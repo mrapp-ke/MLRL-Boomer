@@ -67,8 +67,8 @@ namespace boosting {
         public:
 
             /**
-             * @param quantizationPtr       An unique pointer to an object of type `IQuantization` that implements the
-             *                              method for quantizing gradients and Hessians
+             * @param quantizationMatrixPtr An unique pointer to an object of template type `QuantizationMatrix` that
+             *                              provides access to quantized gradients and Hessians
              * @param lossPtr               An unique pointer to an object of template type `Loss` that implements the
              *                              loss function to be used for calculating gradients and Hessians
              * @param evaluationMeasurePtr  An unique pointer to an object of template type `EvaluationMeasure` that
@@ -84,7 +84,7 @@ namespace boosting {
              * @param scoreMatrixPtr        An unique pointer to an object of type `NumericCContiguousMatrix` that
              *                              stores the currently predicted scores
              */
-            DenseNonDecomposableStatistics(std::unique_ptr<IQuantization> quantizationPtr,
+            DenseNonDecomposableStatistics(std::unique_ptr<QuantizationMatrix> quantizationMatrixPtr,
                                            std::unique_ptr<Loss> lossPtr,
                                            std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
                                            const INonDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
@@ -95,7 +95,7 @@ namespace boosting {
                     OutputMatrix, QuantizationMatrix, DenseNonDecomposableStatisticVector,
                     DenseNonDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>, Loss, EvaluationMeasure,
                     INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory>(
-                    std::move(quantizationPtr), std::move(lossPtr), std::move(evaluationMeasurePtr),
+                    std::move(quantizationMatrixPtr), std::move(lossPtr), std::move(evaluationMeasurePtr),
                     ruleEvaluationFactory, outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
 
             /**
@@ -143,9 +143,9 @@ namespace boosting {
 
                 return std::make_unique<
                   DenseDecomposableStatistics<Loss, OutputMatrix, QuantizationMatrix, EvaluationMeasure>>(
-                  std::move(this->quantizationPtr_), std::move(this->lossPtr_), std::move(this->evaluationMeasurePtr_),
-                  ruleEvaluationFactory, this->outputMatrix_, std::move(decomposableStatisticMatrixPtr),
-                  std::move(this->scoreMatrixPtr_));
+                  std::move(this->quantizationMatrixPtr_), std::move(this->lossPtr_),
+                  std::move(this->evaluationMeasurePtr_), ruleEvaluationFactory, this->outputMatrix_,
+                  std::move(decomposableStatisticMatrixPtr), std::move(this->scoreMatrixPtr_));
             }
     };
 
@@ -189,11 +189,11 @@ namespace boosting {
             throw std::runtime_error("not implemented");
         };
         auto denseNonDecomposableMatrixVisitor =
-          [&](std::unique_ptr<IQuantizationMatrix<DenseNonDecomposableStatisticView>>& ptr) {
+          [&](std::unique_ptr<IQuantizationMatrix<DenseNonDecomposableStatisticView>>& quantizationMatrixPtr) {
             statisticsPtr = std::make_unique<DenseNonDecomposableStatistics<
               Loss, OutputMatrix, IQuantizationMatrix<DenseNonDecomposableStatisticView>, EvaluationMeasure>>(
-              std::move(quantizationPtr), std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory,
-              outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
+              std::move(quantizationMatrixPtr), std::move(lossPtr), std::move(evaluationMeasurePtr),
+              ruleEvaluationFactory, outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
         };
         quantizationPtr->visitQuantizationMatrix(denseDecomposableMatrixVisitor, sparseDecomposableMatrixVisitor,
                                                  denseNonDecomposableMatrixVisitor);

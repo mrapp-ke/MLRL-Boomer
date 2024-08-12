@@ -40,8 +40,8 @@ namespace boosting {
         public:
 
             /**
-             * @param quantizationPtr       An unique pointer to an object of type `IQuantization` that implements the
-             *                              method that should be used for calculating gradients and Hessians
+             * @param quantizationMatrixPtr An unique pointer to an object of template type `QuantizationMatrix` that
+             *                              provides access to quantized gradients and Hessians
              * @param lossPtr               An unique pointer to an object of template type `LossFunction` that
              *                              implements the loss function that should be used for calculating gradients
              *                              and Hessians
@@ -58,7 +58,7 @@ namespace boosting {
              * @param scoreMatrixPtr        An unique pointer to an object of type `NumericSparseSetMatrix` that stores
              *                              the currently predicted scores
              */
-            SparseDecomposableStatistics(std::unique_ptr<IQuantization> quantizationPtr,
+            SparseDecomposableStatistics(std::unique_ptr<QuantizationMatrix> quantizationMatrixPtr,
                                          std::unique_ptr<ISparseDecomposableClassificationLoss> lossPtr,
                                          std::unique_ptr<ISparseEvaluationMeasure> evaluationMeasurePtr,
                                          const ISparseDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
@@ -69,7 +69,7 @@ namespace boosting {
                                                  SparseDecomposableStatisticMatrix, NumericSparseSetMatrix<float64>,
                                                  ISparseDecomposableClassificationLoss, ISparseEvaluationMeasure,
                                                  ISparseDecomposableRuleEvaluationFactory>(
-                    std::move(quantizationPtr), std::move(lossPtr), std::move(evaluationMeasurePtr),
+                    std::move(quantizationMatrixPtr), std::move(lossPtr), std::move(evaluationMeasurePtr),
                     ruleEvaluationFactory, outputMatrix, std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
 
             /**
@@ -119,11 +119,11 @@ namespace boosting {
             throw std::runtime_error("not implemented");
         };
         auto sparseDecomposableMatrixVisitor =
-          [&](std::unique_ptr<IQuantizationMatrix<SparseSetView<Tuple<float64>>>>& ptr) {
+          [&](std::unique_ptr<IQuantizationMatrix<SparseSetView<Tuple<float64>>>>& quantizationMatrixPtr) {
             statisticsPtr = std::make_unique<
               SparseDecomposableStatistics<OutputMatrix, IQuantizationMatrix<SparseSetView<Tuple<float64>>>>>(
-              std::move(quantizationPtr), std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory,
-              outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
+              std::move(quantizationMatrixPtr), std::move(lossPtr), std::move(evaluationMeasurePtr),
+              ruleEvaluationFactory, outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
         };
         auto denseNonDecomposableMatrixVisitor =
           [&](std::unique_ptr<IQuantizationMatrix<DenseNonDecomposableStatisticView>>& quantizationMatrixPtr) {

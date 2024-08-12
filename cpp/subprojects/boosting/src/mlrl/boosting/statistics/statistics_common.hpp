@@ -516,16 +516,16 @@ namespace boosting {
                     }
 
                     void commit() override {
-                        statistics_.quantizationPtr_->quantize(prediction_.getIndexVector());
+                        statistics_.quantizationMatrixPtr_->quantize(prediction_.getIndexVector());
                     }
             };
 
         protected:
 
             /**
-             * An unique pointer to the method that should be used for quantizing gradients and Hessians.
+             * An unique pointer to the matrix that provides access to quantized gradients and Hessians.
              */
-            std::unique_ptr<IQuantization> quantizationPtr_;
+            std::unique_ptr<QuantizationMatrix> quantizationMatrixPtr_;
 
             /**
              * An unique pointer to the loss function that should be used for calculating gradients and Hessians.
@@ -582,8 +582,8 @@ namespace boosting {
         public:
 
             /**
-             * @param quantizationPtr       An unique pointer to an object of type `IQuantization` that implements the
-             *                              method that should be used for quantizing gradients and Hessians
+             * @param quantizationMatrixPtr An unique pointer to an object of template type `QuantizationMatrix` that
+             *                              provides access to quantized gradients and Hessians
              * @param lossPtr               An unique pointer to an object of template type `LossFunction` that
              *                              implements the loss function that should be used for calculating gradients
              *                              and Hessians
@@ -600,12 +600,13 @@ namespace boosting {
              * @param scoreMatrixPtr        An unique pointer to an object of template type `ScoreMatrix` that stores
              *                              the currently predicted scores
              */
-            AbstractStatistics(std::unique_ptr<IQuantization> quantizationPtr, std::unique_ptr<LossFunction> lossPtr,
+            AbstractStatistics(std::unique_ptr<QuantizationMatrix> quantizationMatrixPtr,
+                               std::unique_ptr<LossFunction> lossPtr,
                                std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
                                const RuleEvaluationFactory& ruleEvaluationFactory, const OutputMatrix& outputMatrix,
                                std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                                std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
-                : quantizationPtr_(std::move(quantizationPtr)), lossPtr_(std::move(lossPtr)),
+                : quantizationMatrixPtr_(std::move(quantizationMatrixPtr)), lossPtr_(std::move(lossPtr)),
                   evaluationMeasurePtr_(std::move(evaluationMeasurePtr)),
                   ruleEvaluationFactory_(&ruleEvaluationFactory), outputMatrix_(outputMatrix),
                   statisticMatrixPtr_(std::move(statisticMatrixPtr)), scoreMatrixPtr_(std::move(scoreMatrixPtr)) {}

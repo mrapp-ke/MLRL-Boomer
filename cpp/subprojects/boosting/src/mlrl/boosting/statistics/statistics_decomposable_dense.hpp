@@ -63,8 +63,8 @@ namespace boosting {
         public:
 
             /**
-             * @param quantizationPtr       An unique pointer to an object of type `IQuantization` that implements the
-             *                              method that should be used for quantizing gradients and Hessians
+             * @param quantizationMatrixPtr An unique pointer to an object of template type `QuantizationMatrix` that
+             *                              provides access to quantized gradients and Hessians
              * @param lossPtr               An unique pointer to an object of template type `Loss` that implements the
              *                              loss function that should be used for calculating gradients and Hessians
              * @param evaluationMeasurePtr  An unique pointer to an object of template type `EvaluationMeasure` that
@@ -80,7 +80,8 @@ namespace boosting {
              * @param scoreMatrixPtr        An unique pointer to an object of type `NumericCContiguousMatrix` that
              *                              stores the currently predicted scores
              */
-            DenseDecomposableStatistics(std::unique_ptr<IQuantization> quantizationPtr, std::unique_ptr<Loss> lossPtr,
+            DenseDecomposableStatistics(std::unique_ptr<QuantizationMatrix> quantizationMatrixPtr,
+                                        std::unique_ptr<Loss> lossPtr,
                                         std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
                                         const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
                                         const OutputMatrix& outputMatrix,
@@ -89,7 +90,7 @@ namespace boosting {
                 : AbstractDecomposableStatistics<OutputMatrix, QuantizationMatrix, DenseDecomposableStatisticVector,
                                                  DenseDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>,
                                                  Loss, EvaluationMeasure, IDecomposableRuleEvaluationFactory>(
-                    std::move(quantizationPtr), std::move(lossPtr), std::move(evaluationMeasurePtr),
+                    std::move(quantizationMatrixPtr), std::move(lossPtr), std::move(evaluationMeasurePtr),
                     ruleEvaluationFactory, outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
 
             /**

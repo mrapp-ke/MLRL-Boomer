@@ -62,8 +62,8 @@ namespace boosting {
         public:
 
             /**
-             * @param quantizationPtr       An unique pointer to an object of type `IQuantization` that implements the
-             *                              method that should be used for quantizing gradients and Hessians
+             * @param quantizationMatrixPtr An unique pointer to an object of template type `QuantizationMatrix` that
+             *                              provides access to quantized gradients and Hessians
              * @param lossPtr               An unique pointer to an object of template type `LossFunction` that
              *                              implements the loss function that should be used for calculating gradients
              *                              and Hessians
@@ -80,7 +80,7 @@ namespace boosting {
              * @param scoreMatrixPtr        An unique pointer to an object of template type `ScoreMatrix` that stores
              *                              the currently predicted scores
              */
-            AbstractDecomposableStatistics(std::unique_ptr<IQuantization> quantizationPtr,
+            AbstractDecomposableStatistics(std::unique_ptr<QuantizationMatrix> quantizationMatrixPtr,
                                            std::unique_ptr<LossFunction> lossPtr,
                                            std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
                                            const RuleEvaluationFactory& ruleEvaluationFactory,
@@ -89,7 +89,7 @@ namespace boosting {
                                            std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
                 : AbstractStatistics<OutputMatrix, QuantizationMatrix, StatisticVector, StatisticMatrix, ScoreMatrix,
                                      LossFunction, EvaluationMeasure, RuleEvaluationFactory>(
-                    std::move(quantizationPtr), std::move(lossPtr), std::move(evaluationMeasurePtr),
+                    std::move(quantizationMatrixPtr), std::move(lossPtr), std::move(evaluationMeasurePtr),
                     ruleEvaluationFactory, outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
 
             /**
