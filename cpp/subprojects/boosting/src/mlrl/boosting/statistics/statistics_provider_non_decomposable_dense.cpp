@@ -101,9 +101,12 @@ namespace boosting {
             /**
              * @see `IBoostingStatistics::visitScoreMatrix`
              */
-            void visitScoreMatrix(IBoostingStatistics::DenseScoreMatrixVisitor denseVisitor,
-                                  IBoostingStatistics::SparseScoreMatrixVisitor sparseVisitor) const override {
-                denseVisitor(this->scoreMatrixPtr_->getView());
+            void visitScoreMatrix(
+              std::optional<IBoostingStatistics::DenseScoreMatrixVisitor> denseVisitor,
+              std::optional<IBoostingStatistics::SparseScoreMatrixVisitor> sparseVisitor) const override {
+                if (denseVisitor) {
+                    (*denseVisitor)(this->scoreMatrixPtr_->getView());
+                }
             }
 
             /**
@@ -152,16 +155,7 @@ namespace boosting {
                       std::move(this->evaluationMeasurePtr_), ruleEvaluationFactory, this->outputMatrix_,
                       std::move(decomposableStatisticMatrixPtr), std::move(this->scoreMatrixPtr_));
                 };
-                auto sparseDecomposableMatrixVisitor =
-                  [&](std::unique_ptr<IQuantizationMatrix<SparseSetView<Tuple<float64>>>>& quantizationMatrixPtr) {
-                    throw std::runtime_error("not implemented");
-                };
-                auto denseNonDecomposableMatrixVisitor =
-                  [&](std::unique_ptr<IQuantizationMatrix<DenseNonDecomposableStatisticView>>& quantizationMatrixPtr) {
-                    throw std::runtime_error("not implemented");
-                };
-                quantizationPtr->visitQuantizationMatrix(
-                  denseDecomposableMatrixVisitor, sparseDecomposableMatrixVisitor, denseNonDecomposableMatrixVisitor);
+                quantizationPtr->visitQuantizationMatrix(denseDecomposableMatrixVisitor, {}, {});
                 return statisticsPtr;
             }
     };
@@ -197,14 +191,6 @@ namespace boosting {
         std::unique_ptr<
           INonDecomposableStatistics<INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory>>
           statisticsPtr;
-        auto denseDecomposableMatrixVisitor =
-          [&](std::unique_ptr<IQuantizationMatrix<CContiguousView<Tuple<float64>>>>& quantizationMatrixPtr) {
-            throw std::runtime_error("not implemented");
-        };
-        auto sparseDecomposableMatrixVisitor =
-          [&](std::unique_ptr<IQuantizationMatrix<SparseSetView<Tuple<float64>>>>& quantizationMatrixPtr) {
-            throw std::runtime_error("not implemented");
-        };
         auto denseNonDecomposableMatrixVisitor =
           [&](std::unique_ptr<IQuantizationMatrix<DenseNonDecomposableStatisticView>>& quantizationMatrixPtr) {
             statisticsPtr = std::make_unique<DenseNonDecomposableStatistics<
@@ -212,8 +198,7 @@ namespace boosting {
               std::move(quantizationMatrixPtr), std::move(lossPtr), std::move(evaluationMeasurePtr),
               ruleEvaluationFactory, outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
         };
-        quantizationPtr->visitQuantizationMatrix(denseDecomposableMatrixVisitor, sparseDecomposableMatrixVisitor,
-                                                 denseNonDecomposableMatrixVisitor);
+        quantizationPtr->visitQuantizationMatrix({}, {}, denseNonDecomposableMatrixVisitor);
         return statisticsPtr;
     }
 

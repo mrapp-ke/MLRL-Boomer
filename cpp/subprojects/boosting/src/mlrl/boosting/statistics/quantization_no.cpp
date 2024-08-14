@@ -18,10 +18,13 @@ namespace boosting {
             void quantize(const PartialIndexVector& outputIndices) override {}
 
             void visitQuantizationMatrix(
-              IQuantization::DenseDecomposableMatrixVisitor denseDecomposableMatrixVisitor,
-              IQuantization::SparseDecomposableMatrixVisitor sparseDecomposableMatrixVisitor,
-              IQuantization::DenseNonDecomposableMatrixVisitor denseNonDecomposableMatrixVisitor) override {
-                denseDecomposableMatrixVisitor(quantizationMatrixPtr_);
+              std::optional<IQuantization::DenseDecomposableMatrixVisitor> denseDecomposableMatrixVisitor,
+              std::optional<IQuantization::SparseDecomposableMatrixVisitor> sparseDecomposableMatrixVisitor,
+              std::optional<IQuantization::DenseNonDecomposableMatrixVisitor> denseNonDecomposableMatrixVisitor)
+              override {
+                if (denseDecomposableMatrixVisitor) {
+                    (*denseDecomposableMatrixVisitor)(quantizationMatrixPtr_);
+                }
             }
     };
 
@@ -41,10 +44,13 @@ namespace boosting {
             void quantize(const PartialIndexVector& outputIndices) override {}
 
             void visitQuantizationMatrix(
-              IQuantization::DenseDecomposableMatrixVisitor denseDecomposableMatrixVisitor,
-              IQuantization::SparseDecomposableMatrixVisitor sparseDecomposableMatrixVisitor,
-              IQuantization::DenseNonDecomposableMatrixVisitor denseNonDecomposableMatrixVisitor) override {
-                sparseDecomposableMatrixVisitor(quantizationMatrixPtr_);
+              std::optional<IQuantization::DenseDecomposableMatrixVisitor> denseDecomposableMatrixVisitor,
+              std::optional<IQuantization::SparseDecomposableMatrixVisitor> sparseDecomposableMatrixVisitor,
+              std::optional<IQuantization::DenseNonDecomposableMatrixVisitor> denseNonDecomposableMatrixVisitor)
+              override {
+                if (sparseDecomposableMatrixVisitor) {
+                    (*sparseDecomposableMatrixVisitor)(quantizationMatrixPtr_);
+                }
             }
     };
 
@@ -64,10 +70,13 @@ namespace boosting {
             void quantize(const PartialIndexVector& outputIndices) override {}
 
             void visitQuantizationMatrix(
-              IQuantization::DenseDecomposableMatrixVisitor denseDecomposableMatrixVisitor,
-              IQuantization::SparseDecomposableMatrixVisitor sparseDecomposableMatrixVisitor,
-              IQuantization::DenseNonDecomposableMatrixVisitor denseNonDecomposableMatrixVisitor) override {
-                denseNonDecomposableMatrixVisitor(quantizationMatrixPtr_);
+              std::optional<IQuantization::DenseDecomposableMatrixVisitor> denseDecomposableMatrixVisitor,
+              std::optional<IQuantization::SparseDecomposableMatrixVisitor> sparseDecomposableMatrixVisitor,
+              std::optional<IQuantization::DenseNonDecomposableMatrixVisitor> denseNonDecomposableMatrixVisitor)
+              override {
+                if (denseNonDecomposableMatrixVisitor) {
+                    (*denseNonDecomposableMatrixVisitor)(quantizationMatrixPtr_);
+                }
             }
     };
 

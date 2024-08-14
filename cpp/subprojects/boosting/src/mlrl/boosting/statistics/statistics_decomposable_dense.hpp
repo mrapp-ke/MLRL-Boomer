@@ -96,9 +96,12 @@ namespace boosting {
             /**
              * @see `IBoostingStatistics::visitScoreMatrix`
              */
-            void visitScoreMatrix(IBoostingStatistics::DenseScoreMatrixVisitor denseVisitor,
-                                  IBoostingStatistics::SparseScoreMatrixVisitor sparseVisitor) const override {
-                denseVisitor(this->scoreMatrixPtr_->getView());
+            void visitScoreMatrix(
+              std::optional<IBoostingStatistics::DenseScoreMatrixVisitor> denseVisitor,
+              std::optional<IBoostingStatistics::SparseScoreMatrixVisitor> sparseVisitor) const override {
+                if (denseVisitor) {
+                    (*denseVisitor)(this->scoreMatrixPtr_->getView());
+                }
             }
     };
 

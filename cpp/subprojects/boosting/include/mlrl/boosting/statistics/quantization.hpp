@@ -12,6 +12,7 @@
 
 #include <functional>
 #include <memory>
+#include <optional>
 
 namespace boosting {
 
@@ -53,17 +54,20 @@ namespace boosting {
              * Invokes one of the given visitor functions, depending on which one is able to handle the type of the
              * matrix that is used for storing quantized scores.
              *
-             * @param denseDecomposableMatrixVisitor    The visitor function for handling quantization matrices that are
-             *                                          backed by a view of the type `CContiguousView<Tuple<float64>>`
-             * @param sparseDecomposableMatrixVisitor   The visitor function for handling quantization matrices that are
-             *                                          backed by a view of the type `SparseSetView<Tuple<float64>>`
-             * @param denseNonDecomposableMatrixVisitor The visitor function for handling quantization matrices that are
-             *                                          backed by a view of the type `DenseNonDecomposableStatisticView`
+             * @param denseDecomposableMatrixVisitor    An optional visitor function for handling quantization matrices
+             *                                          that are backed by a view of the type
+             *                                          `CContiguousView<Tuple<float64>>`
+             * @param sparseDecomposableMatrixVisitor   An optional visitor function for handling quantization matrices
+             *                                          that are backed by a view of the type
+             *                                          `SparseSetView<Tuple<float64>>`
+             * @param denseNonDecomposableMatrixVisitor An optional visitor function for handling quantization matrices
+             *                                          that are backed by a view of the type
+             *                                          `DenseNonDecomposableStatisticView`
              */
             virtual void visitQuantizationMatrix(
-              DenseDecomposableMatrixVisitor denseDecomposableMatrixVisitor,
-              SparseDecomposableMatrixVisitor sparseDecomposableMatrixVisitor,
-              DenseNonDecomposableMatrixVisitor denseNonDecomposableMatrixVisitor) = 0;
+              std::optional<DenseDecomposableMatrixVisitor> denseDecomposableMatrixVisitor,
+              std::optional<SparseDecomposableMatrixVisitor> sparseDecomposableMatrixVisitor,
+              std::optional<DenseNonDecomposableMatrixVisitor> denseNonDecomposableMatrixVisitor) = 0;
 
             /**
              * Quantifies all statistics that corresonds to the available outputs.

@@ -19,5 +19,6 @@ class MLRLCOMMON_API PartialHead final
          */
         PartialHead(uint32 numElements);
 
-        void visit(CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor) const override;
+        void visit(std::optional<CompleteHeadVisitor> completeHeadVisitor,
+                   std::optional<PartialHeadVisitor> partialHeadVisitor) const override;
 };
