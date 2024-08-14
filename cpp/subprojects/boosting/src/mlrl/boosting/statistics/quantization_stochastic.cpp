@@ -39,68 +39,80 @@ namespace boosting {
 
             static inline void visitInternally(
               const IQuantizationMatrix<CContiguousView<Statistic<float32>>>& quantizationMatrix,
-              IQuantization::DenseDecomposableMatrixVisitor<float32> denseDecomposable32BitVisitor,
-              IQuantization::DenseDecomposableMatrixVisitor<float64> denseDecomposable64BitVisitor,
-              IQuantization::SparseDecomposableMatrixVisitor<float32> sparseDecomposable32BitVisitor,
-              IQuantization::SparseDecomposableMatrixVisitor<float64> sparseDecomposable64BitVisitor,
-              IQuantization::DenseNonDecomposableMatrixVisitor<float32> denseNonDecomposable32BitVisitor,
-              IQuantization::DenseNonDecomposableMatrixVisitor<float64> denseNonDecomposable64BitVisitor) {
-                denseDecomposable32BitVisitor(quantizationMatrix);
+              std::optional<DenseDecomposableMatrixVisitor<float32>> denseDecomposable32BitVisitor,
+              std::optional<DenseDecomposableMatrixVisitor<float64>> denseDecomposable64BitVisitor,
+              std::optional<SparseDecomposableMatrixVisitor<float32>> sparseDecomposable32BitVisitor,
+              std::optional<SparseDecomposableMatrixVisitor<float64>> sparseDecomposable64BitVisitor,
+              std::optional<DenseNonDecomposableMatrixVisitor<float32>> denseNonDecomposable32BitVisitor,
+              std::optional<DenseNonDecomposableMatrixVisitor<float64>> denseNonDecomposable64BitVisitor) {
+                if (denseDecomposable32BitVisitor) {
+                    (*denseDecomposable32BitVisitor)(quantizationMatrix);
+                }
             }
 
             static inline void visitInternally(
               const IQuantizationMatrix<CContiguousView<Statistic<float64>>>& quantizationMatrix,
-              IQuantization::DenseDecomposableMatrixVisitor<float32> denseDecomposable32BitVisitor,
-              IQuantization::DenseDecomposableMatrixVisitor<float64> denseDecomposable64BitVisitor,
-              IQuantization::SparseDecomposableMatrixVisitor<float32> sparseDecomposable32BitVisitor,
-              IQuantization::SparseDecomposableMatrixVisitor<float64> sparseDecomposable64BitVisitor,
-              IQuantization::DenseNonDecomposableMatrixVisitor<float32> denseNonDecomposable32BitVisitor,
-              IQuantization::DenseNonDecomposableMatrixVisitor<float64> denseNonDecomposable64BitVisitor) {
-                denseDecomposable64BitVisitor(quantizationMatrix);
+              std::optional<DenseDecomposableMatrixVisitor<float32>> denseDecomposable32BitVisitor,
+              std::optional<DenseDecomposableMatrixVisitor<float64>> denseDecomposable64BitVisitor,
+              std::optional<SparseDecomposableMatrixVisitor<float32>> sparseDecomposable32BitVisitor,
+              std::optional<SparseDecomposableMatrixVisitor<float64>> sparseDecomposable64BitVisitor,
+              std::optional<DenseNonDecomposableMatrixVisitor<float32>> denseNonDecomposable32BitVisitor,
+              std::optional<DenseNonDecomposableMatrixVisitor<float64>> denseNonDecomposable64BitVisitor) {
+                if (denseDecomposable64BitVisitor) {
+                    (*denseDecomposable64BitVisitor)(quantizationMatrix);
+                }
             }
 
             static inline void visitInternally(
               const IQuantizationMatrix<SparseSetView<Statistic<float32>>>& quantizationMatrix,
-              IQuantization::DenseDecomposableMatrixVisitor<float32> denseDecomposable32BitVisitor,
-              IQuantization::DenseDecomposableMatrixVisitor<float64> denseDecomposable64BitVisitor,
-              IQuantization::SparseDecomposableMatrixVisitor<float32> sparseDecomposable32BitVisitor,
-              IQuantization::SparseDecomposableMatrixVisitor<float64> sparseDecomposable64BitVisitor,
-              IQuantization::DenseNonDecomposableMatrixVisitor<float32> denseNonDecomposable32BitVisitor,
-              IQuantization::DenseNonDecomposableMatrixVisitor<float64> denseNonDecomposable64BitVisitor) {
-                sparseDecomposable32BitVisitor(quantizationMatrix);
+              std::optional<DenseDecomposableMatrixVisitor<float32>> denseDecomposable32BitVisitor,
+              std::optional<DenseDecomposableMatrixVisitor<float64>> denseDecomposable64BitVisitor,
+              std::optional<SparseDecomposableMatrixVisitor<float32>> sparseDecomposable32BitVisitor,
+              std::optional<SparseDecomposableMatrixVisitor<float64>> sparseDecomposable64BitVisitor,
+              std::optional<DenseNonDecomposableMatrixVisitor<float32>> denseNonDecomposable32BitVisitor,
+              std::optional<DenseNonDecomposableMatrixVisitor<float64>> denseNonDecomposable64BitVisitor) {
+                if (sparseDecomposable32BitVisitor) {
+                    (*sparseDecomposable32BitVisitor)(quantizationMatrix);
+                }
             }
 
             static inline void visitInternally(
               const IQuantizationMatrix<SparseSetView<Statistic<float64>>>& quantizationMatrix,
-              IQuantization::DenseDecomposableMatrixVisitor<float32> denseDecomposable32BitVisitor,
-              IQuantization::DenseDecomposableMatrixVisitor<float64> denseDecomposable64BitVisitor,
-              IQuantization::SparseDecomposableMatrixVisitor<float32> sparseDecomposable32BitVisitor,
-              IQuantization::SparseDecomposableMatrixVisitor<float64> sparseDecomposable64BitVisitor,
-              IQuantization::DenseNonDecomposableMatrixVisitor<float32> denseNonDecomposable32BitVisitor,
-              IQuantization::DenseNonDecomposableMatrixVisitor<float64> denseNonDecomposable64BitVisitor) {
-                sparseDecomposable64BitVisitor(quantizationMatrix);
+              std::optional<DenseDecomposableMatrixVisitor<float32>> denseDecomposable32BitVisitor,
+              std::optional<DenseDecomposableMatrixVisitor<float64>> denseDecomposable64BitVisitor,
+              std::optional<SparseDecomposableMatrixVisitor<float32>> sparseDecomposable32BitVisitor,
+              std::optional<SparseDecomposableMatrixVisitor<float64>> sparseDecomposable64BitVisitor,
+              std::optional<DenseNonDecomposableMatrixVisitor<float32>> denseNonDecomposable32BitVisitor,
+              std::optional<DenseNonDecomposableMatrixVisitor<float64>> denseNonDecomposable64BitVisitor) {
+                if (sparseDecomposable64BitVisitor) {
+                    (*sparseDecomposable64BitVisitor)(quantizationMatrix);
+                }
             }
 
             static inline void visitInternally(
               const IQuantizationMatrix<DenseNonDecomposableStatisticView<float32>>& quantizationMatrix,
-              IQuantization::DenseDecomposableMatrixVisitor<float32> denseDecomposable32BitVisitor,
-              IQuantization::DenseDecomposableMatrixVisitor<float64> denseDecomposable64BitVisitor,
-              IQuantization::SparseDecomposableMatrixVisitor<float32> sparseDecomposable32BitVisitor,
-              IQuantization::SparseDecomposableMatrixVisitor<float64> sparseDecomposable64BitVisitor,
-              IQuantization::DenseNonDecomposableMatrixVisitor<float32> denseNonDecomposable32BitVisitor,
-              IQuantization::DenseNonDecomposableMatrixVisitor<float64> denseNonDecomposable64BitVisitor) {
-                denseNonDecomposable32BitVisitor(quantizationMatrix);
+              std::optional<DenseDecomposableMatrixVisitor<float32>> denseDecomposable32BitVisitor,
+              std::optional<DenseDecomposableMatrixVisitor<float64>> denseDecomposable64BitVisitor,
+              std::optional<SparseDecomposableMatrixVisitor<float32>> sparseDecomposable32BitVisitor,
+              std::optional<SparseDecomposableMatrixVisitor<float64>> sparseDecomposable64BitVisitor,
+              std::optional<DenseNonDecomposableMatrixVisitor<float32>> denseNonDecomposable32BitVisitor,
+              std::optional<DenseNonDecomposableMatrixVisitor<float64>> denseNonDecomposable64BitVisitor) {
+                if (denseNonDecomposable32BitVisitor) {
+                    (*denseNonDecomposable32BitVisitor)(quantizationMatrix);
+                }
             }
 
             static inline void visitInternally(
               const IQuantizationMatrix<DenseNonDecomposableStatisticView<float64>>& quantizationMatrix,
-              IQuantization::DenseDecomposableMatrixVisitor<float32> denseDecomposable32BitVisitor,
-              IQuantization::DenseDecomposableMatrixVisitor<float64> denseDecomposable64BitVisitor,
-              IQuantization::SparseDecomposableMatrixVisitor<float32> sparseDecomposable32BitVisitor,
-              IQuantization::SparseDecomposableMatrixVisitor<float64> sparseDecomposable64BitVisitor,
-              IQuantization::DenseNonDecomposableMatrixVisitor<float32> denseNonDecomposable32BitVisitor,
-              IQuantization::DenseNonDecomposableMatrixVisitor<float64> denseNonDecomposable64BitVisitor) {
-                denseNonDecomposable64BitVisitor(quantizationMatrix);
+              std::optional<DenseDecomposableMatrixVisitor<float32>> denseDecomposable32BitVisitor,
+              std::optional<DenseDecomposableMatrixVisitor<float64>> denseDecomposable64BitVisitor,
+              std::optional<SparseDecomposableMatrixVisitor<float32>> sparseDecomposable32BitVisitor,
+              std::optional<SparseDecomposableMatrixVisitor<float64>> sparseDecomposable64BitVisitor,
+              std::optional<DenseNonDecomposableMatrixVisitor<float32>> denseNonDecomposable32BitVisitor,
+              std::optional<DenseNonDecomposableMatrixVisitor<float64>> denseNonDecomposable64BitVisitor) {
+                if (denseNonDecomposable64BitVisitor) {
+                    (*denseNonDecomposable64BitVisitor)(quantizationMatrix);
+                }
             }
 
             std::unique_ptr<IQuantizationMatrix<CContiguousView<Statistic<StatisticType>>>> quantizationMatrixPtr_;
@@ -111,12 +123,12 @@ namespace boosting {
                 : quantizationMatrixPtr_(std::make_unique<StochasticQuantizationMatrix<View, StatisticType>>(view)) {}
 
             void visitQuantizationMatrix(
-              IQuantization::DenseDecomposableMatrixVisitor<float32> denseDecomposable32BitVisitor,
-              IQuantization::DenseDecomposableMatrixVisitor<float64> denseDecomposable64BitVisitor,
-              IQuantization::SparseDecomposableMatrixVisitor<float32> sparseDecomposable32BitVisitor,
-              IQuantization::SparseDecomposableMatrixVisitor<float64> sparseDecomposable64BitVisitor,
-              IQuantization::DenseNonDecomposableMatrixVisitor<float32> denseNonDecomposable32BitVisitor,
-              IQuantization::DenseNonDecomposableMatrixVisitor<float64> denseNonDecomposable64BitVisitor) override {
+              std::optional<DenseDecomposableMatrixVisitor<float32>> denseDecomposable32BitVisitor,
+              std::optional<DenseDecomposableMatrixVisitor<float64>> denseDecomposable64BitVisitor,
+              std::optional<SparseDecomposableMatrixVisitor<float32>> sparseDecomposable32BitVisitor,
+              std::optional<SparseDecomposableMatrixVisitor<float64>> sparseDecomposable64BitVisitor,
+              std::optional<DenseNonDecomposableMatrixVisitor<float32>> denseNonDecomposable32BitVisitor,
+              std::optional<DenseNonDecomposableMatrixVisitor<float64>> denseNonDecomposable64BitVisitor) override {
                 visitInternally(*quantizationMatrixPtr_, denseDecomposable32BitVisitor, denseDecomposable64BitVisitor,
                                 sparseDecomposable32BitVisitor, sparseDecomposable64BitVisitor,
                                 denseNonDecomposable32BitVisitor, denseNonDecomposable64BitVisitor);

@@ -12,6 +12,7 @@
 
 #include <functional>
 #include <memory>
+#include <optional>
 
 namespace boosting {
 
@@ -90,30 +91,32 @@ namespace boosting {
              * Invokes one of the given visitor functions, depending on which one is able to handle the type of the
              * matrix that is used for storing quantized scores.
              *
-             * @param denseDecomposable32BitVisitor     The visitor function for handling quantization matrices that are
-             *                                          backed by a view of the type
+             * @param denseDecomposable32BitVisitor     An optional visitor function for handling quantization matrices
+             *                                          that are backed by a view of the type
              *                                          `CContiguousView<Statistic<float32>>`
-             * @param denseDecomposable64BitVisitor     The visitor function for handling quantization matrices that are
-             *                                          backed by a view of the type
+             * @param denseDecomposable64BitVisitor     An optional visitor function for handling quantization matrices
+             *                                          that are backed by a view of the type
              *                                          `CContiguousView<Statistic<float64>>`
-             * @param sparseDecomposable32BitVisitor    The visitor function for handling quantization matrices that are
-             *                                          backed by a view of the type `SparseSetView<Statistic<float32>>`
-             * @param sparseDecomposable64BitVisitor    The visitor function for handling quantization matrices that are
-             *                                          backed by a view of the type `SparseSetView<Statistic<float64>>`
-             * @param denseNonDecomposable32BitVisitor  The visitor function for handling quantization matrices that are
-             *                                          backed by a view of the type
+             * @param sparseDecomposable32BitVisitor    An optional visitor function for handling quantization matrices
+             *                                          that are backed by a view of the type
+             *                                          `SparseSetView<Statistic<float32>>`
+             * @param sparseDecomposable64BitVisitor    An optional visitor function for handling quantization matrices
+             *                                          that are backed by a view of the type
+             *                                          `SparseSetView<Statistic<float64>>`
+             * @param denseNonDecomposable32BitVisitor  An optional visitor function for handling quantization matrices
+             *                                          that are backed by a view of the type
              *                                          `DenseNonDecomposableStatisticView<float32>`
-             * @param denseNonDecomposable64BitVisitor  The visitor function for handling quantization matrices that are
-             *                                          backed by a view of the type
+             * @param denseNonDecomposable64BitVisitor  An optional visitor function for handling quantization matrices
+             *                                          that are backed by a view of the type
              *                                          `DenseNonDecomposableStatisticView<float64>`
              */
             virtual void visitQuantizationMatrix(
-              DenseDecomposableMatrixVisitor<float32> denseDecomposable32BitVisitor,
-              DenseDecomposableMatrixVisitor<float64> denseDecomposable64BitVisitor,
-              SparseDecomposableMatrixVisitor<float32> sparseDecomposable32BitVisitor,
-              SparseDecomposableMatrixVisitor<float64> sparseDecomposable64BitVisitor,
-              DenseNonDecomposableMatrixVisitor<float32> denseNonDecomposable32BitVisitor,
-              DenseNonDecomposableMatrixVisitor<float64> denseNonDecomposable64BitVisitor) = 0;
+              std::optional<DenseDecomposableMatrixVisitor<float32>> denseDecomposable32BitVisitor,
+              std::optional<DenseDecomposableMatrixVisitor<float64>> denseDecomposable64BitVisitor,
+              std::optional<SparseDecomposableMatrixVisitor<float32>> sparseDecomposable32BitVisitor,
+              std::optional<SparseDecomposableMatrixVisitor<float64>> sparseDecomposable64BitVisitor,
+              std::optional<DenseNonDecomposableMatrixVisitor<float32>> denseNonDecomposable32BitVisitor,
+              std::optional<DenseNonDecomposableMatrixVisitor<float64>> denseNonDecomposable64BitVisitor) = 0;
     };
 
     /**

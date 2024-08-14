@@ -45,25 +45,8 @@ namespace boosting {
               std::move(quantizationPtr), std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory,
               outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
         };
-        auto sparseDecomposable32BitVisitor =
-          [&](const IQuantizationMatrix<SparseSetView<Statistic<float32>>>& quantizationMatrixPtr) {
-            throw std::runtime_error("not implemented");
-        };
-        auto sparseDecomposable64BitVisitor =
-          [&](const IQuantizationMatrix<SparseSetView<Statistic<float64>>>& quantizationMatrixPtr) {
-            throw std::runtime_error("not implemented");
-        };
-        auto denseNonDecomposable32BitVisitor =
-          [&](const IQuantizationMatrix<DenseNonDecomposableStatisticView<float32>>& quantizationMatrixPtr) {
-            throw std::runtime_error("not implemented");
-        };
-        auto denseNonDecomposable64BitVisitor =
-          [&](const IQuantizationMatrix<DenseNonDecomposableStatisticView<float64>>& quantizationMatrixPtr) {
-            throw std::runtime_error("not implemented");
-        };
-        quantizationPtr->visitQuantizationMatrix(denseDecomposable32BitVisitor, denseDecomposable64BitVisitor,
-                                                 sparseDecomposable32BitVisitor, sparseDecomposable64BitVisitor,
-                                                 denseNonDecomposable32BitVisitor, denseNonDecomposable64BitVisitor);
+        quantizationPtr->visitQuantizationMatrix(denseDecomposable32BitVisitor, denseDecomposable64BitVisitor, {}, {},
+                                                 {}, {});
         return statisticsPtr;
     }
 
