@@ -6,6 +6,7 @@
 #include "mlrl/common/data/view.hpp"
 
 #include <functional>
+#include <optional>
 
 // Forward declarations
 class EmptyBody;
@@ -74,8 +75,10 @@ class MLRLCOMMON_API IBody : public IConditional {
          * Invokes one of the given visitor functions, depending on which one is able to handle this particular type of
          * body.
          *
-         * @param emptyBodyVisitor          The visitor function for handling objects of the type `EmptyBody`
-         * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
+         * @param emptyBodyVisitor          An optional visitor function for handling objects of the type `EmptyBody`
+         * @param conjunctiveBodyVisitor    An optional visitor function for handling objects of the type
+         *                                  `ConjunctiveBody`
          */
-        virtual void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor) const = 0;
+        virtual void visit(std::optional<EmptyBodyVisitor> emptyBodyVisitor,
+                           std::optional<ConjunctiveBodyVisitor> conjunctiveBodyVisitor) const = 0;
 };

@@ -400,22 +400,6 @@ namespace boosting {
         std::unique_ptr<
           INonDecomposableStatistics<INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory>>
           statisticsPtr;
-        auto denseDecomposable32BitVisitor =
-          [&](const IQuantizationMatrix<CContiguousView<Statistic<float32>>>& quantizationMatrix) {
-            throw std::runtime_error("not implemented");
-        };
-        auto denseDecomposable64BitVisitor =
-          [&](const IQuantizationMatrix<CContiguousView<Statistic<float64>>>& quantizationMatrix) {
-            throw std::runtime_error("not implemented");
-        };
-        auto sparseDecomposable32BitVisitor =
-          [&](const IQuantizationMatrix<SparseSetView<Statistic<float32>>>& quantizationMatrix) {
-            throw std::runtime_error("not implemented");
-        };
-        auto sparseDecomposable64BitVisitor =
-          [&](const IQuantizationMatrix<SparseSetView<Statistic<float64>>>& quantizationMatrix) {
-            throw std::runtime_error("not implemented");
-        };
         auto denseNonDecomposable32BitVisitor =
           [&](const IQuantizationMatrix<DenseNonDecomposableStatisticView<float32>>& quantizationMatrix) {
             statisticsPtr = std::make_unique<DenseNonDecomposableStatistics<Loss, OutputMatrix, EvaluationMeasure>>(
@@ -428,9 +412,8 @@ namespace boosting {
               std::move(quantizationPtr), std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory,
               outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
         };
-        quantizationPtr->visitQuantizationMatrix(denseDecomposable32BitVisitor, denseDecomposable64BitVisitor,
-                                                 sparseDecomposable32BitVisitor, sparseDecomposable64BitVisitor,
-                                                 denseNonDecomposable32BitVisitor, denseNonDecomposable64BitVisitor);
+        quantizationPtr->visitQuantizationMatrix({}, {}, {}, {}, denseNonDecomposable32BitVisitor,
+                                                 denseNonDecomposable64BitVisitor);
         return statisticsPtr;
     }
 

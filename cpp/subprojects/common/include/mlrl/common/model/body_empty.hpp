@@ -18,5 +18,6 @@ class MLRLCOMMON_API EmptyBody final : public IBody {
                     float32 sparseValue, View<float32>::iterator tmpArray1, View<uint32>::iterator tmpArray2,
                     uint32 n) const override;
 
-        void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor) const override;
+        void visit(std::optional<EmptyBodyVisitor> emptyBodyVisitor,
+                   std::optional<ConjunctiveBodyVisitor> conjunctiveBodyVisitor) const override;
 };
