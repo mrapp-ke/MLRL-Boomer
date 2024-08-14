@@ -141,11 +141,28 @@ namespace boosting {
                     }
                 }
 
-                return std::make_unique<
-                  DenseDecomposableStatistics<Loss, OutputMatrix, QuantizationMatrix, EvaluationMeasure>>(
-                  std::move(this->quantizationMatrixPtr_), std::move(this->lossPtr_),
-                  std::move(this->evaluationMeasurePtr_), ruleEvaluationFactory, this->outputMatrix_,
-                  std::move(decomposableStatisticMatrixPtr), std::move(this->scoreMatrixPtr_));
+                std::unique_ptr<IQuantization> quantizationPtr =
+                  this->quantizationMatrixPtr_->create(*decomposableStatisticMatrixRawPtr);
+                std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> statisticsPtr;
+                auto denseDecomposableMatrixVisitor =
+                  [&](std::unique_ptr<IQuantizationMatrix<CContiguousView<Tuple<float64>>>>& quantizationMatrixPtr) {
+                    statisticsPtr = std::make_unique<DenseDecomposableStatistics<
+                      Loss, OutputMatrix, IQuantizationMatrix<CContiguousView<Tuple<float64>>>, EvaluationMeasure>>(
+                      std::move(quantizationMatrixPtr), std::move(this->lossPtr_),
+                      std::move(this->evaluationMeasurePtr_), ruleEvaluationFactory, this->outputMatrix_,
+                      std::move(decomposableStatisticMatrixPtr), std::move(this->scoreMatrixPtr_));
+                };
+                auto sparseDecomposableMatrixVisitor =
+                  [&](std::unique_ptr<IQuantizationMatrix<SparseSetView<Tuple<float64>>>>& quantizationMatrixPtr) {
+                    throw std::runtime_error("not implemented");
+                };
+                auto denseNonDecomposableMatrixVisitor =
+                  [&](std::unique_ptr<IQuantizationMatrix<DenseNonDecomposableStatisticView>>& quantizationMatrixPtr) {
+                    throw std::runtime_error("not implemented");
+                };
+                quantizationPtr->visitQuantizationMatrix(
+                  denseDecomposableMatrixVisitor, sparseDecomposableMatrixVisitor, denseNonDecomposableMatrixVisitor);
+                return statisticsPtr;
             }
     };
 

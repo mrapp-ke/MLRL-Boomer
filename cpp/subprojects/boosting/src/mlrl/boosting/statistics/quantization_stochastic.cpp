@@ -5,6 +5,34 @@
 namespace boosting {
 
     template<typename View>
+    class StochasticQuantization final : public IQuantization {
+        private:
+
+            std::unique_ptr<IQuantizationMatrix<CContiguousView<Tuple<float64>>>> quantizationMatrixPtr_;
+
+        public:
+
+            StochasticQuantization(
+              std::unique_ptr<IQuantizationMatrix<CContiguousView<Tuple<float64>>>> quantizationMatrixPtr)
+                : quantizationMatrixPtr_(std::move(quantizationMatrixPtr)) {}
+
+            void quantize(const CompleteIndexVector& outputIndices) override {
+                // TODO Implement
+            }
+
+            void quantize(const PartialIndexVector& outputIndices) override {
+                // TODO Implement
+            }
+
+            void visitQuantizationMatrix(
+              IQuantization::DenseDecomposableMatrixVisitor denseDecomposableMatrixVisitor,
+              IQuantization::SparseDecomposableMatrixVisitor sparseDecomposableMatrixVisitor,
+              IQuantization::DenseNonDecomposableMatrixVisitor denseNonDecomposableMatrixVisitor) override {
+                denseDecomposableMatrixVisitor(quantizationMatrixPtr_);
+            }
+    };
+
+    template<typename View>
     class StochasticQuantizationMatrix final : public IQuantizationMatrix<CContiguousView<Tuple<float64>>> {
         private:
 
@@ -29,32 +57,22 @@ namespace boosting {
             const typename IQuantizationMatrix<CContiguousView<Tuple<float64>>>::view_type& getView() const override {
                 return matrix_.getView();
             }
-    };
 
-    template<typename View>
-    class StochasticQuantization final : public IQuantization {
-        private:
-
-            std::unique_ptr<IQuantizationMatrix<CContiguousView<Tuple<float64>>>> quantizationMatrixPtr_;
-
-        public:
-
-            StochasticQuantization(const View& view)
-                : quantizationMatrixPtr_(std::make_unique<StochasticQuantizationMatrix<View>>(view)) {}
-
-            void quantize(const CompleteIndexVector& outputIndices) override {
-                // TODO Implement
+            std::unique_ptr<IQuantization> create(
+              const CContiguousView<Tuple<float64>>& statisticMatrix) const override {
+                return std::make_unique<StochasticQuantization<CContiguousView<Tuple<float64>>>>(
+                  std::make_unique<StochasticQuantizationMatrix<CContiguousView<Tuple<float64>>>>(statisticMatrix));
             }
 
-            void quantize(const PartialIndexVector& outputIndices) override {
-                // TODO Implement
+            std::unique_ptr<IQuantization> create(const SparseSetView<Tuple<float64>>& statisticMatrix) const override {
+                return std::make_unique<StochasticQuantization<SparseSetView<Tuple<float64>>>>(
+                  std::make_unique<StochasticQuantizationMatrix<SparseSetView<Tuple<float64>>>>(statisticMatrix));
             }
 
-            void visitQuantizationMatrix(
-              IQuantization::DenseDecomposableMatrixVisitor denseDecomposableMatrixVisitor,
-              IQuantization::SparseDecomposableMatrixVisitor sparseDecomposableMatrixVisitor,
-              IQuantization::DenseNonDecomposableMatrixVisitor denseNonDecomposableMatrixVisitor) override {
-                denseDecomposableMatrixVisitor(quantizationMatrixPtr_);
+            std::unique_ptr<IQuantization> create(
+              const DenseNonDecomposableStatisticView& statisticMatrix) const override {
+                return std::make_unique<StochasticQuantization<DenseNonDecomposableStatisticView>>(
+                  std::make_unique<StochasticQuantizationMatrix<DenseNonDecomposableStatisticView>>(statisticMatrix));
             }
     };
 
@@ -72,16 +90,19 @@ namespace boosting {
 
             std::unique_ptr<IQuantization> create(
               const CContiguousView<Tuple<float64>>& statisticMatrix) const override {
-                return std::make_unique<StochasticQuantization<CContiguousView<Tuple<float64>>>>(statisticMatrix);
+                return std::make_unique<StochasticQuantization<CContiguousView<Tuple<float64>>>>(
+                  std::make_unique<StochasticQuantizationMatrix<CContiguousView<Tuple<float64>>>>(statisticMatrix));
             }
 
             std::unique_ptr<IQuantization> create(const SparseSetView<Tuple<float64>>& statisticMatrix) const override {
-                return std::make_unique<StochasticQuantization<SparseSetView<Tuple<float64>>>>(statisticMatrix);
+                return std::make_unique<StochasticQuantization<SparseSetView<Tuple<float64>>>>(
+                  std::make_unique<StochasticQuantizationMatrix<SparseSetView<Tuple<float64>>>>(statisticMatrix));
             }
 
             std::unique_ptr<IQuantization> create(
               const DenseNonDecomposableStatisticView& statisticMatrix) const override {
-                return std::make_unique<StochasticQuantization<DenseNonDecomposableStatisticView>>(statisticMatrix);
+                return std::make_unique<StochasticQuantization<DenseNonDecomposableStatisticView>>(
+                  std::make_unique<StochasticQuantizationMatrix<DenseNonDecomposableStatisticView>>(statisticMatrix));
             }
     };
 
