@@ -2,30 +2,11 @@
 
 namespace boosting {
 
-    template<typename View>
-    class NoQuantizationMatrix final : public IQuantizationMatrix<View> {
-        private:
-
-            const View& view_;
-
-        public:
-
-            NoQuantizationMatrix(const View& view) : view_(view) {}
-
-            void quantize(const CompleteIndexVector& outputIndices) override {}
-
-            void quantize(const PartialIndexVector& outputIndices) override {}
-
-            const typename IQuantizationMatrix<View>::view_type& getView() const override {
-                return view_;
-            }
-    };
-
     template<typename StatisticType>
     class NoDenseDecomposableQuantization final : public IQuantization {
         private:
 
-            NoQuantizationMatrix<CContiguousView<Statistic<StatisticType>>> quantizationMatrix_;
+            std::unique_ptr<IQuantizationMatrix<CContiguousView<Statistic<StatisticType>>>> quantizationMatrixPtr_;
 
             static inline void visitInternally(
               const IQuantizationMatrix<CContiguousView<Statistic<float32>>>& quantizationMatrix,
@@ -47,8 +28,9 @@ namespace boosting {
 
         public:
 
-            NoDenseDecomposableQuantization(const CContiguousView<Statistic<StatisticType>>& view)
-                : quantizationMatrix_(view) {}
+            NoDenseDecomposableQuantization(
+              std::unique_ptr<IQuantizationMatrix<CContiguousView<Statistic<StatisticType>>>> quantizationMatrixPtr)
+                : quantizationMatrixPtr_(std::move(quantizationMatrixPtr)) {}
 
             void visitQuantizationMatrix(
               std::optional<DenseDecomposableMatrixVisitor<float32>> denseDecomposable32BitVisitor,
@@ -57,7 +39,7 @@ namespace boosting {
               std::optional<SparseDecomposableMatrixVisitor<float64>> sparseDecomposable64BitVisitor,
               std::optional<DenseNonDecomposableMatrixVisitor<float32>> denseNonDecomposable32BitVisitor,
               std::optional<DenseNonDecomposableMatrixVisitor<float64>> denseNonDecomposable64BitVisitor) override {
-                visitInternally(quantizationMatrix_, denseDecomposable32BitVisitor, denseDecomposable64BitVisitor);
+                visitInternally(*quantizationMatrixPtr_, denseDecomposable32BitVisitor, denseDecomposable64BitVisitor);
             }
     };
 
@@ -83,12 +65,13 @@ namespace boosting {
                 }
             }
 
-            NoQuantizationMatrix<SparseSetView<Statistic<StatisticType>>> quantizationMatrix_;
+            std::unique_ptr<IQuantizationMatrix<SparseSetView<Statistic<StatisticType>>>> quantizationMatrixPtr_;
 
         public:
 
-            NoSparseDecomposableQuantization(const SparseSetView<Statistic<StatisticType>>& view)
-                : quantizationMatrix_(view) {}
+            NoSparseDecomposableQuantization(
+              std::unique_ptr<IQuantizationMatrix<SparseSetView<Statistic<StatisticType>>>> quantizationMatrixPtr)
+                : quantizationMatrixPtr_(std::move(quantizationMatrixPtr)) {}
 
             void visitQuantizationMatrix(
               std::optional<DenseDecomposableMatrixVisitor<float32>> denseDecomposable32BitVisitor,
@@ -97,7 +80,8 @@ namespace boosting {
               std::optional<SparseDecomposableMatrixVisitor<float64>> sparseDecomposable64BitVisitor,
               std::optional<DenseNonDecomposableMatrixVisitor<float32>> denseNonDecomposable32BitVisitor,
               std::optional<DenseNonDecomposableMatrixVisitor<float64>> denseNonDecomposable64BitVisitor) override {
-                visitInternally(quantizationMatrix_, sparseDecomposable32BitVisitor, sparseDecomposable64BitVisitor);
+                visitInternally(*quantizationMatrixPtr_, sparseDecomposable32BitVisitor,
+                                sparseDecomposable64BitVisitor);
             }
     };
 
@@ -123,12 +107,15 @@ namespace boosting {
                 }
             }
 
-            NoQuantizationMatrix<DenseNonDecomposableStatisticView<StatisticType>> quantizationMatrix_;
+            std::unique_ptr<IQuantizationMatrix<DenseNonDecomposableStatisticView<StatisticType>>>
+              quantizationMatrixPtr_;
 
         public:
 
-            NoDenseNonDecomposableQuantization(const DenseNonDecomposableStatisticView<StatisticType>& view)
-                : quantizationMatrix_(view) {}
+            NoDenseNonDecomposableQuantization(
+              std::unique_ptr<IQuantizationMatrix<DenseNonDecomposableStatisticView<StatisticType>>>
+                quantizationMatrixPtr)
+                : quantizationMatrixPtr_(std::move(quantizationMatrixPtr)) {}
 
             void visitQuantizationMatrix(
               std::optional<DenseDecomposableMatrixVisitor<float32>> denseDecomposable32BitVisitor,
@@ -137,8 +124,63 @@ namespace boosting {
               std::optional<SparseDecomposableMatrixVisitor<float64>> sparseDecomposable64BitVisitor,
               std::optional<DenseNonDecomposableMatrixVisitor<float32>> denseNonDecomposable32BitVisitor,
               std::optional<DenseNonDecomposableMatrixVisitor<float64>> denseNonDecomposable64BitVisitor) override {
-                visitInternally(quantizationMatrix_, denseNonDecomposable32BitVisitor,
+                visitInternally(*quantizationMatrixPtr_, denseNonDecomposable32BitVisitor,
                                 denseNonDecomposable64BitVisitor);
+            }
+    };
+
+    template<typename View>
+    class NoQuantizationMatrix final : public IQuantizationMatrix<View> {
+        private:
+
+            const View& view_;
+
+        public:
+
+            NoQuantizationMatrix(const View& view) : view_(view) {}
+
+            void quantize(const CompleteIndexVector& outputIndices) override {}
+
+            void quantize(const PartialIndexVector& outputIndices) override {}
+
+            const typename IQuantizationMatrix<View>::view_type& getView() const override {
+                return view_;
+            }
+
+            std::unique_ptr<IQuantization> create(
+              const CContiguousView<Statistic<float32>>& statisticMatrix) const override {
+                return std::make_unique<NoDenseDecomposableQuantization<float32>>(
+                  std::make_unique<NoQuantizationMatrix<CContiguousView<Statistic<float32>>>>(statisticMatrix));
+            }
+
+            std::unique_ptr<IQuantization> create(
+              const CContiguousView<Statistic<float64>>& statisticMatrix) const override {
+                return std::make_unique<NoDenseDecomposableQuantization<float64>>(
+                  std::make_unique<NoQuantizationMatrix<CContiguousView<Statistic<float64>>>>(statisticMatrix));
+            }
+
+            std::unique_ptr<IQuantization> create(
+              const SparseSetView<Statistic<float32>>& statisticMatrix) const override {
+                return std::make_unique<NoSparseDecomposableQuantization<float32>>(
+                  std::make_unique<NoQuantizationMatrix<SparseSetView<Statistic<float32>>>>(statisticMatrix));
+            }
+
+            std::unique_ptr<IQuantization> create(
+              const SparseSetView<Statistic<float64>>& statisticMatrix) const override {
+                return std::make_unique<NoSparseDecomposableQuantization<float64>>(
+                  std::make_unique<NoQuantizationMatrix<SparseSetView<Statistic<float64>>>>(statisticMatrix));
+            }
+
+            std::unique_ptr<IQuantization> create(
+              const DenseNonDecomposableStatisticView<float32>& statisticMatrix) const override {
+                return std::make_unique<NoDenseNonDecomposableQuantization<float32>>(
+                  std::make_unique<NoQuantizationMatrix<DenseNonDecomposableStatisticView<float32>>>(statisticMatrix));
+            }
+
+            std::unique_ptr<IQuantization> create(
+              const DenseNonDecomposableStatisticView<float64>& statisticMatrix) const override {
+                return std::make_unique<NoDenseNonDecomposableQuantization<float64>>(
+                  std::make_unique<NoQuantizationMatrix<DenseNonDecomposableStatisticView<float64>>>(statisticMatrix));
             }
     };
 
@@ -147,32 +189,38 @@ namespace boosting {
 
             std::unique_ptr<IQuantization> create(
               const CContiguousView<Statistic<float32>>& statisticMatrix) const override {
-                return std::make_unique<NoDenseDecomposableQuantization<float32>>(statisticMatrix);
+                return std::make_unique<NoDenseDecomposableQuantization<float32>>(
+                  std::make_unique<NoQuantizationMatrix<CContiguousView<Statistic<float32>>>>(statisticMatrix));
             }
 
             std::unique_ptr<IQuantization> create(
               const CContiguousView<Statistic<float64>>& statisticMatrix) const override {
-                return std::make_unique<NoDenseDecomposableQuantization<float64>>(statisticMatrix);
+                return std::make_unique<NoDenseDecomposableQuantization<float64>>(
+                  std::make_unique<NoQuantizationMatrix<CContiguousView<Statistic<float64>>>>(statisticMatrix));
             }
 
             std::unique_ptr<IQuantization> create(
               const SparseSetView<Statistic<float32>>& statisticMatrix) const override {
-                return std::make_unique<NoSparseDecomposableQuantization<float32>>(statisticMatrix);
+                return std::make_unique<NoSparseDecomposableQuantization<float32>>(
+                  std::make_unique<NoQuantizationMatrix<SparseSetView<Statistic<float32>>>>(statisticMatrix));
             }
 
             std::unique_ptr<IQuantization> create(
               const SparseSetView<Statistic<float64>>& statisticMatrix) const override {
-                return std::make_unique<NoSparseDecomposableQuantization<float64>>(statisticMatrix);
+                return std::make_unique<NoSparseDecomposableQuantization<float64>>(
+                  std::make_unique<NoQuantizationMatrix<SparseSetView<Statistic<float64>>>>(statisticMatrix));
             }
 
             std::unique_ptr<IQuantization> create(
               const DenseNonDecomposableStatisticView<float32>& statisticMatrix) const override {
-                return std::make_unique<NoDenseNonDecomposableQuantization<float32>>(statisticMatrix);
+                return std::make_unique<NoDenseNonDecomposableQuantization<float32>>(
+                  std::make_unique<NoQuantizationMatrix<DenseNonDecomposableStatisticView<float32>>>(statisticMatrix));
             }
 
             std::unique_ptr<IQuantization> create(
               const DenseNonDecomposableStatisticView<float64>& statisticMatrix) const override {
-                return std::make_unique<NoDenseNonDecomposableQuantization<float64>>(statisticMatrix);
+                return std::make_unique<NoDenseNonDecomposableQuantization<float64>>(
+                  std::make_unique<NoQuantizationMatrix<DenseNonDecomposableStatisticView<float64>>>(statisticMatrix));
             }
     };
 

@@ -16,43 +16,9 @@
 
 namespace boosting {
 
-    /**
-     * Defines an interfaces for all matrices for storing quantized statistics that are backed by a view.
-     */
-    template<typename View>
-    class IQuantizationMatrix {
-        public:
-
-            virtual ~IQuantizationMatrix() {}
-
-            /**
-             * Quantifies all statistics that corresponds to the available outputs.
-             *
-             * @param outputIndices A reference to an object of type `ICompleteIndexVector` that stores the indices of
-             *                      the output for which the statistics should be quantized
-             */
-            virtual void quantize(const CompleteIndexVector& outputIndices) = 0;
-
-            /**
-             * Quantifies all statistics that correspond to a certain subset of the outputs.
-             *
-             * @param outputIndices A reference to an object of type `IPartialIndexVector` that stores the indices of
-             *                      the output for which the statistics should be quantized
-             */
-            virtual void quantize(const PartialIndexVector& outputIndices) = 0;
-
-            /**
-             * The type of the view, the matrix is backed by.
-             */
-            typedef View view_type;
-
-            /**
-             * Returns the view, the matrix is backed by.
-             *
-             * @return A reference to an object of type `view_type`
-             */
-            virtual const view_type& getView() const = 0;
-    };
+    // Forward declarations
+    template<typename>
+    class IQuantizationMatrix;
 
     /**
      * Defines an interface for all classes that implement a method for quantizing statistics about the quality of
@@ -186,6 +152,44 @@ namespace boosting {
              */
             virtual std::unique_ptr<IQuantization> create(
               const DenseNonDecomposableStatisticView<float64>& statisticMatrix) const = 0;
+    };
+
+    /**
+     * Defines an interfaces for all matrices for storing quantized statistics that are backed by a view.
+     */
+    template<typename View>
+    class IQuantizationMatrix : public IQuantizationFactory {
+        public:
+
+            virtual ~IQuantizationMatrix() override {}
+
+            /**
+             * Quantifies all statistics that corresponds to the available outputs.
+             *
+             * @param outputIndices A reference to an object of type `ICompleteIndexVector` that stores the indices of
+             *                      the output for which the statistics should be quantized
+             */
+            virtual void quantize(const CompleteIndexVector& outputIndices) = 0;
+
+            /**
+             * Quantifies all statistics that correspond to a certain subset of the outputs.
+             *
+             * @param outputIndices A reference to an object of type `IPartialIndexVector` that stores the indices of
+             *                      the output for which the statistics should be quantized
+             */
+            virtual void quantize(const PartialIndexVector& outputIndices) = 0;
+
+            /**
+             * The type of the view, the matrix is backed by.
+             */
+            typedef View view_type;
+
+            /**
+             * Returns the view, the matrix is backed by.
+             *
+             * @return A reference to an object of type `view_type`
+             */
+            virtual const view_type& getView() const = 0;
     };
 
     /**
