@@ -5,35 +5,6 @@
 namespace boosting {
 
     template<typename View, typename StatisticType>
-    class StochasticQuantizationMatrix final : public IQuantizationMatrix<CContiguousView<Statistic<StatisticType>>> {
-        private:
-
-            const View& view_;
-
-            // TODO Use correct type
-            MatrixDecorator<AllocatedCContiguousView<Statistic<StatisticType>>> matrix_;
-
-        public:
-
-            StochasticQuantizationMatrix(const View& view)
-                : view_(view), matrix_(AllocatedCContiguousView<Statistic<StatisticType>>(view.numRows, view.numCols)) {
-            }
-
-            void quantize(const CompleteIndexVector& outputIndices) override {
-                // TODO Implement
-            }
-
-            void quantize(const PartialIndexVector& outputIndices) override {
-                // TODO Implement
-            }
-
-            const typename IQuantizationMatrix<CContiguousView<Statistic<StatisticType>>>::view_type& getView()
-              const override {
-                return matrix_.getView();
-            }
-    };
-
-    template<typename View, typename StatisticType>
     class StochasticQuantization final : public IQuantization {
         private:
 
@@ -119,8 +90,9 @@ namespace boosting {
 
         public:
 
-            StochasticQuantization(const View& view)
-                : quantizationMatrixPtr_(std::make_unique<StochasticQuantizationMatrix<View, StatisticType>>(view)) {}
+            StochasticQuantization(
+              std::unique_ptr<IQuantizationMatrix<CContiguousView<Statistic<StatisticType>>>> quantizationMatrixPtr)
+                : quantizationMatrixPtr_(std::move(quantizationMatrixPtr)) {}
 
             void visitQuantizationMatrix(
               std::optional<DenseDecomposableMatrixVisitor<float32>> denseDecomposable32BitVisitor,
@@ -132,6 +104,77 @@ namespace boosting {
                 visitInternally(*quantizationMatrixPtr_, denseDecomposable32BitVisitor, denseDecomposable64BitVisitor,
                                 sparseDecomposable32BitVisitor, sparseDecomposable64BitVisitor,
                                 denseNonDecomposable32BitVisitor, denseNonDecomposable64BitVisitor);
+            }
+    };
+
+    template<typename View, typename StatisticType>
+    class StochasticQuantizationMatrix final : public IQuantizationMatrix<CContiguousView<Statistic<StatisticType>>> {
+        private:
+
+            const View& view_;
+
+            // TODO Use correct type
+            MatrixDecorator<AllocatedCContiguousView<Statistic<StatisticType>>> matrix_;
+
+        public:
+
+            StochasticQuantizationMatrix(const View& view)
+                : view_(view), matrix_(AllocatedCContiguousView<Statistic<StatisticType>>(view.numRows, view.numCols)) {
+            }
+
+            void quantize(const CompleteIndexVector& outputIndices) override {
+                // TODO Implement
+            }
+
+            void quantize(const PartialIndexVector& outputIndices) override {
+                // TODO Implement
+            }
+
+            const typename IQuantizationMatrix<CContiguousView<Statistic<StatisticType>>>::view_type& getView()
+              const override {
+                return matrix_.getView();
+            }
+
+            std::unique_ptr<IQuantization> create(
+              const CContiguousView<Statistic<float32>>& statisticMatrix) const override {
+                return std::make_unique<StochasticQuantization<CContiguousView<Statistic<float32>>, float32>>(
+                  std::make_unique<StochasticQuantizationMatrix<CContiguousView<Statistic<float32>>, float32>>(
+                    statisticMatrix));
+            }
+
+            std::unique_ptr<IQuantization> create(
+              const CContiguousView<Statistic<float64>>& statisticMatrix) const override {
+                return std::make_unique<StochasticQuantization<CContiguousView<Statistic<float64>>, float64>>(
+                  std::make_unique<StochasticQuantizationMatrix<CContiguousView<Statistic<float64>>, float64>>(
+                    statisticMatrix));
+            }
+
+            std::unique_ptr<IQuantization> create(
+              const SparseSetView<Statistic<float32>>& statisticMatrix) const override {
+                return std::make_unique<StochasticQuantization<SparseSetView<Statistic<float32>>, float32>>(
+                  std::make_unique<StochasticQuantizationMatrix<SparseSetView<Statistic<float32>>, float32>>(
+                    statisticMatrix));
+            }
+
+            std::unique_ptr<IQuantization> create(
+              const SparseSetView<Statistic<float64>>& statisticMatrix) const override {
+                return std::make_unique<StochasticQuantization<SparseSetView<Statistic<float64>>, float32>>(
+                  std::make_unique<StochasticQuantizationMatrix<SparseSetView<Statistic<float64>>, float32>>(
+                    statisticMatrix));
+            }
+
+            std::unique_ptr<IQuantization> create(
+              const DenseNonDecomposableStatisticView<float32>& statisticMatrix) const override {
+                return std::make_unique<StochasticQuantization<DenseNonDecomposableStatisticView<float32>, float32>>(
+                  std::make_unique<StochasticQuantizationMatrix<DenseNonDecomposableStatisticView<float32>, float32>>(
+                    statisticMatrix));
+            }
+
+            std::unique_ptr<IQuantization> create(
+              const DenseNonDecomposableStatisticView<float64>& statisticMatrix) const override {
+                return std::make_unique<StochasticQuantization<DenseNonDecomposableStatisticView<float64>, float64>>(
+                  std::make_unique<StochasticQuantizationMatrix<DenseNonDecomposableStatisticView<float64>, float64>>(
+                    statisticMatrix));
             }
     };
 
@@ -150,37 +193,43 @@ namespace boosting {
             std::unique_ptr<IQuantization> create(
               const CContiguousView<Statistic<float32>>& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<CContiguousView<Statistic<float32>>, float32>>(
-                  statisticMatrix);
+                  std::make_unique<StochasticQuantizationMatrix<CContiguousView<Statistic<float32>>, float32>>(
+                    statisticMatrix));
             }
 
             std::unique_ptr<IQuantization> create(
               const CContiguousView<Statistic<float64>>& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<CContiguousView<Statistic<float64>>, float64>>(
-                  statisticMatrix);
+                  std::make_unique<StochasticQuantizationMatrix<CContiguousView<Statistic<float64>>, float64>>(
+                    statisticMatrix));
             }
 
             std::unique_ptr<IQuantization> create(
               const SparseSetView<Statistic<float32>>& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<SparseSetView<Statistic<float32>>, float32>>(
-                  statisticMatrix);
+                  std::make_unique<StochasticQuantizationMatrix<SparseSetView<Statistic<float32>>, float32>>(
+                    statisticMatrix));
             }
 
             std::unique_ptr<IQuantization> create(
               const SparseSetView<Statistic<float64>>& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<SparseSetView<Statistic<float64>>, float64>>(
-                  statisticMatrix);
+                  std::make_unique<StochasticQuantizationMatrix<SparseSetView<Statistic<float64>>, float64>>(
+                    statisticMatrix));
             }
 
             std::unique_ptr<IQuantization> create(
               const DenseNonDecomposableStatisticView<float32>& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<DenseNonDecomposableStatisticView<float32>, float32>>(
-                  statisticMatrix);
+                  std::make_unique<StochasticQuantizationMatrix<DenseNonDecomposableStatisticView<float32>, float32>>(
+                    statisticMatrix));
             }
 
             std::unique_ptr<IQuantization> create(
               const DenseNonDecomposableStatisticView<float64>& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<DenseNonDecomposableStatisticView<float64>, float64>>(
-                  statisticMatrix);
+                  std::make_unique<StochasticQuantizationMatrix<DenseNonDecomposableStatisticView<float64>, float64>>(
+                    statisticMatrix));
             }
     };
 
