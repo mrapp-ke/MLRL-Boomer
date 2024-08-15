@@ -51,7 +51,7 @@ namespace boosting {
             float64 predictedScore = scoreIterator[i];
             typename std::iterator_traits<GroundTruthIterator>::value_type groundTruth = *groundTruthIterator;
             float64 score = (*evaluateFunction)(groundTruth, predictedScore);
-            mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
+            mean = util::iterativeArithmeticMean<float64>(i + 1, score, mean);
             groundTruthIterator++;
         }
 
@@ -187,7 +187,7 @@ namespace boosting {
                     float64 predictedScore = scoresBegin[i];
                     bool trueLabel = *labelIterator;
                     float64 score = (*evaluateFunction_)(trueLabel, predictedScore);
-                    mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
+                    mean = util::iterativeArithmeticMean<float64>(i + 1, score, mean);
                     labelIterator++;
                 }
 

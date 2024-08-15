@@ -82,8 +82,8 @@ float32 OutputWiseStratifiedBiPartitionSamplingConfig::getHoldoutSetSize() const
 
 IOutputWiseStratifiedBiPartitionSamplingConfig& OutputWiseStratifiedBiPartitionSamplingConfig::setHoldoutSetSize(
   float32 holdoutSetSize) {
-    assertGreater<float32>("holdoutSetSize", holdoutSetSize, 0);
-    assertLess<float32>("holdoutSetSize", holdoutSetSize, 1);
+    util::assertGreater<float32>("holdoutSetSize", holdoutSetSize, 0);
+    util::assertLess<float32>("holdoutSetSize", holdoutSetSize, 1);
     holdoutSetSize_ = holdoutSetSize;
     return *this;
 }

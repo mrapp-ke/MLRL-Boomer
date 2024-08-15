@@ -36,11 +36,11 @@ namespace seco {
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(const DenseConfusionMatrixVector& other)
         : DenseConfusionMatrixVector(other.getNumElements()) {
-        copyView(other.cbegin(), this->begin(), this->getNumElements());
+        util::copyView(other.cbegin(), this->begin(), this->getNumElements());
     }
 
     void DenseConfusionMatrixVector::add(const_iterator begin, const_iterator end) {
-        addToView(this->begin(), begin, this->getNumElements());
+        util::addToView(this->begin(), begin, this->getNumElements());
     }
 
     void DenseConfusionMatrixVector::add(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
@@ -162,14 +162,14 @@ namespace seco {
     void DenseConfusionMatrixVector::difference(const_iterator firstBegin, const_iterator firstEnd,
                                                 const CompleteIndexVector& firstIndices, const_iterator secondBegin,
                                                 const_iterator secondEnd) {
-        setViewToDifference(this->begin(), firstBegin, secondBegin, this->getNumElements());
+        util::setViewToDifference(this->begin(), firstBegin, secondBegin, this->getNumElements());
     }
 
     void DenseConfusionMatrixVector::difference(const_iterator firstBegin, const_iterator firstEnd,
                                                 const PartialIndexVector& firstIndices, const_iterator secondBegin,
                                                 const_iterator secondEnd) {
         PartialIndexVector::const_iterator indexIterator = firstIndices.cbegin();
-        setViewToDifference(this->begin(), firstBegin, secondBegin, indexIterator, this->getNumElements());
+        util::setViewToDifference(this->begin(), firstBegin, secondBegin, indexIterator, this->getNumElements());
     }
 
 }

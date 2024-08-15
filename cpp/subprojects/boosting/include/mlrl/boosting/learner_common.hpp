@@ -126,46 +126,46 @@ namespace boosting {
             virtual ~BoostedRuleLearnerConfig() override {}
 
             Property<IHeadConfig> getHeadConfig() override final {
-                return property(headConfigPtr_);
+                return util::property(headConfigPtr_);
             }
 
             ReadableProperty<IStatisticsConfig> getStatisticsConfig() const override final {
-                return readableProperty<IStatisticsConfig, IClassificationStatisticsConfig,
-                                        IRegressionStatisticsConfig>(classificationStatisticsConfigPtr_,
-                                                                     regressionStatisticsConfigPtr_);
+                return util::readableProperty<IStatisticsConfig, IClassificationStatisticsConfig,
+                                              IRegressionStatisticsConfig>(classificationStatisticsConfigPtr_,
+                                                                           regressionStatisticsConfigPtr_);
             }
 
             SharedProperty<IClassificationStatisticsConfig> getClassificationStatisticsConfig() override final {
-                return sharedProperty(classificationStatisticsConfigPtr_);
+                return util::sharedProperty(classificationStatisticsConfigPtr_);
             }
 
             SharedProperty<IRegressionStatisticsConfig> getRegressionStatisticsConfig() override final {
-                return sharedProperty(regressionStatisticsConfigPtr_);
+                return util::sharedProperty(regressionStatisticsConfigPtr_);
             }
 
             Property<IRegularizationConfig> getL1RegularizationConfig() override final {
-                return property(l1RegularizationConfigPtr_);
+                return util::property(l1RegularizationConfigPtr_);
             }
 
             Property<IRegularizationConfig> getL2RegularizationConfig() override final {
-                return property(l2RegularizationConfigPtr_);
+                return util::property(l2RegularizationConfigPtr_);
             }
 
             ReadableProperty<ILossConfig> getLossConfig() const override final {
-                return readableProperty<ILossConfig, IClassificationLossConfig, IRegressionLossConfig>(
+                return util::readableProperty<ILossConfig, IClassificationLossConfig, IRegressionLossConfig>(
                   classificationLossConfigPtr_, regressionLossConfigPtr_);
             }
 
             SharedProperty<IClassificationLossConfig> getClassificationLossConfig() override final {
-                return sharedProperty(classificationLossConfigPtr_);
+                return util::sharedProperty(classificationLossConfigPtr_);
             }
 
             SharedProperty<IRegressionLossConfig> getRegressionLossConfig() override final {
-                return sharedProperty(regressionLossConfigPtr_);
+                return util::sharedProperty(regressionLossConfigPtr_);
             }
 
             Property<ILabelBinningConfig> getLabelBinningConfig() override final {
-                return property(labelBinningConfigPtr_);
+                return util::property(labelBinningConfigPtr_);
             }
     };
 }

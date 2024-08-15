@@ -28,7 +28,7 @@ static inline float64 evaluate(const SinglePartition& partition, bool useHoldout
     for (uint32 i = 0; i < numExamples; i++) {
         uint32 exampleIndex = iterator[i];
         float64 score = statistics.evaluatePrediction(exampleIndex);
-        mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
+        mean = util::iterativeArithmeticMean<float64>(i + 1, score, mean);
     }
 
     return mean;
@@ -63,7 +63,7 @@ static inline float64 evaluate(const BiPartition& partition, bool useHoldoutSet,
     for (uint32 i = 0; i < numExamples; i++) {
         uint32 exampleIndex = iterator[i];
         float64 score = statistics.evaluatePrediction(exampleIndex);
-        mean = iterativeArithmeticMean<float64>(i + 1, score, mean);
+        mean = util::iterativeArithmeticMean<float64>(i + 1, score, mean);
     }
 
     return mean;

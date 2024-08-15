@@ -5,7 +5,7 @@
 #include "mlrl/common/util/threads.hpp"
 
 static inline std::string formatGpuDevices() {
-    std::vector<std::string> devices = getSupportedGpuDevices();
+    std::vector<std::string> devices = util::getSupportedGpuDevices();
 
     if (!devices.empty()) {
         std::string result = "";
@@ -74,7 +74,7 @@ bool isMultiThreadingSupportEnabled() {
 }
 
 uint32 getNumCpuCores() {
-    return getNumAvailableCpuCores();
+    return util::getNumAvailableCpuCores();
 }
 
 bool isGpuSupportEnabled() {
@@ -82,9 +82,9 @@ bool isGpuSupportEnabled() {
 }
 
 bool isGpuAvailable() {
-    return !getSupportedGpuDevices().empty();
+    return !util::getSupportedGpuDevices().empty();
 }
 
 std::vector<std::string> getGpuDevices() {
-    return getSupportedGpuDevices();
+    return util::getSupportedGpuDevices();
 }
