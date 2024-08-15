@@ -2,7 +2,6 @@ project('common', 'cpp')
 
 # Source files
 source_files = [
-    'src/mlrl/common/data/vector_bit_binary.cpp',
     'src/mlrl/common/iterator/iterator_index.cpp',
     'src/mlrl/common/indices/index_vector_complete.cpp',
     'src/mlrl/common/indices/index_vector_partial.cpp',
