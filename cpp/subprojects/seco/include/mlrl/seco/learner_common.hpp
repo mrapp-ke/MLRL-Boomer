@@ -121,7 +121,7 @@ namespace seco {
                 : RuleLearnerConfig(SECO_RULE_COMPARE_FUNCTION),
                   coverageStoppingCriterionConfigPtr_(std::make_unique<NoStoppingCriterionConfig>()),
                   headConfigPtr_(std::make_unique<SingleOutputHeadConfig>(
-                    readableProperty(heuristicConfigPtr_), readableProperty(pruningHeuristicConfigPtr_))),
+                    util::readableProperty(heuristicConfigPtr_), util::readableProperty(pruningHeuristicConfigPtr_))),
                   heuristicConfigPtr_(std::make_unique<PrecisionConfig>()),
                   pruningHeuristicConfigPtr_(std::make_unique<PrecisionConfig>()),
                   liftFunctionConfigPtr_(std::make_unique<NoLiftFunctionConfig>()) {}
@@ -129,23 +129,23 @@ namespace seco {
             virtual ~SeCoRuleLearnerConfig() override {}
 
             Property<IStoppingCriterionConfig> getCoverageStoppingCriterionConfig() override final {
-                return property(coverageStoppingCriterionConfigPtr_);
+                return util::property(coverageStoppingCriterionConfigPtr_);
             }
 
             Property<IHeadConfig> getHeadConfig() override final {
-                return property(headConfigPtr_);
+                return util::property(headConfigPtr_);
             }
 
             Property<IHeuristicConfig> getHeuristicConfig() override final {
-                return property(heuristicConfigPtr_);
+                return util::property(heuristicConfigPtr_);
             }
 
             Property<IHeuristicConfig> getPruningHeuristicConfig() override final {
-                return property(pruningHeuristicConfigPtr_);
+                return util::property(pruningHeuristicConfigPtr_);
             }
 
             Property<ILiftFunctionConfig> getLiftFunctionConfig() override final {
-                return property(liftFunctionConfigPtr_);
+                return util::property(liftFunctionConfigPtr_);
             }
     };
 }

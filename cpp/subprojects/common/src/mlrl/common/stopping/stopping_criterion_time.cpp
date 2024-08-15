@@ -79,7 +79,7 @@ uint32 TimeStoppingCriterionConfig::getTimeLimit() const {
 }
 
 ITimeStoppingCriterionConfig& TimeStoppingCriterionConfig::setTimeLimit(uint32 timeLimit) {
-    assertGreaterOrEqual<uint32>("timeLimit", timeLimit, 1);
+    util::assertGreaterOrEqual<uint32>("timeLimit", timeLimit, 1);
     timeLimit_ = timeLimit;
     return *this;
 }

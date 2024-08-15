@@ -82,7 +82,7 @@ namespace boosting {
       DecomposableFixedPartialBinnedRuleEvaluationFactory::create(
         const DenseDecomposableStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
         std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(
-          calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_));
+          util::calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_));
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         return std::make_unique<
           DecomposableFixedPartialBinnedRuleEvaluation<DenseDecomposableStatisticVector, CompleteIndexVector>>(
@@ -103,7 +103,7 @@ namespace boosting {
       DecomposableFixedPartialBinnedRuleEvaluationFactory::create(
         const SparseDecomposableStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
         std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(
-          calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_));
+          util::calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_));
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         return std::make_unique<
           DecomposableFixedPartialBinnedRuleEvaluation<SparseDecomposableStatisticVector, CompleteIndexVector>>(

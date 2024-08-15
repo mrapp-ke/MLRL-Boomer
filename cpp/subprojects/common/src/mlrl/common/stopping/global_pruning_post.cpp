@@ -119,7 +119,7 @@ uint32 PostPruningConfig::getMinRules() const {
 }
 
 IPostPruningConfig& PostPruningConfig::setMinRules(uint32 minRules) {
-    assertGreaterOrEqual<uint32>("minRules", minRules, 1);
+    util::assertGreaterOrEqual<uint32>("minRules", minRules, 1);
     minRules_ = minRules;
     return *this;
 }
@@ -129,7 +129,7 @@ uint32 PostPruningConfig::getInterval() const {
 }
 
 IPostPruningConfig& PostPruningConfig::setInterval(uint32 interval) {
-    assertGreaterOrEqual<uint32>("interval", interval, 1);
+    util::assertGreaterOrEqual<uint32>("interval", interval, 1);
     interval_ = interval;
     return *this;
 }

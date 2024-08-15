@@ -52,7 +52,7 @@ class CContiguousLabelMatrix final : public DenseMatrixDecorator<CContiguousView
                     }
                 }
 
-                labelCardinality = iterativeArithmeticMean(i + 1, (float32) numRelevantLabels, labelCardinality);
+                labelCardinality = util::iterativeArithmeticMean(i + 1, (float32) numRelevantLabels, labelCardinality);
             }
 
             return labelCardinality;
