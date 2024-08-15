@@ -3,18 +3,19 @@
  */
 #pragma once
 
-#include "mlrl/common/data/vector_bit.hpp"
+#include "mlrl/common/data/vector_bit_binary.hpp"
 #include "mlrl/common/sampling/weight_vector.hpp"
 
 #include <memory>
 
 /**
- * An one-dimensional vector that provides random access to a fixed number of binary weights stored in a `BitVector`.
+ * An one-dimensional vector that provides random access to a fixed number of binary weights stored in a
+ * `BinaryBitVector`.
  */
 class BitWeightVector final : public IWeightVector {
     private:
 
-        BitVector vector_;
+        BinaryBitVector vector_;
 
         uint32 numNonZeroWeights_;
 

@@ -1,4 +1,4 @@
-#include "mlrl/common/data/vector_bit.hpp"
+#include "mlrl/common/data/vector_bit_binary.hpp"
 
 #include <climits>
 
@@ -16,16 +16,16 @@ static inline constexpr uint32 mask(uint32 pos) {
     return 1U << (pos % UINT32_SIZE);
 }
 
-BitVector::BitVector(uint32 numElements, bool init)
+BinaryBitVector::BinaryBitVector(uint32 numElements, bool init)
     : ClearableViewDecorator<VectorDecorator<AllocatedVector<uint32>>>(
         AllocatedVector<uint32>(size(numElements), init)),
       numElements_(numElements) {}
 
-bool BitVector::operator[](uint32 pos) const {
+bool BinaryBitVector::operator[](uint32 pos) const {
     return this->view.array[index(pos)] & mask(pos);
 }
 
-void BitVector::set(uint32 pos, bool value) {
+void BinaryBitVector::set(uint32 pos, bool value) {
     if (value) {
         this->view.array[index(pos)] |= mask(pos);
     } else {
@@ -33,6 +33,6 @@ void BitVector::set(uint32 pos, bool value) {
     }
 }
 
-uint32 BitVector::getNumElements() const {
+uint32 BinaryBitVector::getNumElements() const {
     return numElements_;
 }

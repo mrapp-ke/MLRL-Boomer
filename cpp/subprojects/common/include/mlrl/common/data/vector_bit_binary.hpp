@@ -8,7 +8,7 @@
 /**
  * An one-dimension vector that stores binary data in a space-efficient way.
  */
-class BitVector final : public ClearableViewDecorator<VectorDecorator<AllocatedVector<uint32>>> {
+class BinaryBitVector final : public ClearableViewDecorator<VectorDecorator<AllocatedVector<uint32>>> {
     private:
 
         const uint32 numElements_;
@@ -19,7 +19,7 @@ class BitVector final : public ClearableViewDecorator<VectorDecorator<AllocatedV
          * @param numElements   The number of elements in the vector
          * @param init          True, if all elements in the vector should be value-initialized, false otherwise
          */
-        BitVector(uint32 numElements, bool init = false);
+        BinaryBitVector(uint32 numElements, bool init = false);
 
         /**
          * Returns the value of the element at a specific position.
