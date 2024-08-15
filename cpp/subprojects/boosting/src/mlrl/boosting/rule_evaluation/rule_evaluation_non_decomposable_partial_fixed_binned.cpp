@@ -95,7 +95,7 @@ namespace boosting {
       NonDecomposableFixedPartialBinnedRuleEvaluationFactory::create(
         const DenseNonDecomposableStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
-          calculateBoundedFraction(statisticVector.getNumGradients(), labelRatio_, minLabels_, maxLabels_);
+          util::calculateBoundedFraction(statisticVector.getNumGradients(), labelRatio_, minLabels_, maxLabels_);
         std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(numPredictions);
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         uint32 maxBins = labelBinningPtr->getMaxBins(numPredictions);

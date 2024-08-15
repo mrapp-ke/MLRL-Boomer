@@ -58,16 +58,16 @@ namespace boosting {
 
             if (trueLabel) {
                 if (predictedScore < 1) {
-                    gradient = divideOrZero<float64>(predictedScore - 1, denominatorGradient);
-                    hessian = divideOrZero<float64>(denominator - tuple.first, denominatorHessian);
+                    gradient = util::divideOrZero<float64>(predictedScore - 1, denominatorGradient);
+                    hessian = util::divideOrZero<float64>(denominator - tuple.first, denominatorHessian);
                 } else {
                     gradient = 0;
                     hessian = 1;
                 }
             } else {
                 if (predictedScore > 0) {
-                    gradient = divideOrZero<float64>(predictedScore, denominatorGradient);
-                    hessian = divideOrZero<float64>(denominator - tuple.first, denominatorHessian);
+                    gradient = util::divideOrZero<float64>(predictedScore, denominatorGradient);
+                    hessian = util::divideOrZero<float64>(denominator - tuple.first, denominatorHessian);
                 } else {
                     gradient = 0;
                     hessian = 1;
@@ -133,16 +133,16 @@ namespace boosting {
 
             if (trueLabel) {
                 if (predictedScore < 1) {
-                    gradient = divideOrZero<float64>(predictedScore - 1, denominatorGradient);
-                    hessian = divideOrZero<float64>(denominator - gradientIterator[i], denominatorHessian);
+                    gradient = util::divideOrZero<float64>(predictedScore - 1, denominatorGradient);
+                    hessian = util::divideOrZero<float64>(denominator - gradientIterator[i], denominatorHessian);
                 } else {
                     gradient = 0;
                     hessian = 1;
                 }
             } else {
                 if (predictedScore > 0) {
-                    gradient = divideOrZero<float64>(predictedScore, denominatorGradient);
-                    hessian = divideOrZero<float64>(denominator - gradientIterator[i], denominatorHessian);
+                    gradient = util::divideOrZero<float64>(predictedScore, denominatorGradient);
+                    hessian = util::divideOrZero<float64>(denominator - gradientIterator[i], denominatorHessian);
                 } else {
                     gradient = 0;
                     hessian = 1;
@@ -179,7 +179,7 @@ namespace boosting {
                         numerator *= -predictedScore;
                     }
 
-                    hessianTriangle = divideOrZero<float64>(numerator, denominatorHessian);
+                    hessianTriangle = util::divideOrZero<float64>(numerator, denominatorHessian);
                 } else {
                     hessianTriangle = 0;
                 }

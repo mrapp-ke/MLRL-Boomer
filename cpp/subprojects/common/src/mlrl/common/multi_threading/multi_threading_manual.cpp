@@ -10,11 +10,11 @@ uint32 ManualMultiThreadingConfig::getNumPreferredThreads() const {
 }
 
 IManualMultiThreadingConfig& ManualMultiThreadingConfig::setNumPreferredThreads(uint32 numPreferredThreads) {
-    if (numPreferredThreads != 0) assertGreaterOrEqual<uint32>("numPreferredThreads", numPreferredThreads, 1);
+    if (numPreferredThreads != 0) util::assertGreaterOrEqual<uint32>("numPreferredThreads", numPreferredThreads, 1);
     numPreferredThreads_ = numPreferredThreads;
     return *this;
 }
 
 uint32 ManualMultiThreadingConfig::getNumThreads(const IFeatureMatrix& featureMatrix, uint32 numOutputs) const {
-    return getNumAvailableThreads(numPreferredThreads_);
+    return util::getNumAvailableThreads(numPreferredThreads_);
 }

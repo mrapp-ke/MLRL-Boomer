@@ -123,7 +123,7 @@ namespace boosting {
       NonDecomposableFixedPartialRuleEvaluationFactory::create(
         const DenseNonDecomposableStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
-          calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
+          util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
         return std::make_unique<DenseNonDecomposableFixedPartialRuleEvaluation<CompleteIndexVector>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
     }

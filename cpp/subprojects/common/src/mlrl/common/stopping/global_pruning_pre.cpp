@@ -227,7 +227,7 @@ uint32 PrePruningConfig::getMinRules() const {
 }
 
 IPrePruningConfig& PrePruningConfig::setMinRules(uint32 minRules) {
-    assertGreaterOrEqual<uint32>("minRules", minRules, 1);
+    util::assertGreaterOrEqual<uint32>("minRules", minRules, 1);
     minRules_ = minRules;
     return *this;
 }
@@ -237,7 +237,7 @@ uint32 PrePruningConfig::getUpdateInterval() const {
 }
 
 IPrePruningConfig& PrePruningConfig::setUpdateInterval(uint32 updateInterval) {
-    assertGreaterOrEqual<uint32>("updateInterval", updateInterval, 1);
+    util::assertGreaterOrEqual<uint32>("updateInterval", updateInterval, 1);
     updateInterval_ = updateInterval;
     return *this;
 }
@@ -247,7 +247,7 @@ uint32 PrePruningConfig::getStopInterval() const {
 }
 
 IPrePruningConfig& PrePruningConfig::setStopInterval(uint32 stopInterval) {
-    assertMultiple<uint32>("stopInterval", stopInterval, updateInterval_);
+    util::assertMultiple<uint32>("stopInterval", stopInterval, updateInterval_);
     stopInterval_ = stopInterval;
     return *this;
 }
@@ -257,7 +257,7 @@ uint32 PrePruningConfig::getNumPast() const {
 }
 
 IPrePruningConfig& PrePruningConfig::setNumPast(uint32 numPast) {
-    assertGreaterOrEqual<uint32>("numPast", numPast, 1);
+    util::assertGreaterOrEqual<uint32>("numPast", numPast, 1);
     numPast_ = numPast;
     return *this;
 }
@@ -267,7 +267,7 @@ uint32 PrePruningConfig::getNumCurrent() const {
 }
 
 IPrePruningConfig& PrePruningConfig::setNumCurrent(uint32 numCurrent) {
-    assertGreaterOrEqual<uint32>("numCurrent", numCurrent, 1);
+    util::assertGreaterOrEqual<uint32>("numCurrent", numCurrent, 1);
     numCurrent_ = numCurrent;
     return *this;
 }
@@ -277,8 +277,8 @@ float64 PrePruningConfig::getMinImprovement() const {
 }
 
 IPrePruningConfig& PrePruningConfig::setMinImprovement(float64 minImprovement) {
-    assertGreaterOrEqual<float64>("minImprovement", minImprovement, 0);
-    assertLessOrEqual<float64>("minImprovement", minImprovement, 1);
+    util::assertGreaterOrEqual<float64>("minImprovement", minImprovement, 0);
+    util::assertLessOrEqual<float64>("minImprovement", minImprovement, 1);
     minImprovement_ = minImprovement;
     return *this;
 }

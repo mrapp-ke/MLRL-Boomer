@@ -130,7 +130,7 @@ class MLRLCOMMON_API Allocator : public View {
          * @param init          True, if all elements in the view should be value-initialized, false otherwise
          */
         explicit Allocator(uint32 numElements, bool init = false)
-            : View(allocateMemory<typename View::value_type>(numElements, init), {numElements}) {}
+            : View(util::allocateMemory<typename View::value_type>(numElements, init), {numElements}) {}
 
         /**
          * @param other A reference to an object of type `Allocator` that should be copied
@@ -147,7 +147,7 @@ class MLRLCOMMON_API Allocator : public View {
         }
 
         virtual ~Allocator() override {
-            freeMemory(View::array);
+            util::freeMemory(View::array);
         }
 };
 
@@ -205,11 +205,11 @@ class MLRLCOMMON_API ResizableAllocator : public Allocator<View> {
         void resize(uint32 numElements, bool freeMemory) {
             if (numElements < maxCapacity) {
                 if (freeMemory) {
-                    View::array = reallocateMemory(View::array, numElements);
+                    View::array = util::reallocateMemory(View::array, numElements);
                     maxCapacity = numElements;
                 }
             } else if (numElements > maxCapacity) {
-                View::array = reallocateMemory(View::array, numElements);
+                View::array = util::reallocateMemory(View::array, numElements);
                 maxCapacity = numElements;
             }
 

@@ -89,11 +89,11 @@ void PartialPrediction::postProcess(const IPostProcessor& postProcessor) {
 }
 
 void PartialPrediction::set(View<float64>::const_iterator begin, View<float64>::const_iterator end) {
-    copyView(begin, this->view.begin(), this->getNumElements());
+    util::copyView(begin, this->view.begin(), this->getNumElements());
 }
 
 void PartialPrediction::set(BinnedConstIterator<float64> begin, BinnedConstIterator<float64> end) {
-    copyView(begin, this->view.begin(), this->getNumElements());
+    util::copyView(begin, this->view.begin(), this->getNumElements());
 }
 
 bool PartialPrediction::isPartial() const {
@@ -146,7 +146,7 @@ std::unique_ptr<IStatisticsUpdate> PartialPrediction::createStatisticsUpdate(ISt
 std::unique_ptr<IHead> PartialPrediction::createHead() const {
     uint32 numElements = this->getNumElements();
     std::unique_ptr<PartialHead> headPtr = std::make_unique<PartialHead>(numElements);
-    copyView(this->values_cbegin(), headPtr->values_begin(), numElements);
-    copyView(this->indices_cbegin(), headPtr->indices_begin(), numElements);
+    util::copyView(this->values_cbegin(), headPtr->values_begin(), numElements);
+    util::copyView(this->indices_cbegin(), headPtr->indices_begin(), numElements);
     return headPtr;
 }

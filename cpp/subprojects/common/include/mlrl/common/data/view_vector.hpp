@@ -30,7 +30,7 @@ class MLRLCOMMON_API Vector : public View<T> {
                  * @return  The hash value
                  */
                 inline std::size_t operator()(const Vector<T>& v) const {
-                    return hashView(v.cbegin(), v.numElements);
+                    return util::hashView(v.cbegin(), v.numElements);
                 }
         };
 
@@ -48,7 +48,7 @@ class MLRLCOMMON_API Vector : public View<T> {
                  * @return      True, if the given objects are equal, false otherwise
                  */
                 inline bool operator()(const Vector<T>& lhs, const Vector<T>& rhs) const {
-                    return compareViews(lhs.cbegin(), lhs.numElements, rhs.cbegin(), rhs.numElements);
+                    return util::compareViews(lhs.cbegin(), lhs.numElements, rhs.cbegin(), rhs.numElements);
                 }
         };
 
@@ -106,7 +106,7 @@ class MLRLCOMMON_API Vector : public View<T> {
          * Sets all values stored in the view to zero.
          */
         void clear() {
-            setViewToZeros(View<T>::array, numElements);
+            util::setViewToZeros(View<T>::array, numElements);
         }
 };
 

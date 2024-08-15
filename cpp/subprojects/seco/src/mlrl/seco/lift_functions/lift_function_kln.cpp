@@ -70,7 +70,7 @@ namespace seco {
     }
 
     IKlnLiftFunctionConfig& KlnLiftFunctionConfig::setK(float64 k) {
-        assertGreater<float64>("k", k, 0);
+        util::assertGreater<float64>("k", k, 0);
         k_ = k;
         return *this;
     }

@@ -14,7 +14,7 @@ static inline void processCompleteScores(std::unique_ptr<IEvaluatedPrediction>& 
         existingHead = static_cast<CompletePrediction*>(existingHeadPtr.get());
     }
 
-    copyView(scoreVector.values_cbegin(), existingHead->values_begin(), numElements);
+    util::copyView(scoreVector.values_cbegin(), existingHead->values_begin(), numElements);
     existingHead->quality = scoreVector.quality;
 }
 
@@ -36,8 +36,8 @@ static inline void processPartialScores(std::unique_ptr<IEvaluatedPrediction>& e
         existingHead->setSorted(scoreVector.isSorted());
     }
 
-    copyView(scoreVector.values_cbegin(), existingHead->values_begin(), numElements);
-    copyView(scoreVector.indices_cbegin(), existingHead->indices_begin(), numElements);
+    util::copyView(scoreVector.values_cbegin(), existingHead->values_begin(), numElements);
+    util::copyView(scoreVector.indices_cbegin(), existingHead->indices_begin(), numElements);
     existingHead->quality = scoreVector.quality;
 }
 
