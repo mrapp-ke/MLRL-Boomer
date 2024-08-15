@@ -17,7 +17,7 @@ namespace seco {
                 float64 numUncoveredCorrect = uin + uip;
                 float64 numCorrect = numCoveredCorrect + numUncoveredCorrect;
                 float64 numTotal = numCorrect + cip + crn + urn + urp;
-                return divideOrZero(numCorrect, numTotal);
+                return util::divideOrZero(numCorrect, numTotal);
             }
     };
 

@@ -61,7 +61,7 @@ class MLRLCOMMON_API DenseMatrix : public Matrix {
          * Sets all values stored in the matrix to zero.
          */
         void clear() {
-            setViewToZeros(array, Matrix::numRows * Matrix::numCols);
+            util::setViewToZeros(array, Matrix::numRows * Matrix::numCols);
         }
 
         /**
@@ -93,7 +93,7 @@ class MLRLCOMMON_API DenseMatrixAllocator : public Matrix {
          * @param init      True, if all elements in the view should be value-initialized, false otherwise
          */
         DenseMatrixAllocator(uint32 numRows, uint32 numCols, bool init = false)
-            : Matrix(allocateMemory<typename Matrix::value_type>(numRows * numCols, init), numRows, numCols) {}
+            : Matrix(util::allocateMemory<typename Matrix::value_type>(numRows * numCols, init), numRows, numCols) {}
 
         /**
          * @param other A reference to an object of type `DenseMatrixAllocator` that should be copied
@@ -110,7 +110,7 @@ class MLRLCOMMON_API DenseMatrixAllocator : public Matrix {
         }
 
         virtual ~DenseMatrixAllocator() override {
-            freeMemory(Matrix::array);
+            util::freeMemory(Matrix::array);
         }
 };
 

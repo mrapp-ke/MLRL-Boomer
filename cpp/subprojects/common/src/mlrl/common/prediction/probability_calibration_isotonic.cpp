@@ -20,7 +20,7 @@ static inline void sortByThresholdsAndEliminateDuplicates(ListOfLists<Tuple<floa
 
         if (isEqual(currentBin.first, previousBin.first)) {
             uint32 numAggregated = j - previousIndex + 1;
-            previousBin.second = iterativeArithmeticMean(numAggregated, currentBin.second, previousBin.second);
+            previousBin.second = util::iterativeArithmeticMean(numAggregated, currentBin.second, previousBin.second);
         } else {
             bins[n] = previousBin;
             n++;
@@ -41,7 +41,7 @@ static inline void aggregateNonIncreasingBins(ListOfLists<Tuple<float64>>::row b
     // `pools[j] = i`...
     uint32 numBins = static_cast<uint32>(bins.size());
     Array<uint32> pools(numBins);
-    setViewToIncreasingValues(pools.begin(), numBins, 0, 1);
+    util::setViewToIncreasingValues(pools.begin(), numBins, 0, 1);
     uint32 i = 0;
     uint32 j = 0;
 
@@ -58,7 +58,8 @@ static inline void aggregateNonIncreasingBins(ListOfLists<Tuple<float64>>::row b
             // The probabilities are not increasing, i.e., the monotonicity constraint is violated, and we have to
             // average the probabilities of all bins within the non-increasing subsequence...
             uint32 numBinsInSubsequence = 2;
-            previousBin.second = iterativeArithmeticMean(numBinsInSubsequence, currentBin.second, previousBin.second);
+            previousBin.second =
+              util::iterativeArithmeticMean(numBinsInSubsequence, currentBin.second, previousBin.second);
 
             // Search for the end of the non-increasing subsequence...
             while ((j = pools[j] + 1) < numBins) {
@@ -71,7 +72,7 @@ static inline void aggregateNonIncreasingBins(ListOfLists<Tuple<float64>>::row b
                     // We are still within the non-increasing subsequence...
                     numBinsInSubsequence++;
                     previousBin.second =
-                      iterativeArithmeticMean(numBinsInSubsequence, nextBin.second, previousBin.second);
+                      util::iterativeArithmeticMean(numBinsInSubsequence, nextBin.second, previousBin.second);
                     currentBin = nextBin;
                 }
             }

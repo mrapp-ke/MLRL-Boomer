@@ -427,7 +427,7 @@ uint32 BeamSearchTopDownRuleInductionConfig::getBeamWidth() const {
 }
 
 IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::setBeamWidth(uint32 beamWidth) {
-    assertGreaterOrEqual<uint32>("beamWidth", beamWidth, 2);
+    util::assertGreaterOrEqual<uint32>("beamWidth", beamWidth, 2);
     beamWidth_ = beamWidth;
     return *this;
 }
@@ -447,7 +447,7 @@ uint32 BeamSearchTopDownRuleInductionConfig::getMinCoverage() const {
 }
 
 IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::setMinCoverage(uint32 minCoverage) {
-    assertGreaterOrEqual<uint32>("minCoverage", minCoverage, 1);
+    util::assertGreaterOrEqual<uint32>("minCoverage", minCoverage, 1);
     minCoverage_ = minCoverage;
     return *this;
 }
@@ -458,8 +458,8 @@ float32 BeamSearchTopDownRuleInductionConfig::getMinSupport() const {
 
 IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::setMinSupport(float32 minSupport) {
     if (!isEqualToZero(minSupport)) {
-        assertGreater<float32>("minSupport", minSupport, 0);
-        assertLess<float32>("minSupport", minSupport, 1);
+        util::assertGreater<float32>("minSupport", minSupport, 0);
+        util::assertLess<float32>("minSupport", minSupport, 1);
     }
 
     minSupport_ = minSupport;
@@ -471,7 +471,7 @@ uint32 BeamSearchTopDownRuleInductionConfig::getMaxConditions() const {
 }
 
 IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::setMaxConditions(uint32 maxConditions) {
-    if (maxConditions != 0) assertGreaterOrEqual<uint32>("maxConditions", maxConditions, 2);
+    if (maxConditions != 0) util::assertGreaterOrEqual<uint32>("maxConditions", maxConditions, 2);
     maxConditions_ = maxConditions;
     return *this;
 }
@@ -482,7 +482,7 @@ uint32 BeamSearchTopDownRuleInductionConfig::getMaxHeadRefinements() const {
 
 IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::setMaxHeadRefinements(
   uint32 maxHeadRefinements) {
-    if (maxHeadRefinements != 0) assertGreaterOrEqual<uint32>("maxHeadRefinements", maxHeadRefinements, 1);
+    if (maxHeadRefinements != 0) util::assertGreaterOrEqual<uint32>("maxHeadRefinements", maxHeadRefinements, 1);
     maxHeadRefinements_ = maxHeadRefinements;
     return *this;
 }
@@ -503,7 +503,7 @@ std::unique_ptr<IRuleInductionFactory> BeamSearchTopDownRuleInductionConfig::cre
     uint32 minCoverage;
 
     if (minSupport_ > 0) {
-        minCoverage = calculateBoundedFraction(numExamples, minSupport_, minCoverage_, numExamples);
+        minCoverage = util::calculateBoundedFraction(numExamples, minSupport_, minCoverage_, numExamples);
     } else {
         minCoverage = std::min(numExamples, minCoverage_);
     }

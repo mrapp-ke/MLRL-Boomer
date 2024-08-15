@@ -62,8 +62,8 @@ namespace boosting {
     }
 
     IConstantShrinkageConfig& ConstantShrinkageConfig::setShrinkage(float64 shrinkage) {
-        assertGreater<float64>("shrinkage", shrinkage, 0);
-        assertLess<float64>("shrinkage", shrinkage, 1);
+        util::assertGreater<float64>("shrinkage", shrinkage, 0);
+        util::assertLess<float64>("shrinkage", shrinkage, 1);
         shrinkage_ = shrinkage;
         return *this;
     }

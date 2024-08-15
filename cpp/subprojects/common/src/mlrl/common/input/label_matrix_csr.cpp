@@ -48,7 +48,7 @@ class CsrLabelMatrix final : public IterableBinarySparseMatrixDecorator<MatrixDe
                 index_const_iterator indicesBegin = this->indices_cbegin(i);
                 index_const_iterator indicesEnd = this->indices_cend(i);
                 uint32 numRelevantLabels = indicesEnd - indicesBegin;
-                labelCardinality = iterativeArithmeticMean(i + 1, (float32) numRelevantLabels, labelCardinality);
+                labelCardinality = util::iterativeArithmeticMean(i + 1, (float32) numRelevantLabels, labelCardinality);
             }
 
             return labelCardinality;
@@ -60,7 +60,7 @@ class CsrLabelMatrix final : public IterableBinarySparseMatrixDecorator<MatrixDe
             uint32 numElements = indicesEnd - indexIterator;
             std::unique_ptr<LabelVector> labelVectorPtr = std::make_unique<LabelVector>(numElements);
             LabelVector::iterator iterator = labelVectorPtr->begin();
-            copyView(indexIterator, iterator, numElements);
+            util::copyView(indexIterator, iterator, numElements);
             return labelVectorPtr;
         }
 

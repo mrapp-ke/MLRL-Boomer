@@ -75,7 +75,7 @@ namespace seco {
     }
 
     IMEstimateConfig& MEstimateConfig::setM(float64 m) {
-        assertGreaterOrEqual<float64>("m", m, 0);
+        util::assertGreaterOrEqual<float64>("m", m, 0);
         m_ = m;
         return *this;
     }
