@@ -25,7 +25,7 @@ class RandomBiPartitionSampling final : public IPartitionSampling {
             uint32 numTraining = partition_.getNumFirst();
             uint32 numHoldout = partition_.getNumSecond();
             BiPartition::iterator trainingIterator = partition_.first_begin();
-            setViewToIncreasingValues(trainingIterator, numTraining, 0, 1);
+            util::setViewToIncreasingValues(trainingIterator, numTraining, 0, 1);
             BiPartition::iterator holdoutIterator = partition_.second_begin();
 
             for (uint32 i = 0; i < numHoldout; i++) {
@@ -91,8 +91,8 @@ float32 RandomBiPartitionSamplingConfig::getHoldoutSetSize() const {
 }
 
 IRandomBiPartitionSamplingConfig& RandomBiPartitionSamplingConfig::setHoldoutSetSize(float32 holdoutSetSize) {
-    assertGreater<float32>("holdoutSetSize", holdoutSetSize, 0);
-    assertLess<float32>("holdoutSetSize", holdoutSetSize, 1);
+    util::assertGreater<float32>("holdoutSetSize", holdoutSetSize, 0);
+    util::assertLess<float32>("holdoutSetSize", holdoutSetSize, 1);
     holdoutSetSize_ = holdoutSetSize;
     return *this;
 }

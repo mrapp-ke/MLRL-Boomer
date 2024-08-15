@@ -89,7 +89,7 @@ class ArithmeticMeanAggregationFunction final : public IAggregationFunction {
 
             for (uint32 i = 0; i < numElements; i++) {
                 float64 value = begin[i];
-                mean = iterativeArithmeticMean<float64>(i + 1, value, mean);
+                mean = util::iterativeArithmeticMean<float64>(i + 1, value, mean);
             }
 
             return mean;

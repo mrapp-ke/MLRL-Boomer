@@ -7,7 +7,7 @@ namespace boosting {
     DenseNonDecomposableStatisticView::DenseNonDecomposableStatisticView(uint32 numRows, uint32 numCols)
         : CompositeMatrix<AllocatedCContiguousView<float64>, AllocatedCContiguousView<float64>>(
             AllocatedCContiguousView<float64>(numRows, numCols),
-            AllocatedCContiguousView<float64>(numRows, triangularNumber(numCols)), numRows, numCols) {}
+            AllocatedCContiguousView<float64>(numRows, util::triangularNumber(numCols)), numRows, numCols) {}
 
     DenseNonDecomposableStatisticView::DenseNonDecomposableStatisticView(DenseNonDecomposableStatisticView&& other)
         : CompositeMatrix<AllocatedCContiguousView<float64>, AllocatedCContiguousView<float64>>(std::move(other)) {}

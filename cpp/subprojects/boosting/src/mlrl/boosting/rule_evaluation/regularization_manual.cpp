@@ -11,7 +11,7 @@ namespace boosting {
     }
 
     IManualRegularizationConfig& ManualRegularizationConfig::setRegularizationWeight(float64 regularizationWeight) {
-        assertGreater<float64>("regularizationWeight", regularizationWeight, 0);
+        util::assertGreater<float64>("regularizationWeight", regularizationWeight, 0);
         regularizationWeight_ = regularizationWeight;
         return *this;
     }

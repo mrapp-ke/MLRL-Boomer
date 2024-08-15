@@ -43,11 +43,11 @@ void CompletePrediction::postProcess(const IPostProcessor& postProcessor) {
 }
 
 void CompletePrediction::set(View<float64>::const_iterator begin, View<float64>::const_iterator end) {
-    copyView(begin, this->view.begin(), this->getNumElements());
+    util::copyView(begin, this->view.begin(), this->getNumElements());
 }
 
 void CompletePrediction::set(BinnedConstIterator<float64> begin, BinnedConstIterator<float64> end) {
-    copyView(begin, this->view.begin(), this->getNumElements());
+    util::copyView(begin, this->view.begin(), this->getNumElements());
 }
 
 bool CompletePrediction::isPartial() const {
@@ -104,6 +104,6 @@ void CompletePrediction::revert(IStatistics& statistics, uint32 statisticIndex) 
 std::unique_ptr<IHead> CompletePrediction::createHead() const {
     uint32 numElements = this->getNumElements();
     std::unique_ptr<CompleteHead> headPtr = std::make_unique<CompleteHead>(numElements);
-    copyView(this->values_cbegin(), headPtr->values_begin(), numElements);
+    util::copyView(this->values_cbegin(), headPtr->values_begin(), numElements);
     return headPtr;
 }

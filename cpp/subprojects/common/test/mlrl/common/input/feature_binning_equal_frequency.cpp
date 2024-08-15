@@ -47,7 +47,7 @@ TEST(EqualFrequencyFeatureBinningTest, createBinnedFeatureVectorFromFortranConti
         EXPECT_EQ(numIndices, (uint32) 2);
         EXPECT_EQ(indexIterator[0], (uint32) 3);
         EXPECT_EQ(indexIterator[1], (uint32) 1);
-        EXPECT_FLOAT_EQ(thresholdIterator[0], arithmeticMean(features[1], features[4]));
+        EXPECT_FLOAT_EQ(thresholdIterator[0], util::arithmeticMean(features[1], features[4]));
 
         indexIterator = featureVector.indices_cbegin(1);
         indicesEnd = featureVector.indices_cend(1);
@@ -55,7 +55,7 @@ TEST(EqualFrequencyFeatureBinningTest, createBinnedFeatureVectorFromFortranConti
         EXPECT_EQ(numIndices, (uint32) 2);
         EXPECT_EQ(indexIterator[0], (uint32) 4);
         EXPECT_EQ(indexIterator[1], (uint32) 6);
-        EXPECT_FLOAT_EQ(thresholdIterator[1], arithmeticMean(features[6], features[0]));
+        EXPECT_FLOAT_EQ(thresholdIterator[1], util::arithmeticMean(features[6], features[0]));
 
         indexIterator = featureVector.indices_cbegin(2);
         indicesEnd = featureVector.indices_cend(2);
@@ -134,13 +134,13 @@ TEST(EqualFrequencyFeatureBinningTest, createBinnedFeatureVectorFromCscView) {
         EXPECT_EQ(numIndices, (uint32) 2);
         EXPECT_EQ(indexIterator[0], (uint32) 5);
         EXPECT_EQ(indexIterator[1], (uint32) 2);
-        EXPECT_FLOAT_EQ(thresholdIterator[0], arithmeticMean(data[1], 0.0f));
+        EXPECT_FLOAT_EQ(thresholdIterator[0], util::arithmeticMean(data[1], 0.0f));
 
         indexIterator = featureVector.indices_cbegin(1);
         indicesEnd = featureVector.indices_cend(1);
         numIndices = indicesEnd - indexIterator;
         EXPECT_EQ(numIndices, (uint32) 0);
-        EXPECT_FLOAT_EQ(thresholdIterator[1], arithmeticMean(0.0f, data[6]));
+        EXPECT_FLOAT_EQ(thresholdIterator[1], util::arithmeticMean(0.0f, data[6]));
 
         indexIterator = featureVector.indices_cbegin(2);
         indicesEnd = featureVector.indices_cend(2);

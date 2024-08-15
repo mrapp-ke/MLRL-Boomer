@@ -34,8 +34,8 @@ namespace boosting {
 
     IFixedPartialHeadConfig& FixedPartialHeadConfig::setOutputRatio(float32 outputRatio) {
         if (!isEqualToZero(outputRatio)) {
-            assertGreater<float32>("outputRatio", outputRatio, 0);
-            assertLess<float32>("outputRatio", outputRatio, 1);
+            util::assertGreater<float32>("outputRatio", outputRatio, 0);
+            util::assertLess<float32>("outputRatio", outputRatio, 1);
         }
 
         outputRatio_ = outputRatio;
@@ -47,7 +47,7 @@ namespace boosting {
     }
 
     IFixedPartialHeadConfig& FixedPartialHeadConfig::setMinOutputs(uint32 minOutputs) {
-        assertGreaterOrEqual<uint32>("minOutputs", minOutputs, 2);
+        util::assertGreaterOrEqual<uint32>("minOutputs", minOutputs, 2);
         minOutputs_ = minOutputs;
         return *this;
     }
@@ -57,7 +57,7 @@ namespace boosting {
     }
 
     IFixedPartialHeadConfig& FixedPartialHeadConfig::setMaxOutputs(uint32 maxOutputs) {
-        if (maxOutputs != 0) assertGreaterOrEqual<uint32>("maxOutputs", maxOutputs, minOutputs_);
+        if (maxOutputs != 0) util::assertGreaterOrEqual<uint32>("maxOutputs", maxOutputs, minOutputs_);
         maxOutputs_ = maxOutputs;
         return *this;
     }

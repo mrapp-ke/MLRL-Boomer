@@ -67,7 +67,7 @@ namespace seco {
     }
 
     ICoverageStoppingCriterionConfig& CoverageStoppingCriterionConfig::setThreshold(float64 threshold) {
-        assertGreaterOrEqual<float64>("threshold", threshold, 0);
+        util::assertGreaterOrEqual<float64>("threshold", threshold, 0);
         threshold_ = threshold;
         return *this;
     }

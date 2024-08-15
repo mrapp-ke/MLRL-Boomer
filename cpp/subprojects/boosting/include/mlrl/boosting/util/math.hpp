@@ -5,7 +5,7 @@
 
 #include "mlrl/common/data/types.hpp"
 
-namespace boosting {
+namespace util {
 
     /**
      * Calculates and returns the n-th triangular number, i.e., the number of elements in a n times n triangle.

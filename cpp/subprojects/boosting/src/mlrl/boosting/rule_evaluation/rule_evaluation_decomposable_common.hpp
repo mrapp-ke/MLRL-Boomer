@@ -37,8 +37,8 @@ namespace boosting {
     static inline constexpr float64 calculateOutputWiseScore(float64 gradient, float64 hessian,
                                                              float64 l1RegularizationWeight,
                                                              float64 l2RegularizationWeight) {
-        return divideOrZero(-gradient + getL1RegularizationWeight(gradient, l1RegularizationWeight),
-                            hessian + l2RegularizationWeight);
+        return util::divideOrZero(-gradient + getL1RegularizationWeight(gradient, l1RegularizationWeight),
+                                  hessian + l2RegularizationWeight);
     }
 
     /**

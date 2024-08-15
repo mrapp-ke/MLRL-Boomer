@@ -16,7 +16,7 @@ namespace boosting {
         } else if (featureMatrix.isSparse() && !featureSamplingConfig_.get().isSamplingUsed()) {
             return 1;
         } else {
-            return getNumAvailableThreads(0);
+            return util::getNumAvailableThreads(0);
         }
     }
 
