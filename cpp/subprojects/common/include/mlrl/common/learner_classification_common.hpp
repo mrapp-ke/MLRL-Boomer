@@ -32,7 +32,7 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
                                              const IColumnWiseFeatureMatrix& featureMatrix,
                                              const IRowWiseLabelMatrix& labelMatrix,
                                              uint32 randomState) const override {
-            assertGreaterOrEqual<uint32>("randomState", randomState, 1);
+            util::assertGreaterOrEqual<uint32>("randomState", randomState, 1);
             RNG rng(randomState);
 
             // Create stopping criteria...

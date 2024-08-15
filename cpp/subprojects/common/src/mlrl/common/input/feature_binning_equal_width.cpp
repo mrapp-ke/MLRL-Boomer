@@ -43,7 +43,7 @@ static inline uint32 getBinIndex(float32 value, float32 min, float32 width, uint
 static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
   AllocatedMissingFeatureVector&& missingFeatureVector, const NumericalFeatureVector& numericalFeatureVector,
   uint32 numExamples, float32 binRatio, uint32 minBins, uint32 maxBins) {
-    uint32 numWidths = calculateBoundedFraction(numExamples, binRatio, minBins, maxBins);
+    uint32 numWidths = util::calculateBoundedFraction(numExamples, binRatio, minBins, maxBins);
 
     if (numWidths > 0) {
         const Tuple<float32> tuple = getMinAndMaxFeatureValue(numericalFeatureVector);
@@ -230,8 +230,8 @@ float32 EqualWidthFeatureBinningConfig::getBinRatio() const {
 }
 
 IEqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setBinRatio(float32 binRatio) {
-    assertGreater<float32>("binRatio", binRatio, 0);
-    assertLess<float32>("binRatio", binRatio, 1);
+    util::assertGreater<float32>("binRatio", binRatio, 0);
+    util::assertLess<float32>("binRatio", binRatio, 1);
     binRatio_ = binRatio;
     return *this;
 }
@@ -241,7 +241,7 @@ uint32 EqualWidthFeatureBinningConfig::getMinBins() const {
 }
 
 IEqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setMinBins(uint32 minBins) {
-    assertGreaterOrEqual<uint32>("minBins", minBins, 2);
+    util::assertGreaterOrEqual<uint32>("minBins", minBins, 2);
     minBins_ = minBins;
     return *this;
 }
@@ -251,7 +251,7 @@ uint32 EqualWidthFeatureBinningConfig::getMaxBins() const {
 }
 
 IEqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setMaxBins(uint32 maxBins) {
-    if (maxBins != 0) assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins_);
+    if (maxBins != 0) util::assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins_);
     maxBins_ = maxBins;
     return *this;
 }

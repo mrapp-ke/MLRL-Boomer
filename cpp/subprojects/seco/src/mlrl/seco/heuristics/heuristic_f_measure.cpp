@@ -34,7 +34,7 @@ namespace seco {
                     float64 numCoveredIncorrect = cip + crn;
                     float64 numerator = (1 + betaPow) * numCoveredEqual;
                     float64 denominator = numerator + (betaPow * numUncoveredCorrect) + numCoveredIncorrect;
-                    return divideOrZero(numerator, denominator);
+                    return util::divideOrZero(numerator, denominator);
                 } else {
                     // Equivalent to precision
                     return precision(cin, cip, crn, crp);
@@ -72,7 +72,7 @@ namespace seco {
     }
 
     IFMeasureConfig& FMeasureConfig::setBeta(float64 beta) {
-        assertGreaterOrEqual<float64>("beta", beta, 0);
+        util::assertGreaterOrEqual<float64>("beta", beta, 0);
         beta_ = beta;
         return *this;
     }

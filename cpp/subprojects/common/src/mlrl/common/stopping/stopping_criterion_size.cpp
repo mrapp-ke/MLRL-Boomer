@@ -61,7 +61,7 @@ uint32 SizeStoppingCriterionConfig::getMaxRules() const {
 }
 
 ISizeStoppingCriterionConfig& SizeStoppingCriterionConfig::setMaxRules(uint32 maxRules) {
-    assertGreaterOrEqual<uint32>("maxRules", maxRules, 1);
+    util::assertGreaterOrEqual<uint32>("maxRules", maxRules, 1);
     maxRules_ = maxRules;
     return *this;
 }

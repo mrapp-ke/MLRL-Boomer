@@ -118,7 +118,7 @@ namespace boosting {
                                            typename Model::const_iterator rulesEnd, uint32 threadIndex,
                                            uint32 exampleIndex, uint32 predictionIndex) const override {
                         CContiguousView<float64>::value_iterator realIterator = realMatrix_.values_begin(threadIndex);
-                        setViewToZeros(realIterator, realMatrix_.numCols);
+                        util::setViewToZeros(realIterator, realMatrix_.numCols);
                         ScorePredictionDelegate<FeatureMatrix, Model>(realMatrix_)
                           .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex,
                                              threadIndex);
@@ -188,7 +188,7 @@ namespace boosting {
              */
             std::unique_ptr<IIncrementalPredictor<DensePredictionMatrix<uint8>>> createIncrementalPredictor(
               uint32 maxRules) const override {
-                if (maxRules != 0) assertGreaterOrEqual<uint32>("maxRules", maxRules, 1);
+                if (maxRules != 0) util::assertGreaterOrEqual<uint32>("maxRules", maxRules, 1);
                 return std::make_unique<IncrementalPredictor>(*this, maxRules, binaryTransformationPtr_);
             }
     };
@@ -306,7 +306,7 @@ namespace boosting {
                                              typename Model::const_iterator rulesEnd, uint32 threadIndex,
                                              uint32 exampleIndex, uint32 predictionIndex) const override {
                         CContiguousView<float64>::value_iterator realIterator = realMatrix_.values_begin(threadIndex);
-                        setViewToZeros(realIterator, realMatrix_.numCols);
+                        util::setViewToZeros(realIterator, realMatrix_.numCols);
                         ScorePredictionDelegate<FeatureMatrix, Model>(realMatrix_)
                           .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex,
                                              threadIndex);
@@ -376,7 +376,7 @@ namespace boosting {
              */
             std::unique_ptr<IIncrementalPredictor<BinarySparsePredictionMatrix>> createIncrementalPredictor(
               uint32 maxRules) const override {
-                if (maxRules != 0) assertGreaterOrEqual<uint32>("maxRules", maxRules, 1);
+                if (maxRules != 0) util::assertGreaterOrEqual<uint32>("maxRules", maxRules, 1);
                 return std::make_unique<IncrementalPredictor>(*this, maxRules, binaryTransformationPtr_);
             }
     };

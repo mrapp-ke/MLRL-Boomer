@@ -120,7 +120,7 @@ namespace seco {
     }
 
     IPeakLiftFunctionConfig& PeakLiftFunctionConfig::setPeakLabel(uint32 peakLabel) {
-        if (peakLabel != 0) assertGreaterOrEqual<uint32>("peakLabel", peakLabel, 1);
+        if (peakLabel != 0) util::assertGreaterOrEqual<uint32>("peakLabel", peakLabel, 1);
         peakLabel_ = peakLabel;
         return *this;
     }
@@ -130,7 +130,7 @@ namespace seco {
     }
 
     IPeakLiftFunctionConfig& PeakLiftFunctionConfig::setMaxLift(float64 maxLift) {
-        assertGreaterOrEqual<float64>("maxLift", maxLift, 1);
+        util::assertGreaterOrEqual<float64>("maxLift", maxLift, 1);
         maxLift_ = maxLift;
         return *this;
     }
@@ -140,7 +140,7 @@ namespace seco {
     }
 
     IPeakLiftFunctionConfig& PeakLiftFunctionConfig::setCurvature(float64 curvature) {
-        assertGreater<float64>("curvature", curvature, 0);
+        util::assertGreater<float64>("curvature", curvature, 0);
         curvature_ = curvature;
         return *this;
     }

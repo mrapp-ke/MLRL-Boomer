@@ -71,7 +71,8 @@ namespace boosting {
 
                 // Add the Hessian that corresponds to the `i`-th element on the diagonal of the original Hessian matrix
                 // to the corresponding element of the aggregated Hessian matrix...
-                hessians[triangularNumber(binIndex + 1) - 1] += hessianIterator[triangularNumber(i + 1) - 1];
+                hessians[util::triangularNumber(binIndex + 1) - 1] +=
+                  hessianIterator[util::triangularNumber(i + 1) - 1];
             }
         }
 
@@ -96,7 +97,7 @@ namespace boosting {
                             c = binIndex;
                         }
 
-                        hessians[triangularNumber(c) + r] += hessianIterator[triangularNumber(i) + j];
+                        hessians[util::triangularNumber(c) + r] += hessianIterator[util::triangularNumber(i) + j];
                     }
                 }
             }
@@ -153,13 +154,13 @@ namespace boosting {
         float64 regularizationTerm;
 
         if (l1RegularizationWeight > 0) {
-            regularizationTerm = l1RegularizationWeight * l1Norm(scores, numElementsPerBin, numBins);
+            regularizationTerm = l1RegularizationWeight * util::l1Norm(scores, numElementsPerBin, numBins);
         } else {
             regularizationTerm = 0;
         }
 
         if (l2RegularizationWeight > 0) {
-            regularizationTerm += 0.5 * l2RegularizationWeight * l2NormPow(scores, numElementsPerBin, numBins);
+            regularizationTerm += 0.5 * l2RegularizationWeight * util::l2NormPow(scores, numElementsPerBin, numBins);
         }
 
         return regularizationTerm;
@@ -248,8 +249,8 @@ namespace boosting {
                 : AbstractNonDecomposableRuleEvaluation<DenseNonDecomposableStatisticVector, IndexVector>(maxBins,
                                                                                                           lapack),
                   maxBins_(maxBins), scoreVector_(labelIndices, maxBins + 1, indicesSorted),
-                  aggregatedGradients_(maxBins), aggregatedHessians_(triangularNumber(maxBins)), binIndices_(maxBins),
-                  numElementsPerBin_(maxBins), criteria_(labelIndices.getNumElements()),
+                  aggregatedGradients_(maxBins), aggregatedHessians_(util::triangularNumber(maxBins)),
+                  binIndices_(maxBins), numElementsPerBin_(maxBins), criteria_(labelIndices.getNumElements()),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
                   binningPtr_(std::move(binningPtr)), blas_(blas), lapack_(lapack) {
                 // The last bin is used for labels for which the corresponding criterion is zero. For this particular
@@ -272,7 +273,7 @@ namespace boosting {
 
                 if (numBins > 0) {
                     // Reset arrays to zero...
-                    setViewToZeros(numElementsPerBin_.begin(), numBins);
+                    util::setViewToZeros(numElementsPerBin_.begin(), numBins);
 
                     // Apply binning method in order to aggregate the gradients and Hessians that belong to the same
                     // bins...
@@ -292,8 +293,8 @@ namespace boosting {
                     scoreVector_.setNumBins(numBins, false);
 
                     // Aggregate gradients and Hessians...
-                    setViewToZeros(aggregatedGradients_.begin(), numBins);
-                    setViewToZeros(aggregatedHessians_.begin(), triangularNumber(numBins));
+                    util::setViewToZeros(aggregatedGradients_.begin(), numBins);
+                    util::setViewToZeros(aggregatedHessians_.begin(), util::triangularNumber(numBins));
                     aggregateGradientsAndHessians(statisticVector.gradients_cbegin(), statisticVector.hessians_cbegin(),
                                                   numCriteria, binIndexIterator, binIndices_.cbegin(),
                                                   aggregatedGradients_.begin(), aggregatedHessians_.begin(), maxBins_);
@@ -326,7 +327,7 @@ namespace boosting {
 
                     scoreVector_.quality = quality;
                 } else {
-                    setViewToValue(scoreVector_.bin_indices_begin(), numCriteria, maxBins_);
+                    util::setViewToValue(scoreVector_.bin_indices_begin(), numCriteria, maxBins_);
                     scoreVector_.quality = 0;
                 }
 

@@ -165,7 +165,7 @@ uint32 GreedyTopDownRuleInductionConfig::getMinCoverage() const {
 }
 
 IGreedyTopDownRuleInductionConfig& GreedyTopDownRuleInductionConfig::setMinCoverage(uint32 minCoverage) {
-    assertGreaterOrEqual<uint32>("minCoverage", minCoverage, 1);
+    util::assertGreaterOrEqual<uint32>("minCoverage", minCoverage, 1);
     minCoverage_ = minCoverage;
     return *this;
 }
@@ -176,8 +176,8 @@ float32 GreedyTopDownRuleInductionConfig::getMinSupport() const {
 
 IGreedyTopDownRuleInductionConfig& GreedyTopDownRuleInductionConfig::setMinSupport(float32 minSupport) {
     if (!isEqualToZero(minSupport)) {
-        assertGreater<float32>("minSupport", minSupport, 0);
-        assertLess<float32>("minSupport", minSupport, 1);
+        util::assertGreater<float32>("minSupport", minSupport, 0);
+        util::assertLess<float32>("minSupport", minSupport, 1);
     }
 
     minSupport_ = minSupport;
@@ -189,7 +189,7 @@ uint32 GreedyTopDownRuleInductionConfig::getMaxConditions() const {
 }
 
 IGreedyTopDownRuleInductionConfig& GreedyTopDownRuleInductionConfig::setMaxConditions(uint32 maxConditions) {
-    if (maxConditions != 0) assertGreaterOrEqual<uint32>("maxConditions", maxConditions, 1);
+    if (maxConditions != 0) util::assertGreaterOrEqual<uint32>("maxConditions", maxConditions, 1);
     maxConditions_ = maxConditions;
     return *this;
 }
@@ -199,7 +199,7 @@ uint32 GreedyTopDownRuleInductionConfig::getMaxHeadRefinements() const {
 }
 
 IGreedyTopDownRuleInductionConfig& GreedyTopDownRuleInductionConfig::setMaxHeadRefinements(uint32 maxHeadRefinements) {
-    if (maxHeadRefinements != 0) assertGreaterOrEqual<uint32>("maxHeadRefinements", maxHeadRefinements, 1);
+    if (maxHeadRefinements != 0) util::assertGreaterOrEqual<uint32>("maxHeadRefinements", maxHeadRefinements, 1);
     maxHeadRefinements_ = maxHeadRefinements;
     return *this;
 }
@@ -220,7 +220,7 @@ std::unique_ptr<IRuleInductionFactory> GreedyTopDownRuleInductionConfig::createR
     uint32 minCoverage;
 
     if (minSupport_ > 0) {
-        minCoverage = calculateBoundedFraction(numExamples, minSupport_, minCoverage_, numExamples);
+        minCoverage = util::calculateBoundedFraction(numExamples, minSupport_, minCoverage_, numExamples);
     } else {
         minCoverage = std::min(numExamples, minCoverage_);
     }
