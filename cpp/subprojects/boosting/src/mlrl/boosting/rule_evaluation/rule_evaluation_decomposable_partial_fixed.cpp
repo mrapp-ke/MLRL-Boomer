@@ -85,7 +85,7 @@ namespace boosting {
       DecomposableFixedPartialRuleEvaluationFactory::create(const DenseDecomposableStatisticVector& statisticVector,
                                                             const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
-          calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
+          util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
         return std::make_unique<
           DecomposableFixedPartialRuleEvaluation<DenseDecomposableStatisticVector, CompleteIndexVector>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
@@ -103,7 +103,7 @@ namespace boosting {
       DecomposableFixedPartialRuleEvaluationFactory::create(const SparseDecomposableStatisticVector& statisticVector,
                                                             const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
-          calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
+          util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
         return std::make_unique<
           DecomposableFixedPartialRuleEvaluation<SparseDecomposableStatisticVector, CompleteIndexVector>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);

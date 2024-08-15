@@ -8,7 +8,7 @@
 static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
   AllocatedMissingFeatureVector&& missingFeatureVector, const NumericalFeatureVector& numericalFeatureVector,
   uint32 numExamples, float32 binRatio, uint32 minBins, uint32 maxBins) {
-    uint32 numBins = calculateBoundedFraction(numExamples, binRatio, minBins, maxBins);
+    uint32 numBins = util::calculateBoundedFraction(numExamples, binRatio, minBins, maxBins);
 
     if (numBins > 1) {
         uint32 numElements = numericalFeatureVector.numElements;
@@ -38,7 +38,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
             if (!isEqual(currentValue, previousValue)) {
                 // Check, if the bin is fully occupied...
                 if (numElementsInCurrentBin >= numElementsPerBin) {
-                    thresholdIterator[binIndex] = arithmeticMean(previousValue, currentValue);
+                    thresholdIterator[binIndex] = util::arithmeticMean(previousValue, currentValue);
                     indptrIterator[binIndex + 1] = numIndices;
                     numElementsInCurrentBin = 0;
                     binIndex++;
@@ -58,7 +58,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
 
             if (numElementsInCurrentBin >= numElementsPerBin) {
                 // The sparse values belong to the next bin...
-                thresholdIterator[binIndex] = arithmeticMean(previousValue, sparseValue);
+                thresholdIterator[binIndex] = util::arithmeticMean(previousValue, sparseValue);
                 indptrIterator[binIndex + 1] = numIndices;
                 numElementsInCurrentBin = numSparseValues;
                 binIndex++;
@@ -93,7 +93,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
             if (!isEqual(currentValue, previousValue)) {
                 // Check, if the bin is fully occupied...
                 if (numElementsInCurrentBin >= numElementsPerBin) {
-                    thresholdIterator[binIndex] = arithmeticMean(previousValue, currentValue);
+                    thresholdIterator[binIndex] = util::arithmeticMean(previousValue, currentValue);
                     indptrIterator[binIndex + 1] = numIndices;
                     numElementsInCurrentBin = 0;
                     binIndex++;
@@ -224,8 +224,8 @@ float32 EqualFrequencyFeatureBinningConfig::getBinRatio() const {
 }
 
 IEqualFrequencyFeatureBinningConfig& EqualFrequencyFeatureBinningConfig::setBinRatio(float32 binRatio) {
-    assertGreater<float32>("binRatio", binRatio, 0);
-    assertLess<float32>("binRatio", binRatio, 1);
+    util::assertGreater<float32>("binRatio", binRatio, 0);
+    util::assertLess<float32>("binRatio", binRatio, 1);
     binRatio_ = binRatio;
     return *this;
 }
@@ -235,7 +235,7 @@ uint32 EqualFrequencyFeatureBinningConfig::getMinBins() const {
 }
 
 IEqualFrequencyFeatureBinningConfig& EqualFrequencyFeatureBinningConfig::setMinBins(uint32 minBins) {
-    assertGreaterOrEqual<uint32>("minBins", minBins, 2);
+    util::assertGreaterOrEqual<uint32>("minBins", minBins, 2);
     minBins_ = minBins;
     return *this;
 }
@@ -245,7 +245,7 @@ uint32 EqualFrequencyFeatureBinningConfig::getMaxBins() const {
 }
 
 IEqualFrequencyFeatureBinningConfig& EqualFrequencyFeatureBinningConfig::setMaxBins(uint32 maxBins) {
-    if (maxBins != 0) assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins_);
+    if (maxBins != 0) util::assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins_);
     maxBins_ = maxBins;
     return *this;
 }

@@ -62,7 +62,7 @@ uint32 OutputSamplingWithoutReplacementConfig::getNumSamples() const {
 }
 
 IOutputSamplingWithoutReplacementConfig& OutputSamplingWithoutReplacementConfig::setNumSamples(uint32 numSamples) {
-    assertGreaterOrEqual<uint32>("numSamples", numSamples, 1);
+    util::assertGreaterOrEqual<uint32>("numSamples", numSamples, 1);
     numSamples_ = numSamples;
     return *this;
 }

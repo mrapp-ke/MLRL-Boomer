@@ -38,7 +38,7 @@ namespace boosting {
                 : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {}
 
             uint32 getMaxBins(uint32 numLabels) const override {
-                return calculateBoundedFraction(numLabels, binRatio_, minBins_, maxBins_) + 1;
+                return util::calculateBoundedFraction(numLabels, binRatio_, minBins_, maxBins_) + 1;
             }
 
             LabelInfo getLabelInfo(View<float64>::const_iterator criteria, uint32 numCriteria) const override {
@@ -80,12 +80,12 @@ namespace boosting {
 
                     if (labelInfo.numNegativeBins > 0) {
                         labelInfo.numNegativeBins =
-                          calculateBoundedFraction(labelInfo.numNegativeBins, binRatio_, minBins_, maxBins_);
+                          util::calculateBoundedFraction(labelInfo.numNegativeBins, binRatio_, minBins_, maxBins_);
                     }
 
                     if (labelInfo.numPositiveBins > 0) {
                         labelInfo.numPositiveBins =
-                          calculateBoundedFraction(labelInfo.numPositiveBins, binRatio_, minBins_, maxBins_);
+                          util::calculateBoundedFraction(labelInfo.numPositiveBins, binRatio_, minBins_, maxBins_);
                     }
                 }
 
@@ -174,8 +174,8 @@ namespace boosting {
     }
 
     IEqualWidthLabelBinningConfig& EqualWidthLabelBinningConfig::setBinRatio(float32 binRatio) {
-        assertGreater<float32>("binRatio", binRatio, 0);
-        assertLess<float32>("binRatio", binRatio, 1);
+        util::assertGreater<float32>("binRatio", binRatio, 0);
+        util::assertLess<float32>("binRatio", binRatio, 1);
         binRatio_ = binRatio;
         return *this;
     }
@@ -185,7 +185,7 @@ namespace boosting {
     }
 
     IEqualWidthLabelBinningConfig& EqualWidthLabelBinningConfig::setMinBins(uint32 minBins) {
-        assertGreaterOrEqual<uint32>("minBins", minBins, 1);
+        util::assertGreaterOrEqual<uint32>("minBins", minBins, 1);
         minBins_ = minBins;
         return *this;
     }
@@ -195,7 +195,7 @@ namespace boosting {
     }
 
     IEqualWidthLabelBinningConfig& EqualWidthLabelBinningConfig::setMaxBins(uint32 maxBins) {
-        if (maxBins != 0) assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins_);
+        if (maxBins != 0) util::assertGreaterOrEqual<uint32>("maxBins", maxBins, minBins_);
         maxBins_ = maxBins;
         return *this;
     }

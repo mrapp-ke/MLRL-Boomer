@@ -91,8 +91,8 @@ float32 FeatureSamplingWithoutReplacementConfig::getSampleSize() const {
 }
 
 IFeatureSamplingWithoutReplacementConfig& FeatureSamplingWithoutReplacementConfig::setSampleSize(float32 sampleSize) {
-    assertGreaterOrEqual<float32>("sampleSize", sampleSize, 0);
-    assertLess<float32>("sampleSize", sampleSize, 1);
+    util::assertGreaterOrEqual<float32>("sampleSize", sampleSize, 0);
+    util::assertLess<float32>("sampleSize", sampleSize, 1);
     sampleSize_ = sampleSize;
     return *this;
 }
@@ -102,7 +102,7 @@ uint32 FeatureSamplingWithoutReplacementConfig::getNumRetained() const {
 }
 
 IFeatureSamplingWithoutReplacementConfig& FeatureSamplingWithoutReplacementConfig::setNumRetained(uint32 numRetained) {
-    assertGreaterOrEqual<uint32>("numRetained", numRetained, 0);
+    util::assertGreaterOrEqual<uint32>("numRetained", numRetained, 0);
     numRetained_ = numRetained;
     return *this;
 }

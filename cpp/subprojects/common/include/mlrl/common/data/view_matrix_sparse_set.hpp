@@ -271,7 +271,8 @@ class MLRLCOMMON_API SparseSetView
             : CompositeMatrix<AllocatedListOfLists<IndexedValue<T>>, AllocatedCContiguousView<uint32>>(
                 AllocatedListOfLists<IndexedValue<T>>(numRows, numCols),
                 AllocatedCContiguousView<uint32>(numRows, numCols), numRows, numCols) {
-            setViewToValue(this->secondView.array, this->secondView.numRows * this->secondView.numCols, MAX_INDEX);
+            util::setViewToValue(this->secondView.array, this->secondView.numRows * this->secondView.numCols,
+                                 MAX_INDEX);
         }
 
         /**

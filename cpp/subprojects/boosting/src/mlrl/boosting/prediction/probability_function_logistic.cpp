@@ -25,7 +25,7 @@ namespace boosting {
 
             float64 transformScoreIntoMarginalProbability(uint32 labelIndex, float64 score) const override {
                 return marginalProbabilityCalibrationModel_.calibrateMarginalProbability(labelIndex,
-                                                                                         logisticFunction(score));
+                                                                                         util::logisticFunction(score));
             }
     };
 
