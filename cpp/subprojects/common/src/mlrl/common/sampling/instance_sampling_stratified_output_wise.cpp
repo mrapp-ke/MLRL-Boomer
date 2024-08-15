@@ -102,8 +102,8 @@ float32 OutputWiseStratifiedInstanceSamplingConfig::getSampleSize() const {
 
 IOutputWiseStratifiedInstanceSamplingConfig& OutputWiseStratifiedInstanceSamplingConfig::setSampleSize(
   float32 sampleSize) {
-    assertGreater<float32>("sampleSize", sampleSize, 0);
-    assertLess<float32>("sampleSize", sampleSize, 1);
+    util::assertGreater<float32>("sampleSize", sampleSize, 0);
+    util::assertLess<float32>("sampleSize", sampleSize, 1);
     sampleSize_ = sampleSize;
     return *this;
 }

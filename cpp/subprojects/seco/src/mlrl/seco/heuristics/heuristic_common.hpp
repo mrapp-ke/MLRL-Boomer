@@ -11,13 +11,13 @@ namespace seco {
     static inline constexpr float64 precision(float64 cin, float64 cip, float64 crn, float64 crp) {
         float64 numCoveredCorrect = cin + crp;
         float64 numCovered = numCoveredCorrect + cip + crn;
-        return divideOrZero(numCoveredCorrect, numCovered);
+        return util::divideOrZero(numCoveredCorrect, numCovered);
     }
 
     static inline constexpr float64 recall(float64 cin, float64 crp, float64 uin, float64 urp) {
         float64 numCoveredEqual = cin + crp;
         float64 numEqual = numCoveredEqual + uin + urp;
-        return divideOrZero(numCoveredEqual, numEqual);
+        return util::divideOrZero(numCoveredEqual, numEqual);
     }
 
     static inline constexpr float64 wra(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin, float64 uip,

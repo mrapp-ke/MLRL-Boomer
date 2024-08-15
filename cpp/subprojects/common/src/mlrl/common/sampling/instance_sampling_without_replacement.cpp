@@ -130,8 +130,8 @@ float32 InstanceSamplingWithoutReplacementConfig::getSampleSize() const {
 }
 
 IInstanceSamplingWithoutReplacementConfig& InstanceSamplingWithoutReplacementConfig::setSampleSize(float32 sampleSize) {
-    assertGreater<float32>("sampleSize", sampleSize, 0);
-    assertLess<float32>("sampleSize", sampleSize, 1);
+    util::assertGreater<float32>("sampleSize", sampleSize, 0);
+    util::assertLess<float32>("sampleSize", sampleSize, 1);
     sampleSize_ = sampleSize;
     return *this;
 }

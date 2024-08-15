@@ -17,8 +17,8 @@ namespace boosting {
     }
 
     IDynamicPartialHeadConfig& DynamicPartialHeadConfig::setThreshold(float32 threshold) {
-        assertGreater<float32>("threshold", threshold, 0);
-        assertLess<float32>("threshold", threshold, 1);
+        util::assertGreater<float32>("threshold", threshold, 0);
+        util::assertLess<float32>("threshold", threshold, 1);
         threshold_ = threshold;
         return *this;
     }
@@ -28,7 +28,7 @@ namespace boosting {
     }
 
     IDynamicPartialHeadConfig& DynamicPartialHeadConfig::setExponent(float32 exponent) {
-        assertGreaterOrEqual<float32>("exponent", exponent, 1);
+        util::assertGreaterOrEqual<float32>("exponent", exponent, 1);
         exponent_ = exponent;
         return *this;
     }

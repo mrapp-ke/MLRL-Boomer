@@ -49,11 +49,11 @@ namespace boosting {
             float64 x = tuple.first;
 
             // Calculate the gradient as `(predictedScore_i - expectedScore_i) / sqrt(x_1 + x_2 + ...)`...
-            tuple.first = divideOrZero<float64>(predictedScore - expectedScore, denominatorGradient);
+            tuple.first = util::divideOrZero<float64>(predictedScore - expectedScore, denominatorGradient);
 
             // Calculate the Hessian on the diagonal of the Hessian matrix as
             // `(x_1 + ... + x_i-1 + x_i+1 + ...) / (x_1 + x_2 + ...)^1.5`...
-            tuple.second = divideOrZero<float64>(denominator - x, denominatorHessian);
+            tuple.second = util::divideOrZero<float64>(denominator - x, denominatorHessian);
             groundTruthIterator2++;
         }
     }
@@ -104,18 +104,18 @@ namespace boosting {
                 float64 predictedScore2 = scoreIterator[j];
                 typename std::iterator_traits<GroundTruthIterator>::value_type groundTruth2 = *groundTruthIterator4;
                 float64 expectedScore2 = groundTruthConversionFunction(groundTruth2);
-                *hessianIterator = divideOrZero<float64>(
+                *hessianIterator = util::divideOrZero<float64>(
                   -(predictedScore - expectedScore) * (predictedScore2 - expectedScore2), denominatorHessian);
                 hessianIterator++;
                 groundTruthIterator4++;
             }
 
             // Calculate the gradient as `(predictedScore_i - expectedScore_i) / sqrt(x_1 + x_2 + ...)`...
-            gradientIterator[i] = divideOrZero<float64>(predictedScore - expectedScore, denominatorGradient);
+            gradientIterator[i] = util::divideOrZero<float64>(predictedScore - expectedScore, denominatorGradient);
 
             // Calculate the Hessian on the diagonal of the Hessian matrix as
             // `(x_1 + ... + x_i-1 + x_i+1 + ...) / (x_1 + x_2 + ...)^1.5`...
-            *hessianIterator = divideOrZero<float64>(denominator - x, denominatorHessian);
+            *hessianIterator = util::divideOrZero<float64>(denominator - x, denominatorHessian);
             hessianIterator++;
             groundTruthIterator2++;
         }

@@ -87,7 +87,7 @@ namespace boosting {
                 // Normalize joint probabilities...
                 for (uint32 i = 0; i < numLabelVectors; i++) {
                     float64 jointProbability = jointProbabilityIterator[i];
-                    jointProbabilityIterator[i] = divideOrZero(jointProbability, sumOfJointProbabilities);
+                    jointProbabilityIterator[i] = util::divideOrZero(jointProbability, sumOfJointProbabilities);
                 }
 
                 return jointProbabilityVectorPtr;

@@ -40,9 +40,10 @@ namespace boosting {
             void addToRow(uint32 row, View<float64>::const_iterator gradientsBegin,
                           View<float64>::const_iterator gradientsEnd, View<float64>::const_iterator hessiansBegin,
                           View<float64>::const_iterator hessiansEnd, float64 weight) {
-                addToView(this->view.firstView.values_begin(row), gradientsBegin, this->view.firstView.numCols, weight);
-                addToView(this->view.secondView.values_begin(row), hessiansBegin, this->view.secondView.numCols,
-                          weight);
+                util::addToView(this->view.firstView.values_begin(row), gradientsBegin, this->view.firstView.numCols,
+                                weight);
+                util::addToView(this->view.secondView.values_begin(row), hessiansBegin, this->view.secondView.numCols,
+                                weight);
             }
     };
 

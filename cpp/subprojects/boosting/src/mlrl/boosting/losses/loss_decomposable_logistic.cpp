@@ -50,7 +50,7 @@ namespace boosting {
                                                 float64& hessian) {
         // The gradient computes as `-expectedScore / (1 + exp(expectedScore * predictedScore))`, or as
         // `1 / (1 + exp(-predictedScore)) - 1` if `trueLabel == true`, `1 / (1 + exp(-predictedScore))`, otherwise...
-        float64 logistic = logisticFunction(predictedScore);
+        float64 logistic = util::logisticFunction(predictedScore);
         gradient = trueLabel ? logistic - 1.0 : logistic;
 
         // The Hessian computes as `exp(expectedScore * predictedScore) / (1 + exp(expectedScore * predictedScore))^2`,

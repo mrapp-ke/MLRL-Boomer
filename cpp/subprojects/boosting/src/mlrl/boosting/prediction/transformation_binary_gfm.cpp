@@ -85,7 +85,7 @@ namespace boosting {
 
     static inline void storePrediction(const ResizableSparseArrayVector<float64>& tmpVector,
                                        View<uint8>::iterator predictionIterator, uint32 numLabels) {
-        setViewToZeros(predictionIterator, numLabels);
+        util::setViewToZeros(predictionIterator, numLabels);
         uint32 numRelevantLabels = tmpVector.getNumElements();
         ResizableSparseArrayVector<float64>::const_iterator iterator = tmpVector.cbegin();
 

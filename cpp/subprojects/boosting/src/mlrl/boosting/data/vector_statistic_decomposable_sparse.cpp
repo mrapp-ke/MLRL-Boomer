@@ -64,7 +64,7 @@ namespace boosting {
 
     SparseDecomposableStatisticVector::SparseDecomposableStatisticVector(const SparseDecomposableStatisticVector& other)
         : SparseDecomposableStatisticVector(other.getNumElements()) {
-        copyView(other.view.cbegin(), this->view.begin(), this->getNumElements());
+        util::copyView(other.view.cbegin(), this->view.begin(), this->getNumElements());
         sumOfWeights_ = other.sumOfWeights_;
     }
 
@@ -78,7 +78,7 @@ namespace boosting {
 
     void SparseDecomposableStatisticVector::add(const SparseDecomposableStatisticVector& vector) {
         sumOfWeights_ += vector.sumOfWeights_;
-        addToView(this->view.begin(), vector.view.cbegin(), this->getNumElements());
+        util::addToView(this->view.begin(), vector.view.cbegin(), this->getNumElements());
     }
 
     void SparseDecomposableStatisticVector::add(const SparseSetView<Tuple<float64>>& view, uint32 row) {
@@ -171,15 +171,16 @@ namespace boosting {
                                                        const CompleteIndexVector& firstIndices,
                                                        const SparseDecomposableStatisticVector& second) {
         sumOfWeights_ = first.sumOfWeights_ - second.sumOfWeights_;
-        setViewToDifference(this->view.begin(), first.view.cbegin(), second.view.cbegin(), this->getNumElements());
+        util::setViewToDifference(this->view.begin(), first.view.cbegin(), second.view.cbegin(),
+                                  this->getNumElements());
     }
 
     void SparseDecomposableStatisticVector::difference(const SparseDecomposableStatisticVector& first,
                                                        const PartialIndexVector& firstIndices,
                                                        const SparseDecomposableStatisticVector& second) {
         sumOfWeights_ = first.sumOfWeights_ - second.sumOfWeights_;
-        setViewToDifference(this->view.begin(), first.view.cbegin(), second.view.cbegin(), firstIndices.cbegin(),
-                            this->getNumElements());
+        util::setViewToDifference(this->view.begin(), first.view.cbegin(), second.view.cbegin(), firstIndices.cbegin(),
+                                  this->getNumElements());
     }
 
     void SparseDecomposableStatisticVector::clear() {

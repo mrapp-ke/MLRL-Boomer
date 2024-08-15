@@ -19,8 +19,8 @@ class MLRLCOMMON_API AllocatedNominalFeatureVector : public NominalFeatureVector
          * @param majorityValue The majority value, i.e., the most frequent value, of the nominal feature
          */
         AllocatedNominalFeatureVector(uint32 numValues, uint32 numIndices, int32 majorityValue = 0)
-            : NominalFeatureVector(allocateMemory<int32>(numValues), allocateMemory<uint32>(numIndices),
-                                   allocateMemory<uint32>(numValues + 1), numValues, numIndices, majorityValue) {
+            : NominalFeatureVector(util::allocateMemory<int32>(numValues), util::allocateMemory<uint32>(numIndices),
+                                   util::allocateMemory<uint32>(numValues + 1), numValues, numIndices, majorityValue) {
             NominalFeatureVector::indptr[0] = 0;
             NominalFeatureVector::indptr[numValues] = numIndices;
         }
@@ -42,9 +42,9 @@ class MLRLCOMMON_API AllocatedNominalFeatureVector : public NominalFeatureVector
         }
 
         virtual ~AllocatedNominalFeatureVector() override {
-            freeMemory(NominalFeatureVector::values);
-            freeMemory(NominalFeatureVector::indices);
-            freeMemory(NominalFeatureVector::indptr);
+            util::freeMemory(NominalFeatureVector::values);
+            util::freeMemory(NominalFeatureVector::indices);
+            util::freeMemory(NominalFeatureVector::indptr);
         }
 
         /**
@@ -55,9 +55,9 @@ class MLRLCOMMON_API AllocatedNominalFeatureVector : public NominalFeatureVector
          *                      be resized
          */
         void resize(uint32 numValues, uint32 numIndices) {
-            NominalFeatureVector::values = reallocateMemory(NominalFeatureVector::values, numValues);
-            NominalFeatureVector::indices = reallocateMemory(NominalFeatureVector::indices, numIndices);
-            NominalFeatureVector::indptr = reallocateMemory(NominalFeatureVector::indptr, numValues + 1);
+            NominalFeatureVector::values = util::reallocateMemory(NominalFeatureVector::values, numValues);
+            NominalFeatureVector::indices = util::reallocateMemory(NominalFeatureVector::indices, numIndices);
+            NominalFeatureVector::indptr = util::reallocateMemory(NominalFeatureVector::indptr, numValues + 1);
             NominalFeatureVector::numValues = numValues;
             NominalFeatureVector::indptr[numValues] = numIndices;
         }

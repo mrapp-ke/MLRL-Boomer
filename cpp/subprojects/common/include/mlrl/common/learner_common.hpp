@@ -670,103 +670,103 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
         }
 
         Property<IDefaultRuleConfig> getDefaultRuleConfig() override final {
-            return property(defaultRuleConfigPtr_);
+            return util::property(defaultRuleConfigPtr_);
         }
 
         Property<IRuleModelAssemblageConfig> getRuleModelAssemblageConfig() override final {
-            return property(ruleModelAssemblageConfigPtr_);
+            return util::property(ruleModelAssemblageConfigPtr_);
         }
 
         Property<IRuleInductionConfig> getRuleInductionConfig() override final {
-            return property(ruleInductionConfigPtr_);
+            return util::property(ruleInductionConfigPtr_);
         }
 
         Property<IFeatureBinningConfig> getFeatureBinningConfig() override final {
-            return property(featureBinningConfigPtr_);
+            return util::property(featureBinningConfigPtr_);
         }
 
         Property<IOutputSamplingConfig> getOutputSamplingConfig() override final {
-            return property(outputSamplingConfigPtr_);
+            return util::property(outputSamplingConfigPtr_);
         }
 
         SharedProperty<IClassificationInstanceSamplingConfig> getClassificationInstanceSamplingConfig() override final {
-            return sharedProperty(classificationInstanceSamplingConfigPtr_);
+            return util::sharedProperty(classificationInstanceSamplingConfigPtr_);
         }
 
         SharedProperty<IRegressionInstanceSamplingConfig> getRegressionInstanceSamplingConfig() override final {
-            return sharedProperty(regressionInstanceSamplingConfigPtr_);
+            return util::sharedProperty(regressionInstanceSamplingConfigPtr_);
         }
 
         Property<IFeatureSamplingConfig> getFeatureSamplingConfig() override final {
-            return property(featureSamplingConfigPtr_);
+            return util::property(featureSamplingConfigPtr_);
         }
 
         SharedProperty<IClassificationPartitionSamplingConfig> getClassificationPartitionSamplingConfig()
           override final {
-            return sharedProperty(classificationPartitionSamplingConfigPtr_);
+            return util::sharedProperty(classificationPartitionSamplingConfigPtr_);
         }
 
         SharedProperty<IRegressionPartitionSamplingConfig> getRegressionPartitionSamplingConfig() override final {
-            return sharedProperty(regressionPartitionSamplingConfigPtr_);
+            return util::sharedProperty(regressionPartitionSamplingConfigPtr_);
         }
 
         Property<IRulePruningConfig> getRulePruningConfig() override final {
-            return property(rulePruningConfigPtr_);
+            return util::property(rulePruningConfigPtr_);
         }
 
         Property<IPostProcessorConfig> getPostProcessorConfig() override final {
-            return property(postProcessorConfigPtr_);
+            return util::property(postProcessorConfigPtr_);
         }
 
         Property<IMultiThreadingConfig> getParallelRuleRefinementConfig() override final {
-            return property(parallelRuleRefinementConfigPtr_);
+            return util::property(parallelRuleRefinementConfigPtr_);
         }
 
         Property<IMultiThreadingConfig> getParallelStatisticUpdateConfig() override final {
-            return property(parallelStatisticUpdateConfigPtr_);
+            return util::property(parallelStatisticUpdateConfigPtr_);
         }
 
         Property<IMultiThreadingConfig> getParallelPredictionConfig() override final {
-            return property(parallelPredictionConfigPtr_);
+            return util::property(parallelPredictionConfigPtr_);
         }
 
         Property<IStoppingCriterionConfig> getSizeStoppingCriterionConfig() override final {
-            return property(sizeStoppingCriterionConfigPtr_);
+            return util::property(sizeStoppingCriterionConfigPtr_);
         }
 
         Property<IStoppingCriterionConfig> getTimeStoppingCriterionConfig() override final {
-            return property(timeStoppingCriterionConfigPtr_);
+            return util::property(timeStoppingCriterionConfigPtr_);
         }
 
         Property<IGlobalPruningConfig> getGlobalPruningConfig() override final {
-            return property(globalPruningConfigPtr_);
+            return util::property(globalPruningConfigPtr_);
         }
 
         Property<IPostOptimizationPhaseConfig> getSequentialPostOptimizationConfig() override final {
-            return property(sequentialPostOptimizationConfigPtr_);
+            return util::property(sequentialPostOptimizationConfigPtr_);
         }
 
         Property<IPostOptimizationPhaseConfig> getUnusedRuleRemovalConfig() override final {
-            return property(unusedRuleRemovalConfigPtr_);
+            return util::property(unusedRuleRemovalConfigPtr_);
         }
 
         Property<IMarginalProbabilityCalibratorConfig> getMarginalProbabilityCalibratorConfig() override final {
-            return property(marginalProbabilityCalibratorConfigPtr_);
+            return util::property(marginalProbabilityCalibratorConfigPtr_);
         }
 
         Property<IJointProbabilityCalibratorConfig> getJointProbabilityCalibratorConfig() override final {
-            return property(jointProbabilityCalibratorConfigPtr_);
+            return util::property(jointProbabilityCalibratorConfigPtr_);
         }
 
         Property<IScorePredictorConfig> getScorePredictorConfig() override final {
-            return property(scorePredictorConfigPtr_);
+            return util::property(scorePredictorConfigPtr_);
         }
 
         Property<IProbabilityPredictorConfig> getProbabilityPredictorConfig() override final {
-            return property(probabilityPredictorConfigPtr_);
+            return util::property(probabilityPredictorConfigPtr_);
         }
 
         Property<IBinaryPredictorConfig> getBinaryPredictorConfig() override final {
-            return property(binaryPredictorConfigPtr_);
+            return util::property(binaryPredictorConfigPtr_);
         }
 };

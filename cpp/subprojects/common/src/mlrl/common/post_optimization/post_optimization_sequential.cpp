@@ -161,7 +161,7 @@ uint32 SequentialPostOptimizationConfig::getNumIterations() const {
 }
 
 ISequentialPostOptimizationConfig& SequentialPostOptimizationConfig::setNumIterations(uint32 numIterations) {
-    assertGreaterOrEqual<uint32>("numIterations", numIterations, 1);
+    util::assertGreaterOrEqual<uint32>("numIterations", numIterations, 1);
     numIterations_ = numIterations;
     return *this;
 }

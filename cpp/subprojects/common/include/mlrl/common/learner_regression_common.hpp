@@ -32,7 +32,7 @@ class AbstractRegressionRuleLearner : virtual public IRegressionRuleLearner {
                                              const IColumnWiseFeatureMatrix& featureMatrix,
                                              const IRowWiseRegressionMatrix& regressionMatrix,
                                              uint32 randomState) const override {
-            assertGreaterOrEqual<uint32>("randomState", randomState, 1);
+            util::assertGreaterOrEqual<uint32>("randomState", randomState, 1);
             RNG rng(randomState);
 
             // Create stopping criteria...
