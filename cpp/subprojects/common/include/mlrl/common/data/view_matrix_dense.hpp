@@ -14,13 +14,9 @@
  * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
-class MLRLCOMMON_API DenseMatrix : public Matrix {
+class MLRLCOMMON_API DenseMatrix : public BaseView<T>,
+                                   public Matrix {
     public:
-
-        /**
-         * A pointer to the array that stores the values, the view provides access to.
-         */
-        T* array;
 
         /**
          * @param array     A pointer to an array of template type `T` that stores the values, the view should provide
@@ -28,53 +24,35 @@ class MLRLCOMMON_API DenseMatrix : public Matrix {
          * @param numRows   The number of rows in the view
          * @param numCols   The number of columns in the view
          */
-        DenseMatrix(T* array, uint32 numRows, uint32 numCols) : Matrix(numRows, numCols), array(array) {}
+        DenseMatrix(T* array, uint32 numRows, uint32 numCols) : BaseView<T>(array), Matrix(numRows, numCols) {}
 
         /**
          * @param other A const reference to an object of type `DenseMatrix` that should be copied
          */
-        DenseMatrix(const DenseMatrix<T>& other) : Matrix(std::move(other)), array(other.array) {}
+        DenseMatrix(const DenseMatrix<T>& other) : BaseView<T>(other), Matrix(std::move(other)) {}
 
         /**
          * @param other A reference to an object of type `DenseMatrix` that should be moved
          */
-        DenseMatrix(DenseMatrix<T>&& other) : Matrix(std::move(other)), array(other.array) {}
+        DenseMatrix(DenseMatrix<T>&& other) : BaseView<T>(std::move(other)), Matrix(std::move(other)) {}
 
         virtual ~DenseMatrix() override {}
 
         /**
-         * The type of the values, the view provides access to.
-         */
-        typedef T value_type;
-
-        /**
          * An iterator that provides read-only access to the values in the view.
          */
-        typedef typename View<value_type>::const_iterator value_const_iterator;
+        typedef const typename BaseView<T>::value_type* value_const_iterator;
 
         /**
          * An iterator that provides access to the values in the view and allows to modify them.
          */
-        typedef typename View<value_type>::iterator value_iterator;
+        typedef typename BaseView<T>::value_type* value_iterator;
 
         /**
          * Sets all values stored in the matrix to zero.
          */
         void clear() {
-            util::setViewToZeros(array, Matrix::numRows * Matrix::numCols);
-        }
-
-        /**
-         * Releases the ownership of the array that stores the values, the view provides access to. As a result, the
-         * behavior of this view becomes undefined and it should not be used anymore. The caller is responsible for
-         * freeing the memory that is occupied by the array.
-         *
-         * @return  A pointer to the array that stores the values, the view provides access to
-         */
-        value_type* release() {
-            value_type* ptr = array;
-            array = nullptr;
-            return ptr;
+            util::setViewToZeros(BaseView<T>::array, Matrix::numRows * Matrix::numCols);
         }
 };
 
