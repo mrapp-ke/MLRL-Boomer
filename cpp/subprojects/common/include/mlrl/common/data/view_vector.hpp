@@ -90,7 +90,7 @@ class MLRLCOMMON_API Vector : public View<T> {
          * @return A `const_iterator` to the end
          */
         typename View<T>::const_iterator cend() const {
-            return &View<T>::array[numElements];
+            return &BaseView<T>::array[numElements];
         }
 
         /**
@@ -99,14 +99,14 @@ class MLRLCOMMON_API Vector : public View<T> {
          * @return An `iterator` to the end
          */
         typename View<T>::iterator end() {
-            return &View<T>::array[numElements];
+            return &BaseView<T>::array[numElements];
         }
 
         /**
          * Sets all values stored in the view to zero.
          */
         void clear() {
-            util::setViewToZeros(View<T>::array, numElements);
+            util::setViewToZeros(BaseView<T>::array, numElements);
         }
 };
 
