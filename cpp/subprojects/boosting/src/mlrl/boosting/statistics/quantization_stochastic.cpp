@@ -1,5 +1,6 @@
 #include "mlrl/boosting/statistics/quantization_stochastic.hpp"
 
+#include "mlrl/common/data/matrix_bit_integer.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 namespace boosting {
@@ -8,12 +9,11 @@ namespace boosting {
     class StochasticQuantization final : public IQuantization {
         private:
 
-            std::unique_ptr<IQuantizationMatrix<CContiguousView<Tuple<float64>>>> quantizationMatrixPtr_;
+            std::unique_ptr<IQuantizationMatrix<BitMatrix>> quantizationMatrixPtr_;
 
         public:
 
-            StochasticQuantization(
-              std::unique_ptr<IQuantizationMatrix<CContiguousView<Tuple<float64>>>> quantizationMatrixPtr)
+            StochasticQuantization(std::unique_ptr<IQuantizationMatrix<BitMatrix>> quantizationMatrixPtr)
                 : quantizationMatrixPtr_(std::move(quantizationMatrixPtr)) {}
 
             void quantize(const CompleteIndexVector& outputIndices) override {
@@ -29,25 +29,22 @@ namespace boosting {
               std::optional<IQuantization::SparseDecomposableMatrixVisitor> sparseDecomposableMatrixVisitor,
               std::optional<IQuantization::DenseNonDecomposableMatrixVisitor> denseNonDecomposableMatrixVisitor)
               override {
-                if (denseDecomposableMatrixVisitor) {
-                    (*denseDecomposableMatrixVisitor)(quantizationMatrixPtr_);
-                }
+                // TODO Implement
             }
     };
 
     template<typename View>
-    class StochasticQuantizationMatrix final : public IQuantizationMatrix<CContiguousView<Tuple<float64>>> {
+    class StochasticQuantizationMatrix final : public IQuantizationMatrix<BitMatrix> {
         private:
 
             const View& view_;
 
-            // TODO Use correct type
-            MatrixDecorator<AllocatedCContiguousView<Tuple<float64>>> matrix_;
+            IntegerBitMatrix matrix_;
 
         public:
 
-            StochasticQuantizationMatrix(const View& view)
-                : view_(view), matrix_(AllocatedCContiguousView<Tuple<float64>>(view.numRows, view.numCols)) {}
+            StochasticQuantizationMatrix(const View& view, uint32 numBits)
+                : view_(view), matrix_(view.numRows, view.numCols, numBits, true) {}
 
             void quantize(const CompleteIndexVector& outputIndices) override {
                 // TODO Implement
@@ -57,25 +54,28 @@ namespace boosting {
                 // TODO Implement
             }
 
-            const typename IQuantizationMatrix<CContiguousView<Tuple<float64>>>::view_type& getView() const override {
+            const typename IQuantizationMatrix<BitMatrix>::view_type& getView() const override {
                 return matrix_.getView();
             }
 
             std::unique_ptr<IQuantization> create(
               const CContiguousView<Tuple<float64>>& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<CContiguousView<Tuple<float64>>>>(
-                  std::make_unique<StochasticQuantizationMatrix<CContiguousView<Tuple<float64>>>>(statisticMatrix));
+                  std::make_unique<StochasticQuantizationMatrix<CContiguousView<Tuple<float64>>>>(
+                    statisticMatrix, matrix_.getView().numBitsPerElement));
             }
 
             std::unique_ptr<IQuantization> create(const SparseSetView<Tuple<float64>>& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<SparseSetView<Tuple<float64>>>>(
-                  std::make_unique<StochasticQuantizationMatrix<SparseSetView<Tuple<float64>>>>(statisticMatrix));
+                  std::make_unique<StochasticQuantizationMatrix<SparseSetView<Tuple<float64>>>>(
+                    statisticMatrix, matrix_.getView().numBitsPerElement));
             }
 
             std::unique_ptr<IQuantization> create(
               const DenseNonDecomposableStatisticView& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<DenseNonDecomposableStatisticView>>(
-                  std::make_unique<StochasticQuantizationMatrix<DenseNonDecomposableStatisticView>>(statisticMatrix));
+                  std::make_unique<StochasticQuantizationMatrix<DenseNonDecomposableStatisticView>>(
+                    statisticMatrix, matrix_.getView().numBitsPerElement));
             }
     };
 
@@ -94,18 +94,21 @@ namespace boosting {
             std::unique_ptr<IQuantization> create(
               const CContiguousView<Tuple<float64>>& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<CContiguousView<Tuple<float64>>>>(
-                  std::make_unique<StochasticQuantizationMatrix<CContiguousView<Tuple<float64>>>>(statisticMatrix));
+                  std::make_unique<StochasticQuantizationMatrix<CContiguousView<Tuple<float64>>>>(statisticMatrix,
+                                                                                                  numBits_));
             }
 
             std::unique_ptr<IQuantization> create(const SparseSetView<Tuple<float64>>& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<SparseSetView<Tuple<float64>>>>(
-                  std::make_unique<StochasticQuantizationMatrix<SparseSetView<Tuple<float64>>>>(statisticMatrix));
+                  std::make_unique<StochasticQuantizationMatrix<SparseSetView<Tuple<float64>>>>(statisticMatrix,
+                                                                                                numBits_));
             }
 
             std::unique_ptr<IQuantization> create(
               const DenseNonDecomposableStatisticView& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<DenseNonDecomposableStatisticView>>(
-                  std::make_unique<StochasticQuantizationMatrix<DenseNonDecomposableStatisticView>>(statisticMatrix));
+                  std::make_unique<StochasticQuantizationMatrix<DenseNonDecomposableStatisticView>>(statisticMatrix,
+                                                                                                    numBits_));
             }
     };
 
