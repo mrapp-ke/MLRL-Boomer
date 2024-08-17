@@ -59,7 +59,7 @@ class BitVector : public BitView {
 };
 
 /**
- * Allocates the memory, a bit vector provides access to.
+ * Allocates the memory, a `BitVector` provides access to.
  *
  * @tparam BitVector The type of the bit vector
  */
