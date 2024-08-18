@@ -9,11 +9,11 @@ namespace boosting {
     class StochasticQuantization final : public IQuantization {
         private:
 
-            std::unique_ptr<IQuantizationMatrix<BitMatrix>> quantizationMatrixPtr_;
+            std::unique_ptr<IQuantizationMatrix<BitMatrix<uint32>>> quantizationMatrixPtr_;
 
         public:
 
-            StochasticQuantization(std::unique_ptr<IQuantizationMatrix<BitMatrix>> quantizationMatrixPtr)
+            StochasticQuantization(std::unique_ptr<IQuantizationMatrix<BitMatrix<uint32>>> quantizationMatrixPtr)
                 : quantizationMatrixPtr_(std::move(quantizationMatrixPtr)) {}
 
             void quantize(const CompleteIndexVector& outputIndices) override {
@@ -34,7 +34,7 @@ namespace boosting {
     };
 
     template<typename View>
-    class StochasticQuantizationMatrix final : public IQuantizationMatrix<BitMatrix> {
+    class StochasticQuantizationMatrix final : public IQuantizationMatrix<BitMatrix<uint32>> {
         private:
 
             const View& view_;
@@ -54,7 +54,7 @@ namespace boosting {
                 // TODO Implement
             }
 
-            const typename IQuantizationMatrix<BitMatrix>::view_type& getView() const override {
+            const typename IQuantizationMatrix<BitMatrix<uint32>>::view_type& getView() const override {
                 return matrix_.getView();
             }
 

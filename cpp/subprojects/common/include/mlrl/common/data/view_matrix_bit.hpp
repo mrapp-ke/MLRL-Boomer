@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_bit.hpp"
 #include "mlrl/common/data/view_matrix.hpp"
+#include "mlrl/common/data/view_vector_bit.hpp"
 #include "mlrl/common/util/bit_functions.hpp"
 
 #include <utility>
@@ -12,9 +12,16 @@
 /**
  * A two-dimensional view that provides random access to integer values, each with a specific number of bits, stored in
  * a dense matrix of a specific size.
+ *
+ * @tparam T The type of the integer values, the view provides access to
  */
+template<typename T>
 class BitMatrix : public BitView,
                   public Matrix {
+    private:
+
+        uint32 numElementsPerRow;
+
     public:
 
         /**
@@ -25,7 +32,8 @@ class BitMatrix : public BitView,
          * @param numBitsPerElement The number of bits per element in the view
          */
         BitMatrix(uint32* array, uint32 numRows, uint32 numCols, uint32 numBitsPerElement)
-            : BitView(array, numRows * numCols, numBitsPerElement), Matrix(numRows, numCols) {}
+            : BitView(array, numRows * numCols, numBitsPerElement), Matrix(numRows, numCols),
+              numElementsPerRow(util::getBitArraySize<typename BitMatrix::value_type>(numCols, numBitsPerElement)) {}
 
         /**
          * @param other A const reference to an object of type `BitMatrix` that should be copied
@@ -38,6 +46,38 @@ class BitMatrix : public BitView,
         BitMatrix(BitMatrix&& other) : BitView(std::move(other)), Matrix(std::move(other)) {}
 
         virtual ~BitMatrix() override {}
+
+        /**
+         * Provides read-only access to an individual row in the view.
+         */
+        typedef const BitVector<T> const_row;
+
+        /**
+         * Provides access to an individual row in the view and allows to modify it.
+         */
+        typedef BitVector<T> row;
+
+        /**
+         * Creates and returns a view that provides read-only access to a specific row in the view.
+         *
+         * @param row   The index of the row
+         * @return      A `const_row`
+         */
+        const_row operator[](uint32 row) const {
+            return BitVector<T>(&BaseView::array[numElementsPerRow * row], numElementsPerRow,
+                                BitView::numBitsPerElement);
+        }
+
+        /**
+         * Creates and returns a view that provides access to a specific row in the view and allows to modify it.
+         *
+         * @param row   The index of the row
+         * @return      A `row`
+         */
+        row operator[](uint32 row) {
+            return BitVector<T>(&BaseView::array[numElementsPerRow * row], numElementsPerRow,
+                                BitView::numBitsPerElement);
+        }
 };
 
 /**
@@ -82,5 +122,8 @@ class BitMatrixAllocator : public BitMatrix {
 
 /**
  * Allocates the memory, a `BitMatrix` provides access to.
+ *
+ * @tparam T The type of the integer values, the view provides access to
  */
-typedef BitMatrixAllocator<BitMatrix> AllocatedBitMatrix;
+template<typename T>
+using AllocatedBitMatrix = BitMatrixAllocator<BitMatrix<T>>;

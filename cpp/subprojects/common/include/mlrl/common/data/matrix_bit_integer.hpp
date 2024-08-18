@@ -8,7 +8,7 @@
 /**
  * A two-dimensional matrix that stores integer values, each with a specific number of bits.
  */
-class IntegerBitMatrix final : public MatrixDecorator<AllocatedBitMatrix> {
+class IntegerBitMatrix final : public MatrixDecorator<AllocatedBitMatrix<uint32>> {
     public:
 
         /**
@@ -18,5 +18,6 @@ class IntegerBitMatrix final : public MatrixDecorator<AllocatedBitMatrix> {
          * @param init              True, if all elements in the matrix should be value-initialized, false otherwise
          */
         IntegerBitMatrix(uint32 numRows, uint32 numCols, uint32 numBitsPerElements, bool init = false)
-            : MatrixDecorator<AllocatedBitMatrix>(AllocatedBitMatrix(numRows, numCols, numBitsPerElements, init)) {}
+            : MatrixDecorator<AllocatedBitMatrix<uint32>>(
+                AllocatedBitMatrix<uint32>(numRows, numCols, numBitsPerElements, init)) {}
 };
