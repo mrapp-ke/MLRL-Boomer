@@ -12,7 +12,7 @@
 
 namespace boosting {
 
-    static const uint32 LIMIT = std::numeric_limits<uint32>::max();
+    static inline constexpr uint32 LIMIT = std::numeric_limits<uint32>::max();
 
     template<typename IndexIterator>
     static inline uint32 fetchNextStatistic(IndexIterator& indexIterator, IndexIterator indicesEnd,
