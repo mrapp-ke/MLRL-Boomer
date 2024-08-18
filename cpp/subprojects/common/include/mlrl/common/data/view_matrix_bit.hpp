@@ -16,8 +16,8 @@
  * @tparam T The type of the integer values, the view provides access to
  */
 template<typename T>
-class BitMatrix : public BitView,
-                  public Matrix {
+class MLRLCOMMON_API BitMatrix : public BitView,
+                                 public Matrix {
     private:
 
         uint32 numElementsPerRow;
@@ -86,7 +86,7 @@ class BitMatrix : public BitView,
  * @tparam BitMatrix The type of the bit matrix
  */
 template<typename BitMatrix>
-class BitMatrixAllocator : public BitMatrix {
+class MLRLCOMMON_API BitMatrixAllocator : public BitMatrix {
     public:
 
         /**

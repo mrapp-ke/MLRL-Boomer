@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/boosting/util/dll_exports.hpp"
 #include "mlrl/common/data/view_matrix_bit.hpp"
 #include "mlrl/common/data/view_matrix_composite.hpp"
 
@@ -12,7 +13,7 @@ namespace boosting {
      * Implements row-wise read and write access to the gradients and Hessians that have been calculated using a
      * decomposable loss function and are stored in pre-allocated bit matrices.
      */
-    class BitDecomposableStatisticView
+    class MLRLBOOSTING_API BitDecomposableStatisticView
         : public CompositeMatrix<AllocatedBitMatrix<uint32>, AllocatedBitMatrix<uint32>> {
         public:
 

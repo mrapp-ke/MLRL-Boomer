@@ -11,7 +11,7 @@
  * A view that provides random access to integer values, each with a specific number of bits, stored in a pre-allocated
  * array of a specific size.
  */
-class BitView : public BaseView<uint32> {
+class MLRLCOMMON_API BitView : public BaseView<uint32> {
     public:
 
         /**

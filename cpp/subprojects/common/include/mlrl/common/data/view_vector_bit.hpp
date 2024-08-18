@@ -16,7 +16,7 @@
  * @param T The type of the integer values, the view provides access to
  */
 template<typename T>
-class BitVector : public BitView {
+class MLRLCOMMON_API BitVector : public BitView {
     private:
 
         static inline constexpr uint32 NUM_BITS = util::bits<uint32>();
@@ -119,7 +119,7 @@ class BitVector : public BitView {
  * @tparam BitVector The type of the bit vector
  */
 template<typename BitVector>
-class BitVectorAllocator : public BitVector {
+class MLRLCOMMON_API BitVectorAllocator : public BitVector {
     public:
 
         /**
