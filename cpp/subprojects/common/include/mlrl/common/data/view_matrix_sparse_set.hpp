@@ -259,7 +259,7 @@ class MLRLCOMMON_API SparseSetView
         /**
          * The index that is used to indicate that the value at a specific row and column is zero.
          */
-        static const uint32 MAX_INDEX = std::numeric_limits<uint32>::max();
+        static inline constexpr uint32 MAX_INDEX = std::numeric_limits<uint32>::max();
 
     public:
 
