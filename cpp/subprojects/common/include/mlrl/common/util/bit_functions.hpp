@@ -16,46 +16,32 @@ namespace util {
      * @return      The number of bits
      */
     template<typename T>
-    static inline constexpr std::size_t bits() {
-        return CHAR_BIT * sizeof(T);
+    static inline constexpr uint32 bits() {
+        return static_cast<uint32>(CHAR_BIT * sizeof(T));
     }
 
     /**
-     * Returns the number of elements needed by an array of a specific type for storing a given number of bits.
+     * Returns the number of elements needed by an array of a specific type for storing a given number of integers, each
+     * with a specific number of bits.
      *
-     * @tparam T        The type of the array
-     * @param numBits   The number of bits to be stored
-     * @return          The number of elements needed
+     * @tparam T                The type of the array
+     * @param numIntegers       The number of integers to be stored
+     * @param numBitsPerInteger The number of bits per integer
+     * @return                  The number of elements needed
      */
     template<typename T>
-    static inline constexpr std::size_t bitArraySize(uint32 numBits) {
-        return (numBits + bits<T>() - 1) / bits<T>();
+    static inline constexpr uint32 getBitArraySize(uint32 numIntegers, uint32 numBitsPerInteger) {
+        uint32 numIntegersPerElement = bits<T>() / numBitsPerInteger;
+        return numIntegers / numIntegersPerElement + (numIntegers % numIntegersPerElement != 0);
     }
 
     /**
-     * Returns the index of the element in an array of a specific type that stores the bit at a specific position,
-     * starting from the beginning of the array.
+     * Returns the number of values representable by a given number of bits.
      *
-     * @tparam T            The type of the array
-     * @param arrayIndex    The index of the bit
-     * @return              The index of the element that stores the bit
+     * @param numBits   The number of bits
+     * @return          The number of representable values
      */
-    template<typename T>
-    static inline constexpr uint32 bitArrayOffset(uint32 arrayIndex) {
-        return arrayIndex / bits<T>();
+    static inline uint32 getNumBitCombinations(uint32 numBits) {
+        return static_cast<uint32>(std::pow(2, numBits));
     }
-
-    /**
-     * Returns a bit mask that can be compared via bit-wise operators to a single element in an array of a specific
-     * type. The mask consists exclusively of zeros, except for a single bit at a specific index that is set to one.
-     *
-     * @tparam T        The type of the array
-     * @param bitIndex  The index of the bit to be set to one
-     * @return          A value of template type `T` that stores the bit mask
-     */
-    template<typename T>
-    static inline constexpr T bitArrayMask(uint32 bitIndex) {
-        return 1U << (bitIndex % bits<T>());
-    }
-
 }

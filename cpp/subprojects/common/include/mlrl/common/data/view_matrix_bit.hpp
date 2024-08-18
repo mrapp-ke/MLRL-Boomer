@@ -58,7 +58,7 @@ class BitMatrixAllocator : public BitMatrix {
         explicit BitMatrixAllocator(uint32 numRows, uint32 numCols, uint32 numBitsPerElement, bool init = false)
             : BitMatrix(
                 util::allocateMemory<typename BitMatrix::value_type>(
-                  util::bitArraySize<typename BitMatrix::value_type>(numCols * numBitsPerElement) * numRows, init),
+                  util::getBitArraySize<typename BitMatrix::value_type>(numCols, numBitsPerElement) * numRows, init),
                 numRows, numCols, numBitsPerElement) {}
 
         /**
