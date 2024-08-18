@@ -142,12 +142,12 @@ namespace boosting {
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 typename DenseBinnedScoreVector<IndexVector>::bin_index_iterator binIndexIterator =
                   scoreVector_.bin_indices_begin();
-                auto callback = [=](uint32 binIndex, uint32 labelIndex) {
+                auto callback = [=, this](uint32 binIndex, uint32 labelIndex) {
                     aggregatedStatisticIterator[binIndex] += statisticIterator[labelIndex];
                     numElementsPerBin_[binIndex] += 1;
                     binIndexIterator[labelIndex] = binIndex;
                 };
-                auto zeroCallback = [=](uint32 labelIndex) {
+                auto zeroCallback = [=, this](uint32 labelIndex) {
                     binIndexIterator[labelIndex] = maxBins_;
                 };
                 binningPtr_->createBins(labelInfo, criteria_.cbegin(), numCriteria, callback, zeroCallback);

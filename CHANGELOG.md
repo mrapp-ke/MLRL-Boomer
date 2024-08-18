@@ -6,6 +6,14 @@ tocdepth: 2
 
 # Release Notes
 
+## Version 0.12.0 (to be released)
+
+A major update to the BOOMER algorithm that comes with the following changes.
+
+### Quality-of-Life Improvements
+
+- C++ 20 is now required for compiling the project.
+
 ## Version 0.11.0 (Aug. 10th, 2024)
 
 A major update to the BOOMER algorithm that introduces the following changes.
