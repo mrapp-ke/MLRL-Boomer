@@ -68,24 +68,6 @@ namespace boosting {
               std::optional<DenseDecomposableMatrixVisitor> denseDecomposableMatrixVisitor,
               std::optional<SparseDecomposableMatrixVisitor> sparseDecomposableMatrixVisitor,
               std::optional<DenseNonDecomposableMatrixVisitor> denseNonDecomposableMatrixVisitor) = 0;
-
-            /**
-             * Quantifies all statistics that corresonds to the available outputs.
-             *
-             * @param outputIndices A reference to an object of type `ICompleteIndexVector` that stores the indices of
-             *                      the output for which the statistics should be quantized
-             */
-            // TODO Remove
-            virtual void quantize(const CompleteIndexVector& outputIndices) = 0;
-
-            /**
-             * Quantifies all statistics that correspond to a certain subset of the outputs.
-             *
-             * @param outputIndices A reference to an object of type `IPartialIndexVector` that stores the indices of
-             *                      the output for which the statistics should be quantized
-             */
-            // TODO Remove
-            virtual void quantize(const PartialIndexVector& outputIndices) = 0;
     };
 
     /**

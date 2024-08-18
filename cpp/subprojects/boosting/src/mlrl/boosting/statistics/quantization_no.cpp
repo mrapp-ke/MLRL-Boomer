@@ -13,10 +13,6 @@ namespace boosting {
               std::unique_ptr<IQuantizationMatrix<CContiguousView<Tuple<float64>>>> quantizationMatrixPtr)
                 : quantizationMatrixPtr_(std::move(quantizationMatrixPtr)) {}
 
-            void quantize(const CompleteIndexVector& outputIndices) override {}
-
-            void quantize(const PartialIndexVector& outputIndices) override {}
-
             void visitQuantizationMatrix(
               std::optional<IQuantization::DenseDecomposableMatrixVisitor> denseDecomposableMatrixVisitor,
               std::optional<IQuantization::SparseDecomposableMatrixVisitor> sparseDecomposableMatrixVisitor,
@@ -39,10 +35,6 @@ namespace boosting {
               std::unique_ptr<IQuantizationMatrix<SparseSetView<Tuple<float64>>>> quantizationMatrixPtr)
                 : quantizationMatrixPtr_(std::move(quantizationMatrixPtr)) {}
 
-            void quantize(const CompleteIndexVector& outputIndices) override {}
-
-            void quantize(const PartialIndexVector& outputIndices) override {}
-
             void visitQuantizationMatrix(
               std::optional<IQuantization::DenseDecomposableMatrixVisitor> denseDecomposableMatrixVisitor,
               std::optional<IQuantization::SparseDecomposableMatrixVisitor> sparseDecomposableMatrixVisitor,
@@ -64,10 +56,6 @@ namespace boosting {
             NoDenseNonDecomposableQuantization(
               std::unique_ptr<IQuantizationMatrix<DenseNonDecomposableStatisticView>> quantizationMatrixPtr)
                 : quantizationMatrixPtr_(std::move(quantizationMatrixPtr)) {}
-
-            void quantize(const CompleteIndexVector& outputIndices) override {}
-
-            void quantize(const PartialIndexVector& outputIndices) override {}
 
             void visitQuantizationMatrix(
               std::optional<IQuantization::DenseDecomposableMatrixVisitor> denseDecomposableMatrixVisitor,

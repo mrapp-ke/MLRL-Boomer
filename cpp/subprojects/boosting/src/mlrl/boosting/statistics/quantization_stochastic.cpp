@@ -16,14 +16,6 @@ namespace boosting {
             StochasticQuantization(std::unique_ptr<IQuantizationMatrix<BitMatrix<uint32>>> quantizationMatrixPtr)
                 : quantizationMatrixPtr_(std::move(quantizationMatrixPtr)) {}
 
-            void quantize(const CompleteIndexVector& outputIndices) override {
-                // TODO Implement
-            }
-
-            void quantize(const PartialIndexVector& outputIndices) override {
-                // TODO Implement
-            }
-
             void visitQuantizationMatrix(
               std::optional<IQuantization::DenseDecomposableMatrixVisitor> denseDecomposableMatrixVisitor,
               std::optional<IQuantization::SparseDecomposableMatrixVisitor> sparseDecomposableMatrixVisitor,
