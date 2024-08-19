@@ -98,8 +98,8 @@ namespace boosting {
              */
             StatisticsSubset(const StatisticView& statisticView, const RuleEvaluationFactory& ruleEvaluationFactory,
                              const WeightVector& weights, const IndexVector& outputIndices)
-                : sumVector_(outputIndices.getNumElements(), true), statisticView_(statisticView), weights_(weights),
-                  outputIndices_(outputIndices),
+                : sumVector_(statisticView, outputIndices.getNumElements(), true), statisticView_(statisticView),
+                  weights_(weights), outputIndices_(outputIndices),
                   ruleEvaluationPtr_(ruleEvaluationFactory.create(sumVector_, outputIndices)) {}
 
             /**
@@ -182,7 +182,8 @@ namespace boosting {
                         : StatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector,
                                            IndexVector>(statistics.statisticView_, statistics.ruleEvaluationFactory_,
                                                         statistics.weights_, outputIndices),
-                          tmpVector_(outputIndices.getNumElements()), totalSumVector_(&totalSumVector) {}
+                          tmpVector_(statistics.statisticView_, outputIndices.getNumElements()),
+                          totalSumVector_(&totalSumVector) {}
 
                     /**
                      * @see `IResettableStatisticsSubset::resetSubset`
@@ -392,7 +393,7 @@ namespace boosting {
                                const WeightVector& weights)
                 : AbstractWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector>(
                     statisticView, ruleEvaluationFactory, weights),
-                  totalSumVectorPtr_(std::make_unique<StatisticVector>(statisticView.numCols, true)) {
+                  totalSumVectorPtr_(std::make_unique<StatisticVector>(statisticView, statisticView.numCols, true)) {
                 uint32 numStatistics = weights.getNumElements();
 
                 for (uint32 i = 0; i < numStatistics; i++) {

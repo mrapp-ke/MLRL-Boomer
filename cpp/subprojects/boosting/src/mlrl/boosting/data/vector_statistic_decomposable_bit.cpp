@@ -50,14 +50,16 @@ namespace boosting {
         }
     }
 
-    BitDecomposableStatisticVector::BitDecomposableStatisticVector(uint32 numElements, uint32 numBitsPerElement,
-                                                                   bool init)
+    BitDecomposableStatisticVector::BitDecomposableStatisticVector(const BitDecomposableStatisticView& view,
+                                                                   uint32 numElements, bool init)
         : CompositeView<AllocatedBitVector<uint32>, AllocatedBitVector<uint32>>(
-            AllocatedBitVector<uint32>(numElements, numBitsPerElement, init),
-            AllocatedBitVector<uint32>(numElements, numBitsPerElement, init)) {}
+            AllocatedBitVector<uint32>(numElements, view.firstView.numBitsPerElement, init),
+            AllocatedBitVector<uint32>(numElements, view.secondView.numBitsPerElement, init)) {}
 
     BitDecomposableStatisticVector::BitDecomposableStatisticVector(const BitDecomposableStatisticVector& other)
-        : BitDecomposableStatisticVector(other.getNumElements(), other.getNumBitsPerElement()) {
+        : CompositeView<AllocatedBitVector<uint32>, AllocatedBitVector<uint32>>(
+            AllocatedBitVector<uint32>(other.firstView.numElements, other.firstView.numBitsPerElement),
+            AllocatedBitVector<uint32>(other.secondView.numElements, other.secondView.numBitsPerElement)) {
         copyInternally(other.firstView, this->firstView);
         copyInternally(other.secondView, this->secondView);
     }

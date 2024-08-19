@@ -20,12 +20,13 @@ namespace boosting {
         public:
 
             /**
-             * @param numElements       The number of gradients and Hessians in the vector
-             * @param numBitsPerElement The number of bits per element in the bit vector
-             * @param init              True, if all gradients and Hessians in the vector should be initialized with
-             *                          zero, false otherwise
+             * @param view          A reference to an object of type `BitDecomposableStatisticView`
+             * @param numElements   The number of gradients and Hessians in the vector
+             * @param init          True, if all gradients and Hessians in the vector should be initialized with zero,
+             *                      false otherwise
              */
-            BitDecomposableStatisticVector(uint32 numElements, uint32 numBitsPerElement, bool init = false);
+            BitDecomposableStatisticVector(const BitDecomposableStatisticView& view, uint32 numElements,
+                                           bool init = false);
 
             /**
              * @param other A reference to an object of type `BitDecomposableStatisticVector` to be copied
