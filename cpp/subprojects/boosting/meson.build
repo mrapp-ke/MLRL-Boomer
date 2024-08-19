@@ -7,6 +7,7 @@ source_files = [
     'src/mlrl/boosting/binning/label_binning_no.cpp',
     'src/mlrl/boosting/data/matrix_c_contiguous_numeric.cpp',
     'src/mlrl/boosting/data/matrix_sparse_set_numeric.cpp',
+    'src/mlrl/boosting/data/vector_statistic_decomposable_bit.cpp',
     'src/mlrl/boosting/data/vector_statistic_decomposable_dense.cpp',
     'src/mlrl/boosting/data/vector_statistic_decomposable_sparse.cpp',
     'src/mlrl/boosting/data/vector_statistic_non_decomposable_dense.cpp',

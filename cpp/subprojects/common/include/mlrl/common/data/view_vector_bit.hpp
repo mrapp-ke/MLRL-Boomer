@@ -77,11 +77,49 @@ class MLRLCOMMON_API BitVector : public BitView {
         typedef T type;
 
         /**
-         * Sets all values stored in the bit vector to zero.
+         * An iterator that provides read-only access to the view's underlying array.
          */
-        void clear() {
-            util::setViewToZeros(BaseView::array,
-                                 util::getBitArraySize<uint32>(numElements, BitView::numBitsPerElement));
+        typedef const typename BaseView::value_type* const_iterator;
+
+        /**
+         * An iterator that provides access to the view's underlying array and allows to modify it.
+         */
+        typedef typename BaseView::value_type* iterator;
+
+        /**
+         * Returns a `const_iterator` to the beginning of the view's underlying array.
+         *
+         * @return A `const_iterator` to the beginning
+         */
+        const_iterator cbegin() const {
+            return BaseView::array;
+        }
+
+        /**
+         * Returns a `const_iterator` to the end of the view's underlying array.
+         *
+         * @return A `const_iterator` to the end
+         */
+        const_iterator cend() const {
+            return &BaseView::array[util::getBitArraySize<uint32>(numElements, BitView::numBitsPerElement)];
+        }
+
+        /**
+         * Returns an `iterator` to the beginning of the view's underlying array.
+         *
+         * @return An `iterator` to the beginning
+         */
+        iterator begin() {
+            return BaseView::array;
+        }
+
+        /**
+         * Returns an `iterator` to the end of the view's underlying array.
+         *
+         * @return An `iterator` to the end
+         */
+        iterator end() {
+            return &BaseView::array[util::getBitArraySize<uint32>(numElements, BitView::numBitsPerElement)];
         }
 
         /**
@@ -110,6 +148,15 @@ class MLRLCOMMON_API BitVector : public BitView {
             uint32 bitMask = this->getBitMask(numShifts);
             BaseView::array[offset] &= ~bitMask;
             BaseView::array[offset] |= value << numShifts;
+        }
+
+        /**
+         * Sets all values stored in the bit vector to zero.
+         */
+        void clear() {
+            iterator begin = this->begin();
+            uint32 arraySize = util::getBitArraySize<uint32>(numElements, BitView::numBitsPerElement);
+            util::setViewToZeros(begin, arraySize);
         }
 };
 
@@ -174,6 +221,15 @@ class BitVectorDecorator : public BitVector {
         explicit BitVectorDecorator(typename BitVector::view_type&& view) : BitVector(std::move(view)) {}
 
         virtual ~BitVectorDecorator() override {}
+
+        /**
+         * Returns the number of bits per element in the bit vector.
+         *
+         * @return The number of bits per element
+         */
+        uint32 getNumBitsPerElement() const {
+            return this->view.numBitsPerElement;
+        }
 
         /**
          * Returns the value of the element at a specific position.
