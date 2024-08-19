@@ -53,11 +53,13 @@ namespace boosting {
      * @tparam OutputMatrix         The type of the matrix that provides access to the ground truth of the training
      *                              examples
      * @tparam QuantizationMatrix   The type of the matrix that provides access to quantized gradients and Hessians
+     * @tparam StatisticVector      The type of the vectors that are used to store gradients and Hessians
      * @tparam EvaluationMeasure    The type of the evaluation that should be used to access the quality of predictions
      */
-    template<typename Loss, typename OutputMatrix, typename QuantizationMatrix, typename EvaluationMeasure>
+    template<typename Loss, typename OutputMatrix, typename QuantizationMatrix, typename StatisticVector,
+             typename EvaluationMeasure>
     class DenseDecomposableStatistics final
-        : public AbstractDecomposableStatistics<OutputMatrix, QuantizationMatrix, DenseDecomposableStatisticVector,
+        : public AbstractDecomposableStatistics<OutputMatrix, QuantizationMatrix, StatisticVector,
                                                 DenseDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>,
                                                 Loss, EvaluationMeasure, IDecomposableRuleEvaluationFactory> {
         public:
@@ -87,7 +89,7 @@ namespace boosting {
                                         const OutputMatrix& outputMatrix,
                                         std::unique_ptr<DenseDecomposableStatisticMatrix> statisticMatrixPtr,
                                         std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
-                : AbstractDecomposableStatistics<OutputMatrix, QuantizationMatrix, DenseDecomposableStatisticVector,
+                : AbstractDecomposableStatistics<OutputMatrix, QuantizationMatrix, StatisticVector,
                                                  DenseDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>,
                                                  Loss, EvaluationMeasure, IDecomposableRuleEvaluationFactory>(
                     std::move(quantizationMatrixPtr), std::move(lossPtr), std::move(evaluationMeasurePtr),
