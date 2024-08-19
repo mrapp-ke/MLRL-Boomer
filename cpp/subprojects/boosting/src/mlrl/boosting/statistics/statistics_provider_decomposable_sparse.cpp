@@ -124,7 +124,7 @@ namespace boosting {
               std::move(quantizationMatrixPtr), std::move(lossPtr), std::move(evaluationMeasurePtr),
               ruleEvaluationFactory, outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
         };
-        quantizationPtr->visitQuantizationMatrix({}, sparseDecomposableMatrixVisitor, {});
+        quantizationPtr->visitQuantizationMatrix({}, {}, sparseDecomposableMatrixVisitor, {});
         return statisticsPtr;
     }
 

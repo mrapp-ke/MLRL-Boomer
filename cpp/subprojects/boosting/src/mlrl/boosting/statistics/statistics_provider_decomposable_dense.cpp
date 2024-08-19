@@ -41,7 +41,12 @@ namespace boosting {
               std::move(quantizationMatrixPtr), std::move(lossPtr), std::move(evaluationMeasurePtr),
               ruleEvaluationFactory, outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
         };
-        quantizationPtr->visitQuantizationMatrix(denseDecomposableMatrixVisitor, {}, {});
+        auto bitDecomposableMatrixVisitor =
+          [&](std::unique_ptr<IQuantizationMatrix<BitDecomposableStatisticView>>& quantizationMatrixPtr) {
+            // TODO Implement
+            throw std::runtime_error("not implemented");
+        };
+        quantizationPtr->visitQuantizationMatrix(denseDecomposableMatrixVisitor, bitDecomposableMatrixVisitor, {}, {});
         return statisticsPtr;
     }
 

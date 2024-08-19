@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/boosting/data/view_statistic_decomposable_bit.hpp"
 #include "mlrl/boosting/data/view_statistic_non_decomposable_dense.hpp"
 #include "mlrl/common/data/tuple.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
@@ -45,6 +46,13 @@ namespace boosting {
 
             /**
              * A visitor function for handling quantization matrices that are backed by a view of the type
+             * `BitDecomposableStatisticView`.
+             */
+            typedef std::function<void(std::unique_ptr<IQuantizationMatrix<BitDecomposableStatisticView>>&)>
+              BitDecomposableMatrixVisitor;
+
+            /**
+             * A visitor function for handling quantization matrices that are backed by a view of the type
              * `DenseNonDecomposableStatisticView`.
              */
             typedef std::function<void(std::unique_ptr<IQuantizationMatrix<DenseNonDecomposableStatisticView>>&)>
@@ -57,6 +65,9 @@ namespace boosting {
              * @param denseDecomposableMatrixVisitor    An optional visitor function for handling quantization matrices
              *                                          that are backed by a view of the type
              *                                          `CContiguousView<Tuple<float64>>`
+             * @param bitDecomposableMatrixVisitor      An optional visitor function for handling quantization matrices
+             *                                          that are backed by a view of the type
+             *                                          `BitDecomposableStatisticView`
              * @param sparseDecomposableMatrixVisitor   An optional visitor function for handling quantization matrices
              *                                          that are backed by a view of the type
              *                                          `SparseSetView<Tuple<float64>>`
@@ -66,6 +77,7 @@ namespace boosting {
              */
             virtual void visitQuantizationMatrix(
               std::optional<DenseDecomposableMatrixVisitor> denseDecomposableMatrixVisitor,
+              std::optional<BitDecomposableMatrixVisitor> bitDecomposableMatrixVisitor,
               std::optional<SparseDecomposableMatrixVisitor> sparseDecomposableMatrixVisitor,
               std::optional<DenseNonDecomposableMatrixVisitor> denseNonDecomposableMatrixVisitor) = 0;
     };

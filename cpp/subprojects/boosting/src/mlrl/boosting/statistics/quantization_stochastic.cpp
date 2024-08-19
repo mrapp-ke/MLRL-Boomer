@@ -19,10 +19,13 @@ namespace boosting {
 
             void visitQuantizationMatrix(
               std::optional<IQuantization::DenseDecomposableMatrixVisitor> denseDecomposableMatrixVisitor,
+              std::optional<BitDecomposableMatrixVisitor> bitDecomposableMatrixVisitor,
               std::optional<IQuantization::SparseDecomposableMatrixVisitor> sparseDecomposableMatrixVisitor,
               std::optional<IQuantization::DenseNonDecomposableMatrixVisitor> denseNonDecomposableMatrixVisitor)
               override {
-                // TODO Implement
+                if (bitDecomposableMatrixVisitor) {
+                    (*bitDecomposableMatrixVisitor)(quantizationMatrixPtr_);
+                }
             }
     };
 
