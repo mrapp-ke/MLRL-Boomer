@@ -396,6 +396,29 @@ class MLRLCOMMON_API IRuleLearnerConfig {
 };
 
 /**
+ * Defines an interface for all classes that allow to configure the random number generators (RNGs) that are used by a
+ * rule learner.
+ */
+class MLRLCOMMON_API IRNGMixin : virtual public IRuleLearnerConfig {
+    public:
+
+        virtual ~IRNGMixin() override {}
+
+        /**
+         * Configures the random number generators that are used by the rule learner.
+         *
+         * @return A reference to an object of type `RNGConfig` that allows further configuration of the random number
+         *         generators
+         */
+        virtual RNGConfig& useRNG() {
+            auto ptr = std::make_unique<RNGConfig>();
+            RNGConfig& ref = *ptr;
+            this->getRNGConfig().set(std::move(ptr));
+            return ref;
+        }
+};
+
+/**
  * Defines an interface for all classes that allow to configure a rule learner to use an algorithm that sequentially
  * induces several rules.
  */
@@ -1198,6 +1221,7 @@ class MLRLCOMMON_API INoBinaryPredictorMixin : virtual public IRuleLearnerConfig
  * Defines an interface for all classes that allow to configure a rule learner to use a simple default configuration.
  */
 class MLRLCOMMON_API IRuleLearnerMixin : virtual public IRuleLearnerConfig,
+                                         virtual public IRNGMixin,
                                          virtual public IDefaultRuleMixin,
                                          virtual public INoFeatureBinningMixin,
                                          virtual public INoOutputSamplingMixin,
@@ -1223,6 +1247,7 @@ class MLRLCOMMON_API IRuleLearnerMixin : virtual public IRuleLearnerConfig,
         virtual ~IRuleLearnerMixin() override {}
 
         virtual void useDefaults() override {
+            this->useRNG();
             this->useDefaultRule();
             this->useNoFeatureBinning();
             this->useNoOutputSampling();
