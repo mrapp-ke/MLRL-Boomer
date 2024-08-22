@@ -30,8 +30,7 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
 
         std::unique_ptr<ITrainingResult> fit(const IFeatureInfo& featureInfo,
                                              const IColumnWiseFeatureMatrix& featureMatrix,
-                                             const IRowWiseLabelMatrix& labelMatrix,
-                                             uint32 randomState) const override {
+                                             const IRowWiseLabelMatrix& labelMatrix) const override {
             // Create stopping criteria...
             std::unique_ptr<StoppingCriterionListFactory> stoppingCriterionFactoryPtr =
               std::make_unique<StoppingCriterionListFactory>();

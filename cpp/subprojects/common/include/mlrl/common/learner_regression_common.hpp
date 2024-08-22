@@ -30,10 +30,7 @@ class AbstractRegressionRuleLearner : virtual public IRegressionRuleLearner {
 
         std::unique_ptr<ITrainingResult> fit(const IFeatureInfo& featureInfo,
                                              const IColumnWiseFeatureMatrix& featureMatrix,
-                                             const IRowWiseRegressionMatrix& regressionMatrix,
-                                             uint32 randomState) const override {
-            RNG rng(randomState);
-
+                                             const IRowWiseRegressionMatrix& regressionMatrix) const override {
             // Create stopping criteria...
             std::unique_ptr<StoppingCriterionListFactory> stoppingCriterionFactoryPtr =
               std::make_unique<StoppingCriterionListFactory>();
