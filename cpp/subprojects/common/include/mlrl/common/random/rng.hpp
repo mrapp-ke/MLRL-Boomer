@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/types.hpp"
+#include "mlrl/common/util/dll_exports.hpp"
 
 #include <memory>
 
@@ -19,7 +20,7 @@ class RNG final {
     public:
 
         /**
-         * @param randomState The seed to be used by the random number generator
+         * @param randomState The seed to be used by the random number generator. Must be at least 1
          */
         RNG(uint32 randomState);
 
@@ -51,7 +52,7 @@ class RNGFactory final {
     public:
 
         /**
-         * @param randomState The seed to be used by the random number generators
+         * @param randomState The seed to be used by the random number generators. Must be at least 1
          */
         RNGFactory(uint32 randomState);
 
@@ -61,4 +62,38 @@ class RNGFactory final {
          * @return An unique pointer to an object of type `RNG` that has been created
          */
         std::unique_ptr<RNG> create() const;
+};
+
+/**
+ * Allows to configure random number generators.
+ */
+class MLRLCOMMON_API RNGConfig final {
+    private:
+
+        uint32 randomState_;
+
+    public:
+
+        RNGConfig();
+
+        /**
+         * Returns the seed that is used by random number generators.
+         *
+         * @return The seed that is used
+         */
+        uint32 getRandomState() const;
+
+        /**
+         * Sets the seed that should be used by random number generators.
+         *
+         * @param randomState The seed that should be used. Must be at least 1
+         */
+        RNGConfig& setRandomState(uint32 randomState);
+
+        /**
+         * Creates and returns a new object of type `RNGFactory` according to this configuration.
+         *
+         * @return An unique pointer to an object of type `RNGFactory` that has been created
+         */
+        std::unique_ptr<RNGFactory> createRNGFactory() const;
 };
