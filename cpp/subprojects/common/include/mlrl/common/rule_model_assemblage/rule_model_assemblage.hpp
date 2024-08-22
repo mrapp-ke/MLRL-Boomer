@@ -45,15 +45,13 @@ class IRuleModelAssemblage {
          *                              the statistics which serve as the basis for learning rules
          * @param featureSpace          A reference to an object of type `IFeatureSpace` that provides access to the
          *                              feature space
-         * @param rng                   A reference to an object of type `RNG` that implements the random number
-         *                              generator to be used
          * @param modelBuilder          A reference to an object of type `IModelBuilder`, the rules should be added to
          */
         virtual void induceRules(const IRuleInduction& ruleInduction, const IRulePruning& rulePruning,
                                  const IPostProcessor& postProcessor, IPartition& partition,
                                  IOutputSampling& outputSampling, IInstanceSampling& instanceSampling,
                                  IFeatureSampling& featureSampling, IStatisticsProvider& statisticsProvider,
-                                 IFeatureSpace& featureSpace, IModelBuilder& modelBuilder, RNG& rng) const = 0;
+                                 IFeatureSpace& featureSpace, IModelBuilder& modelBuilder) const = 0;
 };
 
 /**

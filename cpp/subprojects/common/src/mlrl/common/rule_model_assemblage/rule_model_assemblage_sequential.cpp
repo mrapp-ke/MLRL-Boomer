@@ -27,7 +27,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
                          const IPostProcessor& postProcessor, IPartition& partition, IOutputSampling& outputSampling,
                          IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
                          IStatisticsProvider& statisticsProvider, IFeatureSpace& featureSpace,
-                         IModelBuilder& modelBuilder, RNG& rng) const override {
+                         IModelBuilder& modelBuilder) const override {
             uint32 numRules = useDefaultRule_ ? 1 : 0;
             uint32 numUsedRules = 0;
 
@@ -54,10 +54,10 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
                     break;
                 }
 
-                const IWeightVector& weights = instanceSampling.sample(rng);
-                const IIndexVector& outputIndices = outputSampling.sample(rng);
+                const IWeightVector& weights = instanceSampling.sample();
+                const IIndexVector& outputIndices = outputSampling.sample();
                 bool success = ruleInduction.induceRule(featureSpace, outputIndices, weights, partition,
-                                                        featureSampling, rulePruning, postProcessor, rng, modelBuilder);
+                                                        featureSampling, rulePruning, postProcessor, modelBuilder);
 
                 if (success) {
                     numRules++;

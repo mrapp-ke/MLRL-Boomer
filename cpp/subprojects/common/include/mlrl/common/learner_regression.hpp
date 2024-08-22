@@ -29,14 +29,12 @@ class MLRLCOMMON_API IRegressionRuleLearner {
          *                          column-wise access to the feature values of the training examples
          * @param regressionMatrix  A reference to an object of type `IRowWiseRegressionMatrix` that provides row-wise
          *                          access to the ground truth regression scores of the training examples
-         * @param randomState       The seed to be used by random number generators
          * @return                  An unique pointer to an object of type `ITrainingResult` that provides access to the
          *                          results of fitting the rule learner to the training data
          */
         virtual std::unique_ptr<ITrainingResult> fit(const IFeatureInfo& featureInfo,
                                                      const IColumnWiseFeatureMatrix& featureMatrix,
-                                                     const IRowWiseRegressionMatrix& regressionMatrix,
-                                                     uint32 randomState) const = 0;
+                                                     const IRowWiseRegressionMatrix& regressionMatrix) const = 0;
 
         /**
          * Returns whether the rule learner is able to predict scores or not.
