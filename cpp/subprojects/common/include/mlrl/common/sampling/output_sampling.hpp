@@ -5,7 +5,7 @@
 
 #include "mlrl/common/indices/index_vector.hpp"
 #include "mlrl/common/input/output_matrix.hpp"
-#include "mlrl/common/sampling/random.hpp"
+#include "mlrl/common/random/rng.hpp"
 
 #include <memory>
 
