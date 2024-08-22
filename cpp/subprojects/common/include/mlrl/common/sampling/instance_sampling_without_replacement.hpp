@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/sampling/instance_sampling.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -42,11 +43,17 @@ class InstanceSamplingWithoutReplacementConfig final : public IClassificationIns
                                                        public IInstanceSamplingWithoutReplacementConfig {
     private:
 
+        const ReadableProperty<RNGConfig> rngConfig_;
+
         float32 sampleSize_;
 
     public:
 
-        InstanceSamplingWithoutReplacementConfig();
+        /**
+         * @param rngConfig A `ReadableProperty` that provides access to the `RNGConfig` that stores the configuration
+         *                  of random number generators
+         */
+        InstanceSamplingWithoutReplacementConfig(ReadableProperty<RNGConfig> rngConfig);
 
         float32 getSampleSize() const override;
 

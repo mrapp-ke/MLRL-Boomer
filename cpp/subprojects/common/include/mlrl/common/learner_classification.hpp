@@ -33,14 +33,12 @@ class MLRLCOMMON_API IClassificationRuleLearner {
          *                          column-wise access to the feature values of the training examples
          * @param labelMatrix       A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access
          *                          to the ground truth labels of the training examples
-         * @param randomState       The seed to be used by random number generators
          * @return                  An unique pointer to an object of type `ITrainingResult` that provides access to the
          *                          results of fitting the rule learner to the training data
          */
         virtual std::unique_ptr<ITrainingResult> fit(const IFeatureInfo& featureInfo,
                                                      const IColumnWiseFeatureMatrix& featureMatrix,
-                                                     const IRowWiseLabelMatrix& labelMatrix,
-                                                     uint32 randomState) const = 0;
+                                                     const IRowWiseLabelMatrix& labelMatrix) const = 0;
 
         /**
          * Returns whether the rule learner is able to predict scores or not.
@@ -336,7 +334,7 @@ class MLRLCOMMON_API IOutputWiseStratifiedInstanceSamplingMixin : virtual public
          *         configuration of the method for sampling instances
          */
         virtual IOutputWiseStratifiedInstanceSamplingConfig& useOutputWiseStratifiedInstanceSampling() {
-            auto ptr = std::make_unique<OutputWiseStratifiedInstanceSamplingConfig>();
+            auto ptr = std::make_unique<OutputWiseStratifiedInstanceSamplingConfig>(this->getRNGConfig());
             IOutputWiseStratifiedInstanceSamplingConfig& ref = *ptr;
             this->getClassificationInstanceSamplingConfig().set(std::move(ptr));
             return ref;
@@ -360,7 +358,7 @@ class MLRLCOMMON_API IExampleWiseStratifiedInstanceSamplingMixin : virtual publi
          *         configuration of the method for sampling instances
          */
         virtual IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() {
-            auto ptr = std::make_unique<ExampleWiseStratifiedInstanceSamplingConfig>();
+            auto ptr = std::make_unique<ExampleWiseStratifiedInstanceSamplingConfig>(this->getRNGConfig());
             IExampleWiseStratifiedInstanceSamplingConfig& ref = *ptr;
             this->getClassificationInstanceSamplingConfig().set(std::move(ptr));
             return ref;
@@ -387,7 +385,7 @@ class MLRLCOMMON_API IOutputWiseStratifiedBiPartitionSamplingMixin : virtual pub
          *         holdout set
          */
         virtual IOutputWiseStratifiedBiPartitionSamplingConfig& useOutputWiseStratifiedBiPartitionSampling() {
-            auto ptr = std::make_unique<OutputWiseStratifiedBiPartitionSamplingConfig>();
+            auto ptr = std::make_unique<OutputWiseStratifiedBiPartitionSamplingConfig>(this->getRNGConfig());
             IOutputWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
             this->getClassificationPartitionSamplingConfig().set(std::move(ptr));
             return ref;
@@ -413,7 +411,7 @@ class MLRLCOMMON_API IExampleWiseStratifiedBiPartitionSamplingMixin : virtual pu
          *         and a holdout set
          */
         virtual IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() {
-            auto ptr = std::make_unique<ExampleWiseStratifiedBiPartitionSamplingConfig>();
+            auto ptr = std::make_unique<ExampleWiseStratifiedBiPartitionSamplingConfig>(this->getRNGConfig());
             IExampleWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
             this->getClassificationPartitionSamplingConfig().set(std::move(ptr));
             return ref;

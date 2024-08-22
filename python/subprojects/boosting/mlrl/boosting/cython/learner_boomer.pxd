@@ -10,7 +10,7 @@ from mlrl.common.cython.learner cimport IBeamSearchTopDownRuleInductionMixin, ID
     INoParallelStatisticUpdateMixin, INoPartitionSamplingMixin, INoPostProcessorMixin, INoRulePruningMixin, \
     INoSequentialPostOptimizationMixin, INoSizeStoppingCriterionMixin, INoTimeStoppingCriterionMixin, \
     IOutputSamplingWithoutReplacementMixin, IParallelPredictionMixin, IParallelRuleRefinementMixin, \
-    IParallelStatisticUpdateMixin, IPostPruningMixin, IPrePruningMixin, IRandomBiPartitionSamplingMixin, \
+    IParallelStatisticUpdateMixin, IPostPruningMixin, IPrePruningMixin, IRandomBiPartitionSamplingMixin, IRNGMixin, \
     IRoundRobinOutputSamplingMixin, ISequentialPostOptimizationMixin, ISequentialRuleModelAssemblageMixin, \
     ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, RuleLearnerConfig
 from mlrl.common.cython.learner_classification cimport ClassificationRuleLearner, IClassificationRuleLearner, \
@@ -37,6 +37,7 @@ from mlrl.boosting.cython.learner_classification cimport IAutomaticBinaryPredict
 cdef extern from "mlrl/boosting/learner_boomer_classifier.hpp" namespace "boosting" nogil:
 
     cdef cppclass IBoomerClassifierConfig"boosting::IBoomerClassifier::IConfig"(
+        IRNGMixin,
         IAutomaticPartitionSamplingMixin,
         IAutomaticFeatureBinningMixin,
         IAutomaticParallelRuleRefinementMixin,

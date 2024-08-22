@@ -41,14 +41,11 @@ class IPostOptimizationPhase {
          *                          rules
          * @param postProcessor     A reference to an object of type `IPostProcessor` that should be used to
          *                          post-process the predictions of new rules
-         * @param rng               A reference to an object of type `RNG` that implements the random number generator
-         *                          to be used
          */
         virtual void optimizeModel(IFeatureSpace& featureSpace, const IRuleInduction& ruleInduction,
                                    IPartition& partition, IOutputSampling& outputSampling,
                                    IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
-                                   const IRulePruning& rulePruning, const IPostProcessor& postProcessor,
-                                   RNG& rng) const = 0;
+                                   const IRulePruning& rulePruning, const IPostProcessor& postProcessor) const = 0;
 };
 
 /**

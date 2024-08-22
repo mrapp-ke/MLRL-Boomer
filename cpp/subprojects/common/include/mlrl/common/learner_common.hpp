@@ -511,6 +511,11 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
     protected:
 
         /**
+         * An unique pointer that stores the configuration of random number generators.
+         */
+        std::unique_ptr<RNGConfig> rngConfigPtr_;
+
+        /**
          * An unique pointer that stores the configuration of the default rule that is included in a rule-based model.
          */
         std::unique_ptr<IDefaultRuleConfig> defaultRuleConfigPtr_;
@@ -660,13 +665,17 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
          *                            used for comparing the quality of different rules
          */
         explicit RuleLearnerConfig(RuleCompareFunction ruleCompareFunction)
-            : ruleCompareFunction_(ruleCompareFunction),
+            : ruleCompareFunction_(ruleCompareFunction), rngConfigPtr_(std::make_unique<RNGConfig>()),
               unusedRuleRemovalConfigPtr_(std::make_unique<UnusedRuleRemovalConfig>()) {}
 
         virtual ~RuleLearnerConfig() override {}
 
         RuleCompareFunction getRuleCompareFunction() const override final {
             return ruleCompareFunction_;
+        }
+
+        Property<RNGConfig> getRNGConfig() override final {
+            return util::property(rngConfigPtr_);
         }
 
         Property<IDefaultRuleConfig> getDefaultRuleConfig() override final {
