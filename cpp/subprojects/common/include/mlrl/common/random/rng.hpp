@@ -28,5 +28,5 @@ class RNG final {
          * @param max   The maximum number (exclusive)
          * @return      The random number that has been generated
          */
-        uint32 random(uint32 min, uint32 max);
+        uint32 randomInt(uint32 min, uint32 max);
 };

@@ -398,7 +398,7 @@ void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(BitWeigh
 
         // Use the Fisher-Yates shuffle to randomly draw `numSamples` examples and set their weights to 1...
         for (j = 0; j < numSamples; j++) {
-            uint32 randomIndex = rng.random(j, numExamples);
+            uint32 randomIndex = rng.randomInt(j, numExamples);
             uint32 exampleIndex = exampleIndices[randomIndex];
             exampleIndices[randomIndex] = exampleIndices[j];
             exampleIndices[j] = exampleIndex;
@@ -446,7 +446,7 @@ void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleBiPartition(BiPa
         uint32 j;
 
         for (j = 0; j < numSamples; j++) {
-            uint32 randomIndex = rng.random(j, numExamples);
+            uint32 randomIndex = rng.randomInt(j, numExamples);
             uint32 exampleIndex = exampleIndices[randomIndex];
             exampleIndices[randomIndex] = exampleIndices[j];
             exampleIndices[j] = exampleIndex;

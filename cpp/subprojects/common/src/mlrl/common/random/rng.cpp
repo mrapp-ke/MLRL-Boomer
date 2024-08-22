@@ -4,7 +4,7 @@ const uint32 MAX_RANDOM = 0x7FFFFFFF;
 
 RNG::RNG(uint32 randomState) : randomState_(randomState) {}
 
-uint32 RNG::random(uint32 min, uint32 max) {
+uint32 RNG::randomInt(uint32 min, uint32 max) {
     uint32* randomState = &randomState_;
 
     if (randomState[0] == 0) {

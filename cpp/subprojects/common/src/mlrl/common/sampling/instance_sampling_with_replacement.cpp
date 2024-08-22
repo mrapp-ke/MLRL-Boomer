@@ -15,7 +15,7 @@ static inline void sampleInternally(const SinglePartition& partition, float32 sa
 
     for (uint32 i = 0; i < numSamples; i++) {
         // Randomly select the index of an example...
-        uint32 randomIndex = rng.random(0, numExamples);
+        uint32 randomIndex = rng.randomInt(0, numExamples);
 
         // Update weight at the selected index...
         uint32 previousWeight = weightIterator[randomIndex];
@@ -41,7 +41,7 @@ static inline void sampleInternally(BiPartition& partition, float32 sampleSize, 
 
     for (uint32 i = 0; i < numSamples; i++) {
         // Randomly select the index of an example...
-        uint32 randomIndex = rng.random(0, numTrainingExamples);
+        uint32 randomIndex = rng.randomInt(0, numTrainingExamples);
         uint32 sampledIndex = indexIterator[randomIndex];
 
         // Update weight at the selected index...

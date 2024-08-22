@@ -68,7 +68,7 @@ void ExampleWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(BitWei
         uint32 i;
 
         for (i = 0; i < numSamples; i++) {
-            uint32 randomIndex = rng.random(i, numExamples);
+            uint32 randomIndex = rng.randomInt(i, numExamples);
             uint32 exampleIndex = indexIterator[randomIndex];
             indexIterator[randomIndex] = indexIterator[i];
             indexIterator[i] = exampleIndex;
@@ -115,7 +115,7 @@ void ExampleWiseStratification<LabelMatrix, IndexIterator>::sampleBiPartition(Bi
         uint32 i;
 
         for (i = 0; i < numSamples; i++) {
-            uint32 randomIndex = rng.random(i, numExamples);
+            uint32 randomIndex = rng.randomInt(i, numExamples);
             uint32 exampleIndex = indexIterator[randomIndex];
             indexIterator[randomIndex] = indexIterator[i];
             indexIterator[i] = exampleIndex;
