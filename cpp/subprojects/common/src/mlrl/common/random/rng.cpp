@@ -22,3 +22,9 @@ uint32 RNG::randomInt(uint32 min, uint32 max) {
 bool RNG::randomBool() {
     return this->randomInt(0, 2) != 0;
 }
+
+RNGFactory::RNGFactory(uint32 randomState) : randomState_(randomState) {}
+
+std::unique_ptr<RNG> RNGFactory::create() const {
+    return std::make_unique<RNG>(randomState_);
+}
