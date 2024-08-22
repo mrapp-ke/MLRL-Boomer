@@ -29,4 +29,11 @@ class RNG final {
          * @return      The random number that has been generated
          */
         uint32 randomInt(uint32 min, uint32 max);
+
+        /**
+         * Generates and returns a random boolean.
+         *
+         * @return The random boolean that has been generated
+         */
+        bool randomBool();
 };

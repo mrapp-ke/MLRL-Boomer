@@ -18,3 +18,7 @@ uint32 RNG::randomInt(uint32 min, uint32 max) {
     uint32 randomNumber = randomState[0] % (MAX_RANDOM + 1);
     return min + (randomNumber % (max - min));
 }
+
+bool RNG::randomBool() {
+    return this->randomInt(0, 2) != 0;
+}
