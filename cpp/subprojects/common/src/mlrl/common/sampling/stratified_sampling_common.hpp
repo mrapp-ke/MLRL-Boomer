@@ -11,6 +11,6 @@ static inline bool tiebreak(uint32 numDesiredSamples, uint32 numDesiredOutOfSamp
     } else if (numDesiredSamples < numDesiredOutOfSamples) {
         return false;
     } else {
-        return rng.random(0, 2) != 0;
+        return rng.randomInt(0, 2) != 0;
     }
 }
