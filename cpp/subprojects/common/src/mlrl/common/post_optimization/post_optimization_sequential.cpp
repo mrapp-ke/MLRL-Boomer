@@ -70,7 +70,7 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
         void optimizeModel(IFeatureSpace& featureSpace, const IRuleInduction& ruleInduction, IPartition& partition,
                            IOutputSampling& outputSampling, IInstanceSampling& instanceSampling,
                            IFeatureSampling& featureSampling, const IRulePruning& rulePruning,
-                           const IPostProcessor& postProcessor, RNG& rng) const override {
+                           const IPostProcessor& postProcessor) const override {
             for (uint32 i = 0; i < numIterations_; i++) {
                 for (auto it = modelBuilder_.begin(); it != modelBuilder_.end(); it++) {
                     IntermediateModelBuilder::IntermediateRule& intermediateRule = *it;
@@ -78,7 +78,7 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
                     const IEvaluatedPrediction& prediction = *intermediateRule.second;
 
                     // Create a new subset of the given thresholds...
-                    const IWeightVector& weights = instanceSampling.sample(rng);
+                    const IWeightVector& weights = instanceSampling.sample();
                     std::unique_ptr<IFeatureSubspace> featureSubspacePtr = weights.createFeatureSubspace(featureSpace);
 
                     // Filter the thresholds subset according to the conditions of the current rule...
@@ -91,12 +91,12 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
                     featureSubspacePtr->revertPrediction(prediction);
 
                     // Learn a new rule...
-                    const IIndexVector& outputIndices = refineHeads_ ? outputSampling.sample(rng) : prediction;
+                    const IIndexVector& outputIndices = refineHeads_ ? outputSampling.sample() : prediction;
                     RuleReplacementBuilder ruleReplacementBuilder(intermediateRule);
 
                     if (resampleFeatures_) {
                         ruleInduction.induceRule(featureSpace, outputIndices, weights, partition, featureSampling,
-                                                 rulePruning, postProcessor, rng, ruleReplacementBuilder);
+                                                 rulePruning, postProcessor, ruleReplacementBuilder);
                     } else {
                         std::unordered_set<uint32> uniqueFeatureIndices;
 
@@ -115,7 +115,7 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
 
                         PredefinedFeatureSampling predefinedFeatureSampling(indexVector);
                         ruleInduction.induceRule(featureSpace, outputIndices, weights, partition,
-                                                 predefinedFeatureSampling, rulePruning, postProcessor, rng,
+                                                 predefinedFeatureSampling, rulePruning, postProcessor,
                                                  ruleReplacementBuilder);
                     }
                 }

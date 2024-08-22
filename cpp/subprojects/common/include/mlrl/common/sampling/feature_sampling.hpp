@@ -20,21 +20,19 @@ class IFeatureSampling {
         /**
          * Creates and returns a sample of the available features.
          *
-         * @param rng   A reference to an object of type `RNG`, implementing the random number generator to be used
-         * @return      A reference to an object of type `IIndexVector` that provides access to the indices of the
-         *              features that are contained in the sample
+         * @return A reference to an object of type `IIndexVector` that provides access to the indices of the features
+         *         that are contained in the sample
          */
-        virtual const IIndexVector& sample(RNG& rng) = 0;
+        virtual const IIndexVector& sample() = 0;
 
         /**
          * Creates and returns a new object of type `IFeatureSampling` that is suited for use during a beam search.
          *
-         * @param rng       A reference to an object of type `RNG`, implementing the random number generator be used
          * @param resample  True, if a new sample of the available features should be created whenever the sampling
          *                  method is invoked during the beam search, false otherwise
-         * @return An unique pointer to an object of type `IFeatureSampling` that has been created
+         * @return          An unique pointer to an object of type `IFeatureSampling` that has been created
          */
-        virtual std::unique_ptr<IFeatureSampling> createBeamSearchFeatureSampling(RNG& rng, bool resample) = 0;
+        virtual std::unique_ptr<IFeatureSampling> createBeamSearchFeatureSampling(bool resample) = 0;
 };
 
 /**

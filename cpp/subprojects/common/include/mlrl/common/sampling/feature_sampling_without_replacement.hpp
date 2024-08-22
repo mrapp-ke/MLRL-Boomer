@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/sampling/feature_sampling.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -58,13 +59,19 @@ class FeatureSamplingWithoutReplacementConfig final : public IFeatureSamplingCon
                                                       public IFeatureSamplingWithoutReplacementConfig {
     private:
 
+        const ReadableProperty<RNGConfig> rngConfig_;
+
         float32 sampleSize_;
 
         uint32 numRetained_;
 
     public:
 
-        FeatureSamplingWithoutReplacementConfig();
+        /**
+         * @param rngConfig A `ReadableProperty` that allows to access the `RNGConfig` that stores the configuration of
+         *                  random number generators
+         */
+        FeatureSamplingWithoutReplacementConfig(ReadableProperty<RNGConfig> rngConfig);
 
         float32 getSampleSize() const override;
 

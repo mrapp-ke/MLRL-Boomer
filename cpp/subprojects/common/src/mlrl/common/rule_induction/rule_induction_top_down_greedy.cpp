@@ -49,7 +49,7 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
 
         std::unique_ptr<IFeatureSubspace> growRule(IFeatureSpace& featureSpace, const IIndexVector& outputIndices,
                                                    const IWeightVector& weights, IPartition& partition,
-                                                   IFeatureSampling& featureSampling, RNG& rng,
+                                                   IFeatureSampling& featureSampling,
                                                    std::unique_ptr<ConditionList>& conditionListPtr,
                                                    std::unique_ptr<IEvaluatedPrediction>& headPtr) const override {
             // The indices of the outputs for which the next refinement of the rule may predict
@@ -68,7 +68,7 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
             // until the maximum number of conditions has been reached...
             while (foundRefinement && (maxConditions_ == 0 || conditionListPtr->getNumConditions() < maxConditions_)) {
                 // Sample features...
-                const IIndexVector& sampledFeatureIndices = featureSampling.sample(rng);
+                const IIndexVector& sampledFeatureIndices = featureSampling.sample();
 
                 // Search for the best refinement...
                 foundRefinement = findRefinement(refinementComparator, *featureSubspacePtr, sampledFeatureIndices,
