@@ -6,8 +6,8 @@
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/data/view_matrix_csr.hpp"
 #include "mlrl/common/data/view_matrix_csr_binary.hpp"
+#include "mlrl/common/random/rng.hpp"
 #include "mlrl/common/sampling/partition.hpp"
-#include "mlrl/common/sampling/random.hpp"
 
 #include <memory>
 

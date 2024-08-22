@@ -1,4 +1,4 @@
-#include "mlrl/common/sampling/random.hpp"
+#include "mlrl/common/random/rng.hpp"
 
 const uint32 MAX_RANDOM = 0x7FFFFFFF;
 
