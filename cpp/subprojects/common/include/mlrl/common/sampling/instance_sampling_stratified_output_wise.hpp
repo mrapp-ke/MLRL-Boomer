@@ -5,6 +5,7 @@
 #pragma once
 
 #include "mlrl/common/sampling/instance_sampling.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -44,11 +45,17 @@ class OutputWiseStratifiedInstanceSamplingConfig final : public IClassificationI
                                                          public IOutputWiseStratifiedInstanceSamplingConfig {
     private:
 
+        const ReadableProperty<RNGConfig> rngConfig_;
+
         float32 sampleSize_;
 
     public:
 
-        OutputWiseStratifiedInstanceSamplingConfig();
+        /**
+         * @param rngConfig A `ReadableProperty` that provides access to the `RNGConfig` that stores the configuration
+         *                  of random number generators
+         */
+        OutputWiseStratifiedInstanceSamplingConfig(ReadableProperty<RNGConfig> rngConfig);
 
         float32 getSampleSize() const override;
 

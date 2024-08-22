@@ -336,7 +336,7 @@ class MLRLCOMMON_API IOutputWiseStratifiedInstanceSamplingMixin : virtual public
          *         configuration of the method for sampling instances
          */
         virtual IOutputWiseStratifiedInstanceSamplingConfig& useOutputWiseStratifiedInstanceSampling() {
-            auto ptr = std::make_unique<OutputWiseStratifiedInstanceSamplingConfig>();
+            auto ptr = std::make_unique<OutputWiseStratifiedInstanceSamplingConfig>(this->getRNGConfig());
             IOutputWiseStratifiedInstanceSamplingConfig& ref = *ptr;
             this->getClassificationInstanceSamplingConfig().set(std::move(ptr));
             return ref;
@@ -360,7 +360,7 @@ class MLRLCOMMON_API IExampleWiseStratifiedInstanceSamplingMixin : virtual publi
          *         configuration of the method for sampling instances
          */
         virtual IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() {
-            auto ptr = std::make_unique<ExampleWiseStratifiedInstanceSamplingConfig>();
+            auto ptr = std::make_unique<ExampleWiseStratifiedInstanceSamplingConfig>(this->getRNGConfig());
             IExampleWiseStratifiedInstanceSamplingConfig& ref = *ptr;
             this->getClassificationInstanceSamplingConfig().set(std::move(ptr));
             return ref;
@@ -387,7 +387,7 @@ class MLRLCOMMON_API IOutputWiseStratifiedBiPartitionSamplingMixin : virtual pub
          *         holdout set
          */
         virtual IOutputWiseStratifiedBiPartitionSamplingConfig& useOutputWiseStratifiedBiPartitionSampling() {
-            auto ptr = std::make_unique<OutputWiseStratifiedBiPartitionSamplingConfig>();
+            auto ptr = std::make_unique<OutputWiseStratifiedBiPartitionSamplingConfig>(this->getRNGConfig());
             IOutputWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
             this->getClassificationPartitionSamplingConfig().set(std::move(ptr));
             return ref;
@@ -413,7 +413,7 @@ class MLRLCOMMON_API IExampleWiseStratifiedBiPartitionSamplingMixin : virtual pu
          *         and a holdout set
          */
         virtual IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() {
-            auto ptr = std::make_unique<ExampleWiseStratifiedBiPartitionSamplingConfig>();
+            auto ptr = std::make_unique<ExampleWiseStratifiedBiPartitionSamplingConfig>(this->getRNGConfig());
             IExampleWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
             this->getClassificationPartitionSamplingConfig().set(std::move(ptr));
             return ref;

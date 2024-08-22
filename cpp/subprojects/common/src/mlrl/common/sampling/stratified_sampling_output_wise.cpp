@@ -366,15 +366,17 @@ class StratificationMatrix final : public AllocatedBinaryCscView {
 };
 
 template<typename LabelMatrix, typename IndexIterator>
-LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(const LabelMatrix& labelMatrix,
+LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(std::unique_ptr<RNG> rngPtr,
+                                                                             const LabelMatrix& labelMatrix,
                                                                              IndexIterator indicesBegin,
                                                                              IndexIterator indicesEnd)
-    : stratificationMatrix_(StratificationMatrix<LabelMatrix, IndexIterator>(
+    : rngPtr_(std::move(rngPtr)),
+      stratificationMatrix_(StratificationMatrix<LabelMatrix, IndexIterator>(
         labelMatrix, CscLabelMatrix(labelMatrix, indicesBegin, indicesEnd), indicesBegin, indicesEnd)) {}
 
 template<typename LabelMatrix, typename IndexIterator>
 void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(BitWeightVector& weightVector,
-                                                                        float32 sampleSize, RNG& rng) {
+                                                                        float32 sampleSize) {
     uint32 numRows = stratificationMatrix_.getNumRows();
     uint32 numCols = stratificationMatrix_.getNumCols();
     uint32 numTotalSamples = static_cast<uint32>(std::round(sampleSize * numRows));
@@ -389,16 +391,16 @@ void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(BitWeigh
         float32 numSamplesDecimal = sampleSize * numExamples;
         uint32 numDesiredSamples = numTotalSamples - numNonZeroWeights;
         uint32 numDesiredOutOfSamples = numTotalOutOfSamples - numZeroWeights;
-        uint32 numSamples =
-          static_cast<uint32>(tiebreak(numDesiredSamples, numDesiredOutOfSamples, rng) ? std::ceil(numSamplesDecimal)
-                                                                                       : std::floor(numSamplesDecimal));
+        uint32 numSamples = static_cast<uint32>(tiebreak(numDesiredSamples, numDesiredOutOfSamples, *rngPtr_)
+                                                  ? std::ceil(numSamplesDecimal)
+                                                  : std::floor(numSamplesDecimal));
         numNonZeroWeights += numSamples;
         numZeroWeights += (numExamples - numSamples);
         uint32 j;
 
         // Use the Fisher-Yates shuffle to randomly draw `numSamples` examples and set their weights to 1...
         for (j = 0; j < numSamples; j++) {
-            uint32 randomIndex = rng.randomInt(j, numExamples);
+            uint32 randomIndex = rngPtr_->randomInt(j, numExamples);
             uint32 exampleIndex = exampleIndices[randomIndex];
             exampleIndices[randomIndex] = exampleIndices[j];
             exampleIndices[j] = exampleIndex;
@@ -416,7 +418,7 @@ void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(BitWeigh
 }
 
 template<typename LabelMatrix, typename IndexIterator>
-void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleBiPartition(BiPartition& partition, RNG& rng) {
+void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleBiPartition(BiPartition& partition) {
     uint32 numCols = stratificationMatrix_.getNumCols();
     BiPartition::iterator firstIterator = partition.first_begin();
     BiPartition::iterator secondIterator = partition.second_begin();
@@ -429,8 +431,8 @@ void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleBiPartition(BiPa
 
         float32 sampleSize = (float32) numFirst / (float32) (numFirst + numSecond);
         float32 numSamplesDecimal = sampleSize * numExamples;
-        uint32 numSamples = static_cast<uint32>(tiebreak(numFirst, numSecond, rng) ? std::ceil(numSamplesDecimal)
-                                                                                   : std::floor(numSamplesDecimal));
+        uint32 numSamples = static_cast<uint32>(
+          tiebreak(numFirst, numSecond, *rngPtr_) ? std::ceil(numSamplesDecimal) : std::floor(numSamplesDecimal));
 
         // Ensure that we do not add too many examples to the first or second partition...
         if (numSamples > numFirst) {
@@ -446,7 +448,7 @@ void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleBiPartition(BiPa
         uint32 j;
 
         for (j = 0; j < numSamples; j++) {
-            uint32 randomIndex = rng.randomInt(j, numExamples);
+            uint32 randomIndex = rngPtr_->randomInt(j, numExamples);
             uint32 exampleIndex = exampleIndices[randomIndex];
             exampleIndices[randomIndex] = exampleIndices[j];
             exampleIndices[j] = exampleIndex;

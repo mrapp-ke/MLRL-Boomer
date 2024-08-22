@@ -33,8 +33,6 @@ class AbstractRuleInduction : public IRuleInduction {
          *                          respectively
          * @param featureSampling   A reference to an object of type `IFeatureSampling` that should be used for sampling
          *                          the features that may be used by a new condition
-         * @param rng               A reference to an object of type `RNG` that implements the random number generator
-         *                          to be used
          * @param conditionListPtr  A reference to an unique pointer of type `ConditionList` that should be used to
          *                          store the conditions of the rule
          * @param headPtr           A reference to an unique pointer of type `IEvaluatedPrediction` that should be used
@@ -45,7 +43,7 @@ class AbstractRuleInduction : public IRuleInduction {
         virtual std::unique_ptr<IFeatureSubspace> growRule(IFeatureSpace& featureSpace,
                                                            const IIndexVector& outputIndices,
                                                            const IWeightVector& weights, IPartition& partition,
-                                                           IFeatureSampling& featureSampling, RNG& rng,
+                                                           IFeatureSampling& featureSampling,
                                                            std::unique_ptr<ConditionList>& conditionListPtr,
                                                            std::unique_ptr<IEvaluatedPrediction>& headPtr) const = 0;
 
@@ -87,12 +85,11 @@ class AbstractRuleInduction : public IRuleInduction {
 
         bool induceRule(IFeatureSpace& featureSpace, const IIndexVector& outputIndices, const IWeightVector& weights,
                         IPartition& partition, IFeatureSampling& featureSampling, const IRulePruning& rulePruning,
-                        const IPostProcessor& postProcessor, RNG& rng,
-                        IModelBuilder& modelBuilder) const override final {
+                        const IPostProcessor& postProcessor, IModelBuilder& modelBuilder) const override final {
             std::unique_ptr<ConditionList> conditionListPtr;
             std::unique_ptr<IEvaluatedPrediction> headPtr;
             std::unique_ptr<IFeatureSubspace> featureSubspacePtr = this->growRule(
-              featureSpace, outputIndices, weights, partition, featureSampling, rng, conditionListPtr, headPtr);
+              featureSpace, outputIndices, weights, partition, featureSampling, conditionListPtr, headPtr);
 
             if (headPtr) {
                 if (weights.hasZeroWeights()) {

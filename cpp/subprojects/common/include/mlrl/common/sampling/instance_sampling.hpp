@@ -27,11 +27,10 @@ class IInstanceSampling {
         /**
          * Creates and returns a sample of the available training examples.
          *
-         * @param rng       A reference to an object of type `RNG`, implementing the random number generator to be used
-         * @return          A reference to an object type `WeightVector` that provides access to the weights of the
-         *                  individual training examples
+         * @return A reference to an object type `WeightVector` that provides access to the weights of the individual
+         *         training examples
          */
-        virtual const IWeightVector& sample(RNG& rng) = 0;
+        virtual const IWeightVector& sample() = 0;
 };
 
 /**

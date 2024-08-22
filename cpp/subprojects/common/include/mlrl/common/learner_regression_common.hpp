@@ -32,7 +32,6 @@ class AbstractRegressionRuleLearner : virtual public IRegressionRuleLearner {
                                              const IColumnWiseFeatureMatrix& featureMatrix,
                                              const IRowWiseRegressionMatrix& regressionMatrix,
                                              uint32 randomState) const override {
-            util::assertGreaterOrEqual<uint32>("randomState", randomState, 1);
             RNG rng(randomState);
 
             // Create stopping criteria...
@@ -50,7 +49,7 @@ class AbstractRegressionRuleLearner : virtual public IRegressionRuleLearner {
               configurator_.createRegressionPartitionSamplingFactory();
             std::unique_ptr<IPartitionSampling> partitionSamplingPtr =
               regressionMatrix.createPartitionSampling(*partitionSamplingFactoryPtr);
-            IPartition& partition = partitionSamplingPtr->partition(rng);
+            IPartition& partition = partitionSamplingPtr->partition();
 
             // Create post-optimization and model builder...
             std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr = configurator_.createModelBuilderFactory();
@@ -106,12 +105,12 @@ class AbstractRegressionRuleLearner : virtual public IRegressionRuleLearner {
               ruleModelAssemblageFactoryPtr->create(std::move(stoppingCriterionFactoryPtr));
             ruleModelAssemblagePtr->induceRules(*ruleInductionPtr, *rulePruningPtr, *postProcessorPtr, partition,
                                                 *outputSamplingPtr, *instanceSamplingPtr, *featureSamplingPtr,
-                                                *statisticsProviderPtr, *featureSpacePtr, modelBuilder, rng);
+                                                *statisticsProviderPtr, *featureSpacePtr, modelBuilder);
 
             // Post-optimize the model...
             postOptimizationPtr->optimizeModel(*featureSpacePtr, *ruleInductionPtr, partition, *outputSamplingPtr,
                                                *instanceSamplingPtr, *featureSamplingPtr, *rulePruningPtr,
-                                               *postProcessorPtr, rng);
+                                               *postProcessorPtr);
 
             return std::make_unique<TrainingResult>(regressionMatrix.getNumOutputs(), modelBuilder.buildModel(),
                                                     createNoOutputSpaceInfo(), createNoProbabilityCalibrationModel(),
