@@ -29,10 +29,9 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             : ruleInductionPtr_(std::move(ruleInductionPtr)),
               stoppingCriterionFactoryPtr_(std::move(stoppingCriterionFactoryPtr)), useDefaultRule_(useDefaultRule) {}
 
-        void induceRules(const IPostProcessor& postProcessor, IPartition& partition, IOutputSampling& outputSampling,
-                         IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
-                         IStatisticsProvider& statisticsProvider, IFeatureSpace& featureSpace,
-                         IModelBuilder& modelBuilder) const override {
+        void induceRules(IPartition& partition, IOutputSampling& outputSampling, IInstanceSampling& instanceSampling,
+                         IFeatureSampling& featureSampling, IStatisticsProvider& statisticsProvider,
+                         IFeatureSpace& featureSpace, IModelBuilder& modelBuilder) const override {
             uint32 numRules = useDefaultRule_ ? 1 : 0;
             uint32 numUsedRules = 0;
 
@@ -62,7 +61,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
                 const IWeightVector& weights = instanceSampling.sample();
                 const IIndexVector& outputIndices = outputSampling.sample();
                 bool success = ruleInductionPtr_->induceRule(featureSpace, outputIndices, weights, partition,
-                                                             featureSampling, postProcessor, modelBuilder);
+                                                             featureSampling, modelBuilder);
 
                 if (success) {
                     numRules++;

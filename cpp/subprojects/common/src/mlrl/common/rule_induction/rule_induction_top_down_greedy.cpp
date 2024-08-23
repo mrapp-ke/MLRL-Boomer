@@ -29,6 +29,8 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
          *                                  should be used for comparing the quality of different rules
          * @param rulePruningPtr            An unique pointer to an object of type `IRulePruning` to be used for pruning
          *                                  rules
+         * @param postProcessorPtr          An unique pointer to an object of type `IPostProcessor` to be used for
+         *                                  post-processing the predictions of rules
          * @param minCoverage               The minimum number of training examples that must be covered by a rule. Must
          *                                  be at least 1
          * @param maxConditions             The maximum number of conditions to be included in a rule's body. Must be at
@@ -42,10 +44,11 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
          *                                  a rule in parallel. Must be at least 1
          */
         GreedyTopDownRuleInduction(RuleCompareFunction ruleCompareFunction,
-                                   std::unique_ptr<IRulePruning> rulePruningPtr, uint32 minCoverage,
+                                   std::unique_ptr<IRulePruning> rulePruningPtr,
+                                   std::unique_ptr<IPostProcessor> postProcessorPtr, uint32 minCoverage,
                                    uint32 maxConditions, uint32 maxHeadRefinements, bool recalculatePredictions,
                                    uint32 numThreads)
-            : AbstractRuleInduction(std::move(rulePruningPtr), recalculatePredictions),
+            : AbstractRuleInduction(std::move(rulePruningPtr), std::move(postProcessorPtr), recalculatePredictions),
               ruleCompareFunction_(ruleCompareFunction), minCoverage_(minCoverage), maxConditions_(maxConditions),
               maxHeadRefinements_(maxHeadRefinements), numThreads_(numThreads) {}
 
@@ -120,6 +123,8 @@ class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
 
         const std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr_;
 
+        const std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr_;
+
         const uint32 minCoverage_;
 
         const uint32 maxConditions_;
@@ -136,6 +141,7 @@ class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
          * @param ruleCompareFunction       An object of type `RuleCompareFunction` that defines the function that
          *                                  should be used for comparing the quality of different rules
          * @param rulePruningFactoryPtr     An unique pointer to an object of type `IRulePruningFactory`
+         * @param postProcessorFactoryPtr   An unique pointer to an object of type `IPostProcessorFactory`
          * @param minCoverage               The minimum number of training examples that must be covered by a rule. Must
          *                                  be at least 1
          * @param maxConditions             The maximum number of conditions to be included in a rule's body. Must be at
@@ -150,25 +156,28 @@ class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
          */
         GreedyTopDownRuleInductionFactory(RuleCompareFunction ruleCompareFunction,
                                           std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
+                                          std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
                                           uint32 minCoverage, uint32 maxConditions, uint32 maxHeadRefinements,
                                           bool recalculatePredictions, uint32 numThreads)
             : ruleCompareFunction_(ruleCompareFunction), rulePruningFactoryPtr_(std::move(rulePruningFactoryPtr)),
-              minCoverage_(minCoverage), maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
+              postProcessorFactoryPtr_(std::move(postProcessorFactoryPtr)), minCoverage_(minCoverage),
+              maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
               recalculatePredictions_(recalculatePredictions), numThreads_(numThreads) {}
 
         std::unique_ptr<IRuleInduction> create() const override {
-            return std::make_unique<GreedyTopDownRuleInduction>(ruleCompareFunction_, rulePruningFactoryPtr_->create(),
-                                                                minCoverage_, maxConditions_, maxHeadRefinements_,
-                                                                recalculatePredictions_, numThreads_);
+            return std::make_unique<GreedyTopDownRuleInduction>(
+              ruleCompareFunction_, rulePruningFactoryPtr_->create(), postProcessorFactoryPtr_->create(), minCoverage_,
+              maxConditions_, maxHeadRefinements_, recalculatePredictions_, numThreads_);
         }
 };
 
 GreedyTopDownRuleInductionConfig::GreedyTopDownRuleInductionConfig(
   RuleCompareFunction ruleCompareFunction, ReadableProperty<IRulePruningConfig> rulePruningConfig,
+  ReadableProperty<IPostProcessorConfig> postProcessorConfig,
   ReadableProperty<IMultiThreadingConfig> multiThreadingConfig)
     : ruleCompareFunction_(ruleCompareFunction), minCoverage_(1), minSupport_(0.0f), maxConditions_(0),
       maxHeadRefinements_(1), recalculatePredictions_(true), rulePruningConfig_(rulePruningConfig),
-      multiThreadingConfig_(multiThreadingConfig) {}
+      postProcessorConfig_(postProcessorConfig), multiThreadingConfig_(multiThreadingConfig) {}
 
 uint32 GreedyTopDownRuleInductionConfig::getMinCoverage() const {
     return minCoverage_;
@@ -237,6 +246,7 @@ std::unique_ptr<IRuleInductionFactory> GreedyTopDownRuleInductionConfig::createR
 
     uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, outputMatrix.getNumOutputs());
     return std::make_unique<GreedyTopDownRuleInductionFactory>(
-      ruleCompareFunction_, rulePruningConfig_.get().createRulePruningFactory(), minCoverage, maxConditions_,
-      maxHeadRefinements_, recalculatePredictions_, numThreads);
+      ruleCompareFunction_, rulePruningConfig_.get().createRulePruningFactory(),
+      postProcessorConfig_.get().createPostProcessorFactory(), minCoverage, maxConditions_, maxHeadRefinements_,
+      recalculatePredictions_, numThreads);
 }

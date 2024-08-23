@@ -89,7 +89,7 @@ class SequentialPostOptimizationConfig final : public ISequentialPostOptimizatio
 
         /**
          * @param ruleInductionConfig A `ReadableProperty` that allows to access the `IRuleInductionConfig` that stores
-         *                            the configuration of the algorithm for the inductoin of individual rules
+         *                            the configuration of the algorithm for the induction of individual rules
          */
         SequentialPostOptimizationConfig(ReadableProperty<IRuleInductionConfig> ruleInductionConfig);
 

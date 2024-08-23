@@ -470,7 +470,8 @@ class MLRLCOMMON_API IGreedyTopDownRuleInductionMixin : virtual public IRuleLear
          */
         virtual IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() {
             auto ptr = std::make_unique<GreedyTopDownRuleInductionConfig>(
-              this->getRuleCompareFunction(), this->getRulePruningConfig(), this->getParallelRuleRefinementConfig());
+              this->getRuleCompareFunction(), this->getRulePruningConfig(), this->getPostProcessorConfig(),
+              this->getParallelRuleRefinementConfig());
             IGreedyTopDownRuleInductionConfig& ref = *ptr;
             this->getRuleInductionConfig().set(std::move(ptr));
             return ref;
@@ -493,7 +494,8 @@ class MLRLCOMMON_API IBeamSearchTopDownRuleInductionMixin : virtual public IRule
          */
         virtual IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() {
             auto ptr = std::make_unique<BeamSearchTopDownRuleInductionConfig>(
-              this->getRuleCompareFunction(), this->getRulePruningConfig(), this->getParallelRuleRefinementConfig());
+              this->getRuleCompareFunction(), this->getRulePruningConfig(), this->getPostProcessorConfig(),
+              this->getParallelRuleRefinementConfig());
             IBeamSearchTopDownRuleInductionConfig& ref = *ptr;
             this->getRuleInductionConfig().set(std::move(ptr));
             return ref;
