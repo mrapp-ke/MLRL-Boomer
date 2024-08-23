@@ -4,7 +4,8 @@
 #pragma once
 
 #include "mlrl/boosting/statistics/quantization.hpp"
-#include "mlrl/common/data/types.hpp"  // TODO Remove later
+#include "mlrl/common/random/rng.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -44,11 +45,17 @@ namespace boosting {
                                                public IStochasticQuantizationConfig {
         private:
 
+            const ReadableProperty<RNGConfig> rngConfig_;
+
             uint32 numBits_;
 
         public:
 
-            StochasticQuantizationConfig();
+            /**
+             * @param rngConfig A `ReadableProperty` that provides access the `RNGConfig` that stores the configuration
+             *                  of random number generators
+             */
+            StochasticQuantizationConfig(ReadableProperty<RNGConfig> rngConfig);
 
             uint32 getNumBits() const override;
 

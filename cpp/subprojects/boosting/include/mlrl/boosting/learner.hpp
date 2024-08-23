@@ -366,8 +366,7 @@ namespace boosting {
              * examples.
              */
             virtual void useNoQuantization() {
-                Property<IQuantizationConfig> property = this->getQuantizationConfig();
-                property.set(std::make_unique<NoQuantizationConfig>());
+                this->getQuantizationConfig().set(std::make_unique<NoQuantizationConfig>());
             }
     };
 
@@ -388,10 +387,9 @@ namespace boosting {
              *         configuration of the quantization method
              */
             virtual IStochasticQuantizationConfig& useStochasticQuantization() {
-                Property<IQuantizationConfig> property = this->getQuantizationConfig();
-                std::unique_ptr<StochasticQuantizationConfig> ptr = std::make_unique<StochasticQuantizationConfig>();
+                auto ptr = std::make_unique<StochasticQuantizationConfig>(this->getRNGConfig());
                 IStochasticQuantizationConfig& ref = *ptr;
-                property.set(std::move(ptr));
+                this->getQuantizationConfig().set(std::move(ptr));
                 return ref;
             }
     };
