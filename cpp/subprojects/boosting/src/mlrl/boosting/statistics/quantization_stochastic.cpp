@@ -117,12 +117,15 @@ namespace boosting {
 
             const View& view_;
 
+            std::shared_ptr<RNG> rngPtr_;
+
             // TODO Use correct type
             DenseDecomposableStatisticMatrix<StatisticType, VectorMath> matrix_;
 
         public:
 
-            StochasticQuantizationMatrix(const View& view) : view_(view), matrix_(view.numRows, view.numCols) {}
+            StochasticQuantizationMatrix(const View& view, std::shared_ptr<RNG> rngPtr)
+                : view_(view), rngPtr_(std::move(rngPtr)), matrix_(view.numRows, view.numCols) {}
 
             void quantize(CompleteIndexVector::const_iterator outputIndicesBegin,
                           CompleteIndexVector::const_iterator outputIndicesEnd) override {
@@ -145,7 +148,7 @@ namespace boosting {
                   StochasticQuantization<DenseDecomposableStatisticView<float32>, float32, VectorMath>>(
                   std::make_unique<
                     StochasticQuantizationMatrix<DenseDecomposableStatisticView<float32>, float32, VectorMath>>(
-                    statisticMatrix));
+                    statisticMatrix, rngPtr_));
             }
 
             std::unique_ptr<IQuantization> create(
@@ -154,7 +157,7 @@ namespace boosting {
                   StochasticQuantization<DenseDecomposableStatisticView<float64>, float64, VectorMath>>(
                   std::make_unique<
                     StochasticQuantizationMatrix<DenseDecomposableStatisticView<float64>, float64, VectorMath>>(
-                    statisticMatrix));
+                    statisticMatrix, rngPtr_));
             }
 
             std::unique_ptr<IQuantization> create(
@@ -162,7 +165,7 @@ namespace boosting {
                 return std::make_unique<StochasticQuantization<SparseSetView<Statistic<float32>>, float32, VectorMath>>(
                   std::make_unique<
                     StochasticQuantizationMatrix<SparseSetView<Statistic<float32>>, float32, VectorMath>>(
-                    statisticMatrix));
+                    statisticMatrix, rngPtr_));
             }
 
             std::unique_ptr<IQuantization> create(
@@ -170,7 +173,7 @@ namespace boosting {
                 return std::make_unique<StochasticQuantization<SparseSetView<Statistic<float64>>, float32, VectorMath>>(
                   std::make_unique<
                     StochasticQuantizationMatrix<SparseSetView<Statistic<float64>>, float32, VectorMath>>(
-                    statisticMatrix));
+                    statisticMatrix, rngPtr_));
             }
 
             std::unique_ptr<IQuantization> create(
@@ -179,7 +182,7 @@ namespace boosting {
                   StochasticQuantization<DenseNonDecomposableStatisticView<float32>, float32, VectorMath>>(
                   std::make_unique<
                     StochasticQuantizationMatrix<DenseNonDecomposableStatisticView<float32>, float32, VectorMath>>(
-                    statisticMatrix));
+                    statisticMatrix, rngPtr_));
             }
 
             std::unique_ptr<IQuantization> create(
@@ -188,7 +191,7 @@ namespace boosting {
                   StochasticQuantization<DenseNonDecomposableStatisticView<float64>, float64, VectorMath>>(
                   std::make_unique<
                     StochasticQuantizationMatrix<DenseNonDecomposableStatisticView<float64>, float64, VectorMath>>(
-                    statisticMatrix));
+                    statisticMatrix, rngPtr_));
             }
     };
 
@@ -196,14 +199,14 @@ namespace boosting {
     class StochasticQuantizationFactory final : public IQuantizationFactory {
         private:
 
+            const std::unique_ptr<RNGFactory> rngFactoryPtr_;
+
             uint8 numBins_;
 
         public:
 
-            /**
-             * @param numBins The number of bins to be used for quantized statistics
-             */
-            StochasticQuantizationFactory(uint8 numBins) : numBins_(numBins) {}
+            StochasticQuantizationFactory(std::unique_ptr<RNGFactory> rngFactoryPtr, uint8 numBins)
+                : rngFactoryPtr_(std::move(rngFactoryPtr)), numBins_(numBins) {}
 
             std::unique_ptr<IQuantization> create(
               const DenseDecomposableStatisticView<float32>& statisticMatrix) const override {
@@ -211,7 +214,7 @@ namespace boosting {
                   StochasticQuantization<DenseDecomposableStatisticView<float32>, float32, VectorMath>>(
                   std::make_unique<
                     StochasticQuantizationMatrix<DenseDecomposableStatisticView<float32>, float32, VectorMath>>(
-                    statisticMatrix));
+                    statisticMatrix, rngFactoryPtr_->create()));
             }
 
             std::unique_ptr<IQuantization> create(
@@ -220,7 +223,7 @@ namespace boosting {
                   StochasticQuantization<DenseDecomposableStatisticView<float64>, float64, VectorMath>>(
                   std::make_unique<
                     StochasticQuantizationMatrix<DenseDecomposableStatisticView<float64>, float64, VectorMath>>(
-                    statisticMatrix));
+                    statisticMatrix, rngFactoryPtr_->create()));
             }
 
             std::unique_ptr<IQuantization> create(
@@ -228,7 +231,7 @@ namespace boosting {
                 return std::make_unique<StochasticQuantization<SparseSetView<Statistic<float32>>, float32, VectorMath>>(
                   std::make_unique<
                     StochasticQuantizationMatrix<SparseSetView<Statistic<float32>>, float32, VectorMath>>(
-                    statisticMatrix));
+                    statisticMatrix, rngFactoryPtr_->create()));
             }
 
             std::unique_ptr<IQuantization> create(
@@ -236,7 +239,7 @@ namespace boosting {
                 return std::make_unique<StochasticQuantization<SparseSetView<Statistic<float64>>, float64, VectorMath>>(
                   std::make_unique<
                     StochasticQuantizationMatrix<SparseSetView<Statistic<float64>>, float64, VectorMath>>(
-                    statisticMatrix));
+                    statisticMatrix, rngFactoryPtr_->create()));
             }
 
             std::unique_ptr<IQuantization> create(
@@ -245,7 +248,7 @@ namespace boosting {
                   StochasticQuantization<DenseNonDecomposableStatisticView<float32>, float32, VectorMath>>(
                   std::make_unique<
                     StochasticQuantizationMatrix<DenseNonDecomposableStatisticView<float32>, float32, VectorMath>>(
-                    statisticMatrix));
+                    statisticMatrix, rngFactoryPtr_->create()));
             }
 
             std::unique_ptr<IQuantization> create(
@@ -254,12 +257,13 @@ namespace boosting {
                   StochasticQuantization<DenseNonDecomposableStatisticView<float64>, float64, VectorMath>>(
                   std::make_unique<
                     StochasticQuantizationMatrix<DenseNonDecomposableStatisticView<float64>, float64, VectorMath>>(
-                    statisticMatrix));
+                    statisticMatrix, rngFactoryPtr_->create()));
             }
     };
 
-    StochasticQuantizationConfig::StochasticQuantizationConfig(ReadableProperty<ISimdConfig> simdConfig)
-        : simdConfig_(simdConfig), numBins_(16) {}
+    StochasticQuantizationConfig::StochasticQuantizationConfig(ReadableProperty<RNGConfig> rngConfig,
+                                                               ReadableProperty<ISimdConfig> simdConfig)
+        : rngConfig_(rngConfig), simdConfig_(simdConfig), numBins_(16) {}
 
     uint8 StochasticQuantizationConfig::getNumBins() const {
         return numBins_;
@@ -273,13 +277,15 @@ namespace boosting {
 
     std::unique_ptr<IQuantizationFactory> StochasticQuantizationConfig::createQuantizationFactory(
       const IOutputMatrix& outputMatrix) const {
+        std::unique_ptr<RNGFactory> rngFactorPtr = rngConfig_.get().createRNGFactory();
+
 #if SIMD_SUPPORT_ENABLED
         if (simdConfig_.get().isSimdRecommended(outputMatrix.getNumOutputs())) {
-            return std::make_unique<StochasticQuantizationFactory<SimdVectorMath>>(numBins_);
+            return std::make_unique<StochasticQuantizationFactory<SimdVectorMath>>(std::move(rngFactorPtr), numBins_);
         }
 #endif
 
-        return std::make_unique<StochasticQuantizationFactory<SequentialVectorMath>>(numBins_);
+        return std::make_unique<StochasticQuantizationFactory<SequentialVectorMath>>(std::move(rngFactorPtr), numBins_);
     }
 
 }
