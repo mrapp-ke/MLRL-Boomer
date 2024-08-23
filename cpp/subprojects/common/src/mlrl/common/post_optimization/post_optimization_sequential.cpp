@@ -44,6 +44,8 @@ class RuleReplacementBuilder final : public IModelBuilder {
 class SequentialPostOptimization final : public IPostOptimizationPhase {
     private:
 
+        const std::unique_ptr<IRuleInduction> ruleInductionPtr_;
+
         IntermediateModelBuilder& modelBuilder_;
 
         const uint32 numIterations_;
@@ -55,6 +57,8 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
     public:
 
         /**
+         * @param ruleInductionPtr  An unique pointer to an object of type `IRuleInduction` that should be used for
+         *                          inducing new rules
          * @param modelBuilder      A reference to an object of type `IntermediateModelBuilder` that provides access to
          *                          the existing rules
          * @param numIterations     The number of iterations to be performed. Must be at least 1
@@ -62,15 +66,14 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
          * @param resampleFeatures  True, if a new sample of the available features should be created when refining a
          *                          new rule, false otherwise
          */
-        SequentialPostOptimization(IntermediateModelBuilder& modelBuilder, uint32 numIterations, bool refineHeads,
+        SequentialPostOptimization(std::unique_ptr<IRuleInduction> ruleInductionPtr,
+                                   IntermediateModelBuilder& modelBuilder, uint32 numIterations, bool refineHeads,
                                    bool resampleFeatures)
-            : modelBuilder_(modelBuilder), numIterations_(numIterations), refineHeads_(refineHeads),
-              resampleFeatures_(resampleFeatures) {}
+            : ruleInductionPtr_(std::move(ruleInductionPtr)), modelBuilder_(modelBuilder),
+              numIterations_(numIterations), refineHeads_(refineHeads), resampleFeatures_(resampleFeatures) {}
 
-        void optimizeModel(IFeatureSpace& featureSpace, const IRuleInduction& ruleInduction, IPartition& partition,
-                           IOutputSampling& outputSampling, IInstanceSampling& instanceSampling,
-                           IFeatureSampling& featureSampling, const IRulePruning& rulePruning,
-                           const IPostProcessor& postProcessor) const override {
+        void optimizeModel(IPartition& partition, IOutputSampling& outputSampling, IInstanceSampling& instanceSampling,
+                           IFeatureSampling& featureSampling, IFeatureSpace& featureSpace) const override {
             for (uint32 i = 0; i < numIterations_; i++) {
                 for (auto it = modelBuilder_.begin(); it != modelBuilder_.end(); it++) {
                     IntermediateModelBuilder::IntermediateRule& intermediateRule = *it;
@@ -95,8 +98,8 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
                     RuleReplacementBuilder ruleReplacementBuilder(intermediateRule);
 
                     if (resampleFeatures_) {
-                        ruleInduction.induceRule(featureSpace, outputIndices, weights, partition, featureSampling,
-                                                 rulePruning, postProcessor, ruleReplacementBuilder);
+                        ruleInductionPtr_->induceRule(featureSpace, outputIndices, weights, partition, featureSampling,
+                                                      ruleReplacementBuilder);
                     } else {
                         std::unordered_set<uint32> uniqueFeatureIndices;
 
@@ -114,9 +117,8 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
                         }
 
                         PredefinedFeatureSampling predefinedFeatureSampling(indexVector);
-                        ruleInduction.induceRule(featureSpace, outputIndices, weights, partition,
-                                                 predefinedFeatureSampling, rulePruning, postProcessor,
-                                                 ruleReplacementBuilder);
+                        ruleInductionPtr_->induceRule(featureSpace, outputIndices, weights, partition,
+                                                      predefinedFeatureSampling, ruleReplacementBuilder);
                     }
                 }
             }
@@ -130,6 +132,8 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
 class SequentialPostOptimizationFactory final : public IPostOptimizationPhaseFactory {
     private:
 
+        const std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr_;
+
         const uint32 numIterations_;
 
         const bool refineHeads_;
@@ -139,22 +143,27 @@ class SequentialPostOptimizationFactory final : public IPostOptimizationPhaseFac
     public:
 
         /**
-         * @param numIterations     The number of iterations to be performed. Must be at least 1
-         * @param refineHeads       True, if the heads of rules should be refined when being relearned, false otherwise
-         * @param resampleFeatures  True, if a new sample of the available features should be created when refining a
-         *                          new rule, false otherwise
+         * @param ruleInductionFactoryPtr   An unique pointer to an object of type `IRuleInductionFactory`
+         * @param numIterations             The number of iterations to be performed. Must be at least 1
+         * @param refineHeads               True, if the heads of rules should be refined when being relearned, false
+         *                                  otherwise
+         * @param resampleFeatures          True, if a new sample of the available features should be created when
+         *                                  refining a new rule, false otherwise
          */
-        SequentialPostOptimizationFactory(uint32 numIterations, bool refineHeads, bool resampleFeatures)
-            : numIterations_(numIterations), refineHeads_(refineHeads), resampleFeatures_(resampleFeatures) {}
+        SequentialPostOptimizationFactory(std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
+                                          uint32 numIterations, bool refineHeads, bool resampleFeatures)
+            : ruleInductionFactoryPtr_(std::move(ruleInductionFactoryPtr)), numIterations_(numIterations),
+              refineHeads_(refineHeads), resampleFeatures_(resampleFeatures) {}
 
         std::unique_ptr<IPostOptimizationPhase> create(IntermediateModelBuilder& modelBuilder) const override {
-            return std::make_unique<SequentialPostOptimization>(modelBuilder, numIterations_, refineHeads_,
-                                                                resampleFeatures_);
+            return std::make_unique<SequentialPostOptimization>(ruleInductionFactoryPtr_->create(), modelBuilder,
+                                                                numIterations_, refineHeads_, resampleFeatures_);
         }
 };
 
-SequentialPostOptimizationConfig::SequentialPostOptimizationConfig()
-    : numIterations_(2), refineHeads_(false), resampleFeatures_(true) {}
+SequentialPostOptimizationConfig::SequentialPostOptimizationConfig(
+  ReadableProperty<IRuleInductionConfig> ruleInductionConfig)
+    : ruleInductionConfig_(ruleInductionConfig), numIterations_(2), refineHeads_(false), resampleFeatures_(true) {}
 
 uint32 SequentialPostOptimizationConfig::getNumIterations() const {
     return numIterations_;
@@ -184,7 +193,9 @@ ISequentialPostOptimizationConfig& SequentialPostOptimizationConfig::setResample
     return *this;
 }
 
-std::unique_ptr<IPostOptimizationPhaseFactory> SequentialPostOptimizationConfig::createPostOptimizationPhaseFactory()
-  const {
-    return std::make_unique<SequentialPostOptimizationFactory>(numIterations_, refineHeads_, resampleFeatures_);
+std::unique_ptr<IPostOptimizationPhaseFactory> SequentialPostOptimizationConfig::createPostOptimizationPhaseFactory(
+  const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const {
+    return std::make_unique<SequentialPostOptimizationFactory>(
+      ruleInductionConfig_.get().createRuleInductionFactory(featureMatrix, outputMatrix), numIterations_, refineHeads_,
+      resampleFeatures_);
 }
