@@ -16,8 +16,8 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
     public:
 
         /**
-         * @param ruleInductionPtr              A reference to an object of type `IRuleInduction` to be used for the
-         *                                      induction of individual rules
+         * @param ruleInductionPtr              An unique pointer to an object of type `IRuleInduction` to be used for
+         *                                      the induction of individual rules
          * @param stoppingCriterionFactoryPtr   An unique pointer to an object of type `IStoppingCriterionFactory` that
          *                                      allows to create the implementations to be used to decide whether
          *                                      additional rules should be induced or not
@@ -29,10 +29,10 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
             : ruleInductionPtr_(std::move(ruleInductionPtr)),
               stoppingCriterionFactoryPtr_(std::move(stoppingCriterionFactoryPtr)), useDefaultRule_(useDefaultRule) {}
 
-        void induceRules(const IRulePruning& rulePruning, const IPostProcessor& postProcessor, IPartition& partition,
-                         IOutputSampling& outputSampling, IInstanceSampling& instanceSampling,
-                         IFeatureSampling& featureSampling, IStatisticsProvider& statisticsProvider,
-                         IFeatureSpace& featureSpace, IModelBuilder& modelBuilder) const override {
+        void induceRules(const IPostProcessor& postProcessor, IPartition& partition, IOutputSampling& outputSampling,
+                         IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
+                         IStatisticsProvider& statisticsProvider, IFeatureSpace& featureSpace,
+                         IModelBuilder& modelBuilder) const override {
             uint32 numRules = useDefaultRule_ ? 1 : 0;
             uint32 numUsedRules = 0;
 
@@ -62,7 +62,7 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
                 const IWeightVector& weights = instanceSampling.sample();
                 const IIndexVector& outputIndices = outputSampling.sample();
                 bool success = ruleInductionPtr_->induceRule(featureSpace, outputIndices, weights, partition,
-                                                             featureSampling, rulePruning, postProcessor, modelBuilder);
+                                                             featureSampling, postProcessor, modelBuilder);
 
                 if (success) {
                     numRules++;

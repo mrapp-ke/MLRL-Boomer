@@ -47,8 +47,6 @@ class IRuleInduction {
          *                          respectively
          * @param featureSampling   A reference to an object of type `IFeatureSampling` that should be used for sampling
          *                          the features that may be used by a new condition
-         * @param rulePruning       A reference to an object of type `IRulePruning` that should be used to prune the
-         *                          rule
          * @param postProcessor     A reference to an object of type `IPostProcessor` that should be used to
          *                          post-process the predictions of the rule
          * @param modelBuilder      A reference to an object of type `IModelBuilder`, the rule should be added to
@@ -56,8 +54,7 @@ class IRuleInduction {
          */
         virtual bool induceRule(IFeatureSpace& featureSpace, const IIndexVector& outputIndices,
                                 const IWeightVector& weights, IPartition& partition, IFeatureSampling& featureSampling,
-                                const IRulePruning& rulePruning, const IPostProcessor& postProcessor,
-                                IModelBuilder& modelBuilder) const = 0;
+                                const IPostProcessor& postProcessor, IModelBuilder& modelBuilder) const = 0;
 };
 
 /**
