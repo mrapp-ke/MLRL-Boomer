@@ -113,14 +113,16 @@ namespace boosting {
 
             const View& view_;
 
+            std::shared_ptr<RNG> rngPtr_;
+
             // TODO Use correct type
             MatrixDecorator<AllocatedCContiguousView<Statistic<StatisticType>>> matrix_;
 
         public:
 
-            StochasticQuantizationMatrix(const View& view)
-                : view_(view), matrix_(AllocatedCContiguousView<Statistic<StatisticType>>(view.numRows, view.numCols)) {
-            }
+            StochasticQuantizationMatrix(const View& view, std::shared_ptr<RNG> rngPtr)
+                : view_(view), rngPtr_(std::move(rngPtr)),
+                  matrix_(AllocatedCContiguousView<Statistic<StatisticType>>(view.numRows, view.numCols)) {}
 
             void quantize(CompleteIndexVector::const_iterator outputIndicesBegin,
                           CompleteIndexVector::const_iterator outputIndicesEnd) override {
@@ -141,101 +143,102 @@ namespace boosting {
               const CContiguousView<Statistic<float32>>& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<CContiguousView<Statistic<float32>>, float32>>(
                   std::make_unique<StochasticQuantizationMatrix<CContiguousView<Statistic<float32>>, float32>>(
-                    statisticMatrix));
+                    statisticMatrix, rngPtr_));
             }
 
             std::unique_ptr<IQuantization> create(
               const CContiguousView<Statistic<float64>>& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<CContiguousView<Statistic<float64>>, float64>>(
                   std::make_unique<StochasticQuantizationMatrix<CContiguousView<Statistic<float64>>, float64>>(
-                    statisticMatrix));
+                    statisticMatrix, rngPtr_));
             }
 
             std::unique_ptr<IQuantization> create(
               const SparseSetView<Statistic<float32>>& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<SparseSetView<Statistic<float32>>, float32>>(
                   std::make_unique<StochasticQuantizationMatrix<SparseSetView<Statistic<float32>>, float32>>(
-                    statisticMatrix));
+                    statisticMatrix, rngPtr_));
             }
 
             std::unique_ptr<IQuantization> create(
               const SparseSetView<Statistic<float64>>& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<SparseSetView<Statistic<float64>>, float32>>(
                   std::make_unique<StochasticQuantizationMatrix<SparseSetView<Statistic<float64>>, float32>>(
-                    statisticMatrix));
+                    statisticMatrix, rngPtr_));
             }
 
             std::unique_ptr<IQuantization> create(
               const DenseNonDecomposableStatisticView<float32>& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<DenseNonDecomposableStatisticView<float32>, float32>>(
                   std::make_unique<StochasticQuantizationMatrix<DenseNonDecomposableStatisticView<float32>, float32>>(
-                    statisticMatrix));
+                    statisticMatrix, rngPtr_));
             }
 
             std::unique_ptr<IQuantization> create(
               const DenseNonDecomposableStatisticView<float64>& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<DenseNonDecomposableStatisticView<float64>, float64>>(
                   std::make_unique<StochasticQuantizationMatrix<DenseNonDecomposableStatisticView<float64>, float64>>(
-                    statisticMatrix));
+                    statisticMatrix, rngPtr_));
             }
     };
 
     class StochasticQuantizationFactory final : public IQuantizationFactory {
         private:
 
+            const std::unique_ptr<RNGFactory> rngFactoryPtr_;
+
             uint32 numBits_;
 
         public:
 
-            /**
-             * @param numBits The number of bits to be used for quantized statistics
-             */
-            StochasticQuantizationFactory(uint32 numBits) : numBits_(numBits) {}
+            StochasticQuantizationFactory(std::unique_ptr<RNGFactory> rngFactoryPtr, uint32 numBits)
+                : rngFactoryPtr_(std::move(rngFactoryPtr)), numBits_(numBits) {}
 
             std::unique_ptr<IQuantization> create(
               const CContiguousView<Statistic<float32>>& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<CContiguousView<Statistic<float32>>, float32>>(
                   std::make_unique<StochasticQuantizationMatrix<CContiguousView<Statistic<float32>>, float32>>(
-                    statisticMatrix));
+                    statisticMatrix, rngFactoryPtr_->create()));
             }
 
             std::unique_ptr<IQuantization> create(
               const CContiguousView<Statistic<float64>>& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<CContiguousView<Statistic<float64>>, float64>>(
                   std::make_unique<StochasticQuantizationMatrix<CContiguousView<Statistic<float64>>, float64>>(
-                    statisticMatrix));
+                    statisticMatrix, rngFactoryPtr_->create()));
             }
 
             std::unique_ptr<IQuantization> create(
               const SparseSetView<Statistic<float32>>& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<SparseSetView<Statistic<float32>>, float32>>(
                   std::make_unique<StochasticQuantizationMatrix<SparseSetView<Statistic<float32>>, float32>>(
-                    statisticMatrix));
+                    statisticMatrix, rngFactoryPtr_->create()));
             }
 
             std::unique_ptr<IQuantization> create(
               const SparseSetView<Statistic<float64>>& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<SparseSetView<Statistic<float64>>, float64>>(
                   std::make_unique<StochasticQuantizationMatrix<SparseSetView<Statistic<float64>>, float64>>(
-                    statisticMatrix));
+                    statisticMatrix, rngFactoryPtr_->create()));
             }
 
             std::unique_ptr<IQuantization> create(
               const DenseNonDecomposableStatisticView<float32>& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<DenseNonDecomposableStatisticView<float32>, float32>>(
                   std::make_unique<StochasticQuantizationMatrix<DenseNonDecomposableStatisticView<float32>, float32>>(
-                    statisticMatrix));
+                    statisticMatrix, rngFactoryPtr_->create()));
             }
 
             std::unique_ptr<IQuantization> create(
               const DenseNonDecomposableStatisticView<float64>& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization<DenseNonDecomposableStatisticView<float64>, float64>>(
                   std::make_unique<StochasticQuantizationMatrix<DenseNonDecomposableStatisticView<float64>, float64>>(
-                    statisticMatrix));
+                    statisticMatrix, rngFactoryPtr_->create()));
             }
     };
 
-    StochasticQuantizationConfig::StochasticQuantizationConfig() : numBits_(4) {}
+    StochasticQuantizationConfig::StochasticQuantizationConfig(ReadableProperty<RNGConfig> rngConfig)
+        : rngConfig_(rngConfig), numBits_(4) {}
 
     uint32 StochasticQuantizationConfig::getNumBits() const {
         return numBits_;
@@ -248,7 +251,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IQuantizationFactory> StochasticQuantizationConfig::createQuantizationFactory() const {
-        return std::make_unique<StochasticQuantizationFactory>(numBits_);
+        return std::make_unique<StochasticQuantizationFactory>(rngConfig_.get().createRNGFactory(), numBits_);
     }
 
 }
