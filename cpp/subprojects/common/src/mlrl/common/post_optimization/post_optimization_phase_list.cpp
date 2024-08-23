@@ -38,11 +38,11 @@ class PostOptimizationPhaseList final : public IPostOptimization {
 
         void optimizeModel(IFeatureSpace& featureSpace, IPartition& partition, IOutputSampling& outputSampling,
                            IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
-                           const IRulePruning& rulePruning, const IPostProcessor& postProcessor) const override {
+                           const IPostProcessor& postProcessor) const override {
             for (auto it = postOptimizationPhases_.cbegin(); it != postOptimizationPhases_.cend(); it++) {
                 const std::unique_ptr<IPostOptimizationPhase>& postOptimizationPhasePtr = *it;
                 postOptimizationPhasePtr->optimizeModel(featureSpace, partition, outputSampling, instanceSampling,
-                                                        featureSampling, rulePruning, postProcessor);
+                                                        featureSampling, postProcessor);
             }
         }
 };
@@ -71,7 +71,7 @@ class NoPostOptimization final : public IPostOptimization {
 
         void optimizeModel(IFeatureSpace& featureSpace, IPartition& partition, IOutputSampling& outputSampling,
                            IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
-                           const IRulePruning& rulePruning, const IPostProcessor& postProcessor) const override {
+                           const IPostProcessor& postProcessor) const override {
             return;
         }
 };

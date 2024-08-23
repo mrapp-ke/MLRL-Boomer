@@ -74,7 +74,7 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
 
         void optimizeModel(IFeatureSpace& featureSpace, IPartition& partition, IOutputSampling& outputSampling,
                            IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
-                           const IRulePruning& rulePruning, const IPostProcessor& postProcessor) const override {
+                           const IPostProcessor& postProcessor) const override {
             for (uint32 i = 0; i < numIterations_; i++) {
                 for (auto it = modelBuilder_.begin(); it != modelBuilder_.end(); it++) {
                     IntermediateModelBuilder::IntermediateRule& intermediateRule = *it;
