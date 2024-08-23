@@ -26,8 +26,6 @@ class IRuleModelAssemblage {
         /**
          * Assembles and returns a rule-based model that consists of several rules.
          *
-         * @param postProcessor         A reference to an object of type `IPostProcessor` to be used for post-processing
-         *                              the predictions of rules
          * @param partition             A reference to an object of type `IPartition` that provides access to the
          *                              indices of the training examples that belong to the training set and the holdout
          *                              set, respectively
@@ -43,10 +41,10 @@ class IRuleModelAssemblage {
          *                              feature space
          * @param modelBuilder          A reference to an object of type `IModelBuilder`, the rules should be added to
          */
-        virtual void induceRules(const IPostProcessor& postProcessor, IPartition& partition,
-                                 IOutputSampling& outputSampling, IInstanceSampling& instanceSampling,
-                                 IFeatureSampling& featureSampling, IStatisticsProvider& statisticsProvider,
-                                 IFeatureSpace& featureSpace, IModelBuilder& modelBuilder) const = 0;
+        virtual void induceRules(IPartition& partition, IOutputSampling& outputSampling,
+                                 IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
+                                 IStatisticsProvider& statisticsProvider, IFeatureSpace& featureSpace,
+                                 IModelBuilder& modelBuilder) const = 0;
 };
 
 /**

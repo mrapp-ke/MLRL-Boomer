@@ -18,6 +18,8 @@ class AbstractRuleInduction : public IRuleInduction {
 
         const std::unique_ptr<IRulePruning> rulePruningPtr_;
 
+        const std::unique_ptr<IPostProcessor> postProcessorPtr_;
+
         const bool recalculatePredictions_;
 
     protected:
@@ -55,11 +57,15 @@ class AbstractRuleInduction : public IRuleInduction {
         /**
          * @param rulePruningPtr         An unique pointer to an object of type `IRulePruning` to be used for pruning
          *                               rules
+         * @param postProcessorPtr       An unique pointer to an object of type `IPostProcessor` to be used for
+         *                               post-processing the predictions of rules
          * @param recalculatePredictions True, if the predictions of rules should be recalculated on all training
          *                               examples, if some of the examples have zero weights, false otherwise
          */
-        explicit AbstractRuleInduction(std::unique_ptr<IRulePruning> rulePruningPtr, bool recalculatePredictions)
-            : rulePruningPtr_(std::move(rulePruningPtr)), recalculatePredictions_(recalculatePredictions) {}
+        explicit AbstractRuleInduction(std::unique_ptr<IRulePruning> rulePruningPtr,
+                                       std::unique_ptr<IPostProcessor> postProcessorPtr, bool recalculatePredictions)
+            : rulePruningPtr_(std::move(rulePruningPtr)), postProcessorPtr_(std::move(postProcessorPtr)),
+              recalculatePredictions_(recalculatePredictions) {}
 
         virtual ~AbstractRuleInduction() override {}
 
@@ -90,7 +96,7 @@ class AbstractRuleInduction : public IRuleInduction {
         }
 
         bool induceRule(IFeatureSpace& featureSpace, const IIndexVector& outputIndices, const IWeightVector& weights,
-                        IPartition& partition, IFeatureSampling& featureSampling, const IPostProcessor& postProcessor,
+                        IPartition& partition, IFeatureSampling& featureSampling,
                         IModelBuilder& modelBuilder) const override final {
             std::unique_ptr<ConditionList> conditionListPtr;
             std::unique_ptr<IEvaluatedPrediction> headPtr;
@@ -115,7 +121,7 @@ class AbstractRuleInduction : public IRuleInduction {
                 }
 
                 // Apply post-processor...
-                headPtr->postProcess(postProcessor);
+                headPtr->postProcess(*postProcessorPtr_);
 
                 // Update the statistics by applying the predictions of the new rule...
                 featureSubspacePtr->applyPrediction(*headPtr);

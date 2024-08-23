@@ -100,7 +100,7 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
 
                     if (resampleFeatures_) {
                         ruleInductionPtr_->induceRule(featureSpace, outputIndices, weights, partition, featureSampling,
-                                                      postProcessor, ruleReplacementBuilder);
+                                                      ruleReplacementBuilder);
                     } else {
                         std::unordered_set<uint32> uniqueFeatureIndices;
 
@@ -119,7 +119,7 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
 
                         PredefinedFeatureSampling predefinedFeatureSampling(indexVector);
                         ruleInductionPtr_->induceRule(featureSpace, outputIndices, weights, partition,
-                                                      predefinedFeatureSampling, postProcessor, ruleReplacementBuilder);
+                                                      predefinedFeatureSampling, ruleReplacementBuilder);
                     }
                 }
             }

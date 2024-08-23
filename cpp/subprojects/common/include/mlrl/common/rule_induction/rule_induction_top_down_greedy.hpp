@@ -133,6 +133,8 @@ class GreedyTopDownRuleInductionConfig final : public IRuleInductionConfig,
 
         const ReadableProperty<IRulePruningConfig> rulePruningConfig_;
 
+        const ReadableProperty<IPostProcessorConfig> postProcessorConfig_;
+
         const ReadableProperty<IMultiThreadingConfig> multiThreadingConfig_;
 
     public:
@@ -142,12 +144,16 @@ class GreedyTopDownRuleInductionConfig final : public IRuleInductionConfig,
          *                              used for comparing the quality of different rules
          * @param rulePruningConfig     A `ReadableProperty` that allows to acccess the `IRulePruningConfig` that stores
          *                              the configuration of the strategy for pruning individual rules
+         * @param postProcessorConfig   A `ReadableProperty` that allows to access the `IPostProcessorConfig` that
+         *                              stores the configuration of the method for post-processing the predictions of
+         *                              rules
          * @param multiThreadingConfig  A `ReadableProperty` that allows to access the `IMultiThreadingConfig` that
          *                              stores the configuration of the multi-threading behavior that should be used for
          *                              the parallel refinement of rules
          */
         GreedyTopDownRuleInductionConfig(RuleCompareFunction ruleCompareFunction,
                                          ReadableProperty<IRulePruningConfig> rulePruningConfig,
+                                         ReadableProperty<IPostProcessorConfig> postProcessorConfig,
                                          ReadableProperty<IMultiThreadingConfig> multiThreadingConfig);
 
         uint32 getMinCoverage() const override;
