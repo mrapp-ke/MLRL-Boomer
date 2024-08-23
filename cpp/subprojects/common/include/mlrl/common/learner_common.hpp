@@ -114,14 +114,17 @@ class RuleLearnerConfigurator {
          * May be overridden by subclasses in order to create the `IRuleModelAssemblageFactory` to be used by the rule
          * learner for the assemblage of a rule model.
          *
+         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
+         *                      values of the training examples
          * @param outputMatrix  A reference to an object of type `IOutputMatrix` that provides row-wise access to the
          *                      ground truth of the training examples
          * @return              An unique pointer to an object of type `IRuleModelAssemblageFactory` that has been
          *                      created
          */
         virtual std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory(
-          const IOutputMatrix& outputMatrix) const {
-            return config_.getRuleModelAssemblageConfig().get().createRuleModelAssemblageFactory(outputMatrix);
+          const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const {
+            return config_.getRuleModelAssemblageConfig().get().createRuleModelAssemblageFactory(featureMatrix,
+                                                                                                 outputMatrix);
         }
 
         /**
@@ -141,21 +144,6 @@ class RuleLearnerConfigurator {
             uint32 numThreads = config_.getParallelStatisticUpdateConfig().get().getNumThreads(
               featureMatrix, outputMatrix.getNumOutputs());
             return std::make_unique<TabularFeatureSpaceFactory>(std::move(featureBinningFactoryPtr), numThreads);
-        }
-
-        /**
-         * May be overridden by subclasses in order to create the `IRuleInductionFactory` to be used by the rule learner
-         * for the induction of individual rules.
-         *
-         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
-         *                      values of the training examples
-         * @param outputMatrix  A reference to an object of type `IOutputMatrix` that provides access to the ground
-         *                      truth of the training examples
-         * @return              An unique pointer to an object of type `IRuleInductionFactory` that has been created
-         */
-        virtual std::unique_ptr<IRuleInductionFactory> createRuleInductionFactory(
-          const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const {
-            return config_.getRuleInductionConfig().get().createRuleInductionFactory(featureMatrix, outputMatrix);
         }
 
         /**
@@ -232,26 +220,6 @@ class RuleLearnerConfigurator {
         }
 
         /**
-         * May be overridden by subclasses in order to create the `IRulePruningFactory` to be used by the rule learner
-         * for pruning individual rules.
-         *
-         * @return An unique pointer to an object of type `IRulePruningFactory` that has been created
-         */
-        virtual std::unique_ptr<IRulePruningFactory> createRulePruningFactory() const {
-            return config_.getRulePruningConfig().get().createRulePruningFactory();
-        }
-
-        /**
-         * May be overridden by subclasses in order to create the `IPostProcessorFactory` to be used by the rule learner
-         * for post-processing the predictions of individual rules.
-         *
-         * @return An unique pointer to an object of type `IPostProcessorFactory` that has been created
-         */
-        virtual std::unique_ptr<IPostProcessorFactory> createPostProcessorFactory() const {
-            return config_.getPostProcessorConfig().get().createPostProcessorFactory();
-        }
-
-        /**
          * May be overridden by subclasses in order to create the `IStoppingCriterionFactory` to be used by the rule
          * learner for stopping the induction of new rules, depending on the number of rules learned so far.
          *
@@ -292,21 +260,35 @@ class RuleLearnerConfigurator {
          * learner for post-optimizing the rules in a model by relearning each one of them in the context of the other
          * rules.
          *
-         * @return An unique pointer to an object of type `IPostOptimizationPhaseFactory` that has been created
+         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
+         *                      values of the training examples
+         * @param outputMatrix  A reference to an object of type `IOutputMatrix` that provides access to the ground
+         *                      truth of the training examples
+         * @return              An unique pointer to an object of type `IPostOptimizationPhaseFactory` that has been
+         *                      created
          */
-        virtual std::unique_ptr<IPostOptimizationPhaseFactory> createSequentialPostOptimizationFactory() const {
-            return config_.getSequentialPostOptimizationConfig().get().createPostOptimizationPhaseFactory();
+        virtual std::unique_ptr<IPostOptimizationPhaseFactory> createSequentialPostOptimizationFactory(
+          const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const {
+            return config_.getSequentialPostOptimizationConfig().get().createPostOptimizationPhaseFactory(featureMatrix,
+                                                                                                          outputMatrix);
         }
 
         /**
          * May be overridden by subclasses in order to create the `IPostOptimizationPhaseFactory` to be used by the rule
          * learner for removing unused rules from a model.
          *
-         * @return An unique pointer to an object of type `IPostOptimizationPhaseFactory` that has been created
+         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
+         *                      values of the training examples
+         * @param outputMatrix  A reference to an object of type `IOutputMatrix` that provides access to the ground
+         *                      truth of the training examples
+         * @return              An unique pointer to an object of type `IPostOptimizationPhaseFactory` that has been
+         *                      created
          */
-        virtual std::unique_ptr<IPostOptimizationPhaseFactory> createUnusedRuleRemovalFactory() const {
+        virtual std::unique_ptr<IPostOptimizationPhaseFactory> createUnusedRuleRemovalFactory(
+          const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const {
             if (config_.getGlobalPruningConfig().get().shouldRemoveUnusedRules()) {
-                return config_.getUnusedRuleRemovalConfig().get().createPostOptimizationPhaseFactory();
+                return config_.getUnusedRuleRemovalConfig().get().createPostOptimizationPhaseFactory(featureMatrix,
+                                                                                                     outputMatrix);
             }
 
             return nullptr;
@@ -364,18 +346,24 @@ class RuleLearnerConfigurator {
          * May be overridden by subclasses in order to create objects of the type `IPostOptimizationPhaseFactory` to be
          * used by the rule learner.
          *
-         * @param factory A reference to an object of type `PostOptimizationPhaseListFactory` the objects may be added
-         *                to
+         * @param factory       A reference to an object of type `PostOptimizationPhaseListFactory` the objects may be
+         *                      added to
+         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
+         *                      values of the training examples
+         * @param outputMatrix  A reference to an object of type `IOutputMatrix` that provides access to the ground
+         *                      truth of the training examples
          */
-        virtual void createPostOptimizationPhaseFactories(PostOptimizationPhaseListFactory& factory) const {
+        virtual void createPostOptimizationPhaseFactories(PostOptimizationPhaseListFactory& factory,
+                                                          const IFeatureMatrix& featureMatrix,
+                                                          const IOutputMatrix& outputMatrix) const {
             std::unique_ptr<IPostOptimizationPhaseFactory> postOptimizationPhaseFactory =
-              this->createUnusedRuleRemovalFactory();
+              this->createUnusedRuleRemovalFactory(featureMatrix, outputMatrix);
 
             if (postOptimizationPhaseFactory) {
                 factory.addPostOptimizationPhaseFactory(std::move(postOptimizationPhaseFactory));
             }
 
-            postOptimizationPhaseFactory = this->createSequentialPostOptimizationFactory();
+            postOptimizationPhaseFactory = this->createSequentialPostOptimizationFactory(featureMatrix, outputMatrix);
 
             if (postOptimizationPhaseFactory) {
                 factory.addPostOptimizationPhaseFactory(std::move(postOptimizationPhaseFactory));

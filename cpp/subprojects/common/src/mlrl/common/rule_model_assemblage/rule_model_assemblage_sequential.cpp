@@ -7,6 +7,8 @@
 class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
     private:
 
+        const std::unique_ptr<IRuleInduction> ruleInductionPtr_;
+
         const std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr_;
 
         const bool useDefaultRule_;
@@ -14,26 +16,28 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
     public:
 
         /**
+         * @param ruleInductionPtr              An unique pointer to an object of type `IRuleInduction` to be used for
+         *                                      the induction of individual rules
          * @param stoppingCriterionFactoryPtr   An unique pointer to an object of type `IStoppingCriterionFactory` that
          *                                      allows to create the implementations to be used to decide whether
          *                                      additional rules should be induced or not
          * @param useDefaultRule                True, if a default rule should be used, False otherwise
          */
-        SequentialRuleModelAssemblage(std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr,
+        SequentialRuleModelAssemblage(std::unique_ptr<IRuleInduction> ruleInductionPtr,
+                                      std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr,
                                       bool useDefaultRule)
-            : stoppingCriterionFactoryPtr_(std::move(stoppingCriterionFactoryPtr)), useDefaultRule_(useDefaultRule) {}
+            : ruleInductionPtr_(std::move(ruleInductionPtr)),
+              stoppingCriterionFactoryPtr_(std::move(stoppingCriterionFactoryPtr)), useDefaultRule_(useDefaultRule) {}
 
-        void induceRules(const IRuleInduction& ruleInduction, const IRulePruning& rulePruning,
-                         const IPostProcessor& postProcessor, IPartition& partition, IOutputSampling& outputSampling,
-                         IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
-                         IStatisticsProvider& statisticsProvider, IFeatureSpace& featureSpace,
-                         IModelBuilder& modelBuilder) const override {
+        void induceRules(IPartition& partition, IOutputSampling& outputSampling, IInstanceSampling& instanceSampling,
+                         IFeatureSampling& featureSampling, IStatisticsProvider& statisticsProvider,
+                         IFeatureSpace& featureSpace, IModelBuilder& modelBuilder) const override {
             uint32 numRules = useDefaultRule_ ? 1 : 0;
             uint32 numUsedRules = 0;
 
             // Induce default rule, if necessary...
             if (useDefaultRule_) {
-                ruleInduction.induceDefaultRule(statisticsProvider.get(), modelBuilder);
+                ruleInductionPtr_->induceDefaultRule(statisticsProvider.get(), modelBuilder);
             }
 
             statisticsProvider.switchToRegularRuleEvaluation();
@@ -56,8 +60,8 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
 
                 const IWeightVector& weights = instanceSampling.sample();
                 const IIndexVector& outputIndices = outputSampling.sample();
-                bool success = ruleInduction.induceRule(featureSpace, outputIndices, weights, partition,
-                                                        featureSampling, rulePruning, postProcessor, modelBuilder);
+                bool success = ruleInductionPtr_->induceRule(featureSpace, outputIndices, weights, partition,
+                                                             featureSampling, modelBuilder);
 
                 if (success) {
                     numRules++;
@@ -78,28 +82,34 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
 class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFactory {
     private:
 
+        const std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr_;
+
         const bool useDefaultRule_;
 
     public:
 
         /**
-         * @param useDefaultRule True, if a default rule should be used, false otherwise
+         * @param ruleInductionFactoryPtr   An unique pointer to an object of type `IRuleInductionFactory`
+         * @param useDefaultRule            True, if a default rule should be used, false otherwise
          */
-        SequentialRuleModelAssemblageFactory(bool useDefaultRule) : useDefaultRule_(useDefaultRule) {}
+        SequentialRuleModelAssemblageFactory(std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr,
+                                             bool useDefaultRule)
+            : ruleInductionFactoryPtr_(std::move(ruleInductionFactoryPtr)), useDefaultRule_(useDefaultRule) {}
 
         std::unique_ptr<IRuleModelAssemblage> create(
           std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactoryPtr) const override {
-            return std::make_unique<SequentialRuleModelAssemblage>(std::move(stoppingCriterionFactoryPtr),
-                                                                   useDefaultRule_);
+            return std::make_unique<SequentialRuleModelAssemblage>(
+              ruleInductionFactoryPtr_->create(), std::move(stoppingCriterionFactoryPtr), useDefaultRule_);
         }
 };
 
 SequentialRuleModelAssemblageConfig::SequentialRuleModelAssemblageConfig(
-  ReadableProperty<IDefaultRuleConfig> defaultRuleConfig)
-    : defaultRuleConfig_(defaultRuleConfig) {}
+  ReadableProperty<IRuleInductionConfig> ruleInductionConfig, ReadableProperty<IDefaultRuleConfig> defaultRuleConfig)
+    : ruleInductionConfig_(ruleInductionConfig), defaultRuleConfig_(defaultRuleConfig) {}
 
 std::unique_ptr<IRuleModelAssemblageFactory> SequentialRuleModelAssemblageConfig::createRuleModelAssemblageFactory(
-  const IOutputMatrix& outputMatrix) const {
+  const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const {
     bool useDefaultRule = defaultRuleConfig_.get().isDefaultRuleUsed(outputMatrix);
-    return std::make_unique<SequentialRuleModelAssemblageFactory>(useDefaultRule);
+    return std::make_unique<SequentialRuleModelAssemblageFactory>(
+      ruleInductionConfig_.get().createRuleInductionFactory(featureMatrix, outputMatrix), useDefaultRule);
 }
