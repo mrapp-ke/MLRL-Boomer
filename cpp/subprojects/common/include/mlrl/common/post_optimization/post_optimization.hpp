@@ -24,8 +24,6 @@ class IPostOptimizationPhase {
         /**
          * Optimizes a rule-based model globally once it has been learned.
          *
-         * @param featureSpace      A reference to an object of type `IFeatureSpace` that provides access to the feature
-         *                          space
          * @param partition         A reference to an object of type `IPartition` that provides access to the indices of
          *                          the training examples that belong to the training set and the holdout set,
          *                          respectively
@@ -35,9 +33,12 @@ class IPostOptimizationPhase {
          *                          sampling examples
          * @param featureSampling   A reference to an object of type `IFeatureSampling` that should be used for sampling
          *                          the features that may be used by the conditions of new rules
+         * @param featureSpace      A reference to an object of type `IFeatureSpace` that provides access to the feature
+         *                          space
          */
-        virtual void optimizeModel(IFeatureSpace& featureSpace, IPartition& partition, IOutputSampling& outputSampling,
-                                   IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling) const = 0;
+        virtual void optimizeModel(IPartition& partition, IOutputSampling& outputSampling,
+                                   IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
+                                   IFeatureSpace& featureSpace) const = 0;
 };
 
 /**

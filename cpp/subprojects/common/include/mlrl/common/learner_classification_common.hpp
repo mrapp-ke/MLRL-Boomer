@@ -95,8 +95,8 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
                                                 modelBuilder);
 
             // Post-optimize the model...
-            postOptimizationPtr->optimizeModel(*featureSpacePtr, partition, *outputSamplingPtr, *instanceSamplingPtr,
-                                               *featureSamplingPtr);
+            postOptimizationPtr->optimizeModel(partition, *outputSamplingPtr, *instanceSamplingPtr, *featureSamplingPtr,
+                                               *featureSpacePtr);
 
             // Fit model for the calibration of marginal probabilities...
             std::unique_ptr<IMarginalProbabilityCalibratorFactory> marginalProbabilityCalibratorFactoryPtr =
