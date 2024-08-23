@@ -83,10 +83,6 @@ class AbstractRegressionRuleLearner : virtual public IRegressionRuleLearner {
               configurator_.createFeatureSamplingFactory(featureMatrix);
             std::unique_ptr<IFeatureSampling> featureSamplingPtr = featureSamplingFactoryPtr->create();
 
-            // Create rule pruning...
-            std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr = configurator_.createRulePruningFactory();
-            std::unique_ptr<IRulePruning> rulePruningPtr = rulePruningFactoryPtr->create();
-
             // Create post-processor...
             std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr = configurator_.createPostProcessorFactory();
             std::unique_ptr<IPostProcessor> postProcessorPtr = postProcessorFactoryPtr->create();
@@ -102,7 +98,7 @@ class AbstractRegressionRuleLearner : virtual public IRegressionRuleLearner {
 
             // Post-optimize the model...
             postOptimizationPtr->optimizeModel(*featureSpacePtr, partition, *outputSamplingPtr, *instanceSamplingPtr,
-                                               *featureSamplingPtr, *rulePruningPtr, *postProcessorPtr);
+                                               *featureSamplingPtr, *postProcessorPtr);
 
             return std::make_unique<TrainingResult>(regressionMatrix.getNumOutputs(), modelBuilder.buildModel(),
                                                     createNoOutputSpaceInfo(), createNoProbabilityCalibrationModel(),

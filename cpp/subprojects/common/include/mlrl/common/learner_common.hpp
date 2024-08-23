@@ -220,16 +220,6 @@ class RuleLearnerConfigurator {
         }
 
         /**
-         * May be overridden by subclasses in order to create the `IRulePruningFactory` to be used by the rule learner
-         * for pruning individual rules.
-         *
-         * @return An unique pointer to an object of type `IRulePruningFactory` that has been created
-         */
-        virtual std::unique_ptr<IRulePruningFactory> createRulePruningFactory() const {
-            return config_.getRulePruningConfig().get().createRulePruningFactory();
-        }
-
-        /**
          * May be overridden by subclasses in order to create the `IPostProcessorFactory` to be used by the rule learner
          * for post-processing the predictions of individual rules.
          *
