@@ -72,8 +72,8 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
             : ruleInductionPtr_(std::move(ruleInductionPtr)), modelBuilder_(modelBuilder),
               numIterations_(numIterations), refineHeads_(refineHeads), resampleFeatures_(resampleFeatures) {}
 
-        void optimizeModel(IFeatureSpace& featureSpace, IPartition& partition, IOutputSampling& outputSampling,
-                           IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling) const override {
+        void optimizeModel(IPartition& partition, IOutputSampling& outputSampling, IInstanceSampling& instanceSampling,
+                           IFeatureSampling& featureSampling, IFeatureSpace& featureSpace) const override {
             for (uint32 i = 0; i < numIterations_; i++) {
                 for (auto it = modelBuilder_.begin(); it != modelBuilder_.end(); it++) {
                     IntermediateModelBuilder::IntermediateRule& intermediateRule = *it;

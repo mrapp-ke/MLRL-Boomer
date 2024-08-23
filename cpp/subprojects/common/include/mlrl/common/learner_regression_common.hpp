@@ -93,8 +93,8 @@ class AbstractRegressionRuleLearner : virtual public IRegressionRuleLearner {
                                                 modelBuilder);
 
             // Post-optimize the model...
-            postOptimizationPtr->optimizeModel(*featureSpacePtr, partition, *outputSamplingPtr, *instanceSamplingPtr,
-                                               *featureSamplingPtr);
+            postOptimizationPtr->optimizeModel(partition, *outputSamplingPtr, *instanceSamplingPtr, *featureSamplingPtr,
+                                               *featureSpacePtr);
 
             return std::make_unique<TrainingResult>(regressionMatrix.getNumOutputs(), modelBuilder.buildModel(),
                                                     createNoOutputSpaceInfo(), createNoProbabilityCalibrationModel(),
