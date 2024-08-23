@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/sampling/output_sampling.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -39,11 +40,17 @@ class OutputSamplingWithoutReplacementConfig final : public IOutputSamplingConfi
                                                      public IOutputSamplingWithoutReplacementConfig {
     private:
 
+        const ReadableProperty<RNGConfig> rngConfig_;
+
         uint32 numSamples_;
 
     public:
 
-        OutputSamplingWithoutReplacementConfig();
+        /**
+         * @param rngConfig A `ReadableProperty` that provides access to the `RNGConfig` that stores the configuration
+         *                  of random number generators
+         */
+        OutputSamplingWithoutReplacementConfig(ReadableProperty<RNGConfig> rngConfig);
 
         uint32 getNumSamples() const override;
 

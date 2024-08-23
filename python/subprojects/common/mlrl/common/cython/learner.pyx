@@ -13,6 +13,7 @@ from mlrl.common.cython.output_sampling import OutputSamplingWithoutReplacementC
 from mlrl.common.cython.partition_sampling import ExampleWiseStratifiedBiPartitionSamplingConfig, \
     OutputWiseStratifiedBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
 from mlrl.common.cython.post_optimization import SequentialPostOptimizationConfig
+from mlrl.common.cython.rng import RNGConfig
 from mlrl.common.cython.rule_induction import BeamSearchTopDownRuleInductionConfig, GreedyTopDownRuleInductionConfig
 from mlrl.common.cython.stopping_criterion import PostPruningConfig, PrePruningConfig, SizeStoppingCriterionConfig, \
     TimeStoppingCriterionConfig
@@ -46,6 +47,21 @@ cdef class TrainingResult:
 
 cdef class RuleLearnerConfig:
     pass
+
+
+class RNGMixin(ABC):
+    """
+    Allows to configure the random number generators (RNGs) that are used by a rule learner.
+    """
+
+    @abstractmethod
+    def use_rng(self) -> RNGConfig:
+        """
+        Configures the random number generators that are used by the rule learner.
+        
+        :return: An `RNGConfig` that allows further configuration of the random number generators
+        """
+        pass
 
 
 class SequentialRuleModelAssemblageMixin(ABC):

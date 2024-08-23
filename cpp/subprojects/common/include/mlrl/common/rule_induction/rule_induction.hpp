@@ -51,14 +51,12 @@ class IRuleInduction {
          *                          rule
          * @param postProcessor     A reference to an object of type `IPostProcessor` that should be used to
          *                          post-process the predictions of the rule
-         * @param rng               A reference to an object of type `RNG` that implements the random number generator
-         *                          to be used
          * @param modelBuilder      A reference to an object of type `IModelBuilder`, the rule should be added to
          * @return                  True, if a rule has been induced, false otherwise
          */
         virtual bool induceRule(IFeatureSpace& featureSpace, const IIndexVector& outputIndices,
                                 const IWeightVector& weights, IPartition& partition, IFeatureSampling& featureSampling,
-                                const IRulePruning& rulePruning, const IPostProcessor& postProcessor, RNG& rng,
+                                const IRulePruning& rulePruning, const IPostProcessor& postProcessor,
                                 IModelBuilder& modelBuilder) const = 0;
 };
 

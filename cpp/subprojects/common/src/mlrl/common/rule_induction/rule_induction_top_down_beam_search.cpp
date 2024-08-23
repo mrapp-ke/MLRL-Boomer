@@ -153,13 +153,10 @@ class Beam final {
          * @param minCoverage           The number of training examples that must be covered by potential refinements
          * @param numThreads            The number of CPU threads to be used to search for potential refinements of a
          *                              rule in parallel
-         * @param rng                   A reference to an object of type `RNG` that implements the random number
-         *                              generator to be used
          * @return                      True, if any refinements have been found, false otherwise
          */
         static bool refine(RuleCompareFunction ruleCompareFunction, std::unique_ptr<Beam>& beamPtr, uint32 beamWidth,
-                           IFeatureSampling& featureSampling, bool keepHeads, uint32 minCoverage, uint32 numThreads,
-                           RNG& rng) {
+                           IFeatureSampling& featureSampling, bool keepHeads, uint32 minCoverage, uint32 numThreads) {
             std::vector<std::reference_wrapper<BeamEntry>>& order = beamPtr->order_;
             std::unique_ptr<Beam> newBeamPtr = std::make_unique<Beam>(beamWidth);
             BeamEntry* newEntries = newBeamPtr->entries_;
@@ -177,7 +174,7 @@ class Beam final {
                 // Check if existing beam entry can be refined...
                 if (entry.outputIndices) {
                     // Sample features...
-                    const IIndexVector& featureIndices = featureSampling.sample(rng);
+                    const IIndexVector& featureIndices = featureSampling.sample();
 
                     // Search for refinements of the existing beam entry...
                     FixedRefinementComparator refinementComparator(ruleCompareFunction, beamWidth, minQuality);
@@ -314,14 +311,14 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
 
         std::unique_ptr<IFeatureSubspace> growRule(IFeatureSpace& featureSpace, const IIndexVector& outputIndices,
                                                    const IWeightVector& weights, IPartition& partition,
-                                                   IFeatureSampling& featureSampling, RNG& rng,
+                                                   IFeatureSampling& featureSampling,
                                                    std::unique_ptr<ConditionList>& conditionListPtr,
                                                    std::unique_ptr<IEvaluatedPrediction>& headPtr) const override {
             // Create a new subset of the given thresholds...
             std::unique_ptr<IFeatureSubspace> featureSubspacePtr = weights.createFeatureSubspace(featureSpace);
 
             // Sample features...
-            const IIndexVector& sampledFeatureIndices = featureSampling.sample(rng);
+            const IIndexVector& sampledFeatureIndices = featureSampling.sample();
 
             // Search for the best refinements using a single condition...
             FixedRefinementComparator refinementComparator(ruleCompareFunction_, beamWidth_);
@@ -340,12 +337,12 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
 
                     // Create a `IFeatureSampling` to be used for refining the current beam...
                     std::unique_ptr<IFeatureSampling> beamSearchFeatureSamplingPtr =
-                      featureSampling.createBeamSearchFeatureSampling(rng, resampleFeatures_);
+                      featureSampling.createBeamSearchFeatureSampling(resampleFeatures_);
 
                     // Search for the best refinements within the current beam...
                     foundRefinement =
                       beamPtr->refine(ruleCompareFunction_, beamPtr, beamWidth_, *beamSearchFeatureSamplingPtr,
-                                      keepHeads, minCoverage_, numThreads_, rng);
+                                      keepHeads, minCoverage_, numThreads_);
                 }
 
                 BeamEntry& entry = beamPtr->getBestEntry();

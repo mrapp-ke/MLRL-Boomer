@@ -6,7 +6,7 @@ Provides utilities that ease the configuration of rule learning algorithms.
 import logging as log
 
 from abc import ABC, abstractmethod
-from argparse import ArgumentParser
+from argparse import ArgumentError, ArgumentParser
 from typing import Optional, Set
 
 from mlrl.common.cython.info import get_num_cpu_cores, is_multi_threading_support_enabled
@@ -17,7 +17,7 @@ from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, Equa
     NoParallelPredictionMixin, NoParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
     NoPartitionSamplingMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, NoSizeStoppingCriterionMixin, \
     NoTimeStoppingCriterionMixin, ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, \
-    PostPruningMixin, PrePruningMixin, RandomBiPartitionSamplingMixin, RoundRobinOutputSamplingMixin, \
+    PostPruningMixin, PrePruningMixin, RandomBiPartitionSamplingMixin, RNGMixin, RoundRobinOutputSamplingMixin, \
     SequentialPostOptimizationMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
 from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPartitionSamplingMixin, \
     ExampleWiseStratifiedInstanceSamplingMixin, OutputWiseStratifiedBiPartitionSamplingMixin, \
@@ -275,6 +275,20 @@ class FloatParameter(NumericalParameter, ABC):
 
     def _cast_value(self, value):
         return float(value)
+
+
+class RandomStateParameter(IntParameter):
+    """
+    A parameter that allows to configure the seed to be used by random number generators.
+    """
+
+    def __init__(self):
+        super().__init__(name='random_state',
+                         description='The seed to be used by random number generators',
+                         mixin=RNGMixin)
+
+    def _configure(self, config, value):
+        config.use_rng().set_random_state(value)
 
 
 class RuleInductionParameter(NominalParameter):
@@ -758,6 +772,7 @@ class SequentialPostOptimizationParameter(NominalParameter):
 
 
 RULE_LEARNER_PARAMETERS = {
+    RandomStateParameter(),
     RuleInductionParameter(),
     FeatureBinningParameter(),
     OutputSamplingParameter(),
@@ -802,7 +817,11 @@ def configure_argument_parser(parser: ArgumentParser, config_type: type, paramet
     :param parameters:  A set that contains the parameters to be taken into account
     """
     for parameter in parameters:
-        parameter.add_to_argument_parser(parser, config_type)
+        try:
+            parameter.add_to_argument_parser(parser, config_type)
+        except ArgumentError:
+            # Argument has already been added, that's okay
+            pass
 
 
 def create_kwargs_from_parameters(args, parameters: Set[Parameter]):
