@@ -8,6 +8,8 @@
 #include "mlrl/common/sampling/partition_bi.hpp"
 #include "mlrl/common/sampling/weight_vector_bit.hpp"
 
+#include <memory>
+
 /**
  * Implements iterative stratified sampling for selecting a subset of the available training examples as proposed in the
  * following publication:
@@ -24,17 +26,22 @@ template<typename LabelMatrix, typename IndexIterator>
 class LabelWiseStratification final {
     private:
 
+        const std::unique_ptr<RNG> rngPtr_;
+
         BinarySparseMatrixDecorator<AllocatedBinaryCscView> stratificationMatrix_;
 
     public:
 
         /**
+         * @param rngPtr        An unique pointer to an object of type `RNG` that should be used for generating random
+         *                      numbers
          * @param labelMatrix   A reference to an object of template type `LabelMatrix` that provides random or row-wise
          *                      access to the labels of the training examples
          * @param indicesBegin  An iterator to the beginning of the indices of the examples that should be considered
          * @param indicesEnd    An iterator to the end of the indices of the examples that should be considered
          */
-        LabelWiseStratification(const LabelMatrix& labelMatrix, IndexIterator indicesBegin, IndexIterator indicesEnd);
+        LabelWiseStratification(std::unique_ptr<RNG> rngPtr, const LabelMatrix& labelMatrix, IndexIterator indicesBegin,
+                                IndexIterator indicesEnd);
 
         /**
          * Randomly selects a stratified sample of the available examples and sets their weights to 1, while the
@@ -42,16 +49,13 @@ class LabelWiseStratification final {
          *
          * @param weightVector  A reference to an object of type `BitWeightVector`, the weights should be written to
          * @param sampleSize    The fraction of the available examples to be selected
-         * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be
-         *                      used
          */
-        void sampleWeights(BitWeightVector& weightVector, float32 sampleSize, RNG& rng);
+        void sampleWeights(BitWeightVector& weightVector, float32 sampleSize);
 
         /**
          * Randomly splits the available examples into two distinct sets and updates a given `BiPartition` accordingly.
          *
          * @param partition A reference to an object of type `BiPartition` to be updated
-         * @param rng       A reference to an object of type `RNG`, implementing the random number generator to be used
          */
-        void sampleBiPartition(BiPartition& partition, RNG& rng);
+        void sampleBiPartition(BiPartition& partition);
 };

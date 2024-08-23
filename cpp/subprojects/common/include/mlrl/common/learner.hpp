@@ -157,6 +157,15 @@ class MLRLCOMMON_API IRuleLearnerConfig {
         virtual RuleCompareFunction getRuleCompareFunction() const = 0;
 
         /**
+         * Returns a `Property` that allows to access the `RNGConfig` that stores the configuration of random number
+         * generators.
+         *
+         * @return A `Property` that allows to access the `RNGConfig` that stores the configuration of random number
+         *         generators
+         */
+        virtual Property<RNGConfig> getRNGConfig() = 0;
+
+        /**
          * Returns a `Property` that allows to access the `IDefaultRuleConfig` that stores the configuration of the
          * default rule.
          *
@@ -387,6 +396,29 @@ class MLRLCOMMON_API IRuleLearnerConfig {
 };
 
 /**
+ * Defines an interface for all classes that allow to configure the random number generators (RNGs) that are used by a
+ * rule learner.
+ */
+class MLRLCOMMON_API IRNGMixin : virtual public IRuleLearnerConfig {
+    public:
+
+        virtual ~IRNGMixin() override {}
+
+        /**
+         * Configures the random number generators that are used by the rule learner.
+         *
+         * @return A reference to an object of type `RNGConfig` that allows further configuration of the random number
+         *         generators
+         */
+        virtual RNGConfig& useRNG() {
+            auto ptr = std::make_unique<RNGConfig>();
+            RNGConfig& ref = *ptr;
+            this->getRNGConfig().set(std::move(ptr));
+            return ref;
+        }
+};
+
+/**
  * Defines an interface for all classes that allow to configure a rule learner to use an algorithm that sequentially
  * induces several rules.
  */
@@ -580,7 +612,7 @@ class MLRLCOMMON_API IOutputSamplingWithoutReplacementMixin : virtual public IRu
          *         configuration of the sampling method
          */
         virtual IOutputSamplingWithoutReplacementConfig& useOutputSamplingWithoutReplacement() {
-            auto ptr = std::make_unique<OutputSamplingWithoutReplacementConfig>();
+            auto ptr = std::make_unique<OutputSamplingWithoutReplacementConfig>(this->getRNGConfig());
             IOutputSamplingWithoutReplacementConfig& ref = *ptr;
             this->getOutputSamplingConfig().set(std::move(ptr));
             return ref;
@@ -641,7 +673,7 @@ class MLRLCOMMON_API IInstanceSamplingWithReplacementMixin : virtual public IRul
          *         configuration of the method for sampling instances
          */
         virtual IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement() {
-            auto ptr = std::make_shared<InstanceSamplingWithReplacementConfig>();
+            auto ptr = std::make_shared<InstanceSamplingWithReplacementConfig>(this->getRNGConfig());
             IInstanceSamplingWithReplacementConfig& ref = *ptr;
             this->getClassificationInstanceSamplingConfig().set(ptr);
             this->getRegressionInstanceSamplingConfig().set(ptr);
@@ -666,7 +698,7 @@ class MLRLCOMMON_API IInstanceSamplingWithoutReplacementMixin : virtual public I
          *         configuration of the method for sampling instances
          */
         virtual IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement() {
-            auto ptr = std::make_shared<InstanceSamplingWithoutReplacementConfig>();
+            auto ptr = std::make_shared<InstanceSamplingWithoutReplacementConfig>(this->getRNGConfig());
             IInstanceSamplingWithoutReplacementConfig& ref = *ptr;
             this->getClassificationInstanceSamplingConfig().set(ptr);
             this->getRegressionInstanceSamplingConfig().set(ptr);
@@ -707,7 +739,7 @@ class MLRLCOMMON_API IFeatureSamplingWithoutReplacementMixin : virtual public IR
          *         configuration of the method for sampling features
          */
         virtual IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() {
-            auto ptr = std::make_unique<FeatureSamplingWithoutReplacementConfig>();
+            auto ptr = std::make_unique<FeatureSamplingWithoutReplacementConfig>(this->getRNGConfig());
             IFeatureSamplingWithoutReplacementConfig& ref = *ptr;
             this->getFeatureSamplingConfig().set(std::move(ptr));
             return ref;
@@ -752,7 +784,7 @@ class MLRLCOMMON_API IRandomBiPartitionSamplingMixin : virtual public IRuleLearn
          *         of the method for partitioning the available training examples into a training set and a holdout set
          */
         virtual IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() {
-            auto ptr = std::make_shared<RandomBiPartitionSamplingConfig>();
+            auto ptr = std::make_shared<RandomBiPartitionSamplingConfig>(this->getRNGConfig());
             IRandomBiPartitionSamplingConfig& ref = *ptr;
             this->getClassificationPartitionSamplingConfig().set(ptr);
             this->getRegressionPartitionSamplingConfig().set(ptr);
@@ -1189,6 +1221,7 @@ class MLRLCOMMON_API INoBinaryPredictorMixin : virtual public IRuleLearnerConfig
  * Defines an interface for all classes that allow to configure a rule learner to use a simple default configuration.
  */
 class MLRLCOMMON_API IRuleLearnerMixin : virtual public IRuleLearnerConfig,
+                                         virtual public IRNGMixin,
                                          virtual public IDefaultRuleMixin,
                                          virtual public INoFeatureBinningMixin,
                                          virtual public INoOutputSamplingMixin,
@@ -1214,6 +1247,7 @@ class MLRLCOMMON_API IRuleLearnerMixin : virtual public IRuleLearnerConfig,
         virtual ~IRuleLearnerMixin() override {}
 
         virtual void useDefaults() override {
+            this->useRNG();
             this->useDefaultRule();
             this->useNoFeatureBinning();
             this->useNoOutputSampling();
