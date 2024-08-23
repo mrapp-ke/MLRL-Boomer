@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/boosting/statistics/quantization.hpp"
+#include "mlrl/common/random/rng.hpp"
 #include "mlrl/common/simd/simd.hpp"
 #include "mlrl/common/util/properties.hpp"
 
@@ -45,6 +46,8 @@ namespace boosting {
                                                public IStochasticQuantizationConfig {
         private:
 
+            const ReadableProperty<RNGConfig> rngConfig_;
+
             const ReadableProperty<ISimdConfig> simdConfig_;
 
             uint8 numBins_;
@@ -52,10 +55,13 @@ namespace boosting {
         public:
 
             /**
-             * @param simdConfig A `ReadableProperty` that allows to access the `ISimdConfig` that stores the
-             *                   configuration of SIMD operations
+             * @param rngConfig     A `ReadableProperty` that provides access the `RNGConfig` that stores the
+             *                      configuration of random number generators
+             * @param simdConfig    A `ReadableProperty` that allows to access the `ISimdConfig` that stores the
+             *                      configuration of SIMD operations
              */
-            StochasticQuantizationConfig(ReadableProperty<ISimdConfig> simdConfig);
+            StochasticQuantizationConfig(ReadableProperty<RNGConfig> rngConfig,
+                                         ReadableProperty<ISimdConfig> simdConfig);
 
             uint8 getNumBins() const override;
 
