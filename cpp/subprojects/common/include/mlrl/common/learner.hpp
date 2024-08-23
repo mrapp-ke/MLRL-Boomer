@@ -1129,7 +1129,7 @@ class MLRLCOMMON_API ISequentialPostOptimizationMixin : virtual public IRuleLear
          *         configuration of the post-optimization method
          */
         virtual ISequentialPostOptimizationConfig& useSequentialPostOptimization() {
-            auto ptr = std::make_unique<SequentialPostOptimizationConfig>();
+            auto ptr = std::make_unique<SequentialPostOptimizationConfig>(this->getRuleInductionConfig());
             ISequentialPostOptimizationConfig& ref = *ptr;
             this->getSequentialPostOptimizationConfig().set(std::move(ptr));
             return ref;
