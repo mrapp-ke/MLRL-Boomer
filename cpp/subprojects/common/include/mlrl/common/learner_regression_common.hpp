@@ -39,7 +39,8 @@ class AbstractRegressionRuleLearner : virtual public IRegressionRuleLearner {
             // Create post-optimization phases...
             std::unique_ptr<PostOptimizationPhaseListFactory> postOptimizationFactoryPtr =
               std::make_unique<PostOptimizationPhaseListFactory>();
-            configurator_.createPostOptimizationPhaseFactories(*postOptimizationFactoryPtr);
+            configurator_.createPostOptimizationPhaseFactories(*postOptimizationFactoryPtr, featureMatrix,
+                                                               regressionMatrix);
 
             // Partition training data...
             std::unique_ptr<IRegressionPartitionSamplingFactory> partitionSamplingFactoryPtr =
@@ -65,11 +66,6 @@ class AbstractRegressionRuleLearner : virtual public IRegressionRuleLearner {
               configurator_.createFeatureSpaceFactory(featureMatrix, regressionMatrix);
             std::unique_ptr<IFeatureSpace> featureSpacePtr =
               featureSpaceFactoryPtr->create(featureMatrix, featureInfo, *statisticsProviderPtr);
-
-            // Create rule induction...
-            std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr =
-              configurator_.createRuleInductionFactory(featureMatrix, regressionMatrix);
-            std::unique_ptr<IRuleInduction> ruleInductionPtr = ruleInductionFactoryPtr->create();
 
             // Create output sampling...
             std::unique_ptr<IOutputSamplingFactory> outputSamplingFactoryPtr =
@@ -105,9 +101,8 @@ class AbstractRegressionRuleLearner : virtual public IRegressionRuleLearner {
                                                 *featureSpacePtr, modelBuilder);
 
             // Post-optimize the model...
-            postOptimizationPtr->optimizeModel(*featureSpacePtr, *ruleInductionPtr, partition, *outputSamplingPtr,
-                                               *instanceSamplingPtr, *featureSamplingPtr, *rulePruningPtr,
-                                               *postProcessorPtr);
+            postOptimizationPtr->optimizeModel(*featureSpacePtr, partition, *outputSamplingPtr, *instanceSamplingPtr,
+                                               *featureSamplingPtr, *rulePruningPtr, *postProcessorPtr);
 
             return std::make_unique<TrainingResult>(regressionMatrix.getNumOutputs(), modelBuilder.buildModel(),
                                                     createNoOutputSpaceInfo(), createNoProbabilityCalibrationModel(),

@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/post_optimization/post_optimization.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -76,6 +77,8 @@ class SequentialPostOptimizationConfig final : public ISequentialPostOptimizatio
                                                public IPostOptimizationPhaseConfig {
     private:
 
+        const ReadableProperty<IRuleInductionConfig> ruleInductionConfig_;
+
         uint32 numIterations_;
 
         bool refineHeads_;
@@ -84,7 +87,11 @@ class SequentialPostOptimizationConfig final : public ISequentialPostOptimizatio
 
     public:
 
-        SequentialPostOptimizationConfig();
+        /**
+         * @param ruleInductionConfig A `ReadableProperty` that allows to access the `IRuleInductionConfig` that stores
+         *                            the configuration of the algorithm for the inductoin of individual rules
+         */
+        SequentialPostOptimizationConfig(ReadableProperty<IRuleInductionConfig> ruleInductionConfig);
 
         uint32 getNumIterations() const override;
 
@@ -98,5 +105,6 @@ class SequentialPostOptimizationConfig final : public ISequentialPostOptimizatio
 
         ISequentialPostOptimizationConfig& setResampleFeatures(bool resampleFeatures) override;
 
-        std::unique_ptr<IPostOptimizationPhaseFactory> createPostOptimizationPhaseFactory() const override;
+        std::unique_ptr<IPostOptimizationPhaseFactory> createPostOptimizationPhaseFactory(
+          const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const override;
 };

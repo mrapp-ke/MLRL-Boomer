@@ -39,7 +39,7 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
             // Create post-optimization phases...
             std::unique_ptr<PostOptimizationPhaseListFactory> postOptimizationFactoryPtr =
               std::make_unique<PostOptimizationPhaseListFactory>();
-            configurator_.createPostOptimizationPhaseFactories(*postOptimizationFactoryPtr);
+            configurator_.createPostOptimizationPhaseFactories(*postOptimizationFactoryPtr, featureMatrix, labelMatrix);
 
             // Create output space info...
             std::unique_ptr<IOutputSpaceInfo> outputSpaceInfoPtr = configurator_.createOutputSpaceInfo(labelMatrix);
@@ -68,11 +68,6 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
               configurator_.createFeatureSpaceFactory(featureMatrix, labelMatrix);
             std::unique_ptr<IFeatureSpace> featureSpacePtr =
               featureSpaceFactoryPtr->create(featureMatrix, featureInfo, *statisticsProviderPtr);
-
-            // Create rule induction...
-            std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr =
-              configurator_.createRuleInductionFactory(featureMatrix, labelMatrix);
-            std::unique_ptr<IRuleInduction> ruleInductionPtr = ruleInductionFactoryPtr->create();
 
             // Create output sampling...
             std::unique_ptr<IOutputSamplingFactory> outputSamplingFactoryPtr =
@@ -108,9 +103,8 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
                                                 *featureSpacePtr, modelBuilder);
 
             // Post-optimize the model...
-            postOptimizationPtr->optimizeModel(*featureSpacePtr, *ruleInductionPtr, partition, *outputSamplingPtr,
-                                               *instanceSamplingPtr, *featureSamplingPtr, *rulePruningPtr,
-                                               *postProcessorPtr);
+            postOptimizationPtr->optimizeModel(*featureSpacePtr, partition, *outputSamplingPtr, *instanceSamplingPtr,
+                                               *featureSamplingPtr, *rulePruningPtr, *postProcessorPtr);
 
             // Fit model for the calibration of marginal probabilities...
             std::unique_ptr<IMarginalProbabilityCalibratorFactory> marginalProbabilityCalibratorFactoryPtr =

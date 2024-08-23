@@ -26,8 +26,6 @@ class IPostOptimizationPhase {
          *
          * @param featureSpace      A reference to an object of type `IFeatureSpace` that provides access to the feature
          *                          space
-         * @param ruleInduction     A reference to an object of type `IRuleInduction` that should be used for inducing
-         *                          new rules
          * @param partition         A reference to an object of type `IPartition` that provides access to the indices of
          *                          the training examples that belong to the training set and the holdout set,
          *                          respectively
@@ -42,8 +40,7 @@ class IPostOptimizationPhase {
          * @param postProcessor     A reference to an object of type `IPostProcessor` that should be used to
          *                          post-process the predictions of new rules
          */
-        virtual void optimizeModel(IFeatureSpace& featureSpace, const IRuleInduction& ruleInduction,
-                                   IPartition& partition, IOutputSampling& outputSampling,
+        virtual void optimizeModel(IFeatureSpace& featureSpace, IPartition& partition, IOutputSampling& outputSampling,
                                    IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
                                    const IRulePruning& rulePruning, const IPostProcessor& postProcessor) const = 0;
 };
@@ -79,9 +76,15 @@ class IPostOptimizationPhaseConfig {
          * Creates and returns a new object of type `IPostOptimizationPhaseFactory` according to the specified
          * configuration.
          *
-         * @return An unique pointer to an object of type `IPostOptimizationPhaseFactory` that has been created
+         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
+         *                      values of the training examples
+         * @param outputMatrix  A reference to an object of type `IOutputMatrix` that provides access to the ground
+         *                      truth of the training examples
+         * @return              An unique pointer to an object of type `IPostOptimizationPhaseFactory` that has been
+         *                      created
          */
-        virtual std::unique_ptr<IPostOptimizationPhaseFactory> createPostOptimizationPhaseFactory() const = 0;
+        virtual std::unique_ptr<IPostOptimizationPhaseFactory> createPostOptimizationPhaseFactory(
+          const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const = 0;
 };
 
 /**
