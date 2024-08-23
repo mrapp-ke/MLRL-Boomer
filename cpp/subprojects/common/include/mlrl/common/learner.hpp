@@ -432,8 +432,8 @@ class MLRLCOMMON_API ISequentialRuleModelAssemblageMixin : virtual public IRuleL
          * with a default rule, that are added to a rule-based model.
          */
         virtual void useSequentialRuleModelAssemblage() {
-            this->getRuleModelAssemblageConfig().set(
-              std::make_unique<SequentialRuleModelAssemblageConfig>(this->getDefaultRuleConfig()));
+            this->getRuleModelAssemblageConfig().set(std::make_unique<SequentialRuleModelAssemblageConfig>(
+              this->getRuleInductionConfig(), this->getDefaultRuleConfig()));
         }
 };
 
