@@ -17,8 +17,7 @@ class UnusedRuleRemoval final : public IPostOptimizationPhase {
         UnusedRuleRemoval(IntermediateModelBuilder& modelBuilder) : modelBuilder_(modelBuilder) {}
 
         void optimizeModel(IFeatureSpace& featureSpace, IPartition& partition, IOutputSampling& outputSampling,
-                           IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
-                           const IPostProcessor& postProcessor) const override {
+                           IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling) const override {
             uint32 numUsedRules = modelBuilder_.getNumUsedRules();
 
             if (numUsedRules > 0) {

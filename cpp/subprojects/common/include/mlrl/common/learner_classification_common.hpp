@@ -85,10 +85,6 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
               configurator_.createFeatureSamplingFactory(featureMatrix);
             std::unique_ptr<IFeatureSampling> featureSamplingPtr = featureSamplingFactoryPtr->create();
 
-            // Create post-processor...
-            std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr = configurator_.createPostProcessorFactory();
-            std::unique_ptr<IPostProcessor> postProcessorPtr = postProcessorFactoryPtr->create();
-
             // Assemble rule model...
             std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr =
               configurator_.createRuleModelAssemblageFactory(featureMatrix, labelMatrix);
@@ -100,7 +96,7 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
 
             // Post-optimize the model...
             postOptimizationPtr->optimizeModel(*featureSpacePtr, partition, *outputSamplingPtr, *instanceSamplingPtr,
-                                               *featureSamplingPtr, *postProcessorPtr);
+                                               *featureSamplingPtr);
 
             // Fit model for the calibration of marginal probabilities...
             std::unique_ptr<IMarginalProbabilityCalibratorFactory> marginalProbabilityCalibratorFactoryPtr =

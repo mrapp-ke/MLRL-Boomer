@@ -35,12 +35,9 @@ class IPostOptimizationPhase {
          *                          sampling examples
          * @param featureSampling   A reference to an object of type `IFeatureSampling` that should be used for sampling
          *                          the features that may be used by the conditions of new rules
-         * @param postProcessor     A reference to an object of type `IPostProcessor` that should be used to
-         *                          post-process the predictions of new rules
          */
         virtual void optimizeModel(IFeatureSpace& featureSpace, IPartition& partition, IOutputSampling& outputSampling,
-                                   IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
-                                   const IPostProcessor& postProcessor) const = 0;
+                                   IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling) const = 0;
 };
 
 /**
