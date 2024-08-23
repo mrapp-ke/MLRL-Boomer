@@ -96,9 +96,9 @@ class AbstractRegressionRuleLearner : virtual public IRegressionRuleLearner {
               configurator_.createRuleModelAssemblageFactory(featureMatrix, regressionMatrix);
             std::unique_ptr<IRuleModelAssemblage> ruleModelAssemblagePtr =
               ruleModelAssemblageFactoryPtr->create(std::move(stoppingCriterionFactoryPtr));
-            ruleModelAssemblagePtr->induceRules(*rulePruningPtr, *postProcessorPtr, partition, *outputSamplingPtr,
-                                                *instanceSamplingPtr, *featureSamplingPtr, *statisticsProviderPtr,
-                                                *featureSpacePtr, modelBuilder);
+            ruleModelAssemblagePtr->induceRules(*postProcessorPtr, partition, *outputSamplingPtr, *instanceSamplingPtr,
+                                                *featureSamplingPtr, *statisticsProviderPtr, *featureSpacePtr,
+                                                modelBuilder);
 
             // Post-optimize the model...
             postOptimizationPtr->optimizeModel(*featureSpacePtr, partition, *outputSamplingPtr, *instanceSamplingPtr,

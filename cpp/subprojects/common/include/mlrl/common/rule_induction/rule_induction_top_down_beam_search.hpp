@@ -170,6 +170,8 @@ class BeamSearchTopDownRuleInductionConfig final : public IRuleInductionConfig,
 
         bool recalculatePredictions_;
 
+        const ReadableProperty<IRulePruningConfig> rulePruningConfig_;
+
         const ReadableProperty<IMultiThreadingConfig> multiThreadingConfig_;
 
     public:
@@ -177,11 +179,14 @@ class BeamSearchTopDownRuleInductionConfig final : public IRuleInductionConfig,
         /**
          * @param ruleCompareFunction   An object of type `RuleCompareFunction` that defines the function that should be
          *                              used for comparing the quality of different rules
+         * @param rulePruningConfig     A `ReadableProperty` that allows to acccess the `IRulePruningConfig` that stores
+         *                              the configuration of the strategy for pruning individual rules
          * @param multiThreadingConfig  A `ReadableProperty` that allows to access the `IMultiThreadingConfig` that
          *                              stores the configuration of the multi-threading behavior that should be used for
          *                              the parallel refinement of rules
          */
         BeamSearchTopDownRuleInductionConfig(RuleCompareFunction ruleCompareFunction,
+                                             ReadableProperty<IRulePruningConfig> rulePruningConfig,
                                              ReadableProperty<IMultiThreadingConfig> multiThreadingConfig);
 
         uint32 getBeamWidth() const override;
