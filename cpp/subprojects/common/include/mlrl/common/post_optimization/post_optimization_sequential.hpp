@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/post_optimization/post_optimization.hpp"
+#include "mlrl/common/rule_induction/rule_induction.hpp"
 #include "mlrl/common/util/properties.hpp"
 
 #include <memory>
