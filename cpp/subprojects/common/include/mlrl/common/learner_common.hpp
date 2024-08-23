@@ -220,16 +220,6 @@ class RuleLearnerConfigurator {
         }
 
         /**
-         * May be overridden by subclasses in order to create the `IPostProcessorFactory` to be used by the rule learner
-         * for post-processing the predictions of individual rules.
-         *
-         * @return An unique pointer to an object of type `IPostProcessorFactory` that has been created
-         */
-        virtual std::unique_ptr<IPostProcessorFactory> createPostProcessorFactory() const {
-            return config_.getPostProcessorConfig().get().createPostProcessorFactory();
-        }
-
-        /**
          * May be overridden by subclasses in order to create the `IStoppingCriterionFactory` to be used by the rule
          * learner for stopping the induction of new rules, depending on the number of rules learned so far.
          *
