@@ -4,7 +4,6 @@
 #pragma once
 
 #include "mlrl/common/model/model_builder.hpp"
-#include "mlrl/common/rule_induction/rule_induction.hpp"
 #include "mlrl/common/rule_refinement/feature_space.hpp"
 #include "mlrl/common/sampling/feature_sampling.hpp"
 #include "mlrl/common/sampling/instance_sampling.hpp"
@@ -27,11 +26,6 @@ class IRuleModelAssemblage {
         /**
          * Assembles and returns a rule-based model that consists of several rules.
          *
-         * @param ruleInduction         A reference to an object of type `IRuleInduction` to be used for the induction
-         *                              of individual rules
-         * @param rulePruning           A reference to an object of type `IRulePruning` to be used for pruning rules
-         * @param postProcessor         A reference to an object of type `IPostProcessor` to be used for post-processing
-         *                              the predictions of rules
          * @param partition             A reference to an object of type `IPartition` that provides access to the
          *                              indices of the training examples that belong to the training set and the holdout
          *                              set, respectively
@@ -47,11 +41,10 @@ class IRuleModelAssemblage {
          *                              feature space
          * @param modelBuilder          A reference to an object of type `IModelBuilder`, the rules should be added to
          */
-        virtual void induceRules(const IRuleInduction& ruleInduction, const IRulePruning& rulePruning,
-                                 const IPostProcessor& postProcessor, IPartition& partition,
-                                 IOutputSampling& outputSampling, IInstanceSampling& instanceSampling,
-                                 IFeatureSampling& featureSampling, IStatisticsProvider& statisticsProvider,
-                                 IFeatureSpace& featureSpace, IModelBuilder& modelBuilder) const = 0;
+        virtual void induceRules(IPartition& partition, IOutputSampling& outputSampling,
+                                 IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
+                                 IStatisticsProvider& statisticsProvider, IFeatureSpace& featureSpace,
+                                 IModelBuilder& modelBuilder) const = 0;
 };
 
 /**
@@ -85,11 +78,13 @@ class IRuleModelAssemblageConfig {
         /**
          * Creates and returns a new object of type `IRuleModelAssemblageFactory` according to specified configuration.
          *
+         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
+         *                      values of the training examples
          * @param outputMatrix  A reference to an object of type `IOutputMatrix` that provides row-wise access to the
          *                      ground truth of the training examples
          * @return              An unique pointer to an object of type `IRuleModelAssemblageFactory` that has been
          *                      created
          */
         virtual std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory(
-          const IOutputMatrix& outputMatrix) const = 0;
+          const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const = 0;
 };

@@ -4,9 +4,6 @@
 #pragma once
 
 #include "mlrl/common/post_optimization/model_builder_intermediate.hpp"
-#include "mlrl/common/post_processing/post_processor.hpp"
-#include "mlrl/common/rule_induction/rule_induction.hpp"
-#include "mlrl/common/rule_pruning/rule_pruning.hpp"
 #include "mlrl/common/rule_refinement/feature_space.hpp"
 #include "mlrl/common/sampling/feature_sampling.hpp"
 #include "mlrl/common/sampling/output_sampling.hpp"
@@ -24,10 +21,6 @@ class IPostOptimizationPhase {
         /**
          * Optimizes a rule-based model globally once it has been learned.
          *
-         * @param featureSpace      A reference to an object of type `IFeatureSpace` that provides access to the feature
-         *                          space
-         * @param ruleInduction     A reference to an object of type `IRuleInduction` that should be used for inducing
-         *                          new rules
          * @param partition         A reference to an object of type `IPartition` that provides access to the indices of
          *                          the training examples that belong to the training set and the holdout set,
          *                          respectively
@@ -37,15 +30,12 @@ class IPostOptimizationPhase {
          *                          sampling examples
          * @param featureSampling   A reference to an object of type `IFeatureSampling` that should be used for sampling
          *                          the features that may be used by the conditions of new rules
-         * @param rulePruning       A reference to an object of type `IRulePruning` that should be used to prune new
-         *                          rules
-         * @param postProcessor     A reference to an object of type `IPostProcessor` that should be used to
-         *                          post-process the predictions of new rules
+         * @param featureSpace      A reference to an object of type `IFeatureSpace` that provides access to the feature
+         *                          space
          */
-        virtual void optimizeModel(IFeatureSpace& featureSpace, const IRuleInduction& ruleInduction,
-                                   IPartition& partition, IOutputSampling& outputSampling,
+        virtual void optimizeModel(IPartition& partition, IOutputSampling& outputSampling,
                                    IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
-                                   const IRulePruning& rulePruning, const IPostProcessor& postProcessor) const = 0;
+                                   IFeatureSpace& featureSpace) const = 0;
 };
 
 /**
@@ -79,9 +69,15 @@ class IPostOptimizationPhaseConfig {
          * Creates and returns a new object of type `IPostOptimizationPhaseFactory` according to the specified
          * configuration.
          *
-         * @return An unique pointer to an object of type `IPostOptimizationPhaseFactory` that has been created
+         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
+         *                      values of the training examples
+         * @param outputMatrix  A reference to an object of type `IOutputMatrix` that provides access to the ground
+         *                      truth of the training examples
+         * @return              An unique pointer to an object of type `IPostOptimizationPhaseFactory` that has been
+         *                      created
          */
-        virtual std::unique_ptr<IPostOptimizationPhaseFactory> createPostOptimizationPhaseFactory() const = 0;
+        virtual std::unique_ptr<IPostOptimizationPhaseFactory> createPostOptimizationPhaseFactory(
+          const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const = 0;
 };
 
 /**
