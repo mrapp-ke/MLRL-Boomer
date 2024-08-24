@@ -6,8 +6,6 @@
 #include "mlrl/common/input/feature_matrix.hpp"
 #include "mlrl/common/input/output_matrix.hpp"
 #include "mlrl/common/model/model_builder.hpp"
-#include "mlrl/common/post_processing/post_processor.hpp"
-#include "mlrl/common/rule_pruning/rule_pruning.hpp"
 #include "mlrl/common/rule_refinement/feature_space.hpp"
 #include "mlrl/common/sampling/feature_sampling.hpp"
 #include "mlrl/common/sampling/partition.hpp"
@@ -47,16 +45,11 @@ class IRuleInduction {
          *                          respectively
          * @param featureSampling   A reference to an object of type `IFeatureSampling` that should be used for sampling
          *                          the features that may be used by a new condition
-         * @param rulePruning       A reference to an object of type `IRulePruning` that should be used to prune the
-         *                          rule
-         * @param postProcessor     A reference to an object of type `IPostProcessor` that should be used to
-         *                          post-process the predictions of the rule
          * @param modelBuilder      A reference to an object of type `IModelBuilder`, the rule should be added to
          * @return                  True, if a rule has been induced, false otherwise
          */
         virtual bool induceRule(IFeatureSpace& featureSpace, const IIndexVector& outputIndices,
                                 const IWeightVector& weights, IPartition& partition, IFeatureSampling& featureSampling,
-                                const IRulePruning& rulePruning, const IPostProcessor& postProcessor,
                                 IModelBuilder& modelBuilder) const = 0;
 };
 
