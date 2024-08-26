@@ -20,4 +20,19 @@ namespace boosting {
         }
     }
 
+    MultiThreadingSettings AutoParallelRuleRefinementConfig::getSettings(const IFeatureMatrix& featureMatrix,
+                                                                         uint32 numOutputs) const {
+        uint32 numThreads;
+
+        if (!lossConfig_.get().isDecomposable() && !headConfig_.get().isSingleOutput()) {
+            numThreads = 1;
+        } else if (featureMatrix.isSparse() && !featureSamplingConfig_.get().isSamplingUsed()) {
+            numThreads = 1;
+        } else {
+            numThreads = util::getNumAvailableThreads(0);
+        }
+
+        return MultiThreadingSettings(numThreads);
+    }
+
 }
