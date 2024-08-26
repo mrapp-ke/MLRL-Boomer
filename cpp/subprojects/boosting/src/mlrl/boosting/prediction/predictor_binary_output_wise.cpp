@@ -200,7 +200,7 @@ namespace boosting {
           createDiscretizationFunctionFactory(basedOnProbabilities_, lossConfig_.get());
 
         if (discretizationFunctionFactoryPtr) {
-            uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, numOutputs);
+            uint32 numThreads = multiThreadingConfig_.get().getSettings(featureMatrix, numOutputs).numThreads;
             return std::make_unique<OutputWiseBinaryPredictorFactory>(
               std::move(discretizationFunctionFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(), numThreads);
         }
@@ -214,7 +214,7 @@ namespace boosting {
           createDiscretizationFunctionFactory(basedOnProbabilities_, lossConfig_.get());
 
         if (discretizationFunctionFactoryPtr) {
-            uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, numLabels);
+            uint32 numThreads = multiThreadingConfig_.get().getSettings(featureMatrix, numLabels).numThreads;
             return std::make_unique<OutputWiseSparseBinaryPredictorFactory>(
               std::move(discretizationFunctionFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(), numThreads);
         }

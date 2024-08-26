@@ -141,8 +141,10 @@ class RuleLearnerConfigurator {
           const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const {
             std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr =
               config_.getFeatureBinningConfig().get().createFeatureBinningFactory(featureMatrix, outputMatrix);
-            uint32 numThreads = config_.getParallelStatisticUpdateConfig().get().getNumThreads(
-              featureMatrix, outputMatrix.getNumOutputs());
+            uint32 numThreads = config_.getParallelStatisticUpdateConfig()
+                                  .get()
+                                  .getSettings(featureMatrix, outputMatrix.getNumOutputs())
+                                  .numThreads;
             return std::make_unique<TabularFeatureSpaceFactory>(std::move(featureBinningFactoryPtr), numThreads);
         }
 

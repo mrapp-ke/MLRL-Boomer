@@ -251,7 +251,7 @@ namespace boosting {
           createDistanceMeasureFactory(basedOnProbabilities_, lossConfig_.get());
 
         if (distanceMeasureFactoryPtr) {
-            uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, numOutputs);
+            uint32 numThreads = multiThreadingConfig_.get().getSettings(featureMatrix, numOutputs).numThreads;
             return std::make_unique<ExampleWiseBinaryPredictorFactory>(
               std::move(distanceMeasureFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(),
               noJointProbabilityCalibrationModelPtr_.get(), numThreads);
@@ -266,7 +266,7 @@ namespace boosting {
           createDistanceMeasureFactory(basedOnProbabilities_, lossConfig_.get());
 
         if (distanceMeasureFactoryPtr) {
-            uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, numLabels);
+            uint32 numThreads = multiThreadingConfig_.get().getSettings(featureMatrix, numLabels).numThreads;
             return std::make_unique<ExampleWiseSparseBinaryPredictorFactory>(
               std::move(distanceMeasureFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(),
               noJointProbabilityCalibrationModelPtr_.get(), numThreads);

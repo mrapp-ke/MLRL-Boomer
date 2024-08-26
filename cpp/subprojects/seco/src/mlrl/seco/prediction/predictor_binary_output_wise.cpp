@@ -463,13 +463,13 @@ namespace seco {
 
     std::unique_ptr<IBinaryPredictorFactory> OutputWiseBinaryPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, const uint32 numOutputs) const {
-        uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, numOutputs);
+        uint32 numThreads = multiThreadingConfig_.get().getSettings(featureMatrix, numOutputs).numThreads;
         return std::make_unique<OutputWiseBinaryPredictorFactory>(numThreads);
     }
 
     std::unique_ptr<ISparseBinaryPredictorFactory> OutputWiseBinaryPredictorConfig::createSparsePredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, const uint32 numLabels) const {
-        uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, numLabels);
+        uint32 numThreads = multiThreadingConfig_.get().getSettings(featureMatrix, numLabels).numThreads;
         return std::make_unique<OutputWiseSparseBinaryPredictorFactory>(numThreads);
     }
 

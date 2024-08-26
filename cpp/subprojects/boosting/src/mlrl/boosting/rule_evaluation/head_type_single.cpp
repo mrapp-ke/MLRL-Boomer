@@ -20,7 +20,8 @@ namespace boosting {
         const IDecomposableClassificationLossConfig& lossConfig) const {
         float64 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
-        uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
+        uint32 numThreads =
+          multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs()).numThreads;
         std::unique_ptr<IDecomposableClassificationLossFactory> lossFactoryPtr =
           lossConfig.createDecomposableClassificationLossFactory();
         std::unique_ptr<IClassificationEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
@@ -44,7 +45,8 @@ namespace boosting {
         const ISparseDecomposableClassificationLossConfig& lossConfig) const {
         float64 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
-        uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
+        uint32 numThreads =
+          multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs()).numThreads;
         std::unique_ptr<ISparseDecomposableClassificationLossFactory> lossFactoryPtr =
           lossConfig.createSparseDecomposableClassificationLossFactory();
         std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
@@ -66,7 +68,8 @@ namespace boosting {
         const INonDecomposableClassificationLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         float64 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
-        uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
+        uint32 numThreads =
+          multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs()).numThreads;
         std::unique_ptr<INonDecomposableClassificationLossFactory> lossFactoryPtr =
           lossConfig.createNonDecomposableClassificationLossFactory();
         std::unique_ptr<IClassificationEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
@@ -90,7 +93,8 @@ namespace boosting {
         const IDecomposableRegressionLossConfig& lossConfig) const {
         float64 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
-        uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, regressionMatrix.getNumOutputs());
+        uint32 numThreads =
+          multiThreadingConfig_.get().getSettings(featureMatrix, regressionMatrix.getNumOutputs()).numThreads;
         std::unique_ptr<IDecomposableRegressionLossFactory> lossFactoryPtr =
           lossConfig.createDecomposableRegressionLossFactory();
         std::unique_ptr<IRegressionEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
@@ -114,7 +118,8 @@ namespace boosting {
         const INonDecomposableRegressionLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         float64 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
-        uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, regressionMatrix.getNumOutputs());
+        uint32 numThreads =
+          multiThreadingConfig_.get().getSettings(featureMatrix, regressionMatrix.getNumOutputs()).numThreads;
         std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr =
           lossConfig.createNonDecomposableRegressionLossFactory();
         std::unique_ptr<IRegressionEvaluationMeasureFactory> evaluationMeasureFactoryPtr =

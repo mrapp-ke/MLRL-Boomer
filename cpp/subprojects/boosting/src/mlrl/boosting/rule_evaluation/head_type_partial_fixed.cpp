@@ -66,7 +66,8 @@ namespace boosting {
       FixedPartialHeadConfig::createClassificationStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
         const IDecomposableClassificationLossConfig& lossConfig) const {
-        uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
+        uint32 numThreads =
+          multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs()).numThreads;
         float32 outputRatio = calculateOutputRatio(outputRatio_, labelMatrix);
         std::unique_ptr<IDecomposableClassificationLossFactory> lossFactoryPtr =
           lossConfig.createDecomposableClassificationLossFactory();
@@ -89,7 +90,8 @@ namespace boosting {
       FixedPartialHeadConfig::createClassificationStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
         const ISparseDecomposableClassificationLossConfig& lossConfig) const {
-        uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
+        uint32 numThreads =
+          multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs()).numThreads;
         float32 outputRatio = calculateOutputRatio(outputRatio_, labelMatrix);
         std::unique_ptr<ISparseDecomposableClassificationLossFactory> lossFactoryPtr =
           lossConfig.createSparseDecomposableClassificationLossFactory();
@@ -110,7 +112,8 @@ namespace boosting {
       FixedPartialHeadConfig::createClassificationStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
         const INonDecomposableClassificationLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
-        uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
+        uint32 numThreads =
+          multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs()).numThreads;
         float32 outputRatio = calculateOutputRatio(outputRatio_, labelMatrix);
         std::unique_ptr<INonDecomposableClassificationLossFactory> lossFactoryPtr =
           lossConfig.createNonDecomposableClassificationLossFactory();
@@ -133,7 +136,8 @@ namespace boosting {
       FixedPartialHeadConfig::createRegressionStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
         const IDecomposableRegressionLossConfig& lossConfig) const {
-        uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, regressionMatrix.getNumOutputs());
+        uint32 numThreads =
+          multiThreadingConfig_.get().getSettings(featureMatrix, regressionMatrix.getNumOutputs()).numThreads;
         float32 outputRatio = calculateOutputRatio(outputRatio_, regressionMatrix);
         std::unique_ptr<IDecomposableRegressionLossFactory> lossFactoryPtr =
           lossConfig.createDecomposableRegressionLossFactory();
@@ -156,7 +160,8 @@ namespace boosting {
       FixedPartialHeadConfig::createRegressionStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
         const INonDecomposableRegressionLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
-        uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, regressionMatrix.getNumOutputs());
+        uint32 numThreads =
+          multiThreadingConfig_.get().getSettings(featureMatrix, regressionMatrix.getNumOutputs()).numThreads;
         float32 outputRatio = calculateOutputRatio(outputRatio_, regressionMatrix);
         std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr =
           lossConfig.createNonDecomposableRegressionLossFactory();
