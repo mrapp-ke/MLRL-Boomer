@@ -96,7 +96,7 @@ namespace boosting {
           lossConfig_.get().createMarginalProbabilityFunctionFactory();
 
         if (marginalProbabilityFunctionFactoryPtr) {
-            uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, numOutputs);
+            uint32 numThreads = multiThreadingConfig_.get().getSettings(featureMatrix, numOutputs).numThreads;
             return std::make_unique<OutputWiseProbabilityPredictorFactory>(
               std::move(marginalProbabilityFunctionFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(),
               numThreads);

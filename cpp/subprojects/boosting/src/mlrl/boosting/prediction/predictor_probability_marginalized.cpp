@@ -132,7 +132,7 @@ namespace boosting {
           lossConfig_.get().createJointProbabilityFunctionFactory();
 
         if (jointProbabilityFunctionFactoryPtr) {
-            uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, numOutputs);
+            uint32 numThreads = multiThreadingConfig_.get().getSettings(featureMatrix, numOutputs).numThreads;
             return std::make_unique<MarginalizedProbabilityPredictorFactory>(
               std::move(jointProbabilityFunctionFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(),
               noJointProbabilityCalibrationModelPtr_.get(), numThreads);

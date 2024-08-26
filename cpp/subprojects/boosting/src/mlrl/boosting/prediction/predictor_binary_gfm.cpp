@@ -238,7 +238,7 @@ namespace boosting {
           lossConfig_.get().createJointProbabilityFunctionFactory();
 
         if (jointProbabilityFunctionFactoryPtr) {
-            uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, numOutputs);
+            uint32 numThreads = multiThreadingConfig_.get().getSettings(featureMatrix, numOutputs).numThreads;
             return std::make_unique<GfmBinaryPredictorFactory>(
               std::move(jointProbabilityFunctionFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(),
               noJointProbabilityCalibrationModelPtr_.get(), numThreads);
@@ -253,7 +253,7 @@ namespace boosting {
           lossConfig_.get().createJointProbabilityFunctionFactory();
 
         if (jointProbabilityFunctionFactoryPtr) {
-            uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, numLabels);
+            uint32 numThreads = multiThreadingConfig_.get().getSettings(featureMatrix, numLabels).numThreads;
             return std::make_unique<GfmSparseBinaryPredictorFactory>(
               std::move(jointProbabilityFunctionFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(),
               noJointProbabilityCalibrationModelPtr_.get(), numThreads);
