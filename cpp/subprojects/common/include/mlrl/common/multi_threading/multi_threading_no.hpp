@@ -12,4 +12,6 @@ class NoMultiThreadingConfig final : public IMultiThreadingConfig {
     public:
 
         uint32 getNumThreads(const IFeatureMatrix& featureMatrix, uint32 numOutputs) const override;
+
+        MultiThreadingSettings getSettings(const IFeatureMatrix& featureMatrix, uint32 numOutputs) const override;
 };

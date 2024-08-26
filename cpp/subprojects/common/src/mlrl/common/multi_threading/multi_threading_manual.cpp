@@ -18,3 +18,8 @@ IManualMultiThreadingConfig& ManualMultiThreadingConfig::setNumPreferredThreads(
 uint32 ManualMultiThreadingConfig::getNumThreads(const IFeatureMatrix& featureMatrix, uint32 numOutputs) const {
     return util::getNumAvailableThreads(numPreferredThreads_);
 }
+
+MultiThreadingSettings ManualMultiThreadingConfig::getSettings(const IFeatureMatrix& featureMatrix,
+                                                               uint32 numOutputs) const {
+    return MultiThreadingSettings(util::getNumAvailableThreads(numPreferredThreads_));
+}
