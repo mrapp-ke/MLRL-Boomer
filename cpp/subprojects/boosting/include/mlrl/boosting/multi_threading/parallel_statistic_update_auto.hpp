@@ -29,11 +29,6 @@ namespace boosting {
             AutoParallelStatisticUpdateConfig(const ReadableProperty<ILossConfig> lossConfig);
 
             /**
-             * @see `IMultiThreadingConfig::getNumThreads`
-             */
-            uint32 getNumThreads(const IFeatureMatrix& featureMatrix, uint32 numOutputs) const override;
-
-            /**
              * @see `IMultiThreadingConfig::getSettings`
              */
             MultiThreadingSettings getSettings(const IFeatureMatrix& featureMatrix, uint32 numOutputs) const override;

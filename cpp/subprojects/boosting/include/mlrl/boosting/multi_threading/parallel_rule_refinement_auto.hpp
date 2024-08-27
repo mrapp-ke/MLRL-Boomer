@@ -41,11 +41,6 @@ namespace boosting {
                                              ReadableProperty<IFeatureSamplingConfig> featureSamplingConfig);
 
             /**
-             * @see `IMultiThreadingConfig::getNumThreads`
-             */
-            uint32 getNumThreads(const IFeatureMatrix& featureMatrix, uint32 numOutputs) const override;
-
-            /**
              * @see `IMultiThreadingConfig::getSettings`
              */
             MultiThreadingSettings getSettings(const IFeatureMatrix& featureMatrix, uint32 numOutputs) const override;
