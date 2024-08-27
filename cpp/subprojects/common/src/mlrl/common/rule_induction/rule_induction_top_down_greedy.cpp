@@ -20,7 +20,7 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
 
         const uint32 maxHeadRefinements_;
 
-        const uint32 numThreads_;
+        const MultiThreadingSettings multiThreadingSettings_;
 
     public:
 
@@ -40,17 +40,17 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
          *                                  number of refinements should not be restricted
          * @param recalculatePredictions    True, if the predictions of rules should be recalculated on all training
          *                                  examples, if some of the examples have zero weights, false otherwise
-         * @param numThreads                The number of CPU threads to be used to search for potential refinements of
-         *                                  a rule in parallel. Must be at least 1
+         * @param multiThreadingSettings    An object of type `MultiThreadingSettings` that stores the settings to be
+         *                                  used for searching for potential refinements of a rule in parallel
          */
         GreedyTopDownRuleInduction(RuleCompareFunction ruleCompareFunction,
                                    std::unique_ptr<IRulePruning> rulePruningPtr,
                                    std::unique_ptr<IPostProcessor> postProcessorPtr, uint32 minCoverage,
                                    uint32 maxConditions, uint32 maxHeadRefinements, bool recalculatePredictions,
-                                   uint32 numThreads)
+                                   MultiThreadingSettings multiThreadingSettings)
             : AbstractRuleInduction(std::move(rulePruningPtr), std::move(postProcessorPtr), recalculatePredictions),
               ruleCompareFunction_(ruleCompareFunction), minCoverage_(minCoverage), maxConditions_(maxConditions),
-              maxHeadRefinements_(maxHeadRefinements), numThreads_(numThreads) {}
+              maxHeadRefinements_(maxHeadRefinements), multiThreadingSettings_(multiThreadingSettings) {}
 
     protected:
 
@@ -79,7 +79,7 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
 
                 // Search for the best refinement...
                 foundRefinement = findRefinement(refinementComparator, *featureSubspacePtr, sampledFeatureIndices,
-                                                 *currentOutputIndices, minCoverage_, numThreads_);
+                                                 *currentOutputIndices, minCoverage_, multiThreadingSettings_);
 
                 if (foundRefinement) {
                     Refinement& bestRefinement = *refinementComparator.begin();
@@ -133,7 +133,7 @@ class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
 
         const bool recalculatePredictions_;
 
-        const uint32 numThreads_;
+        const MultiThreadingSettings multiThreadingSettings_;
 
     public:
 
@@ -151,23 +151,23 @@ class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
          *                                  of refinements should not be restricted
          * @param recalculatePredictions    True, if the predictions of rules should be recalculated on all training
          *                                  examples, if some of the examples have zero weights, false otherwise
-         * @param numThreads                The number of CPU threads to be used to search for potential refinements of
-         *                                  a rule in parallel. Must be at least 1
+         * @param multiThreadingSettings    An object of type `MultiThreadingSettings` that stores the settings to be
+         *                                  used for searching for potential refinements of a rule in parallel
          */
         GreedyTopDownRuleInductionFactory(RuleCompareFunction ruleCompareFunction,
                                           std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr,
                                           std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr,
                                           uint32 minCoverage, uint32 maxConditions, uint32 maxHeadRefinements,
-                                          bool recalculatePredictions, uint32 numThreads)
+                                          bool recalculatePredictions, MultiThreadingSettings multiThreadingSettings)
             : ruleCompareFunction_(ruleCompareFunction), rulePruningFactoryPtr_(std::move(rulePruningFactoryPtr)),
               postProcessorFactoryPtr_(std::move(postProcessorFactoryPtr)), minCoverage_(minCoverage),
               maxConditions_(maxConditions), maxHeadRefinements_(maxHeadRefinements),
-              recalculatePredictions_(recalculatePredictions), numThreads_(numThreads) {}
+              recalculatePredictions_(recalculatePredictions), multiThreadingSettings_(multiThreadingSettings) {}
 
         std::unique_ptr<IRuleInduction> create() const override {
             return std::make_unique<GreedyTopDownRuleInduction>(
               ruleCompareFunction_, rulePruningFactoryPtr_->create(), postProcessorFactoryPtr_->create(), minCoverage_,
-              maxConditions_, maxHeadRefinements_, recalculatePredictions_, numThreads_);
+              maxConditions_, maxHeadRefinements_, recalculatePredictions_, multiThreadingSettings_);
         }
 };
 
@@ -244,9 +244,10 @@ std::unique_ptr<IRuleInductionFactory> GreedyTopDownRuleInductionConfig::createR
         minCoverage = std::min(numExamples, minCoverage_);
     }
 
-    uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, outputMatrix.getNumOutputs());
+    MultiThreadingSettings multiThreadingSettings =
+      multiThreadingConfig_.get().getSettings(featureMatrix, outputMatrix.getNumOutputs());
     return std::make_unique<GreedyTopDownRuleInductionFactory>(
       ruleCompareFunction_, rulePruningConfig_.get().createRulePruningFactory(),
       postProcessorConfig_.get().createPostProcessorFactory(), minCoverage, maxConditions_, maxHeadRefinements_,
-      recalculatePredictions_, numThreads);
+      recalculatePredictions_, multiThreadingSettings);
 }
