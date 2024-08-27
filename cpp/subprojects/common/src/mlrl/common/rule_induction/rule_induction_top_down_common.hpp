@@ -35,24 +35,25 @@ struct RuleRefinementEntry final {
 /**
  * Finds the best refinement(s) of an existing rule across multiple features.
  *
- * @tparam RefinementComparator The type of the comparator that is used to compare the potential refinements
- * @param refinementComparator  A reference to an object of template type `RefinementComparator` that should be used to
- *                              compare the potential refinements
- * @param featureSubspace       A reference to an object of type `IFeatureSubspace` that should be used to search for
- *                              the potential refinements
- * @param featureIndices        A reference to an object of type `IIndexVector` that provides access to the indices of
- *                              the features that should be considered
- * @param outputIndices         A reference to an object of type `IIndexVector` that provides access to the indices of
- *                              the outputs for which the refinement(s) may predict
- * @param minCoverage           The minimum number of training examples that must be covered by potential refinements
- * @param numThreads            The number of CPU threads to be used to search for potential refinements across multiple
- *                              features in parallel
- * @return                      True, if at least one refinement has been found, false otherwise
+ * @tparam RefinementComparator     The type of the comparator that is used to compare the potential refinements
+ * @param refinementComparator      A reference to an object of template type `RefinementComparator` that should be used
+ *                                  to compare the potential refinements
+ * @param featureSubspace           A reference to an object of type `IFeatureSubspace` that should be used to search
+ *                                  for the potential refinements
+ * @param featureIndices            A reference to an object of type `IIndexVector` that provides access to the indices
+ *                                  of the features that should be considered
+ * @param outputIndices             A reference to an object of type `IIndexVector` that provides access to the indices
+ *                                  of the outputs for which the refinement(s) may predict
+ * @param minCoverage               The minimum number of training examples that must be covered by potential
+ *                                  refinements
+ * @param multiThreadingSettings    An object of type `MultiThreadingSettings` that stores the settings to be used for
+ *                                  searching for potential refinements across multiple features in parallel
+ * @return                          True, if at least one refinement has been found, false otherwise
  */
 template<typename RefinementComparator>
 static inline bool findRefinement(RefinementComparator& refinementComparator, IFeatureSubspace& featureSubspace,
                                   const IIndexVector& featureIndices, const IIndexVector& outputIndices,
-                                  uint32 minCoverage, uint32 numThreads) {
+                                  uint32 minCoverage, MultiThreadingSettings multiThreadingSettings) {
     bool foundRefinement = false;
 
     // For each feature, create an object of type `RuleRefinement<RefinementComparator>`...
@@ -70,7 +71,7 @@ static inline bool findRefinement(RefinementComparator& refinementComparator, IF
     // Search for the best condition among all available features to be added to the current rule...
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numFeatures) firstprivate(ruleRefinementEntries) firstprivate(minCoverage) \
-      schedule(dynamic) num_threads(numThreads)
+      schedule(dynamic) num_threads(multiThreadingSettings.numThreads)
 #endif
     for (int64 i = 0; i < numFeatures; i++) {
         RuleRefinementEntry<RefinementComparator>& ruleRefinementEntry = ruleRefinementEntries[i];

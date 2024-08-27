@@ -33,16 +33,16 @@ namespace boosting {
 
     template<typename FeatureMatrix, typename Model>
     static inline std::unique_ptr<IBinaryPredictor> createPredictor(
-      const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels, uint32 numThreads,
-      const LabelVectorSet* labelVectorSet,
+      const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
+      MultiThreadingSettings multiThreadingSettings, const LabelVectorSet* labelVectorSet,
       const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
       const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
       const IJointProbabilityFunctionFactory& jointProbabilityFunctionFactory) {
         std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
           createBinaryTransformation(labelVectorSet, marginalProbabilityCalibrationModel,
                                      jointProbabilityCalibrationModel, jointProbabilityFunctionFactory);
-        return std::make_unique<BinaryPredictor<FeatureMatrix, Model>>(featureMatrix, model, numLabels, numThreads,
-                                                                       std::move(binaryTransformationPtr));
+        return std::make_unique<BinaryPredictor<FeatureMatrix, Model>>(
+          featureMatrix, model, numLabels, multiThreadingSettings, std::move(binaryTransformationPtr));
     }
 
     /**
@@ -59,7 +59,7 @@ namespace boosting {
 
             const IJointProbabilityCalibrationModel* jointProbabilityCalibrationModel_;
 
-            const uint32 numThreads_;
+            const MultiThreadingSettings multiThreadingSettings_;
 
         public:
 
@@ -77,16 +77,19 @@ namespace boosting {
              *                                              `IJointProbabilityCalibrationModel` to be used for the
              *                                              calibration of joint probabilities or a null pointer, if no
              *                                              such model is available
-             * @param numThreads                            The number of CPU threads to be used to make predictions for
-             *                                              different query examples in parallel. Must be at least 1
+             * @param multiThreadingSettings                An object of type `MultiThreadingSettings` that stores the
+             *                                              settings to be used for making predictions for different
+             *                                              query examples in parallel
              */
             GfmBinaryPredictorFactory(
               std::unique_ptr<IJointProbabilityFunctionFactory> jointProbabilityFunctionFactoryPtr,
               const IMarginalProbabilityCalibrationModel* marginalProbabilityCalibrationModel,
-              const IJointProbabilityCalibrationModel* jointProbabilityCalibrationModel, uint32 numThreads)
+              const IJointProbabilityCalibrationModel* jointProbabilityCalibrationModel,
+              MultiThreadingSettings multiThreadingSettings)
                 : jointProbabilityFunctionFactoryPtr_(std::move(jointProbabilityFunctionFactoryPtr)),
                   marginalProbabilityCalibrationModel_(marginalProbabilityCalibrationModel),
-                  jointProbabilityCalibrationModel_(jointProbabilityCalibrationModel), numThreads_(numThreads) {}
+                  jointProbabilityCalibrationModel_(jointProbabilityCalibrationModel),
+                  multiThreadingSettings_(multiThreadingSettings) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -97,7 +100,7 @@ namespace boosting {
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
-                return createPredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
+                return createPredictor(featureMatrix, model, numLabels, multiThreadingSettings_, labelVectorSet,
                                        marginalProbabilityCalibrationModel_ ? *marginalProbabilityCalibrationModel_
                                                                             : marginalProbabilityCalibrationModel,
                                        jointProbabilityCalibrationModel_ ? *jointProbabilityCalibrationModel_
@@ -113,7 +116,7 @@ namespace boosting {
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
-                return createPredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
+                return createPredictor(featureMatrix, model, numLabels, multiThreadingSettings_, labelVectorSet,
                                        marginalProbabilityCalibrationModel_ ? *marginalProbabilityCalibrationModel_
                                                                             : marginalProbabilityCalibrationModel,
                                        jointProbabilityCalibrationModel_ ? *jointProbabilityCalibrationModel_
@@ -124,8 +127,8 @@ namespace boosting {
 
     template<typename FeatureMatrix, typename Model>
     static inline std::unique_ptr<ISparseBinaryPredictor> createSparsePredictor(
-      const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels, uint32 numThreads,
-      const LabelVectorSet* labelVectorSet,
+      const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
+      MultiThreadingSettings multiThreadingSettings, const LabelVectorSet* labelVectorSet,
       const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
       const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
       const IJointProbabilityFunctionFactory& jointProbabilityFunctionFactory) {
@@ -133,7 +136,7 @@ namespace boosting {
           createBinaryTransformation(labelVectorSet, marginalProbabilityCalibrationModel,
                                      jointProbabilityCalibrationModel, jointProbabilityFunctionFactory);
         return std::make_unique<SparseBinaryPredictor<FeatureMatrix, Model>>(
-          featureMatrix, model, numLabels, numThreads, std::move(binaryTransformationPtr));
+          featureMatrix, model, numLabels, multiThreadingSettings, std::move(binaryTransformationPtr));
     }
 
     /**
@@ -150,7 +153,7 @@ namespace boosting {
 
             const IJointProbabilityCalibrationModel* jointProbabilityCalibrationModel_;
 
-            const uint32 numThreads_;
+            const MultiThreadingSettings multiThreadingSettings_;
 
         public:
 
@@ -168,16 +171,19 @@ namespace boosting {
              *                                              `IJointProbabilityCalibrationModel` to be used for the
              *                                              calibration of joint probabilities or a null pointer, if no
              *                                              such model is available
-             * @param numThreads                            The number of CPU threads to be used to make predictions for
-             *                                              different query examples in parallel. Must be at least 1
+             * @param multiThreadingSettings                An object of type `MultiThreadingSettings` that stores the
+             *                                              settings to be used for making predictions for different
+             *                                              query examples in parallel
              */
             GfmSparseBinaryPredictorFactory(
               std::unique_ptr<IJointProbabilityFunctionFactory> jointProbabilityFunctionFactoryPtr,
               const IMarginalProbabilityCalibrationModel* marginalProbabilityCalibrationModel,
-              const IJointProbabilityCalibrationModel* jointProbabilityCalibrationModel, uint32 numThreads)
+              const IJointProbabilityCalibrationModel* jointProbabilityCalibrationModel,
+              MultiThreadingSettings multiThreadingSettings)
                 : jointProbabilityFunctionFactoryPtr_(std::move(jointProbabilityFunctionFactoryPtr)),
                   marginalProbabilityCalibrationModel_(marginalProbabilityCalibrationModel),
-                  jointProbabilityCalibrationModel_(jointProbabilityCalibrationModel), numThreads_(numThreads) {}
+                  jointProbabilityCalibrationModel_(jointProbabilityCalibrationModel),
+                  multiThreadingSettings_(multiThreadingSettings) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -188,7 +194,7 @@ namespace boosting {
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
-                return createSparsePredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
+                return createSparsePredictor(featureMatrix, model, numLabels, multiThreadingSettings_, labelVectorSet,
                                              marginalProbabilityCalibrationModel_
                                                ? *marginalProbabilityCalibrationModel_
                                                : marginalProbabilityCalibrationModel,
@@ -205,7 +211,7 @@ namespace boosting {
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
-                return createSparsePredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
+                return createSparsePredictor(featureMatrix, model, numLabels, multiThreadingSettings_, labelVectorSet,
                                              marginalProbabilityCalibrationModel_
                                                ? *marginalProbabilityCalibrationModel_
                                                : marginalProbabilityCalibrationModel,
@@ -238,10 +244,11 @@ namespace boosting {
           lossConfig_.get().createJointProbabilityFunctionFactory();
 
         if (jointProbabilityFunctionFactoryPtr) {
-            uint32 numThreads = multiThreadingConfig_.get().getSettings(featureMatrix, numOutputs).numThreads;
+            MultiThreadingSettings multiThreadingSettings =
+              multiThreadingConfig_.get().getSettings(featureMatrix, numOutputs);
             return std::make_unique<GfmBinaryPredictorFactory>(
               std::move(jointProbabilityFunctionFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(),
-              noJointProbabilityCalibrationModelPtr_.get(), numThreads);
+              noJointProbabilityCalibrationModelPtr_.get(), multiThreadingSettings);
         } else {
             return nullptr;
         }
@@ -253,10 +260,11 @@ namespace boosting {
           lossConfig_.get().createJointProbabilityFunctionFactory();
 
         if (jointProbabilityFunctionFactoryPtr) {
-            uint32 numThreads = multiThreadingConfig_.get().getSettings(featureMatrix, numLabels).numThreads;
+            MultiThreadingSettings multiThreadingSettings =
+              multiThreadingConfig_.get().getSettings(featureMatrix, numLabels);
             return std::make_unique<GfmSparseBinaryPredictorFactory>(
               std::move(jointProbabilityFunctionFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(),
-              noJointProbabilityCalibrationModelPtr_.get(), numThreads);
+              noJointProbabilityCalibrationModelPtr_.get(), multiThreadingSettings);
         } else {
             return nullptr;
         }
