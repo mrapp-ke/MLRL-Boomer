@@ -654,7 +654,7 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
          *                            used for comparing the quality of different rules
          */
         explicit RuleLearnerConfig(RuleCompareFunction ruleCompareFunction)
-            : ruleCompareFunction_(ruleCompareFunction), rngConfigPtr_(std::make_unique<RNGConfig>()),
+            : ruleCompareFunction_(ruleCompareFunction),
               unusedRuleRemovalConfigPtr_(std::make_unique<UnusedRuleRemovalConfig>()) {}
 
         virtual ~RuleLearnerConfig() override {}
