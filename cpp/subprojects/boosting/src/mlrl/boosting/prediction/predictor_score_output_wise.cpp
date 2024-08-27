@@ -11,15 +11,16 @@ namespace boosting {
     class OutputWiseScorePredictorFactory final : public IScorePredictorFactory {
         private:
 
-            const uint32 numThreads_;
+            const MultiThreadingSettings multiThreadingSettings_;
 
         public:
 
             /**
-             * @param numThreads The number of CPU threads to be used to make predictions for different query examples
-             *                   in parallel. Must be at least 1
+             * @param multiThreadingSettings An object of type `MultiThreadingSettings` that stores the settnigs to be
+             *                               used for making predictions for different query examples in parallel
              */
-            OutputWiseScorePredictorFactory(uint32 numThreads) : numThreads_(numThreads) {}
+            OutputWiseScorePredictorFactory(MultiThreadingSettings multiThreadingSettings)
+                : multiThreadingSettings_(multiThreadingSettings) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -28,7 +29,7 @@ namespace boosting {
                                                     const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                     uint32 numOutputs) const override {
                 return std::make_unique<ScorePredictor<CContiguousView<const float32>, RuleList>>(
-                  featureMatrix, model, numOutputs, numThreads_);
+                  featureMatrix, model, numOutputs, multiThreadingSettings_);
             }
 
             /**
@@ -37,8 +38,8 @@ namespace boosting {
             std::unique_ptr<IScorePredictor> create(const CsrView<const float32>& featureMatrix, const RuleList& model,
                                                     const LabelVectorSet* labelVectorSet,
                                                     uint32 numOutputs) const override {
-                return std::make_unique<ScorePredictor<CsrView<const float32>, RuleList>>(featureMatrix, model,
-                                                                                          numOutputs, numThreads_);
+                return std::make_unique<ScorePredictor<CsrView<const float32>, RuleList>>(
+                  featureMatrix, model, numOutputs, multiThreadingSettings_);
             }
     };
 
@@ -48,8 +49,9 @@ namespace boosting {
 
     std::unique_ptr<IScorePredictorFactory> OutputWiseScorePredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {
-        uint32 numThreads = multiThreadingConfig_.get().getSettings(featureMatrix, numOutputs).numThreads;
-        return std::make_unique<OutputWiseScorePredictorFactory>(numThreads);
+        MultiThreadingSettings multiThreadingSettings =
+          multiThreadingConfig_.get().getSettings(featureMatrix, numOutputs);
+        return std::make_unique<OutputWiseScorePredictorFactory>(multiThreadingSettings);
     }
 
     bool OutputWiseScorePredictorConfig::isLabelVectorSetNeeded() const {

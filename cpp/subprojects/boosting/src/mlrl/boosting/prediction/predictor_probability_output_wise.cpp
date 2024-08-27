@@ -17,7 +17,7 @@ namespace boosting {
 
             const IMarginalProbabilityCalibrationModel* marginalProbabilityCalibrationModel_;
 
-            const uint32 numThreads_;
+            const MultiThreadingSettings multiThreadingSettings_;
 
         public:
 
@@ -31,14 +31,17 @@ namespace boosting {
              *                                              `IMarginalProbabilityCalibrationModel` to be used for the
              *                                              calibration of marginal probabilities or a null pointer, if
              *                                              no such model is available
-             * @param numThreads                            The number of CPU threads to be used to make predictions for
-             *                                              different query examples in parallel. Must be at least 1
+             * @param multiThreadingSettings                An object of type `MultiThreadingSettings` that stores the
+             *                                              settings to be used for making predictions for different
+             *                                              query examples in parallel
              */
             OutputWiseProbabilityPredictorFactory(
               std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactoryPtr,
-              const IMarginalProbabilityCalibrationModel* marginalProbabilityCalibrationModel, uint32 numThreads)
+              const IMarginalProbabilityCalibrationModel* marginalProbabilityCalibrationModel,
+              MultiThreadingSettings multiThreadingSettings)
                 : marginalProbabilityFunctionFactoryPtr_(std::move(marginalProbabilityFunctionFactoryPtr)),
-                  marginalProbabilityCalibrationModel_(marginalProbabilityCalibrationModel), numThreads_(numThreads) {}
+                  marginalProbabilityCalibrationModel_(marginalProbabilityCalibrationModel),
+                  multiThreadingSettings_(multiThreadingSettings) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -54,7 +57,7 @@ namespace boosting {
                     marginalProbabilityCalibrationModel_ ? *marginalProbabilityCalibrationModel_
                                                          : marginalProbabilityCalibrationModel));
                 return std::make_unique<ProbabilityPredictor<CContiguousView<const float32>, RuleList>>(
-                  featureMatrix, model, numLabels, numThreads_, std::move(probabilityTransformationPtr));
+                  featureMatrix, model, numLabels, multiThreadingSettings_, std::move(probabilityTransformationPtr));
             }
 
             /**
@@ -70,7 +73,7 @@ namespace boosting {
                     marginalProbabilityCalibrationModel_ ? *marginalProbabilityCalibrationModel_
                                                          : marginalProbabilityCalibrationModel));
                 return std::make_unique<ProbabilityPredictor<CsrView<const float32>, RuleList>>(
-                  featureMatrix, model, numLabels, numThreads_, std::move(probabilityTransformationPtr));
+                  featureMatrix, model, numLabels, multiThreadingSettings_, std::move(probabilityTransformationPtr));
             }
     };
 
@@ -96,10 +99,11 @@ namespace boosting {
           lossConfig_.get().createMarginalProbabilityFunctionFactory();
 
         if (marginalProbabilityFunctionFactoryPtr) {
-            uint32 numThreads = multiThreadingConfig_.get().getSettings(featureMatrix, numOutputs).numThreads;
+            MultiThreadingSettings multiThreadingSettings =
+              multiThreadingConfig_.get().getSettings(featureMatrix, numOutputs);
             return std::make_unique<OutputWiseProbabilityPredictorFactory>(
               std::move(marginalProbabilityFunctionFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(),
-              numThreads);
+              multiThreadingSettings);
         } else {
             return nullptr;
         }
