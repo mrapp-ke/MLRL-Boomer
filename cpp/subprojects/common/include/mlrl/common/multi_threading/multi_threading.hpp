@@ -33,18 +33,6 @@ class IMultiThreadingConfig {
         virtual ~IMultiThreadingConfig() {}
 
         /**
-         * Determines and returns the number of threads that can actually be used by a parallelizable algorithm,
-         * depending on the number of available CPU cores and whether multi-threading support was enabled at
-         * compile-time.
-         *
-         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
-         *                      values of the training examples
-         * @param numOutputs    The total number of available outputs
-         * @return              The number of threads that can actually be used
-         */
-        virtual uint32 getNumThreads(const IFeatureMatrix& featureMatrix, uint32 numOutputs) const = 0;
-
-        /**
          * Determines and returns the settings to be used by parallelizable algorithms, depending on the available
          * hardware and whether multi-threading support was enabled at compile-time.
          *
