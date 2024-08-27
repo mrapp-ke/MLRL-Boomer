@@ -1,5 +1,6 @@
 #include "mlrl/common/rule_refinement/feature_space_tabular.hpp"
 
+#include "mlrl/common/multi_threading/multi_threading.hpp"
 #include "mlrl/common/rule_refinement/rule_refinement_feature_based.hpp"
 #include "mlrl/common/util/openmp.hpp"
 
@@ -290,7 +291,8 @@ class TabularFeatureSpace final : public IFeatureSpace {
 
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) \
-      firstprivate(statisticsUpdateRawPtr) schedule(dynamic) num_threads(featureSpace_.numThreads_)
+      firstprivate(statisticsUpdateRawPtr) schedule(dynamic) \
+      num_threads(featureSpace_.multiThreadingSettings_.numThreads)
 #endif
                     for (int64 i = 0; i < numStatistics; i++) {
                         if ((*coverageMaskPtr)[i]) {
@@ -309,7 +311,8 @@ class TabularFeatureSpace final : public IFeatureSpace {
 
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) \
-      firstprivate(statisticsUpdateRawPtr) schedule(dynamic) num_threads(featureSpace_.numThreads_)
+      firstprivate(statisticsUpdateRawPtr) schedule(dynamic) \
+      num_threads(featureSpace_.multiThreadingSettings_.numThreads)
 #endif
                     for (int64 i = 0; i < numStatistics; i++) {
                         if ((*coverageMaskPtr)[i]) {
@@ -327,30 +330,31 @@ class TabularFeatureSpace final : public IFeatureSpace {
 
         const IFeatureBinningFactory& featureBinningFactory_;
 
-        const uint32 numThreads_;
+        const MultiThreadingSettings multiThreadingSettings_;
 
         std::unordered_map<uint32, std::unique_ptr<IFeatureVector>> cache_;
 
     public:
 
         /**
-         * @param featureMatrix         A reference to an object of type `IColumnWiseFeatureMatrix` that provides
-         *                              column-wise access to the feature values of individual training examples
-         * @param featureInfo           A reference to an object of type `IFeatureInfo` that provides information about
-         *                              the types of individual features
-         * @param statisticsProvider    A reference to an object of type `IStatisticsProvider` that provides access to
-         *                              statistics about the quality of predictions for training examples
-         * @param featureBinningFactory A reference to an object of type `IFeatureBinningFactory` that allows to create
-         *                              implementations of the binning method to be used for assigning numerical feature
-         *                              values to bins
-         *                              assign nominal feature values to bins
-         * @param numThreads            The number of CPU threads to be used to update statistics in parallel
+         * @param featureMatrix             A reference to an object of type `IColumnWiseFeatureMatrix` that provides
+         *                                  column-wise access to the feature values of individual training examples
+         * @param featureInfo               A reference to an object of type `IFeatureInfo` that provides information
+         *                                  about the types of individual features
+         * @param statisticsProvider        A reference to an object of type `IStatisticsProvider` that provides access
+         *                                  to statistics about the quality of predictions for training examples
+         * @param featureBinningFactory     A reference to an object of type `IFeatureBinningFactory` that allows to
+         *                                  create implementations of the binning method to be used for assigning
+         *                                  numerical feature values to bins
+         * @param multiThreadingSettings    An object of type `MultiThreadingSettings` that stores the settings to be
+         *                                  used for updating statistics in parallel
          */
         TabularFeatureSpace(const IColumnWiseFeatureMatrix& featureMatrix, const IFeatureInfo& featureInfo,
                             IStatisticsProvider& statisticsProvider,
-                            const IFeatureBinningFactory& featureBinningFactory, uint32 numThreads)
+                            const IFeatureBinningFactory& featureBinningFactory,
+                            MultiThreadingSettings multiThreadingSettings)
             : featureMatrix_(featureMatrix), featureInfo_(featureInfo), statisticsProvider_(statisticsProvider),
-              featureBinningFactory_(featureBinningFactory), numThreads_(numThreads) {}
+              featureBinningFactory_(featureBinningFactory), multiThreadingSettings_(multiThreadingSettings) {}
 
         IStatisticsProvider& getStatisticsProvider() const override final {
             return statisticsProvider_;
@@ -379,12 +383,12 @@ class TabularFeatureSpace final : public IFeatureSpace {
 };
 
 TabularFeatureSpaceFactory::TabularFeatureSpaceFactory(std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr,
-                                                       uint32 numThreads)
-    : featureBinningFactoryPtr_(std::move(featureBinningFactoryPtr)), numThreads_(numThreads) {}
+                                                       MultiThreadingSettings multiThreadingSettings)
+    : featureBinningFactoryPtr_(std::move(featureBinningFactoryPtr)), multiThreadingSettings_(multiThreadingSettings) {}
 
 std::unique_ptr<IFeatureSpace> TabularFeatureSpaceFactory::create(const IColumnWiseFeatureMatrix& featureMatrix,
                                                                   const IFeatureInfo& featureInfo,
                                                                   IStatisticsProvider& statisticsProvider) const {
     return std::make_unique<TabularFeatureSpace>(featureMatrix, featureInfo, statisticsProvider,
-                                                 *featureBinningFactoryPtr_, numThreads_);
+                                                 *featureBinningFactoryPtr_, multiThreadingSettings_);
 }
