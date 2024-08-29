@@ -85,6 +85,15 @@ class IFeatureSubspace {
         virtual std::unique_ptr<IFeatureSubspace> copy() const = 0;
 
         /**
+         * Creates and returns a new instance of the type `ICallback` that allows to retrieve information that is
+         * required to search for the best refinement of a rule that covers all examples included in this subspace.
+         *
+         * @param featureIndex  The index of the feature that should be considered when searching for refinements
+         * @return              An unique pointer to an object of type `ICallback` that has been created
+         */
+        virtual std::unique_ptr<ICallback> createCallback(uint32 featureIndex) = 0;
+
+        /**
          * Creates and returns a new instance of the type `IRuleRefinement` that allows to find the best refinement of
          * a rule that covers all examples included in this subspace and predicts for all available outputs.
          *

@@ -204,6 +204,21 @@ class TabularFeatureSpace final : public IFeatureSpace {
                     return std::make_unique<FeatureSubspace<WeightVector>>(*this);
                 }
 
+                std::unique_ptr<ICallback> createCallback(uint32 featureIndex) override {
+                    // Retrieve the `FilteredCacheEntry` from the cache, or insert a new one if it does not already
+                    // exist...
+                    auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredCacheEntry()).first;
+                    IFeatureVector* featureVector = cacheFilteredIterator->second.vectorPtr.get();
+
+                    // If the `FilteredCacheEntry` in the cache does not refer to an `IFeatureVector`, add an empty
+                    // `unique_ptr` to the cache...
+                    if (!featureVector) {
+                        featureSpace_.cache_.emplace(featureIndex, std::unique_ptr<IFeatureVector>());
+                    }
+
+                    return std::make_unique<Callback>(*this, featureSpace_.featureInfo_, featureIndex);
+                }
+
                 std::unique_ptr<IRuleRefinement> createRuleRefinement(const CompleteIndexVector& outputIndices,
                                                                       uint32 featureIndex) override {
                     return createRuleRefinementInternally(outputIndices, featureIndex);
