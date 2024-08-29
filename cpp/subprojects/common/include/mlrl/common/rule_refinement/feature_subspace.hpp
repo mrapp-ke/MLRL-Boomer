@@ -100,10 +100,16 @@ class IFeatureSubspace {
          * @param outputIndices A reference to an object of type `CompleteIndexVector` that provides access to the
          *                      indices of the outputs for which the existing rule predicts
          * @param featureIndex  The index of the feature that should be considered when searching for refinements
+         * @param statistics    A reference to an object of type `IWeightedStatistics` that should be used to search for
+         *                      potential refinements
+         * @param featureVector A reference to an object of type `IFeatureVector` that should be used to search for
+         *                      potential refinements
          * @return              An unique pointer to an object of type `IRuleRefinement` that has been created
          */
         virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(const CompleteIndexVector& outputIndices,
-                                                                      uint32 featureIndex) = 0;
+                                                                      uint32 featureIndex,
+                                                                      const IWeightedStatistics& statistics,
+                                                                      const IFeatureVector& featureVector) = 0;
 
         /**
          * Creates and returns a new instance of the type `IRuleRefinement` that allows to find the best refinement of
@@ -112,10 +118,16 @@ class IFeatureSubspace {
          * @param outputIndices A reference to an object of type `PartialIndexVector` that provides access to the
          *                      indices of the outputs for which the existing rule predicts
          * @param featureIndex  The index of the feature that should be considered when searching for refinements
+         * @param statistics    A reference to an object of type `IWeightedStatistics` that should be used to search for
+         *                      potential refinements
+         * @param featureVector A reference to an object of type `IFeatureVector` that should be used to search for
+         *                      potential refinements
          * @return              An unique pointer to an object of type `IRuleRefinement` that has been created
          */
         virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(const PartialIndexVector& outputIndices,
-                                                                      uint32 featureIndex) = 0;
+                                                                      uint32 featureIndex,
+                                                                      const IWeightedStatistics& statistics,
+                                                                      const IFeatureVector& featureVector) = 0;
 
         /**
          * Filters the subspace such that it only includes those training examples that statisfy a specific condition.

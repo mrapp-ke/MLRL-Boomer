@@ -31,6 +31,8 @@ CompleteIndexVector::const_iterator CompleteIndexVector::cend() const {
 }
 
 std::unique_ptr<IRuleRefinement> CompleteIndexVector::createRuleRefinement(IFeatureSubspace& featureSubspace,
-                                                                           uint32 featureIndex) const {
-    return featureSubspace.createRuleRefinement(*this, featureIndex);
+                                                                           uint32 featureIndex,
+                                                                           const IWeightedStatistics& statistics,
+                                                                           const IFeatureVector& featureVector) const {
+    return featureSubspace.createRuleRefinement(*this, featureIndex, statistics, featureVector);
 }
