@@ -3,8 +3,8 @@
  */
 #pragma once
 
+#include "mlrl/common/rule_refinement/feature_subspace.hpp"
 #include "mlrl/common/rule_refinement/rule_refinement.hpp"
-#include "mlrl/common/statistics/statistics_weighted.hpp"
 
 #include <memory>
 
@@ -26,7 +26,7 @@ class FeatureBasedRuleRefinement final : public IRuleRefinement {
 
         const uint32 numExamplesWithNonZeroWeights_;
 
-        const std::unique_ptr<IRuleRefinement::ICallback> callbackPtr_;
+        const std::unique_ptr<IFeatureSubspace::ICallback> callbackPtr_;
 
     public:
 
@@ -37,13 +37,13 @@ class FeatureBasedRuleRefinement final : public IRuleRefinement {
          * @param featureIndex                  The index of the feature, the new condition corresponds to
          * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
          *                                      by a refinement
-         * @param callbackPtr                   An unique pointer to an object of type `IRuleRefinement::ICallback` that
-         *                                      allows to retrieve the information that is required to search for
+         * @param callbackPtr                   An unique pointer to an object of type `IFeatureSubspace::ICallback`
+         *                                      that allows to retrieve the information that is required to search for
          *                                      potential refinements
          */
         FeatureBasedRuleRefinement(const IndexVector& outputIndices, uint32 featureIndex,
                                    uint32 numExamplesWithNonZeroWeights,
-                                   std::unique_ptr<IRuleRefinement::ICallback> callbackPtr);
+                                   std::unique_ptr<IFeatureSubspace::ICallback> callbackPtr);
 
         void findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) const override;
 
