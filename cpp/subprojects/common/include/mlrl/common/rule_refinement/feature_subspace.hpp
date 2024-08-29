@@ -5,6 +5,7 @@
 
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
+#include "mlrl/common/input/feature_vector.hpp"
 #include "mlrl/common/model/condition.hpp"
 #include "mlrl/common/rule_refinement/coverage_mask.hpp"
 #include "mlrl/common/rule_refinement/prediction.hpp"
@@ -20,6 +21,59 @@
  */
 class IFeatureSubspace {
     public:
+
+        /**
+         * Defines an interface for callbacks that may be invoked in order to retrieve the information that is required
+         * to search for potential refinements of a rule. It consists of `IWeightedStatistics`, as well as an
+         * `IFeatureVector` that allows to determine the thresholds that may be used by potential conditions.
+         */
+        class ICallback {
+            public:
+
+                /**
+                 * The data that is provided via the callback's `get` function.
+                 */
+                struct Result final {
+                    public:
+
+                        /**
+                         * @param statistics    A reference to an object of type `IWeightedStatistics` that should be
+                         *                      used to search for potential refinements
+                         * @param featureVector A reference to an object of type `IFeatureVector` that should be used to
+                         *                      search for potential refinements
+                         */
+                        Result(const IWeightedStatistics& statistics, const IFeatureVector& featureVector)
+                            : statistics(statistics), featureVector(featureVector) {}
+
+                        /**
+                         * @param other A reference to an object of type `Result` that should be copied
+                         */
+                        Result(const Result& other)
+                            : statistics(other.statistics), featureVector(other.featureVector) {}
+
+                        /**
+                         * A reference to an object of type `IWeightedStatistics` that should be used to search for
+                         * potential refinements.
+                         */
+                        const IWeightedStatistics& statistics;
+
+                        /**
+                         * A reference to an object of type `IFeatureVector` that should be used to search for potential
+                         * refinements.
+                         */
+                        const IFeatureVector& featureVector;
+                };
+
+                virtual ~ICallback() {}
+
+                /**
+                 * Invokes the callback and returns its result.
+                 *
+                 * @return An object of type `Result` that stores references to the statistics and the feature vector
+                 *         that may be used to search for potential refinements
+                 */
+                virtual Result get() = 0;
+        };
 
         virtual ~IFeatureSubspace() {}
 
