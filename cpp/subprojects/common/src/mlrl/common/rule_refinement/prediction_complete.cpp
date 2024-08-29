@@ -89,8 +89,10 @@ std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
 }
 
 std::unique_ptr<IRuleRefinement> CompletePrediction::createRuleRefinement(IFeatureSubspace& featureSubspace,
-                                                                          uint32 featureIndex) const {
-    return indexVector_.createRuleRefinement(featureSubspace, featureIndex);
+                                                                          uint32 featureIndex,
+                                                                          const IWeightedStatistics& statistics,
+                                                                          const IFeatureVector& featureVector) const {
+    return indexVector_.createRuleRefinement(featureSubspace, featureIndex, statistics, featureVector);
 }
 
 std::unique_ptr<IStatisticsUpdate> CompletePrediction::createStatisticsUpdate(IStatistics& statistics) const {
