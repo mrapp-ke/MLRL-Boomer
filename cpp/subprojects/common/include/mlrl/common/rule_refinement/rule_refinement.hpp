@@ -8,6 +8,8 @@
 #include "mlrl/common/rule_refinement/refinement_comparator_fixed.hpp"
 #include "mlrl/common/rule_refinement/refinement_comparator_single.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that allow to find the best refinement of existing rules.
  */
@@ -51,4 +53,20 @@ class IRuleRefinement {
         virtual bool findRefinement(FixedRefinementComparator& comparator, IFeatureSubspace& featureSubspace,
                                     const IIndexVector& featureIndices, const IIndexVector& outputIndices,
                                     uint32 minCoverage) const = 0;
+};
+
+/**
+ * Defines an interface for all factories that allow to create instances of the type `IRuleRefinement`.
+ */
+class IRuleRefinementFactory {
+    public:
+
+        virtual ~IRuleRefinementFactory() {}
+
+        /**
+         * Creates and returns a new object of type `IRuleRefinement`.
+         *
+         * @return An unique pointer to an object of type `IRuleRefinement` that has been created
+         */
+        virtual std::unique_ptr<IRuleRefinement> create() const = 0;
 };
