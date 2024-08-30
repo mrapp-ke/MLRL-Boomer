@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/indices/index_vector.hpp"
+#include "mlrl/common/input/feature_matrix.hpp"
 #include "mlrl/common/rule_refinement/feature_subspace.hpp"
 #include "mlrl/common/rule_refinement/refinement_comparator_fixed.hpp"
 #include "mlrl/common/rule_refinement/refinement_comparator_single.hpp"
@@ -69,4 +70,25 @@ class IRuleRefinementFactory {
          * @return An unique pointer to an object of type `IRuleRefinement` that has been created
          */
         virtual std::unique_ptr<IRuleRefinement> create() const = 0;
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a method for finding the best refinements of existing
+ * rules.
+ */
+class IRuleRefinementConfig {
+    public:
+
+        virtual ~IRuleRefinementConfig() {}
+
+        /**
+         * Creates and returns an new object of type `IRuleRefinementFactory`.
+         *
+         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
+         *                      values of the training examples
+         * @param numOutputs    The total number of available outputs
+         * @return              An unique pointer to an object of type `IRuleRefinementFactory` that has been created
+         */
+        virtual std::unique_ptr<IRuleRefinementFactory> createRuleRefinementFactory(const IFeatureMatrix& featureMatrix,
+                                                                                    uint32 numOutputs) const = 0;
 };
