@@ -149,8 +149,9 @@ class PartialPrediction final : public ResizableVectorDecorator<VectorDecorator<
           const IStatistics& statistics,
           const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override;
 
-        std::unique_ptr<IRuleRefinement> createRuleRefinement(IFeatureSubspace& featureSubspace,
-                                                              uint32 featureIndex) const override;
+        std::unique_ptr<IRuleRefinement> createRuleRefinement(IFeatureSubspace& featureSubspace, uint32 featureIndex,
+                                                              const IWeightedStatistics& statistics,
+                                                              const IFeatureVector& featureVector) const override;
 
         std::unique_ptr<IStatisticsUpdate> createStatisticsUpdate(IStatistics& statistics) const override;
 
