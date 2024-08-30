@@ -4,13 +4,9 @@
 
 template<typename IndexVector, typename Comparator>
 static inline void findRefinementInternally(const IndexVector& outputIndices, uint32 featureIndex,
-                                            uint32 numExamplesWithNonZeroWeights, IRuleRefinement::ICallback& callback,
-                                            Comparator& comparator, uint32 minCoverage) {
-    // Invoke the callback...
-    IRuleRefinement::ICallback::Result callbackResult = callback.get();
-    const IImmutableWeightedStatistics& statistics = callbackResult.statistics;
-    const IFeatureVector& featureVector = callbackResult.featureVector;
-
+                                            const IWeightedStatistics& statistics, const IFeatureVector& featureVector,
+                                            uint32 numExamplesWithNonZeroWeights, Comparator& comparator,
+                                            uint32 minCoverage) {
     // Create a new, empty subset of the statistics...
     std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(outputIndices);
 
@@ -22,24 +18,26 @@ static inline void findRefinementInternally(const IndexVector& outputIndices, ui
 }
 
 template<typename IndexVector>
-FeatureBasedRuleRefinement<IndexVector>::FeatureBasedRuleRefinement(
-  const IndexVector& outputIndices, uint32 featureIndex, uint32 numExamplesWithNonZeroWeights,
-  std::unique_ptr<IRuleRefinement::ICallback> callbackPtr)
-    : outputIndices_(outputIndices), featureIndex_(featureIndex),
-      numExamplesWithNonZeroWeights_(numExamplesWithNonZeroWeights), callbackPtr_(std::move(callbackPtr)) {}
+FeatureBasedRuleRefinement<IndexVector>::FeatureBasedRuleRefinement(const IndexVector& outputIndices,
+                                                                    uint32 featureIndex,
+                                                                    const IWeightedStatistics& statistics,
+                                                                    const IFeatureVector& featureVector,
+                                                                    uint32 numExamplesWithNonZeroWeights)
+    : outputIndices_(outputIndices), featureIndex_(featureIndex), statistics_(statistics),
+      featureVector_(featureVector), numExamplesWithNonZeroWeights_(numExamplesWithNonZeroWeights) {}
 
 template<typename IndexVector>
 void FeatureBasedRuleRefinement<IndexVector>::findRefinement(SingleRefinementComparator& comparator,
                                                              uint32 minCoverage) const {
-    findRefinementInternally(outputIndices_, featureIndex_, numExamplesWithNonZeroWeights_, *callbackPtr_, comparator,
-                             minCoverage);
+    findRefinementInternally(outputIndices_, featureIndex_, statistics_, featureVector_, numExamplesWithNonZeroWeights_,
+                             comparator, minCoverage);
 }
 
 template<typename IndexVector>
 void FeatureBasedRuleRefinement<IndexVector>::findRefinement(FixedRefinementComparator& comparator,
                                                              uint32 minCoverage) const {
-    findRefinementInternally(outputIndices_, featureIndex_, numExamplesWithNonZeroWeights_, *callbackPtr_, comparator,
-                             minCoverage);
+    findRefinementInternally(outputIndices_, featureIndex_, statistics_, featureVector_, numExamplesWithNonZeroWeights_,
+                             comparator, minCoverage);
 }
 
 template class FeatureBasedRuleRefinement<CompleteIndexVector>;

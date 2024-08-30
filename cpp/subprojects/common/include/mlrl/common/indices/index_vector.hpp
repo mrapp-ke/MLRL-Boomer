@@ -10,6 +10,8 @@
 // Forward declarations
 class IRuleRefinement;
 class IFeatureSubspace;
+class IWeightedStatistics;
+class IFeatureVector;
 
 /**
  * Defines an interface for all classes that provide random access to indices.
@@ -49,8 +51,14 @@ class IIndexVector {
          * @param featureSubspace   A reference to an object of type `IFeatureSubspace` that should be to search for the
          *                          refinement
          * @param featureIndex      The index of the feature that should be considered when searching for the refinement
+         * @param statistics        A reference to an object of type `IWeightedStatistics` that should be used to search
+         *                          for potential refinements
+         * @param featureVector     A reference to an object of type `IFeatureVector` that should be used to search for
+         *                          potential refinements
          * @return                  An unique pointer to an object of type `IRuleRefinement` that has been created
          */
         virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(IFeatureSubspace& featureSubspace,
-                                                                      uint32 featureIndex) const = 0;
+                                                                      uint32 featureIndex,
+                                                                      const IWeightedStatistics& statistics,
+                                                                      const IFeatureVector& featureVector) const = 0;
 };
