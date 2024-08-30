@@ -5,6 +5,7 @@
 
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
+#include "mlrl/common/input/feature_vector.hpp"
 #include "mlrl/common/model/condition.hpp"
 #include "mlrl/common/rule_refinement/coverage_mask.hpp"
 #include "mlrl/common/rule_refinement/prediction.hpp"
@@ -21,6 +22,59 @@
 class IFeatureSubspace {
     public:
 
+        /**
+         * Defines an interface for callbacks that may be invoked in order to retrieve the information that is required
+         * to search for potential refinements of a rule. It consists of `IWeightedStatistics`, as well as an
+         * `IFeatureVector` that allows to determine the thresholds that may be used by potential conditions.
+         */
+        class ICallback {
+            public:
+
+                /**
+                 * The data that is provided via the callback's `get` function.
+                 */
+                struct Result final {
+                    public:
+
+                        /**
+                         * @param statistics    A reference to an object of type `IWeightedStatistics` that should be
+                         *                      used to search for potential refinements
+                         * @param featureVector A reference to an object of type `IFeatureVector` that should be used to
+                         *                      search for potential refinements
+                         */
+                        Result(const IWeightedStatistics& statistics, const IFeatureVector& featureVector)
+                            : statistics(statistics), featureVector(featureVector) {}
+
+                        /**
+                         * @param other A reference to an object of type `Result` that should be copied
+                         */
+                        Result(const Result& other)
+                            : statistics(other.statistics), featureVector(other.featureVector) {}
+
+                        /**
+                         * A reference to an object of type `IWeightedStatistics` that should be used to search for
+                         * potential refinements.
+                         */
+                        const IWeightedStatistics& statistics;
+
+                        /**
+                         * A reference to an object of type `IFeatureVector` that should be used to search for potential
+                         * refinements.
+                         */
+                        const IFeatureVector& featureVector;
+                };
+
+                virtual ~ICallback() {}
+
+                /**
+                 * Invokes the callback and returns its result.
+                 *
+                 * @return An object of type `Result` that stores references to the statistics and the feature vector
+                 *         that may be used to search for potential refinements
+                 */
+                virtual Result get() = 0;
+        };
+
         virtual ~IFeatureSubspace() {}
 
         /**
@@ -31,16 +85,31 @@ class IFeatureSubspace {
         virtual std::unique_ptr<IFeatureSubspace> copy() const = 0;
 
         /**
+         * Creates and returns a new instance of the type `ICallback` that allows to retrieve information that is
+         * required to search for the best refinement of a rule that covers all examples included in this subspace.
+         *
+         * @param featureIndex  The index of the feature that should be considered when searching for refinements
+         * @return              An unique pointer to an object of type `ICallback` that has been created
+         */
+        virtual std::unique_ptr<ICallback> createCallback(uint32 featureIndex) = 0;
+
+        /**
          * Creates and returns a new instance of the type `IRuleRefinement` that allows to find the best refinement of
          * a rule that covers all examples included in this subspace and predicts for all available outputs.
          *
          * @param outputIndices A reference to an object of type `CompleteIndexVector` that provides access to the
          *                      indices of the outputs for which the existing rule predicts
          * @param featureIndex  The index of the feature that should be considered when searching for refinements
+         * @param statistics    A reference to an object of type `IWeightedStatistics` that should be used to search for
+         *                      potential refinements
+         * @param featureVector A reference to an object of type `IFeatureVector` that should be used to search for
+         *                      potential refinements
          * @return              An unique pointer to an object of type `IRuleRefinement` that has been created
          */
         virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(const CompleteIndexVector& outputIndices,
-                                                                      uint32 featureIndex) = 0;
+                                                                      uint32 featureIndex,
+                                                                      const IWeightedStatistics& statistics,
+                                                                      const IFeatureVector& featureVector) = 0;
 
         /**
          * Creates and returns a new instance of the type `IRuleRefinement` that allows to find the best refinement of
@@ -49,10 +118,16 @@ class IFeatureSubspace {
          * @param outputIndices A reference to an object of type `PartialIndexVector` that provides access to the
          *                      indices of the outputs for which the existing rule predicts
          * @param featureIndex  The index of the feature that should be considered when searching for refinements
+         * @param statistics    A reference to an object of type `IWeightedStatistics` that should be used to search for
+         *                      potential refinements
+         * @param featureVector A reference to an object of type `IFeatureVector` that should be used to search for
+         *                      potential refinements
          * @return              An unique pointer to an object of type `IRuleRefinement` that has been created
          */
         virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(const PartialIndexVector& outputIndices,
-                                                                      uint32 featureIndex) = 0;
+                                                                      uint32 featureIndex,
+                                                                      const IWeightedStatistics& statistics,
+                                                                      const IFeatureVector& featureVector) = 0;
 
         /**
          * Filters the subspace such that it only includes those training examples that statisfy a specific condition.
