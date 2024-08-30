@@ -20,16 +20,16 @@ struct RuleRefinementEntry final {
     public:
 
         /**
-         * An unique pointer to an object of type `IRuleRefinement` that may be used to search for potential refinements
-         * of a rule.
-         */
-        std::unique_ptr<IRuleRefinement> ruleRefinementPtr;
-
-        /**
          * An unique pointer to an object of template type `RefinementComparator` that allows comparing different
          * refinements and keeping track of the best one(s).
          */
         std::unique_ptr<RefinementComparator> comparatorPtr;
+
+        /**
+         * An unique pointer to an object of type `IFeatureSubspace::ICallback` that may be invoked in order to retrieve
+         * the information that is required to search for potential refinements of a rule.
+         */
+        std::unique_ptr<IFeatureSubspace::ICallback> callbackPtr;
 };
 
 /**
@@ -65,7 +65,7 @@ static inline bool findRefinement(RefinementComparator& refinementComparator, IF
         uint32 featureIndex = featureIndices.getIndex(i);
         RuleRefinementEntry<RefinementComparator>& ruleRefinementEntry = ruleRefinementEntries[i];
         ruleRefinementEntry.comparatorPtr = std::make_unique<RefinementComparator>(refinementComparator);
-        ruleRefinementEntry.ruleRefinementPtr = outputIndices.createRuleRefinement(featureSubspace, featureIndex);
+        ruleRefinementEntry.callbackPtr = featureSubspace.createCallback(featureIndex);
     }
 
     // Search for the best condition among all available features to be added to the current rule...
@@ -74,8 +74,12 @@ static inline bool findRefinement(RefinementComparator& refinementComparator, IF
       schedule(dynamic) num_threads(multiThreadingSettings.numThreads)
 #endif
     for (int64 i = 0; i < numFeatures; i++) {
+        uint32 featureIndex = featureIndices.getIndex(i);
         RuleRefinementEntry<RefinementComparator>& ruleRefinementEntry = ruleRefinementEntries[i];
-        ruleRefinementEntry.ruleRefinementPtr->findRefinement(*ruleRefinementEntry.comparatorPtr, minCoverage);
+        IFeatureSubspace::ICallback::Result callbackResult = ruleRefinementEntry.callbackPtr->get();
+        std::unique_ptr<IRuleRefinement> ruleRefinementPtr = outputIndices.createRuleRefinement(
+          featureSubspace, featureIndex, callbackResult.statistics, callbackResult.featureVector);
+        ruleRefinementPtr->findRefinement(*ruleRefinementEntry.comparatorPtr, minCoverage);
     }
 
     // Pick the best refinement among the refinements that have been found for the different features...

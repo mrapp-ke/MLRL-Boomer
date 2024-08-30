@@ -3,8 +3,8 @@
  */
 #pragma once
 
+#include "mlrl/common/input/feature_vector.hpp"
 #include "mlrl/common/rule_refinement/rule_refinement.hpp"
-#include "mlrl/common/statistics/statistics_weighted.hpp"
 
 #include <memory>
 
@@ -24,9 +24,11 @@ class FeatureBasedRuleRefinement final : public IRuleRefinement {
 
         const uint32 featureIndex_;
 
-        const uint32 numExamplesWithNonZeroWeights_;
+        const IWeightedStatistics& statistics_;
 
-        const std::unique_ptr<IRuleRefinement::ICallback> callbackPtr_;
+        const IFeatureVector& featureVector_;
+
+        const uint32 numExamplesWithNonZeroWeights_;
 
     public:
 
@@ -35,15 +37,16 @@ class FeatureBasedRuleRefinement final : public IRuleRefinement {
          *                                      access to the indices of the outputs for which the refined rule is
          *                                      allowed to predict
          * @param featureIndex                  The index of the feature, the new condition corresponds to
+         * @param statistics                    A reference to an object of type `IWeightedStatistics` that should be
+         *                                      used to search for potential refinements
+         * @param featureVector                 A reference to an object of type `IFeatureVector` that should be used to
+         *                                      search for potential refinements
          * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
          *                                      by a refinement
-         * @param callbackPtr                   An unique pointer to an object of type `IRuleRefinement::ICallback` that
-         *                                      allows to retrieve the information that is required to search for
-         *                                      potential refinements
          */
         FeatureBasedRuleRefinement(const IndexVector& outputIndices, uint32 featureIndex,
-                                   uint32 numExamplesWithNonZeroWeights,
-                                   std::unique_ptr<IRuleRefinement::ICallback> callbackPtr);
+                                   const IWeightedStatistics& statistics, const IFeatureVector& featureVector,
+                                   uint32 numExamplesWithNonZeroWeights);
 
         void findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) const override;
 
