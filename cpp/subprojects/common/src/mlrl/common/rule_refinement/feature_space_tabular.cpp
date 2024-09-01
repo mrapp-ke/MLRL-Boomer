@@ -1,7 +1,6 @@
 #include "mlrl/common/rule_refinement/feature_space_tabular.hpp"
 
 #include "mlrl/common/multi_threading/multi_threading.hpp"
-#include "mlrl/common/rule_refinement/rule_refinement_feature_based.hpp"
 #include "mlrl/common/util/openmp.hpp"
 
 #include <unordered_map>
@@ -199,22 +198,6 @@ class TabularFeatureSpace final : public IFeatureSpace {
                     return std::make_unique<Callback>(*this, featureSpace_.featureInfo_, featureIndex);
                 }
 
-                std::unique_ptr<IRuleRefinement> createRuleRefinement(const CompleteIndexVector& outputIndices,
-                                                                      uint32 featureIndex,
-                                                                      const IWeightedStatistics& statistics,
-                                                                      const IFeatureVector& featureVector) override {
-                    return std::make_unique<FeatureBasedRuleRefinement<CompleteIndexVector>>(
-                      outputIndices, featureIndex, statistics, featureVector, numCovered_);
-                }
-
-                std::unique_ptr<IRuleRefinement> createRuleRefinement(const PartialIndexVector& outputIndices,
-                                                                      uint32 featureIndex,
-                                                                      const IWeightedStatistics& statistics,
-                                                                      const IFeatureVector& featureVector) override {
-                    return std::make_unique<FeatureBasedRuleRefinement<PartialIndexVector>>(
-                      outputIndices, featureIndex, statistics, featureVector, numCovered_);
-                }
-
                 void filterSubspace(const Condition& condition) override {
                     uint32 featureIndex = condition.featureIndex;
                     auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredCacheEntry()).first;
@@ -248,6 +231,10 @@ class TabularFeatureSpace final : public IFeatureSpace {
                     numCovered_ = weights_.getNumNonZeroWeights();
                     cacheFiltered_.clear();
                     coverageMask_.reset();
+                }
+
+                uint32 getNumCovered() const override {
+                    return numCovered_;
                 }
 
                 const CoverageMask& getCoverageMask() const override {

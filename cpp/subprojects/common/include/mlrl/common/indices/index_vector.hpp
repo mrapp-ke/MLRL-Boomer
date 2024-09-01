@@ -5,13 +5,12 @@
 
 #include "mlrl/common/data/types.hpp"
 
+#include <functional>
 #include <memory>
 
 // Forward declarations
-class IRuleRefinement;
-class IFeatureSubspace;
-class IWeightedStatistics;
-class IFeatureVector;
+class PartialIndexVector;
+class CompleteIndexVector;
 
 /**
  * Defines an interface for all classes that provide random access to indices.
@@ -20,6 +19,16 @@ class IIndexVector {
     public:
 
         virtual ~IIndexVector() {}
+
+        /**
+         * A visitor function for handling objects of the type `PartialIndexVector`.
+         */
+        typedef std::function<void(const PartialIndexVector&)> PartialIndexVectorVisitor;
+
+        /**
+         * A visitor function for handling objects of the type `CompleteIndexVector`.
+         */
+        typedef std::function<void(const CompleteIndexVector&)> CompleteIndexVectorVisitor;
 
         /**
          * Returns the number of indices.
@@ -45,20 +54,14 @@ class IIndexVector {
         virtual uint32 getIndex(uint32 pos) const = 0;
 
         /**
-         * Creates and return a new instance of type `IRuleRefinement` that allows to search for the best refinement of
-         * an existing rule that predicts only for the outputs whose indices are stored in this vector.
+         * Invokes one of the given visitor functions, depending on which one is able to handle this particular type of
+         * vector.
          *
-         * @param featureSubspace   A reference to an object of type `IFeatureSubspace` that should be to search for the
-         *                          refinement
-         * @param featureIndex      The index of the feature that should be considered when searching for the refinement
-         * @param statistics        A reference to an object of type `IWeightedStatistics` that should be used to search
-         *                          for potential refinements
-         * @param featureVector     A reference to an object of type `IFeatureVector` that should be used to search for
-         *                          potential refinements
-         * @return                  An unique pointer to an object of type `IRuleRefinement` that has been created
+         * @param partialIndexVectorVisitor     The visitor function for handling objects of the type
+         *                                      `PartialIndexVector`
+         * @param completeIndexVectorVisitor    The visitor function for handling objects of the type
+         *                                      `CompleteIndexVector`
          */
-        virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(IFeatureSubspace& featureSubspace,
-                                                                      uint32 featureIndex,
-                                                                      const IWeightedStatistics& statistics,
-                                                                      const IFeatureVector& featureVector) const = 0;
+        virtual void visit(PartialIndexVectorVisitor partialIndexVectorVisitor,
+                           CompleteIndexVectorVisitor completeIndexVectorVisitor) const = 0;
 };
