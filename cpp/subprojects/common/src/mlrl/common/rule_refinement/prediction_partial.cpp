@@ -104,6 +104,11 @@ uint32 PartialPrediction::getIndex(uint32 pos) const {
     return indexVector_.getIndex(pos);
 }
 
+void PartialPrediction::visit(PartialIndexVectorVisitor partialIndexVectorVisitor,
+                              CompleteIndexVectorVisitor completeIndexVectorVisitor) const {
+    partialIndexVectorVisitor(indexVector_);
+}
+
 std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(const IStatistics& statistics,
                                                                              const EqualWeightVector& weights) const {
     return statistics.createSubset(indexVector_, weights);
@@ -132,13 +137,6 @@ std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(
 std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(
   const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const {
     return statistics.createSubset(indexVector_, weights);
-}
-
-std::unique_ptr<IRuleRefinement> PartialPrediction::createRuleRefinement(IFeatureSubspace& featureSubspace,
-                                                                         uint32 featureIndex,
-                                                                         const IWeightedStatistics& statistics,
-                                                                         const IFeatureVector& featureVector) const {
-    return indexVector_.createRuleRefinement(featureSubspace, featureIndex, statistics, featureVector);
 }
 
 std::unique_ptr<IStatisticsUpdate> PartialPrediction::createStatisticsUpdate(IStatistics& statistics) const {
