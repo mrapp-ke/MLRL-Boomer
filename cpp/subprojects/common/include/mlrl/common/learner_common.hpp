@@ -521,6 +521,12 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
         std::unique_ptr<IRuleInductionConfig> ruleInductionConfigPtr_;
 
         /**
+         * An unique pointer that stores the configuration of the method for finding the best refinements of existing
+         * rules.
+         */
+        std::unique_ptr<IRuleRefinementConfig> ruleRefinementConfigPtr_;
+
+        /**
          * An unique pointer that stores the configuration of the method for the assignment of numerical feature values
          * to bins
          */
@@ -677,6 +683,10 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
 
         Property<IRuleInductionConfig> getRuleInductionConfig() override final {
             return util::property(ruleInductionConfigPtr_);
+        }
+
+        Property<IRuleRefinementConfig> getRuleRefinementConfig() override final {
+            return util::property(ruleRefinementConfigPtr_);
         }
 
         Property<IFeatureBinningConfig> getFeatureBinningConfig() override final {
