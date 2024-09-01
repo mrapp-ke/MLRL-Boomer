@@ -58,6 +58,11 @@ uint32 CompletePrediction::getIndex(uint32 pos) const {
     return indexVector_.getIndex(pos);
 }
 
+void CompletePrediction::visit(PartialIndexVectorVisitor partialIndexVectorVisitor,
+                               CompleteIndexVectorVisitor completeIndexVectorVisitor) const {
+    completeIndexVectorVisitor(indexVector_);
+}
+
 std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(const IStatistics& statistics,
                                                                               const EqualWeightVector& weights) const {
     return statistics.createSubset(indexVector_, weights);

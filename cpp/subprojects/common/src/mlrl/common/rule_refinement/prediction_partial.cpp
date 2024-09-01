@@ -104,6 +104,11 @@ uint32 PartialPrediction::getIndex(uint32 pos) const {
     return indexVector_.getIndex(pos);
 }
 
+void PartialPrediction::visit(PartialIndexVectorVisitor partialIndexVectorVisitor,
+                              CompleteIndexVectorVisitor completeIndexVectorVisitor) const {
+    partialIndexVectorVisitor(indexVector_);
+}
+
 std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(const IStatistics& statistics,
                                                                              const EqualWeightVector& weights) const {
     return statistics.createSubset(indexVector_, weights);

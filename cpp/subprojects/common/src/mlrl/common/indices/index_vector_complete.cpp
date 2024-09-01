@@ -36,3 +36,8 @@ std::unique_ptr<IRuleRefinement> CompleteIndexVector::createRuleRefinement(IFeat
                                                                            const IFeatureVector& featureVector) const {
     return featureSubspace.createRuleRefinement(*this, featureIndex, statistics, featureVector);
 }
+
+void CompleteIndexVector::visit(PartialIndexVectorVisitor partialIndexVectorVisitor,
+                                CompleteIndexVectorVisitor completeIndexVectorVisitor) const {
+    completeIndexVectorVisitor(*this);
+}

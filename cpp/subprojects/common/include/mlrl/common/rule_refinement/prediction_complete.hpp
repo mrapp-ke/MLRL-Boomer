@@ -96,6 +96,9 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>
 
         uint32 getIndex(uint32 pos) const override;
 
+        void visit(PartialIndexVectorVisitor partialIndexVectorVisitor,
+                   CompleteIndexVectorVisitor completeIndexVectorVisitor) const override;
+
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(const IStatistics& statistics,
                                                                   const EqualWeightVector& weights) const override;
 
