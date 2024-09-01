@@ -3,8 +3,8 @@
  */
 #pragma once
 
+#include "mlrl/common/rule_refinement/feature_based_search.hpp"
 #include "mlrl/common/rule_refinement/feature_subspace.hpp"
-#include "mlrl/common/rule_refinement/rule_refinement_feature_based.hpp"
 #include "mlrl/common/util/openmp.hpp"
 
 #include <memory>
@@ -32,6 +32,41 @@ struct RuleRefinementEntry final {
          */
         std::unique_ptr<IFeatureSubspace::ICallback> callbackPtr;
 };
+
+/**
+ * Finds the best refinement(s) of an existing rule across multiple features.
+ *
+ * @tparam RefinementComparator     The type of the comparator that is used to compare the potential refinements
+ * @tparam IndexVector              The type of the vector that provides access to the indices of the outputs to predict
+ *                                  for
+ * @param refinementComparator      A reference to an object of template type `RefinementComparator` that should be used
+ *                                  to compare the potential refinements
+ * @param featureSubspace           A reference to an object of type `IFeatureSubspace` that should be used to search
+ *                                  for the potential refinements
+ * @param featureIndices            A reference to an object of type `IIndexVector` that provides access to the indices
+ *                                  of the features that should be considered
+ * @param outputIndices             A reference to an object of type `IIndexVector` that provides access to the indices
+ *                                  of the outputs for which the refinement(s) may predict
+ * @param minCoverage               The minimum number of training examples that must be covered by potential
+ *                                  refinements
+ * @param multiThreadingSettings    An object of type `MultiThreadingSettings` that stores the settings to be used for
+ *                                  searching for potential refinements across multiple features in parallel
+ * @return                          True, if at least one refinement has been found, false otherwise
+ */
+template<typename RefinementComparator, typename IndexVector>
+static inline void findRefinement(RefinementComparator& refinementComparator, const IndexVector& outputIndices,
+                                  uint32 featureIndex, const IWeightedStatistics& statistics,
+                                  const IFeatureVector& featureVector, uint32 numExamplesWithNonZeroWeights,
+                                  uint32 minCoverage) {
+    // Create a new, empty subset of the statistics...
+    std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(outputIndices);
+
+    FeatureBasedSearch featureBasedSearch;
+    Refinement refinement;
+    refinement.featureIndex = featureIndex;
+    featureVector.searchForRefinement(featureBasedSearch, *statisticsSubsetPtr, refinementComparator,
+                                      numExamplesWithNonZeroWeights, minCoverage, refinement);
+}
 
 /**
  * Finds the best refinement(s) of an existing rule across multiple features.
@@ -77,22 +112,20 @@ static inline bool findRefinement(RefinementComparator& refinementComparator, IF
     for (int64 i = 0; i < numFeatures; i++) {
         uint32 featureIndex = featureIndices.getIndex(i);
         RuleRefinementEntry<RefinementComparator>& ruleRefinementEntry = ruleRefinementEntries[i];
+        RefinementComparator& refinementComparator = *ruleRefinementEntry.comparatorPtr;
         IFeatureSubspace::ICallback::Result callbackResult = ruleRefinementEntry.callbackPtr->get();
         const IFeatureVector& featureVector = callbackResult.featureVector;
         const IWeightedStatistics& statistics = callbackResult.statistics;
-        std::unique_ptr<IRuleRefinement> ruleRefinementPtr;
 
         auto partialIndexVectorVisitor = [&](const PartialIndexVector& partialIndexVector) {
-            ruleRefinementPtr = std::make_unique<FeatureBasedRuleRefinement<PartialIndexVector>>(
-              partialIndexVector, featureIndex, statistics, featureVector, featureSubspace.getNumCovered());
+            findRefinement(refinementComparator, partialIndexVector, featureIndex, statistics, featureVector,
+                           featureSubspace.getNumCovered(), minCoverage);
         };
         auto completeIndexVectorVisitor = [&](const CompleteIndexVector& completeIndexVector) {
-            ruleRefinementPtr = std::make_unique<FeatureBasedRuleRefinement<CompleteIndexVector>>(
-              completeIndexVector, featureIndex, statistics, featureVector, featureSubspace.getNumCovered());
+            findRefinement(refinementComparator, completeIndexVector, featureIndex, statistics, featureVector,
+                           featureSubspace.getNumCovered(), minCoverage);
         };
         outputIndices.visit(partialIndexVectorVisitor, completeIndexVectorVisitor);
-
-        ruleRefinementPtr->findRefinement(*ruleRefinementEntry.comparatorPtr, minCoverage);
     }
 
     // Pick the best refinement among the refinements that have been found for the different features...
