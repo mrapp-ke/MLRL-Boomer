@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/rule_refinement/feature_subspace.hpp"
+#include "mlrl/common/rule_refinement/rule_refinement_feature_based.hpp"
 #include "mlrl/common/util/openmp.hpp"
 
 #include <memory>
@@ -82,12 +83,12 @@ static inline bool findRefinement(RefinementComparator& refinementComparator, IF
         std::unique_ptr<IRuleRefinement> ruleRefinementPtr;
 
         auto partialIndexVectorVisitor = [&](const PartialIndexVector& partialIndexVector) {
-            ruleRefinementPtr =
-              featureSubspace.createRuleRefinement(partialIndexVector, featureIndex, statistics, featureVector);
+            ruleRefinementPtr = std::make_unique<FeatureBasedRuleRefinement<PartialIndexVector>>(
+              partialIndexVector, featureIndex, statistics, featureVector, featureSubspace.getNumCovered());
         };
         auto completeIndexVectorVisitor = [&](const CompleteIndexVector& completeIndexVector) {
-            ruleRefinementPtr =
-              featureSubspace.createRuleRefinement(completeIndexVector, featureIndex, statistics, featureVector);
+            ruleRefinementPtr = std::make_unique<FeatureBasedRuleRefinement<CompleteIndexVector>>(
+              completeIndexVector, featureIndex, statistics, featureVector, featureSubspace.getNumCovered());
         };
         outputIndices.visit(partialIndexVectorVisitor, completeIndexVectorVisitor);
 
