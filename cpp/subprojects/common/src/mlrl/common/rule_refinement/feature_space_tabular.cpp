@@ -250,6 +250,10 @@ class TabularFeatureSpace final : public IFeatureSpace {
                     coverageMask_.reset();
                 }
 
+                uint32 getNumCovered() const override {
+                    return numCovered_;
+                }
+
                 const CoverageMask& getCoverageMask() const override {
                     return coverageMask_;
                 }
