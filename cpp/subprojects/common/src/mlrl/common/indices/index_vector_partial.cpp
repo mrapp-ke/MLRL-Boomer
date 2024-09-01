@@ -18,9 +18,7 @@ uint32 PartialIndexVector::getIndex(uint32 pos) const {
     return (*this)[pos];
 }
 
-std::unique_ptr<IRuleRefinement> PartialIndexVector::createRuleRefinement(IFeatureSubspace& featureSubspace,
-                                                                          uint32 featureIndex,
-                                                                          const IWeightedStatistics& statistics,
-                                                                          const IFeatureVector& featureVector) const {
-    return featureSubspace.createRuleRefinement(*this, featureIndex, statistics, featureVector);
+void PartialIndexVector::visit(PartialIndexVectorVisitor partialIndexVectorVisitor,
+                               CompleteIndexVectorVisitor completeIndexVectorVisitor) const {
+    partialIndexVectorVisitor(*this);
 }
