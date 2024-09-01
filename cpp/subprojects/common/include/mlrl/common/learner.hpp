@@ -31,6 +31,7 @@
 #include "mlrl/common/rule_model_assemblage/rule_model_assemblage_sequential.hpp"
 #include "mlrl/common/rule_pruning/rule_pruning_irep.hpp"
 #include "mlrl/common/rule_pruning/rule_pruning_no.hpp"
+#include "mlrl/common/rule_refinement/rule_refinement_statistics_based.hpp"
 #include "mlrl/common/sampling/feature_sampling_no.hpp"
 #include "mlrl/common/sampling/feature_sampling_without_replacement.hpp"
 #include "mlrl/common/sampling/instance_sampling_no.hpp"
@@ -191,6 +192,15 @@ class MLRLCOMMON_API IRuleLearnerConfig {
          *         algorithm for the induction of individual rules
          */
         virtual Property<IRuleInductionConfig> getRuleInductionConfig() = 0;
+
+        /**
+         * Returns a `Property` that allows to access the `IRuleRefinementConfig` that stores the configuration of the
+         * method for finding the best refinements of existing rules.
+         *
+         * @return A `Property` that allows to access the `IRuleRefinementConfig` that stores the configuration of the
+         *         method for finding the best refinements of existing rules
+         */
+        virtual Property<IRuleRefinementConfig> getRuleRefinementConfig() = 0;
 
         /**
          * Returns a `Property` that allows to access the `IFeatureBinningConfig` that stores the configuration of the
@@ -470,8 +480,8 @@ class MLRLCOMMON_API IGreedyTopDownRuleInductionMixin : virtual public IRuleLear
          */
         virtual IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() {
             auto ptr = std::make_unique<GreedyTopDownRuleInductionConfig>(
-              this->getRuleCompareFunction(), this->getRulePruningConfig(), this->getPostProcessorConfig(),
-              this->getParallelRuleRefinementConfig());
+              this->getRuleCompareFunction(), this->getRuleRefinementConfig(), this->getRulePruningConfig(),
+              this->getPostProcessorConfig());
             IGreedyTopDownRuleInductionConfig& ref = *ptr;
             this->getRuleInductionConfig().set(std::move(ptr));
             return ref;
@@ -494,8 +504,8 @@ class MLRLCOMMON_API IBeamSearchTopDownRuleInductionMixin : virtual public IRule
          */
         virtual IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() {
             auto ptr = std::make_unique<BeamSearchTopDownRuleInductionConfig>(
-              this->getRuleCompareFunction(), this->getRulePruningConfig(), this->getPostProcessorConfig(),
-              this->getParallelRuleRefinementConfig());
+              this->getRuleCompareFunction(), this->getRuleRefinementConfig(), this->getRulePruningConfig(),
+              this->getPostProcessorConfig());
             IBeamSearchTopDownRuleInductionConfig& ref = *ptr;
             this->getRuleInductionConfig().set(std::move(ptr));
             return ref;
@@ -870,6 +880,25 @@ class MLRLCOMMON_API IParallelRuleRefinementMixin : virtual public IRuleLearnerC
 
 /**
  * Defines an interface for all classes that allow to configure a rule learner to not use any multi-threading for the
+ * parallel aggregation of statistics into histograms.
+ */
+class MLRLCOMMON_API INoParallelStatisticAggregationMixin : virtual public IRuleLearnerConfig {
+    public:
+
+        virtual ~INoParallelStatisticAggregationMixin() override {}
+
+        /**
+         * Configures the rule learner to not use any multi-threading for the parallel aggregation of statistics into
+         * histograms.
+         */
+        virtual void useNoParallelStatisticAggregation() {
+            this->getRuleRefinementConfig().set(
+              std::make_unique<StatisticsBasedRuleRefinementConfig>(this->getParallelRuleRefinementConfig()));
+        }
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a rule learner to not use any multi-threading for the
  * parallel update of statistics.
  */
 class MLRLCOMMON_API INoParallelStatisticUpdateMixin : virtual public IRuleLearnerConfig {
@@ -1232,6 +1261,7 @@ class MLRLCOMMON_API IRuleLearnerMixin : virtual public IRuleLearnerConfig,
                                          virtual public INoPartitionSamplingMixin,
                                          virtual public INoRulePruningMixin,
                                          virtual public INoParallelRuleRefinementMixin,
+                                         virtual public INoParallelStatisticAggregationMixin,
                                          virtual public INoParallelStatisticUpdateMixin,
                                          virtual public INoParallelPredictionMixin,
                                          virtual public INoSizeStoppingCriterionMixin,
@@ -1258,6 +1288,7 @@ class MLRLCOMMON_API IRuleLearnerMixin : virtual public IRuleLearnerConfig,
             this->useNoPartitionSampling();
             this->useNoRulePruning();
             this->useNoParallelRuleRefinement();
+            this->useNoParallelStatisticAggregation();
             this->useNoParallelStatisticUpdate();
             this->useNoParallelPrediction();
             this->useNoSizeStoppingCriterion();

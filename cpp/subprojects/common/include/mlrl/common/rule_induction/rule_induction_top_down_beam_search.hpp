@@ -3,10 +3,10 @@
  */
 #pragma once
 
-#include "mlrl/common/multi_threading/multi_threading.hpp"
 #include "mlrl/common/post_processing/post_processor.hpp"
 #include "mlrl/common/rule_induction/rule_induction.hpp"
 #include "mlrl/common/rule_pruning/rule_pruning.hpp"
+#include "mlrl/common/rule_refinement/rule_refinement.hpp"
 #include "mlrl/common/util/properties.hpp"
 
 #include <memory>
@@ -172,30 +172,30 @@ class BeamSearchTopDownRuleInductionConfig final : public IRuleInductionConfig,
 
         bool recalculatePredictions_;
 
+        const ReadableProperty<IRuleRefinementConfig> ruleRefinementConfig_;
+
         const ReadableProperty<IRulePruningConfig> rulePruningConfig_;
 
         const ReadableProperty<IPostProcessorConfig> postProcessorConfig_;
-
-        const ReadableProperty<IMultiThreadingConfig> multiThreadingConfig_;
 
     public:
 
         /**
          * @param ruleCompareFunction   An object of type `RuleCompareFunction` that defines the function that should be
          *                              used for comparing the quality of different rules
-         * @param rulePruningConfig     A `ReadableProperty` that allows to acccess the `IRulePruningConfig` that stores
+         * @param ruleRefinementConfig  A `ReadableProperty` that allows to access the `RuleRefinementConfig` that
+         *                              stores the configuration of the method for finding the refinements of existing
+         *                              rules
+         * @param rulePruningConfig     A `ReadableProperty` that allows to access the `IRulePruningConfig` that stores
          *                              the configuration of the strategy for pruning individual rules
          * @param postProcessorConfig   A `ReadableProperty` that allows to access the `IPostProcessorConfig` that
          *                              stores the configuration of the method for post-processing the predictions of
          *                              rules
-         * @param multiThreadingConfig  A `ReadableProperty` that allows to access the `IMultiThreadingConfig` that
-         *                              stores the configuration of the multi-threading behavior that should be used for
-         *                              the parallel refinement of rules
          */
         BeamSearchTopDownRuleInductionConfig(RuleCompareFunction ruleCompareFunction,
+                                             ReadableProperty<IRuleRefinementConfig> ruleRefinementConfig,
                                              ReadableProperty<IRulePruningConfig> rulePruningConfig,
-                                             ReadableProperty<IPostProcessorConfig> postProcessorConfig,
-                                             ReadableProperty<IMultiThreadingConfig> multiThreadingConfig);
+                                             ReadableProperty<IPostProcessorConfig> postProcessorConfig);
 
         uint32 getBeamWidth() const override;
 

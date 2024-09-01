@@ -65,7 +65,7 @@ source_files = [
     'src/mlrl/common/rule_refinement/prediction_partial.cpp',
     'src/mlrl/common/rule_refinement/refinement_comparator_fixed.cpp',
     'src/mlrl/common/rule_refinement/refinement_comparator_single.cpp',
-    'src/mlrl/common/rule_refinement/rule_refinement_feature_based.cpp',
+    'src/mlrl/common/rule_refinement/rule_refinement_statistics_based.cpp',
     'src/mlrl/common/rule_refinement/score_processor.cpp',
     'src/mlrl/common/sampling/feature_sampling_no.cpp',
     'src/mlrl/common/sampling/feature_sampling_predefined.cpp',
