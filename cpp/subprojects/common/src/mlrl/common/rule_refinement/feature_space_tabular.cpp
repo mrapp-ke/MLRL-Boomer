@@ -1,7 +1,6 @@
 #include "mlrl/common/rule_refinement/feature_space_tabular.hpp"
 
 #include "mlrl/common/multi_threading/multi_threading.hpp"
-#include "mlrl/common/rule_refinement/rule_refinement_feature_based.hpp"
 #include "mlrl/common/util/openmp.hpp"
 
 #include <unordered_map>
