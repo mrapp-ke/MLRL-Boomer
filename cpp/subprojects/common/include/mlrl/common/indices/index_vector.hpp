@@ -9,10 +9,6 @@
 #include <memory>
 
 // Forward declarations
-class IRuleRefinement;
-class IFeatureSubspace;
-class IWeightedStatistics;
-class IFeatureVector;
 class PartialIndexVector;
 class CompleteIndexVector;
 
@@ -56,25 +52,6 @@ class IIndexVector {
          * @return      The index at the given position
          */
         virtual uint32 getIndex(uint32 pos) const = 0;
-
-        /**
-         * Creates and return a new instance of type `IRuleRefinement` that allows to search for the best refinement of
-         * an existing rule that predicts only for the outputs whose indices are stored in this vector.
-         *
-         * @param featureSubspace   A reference to an object of type `IFeatureSubspace` that should be to search for the
-         *                          refinement
-         * @param featureIndex      The index of the feature that should be considered when searching for the refinement
-         * @param statistics        A reference to an object of type `IWeightedStatistics` that should be used to search
-         *                          for potential refinements
-         * @param featureVector     A reference to an object of type `IFeatureVector` that should be used to search for
-         *                          potential refinements
-         * @return                  An unique pointer to an object of type `IRuleRefinement` that has been created
-         */
-        // TODO Remove
-        virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(IFeatureSubspace& featureSubspace,
-                                                                      uint32 featureIndex,
-                                                                      const IWeightedStatistics& statistics,
-                                                                      const IFeatureVector& featureVector) const = 0;
 
         /**
          * Invokes one of the given visitor functions, depending on which one is able to handle this particular type of
