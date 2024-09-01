@@ -106,6 +106,7 @@ class IFeatureSubspace {
          *                      potential refinements
          * @return              An unique pointer to an object of type `IRuleRefinement` that has been created
          */
+        // TODO Remove
         virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(const CompleteIndexVector& outputIndices,
                                                                       uint32 featureIndex,
                                                                       const IWeightedStatistics& statistics,
@@ -124,6 +125,7 @@ class IFeatureSubspace {
          *                      potential refinements
          * @return              An unique pointer to an object of type `IRuleRefinement` that has been created
          */
+        // TODO Remove
         virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(const PartialIndexVector& outputIndices,
                                                                       uint32 featureIndex,
                                                                       const IWeightedStatistics& statistics,
@@ -140,6 +142,13 @@ class IFeatureSubspace {
          * Resets the subspace. This reverts the effects of all previous calls to the function `filterSubspace`.
          */
         virtual void resetSubspace() = 0;
+
+        /**
+         * Returns the number of training examples with non-zero weights that are included in this subspace.
+         *
+         * @return The number of training examples included in this subspace
+         */
+        virtual uint32 getNumCovered() const = 0;
 
         /**
          * Returns an object of type `CoverageMask` that keeps track of the training examples that are included in this
