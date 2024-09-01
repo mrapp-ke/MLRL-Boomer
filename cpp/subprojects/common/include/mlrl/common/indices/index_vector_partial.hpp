@@ -30,4 +30,7 @@ class PartialIndexVector final : public ResizableVectorDecorator<DenseVectorDeco
         std::unique_ptr<IRuleRefinement> createRuleRefinement(IFeatureSubspace& featureSubspace, uint32 featureIndex,
                                                               const IWeightedStatistics& statistics,
                                                               const IFeatureVector& featureVector) const override;
+
+        void visit(PartialIndexVectorVisitor partialIndexVectorVisitor,
+                   CompleteIndexVectorVisitor completeIndexVectorVisitor) const override;
 };
