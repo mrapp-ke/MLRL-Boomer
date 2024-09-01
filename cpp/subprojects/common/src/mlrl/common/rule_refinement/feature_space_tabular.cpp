@@ -199,22 +199,6 @@ class TabularFeatureSpace final : public IFeatureSpace {
                     return std::make_unique<Callback>(*this, featureSpace_.featureInfo_, featureIndex);
                 }
 
-                std::unique_ptr<IRuleRefinement> createRuleRefinement(const CompleteIndexVector& outputIndices,
-                                                                      uint32 featureIndex,
-                                                                      const IWeightedStatistics& statistics,
-                                                                      const IFeatureVector& featureVector) override {
-                    return std::make_unique<FeatureBasedRuleRefinement<CompleteIndexVector>>(
-                      outputIndices, featureIndex, statistics, featureVector, numCovered_);
-                }
-
-                std::unique_ptr<IRuleRefinement> createRuleRefinement(const PartialIndexVector& outputIndices,
-                                                                      uint32 featureIndex,
-                                                                      const IWeightedStatistics& statistics,
-                                                                      const IFeatureVector& featureVector) override {
-                    return std::make_unique<FeatureBasedRuleRefinement<PartialIndexVector>>(
-                      outputIndices, featureIndex, statistics, featureVector, numCovered_);
-                }
-
                 void filterSubspace(const Condition& condition) override {
                     uint32 featureIndex = condition.featureIndex;
                     auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredCacheEntry()).first;

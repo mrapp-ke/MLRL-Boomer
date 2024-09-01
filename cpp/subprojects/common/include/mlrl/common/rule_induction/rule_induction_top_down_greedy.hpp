@@ -7,6 +7,7 @@
 #include "mlrl/common/post_processing/post_processor.hpp"
 #include "mlrl/common/rule_induction/rule_induction.hpp"
 #include "mlrl/common/rule_pruning/rule_pruning.hpp"
+#include "mlrl/common/rule_refinement/rule_refinement.hpp"
 #include "mlrl/common/util/properties.hpp"
 
 #include <memory>
