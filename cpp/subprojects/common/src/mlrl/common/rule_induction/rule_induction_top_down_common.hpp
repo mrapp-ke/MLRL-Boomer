@@ -77,8 +77,20 @@ static inline bool findRefinement(RefinementComparator& refinementComparator, IF
         uint32 featureIndex = featureIndices.getIndex(i);
         RuleRefinementEntry<RefinementComparator>& ruleRefinementEntry = ruleRefinementEntries[i];
         IFeatureSubspace::ICallback::Result callbackResult = ruleRefinementEntry.callbackPtr->get();
-        std::unique_ptr<IRuleRefinement> ruleRefinementPtr = outputIndices.createRuleRefinement(
-          featureSubspace, featureIndex, callbackResult.statistics, callbackResult.featureVector);
+        const IFeatureVector& featureVector = callbackResult.featureVector;
+        const IWeightedStatistics& statistics = callbackResult.statistics;
+        std::unique_ptr<IRuleRefinement> ruleRefinementPtr;
+
+        auto partialIndexVectorVisitor = [&](const PartialIndexVector& partialIndexVector) {
+            ruleRefinementPtr =
+              featureSubspace.createRuleRefinement(partialIndexVector, featureIndex, statistics, featureVector);
+        };
+        auto completeIndexVectorVisitor = [&](const CompleteIndexVector& completeIndexVector) {
+            ruleRefinementPtr =
+              featureSubspace.createRuleRefinement(completeIndexVector, featureIndex, statistics, featureVector);
+        };
+        outputIndices.visit(partialIndexVectorVisitor, completeIndexVectorVisitor);
+
         ruleRefinementPtr->findRefinement(*ruleRefinementEntry.comparatorPtr, minCoverage);
     }
 
