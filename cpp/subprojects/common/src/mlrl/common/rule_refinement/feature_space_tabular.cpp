@@ -107,7 +107,7 @@ class TabularFeatureSpace final : public IFeatureSpace {
                             : featureSubspace_(featureSubspace), featureInfo_(featureInfo),
                               featureIndex_(featureIndex) {}
 
-                        Result get() override {
+                        Result invoke() override {
                             auto cacheFilteredIterator = featureSubspace_.cacheFiltered_.find(featureIndex_);
                             FilteredCacheEntry& cacheEntry = cacheFilteredIterator->second;
                             IFeatureVector* featureVector = cacheEntry.vectorPtr.get();

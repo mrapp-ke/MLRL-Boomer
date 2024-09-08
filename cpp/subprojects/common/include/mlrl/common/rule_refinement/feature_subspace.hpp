@@ -69,7 +69,7 @@ class IFeatureSubspace {
                  * @return An object of type `Result` that stores references to the statistics and the feature vector
                  *         that may be used to search for potential refinements
                  */
-                virtual Result get() = 0;
+                virtual Result invoke() = 0;
         };
 
         virtual ~IFeatureSubspace() {}
