@@ -56,7 +56,7 @@ static inline bool findRefinementInternally(RefinementComparator& refinementComp
         uint32 featureIndex = featureIndices.getIndex(i);
         RuleRefinementEntry<RefinementComparator>& ruleRefinementEntry = ruleRefinementEntries[i];
         RefinementComparator& refinementComparator = *ruleRefinementEntry.comparatorPtr;
-        IFeatureSubspace::ICallback::Result callbackResult = ruleRefinementEntry.callbackPtr->get();
+        IFeatureSubspace::ICallback::Result callbackResult = ruleRefinementEntry.callbackPtr->invoke();
         const IFeatureVector& featureVector = callbackResult.featureVector;
         const IWeightedStatistics& statistics = callbackResult.statistics;
 
