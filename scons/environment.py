@@ -6,7 +6,7 @@ Provides utility functions for accessing environment variables.
 from typing import List, Optional
 
 
-def get_env(env, name: str, default: Optional[bool] = None) -> Optional[str]:
+def get_env(env, name: str, default: Optional[str] = None) -> Optional[str]:
     """
     Returns the value of the environment variable with a given name.
 
