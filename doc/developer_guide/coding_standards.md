@@ -50,6 +50,27 @@ To be able to detect problems with the project's source code early during develo
    ```
 ````
 
+This will result in all tests being run and their results being reported. If the execution should be aborted as soon as a single test fails, the environment variable `SKIP_EARLY` can be used as shown below:
+
+````{tab} Linux
+   ```text
+   SKIP_EARLY=true ./build tests
+   ```
+````
+
+````{tab} MacOS
+   ```text
+   SKIP_EARLY=true ./build tests
+   ```
+````
+
+````{tab} Windows
+   ```text
+   $env:SKIP_EARLY = "true"
+   build.bat tests
+   ```
+````
+
 ```{note}
 If you want to execute the tests for the C++ or Python code independently, you can use the build target `tests_cpp` or `tests_python` instead of `tests`.
 ```
