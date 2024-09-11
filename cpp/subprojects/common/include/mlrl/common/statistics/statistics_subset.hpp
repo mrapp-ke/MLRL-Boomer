@@ -26,8 +26,8 @@ class IStatisticsSubset {
          * currently considered for refining a rule.
          *
          * This function must be called repeatedly for each statistic that is covered by the current condition,
-         * immediately after the invocation of the function `IImmutableWeightedStatistics::createSubset`. If a rule has
-         * already been refined, each of these statistics must have been marked as covered earlier via the function
+         * immediately after the invocation of the function `IWeightedStatistics::createSubset`. If a rule has already
+         * been refined, each of these statistics must have been marked as covered earlier via the function
          * `IWeightedStatistics::addCoveredStatistic` and must not have been marked as uncovered via the function
          * `IWeightedStatistics::removeCoveredStatistic`.
          *

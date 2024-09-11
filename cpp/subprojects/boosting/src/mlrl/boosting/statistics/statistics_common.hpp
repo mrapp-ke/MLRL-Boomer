@@ -136,12 +136,12 @@ namespace boosting {
      *                                  statistics
      */
     template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory, typename WeightVector>
-    class AbstractImmutableWeightedStatistics : virtual public IImmutableWeightedStatistics {
+    class AbstractWeightedStatistics : virtual public IStatisticsSpace {
         protected:
 
             /**
              * An abstract base class for all subsets of the gradients and Hessians that are stored by an instance of
-             * the class `AbstractImmutableWeightedStatistics`.
+             * the class `AbstractWeightedStatistics`.
              *
              * @tparam IndexVector The type of the vector that provides access to the indices of the outputs that are
              *                     included in the subset
@@ -168,14 +168,14 @@ namespace boosting {
                 public:
 
                     /**
-                     * @param statistics        A reference to an object of type `AbstractImmutableWeightedStatistics`
-                     *                          that stores the gradients and Hessians
+                     * @param statistics        A reference to an object of type `AbstractWeightedStatistics` that
+                     *                          stores the gradients and Hessians
                      * @param totalSumVector    A reference to an object of template type `StatisticVector` that stores
                      *                          the total sums of gradients and Hessians
                      * @param outputIndices     A reference to an object of template type `IndexVector` that provides
                      *                          access to the indices of the outputs that are included in the subset
                      */
-                    AbstractWeightedStatisticsSubset(const AbstractImmutableWeightedStatistics& statistics,
+                    AbstractWeightedStatisticsSubset(const AbstractWeightedStatistics& statistics,
                                                      const StatisticVector& totalSumVector,
                                                      const IndexVector& outputIndices)
                         : StatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector,
@@ -255,9 +255,8 @@ namespace boosting {
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
              */
-            AbstractImmutableWeightedStatistics(const StatisticView& statisticView,
-                                                const RuleEvaluationFactory& ruleEvaluationFactory,
-                                                const WeightVector& weights)
+            AbstractWeightedStatistics(const StatisticView& statisticView,
+                                       const RuleEvaluationFactory& ruleEvaluationFactory, const WeightVector& weights)
                 : statisticView_(statisticView), ruleEvaluationFactory_(ruleEvaluationFactory), weights_(weights) {}
 
             /**
@@ -314,9 +313,9 @@ namespace boosting {
      *                                  statistics
      */
     template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory, typename WeightVector>
-    class WeightedStatistics final : virtual public IWeightedStatistics,
-                                     public AbstractImmutableWeightedStatistics<StatisticVector, StatisticView,
-                                                                                RuleEvaluationFactory, WeightVector> {
+    class WeightedStatistics final
+        : virtual public IWeightedStatistics,
+          public AbstractWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector> {
         private:
 
             /**
@@ -328,7 +327,7 @@ namespace boosting {
              */
             template<typename IndexVector>
             class WeightedStatisticsSubset final
-                : public AbstractImmutableWeightedStatistics<
+                : public AbstractWeightedStatistics<
                     StatisticVector, StatisticView, RuleEvaluationFactory,
                     WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector> {
                 private:
@@ -353,7 +352,7 @@ namespace boosting {
                                              const StatisticVector& totalSumVector,
                                              const BinaryDokVector& excludedStatisticIndices,
                                              const IndexVector& outputIndices)
-                        : AbstractImmutableWeightedStatistics<
+                        : AbstractWeightedStatistics<
                             StatisticVector, StatisticView, RuleEvaluationFactory,
                             WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector>(statistics,
                                                                                                   totalSumVector,
@@ -391,8 +390,8 @@ namespace boosting {
              */
             WeightedStatistics(const StatisticView& statisticView, const RuleEvaluationFactory& ruleEvaluationFactory,
                                const WeightVector& weights)
-                : AbstractImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                      WeightVector>(statisticView, ruleEvaluationFactory, weights),
+                : AbstractWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector>(
+                    statisticView, ruleEvaluationFactory, weights),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(statisticView.numCols, true)) {
                 uint32 numStatistics = weights.getNumElements();
 
@@ -405,8 +404,7 @@ namespace boosting {
              * @param statistics A reference to an object of type `WeightedStatistics` to be copied
              */
             WeightedStatistics(const WeightedStatistics& statistics)
-                : AbstractImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                      WeightVector>(
+                : AbstractWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector>(
                     statistics.statisticView_, statistics.ruleEvaluationFactory_, statistics.weights_),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(*statistics.totalSumVectorPtr_)) {}
 
