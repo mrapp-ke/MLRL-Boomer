@@ -9,7 +9,7 @@
 
 template<typename Comparator>
 static inline void searchForBinaryRefinementInternally(const BinaryFeatureVector& featureVector,
-                                                       IWeightedStatisticsSubset& statisticsSubset,
+                                                       IResettableStatisticsSubset& statisticsSubset,
                                                        Comparator& comparator, uint32 numExamplesWithNonZeroWeights,
                                                        uint32 minCoverage, Refinement& refinement) {
     // Mark all examples corresponding to the minority value as covered...
