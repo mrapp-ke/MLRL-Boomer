@@ -13,18 +13,15 @@ struct RuleRefinementEntry final {
         std::unique_ptr<IFeatureSubspace::ICallback> callbackPtr;
 };
 
-template<typename RefinementComparator, typename IndexVector>
+template<typename RefinementComparator>
 static inline void findRefinementInternally(RefinementComparator& refinementComparator,
-                                            const IndexVector& outputIndices, uint32 featureIndex,
+                                            const IIndexVector& outputIndices, uint32 featureIndex,
                                             const IWeightedStatistics& statistics, const IFeatureVector& featureVector,
                                             uint32 numExamplesWithNonZeroWeights, uint32 minCoverage) {
-    // Create a new, empty subset of the statistics...
-    std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(outputIndices);
-
     FeatureBasedSearch featureBasedSearch;
     Refinement refinement;
     refinement.featureIndex = featureIndex;
-    featureVector.searchForRefinement(featureBasedSearch, *statisticsSubsetPtr, refinementComparator,
+    featureVector.searchForRefinement(featureBasedSearch, refinementComparator, statistics, outputIndices,
                                       numExamplesWithNonZeroWeights, minCoverage, refinement);
 }
 
@@ -59,16 +56,8 @@ static inline bool findRefinementInternally(RefinementComparator& refinementComp
         IFeatureSubspace::ICallback::Result callbackResult = ruleRefinementEntry.callbackPtr->invoke();
         const IFeatureVector& featureVector = callbackResult.featureVector;
         const IWeightedStatistics& statistics = callbackResult.statistics;
-
-        auto partialIndexVectorVisitor = [&](const PartialIndexVector& partialIndexVector) {
-            findRefinementInternally(refinementComparator, partialIndexVector, featureIndex, statistics, featureVector,
-                                     featureSubspace.getNumCovered(), minCoverage);
-        };
-        auto completeIndexVectorVisitor = [&](const CompleteIndexVector& completeIndexVector) {
-            findRefinementInternally(refinementComparator, completeIndexVector, featureIndex, statistics, featureVector,
-                                     featureSubspace.getNumCovered(), minCoverage);
-        };
-        outputIndices.visit(partialIndexVectorVisitor, completeIndexVectorVisitor);
+        findRefinementInternally(refinementComparator, outputIndices, featureIndex, statistics, featureVector,
+                                 featureSubspace.getNumCovered(), minCoverage);
     }
 
     // Pick the best refinement among the refinements that have been found for the different features...
