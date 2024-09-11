@@ -14,10 +14,10 @@
 class EqualFeatureVector final : public IFeatureVector {
     public:
 
-        std::unique_ptr<IWeightedStatisticsSubset> createStatisticsSubset(
+        std::unique_ptr<IResettableStatisticsSubset> createStatisticsSubset(
           const IWeightedStatistics& statistics, const CompleteIndexVector& outputIndices) const override;
 
-        std::unique_ptr<IWeightedStatisticsSubset> createStatisticsSubset(
+        std::unique_ptr<IResettableStatisticsSubset> createStatisticsSubset(
           const IWeightedStatistics& statistics, const PartialIndexVector& outputIndices) const override;
 
         void searchForRefinement(FeatureBasedSearch& featureBasedSearch, SingleRefinementComparator& comparator,

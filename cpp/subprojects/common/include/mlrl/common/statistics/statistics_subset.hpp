@@ -6,8 +6,8 @@
 #include "mlrl/common/rule_evaluation/score_vector.hpp"
 
 /**
- * Defines an interface for all classes that provide access to a subset of the statistics that are stored by an instance
- * of the class `IStatistics` and allows to calculate the scores to be predicted by rules that cover such a subset.
+ * Defines an interface for all classes that provide access to a subset of the statistics and allows to calculate the
+ * scores to be predicted by rules that cover such a subset.
  */
 class IStatisticsSubset {
     public:

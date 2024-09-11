@@ -20,25 +20,27 @@ class IFeatureVector {
         virtual ~IFeatureVector() {}
 
         /**
-         * Creates and returns an `IWeightedStatisticsSubset` based on given statistics and this feature vector.
+         * Creates and returns an `IResettableStatisticsSubset` based on given statistics and this feature vector.
          *
          * @param statistics    A reference to an object of type `IWeightedStatisticss`, the subset should be based on
          * @param outputIndices A reference to an object of type `CompleteIndexVector` that provides access to the
          *                      indices of the outputs that should be included in the subset
-         * @return              An unique pointer to an object of type `IWeightedStatisticsSubset` that has been created
+         * @return              An unique pointer to an object of type `IResettableStatisticsSubset` that has been
+         *                      created
          */
-        virtual std::unique_ptr<IWeightedStatisticsSubset> createStatisticsSubset(
+        virtual std::unique_ptr<IResettableStatisticsSubset> createStatisticsSubset(
           const IWeightedStatistics& statistics, const CompleteIndexVector& outputIndices) const = 0;
 
         /**
-         * Creates and returns an `IWeightedStatisticsSubset` based on given statistics and this feature vector.
+         * Creates and returns an `IResettableStatisticsSubset` based on given statistics and this feature vector.
          *
          * @param statistics    A reference to an object of type `IWeightedStatisticss`, the subset should be based on
          * @param outputIndices A reference to an object of type `PartialIndexVector` that provides access to the
          *                      indices of the outputs that should be included in the subset
-         * @return              An unique pointer to an object of type `IWeightedStatisticsSubset` that has been created
+         * @return              An unique pointer to an object of type `IResettableStatisticsSubset` that has been
+         *                      created
          */
-        virtual std::unique_ptr<IWeightedStatisticsSubset> createStatisticsSubset(
+        virtual std::unique_ptr<IResettableStatisticsSubset> createStatisticsSubset(
           const IWeightedStatistics& statistics, const PartialIndexVector& outputIndices) const = 0;
 
         /**
