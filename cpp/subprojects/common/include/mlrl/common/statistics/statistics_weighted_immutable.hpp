@@ -6,6 +6,7 @@
 #include "mlrl/common/data/vector_dok_binary.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
+#include "mlrl/common/statistics/statistics_space.hpp"
 #include "mlrl/common/statistics/statistics_subset_weighted.hpp"
 
 #include <memory>
@@ -14,24 +15,10 @@
  * Defines an interface for all classes that provide access to weighted statistics about the quality of predictions for
  * training examples, which serve as the basis for learning a new rule or refining an existing one.
  */
-class IImmutableWeightedStatistics {
+class IImmutableWeightedStatistics : public IStatisticsSpace {
     public:
 
         virtual ~IImmutableWeightedStatistics() {}
-
-        /**
-         * Returns the number of available statistics.
-         *
-         * @return The number of statistics
-         */
-        virtual uint32 getNumStatistics() const = 0;
-
-        /**
-         * Returns the number of available outputs.
-         *
-         * @return The number of outputs
-         */
-        virtual uint32 getNumOutputs() const = 0;
 
         /**
          * Creates and returns a new object of type `IWeightedStatisticsSubset` that includes only those outputs, whose

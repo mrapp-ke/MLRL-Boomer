@@ -261,14 +261,14 @@ namespace boosting {
                 : statisticView_(statisticView), ruleEvaluationFactory_(ruleEvaluationFactory), weights_(weights) {}
 
             /**
-             * @see `IImmutableWeightedStatistics::getNumStatistics`
+             * @see `IStatisticsSpace::getNumStatistics`
              */
             uint32 getNumStatistics() const override final {
                 return statisticView_.numRows;
             }
 
             /**
-             * @see `IImmutableWeightedStatistics::getNumOutputs`
+             * @see `IStatisticsSpace::getNumOutputs`
              */
             uint32 getNumOutputs() const override final {
                 return statisticView_.numCols;
@@ -440,7 +440,7 @@ namespace boosting {
             }
 
             /**
-             * @see `IImmutableWeightedStatistics::createSubset`
+             * @see `IStatisticsSpace::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
               const BinaryDokVector& excludedStatisticIndices,
@@ -450,7 +450,7 @@ namespace boosting {
             }
 
             /**
-             * @see `IImmutableWeightedStatistics::createSubset`
+             * @see `IStatisticsSpace::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
               const BinaryDokVector& excludedStatisticIndices, const PartialIndexVector& outputIndices) const override {
