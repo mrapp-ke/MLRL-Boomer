@@ -313,7 +313,7 @@ namespace seco {
              */
             template<typename IndexVector>
             class WeightedStatisticsSubset final
-                : virtual public IWeightedStatisticsSubset,
+                : virtual public IResettableStatisticsSubset,
                   public AbstractStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
                                                   RuleEvaluationFactory, WeightVector, IndexVector> {
                 private:
@@ -366,7 +366,7 @@ namespace seco {
                     }
 
                     /**
-                     * @see `IWeightedStatisticsSubset::resetSubset`
+                     * @see `IResettableStatisticsSubset::resetSubset`
                      */
                     void resetSubset() override {
                         if (!accumulatedSumVectorPtr_) {
@@ -382,7 +382,7 @@ namespace seco {
                     }
 
                     /**
-                     * @see `IWeightedStatisticsSubset::calculateScoresAccumulated`
+                     * @see `IResettableStatisticsSubset::calculateScoresAccumulated`
                      */
                     const IScoreVector& calculateScoresAccumulated() override {
                         return this->ruleEvaluationPtr_->calculateScores(
@@ -391,7 +391,7 @@ namespace seco {
                     }
 
                     /**
-                     * @see `IWeightedStatisticsSubset::calculateScoresUncovered`
+                     * @see `IResettableStatisticsSubset::calculateScoresUncovered`
                      */
                     const IScoreVector& calculateScoresUncovered() override {
                         tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(),
@@ -402,7 +402,7 @@ namespace seco {
                     }
 
                     /**
-                     * @see `IWeightedStatisticsSubset::calculateScoresUncoveredAccumulated`
+                     * @see `IResettableStatisticsSubset::calculateScoresUncoveredAccumulated`
                      */
                     const IScoreVector& calculateScoresUncoveredAccumulated() override {
                         tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(),
@@ -469,14 +469,14 @@ namespace seco {
                   coverageMatrix_(statistics.coverageMatrix_) {}
 
             /**
-             * @see `IImmutableWeightedStatistics::getNumStatistics`
+             * @see `IStatisticsSpace::getNumStatistics`
              */
             uint32 getNumStatistics() const override {
                 return labelMatrix_.numRows;
             }
 
             /**
-             * @see `IImmutableWeightedStatistics::getNumOutputs`
+             * @see `IStatisticsSpace::getNumOutputs`
              */
             uint32 getNumOutputs() const override {
                 return labelMatrix_.numCols;
@@ -514,9 +514,9 @@ namespace seco {
             }
 
             /**
-             * @see `IImmutableWeightedStatistics::createSubset`
+             * @see `IStatisticsSpace::createSubset`
              */
-            std::unique_ptr<IWeightedStatisticsSubset> createSubset(
+            std::unique_ptr<IResettableStatisticsSubset> createSubset(
               const BinaryDokVector& excludedStatisticIndices,
               const CompleteIndexVector& outputIndices) const override {
                 return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, excludedStatisticIndices,
@@ -524,9 +524,9 @@ namespace seco {
             }
 
             /**
-             * @see `IImmutableWeightedStatistics::createSubset`
+             * @see `IStatisticsSpace::createSubset`
              */
-            std::unique_ptr<IWeightedStatisticsSubset> createSubset(
+            std::unique_ptr<IResettableStatisticsSubset> createSubset(
               const BinaryDokVector& excludedStatisticIndices, const PartialIndexVector& outputIndices) const override {
                 return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, excludedStatisticIndices,
                                                                                       outputIndices);

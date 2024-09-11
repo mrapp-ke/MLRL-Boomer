@@ -9,7 +9,7 @@
 
 template<typename Comparator>
 static inline void searchForNominalRefinementInternally(const NominalFeatureVector& featureVector,
-                                                        IWeightedStatisticsSubset& statisticsSubset,
+                                                        IResettableStatisticsSubset& statisticsSubset,
                                                         Comparator& comparator, uint32 numExamplesWithNonZeroWeights,
                                                         uint32 minCoverage, Refinement& refinement) {
     NominalFeatureVector::value_const_iterator valueIterator = featureVector.values_cbegin();

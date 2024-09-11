@@ -12,12 +12,12 @@ void EqualFeatureVector::searchForRefinement(FeatureBasedSearch& featureBasedSea
                                              uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
                                              Refinement& refinement) const {}
 
-std::unique_ptr<IWeightedStatisticsSubset> EqualFeatureVector::createStatisticsSubset(
+std::unique_ptr<IResettableStatisticsSubset> EqualFeatureVector::createStatisticsSubset(
   const IWeightedStatistics& statistics, const CompleteIndexVector& outputIndices) const {
     throw std::runtime_error("Function EqualFeatureVector::createStatisticsSubset should never be called");
 }
 
-std::unique_ptr<IWeightedStatisticsSubset> EqualFeatureVector::createStatisticsSubset(
+std::unique_ptr<IResettableStatisticsSubset> EqualFeatureVector::createStatisticsSubset(
   const IWeightedStatistics& statistics, const PartialIndexVector& outputIndices) const {
     throw std::runtime_error("Function EqualFeatureVector::createStatisticsSubset should never be called");
 }

@@ -9,7 +9,7 @@
 
 template<typename Comparator>
 static inline void searchForOrdinalRefinementInternally(const OrdinalFeatureVector& featureVector,
-                                                        IWeightedStatisticsSubset& statisticsSubset,
+                                                        IResettableStatisticsSubset& statisticsSubset,
                                                         Comparator& comparator, uint32 numExamplesWithNonZeroWeights,
                                                         uint32 minCoverage, Refinement& refinement) {
     // Mark all examples corresponding to the first ordinal feature value `f < majorityValue` as covered...
