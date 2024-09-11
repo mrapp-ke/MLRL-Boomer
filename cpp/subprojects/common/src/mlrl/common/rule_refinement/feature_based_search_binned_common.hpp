@@ -22,7 +22,7 @@ static inline uint32 addAllToSubset(IResettableStatisticsSubset& statisticsSubse
     typename FeatureVector::index_const_iterator indexIterator = featureVector.indices_cbegin(index);
     typename FeatureVector::index_const_iterator indicesEnd = featureVector.indices_cend(index);
     uint32 numIndices = indicesEnd - indexIterator;
-    uint32 numCovered = 0;
+    uint32 numUncovered = 0;
 
     for (uint32 i = 0; i < numIndices; i++) {
         uint32 exampleIndex = indexIterator[i];
@@ -30,9 +30,10 @@ static inline uint32 addAllToSubset(IResettableStatisticsSubset& statisticsSubse
         // Do only consider examples with non-zero weights...
         if (statisticsSubset.hasNonZeroWeight(exampleIndex)) {
             statisticsSubset.addToSubset(exampleIndex);
-            numCovered++;
+        } else {
+            numUncovered++;
         }
     }
 
-    return numCovered;
+    return numIndices - numUncovered;
 }
