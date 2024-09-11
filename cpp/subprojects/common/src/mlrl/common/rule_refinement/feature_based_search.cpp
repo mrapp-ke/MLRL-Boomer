@@ -20,21 +20,12 @@ static inline std::unique_ptr<IWeightedStatisticsSubset> createStatisticsSubset(
     return statisticsSubsetPtr;
 }
 
-static inline void addMissingStatistics(IWeightedStatisticsSubset& statisticsSubset,
-                                        const MissingFeatureVector& missingFeatureVector) {
-    for (auto it = missingFeatureVector.indices_cbegin(); it != missingFeatureVector.indices_cend(); it++) {
-        uint32 index = *it;
-        statisticsSubset.addToMissing(index);
-    }
-}
-
 void FeatureBasedSearch::searchForNumericalRefinement(
   const NumericalFeatureVector& featureVector, const MissingFeatureVector& missingFeatureVector,
   SingleRefinementComparator& comparator, const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
   uint32 numExamplesWithNonZeroWeights, uint32 minCoverage, Refinement& refinement) const {
     std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr =
       createStatisticsSubset(statistics, outputIndices, missingFeatureVector);
-    addMissingStatistics(*statisticsSubsetPtr, missingFeatureVector);
     searchForNumericalRefinementInternally(featureVector, *statisticsSubsetPtr, comparator,
                                            numExamplesWithNonZeroWeights, minCoverage, refinement);
 }
@@ -45,7 +36,6 @@ void FeatureBasedSearch::searchForNumericalRefinement(
   uint32 numExamplesWithNonZeroWeights, uint32 minCoverage, Refinement& refinement) const {
     std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr =
       createStatisticsSubset(statistics, outputIndices, missingFeatureVector);
-    addMissingStatistics(*statisticsSubsetPtr, missingFeatureVector);
     searchForNumericalRefinementInternally(featureVector, *statisticsSubsetPtr, comparator,
                                            numExamplesWithNonZeroWeights, minCoverage, refinement);
 }
@@ -56,7 +46,6 @@ void FeatureBasedSearch::searchForNominalRefinement(
   uint32 numExamplesWithNonZeroWeights, uint32 minCoverage, Refinement& refinement) const {
     std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr =
       createStatisticsSubset(statistics, outputIndices, missingFeatureVector);
-    addMissingStatistics(*statisticsSubsetPtr, missingFeatureVector);
     searchForNominalRefinementInternally(featureVector, *statisticsSubsetPtr, comparator, numExamplesWithNonZeroWeights,
                                          minCoverage, refinement);
 }
@@ -67,7 +56,6 @@ void FeatureBasedSearch::searchForNominalRefinement(
   uint32 numExamplesWithNonZeroWeights, uint32 minCoverage, Refinement& refinement) const {
     std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr =
       createStatisticsSubset(statistics, outputIndices, missingFeatureVector);
-    addMissingStatistics(*statisticsSubsetPtr, missingFeatureVector);
     searchForNominalRefinementInternally(featureVector, *statisticsSubsetPtr, comparator, numExamplesWithNonZeroWeights,
                                          minCoverage, refinement);
 }
@@ -78,7 +66,6 @@ void FeatureBasedSearch::searchForBinaryRefinement(
   uint32 numExamplesWithNonZeroWeights, uint32 minCoverage, Refinement& refinement) const {
     std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr =
       createStatisticsSubset(statistics, outputIndices, missingFeatureVector);
-    addMissingStatistics(*statisticsSubsetPtr, missingFeatureVector);
     searchForBinaryRefinementInternally(featureVector, *statisticsSubsetPtr, comparator, numExamplesWithNonZeroWeights,
                                         minCoverage, refinement);
 }
@@ -89,7 +76,6 @@ void FeatureBasedSearch::searchForBinaryRefinement(
   uint32 numExamplesWithNonZeroWeights, uint32 minCoverage, Refinement& refinement) const {
     std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr =
       createStatisticsSubset(statistics, outputIndices, missingFeatureVector);
-    addMissingStatistics(*statisticsSubsetPtr, missingFeatureVector);
     searchForBinaryRefinementInternally(featureVector, *statisticsSubsetPtr, comparator, numExamplesWithNonZeroWeights,
                                         minCoverage, refinement);
 }
@@ -100,7 +86,6 @@ void FeatureBasedSearch::searchForOrdinalRefinement(
   uint32 numExamplesWithNonZeroWeights, uint32 minCoverage, Refinement& refinement) const {
     std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr =
       createStatisticsSubset(statistics, outputIndices, missingFeatureVector);
-    addMissingStatistics(*statisticsSubsetPtr, missingFeatureVector);
     searchForOrdinalRefinementInternally(featureVector, *statisticsSubsetPtr, comparator, numExamplesWithNonZeroWeights,
                                          minCoverage, refinement);
 }
@@ -111,7 +96,6 @@ void FeatureBasedSearch::searchForOrdinalRefinement(
   uint32 numExamplesWithNonZeroWeights, uint32 minCoverage, Refinement& refinement) const {
     std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr =
       createStatisticsSubset(statistics, outputIndices, missingFeatureVector);
-    addMissingStatistics(*statisticsSubsetPtr, missingFeatureVector);
     searchForOrdinalRefinementInternally(featureVector, *statisticsSubsetPtr, comparator, numExamplesWithNonZeroWeights,
                                          minCoverage, refinement);
 }
@@ -122,7 +106,6 @@ void FeatureBasedSearch::searchForBinnedRefinement(
   uint32 numExamplesWithNonZeroWeights, uint32 minCoverage, Refinement& refinement) const {
     std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr =
       createStatisticsSubset(statistics, outputIndices, missingFeatureVector);
-    addMissingStatistics(*statisticsSubsetPtr, missingFeatureVector);
     searchForBinnedRefinementInternally(featureVector, *statisticsSubsetPtr, comparator, numExamplesWithNonZeroWeights,
                                         minCoverage, refinement);
 }
@@ -133,7 +116,6 @@ void FeatureBasedSearch::searchForBinnedRefinement(
   uint32 numExamplesWithNonZeroWeights, uint32 minCoverage, Refinement& refinement) const {
     std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr =
       createStatisticsSubset(statistics, outputIndices, missingFeatureVector);
-    addMissingStatistics(*statisticsSubsetPtr, missingFeatureVector);
     searchForBinnedRefinementInternally(featureVector, *statisticsSubsetPtr, comparator, numExamplesWithNonZeroWeights,
                                         minCoverage, refinement);
 }

@@ -358,27 +358,21 @@ namespace boosting {
                             WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector>(statistics,
                                                                                                   totalSumVector,
                                                                                                   outputIndices) {
-                        for (auto it = excludedStatisticIndices.indices_cbegin();
-                             it != excludedStatisticIndices.indices_cend(); it++) {
-                            uint32 index = *it;
-                            this->addToMissing(index);
-                        }
-                    }
-
-                    /**
-                     * @see `IWeightedStatisticsSubset::addToMissing`
-                     */
-                    void addToMissing(uint32 statisticIndex) override {
-                        // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
-                        if (!totalCoverableSumVectorPtr_) {
+                        if (excludedStatisticIndices.getNumIndices() > 0) {
+                            // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
                             totalCoverableSumVectorPtr_ = std::make_unique<StatisticVector>(*this->totalSumVector_);
                             this->totalSumVector_ = totalCoverableSumVectorPtr_.get();
-                        }
 
-                        // Subtract the gradients and Hessians of the example at the given index (weighted by the given
-                        // weight) from the total sums of gradients and Hessians...
-                        removeStatisticInternally(this->weights_, this->statisticView_, *totalCoverableSumVectorPtr_,
-                                                  statisticIndex);
+                            for (auto it = excludedStatisticIndices.indices_cbegin();
+                                 it != excludedStatisticIndices.indices_cend(); it++) {
+                                // Subtract the gradients and Hessians of the example at the given index (weighted by
+                                // the given
+                                // weight) from the total sums of gradients and Hessians...
+                                uint32 statisticIndex = *it;
+                                removeStatisticInternally(this->weights_, this->statisticView_,
+                                                          *totalCoverableSumVectorPtr_, statisticIndex);
+                            }
+                        }
                     }
             };
 
