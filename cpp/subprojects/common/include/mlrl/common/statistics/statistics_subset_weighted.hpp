@@ -16,15 +16,6 @@ class IWeightedStatisticsSubset : virtual public IStatisticsSubset {
         virtual ~IWeightedStatisticsSubset() override {}
 
         /**
-         * Marks the statistics at a specific index as missing, i.e., no condition that will be considered in the
-         * following for refining a rule will be able to cover it and consequently the function `addToSubset` will never
-         * be called for the given `statisticIndex`.
-         *
-         * @param statisticIndex The index of the missing statistic
-         */
-        virtual void addToMissing(uint32 statisticIndex) = 0;
-
-        /**
          * Resets the subset by removing all statistics that have been added via preceding calls to the function
          * `addToSubset`.
          *

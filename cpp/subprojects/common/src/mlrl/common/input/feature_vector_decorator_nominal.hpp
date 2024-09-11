@@ -93,20 +93,22 @@ class NominalFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDe
         NominalFeatureVectorDecorator(const NominalFeatureVectorDecorator& other)
             : AbstractBinnedFeatureVectorDecorator<AllocatedNominalFeatureVector>(other) {}
 
-        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, IWeightedStatisticsSubset& statisticsSubset,
-                                 SingleRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
-                                 uint32 minCoverage, Refinement& refinement) const override {
-            featureBasedSearch.searchForNominalRefinement(this->view.firstView, this->view.secondView, statisticsSubset,
-                                                          comparator, numExamplesWithNonZeroWeights, minCoverage,
-                                                          refinement);
+        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, SingleRefinementComparator& comparator,
+                                 const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
+                                 uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
+                                 Refinement& refinement) const override {
+            featureBasedSearch.searchForNominalRefinement(this->view.firstView, this->view.secondView, comparator,
+                                                          statistics, outputIndices, numExamplesWithNonZeroWeights,
+                                                          minCoverage, refinement);
         }
 
-        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, IWeightedStatisticsSubset& statisticsSubset,
-                                 FixedRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
-                                 uint32 minCoverage, Refinement& refinement) const override {
-            featureBasedSearch.searchForNominalRefinement(this->view.firstView, this->view.secondView, statisticsSubset,
-                                                          comparator, numExamplesWithNonZeroWeights, minCoverage,
-                                                          refinement);
+        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, FixedRefinementComparator& comparator,
+                                 const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
+                                 uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
+                                 Refinement& refinement) const override {
+            featureBasedSearch.searchForNominalRefinement(this->view.firstView, this->view.secondView, comparator,
+                                                          statistics, outputIndices, numExamplesWithNonZeroWeights,
+                                                          minCoverage, refinement);
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
