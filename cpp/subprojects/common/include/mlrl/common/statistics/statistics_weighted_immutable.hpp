@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/common/data/vector_dok_binary.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 #include "mlrl/common/statistics/statistics_subset_weighted.hpp"
@@ -36,21 +37,27 @@ class IImmutableWeightedStatistics {
          * Creates and returns a new object of type `IWeightedStatisticsSubset` that includes only those outputs, whose
          * indices are provided by a specific `CompleteIndexVector`.
          *
-         * @param outputIndices A reference to an object of type `CompleteIndexVector` that provides access to the
-         *                      indices of the outputs that should be included in the subset
-         * @return              An unique pointer to an object of type `IWeightedStatisticsSubset` that has been created
+         * @param excludedStatisticIndices  A reference to an object of type `BinaryDokVector` that provides access to
+         *                                  the indices of the statistics that should be excluded from the subset
+         * @param outputIndices             A reference to an object of type `CompleteIndexVector` that provides access
+         *                                  to the indices of the outputs that should be included in the subset
+         * @return                          An unique pointer to an object of type `IWeightedStatisticsSubset` that has
+         *                                  been created
          */
         virtual std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-          const CompleteIndexVector& outputIndices) const = 0;
+          const BinaryDokVector& excludedStatisticIndices, const CompleteIndexVector& outputIndices) const = 0;
 
         /**
          * Creates and returns a new object of type `IWeightedStatisticsSubset` that includes only those outputs, whose
          * indices are provided by a specific `PartialIndexVector`.
          *
-         * @param outputIndices A reference to an object of type `PartialIndexVector` that provides access to the
-         *                      indices of the outputs that should be included in the subset
-         * @return              An unique pointer to an object of type `IWeightedStatisticsSubset` that has been created
+         * @param excludedStatisticIndices  A reference to an object of type `BinaryDokVector` that provides access to
+         *                                  the indices of the statistics that should be excluded from the subset
+         * @param outputIndices             A reference to an object of type `PartialIndexVector` that provides access
+         *                                  to the indices of the outputs that should be included in the subset
+         * @return                          An unique pointer to an object of type `IWeightedStatisticsSubset` that has
+         *                                  been created
          */
         virtual std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-          const PartialIndexVector& outputIndices) const = 0;
+          const BinaryDokVector& excludedStatisticIndices, const PartialIndexVector& outputIndices) const = 0;
 };
