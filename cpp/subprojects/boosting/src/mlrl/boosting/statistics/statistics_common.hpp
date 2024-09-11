@@ -338,20 +338,32 @@ namespace boosting {
                 public:
 
                     /**
-                     * @param statistics        A reference to an object of type `WeightedStatistics` that stores the
-                     *                          gradients and Hessians
-                     * @param totalSumVector    A reference to an object of template type `StatisticVector` that stores
-                     *                          the total sums of gradients and Hessians
-                     * @param outputIndices     A reference to an object of template type `IndexVector` that provides
-                     *                          access to the indices of the outputs that are included in the subset
+                     * @param statistics                A reference to an object of type `WeightedStatistics` that
+                     *                                  stores the gradients and Hessians
+                     * @param totalSumVector            A reference to an object of template type `StatisticVector` that
+                     *                                  stores the total sums of gradients and Hessians
+                     * @param excludedStatisticIndices  A reference to an object of type `BinaryDokVector` that provides
+                     *                                  access to the indices of the statistics that should be excluded
+                     *                                  from the subset
+                     * @param outputIndices             A reference to an object of template type `IndexVector` that
+                     *                                  provides access to the indices of the outputs that are included
+                     *                                  in the subset
                      */
                     WeightedStatisticsSubset(const WeightedStatistics& statistics,
-                                             const StatisticVector& totalSumVector, const IndexVector& outputIndices)
+                                             const StatisticVector& totalSumVector,
+                                             const BinaryDokVector& excludedStatisticIndices,
+                                             const IndexVector& outputIndices)
                         : AbstractImmutableWeightedStatistics<
                             StatisticVector, StatisticView, RuleEvaluationFactory,
                             WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector>(statistics,
                                                                                                   totalSumVector,
-                                                                                                  outputIndices) {}
+                                                                                                  outputIndices) {
+                        for (auto it = excludedStatisticIndices.indices_cbegin();
+                             it != excludedStatisticIndices.indices_cend(); it++) {
+                            uint32 index = *it;
+                            this->addToMissing(index);
+                        }
+                    }
 
                     /**
                      * @see `IWeightedStatisticsSubset::addToMissing`
@@ -437,18 +449,19 @@ namespace boosting {
              * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
+              const BinaryDokVector& excludedStatisticIndices,
               const CompleteIndexVector& outputIndices) const override {
-                return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, *totalSumVectorPtr_,
-                                                                                       outputIndices);
+                return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(
+                  *this, *totalSumVectorPtr_, excludedStatisticIndices, outputIndices);
             }
 
             /**
              * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-              const PartialIndexVector& outputIndices) const override {
-                return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, *totalSumVectorPtr_,
-                                                                                      outputIndices);
+              const BinaryDokVector& excludedStatisticIndices, const PartialIndexVector& outputIndices) const override {
+                return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(
+                  *this, *totalSumVectorPtr_, excludedStatisticIndices, outputIndices);
             }
     };
 

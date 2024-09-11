@@ -329,18 +329,30 @@ namespace seco {
                 public:
 
                     /**
-                     * @param statistics    A reference to an object of type `WeightedStatistics` that stores the
-                     *                      confusion matrices
-                     * @param outputIndices A reference to an object of template type `IndexVector` that provides access
-                     *                      to the indices of the outputs that are included in the subset
+                     * @param statistics                A reference to an object of type `WeightedStatistics` that
+                     *                                  stores the confusion matrices
+                     * @param excludedStatisticIndices  A reference to an object of type `BinaryDokVector` that provides
+                     *                                  access to the indices of the statistics that should be excluded
+                     *                                  from the subset
+                     * @param outputIndices             A reference to an object of template type `IndexVector` that
+                     *                                  provides access to the indices of the outputs that are included
+                     *                                  in the subset
                      */
-                    WeightedStatisticsSubset(const WeightedStatistics& statistics, const IndexVector& outputIndices)
+                    WeightedStatisticsSubset(const WeightedStatistics& statistics,
+                                             const BinaryDokVector& excludedStatisticIndices,
+                                             const IndexVector& outputIndices)
                         : AbstractStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
                                                    RuleEvaluationFactory, WeightVector, IndexVector>(
                             statistics.labelMatrix_, statistics.coverageMatrix_, statistics.majorityLabelVector_,
                             statistics.totalSumVector_, statistics.ruleEvaluationFactory_, statistics.weights_,
                             outputIndices),
-                          subsetSumVector_(&statistics.subsetSumVector_), tmpVector_(outputIndices.getNumElements()) {}
+                          subsetSumVector_(&statistics.subsetSumVector_), tmpVector_(outputIndices.getNumElements()) {
+                        for (auto it = excludedStatisticIndices.indices_cbegin();
+                             it != excludedStatisticIndices.indices_cend(); it++) {
+                            uint32 index = *it;
+                            this->addToMissing(index);
+                        }
+                    }
 
                     /**
                      * @see `IWeightedStatisticsSubset::addToMissing`
@@ -510,16 +522,19 @@ namespace seco {
              * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
+              const BinaryDokVector& excludedStatisticIndices,
               const CompleteIndexVector& outputIndices) const override {
-                return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, outputIndices);
+                return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, excludedStatisticIndices,
+                                                                                       outputIndices);
             }
 
             /**
              * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-              const PartialIndexVector& outputIndices) const override {
-                return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, outputIndices);
+              const BinaryDokVector& excludedStatisticIndices, const PartialIndexVector& outputIndices) const override {
+                return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, excludedStatisticIndices,
+                                                                                      outputIndices);
             }
     };
 
