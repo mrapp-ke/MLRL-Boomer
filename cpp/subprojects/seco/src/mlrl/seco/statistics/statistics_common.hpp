@@ -347,27 +347,22 @@ namespace seco {
                             statistics.totalSumVector_, statistics.ruleEvaluationFactory_, statistics.weights_,
                             outputIndices),
                           subsetSumVector_(&statistics.subsetSumVector_), tmpVector_(outputIndices.getNumElements()) {
-                        for (auto it = excludedStatisticIndices.indices_cbegin();
-                             it != excludedStatisticIndices.indices_cend(); it++) {
-                            uint32 index = *it;
-                            this->addToMissing(index);
-                        }
-                    }
-
-                    /**
-                     * @see `IWeightedStatisticsSubset::addToMissing`
-                     */
-                    void addToMissing(uint32 statisticIndex) override {
-                        // Allocate a vector for storing the totals sums of confusion matrices, if necessary...
-                        if (!totalCoverableSumVectorPtr_) {
+                        if (excludedStatisticIndices.getNumIndices() > 0) {
+                            // Allocate a vector for storing the totals sums of confusion matrices, if necessary...
                             totalCoverableSumVectorPtr_ = std::make_unique<ConfusionMatrixVector>(*subsetSumVector_);
                             subsetSumVector_ = totalCoverableSumVectorPtr_.get();
-                        }
 
-                        // For each output, subtract the confusion matrices of the example at the given index (weighted
-                        // by the given weight) from the total sum of confusion matrices...
-                        removeStatisticInternally(this->weights_, this->labelMatrix_, this->majorityLabelVector_,
-                                                  this->coverageMatrix_, *totalCoverableSumVectorPtr_, statisticIndex);
+                            for (auto it = excludedStatisticIndices.indices_cbegin();
+                                 it != excludedStatisticIndices.indices_cend(); it++) {
+                                // For each output, subtract the confusion matrices of the example at the given index
+                                // (weighted
+                                // by the given weight) from the total sum of confusion matrices...
+                                uint32 statisticIndex = *it;
+                                removeStatisticInternally(this->weights_, this->labelMatrix_,
+                                                          this->majorityLabelVector_, this->coverageMatrix_,
+                                                          *totalCoverableSumVectorPtr_, statisticIndex);
+                            }
+                        }
                     }
 
                     /**
