@@ -10,6 +10,7 @@
 #include "mlrl/common/sampling/weight_vector_dense.hpp"
 #include "mlrl/common/sampling/weight_vector_equal.hpp"
 #include "mlrl/common/sampling/weight_vector_out_of_sample.hpp"
+#include "mlrl/common/statistics/statistics_space.hpp"
 #include "mlrl/common/statistics/statistics_weighted.hpp"
 
 #include <memory>
@@ -44,24 +45,10 @@ class IStatisticsUpdate {
  * Defines an interface for all classes that provide access to statistics about the quality of predictions for training
  * examples, which serve as the basis for learning a new rule or refining an existing one.
  */
-class IStatistics {
+class IStatistics : public IStatisticsSpace {
     public:
 
-        virtual ~IStatistics() {}
-
-        /**
-         * Returns the number of available statistics.
-         *
-         * @return The number of statistics
-         */
-        virtual uint32 getNumStatistics() const = 0;
-
-        /**
-         * Returns the number of available outputs.
-         *
-         * @return The number of outputs
-         */
-        virtual uint32 getNumOutputs() const = 0;
+        virtual ~IStatistics() override {}
 
         /**
          * Creates and returns a new object of type `IStatisticsUpdate` that allows updating the statistics based on the

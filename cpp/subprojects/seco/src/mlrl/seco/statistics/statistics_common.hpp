@@ -469,14 +469,14 @@ namespace seco {
                   coverageMatrix_(statistics.coverageMatrix_) {}
 
             /**
-             * @see `IImmutableWeightedStatistics::getNumStatistics`
+             * @see `IStatisticsSpace::getNumStatistics`
              */
             uint32 getNumStatistics() const override {
                 return labelMatrix_.numRows;
             }
 
             /**
-             * @see `IImmutableWeightedStatistics::getNumOutputs`
+             * @see `IStatisticsSpace::getNumOutputs`
              */
             uint32 getNumOutputs() const override {
                 return labelMatrix_.numCols;
@@ -514,7 +514,7 @@ namespace seco {
             }
 
             /**
-             * @see `IImmutableWeightedStatistics::createSubset`
+             * @see `IStatisticsSpace::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
               const BinaryDokVector& excludedStatisticIndices,
@@ -524,7 +524,7 @@ namespace seco {
             }
 
             /**
-             * @see `IImmutableWeightedStatistics::createSubset`
+             * @see `IStatisticsSpace::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
               const BinaryDokVector& excludedStatisticIndices, const PartialIndexVector& outputIndices) const override {
