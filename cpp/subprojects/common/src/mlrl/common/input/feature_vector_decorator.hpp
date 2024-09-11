@@ -89,12 +89,12 @@ class AbstractFeatureVectorDecorator
                 CompositeView<FeatureVector, AllocatedMissingFeatureVector>(std::move(firstView),
                                                                             std::move(secondView))) {}
 
-        std::unique_ptr<IWeightedStatisticsSubset> createStatisticsSubset(
+        std::unique_ptr<IResettableStatisticsSubset> createStatisticsSubset(
           const IWeightedStatistics& statistics, const CompleteIndexVector& outputIndices) const override {
             return statistics.createSubset(this->view.secondView, outputIndices);
         }
 
-        std::unique_ptr<IWeightedStatisticsSubset> createStatisticsSubset(
+        std::unique_ptr<IResettableStatisticsSubset> createStatisticsSubset(
           const IWeightedStatistics& statistics, const PartialIndexVector& outputIndices) const override {
             return statistics.createSubset(this->view.secondView, outputIndices);
         }

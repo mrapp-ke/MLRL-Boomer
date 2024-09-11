@@ -150,7 +150,7 @@ namespace boosting {
             class AbstractWeightedStatisticsSubset
                 : public StatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector,
                                           IndexVector>,
-                  virtual public IWeightedStatisticsSubset {
+                  virtual public IResettableStatisticsSubset {
                 private:
 
                     StatisticVector tmpVector_;
@@ -184,7 +184,7 @@ namespace boosting {
                           tmpVector_(outputIndices.getNumElements()), totalSumVector_(&totalSumVector) {}
 
                     /**
-                     * @see `IWeightedStatisticsSubset::resetSubset`
+                     * @see `IResettableStatisticsSubset::resetSubset`
                      */
                     void resetSubset() override final {
                         if (!accumulatedSumVectorPtr_) {
@@ -202,14 +202,14 @@ namespace boosting {
                     }
 
                     /**
-                     * @see `IWeightedStatisticsSubset::calculateScoresAccumulated`
+                     * @see `IResettableStatisticsSubset::calculateScoresAccumulated`
                      */
                     const IScoreVector& calculateScoresAccumulated() override final {
                         return this->ruleEvaluationPtr_->calculateScores(*accumulatedSumVectorPtr_);
                     }
 
                     /**
-                     * @see `IWeightedStatisticsSubset::calculateScoresUncovered`
+                     * @see `IResettableStatisticsSubset::calculateScoresUncovered`
                      */
                     const IScoreVector& calculateScoresUncovered() override final {
                         tmpVector_.difference(*totalSumVector_, this->outputIndices_, this->sumVector_);
@@ -217,7 +217,7 @@ namespace boosting {
                     }
 
                     /**
-                     * @see `IWeightedStatisticsSubset::calculateScoresUncoveredAccumulated`
+                     * @see `IResettableStatisticsSubset::calculateScoresUncoveredAccumulated`
                      */
                     const IScoreVector& calculateScoresUncoveredAccumulated() override final {
                         tmpVector_.difference(*totalSumVector_, this->outputIndices_, *accumulatedSumVectorPtr_);
@@ -440,7 +440,7 @@ namespace boosting {
             /**
              * @see `IStatisticsSpace::createSubset`
              */
-            std::unique_ptr<IWeightedStatisticsSubset> createSubset(
+            std::unique_ptr<IResettableStatisticsSubset> createSubset(
               const BinaryDokVector& excludedStatisticIndices,
               const CompleteIndexVector& outputIndices) const override {
                 return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(
@@ -450,7 +450,7 @@ namespace boosting {
             /**
              * @see `IStatisticsSpace::createSubset`
              */
-            std::unique_ptr<IWeightedStatisticsSubset> createSubset(
+            std::unique_ptr<IResettableStatisticsSubset> createSubset(
               const BinaryDokVector& excludedStatisticIndices, const PartialIndexVector& outputIndices) const override {
                 return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(
                   *this, *totalSumVectorPtr_, excludedStatisticIndices, outputIndices);
