@@ -22,6 +22,7 @@ class IWeightedStatisticsSubset : virtual public IStatisticsSubset {
          *
          * @param statisticIndex The index of the missing statistic
          */
+        // TODO Remove
         virtual void addToMissing(uint32 statisticIndex) = 0;
 
         /**

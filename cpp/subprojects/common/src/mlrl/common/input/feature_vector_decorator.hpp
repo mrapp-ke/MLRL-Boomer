@@ -91,11 +91,11 @@ class AbstractFeatureVectorDecorator
 
         std::unique_ptr<IWeightedStatisticsSubset> createStatisticsSubset(
           const IWeightedStatistics& statistics, const CompleteIndexVector& outputIndices) const override {
-            return statistics.createSubset(outputIndices);
+            return statistics.createSubset(this->view.secondView, outputIndices);
         }
 
         std::unique_ptr<IWeightedStatisticsSubset> createStatisticsSubset(
           const IWeightedStatistics& statistics, const PartialIndexVector& outputIndices) const override {
-            return statistics.createSubset(outputIndices);
+            return statistics.createSubset(this->view.secondView, outputIndices);
         }
 };
