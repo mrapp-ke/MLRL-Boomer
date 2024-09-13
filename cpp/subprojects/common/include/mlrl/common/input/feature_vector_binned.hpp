@@ -3,30 +3,19 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view.hpp"
+#include "mlrl/common/data/view_vector_compressed.hpp"
 
 /**
  * A feature vector that stores the indices of the examples that are associated with each bin, except for the most
  * frequent one, created by a method that assigns numerical feature values to bins.
  */
-class MLRLCOMMON_API BinnedFeatureVector {
+class MLRLCOMMON_API BinnedFeatureVector : public CompressedVector {
     public:
 
         /**
          * A pointer to an array that stores thresholds separating adjacent bins.
          */
         float32* thresholds;
-
-        /**
-         * A pointer to an array that stores the indices of all examples not associated with the most frequent bin.
-         */
-        uint32* indices;
-
-        /**
-         * A pointer to an array that stores the indices of the first element in `indices` that corresponds to a certain
-         * bin.
-         */
-        uint32* indptr;
 
         /**
          * The number of bins, excluding the most frequent one.
@@ -62,12 +51,7 @@ class MLRLCOMMON_API BinnedFeatureVector {
          */
         BinnedFeatureVector(BinnedFeatureVector&& other);
 
-        virtual ~BinnedFeatureVector() {}
-
-        /**
-         * The type of the indices, the view provides access to.
-         */
-        typedef uint32 index_type;
+        virtual ~BinnedFeatureVector() override {}
 
         /**
          * The type of the thresholds, the view provides access to.
@@ -83,18 +67,6 @@ class MLRLCOMMON_API BinnedFeatureVector {
          * An iterator that provides access to all thresholds and allows to modify them.
          */
         typedef float32* threshold_iterator;
-
-        /**
-         * An iterator that provides read-only access to the indices of the examples that are associated with each bin,
-         * except for the most frequent bin.
-         */
-        typedef const uint32* index_const_iterator;
-
-        /**
-         * An iterator that provides access to the indices of the examples that are associated with each bin, except for
-         * the most frequent bin, and allows to modify them.
-         */
-        typedef uint32* index_iterator;
 
         /**
          * Returns a `threshold_const_iterator` to the beginning of the thresholds.
@@ -125,42 +97,6 @@ class MLRLCOMMON_API BinnedFeatureVector {
         threshold_iterator thresholds_end();
 
         /**
-         * Returns an `index_const_iterator` to the beginning of the indices of the examples that are associated with a
-         * specific bin.
-         *
-         * @param index The index of the bin
-         * @return      An `index_const_iterator` to the beginning
-         */
-        index_const_iterator indices_cbegin(uint32 index) const;
-
-        /**
-         * Returns an `index_const_iterator` to the end of the indices of the examples that are associated with a
-         * specific bin.
-         *
-         * @param index The index of the bin
-         * @return      An `index_const_iterator` to the end
-         */
-        index_const_iterator indices_cend(uint32 index) const;
-
-        /**
-         * Returns an `index_iterator` to the beginning of the indices of the examples that are associated with a
-         * specific bin.
-         *
-         * @param index The index of the bin
-         * @return      An `index_iterator` to the beginning
-         */
-        index_iterator indices_begin(uint32 index);
-
-        /**
-         * Returns an `index_iterator` to the end of the indices of the examples that are associated with a specific
-         * bin.
-         *
-         * @param index The index of the bin
-         * @return      An `index_iterator` to the end
-         */
-        index_iterator indices_end(uint32 index);
-
-        /**
          * Releases the ownership of the array that stores the thresholds. As a result, the behavior of this view
          * becomes undefined and it should not be used anymore. The caller is responsible for freeing the memory that is
          * occupied by the array.
@@ -168,24 +104,4 @@ class MLRLCOMMON_API BinnedFeatureVector {
          * @return A pointer to an array that stores all thresholds
          */
         threshold_type* releaseThresholds();
-
-        /**
-         * Releases the ownership of the array that stores the indices of all examples not associated with the most
-         * frequent bin. As a result, the behavior of this view becomes undefined and it should not be used anymore. The
-         * caller is responsible for freeing the memory that is occupied by the array.
-         *
-         * @return A pointer to the array that stores the indices of all examples not associated with the most frequent
-         *         bin
-         */
-        index_type* releaseIndices();
-
-        /**
-         * Releases the ownership of the array that stores the indices of the first element in `indices` that
-         * corresponds to a certain bin. As a result, the behavior of this view becomes undefined and it should not be
-         * used anymore. The caller is responsible for freeing the memory that is occupied by the array.
-         *
-         * @return  A pointer to an array that stores the indices of the first element in `indices` that corresponds to
-         *          a certain bin
-         */
-        index_type* releaseIndptr();
 };
