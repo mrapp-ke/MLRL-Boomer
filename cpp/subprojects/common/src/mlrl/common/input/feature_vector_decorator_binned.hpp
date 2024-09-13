@@ -5,6 +5,7 @@
 
 #include "feature_vector_binned_allocated.hpp"
 #include "feature_vector_decorator_binned_common.hpp"
+#include "mlrl/common/rule_refinement/feature_based_search.hpp"
 
 #include <memory>
 #include <optional>
@@ -100,22 +101,20 @@ class BinnedFeatureVectorView final : public AbstractFeatureVectorDecorator<Binn
         BinnedFeatureVectorView(BinnedFeatureVector&& firstView)
             : AbstractFeatureVectorDecorator(std::move(firstView), AllocatedMissingFeatureVector()) {}
 
-        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, SingleRefinementComparator& comparator,
-                                 const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
-                                 uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                 Refinement& refinement) const override {
-            featureBasedSearch.searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator,
-                                                         statistics, outputIndices, numExamplesWithNonZeroWeights,
-                                                         minCoverage, refinement);
+        void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
+                                 const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
+                                 uint32 minCoverage, Refinement& refinement) const override {
+            FeatureBasedSearch().searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator,
+                                                           statistics, outputIndices, numExamplesWithNonZeroWeights,
+                                                           minCoverage, refinement);
         }
 
-        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, FixedRefinementComparator& comparator,
-                                 const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
-                                 uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                 Refinement& refinement) const override {
-            featureBasedSearch.searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator,
-                                                         statistics, outputIndices, numExamplesWithNonZeroWeights,
-                                                         minCoverage, refinement);
+        void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
+                                 const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
+                                 uint32 minCoverage, Refinement& refinement) const override {
+            FeatureBasedSearch().searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator,
+                                                           statistics, outputIndices, numExamplesWithNonZeroWeights,
+                                                           minCoverage, refinement);
         }
 
         void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
@@ -165,22 +164,20 @@ class AllocatedBinnedFeatureVectorView final : public AbstractFeatureVectorDecor
                                                                   AllocatedMissingFeatureVector()),
               allocatedView(std::move(allocatedView)) {}
 
-        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, SingleRefinementComparator& comparator,
-                                 const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
-                                 uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                 Refinement& refinement) const override {
-            featureBasedSearch.searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator,
-                                                         statistics, outputIndices, numExamplesWithNonZeroWeights,
-                                                         minCoverage, refinement);
+        void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
+                                 const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
+                                 uint32 minCoverage, Refinement& refinement) const override {
+            FeatureBasedSearch().searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator,
+                                                           statistics, outputIndices, numExamplesWithNonZeroWeights,
+                                                           minCoverage, refinement);
         }
 
-        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, FixedRefinementComparator& comparator,
-                                 const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
-                                 uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                 Refinement& refinement) const override {
-            featureBasedSearch.searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator,
-                                                         statistics, outputIndices, numExamplesWithNonZeroWeights,
-                                                         minCoverage, refinement);
+        void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
+                                 const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
+                                 uint32 minCoverage, Refinement& refinement) const override {
+            FeatureBasedSearch().searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator,
+                                                           statistics, outputIndices, numExamplesWithNonZeroWeights,
+                                                           minCoverage, refinement);
         }
 
         void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
@@ -265,22 +262,20 @@ class BinnedFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDec
                                              other.getView().firstView.sparseBinIndex),
                 AllocatedMissingFeatureVector()) {}
 
-        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, SingleRefinementComparator& comparator,
-                                 const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
-                                 uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                 Refinement& refinement) const override {
-            featureBasedSearch.searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator,
-                                                         statistics, outputIndices, numExamplesWithNonZeroWeights,
-                                                         minCoverage, refinement);
+        void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
+                                 const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
+                                 uint32 minCoverage, Refinement& refinement) const override {
+            FeatureBasedSearch().searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator,
+                                                           statistics, outputIndices, numExamplesWithNonZeroWeights,
+                                                           minCoverage, refinement);
         }
 
-        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, FixedRefinementComparator& comparator,
-                                 const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
-                                 uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                 Refinement& refinement) const override {
-            featureBasedSearch.searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator,
-                                                         statistics, outputIndices, numExamplesWithNonZeroWeights,
-                                                         minCoverage, refinement);
+        void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
+                                 const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
+                                 uint32 minCoverage, Refinement& refinement) const override {
+            FeatureBasedSearch().searchForBinnedRefinement(this->view.firstView, this->view.secondView, comparator,
+                                                           statistics, outputIndices, numExamplesWithNonZeroWeights,
+                                                           minCoverage, refinement);
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,

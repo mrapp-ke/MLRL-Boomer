@@ -6,6 +6,7 @@
 #include "feature_vector_decorator.hpp"
 #include "feature_vector_numerical_allocated.hpp"
 #include "mlrl/common/input/feature_vector_equal.hpp"
+#include "mlrl/common/rule_refinement/feature_based_search.hpp"
 
 #include <memory>
 #include <optional>
@@ -74,22 +75,20 @@ class AbstractNumericalFeatureVectorDecorator : public AbstractFeatureVectorDeco
 
         virtual ~AbstractNumericalFeatureVectorDecorator() override {}
 
-        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, SingleRefinementComparator& comparator,
-                                 const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
-                                 uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                 Refinement& refinement) const override {
-            featureBasedSearch.searchForNumericalRefinement(this->view.firstView, this->view.secondView, comparator,
-                                                            statistics, outputIndices, numExamplesWithNonZeroWeights,
-                                                            minCoverage, refinement);
+        void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
+                                 const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
+                                 uint32 minCoverage, Refinement& refinement) const override {
+            FeatureBasedSearch().searchForNumericalRefinement(this->view.firstView, this->view.secondView, comparator,
+                                                              statistics, outputIndices, numExamplesWithNonZeroWeights,
+                                                              minCoverage, refinement);
         }
 
-        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, FixedRefinementComparator& comparator,
-                                 const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
-                                 uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                 Refinement& refinement) const override {
-            featureBasedSearch.searchForNumericalRefinement(this->view.firstView, this->view.secondView, comparator,
-                                                            statistics, outputIndices, numExamplesWithNonZeroWeights,
-                                                            minCoverage, refinement);
+        void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
+                                 const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
+                                 uint32 minCoverage, Refinement& refinement) const override {
+            FeatureBasedSearch().searchForNumericalRefinement(this->view.firstView, this->view.secondView, comparator,
+                                                              statistics, outputIndices, numExamplesWithNonZeroWeights,
+                                                              minCoverage, refinement);
         }
 
         void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,

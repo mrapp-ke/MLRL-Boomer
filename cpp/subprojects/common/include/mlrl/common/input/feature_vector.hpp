@@ -5,7 +5,8 @@
 
 #include "mlrl/common/input/interval.hpp"
 #include "mlrl/common/rule_refinement/coverage_mask.hpp"
-#include "mlrl/common/rule_refinement/feature_based_search.hpp"
+#include "mlrl/common/rule_refinement/refinement_comparator_fixed.hpp"
+#include "mlrl/common/rule_refinement/refinement_comparator_single.hpp"
 #include "mlrl/common/statistics/statistics_weighted.hpp"
 
 #include <memory>
@@ -46,8 +47,6 @@ class IFeatureVector {
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a this feature vector.
          *
-         * @param featureBasedSearch            A reference to an object of type `FeatureBasedSearch` that should be
-         *                                      used for conducting the search
          * @param comparator                    A reference to an object of type `SingleRefinementComparator` that
          *                                      should be used for comparing potential refinements
          * @param statistics                    A reference to an object of type `IWeightedStatistics` that provides
@@ -62,16 +61,13 @@ class IFeatureVector {
          * @param refinement                    A reference to an object of type `Refinement` that should be used for
          *                                      storing the properties of the best refinement that is found
          */
-        virtual void searchForRefinement(FeatureBasedSearch& featureBasedSearch, SingleRefinementComparator& comparator,
-                                         const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
-                                         uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                         Refinement& refinement) const = 0;
+        virtual void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
+                                         const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
+                                         uint32 minCoverage, Refinement& refinement) const = 0;
 
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a this feature vector.
          *
-         * @param featureBasedSearch            A reference to an object of type `FeatureBasedSearch` that should be
-         *                                      used for conducting the search
          * @param comparator                    A reference to an object of type `MultiRefinementComparator` that should
          *                                      be used for comparing potential refinements
          * @param statistics                    A reference to an object of type `IWeightedStatistics` that provides
@@ -86,10 +82,9 @@ class IFeatureVector {
          * @param refinement                    A reference to an object of type `Refinement` that should be used for
          *                                      storing the properties of the best refinement that is found
          */
-        virtual void searchForRefinement(FeatureBasedSearch& featureBasedSearch, FixedRefinementComparator& comparator,
-                                         const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
-                                         uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                         Refinement& refinement) const = 0;
+        virtual void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
+                                         const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
+                                         uint32 minCoverage, Refinement& refinement) const = 0;
 
         /**
          * Updates a given `CoverageMask` and `IWeightedStatistics` depending on the indices of training examples
