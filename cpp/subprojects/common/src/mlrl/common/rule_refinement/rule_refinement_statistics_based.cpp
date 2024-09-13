@@ -1,6 +1,5 @@
 #include "mlrl/common/rule_refinement/rule_refinement_statistics_based.hpp"
 
-#include "mlrl/common/rule_refinement/feature_based_search.hpp"
 #include "mlrl/common/rule_refinement/feature_subspace.hpp"
 #include "mlrl/common/util/openmp.hpp"
 
@@ -18,11 +17,10 @@ static inline void findRefinementInternally(RefinementComparator& refinementComp
                                             const IIndexVector& outputIndices, uint32 featureIndex,
                                             const IWeightedStatistics& statistics, const IFeatureVector& featureVector,
                                             uint32 numExamplesWithNonZeroWeights, uint32 minCoverage) {
-    FeatureBasedSearch featureBasedSearch;
     Refinement refinement;
     refinement.featureIndex = featureIndex;
-    featureVector.searchForRefinement(featureBasedSearch, refinementComparator, statistics, outputIndices,
-                                      numExamplesWithNonZeroWeights, minCoverage, refinement);
+    featureVector.searchForRefinement(refinementComparator, statistics, outputIndices, numExamplesWithNonZeroWeights,
+                                      minCoverage, refinement);
 }
 
 template<typename RefinementComparator>
