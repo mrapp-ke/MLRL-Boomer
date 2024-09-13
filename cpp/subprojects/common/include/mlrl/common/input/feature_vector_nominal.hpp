@@ -38,8 +38,6 @@ class MLRLCOMMON_API NominalFeatureVector {
          */
         int32 majorityValue;
 
-    public:
-
         /**
          * @param values        A pointer to an array of type `int32`, shape `(numValues)` that stores all nominal
          *                      values

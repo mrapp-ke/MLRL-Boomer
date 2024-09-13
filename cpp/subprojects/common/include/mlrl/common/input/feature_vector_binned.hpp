@@ -38,8 +38,6 @@ class MLRLCOMMON_API BinnedFeatureVector {
          */
         uint32 sparseBinIndex;
 
-    public:
-
         /**
          * @param thresholds        A pointer to an array of type `float32`, shape `(numBins - 1)` that stores
          *                          thresholds separating bins
