@@ -12,21 +12,29 @@ class MLRLCOMMON_API CompressedVector : public CompressedView {
     public:
 
         /**
+         * The number of bins.
+         */
+        uint32 numBins;
+
+        /**
          * @param indices   A pointer to an array of type `uint32`, shape `(numIndices)` that stores indices
          * @param indptr    A pointer to an array that stores the indices of the first element in `indices` that
          *                  corresponds to a certain bin
+         * @param numBins   The number of bins
          */
-        CompressedVector(uint32* indices, uint32* indptr) : CompressedView(indices, indptr) {}
+        CompressedVector(uint32* indices, uint32* indptr, uint32 numBins)
+            : CompressedView(indices, indptr), numBins(numBins) {}
 
         /**
          * @param other A reference to an object of type `CompressedVector` that should be copied
          */
-        CompressedVector(const CompressedVector& other) : CompressedVector(other.indices, other.indptr) {}
+        CompressedVector(const CompressedVector& other)
+            : CompressedVector(other.indices, other.indptr, other.numBins) {}
 
         /**
          * @param other A reference to an object of type `CompressedVector` that should be moved
          */
-        CompressedVector(CompressedVector&& other) : CompressedVector(other.indices, other.indptr) {}
+        CompressedVector(CompressedVector&& other) : CompressedVector(other.indices, other.indptr, other.numBins) {}
 
         virtual ~CompressedVector() override {}
 

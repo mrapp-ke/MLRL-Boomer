@@ -18,11 +18,6 @@ class MLRLCOMMON_API BinnedFeatureVector : public CompressedVector {
         float32* thresholds;
 
         /**
-         * The number of bins, excluding the most frequent one.
-         */
-        uint32 numBins;
-
-        /**
          * The index of the most frequent bin.
          */
         uint32 sparseBinIndex;
