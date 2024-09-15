@@ -6,6 +6,7 @@
 #include "feature_based_search_binned_common.hpp"
 #include "mlrl/common/input/feature_vector_ordinal.hpp"
 #include "mlrl/common/rule_refinement/refinement.hpp"
+#include "mlrl/common/statistics/statistics_subset_resettable.hpp"
 
 template<typename Comparator>
 static inline void searchForOrdinalRefinementInternally(const OrdinalFeatureVector& featureVector,
