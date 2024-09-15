@@ -48,12 +48,14 @@ static inline std::unique_ptr<IResettableStatisticsSubset> createStatisticsSubse
 /**
  * Conducts a search for the best refinement of an existing rule that can be created from a `NumericalFeatureVector`.
  *
+ * @tparam Comparator                   The type of the comparator that should be used for comparing potential
+ *                                      refinements
  * @param featureVector                 A reference to an object of type `NumericalFeatureVector`, the refinements
  *                                      should be created from
  * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides access to
  *                                      the indices of training examples with missing feature values
- * @param comparator                    A reference to an object of type `SingleRefinementComparator` that should be
- *                                      used for comparing potential refinements
+ * @param comparator                    A reference to an object of template type `Comparator` that should be used for
+ *                                      comparing potential refinements
  * @param statistics                    A reference to an object of type `IWeightedStatistics` that provides access to
  *                                      weighted statistics about the quality of predictions for training examples,
  *                                      which should serve as the basis for evaluating the quality of potential
@@ -66,43 +68,10 @@ static inline std::unique_ptr<IResettableStatisticsSubset> createStatisticsSubse
  * @param refinement                    A reference to an object of type `Refinement` that should be used for
  *                                      storing the properties of the best refinement that is found
  */
+template<typename Comparator>
 static inline void searchForNumericalRefinement(const NumericalFeatureVector& featureVector,
                                                 const MissingFeatureVector& missingFeatureVector,
-                                                SingleRefinementComparator& comparator,
-                                                const IWeightedStatistics& statistics,
-                                                const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
-                                                uint32 minCoverage, Refinement& refinement) {
-    std::unique_ptr<IResettableStatisticsSubset> statisticsSubsetPtr =
-      createStatisticsSubset(statistics, missingFeatureVector, outputIndices);
-    searchForNumericalRefinementInternally(featureVector, *statisticsSubsetPtr, comparator,
-                                           numExamplesWithNonZeroWeights, minCoverage, refinement);
-}
-
-/**
- * Conducts a search for the best refinement of an existing rule that can be created from a `NumericalFeatureVector`.
- *
- * @param featureVector                 A reference to an object of type `NumericalFeatureVector`, the refinements
- *                                      should be created from
- * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides access to
- *                                      the indices of training examples with missing feature values
- * @param comparator                    A reference to an object of type `MultiRefinementComparator` that should be used
- *                                      for comparing potential refinements
- * @param statistics                    A reference to an object of type `IWeightedStatistics` that provides access to
- *                                      weighted statistics about the quality of predictions for training examples,
- *                                      which should serve as the basis for evaluating the quality of potential
- *                                      refinements
- * @param outputIndices                 A reference to an object of type `IIndexVector` that provides access to the
- *                                      indices of the outputs for which refinements should predict
- * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered by a
- *                                      refinement
- * @param minCoverage                   The minimum number of examples that must be covered by the refinement
- * @param refinement                    A reference to an object of type `Refinement` that should be used for
- *                                      storing the properties of the best refinement that is found
- */
-static inline void searchForNumericalRefinement(const NumericalFeatureVector& featureVector,
-                                                const MissingFeatureVector& missingFeatureVector,
-                                                FixedRefinementComparator& comparator,
-                                                const IWeightedStatistics& statistics,
+                                                Comparator& comparator, const IWeightedStatistics& statistics,
                                                 const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                                 uint32 minCoverage, Refinement& refinement) {
     std::unique_ptr<IResettableStatisticsSubset> statisticsSubsetPtr =
@@ -114,12 +83,14 @@ static inline void searchForNumericalRefinement(const NumericalFeatureVector& fe
 /**
  * Conducts a search for the best refinement of an existing rule that can be created from a `NominalFeatureVector`.
  *
+ * @tparam Comparator                   The type of the comparator that should be used for comparing potential
+ *                                      refinements
  * @param featureVector                 A reference to an object of type `NominalFeatureVector`, the refinements should
  *                                      be created from
  * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides access to
  *                                      the indices of training examples with missing feature values
- * @param comparator                    A reference to an object of type `SingleRefinementComparator` that should be
- *                                      used for comparing potential refinements
+ * @param comparator                    A reference to an object of template type `Comparator` that should be used for
+ *                                      comparing potential refinements
  * @param statistics                    A reference to an object of type `IWeightedStatistics` that provides access to
  *                                      weighted statistics about the quality of predictions for training examples,
  *                                      which should serve as the basis for evaluating the quality of potential
@@ -132,42 +103,9 @@ static inline void searchForNumericalRefinement(const NumericalFeatureVector& fe
  * @param refinement                    A reference to an object of type `Refinement` that should be used for
  *                                      storing the properties of the best refinement that is found
  */
+template<typename Comparator>
 static inline void searchForNominalRefinement(const NominalFeatureVector& featureVector,
-                                              const MissingFeatureVector& missingFeatureVector,
-                                              SingleRefinementComparator& comparator,
-                                              const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
-                                              uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                              Refinement& refinement) {
-    std::unique_ptr<IResettableStatisticsSubset> statisticsSubsetPtr =
-      createStatisticsSubset(statistics, missingFeatureVector, outputIndices);
-    searchForNominalRefinementInternally(featureVector, *statisticsSubsetPtr, comparator, numExamplesWithNonZeroWeights,
-                                         minCoverage, refinement);
-}
-
-/**
- * Conducts a search for the best refinement of an existing rule that can be created from a `NominalFeatureVector`.
- *
- * @param featureVector                 A reference to an object of type `NominalFeatureVector`, the refinements should
- *                                      be created from
- * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides access to
- *                                      the indices of training examples with missing feature values
- * @param comparator                    A reference to an object of type `MultiRefinementComparator` that should be used
- *                                      for comparing potential refinements
- * @param statistics                    A reference to an object of type `IWeightedStatistics` that provides access to
- *                                      weighted statistics about the quality of predictions for training examples,
- *                                      which should serve as the basis for evaluating the quality of potential
- *                                      refinements
- * @param outputIndices                 A reference to an object of type `IIndexVector` that provides access to the
- *                                      indices of the outputs for which refinements should predict
- * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered by a
- *                                      refinement
- * @param minCoverage                   The minimum number of examples that must be covered by the refinement
- * @param refinement                    A reference to an object of type `Refinement` that should be used for
- *                                      storing the properties of the best refinement that is found
- */
-static inline void searchForNominalRefinement(const NominalFeatureVector& featureVector,
-                                              const MissingFeatureVector& missingFeatureVector,
-                                              FixedRefinementComparator& comparator,
+                                              const MissingFeatureVector& missingFeatureVector, Comparator& comparator,
                                               const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
                                               uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
                                               Refinement& refinement) {
@@ -179,13 +117,14 @@ static inline void searchForNominalRefinement(const NominalFeatureVector& featur
 
 /**
  * Conducts a search for the best refinement of an existing rule that can be created from a `BinaryFeatureVector`.
+ *
  *
  * @param featureVector                 A reference to an object of type `BinaryFeatureVector`, the refinements
  *                                      should be created from
  * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides access to
  *                                      the indices of training examples with missing feature values
- * @param comparator                    A reference to an object of type `SingleRefinementComparator` that should be
- *                                      used for comparing potential refinements
+ * @param comparator                    A reference to an object of template type `Comparator` that should be used for
+ *                                      comparing potential refinements
  * @param statistics                    A reference to an object of type `IWeightedStatistics` that provides access to
  *                                      weighted statistics about the quality of predictions for training examples,
  *                                      which should serve as the basis for evaluating the quality of potential
@@ -198,42 +137,9 @@ static inline void searchForNominalRefinement(const NominalFeatureVector& featur
  * @param refinement                    A reference to an object of type `Refinement` that should be used for
  *                                      storing the properties of the best refinement that is found
  */
+template<typename Comparator>
 static inline void searchForBinaryRefinement(const BinaryFeatureVector& featureVector,
-                                             const MissingFeatureVector& missingFeatureVector,
-                                             SingleRefinementComparator& comparator,
-                                             const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
-                                             uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                             Refinement& refinement) {
-    std::unique_ptr<IResettableStatisticsSubset> statisticsSubsetPtr =
-      createStatisticsSubset(statistics, missingFeatureVector, outputIndices);
-    searchForBinaryRefinementInternally(featureVector, *statisticsSubsetPtr, comparator, numExamplesWithNonZeroWeights,
-                                        minCoverage, refinement);
-}
-
-/**
- * Conducts a search for the best refinement of an existing rule that can be created from a `BinaryFeatureVector`.
- *
- * @param featureVector                 A reference to an object of type `BinaryFeatureVector`, the refinements should
- *                                      be created from
- * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides access to
- *                                      the indices of training examples with missing feature values
- * @param comparator                    A reference to an object of type `MultiRefinementComparator` that should be used
- *                                      for comparing potential refinements
- * @param statistics                    A reference to an object of type `IWeightedStatistics` that provides access to
- *                                      weighted statistics about the quality of predictions for training examples,
- *                                      which should serve as the basis for evaluating the quality of potential
- *                                      refinements
- * @param outputIndices                 A reference to an object of type `IIndexVector` that provides access to the
- *                                      indices of the outputs for which refinements should predict
- * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered by a
- *                                      refinement
- * @param minCoverage                   The minimum number of examples that must be covered by the refinement
- * @param refinement                    A reference to an object of type `Refinement` that should be used for
- *                                      storing the properties of the best refinement that is found
- */
-static inline void searchForBinaryRefinement(const BinaryFeatureVector& featureVector,
-                                             const MissingFeatureVector& missingFeatureVector,
-                                             FixedRefinementComparator& comparator,
+                                             const MissingFeatureVector& missingFeatureVector, Comparator& comparator,
                                              const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
                                              uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
                                              Refinement& refinement) {
@@ -246,12 +152,14 @@ static inline void searchForBinaryRefinement(const BinaryFeatureVector& featureV
 /**
  * Conducts a search for the best refinement of an existing rule that can be created from an `OrdinalFeatureVector`.
  *
+ * @tparam Comparator                   The type of the comparator that should be used for comparing potential
+ *                                      refinements
  * @param featureVector                 A reference to an object of type `OrdinalFeatureVector`, the refinements should
  *                                      be created from
  * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides access to
  *                                      the indices of training examples with missing feature values
- * @param comparator                    A reference to an object of type `SingleRefinementComparator` that should be
- *                                      used for comparing potential refinements
+ * @param comparator                    A reference to an object of template type `Comparator` that should be used for
+ *                                      comparing potential refinements
  * @param statistics                    A reference to an object of type `IWeightedStatistics` that provides access to
  *                                      weighted statistics about the quality of predictions for training examples,
  *                                      which should serve as the basis for evaluating the quality of potential
@@ -264,42 +172,9 @@ static inline void searchForBinaryRefinement(const BinaryFeatureVector& featureV
  * @param refinement                    A reference to an object of type `Refinement` that should be used for
  *                                      storing the properties of the best refinement that is found
  */
+template<typename Comparator>
 static inline void searchForOrdinalRefinement(const OrdinalFeatureVector& featureVector,
-                                              const MissingFeatureVector& missingFeatureVector,
-                                              SingleRefinementComparator& comparator,
-                                              const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
-                                              uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                              Refinement& refinement) {
-    std::unique_ptr<IResettableStatisticsSubset> statisticsSubsetPtr =
-      createStatisticsSubset(statistics, missingFeatureVector, outputIndices);
-    searchForOrdinalRefinementInternally(featureVector, *statisticsSubsetPtr, comparator, numExamplesWithNonZeroWeights,
-                                         minCoverage, refinement);
-}
-
-/**
- * Conducts a search for the best refinement of an existing rule that can be created from an `OrdinalFeatureVector`.
- *
- * @param featureVector                 A reference to an object of type `OrdinalFeatureVector`, the refinements should
- *                                      be created from
- * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides access to
- *                                      the indices of training examples with missing feature values
- * @param comparator                    A reference to an object of type `MultiRefinementComparator` that should be used
- *                                      for comparing potential refinements
- * @param statistics                    A reference to an object of type `IWeightedStatistics` that provides access to
- *                                      weighted statistics about the quality of predictions for training examples,
- *                                      which should serve as the basis for evaluating the quality of potential
- *                                      refinements
- * @param outputIndices                 A reference to an object of type `IIndexVector` that provides access to the
- *                                      indices of the outputs for which refinements should predict
- * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered by a
- *                                      refinement
- * @param minCoverage                   The minimum number of examples that must be covered by the refinement
- * @param refinement                    A reference to an object of type `Refinement` that should be used for
- *                                      storing the properties of the best refinement that is found
- */
-static inline void searchForOrdinalRefinement(const OrdinalFeatureVector& featureVector,
-                                              const MissingFeatureVector& missingFeatureVector,
-                                              FixedRefinementComparator& comparator,
+                                              const MissingFeatureVector& missingFeatureVector, Comparator& comparator,
                                               const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
                                               uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
                                               Refinement& refinement) {
@@ -312,12 +187,14 @@ static inline void searchForOrdinalRefinement(const OrdinalFeatureVector& featur
 /**
  * Conducts a search for the best refinement of an existing rule that can be created from a `BinnedFeatureVector`.
  *
+ * @tparam Comparator                   The type of the comparator that should be used for comparing potential
+ *                                      refinements
  * @param featureVector                 A reference to an object of type `BinnedFeatureVector`, the refinements should
  *                                      be created from
  * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides access to
  *                                      the indices of training examples with missing feature values
- * @param comparator                    A reference to an object of type `SingleRefinementComparator` that should be
- *                                      used for comparing potential refinements
+ * @param comparator                    A reference to an object of template type `Comparator` that should be used for
+ *                                      comparing potential refinements
  * @param statistics                    A reference to an object of type `IWeightedStatistics` that provides access to
  *                                      weighted statistics about the quality of predictions for training examples,
  *                                      which should serve as the basis for evaluating the quality of potential
@@ -330,42 +207,9 @@ static inline void searchForOrdinalRefinement(const OrdinalFeatureVector& featur
  * @param refinement                    A reference to an object of type `Refinement` that should be used for
  *                                      storing the properties of the best refinement that is found
  */
+template<typename Comparator>
 static inline void searchForBinnedRefinement(const BinnedFeatureVector& featureVector,
-                                             const MissingFeatureVector& missingFeatureVector,
-                                             SingleRefinementComparator& comparator,
-                                             const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
-                                             uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                             Refinement& refinement) {
-    std::unique_ptr<IResettableStatisticsSubset> statisticsSubsetPtr =
-      createStatisticsSubset(statistics, missingFeatureVector, outputIndices);
-    searchForBinnedRefinementInternally(featureVector, *statisticsSubsetPtr, comparator, numExamplesWithNonZeroWeights,
-                                        minCoverage, refinement);
-}
-
-/**
- * Conducts a search for the best refinement of an existing rule that can be created from a `BinnedFeatureVector`.
- *
- * @param featureVector                 A reference to an object of type `BinnedFeatureVector`, the refinements should
- *                                      be created from
- * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides access to
- *                                      the indices of training examples with missing feature values
- * @param comparator                    A reference to an object of type `MultiRefinementComparator` that should be used
- *                                      for comparing potential refinements
- * @param statistics                    A reference to an object of type `IWeightedStatistics` that provides access to
- *                                      weighted statistics about the quality of predictions for training examples,
- *                                      which should serve as the basis for evaluating the quality of potential
- *                                      refinements
- * @param outputIndices                 A reference to an object of type `IIndexVector` that provides access to the
- *                                      indices of the outputs for which refinements should predict
- * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered by a
- *                                      refinement
- * @param minCoverage                   The minimum number of examples that must be covered by the refinement
- * @param refinement                    A reference to an object of type `Refinement` that should be used for
- *                                      storing the properties of the best refinement that is found
- */
-static inline void searchForBinnedRefinement(const BinnedFeatureVector& featureVector,
-                                             const MissingFeatureVector& missingFeatureVector,
-                                             FixedRefinementComparator& comparator,
+                                             const MissingFeatureVector& missingFeatureVector, Comparator& comparator,
                                              const IWeightedStatistics& statistics, const IIndexVector& outputIndices,
                                              uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
                                              Refinement& refinement) {
