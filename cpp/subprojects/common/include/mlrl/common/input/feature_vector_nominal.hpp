@@ -18,11 +18,6 @@ class MLRLCOMMON_API NominalFeatureVector : public CompressedVector {
         int32* values;
 
         /**
-         * The number of nominal values.
-         */
-        uint32 numValues;
-
-        /**
          * The majority value, i.e., the most frequent value, of the nominal feature.
          */
         int32 majorityValue;
