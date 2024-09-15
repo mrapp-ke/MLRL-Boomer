@@ -15,14 +15,14 @@ template<typename Decorator>
 static inline std::optional<NominalFeatureVector> createFilteredOrdinalFeatureVectorView(
   const Decorator& decorator, std::unique_ptr<IFeatureVector>& existing, const Interval& interval) {
     const NominalFeatureVector& featureVector = decorator.getView().firstView;
-    Tuple<uint32> tuple = getStartAndEndOfOpenInterval(interval, featureVector.numValues);
+    Tuple<uint32> tuple = getStartAndEndOfOpenInterval(interval, featureVector.numBins);
     uint32 start = tuple.first;
     uint32 end = tuple.second;
     uint32 numFilteredValues = end - start;
 
     if (numFilteredValues > 0) {
         return NominalFeatureVector(&featureVector.values[start], featureVector.indices, &featureVector.indptr[start],
-                                    numFilteredValues, featureVector.indptr[featureVector.numValues],
+                                    numFilteredValues, featureVector.indptr[featureVector.numBins],
                                     featureVector.majorityValue);
     }
 
@@ -184,8 +184,8 @@ class OrdinalFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDe
          */
         OrdinalFeatureVectorDecorator(const OrdinalFeatureVectorView& other)
             : OrdinalFeatureVectorDecorator(
-                AllocatedNominalFeatureVector(other.getView().firstView.numValues,
-                                              other.getView().firstView.indptr[other.getView().firstView.numValues],
+                AllocatedNominalFeatureVector(other.getView().firstView.numBins,
+                                              other.getView().firstView.indptr[other.getView().firstView.numBins],
                                               other.getView().firstView.majorityValue),
                 AllocatedMissingFeatureVector()) {}
 
@@ -194,8 +194,8 @@ class OrdinalFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDe
          */
         OrdinalFeatureVectorDecorator(const AllocatedOrdinalFeatureVectorView& other)
             : OrdinalFeatureVectorDecorator(
-                AllocatedNominalFeatureVector(other.getView().firstView.numValues,
-                                              other.getView().firstView.indptr[other.getView().firstView.numValues],
+                AllocatedNominalFeatureVector(other.getView().firstView.numBins,
+                                              other.getView().firstView.indptr[other.getView().firstView.numBins],
                                               other.getView().firstView.majorityValue),
                 AllocatedMissingFeatureVector()) {}
 
