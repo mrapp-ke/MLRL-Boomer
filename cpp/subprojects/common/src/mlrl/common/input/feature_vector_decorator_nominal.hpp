@@ -48,7 +48,7 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVector
             }
         }
 
-        for (uint32 i = interval.end; i < featureVector.numValues; i++) {
+        for (uint32 i = interval.end; i < featureVector.numBins; i++) {
             uint32 n = interval.start + (i - interval.end);
             filteredIndptrIterator[n] = numFilteredIndices;
             filteredValueIterator[n] = valueIterator[i];
@@ -63,7 +63,7 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVector
         }
 
         if (numFilteredIndices > 0) {
-            uint32 numFilteredValues = interval.start + (featureVector.numValues - interval.end);
+            uint32 numFilteredValues = interval.start + (featureVector.numBins - interval.end);
             filteredFeatureVector.resize(numFilteredValues, numFilteredIndices);
             return filteredDecoratorPtr;
         }
