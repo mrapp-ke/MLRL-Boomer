@@ -87,7 +87,7 @@ namespace boosting {
     }
 
     void SparseDecomposableStatisticVector::add(const SparseSetView<Tuple<float64>>& view, uint32 row, float64 weight) {
-        if (weight > 0) {
+        if (!isEqualToZero(weight)) {
             sumOfWeights_ += weight;
             addToSparseDecomposableStatisticVector(this->view.begin(), view.values_cbegin(row), view.values_cend(row),
                                                    weight);
@@ -101,7 +101,7 @@ namespace boosting {
 
     void SparseDecomposableStatisticVector::remove(const SparseSetView<Tuple<float64>>& view, uint32 row,
                                                    float64 weight) {
-        if (weight > 0) {
+        if (!isEqualToZero(weight)) {
             sumOfWeights_ -= weight;
             removeFromSparseDecomposableStatisticVector(this->view.begin(), view.values_cbegin(row),
                                                         view.values_cend(row), weight);
@@ -137,7 +137,7 @@ namespace boosting {
 
     void SparseDecomposableStatisticVector::addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row,
                                                         const CompleteIndexVector& indices, float64 weight) {
-        if (weight > 0) {
+        if (!isEqualToZero(weight)) {
             sumOfWeights_ += weight;
             addToSparseDecomposableStatisticVector(this->view.begin(), view.values_cbegin(row), view.values_cend(row),
                                                    weight);
@@ -146,7 +146,7 @@ namespace boosting {
 
     void SparseDecomposableStatisticVector::addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row,
                                                         const PartialIndexVector& indices, float64 weight) {
-        if (weight > 0) {
+        if (!isEqualToZero(weight)) {
             sumOfWeights_ += weight;
             SparseSetView<Tuple<float64>>::const_row viewRow = view[row];
             PartialIndexVector::const_iterator indexIterator = indices.cbegin();
