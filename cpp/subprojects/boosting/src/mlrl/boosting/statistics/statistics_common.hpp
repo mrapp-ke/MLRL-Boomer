@@ -365,8 +365,7 @@ namespace boosting {
                             for (auto it = excludedStatisticIndices.indices_cbegin();
                                  it != excludedStatisticIndices.indices_cend(); it++) {
                                 // Subtract the gradients and Hessians of the example at the given index (weighted by
-                                // the given
-                                // weight) from the total sums of gradients and Hessians...
+                                // the given weight) from the total sums of gradients and Hessians...
                                 uint32 statisticIndex = *it;
                                 removeStatisticInternally(this->weights_, this->statisticView_,
                                                           *totalCoverableSumVectorPtr_, statisticIndex);
@@ -438,7 +437,7 @@ namespace boosting {
             }
 
             /**
-             * @see `IStatisticsSpace::createSubset`
+             * @see `IWeightedStatistics::createSubset`
              */
             std::unique_ptr<IResettableStatisticsSubset> createSubset(
               const BinaryDokVector& excludedStatisticIndices,
@@ -448,7 +447,7 @@ namespace boosting {
             }
 
             /**
-             * @see `IStatisticsSpace::createSubset`
+             * @see `IWeightedStatistics::createSubset`
              */
             std::unique_ptr<IResettableStatisticsSubset> createSubset(
               const BinaryDokVector& excludedStatisticIndices, const PartialIndexVector& outputIndices) const override {
