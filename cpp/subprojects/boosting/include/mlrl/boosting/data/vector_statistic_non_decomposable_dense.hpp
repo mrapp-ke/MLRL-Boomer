@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/boosting/data/view_statistic_non_decomposable_dense.hpp"
-#include "mlrl/boosting/iterator/diagonal_iterator.hpp"
+#include "mlrl/boosting/iterator/iterator_diagonal.hpp"
 #include "mlrl/common/data/view_vector_composite.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"

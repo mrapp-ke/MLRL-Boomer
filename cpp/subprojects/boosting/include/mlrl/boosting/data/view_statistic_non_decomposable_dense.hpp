@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/iterator/diagonal_iterator.hpp"
+#include "mlrl/boosting/iterator/iterator_diagonal.hpp"
 #include "mlrl/boosting/util/dll_exports.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/data/view_matrix_composite.hpp"
