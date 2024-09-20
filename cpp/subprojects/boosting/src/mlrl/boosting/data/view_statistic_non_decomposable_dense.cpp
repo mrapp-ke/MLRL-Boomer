@@ -51,11 +51,11 @@ namespace boosting {
 
     DenseNonDecomposableStatisticView::hessian_diagonal_const_iterator
       DenseNonDecomposableStatisticView::hessians_diagonal_cbegin(uint32 row) const {
-        return hessian_diagonal_const_iterator(CompositeMatrix::secondView.values_cbegin(row), 0);
+        return hessian_diagonal_const_iterator(CompositeMatrix::secondView[row], 0);
     }
 
     DenseNonDecomposableStatisticView::hessian_diagonal_const_iterator
       DenseNonDecomposableStatisticView::hessians_diagonal_cend(uint32 row) const {
-        return hessian_diagonal_const_iterator(CompositeMatrix::secondView.values_cbegin(row), Matrix::numCols);
+        return hessian_diagonal_const_iterator(CompositeMatrix::secondView[row], Matrix::numCols);
     }
 }

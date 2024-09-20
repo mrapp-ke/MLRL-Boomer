@@ -11,8 +11,7 @@
 namespace boosting {
 
     /**
-     * An iterator that provides read-only access to the elements that correspond to the diagonal of a C-contiguous
-     * square matrix.
+     * An iterator that provides access to the elements that correspond to the diagonal of a C-contiguous square matrix.
      *
      * @tparam T The type of the elements that are stored in the matrix
      */
@@ -20,18 +19,17 @@ namespace boosting {
     class DiagonalIterator final {
         private:
 
-            typename View<T>::const_iterator iterator_;
+            View<T> view_;
 
             uint32 index_;
 
         public:
 
             /**
-             * @param iterator  An iterator to the beginning of the matrix
-             * @param index     The index on the diagonal to start at
+             * @param view  A `View` that provides access to the elements in the matrix
+             * @param index The index on the diagonal to start at
              */
-            DiagonalIterator(typename View<T>::const_iterator iterator, uint32 index)
-                : iterator_(iterator), index_(index) {}
+            DiagonalIterator(View<T> view, uint32 index) : view_(view), index_(index) {}
 
             /**
              * The type that is used to represent the difference between two iterators.
@@ -41,17 +39,17 @@ namespace boosting {
             /**
              * The type of the elements, the iterator provides access to.
              */
-            typedef T value_type;
+            typedef typename View<T>::value_type value_type;
 
             /**
              * The type of a pointer to an element, the iterator provides access to.
              */
-            typedef const T* pointer;
+            typedef typename View<T>::value_type* pointer;
 
             /**
              * The type of a reference to an element, the iterator provides access to.
              */
-            typedef const T& reference;
+            typedef typename View<T>::value_type& reference;
 
             /**
              * The tag that specifies the capabilities of the iterator.
@@ -65,7 +63,17 @@ namespace boosting {
              * @return      The element at the given index
              */
             reference operator[](uint32 index) const {
-                return iterator_[util::triangularNumber(index + 1) - 1];
+                return view_.array[util::triangularNumber(index + 1) - 1];
+            }
+
+            /**
+             * Returns the element at a specific index.
+             *
+             * @param index The index of the element to be returned
+             * @return      The element at the given index
+             */
+            reference operator[](uint32 index) {
+                return view_.array[util::triangularNumber(index + 1) - 1];
             }
 
             /**
@@ -74,7 +82,16 @@ namespace boosting {
              * @return The element, the iterator currently refers to
              */
             reference operator*() const {
-                return iterator_[util::triangularNumber(index_ + 1) - 1];
+                return view_.array[util::triangularNumber(index_ + 1) - 1];
+            }
+
+            /**
+             * Returns the element, the iterator currently refers to.
+             *
+             * @return The element, the iterator currently refers to
+             */
+            reference operator*() {
+                return view_.array[util::triangularNumber(index_ + 1) - 1];
             }
 
             /**
