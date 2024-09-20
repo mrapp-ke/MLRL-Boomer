@@ -12,12 +12,12 @@ namespace boosting {
 
     /**
      * An iterator that provides read-only access to the elements that correspond to the diagonal of a C-contiguous
-     * matrix.
+     * square matrix.
      *
      * @tparam T The type of the elements that are stored in the matrix
      */
     template<typename T>
-    class DiagonalConstIterator final {
+    class DiagonalIterator final {
         private:
 
             typename View<T>::const_iterator iterator_;
@@ -30,7 +30,7 @@ namespace boosting {
              * @param iterator  An iterator to the beginning of the matrix
              * @param index     The index on the diagonal to start at
              */
-            DiagonalConstIterator(typename View<T>::const_iterator iterator, uint32 index)
+            DiagonalIterator(typename View<T>::const_iterator iterator, uint32 index)
                 : iterator_(iterator), index_(index) {}
 
             /**
@@ -82,7 +82,7 @@ namespace boosting {
              *
              * @return A reference to an iterator to the next element
              */
-            DiagonalConstIterator<T>& operator++() {
+            DiagonalIterator<T>& operator++() {
                 ++index_;
                 return *this;
             }
@@ -92,7 +92,7 @@ namespace boosting {
              *
              * @return A reference to an iterator to the next element
              */
-            DiagonalConstIterator<T>& operator++(int n) {
+            DiagonalIterator<T>& operator++(int n) {
                 index_++;
                 return *this;
             }
@@ -102,7 +102,7 @@ namespace boosting {
              *
              * @return A reference to an iterator to the previous element
              */
-            DiagonalConstIterator<T>& operator--() {
+            DiagonalIterator<T>& operator--() {
                 --index_;
                 return *this;
             }
@@ -112,7 +112,7 @@ namespace boosting {
              *
              * @return A reference to an iterator to the previous element
              */
-            DiagonalConstIterator<T>& operator--(int n) {
+            DiagonalIterator<T>& operator--(int n) {
                 index_--;
                 return *this;
             }
@@ -123,7 +123,7 @@ namespace boosting {
              * @param rhs   A reference to another iterator
              * @return      True, if the iterators do not refer to the same element, false otherwise
              */
-            bool operator!=(const DiagonalConstIterator<T>& rhs) const {
+            bool operator!=(const DiagonalIterator<T>& rhs) const {
                 return index_ != rhs.index_;
             }
 
@@ -133,7 +133,7 @@ namespace boosting {
              * @param rhs   A reference to another iterator
              * @return      True, if the iterators refer to the same element, false otherwise
              */
-            bool operator==(const DiagonalConstIterator<T>& rhs) const {
+            bool operator==(const DiagonalIterator<T>& rhs) const {
                 return index_ == rhs.index_;
             }
 
@@ -143,7 +143,7 @@ namespace boosting {
              * @param rhs   A reference to another iterator
              * @return      The difference between the iterators
              */
-            difference_type operator-(const DiagonalConstIterator<T>& rhs) const {
+            difference_type operator-(const DiagonalIterator<T>& rhs) const {
                 return (difference_type) index_ - (difference_type) rhs.index_;
             }
     };
