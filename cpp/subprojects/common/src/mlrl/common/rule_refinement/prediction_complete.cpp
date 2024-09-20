@@ -46,7 +46,7 @@ void CompletePrediction::set(View<float64>::const_iterator begin, View<float64>:
     util::copyView(begin, this->view.begin(), this->getNumElements());
 }
 
-void CompletePrediction::set(BinnedConstIterator<float64> begin, BinnedConstIterator<float64> end) {
+void CompletePrediction::set(BinnedIterator<const float64> begin, BinnedIterator<const float64> end) {
     util::copyView(begin, this->view.begin(), this->getNumElements());
 }
 
