@@ -58,7 +58,7 @@ namespace boosting {
              * An iterator that provides read-only access to the Hessians that correspond to the diagonal of the Hessian
              * matrix.
              */
-            typedef DiagonalIterator<float64> hessian_diagonal_const_iterator;
+            typedef DiagonalIterator<const float64> hessian_diagonal_const_iterator;
 
             /**
              * Returns a `gradient_iterator` to the beginning of the gradients.
