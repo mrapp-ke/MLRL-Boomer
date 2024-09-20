@@ -13,7 +13,7 @@
  * @tparam T The type of the values
  */
 template<typename T>
-class BinnedConstIterator final {
+class BinnedIterator final {
     private:
 
         View<uint32>::const_iterator binIndexIterator_;
@@ -26,8 +26,7 @@ class BinnedConstIterator final {
          * @param binIndexIterator  An iterator to the bin indices of individual elements
          * @param valueIterator     An iterator to the values of individual bins
          */
-        BinnedConstIterator(View<uint32>::const_iterator binIndexIterator,
-                            typename View<T>::const_iterator valueIterator)
+        BinnedIterator(View<uint32>::const_iterator binIndexIterator, typename View<T>::const_iterator valueIterator)
             : binIndexIterator_(binIndexIterator), valueIterator_(valueIterator) {}
 
         /**
@@ -81,7 +80,7 @@ class BinnedConstIterator final {
          *
          * @return A reference to an iterator to the next element
          */
-        BinnedConstIterator& operator++() {
+        BinnedIterator& operator++() {
             ++binIndexIterator_;
             return *this;
         }
@@ -91,7 +90,7 @@ class BinnedConstIterator final {
          *
          * @return A reference to an iterator to the next element
          */
-        BinnedConstIterator& operator++(int n) {
+        BinnedIterator& operator++(int n) {
             binIndexIterator_++;
             return *this;
         }
@@ -101,7 +100,7 @@ class BinnedConstIterator final {
          *
          * @return A reference to an iterator to the previous element
          */
-        BinnedConstIterator& operator--() {
+        BinnedIterator& operator--() {
             --binIndexIterator_;
             return *this;
         }
@@ -111,7 +110,7 @@ class BinnedConstIterator final {
          *
          * @return A reference to an iterator to the previous element
          */
-        BinnedConstIterator& operator--(int n) {
+        BinnedIterator& operator--(int n) {
             binIndexIterator_--;
             return *this;
         }
@@ -122,7 +121,7 @@ class BinnedConstIterator final {
          * @param rhs   A reference to another iterator
          * @return      True, if the iterators do not refer to the same element, false otherwise
          */
-        bool operator!=(const BinnedConstIterator& rhs) const {
+        bool operator!=(const BinnedIterator& rhs) const {
             return binIndexIterator_ != rhs.binIndexIterator_;
         }
 
@@ -132,7 +131,7 @@ class BinnedConstIterator final {
          * @param rhs   A reference to another iterator
          * @return      True, if the iterators refer to the same element, false otherwise
          */
-        bool operator==(const BinnedConstIterator& rhs) const {
+        bool operator==(const BinnedIterator& rhs) const {
             return binIndexIterator_ == rhs.binIndexIterator_;
         }
 
@@ -142,7 +141,7 @@ class BinnedConstIterator final {
          * @param rhs   A reference to another iterator
          * @return      The difference between the iterators
          */
-        difference_type operator-(const BinnedConstIterator& rhs) const {
+        difference_type operator-(const BinnedIterator& rhs) const {
             return (difference_type) (binIndexIterator_ - rhs.binIndexIterator_);
         }
 };
