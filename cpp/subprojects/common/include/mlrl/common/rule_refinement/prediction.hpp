@@ -54,7 +54,7 @@ class IPrediction : public IIndexVector {
          * @param begin An iterator to the beginning of the values to be set
          * @param end   An iterator to the end of the values to be set
          */
-        virtual void set(BinnedIterator<float64> begin, BinnedIterator<float64> end) = 0;
+        virtual void set(BinnedIterator<const float64> begin, BinnedIterator<const float64> end) = 0;
 
         /**
          * Creates and returns an object of type `IStatistics::IUpdate` that allows updating given `IStatistics` based
