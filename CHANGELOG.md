@@ -14,6 +14,12 @@ A major update to the BOOMER algorithm that comes with the following changes.
 
 - C++ 20 is now required for compiling the project.
 
+## Version 0.11.1 (Sep. 24th, 2024)
+
+A bugfix release that fixes the following issues:
+
+- A crash has been fixed that could occur when using the command line argument `--print-rules` or `--store-rules` with a dataset that contains nominal features.
+
 ## Version 0.11.0 (Aug. 10th, 2024)
 
 A major update to the BOOMER algorithm that introduces the following changes.
