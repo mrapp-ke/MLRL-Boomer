@@ -27,6 +27,8 @@ class OutputWiseStratifiedSampling final : public IInstanceSampling {
     public:
 
         /**
+         * @param rngPtr        An unique pointer to an object of type `RNG` that should be used for generating random
+         *                      numbers
          * @param labelMatrix   A reference to an object of template type `LabelMatrix` that provides random or
          *                      row-wise access to the labels of the training examples
          * @param indicesBegin  An iterator to the beginning of the indices of the examples that are contained by
@@ -36,14 +38,14 @@ class OutputWiseStratifiedSampling final : public IInstanceSampling {
          * @param sampleSize    The fraction of examples to be included in the sample (e.g. a value of 0.6
          *                      corresponds to 60 % of the available examples). Must be in (0, 1]
          */
-        OutputWiseStratifiedSampling(const LabelMatrix& labelMatrix, IndexIterator indicesBegin,
-                                     IndexIterator indicesEnd, float32 sampleSize)
+        OutputWiseStratifiedSampling(std::unique_ptr<RNG> rngPtr, const LabelMatrix& labelMatrix,
+                                     IndexIterator indicesBegin, IndexIterator indicesEnd, float32 sampleSize)
             : sampleSize_(sampleSize),
               weightVector_(labelMatrix.numRows, static_cast<uint32>(indicesEnd - indicesBegin) < labelMatrix.numRows),
-              stratification_(labelMatrix, indicesBegin, indicesEnd) {}
+              stratification_(std::move(rngPtr), labelMatrix, indicesBegin, indicesEnd) {}
 
-        const IWeightVector& sample(RNG& rng) override {
-            stratification_.sampleWeights(weightVector_, sampleSize_, rng);
+        const IWeightVector& sample() override {
+            stratification_.sampleWeights(weightVector_, sampleSize_);
             return weightVector_;
         }
 };
@@ -56,45 +58,52 @@ class OutputWiseStratifiedSampling final : public IInstanceSampling {
 class OutputWiseStratifiedInstanceSamplingFactory final : public IClassificationInstanceSamplingFactory {
     private:
 
+        const std::unique_ptr<RNGFactory> rngFactoryPtr_;
+
         const float32 sampleSize_;
 
     public:
 
         /**
-         * @param sampleSize The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
-         *                   60 % of the available examples). Must be in (0, 1]
+         * @param rngFactoryPtr An unique pointer to an object of type `RNGFactory` that allows to create random number
+         *                      generators
+         * @param sampleSize    The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds
+         *                      to 60 % of the available examples). Must be in (0, 1]
          */
-        OutputWiseStratifiedInstanceSamplingFactory(float32 sampleSize) : sampleSize_(sampleSize) {}
+        OutputWiseStratifiedInstanceSamplingFactory(std::unique_ptr<RNGFactory> rngFactoryPtr, float32 sampleSize)
+            : rngFactoryPtr_(std::move(rngFactoryPtr)), sampleSize_(sampleSize) {}
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
                                                   const SinglePartition& partition,
                                                   IStatistics& statistics) const override {
             return std::make_unique<
               OutputWiseStratifiedSampling<CContiguousView<const uint8>, SinglePartition::const_iterator>>(
-              labelMatrix, partition.cbegin(), partition.cend(), sampleSize_);
+              rngFactoryPtr_->create(), labelMatrix, partition.cbegin(), partition.cend(), sampleSize_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
                                                   BiPartition& partition, IStatistics& statistics) const override {
             return std::make_unique<
               OutputWiseStratifiedSampling<CContiguousView<const uint8>, BiPartition::const_iterator>>(
-              labelMatrix, partition.first_cbegin(), partition.first_cend(), sampleSize_);
+              rngFactoryPtr_->create(), labelMatrix, partition.first_cbegin(), partition.first_cend(), sampleSize_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, const SinglePartition& partition,
                                                   IStatistics& statistics) const override {
             return std::make_unique<OutputWiseStratifiedSampling<BinaryCsrView, SinglePartition::const_iterator>>(
-              labelMatrix, partition.cbegin(), partition.cend(), sampleSize_);
+              rngFactoryPtr_->create(), labelMatrix, partition.cbegin(), partition.cend(), sampleSize_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, BiPartition& partition,
                                                   IStatistics& statistics) const override {
             return std::make_unique<OutputWiseStratifiedSampling<BinaryCsrView, BiPartition::const_iterator>>(
-              labelMatrix, partition.first_cbegin(), partition.first_cend(), sampleSize_);
+              rngFactoryPtr_->create(), labelMatrix, partition.first_cbegin(), partition.first_cend(), sampleSize_);
         }
 };
 
-OutputWiseStratifiedInstanceSamplingConfig::OutputWiseStratifiedInstanceSamplingConfig() : sampleSize_(0.66f) {}
+OutputWiseStratifiedInstanceSamplingConfig::OutputWiseStratifiedInstanceSamplingConfig(
+  ReadableProperty<RNGConfig> rngConfig)
+    : rngConfig_(rngConfig), sampleSize_(0.66f) {}
 
 float32 OutputWiseStratifiedInstanceSamplingConfig::getSampleSize() const {
     return sampleSize_;
@@ -110,5 +119,6 @@ IOutputWiseStratifiedInstanceSamplingConfig& OutputWiseStratifiedInstanceSamplin
 
 std::unique_ptr<IClassificationInstanceSamplingFactory>
   OutputWiseStratifiedInstanceSamplingConfig::createClassificationInstanceSamplingFactory() const {
-    return std::make_unique<OutputWiseStratifiedInstanceSamplingFactory>(sampleSize_);
+    return std::make_unique<OutputWiseStratifiedInstanceSamplingFactory>(rngConfig_.get().createRNGFactory(),
+                                                                         sampleSize_);
 }

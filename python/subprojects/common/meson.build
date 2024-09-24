@@ -22,6 +22,7 @@ cython_module_names = [
     'prediction',
     'probability_calibration',
     'regression_matrix',
+    'rng',
     'rule_induction',
     'rule_model',
     'stopping_criterion'

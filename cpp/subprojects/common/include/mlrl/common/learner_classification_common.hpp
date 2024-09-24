@@ -30,11 +30,7 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
 
         std::unique_ptr<ITrainingResult> fit(const IFeatureInfo& featureInfo,
                                              const IColumnWiseFeatureMatrix& featureMatrix,
-                                             const IRowWiseLabelMatrix& labelMatrix,
-                                             uint32 randomState) const override {
-            util::assertGreaterOrEqual<uint32>("randomState", randomState, 1);
-            RNG rng(randomState);
-
+                                             const IRowWiseLabelMatrix& labelMatrix) const override {
             // Create stopping criteria...
             std::unique_ptr<StoppingCriterionListFactory> stoppingCriterionFactoryPtr =
               std::make_unique<StoppingCriterionListFactory>();
@@ -43,7 +39,7 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
             // Create post-optimization phases...
             std::unique_ptr<PostOptimizationPhaseListFactory> postOptimizationFactoryPtr =
               std::make_unique<PostOptimizationPhaseListFactory>();
-            configurator_.createPostOptimizationPhaseFactories(*postOptimizationFactoryPtr);
+            configurator_.createPostOptimizationPhaseFactories(*postOptimizationFactoryPtr, featureMatrix, labelMatrix);
 
             // Create output space info...
             std::unique_ptr<IOutputSpaceInfo> outputSpaceInfoPtr = configurator_.createOutputSpaceInfo(labelMatrix);
@@ -53,7 +49,7 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
               configurator_.createClassificationPartitionSamplingFactory();
             std::unique_ptr<IPartitionSampling> partitionSamplingPtr =
               labelMatrix.createPartitionSampling(*partitionSamplingFactoryPtr);
-            IPartition& partition = partitionSamplingPtr->partition(rng);
+            IPartition& partition = partitionSamplingPtr->partition();
 
             // Create post-optimization and model builder...
             std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr = configurator_.createModelBuilderFactory();
@@ -73,11 +69,6 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
             std::unique_ptr<IFeatureSpace> featureSpacePtr =
               featureSpaceFactoryPtr->create(featureMatrix, featureInfo, *statisticsProviderPtr);
 
-            // Create rule induction...
-            std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr =
-              configurator_.createRuleInductionFactory(featureMatrix, labelMatrix);
-            std::unique_ptr<IRuleInduction> ruleInductionPtr = ruleInductionFactoryPtr->create();
-
             // Create output sampling...
             std::unique_ptr<IOutputSamplingFactory> outputSamplingFactoryPtr =
               configurator_.createOutputSamplingFactory(labelMatrix);
@@ -94,27 +85,18 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
               configurator_.createFeatureSamplingFactory(featureMatrix);
             std::unique_ptr<IFeatureSampling> featureSamplingPtr = featureSamplingFactoryPtr->create();
 
-            // Create rule pruning...
-            std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr = configurator_.createRulePruningFactory();
-            std::unique_ptr<IRulePruning> rulePruningPtr = rulePruningFactoryPtr->create();
-
-            // Create post-processor...
-            std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr = configurator_.createPostProcessorFactory();
-            std::unique_ptr<IPostProcessor> postProcessorPtr = postProcessorFactoryPtr->create();
-
             // Assemble rule model...
             std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr =
-              configurator_.createRuleModelAssemblageFactory(labelMatrix);
+              configurator_.createRuleModelAssemblageFactory(featureMatrix, labelMatrix);
             std::unique_ptr<IRuleModelAssemblage> ruleModelAssemblagePtr =
               ruleModelAssemblageFactoryPtr->create(std::move(stoppingCriterionFactoryPtr));
-            ruleModelAssemblagePtr->induceRules(*ruleInductionPtr, *rulePruningPtr, *postProcessorPtr, partition,
-                                                *outputSamplingPtr, *instanceSamplingPtr, *featureSamplingPtr,
-                                                *statisticsProviderPtr, *featureSpacePtr, modelBuilder, rng);
+            ruleModelAssemblagePtr->induceRules(partition, *outputSamplingPtr, *instanceSamplingPtr,
+                                                *featureSamplingPtr, *statisticsProviderPtr, *featureSpacePtr,
+                                                modelBuilder);
 
             // Post-optimize the model...
-            postOptimizationPtr->optimizeModel(*featureSpacePtr, *ruleInductionPtr, partition, *outputSamplingPtr,
-                                               *instanceSamplingPtr, *featureSamplingPtr, *rulePruningPtr,
-                                               *postProcessorPtr, rng);
+            postOptimizationPtr->optimizeModel(partition, *outputSamplingPtr, *instanceSamplingPtr, *featureSamplingPtr,
+                                               *featureSpacePtr);
 
             // Fit model for the calibration of marginal probabilities...
             std::unique_ptr<IMarginalProbabilityCalibratorFactory> marginalProbabilityCalibratorFactoryPtr =

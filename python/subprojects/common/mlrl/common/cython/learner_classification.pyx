@@ -1,8 +1,6 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.common.cython.validation import assert_greater_or_equal
-
 from cython.operator cimport dereference
 from libcpp.utility cimport move
 
@@ -34,7 +32,7 @@ cdef class ClassificationRuleLearner:
         pass
 
     def fit(self, FeatureInfo feature_info not None, ColumnWiseFeatureMatrix feature_matrix not None,
-            RowWiseLabelMatrix label_matrix not None, uint32 random_state) -> TrainingResult:
+            RowWiseLabelMatrix label_matrix not None) -> TrainingResult:
         """
         Applies the rule learner to given training examples and corresponding ground truth labels.
 
@@ -43,15 +41,13 @@ cdef class ClassificationRuleLearner:
                                 the training examples
         :param label_matrix:    A `RowWiseLabelMatrix` that provides row-wise access to the ground truth labels of the
                                 training examples
-        :param random_state:    The seed to be used by random number generators
         :return:                The `TrainingResult` that provides access to the result of fitting the rule learner to
                                 the training data
         """
-        assert_greater_or_equal("random_state", random_state, 1)
         cdef unique_ptr[ITrainingResult] training_result_ptr = self.get_classification_rule_learner_ptr().fit(
             dereference(feature_info.get_feature_info_ptr()),
             dereference(feature_matrix.get_column_wise_feature_matrix_ptr()),
-            dereference(label_matrix.get_row_wise_label_matrix_ptr()), random_state)
+            dereference(label_matrix.get_row_wise_label_matrix_ptr()))
         cdef uint32 num_outputs = training_result_ptr.get().getNumOutputs()
         cdef unique_ptr[IRuleModel] rule_model_ptr = move(training_result_ptr.get().getRuleModel())
         cdef unique_ptr[IOutputSpaceInfo] output_space_info_ptr = move(training_result_ptr.get().getOutputSpaceInfo())
