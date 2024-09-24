@@ -7,7 +7,7 @@ mdformat >= 0.7, < 0.8
 mdformat-myst >= 0.1, < 0.2
 meson >= 1.5, < 1.6
 ninja >= 1.11, < 1.12
-pylint >= 3.2, < 3.3
+pylint >= 3.3, < 3.4
 setuptools
 scons >= 4.8, < 4.9
 unittest-xml-reporting >= 3.2, < 3.3
