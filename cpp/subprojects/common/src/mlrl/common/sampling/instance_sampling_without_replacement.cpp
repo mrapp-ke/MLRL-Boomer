@@ -32,6 +32,8 @@ template<typename Partition>
 class InstanceSamplingWithoutReplacement final : public IInstanceSampling {
     private:
 
+        std::unique_ptr<RNG> rngPtr_;
+
         Partition& partition_;
 
         const float32 sampleSize_;
@@ -41,25 +43,22 @@ class InstanceSamplingWithoutReplacement final : public IInstanceSampling {
     public:
 
         /**
-         * @param partition  A reference to an object of template type `Partition` that provides access to the indices
-         *                   of the examples that are included in the training set
-         * @param sampleSize The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
-         *                   60 % of the available examples). Must be in (0, 1)
+         * @param rngPtr        An unique pointer to an object of type `RNG` that should be used for generating random
+         *                      numbers
+         * @param partition     A reference to an object of template type `Partition` that provides access to the
+         *                      indices of the examples that are included in the training set
+         * @param sampleSize    The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds
+         *                      to 60 % of the available examples). Must be in (0, 1)
          */
-        InstanceSamplingWithoutReplacement(Partition& partition, float32 sampleSize)
-            : partition_(partition), sampleSize_(sampleSize), weightVector_(partition.getNumElements()) {}
+        InstanceSamplingWithoutReplacement(std::unique_ptr<RNG> rngPtr, Partition& partition, float32 sampleSize)
+            : rngPtr_(std::move(rngPtr)), partition_(partition), sampleSize_(sampleSize),
+              weightVector_(partition.getNumElements()) {}
 
-        const IWeightVector& sample(RNG& rng) override {
-            sampleInternally(partition_, sampleSize_, weightVector_, rng);
+        const IWeightVector& sample() override {
+            sampleInternally(partition_, sampleSize_, weightVector_, *rngPtr_);
             return weightVector_;
         }
 };
-
-template<typename Partition>
-static inline std::unique_ptr<IInstanceSampling> createInstanceSamplingWithoutReplacement(Partition& partition,
-                                                                                          float32 sampleSize) {
-    return std::make_unique<InstanceSamplingWithoutReplacement<Partition>>(partition, sampleSize);
-}
 
 /**
  * Allows to create instances of the type `IInstanceSampling` that allow to select a subset of the available training
@@ -69,61 +68,76 @@ class InstanceSamplingWithoutReplacementFactory final : public IClassificationIn
                                                         public IRegressionInstanceSamplingFactory {
     private:
 
+        const std::unique_ptr<RNGFactory> rngFactoryPtr_;
+
         const float32 sampleSize_;
 
     public:
 
         /**
-         * @param sampleSize The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds to
-         *                   60 % of the available examples). Must be in (0, 1)
+         * @param rngFactoryPtr An unique pointer to an object of type `RNGFactory` that allows to create random number
+         *                      generators
+         * @param sampleSize    The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds
+         *                      to 60 % of the available examples). Must be in (0, 1)
          */
-        InstanceSamplingWithoutReplacementFactory(float32 sampleSize) : sampleSize_(sampleSize) {}
+        InstanceSamplingWithoutReplacementFactory(std::unique_ptr<RNGFactory> rngFactoryPtr, float32 sampleSize)
+            : rngFactoryPtr_(std::move(rngFactoryPtr)), sampleSize_(sampleSize) {}
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
                                                   const SinglePartition& partition,
                                                   IStatistics& statistics) const override {
-            return createInstanceSamplingWithoutReplacement(partition, sampleSize_);
+            return std::make_unique<InstanceSamplingWithoutReplacement<const SinglePartition>>(rngFactoryPtr_->create(),
+                                                                                               partition, sampleSize_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
                                                   BiPartition& partition, IStatistics& statistics) const override {
-            return createInstanceSamplingWithoutReplacement(partition, sampleSize_);
+            return std::make_unique<InstanceSamplingWithoutReplacement<BiPartition>>(rngFactoryPtr_->create(),
+                                                                                     partition, sampleSize_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, const SinglePartition& partition,
                                                   IStatistics& statistics) const override {
-            return createInstanceSamplingWithoutReplacement(partition, sampleSize_);
+            return std::make_unique<InstanceSamplingWithoutReplacement<const SinglePartition>>(rngFactoryPtr_->create(),
+                                                                                               partition, sampleSize_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, BiPartition& partition,
                                                   IStatistics& statistics) const override {
-            return createInstanceSamplingWithoutReplacement(partition, sampleSize_);
+            return std::make_unique<InstanceSamplingWithoutReplacement<BiPartition>>(rngFactoryPtr_->create(),
+                                                                                     partition, sampleSize_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const float32>& regressionMatrix,
                                                   const SinglePartition& partition,
                                                   IStatistics& statistics) const override {
-            return createInstanceSamplingWithoutReplacement(partition, sampleSize_);
+            return std::make_unique<InstanceSamplingWithoutReplacement<const SinglePartition>>(rngFactoryPtr_->create(),
+                                                                                               partition, sampleSize_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const float32>& regressionMatrix,
                                                   BiPartition& partition, IStatistics& statistics) const override {
-            return createInstanceSamplingWithoutReplacement(partition, sampleSize_);
+            return std::make_unique<InstanceSamplingWithoutReplacement<BiPartition>>(rngFactoryPtr_->create(),
+                                                                                     partition, sampleSize_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const CsrView<const float32>& regressionMatrix,
                                                   const SinglePartition& partition,
                                                   IStatistics& statistics) const override {
-            return createInstanceSamplingWithoutReplacement(partition, sampleSize_);
+            return std::make_unique<InstanceSamplingWithoutReplacement<const SinglePartition>>(rngFactoryPtr_->create(),
+                                                                                               partition, sampleSize_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const CsrView<const float32>& regressionMatrix,
                                                   BiPartition& partition, IStatistics& statistics) const override {
-            return createInstanceSamplingWithoutReplacement(partition, sampleSize_);
+            return std::make_unique<InstanceSamplingWithoutReplacement<BiPartition>>(rngFactoryPtr_->create(),
+                                                                                     partition, sampleSize_);
         }
 };
 
-InstanceSamplingWithoutReplacementConfig::InstanceSamplingWithoutReplacementConfig() : sampleSize_(0.66f) {}
+InstanceSamplingWithoutReplacementConfig::InstanceSamplingWithoutReplacementConfig(
+  ReadableProperty<RNGConfig> rngConfig)
+    : rngConfig_(rngConfig), sampleSize_(0.66f) {}
 
 float32 InstanceSamplingWithoutReplacementConfig::getSampleSize() const {
     return sampleSize_;
@@ -138,10 +152,12 @@ IInstanceSamplingWithoutReplacementConfig& InstanceSamplingWithoutReplacementCon
 
 std::unique_ptr<IClassificationInstanceSamplingFactory>
   InstanceSamplingWithoutReplacementConfig::createClassificationInstanceSamplingFactory() const {
-    return std::make_unique<InstanceSamplingWithoutReplacementFactory>(sampleSize_);
+    return std::make_unique<InstanceSamplingWithoutReplacementFactory>(rngConfig_.get().createRNGFactory(),
+                                                                       sampleSize_);
 }
 
 std::unique_ptr<IRegressionInstanceSamplingFactory>
   InstanceSamplingWithoutReplacementConfig::createRegressionInstanceSamplingFactory() const {
-    return std::make_unique<InstanceSamplingWithoutReplacementFactory>(sampleSize_);
+    return std::make_unique<InstanceSamplingWithoutReplacementFactory>(rngConfig_.get().createRNGFactory(),
+                                                                       sampleSize_);
 }

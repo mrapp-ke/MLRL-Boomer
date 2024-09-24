@@ -6,6 +6,7 @@
 #include "mlrl/boosting/losses/loss_decomposable_sparse.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_decomposable_sparse.hpp"
 #include "mlrl/boosting/statistics/statistics_decomposable.hpp"
+#include "mlrl/common/multi_threading/multi_threading.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
 
 #include <memory>
@@ -29,7 +30,7 @@ namespace boosting {
 
             const std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
 
-            const uint32 numThreads_;
+            const MultiThreadingSettings multiThreadingSettings_;
 
         public:
 
@@ -50,15 +51,16 @@ namespace boosting {
              *                                          `ISparseDecomposableRuleEvaluationFactory` that should be used
              *                                          for calculating the predictions, as well as corresponding
              *                                          quality scores, when pruning rules
-             * @param numThreads                        The number of CPU threads to be used to calculate the initial
-             *                                          statistics in parallel. Must be at least 1
+             * @param multiThreadingSettings            An object of type `MultiThreadingSettings` that stores the
+             *                                          settings to be used for calculating the initial statistics in
+             *                                          parallel
              */
             SparseDecomposableClassificationStatisticsProviderFactory(
               std::unique_ptr<ISparseDecomposableClassificationLossFactory> lossFactoryPtr,
               std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
               std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
               std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
-              uint32 numThreads);
+              MultiThreadingSettings multiThreadingSettings);
 
             /**
              * @see `IClassificationStatisticsProviderFactory::create`

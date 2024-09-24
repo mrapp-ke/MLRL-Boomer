@@ -12,6 +12,8 @@
 class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
     private:
 
+        const std::shared_ptr<RNG> rngPtr_;
+
         const uint32 numFeatures_;
 
         const uint32 numSamples_;
@@ -23,12 +25,15 @@ class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
     public:
 
         /**
+         * @param rngPtr        A shared pointer to an object of type `RNG` that should be used for generating random
+         *                      numbers
          * @param numFeatures   The total number of available features
          * @param numSamples    The number of features to be included in the sample
          * @param numRetained   The number of trailing features to be always included in the sample
          */
-        FeatureSamplingWithoutReplacement(uint32 numFeatures, uint32 numSamples, uint32 numRetained)
-            : numFeatures_(numFeatures), numSamples_(numSamples), numRetained_(numRetained),
+        FeatureSamplingWithoutReplacement(std::shared_ptr<RNG> rngPtr, uint32 numFeatures, uint32 numSamples,
+                                          uint32 numRetained)
+            : rngPtr_(rngPtr), numFeatures_(numFeatures), numSamples_(numSamples), numRetained_(numRetained),
               indexVector_(numSamples + numRetained) {
             if (numRetained > 0) {
                 PartialIndexVector::iterator iterator = indexVector_.begin();
@@ -40,18 +45,19 @@ class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
             }
         }
 
-        const IIndexVector& sample(RNG& rng) override {
+        const IIndexVector& sample() override {
             uint32 numTotal = numFeatures_ - numRetained_;
             sampleIndicesWithoutReplacement<IndexIterator>(&indexVector_.begin()[numRetained_], numSamples_,
-                                                           IndexIterator(numTotal), numTotal, rng);
+                                                           IndexIterator(numTotal), numTotal, *rngPtr_);
             return indexVector_;
         }
 
-        std::unique_ptr<IFeatureSampling> createBeamSearchFeatureSampling(RNG& rng, bool resample) override {
+        std::unique_ptr<IFeatureSampling> createBeamSearchFeatureSampling(bool resample) override {
             if (resample) {
-                return std::make_unique<FeatureSamplingWithoutReplacement>(numFeatures_, numSamples_, numRetained_);
+                return std::make_unique<FeatureSamplingWithoutReplacement>(rngPtr_, numFeatures_, numSamples_,
+                                                                           numRetained_);
             } else {
-                return std::make_unique<PredefinedFeatureSampling>(this->sample(rng));
+                return std::make_unique<PredefinedFeatureSampling>(this->sample());
             }
         }
 };
@@ -63,6 +69,8 @@ class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
 class FeatureSamplingWithoutReplacementFactory final : public IFeatureSamplingFactory {
     private:
 
+        const std::unique_ptr<RNGFactory> rngFactoryPtr_;
+
         const uint32 numFeatures_;
 
         const uint32 numSamples_;
@@ -72,19 +80,25 @@ class FeatureSamplingWithoutReplacementFactory final : public IFeatureSamplingFa
     public:
 
         /**
+         * @param rngFactoryPtr An unique pointer to an object of type `RNGFactory` that allows to create random number
+         *                      generators
          * @param numFeatures   The total number of available features
          * @param numSamples    The number of features to be included in the sample
          * @param numRetained   The number of trailing features to be always included in the sample
          */
-        FeatureSamplingWithoutReplacementFactory(uint32 numFeatures, uint32 numSamples, uint32 numRetained)
-            : numFeatures_(numFeatures), numSamples_(numSamples), numRetained_(numRetained) {}
+        FeatureSamplingWithoutReplacementFactory(std::unique_ptr<RNGFactory> rngFactoryPtr, uint32 numFeatures,
+                                                 uint32 numSamples, uint32 numRetained)
+            : rngFactoryPtr_(std::move(rngFactoryPtr)), numFeatures_(numFeatures), numSamples_(numSamples),
+              numRetained_(numRetained) {}
 
         std::unique_ptr<IFeatureSampling> create() const override {
-            return std::make_unique<FeatureSamplingWithoutReplacement>(numFeatures_, numSamples_, numRetained_);
+            std::shared_ptr<RNG> rngPtr = rngFactoryPtr_->create();
+            return std::make_unique<FeatureSamplingWithoutReplacement>(rngPtr, numFeatures_, numSamples_, numRetained_);
         }
 };
 
-FeatureSamplingWithoutReplacementConfig::FeatureSamplingWithoutReplacementConfig() : sampleSize_(0), numRetained_(0) {}
+FeatureSamplingWithoutReplacementConfig::FeatureSamplingWithoutReplacementConfig(ReadableProperty<RNGConfig> rngConfig)
+    : rngConfig_(rngConfig), sampleSize_(0), numRetained_(0) {}
 
 float32 FeatureSamplingWithoutReplacementConfig::getSampleSize() const {
     return sampleSize_;
@@ -114,7 +128,8 @@ std::unique_ptr<IFeatureSamplingFactory> FeatureSamplingWithoutReplacementConfig
     uint32 numRemainingFeatures = numFeatures - numRetained;
     uint32 numSamples =
       static_cast<uint32>(sampleSize_ > 0 ? sampleSize_ * numRemainingFeatures : log2(numRemainingFeatures - 1) + 1);
-    return std::make_unique<FeatureSamplingWithoutReplacementFactory>(numFeatures, numSamples, numRetained);
+    return std::make_unique<FeatureSamplingWithoutReplacementFactory>(rngConfig_.get().createRNGFactory(), numFeatures,
+                                                                      numSamples, numRetained);
 }
 
 bool FeatureSamplingWithoutReplacementConfig::isSamplingUsed() const {

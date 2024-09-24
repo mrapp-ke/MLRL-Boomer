@@ -1266,7 +1266,6 @@ class RuleLearnerRunnable(LearnerRunnable):
     @staticmethod
     def __create_kwargs_from_parameters(parameters: Set[Parameter], args):
         kwargs = create_kwargs_from_parameters(args, parameters)
-        kwargs['random_state'] = args.random_state
         kwargs['feature_format'] = args.feature_format
         kwargs['output_format'] = args.output_format
         kwargs['prediction_format'] = args.prediction_format
