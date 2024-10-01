@@ -44,7 +44,7 @@ class ExampleWiseStratifiedSampling final : public IInstanceSampling {
               stratification_(std::move(rngPtr), labelMatrix, indicesBegin, indicesEnd) {}
 
         const IWeightVector& sample() override {
-            stratification_.sampleWeights(weightVector_, sampleSize_);
+            stratification_.sampleWeights(weightVector_, sampleSize_, 1, 0);
             return weightVector_;
         }
 };
