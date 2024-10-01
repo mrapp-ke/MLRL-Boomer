@@ -1,4 +1,4 @@
-from mlrl.common.cython._types cimport float32
+from mlrl.common.cython._types cimport float32, uint32
 
 
 cdef extern from "mlrl/common/sampling/instance_sampling_stratified_example_wise.hpp" nogil:
@@ -32,6 +32,14 @@ cdef extern from "mlrl/common/sampling/instance_sampling_with_replacement.hpp" n
         float32 getSampleSize() const
 
         IInstanceSamplingWithReplacementConfig& setSampleSize(float32 sampleSize)
+
+        uint32 getMinSamples() const
+
+        IExampleWiseStratifiedInstanceSamplingConfig& setMinSamples(float32 minSamples)
+
+        uint32 getMaxSamples() const
+
+        IExampleWiseStratifiedInstanceSamplingConfig& setMaxSamples(float32 maxSamples)
 
 
 cdef extern from "mlrl/common/sampling/instance_sampling_without_replacement.hpp" nogil:
