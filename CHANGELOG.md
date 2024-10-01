@@ -10,6 +10,14 @@ tocdepth: 2
 
 A major update to the BOOMER algorithm that comes with the following changes.
 
+```{warning}
+This release comes with several API changes. For an updated overview of the available parameters and command line arguments, please refer to the [documentation](https://mlrl-boomer.readthedocs.io/en/0.11.0/).
+```
+
+### API Changes
+
+- The options `min_samples` and `max_samples` have been added to the values of the command line arguments `--feature-sampling` and `--instance-sampling`.
+
 ### Quality-of-Life Improvements
 
 - C++ 20 is now required for compiling the project.
