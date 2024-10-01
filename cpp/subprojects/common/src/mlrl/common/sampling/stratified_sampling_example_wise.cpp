@@ -1,6 +1,7 @@
 #include "mlrl/common/sampling/stratified_sampling_example_wise.hpp"
 
 #include "mlrl/common/sampling/partition_single.hpp"
+#include "mlrl/common/util/math.hpp"
 #include "stratified_sampling_common.hpp"
 
 #include <algorithm>
@@ -46,8 +47,9 @@ ExampleWiseStratification<LabelMatrix, IndexIterator>::ExampleWiseStratification
 
 template<typename LabelMatrix, typename IndexIterator>
 void ExampleWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(BitWeightVector& weightVector,
-                                                                          float32 sampleSize) const {
-    uint32 numTotalSamples = static_cast<uint32>(std::round(sampleSize * numTotal_));
+                                                                          float32 sampleSize, uint32 minSamples,
+                                                                          uint32 maxSamples) const {
+    uint32 numTotalSamples = util::calculateBoundedFraction(numTotal_, sampleSize, minSamples, maxSamples);
     uint32 numTotalOutOfSamples = numTotal_ - numTotalSamples;
     uint32 numNonZeroWeights = 0;
     uint32 numZeroWeights = 0;
