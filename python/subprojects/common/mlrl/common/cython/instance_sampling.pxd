@@ -52,6 +52,14 @@ cdef extern from "mlrl/common/sampling/instance_sampling_without_replacement.hpp
 
         IInstanceSamplingWithoutReplacementConfig& setSampleSize(float32 sampleSize)
 
+        uint32 getMinSamples() const
+
+        IExampleWiseStratifiedInstanceSamplingConfig& setMinSamples(float32 minSamples)
+
+        uint32 getMaxSamples() const
+
+        IExampleWiseStratifiedInstanceSamplingConfig& setMaxSamples(float32 maxSamples)
+
 
 cdef class ExampleWiseStratifiedInstanceSamplingConfig:
 

@@ -158,3 +158,45 @@ cdef class InstanceSamplingWithoutReplacementConfig:
         assert_less('sample_size', sample_size, 1)
         self.config_ptr.setSampleSize(sample_size)
         return self
+
+    def get_min_samples(self) -> int:
+        """
+        Returns the minimum number of examples that are included in a sample.
+
+        :return: The minimum number of examples that are included in a sample
+        """
+        return self.config_ptr.getMinSamples()
+
+    def set_min_samples(self, min_samples: int) -> InstanceSamplingWithoutReplacementConfig:
+        """
+        Sets the minimum number of examples that should be included in a sample.
+
+        :param min_samples: The minimum number of examples that should be included in a sample. Must be at least 1
+        :return:            An `InstanceSamplingWithReplacementConfig` that allows further configuration of the method
+                            for sampling instances
+        """
+        assert_greater_or_equal('min_samples', min_samples, 1)
+        self.config_ptr.setMinSamples(min_samples)
+        return self
+
+    def get_max_samples(self) -> int:
+        """
+        Returns the maximum number of examples that are included in a sample.
+
+        :return: The maximum number of examples that are included in a sample
+        """
+        return self.config_ptr.getMaxSamples()
+
+    def set_max_samples(self, max_samples: int) -> InstanceSamplingWithoutReplacementConfig:
+        """
+        Sets the maximum number of examples that should be included in a sample.
+
+        :param max_samples: The maximum number of examples that should be included in a sample. Must be at least
+                            `get_min_samples()` or 0, if the number of examples should not be restricted
+        :return:            An `InstanceSamplingWithReplacementConfig` that allows further configuration of the method
+                            for sampling instances
+        """
+        if max_samples != 0:
+            assert_greater_or_equal('max_samples', max_samples, self.get_min_samples())
+        self.config_ptr.setMaxSamples(max_samples)
+        return self
