@@ -4,6 +4,7 @@
 #include "mlrl/common/indices/index_vector_partial.hpp"
 #include "mlrl/common/iterator/iterator_index.hpp"
 #include "mlrl/common/sampling/feature_sampling_predefined.hpp"
+#include "mlrl/common/util/math.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 /**
@@ -98,7 +99,7 @@ class FeatureSamplingWithoutReplacementFactory final : public IFeatureSamplingFa
 };
 
 FeatureSamplingWithoutReplacementConfig::FeatureSamplingWithoutReplacementConfig(ReadableProperty<RNGConfig> rngConfig)
-    : rngConfig_(rngConfig), sampleSize_(0), numRetained_(0) {}
+    : rngConfig_(rngConfig), sampleSize_(0), minSamples_(1), maxSamples_(0), numRetained_(0) {}
 
 float32 FeatureSamplingWithoutReplacementConfig::getSampleSize() const {
     return sampleSize_;
@@ -108,6 +109,26 @@ IFeatureSamplingWithoutReplacementConfig& FeatureSamplingWithoutReplacementConfi
     util::assertGreaterOrEqual<float32>("sampleSize", sampleSize, 0);
     util::assertLess<float32>("sampleSize", sampleSize, 1);
     sampleSize_ = sampleSize;
+    return *this;
+}
+
+uint32 FeatureSamplingWithoutReplacementConfig::getMinSamples() const {
+    return minSamples_;
+}
+
+IFeatureSamplingWithoutReplacementConfig& FeatureSamplingWithoutReplacementConfig::setMinSamples(uint32 minSamples) {
+    util::assertGreaterOrEqual<uint32>("minSamples", minSamples, 1);
+    minSamples_ = minSamples;
+    return *this;
+}
+
+uint32 FeatureSamplingWithoutReplacementConfig::getMaxSamples() const {
+    return maxSamples_;
+}
+
+IFeatureSamplingWithoutReplacementConfig& FeatureSamplingWithoutReplacementConfig::setMaxSamples(uint32 maxSamples) {
+    if (maxSamples != 0) util::assertGreaterOrEqual<uint32>("maxSamples", maxSamples, minSamples_);
+    maxSamples_ = maxSamples;
     return *this;
 }
 
@@ -126,8 +147,14 @@ std::unique_ptr<IFeatureSamplingFactory> FeatureSamplingWithoutReplacementConfig
     uint32 numFeatures = featureMatrix.getNumFeatures();
     uint32 numRetained = std::min(numRetained_, numFeatures);
     uint32 numRemainingFeatures = numFeatures - numRetained;
-    uint32 numSamples =
-      static_cast<uint32>(sampleSize_ > 0 ? sampleSize_ * numRemainingFeatures : log2(numRemainingFeatures - 1) + 1);
+    uint32 numSamples;
+
+    if (sampleSize_ > 0) {
+        numSamples = util::calculateBoundedFraction(numRemainingFeatures, sampleSize_, minSamples_, maxSamples_);
+    } else {
+        numSamples = static_cast<uint32>(log2(numRemainingFeatures - 1) + 1);
+    }
+
     return std::make_unique<FeatureSamplingWithoutReplacementFactory>(rngConfig_.get().createRNGFactory(), numFeatures,
                                                                       numSamples, numRetained);
 }
