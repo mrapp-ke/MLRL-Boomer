@@ -33,6 +33,39 @@ class MLRLCOMMON_API IInstanceSamplingWithReplacementConfig {
          *                      further configuration of the method for sampling instances
          */
         virtual IInstanceSamplingWithReplacementConfig& setSampleSize(float32 sampleSize) = 0;
+
+        /**
+         * Returns the minimum number of examples that are included in a sample.
+         *
+         * @return The minimum number of examples that are included in a sample
+         */
+        virtual uint32 getMinSamples() const = 0;
+
+        /**
+         * Sets the minimum number of examples that should be included in a sample.
+         *
+         * @param minSamples    The minimum number of examples that should be included in a sample. Must be at least 1
+         * @return              A reference to an object of type `IInstanceSamplingWithReplacementConfig` that allows
+         *                      further configuration of the method for sampling instances
+         */
+        virtual IInstanceSamplingWithReplacementConfig& setMinSamples(uint32 minSamples) = 0;
+
+        /**
+         * Returns the maximum number of examples that are included in a sample.
+         *
+         * @return The maximum number of examples that are included in a sample
+         */
+        virtual uint32 getMaxSamples() const = 0;
+
+        /**
+         * Sets the maximum number of examples that should be included in a sample.
+         *
+         * @param maxSamples    The maximum number of examples that should be included in a sample. Must be at the value
+         *                      returned by `getMaxSamples` or 0, if the number of examples should not be restricted
+         * @return              A reference to an object of type `IInstanceSamplingWithReplacementConfig` that allows
+         *                      further configuration of the method for sampling instances
+         */
+        virtual IInstanceSamplingWithReplacementConfig& setMaxSamples(uint32 maxSamples) = 0;
 };
 
 /**
@@ -47,6 +80,10 @@ class InstanceSamplingWithReplacementConfig final : public IClassificationInstan
 
         float32 sampleSize_;
 
+        uint32 minSamples_;
+
+        uint32 maxSamples_;
+
     public:
 
         /**
@@ -58,6 +95,14 @@ class InstanceSamplingWithReplacementConfig final : public IClassificationInstan
         float32 getSampleSize() const override;
 
         IInstanceSamplingWithReplacementConfig& setSampleSize(float32 sampleSize) override;
+
+        uint32 getMinSamples() const override;
+
+        IInstanceSamplingWithReplacementConfig& setMinSamples(uint32 minSamples) override;
+
+        uint32 getMaxSamples() const override;
+
+        IInstanceSamplingWithReplacementConfig& setMaxSamples(uint32 maxSamples) override;
 
         std::unique_ptr<IClassificationInstanceSamplingFactory> createClassificationInstanceSamplingFactory()
           const override;
