@@ -19,10 +19,6 @@ cdef extern from "mlrl/common/sampling/output_sampling_without_replacement.hpp" 
 
         IOutputSamplingWithoutReplacementConfig& setMaxSamples(float32 maxSamples)
 
-        uint32 getNumSamples() const
-
-        IOutputSamplingWithoutReplacementConfig& setNumSamples(uint32 numSamples) except +
-
 
 cdef class OutputSamplingWithoutReplacementConfig:
 
