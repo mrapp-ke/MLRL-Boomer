@@ -46,8 +46,12 @@ class ExampleWiseStratification final {
          *
          * @param weightVector  A reference to an object of type `BitWeightVector`, the weights should be written to
          * @param sampleSize    The fraction of the available examples to be selected
+         * @param minSamples    The minimum number of examples to be included in the sample. Must be at least 1
+         * @param maxSamples    The maximum number of examples to be included in the sample. Must be at least
+         *                      `minSamples` or 0, if the number of examples should not be restricted
          */
-        void sampleWeights(BitWeightVector& weightVector, float32 sampleSize) const;
+        void sampleWeights(BitWeightVector& weightVector, float32 sampleSize, uint32 minSamples,
+                           uint32 maxSamples) const;
 
         /**
          * Randomly splits the available examples into two distinct sets and updates a given `BiPartition` accordingly.

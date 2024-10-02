@@ -3,6 +3,7 @@
 #include "mlrl/common/data/array.hpp"
 #include "mlrl/common/data/indexed_value.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
+#include "mlrl/common/util/math.hpp"
 #include "stratified_sampling_common.hpp"
 
 #include <set>
@@ -376,10 +377,11 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(std
 
 template<typename LabelMatrix, typename IndexIterator>
 void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(BitWeightVector& weightVector,
-                                                                        float32 sampleSize) {
+                                                                        float32 sampleSize, uint32 minSamples,
+                                                                        uint32 maxSamples) {
     uint32 numRows = stratificationMatrix_.getNumRows();
     uint32 numCols = stratificationMatrix_.getNumCols();
-    uint32 numTotalSamples = static_cast<uint32>(std::round(sampleSize * numRows));
+    uint32 numTotalSamples = util::calculateBoundedFraction(numRows, sampleSize, minSamples, maxSamples);
     uint32 numTotalOutOfSamples = numRows - numTotalSamples;
     uint32 numNonZeroWeights = 0;
     uint32 numZeroWeights = 0;

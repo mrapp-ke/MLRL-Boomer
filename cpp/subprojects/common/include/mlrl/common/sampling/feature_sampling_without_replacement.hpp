@@ -35,6 +35,39 @@ class MLRLCOMMON_API IFeatureSamplingWithoutReplacementConfig {
         virtual IFeatureSamplingWithoutReplacementConfig& setSampleSize(float32 sampleSize) = 0;
 
         /**
+         * Returns the minimum number of features that are included in a sample.
+         *
+         * @return The minimum number of features that are included in a sample
+         */
+        virtual uint32 getMinSamples() const = 0;
+
+        /**
+         * Sets the minimum number of features that should be included in a sample.
+         *
+         * @param minSamples    The minimum number of features that should be included in a sample. Must be at least 1
+         * @return              A reference to an object of type `IFeatureSamplingWithoutReplacementConfig` that allows
+         *                      further configuration of the method for sampling features
+         */
+        virtual IFeatureSamplingWithoutReplacementConfig& setMinSamples(uint32 minSamples) = 0;
+
+        /**
+         * Returns the maximum number of features that are included in a sample.
+         *
+         * @return The maximum number of features that are included in a sample
+         */
+        virtual uint32 getMaxSamples() const = 0;
+
+        /**
+         * Sets the maximum number of features that should be included in a sample.
+         *
+         * @param maxSamples    The maximum number of features that should be included in a sample. Must be at the value
+         *                      returned by `getMaxSamples` or 0, if the number of features should not be restricted
+         * @return              A reference to an object of type `IFeatureSamplingWithoutReplacementConfig` that allows
+         *                      further configuration of the method for sampling features
+         */
+        virtual IFeatureSamplingWithoutReplacementConfig& setMaxSamples(uint32 maxSamples) = 0;
+
+        /**
          * Returns the number of trailing features that are always included in a sample.
          *
          * @return The number of trailing features that are always included in a sample
@@ -63,6 +96,10 @@ class FeatureSamplingWithoutReplacementConfig final : public IFeatureSamplingCon
 
         float32 sampleSize_;
 
+        uint32 minSamples_;
+
+        uint32 maxSamples_;
+
         uint32 numRetained_;
 
     public:
@@ -76,6 +113,14 @@ class FeatureSamplingWithoutReplacementConfig final : public IFeatureSamplingCon
         float32 getSampleSize() const override;
 
         IFeatureSamplingWithoutReplacementConfig& setSampleSize(float32 sampleSize) override;
+
+        uint32 getMinSamples() const override;
+
+        IFeatureSamplingWithoutReplacementConfig& setMinSamples(uint32 minSamples) override;
+
+        uint32 getMaxSamples() const override;
+
+        IFeatureSamplingWithoutReplacementConfig& setMaxSamples(uint32 maxSamples) override;
 
         uint32 getNumRetained() const override;
 
