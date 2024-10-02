@@ -46,8 +46,6 @@ OPTION_MIN_SAMPLES = 'min_samples'
 
 OPTION_MAX_SAMPLES = 'max_samples'
 
-OPTION_NUM_SAMPLES = 'num_samples'
-
 BINNING_EQUAL_FREQUENCY = 'equal-frequency'
 
 BINNING_EQUAL_WIDTH = 'equal-width'
@@ -398,7 +396,7 @@ class OutputSamplingParameter(NominalParameter):
         self.add_value(name=NONE, mixin=NoFeatureSamplingMixin)
         self.add_value(name=SAMPLING_WITHOUT_REPLACEMENT,
                        mixin=FeatureSamplingWithoutReplacementMixin,
-                       options={OPTION_NUM_SAMPLES})
+                       options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES})
         self.add_value(name=self.OUTPUT_SAMPLING_ROUND_ROBIN, mixin=RoundRobinOutputSamplingMixin)
 
     def _configure(self, config, value: str, options: Optional[Options]):
@@ -406,7 +404,9 @@ class OutputSamplingParameter(NominalParameter):
             config.use_no_output_sampling()
         elif value == SAMPLING_WITHOUT_REPLACEMENT:
             conf = config.use_output_sampling_without_replacement()
-            conf.set_num_samples(options.get_int(OPTION_NUM_SAMPLES, conf.get_num_samples()))
+            conf.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, conf.get_sample_size()))
+            conf.set_min_samples(options.get_int(OPTION_MIN_SAMPLES, conf.get_min_samples()))
+            conf.set_max_samples(options.get_int(OPTION_MAX_SAMPLES, conf.get_max_samples()))
         elif value == self.OUTPUT_SAMPLING_ROUND_ROBIN:
             config.use_round_robin_output_sampling()
 
