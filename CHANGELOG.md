@@ -17,6 +17,7 @@ This release comes with several API changes. For an updated overview of the avai
 ### API Changes
 
 - The options `min_samples` and `max_samples` have been added to the values of the command line arguments `--feature-sampling` and `--instance-sampling`.
+- Similar to other sampling methods, the options `sample_size`, `min_samples`, and `max_samples` can now be specified via the command line argument `--feature-sampling` when set to the value `without-replacement`.
 
 ### Quality-of-Life Improvements
 
