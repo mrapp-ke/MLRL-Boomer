@@ -20,6 +20,10 @@ class OutputWiseStratifiedSampling final : public IInstanceSampling {
 
         const float32 sampleSize_;
 
+        const uint32 minSamples_;
+
+        const uint32 maxSamples_;
+
         BitWeightVector weightVector_;
 
         LabelWiseStratification<LabelMatrix, IndexIterator> stratification_;
@@ -39,13 +43,14 @@ class OutputWiseStratifiedSampling final : public IInstanceSampling {
          *                      corresponds to 60 % of the available examples). Must be in (0, 1]
          */
         OutputWiseStratifiedSampling(std::unique_ptr<RNG> rngPtr, const LabelMatrix& labelMatrix,
-                                     IndexIterator indicesBegin, IndexIterator indicesEnd, float32 sampleSize)
-            : sampleSize_(sampleSize),
+                                     IndexIterator indicesBegin, IndexIterator indicesEnd, float32 sampleSize,
+                                     uint32 minSamples, uint32 maxSamples)
+            : sampleSize_(sampleSize), minSamples_(minSamples), maxSamples_(maxSamples),
               weightVector_(labelMatrix.numRows, static_cast<uint32>(indicesEnd - indicesBegin) < labelMatrix.numRows),
               stratification_(std::move(rngPtr), labelMatrix, indicesBegin, indicesEnd) {}
 
         const IWeightVector& sample() override {
-            stratification_.sampleWeights(weightVector_, sampleSize_);
+            stratification_.sampleWeights(weightVector_, sampleSize_, minSamples_, maxSamples_);
             return weightVector_;
         }
 };
@@ -62,6 +67,10 @@ class OutputWiseStratifiedInstanceSamplingFactory final : public IClassification
 
         const float32 sampleSize_;
 
+        const uint32 minSamples_;
+
+        const uint32 maxSamples_;
+
     public:
 
         /**
@@ -69,41 +78,50 @@ class OutputWiseStratifiedInstanceSamplingFactory final : public IClassification
          *                      generators
          * @param sampleSize    The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds
          *                      to 60 % of the available examples). Must be in (0, 1]
+         * @param minSamples    The minimum number of examples to be included in the sample. Must be at least 1
+         * @param maxSamples    The maximum number of examples to be included in the sample. Must be at least
+         *                      `minSamples` or 0, if the number of examples should not be restricted
          */
-        OutputWiseStratifiedInstanceSamplingFactory(std::unique_ptr<RNGFactory> rngFactoryPtr, float32 sampleSize)
-            : rngFactoryPtr_(std::move(rngFactoryPtr)), sampleSize_(sampleSize) {}
+        OutputWiseStratifiedInstanceSamplingFactory(std::unique_ptr<RNGFactory> rngFactoryPtr, float32 sampleSize,
+                                                    uint32 minSamples, uint32 maxSamples)
+            : rngFactoryPtr_(std::move(rngFactoryPtr)), sampleSize_(sampleSize), minSamples_(minSamples),
+              maxSamples_(maxSamples) {}
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
                                                   const SinglePartition& partition,
                                                   IStatistics& statistics) const override {
             return std::make_unique<
               OutputWiseStratifiedSampling<CContiguousView<const uint8>, SinglePartition::const_iterator>>(
-              rngFactoryPtr_->create(), labelMatrix, partition.cbegin(), partition.cend(), sampleSize_);
+              rngFactoryPtr_->create(), labelMatrix, partition.cbegin(), partition.cend(), sampleSize_, minSamples_,
+              maxSamples_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
                                                   BiPartition& partition, IStatistics& statistics) const override {
             return std::make_unique<
               OutputWiseStratifiedSampling<CContiguousView<const uint8>, BiPartition::const_iterator>>(
-              rngFactoryPtr_->create(), labelMatrix, partition.first_cbegin(), partition.first_cend(), sampleSize_);
+              rngFactoryPtr_->create(), labelMatrix, partition.first_cbegin(), partition.first_cend(), sampleSize_,
+              minSamples_, maxSamples_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, const SinglePartition& partition,
                                                   IStatistics& statistics) const override {
             return std::make_unique<OutputWiseStratifiedSampling<BinaryCsrView, SinglePartition::const_iterator>>(
-              rngFactoryPtr_->create(), labelMatrix, partition.cbegin(), partition.cend(), sampleSize_);
+              rngFactoryPtr_->create(), labelMatrix, partition.cbegin(), partition.cend(), sampleSize_, minSamples_,
+              maxSamples_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, BiPartition& partition,
                                                   IStatistics& statistics) const override {
             return std::make_unique<OutputWiseStratifiedSampling<BinaryCsrView, BiPartition::const_iterator>>(
-              rngFactoryPtr_->create(), labelMatrix, partition.first_cbegin(), partition.first_cend(), sampleSize_);
+              rngFactoryPtr_->create(), labelMatrix, partition.first_cbegin(), partition.first_cend(), sampleSize_,
+              minSamples_, maxSamples_);
         }
 };
 
 OutputWiseStratifiedInstanceSamplingConfig::OutputWiseStratifiedInstanceSamplingConfig(
   ReadableProperty<RNGConfig> rngConfig)
-    : rngConfig_(rngConfig), sampleSize_(0.66f) {}
+    : rngConfig_(rngConfig), sampleSize_(0.66f), minSamples_(1), maxSamples_(0) {}
 
 float32 OutputWiseStratifiedInstanceSamplingConfig::getSampleSize() const {
     return sampleSize_;
@@ -117,8 +135,30 @@ IOutputWiseStratifiedInstanceSamplingConfig& OutputWiseStratifiedInstanceSamplin
     return *this;
 }
 
+uint32 OutputWiseStratifiedInstanceSamplingConfig::getMinSamples() const {
+    return minSamples_;
+}
+
+IOutputWiseStratifiedInstanceSamplingConfig& OutputWiseStratifiedInstanceSamplingConfig::setMinSamples(
+  uint32 minSamples) {
+    util::assertGreaterOrEqual<uint32>("minSamples", minSamples, 1);
+    minSamples_ = minSamples;
+    return *this;
+}
+
+uint32 OutputWiseStratifiedInstanceSamplingConfig::getMaxSamples() const {
+    return maxSamples_;
+}
+
+IOutputWiseStratifiedInstanceSamplingConfig& OutputWiseStratifiedInstanceSamplingConfig::setMaxSamples(
+  uint32 maxSamples) {
+    if (maxSamples != 0) util::assertGreaterOrEqual<uint32>("maxSamples", maxSamples, minSamples_);
+    maxSamples_ = maxSamples;
+    return *this;
+}
+
 std::unique_ptr<IClassificationInstanceSamplingFactory>
   OutputWiseStratifiedInstanceSamplingConfig::createClassificationInstanceSamplingFactory() const {
     return std::make_unique<OutputWiseStratifiedInstanceSamplingFactory>(rngConfig_.get().createRNGFactory(),
-                                                                         sampleSize_);
+                                                                         sampleSize_, minSamples_, maxSamples_);
 }

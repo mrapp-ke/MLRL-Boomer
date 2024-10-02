@@ -42,6 +42,10 @@ SAMPLING_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
 OPTION_SAMPLE_SIZE = 'sample_size'
 
+OPTION_MIN_SAMPLES = 'min_samples'
+
+OPTION_MAX_SAMPLES = 'max_samples'
+
 OPTION_NUM_SAMPLES = 'num_samples'
 
 BINNING_EQUAL_FREQUENCY = 'equal-frequency'
@@ -418,16 +422,16 @@ class InstanceSamplingParameter(NominalParameter):
         self.add_value(name=NONE, mixin=NoInstanceSamplingMixin)
         self.add_value(name=SAMPLING_WITH_REPLACEMENT,
                        mixin=InstanceSamplingWithReplacementMixin,
-                       options={OPTION_SAMPLE_SIZE})
+                       options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES})
         self.add_value(name=SAMPLING_WITHOUT_REPLACEMENT,
                        mixin=InstanceSamplingWithoutReplacementMixin,
-                       options={OPTION_SAMPLE_SIZE})
+                       options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES})
         self.add_value(name=SAMPLING_STRATIFIED_OUTPUT_WISE,
                        mixin=OutputWiseStratifiedInstanceSamplingMixin,
-                       options={OPTION_SAMPLE_SIZE})
+                       options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES})
         self.add_value(name=SAMPLING_STRATIFIED_EXAMPLE_WISE,
                        mixin=ExampleWiseStratifiedInstanceSamplingMixin,
-                       options={OPTION_SAMPLE_SIZE})
+                       options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES})
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == NONE:
@@ -435,15 +439,23 @@ class InstanceSamplingParameter(NominalParameter):
         elif value == SAMPLING_WITH_REPLACEMENT:
             conf = config.use_instance_sampling_with_replacement()
             conf.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, conf.get_sample_size()))
+            conf.set_min_samples(options.get_int(OPTION_MIN_SAMPLES, conf.get_min_samples()))
+            conf.set_max_samples(options.get_int(OPTION_MAX_SAMPLES, conf.get_max_samples()))
         elif value == SAMPLING_WITHOUT_REPLACEMENT:
             conf = config.use_instance_sampling_without_replacement()
             conf.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, conf.get_sample_size()))
+            conf.set_min_samples(options.get_int(OPTION_MIN_SAMPLES, conf.get_min_samples()))
+            conf.set_max_samples(options.get_int(OPTION_MAX_SAMPLES, conf.get_max_samples()))
         elif value == SAMPLING_STRATIFIED_OUTPUT_WISE:
             conf = config.use_output_wise_stratified_instance_sampling()
             conf.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, conf.get_sample_size()))
+            conf.set_min_samples(options.get_int(OPTION_MIN_SAMPLES, conf.get_min_samples()))
+            conf.set_max_samples(options.get_int(OPTION_MAX_SAMPLES, conf.get_max_samples()))
         elif value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
             conf = config.use_example_wise_stratified_instance_sampling()
             conf.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, conf.get_sample_size()))
+            conf.set_min_samples(options.get_int(OPTION_MIN_SAMPLES, conf.get_min_samples()))
+            conf.set_max_samples(options.get_int(OPTION_MAX_SAMPLES, conf.get_max_samples()))
 
 
 class FeatureSamplingParameter(NominalParameter):
@@ -459,7 +471,7 @@ class FeatureSamplingParameter(NominalParameter):
         self.add_value(name=NONE, mixin=NoFeatureSamplingMixin)
         self.add_value(name=SAMPLING_WITHOUT_REPLACEMENT,
                        mixin=FeatureSamplingWithoutReplacementMixin,
-                       options={OPTION_SAMPLE_SIZE, self.OPTION_NUM_RETAINED})
+                       options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES, self.OPTION_NUM_RETAINED})
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == NONE:
@@ -467,6 +479,8 @@ class FeatureSamplingParameter(NominalParameter):
         elif value == SAMPLING_WITHOUT_REPLACEMENT:
             conf = config.use_feature_sampling_without_replacement()
             conf.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, conf.get_sample_size()))
+            conf.set_min_samples(options.get_int(OPTION_MIN_SAMPLES, conf.get_min_samples()))
+            conf.set_max_samples(options.get_int(OPTION_MAX_SAMPLES, conf.get_max_samples()))
             conf.set_num_retained(options.get_int(self.OPTION_NUM_RETAINED, conf.get_num_retained()))
 
 
