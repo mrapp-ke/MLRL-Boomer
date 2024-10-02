@@ -65,22 +65,6 @@ class MLRLCOMMON_API IOutputSamplingWithoutReplacementConfig {
          *                      further configuration of the method for sampling instances
          */
         virtual IOutputSamplingWithoutReplacementConfig& setMaxSamples(uint32 maxSamples) = 0;
-
-        /**
-         * Returns the number of outputs that are included in a sample.
-         *
-         * @return The number of outputs that are included in a sample
-         */
-        virtual uint32 getNumSamples() const = 0;
-
-        /**
-         * Sets the number of outputs that should be included in a sample.
-         *
-         * @param numSamples    The number of outputs that should be included in a sample. Must be at least 1
-         * @return              A reference to an object of type `IOutputSamplingWithoutReplacementConfig` that allows
-         *                      further configuration of the sampling method
-         */
-        virtual IOutputSamplingWithoutReplacementConfig& setNumSamples(uint32 numSamples) = 0;
 };
 
 /**
@@ -97,8 +81,6 @@ class OutputSamplingWithoutReplacementConfig final : public IOutputSamplingConfi
         uint32 minSamples_;
 
         uint32 maxSamples_;
-
-        uint32 numSamples_;
 
     public:
 
@@ -119,10 +101,6 @@ class OutputSamplingWithoutReplacementConfig final : public IOutputSamplingConfi
         uint32 getMaxSamples() const override;
 
         IOutputSamplingWithoutReplacementConfig& setMaxSamples(uint32 maxSamples) override;
-
-        uint32 getNumSamples() const override;
-
-        IOutputSamplingWithoutReplacementConfig& setNumSamples(uint32 numSamples) override;
 
         std::unique_ptr<IOutputSamplingFactory> createOutputSamplingFactory(
           const IOutputMatrix& outputMatrix) const override;

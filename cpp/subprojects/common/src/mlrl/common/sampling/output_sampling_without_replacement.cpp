@@ -68,7 +68,7 @@ class OutputSamplingWithoutReplacementFactory final : public IOutputSamplingFact
 };
 
 OutputSamplingWithoutReplacementConfig::OutputSamplingWithoutReplacementConfig(ReadableProperty<RNGConfig> rngConfig)
-    : rngConfig_(rngConfig), sampleSize_(0.33f), minSamples_(1), maxSamples_(1), numSamples_(1) {}
+    : rngConfig_(rngConfig), sampleSize_(0.33f), minSamples_(1), maxSamples_(1) {}
 
 float32 OutputSamplingWithoutReplacementConfig::getSampleSize() const {
     return sampleSize_;
@@ -98,16 +98,6 @@ uint32 OutputSamplingWithoutReplacementConfig::getMaxSamples() const {
 IOutputSamplingWithoutReplacementConfig& OutputSamplingWithoutReplacementConfig::setMaxSamples(uint32 maxSamples) {
     if (maxSamples != 0) util::assertGreaterOrEqual<uint32>("maxSamples", maxSamples, minSamples_);
     maxSamples_ = maxSamples;
-    return *this;
-}
-
-uint32 OutputSamplingWithoutReplacementConfig::getNumSamples() const {
-    return numSamples_;
-}
-
-IOutputSamplingWithoutReplacementConfig& OutputSamplingWithoutReplacementConfig::setNumSamples(uint32 numSamples) {
-    util::assertGreaterOrEqual<uint32>("numSamples", numSamples, 1);
-    numSamples_ = numSamples;
     return *this;
 }
 
