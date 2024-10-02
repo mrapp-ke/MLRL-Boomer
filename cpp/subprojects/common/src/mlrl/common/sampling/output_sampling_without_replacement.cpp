@@ -3,6 +3,7 @@
 #include "index_sampling.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 #include "mlrl/common/iterator/iterator_index.hpp"
+#include "mlrl/common/util/math.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 /**
@@ -67,20 +68,43 @@ class OutputSamplingWithoutReplacementFactory final : public IOutputSamplingFact
 };
 
 OutputSamplingWithoutReplacementConfig::OutputSamplingWithoutReplacementConfig(ReadableProperty<RNGConfig> rngConfig)
-    : rngConfig_(rngConfig), numSamples_(1) {}
+    : rngConfig_(rngConfig), sampleSize_(0.33f), minSamples_(1), maxSamples_(1) {}
 
-uint32 OutputSamplingWithoutReplacementConfig::getNumSamples() const {
-    return numSamples_;
+float32 OutputSamplingWithoutReplacementConfig::getSampleSize() const {
+    return sampleSize_;
 }
 
-IOutputSamplingWithoutReplacementConfig& OutputSamplingWithoutReplacementConfig::setNumSamples(uint32 numSamples) {
-    util::assertGreaterOrEqual<uint32>("numSamples", numSamples, 1);
-    numSamples_ = numSamples;
+IOutputSamplingWithoutReplacementConfig& OutputSamplingWithoutReplacementConfig::setSampleSize(float32 sampleSize) {
+    util::assertGreater<float32>("sampleSize", sampleSize, 0);
+    util::assertLess<float32>("sampleSize", sampleSize, 1);
+    sampleSize_ = sampleSize;
+    return *this;
+}
+
+uint32 OutputSamplingWithoutReplacementConfig::getMinSamples() const {
+    return minSamples_;
+}
+
+IOutputSamplingWithoutReplacementConfig& OutputSamplingWithoutReplacementConfig::setMinSamples(uint32 minSamples) {
+    util::assertGreaterOrEqual<uint32>("minSamples", minSamples, 1);
+    minSamples_ = minSamples;
+    return *this;
+}
+
+uint32 OutputSamplingWithoutReplacementConfig::getMaxSamples() const {
+    return maxSamples_;
+}
+
+IOutputSamplingWithoutReplacementConfig& OutputSamplingWithoutReplacementConfig::setMaxSamples(uint32 maxSamples) {
+    if (maxSamples != 0) util::assertGreaterOrEqual<uint32>("maxSamples", maxSamples, minSamples_);
+    maxSamples_ = maxSamples;
     return *this;
 }
 
 std::unique_ptr<IOutputSamplingFactory> OutputSamplingWithoutReplacementConfig::createOutputSamplingFactory(
   const IOutputMatrix& outputMatrix) const {
+    uint32 numOutputs = outputMatrix.getNumOutputs();
+    uint32 numSamples = util::calculateBoundedFraction(numOutputs, sampleSize_, minSamples_, maxSamples_);
     return std::make_unique<OutputSamplingWithoutReplacementFactory>(rngConfig_.get().createRNGFactory(),
-                                                                     outputMatrix.getNumOutputs(), numSamples_);
+                                                                     outputMatrix.getNumOutputs(), numSamples);
 }
