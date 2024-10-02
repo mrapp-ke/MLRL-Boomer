@@ -287,6 +287,8 @@ class TabularFeatureSpace final : public IFeatureSpace {
                             statisticsUpdateRawPtr->applyPrediction(i);
                         }
                     }
+
+                    statisticsUpdatePtr->commit();
                 }
 
                 void revertPrediction(const IPrediction& prediction) override {
@@ -307,6 +309,8 @@ class TabularFeatureSpace final : public IFeatureSpace {
                             statisticsUpdateRawPtr->revertPrediction(i);
                         }
                     }
+
+                    statisticsUpdatePtr->commit();
                 }
         };
 

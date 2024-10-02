@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/boosting/statistics/quantization.hpp"
 #include "mlrl/boosting/statistics/statistics.hpp"
 
 #include <memory>
@@ -97,8 +98,8 @@ namespace boosting {
              */
             StatisticsSubset(const StatisticView& statisticView, const RuleEvaluationFactory& ruleEvaluationFactory,
                              const WeightVector& weights, const IndexVector& outputIndices)
-                : sumVector_(outputIndices.getNumElements(), true), statisticView_(statisticView), weights_(weights),
-                  outputIndices_(outputIndices),
+                : sumVector_(statisticView, outputIndices.getNumElements(), true), statisticView_(statisticView),
+                  weights_(weights), outputIndices_(outputIndices),
                   ruleEvaluationPtr_(ruleEvaluationFactory.create(sumVector_, outputIndices)) {}
 
             /**
@@ -181,7 +182,8 @@ namespace boosting {
                         : StatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector,
                                            IndexVector>(statistics.statisticView_, statistics.ruleEvaluationFactory_,
                                                         statistics.weights_, outputIndices),
-                          tmpVector_(outputIndices.getNumElements()), totalSumVector_(&totalSumVector) {}
+                          tmpVector_(statistics.statisticView_, outputIndices.getNumElements()),
+                          totalSumVector_(&totalSumVector) {}
 
                     /**
                      * @see `IResettableStatisticsSubset::resetSubset`
@@ -391,7 +393,7 @@ namespace boosting {
                                const WeightVector& weights)
                 : AbstractWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector>(
                     statisticView, ruleEvaluationFactory, weights),
-                  totalSumVectorPtr_(std::make_unique<StatisticVector>(statisticView.numCols, true)) {
+                  totalSumVectorPtr_(std::make_unique<StatisticVector>(statisticView, statisticView.numCols, true)) {
                 uint32 numStatistics = weights.getNumElements();
 
                 for (uint32 i = 0; i < numStatistics; i++) {
@@ -456,26 +458,13 @@ namespace boosting {
             }
     };
 
-    template<typename Prediction, typename ScoreMatrix>
-    static inline void applyPredictionInternally(uint32 statisticIndex, const Prediction& prediction,
-                                                 ScoreMatrix& scoreMatrix) {
-        scoreMatrix.addToRowFromSubset(statisticIndex, prediction.values_cbegin(), prediction.values_cend(),
-                                       prediction.indices_cbegin(), prediction.indices_cend());
-    }
-
-    template<typename Prediction, typename ScoreMatrix>
-    static inline void revertPredictionInternally(uint32 statisticIndex, const Prediction& prediction,
-                                                  ScoreMatrix& scoreMatrix) {
-        scoreMatrix.removeFromRowFromSubset(statisticIndex, prediction.values_cbegin(), prediction.values_cend(),
-                                            prediction.indices_cbegin(), prediction.indices_cend());
-    }
-
     /**
      * An abstract base class for all statistics that provide access to gradients and Hessians that are calculated
      * according to a loss function.
      *
      * @tparam OutputMatrix             The type of the matrix that provides access to the ground truth of the training
      *                                  examples
+     * @tparam QuantizationMatrix       The type of the matrix that provides access to quantized gradients and Hessians
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticMatrix          The type of the matrix that provides access to the gradients and Hessians
      * @tparam ScoreMatrix              The type of the matrices that are used to store predicted scores
@@ -486,8 +475,8 @@ namespace boosting {
      *                                  used for calculating the predictions of rules, as well as corresponding quality
      *                                  scores
      */
-    template<typename OutputMatrix, typename StatisticVector, typename StatisticMatrix, typename ScoreMatrix,
-             typename LossFunction, typename EvaluationMeasure, typename RuleEvaluationFactory>
+    template<typename OutputMatrix, typename QuantizationMatrix, typename StatisticVector, typename StatisticMatrix,
+             typename ScoreMatrix, typename LossFunction, typename EvaluationMeasure, typename RuleEvaluationFactory>
     class AbstractStatistics : virtual public IBoostingStatistics {
         private:
 
@@ -514,17 +503,30 @@ namespace boosting {
                         : statistics_(statistics), prediction_(prediction) {}
 
                     void applyPrediction(uint32 statisticIndex) override {
-                        applyPredictionInternally(statisticIndex, prediction_, *statistics_.scoreMatrixPtr_);
+                        statistics_.scoreMatrixPtr_->addToRowFromSubset(
+                          statisticIndex, prediction_.values_cbegin(), prediction_.values_cend(),
+                          prediction_.indices_cbegin(), prediction_.indices_cend());
                         statistics_.updateStatistics(statisticIndex, prediction_);
                     }
 
                     void revertPrediction(uint32 statisticIndex) override {
-                        revertPredictionInternally(statisticIndex, prediction_, *statistics_.scoreMatrixPtr_);
+                        statistics_.scoreMatrixPtr_->removeFromRowFromSubset(
+                          statisticIndex, prediction_.values_cbegin(), prediction_.values_cend(),
+                          prediction_.indices_cbegin(), prediction_.indices_cend());
                         statistics_.updateStatistics(statisticIndex, prediction_);
+                    }
+
+                    void commit() override {
+                        statistics_.quantizationMatrixPtr_->quantize(prediction_.getIndexVector());
                     }
             };
 
         protected:
+
+            /**
+             * An unique pointer to the matrix that provides access to quantized gradients and Hessians.
+             */
+            std::unique_ptr<QuantizationMatrix> quantizationMatrixPtr_;
 
             /**
              * An unique pointer to the loss function that should be used for calculating gradients and Hessians.
@@ -561,18 +563,28 @@ namespace boosting {
             /**
              * Must be implemented by subclasses in order to update the statistics for all available outputs at a
              * specific index.
+             *
+             * @param statisticIndex    The index of the statistics that should be updated
+             * @param prediction        A reference to an object of type `CompletePrediction` that stores the
+             *                          predictions according to which the statistics should be updated
              */
             virtual void updateStatistics(uint32 statisticIndex, const CompletePrediction& prediction) = 0;
 
             /**
              * Must be implemented by subclasses in order to update the statistics for a subset of the available outputs
              * at a specific index.
+             *
+             * @param statisticIndex    The index of the statistics that should be updated
+             * @param prediction        A reference to an object of type `PartialPrediction` that stores the predictions
+             *                          according to which the statistics should be updated
              */
             virtual void updateStatistics(uint32 statisticIndex, const PartialPrediction& prediction) = 0;
 
         public:
 
             /**
+             * @param quantizationMatrixPtr An unique pointer to an object of template type `QuantizationMatrix` that
+             *                              provides access to quantized gradients and Hessians
              * @param lossPtr               An unique pointer to an object of template type `LossFunction` that
              *                              implements the loss function that should be used for calculating gradients
              *                              and Hessians
@@ -589,12 +601,14 @@ namespace boosting {
              * @param scoreMatrixPtr        An unique pointer to an object of template type `ScoreMatrix` that stores
              *                              the currently predicted scores
              */
-            AbstractStatistics(std::unique_ptr<LossFunction> lossPtr,
+            AbstractStatistics(std::unique_ptr<QuantizationMatrix> quantizationMatrixPtr,
+                               std::unique_ptr<LossFunction> lossPtr,
                                std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
                                const RuleEvaluationFactory& ruleEvaluationFactory, const OutputMatrix& outputMatrix,
                                std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                                std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
-                : lossPtr_(std::move(lossPtr)), evaluationMeasurePtr_(std::move(evaluationMeasurePtr)),
+                : quantizationMatrixPtr_(std::move(quantizationMatrixPtr)), lossPtr_(std::move(lossPtr)),
+                  evaluationMeasurePtr_(std::move(evaluationMeasurePtr)),
                   ruleEvaluationFactory_(&ruleEvaluationFactory), outputMatrix_(outputMatrix),
                   statisticMatrixPtr_(std::move(statisticMatrixPtr)), scoreMatrixPtr_(std::move(scoreMatrixPtr)) {}
 
@@ -639,9 +653,9 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                             const EqualWeightVector& weights) const override final {
                 return std::make_unique<
-                  StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
+                  StatisticsSubset<StatisticVector, typename QuantizationMatrix::view_type, RuleEvaluationFactory,
                                    EqualWeightVector, CompleteIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
+                  quantizationMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -649,9 +663,9 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                             const EqualWeightVector& weights) const override final {
-                return std::make_unique<StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
+                return std::make_unique<StatisticsSubset<StatisticVector, typename QuantizationMatrix::view_type,
                                                          RuleEvaluationFactory, EqualWeightVector, PartialIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
+                  quantizationMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -659,9 +673,9 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                             const BitWeightVector& weights) const override final {
-                return std::make_unique<StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
+                return std::make_unique<StatisticsSubset<StatisticVector, typename QuantizationMatrix::view_type,
                                                          RuleEvaluationFactory, BitWeightVector, CompleteIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
+                  quantizationMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -669,9 +683,9 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                             const BitWeightVector& weights) const override final {
-                return std::make_unique<StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
+                return std::make_unique<StatisticsSubset<StatisticVector, typename QuantizationMatrix::view_type,
                                                          RuleEvaluationFactory, BitWeightVector, PartialIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
+                  quantizationMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -680,9 +694,9 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& outputIndices, const DenseWeightVector<uint32>& weights) const override final {
                 return std::make_unique<
-                  StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
+                  StatisticsSubset<StatisticVector, typename QuantizationMatrix::view_type, RuleEvaluationFactory,
                                    DenseWeightVector<uint32>, CompleteIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
+                  quantizationMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -691,9 +705,9 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const PartialIndexVector& outputIndices, const DenseWeightVector<uint32>& weights) const override final {
                 return std::make_unique<
-                  StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
+                  StatisticsSubset<StatisticVector, typename QuantizationMatrix::view_type, RuleEvaluationFactory,
                                    DenseWeightVector<uint32>, PartialIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
+                  quantizationMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -703,9 +717,9 @@ namespace boosting {
               const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
                 return std::make_unique<
-                  StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
+                  StatisticsSubset<StatisticVector, typename QuantizationMatrix::view_type, RuleEvaluationFactory,
                                    OutOfSampleWeightVector<EqualWeightVector>, CompleteIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
+                  quantizationMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -715,9 +729,9 @@ namespace boosting {
               const PartialIndexVector& outputIndices,
               const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
                 return std::make_unique<
-                  StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
+                  StatisticsSubset<StatisticVector, typename QuantizationMatrix::view_type, RuleEvaluationFactory,
                                    OutOfSampleWeightVector<EqualWeightVector>, PartialIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
+                  quantizationMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -727,9 +741,9 @@ namespace boosting {
               const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<BitWeightVector>& weights) const override final {
                 return std::make_unique<
-                  StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
+                  StatisticsSubset<StatisticVector, typename QuantizationMatrix::view_type, RuleEvaluationFactory,
                                    OutOfSampleWeightVector<BitWeightVector>, CompleteIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
+                  quantizationMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -739,9 +753,9 @@ namespace boosting {
               const PartialIndexVector& outputIndices,
               const OutOfSampleWeightVector<BitWeightVector>& weights) const override final {
                 return std::make_unique<
-                  StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
+                  StatisticsSubset<StatisticVector, typename QuantizationMatrix::view_type, RuleEvaluationFactory,
                                    OutOfSampleWeightVector<BitWeightVector>, PartialIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
+                  quantizationMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -751,9 +765,9 @@ namespace boosting {
               const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override final {
                 return std::make_unique<
-                  StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
+                  StatisticsSubset<StatisticVector, typename QuantizationMatrix::view_type, RuleEvaluationFactory,
                                    OutOfSampleWeightVector<DenseWeightVector<uint32>>, CompleteIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
+                  quantizationMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -763,9 +777,9 @@ namespace boosting {
               const PartialIndexVector& outputIndices,
               const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override final {
                 return std::make_unique<
-                  StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
+                  StatisticsSubset<StatisticVector, typename QuantizationMatrix::view_type, RuleEvaluationFactory,
                                    OutOfSampleWeightVector<DenseWeightVector<uint32>>, PartialIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
+                  quantizationMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -773,9 +787,9 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const EqualWeightVector& weights) const override final {
-                return std::make_unique<WeightedStatistics<StatisticVector, typename StatisticMatrix::view_type,
+                return std::make_unique<WeightedStatistics<StatisticVector, typename QuantizationMatrix::view_type,
                                                            RuleEvaluationFactory, EqualWeightVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
+                  quantizationMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
             }
 
             /**
@@ -783,9 +797,9 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const BitWeightVector& weights) const override final {
-                return std::make_unique<WeightedStatistics<StatisticVector, typename StatisticMatrix::view_type,
+                return std::make_unique<WeightedStatistics<StatisticVector, typename QuantizationMatrix::view_type,
                                                            RuleEvaluationFactory, BitWeightVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
+                  quantizationMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
             }
 
             /**
@@ -793,9 +807,9 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const DenseWeightVector<uint32>& weights) const override final {
-                return std::make_unique<WeightedStatistics<StatisticVector, typename StatisticMatrix::view_type,
+                return std::make_unique<WeightedStatistics<StatisticVector, typename QuantizationMatrix::view_type,
                                                            RuleEvaluationFactory, DenseWeightVector<uint32>>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
+                  quantizationMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
             }
     };
 

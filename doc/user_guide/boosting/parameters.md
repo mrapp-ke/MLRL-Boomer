@@ -606,6 +606,22 @@ The following parameters can be used to control various approximation and optimi
   A sparse format is used for the representation of gradients and Hessians, if supported by the loss function.
 ```
 
+### `quantization`
+
+> *Default value = `'none'`.*
+
+```{glossary}
+`'none'`
+  No quantization is used.
+
+`'stochastic'`
+  Gradients and Hessians are quantized using a stochastic rounding strategy. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
+
+    - `num_bits` *(Default value = `4`)*
+    
+      The number of bits to be used for quantized gradients and Hessians. The given value must be at least 1.
+```
+
 ## Probability Calibration
 
 The following parameters enable to learn calibration models that should be included in a model and may result in more accurate probability estimates being predicted.

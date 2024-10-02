@@ -28,4 +28,18 @@ namespace boosting {
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr));
     }
 
+    std::unique_ptr<IRuleEvaluation<BitDecomposableStatisticVector>>
+      DecomposableCompleteBinnedRuleEvaluationFactory::create(const BitDecomposableStatisticVector& statisticVector,
+                                                              const CompleteIndexVector& indexVector) const {
+        // TODO Implement
+        return nullptr;
+    }
+
+    std::unique_ptr<IRuleEvaluation<BitDecomposableStatisticVector>>
+      DecomposableCompleteBinnedRuleEvaluationFactory::create(const BitDecomposableStatisticVector& statisticVector,
+                                                              const PartialIndexVector& indexVector) const {
+        // TODO Implement
+        return nullptr;
+    }
+
 }

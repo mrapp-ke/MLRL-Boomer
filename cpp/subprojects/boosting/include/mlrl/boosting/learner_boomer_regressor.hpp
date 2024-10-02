@@ -37,6 +37,7 @@ namespace boosting {
                             virtual public IDenseStatisticsMixin,
                             virtual public ISparseStatisticsMixin,
                             virtual public IAutomaticStatisticsMixin,
+                            virtual public IStochasticQuantizationMixin,
                             virtual public IDecomposableSquaredErrorLossMixin,
                             virtual public INonDecomposableSquaredErrorLossMixin,
                             virtual public IOutputWiseScorePredictorMixin,

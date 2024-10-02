@@ -138,11 +138,13 @@ namespace boosting {
         public:
 
             /**
+             * @param view          A reference to an object of type `SparseSetView`
              * @param numElements   The number of gradients and Hessians in the vector
              * @param init          True, if all gradients and Hessians in the vector should be initialized with zero,
              *                      false otherwise
              */
-            SparseDecomposableStatisticVector(uint32 numElements, bool init = false);
+            SparseDecomposableStatisticVector(const SparseSetView<Tuple<float64>>& view, uint32 numElements,
+                                              bool init = false);
 
             /**
              * @param other A reference to an object of type `SparseDecomposableStatisticVector` to be copied

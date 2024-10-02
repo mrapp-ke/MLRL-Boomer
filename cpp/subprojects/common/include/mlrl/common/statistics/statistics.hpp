@@ -39,6 +39,11 @@ class IStatisticsUpdate {
          * @param statisticIndex The index of the statistic that should be updated
          */
         virtual void revertPrediction(uint32 statisticIndex) = 0;
+
+        /**
+         * Commits the update.
+         */
+        virtual void commit() = 0;
 };
 
 /**

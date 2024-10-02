@@ -4,7 +4,8 @@
 
 namespace boosting {
 
-    DenseNonDecomposableStatisticVector::DenseNonDecomposableStatisticVector(uint32 numGradients, bool init)
+    DenseNonDecomposableStatisticVector::DenseNonDecomposableStatisticVector(
+      const DenseNonDecomposableStatisticView& view, uint32 numGradients, bool init)
         : ClearableViewDecorator<ViewDecorator<CompositeVector<AllocatedVector<float64>, AllocatedVector<float64>>>>(
             CompositeVector<AllocatedVector<float64>, AllocatedVector<float64>>(
               AllocatedVector<float64>(numGradients, init),
@@ -12,7 +13,9 @@ namespace boosting {
 
     DenseNonDecomposableStatisticVector::DenseNonDecomposableStatisticVector(
       const DenseNonDecomposableStatisticVector& other)
-        : DenseNonDecomposableStatisticVector(other.getNumGradients()) {
+        : ClearableViewDecorator<ViewDecorator<CompositeVector<AllocatedVector<float64>, AllocatedVector<float64>>>>(
+            CompositeVector<AllocatedVector<float64>, AllocatedVector<float64>>(
+              AllocatedVector<float64>(other.getNumGradients()), AllocatedVector<float64>(other.getNumHessians()))) {
         util::copyView(other.gradients_cbegin(), this->gradients_begin(), this->getNumGradients());
         util::copyView(other.hessians_cbegin(), this->hessians_begin(), this->getNumHessians());
     }

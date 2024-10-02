@@ -4,6 +4,7 @@
 #pragma once
 
 #include <functional>
+#include <optional>
 
 // Forward declarations
 class CompleteHead;
@@ -31,8 +32,9 @@ class MLRLCOMMON_API IHead {
          * Invokes one of the given visitor functions, depending on which one is able to handle this particular type of
          * head.
          *
-         * @param completeHeadVisitor   The visitor function for handling objects of the type `CompleteHead`
-         * @param partialHeadVisitor    The visitor function for handling objects of the type `PartialHead`
+         * @param completeHeadVisitor   An optional visitor function for handling objects of the type `CompleteHead`
+         * @param partialHeadVisitor    An optional visitor function for handling objects of the type `PartialHead`
          */
-        virtual void visit(CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor) const = 0;
+        virtual void visit(std::optional<CompleteHeadVisitor> completeHeadVisitor,
+                           std::optional<PartialHeadVisitor> partialHeadVisitor) const = 0;
 };
