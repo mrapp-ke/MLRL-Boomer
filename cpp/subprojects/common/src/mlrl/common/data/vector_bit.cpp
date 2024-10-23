@@ -2,10 +2,10 @@
 
 #include <climits>
 
-constexpr std::size_t UINT32_SIZE = CHAR_BIT * sizeof(uint32);
+static inline constexpr uint32 UINT32_SIZE = static_cast<uint32>(CHAR_BIT * sizeof(uint32));
 
-static inline constexpr std::size_t size(uint32 numElements) {
-    return (numElements + UINT32_SIZE - 1) / UINT32_SIZE;
+static inline constexpr uint32 size(uint32 numElements) {
+    return numElements / UINT32_SIZE + (numElements % UINT32_SIZE != 0);
 }
 
 static inline constexpr uint32 index(uint32 pos) {

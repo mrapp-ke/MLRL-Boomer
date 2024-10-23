@@ -5,11 +5,11 @@
 #include "mlrl/common/sampling/weight_vector_bit.hpp"
 #include "mlrl/common/sampling/weight_vector_equal.hpp"
 
-static inline void sampleInternally(const SinglePartition& partition, EqualWeightVector& weightVector, RNG& rng) {
+static inline void sampleInternally(const SinglePartition& partition, EqualWeightVector& weightVector) {
     return;
 }
 
-static inline void sampleInternally(BiPartition& partition, BitWeightVector& weightVector, RNG& rng) {
+static inline void sampleInternally(BiPartition& partition, BitWeightVector& weightVector) {
     uint32 numTrainingExamples = partition.getNumFirst();
     BiPartition::const_iterator indexIterator = partition.first_cbegin();
     weightVector.clear();
@@ -46,8 +46,8 @@ class NoInstanceSampling final : public IInstanceSampling {
          */
         NoInstanceSampling(Partition& partition) : partition_(partition), weightVector_(partition.getNumElements()) {}
 
-        const IWeightVector& sample(RNG& rng) override {
-            sampleInternally(partition_, weightVector_, rng);
+        const IWeightVector& sample() override {
+            sampleInternally(partition_, weightVector_);
             return weightVector_;
         }
 };

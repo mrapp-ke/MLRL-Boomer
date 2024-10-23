@@ -12,9 +12,9 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data:
 
-Mean Absolute Error               31.48
-Mean Absolute Percentage Error     1.94
-Mean Squared Error              2273.58
-Median Absolute Error             19.69
+Mean Absolute Error               31.83
+Mean Absolute Percentage Error     2.01
+Mean Squared Error              2195.87
+Median Absolute Error             21.22
 
 INFO Successfully finished after <duration>
