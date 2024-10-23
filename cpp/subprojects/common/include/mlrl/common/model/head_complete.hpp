@@ -56,5 +56,6 @@ class MLRLCOMMON_API CompleteHead final : public VectorDecorator<AllocatedVector
          */
         value_const_iterator values_cend() const;
 
-        void visit(CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor) const override;
+        void visit(std::optional<CompleteHeadVisitor> completeHeadVisitor,
+                   std::optional<PartialHeadVisitor> partialHeadVisitor) const override;
 };

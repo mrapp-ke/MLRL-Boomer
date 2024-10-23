@@ -19,6 +19,9 @@ CompleteHead::value_const_iterator CompleteHead::values_cend() const {
     return this->view.cend();
 }
 
-void CompleteHead::visit(CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor) const {
-    completeHeadVisitor(*this);
+void CompleteHead::visit(std::optional<CompleteHeadVisitor> completeHeadVisitor,
+                         std::optional<PartialHeadVisitor> partialHeadVisitor) const {
+    if (completeHeadVisitor) {
+        (*completeHeadVisitor)(*this);
+    }
 }

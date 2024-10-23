@@ -32,6 +32,10 @@ CompletePrediction::index_const_iterator CompletePrediction::indices_cend() cons
     return indexVector_.cend();
 }
 
+const CompleteIndexVector& CompletePrediction::getIndexVector() const {
+    return indexVector_;
+}
+
 uint32 CompletePrediction::getNumElements() const {
     return VectorDecorator<AllocatedVector<float64>>::getNumElements();
 }

@@ -617,6 +617,8 @@ namespace seco {
                                                    statistics_.majorityLabelVectorPtr_->cbegin(),
                                                    statistics_.majorityLabelVectorPtr_->cend());
                     }
+
+                    void commit() override {}
             };
 
             const LabelMatrix& labelMatrix_;

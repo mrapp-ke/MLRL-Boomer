@@ -1,25 +1,25 @@
-#include "mlrl/common/data/vector_bit.hpp"
+#include "mlrl/common/data/vector_bit_binary.hpp"
 
 #include <gtest/gtest.h>
 
-TEST(BitVectorTest, getNumElements) {
+TEST(BinaryBitVectorTest, getNumElements) {
     uint32 numElements = 270;
-    BitVector vector(numElements);
+    BinaryBitVector vector(numElements);
     EXPECT_EQ(vector.getNumElements(), numElements);
 }
 
-TEST(BitVectorTest, defaultInitialization) {
+TEST(BinaryBitVectorTest, defaultInitialization) {
     uint32 numElements = 270;
-    BitVector vector(numElements, true);
+    BinaryBitVector vector(numElements, true);
 
     for (uint32 i = 0; i < numElements; i++) {
         EXPECT_FALSE(vector[i]);
     }
 }
 
-TEST(BitVectorTest, set) {
+TEST(BinaryBitVectorTest, set) {
     uint32 numElements = 270;
-    BitVector vector(numElements, false);
+    BinaryBitVector vector(numElements, false);
 
     for (uint32 i = 0; i < numElements; i++) {
         vector.set(i, false);
@@ -27,9 +27,9 @@ TEST(BitVectorTest, set) {
     }
 }
 
-TEST(BitVectorTest, clear) {
+TEST(BinaryBitVectorTest, clear) {
     uint32 numElements = 270;
-    BitVector vector(numElements);
+    BinaryBitVector vector(numElements);
 
     for (uint32 i = 0; i < numElements; i++) {
         vector.set(i, true);
