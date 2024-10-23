@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "feature_based_search.hpp"
 #include "feature_vector_decorator_binned_common.hpp"
 #include "feature_vector_decorator_nominal_common.hpp"
 
@@ -14,14 +15,14 @@ template<typename Decorator>
 static inline std::optional<NominalFeatureVector> createFilteredOrdinalFeatureVectorView(
   const Decorator& decorator, std::unique_ptr<IFeatureVector>& existing, const Interval& interval) {
     const NominalFeatureVector& featureVector = decorator.getView().firstView;
-    Tuple<uint32> tuple = getStartAndEndOfOpenInterval(interval, featureVector.numValues);
+    Tuple<uint32> tuple = getStartAndEndOfOpenInterval(interval, featureVector.numBins);
     uint32 start = tuple.first;
     uint32 end = tuple.second;
     uint32 numFilteredValues = end - start;
 
     if (numFilteredValues > 0) {
         return NominalFeatureVector(&featureVector.values[start], featureVector.indices, &featureVector.indptr[start],
-                                    numFilteredValues, featureVector.indptr[featureVector.numValues],
+                                    numFilteredValues, featureVector.indptr[featureVector.numBins],
                                     featureVector.majorityValue);
     }
 
@@ -44,20 +45,18 @@ class OrdinalFeatureVectorView final : public AbstractFeatureVectorDecorator<Nom
         OrdinalFeatureVectorView(NominalFeatureVector&& firstView)
             : AbstractFeatureVectorDecorator(std::move(firstView), AllocatedMissingFeatureVector()) {}
 
-        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, IWeightedStatisticsSubset& statisticsSubset,
-                                 SingleRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+        void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
+                                 const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                  uint32 minCoverage, Refinement& refinement) const override {
-            featureBasedSearch.searchForOrdinalRefinement(this->view.firstView, this->view.secondView, statisticsSubset,
-                                                          comparator, numExamplesWithNonZeroWeights, minCoverage,
-                                                          refinement);
+            searchForOrdinalRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
+                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
 
-        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, IWeightedStatisticsSubset& statisticsSubset,
-                                 FixedRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+        void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
+                                 const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                  uint32 minCoverage, Refinement& refinement) const override {
-            featureBasedSearch.searchForOrdinalRefinement(this->view.firstView, this->view.secondView, statisticsSubset,
-                                                          comparator, numExamplesWithNonZeroWeights, minCoverage,
-                                                          refinement);
+            searchForOrdinalRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
+                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
 
         void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
@@ -108,20 +107,18 @@ class AllocatedOrdinalFeatureVectorView final : public AbstractFeatureVectorDeco
                                                                    AllocatedMissingFeatureVector()),
               allocatedView(std::move(allocatedView)) {}
 
-        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, IWeightedStatisticsSubset& statisticsSubset,
-                                 SingleRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+        void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
+                                 const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                  uint32 minCoverage, Refinement& refinement) const override {
-            featureBasedSearch.searchForOrdinalRefinement(this->view.firstView, this->view.secondView, statisticsSubset,
-                                                          comparator, numExamplesWithNonZeroWeights, minCoverage,
-                                                          refinement);
+            searchForOrdinalRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
+                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
 
-        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, IWeightedStatisticsSubset& statisticsSubset,
-                                 FixedRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+        void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
+                                 const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                  uint32 minCoverage, Refinement& refinement) const override {
-            featureBasedSearch.searchForOrdinalRefinement(this->view.firstView, this->view.secondView, statisticsSubset,
-                                                          comparator, numExamplesWithNonZeroWeights, minCoverage,
-                                                          refinement);
+            searchForOrdinalRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
+                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
 
         void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
@@ -187,8 +184,8 @@ class OrdinalFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDe
          */
         OrdinalFeatureVectorDecorator(const OrdinalFeatureVectorView& other)
             : OrdinalFeatureVectorDecorator(
-                AllocatedNominalFeatureVector(other.getView().firstView.numValues,
-                                              other.getView().firstView.indptr[other.getView().firstView.numValues],
+                AllocatedNominalFeatureVector(other.getView().firstView.numBins,
+                                              other.getView().firstView.indptr[other.getView().firstView.numBins],
                                               other.getView().firstView.majorityValue),
                 AllocatedMissingFeatureVector()) {}
 
@@ -197,25 +194,23 @@ class OrdinalFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDe
          */
         OrdinalFeatureVectorDecorator(const AllocatedOrdinalFeatureVectorView& other)
             : OrdinalFeatureVectorDecorator(
-                AllocatedNominalFeatureVector(other.getView().firstView.numValues,
-                                              other.getView().firstView.indptr[other.getView().firstView.numValues],
+                AllocatedNominalFeatureVector(other.getView().firstView.numBins,
+                                              other.getView().firstView.indptr[other.getView().firstView.numBins],
                                               other.getView().firstView.majorityValue),
                 AllocatedMissingFeatureVector()) {}
 
-        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, IWeightedStatisticsSubset& statisticsSubset,
-                                 SingleRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+        void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
+                                 const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                  uint32 minCoverage, Refinement& refinement) const override {
-            featureBasedSearch.searchForOrdinalRefinement(this->view.firstView, this->view.secondView, statisticsSubset,
-                                                          comparator, numExamplesWithNonZeroWeights, minCoverage,
-                                                          refinement);
+            searchForOrdinalRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
+                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
 
-        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, IWeightedStatisticsSubset& statisticsSubset,
-                                 FixedRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+        void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
+                                 const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                  uint32 minCoverage, Refinement& refinement) const override {
-            featureBasedSearch.searchForOrdinalRefinement(this->view.firstView, this->view.secondView, statisticsSubset,
-                                                          comparator, numExamplesWithNonZeroWeights, minCoverage,
-                                                          refinement);
+            searchForOrdinalRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
+                                       outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,

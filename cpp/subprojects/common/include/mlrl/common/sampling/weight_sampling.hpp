@@ -32,7 +32,7 @@ static inline void sampleWeightsWithoutReplacementViaTrackingSelection(BitWeight
         uint32 sampledIndex;
 
         while (shouldContinue) {
-            uint32 randomIndex = rng.random(0, numTotal);
+            uint32 randomIndex = rng.randomInt(0, numTotal);
             sampledIndex = iterator[randomIndex];
             shouldContinue = !selectedIndices.insert(sampledIndex).second;
         }
@@ -68,7 +68,7 @@ static inline void sampleWeightsWithoutReplacementViaPool(BitWeightVector& weigh
 
     for (uint32 i = 0; i < numSamples; i++) {
         // Randomly select an index that has not been drawn yet...
-        uint32 randomIndex = rng.random(0, numTotal - i);
+        uint32 randomIndex = rng.randomInt(0, numTotal - i);
         uint32 sampledIndex = pool[randomIndex];
 
         // Set weight at the selected index to 1...

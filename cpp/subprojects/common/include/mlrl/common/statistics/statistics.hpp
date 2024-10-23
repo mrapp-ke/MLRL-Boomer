@@ -10,77 +10,63 @@
 #include "mlrl/common/sampling/weight_vector_dense.hpp"
 #include "mlrl/common/sampling/weight_vector_equal.hpp"
 #include "mlrl/common/sampling/weight_vector_out_of_sample.hpp"
+#include "mlrl/common/statistics/statistics_space.hpp"
 #include "mlrl/common/statistics/statistics_weighted.hpp"
 
 #include <memory>
 
 /**
+ * Defines an interface for all classes that allow updating statistics.
+ */
+class IStatisticsUpdate {
+    public:
+
+        virtual ~IStatisticsUpdate() {}
+
+        /**
+         * Updates a specific statistic.
+         *
+         * This function must be called for each statistic that is covered by a new rule before learning the
+         * next rule.
+         *
+         * @param statisticIndex The index of the statistic that should be updated
+         */
+        virtual void applyPrediction(uint32 statisticIndex) = 0;
+
+        /**
+         * Reverts a specific statistic that has previously been updated via the function `applyPrediction`.
+         *
+         * @param statisticIndex The index of the statistic that should be updated
+         */
+        virtual void revertPrediction(uint32 statisticIndex) = 0;
+};
+
+/**
  * Defines an interface for all classes that provide access to statistics about the quality of predictions for training
  * examples, which serve as the basis for learning a new rule or refining an existing one.
  */
-class IStatistics {
+class IStatistics : public IStatisticsSpace {
     public:
 
-        virtual ~IStatistics() {}
+        virtual ~IStatistics() override {}
 
         /**
-         * Returns the number of available statistics.
+         * Creates and returns a new object of type `IStatisticsUpdate` that allows updating the statistics based on the
+         * predictions of a rule that predicts for all available outputs.
          *
-         * @return The number of statistics
+         * @param prediction A reference to an object of type `CompletePrediction` that stores the scores that are
+         *                   predicted by the rule
          */
-        virtual uint32 getNumStatistics() const = 0;
+        virtual std::unique_ptr<IStatisticsUpdate> createUpdate(const CompletePrediction& prediction) = 0;
 
         /**
-         * Returns the number of available outputs.
+         * Creates and returns a new object of type `IStatisticsUpdate` that allows updating the statistics based on the
+         * predictions of a rule that predicts for a subset of the available outputs.
          *
-         * @return The number of outputs
+         * @param prediction A reference to an object of type `PartialPrediction` that stores the scores that are
+         *                   predicted by the rule
          */
-        virtual uint32 getNumOutputs() const = 0;
-
-        /**
-         * Updates a specific statistic based on the prediction of a rule that predicts for all available outputs.
-         *
-         * This function must be called for each statistic that is covered by the new rule before learning the next
-         * rule.
-         *
-         * @param statisticIndex    The index of the statistic to be updated
-         * @param prediction        A reference to an object of type `CompletePrediction` that stores the scores that
-         *                          are predicted by the rule
-         */
-        virtual void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) = 0;
-
-        /**
-         * Updates a specific statistic based on the prediction of a rule that predicts for a subset of the available
-         * outputs.
-         *
-         * This function must be called for each statistic that is covered by the new rule before learning the next
-         * rule.
-         *
-         * @param statisticIndex    The index of the statistic to be updated
-         * @param prediction        A reference to an object of type `PartialPrediction` that stores the scores that are
-         *                          predicted by the rule
-         */
-        virtual void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) = 0;
-
-        /**
-         * Reverts a specific statistic that has previously been updated via the function `applyPrediction` based on the
-         * prediction of a rule that predicts for all available outputs.
-         *
-         * @param statisticIndex    The index of the statistic to be reverted
-         * @param prediction        A reference to an object of type `CompletePrediction` that stores the scores that
-         *                          are predicted by the rule
-         */
-        virtual void revertPrediction(uint32 statisticIndex, const CompletePrediction& prediction) = 0;
-
-        /**
-         * Reverts a specific statistic that has previously been updated via the function `applyPrediction` based on the
-         * prediction of a rule that predicts for a subset of the available outputs.
-         *
-         * @param statisticIndex    The index of the statistic to be reverted
-         * @param prediction        A reference to an object of type `PartialPrediction` that stores the scores that are
-         *                          predicted by the rule
-         */
-        virtual void revertPrediction(uint32 statisticIndex, const PartialPrediction& prediction) = 0;
+        virtual std::unique_ptr<IStatisticsUpdate> createUpdate(const PartialPrediction& prediction) = 0;
 
         /**
          * Calculates and returns a numerical score that assesses the quality of the current predictions for a specific
