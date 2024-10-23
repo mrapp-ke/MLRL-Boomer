@@ -1,4 +1,4 @@
-project('common', 'cpp')
+project('common', 'cpp', meson_version : '>=1.1')
 
 # Source files
 source_files = [
