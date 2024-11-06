@@ -6,23 +6,6 @@ tocdepth: 2
 
 # Release Notes
 
-## Version 0.12.0 (to be released)
-
-A major update to the BOOMER algorithm that comes with the following changes.
-
-```{warning}
-This release comes with several API changes. For an updated overview of the available parameters and command line arguments, please refer to the [documentation](https://mlrl-boomer.readthedocs.io/en/0.11.0/).
-```
-
-### API Changes
-
-- The options `min_samples` and `max_samples` have been added to the values of the command line arguments `--feature-sampling` and `--instance-sampling`.
-- Similar to other sampling methods, the options `sample_size`, `min_samples`, and `max_samples` can now be specified via the command line argument `--feature-sampling` when set to the value `without-replacement`.
-
-### Quality-of-Life Improvements
-
-- C++ 20 is now required for compiling the project.
-
 ## Version 0.11.1 (Sep. 24th, 2024)
 
 A bugfix release that fixes the following issues:
