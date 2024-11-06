@@ -1,0 +1,54 @@
+---
+name: Validate changelog
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+jobs:
+  test_changelog:
+    name: Validate changelog
+    runs-on: ubuntu-latest
+    steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .git/
+          key: test-changelog-cache-git-${{ github.run_id }}
+          restore-keys: |
+            test-changelog-cache-git
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: .version-python
+      - name: Detect changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            build_files: &build_files
+              - '.github/workflows/test_changelog.yml'
+              - 'build'
+              - 'build.bat'
+              - 'scons/**'
+            bugfix:
+              - *build_files
+              - '.changelog-bugfix.md'
+            feature:
+              - *build_files
+              - '.changelog-feature.md'
+            main:
+              - *build_files
+              - '.changelog-main.md'
+      - name: Validate bugfix changelog
+        if: steps.filter.outputs.bugfix == 'true'
+        run: ./build validate_changelog_bugfix
+      - name: Validate feature changelog
+        if: steps.filter.outputs.feature == 'true'
+        run: ./build validate_changelog_feature
+      - name: Validate main changelog
+        if: steps.filter.outputs.main == 'true'
+        run: ./build validate_changelog_main
