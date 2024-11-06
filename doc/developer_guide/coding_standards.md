@@ -22,6 +22,7 @@ The workflow definitions of individual CI jobs can be found in the directory [.g
 - `test_build.yml` builds the project for each of the supported target platforms, i.e., Linux, Windows, and MacOS (see {ref}`compilation`). In the Linux environment, this job does also execute all available unit and integration tests (see {ref}`testing`). It is run for pull requests whenever relevant parts of the project's source code have been modified.
 - `test_doc.yml` generates the latest documentation (see {ref}`documentation`) whenever relevant parts of the source code are affected by a pull request.
 - `test_format.yml` ensures that all source files in the project adhere to our coding style guidelines (see {ref}`code-style`). This job is run automatically for pull requests whenever they include any changes affecting the relevant source files.
+- `test_changelog.yml` ensures that all changelog files in the project adhere to the structure that is necessary to be processed automatically when publishing a new release. This job is run for pull requests if they modify one of the changelog files.
 - `merge_feature.yml` and `merge_bugfix.yml` are used to merge changes that have been pushed to the feature or bugfix branch into downstream branches via pull requests (see {ref}`release-process`).
 - `merge_release.yml` is used to merge all changes included in a new release published on [Github](https://github.com/mrapp-ke/MLRL-Boomer/releases) into upstream branches and update the version numbers of these branches.
 
