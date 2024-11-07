@@ -106,6 +106,15 @@ def __update_version(version: Version):
     __write_version_file(VERSION_FILE, updated_version)
 
 
+def get_current_version() -> Version:
+    """
+    Returns the project's current version.
+
+    :return: The project's current version
+    """
+    return __parse_version(__read_version_file(VERSION_FILE))
+
+
 def increment_development_version(**_):
     """
     Increments the development version.
