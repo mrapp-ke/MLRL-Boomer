@@ -92,7 +92,7 @@ This release comes with several API changes. For an updated overview of the avai
 - Development versions of wheel packages are now regularly built via continuous integration, uploaded as artifacts, and published on [Test-PyPI](https://test.pypi.org/).
 - Continuous integration is now used to maintain separate branches for major, feature, and bugfix releases and keep them up-to-date.
 - The runtime of continuous integration jobs has been optimized by running individual steps only if necessary, caching files across subsequent runs, and making use of parallelization.
-- When tests are run via continuous integration, a summary of the test results is now added to merge requests and Github workflows.
+- When tests are run via continuous integration, a summary of the test results is now added to merge requests and GitHub workflows.
 - Markdown files are now used for writing the documentation.
 - A consistent style is now enforced for Markdown files by applying the tool `mdformat` via continuous integration.
 - C++ 17 or newer is now required for compiling the project.

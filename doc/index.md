@@ -21,7 +21,7 @@ To provide a versatile tool for different use cases, great emphasis is put on th
 This document is intended for end users of our algorithms and developers who are interested in their implementation. In addition, the following links might be of interest:
 
 - For a detailed description of the methodology used by the algorithms, please refer to the {ref}`list of publications <references>`.
-- The source code maintained by this project can be found in the [Github repository](https://github.com/mrapp-ke/MLRL-Boomer).
+- The source code maintained by this project can be found in the [GitHub repository](https://github.com/mrapp-ke/MLRL-Boomer).
 - Issues with the software, feature requests, or questions to the developers should be posted via the project's [issue tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues).
 
 ```{toctree}
