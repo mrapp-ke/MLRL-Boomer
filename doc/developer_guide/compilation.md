@@ -29,12 +29,12 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
    ```
 ````
 
-````{tab} MacOS
+````{tab} macOS
    ```{list-table}
    * - **Python**
-     - Recent versions of MacOS do not include Python by default. A suitable Python version can manually be downloaded from the [project's website](https://www.python.org/downloads/macos/). Alternatively, the package manager [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) can be used for installation via the command `brew install python`.
+     - Recent versions of macOS do not include Python by default. A suitable Python version can manually be downloaded from the [project's website](https://www.python.org/downloads/macos/). Alternatively, the package manager [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) can be used for installation via the command `brew install python`.
    * - **C++ compiler**
-     - MacOS relies on the [Clang](https://en.wikipedia.org/wiki/Clang) compiler for building C++ code. It is part of the [Xcode](https://developer.apple.com/support/xcode/) developer toolset.
+     - macOS relies on the [Clang](https://en.wikipedia.org/wiki/Clang) compiler for building C++ code. It is part of the [Xcode](https://developer.apple.com/support/xcode/) developer toolset.
    * - **GoogleTest**
      - The [GoogleTest](https://github.com/google/googletest) framework must optionally be installed in order to compile the project with {ref}`testing support <testing-support>` enabled. It can easily be installed via [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) by runnig the command `brew install googletest`.
    * - **OpenMP**
@@ -70,7 +70,7 @@ Instead of following the instructions below step by step, the following command,
    ```
 ````
 
-````{tab} MacOS
+````{tab} macOS
    ```text
    ./build
    ```
@@ -94,7 +94,7 @@ As shown in the section {ref}`project-structure`, this project is organized in t
    ```
 ````
 
-````{tab} MacOS
+````{tab} macOS
    ```text
    SUBPROJECTS=common,boosting ./build
    ```
@@ -118,7 +118,7 @@ The build process is based on an virtual Python environment that allows to insta
    ```
 ````
 
-````{tab} MacOS
+````{tab} macOS
    ```text
    ./build venv
    ```
@@ -142,7 +142,7 @@ Once a new virtual environment has successfully been created, the compilation of
    ```
 ````
 
-````{tab} MacOS
+````{tab} macOS
    ```text
    ./build compile_cpp
    ```
@@ -166,7 +166,7 @@ Once the compilation of the C++ code has completed, the Cython code, which allow
    ```
 ````
 
-````{tab} MacOS
+````{tab} macOS
    ```text
    ./build compile_cython
    ```
@@ -194,7 +194,7 @@ The shared libraries that have been created in the previous steps from the C++ s
    ```
 ````
 
-````{tab} MacOS
+````{tab} macOS
    ```text
    ./build install_cpp
    ```
@@ -222,7 +222,7 @@ Similar to the previous step, the Python extension modules that have been built 
    ```
 ````
 
-````{tab} MacOS
+````{tab} macOS
    ```text
    ./build install_cython
    ```
@@ -250,7 +250,7 @@ Once the compilation files have been copied into the Python source tree, wheel p
    ```
 ````
 
-````{tab} MacOS
+````{tab} macOS
    ```text
    ./build build_wheels
    ```
@@ -274,7 +274,7 @@ The wheel packages that have previously been created can finally be installed in
    ```
 ````
 
-````{tab} MacOS
+````{tab} macOS
    ```text
    ./build install_wheels
    ```
@@ -298,7 +298,7 @@ It is possible to delete the compilation files that result from an individual st
    ```
 ````
 
-````{tab} MacOS
+````{tab} macOS
    ```text
    ./build --clean compile_cpp
    ```
@@ -318,7 +318,7 @@ If you want to delete all compilation files that have previously been created, i
    ```
 ````
 
-````{tab} MacOS
+````{tab} macOS
    ```text
    ./build --clean
    ```
