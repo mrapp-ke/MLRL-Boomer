@@ -129,7 +129,7 @@ Some algorithmic parameters, including the parameter `feature_binning`, come wit
 
 ## Bracket Notation
 
-Each algorithmic parameter is identified by an unique name. Depending on the type of a parameter, it either accepts numbers as possible values or allows to specify a string that corresponds to a predefined set of possible values (boolean values are also represented as strings).
+Each algorithmic parameter is identified by a unique name. Depending on the type of parameter, it either accepts numbers as possible values or allows to specify a string that corresponds to a predefined set of possible values (boolean values are also represented as strings).
 
 In addition to the specified value, some parameters allow to provide additional options as key-value pairs. These options must be provided by using the following bracket notation:
 

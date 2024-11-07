@@ -4,7 +4,7 @@
 
 To remember the parameters that have been used for training a model, it might be useful to save them to disk. Similar to {ref}`saving models<model-persistence>`, keeping the resulting files allows to load a previously used configuration and reuse it at a later point in time.
 
-On the one hand, this requires to specify a directory where parameter settings should be saved via the command line argument `--parameter-dir`. On the other hand, the argument `--store-parameters true` instructs the program to save custom parameters that are set via command line argments (see {ref}`setting-algorithmic-parameters`). For example, the following command sets a custom value for a parameter, which is stored in an output file:
+On the one hand, this requires to specify a directory where parameter settings should be saved via the command line argument `--parameter-dir`. On the other hand, the argument `--store-parameters true` instructs the program to save custom parameters that are set via command line arguments (see {ref}`setting-algorithmic-parameters`). For example, the following command sets a custom value for a parameter, which is stored in an output file:
 
 ````{tab} BOOMER
    ```text
