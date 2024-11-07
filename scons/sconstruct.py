@@ -8,7 +8,8 @@ import sys
 from functools import reduce
 from os import path
 
-from changelog import validate_changelog_bugfix, validate_changelog_feature, validate_changelog_main
+from changelog import update_changelog_bugfix, update_changelog_feature, update_changelog_main, \
+    validate_changelog_bugfix, validate_changelog_feature, validate_changelog_main
 from code_style import check_cpp_code_style, check_md_code_style, check_python_code_style, check_yaml_code_style, \
     enforce_cpp_code_style, enforce_md_code_style, enforce_python_code_style, enforce_yaml_code_style
 from compilation import compile_cpp, compile_cython, install_cpp, install_cython, setup_cpp, setup_cython
@@ -43,6 +44,9 @@ TARGET_NAME_INCREMENT_MAJOR_VERSION = 'increment_major_version'
 TARGET_NAME_VALIDATE_CHANGELOG_BUGFIX = 'validate_changelog_bugfix'
 TARGET_NAME_VALIDATE_CHANGELOG_FEATURE = 'validate_changelog_feature'
 TARGET_NAME_VALIDATE_CHANGELOG_MAIN = 'validate_changelog_main'
+TARGET_NAME_UPDATE_CHANGELOG_BUGFIX = 'update_changelog_bugfix'
+TARGET_NAME_UPDATE_CHANGELOG_FEATURE = 'update_changelog_feature'
+TARGET_NAME_UPDATE_CHANGELOG_MAIN = 'update_changelog_main'
 TARGET_NAME_TEST_FORMAT = 'test_format'
 TARGET_NAME_TEST_FORMAT_PYTHON = TARGET_NAME_TEST_FORMAT + '_python'
 TARGET_NAME_TEST_FORMAT_CPP = TARGET_NAME_TEST_FORMAT + '_cpp'
@@ -75,7 +79,8 @@ VALID_TARGETS = {
     TARGET_NAME_INCREMENT_DEVELOPMENT_VERSION, TARGET_NAME_RESET_DEVELOPMENT_VERSION,
     TARGET_NAME_APPLY_DEVELOPMENT_VERSION, TARGET_NAME_INCREMENT_PATCH_VERSION, TARGET_NAME_INCREMENT_MINOR_VERSION,
     TARGET_NAME_INCREMENT_MAJOR_VERSION, TARGET_NAME_VALIDATE_CHANGELOG_BUGFIX, TARGET_NAME_VALIDATE_CHANGELOG_FEATURE,
-    TARGET_NAME_VALIDATE_CHANGELOG_MAIN, TARGET_NAME_TEST_FORMAT, TARGET_NAME_TEST_FORMAT_PYTHON,
+    TARGET_NAME_VALIDATE_CHANGELOG_MAIN, TARGET_NAME_UPDATE_CHANGELOG_BUGFIX, TARGET_NAME_UPDATE_CHANGELOG_FEATURE,
+    TARGET_NAME_UPDATE_CHANGELOG_MAIN, TARGET_NAME_TEST_FORMAT, TARGET_NAME_TEST_FORMAT_PYTHON,
     TARGET_NAME_TEST_FORMAT_CPP, TARGET_NAME_TEST_FORMAT_MD, TARGET_NAME_TEST_FORMAT_YAML, TARGET_NAME_FORMAT,
     TARGET_NAME_FORMAT_PYTHON, TARGET_NAME_FORMAT_CPP, TARGET_NAME_FORMAT_MD, TARGET_NAME_FORMAT_YAML,
     TARGET_NAME_CHECK_DEPENDENCIES, TARGET_NAME_VENV, TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP,
@@ -110,6 +115,11 @@ __create_phony_target(env, TARGET_NAME_INCREMENT_MAJOR_VERSION, action=increment
 __create_phony_target(env, TARGET_NAME_VALIDATE_CHANGELOG_BUGFIX, action=validate_changelog_bugfix)
 __create_phony_target(env, TARGET_NAME_VALIDATE_CHANGELOG_FEATURE, action=validate_changelog_feature)
 __create_phony_target(env, TARGET_NAME_VALIDATE_CHANGELOG_MAIN, action=validate_changelog_main)
+
+# Define targets for updating the project's changelog...
+__create_phony_target(env, TARGET_NAME_UPDATE_CHANGELOG_BUGFIX, action=update_changelog_bugfix)
+__create_phony_target(env, TARGET_NAME_UPDATE_CHANGELOG_FEATURE, action=update_changelog_feature)
+__create_phony_target(env, TARGET_NAME_UPDATE_CHANGELOG_MAIN, action=update_changelog_main)
 
 # Define targets for checking code style definitions...
 target_test_format_python = __create_phony_target(env, TARGET_NAME_TEST_FORMAT_PYTHON, action=check_python_code_style)
