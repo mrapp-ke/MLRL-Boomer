@@ -149,7 +149,7 @@ This release comes with several API changes. For an updated overview of the avai
 
 ### Quality-of-Life Improvements
 
-- Continuous integration is now used to test the most common functionalites of the BOOMER algorithm and the corresponding command line API.
+- Continuous integration is now used to test the most common functionalities of the BOOMER algorithm and the corresponding command line API.
 - Successful generation of the documentation is now tested via continuous integration.
 - Style definitions for Python and C++ code are now enforced by applying the tools `clang-format`, `yapf`, and `isort` via continuous integration.
 
@@ -266,7 +266,7 @@ A major update to the BOOMER algorithm that features the following changes:
 - Includes many refactorings and quality of live improvements. Code that is not directly related with the algorithm, such as the implementation of baselines, has been removed.
 - The algorithm is now able to natively handle nominal features without the need for pre-processing techniques such as one-hot encoding.
 - Sparse feature matrices can now be used for training and prediction, which reduces the memory footprint and results in a significant speed-up of training times on some data sets.
-- Additional hyper-parameters (`min_coverage`, `max_conditions` and `max_head_refinements`) that provide fine-grained control over the specificity/generality of rules have been added.
+- Additional hyperparameters (`min_coverage`, `max_conditions` and `max_head_refinements`) that provide fine-grained control over the specificity/generality of rules have been added.
 
 ## Version 0.1.0 (Jun. 22, 2020)
 

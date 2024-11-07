@@ -8,7 +8,7 @@ Unlike pure Python programs, the C++ and Cython source files must be compiled fo
 
 ## Prerequisites
 
-As a prerequisite, a supported version of Python, a suitable C++ compiler, as well as optional libraries for multi-threading and GPU support, must be available on the host system. The installation of these software components depends on the operation system at hand. In the following, we provide installation instructions for the supported platforms.
+As a prerequisite, a supported version of Python, a suitable C++ compiler, as well as optional libraries for multi-threading and GPU support, must be available on the host system. The installation of these software components depends on the operating system at hand. In the following, we provide installation instructions for the supported platforms.
 
 ```{tip}
 This project uses [Meson](https://mesonbuild.com/) as a build system for compiling C++ code. If available on the system, Meson automatically utilizes [Ccache](https://ccache.dev/) for caching previous compilations and detecting when the same compilation is being done again. Compared to the runtime without Ccache, where changes are only detected at the level of entire files, usage of this compiler cache can significantly speed up recompilation and therefore is strongly adviced.
@@ -110,7 +110,7 @@ As shown in the section {ref}`project-structure`, this project is organized in t
 
 ## Creating a Virtual Environment
 
-The build process is based on an virtual Python environment that allows to install build- and run-time dependencies in an isolated manner and independently from the host system. Once the build process was completed, the resulting Python packages are installed into the virtual environment. To create new virtual environment and install all necessarily run-time dependencies, the following command must be executed:
+The build process is based on a virtual Python environment that allows to install build- and run-time dependencies in an isolated manner and independently of the host system. Once the build process was completed, the resulting Python packages are installed into the virtual environment. To create new virtual environment and install all necessarily run-time dependencies, the following command must be executed:
 
 ````{tab} Linux
    ```text
@@ -186,7 +186,7 @@ Instead of performing the previous steps one after the other, the build target `
 
 ## Installing Shared Libraries
 
-The shared libraries that have been created in the previous steps from the C++ source files must afterwards be copied into the Python source tree. This can be achieved by executing the following command:
+The shared libraries that have been created in the previous steps from the C++ source files must afterward be copied into the Python source tree. This can be achieved by executing the following command:
 
 ````{tab} Linux
    ```text

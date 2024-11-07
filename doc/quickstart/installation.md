@@ -28,7 +28,7 @@ In addition to the BOOMER algorithm, this project does also provide a Separate-a
 pip install mlrl-seco
 ```
 
-In {ref}`this<user-guide-seco>` section, we elaborate on the techiques utilized by the SeCo algorithm and discuss its parameters.
+In {ref}`this<user-guide-seco>` section, we elaborate on the techniques utilized by the SeCo algorithm and discuss its parameters.
 
 ## Installing the Command Line API
 
