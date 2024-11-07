@@ -92,7 +92,7 @@ This release comes with several API changes. For an updated overview of the avai
 - Development versions of wheel packages are now regularly built via continuous integration, uploaded as artifacts, and published on [Test-PyPI](https://test.pypi.org/).
 - Continuous integration is now used to maintain separate branches for major, feature, and bugfix releases and keep them up-to-date.
 - The runtime of continuous integration jobs has been optimized by running individual steps only if necessary, caching files across subsequent runs, and making use of parallelization.
-- When tests are run via continuous integration, a summary of the test results is now added to merge requests and Github workflows.
+- When tests are run via continuous integration, a summary of the test results is now added to merge requests and GitHub workflows.
 - Markdown files are now used for writing the documentation.
 - A consistent style is now enforced for Markdown files by applying the tool `mdformat` via continuous integration.
 - C++ 17 or newer is now required for compiling the project.
@@ -149,7 +149,7 @@ This release comes with several API changes. For an updated overview of the avai
 
 ### Quality-of-Life Improvements
 
-- Continuous integration is now used to test the most common functionalites of the BOOMER algorithm and the corresponding command line API.
+- Continuous integration is now used to test the most common functionalities of the BOOMER algorithm and the corresponding command line API.
 - Successful generation of the documentation is now tested via continuous integration.
 - Style definitions for Python and C++ code are now enforced by applying the tools `clang-format`, `yapf`, and `isort` via continuous integration.
 
@@ -185,8 +185,8 @@ This release comes with changes to the command line API. For an updated overview
 A bugfix release that solves the following issues:
 
 - Fixes an issue preventing the use of dense representations of ground truth label matrices that was introduced in version 0.7.0.
-- Pre-built packages for MacOS systems are now available at [PyPI](https://pypi.org/project/mlrl-boomer/).
-- Linux and MacOS packages for Python 3.10 are now provided.
+- Pre-built packages for macOS systems are now available at [PyPI](https://pypi.org/project/mlrl-boomer/).
+- Linux and macOS packages for Python 3.10 are now provided.
 
 ## Version 0.7.0 (Dec. 5, 2021)
 
@@ -266,7 +266,7 @@ A major update to the BOOMER algorithm that features the following changes:
 - Includes many refactorings and quality of live improvements. Code that is not directly related with the algorithm, such as the implementation of baselines, has been removed.
 - The algorithm is now able to natively handle nominal features without the need for pre-processing techniques such as one-hot encoding.
 - Sparse feature matrices can now be used for training and prediction, which reduces the memory footprint and results in a significant speed-up of training times on some data sets.
-- Additional hyper-parameters (`min_coverage`, `max_conditions` and `max_head_refinements`) that provide fine-grained control over the specificity/generality of rules have been added.
+- Additional hyperparameters (`min_coverage`, `max_conditions` and `max_head_refinements`) that provide fine-grained control over the specificity/generality of rules have been added.
 
 ## Version 0.1.0 (Jun. 22, 2020)
 

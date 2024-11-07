@@ -38,7 +38,7 @@ The following optional arguments allow additional control over the loading mecha
 
 - `-r` or `--runnable` (Default value = `Runnable`) The name of the class extending {py:class}`mlrl.testbed.runnables.Runnable` that resides within the module or source file specified via the argument `<module_or_source_file>`.
 
-The arguments given above can be used to integrate any scikit-learn compatible machine learning algorithm with the comman line API. You can learn about this {ref}`here<runnables>`.
+The arguments given above can be used to integrate any scikit-learn compatible machine learning algorithm with the command line API. You can learn about this {ref}`here<runnables>`.
 
 ### Dataset
 
@@ -64,7 +64,7 @@ The command line API can conduct experiments for classification and regression p
 
 > A more detailed description of the following arguments can be found {ref}`here<evaluation>`.
 
-One of the most important capabilities of the command line API is to train machine learning models and obtain an unbiased estimate of their predictive performance. For this purpose, the available data must be split into training and test data. The former is used to train models and the latter is used for evaluation afterwards, whereas the evaluation metrics depend on the type of predictions provided by a model.
+One of the most important capabilities of the command line API is to train machine learning models and obtain an unbiased estimate of their predictive performance. For this purpose, the available data must be split into training and test data. The former is used to train models and the latter is used for evaluation afterward, whereas the evaluation metrics depend on the type of predictions provided by a model.
 
 ### Strategies for Data Splitting
 
@@ -74,7 +74,7 @@ One of the most important capabilities of the command line API is to train machi
 
     - `test_size` (Default value = `0.33`) The fraction of the available data to be included in the test set, if the training and test set are not provided as separate files. Must be in (0, 1).
 
-  - `cross-validation` A cross validation is performed. Given that `dataset-name` is provided as the value of the argument `--dataset`, the data for individual folds must be stored in files named `dataset-name_fold-1`, `dataset-name_fold-2`, etc.. If no such files are available, the program searches for a file with the name `dataset-name.arff` and splits it into training and test data for the individual folds automatically. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
+  - `cross-validation` A cross validation is performed. Given that `dataset-name` is provided as the value of the argument `--dataset`, the data for individual folds must be stored in files named `dataset-name_fold-1`, `dataset-name_fold-2`, etc. If no such files are available, the program searches for a file with the name `dataset-name.arff` and splits it into training and test data for the individual folds automatically. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
     - `num_folds` (Default value = `10`) The total number of cross validation folds to be performed. Must be at least 2.
     - `current_fold` (Default value = `0`) The cross validation fold to be performed. Must be in \[1, `num_folds`\] or 0, if all folds should be performed.
@@ -92,7 +92,7 @@ One of the most important capabilities of the command line API is to train machi
 
   - `scores` The learner is instructed to predict scores. In this case, ranking measures are used for evaluation.
   - `probabilities` The learner is instructed to predict probability estimates. In this case, ranking measures are used for evaluation.
-  - `binary` The learner is instructed to predict binary labels. In this case, bipartition evaluation measures are used for evaluation.
+  - `binary` The learner is instructed to predict binary labels. In this case, bi-partition evaluation measures are used for evaluation.
 
 ### Incremental Evaluation
 
@@ -332,7 +332,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
     - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
     - `outputs` (Default value = `true`) `true`, if the number of outputs should be stored, `false` otherwise.
     - `output_density` (Default value = `true`) `true`, if the density of the ground truth matrix should be stored, `false` otherwise.
-    - `output_sparsity` (Default value = `true`) `true`, if the sparsity of the groun dtruth matrix should be stored, `false` otherwise.
+    - `output_sparsity` (Default value = `true`) `true`, if the sparsity of the ground truth matrix should be stored, `false` otherwise.
     - `label_imbalance_ratio` (Default value = `true`, *classification only*) `true`, if the label imbalance ratio should be stored, `false` otherwise.
     - `label_cardinality` (Default value = `true`, *classification only*) `true`, if the average label cardinality should be stored, `false` otherwise.
     - `distinct_label_vectors` (Default value = `true`, *classification only*) `true`, if the number of distinct label vectors should be stored, `false` otherwise.
@@ -451,7 +451,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 ## Setting Algorithmic Parameters
 
-In addition to the command line arguments that are discussed above, it is often desirable to not rely on the default configuration of the BOOMER algorithm in an experiment, but to use a custom configuration. For this purpose, all of the algorithmic parameters that are discussed in the section {ref}`parameters` may be set by providing corresponding arguments to the command line API.
+In addition to the command line arguments that are discussed above, it is often desirable to not rely on the default configuration of the BOOMER algorithm in an experiment, but to use a custom configuration. For this purpose, all the algorithmic parameters that are discussed in the section {ref}`parameters` may be set by providing corresponding arguments to the command line API.
 
 In accordance with the syntax that is typically used by command line programs, the parameter names must be given according to the following syntax that slightly differs from the names that are used by the programmatic Python API:
 
