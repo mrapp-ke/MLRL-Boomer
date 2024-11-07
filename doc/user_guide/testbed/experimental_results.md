@@ -352,7 +352,7 @@ When using a {ref}`cross validation<cross-validation>`, several models are train
 - `label_vectors_fold-4.csv`
 - `label_vectors_fold-5.csv`
 
-The above commands output each label vector present in a dataset, as well as their frequency, i.e., the number of examples they are associated with. Moreover, each label vector is assigned an unique index. By default, feature vectors are given in the following format, where the n-th element indicates whether the n-th label is relevant (1) or not (0):
+The above commands output each label vector present in a dataset, as well as their frequency, i.e., the number of examples they are associated with. Moreover, each label vector is assigned a unique index. By default, feature vectors are given in the following format, where the n-th element indicates whether the n-th label is relevant (1) or not (0):
 
 ```text
 [0 0 1 1 1 0]
@@ -424,7 +424,7 @@ When using a {ref}`cross validation<cross-validation>`, several models are train
 
 The statistics captured by the previous commands include the following:
 
-- **Statistics about conditions:** Information about the number of rules in a model, as well as the different types of conditons contained in their bodies.
+- **Statistics about conditions:** Information about the number of rules in a model, as well as the different types of conditions contained in their bodies.
 - **Statistics about predictions:** The distribution of positive and negative predictions provided by the rules in a model.
 - **Statistics per local rule:** The minimum, average, and maximum number of conditions and predictions the rules in a model entail in their bodies and heads, respectively.
 
@@ -452,7 +452,7 @@ It is considered one of the advantages of rule-based machine learning models tha
    ```
 ````
 
-Alternatively, by using the argument `--store-rules`, a textual representation of models can be written into a text file in the specifed output directory:
+Alternatively, by using the argument `--store-rules`, a textual representation of models can be written into a text file in the specified output directory:
 
 ````{tab} BOOMER
    ```text
@@ -490,7 +490,7 @@ A {ref}`cross validation<cross-validation>` results in multiple output files, ea
 - `rules_fold-4.csv`
 - `rules_fold-5.csv`
 
-Each rule in a model consists of a *body* and a *head* (we use the notation `body => head`). The body specifies to which examples a rule applies. It consist of one or several conditions that compare the feature values of given examples to thresholds derived from the training data. The head of a rule consists of the predictions it provides for individual outputs. The predictions provided by a head may be restricted to a subset of the available output or even a single one.
+Each rule in a model consists of a *body* and a *head* (we use the notation `body => head`). The body specifies to which examples a rule applies. It consists of one or several conditions that compare the feature values of given examples to thresholds derived from the training data. The head of a rule consists of the predictions it provides for individual outputs. The predictions provided by a head may be restricted to a subset of the available output or even a single one.
 
 If not configured otherwise, the first rule in a model is a *default rule*. Unlike the other rules, it does not contain any conditions in its body and therefore applies to any given example. As shown in the following example, it always provides predictions for all available labels:
 
@@ -500,7 +500,7 @@ If not configured otherwise, the first rule in a model is a *default rule*. Unli
 
 In regression models, the predictions of individual rules sum up to the regression scores predicted by the overall model. In classification models, a rule's prediction for a particular label is positive, if most examples it covers are associated with the respective label, otherwise it is negative. The ratio between the number of examples that are associated with a label, and those that are not, affects the absolute size of the default prediction. Large values indicate a stong preference towards predicting a particular label as relevant or irrelevant, depending on the sign.
 
-The remaining rules only apply to examples that satisfy all of the conditions in their bodies. For example, the body of the following rule consists of two conditions:
+The remaining rules only apply to examples that satisfy all the conditions in their bodies. For example, the body of the following rule consists of two conditions:
 
 ```text
 {feature1 <= 1.53 & feature2 > 7.935} => (output1 = -0.31)

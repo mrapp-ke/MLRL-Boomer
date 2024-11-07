@@ -239,7 +239,7 @@ The duration in seconds after which the induction of rules should be canceled. T
 
 ## Pruning and Post-Optimization
 
-The following parameters provide fine-grain control over the techniques that should be used for pruning rules or optimizing them after they have been learned. These techniques can help to prevent overfitting and may be helpful if one strives for simple models without any superflous rules.
+The following parameters provide fine-grain control over the techniques that should be used for pruning rules or optimizing them after they have been learned. These techniques can help to prevent overfitting and may be helpful if one strives for simple models without any superfluous rules.
 
 ### `holdout`
 
@@ -383,7 +383,7 @@ The following parameters provide fine-grain control over the techniques that sho
 
 ## Sampling Techniques
 
-The following parameters allow to employ various sampling techniques that may help reducing computational costs when dealing with large datasets. Moreover, they may be used to ensure that a diverse set of rules is learned, which mcanay lead to better generalization when dealing with large models.
+The following parameters allow to employ various sampling techniques that may help reducing computational costs when dealing with large datasets. Moreover, they may be used to ensure that a diverse set of rules is learned, which may lead to better generalization when dealing with large models.
 
 ### `random_state`
 
