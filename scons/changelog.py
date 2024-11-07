@@ -50,19 +50,6 @@ class LineType(Enum):
 
 
 @dataclass
-class Changeset:
-    """
-    A changeset, consisting of a header and textual descriptions of several changes.
-
-    Attributes:
-        header:     The header of the changeset
-        changes:    A list that stores the textual descriptions of the changes
-    """
-    header: str
-    changes: List[str] = field(default_factory=list)
-
-
-@dataclass
 class Line:
     """
     A single line in a changelog.
@@ -77,6 +64,19 @@ class Line:
     line_type: LineType
     line: str
     content: str
+
+
+@dataclass
+class Changeset:
+    """
+    A changeset, consisting of a header and textual descriptions of several changes.
+
+    Attributes:
+        header:     The header of the changeset
+        changes:    A list that stores the textual descriptions of the changes
+    """
+    header: str
+    changes: List[str] = field(default_factory=list)
 
 
 def __read_lines(changelog_file: str, skip_if_missing: bool = False) -> List[str]:
