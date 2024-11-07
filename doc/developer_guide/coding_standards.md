@@ -19,7 +19,7 @@ The workflow definitions of individual CI jobs can be found in the directory [.g
 - `publish.yml` is used for publishing pre-built packages on [PyPI](https://pypi.org/) (see {ref}`installation`). For this purpose, the project is built from source for each of the target platforms and architectures, using virtualization in some cases. The job is run automatically when a new release was published on [GitHub](https://github.com/mrapp-ke/MLRL-Boomer/releases). It does also increment the project's major version number and merge the release branch into its upstream branches (see {ref}`release-process`).
 - `publish_development.yml` publishes development versions of packages on [Test-PyPI](https://test.pypi.org/) whenever changes to the project's source code have been pushed to the main branch. The packages built by each of these runs are also saved as [artifacts](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts) and can be downloaded as zip archives.
 - `test_publish.yml` ensures that the packages to be released for different architectures and Python versions can be built. The job is run for pull requests that modify relevant parts of the source code.
-- `test_build.yml` builds the project for each of the supported target platforms, i.e., Linux, Windows, and MacOS (see {ref}`compilation`). In the Linux environment, this job does also execute all available unit and integration tests (see {ref}`testing`). It is run for pull requests whenever relevant parts of the project's source code have been modified.
+- `test_build.yml` builds the project for each of the supported target platforms, i.e., Linux, Windows, and macOS (see {ref}`compilation`). In the Linux environment, this job does also execute all available unit and integration tests (see {ref}`testing`). It is run for pull requests whenever relevant parts of the project's source code have been modified.
 - `test_doc.yml` generates the latest documentation (see {ref}`documentation`) whenever relevant parts of the source code are affected by a pull request.
 - `test_format.yml` ensures that all source files in the project adhere to our coding style guidelines (see {ref}`code-style`). This job is run automatically for pull requests whenever they include any changes affecting the relevant source files.
 - `test_changelog.yml` ensures that all changelog files in the project adhere to the structure that is necessary to be processed automatically when publishing a new release. This job is run for pull requests if they modify one of the changelog files.
@@ -38,7 +38,7 @@ To be able to detect problems with the project's source code early during develo
    ```
 ````
 
-````{tab} MacOS
+````{tab} macOS
    ```text
    ./build tests
    ```
@@ -58,7 +58,7 @@ This will result in all tests being run and their results being reported. If the
    ```
 ````
 
-````{tab} MacOS
+````{tab} macOS
    ```text
    SKIP_EARLY=true ./build tests
    ```
@@ -100,7 +100,7 @@ If you have modified the project's source code, you can check whether it adheres
    ```
 ````
 
-````{tab} MacOS
+````{tab} macOS
    ```text
    ./build test_format
    ```
@@ -124,7 +124,7 @@ In order to automatically format the project's source files according to our sty
    ```
 ````
 
-````{tab} MacOS
+````{tab} macOS
    ```text
    ./build format
    ```
@@ -200,7 +200,7 @@ To ease the life of developers, the following command provided by the project's 
    ```
 ````
 
-````{tab} MacOS
+````{tab} macOS
    ```text
    ./build check_dependencies
    ```

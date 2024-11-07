@@ -21,7 +21,7 @@ It is not necessary to execute the steps below one after the other. Instead, run
    ```
 ````
 
-````{tab} MacOS
+````{tab} macOS
    ```text
    ./build doc
    ```
@@ -46,7 +46,7 @@ By running the following command, the C++ API documentation is generated via Dox
    ```
 ````
 
-````{tab} MacOS
+````{tab} macOS
    ```text
    ./build apidoc_cpp
    ```
@@ -70,7 +70,7 @@ Similarly, the following command generates an API documentation from the project
    ```
 ````
 
-````{tab} MacOS
+````{tab} macOS
    ```text
    ./build apidoc_python
    ```
@@ -96,7 +96,7 @@ To generate the final documentation's HTML files via [sphinx](https://www.sphinx
    ```
 ````
 
-````{tab} MacOS
+````{tab} macOS
    ```text
    ./build doc
    ```
