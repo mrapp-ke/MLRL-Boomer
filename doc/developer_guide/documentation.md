@@ -108,7 +108,7 @@ To generate the final documentation's HTML files via [sphinx](https://www.sphinx
    ```
 ````
 
-Afterwards, the generated files can be found in the directory `doc/_build/html/`.
+Afterward, the generated files can be found in the directory `doc/_build/html/`.
 
 ## Cleaning up Build Files
 

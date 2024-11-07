@@ -2,7 +2,7 @@
 
 # Performance Evaluation
 
-A major task in machine learning is to assess the predictive performance of different learning approaches, compare them to each other, and decide for the best approach suitable for a particular problem. The command line API provided by this project helps with these tasks by implementing several strategies for splitting available data into training and test sets, which is crucial to obtain unbiased estimates of a method's performance. In accordance with established practices, a machine learning model that is trained on a test set is afterwards applied to the corresponding test set to obtain predictions for data that was not included in the training process. The metrics that are used for evaluating the quality of these predictions are automatically chosen, depending on the type of predictions (binary predictions, probability estimates, etc.) provided by the tested method.
+A major task in machine learning is to assess the predictive performance of different learning approaches, compare them to each other, and decide for the best approach suitable for a particular problem. The command line API provided by this project helps with these tasks by implementing several strategies for splitting available data into training and test sets, which is crucial to obtain unbiased estimates of a method's performance. In accordance with established practices, a machine learning model that is trained on a test set is afterward applied to the corresponding test set to obtain predictions for data that was not included in the training process. The metrics that are used for evaluating the quality of these predictions are automatically chosen, depending on the type of predictions (binary predictions, probability estimates, etc.) provided by the tested method.
 
 ## Strategies for Data Splitting
 
@@ -12,7 +12,7 @@ Several strategies for splitting the available data into distinct training and t
 
 ### Train-Test-Splits
 
-The simplest and computationally least demanding strategy for obtaining training and tests is to randomly split the available data into two, mutually exclusive, parts. This strategy, which is used by default, if not specified otherwise, can be used by providing the argument `--data-split train-test` to the command line API:
+The simplest and computationally the least demanding strategy for obtaining training and tests is to randomly split the available data into two, mutually exclusive, parts. This strategy, which is used by default, if not specified otherwise, can be used by providing the argument `--data-split train-test` to the command line API:
 
 ````{tab} BOOMER
    ```text
@@ -60,7 +60,7 @@ This command instructs the command line API to include 75% of the available data
 
 ### Cross Validation
 
-A more elaborate strategy for splitting data into training and test sets, which results in more realistic performance estimates, but also entails greater computational costs, is referred to as [cross validation](<https://en.wikipedia.org/wiki/Cross-validation_(statistics)>) (CV). The basic idea is to split the available data into several, equally-sized, parts. Afterwards, several machine learning models are trained and evaluated on different portions of the data using the same learning method. Each of these parts are used for testing exactly once, whereas the remaining ones make up the training set. The performance estimates that are obtained for each of these subsequent runs, referred to as *folds*, are finally averaged to obtain a single score and corresponding [standard deviation](https://en.wikipedia.org/wiki/Standard_deviation). The command line API can be instructed to perform a cross validation using the argument `--data-split cv`:
+A more elaborate strategy for splitting data into training and test sets, which results in more realistic performance estimates, but also entails greater computational costs, is referred to as [cross validation](<https://en.wikipedia.org/wiki/Cross-validation_(statistics)>) (CV). The basic idea is to split the available data into several, equally-sized, parts. Afterward, several machine learning models are trained and evaluated on different portions of the data using the same learning method. Each of these parts are used for testing exactly once, whereas the remaining ones make up the training set. The performance estimates that are obtained for each of these subsequent runs, referred to as *folds*, are finally averaged to obtain a single score and corresponding [standard deviation](https://en.wikipedia.org/wiki/Standard_deviation). The command line API can be instructed to perform a cross validation using the argument `--data-split cv`:
 
 ````{tab} BOOMER
    ```text
@@ -258,7 +258,7 @@ In a multi-label setting, the quality of binary predictions is assessed in terms
 
 ## Incremental Evaluation
 
-When evaluating the predictive performance of an [ensemble method](https://en.wikipedia.org/wiki/Ensemble_learning), i.e., models that consist of several weak predictors, also referred to as *ensemble members*, the command line API supports to evaluate these models incrementally. In particular, rule-based machine learning algorithms like the ones implemented by this project are often considered as ensemble methods, where each rule in a model can be viewed as a weak predictor. Adding more rules to a model typically results in better predictive performance. However, adding too many rules may result in overfitting the training data and therefore achieving subpar performance on the test data. For analyzing such behavior, the arugment `--incremental-evaluation true` may be passed to the command line API:
+When evaluating the predictive performance of an [ensemble method](https://en.wikipedia.org/wiki/Ensemble_learning), i.e., models that consist of several weak predictors, also referred to as *ensemble members*, the command line API supports to evaluate these models incrementally. In particular, rule-based machine learning algorithms like the ones implemented by this project are often considered as ensemble methods, where each rule in a model can be viewed as a weak predictor. Adding more rules to a model typically results in better predictive performance. However, adding too many rules may result in overfitting the training data and therefore achieving subpar performance on the test data. For analyzing such behavior, the argument `--incremental-evaluation true` may be passed to the command line API:
 
 ````{tab} BOOMER
    ```text
@@ -282,9 +282,9 @@ When using the above command, the rule-based model that is learned by the BOOMER
 
 - `min_size` specifies the minimum number of ensemble members that must be included in a model for the first evaluation to be performed.
 - `max_size` specifies the maximum number of ensemble members to be evaluated.
-- `step_size` allows to to specify after how many additional ensemble members the evaluation should be repeated.
+- `step_size` allows to specify after how many additional ensemble members the evaluation should be repeated.
 
-For example, the following command may be used for the incremental evaluation of a BOOMER model that consists of up to 1000 rules. The model is evaluated for the first time after 200 rules have been added. Subsequent evaluations are perfomed when the model comprises 400, 600, 800, and 1000 rules.
+For example, the following command may be used for the incremental evaluation of a BOOMER model that consists of up to 1000 rules. The model is evaluated for the first time after 200 rules have been added. Subsequent evaluations are performed when the model comprises 400, 600, 800, and 1000 rules.
 
 ````{tab} BOOMER
    ```text
