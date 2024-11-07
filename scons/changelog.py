@@ -295,6 +295,30 @@ def __update_changelog(release_type: ReleaseType, *changelog_files):
     __clear_changelogs(*changelog_files)
 
 
+def __get_latest_changelog() -> str:
+    changelog = ''
+    lines = __read_lines(CHANGELOG_FILE)
+    offset = 0
+
+    for offset, line in enumerate(lines):
+        if line.startswith(PREFIX_SUB_HEADER):
+            break
+
+    for line in lines[offset + 2:]:
+        if line.startswith(PREFIX_SUB_HEADER):
+            break
+
+        if line.startswith('```{'):
+            changelog += '***'
+        elif line.startswith('```'):
+            changelog = changelog.rstrip('\n')
+            changelog += '***\n'
+        else:
+            changelog += line
+
+    return changelog.rstrip('\n')
+
+
 def validate_changelog_bugfix(**_):
     """
     Validates the changelog file that lists bugfixes.
@@ -335,3 +359,10 @@ def update_changelog_bugfix(**_):
     Updates the project's changelog when releasing major updates.
     """
     __update_changelog(ReleaseType.PATCH, CHANGELOG_FILE_BUGFIX)
+
+
+def print_latest_changelog(**_):
+    """
+    Prints the changelog of the latest release.
+    """
+    print(__get_latest_changelog())
