@@ -39,7 +39,7 @@ The algorithm that is provided by this project currently supports the following 
 - **Rules can be constructed via a greedy search or a beam search.** The latter may help to improve the quality of individual rules.
 - **Sampling techniques and stratification methods** can be used for learning new rules on a subset of the available training examples, features, or output variables.
 - **Shrinkage (a.k.a. the learning rate) can be adjusted** for controlling the impact of individual rules on the overall ensemble.
-- **Fine-grained control over the specificity/generality of rules** is provided via hyper-parameters.
+- **Fine-grained control over the specificity/generality of rules** is provided via hyperparameters.
 - **Incremental reduced error pruning** can be used for removing overly specific conditions from rules and preventing overfitting.
 - **Post- and pre-pruning (a.k.a. early stopping)** allows to determine the optimal number of rules to be included in an ensemble.
 - **Sequential post-optimization** may help improving the predictive performance of a model by reconstructing each rule in the context of the other rules.
