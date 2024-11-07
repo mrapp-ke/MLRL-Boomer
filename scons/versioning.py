@@ -115,6 +115,13 @@ def get_current_version() -> Version:
     return __parse_version(__read_version_file(VERSION_FILE))
 
 
+def print_current_version(**_):
+    """
+    Prints the project's current version.
+    """
+    return print(str(get_current_version()))
+
+
 def increment_development_version(**_):
     """
     Increments the development version.
