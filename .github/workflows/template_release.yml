@@ -1,0 +1,39 @@
+---
+name: Publish release on GitHub
+on:
+  workflow_call:
+    inputs:
+      release_branch:
+        required: true
+        type: string
+      release_version:
+        required: true
+        type: string
+      changelog:
+        required: true
+        type: string
+    secrets:
+      token_app_id:
+        required: true
+      token_app_secret:
+        required: true
+jobs:
+  release:
+    name: Publish release on GitHub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate token
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.token_app_id }}
+          private-key: ${{ secrets.token_app_secret }}
+      - name: Publish release on GitHub
+        uses: softprops/action-gh-release@v2
+        with:
+          target_commitish: ${{ inputs.release_branch }}
+          name: Version ${{ inputs.release_version }}
+          tag_name: ${{ inputs.release_version }}
+          body: ${{ inputs.changelog }}
+          make_latest: true
+          token: ${{ steps.app-token.outputs.token }}
