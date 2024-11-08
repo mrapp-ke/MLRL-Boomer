@@ -23,6 +23,8 @@ PREFIX_DASH = '- '
 
 PREFIX_ASTERISK = '* '
 
+URL_DOCUMENTATION = 'https://mlrl-boomer.readthedocs.io/en/'
+
 CHANGELOG_FILE_MAIN = '.changelog-main.md'
 
 CHANGELOG_FILE_FEATURE = '.changelog-feature.md'
@@ -141,8 +143,8 @@ class Release:
     def __format_disclaimer(self) -> str:
         if [changeset for changeset in self.changesets if changeset.header.lower() == 'api changes']:
             return ('```{warning}\nThis release comes with API changes. For an updated overview of the available '
-                    + 'parameters and command line arguments, please refer to the '
-                    + '[documentation](https://documentation/en/' + str(self.version) + '/).\n```\n\n')
+                    + 'parameters and command line arguments, please refer to the ' + '[documentation]('
+                    + URL_DOCUMENTATION + str(self.version) + ').\n```\n\n')
         return ''
 
     def __str__(self) -> str:
