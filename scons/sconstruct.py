@@ -15,6 +15,7 @@ from code_style import check_cpp_code_style, check_md_code_style, check_python_c
 from compilation import compile_cpp, compile_cython, install_cpp, install_cython, setup_cpp, setup_cython
 from dependencies import check_dependency_versions, install_runtime_dependencies
 from documentation import apidoc_cpp, apidoc_cpp_tocfile, apidoc_python, apidoc_python_tocfile, doc
+from github_actions import check_github_actions
 from modules import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from packaging import build_python_wheel, install_python_wheels
 from testing import tests_cpp, tests_python
@@ -60,6 +61,7 @@ TARGET_NAME_FORMAT_CPP = TARGET_NAME_FORMAT + '_cpp'
 TARGET_NAME_FORMAT_MD = TARGET_NAME_FORMAT + '_md'
 TARGET_NAME_FORMAT_YAML = TARGET_NAME_FORMAT + '_yaml'
 TARGET_NAME_CHECK_DEPENDENCIES = 'check_dependencies'
+TARGET_NAME_CHECK_GITHUB_ACTIONS = 'check_github_actions'
 TARGET_NAME_VENV = 'venv'
 TARGET_NAME_COMPILE = 'compile'
 TARGET_NAME_COMPILE_CPP = TARGET_NAME_COMPILE + '_cpp'
@@ -85,8 +87,8 @@ VALID_TARGETS = {
     TARGET_NAME_UPDATE_CHANGELOG_MAIN, TARGET_NAME_PRINT_VERSION, TARGET_NAME_PRINT_LATEST_CHANGELOG,
     TARGET_NAME_TEST_FORMAT, TARGET_NAME_TEST_FORMAT_PYTHON, TARGET_NAME_TEST_FORMAT_CPP, TARGET_NAME_TEST_FORMAT_MD,
     TARGET_NAME_TEST_FORMAT_YAML, TARGET_NAME_FORMAT, TARGET_NAME_FORMAT_PYTHON, TARGET_NAME_FORMAT_CPP,
-    TARGET_NAME_FORMAT_MD, TARGET_NAME_FORMAT_YAML, TARGET_NAME_CHECK_DEPENDENCIES, TARGET_NAME_VENV,
-    TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP, TARGET_NAME_COMPILE_CYTHON, TARGET_NAME_INSTALL,
+    TARGET_NAME_FORMAT_MD, TARGET_NAME_FORMAT_YAML, TARGET_NAME_CHECK_DEPENDENCIES, TARGET_NAME_CHECK_GITHUB_ACTIONS,
+    TARGET_NAME_VENV, TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP, TARGET_NAME_COMPILE_CYTHON, TARGET_NAME_INSTALL,
     TARGET_NAME_INSTALL_CPP, TARGET_NAME_INSTALL_CYTHON, TARGET_NAME_BUILD_WHEELS, TARGET_NAME_INSTALL_WHEELS,
     TARGET_NAME_TESTS, TARGET_NAME_TESTS_CPP, TARGET_NAME_TESTS_PYTHON, TARGET_NAME_APIDOC, TARGET_NAME_APIDOC_CPP,
     TARGET_NAME_APIDOC_PYTHON, TARGET_NAME_DOC
@@ -147,6 +149,9 @@ env.Depends(target_format, [target_format_python, target_format_cpp, target_form
 
 # Define target for checking dependency versions...
 target_check_dependencies = __create_phony_target(env, TARGET_NAME_CHECK_DEPENDENCIES, action=check_dependency_versions)
+
+# Define target for checking the versions of GitHub Actions...
+target_check_github_actions = __create_phony_target(env, TARGET_NAME_CHECK_GITHUB_ACTIONS, action=check_github_actions)
 
 # Define target for installing runtime dependencies...
 target_venv = __create_phony_target(env, TARGET_NAME_VENV, action=install_runtime_dependencies)
