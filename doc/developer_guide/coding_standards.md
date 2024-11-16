@@ -27,6 +27,30 @@ The workflow definitions of individual CI jobs can be found in the directory [.g
 - `merge_feature.yml` and `merge_bugfix.yml` are used to merge changes that have been pushed to the feature or bugfix branch into downstream branches via pull requests (see {ref}`release-process`).
 - `merge_release.yml` is used to merge all changes included in a new release published on [GitHub](https://github.com/mrapp-ke/MLRL-Boomer/releases) into upstream branches and update the version numbers of these branches.
 
+The project's build system allows to automatically check for outdated GitHub Actions used in the workflows mentioned above. These are reusable building blocks provided by third-party developers. The following command prints a list of all outdated Actions:
+
+````{tab} Linux
+   ```text
+   ./build check_github_actions
+   ```
+````
+
+````{tab} macOS
+   ```text
+   ./build check_github_actions
+   ```
+````
+
+````{tab} Windows
+   ```
+   build.bat check_github_actions
+   ```
+````
+
+```{note}
+The above command queries the [GitHub API](https://docs.github.com/rest) for the latest version of relevant GitHub Actions. You can optionally specify an [API token](https://docs.github.com/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) to be used for these queries via the command line argument `GITHUB_TOKEN`. If no token is provided, repeated requests may be prohibited due to GitHub's rate limit.
+```
+
 (testing)=
 
 ## Testing the Code
