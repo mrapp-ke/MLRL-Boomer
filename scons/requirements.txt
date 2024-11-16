@@ -11,6 +11,6 @@ pylint >= 3.3, < 3.4
 setuptools
 scons >= 4.8, < 4.9
 unittest-xml-reporting >= 3.2, < 3.3
-wheel >= 0.44, < 0.45
+wheel >= 0.45, < 0.46
 yamlfix >= 1.17, < 1.18
-yapf >= 0.40, < 0.41
+yapf >= 0.43, < 0.44
