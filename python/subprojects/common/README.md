@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![PyPI version](https://badge.fury.io/py/mlrl-common.svg)](https://badge.fury.io/py/mlrl-common) [![Documentation Status](https://readthedocs.org/projects/mlrl-boomer/badge/?version=latest)](https://mlrl-boomer.readthedocs.io/en/latest/?badge=latest)
 
-**Important links:** [Documentation](https://mlrl-boomer.readthedocs.io/en/latest/) | [Issue Tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) | [Changelog](https://mlrl-boomer.readthedocs.io/en/latest/misc/CHANGELOG.html) | [Contributors](https://mlrl-boomer.readthedocs.io/en/latest/misc/CONTRIBUTORS.html) | [Code of Conduct](https://mlrl-boomer.readthedocs.io/en/latest/misc/CODE_OF_CONDUCT.html) | [License](https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html)
+**:link: Important links:** [Documentation](https://mlrl-boomer.readthedocs.io/en/latest/) | [Issue Tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) | [Changelog](https://mlrl-boomer.readthedocs.io/en/latest/misc/CHANGELOG.html) | [Contributors](https://mlrl-boomer.readthedocs.io/en/latest/misc/CONTRIBUTORS.html) | [Code of Conduct](https://mlrl-boomer.readthedocs.io/en/latest/misc/CODE_OF_CONDUCT.html) | [License](https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html)
 
 This software package provides common modules to be used by different types of **multi-output rule learning (MLRL)** algorithms that integrate with the popular [scikit-learn](https://scikit-learn.org) machine learning framework.
 
@@ -16,7 +16,7 @@ The library serves as the basis for the implementation of the following rule lea
 - **BOOMER (Gradient Boosted Multi-Output Rules)**: A state-of-the art algorithm that uses [gradient boosting](https://en.wikipedia.org/wiki/Gradient_boosting) to learn an ensemble of rules that is built with respect to a given multivariate loss function.
 - **Multi-label Separate-and-Conquer (SeCo) Rule Learning Algorithm**: A heuristic rule learning algorithm based on traditional rule learning techniques that are particularly well-suited for learning interpretable models.
 
-## Functionalities
+## :wrench: Functionalities
 
 This package follows a unified and modular framework for the implementation of different types of rule learning algorithms. In the following, we provide an overview of the individual modules an instantiation of the framework must implement.
 
@@ -73,6 +73,6 @@ Post-optimization methods can be employed to further improve the predictive perf
 
 A prediction algorithm is needed to derive predictions from the rules in a previously assembled model. As prediction methods heavily depend on the rule learning algorithm and problem domain at hand, no implementation is provided by this package out-of-the-box. However, it defines interfaces for the prediction of **scores, binary predictions, or probability estimates.**
 
-## License
+## :scroll: License
 
 This project is open source software licensed under the terms of the [MIT license](https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html). We welcome contributions to the project to enhance its functionality and make it more accessible to a broader audience. A frequently updated list of contributors is available [here](https://mlrl-boomer.readthedocs.io/en/latest/misc/CONTRIBUTORS.html).
