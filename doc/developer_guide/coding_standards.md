@@ -14,7 +14,7 @@ We make use of [GitHub Actions](https://docs.github.com/actions) as a [Continuou
 A track record of past runs can be found on GitHub in the [Actions](https://github.com/mrapp-ke/MLRL-Boomer/actions) tab.
 ```
 
-The workflow definitions of individual CI jobs can be found in the directory [.github/workflows/](https://github.com/mrapp-ke/MLRL-Boomer/tree/8ed4f36af5e449c5960a4676bc0a6a22de195979/.github/workflows). Currently, the following jobs are used in the project:
+The workflow definitions of individual CI jobs can be found in the directory `.github/workflows/`. Currently, the following jobs are used in the project:
 
 - `release.yml` defines a job for releasing a new version of the software developed by this project. The job can be triggered manually for one of the branches mentioned in the section {ref}`release-process`. It automatically updates the project's changelog and publishes a new release on GitHub.
 - `publish.yml` is used for publishing pre-built packages on [PyPI](https://pypi.org/) (see {ref}`installation`). For this purpose, the project is built from source for each of the target platforms and architectures, using virtualization in some cases. The job is run automatically when a new release was published on [GitHub](https://github.com/mrapp-ke/MLRL-Boomer/releases). It does also increment the project's major version number and merge the release branch into its upstream branches (see {ref}`release-process`).
@@ -47,8 +47,28 @@ The project's build system allows to automatically check for outdated GitHub Act
    ```
 ````
 
+Alternatively, the following command may be used to update the versions of outdated Actions automatically:
+
+````{tab} Linux
+   ```text
+   ./build update_github_actions
+   ```
+````
+
+````{tab} macOS
+   ```text
+   ./build update_github_actions
+   ```
+````
+
+````{tab} Windows
+   ```
+   build.bat update_github_actions
+   ```
+````
+
 ```{note}
-The above command queries the [GitHub API](https://docs.github.com/rest) for the latest version of relevant GitHub Actions. You can optionally specify an [API token](https://docs.github.com/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) to be used for these queries via the command line argument `GITHUB_TOKEN`. If no token is provided, repeated requests may be prohibited due to GitHub's rate limit.
+The above commands query the [GitHub API](https://docs.github.com/rest) for the latest version of relevant GitHub Actions. You can optionally specify an [API token](https://docs.github.com/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) to be used for these queries via the environment variable `GITHUB_TOKEN`. If no token is provided, repeated requests might fail due to GitHub's rate limit.
 ```
 
 (testing)=
