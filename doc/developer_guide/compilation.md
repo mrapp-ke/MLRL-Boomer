@@ -209,7 +209,7 @@ The shared libraries that have been created in the previous steps from the C++ s
 This should result in the compilation files, which were previously located in the `cpp/build/` directory, to be copied into the `cython/` subdirectories that are contained by each Python module (e.g., into the directory `python/subprojects/common/mlrl/common/cython/`).
 
 ```{tip}
-When shared libaries are built via {ref}`Continuous Integration <ci>` jobs, the resulting files for different platform are saved as [artifacts](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts) and can be downloaded as zip archives.
+When shared libaries are built via {ref}`Continuous Integration <ci>` jobs, the resulting files for different platform are saved as [artifacts](https://docs.github.com/actions/using-workflows/storing-workflow-data-as-artifacts) and can be downloaded as zip archives.
 ```
 
 ## Installing Extension Modules
