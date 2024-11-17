@@ -29,33 +29,55 @@ If you use the algorithm in a scientific publication, we would appreciate citati
 
 ## :wrench: Functionalities
 
-The algorithm that is provided by this project currently supports the following core functionalities for learning ensembles of boosted classification or regression rules:
+The algorithm that is provided by this project currently supports the following core functionalities for learning ensembles of boosted classification or regression rules.
 
-- **Decomposable or non-decomposable loss functions** can be minimized in expectation.
-- **L1 and L2 regularization** can be used.
-- **Single-output, partial, or complete heads** can be used by rules, i.e., they can predict for a single output, a subset of the available outputs, or all of them. Predicting for multiple outputs simultaneously enables to model local dependencies between them.
+### Deliberate Loss Optimization
+
+- **Decomposable or non-decomposable loss functions** can be optimized in expectation.
+- **$L_1$ and $L_2$ regularization** can be used.
+- **Shrinkage (a.k.a. the learning rate) can be adjusted** for controlling the impact of individual rules on the overall ensemble.
+
+### Different Prediction Strategies
+
 - **Various strategies for predicting scores, binary labels or probabilities** are available, depending on whether a classification or regression model is used.
 - **Isotonic regression models can be used to calibrate marginal and joint probabilities** predicted by a classification model.
+
+### Flexible Handling of Input Data
+
+- **Native support for numerical, ordinal, and nominal features** eliminates the need for pre-processing techniques such as one-hot encoding.
+- **Handling of missing feature values**, i.e., occurrences of *NaN* in the feature matrix, is implemented by the algorithm.
+
+### Fine-grained Control over Model Characteristics
+
 - **Rules can be constructed via a greedy search or a beam search.** The latter may help to improve the quality of individual rules.
-- **Sampling techniques and stratification methods** can be used for learning new rules on a subset of the available training examples, features, or output variables.
-- **Shrinkage (a.k.a. the learning rate) can be adjusted** for controlling the impact of individual rules on the overall ensemble.
+- **Single-output, partial, or complete heads** can be used by rules, i.e., they can predict for a single output, a subset of the available outputs, or all of them. Predicting for multiple outputs simultaneously enables to model local dependencies between them.
 - **Fine-grained control over the specificity/generality of rules** is provided via hyperparameters.
+
+### Support for Post-Optimization and Pruning
+
 - **Incremental reduced error pruning** can be used for removing overly specific conditions from rules and preventing overfitting.
 - **Post- and pre-pruning (a.k.a. early stopping)** allows to determine the optimal number of rules to be included in an ensemble.
 - **Sequential post-optimization** may help improving the predictive performance of a model by reconstructing each rule in the context of the other rules.
-- **Native support for numerical, ordinal, and nominal features** eliminates the need for pre-processing techniques such as one-hot encoding.
-- **Handling of missing feature values**, i.e., occurrences of NaN in the feature matrix, is implemented by the algorithm.
 
 ## :watch: Runtime and Memory Optimizations
 
-In addition, the following features that may speed up training or reduce the memory footprint are currently implemented:
+In addition to the features mentioned above, several techniques that may speed up training or reduce the memory footprint are currently implemented.
+
+### Approximation Techniques
 
 - **Unsupervised feature binning** can be used to speed up the evaluation of a rule's potential conditions when dealing with numerical features.
+- **Sampling techniques and stratification methods** can be used for learning new rules on a subset of the available training examples, features, or output variables.
 - **[Gradient-based label binning (GBLB)](https://arxiv.org/pdf/2106.11690.pdf)** can be used for assigning the labels included in a multi-label classification data set to a limited number of bins. This may speed up training significantly when minimizing a non-decomposable loss function using rules with partial or complete heads.
+
+### Sparse Data Structures
+
 - **Sparse feature matrices** can be used for training and prediction. This may speed up training significantly on some data sets.
 - **Sparse ground truth matrices** can be used for training. This may reduce the memory footprint in case of large data sets.
 - **Sparse prediction matrices** can be used for storing predicted labels. This may reduce the memory footprint in case of large data sets.
 - **Sparse matrices for storing gradients and Hessians** can be used if supported by the loss function. This may speed up training significantly on data sets with many output variables.
+
+### Parallelization
+
 - **Multi-threading** can be used for parallelizing the evaluation of a rule's potential refinements across several features, updating the gradients and Hessians of individual examples in parallel, or obtaining predictions for several examples in parallel.
 
 ## :books: Documentation
