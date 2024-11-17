@@ -14,7 +14,7 @@ We make use of [GitHub Actions](https://docs.github.com/actions) as a [Continuou
 A track record of past runs can be found on GitHub in the [Actions](https://github.com/mrapp-ke/MLRL-Boomer/actions) tab.
 ```
 
-The workflow definitions of individual CI jobs can be found in the directory [.github/workflows/](https://github.com/mrapp-ke/MLRL-Boomer/tree/8ed4f36af5e449c5960a4676bc0a6a22de195979/.github/workflows). Currently, the following jobs are used in the project:
+The workflow definitions of individual CI jobs can be found in the directory `.github/workflows/`. Currently, the following jobs are used in the project:
 
 - `release.yml` defines a job for releasing a new version of the software developed by this project. The job can be triggered manually for one of the branches mentioned in the section {ref}`release-process`. It automatically updates the project's changelog and publishes a new release on GitHub.
 - `publish.yml` is used for publishing pre-built packages on [PyPI](https://pypi.org/) (see {ref}`installation`). For this purpose, the project is built from source for each of the target platforms and architectures, using virtualization in some cases. The job is run automatically when a new release was published on [GitHub](https://github.com/mrapp-ke/MLRL-Boomer/releases). It does also increment the project's major version number and merge the release branch into its upstream branches (see {ref}`release-process`).
