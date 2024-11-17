@@ -8,7 +8,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![PyPI version](https://badge.fury.io/py/mlrl-boomer.svg)](https://badge.fury.io/py/mlrl-boomer) [![Documentation Status](https://readthedocs.org/projects/mlrl-boomer/badge/?version=latest)](https://mlrl-boomer.readthedocs.io/en/latest/?badge=latest) [![X URL](https://img.shields.io/twitter/url?label=Follow&style=social&url=https%3A%2F%2Ftwitter.com%2FBOOMER_ML)](https://twitter.com/BOOMER_ML)
 
-**Important links:** [Documentation](https://mlrl-boomer.readthedocs.io/en/latest/) | [Issue Tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) | [Changelog](https://mlrl-boomer.readthedocs.io/en/latest/misc/CHANGELOG.html) | [Contributors](https://mlrl-boomer.readthedocs.io/en/latest/misc/CONTRIBUTORS.html) | [Code of Conduct](https://mlrl-boomer.readthedocs.io/en/latest/misc/CODE_OF_CONDUCT.html) | [License](https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html)
+**:link: Important links:** [Documentation](https://mlrl-boomer.readthedocs.io/en/latest/) | [Issue Tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) | [Changelog](https://mlrl-boomer.readthedocs.io/en/latest/misc/CHANGELOG.html) | [Contributors](https://mlrl-boomer.readthedocs.io/en/latest/misc/CONTRIBUTORS.html) | [Code of Conduct](https://mlrl-boomer.readthedocs.io/en/latest/misc/CODE_OF_CONDUCT.html) | [License](https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html)
 
 This software package provides the official implementation of **BOOMER - an algorithm for learning gradient boosted multi-output rules** that uses [gradient boosting](https://en.wikipedia.org/wiki/Gradient_boosting) for learning an ensemble of rules that is built with respect to a specific multivariate loss function. It integrates with the popular [scikit-learn](https://scikit-learn.org) machine learning framework.
 
@@ -19,7 +19,7 @@ The problem domains addressed by this algorithm include the following:
 
 To provide a versatile tool for different use cases, great emphasis is put on the *efficiency* of the implementation. Moreover, to ensure its *flexibility*, it is designed in a modular fashion and can therefore easily be adjusted to different requirements. This modular approach enables implementing different kind of rule learning algorithms. For example, this project does also provide a [Separate-and-Conquer (SeCo) algorithm](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/seco/index.html) based on traditional rule learning techniques that are particularly well-suited for learning interpretable models.
 
-## References
+## :book: References
 
 The algorithm was first published in the following [paper](https://doi.org/10.1007/978-3-030-67664-3_8). A preprint version is publicly available [here](https://arxiv.org/pdf/2006.13346.pdf).
 
@@ -27,7 +27,7 @@ The algorithm was first published in the following [paper](https://doi.org/10.10
 
 If you use the algorithm in a scientific publication, we would appreciate citations to the mentioned paper. An overview of publications that are concerned with the BOOMER algorithm, together with information on how to cite them, can be found in the section [References](https://mlrl-boomer.readthedocs.io/en/latest/misc/references.html) of the documentation.
 
-## Functionalities
+## :wrench: Functionalities
 
 The algorithm that is provided by this project currently supports the following core functionalities for learning ensembles of boosted classification or regression rules:
 
@@ -46,7 +46,7 @@ The algorithm that is provided by this project currently supports the following 
 - **Native support for numerical, ordinal, and nominal features** eliminates the need for pre-processing techniques such as one-hot encoding.
 - **Handling of missing feature values**, i.e., occurrences of NaN in the feature matrix, is implemented by the algorithm.
 
-## Runtime and Memory Optimizations
+## :watch: Runtime and Memory Optimizations
 
 In addition, the following features that may speed up training or reduce the memory footprint are currently implemented:
 
@@ -58,7 +58,7 @@ In addition, the following features that may speed up training or reduce the mem
 - **Sparse matrices for storing gradients and Hessians** can be used if supported by the loss function. This may speed up training significantly on data sets with many output variables.
 - **Multi-threading** can be used for parallelizing the evaluation of a rule's potential refinements across several features, updating the gradients and Hessians of individual examples in parallel, or obtaining predictions for several examples in parallel.
 
-## Documentation
+## :books: Documentation
 
 An extensive user guide, as well as an API documentation for developers, is available at [https://mlrl-boomer.readthedocs.io](https://mlrl-boomer.readthedocs.io/en/latest/). If you are new to the project, you probably want to read about the following topics:
 
@@ -70,7 +70,7 @@ A collection of benchmark datasets that are compatible with the algorithm are pr
 
 For an overview of changes and new features that have been included in past releases, please refer to the [changelog](https://mlrl-boomer.readthedocs.io/en/latest/misc/CHANGELOG.html).
 
-## License
+## :scroll: License
 
 This project is open source software licensed under the terms of the [MIT license](https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html). We welcome contributions to the project to enhance its functionality and make it more accessible to a broader audience. A frequently updated list of contributors is available [here](https://mlrl-boomer.readthedocs.io/en/latest/misc/CONTRIBUTORS.html).
 
