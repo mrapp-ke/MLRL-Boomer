@@ -6,7 +6,7 @@
 
 This software package provides **utilities for training and evaluating machine learning algorithms**, including classification and regression problems.
 
-## Functionalities
+## :wrench: Functionalities
 
 Most notably, the package includes a command line API that allows configuring and running machine learning algorithms. For example, the [BOOMER algorithm](https://mlrl-boomer.readthedocs.io/en/stable/user_guide/boosting/index.html) integrates with the command line API out-of-the-box. For [using other algorithms](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/testbed/runnables.html) only a few lines of Python code are necessary.
 
@@ -26,6 +26,6 @@ The command line API allows applying machine learning algorithms to different da
 - **Models can be saved on disk** in order to be reused by future experiments.
 - **Algorithmic parameters can be read from configuration files** instead of providing them via command line arguments. When providing parameters via the command line, corresponding configuration files can automatically be saved on disk.
 
-## License
+## :scroll: License
 
 This project is open source software licensed under the terms of the [MIT license](https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html). We welcome contributions to the project to enhance its functionality and make it more accessible to a broader audience. A frequently updated list of contributors is available [here](https://mlrl-boomer.readthedocs.io/en/latest/misc/CONTRIBUTORS.html).
