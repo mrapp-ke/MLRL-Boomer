@@ -196,12 +196,12 @@ def __determine_latest_action_versions(*workflows: Workflow) -> Set[Workflow]:
 
     for workflow in workflows:
         for action in workflow.actions:
-            latest_version = version_cache.get(action)
+            latest_version = version_cache.get(action.name)
 
             if not latest_version:
                 print('Checking version of GitHub Action "' + action.name + '"...')
                 latest_version = __query_latest_action_version(action, github_token=github_token)
-                version_cache[action] = latest_version
+                version_cache[action.name] = latest_version
 
             action.latest_version = latest_version
 
