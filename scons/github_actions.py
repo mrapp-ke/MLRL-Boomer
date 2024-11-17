@@ -234,3 +234,10 @@ def check_github_actions(**_):
     workflow_files = __get_github_workflow_files(workflow_directory)
     workflows = __determine_latest_action_versions(*__parse_workflows(*workflow_files))
     __print_outdated_actions(*workflows)
+
+
+def update_github_actions(**_):
+    """
+    Updates the versions of outdated GitHub Actions in the project's workflows.
+    """
+    print('Updating versions of outdated GitHub Actions...')
