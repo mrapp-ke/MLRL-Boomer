@@ -47,8 +47,28 @@ The project's build system allows to automatically check for outdated GitHub Act
    ```
 ````
 
+Alternatively, the following command may be used to update the versions of outdated Actions automatically:
+
+````{tab} Linux
+   ```text
+   ./build update_github_actions
+   ```
+````
+
+````{tab} macOS
+   ```text
+   ./build update_github_actions
+   ```
+````
+
+````{tab} Windows
+   ```
+   build.bat update_github_actions
+   ```
+````
+
 ```{note}
-The above command queries the [GitHub API](https://docs.github.com/rest) for the latest version of relevant GitHub Actions. You can optionally specify an [API token](https://docs.github.com/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) to be used for these queries via the command line argument `GITHUB_TOKEN`. If no token is provided, repeated requests may be prohibited due to GitHub's rate limit.
+The above commands query the [GitHub API](https://docs.github.com/rest) for the latest version of relevant GitHub Actions. You can optionally specify an [API token](https://docs.github.com/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) to be used for these queries via the environment variable `GITHUB_TOKEN`. If no token is provided, repeated requests might fail due to GitHub's rate limit.
 ```
 
 (testing)=
