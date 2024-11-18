@@ -4,73 +4,6 @@
 
 As it is common for Open Source projects, where everyone is invited to contribute, we rely on coding standards to ensure that new code works as expected, does not break existing functionality, and adheres to best practices we agreed on. These coding standards are described in the following.
 
-(ci)=
-
-## Continuous Integration
-
-We make use of [GitHub Actions](https://docs.github.com/actions) as a [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration) (CI) server for running predefined jobs, such as automated tests, in a controlled environment. Whenever certain parts of the project's repository have changed, relevant jobs are automatically executed.
-
-```{tip}
-A track record of past runs can be found on GitHub in the [Actions](https://github.com/mrapp-ke/MLRL-Boomer/actions) tab.
-```
-
-The workflow definitions of individual CI jobs can be found in the directory `.github/workflows/`. Currently, the following jobs are used in the project:
-
-- `release.yml` defines a job for releasing a new version of the software developed by this project. The job can be triggered manually for one of the branches mentioned in the section {ref}`release-process`. It automatically updates the project's changelog and publishes a new release on GitHub.
-- `publish.yml` is used for publishing pre-built packages on [PyPI](https://pypi.org/) (see {ref}`installation`). For this purpose, the project is built from source for each of the target platforms and architectures, using virtualization in some cases. The job is run automatically when a new release was published on [GitHub](https://github.com/mrapp-ke/MLRL-Boomer/releases). It does also increment the project's major version number and merge the release branch into its upstream branches (see {ref}`release-process`).
-- `publish_development.yml` publishes development versions of packages on [Test-PyPI](https://test.pypi.org/) whenever changes to the project's source code have been pushed to the main branch. The packages built by each of these runs are also saved as [artifacts](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts) and can be downloaded as zip archives.
-- `test_publish.yml` ensures that the packages to be released for different architectures and Python versions can be built. The job is run for pull requests that modify relevant parts of the source code.
-- `test_build.yml` builds the project for each of the supported target platforms, i.e., Linux, Windows, and macOS (see {ref}`compilation`). In the Linux environment, this job does also execute all available unit and integration tests (see {ref}`testing`). It is run for pull requests whenever relevant parts of the project's source code have been modified.
-- `test_doc.yml` generates the latest documentation (see {ref}`documentation`) whenever relevant parts of the source code are affected by a pull request.
-- `test_format.yml` ensures that all source files in the project adhere to our coding style guidelines (see {ref}`code-style`). This job is run automatically for pull requests whenever they include any changes affecting the relevant source files.
-- `test_changelog.yml` ensures that all changelog files in the project adhere to the structure that is necessary to be processed automatically when publishing a new release. This job is run for pull requests if they modify one of the changelog files.
-- `merge_feature.yml` and `merge_bugfix.yml` are used to merge changes that have been pushed to the feature or bugfix branch into downstream branches via pull requests (see {ref}`release-process`).
-- `merge_release.yml` is used to merge all changes included in a new release published on [GitHub](https://github.com/mrapp-ke/MLRL-Boomer/releases) into upstream branches and update the version numbers of these branches.
-
-The project's build system allows to automatically check for outdated GitHub Actions used in the workflows mentioned above. These are reusable building blocks provided by third-party developers. The following command prints a list of all outdated Actions:
-
-````{tab} Linux
-   ```text
-   ./build check_github_actions
-   ```
-````
-
-````{tab} macOS
-   ```text
-   ./build check_github_actions
-   ```
-````
-
-````{tab} Windows
-   ```
-   build.bat check_github_actions
-   ```
-````
-
-Alternatively, the following command may be used to update the versions of outdated Actions automatically:
-
-````{tab} Linux
-   ```text
-   ./build update_github_actions
-   ```
-````
-
-````{tab} macOS
-   ```text
-   ./build update_github_actions
-   ```
-````
-
-````{tab} Windows
-   ```
-   build.bat update_github_actions
-   ```
-````
-
-```{note}
-The above commands query the [GitHub API](https://docs.github.com/rest) for the latest version of relevant GitHub Actions. You can optionally specify an [API token](https://docs.github.com/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) to be used for these queries via the environment variable `GITHUB_TOKEN`. If no token is provided, repeated requests might fail due to GitHub's rate limit.
-```
-
 (testing)=
 
 ## Testing the Code
@@ -223,11 +156,23 @@ To enable releasing new major, feature, or bugfix releases at any time, we maint
 
 We do not allow directly pushing to the above branches. Instead, all changes must be submitted via pull requests and require certain checks to pass.
 
-Once modifications to one of the branches have been merged, {ref}`Continuous Integration <ci>` jobs are used to automatically update downstream branches via pull requests. If all checks for such pull requests are successful, they are merged automatically. If there are any merge conflicts, they must be resolved manually. Following this procedure, changes to the feature branch are merged into the main branch (see `merge_feature.yml`), whereas changes to the bugfix branch are first merged into the feature branch and then into the main branch (see `merge_bugfix.yml`).
+(downstream-merges)=
 
-We use a {ref}`Continuous Integration <ci>` job for triggering a new release, including the changes of one of the branches mentioned above (see `release.yml`). Depending on the release branch, the job automatically collects the corresponding changelog entries from the files `.changelog-main.md`, `.changelog-feature.md`, and `.changelog-bugfix.md` and updates the file `CHANGELOG.md` in the project's root directory accordingly. Afterward, it will publish the new release on GitHub, which will in turn trigger the publishing of pre-built packages (see `publish.yml`).
+### Downstream Merges
 
-Whenever a new release has been published, the release branch is merged into the upstream branches (see `merge_release.yml`), i.e., major releases result in the feature and bugfix branches being updated, whereas minor releases result in the bugfix branch being updated. The version of the release branch and the affected branches are updated accordingly. The file `.version` in the project's root directory specifies the version of each of these branches. Similarly, the file `.version-dev` keeps track of the version number used for development releases (see `publish_development.yml`).
+Once modifications to one of the branches have been merged, {ref}`Continuous Integration <ci>` jobs are used to automatically update downstream branches via pull requests. If all checks for such pull requests are successful, they are merged automatically. If there are any merge conflicts, they must be resolved manually. Following this procedure, changes to the feature branch are merged into the main branch, whereas changes to the bugfix branch are first merged into the feature branch and then into the main branch (see description of `merge_feature.yml` and `merge_bugfix.yml` in {ref}`ci-releases`).
+
+(triggering-releases)=
+
+### Triggering Releases
+
+We use a {ref}`Continuous Integration <ci>` job for triggering a new release, including the changes of one of the branches mentioned above (see description of `release.yml` in {ref}`ci-releases`). Depending on the release branch, the job automatically collects the corresponding changelog entries from the files `.changelog-main.md`, `.changelog-feature.md`, and `.changelog-bugfix.md` and updates the file `CHANGELOG.md` in the project's root directory accordingly. Afterward, it will publish the new release on GitHub, which will in turn trigger the publishing of pre-built packages (see description of `publish.yml` in {ref}`ci-publishing`).
+
+(upstream-merges)=
+
+### Upstream Merges
+
+Whenever a new release has been published, the release branch is merged into the upstream branches (see description of `merge_release.yml` in {ref}`ci-releases`), i.e., major releases result in the feature and bugfix branches being updated, whereas minor releases result in the bugfix branch being updated. The version of the release branch and the affected branches are updated accordingly. The file `.version` in the project's root directory specifies the version of each of these branches. Similarly, the file `.version-dev` keeps track of the version number used for development releases (see description of `publish_development.yml` in {ref}`ci-publishing`).
 
 (dependencies)=
 
@@ -235,9 +180,11 @@ Whenever a new release has been published, the release branch is merged into the
 
 Adding dependencies to a software project always comes at a cost. Maintainers need to continuously test their software as new versions of dependencies are released and major changes in their APIs may break existing functionality. For this reason, we try to keep the number of dependencies at a minimum.
 
-That being said, we still rely on several dependencies for compiling our source code, generating the documentation, or running the algorithms provided by this project. When using pre-built packages from [PyPI](https://pypi.org/project/mlrl-boomer/), there is no need to care about these dependencies, as they are already included in the packages. When {ref}`building from source <compilation>`, dependencies are automatically installed by the build system once they are needed, unless explicitly stated in the documentation.
+That being said, we still rely on several dependencies for Continuous Integration, compiling our source code, generating the documentation, or running the algorithms provided by this project. When using pre-built packages from [PyPI](https://pypi.org/project/mlrl-boomer/), there is no need to care about these dependencies, as they are already included in the packages. When {ref}`building from source <compilation>`, dependencies are automatically installed by the build system once they are needed, unless explicitly stated in the documentation.
 
-The dependencies that are required by different aspects of the project, such as the build system, the Python code, or the C++ code, are defined in separate `requirements.txt` files. For dependencies that use [Semantic Versioning](https://semver.org/), we specify the earliest and latest version we support. For other dependencies, we demand for a specific version number. This strives to achieve a balance between flexibility for users and comfort for developers. On the one hand, supporting a range of versions provides more freedom to users, as our packages can more flexibly be used together with other ones, relying on the same dependencies. On the other hand, the project's maintainers must not manually update dependencies that have a minor release, while still requiring manual intervention for major updates.
+### Python Dependencies
+
+Python dependencies that are required by different aspects of the project, such as the build system, the documentation, or our own Python code, are defined in separate `requirements.txt` files. For dependencies that use [Semantic Versioning](https://semver.org/), we specify the earliest and latest version we support. For other dependencies, we demand for a specific version number. This strives to achieve a balance between flexibility for users and comfort for developers. On the one hand, supporting a range of versions provides more freedom to users, as our packages can more flexibly be used together with other ones, relying on the same dependencies. On the other hand, the project's maintainers must not manually update dependencies that have a minor release, while still requiring manual intervention for major updates.
 
 To ease the life of developers, the following command provided by the project's build system may be used to check for outdated dependencies:
 
@@ -258,3 +205,51 @@ To ease the life of developers, the following command provided by the project's 
    build.bat check_dependencies
    ```
 ````
+
+### GitHub Actions
+
+Our {ref}`Continuous Integration <ci>` (CI) jobs heavily rely on so-called [Actions](https://github.com/marketplace?type=actions), which are reusable building blocks provided by third-party developers. As with all dependencies, updates to these Actions may introduce breaking changes. To reduce the risk of updates breaking our CI jobs, we pin the Actions to a certain version. Usually, we only restrict the major version required by a job, rather than specifying a specific version. This allows minor updates, which are less likely to cause problems, to take effect without manual intervention.
+
+The project's build system allows to automatically check for outdated Actions used by the project's CI jobs. The following command prints a list of all outdated Actions:
+
+````{tab} Linux
+   ```text
+   ./build check_github_actions
+   ```
+````
+
+````{tab} macOS
+   ```text
+   ./build check_github_actions
+   ```
+````
+
+````{tab} Windows
+   ```
+   build.bat check_github_actions
+   ```
+````
+
+Alternatively, the following command may be used to update the versions of outdated Actions automatically:
+
+````{tab} Linux
+   ```text
+   ./build update_github_actions
+   ```
+````
+
+````{tab} macOS
+   ```text
+   ./build update_github_actions
+   ```
+````
+
+````{tab} Windows
+   ```
+   build.bat update_github_actions
+   ```
+````
+
+```{note}
+The above commands query the [GitHub API](https://docs.github.com/rest) for the latest version of relevant GitHub Actions. You can optionally specify an [API token](https://docs.github.com/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) to be used for these queries via the environment variable `GITHUB_TOKEN`. If no token is provided, repeated requests might fail due to GitHub's rate limit.
+```
