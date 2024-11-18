@@ -174,7 +174,7 @@ Whenever a new release has been published, the release branch is merged into the
 
 Adding dependencies to a software project always comes at a cost. Maintainers need to continuously test their software as new versions of dependencies are released and major changes in their APIs may break existing functionality. For this reason, we try to keep the number of dependencies at a minimum.
 
-That being said, we still rely on several dependencies for continuous integration, compiling our source code, generating the documentation, or running the algorithms provided by this project. When using pre-built packages from [PyPI](https://pypi.org/project/mlrl-boomer/), there is no need to care about these dependencies, as they are already included in the packages. When {ref}`building from source <compilation>`, dependencies are automatically installed by the build system once they are needed, unless explicitly stated in the documentation.
+That being said, we still rely on several dependencies for Continuous Integration, compiling our source code, generating the documentation, or running the algorithms provided by this project. When using pre-built packages from [PyPI](https://pypi.org/project/mlrl-boomer/), there is no need to care about these dependencies, as they are already included in the packages. When {ref}`building from source <compilation>`, dependencies are automatically installed by the build system once they are needed, unless explicitly stated in the documentation.
 
 ### Python Dependencies
 
