@@ -46,8 +46,8 @@ A bugfix release that fixes the following issues.
 A bugfix release that comes with the following changes.
 
 - If the sparse value of a feature matrix is provided to the Python API, it is now properly taken into account when converting into a dense matrix.
-- The C++ code is now checked for common issues by applying `cpplint` via continuous integration.
-- The styling of YAML files is now verified by applying `yamlfix` via continuous integration.
+- The C++ code is now checked for common issues by applying `cpplint` via Continuous Integration.
+- The styling of YAML files is now verified by applying `yamlfix` via Continuous Integration.
 
 ## Version 0.10.0 (May 5th, 2024)
 
@@ -87,14 +87,14 @@ This release comes with several API changes. For an updated overview of the avai
 - A build option that allows disabling multi-threading support via OpenMP at compile-time has been added.
 - The groundwork for GPU support was laid. It can be disabled at compile-time via a build option.
 - Added support for unit testing the project's C++ code. Compilation of the tests can be disabled via a build option.
-- The Python code is now checked for common issues by applying `pylint` via continuous integration.
+- The Python code is now checked for common issues by applying `pylint` via Continuous Integration.
 - The Makefile has been replaced with wrapper scripts triggering a [SCons](https://scons.org/) build.
-- Development versions of wheel packages are now regularly built via continuous integration, uploaded as artifacts, and published on [Test-PyPI](https://test.pypi.org/).
+- Development versions of wheel packages are now regularly built via Continuous Integration, uploaded as artifacts, and published on [Test-PyPI](https://test.pypi.org/).
 - Continuous integration is now used to maintain separate branches for major, feature, and bugfix releases and keep them up-to-date.
-- The runtime of continuous integration jobs has been optimized by running individual steps only if necessary, caching files across subsequent runs, and making use of parallelization.
-- When tests are run via continuous integration, a summary of the test results is now added to merge requests and GitHub workflows.
+- The runtime of Continuous Integration jobs has been optimized by running individual steps only if necessary, caching files across subsequent runs, and making use of parallelization.
+- When tests are run via Continuous Integration, a summary of the test results is now added to merge requests and GitHub workflows.
 - Markdown files are now used for writing the documentation.
-- A consistent style is now enforced for Markdown files by applying the tool `mdformat` via continuous integration.
+- A consistent style is now enforced for Markdown files by applying the tool `mdformat` via Continuous Integration.
 - C++ 17 or newer is now required for compiling the project.
 
 ## Version 0.9.0 (Jul. 2nd, 2023)
@@ -150,8 +150,8 @@ This release comes with several API changes. For an updated overview of the avai
 ### Quality-of-Life Improvements
 
 - Continuous integration is now used to test the most common functionalities of the BOOMER algorithm and the corresponding command line API.
-- Successful generation of the documentation is now tested via continuous integration.
-- Style definitions for Python and C++ code are now enforced by applying the tools `clang-format`, `yapf`, and `isort` via continuous integration.
+- Successful generation of the documentation is now tested via Continuous Integration.
+- Style definitions for Python and C++ code are now enforced by applying the tools `clang-format`, `yapf`, and `isort` via Continuous Integration.
 
 ## Version 0.8.2 (Apr. 11th, 2022)
 
