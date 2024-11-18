@@ -40,7 +40,7 @@ jobs:
         with:
           platforms: all
       - name: Build package
-        uses: pypa/cibuildwheel@v2.17
+        uses: pypa/cibuildwheel@v2.21
         env:
           CIBW_BEFORE_BUILD_LINUX: ./build --clean && SUBPROJECTS=${{ inputs.subproject }} TEST_SUPPORT=disabled GPU_SUPPORT=disabled
             ./build install
