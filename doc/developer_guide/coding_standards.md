@@ -174,9 +174,11 @@ Whenever a new release has been published, the release branch is merged into the
 
 Adding dependencies to a software project always comes at a cost. Maintainers need to continuously test their software as new versions of dependencies are released and major changes in their APIs may break existing functionality. For this reason, we try to keep the number of dependencies at a minimum.
 
-That being said, we still rely on several dependencies for compiling our source code, generating the documentation, or running the algorithms provided by this project. When using pre-built packages from [PyPI](https://pypi.org/project/mlrl-boomer/), there is no need to care about these dependencies, as they are already included in the packages. When {ref}`building from source <compilation>`, dependencies are automatically installed by the build system once they are needed, unless explicitly stated in the documentation.
+That being said, we still rely on several dependencies for continuous integration, compiling our source code, generating the documentation, or running the algorithms provided by this project. When using pre-built packages from [PyPI](https://pypi.org/project/mlrl-boomer/), there is no need to care about these dependencies, as they are already included in the packages. When {ref}`building from source <compilation>`, dependencies are automatically installed by the build system once they are needed, unless explicitly stated in the documentation.
 
-The dependencies that are required by different aspects of the project, such as the build system, the Python code, or the C++ code, are defined in separate `requirements.txt` files. For dependencies that use [Semantic Versioning](https://semver.org/), we specify the earliest and latest version we support. For other dependencies, we demand for a specific version number. This strives to achieve a balance between flexibility for users and comfort for developers. On the one hand, supporting a range of versions provides more freedom to users, as our packages can more flexibly be used together with other ones, relying on the same dependencies. On the other hand, the project's maintainers must not manually update dependencies that have a minor release, while still requiring manual intervention for major updates.
+### Python Dependencies
+
+Python dependencies that are required by different aspects of the project, such as the build system, the documentation, or our own Python code, are defined in separate `requirements.txt` files. For dependencies that use [Semantic Versioning](https://semver.org/), we specify the earliest and latest version we support. For other dependencies, we demand for a specific version number. This strives to achieve a balance between flexibility for users and comfort for developers. On the one hand, supporting a range of versions provides more freedom to users, as our packages can more flexibly be used together with other ones, relying on the same dependencies. On the other hand, the project's maintainers must not manually update dependencies that have a minor release, while still requiring manual intervention for major updates.
 
 To ease the life of developers, the following command provided by the project's build system may be used to check for outdated dependencies:
 
@@ -197,3 +199,51 @@ To ease the life of developers, the following command provided by the project's 
    build.bat check_dependencies
    ```
 ````
+
+### GitHub Actions
+
+Our {ref}`Continuous Integration <ci>` (CI) jobs heavily rely on so-called [Actions](https://github.com/marketplace?type=actions), which are reusable building blocks provided by third-party developers. As with all dependencies, updates to these Actions may introduce breaking changes. To reduce the risk of updates breaking our CI jobs, we pin the Actions to a certain version. Usually, we only restrict the major version required by a job, rather than specifying a specific version. This allows minor updates, which are less likely to cause problems, to take effect without manual intervention.
+
+The project's build system allows to automatically check for outdated Actions used by the project's CI jobs. The following command prints a list of all outdated Actions:
+
+````{tab} Linux
+   ```text
+   ./build check_github_actions
+   ```
+````
+
+````{tab} macOS
+   ```text
+   ./build check_github_actions
+   ```
+````
+
+````{tab} Windows
+   ```
+   build.bat check_github_actions
+   ```
+````
+
+Alternatively, the following command may be used to update the versions of outdated Actions automatically:
+
+````{tab} Linux
+   ```text
+   ./build update_github_actions
+   ```
+````
+
+````{tab} macOS
+   ```text
+   ./build update_github_actions
+   ```
+````
+
+````{tab} Windows
+   ```
+   build.bat update_github_actions
+   ```
+````
+
+```{note}
+The above commands query the [GitHub API](https://docs.github.com/rest) for the latest version of relevant GitHub Actions. You can optionally specify an [API token](https://docs.github.com/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) to be used for these queries via the environment variable `GITHUB_TOKEN`. If no token is provided, repeated requests might fail due to GitHub's rate limit.
+```
