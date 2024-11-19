@@ -23,11 +23,13 @@ namespace boosting {
         public:
 
             /**
-             * @param numGradients The number of gradients in the vector
-             * @param init         True, if all gradients and Hessians in the vector should be initialized with zero,
-             *                     false otherwise
+             * @param view          A reference to an object of type `DenseNonDecomposableStatisticView`
+             * @param numGradients  The number of gradients in the vector
+             * @param init          True, if all gradients and Hessians in the vector should be initialized with zero,
+             *                      false otherwise
              */
-            DenseNonDecomposableStatisticVector(uint32 numGradients, bool init = false);
+            DenseNonDecomposableStatisticVector(const DenseNonDecomposableStatisticView& view, uint32 numGradients,
+                                                bool init = false);
 
             /**
              * @param other A reference to an object of type `DenseNonDecomposableStatisticVector` to be copied

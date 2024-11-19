@@ -12,6 +12,7 @@ cython_module_names = [
     'post_processor',
     'prediction',
     'probability_calibration',
+    'quantization',
     'regularization'
 ]
 

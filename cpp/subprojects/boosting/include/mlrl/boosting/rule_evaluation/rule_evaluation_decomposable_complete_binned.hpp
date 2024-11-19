@@ -44,6 +44,14 @@ namespace boosting {
             std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>> create(
               const DenseDecomposableStatisticVector& statisticVector,
               const PartialIndexVector& indexVector) const override;
+
+            std::unique_ptr<IRuleEvaluation<BitDecomposableStatisticVector>> create(
+              const BitDecomposableStatisticVector& statisticVector,
+              const CompleteIndexVector& indexVector) const override;
+
+            std::unique_ptr<IRuleEvaluation<BitDecomposableStatisticVector>> create(
+              const BitDecomposableStatisticVector& statisticVector,
+              const PartialIndexVector& indexVector) const override;
     };
 
 }

@@ -52,29 +52,31 @@ class MLRLCOMMON_API IRuleList : public IRuleModel {
          * Invokes some of the given visitor functions, depending on which ones are able to handle the bodies and heads
          * of all rules that are contained in this model, including the default rule, if available.
          *
-         * @param emptyBodyVisitor          The visitor function for handling objects of the type `EmptyBody`
-         * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
-         * @param completeHeadVisitor       The visitor function for handling objects of the type `CompleteHead`
-         * @param partialHeadVisitor        The visitor function for handling objects of the type `PartialHead`
+         * @param emptyBodyVisitor          An optional visitor function for handling objects of the type `EmptyBody`
+         * @param conjunctiveBodyVisitor    An optional visitor function for handling objects of the type
+         *                                  `ConjunctiveBody`
+         * @param completeHeadVisitor       An optional visitor function for handling objects of the type `CompleteHead`
+         * @param partialHeadVisitor        An optional visitor function for handling objects of the type `PartialHead`
          */
-        virtual void visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
-                           IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                           IHead::CompleteHeadVisitor completeHeadVisitor,
-                           IHead::PartialHeadVisitor partialHeadVisitor) const = 0;
+        virtual void visit(std::optional<IBody::EmptyBodyVisitor> emptyBodyVisitor,
+                           std::optional<IBody::ConjunctiveBodyVisitor> conjunctiveBodyVisitor,
+                           std::optional<IHead::CompleteHeadVisitor> completeHeadVisitor,
+                           std::optional<IHead::PartialHeadVisitor> partialHeadVisitor) const = 0;
 
         /**
          * Invokes some of the given visitor functions, depending on which ones are able to handle the bodies and heads
          * of all used rules that are contained in this model, including the default rule, if available.
          *
-         * @param emptyBodyVisitor          The visitor function for handling objects of the type `EmptyBody`
-         * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
-         * @param completeHeadVisitor       The visitor function for handling objects of the type `CompleteHead`
-         * @param partialHeadVisitor        The visitor function for handling objects of the type `PartialHead`
+         * @param emptyBodyVisitor          An optional visitor function for handling objects of the type `EmptyBody`
+         * @param conjunctiveBodyVisitor    An optional visitor function for handling objects of the type
+         *                                  `ConjunctiveBody`
+         * @param completeHeadVisitor       An optional visitor function for handling objects of the type `CompleteHead`
+         * @param partialHeadVisitor        An optional visitor function for handling objects of the type `PartialHead`
          */
-        virtual void visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor,
-                               IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                               IHead::CompleteHeadVisitor completeHeadVisitor,
-                               IHead::PartialHeadVisitor partialHeadVisitor) const = 0;
+        virtual void visitUsed(std::optional<IBody::EmptyBodyVisitor> emptyBodyVisitor,
+                               std::optional<IBody::ConjunctiveBodyVisitor> conjunctiveBodyVisitor,
+                               std::optional<IHead::CompleteHeadVisitor> completeHeadVisitor,
+                               std::optional<IHead::PartialHeadVisitor> partialHeadVisitor) const = 0;
 };
 
 /**
@@ -120,15 +122,19 @@ class RuleList final : public IRuleList {
                  * Invokes some of the given visitor functions, depending on which ones are able to handle the rule's
                  * particular type of body and head.
                  *
-                 * @param emptyBodyVisitor          The visitor function for handling objects of type `EmptyBody`
-                 * @param conjunctiveBodyVisitor    The visitor function for handling objects of type `ConjunctiveBody`
-                 * @param completeHeadVisitor       The visitor function for handling objects of type `CompleteHead`
-                 * @param partialHeadVisitor        The visitor function for handling objects of type `PartialHead`
+                 * @param emptyBodyVisitor          An optional visitor function for handling objects of type
+                 *                                  `EmptyBody`
+                 * @param conjunctiveBodyVisitor    An optional visitor function for handling objects of type
+                 *                                  `ConjunctiveBody`
+                 * @param completeHeadVisitor       An optional visitor function for handling objects of type
+                 *                                  `CompleteHead`
+                 * @param partialHeadVisitor        An optional visitor function for handling objects of type
+                 *                                  `PartialHead`
                  */
-                void visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
-                           IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                           IHead::CompleteHeadVisitor completeHeadVisitor,
-                           IHead::PartialHeadVisitor partialHeadVisitor) const;
+                void visit(std::optional<IBody::EmptyBodyVisitor> emptyBodyVisitor,
+                           std::optional<IBody::ConjunctiveBodyVisitor> conjunctiveBodyVisitor,
+                           std::optional<IHead::CompleteHeadVisitor> completeHeadVisitor,
+                           std::optional<IHead::PartialHeadVisitor> partialHeadVisitor) const;
         };
 
     private:
@@ -317,13 +323,15 @@ class RuleList final : public IRuleList {
 
         bool isDefaultRuleTakingPrecedence() const override;
 
-        void visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                   IHead::CompleteHeadVisitor completeHeadVisitor,
-                   IHead::PartialHeadVisitor partialHeadVisitor) const override;
+        void visit(std::optional<IBody::EmptyBodyVisitor> emptyBodyVisitor,
+                   std::optional<IBody::ConjunctiveBodyVisitor> conjunctiveBodyVisitor,
+                   std::optional<IHead::CompleteHeadVisitor> completeHeadVisitor,
+                   std::optional<IHead::PartialHeadVisitor> partialHeadVisitor) const override;
 
-        void visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                       IHead::CompleteHeadVisitor completeHeadVisitor,
-                       IHead::PartialHeadVisitor partialHeadVisitor) const override;
+        void visitUsed(std::optional<IBody::EmptyBodyVisitor> emptyBodyVisitor,
+                       std::optional<IBody::ConjunctiveBodyVisitor> conjunctiveBodyVisitor,
+                       std::optional<IHead::CompleteHeadVisitor> completeHeadVisitor,
+                       std::optional<IHead::PartialHeadVisitor> partialHeadVisitor) const override;
 
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
           const IBinaryPredictorFactory& factory, const CContiguousView<const float32>& featureMatrix,

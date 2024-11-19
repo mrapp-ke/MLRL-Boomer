@@ -2,12 +2,14 @@
 
 namespace boosting {
 
-    DenseDecomposableStatisticVector::DenseDecomposableStatisticVector(uint32 numElements, bool init)
+    DenseDecomposableStatisticVector::DenseDecomposableStatisticVector(const CContiguousView<Tuple<float64>>& view,
+                                                                       uint32 numElements, bool init)
         : ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<Tuple<float64>>>>(
             AllocatedVector<Tuple<float64>>(numElements, init)) {}
 
     DenseDecomposableStatisticVector::DenseDecomposableStatisticVector(const DenseDecomposableStatisticVector& other)
-        : DenseDecomposableStatisticVector(other.getNumElements()) {
+        : ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<Tuple<float64>>>>(
+            AllocatedVector<Tuple<float64>>(other.getNumElements())) {
         util::copyView(other.cbegin(), this->begin(), this->getNumElements());
     }
 

@@ -262,7 +262,7 @@ class StratificationMatrix final : public AllocatedBinaryCscView {
 
             // Create a boolean array that stores whether individual examples remain to be processed (1) or not (0)...
             uint32 numTotalExamples = columnWiseLabelMatrix.numRows;
-            BitVector mask(numTotalExamples, true);
+            BinaryBitVector mask(numTotalExamples, true);
 
             for (uint32 i = 0; i < Matrix::numRows; i++) {
                 uint32 exampleIndex = indicesBegin[i];
