@@ -17,10 +17,9 @@ from github_actions import check_github_actions, update_github_actions
 from modules import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from packaging import build_python_wheel, install_python_wheels
 from testing import tests_cpp, tests_python
-from versioning.changelog import print_latest_changelog, update_changelog_bugfix, update_changelog_feature, \
-    update_changelog_main, validate_changelog_bugfix, validate_changelog_feature, validate_changelog_main
-from versioning.versioning import apply_development_version, increment_development_version, increment_major_version, \
-    increment_minor_version, increment_patch_version, print_current_version, reset_development_version
+from util.files import DirectorySearch
+from util.reflection import import_source_file
+from util.targets import Target
 
 from SCons.Script import COMMAND_LINE_TARGETS
 from SCons.Script.SConscript import SConsEnvironment
@@ -36,20 +35,6 @@ def __print_if_clean(environment, message: str):
 
 
 # Define target names...
-TARGET_NAME_INCREMENT_DEVELOPMENT_VERSION = 'increment_development_version'
-TARGET_NAME_RESET_DEVELOPMENT_VERSION = 'reset_development_version'
-TARGET_NAME_APPLY_DEVELOPMENT_VERSION = 'apply_development_version'
-TARGET_NAME_INCREMENT_PATCH_VERSION = 'increment_patch_version'
-TARGET_NAME_INCREMENT_MINOR_VERSION = 'increment_minor_version'
-TARGET_NAME_INCREMENT_MAJOR_VERSION = 'increment_major_version'
-TARGET_NAME_VALIDATE_CHANGELOG_BUGFIX = 'validate_changelog_bugfix'
-TARGET_NAME_VALIDATE_CHANGELOG_FEATURE = 'validate_changelog_feature'
-TARGET_NAME_VALIDATE_CHANGELOG_MAIN = 'validate_changelog_main'
-TARGET_NAME_UPDATE_CHANGELOG_BUGFIX = 'update_changelog_bugfix'
-TARGET_NAME_UPDATE_CHANGELOG_FEATURE = 'update_changelog_feature'
-TARGET_NAME_UPDATE_CHANGELOG_MAIN = 'update_changelog_main'
-TARGET_NAME_PRINT_VERSION = 'print_version'
-TARGET_NAME_PRINT_LATEST_CHANGELOG = 'print_latest_changelog'
 TARGET_NAME_TEST_FORMAT = 'test_format'
 TARGET_NAME_TEST_FORMAT_PYTHON = TARGET_NAME_TEST_FORMAT + '_python'
 TARGET_NAME_TEST_FORMAT_CPP = TARGET_NAME_TEST_FORMAT + '_cpp'
@@ -81,11 +66,6 @@ TARGET_NAME_APIDOC_PYTHON = TARGET_NAME_APIDOC + '_python'
 TARGET_NAME_DOC = 'doc'
 
 VALID_TARGETS = {
-    TARGET_NAME_INCREMENT_DEVELOPMENT_VERSION, TARGET_NAME_RESET_DEVELOPMENT_VERSION,
-    TARGET_NAME_APPLY_DEVELOPMENT_VERSION, TARGET_NAME_INCREMENT_PATCH_VERSION, TARGET_NAME_INCREMENT_MINOR_VERSION,
-    TARGET_NAME_INCREMENT_MAJOR_VERSION, TARGET_NAME_VALIDATE_CHANGELOG_BUGFIX, TARGET_NAME_VALIDATE_CHANGELOG_FEATURE,
-    TARGET_NAME_VALIDATE_CHANGELOG_MAIN, TARGET_NAME_UPDATE_CHANGELOG_BUGFIX, TARGET_NAME_UPDATE_CHANGELOG_FEATURE,
-    TARGET_NAME_UPDATE_CHANGELOG_MAIN, TARGET_NAME_PRINT_VERSION, TARGET_NAME_PRINT_LATEST_CHANGELOG,
     TARGET_NAME_TEST_FORMAT, TARGET_NAME_TEST_FORMAT_PYTHON, TARGET_NAME_TEST_FORMAT_CPP, TARGET_NAME_TEST_FORMAT_MD,
     TARGET_NAME_TEST_FORMAT_YAML, TARGET_NAME_FORMAT, TARGET_NAME_FORMAT_PYTHON, TARGET_NAME_FORMAT_CPP,
     TARGET_NAME_FORMAT_MD, TARGET_NAME_FORMAT_YAML, TARGET_NAME_DEPENDENCIES_CHECK, TARGET_NAME_GITHUB_ACTIONS_CHECK,
@@ -97,6 +77,18 @@ VALID_TARGETS = {
 
 DEFAULT_TARGET = TARGET_NAME_INSTALL_WHEELS
 
+# Register build targets...
+env = SConsEnvironment()
+
+for subdirectory in DirectorySearch().set_recursive(True).list(BUILD_MODULE.root_dir):
+    init_file = path.join(subdirectory, '__init__.py')
+
+    if path.isfile(init_file):
+        for build_target in getattr(import_source_file(init_file), 'TARGETS', []):
+            if isinstance(build_target, Target):
+                build_target.register(env)
+                VALID_TARGETS.add(build_target.name)
+
 # Raise an error if any invalid targets are given...
 invalid_targets = [target for target in COMMAND_LINE_TARGETS if target not in VALID_TARGETS]
 
@@ -106,30 +98,7 @@ if invalid_targets:
     sys.exit(-1)
 
 # Create temporary file ".sconsign.dblite" in the build directory...
-env = SConsEnvironment()
 env.SConsignFile(name=path.relpath(path.join(BUILD_MODULE.build_dir, '.sconsign'), BUILD_MODULE.root_dir))
-
-# Defines targets for updating the project's version...
-__create_phony_target(env, TARGET_NAME_INCREMENT_DEVELOPMENT_VERSION, action=increment_development_version)
-__create_phony_target(env, TARGET_NAME_RESET_DEVELOPMENT_VERSION, action=reset_development_version)
-__create_phony_target(env, TARGET_NAME_APPLY_DEVELOPMENT_VERSION, action=apply_development_version)
-__create_phony_target(env, TARGET_NAME_INCREMENT_PATCH_VERSION, action=increment_patch_version)
-__create_phony_target(env, TARGET_NAME_INCREMENT_MINOR_VERSION, action=increment_minor_version)
-__create_phony_target(env, TARGET_NAME_INCREMENT_MAJOR_VERSION, action=increment_major_version)
-
-# Define targets for validating changelogs...
-__create_phony_target(env, TARGET_NAME_VALIDATE_CHANGELOG_BUGFIX, action=validate_changelog_bugfix)
-__create_phony_target(env, TARGET_NAME_VALIDATE_CHANGELOG_FEATURE, action=validate_changelog_feature)
-__create_phony_target(env, TARGET_NAME_VALIDATE_CHANGELOG_MAIN, action=validate_changelog_main)
-
-# Define targets for updating the project's changelog...
-__create_phony_target(env, TARGET_NAME_UPDATE_CHANGELOG_BUGFIX, action=update_changelog_bugfix)
-__create_phony_target(env, TARGET_NAME_UPDATE_CHANGELOG_FEATURE, action=update_changelog_feature)
-__create_phony_target(env, TARGET_NAME_UPDATE_CHANGELOG_MAIN, action=update_changelog_main)
-
-# Define targets for printing information about the project...
-__create_phony_target(env, TARGET_NAME_PRINT_VERSION, action=print_current_version)
-__create_phony_target(env, TARGET_NAME_PRINT_LATEST_CHANGELOG, action=print_latest_changelog)
 
 # Define targets for checking code style definitions...
 target_test_format_python = __create_phony_target(env, TARGET_NAME_TEST_FORMAT_PYTHON, action=check_python_code_style)
