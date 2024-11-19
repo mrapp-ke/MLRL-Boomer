@@ -9,8 +9,8 @@ from functools import reduce
 from os import path
 from typing import List, Optional
 
-from command_line import run_command
 from modules import ALL_MODULES, BUILD_MODULE, CPP_MODULE, PYTHON_MODULE, Module
+from util.cmd import run_command
 
 
 @dataclass
