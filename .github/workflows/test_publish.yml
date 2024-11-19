@@ -55,3 +55,14 @@ jobs:
     uses: ./.github/workflows/template_publish.yml
     with:
       python_version: ${{ needs.changes.outputs.python_version }}
+  check_success:
+    needs: test_release
+    if: ${{ always() && needs.changes.outputs.build_files == 'true' }}
+    name: Test publishing packages succeeded
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for success
+        run: |-
+          if [[ "${{ needs.test_release.result }}" == "failure" ]]; then
+            exit 1
+          fi
