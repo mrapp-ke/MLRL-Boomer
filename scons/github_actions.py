@@ -12,7 +12,7 @@ from os import environ, path
 from typing import List, Optional, Set
 
 from dependencies import install_build_dependencies
-from environment import get_env
+from util.env import get_env
 from util.io import read_file, write_file
 
 ENV_GITHUB_TOKEN = 'GITHUB_TOKEN'

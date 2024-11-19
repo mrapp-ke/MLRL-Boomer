@@ -57,4 +57,4 @@ def set_env(env, name: str, value: str):
     :param value:   The value to be set
     """
     env[name] = value
-    print('Set environment variable \'' + name + '\' to value \'' + value + '\'')
+    print('Set environment variable "' + name + '" to value "' + value + '"')

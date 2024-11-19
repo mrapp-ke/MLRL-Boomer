@@ -6,9 +6,9 @@ Provides utility functions for compiling C++ and Cython code.
 from os import environ
 from typing import List, Optional
 
-from environment import get_env
 from modules import CPP_MODULE, PYTHON_MODULE
 from run import run_program
+from util.env import get_env
 
 
 class BuildOptions:
