@@ -1,16 +1,17 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides utility functions for validating and updating the project's changelog.
+Provides actions for validating and updating the project's changelog.
 """
 import sys
 
 from dataclasses import dataclass, field
 from datetime import date
 from enum import Enum, auto
-from os.path import isfile
+from os import path
 from typing import List, Optional
 
+from util.io import read_file, write_file
 from versioning.versioning import Version, get_current_version
 
 PREFIX_HEADER = '# '
@@ -32,8 +33,6 @@ CHANGELOG_FILE_FEATURE = '.changelog-feature.md'
 CHANGELOG_FILE_BUGFIX = '.changelog-bugfix.md'
 
 CHANGELOG_FILE = 'CHANGELOG.md'
-
-CHANGELOG_ENCODING = 'utf-8'
 
 
 class LineType(Enum):
@@ -159,15 +158,15 @@ class Release:
 
 
 def __read_lines(changelog_file: str, skip_if_missing: bool = False) -> List[str]:
-    if skip_if_missing and not isfile(changelog_file):
+    if skip_if_missing and not path.isfile(changelog_file):
         return []
 
-    with open(changelog_file, mode='r', encoding=CHANGELOG_ENCODING) as file:
+    with read_file(changelog_file) as file:
         return file.readlines()
 
 
 def __write_lines(changelog_file: str, lines: List[str]):
-    with open(changelog_file, mode='w', encoding=CHANGELOG_ENCODING) as file:
+    with write_file(changelog_file) as file:
         file.writelines(lines)
 
 
@@ -321,49 +320,49 @@ def __get_latest_changelog() -> str:
     return changelog.rstrip('\n')
 
 
-def validate_changelog_bugfix(**_):
+def validate_changelog_bugfix():
     """
     Validates the changelog file that lists bugfixes.
     """
     __validate_changelog(CHANGELOG_FILE_BUGFIX)
 
 
-def validate_changelog_feature(**_):
+def validate_changelog_feature():
     """
     Validates the changelog file that lists new features.
     """
     __validate_changelog(CHANGELOG_FILE_FEATURE)
 
 
-def validate_changelog_main(**_):
+def validate_changelog_main():
     """
     Validates the changelog file that lists major updates.
     """
     __validate_changelog(CHANGELOG_FILE_MAIN)
 
 
-def update_changelog_main(**_):
+def update_changelog_main():
     """
     Updates the projects changelog when releasing bugfixes.
     """
     __update_changelog(ReleaseType.MAJOR, CHANGELOG_FILE_MAIN, CHANGELOG_FILE_FEATURE, CHANGELOG_FILE_BUGFIX)
 
 
-def update_changelog_feature(**_):
+def update_changelog_feature():
     """
     Updates the project's changelog when releasing new features.
     """
     __update_changelog(ReleaseType.MINOR, CHANGELOG_FILE_FEATURE, CHANGELOG_FILE_BUGFIX)
 
 
-def update_changelog_bugfix(**_):
+def update_changelog_bugfix():
     """
     Updates the project's changelog when releasing major updates.
     """
     __update_changelog(ReleaseType.PATCH, CHANGELOG_FILE_BUGFIX)
 
 
-def print_latest_changelog(**_):
+def print_latest_changelog():
     """
     Prints the changelog of the latest release.
     """
