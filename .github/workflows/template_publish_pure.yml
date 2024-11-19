@@ -20,8 +20,7 @@ on:
 jobs:
   publish_pure_wheels:
     name: Publish pure wheels
-    runs-on:
-      - ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
