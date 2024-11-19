@@ -40,3 +40,9 @@ The following CI jobs are used for building our software for different target pl
 
 - `publish.yml` is used for publishing pre-built packages on [PyPI](https://pypi.org/) (see {ref}`installation`). For this purpose, the project is built from source for each of the target platforms and architectures, using virtualization in some cases. The job is run automatically when a new release was published on [GitHub](https://github.com/mrapp-ke/MLRL-Boomer/releases). It does also increment the project's major version number and merge the release branch into its upstream branches (see {ref}`release-process`).
 - `publish_development.yml` publishes development versions of packages on [Test-PyPI](https://test.pypi.org/) whenever changes to the project's source code have been pushed to the main branch. The packages built by each of these runs are also saved as [artifacts](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts) and can be downloaded as zip archives.
+
+## Maintenance
+
+The CI jobs listed below are run periodically to perform different maintenance tasks, such as the automatic update of dependencies.
+
+- `update_github_actions.yml` checks for outdated GitHub Actions used in workflow definition files. In cases where any updates are necessary, a pull request with the respective changes is opened. If the pull request passes all {ref}`necessary checks <ci-testing>`, it is merged automatically. Otherwise, manual intervention is needed.
