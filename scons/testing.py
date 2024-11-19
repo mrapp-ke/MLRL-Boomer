@@ -5,9 +5,9 @@ Provides utility functions for running automated tests.
 """
 from os import environ, path
 
-from environment import get_env_bool
 from modules import CPP_MODULE, PYTHON_MODULE
 from run import run_program, run_python_program
+from util.env import get_env_bool
 
 
 def __meson_test(build_dir: str):

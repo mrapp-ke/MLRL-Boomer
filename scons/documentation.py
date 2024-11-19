@@ -6,9 +6,9 @@ Provides utility functions for generating the documentation.
 from os import environ, makedirs, path, remove
 from typing import List
 
-from environment import set_env
 from modules import CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from run import run_program
+from util.env import set_env
 from util.io import read_file, write_file
 
 

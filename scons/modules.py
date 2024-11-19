@@ -8,7 +8,7 @@ from glob import glob
 from os import environ, path, walk
 from typing import Callable, List, Optional
 
-from environment import get_env_array
+from util.env import get_env_array
 
 
 def find_files_recursively(directory: str,
