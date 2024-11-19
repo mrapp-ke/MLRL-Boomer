@@ -8,11 +8,11 @@ import sys
 from dataclasses import dataclass
 from typing import Optional
 
+from util.io import read_file, write_file
+
 VERSION_FILE = '.version'
 
 DEV_VERSION_FILE = '.version-dev'
-
-VERSION_FILE_ENCODING = 'utf-8'
 
 
 @dataclass
@@ -77,7 +77,7 @@ class Version:
 
 
 def __read_version_file(version_file) -> str:
-    with open(version_file, mode='r', encoding=VERSION_FILE_ENCODING) as file:
+    with read_file(version_file) as file:
         lines = file.readlines()
 
         if len(lines) != 1:
@@ -88,7 +88,7 @@ def __read_version_file(version_file) -> str:
 
 
 def __write_version_file(version_file, version: str):
-    with open(version_file, mode='w', encoding=VERSION_FILE_ENCODING) as file:
+    with write_file(version_file) as file:
         file.write(version)
 
 

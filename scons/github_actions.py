@@ -13,10 +13,9 @@ from typing import List, Optional, Set
 
 from dependencies import install_build_dependencies
 from environment import get_env
+from util.io import read_file, write_file
 
 ENV_GITHUB_TOKEN = 'GITHUB_TOKEN'
-
-WORKFLOW_ENCODING = 'utf-8'
 
 
 @dataclass
@@ -176,18 +175,18 @@ def __read_workflow(workflow_file: str) -> Workflow:
     install_build_dependencies('pyyaml')
     # pylint: disable=import-outside-toplevel
     import yaml
-    with open(workflow_file, mode='r', encoding=WORKFLOW_ENCODING) as file:
+    with read_file(workflow_file) as file:
         yaml_dict = yaml.load(file.read(), Loader=yaml.CLoader)
         return Workflow(workflow_file=workflow_file, yaml_dict=yaml_dict)
 
 
 def __read_workflow_lines(workflow_file: str) -> List[str]:
-    with open(workflow_file, mode='r', encoding=WORKFLOW_ENCODING) as file:
+    with read_file(workflow_file) as file:
         return file.readlines()
 
 
 def __write_workflow_lines(workflow_file: str, lines: List[str]):
-    with open(workflow_file, mode='w', encoding=WORKFLOW_ENCODING) as file:
+    with write_file(workflow_file) as file:
         file.writelines(lines)
 
 

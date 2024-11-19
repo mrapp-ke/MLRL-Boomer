@@ -9,6 +9,7 @@ from typing import List
 from environment import set_env
 from modules import CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from run import run_program
+from util.io import read_file, write_file
 
 
 def __doxygen(project_name: str, input_dir: str, output_dir: str):
@@ -77,7 +78,7 @@ def __sphinx_build(source_dir: str, output_dir: str):
 
 
 def __read_tocfile_template(directory: str) -> List[str]:
-    with open(path.join(directory, 'index.md.template'), mode='r', encoding='utf-8') as file:
+    with read_file(path.join(directory, 'index.md.template')) as file:
         return file.readlines()
 
 
@@ -91,7 +92,7 @@ def __write_tocfile(directory: str, tocfile_entries: List[str]):
         else:
             tocfile.append(line)
 
-    with open(path.join(directory, 'index.md'), mode='w', encoding='utf-8') as file:
+    with write_file(path.join(directory, 'index.md')) as file:
         file.writelines(tocfile)
 
 
