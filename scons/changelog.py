@@ -11,7 +11,7 @@ from enum import Enum, auto
 from os.path import isfile
 from typing import List, Optional
 
-from versioning import Version, get_current_version
+from versioning.versioning import Version, get_current_version
 
 PREFIX_HEADER = '# '
 

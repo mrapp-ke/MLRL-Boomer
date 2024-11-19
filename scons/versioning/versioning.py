@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides utility functions for updating the project's version.
+Provides actions for updating the project's version.
 """
 import sys
 
@@ -115,14 +115,14 @@ def get_current_version() -> Version:
     return __parse_version(__read_version_file(VERSION_FILE))
 
 
-def print_current_version(**_):
+def print_current_version():
     """
     Prints the project's current version.
     """
     return print(str(get_current_version()))
 
 
-def increment_development_version(**_):
+def increment_development_version():
     """
     Increments the development version.
     """
@@ -131,7 +131,7 @@ def increment_development_version(**_):
     __update_development_version(dev)
 
 
-def reset_development_version(**_):
+def reset_development_version():
     """
     Resets the development version.
     """
@@ -139,7 +139,7 @@ def reset_development_version(**_):
     __update_development_version(0)
 
 
-def apply_development_version(**_):
+def apply_development_version():
     """
     Appends the development version to the current semantic version.
     """
@@ -148,7 +148,7 @@ def apply_development_version(**_):
     __update_version(version)
 
 
-def increment_patch_version(**_):
+def increment_patch_version():
     """
     Increments the patch version.
     """
@@ -157,7 +157,7 @@ def increment_patch_version(**_):
     __update_version(version)
 
 
-def increment_minor_version(**_):
+def increment_minor_version():
     """
     Increments the minor version.
     """
@@ -167,7 +167,7 @@ def increment_minor_version(**_):
     __update_version(version)
 
 
-def increment_major_version(**_):
+def increment_major_version():
     """
     Increments the major version.
     """

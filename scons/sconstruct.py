@@ -19,7 +19,7 @@ from github_actions import check_github_actions, update_github_actions
 from modules import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from packaging import build_python_wheel, install_python_wheels
 from testing import tests_cpp, tests_python
-from versioning import apply_development_version, increment_development_version, increment_major_version, \
+from versioning.versioning import apply_development_version, increment_development_version, increment_major_version, \
     increment_minor_version, increment_patch_version, print_current_version, reset_development_version
 
 from SCons.Script import COMMAND_LINE_TARGETS
