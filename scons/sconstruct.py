@@ -8,8 +8,6 @@ import sys
 from functools import reduce
 from os import path
 
-from changelog import print_latest_changelog, update_changelog_bugfix, update_changelog_feature, \
-    update_changelog_main, validate_changelog_bugfix, validate_changelog_feature, validate_changelog_main
 from code_style import check_cpp_code_style, check_md_code_style, check_python_code_style, check_yaml_code_style, \
     enforce_cpp_code_style, enforce_md_code_style, enforce_python_code_style, enforce_yaml_code_style
 from compilation import compile_cpp, compile_cython, install_cpp, install_cython, setup_cpp, setup_cython
@@ -19,6 +17,8 @@ from github_actions import check_github_actions, update_github_actions
 from modules import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from packaging import build_python_wheel, install_python_wheels
 from testing import tests_cpp, tests_python
+from versioning.changelog import print_latest_changelog, update_changelog_bugfix, update_changelog_feature, \
+    update_changelog_main, validate_changelog_bugfix, validate_changelog_feature, validate_changelog_main
 from versioning.versioning import apply_development_version, increment_development_version, increment_major_version, \
     increment_minor_version, increment_patch_version, print_current_version, reset_development_version
 
