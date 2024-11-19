@@ -5,9 +5,9 @@ Provides utility functions for running external programs during the build proces
 """
 from typing import List, Optional
 
-from command_line import run_command
 from dependencies import install_dependencies
 from modules import BUILD_MODULE
+from util.cmd import run_command
 
 
 def run_program(program: str,
