@@ -4,13 +4,14 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for dealing with dependencies.
 """
 
+from abc import ABC
 from dataclasses import dataclass
 from functools import reduce
 from os import path
 from typing import List, Optional
 
 from modules import ALL_MODULES, BUILD_MODULE, CPP_MODULE, PYTHON_MODULE, Module
-from util.cmd import run_command
+from util.cmd import Command
 
 
 @dataclass
@@ -29,31 +30,52 @@ class Requirement:
         return self.dependency + (self.version if self.version else '')
 
 
-def __run_pip_command(*args, **kwargs):
-    return run_command('python', '-m', 'pip', *args, **kwargs)
+class PipCommand(Command, ABC):
+    """
+    An abstract base class for all classes that allow to run pip on the command line.
+    """
+
+    def __init__(self, *arguments: str):
+        super().__init__('python', '-m', 'pip', *arguments)
 
 
-def __run_pip_install_command(requirement: Requirement, *args, **kwargs):
-    return __run_pip_command('install', str(requirement), '--upgrade', '--upgrade-strategy', 'eager', '--prefer-binary',
-                             '--disable-pip-version-check', *args, **kwargs)
+class PipInstallCommand(PipCommand):
+    """
+    Allows to install a package via the command `pip install`.
+    """
+
+    def __init__(self, requirement: Requirement, *arguments: str):
+        """
+        :requirement:   Specifies the name and version of the package that should be installed
+        :arguments:     Optional arguments to be passed to the command
+        """
+        super().__init__('install', str(requirement), '--upgrade', '--upgrade-strategy', 'eager', '--prefer-binary',
+                         '--disable-pip-version-check', *arguments)
+
+
+class PipListCommand(PipCommand):
+    """
+    Allows to list all installed Python packages via the command `pip list`.
+    """
+
+    def __init__(self, *arguments: str):
+        """
+        :arguments: Optional arguments to be passed to the command
+        """
+        super().__init__('list', *arguments)
 
 
 def __pip_install(requirement: Requirement, dry_run: bool = False):
     try:
         args = ['--dry-run'] if dry_run else []
-        out = __run_pip_install_command(requirement,
-                                        *args,
-                                        print_cmd=False,
-                                        capture_output=True,
-                                        exit_on_error=not dry_run)
-        stdout = str(out.stdout).strip()
-        stdout_lines = stdout.split('\n')
+        stdout = PipInstallCommand(requirement, *args).print_command(False).exit_on_error(not dry_run).capture_output()
+        stdout_lines = stdout.strip().split('\n')
 
         if reduce(
                 lambda aggr, line: aggr | line.startswith('Would install') and __normalize_dependency(line).find(
                     requirement.dependency) >= 0, stdout_lines, False):
             if dry_run:
-                __run_pip_install_command(requirement, print_args=True)
+                PipInstallCommand(requirement).print_arguments(True).run()
             else:
                 print(stdout)
     except RuntimeError:
@@ -132,9 +154,8 @@ def check_dependency_versions(**_):
         __install_module_dependencies(module)
 
     print('Checking for outdated dependencies...')
-    out = __run_pip_command('list', '--outdated', print_cmd=False, capture_output=True)
-    stdout = str(out.stdout).strip()
-    stdout_lines = stdout.split('\n')
+    stdout = PipListCommand('--outdated').print_command(False).capture_output()
+    stdout_lines = stdout.strip().split('\n')
     i = 0
 
     for line in stdout_lines:
