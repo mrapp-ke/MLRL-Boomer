@@ -7,7 +7,7 @@ from typing import List, Optional
 
 from dependencies import install_dependencies
 from modules import BUILD_MODULE
-from util.cmd import run_command
+from util.cmd import Command
 
 
 def run_program(program: str,
@@ -37,7 +37,7 @@ def run_program(program: str,
         dependencies.extend(additional_dependencies)
 
     install_dependencies(requirements_file, *dependencies)
-    run_command(program, *args, print_args=print_args, env=env)
+    Command(program, *args).print_arguments(print_args).use_environment(env).run()
 
 
 def run_python_program(program: str,
