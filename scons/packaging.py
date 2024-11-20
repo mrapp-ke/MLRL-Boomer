@@ -5,28 +5,24 @@ Provides utility functions for building and installing Python wheel packages.
 """
 from typing import List
 
-from modules import PYTHON_MODULE
-from run import run_python_program
+from modules import BUILD_MODULE, PYTHON_MODULE
+from util.pip import RequirementsFile
+from util.run import PythonModule
 
 
 def __build_python_wheel(package_dir: str):
-    run_python_program('build',
-                       '--no-isolation',
-                       '--wheel',
-                       package_dir,
-                       print_args=True,
-                       additional_dependencies=['wheel', 'setuptools'])
+    PythonModule(RequirementsFile(BUILD_MODULE.requirements_file), 'build', '--no-isolation', '--wheel', package_dir) \
+        .print_arguments(True) \
+        .add_dependencies('wheel', 'setuptools') \
+        .run()
 
 
 def __install_python_wheels(wheels: List[str]):
-    run_python_program('pip',
-                       'install',
-                       '--force-reinstall',
-                       '--no-deps',
-                       '--disable-pip-version-check',
-                       *wheels,
-                       print_args=True,
-                       install_program=False)
+    PythonModule(RequirementsFile(BUILD_MODULE.requirements_file), 'pip', 'install', '--force-reinstall', '--no-deps',
+                 '--disable-pip-version-check', *wheels) \
+        .print_arguments(True) \
+        .install_program(False) \
+        .run()
 
 
 # pylint: disable=unused-argument

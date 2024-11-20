@@ -6,10 +6,11 @@ Provides utility functions for generating the documentation.
 from os import environ, makedirs, path, remove
 from typing import List
 
-from modules import CPP_MODULE, DOC_MODULE, PYTHON_MODULE
-from run import run_program
+from modules import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from util.env import set_env
 from util.io import read_file, write_file
+from util.pip import RequirementsFile
+from util.run import Program
 
 
 def __doxygen(project_name: str, input_dir: str, output_dir: str):
@@ -19,38 +20,29 @@ def __doxygen(project_name: str, input_dir: str, output_dir: str):
     set_env(env, 'DOXYGEN_INPUT_DIR', input_dir)
     set_env(env, 'DOXYGEN_OUTPUT_DIR', output_dir)
     set_env(env, 'DOXYGEN_PREDEFINED', 'MLRL' + project_name.upper() + '_API=')
-    run_program('doxygen', DOC_MODULE.doxygen_config_file, print_args=True, install_program=False, env=env)
+    Program(RequirementsFile(BUILD_MODULE.requirements_file), 'doxygen', DOC_MODULE.doxygen_config_file) \
+        .print_arguments(False) \
+        .install_program(False) \
+        .use_environment(env) \
+        .run()
 
 
 def __breathe_apidoc(source_dir: str, output_dir: str, project: str):
-    run_program('breathe-apidoc',
-                '--members',
-                '--project',
-                project,
-                '-g',
-                'file',
-                '-o',
-                output_dir,
-                source_dir,
-                print_args=True,
-                additional_dependencies=['breathe'],
-                requirements_file=DOC_MODULE.requirements_file,
-                install_program=False)
+    Program(RequirementsFile(DOC_MODULE.requirements_file), 'breathe-apidoc', '--members', '--project', project, '-g',
+            'file', '-o', output_dir, source_dir) \
+        .print_arguments(True) \
+        .add_dependencies('breathe') \
+        .install_program(False) \
+        .run()
 
 
 def __sphinx_apidoc(source_dir: str, output_dir: str):
-    run_program('sphinx-apidoc',
-                '--separate',
-                '--module-first',
-                '--no-toc',
-                '-o',
-                output_dir,
-                source_dir,
-                '*.so*',
-                print_args=True,
-                additional_dependencies=['sphinx'],
-                requirements_file=DOC_MODULE.requirements_file,
-                install_program=False)
+    Program(RequirementsFile(DOC_MODULE.requirements_file), 'sphinx-apidoc', '--separate', '--module-first', '--no-toc',
+            '-o', output_dir, source_dir, '*.so*') \
+        .print_arguments(True) \
+        .add_dependencies('sphinx') \
+        .install_program(False) \
+        .run()
 
     root_rst_file = path.join(output_dir, 'mlrl.rst')
 
@@ -59,22 +51,12 @@ def __sphinx_apidoc(source_dir: str, output_dir: str):
 
 
 def __sphinx_build(source_dir: str, output_dir: str):
-    run_program('sphinx-build',
-                '--jobs',
-                'auto',
-                source_dir,
-                output_dir,
-                print_args=True,
-                additional_dependencies=[
-                    'furo',
-                    'myst-parser',
-                    'sphinxext-opengraph',
-                    'sphinx-inline-tabs',
-                    'sphinx-copybutton',
-                    'sphinx-favicon',
-                ],
-                requirements_file=DOC_MODULE.requirements_file,
-                install_program=False)
+    Program(RequirementsFile(DOC_MODULE.requirements_file), 'sphinx-build', '--jobs', 'auto', source_dir, output_dir) \
+        .print_arguments(True) \
+        .add_dependencies('furo', 'myst-parser', 'sphinxext-opengraph', 'sphinx-inline-tabs', 'sphinx-copybutton',
+                          'sphinx-favicon',) \
+        .install_program(False) \
+        .run()
 
 
 def __read_tocfile_template(directory: str) -> List[str]:
