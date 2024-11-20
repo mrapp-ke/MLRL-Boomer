@@ -31,6 +31,42 @@ class Version:
     patch: int
     dev: Optional[int] = None
 
+    @staticmethod
+    def parse_version_number(version_number: str) -> int:
+        """
+        Parses and returns a single version number from a given string.
+
+        :param version_number:  The string to be parsed
+        :return:                The version number that has been parsed
+        """
+        try:
+            number = int(version_number)
+
+            if number < 0:
+                raise ValueError()
+
+            return number
+        except ValueError as error:
+            raise ValueError('Version numbers must be non-negative integers, but got: ' + version_number) from error
+
+    @staticmethod
+    def parse(version: str) -> 'Version':
+        """
+        Parses and returns a version from a given string.
+
+        :param version: The string to be parsed
+        :return:        The version that has been parsed
+        """
+        parts = version.split('.')
+
+        if len(parts) != 3:
+            raise ValueError('Version must be given in format MAJOR.MINOR.PATCH, but got: ' + version)
+
+        major = Version.parse_version_number(parts[0])
+        minor = Version.parse_version_number(parts[1])
+        patch = Version.parse_version_number(parts[2])
+        return Version(major=major, minor=minor, patch=patch)
+
     def __str__(self) -> str:
         version = str(self.major) + '.' + str(self.minor) + '.' + str(self.patch)
 
@@ -56,23 +92,10 @@ def __write_version_file(version_file, version: str):
         file.write(version)
 
 
-def __parse_version_number(version_number: str) -> int:
-    try:
-        number = int(version_number)
-
-        if number < 0:
-            raise ValueError()
-
-        return number
-    except ValueError:
-        print('Version numbers must only consist of non-negative integers, but got: ' + version_number)
-        sys.exit(-1)
-
-
 def __get_current_development_version() -> int:
     current_version = __read_version_file(DEV_VERSION_FILE)
     print('Current development version is "' + current_version + '"')
-    return __parse_version_number(current_version)
+    return Version.parse_version_number(current_version)
 
 
 def __update_development_version(dev: int):
@@ -81,23 +104,10 @@ def __update_development_version(dev: int):
     __write_version_file(DEV_VERSION_FILE, updated_version)
 
 
-def __parse_version(version: str) -> Version:
-    parts = version.split('.')
-
-    if len(parts) != 3:
-        print('Version must be given in format MAJOR.MINOR.PATCH or MAJOR.MINOR.PATCH.devN, but got: ' + version)
-        sys.exit(-1)
-
-    major = __parse_version_number(parts[0])
-    minor = __parse_version_number(parts[1])
-    patch = __parse_version_number(parts[2])
-    return Version(major=major, minor=minor, patch=patch)
-
-
 def __get_current_version() -> Version:
     current_version = __read_version_file(VERSION_FILE)
     print('Current version is "' + current_version + '"')
-    return __parse_version(current_version)
+    return Version.parse(current_version)
 
 
 def __update_version(version: Version):
@@ -112,7 +122,7 @@ def get_current_version() -> Version:
 
     :return: The project's current version
     """
-    return __parse_version(__read_version_file(VERSION_FILE))
+    return Version.parse(__read_version_file(VERSION_FILE))
 
 
 def print_current_version():
