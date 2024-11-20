@@ -6,9 +6,10 @@ Provides utility functions for compiling C++ and Cython code.
 from os import environ
 from typing import List, Optional
 
-from modules import CPP_MODULE, PYTHON_MODULE
-from run import run_program
+from modules import BUILD_MODULE, CPP_MODULE, PYTHON_MODULE
 from util.env import get_env
+from util.pip import RequirementsFile
+from util.run import Program
 
 
 class BuildOptions:
@@ -64,22 +65,29 @@ class BuildOptions:
         self.build_options.append(BuildOptions.BuildOption(name=name, subpackage=subpackage))
         return self
 
-    def to_args(self) -> List[str]:
+    def as_arguments(self) -> List[str]:
         """
         Returns a list of arguments to be passed to the command "meson configure" for setting the build options.
 
         :return: A list of arguments
         """
-        args = []
+        arguments = []
 
         for build_option in self.build_options:
             value = build_option.value
 
             if value:
-                args.append('-D')
-                args.append(build_option.key + '=' + value)
+                arguments.append('-D')
+                arguments.append(build_option.key + '=' + value)
 
-        return args
+        return arguments
+
+    def __bool__(self) -> bool:
+        for build_option in self.build_options:
+            if build_option.value:
+                return True
+
+        return False
 
 
 CPP_BUILD_OPTIONS = BuildOptions() \
@@ -93,45 +101,88 @@ CYTHON_BUILD_OPTIONS = BuildOptions() \
         .add(name='subprojects')
 
 
-def __meson_setup(root_dir: str,
-                  build_dir: str,
-                  build_options: BuildOptions = BuildOptions(),
-                  dependencies: Optional[List[str]] = None):
-    print('Setting up build directory "' + build_dir + '"...')
-    args = build_options.to_args()
-    run_program('meson', 'setup', *args, build_dir, root_dir, print_args=True, additional_dependencies=dependencies)
+class MesonSetup(Program):
+    """
+    Allows to run the external program "meson setup".
+    """
+
+    def __init__(self, build_directory: str, source_directory: str, build_options: BuildOptions = BuildOptions()):
+        """
+        :param build_directory:     The path to the build directory
+        :param source_directory:    The path to the source directory
+        :param build_options:       The build options to be used
+        """
+        super().__init__(RequirementsFile(BUILD_MODULE.requirements_file), 'meson', 'setup',
+                         *build_options.as_arguments(), build_directory, source_directory)
+        self.print_arguments(True)
 
 
-def __meson_configure(build_dir: str, build_options: BuildOptions):
-    args = build_options.to_args()
+class MesonConfigure(Program):
+    """
+    Allows to run the external program "meson configure".
+    """
 
-    if args:
-        print('Configuring build options according to environment variables...')
-        run_program('meson', 'configure', *args, build_dir, print_args=True)
+    def __init__(self, build_directory: str, build_options: BuildOptions = BuildOptions()):
+        """
+        :param build_directory: The path to the build directory
+        :param build_options:   The build options to be used
+        """
+        super().__init__(RequirementsFile(BUILD_MODULE.requirements_file), 'meson', 'configure',
+                         *build_options.as_arguments(), build_directory)
+        self.print_arguments(True)
+        self.build_options = build_options
+
+    def run(self):
+        if self.build_options:
+            print('Configuring build options according to environment variables...')
+            super().run()
 
 
-def __meson_compile(build_dir: str):
-    run_program('meson', 'compile', '-C', build_dir, print_args=True)
+class MesonCompile(Program):
+    """
+    Allows to run the external program "meson compile".
+    """
+
+    def __init__(self, build_directory: str):
+        """
+        :param build_directory: The path to the build directory
+        """
+        super().__init__(RequirementsFile(BUILD_MODULE.requirements_file), 'meson', 'compile', '-C', build_directory)
+        self.print_arguments(True)
 
 
-def __meson_install(build_dir: str):
-    run_program('meson', 'install', '--no-rebuild', '--only-changed', '-C', build_dir, print_args=True)
+class MesonInstall(Program):
+    """
+    Allows to run the external program "meson install".
+    """
+
+    def __init__(self, build_directory: str):
+        """
+        :param build_directory: The path to the build directory
+        """
+        super().__init__(RequirementsFile(BUILD_MODULE.requirements_file), 'meson', 'install', '--no-rebuild',
+                         '--only-changed', '-C', build_directory)
+        self.print_arguments(True)
 
 
 def setup_cpp(**_):
     """
     Sets up the build system for compiling the C++ code.
     """
-    __meson_setup(CPP_MODULE.root_dir, CPP_MODULE.build_dir, CPP_BUILD_OPTIONS, dependencies=['ninja'])
+    MesonSetup(build_directory=CPP_MODULE.build_dir,
+               source_directory=CPP_MODULE.root_dir,
+               build_options=CPP_BUILD_OPTIONS) \
+        .add_dependencies('ninja') \
+        .run()
 
 
 def compile_cpp(**_):
     """
     Compiles the C++ code.
     """
-    __meson_configure(CPP_MODULE.build_dir, CPP_BUILD_OPTIONS)
+    MesonConfigure(CPP_MODULE.build_dir, CPP_BUILD_OPTIONS).run()
     print('Compiling C++ code...')
-    __meson_compile(CPP_MODULE.build_dir)
+    MesonCompile(CPP_MODULE.build_dir).run()
 
 
 def install_cpp(**_):
@@ -139,23 +190,27 @@ def install_cpp(**_):
     Installs shared libraries into the source tree.
     """
     print('Installing shared libraries into source tree...')
-    __meson_install(CPP_MODULE.build_dir)
+    MesonInstall(CPP_MODULE.build_dir).run()
 
 
 def setup_cython(**_):
     """
     Sets up the build system for compiling the Cython code.
     """
-    __meson_setup(PYTHON_MODULE.root_dir, PYTHON_MODULE.build_dir, CYTHON_BUILD_OPTIONS, dependencies=['cython'])
+    MesonSetup(build_directory=PYTHON_MODULE.build_dir,
+               source_directory=PYTHON_MODULE.root_dir,
+               build_options=CYTHON_BUILD_OPTIONS) \
+        .add_dependencies('cython') \
+        .run()
 
 
 def compile_cython(**_):
     """
     Compiles the Cython code.
     """
-    __meson_configure(PYTHON_MODULE.build_dir, CYTHON_BUILD_OPTIONS)
+    MesonConfigure(PYTHON_MODULE.build_dir, CYTHON_BUILD_OPTIONS)
     print('Compiling Cython code...')
-    __meson_compile(PYTHON_MODULE.build_dir)
+    MesonCompile(PYTHON_MODULE.build_dir).run()
 
 
 def install_cython(**_):
@@ -163,4 +218,4 @@ def install_cython(**_):
     Installs extension modules into the source tree.
     """
     print('Installing extension modules into source tree...')
-    __meson_install(PYTHON_MODULE.build_dir)
+    MesonInstall(PYTHON_MODULE.build_dir).run()

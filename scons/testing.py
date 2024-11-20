@@ -5,46 +5,26 @@ Provides utility functions for running automated tests.
 """
 from os import environ, path
 
-from modules import CPP_MODULE, PYTHON_MODULE
-from run import run_program, run_python_program
+from modules import BUILD_MODULE, CPP_MODULE, PYTHON_MODULE
 from util.env import get_env_bool
-
-
-def __meson_test(build_dir: str):
-    run_program('meson', 'test', '-C', build_dir, '-v', print_args=True)
-
-
-def __python_unittest(directory: str, fail_fast: bool = False):
-    args = [
-        'discover',
-        '--verbose',
-        '--start-directory',
-        directory,
-        '--output',
-        path.join(PYTHON_MODULE.build_dir, 'test-results'),
-    ]
-
-    if fail_fast:
-        args.append('--failfast')
-
-    run_python_program('xmlrunner',
-                       *args,
-                       print_args=True,
-                       install_program=False,
-                       additional_dependencies=['unittest-xml-reporting'])
+from util.pip import RequirementsFile
+from util.run import Program, PythonModule
 
 
 def tests_cpp(**_):
     """
     Runs all automated tests of C++ code.
     """
-    __meson_test(CPP_MODULE.build_dir)
+    Program(RequirementsFile(BUILD_MODULE.requirements_file), 'meson', 'test', '-C', CPP_MODULE.build_dir, '-v') \
+        .print_arguments(True) \
+        .run()
 
 
 def tests_python(**_):
     """
     Runs all automated tests of Python code.
     """
+    output_directory = path.join(PYTHON_MODULE.build_dir, 'test-results')
     fail_fast = get_env_bool(environ, 'FAIL_FAST')
 
     for subproject in PYTHON_MODULE.find_subprojects():
@@ -52,4 +32,10 @@ def tests_python(**_):
 
         if path.isdir(test_dir):
             print('Running automated tests for subpackage "' + subproject.name + '"...')
-            __python_unittest(test_dir, fail_fast=fail_fast)
+            PythonModule(RequirementsFile(BUILD_MODULE.requirements_file), 'xmlrunner', 'discover', '--verbose',
+                                          '--start-directory', test_dir, '--output', output_directory) \
+                .add_conditional_arguments(fail_fast, '--failfast') \
+                .print_arguments(True) \
+                .install_program(False) \
+                .add_dependencies('unittest-xml-reporting') \
+                .run()

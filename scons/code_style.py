@@ -7,74 +7,127 @@ from glob import glob
 from os import path
 
 from modules import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
-from run import run_program
+from util.pip import RequirementsFile
+from util.run import Program
 
 MD_DIRS = [('.', False), (DOC_MODULE.root_dir, True), (PYTHON_MODULE.root_dir, True)]
 
 YAML_DIRS = [('.', False), ('.github', True)]
 
 
-def __isort(directory: str, enforce_changes: bool = False):
-    args = ['--settings-path', '.', '--virtual-env', 'venv', '--skip-gitignore']
+class Yapf(Program):
+    """
+    Allows to run the external program "yapf".
+    """
 
-    if not enforce_changes:
-        args.append('--check')
-
-    run_program('isort', *args, directory)
-
-
-def __yapf(directory: str, enforce_changes: bool = False):
-    run_program('yapf', '-r', '-p', '--style=.style.yapf', '--exclude', '**/build/*.py',
-                '-i' if enforce_changes else '--diff', directory)
-
-
-def __pylint(directory: str):
-    run_program('pylint', '--jobs=0', '--recursive=y', '--ignore=build', '--rcfile=.pylintrc', '--score=n', directory)
+    def __init__(self, directory: str, enforce_changes: bool = False):
+        """
+        :param directory:       The path to the directory, the program should be applied to
+        :param enforce_changes: True, if changes should be applied to files, False otherwise
+        """
+        super().__init__(RequirementsFile(BUILD_MODULE.requirements_file), 'yapf', '-r', '-p', '--style=.style.yapf',
+                         '--exclude', '**/build/*.py', '-i' if enforce_changes else '--diff', directory)
 
 
-def __clang_format(directory: str, enforce_changes: bool = False):
-    cpp_header_files = glob(path.join(directory, '**', '*.hpp'), recursive=True)
-    cpp_source_files = glob(path.join(directory, '**', '*.cpp'), recursive=True)
-    args = ['--style=file']
+class Isort(Program):
+    """
+    Allows to run the external program "isort".
+    """
 
-    if enforce_changes:
-        args.append('-i')
-    else:
-        args.append('-n')
-        args.append('--Werror')
-
-    run_program('clang-format', *args, *cpp_header_files, *cpp_source_files)
-
-
-def __cpplint(directory: str):
-    run_program('cpplint', '--quiet', '--recursive', directory)
+    def __init__(self, directory: str, enforce_changes: bool = False):
+        """
+        :param directory:       The path to the directory, the program should be applied to
+        :param enforce_changes: True, if changes should be applied to files, False otherwise
+        """
+        super().__init__(RequirementsFile(BUILD_MODULE.requirements_file), 'isort', directory, '--settings-path', '.',
+                         '--virtual-env', 'venv', '--skip-gitignore')
+        self.add_conditional_arguments(not enforce_changes, '--check')
 
 
-def __mdformat(directory: str, recursive: bool = False, enforce_changes: bool = False):
-    suffix_md = '*.md'
-    glob_path = path.join(directory, '**', '**', suffix_md) if recursive else path.join(directory, suffix_md)
-    md_files = glob(glob_path, recursive=recursive)
-    args = ['--number', '--wrap', 'no', '--end-of-line', 'lf']
+class Pylint(Program):
+    """
+    Allows to run the external program "pylint".
+    """
 
-    if not enforce_changes:
-        args.append('--check')
+    def __init__(self, directory: str):
+        """
+        :param directory: The path to the directory, the program should be applied to
+        """
+        super().__init__(RequirementsFile(BUILD_MODULE.requirements_file), 'pylint', directory, '--jobs=0',
+                         '--recursive=y', '--ignore=build', '--rcfile=.pylintrc', '--score=n')
 
-    run_program('mdformat', *args, *md_files, additional_dependencies=['mdformat-myst'])
+
+class ClangFormat(Program):
+    """
+    Allows to run the external program "clang-format".
+    """
+
+    def __init__(self, directory: str, enforce_changes: bool = False):
+        """
+        :param directory:       The path to the directory, the program should be applied to
+        :param enforce_changes: True, if changes should be applied to files, False otherwise
+        """
+        super().__init__(RequirementsFile(BUILD_MODULE.requirements_file), 'clang-format', '--style=file')
+        self.add_conditional_arguments(enforce_changes, '-i')
+        self.add_conditional_arguments(not enforce_changes, '--dry-run', '--Werror')
+        self.add_arguments(*glob(path.join(directory, '**', '*.hpp'), recursive=True))
+        self.add_arguments(*glob(path.join(directory, '**', '*.cpp'), recursive=True))
 
 
-def __yamlfix(directory: str, recursive: bool = False, enforce_changes: bool = False):
-    glob_path = path.join(directory, '**', '*') if recursive else path.join(directory, '*')
-    glob_path_hidden = path.join(directory, '**', '.*') if recursive else path.join(directory, '.*')
-    yaml_files = [
-        file for file in glob(glob_path) + glob(glob_path_hidden)
-        if path.basename(file).endswith('.yml') or path.basename(file).endswith('.yaml')
-    ]
-    args = ['--config-file', '.yamlfix.toml']
+class Cpplint(Program):
+    """
+    Allows to run the external program "cpplint".
+    """
 
-    if not enforce_changes:
-        args.append('--check')
+    def __init__(self, directory: str):
+        """
+        :param directory: The path to the directory, the program should be applied to
+        """
+        super().__init__(RequirementsFile(BUILD_MODULE.requirements_file), 'cpplint', directory, '--quiet',
+                         '--recursive')
 
-    run_program('yamlfix', *args, *yaml_files, print_args=True)
+
+class Mdformat(Program):
+    """
+    Allows to run the external program "mdformat".
+    """
+
+    def __init__(self, directory: str, recursive: bool = False, enforce_changes: bool = False):
+        """
+        :param directory:       The path to the directory, the program should be applied to
+        :param recursive:       True, if the program should be applied to subdirectories, False otherwise
+        :param enforce_changes: True, if changes should be applied to files, False otherwise
+        """
+        super().__init__(RequirementsFile(BUILD_MODULE.requirements_file), 'mdformat', '--number', '--wrap', 'no',
+                         '--end-of-line', 'lf')
+        self.add_conditional_arguments(not enforce_changes, '--check')
+        suffix_md = '*.md'
+        glob_path = path.join(directory, '**', '**', suffix_md) if recursive else path.join(directory, suffix_md)
+        self.add_arguments(*glob(glob_path, recursive=recursive))
+        self.add_dependencies('mdformat-myst')
+
+
+class Yamlfix(Program):
+    """
+    Allows to run the external program "yamlfix".
+    """
+
+    def __init__(self, directory: str, recursive: bool = False, enforce_changes: bool = False):
+        """
+        :param directory:       The path to the directory, the program should be applied to
+        :param recursive:       True, if the program should be applied to subdirectories, False otherwise
+        :param enforce_changes: True, if changes should be applied to files, False otherwise
+        """
+        super().__init__(RequirementsFile(BUILD_MODULE.requirements_file), 'yamlfix', '--config-file', '.yamlfix.toml')
+        self.add_conditional_arguments(not enforce_changes, '--check')
+        glob_path = path.join(directory, '**', '*') if recursive else path.join(directory, '*')
+        glob_path_hidden = path.join(directory, '**', '.*') if recursive else path.join(directory, '.*')
+        yaml_files = [
+            file for file in glob(glob_path) + glob(glob_path_hidden)
+            if path.basename(file).endswith('.yml') or path.basename(file).endswith('.yaml')
+        ]
+        self.add_arguments(yaml_files)
+        self.print_arguments(True)
 
 
 def check_python_code_style(**_):
@@ -84,9 +137,9 @@ def check_python_code_style(**_):
     for module in [BUILD_MODULE, PYTHON_MODULE]:
         directory = module.root_dir
         print('Checking Python code style in directory "' + directory + '"...')
-        __isort(directory)
-        __yapf(directory)
-        __pylint(directory)
+        Isort(directory).run()
+        Yapf(directory).run()
+        Pylint(directory).run()
 
 
 def enforce_python_code_style(**_):
@@ -96,8 +149,8 @@ def enforce_python_code_style(**_):
     for module in [BUILD_MODULE, PYTHON_MODULE, DOC_MODULE]:
         directory = module.root_dir
         print('Formatting Python code in directory "' + directory + '"...')
-        __isort(directory, enforce_changes=True)
-        __yapf(directory, enforce_changes=True)
+        Isort(directory, enforce_changes=True).run()
+        Yapf(directory, enforce_changes=True).run()
 
 
 def check_cpp_code_style(**_):
@@ -106,11 +159,11 @@ def check_cpp_code_style(**_):
     """
     root_dir = CPP_MODULE.root_dir
     print('Checking C++ code style in directory "' + root_dir + '"...')
-    __clang_format(root_dir)
+    ClangFormat(root_dir).run()
 
     for subproject in CPP_MODULE.find_subprojects():
         for directory in [subproject.include_dir, subproject.src_dir]:
-            __cpplint(directory)
+            Cpplint(directory).run()
 
 
 def enforce_cpp_code_style(**_):
@@ -119,7 +172,7 @@ def enforce_cpp_code_style(**_):
     """
     root_dir = CPP_MODULE.root_dir
     print('Formatting C++ code in directory "' + root_dir + '"...')
-    __clang_format(root_dir, enforce_changes=True)
+    ClangFormat(root_dir, enforce_changes=True).run()
 
 
 def check_md_code_style(**_):
@@ -128,7 +181,7 @@ def check_md_code_style(**_):
     """
     for directory, recursive in MD_DIRS:
         print('Checking Markdown code style in the directory "' + directory + '"...')
-        __mdformat(directory, recursive=recursive)
+        Mdformat(directory, recursive=recursive).run()
 
 
 def enforce_md_code_style(**_):
@@ -137,7 +190,7 @@ def enforce_md_code_style(**_):
     """
     for directory, recursive in MD_DIRS:
         print('Formatting Markdown files in the directory "' + directory + '"...')
-        __mdformat(directory, recursive=recursive, enforce_changes=True)
+        Mdformat(directory, recursive=recursive, enforce_changes=True).run()
 
 
 def check_yaml_code_style(**_):
@@ -146,7 +199,7 @@ def check_yaml_code_style(**_):
     """
     for directory, recursive in YAML_DIRS:
         print('Checking YAML files in the directory "' + directory + '"...')
-        __yamlfix(directory, recursive=recursive)
+        Yamlfix(directory, recursive=recursive).run()
 
 
 def enforce_yaml_code_style(**_):
@@ -155,4 +208,4 @@ def enforce_yaml_code_style(**_):
     """
     for directory, recursive in YAML_DIRS:
         print('Formatting YAML files in the directory "' + directory + '"...')
-        __yamlfix(directory, recursive=recursive, enforce_changes=True)
+        Yamlfix(directory, recursive=recursive, enforce_changes=True).run()
