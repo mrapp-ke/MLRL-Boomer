@@ -5,7 +5,6 @@ Defines the individual targets of the build process.
 """
 import sys
 
-from functools import reduce
 from os import path
 
 from code_style import check_cpp_code_style, check_md_code_style, check_python_code_style, check_yaml_code_style, \
@@ -18,6 +17,7 @@ from modules import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from packaging import build_python_wheel, install_python_wheels
 from testing import tests_cpp, tests_python
 from util.files import DirectorySearch
+from util.format import format_iterable
 from util.reflection import import_source_file
 from util.targets import Target
 
@@ -93,8 +93,7 @@ for subdirectory in DirectorySearch().set_recursive(True).list(BUILD_MODULE.root
 invalid_targets = [target for target in COMMAND_LINE_TARGETS if target not in VALID_TARGETS]
 
 if invalid_targets:
-    print('The following targets are unknown: '
-          + reduce(lambda aggr, target: aggr + (', ' if len(aggr) > 0 else '') + target, invalid_targets, ''))
+    print('The following targets are unknown: ' + format_iterable(invalid_targets))
     sys.exit(-1)
 
 # Create temporary file ".sconsign.dblite" in the build directory...

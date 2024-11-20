@@ -6,12 +6,13 @@ Provides utility functions for running command line programs during the build pr
 import subprocess
 import sys
 
-from functools import reduce
 from os import path
+
+from util.format import format_iterable
 
 
 def __format_command(cmd: str, *args, format_args: bool = True) -> str:
-    return cmd + (reduce(lambda aggr, argument: aggr + ' ' + argument, args, '') if format_args else '')
+    return cmd + (format_iterable(args, separator=' ') if format_args else '')
 
 
 def __is_virtual_environment() -> bool:
