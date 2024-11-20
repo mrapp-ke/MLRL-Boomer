@@ -9,18 +9,15 @@ import sys
 from os import path
 
 from util.format import format_iterable
+from util.venv import in_virtual_environment
 
 
 def __format_command(cmd: str, *args, format_args: bool = True) -> str:
     return cmd + (format_iterable(args, separator=' ') if format_args else '')
 
 
-def __is_virtual_environment() -> bool:
-    return sys.prefix != sys.base_prefix
-
-
 def __get_qualified_command(cmd: str) -> str:
-    if __is_virtual_environment():
+    if in_virtual_environment():
         # On Windows, we use the relative path to the command's executable within the virtual environment, if such an
         # executable exists. This circumvents situations where the PATH environment variable has not been updated after
         # activating the virtual environment. This can prevent the executables from being found or can lead to the wrong
