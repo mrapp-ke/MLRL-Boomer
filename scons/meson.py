@@ -6,7 +6,7 @@ Provides classes that allow to run the external program "meson".
 from abc import ABC
 from typing import List
 
-from build_options import BuildOptions
+from compilation.build_options import BuildOptions
 from util.run import Program
 
 

@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for compiling C++ code.
 """
-from build_options import BuildOptions, EnvBuildOption
+from compilation.build_options import BuildOptions, EnvBuildOption
 from meson import MesonCompile, MesonConfigure, MesonInstall, MesonSetup
 from modules import CPP_MODULE
 
