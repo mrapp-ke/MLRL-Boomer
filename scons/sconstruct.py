@@ -9,7 +9,7 @@ from os import path
 
 from code_style import check_cpp_code_style, check_md_code_style, check_python_code_style, check_yaml_code_style, \
     enforce_cpp_code_style, enforce_md_code_style, enforce_python_code_style, enforce_yaml_code_style
-from compilation import compile_cpp, compile_cython, install_cpp, install_cython, setup_cpp, setup_cython
+from cython import compile_cython, install_cython, setup_cython
 from dependencies import check_dependency_versions, install_runtime_dependencies
 from documentation import apidoc_cpp, apidoc_cpp_tocfile, apidoc_python, apidoc_python_tocfile, doc
 from github_actions import check_github_actions, update_github_actions
@@ -20,6 +20,8 @@ from util.files import DirectorySearch
 from util.format import format_iterable
 from util.reflection import import_source_file
 from util.targets import Target
+
+from cpp import compile_cpp, install_cpp, setup_cpp
 
 from SCons.Script import COMMAND_LINE_TARGETS
 from SCons.Script.SConscript import SConsEnvironment

@@ -4,10 +4,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow to run the external program "meson".
 """
 from abc import ABC
+from typing import List
 
 from build_options import BuildOptions
 from util.run import Program
-from typing import List
 
 
 def build_options_as_meson_arguments(build_options: BuildOptions) -> List[str]:
