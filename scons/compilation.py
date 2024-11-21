@@ -3,101 +3,19 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for compiling C++ and Cython code.
 """
-from os import environ
-from typing import List, Optional
-
+from build_options import BuildOptions, EnvBuildOption
 from modules import CPP_MODULE, PYTHON_MODULE
-from util.env import get_env
 from util.run import Program
 
-
-class BuildOptions:
-    """
-    Allows to obtain build options from environment variables.
-    """
-
-    class BuildOption:
-        """
-        A single build option.
-        """
-
-        def __init__(self, name: str, subpackage: Optional[str] = None):
-            """
-            :param name:        The name of the build option
-            :param subpackage:  The subpackage, the build option corresponds to, or None, if it is a global option
-            """
-            self.name = name
-            self.subpackage = subpackage
-
-        @property
-        def key(self) -> str:
-            """
-            The key to be used for setting the build option.
-            """
-            return (self.subpackage + ':' if self.subpackage else '') + self.name
-
-        @property
-        def value(self) -> Optional[str]:
-            """
-            Returns the value to be set for the build option.
-
-            :return: The value to be set or None, if no value should be set
-            """
-            value = get_env(environ, self.name.upper(), None)
-
-            if value:
-                value = value.strip()
-
-            return value
-
-    def __init__(self):
-        self.build_options = []
-
-    def add(self, name: str, subpackage: Optional[str] = None) -> 'BuildOptions':
-        """
-        Adds a build option.
-
-        :param name:        The name of the build option
-        :param subpackage:  The subpackage, the build option corresponds to, or None, if it is a global option
-        :return:            The `BuildOptions` itself
-        """
-        self.build_options.append(BuildOptions.BuildOption(name=name, subpackage=subpackage))
-        return self
-
-    def as_arguments(self) -> List[str]:
-        """
-        Returns a list of arguments to be passed to the command "meson configure" for setting the build options.
-
-        :return: A list of arguments
-        """
-        arguments = []
-
-        for build_option in self.build_options:
-            value = build_option.value
-
-            if value:
-                arguments.append('-D')
-                arguments.append(build_option.key + '=' + value)
-
-        return arguments
-
-    def __bool__(self) -> bool:
-        for build_option in self.build_options:
-            if build_option.value:
-                return True
-
-        return False
-
-
 CPP_BUILD_OPTIONS = BuildOptions() \
-        .add(name='subprojects') \
-        .add(name='test_support', subpackage='common') \
-        .add(name='multi_threading_support', subpackage='common') \
-        .add(name='gpu_support', subpackage='common')
+        .add(EnvBuildOption(name='subprojects')) \
+        .add(EnvBuildOption(name='test_support', subpackage='common')) \
+        .add(EnvBuildOption(name='multi_threading_support', subpackage='common')) \
+        .add(EnvBuildOption(name='gpu_support', subpackage='common'))
 
 
 CYTHON_BUILD_OPTIONS = BuildOptions() \
-        .add(name='subprojects')
+        .add(EnvBuildOption(name='subprojects'))
 
 
 class MesonSetup(Program):
