@@ -5,7 +5,7 @@ Provides classes that allow to configure build options.
 """
 from abc import ABC, abstractmethod
 from os import environ
-from typing import Iterable, List, Optional
+from typing import Iterable, Optional
 
 from util.env import get_env
 
@@ -84,23 +84,6 @@ class BuildOptions(Iterable):
         """
         self.build_options.add(build_option)
         return self
-
-    def as_arguments(self) -> List[str]:
-        """
-        Returns a list of arguments to be passed to the command "meson configure" for setting the build options.
-
-        :return: A list of arguments
-        """
-        arguments = []
-
-        for build_option in self:
-            value = build_option.value
-
-            if value:
-                arguments.append('-D')
-                arguments.append(build_option.key + '=' + value)
-
-        return arguments
 
     def __iter__(self):
         return iter(self.build_options)

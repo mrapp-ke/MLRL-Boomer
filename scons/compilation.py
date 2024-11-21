@@ -4,8 +4,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for compiling C++ and Cython code.
 """
 from build_options import BuildOptions, EnvBuildOption
+from meson import MesonCompile, MesonConfigure, MesonInstall, MesonSetup
 from modules import CPP_MODULE, PYTHON_MODULE
-from util.run import Program
 
 CPP_BUILD_OPTIONS = BuildOptions() \
         .add(EnvBuildOption(name='subprojects')) \
@@ -16,67 +16,6 @@ CPP_BUILD_OPTIONS = BuildOptions() \
 
 CYTHON_BUILD_OPTIONS = BuildOptions() \
         .add(EnvBuildOption(name='subprojects'))
-
-
-class MesonSetup(Program):
-    """
-    Allows to run the external program "meson setup".
-    """
-
-    def __init__(self, build_directory: str, source_directory: str, build_options: BuildOptions = BuildOptions()):
-        """
-        :param build_directory:     The path to the build directory
-        :param source_directory:    The path to the source directory
-        :param build_options:       The build options to be used
-        """
-        super().__init__('meson', 'setup', *build_options.as_arguments(), build_directory, source_directory)
-        self.print_arguments(True)
-
-
-class MesonConfigure(Program):
-    """
-    Allows to run the external program "meson configure".
-    """
-
-    def __init__(self, build_directory: str, build_options: BuildOptions = BuildOptions()):
-        """
-        :param build_directory: The path to the build directory
-        :param build_options:   The build options to be used
-        """
-        super().__init__('meson', 'configure', *build_options.as_arguments(), build_directory)
-        self.print_arguments(True)
-        self.build_options = build_options
-
-    def run(self):
-        if self.build_options:
-            print('Configuring build options according to environment variables...')
-            super().run()
-
-
-class MesonCompile(Program):
-    """
-    Allows to run the external program "meson compile".
-    """
-
-    def __init__(self, build_directory: str):
-        """
-        :param build_directory: The path to the build directory
-        """
-        super().__init__('meson', 'compile', '-C', build_directory)
-        self.print_arguments(True)
-
-
-class MesonInstall(Program):
-    """
-    Allows to run the external program "meson install".
-    """
-
-    def __init__(self, build_directory: str):
-        """
-        :param build_directory: The path to the build directory
-        """
-        super().__init__('meson', 'install', '--no-rebuild', '--only-changed', '-C', build_directory)
-        self.print_arguments(True)
 
 
 def setup_cpp(**_):
