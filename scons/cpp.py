@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for compiling C++ code.
 """
 from compilation.build_options import BuildOptions, EnvBuildOption
-from meson import MesonCompile, MesonConfigure, MesonInstall, MesonSetup
+from compilation.meson import MesonCompile, MesonConfigure, MesonInstall, MesonSetup
 from modules import CPP_MODULE
 
 BUILD_OPTIONS = BuildOptions() \
