@@ -5,9 +5,8 @@ Provides utility functions for running automated tests.
 """
 from os import environ, path
 
-from modules import BUILD_MODULE, CPP_MODULE, PYTHON_MODULE
+from modules import CPP_MODULE, PYTHON_MODULE
 from util.env import get_env_bool
-from util.pip import RequirementsFile
 from util.run import Program, PythonModule
 
 
@@ -15,7 +14,7 @@ def tests_cpp(**_):
     """
     Runs all automated tests of C++ code.
     """
-    Program(RequirementsFile(BUILD_MODULE.requirements_file), 'meson', 'test', '-C', CPP_MODULE.build_dir, '-v') \
+    Program('meson', 'test', '-C', CPP_MODULE.build_dir, '-v') \
         .print_arguments(True) \
         .run()
 
@@ -32,8 +31,8 @@ def tests_python(**_):
 
         if path.isdir(test_dir):
             print('Running automated tests for subpackage "' + subproject.name + '"...')
-            PythonModule(RequirementsFile(BUILD_MODULE.requirements_file), 'xmlrunner', 'discover', '--verbose',
-                                          '--start-directory', test_dir, '--output', output_directory) \
+            PythonModule('xmlrunner', 'discover', '--verbose', '--start-directory', test_dir, '--output',
+                         output_directory) \
                 .add_conditional_arguments(fail_fast, '--failfast') \
                 .print_arguments(True) \
                 .install_program(False) \

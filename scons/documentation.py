@@ -6,10 +6,9 @@ Provides utility functions for generating the documentation.
 from os import environ, makedirs, path, remove
 from typing import List
 
-from modules import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
+from modules import CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from util.env import set_env
 from util.io import read_file, write_file
-from util.pip import RequirementsFile
 from util.run import Program
 
 
@@ -20,7 +19,7 @@ def __doxygen(project_name: str, input_dir: str, output_dir: str):
     set_env(env, 'DOXYGEN_INPUT_DIR', input_dir)
     set_env(env, 'DOXYGEN_OUTPUT_DIR', output_dir)
     set_env(env, 'DOXYGEN_PREDEFINED', 'MLRL' + project_name.upper() + '_API=')
-    Program(RequirementsFile(BUILD_MODULE.requirements_file), 'doxygen', DOC_MODULE.doxygen_config_file) \
+    Program('doxygen', DOC_MODULE.doxygen_config_file) \
         .print_arguments(False) \
         .install_program(False) \
         .use_environment(env) \
@@ -28,8 +27,8 @@ def __doxygen(project_name: str, input_dir: str, output_dir: str):
 
 
 def __breathe_apidoc(source_dir: str, output_dir: str, project: str):
-    Program(RequirementsFile(DOC_MODULE.requirements_file), 'breathe-apidoc', '--members', '--project', project, '-g',
-            'file', '-o', output_dir, source_dir) \
+    Program('breathe-apidoc', '--members', '--project', project, '-g', 'file', '-o', output_dir, source_dir) \
+        .set_build_unit(DOC_MODULE) \
         .print_arguments(True) \
         .add_dependencies('breathe') \
         .install_program(False) \
@@ -37,8 +36,8 @@ def __breathe_apidoc(source_dir: str, output_dir: str, project: str):
 
 
 def __sphinx_apidoc(source_dir: str, output_dir: str):
-    Program(RequirementsFile(DOC_MODULE.requirements_file), 'sphinx-apidoc', '--separate', '--module-first', '--no-toc',
-            '-o', output_dir, source_dir, '*.so*') \
+    Program('sphinx-apidoc', '--separate', '--module-first', '--no-toc', '-o', output_dir, source_dir, '*.so*') \
+        .set_build_unit(DOC_MODULE) \
         .print_arguments(True) \
         .add_dependencies('sphinx') \
         .install_program(False) \
@@ -51,7 +50,8 @@ def __sphinx_apidoc(source_dir: str, output_dir: str):
 
 
 def __sphinx_build(source_dir: str, output_dir: str):
-    Program(RequirementsFile(DOC_MODULE.requirements_file), 'sphinx-build', '--jobs', 'auto', source_dir, output_dir) \
+    Program('sphinx-build', '--jobs', 'auto', source_dir, output_dir) \
+        .set_build_unit(DOC_MODULE) \
         .print_arguments(True) \
         .add_dependencies('furo', 'myst-parser', 'sphinxext-opengraph', 'sphinx-inline-tabs', 'sphinx-copybutton',
                           'sphinx-favicon',) \

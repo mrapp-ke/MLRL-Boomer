@@ -7,6 +7,7 @@ from subprocess import CompletedProcess
 
 from util.cmd import Command
 from util.pip import Pip
+from util.units import BuildUnit
 
 
 class Program(Command):
@@ -19,12 +20,12 @@ class Program(Command):
         Allows to customize options for running an external program.
         """
 
-        def __init__(self, requirements_file: RequirementsFile):
+        def __init__(self, build_unit: BuildUnit = BuildUnit()):
             """
-            :param requirements_file: The requirements file that should be used for looking up dependency versions
+            :param build_unit: The build unit from which the program should be run
             """
             super().__init__()
-            self.requirements_file = requirements_file
+            self.build_unit = build_unit
             self.install_program = True
             self.dependencies = set()
 
@@ -35,16 +36,25 @@ class Program(Command):
                 dependencies.append(command.command)
 
             dependencies.extend(self.dependencies)
-            Pip(self.requirements_file).install_packages(*dependencies)
+            Pip(self.build_unit).install_packages(*dependencies)
             return super().run(command, capture_output)
 
-    def __init__(self, requirements_file: RequirementsFile, program: str, *arguments: str):
+    def __init__(self, program: str, *arguments: str):
         """
-        :param requirements_file:   The requirements file that should be used for looking up dependency versions
-        :param program:             The name of the program to be run
-        :param arguments:           Optional arguments to be passed to the program
+        :param program:     The name of the program to be run
+        :param arguments:   Optional arguments to be passed to the program
         """
-        super().__init__(program, *arguments, run_options=Program.RunOptions(requirements_file))
+        super().__init__(program, *arguments, run_options=Program.RunOptions())
+
+    def set_build_unit(self, build_unit: BuildUnit) -> 'Program':
+        """
+        Sets the build unit from which the program should be run.
+
+        :param build_unit:  The build unit to be set
+        :return:            The `Program` itself
+        """
+        self.run_options.build_unit = build_unit
+        return self
 
     def install_program(self, install_program: bool) -> 'Program':
         """
@@ -72,13 +82,12 @@ class PythonModule(Program):
     Allows to run a Python module.
     """
 
-    def __init__(self, requirements_file: RequirementsFile, module: str, *arguments: str):
+    def __init__(self, module: str, *arguments: str):
         """
-        :param requirements_file:   The requirements file that should be used for looking up dependency versions
-        :param module:              The name of the module to be run
-        :param arguments:           Optional arguments to be passed to the module
+        :param module:      The name of the module to be run
+        :param arguments:   Optional arguments to be passed to the module
         """
-        super().__init__(requirements_file, 'python', '-m', module, *arguments)
+        super().__init__('python', '-m', module, *arguments)
         self.module = module
         self.install_program(True)
 

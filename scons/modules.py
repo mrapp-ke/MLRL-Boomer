@@ -9,6 +9,7 @@ from os import environ, path, walk
 from typing import Callable, List, Optional
 
 from util.env import get_env_array
+from util.units import BuildUnit
 
 
 def find_files_recursively(directory: str,
@@ -36,10 +37,13 @@ def find_files_recursively(directory: str,
     return result
 
 
-class Module(ABC):
+class Module(BuildUnit, ABC):
     """
     An abstract base class for all classes that provide access to directories and files that belong to a module.
     """
+
+    def __init__(self):
+        super().__init__(path.join(self.root_dir, 'requirements.txt'))
 
     @property
     @abstractmethod
@@ -54,13 +58,6 @@ class Module(ABC):
         The path to the directory, where build files are stored.
         """
         return path.join(self.root_dir, 'build')
-
-    @property
-    def requirements_file(self) -> str:
-        """
-        The path to the requirements.txt file that specifies dependencies required by a module.
-        """
-        return path.join(self.root_dir, 'requirements.txt')
 
 
 class SourceModule(Module, ABC):

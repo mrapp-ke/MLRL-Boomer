@@ -7,7 +7,6 @@ from glob import glob
 from os import path
 
 from modules import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
-from util.pip import RequirementsFile
 from util.run import Program
 
 MD_DIRS = [('.', False), (DOC_MODULE.root_dir, True), (PYTHON_MODULE.root_dir, True)]
@@ -25,8 +24,8 @@ class Yapf(Program):
         :param directory:       The path to the directory, the program should be applied to
         :param enforce_changes: True, if changes should be applied to files, False otherwise
         """
-        super().__init__(RequirementsFile(BUILD_MODULE.requirements_file), 'yapf', '-r', '-p', '--style=.style.yapf',
-                         '--exclude', '**/build/*.py', '-i' if enforce_changes else '--diff', directory)
+        super().__init__('yapf', '-r', '-p', '--style=.style.yapf', '--exclude', '**/build/*.py',
+                         '-i' if enforce_changes else '--diff', directory)
 
 
 class Isort(Program):
@@ -39,8 +38,7 @@ class Isort(Program):
         :param directory:       The path to the directory, the program should be applied to
         :param enforce_changes: True, if changes should be applied to files, False otherwise
         """
-        super().__init__(RequirementsFile(BUILD_MODULE.requirements_file), 'isort', directory, '--settings-path', '.',
-                         '--virtual-env', 'venv', '--skip-gitignore')
+        super().__init__('isort', directory, '--settings-path', '.', '--virtual-env', 'venv', '--skip-gitignore')
         self.add_conditional_arguments(not enforce_changes, '--check')
 
 
@@ -53,8 +51,8 @@ class Pylint(Program):
         """
         :param directory: The path to the directory, the program should be applied to
         """
-        super().__init__(RequirementsFile(BUILD_MODULE.requirements_file), 'pylint', directory, '--jobs=0',
-                         '--recursive=y', '--ignore=build', '--rcfile=.pylintrc', '--score=n')
+        super().__init__('pylint', directory, '--jobs=0', '--recursive=y', '--ignore=build', '--rcfile=.pylintrc',
+                         '--score=n')
 
 
 class ClangFormat(Program):
@@ -67,7 +65,7 @@ class ClangFormat(Program):
         :param directory:       The path to the directory, the program should be applied to
         :param enforce_changes: True, if changes should be applied to files, False otherwise
         """
-        super().__init__(RequirementsFile(BUILD_MODULE.requirements_file), 'clang-format', '--style=file')
+        super().__init__('clang-format', '--style=file')
         self.add_conditional_arguments(enforce_changes, '-i')
         self.add_conditional_arguments(not enforce_changes, '--dry-run', '--Werror')
         self.add_arguments(*glob(path.join(directory, '**', '*.hpp'), recursive=True))
@@ -83,8 +81,7 @@ class Cpplint(Program):
         """
         :param directory: The path to the directory, the program should be applied to
         """
-        super().__init__(RequirementsFile(BUILD_MODULE.requirements_file), 'cpplint', directory, '--quiet',
-                         '--recursive')
+        super().__init__('cpplint', directory, '--quiet', '--recursive')
 
 
 class Mdformat(Program):
@@ -98,8 +95,7 @@ class Mdformat(Program):
         :param recursive:       True, if the program should be applied to subdirectories, False otherwise
         :param enforce_changes: True, if changes should be applied to files, False otherwise
         """
-        super().__init__(RequirementsFile(BUILD_MODULE.requirements_file), 'mdformat', '--number', '--wrap', 'no',
-                         '--end-of-line', 'lf')
+        super().__init__('mdformat', '--number', '--wrap', 'no', '--end-of-line', 'lf')
         self.add_conditional_arguments(not enforce_changes, '--check')
         suffix_md = '*.md'
         glob_path = path.join(directory, '**', '**', suffix_md) if recursive else path.join(directory, suffix_md)
@@ -118,7 +114,7 @@ class Yamlfix(Program):
         :param recursive:       True, if the program should be applied to subdirectories, False otherwise
         :param enforce_changes: True, if changes should be applied to files, False otherwise
         """
-        super().__init__(RequirementsFile(BUILD_MODULE.requirements_file), 'yamlfix', '--config-file', '.yamlfix.toml')
+        super().__init__('yamlfix', '--config-file', '.yamlfix.toml')
         self.add_conditional_arguments(not enforce_changes, '--check')
         glob_path = path.join(directory, '**', '*') if recursive else path.join(directory, '*')
         glob_path_hidden = path.join(directory, '**', '.*') if recursive else path.join(directory, '.*')
