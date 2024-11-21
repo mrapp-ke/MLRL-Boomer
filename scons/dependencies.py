@@ -51,7 +51,7 @@ def __install_module_dependencies(module: Module, *dependencies: str):
     requirements_file = module.requirements_file
 
     if path.isfile(requirements_file):
-        Pip(RequirementsFile(requirements_file)).install_packages(*(dependencies)
+        Pip(module).install_packages(*dependencies)
 
 
 def __print_table(header: List[str], rows: List[List[str]]):

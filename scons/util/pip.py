@@ -10,6 +10,7 @@ from typing import Dict, Optional, Set
 
 from util.cmd import Command as Cmd
 from util.io import read_file
+from util.units import BuildUnit
 
 
 @dataclass
@@ -189,11 +190,11 @@ class Pip:
         except RuntimeError:
             Pip.__install_requirement(requirement)
 
-    def __init__(self, requirements_file: RequirementsFile):
+    def __init__(self, build_unit: BuildUnit = BuildUnit()):
         """
-        :param requirements_file: The requirements file that should be used for looking up package versions
+        :param build_unit: The build unit for which packages should be installed
         """
-        self.requirements_file = requirements_file
+        self.requirements_file = RequirementsFile(build_unit.requirements_file)
 
     def install_packages(self, *package_names: str, accept_missing: bool = False):
         """

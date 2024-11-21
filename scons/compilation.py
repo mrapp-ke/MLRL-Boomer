@@ -6,9 +6,8 @@ Provides utility functions for compiling C++ and Cython code.
 from os import environ
 from typing import List, Optional
 
-from modules import BUILD_MODULE, CPP_MODULE, PYTHON_MODULE
+from modules import CPP_MODULE, PYTHON_MODULE
 from util.env import get_env
-from util.pip import RequirementsFile
 from util.run import Program
 
 
@@ -112,8 +111,7 @@ class MesonSetup(Program):
         :param source_directory:    The path to the source directory
         :param build_options:       The build options to be used
         """
-        super().__init__(RequirementsFile(BUILD_MODULE.requirements_file), 'meson', 'setup',
-                         *build_options.as_arguments(), build_directory, source_directory)
+        super().__init__('meson', 'setup', *build_options.as_arguments(), build_directory, source_directory)
         self.print_arguments(True)
 
 
@@ -127,8 +125,7 @@ class MesonConfigure(Program):
         :param build_directory: The path to the build directory
         :param build_options:   The build options to be used
         """
-        super().__init__(RequirementsFile(BUILD_MODULE.requirements_file), 'meson', 'configure',
-                         *build_options.as_arguments(), build_directory)
+        super().__init__('meson', 'configure', *build_options.as_arguments(), build_directory)
         self.print_arguments(True)
         self.build_options = build_options
 
@@ -147,7 +144,7 @@ class MesonCompile(Program):
         """
         :param build_directory: The path to the build directory
         """
-        super().__init__(RequirementsFile(BUILD_MODULE.requirements_file), 'meson', 'compile', '-C', build_directory)
+        super().__init__('meson', 'compile', '-C', build_directory)
         self.print_arguments(True)
 
 
@@ -160,8 +157,7 @@ class MesonInstall(Program):
         """
         :param build_directory: The path to the build directory
         """
-        super().__init__(RequirementsFile(BUILD_MODULE.requirements_file), 'meson', 'install', '--no-rebuild',
-                         '--only-changed', '-C', build_directory)
+        super().__init__('meson', 'install', '--no-rebuild', '--only-changed', '-C', build_directory)
         self.print_arguments(True)
 
 
