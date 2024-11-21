@@ -11,9 +11,9 @@ from glob import glob
 from os import environ, path
 from typing import List, Optional, Set
 
-from dependencies import install_build_dependencies
 from util.env import get_env
 from util.io import read_file, write_file
+from util.pip import Pip
 
 ENV_GITHUB_TOKEN = 'GITHUB_TOKEN'
 
@@ -172,7 +172,7 @@ class Workflow:
 
 
 def __read_workflow(workflow_file: str) -> Workflow:
-    install_build_dependencies('pyyaml')
+    Pip().install_packages('pyyaml')
     # pylint: disable=import-outside-toplevel
     import yaml
     with read_file(workflow_file) as file:
@@ -231,7 +231,7 @@ def __parse_workflows(*workflow_files: str) -> Set[Workflow]:
 
 def __query_latest_action_version(action: Action, github_token: Optional[str] = None) -> Optional[ActionVersion]:
     repository_name = action.repository
-    install_build_dependencies('pygithub')
+    Pip().install_packages('pygithub')
     # pylint: disable=import-outside-toplevel
     from github import Auth, Github, UnknownObjectException
 
@@ -282,7 +282,7 @@ def __parse_all_workflows() -> Set[Workflow]:
 
 
 def __print_table(header: List[str], rows: List[List[str]]):
-    install_build_dependencies('tabulate')
+    Pip().install_packages('tabulate')
     # pylint: disable=import-outside-toplevel
     from tabulate import tabulate
     print(tabulate(rows, headers=header))

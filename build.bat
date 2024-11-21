@@ -20,7 +20,7 @@ if not exist "%VENV_DIR%" (
 
 if exist "%VENV_DIR%" (
     call %VENV_DIR%\Scripts\activate || exit
-    .\%VENV_DIR%\Scripts\python -c "import sys;sys.path.append('%SCONS_DIR%');import dependencies;dependencies.install_build_dependencies('scons')" || exit
+    .\%VENV_DIR%\Scripts\python -c "import sys;sys.path.append('%SCONS_DIR%');from util.pip import Pip;Pip().install_packages('scons')" || exit
     .\%VENV_DIR%\Scripts\python -m SCons --silent --file %SCONS_DIR%\sconstruct.py %* || exit
     call deactivate || exit
 )

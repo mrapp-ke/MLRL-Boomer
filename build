@@ -22,7 +22,7 @@ fi
 
 if [ -d "$VENV_DIR" ]; then
     . $VENV_DIR/bin/activate
-    python3 -c "import sys; sys.path.append('$SCONS_DIR'); import dependencies; dependencies.install_build_dependencies('scons')"
+    python3 -c "import sys; sys.path.append('$SCONS_DIR'); from util.pip import Pip; Pip().install_packages('scons')"
     scons --silent --file $SCONS_DIR/sconstruct.py $@
     deactivate
 fi
