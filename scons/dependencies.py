@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from os import path
 from typing import List
 
-from modules import ALL_MODULES, BUILD_MODULE, CPP_MODULE, PYTHON_MODULE, Module
+from modules import ALL_MODULES, CPP_MODULE, PYTHON_MODULE, Module
 from util.pip import Package, Pip, RequirementsFile
 
 
@@ -55,19 +55,10 @@ def __install_module_dependencies(module: Module, *dependencies: str):
 
 
 def __print_table(header: List[str], rows: List[List[str]]):
-    install_build_dependencies('tabulate')
+    Pip().install_packages('tabulate')
     # pylint: disable=import-outside-toplevel
     from tabulate import tabulate
     print(tabulate(rows, headers=header))
-
-
-def install_build_dependencies(*dependencies: str):
-    """
-    Installs one or several dependencies that are required by the build system.
-
-    :param dependencies: The names of the dependencies that should be installed
-    """
-    __install_module_dependencies(BUILD_MODULE, *dependencies)
 
 
 def install_runtime_dependencies(**_):
