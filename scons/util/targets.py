@@ -4,9 +4,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for defining individual targets of the build process.
 """
 from abc import ABC, abstractmethod
-from typing import Callable
+from typing import Callable, List
 
 from util.modules import ModuleRegistry
+from util.units import BuildUnit
 
 from SCons.Script.SConscript import SConsEnvironment as Environment
 
@@ -15,6 +16,19 @@ class Target(ABC):
     """
     An abstract base class for all targets of the build system.
     """
+
+    class Builder(ABC):
+        """
+        An abstract base class for all builders that allow to configure and create targets.
+        """
+
+        @abstractmethod
+        def build(self) -> 'Target':
+            """
+            Creates and returns the target that has been configured via the builder.
+
+            :return: The target that has been created
+            """
 
     def __init__(self, name: str):
         """
@@ -44,59 +58,57 @@ class PhonyTarget(Target):
         An abstract base class for all classes that can be run via a phony target.
         """
 
-        def run(self, modules: ModuleRegistry):
+        def run(self, build_unit: BuildUnit, modules: ModuleRegistry):
             """
             Must be implemented by subclasses in order to run the target.
 
-            :param modules: A `ModuleRegistry` that can be used by the target for looking up modules
+            :param build_unit:  The build unit, the target belongs to
+            :param modules:     A `ModuleRegistry` that can be used by the target for looking up modules
             """
 
-    class Builder:
+    class Builder(Target.Builder):
         """
         A builder that allows to configure and create phony targets.
         """
 
-        def __init__(self, name: str):
+        def __init__(self, target_builder: 'TargetBuilder', name: str):
             """
-            :param name: The name of the target
+            :param target_builder:  The `TargetBuilder`, this builder has been created from
+            :param name:            The name of the target
             """
+            self.target_builder = target_builder
             self.name = name
             self.function = None
             self.runnable = None
 
-        def set_function(self, function: 'PhonyTarget.Function') -> 'PhonyTarget.Builder':
+        def set_function(self, function: 'PhonyTarget.Function') -> 'TargetBuilder':
             """
             Sets a function to be run by the target.
 
             :param function:    The function to be run
-            :return:            The `PhonyTarget.Builder` itself
+            :return:            The `TargetBuilder`, this builder has been created from
             """
             self.function = function
-            return self
+            return self.target_builder
 
-        def set_runnable(self, runnable: 'PhonyTarget.Runnable') -> 'PhonyTarget.Builder':
+        def set_runnable(self, runnable: 'PhonyTarget.Runnable') -> 'TargetBuilder':
             """
             Sets a runnable to be run by the target.
 
             :param runnable:    The runnable to be run
-            :return:            The `PhonyTarget.Builder` itself
+            :return:            The `TargetBuilder`, this builder has been created from
             """
             self.runnable = runnable
-            return self
+            return self.target_builder
 
-        def build(self) -> 'PhonyTarget':
-            """
-            Creates and returns the phony target that has been configured via the builder.
-
-            :return: The phony target that has been created
-            """
+        def build(self) -> Target:
 
             def action(module_registry: ModuleRegistry):
                 if self.function:
                     self.function()
 
                 if self.runnable:
-                    self.runnable.run(module_registry)
+                    self.runnable.run(self.target_builder.build_unit, module_registry)
 
             return PhonyTarget(self.name, action)
 
@@ -110,3 +122,35 @@ class PhonyTarget(Target):
 
     def register(self, environment: Environment, module_registry: ModuleRegistry):
         environment.AlwaysBuild(environment.Alias(self.name, None, action=lambda **_: self.action(module_registry)))
+
+
+class TargetBuilder:
+    """
+    A builder that allows to configure and create multiple targets.
+    """
+
+    def __init__(self, build_unit: BuildUnit = BuildUnit()):
+        """
+        :param build_unit: The build unit, the targets belong to
+        """
+        self.build_unit = build_unit
+        self.target_builders = []
+
+    def add_phony_target(self, name: str) -> PhonyTarget.Builder:
+        """
+        Adds a phony target.
+
+        :param name:    The name of the target
+        :return:        A `PhonyTarget.Builder` that allows to configure the target
+        """
+        target_builder = PhonyTarget.Builder(self, name)
+        self.target_builders.append(target_builder)
+        return target_builder
+
+    def build(self) -> List[Target]:
+        """
+        Creates and returns the targets that have been configured via the builder.
+
+        :return: A list that stores the targets that have been created
+        """
+        return [target_builder.build() for target_builder in self.target_builders]
