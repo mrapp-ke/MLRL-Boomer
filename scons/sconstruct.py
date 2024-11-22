@@ -18,6 +18,7 @@ from packaging import build_python_wheel, install_python_wheels
 from testing import tests_cpp, tests_python
 from util.files import DirectorySearch
 from util.format import format_iterable
+from util.modules import ModuleRegistry
 from util.reflection import import_source_file
 from util.targets import Target
 
@@ -81,6 +82,7 @@ DEFAULT_TARGET = TARGET_NAME_INSTALL_WHEELS
 
 # Register build targets...
 env = SConsEnvironment()
+module_registry = ModuleRegistry()
 
 for subdirectory in DirectorySearch().set_recursive(True).list(BUILD_MODULE.root_dir):
     init_file = path.join(subdirectory, '__init__.py')
@@ -88,7 +90,7 @@ for subdirectory in DirectorySearch().set_recursive(True).list(BUILD_MODULE.root
     if path.isfile(init_file):
         for build_target in getattr(import_source_file(init_file), 'TARGETS', []):
             if isinstance(build_target, Target):
-                build_target.register(env)
+                build_target.register(env, module_registry)
                 VALID_TARGETS.add(build_target.name)
 
 # Raise an error if any invalid targets are given...
