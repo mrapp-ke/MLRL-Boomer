@@ -9,24 +9,24 @@ from versioning.versioning import apply_development_version, increment_developme
 
 TARGETS = [
     # Targets for updating the project's version
-    PhonyTarget('increment_development_version', action=increment_development_version),
-    PhonyTarget('reset_development_version', action=reset_development_version),
-    PhonyTarget('apply_development_version', action=apply_development_version),
-    PhonyTarget('increment_patch_version', action=increment_patch_version),
-    PhonyTarget('increment_minor_version', action=increment_minor_version),
-    PhonyTarget('increment_major_version', action=increment_major_version),
+    PhonyTarget.Builder('increment_development_version').set_function(increment_development_version).build(),
+    PhonyTarget.Builder('reset_development_version').set_function(reset_development_version).build(),
+    PhonyTarget.Builder('apply_development_version').set_function(apply_development_version).build(),
+    PhonyTarget.Builder('increment_patch_version').set_function(increment_patch_version).build(),
+    PhonyTarget.Builder('increment_minor_version').set_function(increment_minor_version).build(),
+    PhonyTarget.Builder('increment_major_version').set_function(increment_major_version).build(),
 
     # Targets for validating changelogs
-    PhonyTarget('validate_changelog_bugfix', action=validate_changelog_bugfix),
-    PhonyTarget('validate_changelog_feature', action=validate_changelog_feature),
-    PhonyTarget('validate_changelog_main', action=validate_changelog_main),
+    PhonyTarget.Builder('validate_changelog_bugfix').set_function(validate_changelog_bugfix).build(),
+    PhonyTarget.Builder('validate_changelog_feature').set_function(validate_changelog_feature).build(),
+    PhonyTarget.Builder('validate_changelog_main').set_function(validate_changelog_main).build(),
 
     # Targets for updating the project's changelog
-    PhonyTarget('update_changelog_bugfix', action=update_changelog_bugfix),
-    PhonyTarget('update_changelog_feature', action=update_changelog_feature),
-    PhonyTarget('update_changelog_main', action=update_changelog_main),
+    PhonyTarget.Builder('update_changelog_bugfix').set_function(update_changelog_bugfix).build(),
+    PhonyTarget.Builder('update_changelog_feature').set_function(update_changelog_feature).build(),
+    PhonyTarget.Builder('update_changelog_main').set_function(update_changelog_main).build(),
 
     # Targets for printing information about the project
-    PhonyTarget(name='print_version', action=print_current_version),
-    PhonyTarget(name='print_latest_changelog', action=print_latest_changelog)
+    PhonyTarget.Builder('print_version').set_function(print_current_version).build(),
+    PhonyTarget.Builder('print_latest_changelog').set_function(print_latest_changelog).build()
 ]
