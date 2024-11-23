@@ -20,7 +20,7 @@ from packaging import build_python_wheel, install_python_wheels
 from testing import tests_cpp, tests_python
 from util.files import DirectorySearch
 from util.format import format_iterable
-from util.modules import ModuleRegistry
+from util.modules import Module, ModuleRegistry
 from util.reflection import import_source_file
 from util.targets import Target
 
@@ -82,9 +82,19 @@ VALID_TARGETS = {
 
 DEFAULT_TARGET = TARGET_NAME_INSTALL_WHEELS
 
+# Register modules...
+module_registry = ModuleRegistry()
+
+for subdirectory in DirectorySearch().set_recursive(True).list(BUILD_MODULE.root_dir):
+    init_file = path.join(subdirectory, '__init__.py')
+
+    if path.isfile(init_file):
+        for module in getattr(import_source_file(init_file), 'MODULES', []):
+            if isinstance(module, Module):
+                module_registry.register(module)
+
 # Register build targets...
 env = SConsEnvironment()
-module_registry = ModuleRegistry()
 
 for subdirectory in DirectorySearch().set_recursive(True).list(BUILD_MODULE.root_dir):
     init_file = path.join(subdirectory, '__init__.py')
