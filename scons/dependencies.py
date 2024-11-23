@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from os import path
 from typing import List
 
-from modules import ALL_MODULES, CPP_MODULE, PYTHON_MODULE, Module
+from modules_old import ALL_MODULES, CPP_MODULE, PYTHON_MODULE, Module
 from util.pip import Package, Pip, RequirementsFile
 
 

@@ -6,7 +6,7 @@ Provides utility functions for checking and enforcing code style definitions.
 from glob import glob
 from os import path
 
-from modules import CPP_MODULE
+from modules_old import CPP_MODULE
 from util.run import Program
 
 

@@ -5,7 +5,7 @@ Provides utility functions for building and installing Python wheel packages.
 """
 from typing import List
 
-from modules import PYTHON_MODULE
+from modules_old import PYTHON_MODULE
 from util.run import PythonModule
 
 

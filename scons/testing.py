@@ -5,7 +5,7 @@ Provides utility functions for running automated tests.
 """
 from os import environ, path
 
-from modules import CPP_MODULE, PYTHON_MODULE
+from modules_old import CPP_MODULE, PYTHON_MODULE
 from util.env import get_env_bool
 from util.run import Program, PythonModule
 

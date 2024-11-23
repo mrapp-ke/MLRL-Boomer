@@ -5,7 +5,7 @@ Provides utility functions for compiling C++ code.
 """
 from compilation.build_options import BuildOptions, EnvBuildOption
 from compilation.meson import MesonCompile, MesonConfigure, MesonInstall, MesonSetup
-from modules import CPP_MODULE
+from modules_old import CPP_MODULE
 
 BUILD_OPTIONS = BuildOptions() \
         .add(EnvBuildOption(name='subprojects')) \
