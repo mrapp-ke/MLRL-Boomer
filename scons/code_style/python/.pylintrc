@@ -39,7 +39,8 @@ disable=no-name-in-module,
         too-many-locals,
         too-many-lines,
         too-many-public-methods,
-        too-many-statements
+        too-many-statements,
+        wrong-import-order
 
 [STRING]
 
