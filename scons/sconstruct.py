@@ -7,8 +7,10 @@ import sys
 
 from os import path
 
-from code_style import check_cpp_code_style, check_md_code_style, check_python_code_style, check_yaml_code_style, \
-    enforce_cpp_code_style, enforce_md_code_style, enforce_python_code_style, enforce_yaml_code_style
+from code_style_cpp import check_cpp_code_style, enforce_cpp_code_style
+from code_style_md import check_md_code_style, enforce_md_code_style
+from code_style_python import check_python_code_style, enforce_python_code_style
+from code_style_yaml import check_yaml_code_style, enforce_yaml_code_style
 from cython import compile_cython, install_cython, setup_cython
 from dependencies import check_dependency_versions, install_runtime_dependencies
 from documentation import apidoc_cpp, apidoc_cpp_tocfile, apidoc_python, apidoc_python_tocfile, doc
