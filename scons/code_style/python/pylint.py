@@ -3,7 +3,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow to run the external program "isort".
 """
+from os import path
+
+from code_style.modules import CodeModule
 from util.run import Program
+from util.units import BuildUnit
 
 
 class PyLint(Program):
@@ -11,9 +15,11 @@ class PyLint(Program):
     Allows to run the external program "pylint".
     """
 
-    def __init__(self, directory: str):
+    def __init__(self, build_unit: BuildUnit, module: CodeModule):
         """
-        :param directory: The path to the directory, the program should be applied to
+        :param build_unit:  The build unit from which the program should be run
+        :param module:      The module, the program should be applied to
         """
-        super().__init__('pylint', directory, '--jobs=0', '--recursive=y', '--ignore=build', '--rcfile=.pylintrc',
-                         '--score=n')
+        super().__init__('pylint', *module.find_source_files(), '--jobs=0', '--ignore=build',
+                         '--rcfile=' + path.join(build_unit.root_directory, '.pylintrc'), '--score=n')
+        self.set_build_unit(build_unit)

@@ -7,10 +7,7 @@ import sys
 
 from os import path
 
-from code_style_cpp import check_cpp_code_style, enforce_cpp_code_style
-from code_style_md import check_md_code_style, enforce_md_code_style
-from code_style_python import check_python_code_style, enforce_python_code_style
-from code_style_yaml import check_yaml_code_style, enforce_yaml_code_style
+from cpp import compile_cpp, install_cpp, setup_cpp
 from cython import compile_cython, install_cython, setup_cython
 from dependencies import check_dependency_versions, install_runtime_dependencies
 from documentation import apidoc_cpp, apidoc_cpp_tocfile, apidoc_python, apidoc_python_tocfile, doc
@@ -23,8 +20,6 @@ from util.format import format_iterable
 from util.modules import Module, ModuleRegistry
 from util.reflection import import_source_file
 from util.targets import Target, TargetRegistry
-
-from cpp import compile_cpp, install_cpp, setup_cpp
 
 from SCons.Script import COMMAND_LINE_TARGETS
 
@@ -39,16 +34,6 @@ def __print_if_clean(environment, message: str):
 
 
 # Define target names...
-TARGET_NAME_TEST_FORMAT = 'test_format'
-TARGET_NAME_TEST_FORMAT_PYTHON = TARGET_NAME_TEST_FORMAT + '_python'
-TARGET_NAME_TEST_FORMAT_CPP = TARGET_NAME_TEST_FORMAT + '_cpp'
-TARGET_NAME_TEST_FORMAT_MD = TARGET_NAME_TEST_FORMAT + '_md'
-TARGET_NAME_TEST_FORMAT_YAML = TARGET_NAME_TEST_FORMAT + '_yaml'
-TARGET_NAME_FORMAT = 'format'
-TARGET_NAME_FORMAT_PYTHON = TARGET_NAME_FORMAT + '_python'
-TARGET_NAME_FORMAT_CPP = TARGET_NAME_FORMAT + '_cpp'
-TARGET_NAME_FORMAT_MD = TARGET_NAME_FORMAT + '_md'
-TARGET_NAME_FORMAT_YAML = TARGET_NAME_FORMAT + '_yaml'
 TARGET_NAME_DEPENDENCIES_CHECK = 'check_dependencies'
 TARGET_NAME_GITHUB_ACTIONS_CHECK = 'check_github_actions'
 TARGET_NAME_GITHUB_ACTIONS_UPDATE = 'update_github_actions'
@@ -70,13 +55,11 @@ TARGET_NAME_APIDOC_PYTHON = TARGET_NAME_APIDOC + '_python'
 TARGET_NAME_DOC = 'doc'
 
 VALID_TARGETS = {
-    TARGET_NAME_TEST_FORMAT, TARGET_NAME_TEST_FORMAT_PYTHON, TARGET_NAME_TEST_FORMAT_CPP, TARGET_NAME_TEST_FORMAT_MD,
-    TARGET_NAME_TEST_FORMAT_YAML, TARGET_NAME_FORMAT, TARGET_NAME_FORMAT_PYTHON, TARGET_NAME_FORMAT_CPP,
-    TARGET_NAME_FORMAT_MD, TARGET_NAME_FORMAT_YAML, TARGET_NAME_DEPENDENCIES_CHECK, TARGET_NAME_GITHUB_ACTIONS_CHECK,
-    TARGET_NAME_GITHUB_ACTIONS_UPDATE, TARGET_NAME_VENV, TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP,
-    TARGET_NAME_COMPILE_CYTHON, TARGET_NAME_INSTALL, TARGET_NAME_INSTALL_CPP, TARGET_NAME_INSTALL_CYTHON,
-    TARGET_NAME_BUILD_WHEELS, TARGET_NAME_INSTALL_WHEELS, TARGET_NAME_TESTS, TARGET_NAME_TESTS_CPP,
-    TARGET_NAME_TESTS_PYTHON, TARGET_NAME_APIDOC, TARGET_NAME_APIDOC_CPP, TARGET_NAME_APIDOC_PYTHON, TARGET_NAME_DOC
+    TARGET_NAME_DEPENDENCIES_CHECK, TARGET_NAME_GITHUB_ACTIONS_CHECK, TARGET_NAME_GITHUB_ACTIONS_UPDATE,
+    TARGET_NAME_VENV, TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP, TARGET_NAME_COMPILE_CYTHON, TARGET_NAME_INSTALL,
+    TARGET_NAME_INSTALL_CPP, TARGET_NAME_INSTALL_CYTHON, TARGET_NAME_BUILD_WHEELS, TARGET_NAME_INSTALL_WHEELS,
+    TARGET_NAME_TESTS, TARGET_NAME_TESTS_CPP, TARGET_NAME_TESTS_PYTHON, TARGET_NAME_APIDOC, TARGET_NAME_APIDOC_CPP,
+    TARGET_NAME_APIDOC_PYTHON, TARGET_NAME_DOC
 }
 
 DEFAULT_TARGET = TARGET_NAME_INSTALL_WHEELS
@@ -116,23 +99,6 @@ if invalid_targets:
 
 # Create temporary file ".sconsign.dblite" in the build directory...
 env.SConsignFile(name=path.relpath(path.join(BUILD_MODULE.build_dir, '.sconsign'), BUILD_MODULE.root_dir))
-
-# Define targets for checking code style definitions...
-target_test_format_python = __create_phony_target(env, TARGET_NAME_TEST_FORMAT_PYTHON, action=check_python_code_style)
-target_test_format_cpp = __create_phony_target(env, TARGET_NAME_TEST_FORMAT_CPP, action=check_cpp_code_style)
-target_test_format_md = __create_phony_target(env, TARGET_NAME_TEST_FORMAT_MD, action=check_md_code_style)
-target_test_format_yaml = __create_phony_target(env, TARGET_NAME_TEST_FORMAT_YAML, action=check_yaml_code_style)
-target_test_format = __create_phony_target(env, TARGET_NAME_TEST_FORMAT)
-env.Depends(target_test_format,
-            [target_test_format_python, target_test_format_cpp, target_test_format_md, target_test_format_yaml])
-
-# Define targets for enforcing code style definitions...
-target_format_python = __create_phony_target(env, TARGET_NAME_FORMAT_PYTHON, action=enforce_python_code_style)
-target_format_cpp = __create_phony_target(env, TARGET_NAME_FORMAT_CPP, action=enforce_cpp_code_style)
-target_format_md = __create_phony_target(env, TARGET_NAME_FORMAT_MD, action=enforce_md_code_style)
-target_format_yaml = __create_phony_target(env, TARGET_NAME_FORMAT_YAML, action=enforce_yaml_code_style)
-target_format = __create_phony_target(env, TARGET_NAME_FORMAT)
-env.Depends(target_format, [target_format_python, target_format_cpp, target_format_md, target_format_yaml])
 
 # Define target for checking dependency versions...
 __create_phony_target(env, TARGET_NAME_DEPENDENCIES_CHECK, action=check_dependency_versions)
