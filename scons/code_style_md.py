@@ -6,7 +6,7 @@ Provides utility functions for checking and enforcing code style definitions.
 from glob import glob
 from os import path
 
-from modules import DOC_MODULE, PYTHON_MODULE
+from modules_old import DOC_MODULE, PYTHON_MODULE
 from util.run import Program
 
 MD_DIRS = [('.', False), (DOC_MODULE.root_dir, True), (PYTHON_MODULE.root_dir, True)]

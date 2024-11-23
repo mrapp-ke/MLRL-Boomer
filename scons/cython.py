@@ -5,7 +5,7 @@ Provides utility functions for compiling Cython code.
 """
 from compilation.build_options import BuildOptions, EnvBuildOption
 from compilation.meson import MesonCompile, MesonConfigure, MesonInstall, MesonSetup
-from modules import PYTHON_MODULE
+from modules_old import PYTHON_MODULE
 
 BUILD_OPTIONS = BuildOptions() \
         .add(EnvBuildOption(name='subprojects'))

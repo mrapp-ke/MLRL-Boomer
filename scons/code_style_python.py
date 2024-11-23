@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for checking and enforcing code style definitions.
 """
-from modules import BUILD_MODULE, DOC_MODULE, PYTHON_MODULE
+from modules_old import BUILD_MODULE, DOC_MODULE, PYTHON_MODULE
 from util.run import Program
 
 MD_DIRS = [('.', False), (DOC_MODULE.root_dir, True), (PYTHON_MODULE.root_dir, True)]
