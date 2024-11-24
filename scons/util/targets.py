@@ -78,37 +78,37 @@ class PhonyTarget(Target):
             """
             self.target_builder = target_builder
             self.name = name
-            self.function = None
-            self.runnable = None
+            self.functions = []
+            self.runnables = []
 
-        def set_function(self, function: 'PhonyTarget.Function') -> 'TargetBuilder':
+        def set_functions(self, *functions: 'PhonyTarget.Function') -> 'TargetBuilder':
             """
-            Sets a function to be run by the target.
+            Sets one or several functions to be run by the target.
 
-            :param function:    The function to be run
+            :param functions:   The functions to be set
             :return:            The `TargetBuilder`, this builder has been created from
             """
-            self.function = function
+            self.functions = list(functions)
             return self.target_builder
 
-        def set_runnable(self, runnable: 'PhonyTarget.Runnable') -> 'TargetBuilder':
+        def set_runnables(self, *runnables: 'PhonyTarget.Runnable') -> 'TargetBuilder':
             """
-            Sets a runnable to be run by the target.
+            Sets one or several `Runnable` objects to be run by the target.
 
-            :param runnable:    The runnable to be run
+            :param runnables:   The `Runnable` objects to be set
             :return:            The `TargetBuilder`, this builder has been created from
             """
-            self.runnable = runnable
+            self.runnables = list(runnables)
             return self.target_builder
 
         def build(self) -> Target:
 
             def action(module_registry: ModuleRegistry):
-                if self.function:
-                    self.function()
+                for function in self.functions:
+                    function()
 
-                if self.runnable:
-                    self.runnable.run(self.target_builder.build_unit, module_registry)
+                for runnable in self.runnables:
+                    runnable.run(self.target_builder.build_unit, module_registry)
 
             return PhonyTarget(self.name, action)
 
