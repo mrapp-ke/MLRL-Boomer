@@ -22,16 +22,15 @@ from util.files import DirectorySearch
 from util.format import format_iterable
 from util.modules import Module, ModuleRegistry
 from util.reflection import import_source_file
-from util.targets import Target
+from util.targets import Target, TargetRegistry
 
 from cpp import compile_cpp, install_cpp, setup_cpp
 
 from SCons.Script import COMMAND_LINE_TARGETS
-from SCons.Script.SConscript import SConsEnvironment
 
 
-def __create_phony_target(environment, target, action=None):
-    return environment.AlwaysBuild(environment.Alias(target, None, action))
+def __create_phony_target(environment, target_name, action=None):
+    return environment.AlwaysBuild(environment.Alias(target_name, None, action))
 
 
 def __print_if_clean(environment, message: str):
@@ -94,16 +93,19 @@ for subdirectory in DirectorySearch().set_recursive(True).list(BUILD_MODULE.root
                 module_registry.register(module)
 
 # Register build targets...
-env = SConsEnvironment()
+target_registry = TargetRegistry(module_registry)
+env = target_registry.environment
 
 for subdirectory in DirectorySearch().set_recursive(True).list(BUILD_MODULE.root_dir):
     init_file = path.join(subdirectory, '__init__.py')
 
     if path.isfile(init_file):
-        for build_target in getattr(import_source_file(init_file), 'TARGETS', []):
-            if isinstance(build_target, Target):
-                build_target.register(env, module_registry)
-                VALID_TARGETS.add(build_target.name)
+        for target in getattr(import_source_file(init_file), 'TARGETS', []):
+            if isinstance(target, Target):
+                target_registry.add_target(target)
+                VALID_TARGETS.add(target.name)
+
+target_registry.register()
 
 # Raise an error if any invalid targets are given...
 invalid_targets = [target for target in COMMAND_LINE_TARGETS if target not in VALID_TARGETS]
