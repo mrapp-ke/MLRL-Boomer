@@ -5,11 +5,10 @@ Provides utility functions for installing Python packages via pip.
 """
 from abc import ABC
 from dataclasses import dataclass
-from functools import cached_property
 from typing import Dict, Optional, Set
 
 from util.cmd import Command as Cmd
-from util.io import read_file
+from util.io import TextFile
 from util.units import BuildUnit
 
 
@@ -75,24 +74,20 @@ class Requirement:
         return hash(self.package)
 
 
-@dataclass
-class RequirementsFile:
+class RequirementsFile(TextFile):
     """
     Represents a specific requirements.txt file.
-
-    Attributes:
-        requirements_file: The path to the requirements file
     """
-    requirements_file: str
 
-    @cached_property
+    @property
     def requirements_by_package(self) -> Dict[Package, Requirement]:
         """
         A dictionary that contains all requirements in the requirements file by their package.
         """
-        with read_file(self.requirements_file) as file:
-            requirements = [Requirement.parse(line) for line in file.readlines() if line.strip('\n').strip()]
-            return {requirement.package: requirement for requirement in requirements}
+        return {
+            requirement.package: requirement
+            for requirement in [Requirement.parse(line) for line in self.lines if line.strip('\n').strip()]
+        }
 
     @property
     def requirements(self) -> Set[Requirement]:
@@ -118,8 +113,7 @@ class RequirementsFile:
             if requirement:
                 requirements.add(requirement)
             elif not accept_missing:
-                raise RuntimeError('Package "' + str(package) + '" not found in requirements file "'
-                                   + self.requirements_file + '"')
+                raise RuntimeError('Package "' + str(package) + '" not found in requirements file "' + self.file + '"')
 
         return requirements
 
