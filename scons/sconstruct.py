@@ -9,11 +9,11 @@ from os import path
 
 from cpp import compile_cpp, install_cpp, setup_cpp
 from cython import compile_cython, install_cython, setup_cython
-from dependencies import check_dependency_versions, install_runtime_dependencies
 from documentation import apidoc_cpp, apidoc_cpp_tocfile, apidoc_python, apidoc_python_tocfile, doc
 from github_actions import check_github_actions, update_github_actions
 from modules_old import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from packaging import build_python_wheel, install_python_wheels
+from python_dependencies import check_dependency_versions, install_runtime_dependencies
 from testing import tests_cpp, tests_python
 from util.files import DirectorySearch
 from util.format import format_iterable
