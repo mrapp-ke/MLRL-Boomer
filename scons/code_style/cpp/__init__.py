@@ -11,7 +11,7 @@ FORMAT_CPP = 'format_cpp'
 
 TEST_FORMAT_CPP = 'test_format_cpp'
 
-TARGETS = TargetBuilder(BuildUnit.by_name('code_style', 'cpp')) \
+TARGETS = TargetBuilder(BuildUnit('code_style', 'cpp')) \
     .add_phony_target(FORMAT_CPP).set_runnables(EnforceCppCodeStyle()) \
     .add_phony_target(TEST_FORMAT_CPP).set_runnables(CheckCppCodeStyle()) \
     .build()

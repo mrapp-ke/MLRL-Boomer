@@ -11,7 +11,7 @@ FORMAT_MARKDOWN = 'format_md'
 
 TEST_FORMAT_MARKDOWN = 'test_format_md'
 
-TARGETS = TargetBuilder(BuildUnit.by_name('code_style', 'markdown')) \
+TARGETS = TargetBuilder(BuildUnit('code_style', 'markdown')) \
     .add_phony_target(FORMAT_MARKDOWN).set_runnables(EnforceMarkdownCodeStyle()) \
     .add_phony_target(TEST_FORMAT_MARKDOWN).set_runnables(CheckMarkdownCodeStyle()) \
     .build()

@@ -184,7 +184,7 @@ class Pip:
         except RuntimeError:
             Pip.__install_requirement(requirement)
 
-    def __init__(self, build_unit: BuildUnit = BuildUnit()):
+    def __init__(self, build_unit: BuildUnit = BuildUnit('util')):
         """
         :param build_unit: The build unit for which packages should be installed
         """

@@ -7,7 +7,7 @@ from dependencies.github.targets import CheckGithubActions, UpdateGithubActions
 from util.targets import PhonyTarget, TargetBuilder
 from util.units import BuildUnit
 
-TARGETS = TargetBuilder(BuildUnit.by_name('dependencies', 'github')) \
+TARGETS = TargetBuilder(BuildUnit('dependencies', 'github')) \
     .add_phony_target('check_github_actions').set_runnables(CheckGithubActions()) \
     .add_phony_target('update_github_actions').set_runnables(UpdateGithubActions()) \
     .build()

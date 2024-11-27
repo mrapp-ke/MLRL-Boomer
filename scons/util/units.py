@@ -3,31 +3,23 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that provide information about independent units of the build system.
 """
-from dataclasses import dataclass
 from os import path
 
 
-@dataclass
 class BuildUnit:
     """
     An independent unit of the build system that may come with its own built-time dependencies.
-
-    Attributes:
-        root_directory:     The path to the root directory of this unit
-        requirements_file:  The path to the requirements file that specifies the dependencies required by this unit
     """
 
-    def __init__(self, root_directory: str = path.join('scons', 'util')):
-        self.root_directory = root_directory
-        self.requirements_file: str = path.join(root_directory, 'requirements.txt')
-
-    @staticmethod
-    def by_name(unit_name: str, *subdirectories: str) -> 'BuildUnit':
+    def __init__(self, *subdirectories: str):
         """
-        Creates and returns a `BuildUnit` with a specific name.
-
-        :param unit_name:       The name of the build unit
-        :param subdirectories:  Optional subdirectories
-        :return:                The `BuildUnit` that has been created
+        :param subdirectories: The subdirectories within the build system that lead to the root directory of this unit
         """
-        return BuildUnit(path.join('scons', unit_name, *subdirectories))
+        self.root_directory = path.join('scons', *subdirectories)
+
+    @property
+    def requirements_file(self) -> str:
+        """
+        The path to the requirements file that specifies the build-time dependencies of this unit.
+        """
+        return path.join(self.root_directory, 'requirements.txt')

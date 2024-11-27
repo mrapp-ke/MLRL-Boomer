@@ -10,6 +10,7 @@ from typing import List
 
 from modules_old import ALL_MODULES, CPP_MODULE, PYTHON_MODULE, Module
 from util.pip import Package, Pip, RequirementsFile
+from util.units import BuildUnit
 
 
 @dataclass
@@ -55,7 +56,7 @@ def __install_module_dependencies(module: Module, *dependencies: str):
 
 
 def __print_table(header: List[str], rows: List[List[str]]):
-    Pip().install_packages('tabulate')
+    Pip(BuildUnit('util')).install_packages('tabulate')
     # pylint: disable=import-outside-toplevel
     from tabulate import tabulate
     print(tabulate(rows, headers=header))

@@ -10,7 +10,7 @@ from code_style.yaml import FORMAT_YAML, TEST_FORMAT_YAML
 from util.targets import TargetBuilder
 from util.units import BuildUnit
 
-TARGETS = TargetBuilder(BuildUnit.by_name('code_style')) \
+TARGETS = TargetBuilder(BuildUnit('code_style')) \
     .add_phony_target('format') \
         .depends_on(FORMAT_PYTHON, FORMAT_CPP, FORMAT_MARKDOWN, FORMAT_YAML) \
         .nop() \
