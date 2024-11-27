@@ -184,11 +184,21 @@ class Pip:
         except RuntimeError:
             Pip.__install_requirement(requirement)
 
-    def __init__(self, build_unit: BuildUnit = BuildUnit('util')):
+    def __init__(self, requirements_file: str):
         """
-        :param build_unit: The build unit for which packages should be installed
+        :param requirements_file: The requirements file that specifies the version of the packages to be installed
         """
-        self.requirements_file = RequirementsFile(build_unit.requirements_file)
+        self.requirements_file = RequirementsFile(requirements_file)
+
+    @staticmethod
+    def for_build_unit(build_unit: BuildUnit = BuildUnit('util')):
+        """
+        Creates and returns a new `Pip` instance for installing packages for a specific build unit.
+
+        :param build_unit:  The build unit for which packages should be installed
+        :return:            The `Pip` instance that has been created
+        """
+        return Pip(build_unit.requirements_file)
 
     def install_packages(self, *package_names: str, accept_missing: bool = False):
         """

@@ -52,11 +52,11 @@ def __install_module_dependencies(module: Module, *dependencies: str):
     requirements_file = module.requirements_file
 
     if path.isfile(requirements_file):
-        Pip(module).install_packages(*dependencies)
+        Pip.for_build_unit(module).install_packages(*dependencies)
 
 
 def __print_table(header: List[str], rows: List[List[str]]):
-    Pip(BuildUnit('util')).install_packages('tabulate')
+    Pip.for_build_unit(BuildUnit('util')).install_packages('tabulate')
     # pylint: disable=import-outside-toplevel
     from tabulate import tabulate
     print(tabulate(rows, headers=header))

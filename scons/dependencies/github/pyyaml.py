@@ -29,7 +29,7 @@ class YamlFile(TextFile):
         """
         A dictionary that stores the content of the YAML file.
         """
-        Pip(self.build_unit).install_packages('pyyaml')
+        Pip.for_build_unit(self.build_unit).install_packages('pyyaml')
         # pylint: disable=import-outside-toplevel
         import yaml
         with read_file(self.file) as file:

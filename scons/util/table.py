@@ -39,7 +39,7 @@ class Table:
         self.rows.sort(key=lambda row: ([row[i] for i in [column_index] + list(additional_column_indices)]))
 
     def __str__(self) -> str:
-        Pip(self.build_unit).install_packages('tabulate')
+        Pip.for_build_unit(self.build_unit).install_packages('tabulate')
         # pylint: disable=import-outside-toplevel
         from tabulate import tabulate
         return tabulate(self.rows, headers=self.headers)
