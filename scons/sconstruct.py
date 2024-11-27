@@ -12,7 +12,7 @@ from cython import compile_cython, install_cython, setup_cython
 from documentation import apidoc_cpp, apidoc_cpp_tocfile, apidoc_python, apidoc_python_tocfile, doc
 from modules_old import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from packaging import build_python_wheel, install_python_wheels
-from python_dependencies import check_dependency_versions, install_runtime_dependencies
+from python_dependencies import check_dependency_versions
 from testing import tests_cpp, tests_python
 from util.files import FileSearch
 from util.format import format_iterable
@@ -34,7 +34,6 @@ def __print_if_clean(environment, message: str):
 
 # Define target names...
 TARGET_NAME_DEPENDENCIES_CHECK = 'check_dependencies'
-TARGET_NAME_VENV = 'venv'
 TARGET_NAME_COMPILE = 'compile'
 TARGET_NAME_COMPILE_CPP = TARGET_NAME_COMPILE + '_cpp'
 TARGET_NAME_COMPILE_CYTHON = TARGET_NAME_COMPILE + '_cython'
@@ -52,10 +51,10 @@ TARGET_NAME_APIDOC_PYTHON = TARGET_NAME_APIDOC + '_python'
 TARGET_NAME_DOC = 'doc'
 
 VALID_TARGETS = {
-    TARGET_NAME_DEPENDENCIES_CHECK, TARGET_NAME_VENV, TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP,
-    TARGET_NAME_COMPILE_CYTHON, TARGET_NAME_INSTALL, TARGET_NAME_INSTALL_CPP, TARGET_NAME_INSTALL_CYTHON,
-    TARGET_NAME_BUILD_WHEELS, TARGET_NAME_INSTALL_WHEELS, TARGET_NAME_TESTS, TARGET_NAME_TESTS_CPP,
-    TARGET_NAME_TESTS_PYTHON, TARGET_NAME_APIDOC, TARGET_NAME_APIDOC_CPP, TARGET_NAME_APIDOC_PYTHON, TARGET_NAME_DOC
+    TARGET_NAME_DEPENDENCIES_CHECK, TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP, TARGET_NAME_COMPILE_CYTHON,
+    TARGET_NAME_INSTALL, TARGET_NAME_INSTALL_CPP, TARGET_NAME_INSTALL_CYTHON, TARGET_NAME_BUILD_WHEELS,
+    TARGET_NAME_INSTALL_WHEELS, TARGET_NAME_TESTS, TARGET_NAME_TESTS_CPP, TARGET_NAME_TESTS_PYTHON, TARGET_NAME_APIDOC,
+    TARGET_NAME_APIDOC_CPP, TARGET_NAME_APIDOC_PYTHON, TARGET_NAME_DOC
 }
 
 DEFAULT_TARGET = TARGET_NAME_INSTALL_WHEELS
@@ -94,13 +93,10 @@ env.SConsignFile(name=path.relpath(path.join(BUILD_MODULE.build_dir, '.sconsign'
 # Define target for checking dependency versions...
 __create_phony_target(env, TARGET_NAME_DEPENDENCIES_CHECK, action=check_dependency_versions)
 
-# Define target for installing runtime dependencies...
-target_venv = __create_phony_target(env, TARGET_NAME_VENV, action=install_runtime_dependencies)
-
 # Define targets for compiling the C++ and Cython code...
 env.Command(CPP_MODULE.build_dir, None, action=setup_cpp)
 target_compile_cpp = __create_phony_target(env, TARGET_NAME_COMPILE_CPP, action=compile_cpp)
-env.Depends(target_compile_cpp, [target_venv, CPP_MODULE.build_dir])
+env.Depends(target_compile_cpp, ['target_venv', CPP_MODULE.build_dir])
 
 env.Command(PYTHON_MODULE.build_dir, None, action=setup_cython)
 target_compile_cython = __create_phony_target(env, TARGET_NAME_COMPILE_CYTHON, action=compile_cython)

@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from os import path
 from typing import List
 
-from modules_old import ALL_MODULES, CPP_MODULE, PYTHON_MODULE, Module
+from modules_old import ALL_MODULES, Module
 from util.pip import Package, Pip, RequirementsFile
 from util.units import BuildUnit
 
@@ -60,14 +60,6 @@ def __print_table(header: List[str], rows: List[List[str]]):
     # pylint: disable=import-outside-toplevel
     from tabulate import tabulate
     print(tabulate(rows, headers=header))
-
-
-def install_runtime_dependencies(**_):
-    """
-    Installs all runtime dependencies that are required by the Python and C++ module.
-    """
-    __install_module_dependencies(PYTHON_MODULE)
-    __install_module_dependencies(CPP_MODULE)
 
 
 def check_dependency_versions(**_):
