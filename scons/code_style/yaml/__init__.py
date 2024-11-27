@@ -11,7 +11,7 @@ FORMAT_YAML = 'format_yaml'
 
 TEST_FORMAT_YAML = 'test_format_yaml'
 
-TARGETS = TargetBuilder(BuildUnit.by_name('code_style', 'yaml')) \
+TARGETS = TargetBuilder(BuildUnit('code_style', 'yaml')) \
     .add_phony_target(FORMAT_YAML).set_runnables(EnforceYamlCodeStyle()) \
     .add_phony_target(TEST_FORMAT_YAML).set_runnables(CheckYamlCodeStyle()) \
     .build()

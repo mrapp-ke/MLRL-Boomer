@@ -2,12 +2,13 @@
 Defines build targets for updating the project's version and changelog.
 """
 from util.targets import PhonyTarget, TargetBuilder
+from util.units import BuildUnit
 from versioning.changelog import print_latest_changelog, update_changelog_bugfix, update_changelog_feature, \
     update_changelog_main, validate_changelog_bugfix, validate_changelog_feature, validate_changelog_main
 from versioning.versioning import apply_development_version, increment_development_version, increment_major_version, \
     increment_minor_version, increment_patch_version, print_current_version, reset_development_version
 
-TARGETS = TargetBuilder() \
+TARGETS = TargetBuilder(BuildUnit('util')) \
     .add_phony_target('increment_development_version').set_functions(increment_development_version) \
     .add_phony_target('reset_development_version').set_functions(reset_development_version) \
     .add_phony_target('apply_development_version').set_functions(apply_development_version) \
