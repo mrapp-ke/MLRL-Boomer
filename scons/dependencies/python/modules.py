@@ -47,6 +47,7 @@ class PythonDependencyModule(Module):
         """
         self.dependency_type = dependency_type
         self.root_directory = root_directory
+        self.file_search = file_search
 
     def find_requirements_files(self) -> List[str]:
         """
