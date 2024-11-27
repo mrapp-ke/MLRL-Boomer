@@ -202,7 +202,7 @@ class Pip:
 
     def install_packages(self, *package_names: str, accept_missing: bool = False):
         """
-        Installs one or several dependencies.
+        Installs one or several dependencies in the requirements file.
 
         :param package_names:   The names of the packages that should be installed
         :param accept_missing:  False, if an error should be raised if a package is not listed in the requirements file,
@@ -210,6 +210,15 @@ class Pip:
         """
         packages = [Package(package_name) for package_name in package_names]
         requirements = self.requirements_file.lookup(*packages, accept_missing=accept_missing)
+
+        for requirement in requirements:
+            self.__install_requirement(requirement, dry_run=True)
+
+    def install_all_packages(self):
+        """
+        Installs all dependencies in the requirements file.
+        """
+        requirements = self.requirements_file.requirements
 
         for requirement in requirements:
             self.__install_requirement(requirement, dry_run=True)
