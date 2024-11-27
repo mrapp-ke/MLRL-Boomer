@@ -14,7 +14,7 @@ from modules_old import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from packaging import build_python_wheel, install_python_wheels
 from python_dependencies import check_dependency_versions, install_runtime_dependencies
 from testing import tests_cpp, tests_python
-from util.files import DirectorySearch
+from util.files import FileSearch
 from util.format import format_iterable
 from util.modules import Module, ModuleRegistry
 from util.reflection import import_source_file
@@ -61,28 +61,23 @@ VALID_TARGETS = {
 DEFAULT_TARGET = TARGET_NAME_INSTALL_WHEELS
 
 # Register modules...
+init_files = FileSearch().set_recursive(True).filter_by_name('__init__.py').list(BUILD_MODULE.root_dir)
 module_registry = ModuleRegistry()
 
-for subdirectory in DirectorySearch().set_recursive(True).list(BUILD_MODULE.root_dir):
-    init_file = path.join(subdirectory, '__init__.py')
-
-    if path.isfile(init_file):
-        for module in getattr(import_source_file(init_file), 'MODULES', []):
-            if isinstance(module, Module):
-                module_registry.register(module)
+for init_file in init_files:
+    for module in getattr(import_source_file(init_file), 'MODULES', []):
+        if isinstance(module, Module):
+            module_registry.register(module)
 
 # Register build targets...
 target_registry = TargetRegistry(module_registry)
 env = target_registry.environment
 
-for subdirectory in DirectorySearch().set_recursive(True).list(BUILD_MODULE.root_dir):
-    init_file = path.join(subdirectory, '__init__.py')
-
-    if path.isfile(init_file):
-        for target in getattr(import_source_file(init_file), 'TARGETS', []):
-            if isinstance(target, Target):
-                target_registry.add_target(target)
-                VALID_TARGETS.add(target.name)
+for init_file in init_files:
+    for target in getattr(import_source_file(init_file), 'TARGETS', []):
+        if isinstance(target, Target):
+            target_registry.add_target(target)
+            VALID_TARGETS.add(target.name)
 
 target_registry.register()
 

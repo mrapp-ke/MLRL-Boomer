@@ -49,4 +49,4 @@ class CodeModule(Module):
 
         :return: A list that contains the paths of the source files that have been found
         """
-        return self.file_search.set_languages(self.language).list(self.root_directory)
+        return self.file_search.filter_by_language(self.language).list(self.root_directory)
