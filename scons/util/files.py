@@ -130,7 +130,17 @@ class FileSearch:
         self.hidden = hidden
         return self
 
-    def set_suffixes(self, *suffixes: str) -> 'FileSearch':
+    def filter_by_name(self, *names: str) -> 'FileSearch':
+        """
+        Sets the names of the files that should be included.
+
+        :param names:   The names of the files that should be included (including their suffix)
+        :return:        The `FileSearch` itself
+        """
+        self.file_patterns = {name for name in names}
+        return self
+
+    def filter_by_suffix(self, *suffixes: str) -> 'FileSearch':
         """
         Sets the suffixes of the files that should be included.
 
@@ -140,14 +150,14 @@ class FileSearch:
         self.file_patterns = {'*.' + suffix for suffix in suffixes}
         return self
 
-    def set_languages(self, *languages: Language) -> 'FileSearch':
+    def filter_by_language(self, *languages: Language) -> 'FileSearch':
         """
         Sets the suffixes of the files that should be included.
 
         :param languages:   The languages of the files that should be included
         :return:            The `FileSearch` itself
         """
-        return self.set_suffixes(*reduce(lambda aggr, language: aggr | language.value, languages, set()))
+        return self.filter_by_suffix(*reduce(lambda aggr, language: aggr | language.value, languages, set()))
 
     def list(self, *directories: str) -> List[str]:
         """

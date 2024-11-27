@@ -293,7 +293,7 @@ class WorkflowUpdater:
         """
         workflows = set()
 
-        for workflow_file in FileSearch().set_languages(Language.YAML).list(self.workflow_directory):
+        for workflow_file in FileSearch().filter_by_language(Language.YAML).list(self.workflow_directory):
             print('Searching for GitHub Actions in workflow "' + workflow_file + '"...')
             workflows.add(Workflow(self.build_unit, workflow_file))
 
