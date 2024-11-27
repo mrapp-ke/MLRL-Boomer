@@ -50,7 +50,7 @@ class GithubApi:
         """
         :param build_unit: The build unit to access the GitHub API from
         """
-        Pip(build_unit).install_packages('pygithub')
+        Pip.for_build_unit(build_unit).install_packages('pygithub')
         self.authentication = None
 
     def set_token(self, token: Optional[str]) -> 'GithubApi':

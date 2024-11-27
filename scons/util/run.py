@@ -36,7 +36,7 @@ class Program(Command):
                 dependencies.append(command.command)
 
             dependencies.extend(self.dependencies)
-            Pip(self.build_unit).install_packages(*dependencies)
+            Pip.for_build_unit(self.build_unit).install_packages(*dependencies)
             return super().run(command, capture_output)
 
     def __init__(self, program: str, *arguments: str):
