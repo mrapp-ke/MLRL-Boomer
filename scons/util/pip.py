@@ -74,6 +74,25 @@ class Requirement:
         return hash(self.package)
 
 
+@dataclass
+class Dependency:
+    """
+    Provides information about a dependency.
+
+    Attributes:
+        installed:  The version of the dependency that is currently installed
+        latest:     The latest version of the dependency
+    """
+    installed: Requirement
+    latest: Requirement
+
+    def __eq__(self, other: 'Dependency') -> bool:
+        return self.installed == other.installed
+
+    def __hash__(self) -> int:
+        return hash(self.installed)
+
+
 class RequirementsFile(TextFile):
     """
     Represents a specific requirements.txt file.
@@ -96,7 +115,7 @@ class RequirementsFile(TextFile):
         """
         return set(self.requirements_by_package.values())
 
-    def lookup(self, *packages: Package, accept_missing: bool = False) -> Set[Requirement]:
+    def lookup_requirements(self, *packages: Package, accept_missing: bool = False) -> Set[Requirement]:
         """
         Looks up the requirements for given packages in the requirements file.
 
@@ -116,6 +135,18 @@ class RequirementsFile(TextFile):
                 raise RuntimeError('Package "' + str(package) + '" not found in requirements file "' + self.file + '"')
 
         return requirements
+
+    def lookup_requirement(self, package: Package, accept_missing: bool = False) -> Optional[Requirement]:
+        """
+        Looks up the requirement for a given package in the requirements file.
+
+        :param package:         The package that should be looked up
+        :param accept_missing:  False, if an error should be raised if the package is not listed in the requirements
+                                file, True, if it should simply be ignored
+        :return:                The requirement for the given package
+        """
+        requirements = self.lookup_requirements(package, accept_missing=accept_missing)
+        return requirements.pop() if requirements else None
 
 
 class Pip:
@@ -147,6 +178,18 @@ class Pip:
             """
             super().__init__('install', str(requirement), '--upgrade', '--upgrade-strategy', 'eager', '--prefer-binary')
             self.add_conditional_arguments(dry_run, '--dry-run')
+
+    class ListCommand(Command):
+        """
+        Allows to list information about installed packages via the command `pip list`.
+        """
+
+        def __init__(self, outdated: bool = False):
+            """
+            :param outdated: True, if only outdated packages should be listed, False otherwise
+            """
+            super().__init__('list')
+            self.add_conditional_arguments(outdated, '--outdated')
 
     @staticmethod
     def __would_install_requirement(requirement: Requirement, stdout: str) -> bool:
@@ -209,7 +252,7 @@ class Pip:
                                 True, if it should simply be ignored
         """
         packages = [Package(package_name) for package_name in package_names]
-        requirements = self.requirements_file.lookup(*packages, accept_missing=accept_missing)
+        requirements = self.requirements_file.lookup_requirements(*packages, accept_missing=accept_missing)
 
         for requirement in requirements:
             self.__install_requirement(requirement, dry_run=True)
@@ -218,7 +261,44 @@ class Pip:
         """
         Installs all dependencies in the requirements file.
         """
+        print('Installing all dependencies in requirements file "' + str(self.requirements_file) + '"...')
         requirements = self.requirements_file.requirements
 
         for requirement in requirements:
             self.__install_requirement(requirement, dry_run=True)
+
+    def list_outdated_dependencies(self) -> Set[Dependency]:
+        self.install_all_packages()
+
+        print('Checking for outdated dependencies in requirements file "' + str(self.requirements_file) + '"...')
+        stdout = Pip.ListCommand(outdated=True).print_command(False).capture_output()
+        stdout_lines = stdout.strip().split('\n')
+        i = 0
+
+        for line in stdout_lines:
+            i += 1
+
+            if line.startswith('----'):
+                break
+
+        outdated_dependencies = set()
+
+        for line in stdout_lines[i:]:
+            parts = line.split()
+
+            if len(parts) < 3:
+                raise ValueError(
+                    'Output of command "pip list" is expected to be a table with at least three columns, but got:'
+                    + line)
+
+            package = Package(parts[0])
+            requirement = self.requirements_file.lookup_requirement(package, accept_missing=True)
+
+            if requirement and requirement.version:
+                installed_version = parts[1]
+                latest_version = parts[2]
+                outdated_dependencies.add(
+                    Dependency(installed=Requirement(package, version=installed_version),
+                               latest=Requirement(package, version=latest_version)))
+
+        return outdated_dependencies
