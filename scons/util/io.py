@@ -56,3 +56,6 @@ class TextFile:
             file.writelines(lines)
 
         del self.lines
+
+    def __str__(self) -> str:
+        return self.file
