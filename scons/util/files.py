@@ -6,7 +6,7 @@ Provides classes for listing files and directories.
 from functools import partial, reduce
 from glob import glob
 from os import path
-from typing import Callable, List
+from typing import Callable, List, Optional, Set
 
 from util.languages import Language
 
@@ -84,9 +84,11 @@ class FileSearch:
     Allows to search for files.
     """
 
+    Filter = Callable[[str, str], bool]
+
     def __init__(self):
         self.hidden = False
-        self.file_patterns = {'*'}
+        self.filters = []
         self.directory_search = DirectorySearch()
 
     def set_recursive(self, recursive: bool) -> 'FileSearch':
@@ -130,29 +132,76 @@ class FileSearch:
         self.hidden = hidden
         return self
 
+    def add_filters(self, *filter_functions: Filter) -> 'FileSearch':
+        """
+        Adds one or several filters that match files to be included.
+
+        :param filter_functions:    The filters to be added
+        :return:                    The `FileSearch` itself
+        """
+        self.filters.extend(filter_functions)
+        return self
+
     def filter_by_name(self, *names: str) -> 'FileSearch':
         """
-        Sets the names of the files that should be included.
+        Adds one or several filters that match files to be included based on their name.
 
         :param names:   The names of the files that should be included (including their suffix)
         :return:        The `FileSearch` itself
         """
-        self.file_patterns = {name for name in names}
-        return self
+
+        def filter_file(filtered_names: Set[str], _: str, file_name: str):
+            return file_name in filtered_names
+
+        return self.add_filters(*[partial(filter_file, name) for name in names])
+
+    def filter_by_substrings(self,
+                             starts_with: Optional[str] = None,
+                             not_starts_with: Optional[str] = None,
+                             ends_with: Optional[str] = None,
+                             not_ends_with: Optional[str] = None,
+                             contains: Optional[str] = None,
+                             not_contains: Optional[str] = None) -> 'FileSearch':
+        """
+        Adds a filter that matches files based on whether their name contains specific substrings.
+
+        :param starts_with:     A substring, names must start with or None, if no restrictions should be imposed
+        :param not_starts_with: A substring, names must not start with or None, if no restrictions should be imposed
+        :param ends_with:       A substring, names must end with or None, if no restrictions should be imposed
+        :param not_ends_with:   A substring, names must not end with or None, if no restrictions should be imposed
+        :param contains:        A substring, names must contain or None, if no restrictions should be imposed
+        :param not_contains:    A substring, names must not contain or None, if no restrictions should be imposed
+        :return:                The `FileSearch` itself
+        """
+
+        def filter_file(start: Optional[str], not_start: Optional[str], end: Optional[str], not_end: Optional[str],
+                        substring: Optional[str], not_substring: Optional[str], _: str, file_name: str):
+            return (not start or file_name.startswith(start)) \
+                and (not not_start or not file_name.startswith(not_start)) \
+                and (not end or file_name.endswith(end)) \
+                and (not not_end or file_name.endswith(not_end)) \
+                and (not substring or file_name.find(substring) >= 0) \
+                and (not not_substring or file_name.find(not_substring) < 0)
+
+        return self.add_filters(
+            partial(filter_file, starts_with, not_starts_with, ends_with, not_ends_with, contains, not_contains))
 
     def filter_by_suffix(self, *suffixes: str) -> 'FileSearch':
         """
-        Sets the suffixes of the files that should be included.
+        Adds one or several filters that match files to be included based on their suffix.
 
         :param suffixes:    The suffixes of the files that should be included (without starting dot)
         :return:            The `FileSearch` itself
         """
-        self.file_patterns = {'*.' + suffix for suffix in suffixes}
-        return self
+
+        def filter_file(filtered_suffixes: List[str], _: str, file_name: str):
+            return reduce(lambda aggr, suffix: aggr or file_name.endswith(suffix), filtered_suffixes, False)
+
+        return self.add_filters(partial(filter_file, list(suffixes)))
 
     def filter_by_language(self, *languages: Language) -> 'FileSearch':
         """
-        Sets the suffixes of the files that should be included.
+        Adds one or several filters that match files to be included based on the programming language they belong to.
 
         :param languages:   The languages of the files that should be included
         :return:            The `FileSearch` itself
@@ -169,13 +218,17 @@ class FileSearch:
         result = []
         subdirectories = self.directory_search.list(*directories) if self.directory_search.recursive else []
 
+        def filter_file(file: str) -> bool:
+            return path.isfile(file) and (not self.filters or reduce(
+                lambda aggr, file_filter: aggr or file_filter(path.dirname(file), path.basename(file)), self.filters,
+                False))
+
         for directory in list(directories) + subdirectories:
-            for file_pattern in self.file_patterns:
-                files = [file for file in glob(path.join(directory, file_pattern)) if path.isfile(file)]
+            files = [file for file in glob(path.join(directory, '*')) if filter_file(file)]
 
-                if self.hidden:
-                    files.extend([file for file in glob(path.join(directory, '.' + file_pattern)) if path.isfile(file)])
+            if self.hidden:
+                files.extend([file for file in glob(path.join(directory, '.*')) if filter_file(file)])
 
-                result.extend(files)
+            result.extend(files)
 
         return result
