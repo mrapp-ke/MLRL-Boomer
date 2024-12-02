@@ -6,9 +6,9 @@ Implements targets for installing runtime requirements that are required by the 
 from functools import reduce
 
 from dependencies.python.modules import DependencyType, PythonDependencyModule
+from dependencies.table import Table
 from util.modules import ModuleRegistry
 from util.pip import Pip
-from util.table import Table
 from util.targets import PhonyTarget
 from util.units import BuildUnit
 

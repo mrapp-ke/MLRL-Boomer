@@ -4,8 +4,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements targets for updating the project's GitHub Actions.
 """
 from dependencies.github.actions import WorkflowUpdater
+from dependencies.table import Table
 from util.modules import ModuleRegistry
-from util.table import Table
 from util.targets import PhonyTarget
 from util.units import BuildUnit
 

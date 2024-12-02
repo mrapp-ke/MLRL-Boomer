@@ -267,7 +267,7 @@ class Pip:
         :param build_unit:  The build unit for which packages should be installed
         :return:            The `Pip` instance that has been created
         """
-        return Pip(build_unit.requirements_file)
+        return Pip(*build_unit.find_requirements_files())
 
     def install_packages(self, *package_names: str, accept_missing: bool = False):
         """
