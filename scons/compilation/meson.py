@@ -7,7 +7,9 @@ from abc import ABC
 from typing import List
 
 from compilation.build_options import BuildOptions
+from compilation.modules import CompilationModule
 from util.run import Program
+from util.units import BuildUnit
 
 
 def build_options_as_meson_arguments(build_options: BuildOptions) -> List[str]:
@@ -32,13 +34,15 @@ class Meson(Program, ABC):
     An abstract base class for all classes that allow to run the external program "meson".
     """
 
-    def __init__(self, meson_command: str, *arguments: str):
+    def __init__(self, build_unit: BuildUnit, meson_command: str, *arguments: str):
         """
+        :param build_unit:  The build unit from which the program should be run
         :param program:     The meson command to be run
         :param arguments:   Optional arguments to be passed to meson
         """
         super().__init__('meson', meson_command, *arguments)
         self.print_arguments(True)
+        self.set_build_unit(build_unit)
 
 
 class MesonSetup(Meson):
@@ -46,13 +50,15 @@ class MesonSetup(Meson):
     Allows to run the external program "meson setup".
     """
 
-    def __init__(self, build_directory: str, source_directory: str, build_options: BuildOptions = BuildOptions()):
+    def __init__(self, build_unit: BuildUnit, module: CompilationModule, build_options: BuildOptions = BuildOptions()):
         """
-        :param build_directory:     The path to the build directory
-        :param source_directory:    The path to the source directory
-        :param build_options:       The build options to be used
+        :param build_unit:      The build unit from which the program should be run
+        :param module:          The module, the program should be applied to
+        :param build_options:   The build options to be used
         """
-        super().__init__('setup', *build_options_as_meson_arguments(build_options), build_directory, source_directory)
+        super().__init__(build_unit, 'setup', *build_options_as_meson_arguments(build_options), module.build_directory,
+                         module.root_directory)
+        self.add_dependencies('ninja')
 
 
 class MesonConfigure(Meson):
@@ -60,12 +66,14 @@ class MesonConfigure(Meson):
     Allows to run the external program "meson configure".
     """
 
-    def __init__(self, build_directory: str, build_options: BuildOptions = BuildOptions()):
+    def __init__(self, build_unit: BuildUnit, module: CompilationModule, build_options: BuildOptions = BuildOptions()):
         """
-        :param build_directory: The path to the build directory
+        :param build_unit:      The build unit from which the program should be run
+        :param module:          The module, the program should be applied to
         :param build_options:   The build options to be used
         """
-        super().__init__('configure', *build_options_as_meson_arguments(build_options), build_directory)
+        super().__init__(build_unit, 'configure', *build_options_as_meson_arguments(build_options),
+                         module.build_directory)
         self.build_options = build_options
 
     def _should_be_skipped(self) -> bool:
@@ -80,11 +88,12 @@ class MesonCompile(Meson):
     Allows to run the external program "meson compile".
     """
 
-    def __init__(self, build_directory: str):
+    def __init__(self, build_unit: BuildUnit, module: CompilationModule):
         """
-        :param build_directory: The path to the build directory
+        :param build_unit:  The build unit from which the program should be run
+        :param module:      The module, the program should be applied to
         """
-        super().__init__('compile', '-C', build_directory)
+        super().__init__(build_unit, 'compile', '-C', module.build_directory)
 
 
 class MesonInstall(Meson):
@@ -92,8 +101,10 @@ class MesonInstall(Meson):
     Allows to run the external program "meson install".
     """
 
-    def __init__(self, build_directory: str):
+    def __init__(self, build_unit: BuildUnit, module: CompilationModule):
         """
-        :param build_directory: The path to the build directory
+        :param build_unit:  The build unit from which the program should be run
+        :param module:      The module, the program should be applied to
         """
-        super().__init__('install', '--no-rebuild', '--only-changed', '-C', build_directory)
+        super().__init__(build_unit, 'install', '--no-rebuild', '--only-changed', '-C', module.build_directory)
+        self.install_program(False)
