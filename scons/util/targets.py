@@ -364,3 +364,10 @@ class TargetRegistry:
 
             if scons_dependencies:
                 self.environment.Depends(scons_target, scons_dependencies)
+
+    @property
+    def target_names(self) -> Set[str]:
+        """
+        A set that contains the names of all targets that have previously been added.
+        """
+        return set(self.targets_by_name.keys())

@@ -74,11 +74,11 @@ for init_file in init_files:
     for target in getattr(import_source_file(init_file), 'TARGETS', []):
         if isinstance(target, Target):
             target_registry.add_target(target)
-            VALID_TARGETS.add(target.name)
 
 target_registry.register()
 
 # Raise an error if any invalid targets are given...
+VALID_TARGETS.update(target_registry.target_names)
 invalid_targets = [target for target in COMMAND_LINE_TARGETS if target not in VALID_TARGETS]
 
 if invalid_targets:
