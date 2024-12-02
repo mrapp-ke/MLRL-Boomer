@@ -34,7 +34,11 @@ class CheckPythonDependencies(PhonyTarget.Runnable):
         dependency_modules = modules.lookup(PythonDependencyModule.Filter())
         requirements_files = reduce(lambda aggr, module: aggr + module.find_requirements_files(), dependency_modules,
                                     [])
-        outdated_dependencies = Pip(*requirements_files).list_outdated_dependencies()
+        pip = Pip(*requirements_files)
+        print('Installing all dependencies...')
+        pip.install_all_packages()
+        print('Checking for outdated dependencies...')
+        outdated_dependencies = pip.list_outdated_dependencies()
 
         if outdated_dependencies:
             table = Table(build_unit, 'Dependency', 'Installed version', 'Latest version')
