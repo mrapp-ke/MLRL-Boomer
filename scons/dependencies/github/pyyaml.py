@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for reading the contents of YAML files via "pyyaml".
 """
 from functools import cached_property
-from typing import Dict, List
+from typing import Dict
 
 from util.io import TextFile, read_file
 from util.pip import Pip
@@ -35,6 +35,6 @@ class YamlFile(TextFile):
         with read_file(self.file) as file:
             return yaml.load(file.read(), Loader=yaml.CLoader)
 
-    def write_lines(self, lines: List[str]):
+    def write_lines(self, *lines: str):
         super().write_lines(lines)
         del self.yaml_dict

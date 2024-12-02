@@ -177,9 +177,9 @@ class Workflow(YamlFile):
                 if updated_action:
                     updated_lines[-1] = line.replace(str(action.version), str(updated_action.version))
 
-        self.write_lines(updated_lines)
+        self.write_lines(*updated_lines)
 
-    def write_lines(self, lines: List[str]):
+    def write_lines(self, *lines: str):
         super().write_lines(lines)
         del self.uses_clauses
         del self.actions

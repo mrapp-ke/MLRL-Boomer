@@ -46,7 +46,7 @@ class TextFile:
         with read_file(self.file) as file:
             return file.readlines()
 
-    def write_lines(self, lines: List[str]):
+    def write_lines(self, *lines: str):
         """
         Overwrites all lines in the text file.
 
