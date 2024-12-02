@@ -10,7 +10,7 @@ from os import path
 from documentation import apidoc_cpp, apidoc_cpp_tocfile, apidoc_python, apidoc_python_tocfile, doc
 from modules_old import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from packaging import build_python_wheel, install_python_wheels
-from testing import tests_cpp, tests_python
+from testing_python import tests_python
 from util.files import FileSearch
 from util.format import format_iterable
 from util.modules import Module, ModuleRegistry
@@ -33,7 +33,6 @@ def __print_if_clean(environment, message: str):
 TARGET_NAME_BUILD_WHEELS = 'build_wheels'
 TARGET_NAME_INSTALL_WHEELS = 'install_wheels'
 TARGET_NAME_TESTS = 'tests'
-TARGET_NAME_TESTS_CPP = TARGET_NAME_TESTS + '_cpp'
 TARGET_NAME_TESTS_PYTHON = TARGET_NAME_TESTS + '_python'
 TARGET_NAME_APIDOC = 'apidoc'
 TARGET_NAME_APIDOC_CPP = TARGET_NAME_APIDOC + '_cpp'
@@ -41,8 +40,8 @@ TARGET_NAME_APIDOC_PYTHON = TARGET_NAME_APIDOC + '_python'
 TARGET_NAME_DOC = 'doc'
 
 VALID_TARGETS = {
-    TARGET_NAME_BUILD_WHEELS, TARGET_NAME_INSTALL_WHEELS, TARGET_NAME_TESTS, TARGET_NAME_TESTS_CPP,
-    TARGET_NAME_TESTS_PYTHON, TARGET_NAME_APIDOC, TARGET_NAME_APIDOC_CPP, TARGET_NAME_APIDOC_PYTHON, TARGET_NAME_DOC
+    TARGET_NAME_BUILD_WHEELS, TARGET_NAME_INSTALL_WHEELS, TARGET_NAME_TESTS, TARGET_NAME_TESTS_PYTHON,
+    TARGET_NAME_APIDOC, TARGET_NAME_APIDOC_CPP, TARGET_NAME_APIDOC_PYTHON, TARGET_NAME_DOC
 }
 
 DEFAULT_TARGET = TARGET_NAME_INSTALL_WHEELS
@@ -107,14 +106,11 @@ if not COMMAND_LINE_TARGETS or TARGET_NAME_BUILD_WHEELS in COMMAND_LINE_TARGETS:
         env.Clean([target_build_wheels, DEFAULT_TARGET], subproject.build_dirs)
 
 # Define targets for running automated tests...
-target_tests_cpp = __create_phony_target(env, TARGET_NAME_TESTS_CPP, action=tests_cpp)
-env.Depends(target_tests_cpp, 'target_compile_cpp')
-
 target_tests_python = __create_phony_target(env, TARGET_NAME_TESTS_PYTHON, action=tests_python)
 env.Depends(target_tests_python, target_install_wheels)
 
 target_tests = __create_phony_target(env, TARGET_NAME_TESTS)
-env.Depends(target_tests, [target_tests_cpp, target_tests_python])
+env.Depends(target_tests, ['target_tests_cpp', target_tests_python])
 
 # Define targets for generating the documentation...
 commands_apidoc_cpp = []

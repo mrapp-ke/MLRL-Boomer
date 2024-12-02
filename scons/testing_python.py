@@ -5,18 +5,9 @@ Provides utility functions for running automated tests.
 """
 from os import environ, path
 
-from modules_old import CPP_MODULE, PYTHON_MODULE
+from modules_old import PYTHON_MODULE
 from util.env import get_env_bool
-from util.run import Program, PythonModule
-
-
-def tests_cpp(**_):
-    """
-    Runs all automated tests of C++ code.
-    """
-    Program('meson', 'test', '-C', CPP_MODULE.build_dir, '-v') \
-        .print_arguments(True) \
-        .run()
+from util.run import PythonModule
 
 
 def tests_python(**_):
