@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for reading and writing files.
 """
 from functools import cached_property
+from os import path
 from typing import List
 
 ENCODING_UTF8 = 'utf-8'
@@ -32,17 +33,22 @@ class TextFile:
     Allows to read and write the content of a text file.
     """
 
-    def __init__(self, file: str):
+    def __init__(self, file: str, accept_missing: bool = False):
         """
-        :param file: The path to the text file
+        :param file:            The path to the text file
+        :param accept_missing:  True, if no errors should be raised if the text file is missing, False otherwise
         """
         self.file = file
+        self.accept_missing = accept_missing
 
     @cached_property
     def lines(self) -> List[str]:
         """
         The lines in the text file.
         """
+        if self.accept_missing and not path.isfile(self.file):
+            return []
+
         with read_file(self.file) as file:
             return file.readlines()
 
@@ -56,6 +62,13 @@ class TextFile:
             file.writelines(lines)
 
         del self.lines
+
+    def clear(self):
+        """
+        Clears the text file.
+        """
+        print('Clearing file "' + self.file + '"...')
+        self.write_lines('')
 
     def __str__(self) -> str:
         return self.file
