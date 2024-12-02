@@ -287,15 +287,10 @@ class Pip:
         """
         Installs all dependencies in the requirements file.
         """
-        print('Installing all dependencies...')
-
         for requirement in self.requirements.requirements:
             self.__install_requirement(requirement, dry_run=True)
 
     def list_outdated_dependencies(self) -> Set[Dependency]:
-        self.install_all_packages()
-
-        print('Checking for outdated dependencies...')
         stdout = Pip.ListCommand(outdated=True).print_command(False).capture_output()
         stdout_lines = stdout.strip().split('\n')
         i = 0
