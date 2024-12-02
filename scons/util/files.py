@@ -34,7 +34,7 @@ class DirectorySearch:
 
     def exclude(self, *excludes: Filter) -> 'DirectorySearch':
         """
-        Sets one or several filters that should be used for excluding subdirectories.
+        Adds one or several filters that should be used for excluding subdirectories.
 
         :param excludes:    The filters to be set
         :return:            The `DirectorySearch` itself
@@ -44,7 +44,7 @@ class DirectorySearch:
 
     def exclude_by_name(self, *names: str) -> 'DirectorySearch':
         """
-        Sets one or several filters that should be used for excluding subdirectories by their names.
+        Adds one or several filters that should be used for excluding subdirectories by their names.
 
         :param names:   The names of the subdirectories to be excluded
         :return:        The `DirectorySearch` itself
@@ -54,6 +54,38 @@ class DirectorySearch:
             return directory_name == excluded_name
 
         return self.exclude(*[partial(filter_directory, name) for name in names])
+
+    def exclude_by_substrings(self,
+                              starts_with: Optional[str] = None,
+                              not_starts_with: Optional[str] = None,
+                              ends_with: Optional[str] = None,
+                              not_ends_with: Optional[str] = None,
+                              contains: Optional[str] = None,
+                              not_contains: Optional[str] = None) -> 'DirectorySearch':
+        """
+        Adds a filter that that should be used for excluding subdirectories based on whether their name contains
+        specific substrings.
+
+        :param starts_with:     A substring, names must start with or None, if no restrictions should be imposed
+        :param not_starts_with: A substring, names must not start with or None, if no restrictions should be imposed
+        :param ends_with:       A substring, names must end with or None, if no restrictions should be imposed
+        :param not_ends_with:   A substring, names must not end with or None, if no restrictions should be imposed
+        :param contains:        A substring, names must contain or None, if no restrictions should be imposed
+        :param not_contains:    A substring, names must not contain or None, if no restrictions should be imposed
+        :return:                The `DirectorySearch` itself
+        """
+
+        def filter_directory(start: Optional[str], not_start: Optional[str], end: Optional[str], not_end: Optional[str],
+                             substring: Optional[str], not_substring: Optional[str], _: str, file_name: str):
+            return (not start or file_name.startswith(start)) \
+                and (not not_start or not file_name.startswith(not_start)) \
+                and (not end or file_name.endswith(end)) \
+                and (not not_end or file_name.endswith(not_end)) \
+                and (not substring or file_name.find(substring) >= 0) \
+                and (not not_substring or file_name.find(not_substring) < 0)
+
+        return self.exclude(
+            partial(filter_directory, starts_with, not_starts_with, ends_with, not_ends_with, contains, not_contains))
 
     def list(self, *directories: str) -> List[str]:
         """
@@ -103,7 +135,7 @@ class FileSearch:
 
     def exclude_subdirectories(self, *excludes: DirectorySearch.Filter) -> 'FileSearch':
         """
-        Sets one or several filters that should be used for excluding subdirectories. Does only have an effect if the
+        Adds one or several filters that should be used for excluding subdirectories. Does only have an effect if the
         search is recursive.
 
         :param excludes:    The filters to be set
@@ -114,13 +146,40 @@ class FileSearch:
 
     def exclude_subdirectories_by_name(self, *names: str) -> 'FileSearch':
         """
-        Sets one or several filters that should be used for excluding subdirectories by their names. Does only have an
+        Adds one or several filters that should be used for excluding subdirectories by their names. Does only have an
         effect if the search is recursive.
 
         :param names:   The names of the subdirectories to be excluded
         :return:        The `FileSearch` itself
         """
         self.directory_search.exclude_by_name(*names)
+        return self
+
+    def exclude_subdirectories_by_substrings(self,
+                                             starts_with: Optional[str] = None,
+                                             not_starts_with: Optional[str] = None,
+                                             ends_with: Optional[str] = None,
+                                             not_ends_with: Optional[str] = None,
+                                             contains: Optional[str] = None,
+                                             not_contains: Optional[str] = None) -> 'FileSearch':
+        """
+        Adds a filter that should be used for excluding subdirectories based on whether their name contains specific
+        substrings.
+
+        :param starts_with:     A substring, names must start with or None, if no restrictions should be imposed
+        :param not_starts_with: A substring, names must not start with or None, if no restrictions should be imposed
+        :param ends_with:       A substring, names must end with or None, if no restrictions should be imposed
+        :param not_ends_with:   A substring, names must not end with or None, if no restrictions should be imposed
+        :param contains:        A substring, names must contain or None, if no restrictions should be imposed
+        :param not_contains:    A substring, names must not contain or None, if no restrictions should be imposed
+        :return:                The `FileSearch` itself
+        """
+        self.directory_search.exclude_by_substrings(starts_with=starts_with,
+                                                    not_starts_with=not_starts_with,
+                                                    ends_with=ends_with,
+                                                    not_ends_with=not_ends_with,
+                                                    contains=contains,
+                                                    not_contains=not_contains)
         return self
 
     def set_hidden(self, hidden: bool) -> 'FileSearch':
