@@ -3,16 +3,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides actions for updating the project's version.
 """
-import sys
-
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+from functools import cached_property
 from typing import Optional
 
-from util.io import read_file, write_file
-
-VERSION_FILE = '.version'
-
-DEV_VERSION_FILE = '.version-dev'
+from util.io import TextFile
 
 
 @dataclass
@@ -76,44 +71,65 @@ class Version:
         return version
 
 
-def __read_version_file(version_file) -> str:
-    with read_file(version_file) as file:
-        lines = file.readlines()
+class VersionFile(TextFile):
+    """
+    The file that stores the project's version.
+    """
+
+    def __init__(self):
+        super().__init__('.version')
+
+    @cached_property
+    def version(self) -> Version:
+        lines = self.lines
 
         if len(lines) != 1:
-            print('File "' + version_file + '" must contain exactly one line')
-            sys.exit(-1)
+            raise ValueError('File "' + self.file + '" must contain exactly one line')
 
-        return lines[0]
+        return Version.parse(lines[0])
 
+    def update(self, version: Version):
+        self.write_lines(str(version))
+        print('Updated version to "' + str(version) + '"')
 
-def __write_version_file(version_file, version: str):
-    with write_file(version_file) as file:
-        file.write(version)
-
-
-def __get_current_development_version() -> int:
-    current_version = __read_version_file(DEV_VERSION_FILE)
-    print('Current development version is "' + current_version + '"')
-    return Version.parse_version_number(current_version)
+    def write_lines(self, *lines: str):
+        super().write_lines(lines)
+        del self.version
 
 
-def __update_development_version(dev: int):
-    updated_version = str(dev)
-    print('Updated version to "' + updated_version + '"')
-    __write_version_file(DEV_VERSION_FILE, updated_version)
+class DevelopmentVersionFile(TextFile):
+    """
+    The file that stores the project's development version.
+    """
+
+    @cached_property
+    def development_version(self) -> int:
+        lines = self.lines
+
+        if len(lines) != 1:
+            raise ValueError('File "' + self.file + '" must contain exactly one line')
+
+        return Version.parse_version_number(lines[0])
+
+    def update(self, development_version: int):
+        self.write_lines(str(development_version))
+        print('Updated development version to "' + str(development_version) + '"')
+
+    def write_lines(self, *lines: str):
+        super().write_lines(lines)
+        del self.development_version
 
 
-def __get_current_version() -> Version:
-    current_version = __read_version_file(VERSION_FILE)
-    print('Current version is "' + current_version + '"')
-    return Version.parse(current_version)
+def __get_version_file() -> VersionFile:
+    version_file = VersionFile()
+    print('Current version is "' + str(version_file.version) + '"')
+    return version_file
 
 
-def __update_version(version: Version):
-    updated_version = str(version)
-    print('Updated version to "' + updated_version + '"')
-    __write_version_file(VERSION_FILE, updated_version)
+def __get_development_version_file() -> DevelopmentVersionFile:
+    version_file = DevelopmentVersionFile()
+    print('Current development version is "' + str(version_file.development_version) + '"')
+    return version_file
 
 
 def get_current_version() -> Version:
@@ -122,7 +138,7 @@ def get_current_version() -> Version:
 
     :return: The project's current version
     """
-    return Version.parse(__read_version_file(VERSION_FILE))
+    return VersionFile().version
 
 
 def print_current_version():
@@ -136,53 +152,49 @@ def increment_development_version():
     """
     Increments the development version.
     """
-    dev = __get_current_development_version()
-    dev += 1
-    __update_development_version(dev)
+    version_file = __get_development_version_file()
+    version_file.update(version_file.dev + 1)
 
 
 def reset_development_version():
     """
     Resets the development version.
     """
-    __get_current_development_version()
-    __update_development_version(0)
+    version_file = __get_development_version_file()
+    version_file.update(0)
 
 
 def apply_development_version():
     """
     Appends the development version to the current semantic version.
     """
-    version = __get_current_version()
-    version.dev = __get_current_development_version()
-    __update_version(version)
+    version_file = __get_version_file()
+    development_version = __get_development_version_file().development_version
+    version_file.update(replace(version_file.version, dev=development_version))
 
 
 def increment_patch_version():
     """
     Increments the patch version.
     """
-    version = __get_current_version()
-    version.patch += 1
-    __update_version(version)
+    version_file = __get_version_file()
+    version = version_file.version
+    version_file.update(replace(version, patch=version.patch + 1))
 
 
 def increment_minor_version():
     """
     Increments the minor version.
     """
-    version = __get_current_version()
-    version.minor += 1
-    version.patch = 0
-    __update_version(version)
+    version_file = __get_version_file()
+    version = version_file.version
+    version_file.update(replace(version, minor=version.minor + 1, patch=0))
 
 
 def increment_major_version():
     """
     Increments the major version.
     """
-    version = __get_current_version()
-    version.major += 1
-    version.minor = 0
-    version.patch = 0
-    __update_version(version)
+    version_file = __get_version_file()
+    version = version_file.version
+    version_file.update(replace(version, major=version.major + 1, minor=0, patch=0))
