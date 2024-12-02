@@ -3,8 +3,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for installing Python packages via pip.
 """
-from abc import ABC
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from functools import reduce
 from typing import Dict, Optional, Set
 
 from util.cmd import Command as Cmd
@@ -93,20 +94,17 @@ class Dependency:
         return hash(self.installed)
 
 
-class RequirementsFile(TextFile):
+class Requirements(ABC):
     """
-    Represents a specific requirements.txt file.
+    An abstract base class for all classes that provide access to requirements.
     """
 
     @property
+    @abstractmethod
     def requirements_by_package(self) -> Dict[Package, Requirement]:
         """
-        A dictionary that contains all requirements in the requirements file by their package.
+        A dictionary that contains all requirements by their package.
         """
-        return {
-            requirement.package: requirement
-            for requirement in [Requirement.parse(line) for line in self.lines if line.strip('\n').strip()]
-        }
 
     @property
     def requirements(self) -> Set[Requirement]:
@@ -132,7 +130,7 @@ class RequirementsFile(TextFile):
             if requirement:
                 requirements.add(requirement)
             elif not accept_missing:
-                raise RuntimeError('Package "' + str(package) + '" not found in requirements file "' + self.file + '"')
+                raise RuntimeError('Requirement for package "' + str(package) + '" not found')
 
         return requirements
 
@@ -147,6 +145,33 @@ class RequirementsFile(TextFile):
         """
         requirements = self.lookup_requirements(package, accept_missing=accept_missing)
         return requirements.pop() if requirements else None
+
+
+class RequirementsFile(TextFile, Requirements):
+    """
+    Represents a specific requirements.txt file.
+    """
+
+    @property
+    def requirements_by_package(self) -> Dict[Package, Requirement]:
+        return {
+            requirement.package: requirement
+            for requirement in [Requirement.parse(line) for line in self.lines if line.strip('\n').strip()]
+        }
+
+
+class RequirementsFiles(Requirements):
+    """
+    Represents multiple requirements.txt files.
+    """
+
+    def __init__(self, *requirements_files: str):
+        self.requirements_files = [RequirementsFile(requirements_file) for requirements_file in requirements_files]
+
+    @property
+    def requirements_by_package(self) -> Dict[Package, Requirement]:
+        return reduce(lambda aggr, requirements_file: aggr | requirements_file.requirements_by_package,
+                      self.requirements_files, {})
 
 
 class Pip:
@@ -227,11 +252,12 @@ class Pip:
         except RuntimeError:
             Pip.__install_requirement(requirement)
 
-    def __init__(self, requirements_file: str):
+    def __init__(self, *requirements_files: str):
         """
-        :param requirements_file: The requirements file that specifies the version of the packages to be installed
+        :param requirements_files: The paths to the requirements files that specify the versions of the packages to be
+                                   installed
         """
-        self.requirements_file = RequirementsFile(requirements_file)
+        self.requirements = RequirementsFiles(*requirements_files)
 
     @staticmethod
     def for_build_unit(build_unit: BuildUnit = BuildUnit('util')):
@@ -252,7 +278,7 @@ class Pip:
                                 True, if it should simply be ignored
         """
         packages = [Package(package_name) for package_name in package_names]
-        requirements = self.requirements_file.lookup_requirements(*packages, accept_missing=accept_missing)
+        requirements = self.requirements.lookup_requirements(*packages, accept_missing=accept_missing)
 
         for requirement in requirements:
             self.__install_requirement(requirement, dry_run=True)
@@ -261,16 +287,15 @@ class Pip:
         """
         Installs all dependencies in the requirements file.
         """
-        print('Installing all dependencies in requirements file "' + str(self.requirements_file) + '"...')
-        requirements = self.requirements_file.requirements
+        print('Installing all dependencies...')
 
-        for requirement in requirements:
+        for requirement in self.requirements.requirements:
             self.__install_requirement(requirement, dry_run=True)
 
     def list_outdated_dependencies(self) -> Set[Dependency]:
         self.install_all_packages()
 
-        print('Checking for outdated dependencies in requirements file "' + str(self.requirements_file) + '"...')
+        print('Checking for outdated dependencies...')
         stdout = Pip.ListCommand(outdated=True).print_command(False).capture_output()
         stdout_lines = stdout.strip().split('\n')
         i = 0
@@ -292,7 +317,7 @@ class Pip:
                     + line)
 
             package = Package(parts[0])
-            requirement = self.requirements_file.lookup_requirement(package, accept_missing=True)
+            requirement = self.requirements.lookup_requirement(package, accept_missing=True)
 
             if requirement and requirement.version:
                 installed_version = parts[1]
