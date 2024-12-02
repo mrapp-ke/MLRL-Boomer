@@ -8,36 +8,22 @@ import sys
 from dataclasses import dataclass, field
 from datetime import date
 from enum import Enum, auto
-from os import path
+from functools import cached_property
 from typing import List, Optional
 
-from util.io import read_file, write_file
+from util.io import TextFile
 from versioning.versioning import Version, get_current_version
 
-PREFIX_HEADER = '# '
+CHANGESET_FILE_MAIN = '.changelog-main.md'
 
-PREFIX_SUB_HEADER = '## '
+CHANGESET_FILE_FEATURE = '.changelog-feature.md'
 
-PREFIX_SUB_SUB_HEADER = '### '
-
-PREFIX_DASH = '- '
-
-PREFIX_ASTERISK = '* '
-
-URL_DOCUMENTATION = 'https://mlrl-boomer.readthedocs.io/en/'
-
-CHANGELOG_FILE_MAIN = '.changelog-main.md'
-
-CHANGELOG_FILE_FEATURE = '.changelog-feature.md'
-
-CHANGELOG_FILE_BUGFIX = '.changelog-bugfix.md'
-
-CHANGELOG_FILE = 'CHANGELOG.md'
+CHANGESET_FILE_BUGFIX = '.changelog-bugfix.md'
 
 
 class LineType(Enum):
     """
-    Represents different types of lines that may occur in a changelog.
+    Represents different types of lines that may occur in a changeset.
     """
     BLANK = auto()
     HEADER = auto()
@@ -52,9 +38,9 @@ class LineType(Enum):
         """
         if not line or line.isspace():
             return LineType.BLANK
-        if line.startswith(PREFIX_HEADER):
+        if line.startswith(Line.PREFIX_HEADER):
             return LineType.HEADER
-        if line.startswith(PREFIX_DASH) or line.startswith(PREFIX_ASTERISK):
+        if line.startswith(Line.PREFIX_DASH) or line.startswith(Line.PREFIX_ASTERISK):
             return LineType.ENUMERATION
         return None
 
@@ -62,7 +48,7 @@ class LineType(Enum):
 @dataclass
 class Line:
     """
-    A single line in a changelog.
+    A single line in a changeset.
 
     Attributes:
         line_number:    The line number, starting at 1
@@ -74,6 +60,41 @@ class Line:
     line_type: LineType
     line: str
     content: str
+
+    PREFIX_HEADER = '# '
+
+    PREFIX_DASH = '- '
+
+    PREFIX_ASTERISK = '* '
+
+    @staticmethod
+    def parse(line: str, line_number: int) -> 'Line':
+        """
+        Parses and returns a single line in a changeset.
+
+        :param line:        The line to be parsed
+        :param line_number: The number of the line to parsed (starting at 1)
+        :return:            The `Line` that has been created
+        """
+        line = line.strip('\n')
+        line_type = LineType.parse(line)
+
+        if not line_type:
+            raise ValueError('Line ' + str(line_number)
+                             + ' is invalid: Must be blank, a top-level header (starting with "' + Line.PREFIX_HEADER
+                             + '"), or an enumeration (starting with "' + Line.PREFIX_DASH + '" or "'
+                             + Line.PREFIX_ASTERISK + '"), but is "' + line + '"')
+
+        content = line
+
+        if line_type != LineType.BLANK:
+            content = line.lstrip(Line.PREFIX_HEADER).lstrip(Line.PREFIX_DASH).lstrip(Line.PREFIX_ASTERISK)
+
+            if not content or content.isspace():
+                raise ValueError('Line ' + str(line_number) + ' is is invalid: Content must not be blank, but is "'
+                                 + line + '"')
+
+        return Line(line_number=line_number, line_type=line_type, line=line, content=content)
 
 
 @dataclass
@@ -89,12 +110,75 @@ class Changeset:
     changes: List[str] = field(default_factory=list)
 
     def __str__(self) -> str:
-        changeset = PREFIX_SUB_SUB_HEADER + self.header + '\n\n'
+        changeset = '### ' + self.header + '\n\n'
 
         for content in self.changes:
-            changeset += PREFIX_DASH + content + '\n'
+            changeset += Line.PREFIX_DASH + content + '\n'
 
         return changeset
+
+
+class ChangesetFile(TextFile):
+    """
+    A file that stores several changesets.
+    """
+
+    def __validate_line(self, current_line: Optional[Line], previous_line: Optional[Line]):
+        current_line_is_enumeration = current_line and current_line.line_type == LineType.ENUMERATION
+
+        if current_line_is_enumeration and not previous_line:
+            raise ValueError('File "' + self.file + '" must start with a top-level header (starting with "'
+                             + Line.PREFIX_HEADER + '")')
+
+        current_line_is_header = current_line and current_line.line_type == LineType.HEADER
+        previous_line_is_header = previous_line and previous_line.line_type == LineType.HEADER
+
+        if (current_line_is_header and previous_line_is_header) or (not current_line and previous_line_is_header):
+            raise ValueError('Header "' + previous_line.line + '" at line ' + str(previous_line.line_number)
+                             + ' of file "' + self.file + '" is not followed by any content')
+
+    @cached_property
+    def parsed_lines(self) -> List[Line]:
+        parsed_lines = []
+
+        for i, line in enumerate(self.lines):
+            current_line = Line.parse(line, line_number=i + 1)
+
+            if current_line.line_type != LineType.BLANK:
+                parsed_lines.append(current_line)
+
+        return parsed_lines
+
+    @cached_property
+    def changesets(self) -> List[Changeset]:
+        changesets = []
+
+        for line in self.parsed_lines:
+            if line.line_type == LineType.HEADER:
+                changesets.append(Changeset(header=line.content))
+            elif line.line_type == LineType.ENUMERATION:
+                current_changeset = changesets[-1]
+                current_changeset.changes.append(line.content)
+
+        return changesets
+
+    def validate(self):
+        """
+        Validates the changelog.
+        """
+        previous_line = None
+
+        for i, current_line in enumerate(self.parsed_lines):
+            if current_line.line_type != LineType.BLANK:
+                self.__validate_line(current_line=current_line, previous_line=previous_line)
+                previous_line = current_line
+
+        self.__validate_line(current_line=None, previous_line=previous_line)
+
+    def write_lines(self, *lines: str):
+        super().write_lines(lines)
+        del self.parsed_lines
+        del self.changesets
 
 
 class ReleaseType(Enum):
@@ -122,6 +206,10 @@ class Release:
     release_type: ReleaseType
     changesets: List[Changeset] = field(default_factory=list)
 
+    URL_DOCUMENTATION = 'https://mlrl-boomer.readthedocs.io/en/'
+
+    PREFIX_SUB_HEADER = '## '
+
     @staticmethod
     def __format_release_month(month: int) -> str:
         return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][month - 1]
@@ -143,11 +231,12 @@ class Release:
         if [changeset for changeset in self.changesets if changeset.header.lower() == 'api changes']:
             return ('```{warning}\nThis release comes with API changes. For an updated overview of the available '
                     + 'parameters and command line arguments, please refer to the ' + '[documentation]('
-                    + URL_DOCUMENTATION + str(self.version) + ').\n```\n\n')
+                    + self.URL_DOCUMENTATION + str(self.version) + ').\n```\n\n')
         return ''
 
     def __str__(self) -> str:
-        release = PREFIX_SUB_HEADER + 'Version ' + str(self.version) + ' (' + self.__format_release_date() + ')\n\n'
+        release = self.PREFIX_SUB_HEADER + 'Version ' + str(
+            self.version) + ' (' + self.__format_release_date() + ')\n\n'
         release += 'A ' + self.release_type.value + ' release that comes with the following changes.\n\n'
         release += self.__format_disclaimer()
 
@@ -157,100 +246,78 @@ class Release:
         return release
 
 
-def __read_lines(changelog_file: str, skip_if_missing: bool = False) -> List[str]:
-    if skip_if_missing and not path.isfile(changelog_file):
-        return []
+class ChangelogFile(TextFile):
+    """
+    The file that stores the project's changelog.
+    """
 
-    with read_file(changelog_file) as file:
-        return file.readlines()
+    def __init__(self):
+        super().__init__('CHANGELOG.md')
+
+    def add_release(self, release: Release):
+        """
+        Adds a new release to the project's changelog.
+
+        :param release: The release to be added
+        """
+        formatted_release = str(release)
+        print('Adding new release to changelog file "' + self.file + '":\n\n' + formatted_release)
+        original_lines = self.lines
+        modified_lines = []
+        offset = 0
+
+        for offset, line in enumerate(original_lines):
+            if line.startswith(Release.PREFIX_SUB_HEADER):
+                break
+
+            modified_lines.append(line)
+
+        modified_lines.append(formatted_release)
+        modified_lines.extend(original_lines[offset:])
+        self.write_lines(*modified_lines)
+
+    @property
+    def latest(self) -> str:
+        """
+        The latest release in the changelog.
+        """
+        release = ''
+        lines = self.lines
+        offset = 0
+
+        for offset, line in enumerate(lines):
+            if line.startswith(Release.PREFIX_SUB_HEADER):
+                break
+
+        for line in lines[offset + 2:]:
+            if line.startswith(Release.PREFIX_SUB_HEADER):
+                break
+
+            if line.startswith('```{'):
+                release += '***'
+            elif line.startswith('```'):
+                release = release.rstrip('\n')
+                release += '***\n'
+            else:
+                release += line
+
+        return release.rstrip('\n')
 
 
-def __write_lines(changelog_file: str, lines: List[str]):
-    with write_file(changelog_file) as file:
-        file.writelines(lines)
-
-
-def __parse_line(changelog_file: str, line_number: int, line: str) -> Line:
-    line = line.strip('\n')
-    line_type = LineType.parse(line)
-
-    if not line_type:
-        print('Line ' + str(line_number) + ' of file "' + changelog_file
-              + '" is invalid: Must be blank, a top-level header (starting with "' + PREFIX_HEADER
-              + '"), or an enumeration (starting with "' + PREFIX_DASH + '" or "' + PREFIX_ASTERISK + '"), but is "'
-              + line + '"')
+def __validate_changeset(changeset_file: str):
+    try:
+        print('Validating changeset file "' + changeset_file + '"...')
+        ChangesetFile(changeset_file, accept_missing=True).validate()
+    except ValueError as error:
+        print('Changeset file "' + changeset_file + '" is malformed!\n\n' + str(error))
         sys.exit(-1)
 
-    content = line
 
-    if line_type != LineType.BLANK:
-        content = line.lstrip(PREFIX_HEADER).lstrip(PREFIX_DASH).lstrip(PREFIX_ASTERISK)
-
-        if not content or content.isspace():
-            print('Line ' + str(line_number) + ' of file "' + changelog_file
-                  + '" is is invalid: Content must not be blank, but is "' + line + '"')
-            sys.exit(-1)
-
-    return Line(line_number=line_number, line_type=line_type, line=line, content=content)
-
-
-def __validate_line(changelog_file: str, current_line: Optional[Line], previous_line: Optional[Line]):
-    current_line_is_enumeration = current_line and current_line.line_type == LineType.ENUMERATION
-
-    if current_line_is_enumeration and not previous_line:
-        print('File "' + changelog_file + '" must start with a top-level header (starting with "' + PREFIX_HEADER
-              + '")')
-        sys.exit(-1)
-
-    current_line_is_header = current_line and current_line.line_type == LineType.HEADER
-    previous_line_is_header = previous_line and previous_line.line_type == LineType.HEADER
-
-    if (current_line_is_header and previous_line_is_header) or (not current_line and previous_line_is_header):
-        print('Header "' + previous_line.line + '" at line ' + str(previous_line.line_number) + ' of file "'
-              + changelog_file + '" is not followed by any content')
-        sys.exit(-1)
-
-
-def __parse_lines(changelog_file: str, lines: List[str]) -> List[Line]:
-    previous_line = None
-    parsed_lines = []
-
-    for i, line in enumerate(lines):
-        current_line = __parse_line(changelog_file=changelog_file, line_number=(i + 1), line=line)
-
-        if current_line.line_type != LineType.BLANK:
-            __validate_line(changelog_file=changelog_file, current_line=current_line, previous_line=previous_line)
-            previous_line = current_line
-            parsed_lines.append(current_line)
-
-    __validate_line(changelog_file=changelog_file, current_line=None, previous_line=previous_line)
-    return parsed_lines
-
-
-def __parse_changesets(changelog_file: str, skip_if_missing: bool = False) -> List[Changeset]:
-    changesets = []
-    lines = __parse_lines(changelog_file, __read_lines(changelog_file, skip_if_missing=skip_if_missing))
-
-    for line in lines:
-        if line.line_type == LineType.HEADER:
-            changesets.append(Changeset(header=line.content))
-        elif line.line_type == LineType.ENUMERATION:
-            current_changeset = changesets[-1]
-            current_changeset.changes.append(line.content)
-
-    return changesets
-
-
-def __validate_changelog(changelog_file: str):
-    print('Validating changelog file "' + changelog_file + '"...')
-    __parse_changesets(changelog_file, skip_if_missing=True)
-
-
-def __merge_changesets(*changelog_files) -> List[Changeset]:
+def __merge_changesets(*changeset_files) -> List[Changeset]:
     changesets_by_header = {}
 
-    for changelog_file in changelog_files:
-        for changeset in __parse_changesets(changelog_file):
+    for changeset_file in changeset_files:
+        for changeset in ChangesetFile(changeset_file).changesets:
             merged_changeset = changesets_by_header.setdefault(changeset.header.lower(), changeset)
 
             if merged_changeset != changeset:
@@ -259,111 +326,62 @@ def __merge_changesets(*changelog_files) -> List[Changeset]:
     return list(changesets_by_header.values())
 
 
-def __create_release(release_type: ReleaseType, *changelog_files) -> Release:
-    return Release(version=get_current_version(),
-                   release_date=date.today(),
-                   release_type=release_type,
-                   changesets=__merge_changesets(*changelog_files))
+def __update_changelog(release_type: ReleaseType, *changeset_files):
+    merged_changesets = __merge_changesets(*changeset_files)
+    new_release = Release(version=get_current_version(),
+                          release_date=date.today(),
+                          release_type=release_type,
+                          changesets=merged_changesets)
+    ChangelogFile().add_release(new_release)
 
-
-def __add_release_to_changelog(changelog_file: str, new_release: Release):
-    formatted_release = str(new_release)
-    print('Adding new release to changelog file "' + changelog_file + '":\n\n' + formatted_release)
-    original_lines = __read_lines(changelog_file)
-    modified_lines = []
-    offset = 0
-
-    for offset, line in enumerate(original_lines):
-        if line.startswith(PREFIX_SUB_HEADER):
-            break
-
-        modified_lines.append(line)
-
-    modified_lines.append(formatted_release)
-    modified_lines.extend(original_lines[offset:])
-    __write_lines(changelog_file, modified_lines)
-
-
-def __clear_changelogs(*changelog_files):
-    for changelog_file in changelog_files:
-        print('Clearing changelog file "' + changelog_file + '"...')
-        __write_lines(changelog_file, [''])
-
-
-def __update_changelog(release_type: ReleaseType, *changelog_files):
-    new_release = __create_release(release_type, *changelog_files)
-    __add_release_to_changelog(CHANGELOG_FILE, new_release)
-    __clear_changelogs(*changelog_files)
-
-
-def __get_latest_changelog() -> str:
-    changelog = ''
-    lines = __read_lines(CHANGELOG_FILE)
-    offset = 0
-
-    for offset, line in enumerate(lines):
-        if line.startswith(PREFIX_SUB_HEADER):
-            break
-
-    for line in lines[offset + 2:]:
-        if line.startswith(PREFIX_SUB_HEADER):
-            break
-
-        if line.startswith('```{'):
-            changelog += '***'
-        elif line.startswith('```'):
-            changelog = changelog.rstrip('\n')
-            changelog += '***\n'
-        else:
-            changelog += line
-
-    return changelog.rstrip('\n')
+    for changeset_file in changeset_files:
+        ChangesetFile(changeset_file).clear()
 
 
 def validate_changelog_bugfix():
     """
     Validates the changelog file that lists bugfixes.
     """
-    __validate_changelog(CHANGELOG_FILE_BUGFIX)
+    __validate_changeset(CHANGESET_FILE_BUGFIX)
 
 
 def validate_changelog_feature():
     """
     Validates the changelog file that lists new features.
     """
-    __validate_changelog(CHANGELOG_FILE_FEATURE)
+    __validate_changeset(CHANGESET_FILE_FEATURE)
 
 
 def validate_changelog_main():
     """
     Validates the changelog file that lists major updates.
     """
-    __validate_changelog(CHANGELOG_FILE_MAIN)
+    __validate_changeset(CHANGESET_FILE_MAIN)
 
 
 def update_changelog_main():
     """
     Updates the projects changelog when releasing bugfixes.
     """
-    __update_changelog(ReleaseType.MAJOR, CHANGELOG_FILE_MAIN, CHANGELOG_FILE_FEATURE, CHANGELOG_FILE_BUGFIX)
+    __update_changelog(ReleaseType.MAJOR, CHANGESET_FILE_MAIN, CHANGESET_FILE_FEATURE, CHANGESET_FILE_BUGFIX)
 
 
 def update_changelog_feature():
     """
     Updates the project's changelog when releasing new features.
     """
-    __update_changelog(ReleaseType.MINOR, CHANGELOG_FILE_FEATURE, CHANGELOG_FILE_BUGFIX)
+    __update_changelog(ReleaseType.MINOR, CHANGESET_FILE_FEATURE, CHANGESET_FILE_BUGFIX)
 
 
 def update_changelog_bugfix():
     """
     Updates the project's changelog when releasing major updates.
     """
-    __update_changelog(ReleaseType.PATCH, CHANGELOG_FILE_BUGFIX)
+    __update_changelog(ReleaseType.PATCH, CHANGESET_FILE_BUGFIX)
 
 
 def print_latest_changelog():
     """
     Prints the changelog of the latest release.
     """
-    print(__get_latest_changelog())
+    print(ChangelogFile().latest)
