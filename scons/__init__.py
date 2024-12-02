@@ -6,6 +6,7 @@ Defines modules to be dealt with by the build system.
 from code_style.modules import CodeModule
 from compilation.modules import CompilationModule
 from dependencies.python.modules import DependencyType, PythonDependencyModule
+from testing.cpp.modules import CppTestModule
 from util.files import FileSearch
 from util.languages import Language
 
@@ -92,5 +93,8 @@ MODULES = [
             .filter_by_substrings(not_starts_with='lib', ends_with='.so') \
             .filter_by_substrings(ends_with='.pyd') \
             .filter_by_substrings(not_starts_with='mlrl', ends_with='.lib'),
+    ),
+    CppTestModule(
+        root_directory='cpp',
     )
 ]
