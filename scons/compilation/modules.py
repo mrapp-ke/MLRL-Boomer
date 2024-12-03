@@ -35,19 +35,19 @@ class CompilationModule(Module):
                  language: Language,
                  root_directory: str,
                  install_directory: Optional[str] = None,
-                 file_search: Optional[FileSearch] = None):
+                 installed_file_search: Optional[FileSearch] = None):
         """
-        :param language:            The programming language of the source code that belongs to the module
-        :param root_directory:      The path to the module's root directory
-        :param install_directory:   The path to the directory into which files are installed or None, if the files are
-                                    installed into the root directory
-        :param file_search:         The `FileSearch` that should be used to search for installed files or None, if the
-                                    module does never contain any installed files
+        :param language:                The programming language of the source code that belongs to the module
+        :param root_directory:          The path to the module's root directory
+        :param install_directory:       The path to the directory into which files are installed or None, if the files
+                                        are installed into the root directory
+        :param installed_file_search:   The `FileSearch` that should be used to search for installed files or None, if
+                                        the module does never contain any installed files
         """
         self.language = language
         self.root_directory = root_directory
         self.install_directory = install_directory if install_directory else root_directory
-        self.file_search = file_search
+        self.installed_file_search = installed_file_search
 
     @property
     def build_directory(self) -> str:
@@ -62,8 +62,8 @@ class CompilationModule(Module):
 
         :return: A list that contains the paths of the requirements files that have been found
         """
-        if self.file_search:
-            return self.file_search \
+        if self.installed_file_search:
+            return self.installed_file_search \
                 .set_recursive(True) \
                 .exclude_subdirectories_by_name(path.basename(self.build_directory)) \
                 .list(self.install_directory)

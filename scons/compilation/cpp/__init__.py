@@ -1,10 +1,13 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Defines targets for compiling C++ code.
+Defines targets and modules for compiling C++ code.
 """
 from compilation.cpp.targets import CompileCpp, InstallCpp, SetupCpp
+from compilation.modules import CompilationModule
 from dependencies.python import VENV
+from util.files import FileSearch
+from util.languages import Language
 from util.targets import PhonyTarget, TargetBuilder
 from util.units import BuildUnit
 
@@ -25,3 +28,16 @@ TARGETS = TargetBuilder(BuildUnit('compilation', 'cpp')) \
         .depends_on(COMPILE_CPP) \
         .set_runnables(InstallCpp()) \
     .build()
+
+MODULES = [
+    CompilationModule(
+        language=Language.CPP,
+        root_directory='cpp',
+        install_directory='python',
+        installed_file_search=FileSearch() \
+            .filter_by_substrings(starts_with='lib', contains='.so') \
+            .filter_by_substrings(ends_with='.dylib') \
+            .filter_by_substrings(starts_with='mlrl', ends_with='.lib') \
+            .filter_by_substrings(ends_with='.dll'),
+    ),
+]

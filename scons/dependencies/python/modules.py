@@ -39,15 +39,18 @@ class PythonDependencyModule(Module):
             return isinstance(module, PythonDependencyModule) and (not self.dependency_types
                                                                    or module.dependency_type in self.dependency_types)
 
-    def __init__(self, dependency_type: DependencyType, root_directory: str, file_search: FileSearch = FileSearch()):
+    def __init__(self,
+                 dependency_type: DependencyType,
+                 root_directory: str,
+                 requirements_file_search: FileSearch = FileSearch()):
         """
-        :param dependency_type: The type of the Python dependencies
-        :param root_directory:  The path to the module's root directory
-        :param file_search:     The `FileSearch` that should be used to search for requirements files
+        :param dependency_type:             The type of the Python dependencies
+        :param root_directory:              The path to the module's root directory
+        :param requirements_file_search:    The `FileSearch` that should be used to search for requirements files
         """
         self.dependency_type = dependency_type
         self.root_directory = root_directory
-        self.file_search = file_search
+        self.requirements_file_search = requirements_file_search
 
     def find_requirements_files(self) -> List[str]:
         """
@@ -55,4 +58,4 @@ class PythonDependencyModule(Module):
 
         :return: A list that contains the paths of the requirements files that have been found
         """
-        return self.file_search.filter_by_name('requirements.txt').list(self.root_directory)
+        return self.requirements_file_search.filter_by_name('requirements.txt').list(self.root_directory)
