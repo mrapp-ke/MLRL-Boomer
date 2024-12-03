@@ -7,6 +7,7 @@ from code_style.modules import CodeModule
 from compilation.modules import CompilationModule
 from dependencies.python.modules import DependencyType, PythonDependencyModule
 from testing.cpp.modules import CppTestModule
+from testing.python.modules import PythonTestModule
 from util.files import FileSearch
 from util.languages import Language
 
@@ -96,5 +97,8 @@ MODULES = [
     ),
     CppTestModule(
         root_directory='cpp',
+    ),
+    PythonTestModule(
+        root_directory='python',
     )
 ]
