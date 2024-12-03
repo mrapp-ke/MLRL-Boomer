@@ -21,6 +21,7 @@ class DirectorySearch:
     def __init__(self):
         self.recursive = False
         self.excludes = []
+        self.filters = []
 
     def set_recursive(self, recursive: bool) -> 'DirectorySearch':
         """
@@ -31,6 +32,29 @@ class DirectorySearch:
         """
         self.recursive = recursive
         return self
+
+    def add_filters(self, *filter_functions: Filter) -> 'DirectorySearch':
+        """
+        Adds one or several filters that match subdirectories to be included.
+
+        :param filter_functions:    The filters to be added
+        :return:                    The `DirectorySearch` itself
+        """
+        self.filters.extend(filter_functions)
+        return self
+
+    def filter_by_name(self, *names: str) -> 'DirectorySearch':
+        """
+        Adds one or several filters that match subdirectories to be included based on their name.
+
+        :param names:   The names of the subdirectories that should be included
+        :return:        The `DirectorySearch` itself
+        """
+
+        def filter_directory(filtered_names: Set[str], _: str, directory_name: str):
+            return directory_name in filtered_names
+
+        return self.add_filters(*[partial(filter_directory, name) for name in names])
 
     def exclude(self, *excludes: Filter) -> 'DirectorySearch':
         """
@@ -97,14 +121,34 @@ class DirectorySearch:
         result = []
 
         def filter_file(file: str) -> bool:
-            return path.isdir(file) and not reduce(
-                lambda aggr, exclude: aggr or exclude(path.dirname(file), path.basename(file)), self.excludes, False)
+            if path.isdir(file):
+                parent = path.dirname(file)
+                file_name = path.basename(file)
+
+                if not reduce(lambda aggr, exclude: aggr or exclude(parent, file_name), self.excludes, False):
+                    return True
+
+            return False
+
+        def filter_subdirectory(subdirectory: str, filters: List[DirectorySearch.Filter]) -> bool:
+            parent = path.dirname(subdirectory)
+            directory_name = path.basename(subdirectory)
+
+            if reduce(lambda aggr, dir_filter: aggr or dir_filter(parent, directory_name), filters, False):
+                return True
+
+            return False
 
         for directory in directories:
             subdirectories = [file for file in glob(path.join(directory, '*')) if filter_file(file)]
 
             if self.recursive:
-                subdirectories.extend(self.list(*subdirectories))
+                result.extend(self.list(*subdirectories))
+
+            if self.filters:
+                subdirectories = [
+                    subdirectory for subdirectory in subdirectories if filter_subdirectory(subdirectory, self.filters)
+                ]
 
             result.extend(subdirectories)
 
@@ -131,6 +175,26 @@ class FileSearch:
         :return:            The `FileSearch` itself
         """
         self.directory_search.set_recursive(recursive)
+        return self
+
+    def add_subdirectory_filters(self, *filter_functions: DirectorySearch.Filter) -> 'FileSearch':
+        """
+        Adds one or several filters that match subdirectories to be included.
+
+        :param filter_functions:    The filters to be added
+        :return:                    The `FileSearch` itself
+        """
+        self.directory_search.add_filters(*filter_functions)
+        return self
+
+    def filter_subdirectories_by_name(self, *names: str) -> 'FileSearch':
+        """
+        Adds one or several filters that match subdirectories to be included based on their name.
+
+        :param names:   The names of the subdirectories that should be included
+        :return:        The `FileSearch` itself
+        """
+        self.directory_search.filter_by_name(*names)
         return self
 
     def exclude_subdirectories(self, *excludes: DirectorySearch.Filter) -> 'FileSearch':
@@ -278,9 +342,17 @@ class FileSearch:
         subdirectories = self.directory_search.list(*directories) if self.directory_search.recursive else []
 
         def filter_file(file: str) -> bool:
-            return path.isfile(file) and (not self.filters or reduce(
-                lambda aggr, file_filter: aggr or file_filter(path.dirname(file), path.basename(file)), self.filters,
-                False))
+            if path.isfile(file):
+                if not self.filters:
+                    return True
+
+                parent = path.dirname(file)
+                file_name = path.basename(file)
+
+                if reduce(lambda aggr, file_filter: aggr or file_filter(parent, file_name), self.filters, False):
+                    return True
+
+            return False
 
         for directory in list(directories) + subdirectories:
             files = [file for file in glob(path.join(directory, '*')) if filter_file(file)]
