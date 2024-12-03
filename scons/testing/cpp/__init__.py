@@ -1,9 +1,10 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Defines targets for testing C++ code.
+Defines targets and modules for testing C++ code.
 """
 from compilation.cpp import COMPILE_CPP
+from testing.cpp.modules import CppTestModule
 from testing.cpp.targets import TestCpp
 from util.targets import PhonyTarget, TargetBuilder
 from util.units import BuildUnit
@@ -15,3 +16,7 @@ TARGETS = TargetBuilder(BuildUnit('testing', 'cpp')) \
         .depends_on(COMPILE_CPP) \
         .set_runnables(TestCpp()) \
     .build()
+
+MODULES = [
+    CppTestModule(root_directory='cpp'),
+]

@@ -33,15 +33,15 @@ class CodeModule(Module):
     def __init__(self,
                  language: Language,
                  root_directory: str,
-                 file_search: FileSearch = FileSearch().set_recursive(True)):
+                 source_file_search: FileSearch = FileSearch().set_recursive(True)):
         """
-        :param language:        The programming language of the source code that belongs to the module
-        :param root_directory:  The path to the module's root directory
-        :param file_search:     The `FileSearch` that should be used to search for source files
+        :param language:            The programming language of the source code that belongs to the module
+        :param root_directory:      The path to the module's root directory
+        :param source_file_search:  The `FileSearch` that should be used to search for source files
         """
         self.language = language
         self.root_directory = root_directory
-        self.file_search = file_search
+        self.source_file_search = source_file_search
 
     def find_source_files(self) -> List[str]:
         """
@@ -49,4 +49,4 @@ class CodeModule(Module):
 
         :return: A list that contains the paths of the source files that have been found
         """
-        return self.file_search.filter_by_language(self.language).list(self.root_directory)
+        return self.source_file_search.filter_by_language(self.language).list(self.root_directory)

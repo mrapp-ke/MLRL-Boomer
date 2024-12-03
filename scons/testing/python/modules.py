@@ -26,14 +26,14 @@ class PythonTestModule(TestModule):
 
     def __init__(self,
                  root_directory: str,
-                 directory_search: DirectorySearch = DirectorySearch().set_recursive(True).exclude_by_name(
+                 test_directory_search: DirectorySearch = DirectorySearch().set_recursive(True).exclude_by_name(
                      'build').filter_by_name('tests')):
         """
-        :param root_directory:      The path to the module's root directory
-        :param directory_search:    The `DirectorySearch` that should be used for directories containing automated tests
+        :param root_directory:          The path to the module's root directory
+        :param test_directory_search:   The `DirectorySearch` that should be used for directories containing tests
         """
         self.root_directory = root_directory
-        self.directory_search = directory_search
+        self.test_directory_search = test_directory_search
 
     @property
     def test_result_directory(self) -> str:
@@ -48,4 +48,4 @@ class PythonTestModule(TestModule):
 
         :return: A list that contains the paths of the directories that have been found
         """
-        return self.directory_search.list(self.root_directory)
+        return self.test_directory_search.list(self.root_directory)
