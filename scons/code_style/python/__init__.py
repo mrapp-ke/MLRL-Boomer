@@ -6,8 +6,8 @@ Defines targets and modules for checking and enforcing code style definitions fo
 from code_style.modules import CodeModule
 from code_style.python.targets import CheckCythonCodeStyle, CheckPythonCodeStyle, EnforceCythonCodeStyle, \
     EnforcePythonCodeStyle
-from util.files import FileSearch
 from util.languages import Language
+from util.paths import Project
 from util.targets import PhonyTarget, TargetBuilder
 from util.units import BuildUnit
 
@@ -23,26 +23,22 @@ TARGETS = TargetBuilder(BuildUnit('code_style', 'python')) \
 MODULES = [
     CodeModule(
         language=Language.PYTHON,
-        root_directory='scons',
+        root_directory=Project.BuildSystem.root_directory,
+        source_file_search=Project.BuildSystem.file_search(),
     ),
     CodeModule(
         language=Language.PYTHON,
-        root_directory='python',
-        source_file_search=FileSearch() \
-            .set_recursive(True) \
-            .exclude_subdirectories_by_name('build', 'dist', '__pycache__') \
-            .exclude_subdirectories_by_substrings(ends_with='.egg.info'),
+        root_directory=Project.Python.root_directory,
+        source_file_search=Project.Python.file_search(),
     ),
     CodeModule(
         language=Language.CYTHON,
-        root_directory='python',
-        source_file_search=FileSearch() \
-            .set_recursive(True) \
-            .exclude_subdirectories_by_name('build', 'dist', '__pycache__') \
-            .exclude_subdirectories_by_substrings(ends_with='.egg.info'),
+        root_directory=Project.Python.root_directory,
+        source_file_search=Project.Python.file_search(),
     ),
     CodeModule(
         language=Language.PYTHON,
-        root_directory='doc',
+        root_directory=Project.Documentation.root_directory,
+        source_file_search=Project.Documentation.file_search(),
     ),
 ]

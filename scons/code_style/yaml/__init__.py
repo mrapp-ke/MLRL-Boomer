@@ -7,6 +7,7 @@ from code_style.modules import CodeModule
 from code_style.yaml.targets import CheckYamlCodeStyle, EnforceYamlCodeStyle
 from util.files import FileSearch
 from util.languages import Language
+from util.paths import Project
 from util.targets import PhonyTarget, TargetBuilder
 from util.units import BuildUnit
 
@@ -22,11 +23,11 @@ TARGETS = TargetBuilder(BuildUnit('code_style', 'yaml')) \
 MODULES = [
     CodeModule(
         language=Language.YAML,
-        root_directory='.',
+        root_directory=Project.root_directory,
         source_file_search=FileSearch().set_recursive(False).set_hidden(True),
     ),
     CodeModule(
         language=Language.YAML,
-        root_directory='.github',
+        root_directory=Project.Github.root_directory,
     ),
 ]

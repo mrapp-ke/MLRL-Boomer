@@ -5,7 +5,7 @@ Defines targets and modules for installing Python dependencies that are required
 """
 from dependencies.python.modules import DependencyType, PythonDependencyModule
 from dependencies.python.targets import CheckPythonDependencies, InstallRuntimeDependencies
-from util.files import FileSearch
+from util.paths import Project
 from util.targets import PhonyTarget, TargetBuilder
 from util.units import BuildUnit
 
@@ -19,16 +19,17 @@ TARGETS = TargetBuilder(BuildUnit('dependencies', 'python')) \
 MODULES = [
     PythonDependencyModule(
         dependency_type=DependencyType.BUILD_TIME,
-        root_directory='scons',
-        requirements_file_search=FileSearch().set_recursive(True),
+        root_directory=Project.BuildSystem.root_directory,
+        requirements_file_search=Project.BuildSystem.file_search(),
     ),
     PythonDependencyModule(
         dependency_type=DependencyType.RUNTIME,
-        root_directory='python',
+        root_directory=Project.Python.root_directory,
+        requirements_file_search=Project.Python.file_search(),
     ),
     PythonDependencyModule(
         dependency_type=DependencyType.BUILD_TIME,
-        root_directory='doc',
-        requirements_file_search=FileSearch().set_recursive(True),
+        root_directory=Project.Documentation.root_directory,
+        requirements_file_search=Project.Documentation.file_search(),
     ),
 ]

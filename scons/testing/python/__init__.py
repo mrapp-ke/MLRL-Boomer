@@ -5,6 +5,7 @@ Defines targets and modules for testing Python code.
 """
 from testing.python.modules import PythonTestModule
 from testing.python.targets import TestPython
+from util.paths import Project
 from util.targets import PhonyTarget, TargetBuilder
 from util.units import BuildUnit
 
@@ -17,5 +18,10 @@ TARGETS = TargetBuilder(BuildUnit('testing', 'python')) \
     .build()
 
 MODULES = [
-    PythonTestModule(root_directory='python'),
+    PythonTestModule(
+        root_directory=Project.Python.root_directory,
+        build_directory_name=Project.Python.build_directory_name,
+        test_file_search=Project.Python.file_search() \
+            .filter_subdirectories_by_name(Project.Python.test_directory_name),
+    ),
 ]

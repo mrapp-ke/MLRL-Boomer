@@ -5,8 +5,8 @@ Defines targets and modules for checking and enforcing code style definitions fo
 """
 from code_style.cpp.targets import CheckCppCodeStyle, EnforceCppCodeStyle
 from code_style.modules import CodeModule
-from util.files import FileSearch
 from util.languages import Language
+from util.paths import Project
 from util.targets import PhonyTarget, TargetBuilder
 from util.units import BuildUnit
 
@@ -22,7 +22,7 @@ TARGETS = TargetBuilder(BuildUnit('code_style', 'cpp')) \
 MODULES = [
     CodeModule(
         language=Language.CPP,
-        root_directory='cpp',
-        source_file_search=FileSearch().set_recursive(True).exclude_subdirectories_by_name('build'),
+        root_directory=Project.Cpp.root_directory,
+        source_file_search=Project.Cpp.file_search(),
     ),
 ]

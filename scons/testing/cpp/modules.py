@@ -22,15 +22,17 @@ class CppTestModule(TestModule):
         def matches(self, module: Module) -> bool:
             return isinstance(module, CppTestModule)
 
-    def __init__(self, root_directory: str):
+    def __init__(self, root_directory: str, build_directory_name: str):
         """
-        :param root_directory: The path to the module's root directory
+        :param root_directory:          The path to the module's root directory
+        :param build_directory_name:    The name of the module's build directory
         """
         self.root_directory = root_directory
+        self.build_directory_name = build_directory_name
 
     @property
     def build_directory(self) -> str:
         """
         The path to the directory, where build files are stored.
         """
-        return path.join(self.root_directory, 'build')
+        return path.join(self.root_directory, self.build_directory_name)

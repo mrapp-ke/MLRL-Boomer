@@ -6,6 +6,7 @@ Defines targets and modules for testing C++ code.
 from compilation.cpp import COMPILE_CPP
 from testing.cpp.modules import CppTestModule
 from testing.cpp.targets import TestCpp
+from util.paths import Project
 from util.targets import PhonyTarget, TargetBuilder
 from util.units import BuildUnit
 
@@ -18,5 +19,8 @@ TARGETS = TargetBuilder(BuildUnit('testing', 'cpp')) \
     .build()
 
 MODULES = [
-    CppTestModule(root_directory='cpp'),
+    CppTestModule(
+        root_directory=Project.Cpp.root_directory,
+        build_directory_name=Project.Cpp.build_directory_name,
+    ),
 ]

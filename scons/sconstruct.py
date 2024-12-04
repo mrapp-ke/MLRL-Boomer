@@ -13,6 +13,7 @@ from packaging import build_python_wheel, install_python_wheels
 from util.files import FileSearch
 from util.format import format_iterable
 from util.modules import Module, ModuleRegistry
+from util.paths import Project
 from util.reflection import import_source_file
 from util.targets import Target, TargetRegistry
 
@@ -44,7 +45,7 @@ VALID_TARGETS = {
 DEFAULT_TARGET = TARGET_NAME_INSTALL_WHEELS
 
 # Register modules...
-init_files = FileSearch().set_recursive(True).filter_by_name('__init__.py').list(BUILD_MODULE.root_dir)
+init_files = FileSearch().set_recursive(True).filter_by_name('__init__.py').list(Project.BuildSystem.root_directory)
 module_registry = ModuleRegistry()
 
 for init_file in init_files:
