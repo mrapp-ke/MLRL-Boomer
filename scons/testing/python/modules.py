@@ -7,7 +7,8 @@ from os import path
 from typing import List
 
 from testing.modules import TestModule
-from util.files import DirectorySearch
+from util.files import FileSearch
+from util.languages import Language
 from util.modules import Module
 
 
@@ -26,21 +27,23 @@ class PythonTestModule(TestModule):
 
     def __init__(self,
                  root_directory: str,
-                 test_directory_search: DirectorySearch = DirectorySearch().set_recursive(True).exclude_by_name(
-                     'build').filter_by_name('tests')):
+                 build_directory_name: str,
+                 test_file_search: FileSearch = FileSearch().set_recursive(True)):
         """
         :param root_directory:          The path to the module's root directory
-        :param test_directory_search:   The `DirectorySearch` that should be used for directories containing tests
+        :param build_directory_name:    The name of the module's build directory
+        :param test_file_search:        The `FilesSearch` that should be used to search for test files
         """
         self.root_directory = root_directory
-        self.test_directory_search = test_directory_search
+        self.build_directory_name = build_directory_name
+        self.test_file_search = test_file_search
 
     @property
     def test_result_directory(self) -> str:
         """
         The path of the directory where tests results should be stored.
         """
-        return path.join(self.root_directory, 'build', 'test-results')
+        return path.join(self.root_directory, self.build_directory_name, 'test-results')
 
     def find_test_directories(self) -> List[str]:
         """
@@ -48,4 +51,8 @@ class PythonTestModule(TestModule):
 
         :return: A list that contains the paths of the directories that have been found
         """
-        return self.test_directory_search.list(self.root_directory)
+        return self.test_file_search \
+            .exclude_subdirectories_by_name(self.build_directory_name) \
+            .filter_by_substrings(starts_with='test_') \
+            .filter_by_language(Language.PYTHON) \
+            .list(self.root_directory)

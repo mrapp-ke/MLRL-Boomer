@@ -34,11 +34,13 @@ class CompilationModule(Module):
     def __init__(self,
                  language: Language,
                  root_directory: str,
+                 build_directory_name: str,
                  install_directory: Optional[str] = None,
                  installed_file_search: Optional[FileSearch] = None):
         """
         :param language:                The programming language of the source code that belongs to the module
         :param root_directory:          The path to the module's root directory
+        :param build_directory_name:    The name of the module's build directory
         :param install_directory:       The path to the directory into which files are installed or None, if the files
                                         are installed into the root directory
         :param installed_file_search:   The `FileSearch` that should be used to search for installed files or None, if
@@ -46,6 +48,7 @@ class CompilationModule(Module):
         """
         self.language = language
         self.root_directory = root_directory
+        self.build_directory_name = build_directory_name
         self.install_directory = install_directory if install_directory else root_directory
         self.installed_file_search = installed_file_search
 
@@ -54,7 +57,7 @@ class CompilationModule(Module):
         """
         The path to the directory, where build files should be stored.
         """
-        return path.join(self.root_directory, 'build')
+        return path.join(self.root_directory, self.build_directory_name)
 
     def find_installed_files(self) -> List[str]:
         """

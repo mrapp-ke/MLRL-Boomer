@@ -7,6 +7,7 @@ from code_style.markdown.targets import CheckMarkdownCodeStyle, EnforceMarkdownC
 from code_style.modules import CodeModule
 from util.files import FileSearch
 from util.languages import Language
+from util.paths import Project
 from util.targets import PhonyTarget, TargetBuilder
 from util.units import BuildUnit
 
@@ -22,15 +23,17 @@ TARGETS = TargetBuilder(BuildUnit('code_style', 'markdown')) \
 MODULES = [
     CodeModule(
         language=Language.MARKDOWN,
-        root_directory='.',
+        root_directory=Project.root_directory,
         source_file_search=FileSearch().set_recursive(False),
     ),
     CodeModule(
         language=Language.MARKDOWN,
-        root_directory='python',
+        root_directory=Project.Python.root_directory,
+        source_file_search=Project.Python.file_search(),
     ),
     CodeModule(
         language=Language.MARKDOWN,
-        root_directory='doc',
+        root_directory=Project.Documentation.root_directory,
+        source_file_search=Project.Documentation.file_search(),
     ),
 ]
