@@ -6,9 +6,9 @@ Implements targets for installing runtime requirements that are required by the 
 from functools import reduce
 
 from dependencies.python.modules import DependencyType, PythonDependencyModule
+from dependencies.python.pip import PipList
 from dependencies.table import Table
 from util.modules import ModuleRegistry
-from util.pip import Pip
 from util.targets import PhonyTarget
 from util.units import BuildUnit
 
@@ -22,7 +22,7 @@ class InstallRuntimeDependencies(PhonyTarget.Runnable):
         dependency_modules = modules.lookup(PythonDependencyModule.Filter(DependencyType.RUNTIME))
         requirements_files = reduce(lambda aggr, module: aggr + module.find_requirements_files(), dependency_modules,
                                     [])
-        Pip(*requirements_files).install_all_packages()
+        PipList(*requirements_files).install_all_packages()
 
 
 class CheckPythonDependencies(PhonyTarget.Runnable):
@@ -34,7 +34,7 @@ class CheckPythonDependencies(PhonyTarget.Runnable):
         dependency_modules = modules.lookup(PythonDependencyModule.Filter())
         requirements_files = reduce(lambda aggr, module: aggr + module.find_requirements_files(), dependency_modules,
                                     [])
-        pip = Pip(*requirements_files)
+        pip = PipList(*requirements_files)
         print('Installing all dependencies...')
         pip.install_all_packages()
         print('Checking for outdated dependencies...')
