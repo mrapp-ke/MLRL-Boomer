@@ -164,6 +164,7 @@ class FileSearch:
 
     def __init__(self):
         self.hidden = False
+        self.symlinks = True
         self.filters = []
         self.directory_search = DirectorySearch()
 
@@ -251,8 +252,19 @@ class FileSearch:
         Sets whether hidden files should be included or not.
 
         :param hidden:  True, if hidden files should be included, False otherwise
+        :return:        The `FileSearch` itself
         """
         self.hidden = hidden
+        return self
+
+    def set_symlinks(self, symlinks: bool) -> 'FileSearch':
+        """
+        Sets whether symbolic links should be included or not.
+
+        :param symlinks:    True, if symbolic links should be included, False otherwise
+        :return:            The `FileSearch` itself
+        """
+        self.symlinks = symlinks
         return self
 
     def add_filters(self, *filter_functions: Filter) -> 'FileSearch':
@@ -342,7 +354,7 @@ class FileSearch:
         subdirectories = self.directory_search.list(*directories) if self.directory_search.recursive else []
 
         def filter_file(file: str) -> bool:
-            if path.isfile(file):
+            if path.isfile(file) and (self.symlinks or not path.islink(file)):
                 if not self.filters:
                     return True
 
