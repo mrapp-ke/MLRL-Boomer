@@ -6,7 +6,7 @@ Defines targets and modules for compiling Cython code.
 from compilation.cpp import COMPILE_CPP
 from compilation.cython.targets import CompileCython, InstallCython, SetupCython
 from compilation.modules import CompilationModule
-from util.languages import Language
+from util.files import FileType
 from util.paths import Project
 from util.targets import PhonyTarget, TargetBuilder
 from util.units import BuildUnit
@@ -31,12 +31,9 @@ TARGETS = TargetBuilder(BuildUnit('compilation', 'cython')) \
 
 MODULES = [
     CompilationModule(
-        language=Language.CYTHON,
+        file_type=FileType.cython(),
         root_directory=Project.Python.root_directory,
         build_directory_name=Project.Python.build_directory_name,
-        installed_file_search=Project.Python.file_search() \
-            .filter_by_substrings(not_starts_with='lib', ends_with='.so') \
-            .filter_by_substrings(ends_with='.pyd') \
-            .filter_by_substrings(not_starts_with='mlrl', ends_with='.lib'),
+        installed_file_search=Project.Python.file_search().filter_by_file_type(FileType.extension_module()),
     ),
 ]

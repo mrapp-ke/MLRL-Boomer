@@ -5,8 +5,7 @@ Defines targets and modules for checking and enforcing code style definitions fo
 """
 from code_style.modules import CodeModule
 from code_style.yaml.targets import CheckYamlCodeStyle, EnforceYamlCodeStyle
-from util.files import FileSearch
-from util.languages import Language
+from util.files import FileSearch, FileType
 from util.paths import Project
 from util.targets import PhonyTarget, TargetBuilder
 from util.units import BuildUnit
@@ -22,12 +21,12 @@ TARGETS = TargetBuilder(BuildUnit('code_style', 'yaml')) \
 
 MODULES = [
     CodeModule(
-        language=Language.YAML,
+        file_type=FileType.yaml(),
         root_directory=Project.root_directory,
         source_file_search=FileSearch().set_recursive(False).set_hidden(True),
     ),
     CodeModule(
-        language=Language.YAML,
+        file_type=FileType.yaml(),
         root_directory=Project.Github.root_directory,
     ),
 ]

@@ -6,7 +6,7 @@ Defines targets and modules for compiling C++ code.
 from compilation.cpp.targets import CompileCpp, InstallCpp, SetupCpp
 from compilation.modules import CompilationModule
 from dependencies.python import VENV
-from util.languages import Language
+from util.files import FileType
 from util.paths import Project
 from util.targets import PhonyTarget, TargetBuilder
 from util.units import BuildUnit
@@ -31,14 +31,10 @@ TARGETS = TargetBuilder(BuildUnit('compilation', 'cpp')) \
 
 MODULES = [
     CompilationModule(
-        language=Language.CPP,
+        file_type=FileType.cpp(),
         root_directory=Project.Cpp.root_directory,
         build_directory_name=Project.Cpp.build_directory_name,
         install_directory=Project.Python.root_directory,
-        installed_file_search=Project.Cpp.file_search() \
-            .filter_by_substrings(starts_with='lib', contains='.so') \
-            .filter_by_substrings(ends_with='.dylib') \
-            .filter_by_substrings(starts_with='mlrl', ends_with='.lib') \
-            .filter_by_substrings(ends_with='.dll'),
+        installed_file_search=Project.Cpp.file_search().filter_by_file_type(FileType.shared_library()),
     ),
 ]
