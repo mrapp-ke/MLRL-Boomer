@@ -9,12 +9,12 @@ from typing import List
 from compilation.build_options import BuildOptions, EnvBuildOption
 from compilation.meson import MesonCompile, MesonConfigure, MesonInstall, MesonSetup
 from compilation.modules import CompilationModule
-from util.languages import Language
+from util.files import FileType
 from util.modules import ModuleRegistry
 from util.targets import BuildTarget, PhonyTarget
 from util.units import BuildUnit
 
-MODULE_FILTER = CompilationModule.Filter(Language.CYTHON)
+MODULE_FILTER = CompilationModule.Filter(FileType.cython())
 
 BUILD_OPTIONS = BuildOptions() \
         .add(EnvBuildOption(name='subprojects'))

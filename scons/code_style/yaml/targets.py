@@ -5,12 +5,12 @@ Implements targets for checking and enforcing code style definitions for YAML fi
 """
 from code_style.modules import CodeModule
 from code_style.yaml.yamlfix import YamlFix
-from util.languages import Language
+from util.files import FileType
 from util.modules import ModuleRegistry
 from util.targets import PhonyTarget
 from util.units import BuildUnit
 
-MODULE_FILTER = CodeModule.Filter(Language.YAML)
+MODULE_FILTER = CodeModule.Filter(FileType.yaml())
 
 
 class CheckYamlCodeStyle(PhonyTarget.Runnable):

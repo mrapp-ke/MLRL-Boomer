@@ -7,14 +7,14 @@ from code_style.modules import CodeModule
 from code_style.python.isort import ISort
 from code_style.python.pylint import PyLint
 from code_style.python.yapf import Yapf
-from util.languages import Language
+from util.files import FileType
 from util.modules import ModuleRegistry
 from util.targets import PhonyTarget
 from util.units import BuildUnit
 
-PYTHON_MODULE_FILTER = CodeModule.Filter(Language.PYTHON)
+PYTHON_MODULE_FILTER = CodeModule.Filter(FileType.python())
 
-CYTHON_MODULE_FILTER = CodeModule.Filter(Language.CYTHON)
+CYTHON_MODULE_FILTER = CodeModule.Filter(FileType.cython())
 
 
 class CheckPythonCodeStyle(PhonyTarget.Runnable):

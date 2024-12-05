@@ -7,8 +7,7 @@ from os import path
 from typing import List
 
 from testing.modules import TestModule
-from util.files import FileSearch
-from util.languages import Language
+from util.files import FileSearch, FileType
 from util.modules import Module
 
 
@@ -54,5 +53,5 @@ class PythonTestModule(TestModule):
         return self.test_file_search \
             .exclude_subdirectories_by_name(self.build_directory_name) \
             .filter_by_substrings(starts_with='test_') \
-            .filter_by_language(Language.PYTHON) \
+            .filter_by_file_type(FileType.python()) \
             .list(self.root_directory)

@@ -5,8 +5,7 @@ Defines targets and modules for checking and enforcing code style definitions fo
 """
 from code_style.markdown.targets import CheckMarkdownCodeStyle, EnforceMarkdownCodeStyle
 from code_style.modules import CodeModule
-from util.files import FileSearch
-from util.languages import Language
+from util.files import FileSearch, FileType
 from util.paths import Project
 from util.targets import PhonyTarget, TargetBuilder
 from util.units import BuildUnit
@@ -22,17 +21,17 @@ TARGETS = TargetBuilder(BuildUnit('code_style', 'markdown')) \
 
 MODULES = [
     CodeModule(
-        language=Language.MARKDOWN,
+        file_type=FileType.markdown(),
         root_directory=Project.root_directory,
         source_file_search=FileSearch().set_recursive(False),
     ),
     CodeModule(
-        language=Language.MARKDOWN,
+        file_type=FileType.markdown(),
         root_directory=Project.Python.root_directory,
         source_file_search=Project.Python.file_search(),
     ),
     CodeModule(
-        language=Language.MARKDOWN,
+        file_type=FileType.markdown(),
         root_directory=Project.Documentation.root_directory,
         source_file_search=Project.Documentation.file_search(),
     ),

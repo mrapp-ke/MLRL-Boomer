@@ -9,8 +9,7 @@ from typing import List
 from packaging.build import Build
 from packaging.modules import PythonPackageModule
 from packaging.pip import PipInstallWheel
-from util.files import DirectorySearch
-from util.languages import Language
+from util.files import DirectorySearch, FileType
 from util.modules import ModuleRegistry
 from util.paths import Project
 from util.targets import BuildTarget, PhonyTarget
@@ -38,8 +37,7 @@ class BuildPythonWheels(BuildTarget.Runnable):
         file_search = Project.Python.file_search() \
             .set_symlinks(False) \
             .exclude_subdirectories_by_name(Project.Python.test_directory_name) \
-            .filter_by_language(Language.PYTHON) \
-            .filter_by_suffix('so', 'pyd', 'lib', 'dylib', 'dll')
+            .filter_by_file_type(FileType.python(), FileType.extension_module(), FileType.shared_library())
         return reduce(lambda aggr, module: aggr + file_search.list(module.root_directory), package_modules, [])
 
     def get_output_files(self, modules: ModuleRegistry) -> List[str]:

@@ -5,12 +5,12 @@ Implements targets for checking and enforcing code style definitions for Markdow
 """
 from code_style.markdown.mdformat import MdFormat
 from code_style.modules import CodeModule
-from util.languages import Language
+from util.files import FileType
 from util.modules import ModuleRegistry
 from util.targets import PhonyTarget
 from util.units import BuildUnit
 
-MODULE_FILTER = CodeModule.Filter(Language.MARKDOWN)
+MODULE_FILTER = CodeModule.Filter(FileType.markdown())
 
 
 class CheckMarkdownCodeStyle(PhonyTarget.Runnable):

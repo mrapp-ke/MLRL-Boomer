@@ -3,12 +3,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for listing files and directories.
 """
+from abc import abstractmethod
 from functools import partial, reduce
 from glob import glob
 from os import path
 from typing import Callable, List, Optional, Set
-
-from util.languages import Language
 
 
 class DirectorySearch:
@@ -334,14 +333,17 @@ class FileSearch:
 
         return self.add_filters(partial(filter_file, list(suffixes)))
 
-    def filter_by_language(self, *languages: Language) -> 'FileSearch':
+    def filter_by_file_type(self, *file_types: 'FileType') -> 'FileSearch':
         """
-        Adds one or several filters that match files to be included based on the programming language they belong to.
+        Adds one or several filters that match files to be included based on a `FileType`.
 
-        :param languages:   The languages of the files that should be included
+        :param file_types:  The `FileType` of the files that should be included
         :return:            The `FileSearch` itself
         """
-        return self.filter_by_suffix(*reduce(lambda aggr, language: aggr | language.value, languages, set()))
+        for file_type in file_types:
+            file_type.file_search_decorator(self)
+
+        return self
 
     def list(self, *directories: str) -> List[str]:
         """
@@ -375,3 +377,102 @@ class FileSearch:
             result.extend(files)
 
         return result
+
+
+class FileType:
+    """
+    Represents different types of files.
+    """
+
+    def __init__(self, name: str, file_search_decorator: Callable[[FileSearch], None]):
+        """
+        :param name:                    The name of the file type
+        :param file_search_decorator:   A function that adds a filter for this file type to a `FileSearch`
+        """
+        self.name = name
+        self.file_search_decorator = file_search_decorator
+
+    @staticmethod
+    def python() -> 'FileType':
+        """
+        Creates and returns a `FileType` that corresponds to Python source files.
+
+        :return: The `FileType` that has been created
+        """
+        return FileType('Python', lambda file_search: file_search.filter_by_suffix('py'))
+
+    @staticmethod
+    def cpp() -> 'FileType':
+        """
+        Creates and returns a `FileType` that corresponds to C++ source files.
+
+        :return: The `FileType` that has been created
+        """
+        return FileType('C++', lambda file_search: file_search.filter_by_suffix('cpp', 'hpp'))
+
+    @staticmethod
+    def cython() -> 'FileType':
+        """
+        Creates and returns a `FileType` that corresponds to Cython source files.
+
+        :return: The `FileType` that has been created
+        """
+        return FileType('Cython', lambda file_search: file_search.filter_by_suffix('pyx', 'pxd'))
+
+    @staticmethod
+    def markdown() -> 'FileType':
+        """
+        Creates and returns a `FileType` that corresponds to Markdown files.
+
+        :return: The `FileType` that has been created
+        """
+        return FileType('Markdown', lambda file_search: file_search.filter_by_suffix('md'))
+
+    @staticmethod
+    def yaml() -> 'FileType':
+        """
+        Creates and returns a `FileType` that corresponds to YAML files.
+
+        :return: The `FileType` that has been created
+        """
+        return FileType('YAML', lambda file_search: file_search.filter_by_suffix('yaml', 'yml'))
+
+    @staticmethod
+    def extension_module() -> 'FileType':
+        """
+        Creates and returns a `FileType` that corresponds to shared libraries.
+
+        :return: The `FileType` that has been created
+        """
+        return FileType(
+            'Extension module',
+            lambda file_search: file_search \
+                .filter_by_substrings(not_starts_with='lib', ends_with='.so') \
+                .filter_by_substrings(ends_with='.pyd') \
+                .filter_by_substrings(not_starts_with='mlrl', ends_with='.lib'),
+        )
+
+    @staticmethod
+    def shared_library() -> 'FileType':
+        """
+        Creates and returns a `FileType` that corresponds to shared libraries.
+
+        :return: The `FileType` that has been created
+        """
+        return FileType(
+            'Shared library',
+            lambda file_search: file_search \
+                .filter_by_substrings(starts_with='lib', contains='.so') \
+                .filter_by_substrings(ends_with='.dylib') \
+                .filter_by_substrings(starts_with='mlrl', ends_with='.lib') \
+                .filter_by_substrings(ends_with='.dll'),
+        )
+
+    def __str__(self) -> str:
+        return self.name
+
+    def __eq__(self, other: 'FileType') -> bool:
+        return self.name == other.name
+
+    def __hash__(self) -> int:
+        return hash(self.name)
