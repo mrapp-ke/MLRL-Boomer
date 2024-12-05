@@ -8,7 +8,7 @@ import sys
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from functools import reduce
-from typing import Any, Callable, Dict, List, Optional, Set
+from typing import Any, Callable, Dict, Iterable, List, Optional, Set
 from uuid import uuid4
 
 from util.modules import ModuleRegistry
@@ -84,6 +84,27 @@ class Target(ABC):
             self.depends_on(target_name, clean_dependencies=clean_dependency)
             return target_builder
 
+        def depends_on_build_targets(self,
+                                     iterable: Iterable[Any],
+                                     target_configurator: Callable[[Any, 'BuildTarget.Builder'], None],
+                                     clean_dependencies: bool = True) -> 'Target.Builder':
+            """
+            Configures multiple build targets, one for each value in a given `Iterable`, this target should depend on.
+
+            :param iterable:            An `Iterable` that provides access to the values for which dependencies should
+                                        be created
+            :param target_configurator: A function that accepts one value in the `Iterable` at a time, as well as a
+                                        `BuildTarget.Builder` for configuring the corresponding dependency
+            :param clean_dependencies:  True, if output files of the dependencies should also be cleaned when cleaning
+                                        the output files of this target, False otherwise
+            :return:                    The `Target.Builder` itself
+            """
+            for value in iterable:
+                target_builder = self.depends_on_build_target(clean_dependency=clean_dependencies)
+                target_configurator(value, target_builder)
+
+            return self
+
         def depends_on_phony_target(self, clean_dependency: bool = True) -> 'PhonyTarget.Builder':
             """
             Creates and returns a `PhonyTarget.Builder` that allows to configure a phony target, this target should
@@ -98,6 +119,27 @@ class Target(ABC):
             self.child_builders.append(target_builder)
             self.depends_on(target_name, clean_dependencies=clean_dependency)
             return target_builder
+
+        def depends_on_phony_targets(self,
+                                     iterable: Iterable[Any],
+                                     target_configurator: Callable[[Any, 'PhonyTarget.Builder'], None],
+                                     clean_dependencies: bool = True) -> 'Target.Builder':
+            """
+            Configures multiple phony targets, one for each value in a given `Iterable`, this target should depend on.
+
+            :param iterable:            An `Iterable` that provides access to the values for which dependencies should
+                                        be created
+            :param target_configurator: A function that accepts one value in the `Iterable` at a time, as well as a
+                                        `BuildTarget.Builder` for configuring the corresponding dependency
+            :param clean_dependencies:  True, if output files of the dependencies should also be cleaned when cleaning
+                                        the output files of this target, False otherwise
+            :return:                    The `Target.Builder` itself
+            """
+            for value in iterable:
+                target_builder = self.depends_on_phony_target(clean_dependency=clean_dependencies)
+                target_configurator(value, target_builder)
+
+            return self
 
         @abstractmethod
         def _build(self, build_unit: BuildUnit) -> 'Target':
@@ -244,7 +286,10 @@ class BuildTarget(Target):
         target = (output_files if len(output_files) > 1 else output_files[0]) if output_files else None
 
         if target:
-            return environment.Command(target, source, action=lambda **_: action())
+            return environment.Depends(
+                environment.Alias(self.name, None, None),
+                environment.Command(target, source, action=lambda **_: action()),
+            )
 
         return environment.AlwaysBuild(environment.Alias(self.name, None, action=lambda **_: action()))
 
@@ -338,7 +383,8 @@ class PhonyTarget(Target):
 
     def register(self, environment: Environment, module_registry: ModuleRegistry) -> Any:
         return environment.AlwaysBuild(
-            environment.Alias(self.name, None, action=lambda **_: self.action(module_registry)))
+            environment.Alias(self.name, None, action=lambda **_: self.action(module_registry)),
+        )
 
 
 class TargetBuilder:

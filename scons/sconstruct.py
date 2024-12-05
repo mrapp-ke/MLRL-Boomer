@@ -9,7 +9,6 @@ from os import path
 
 from documentation import apidoc_cpp, apidoc_cpp_tocfile, apidoc_python, apidoc_python_tocfile, doc
 from modules_old import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
-from packaging import build_python_wheel, install_python_wheels
 from util.files import FileSearch
 from util.format import format_iterable
 from util.modules import Module, ModuleRegistry
@@ -30,19 +29,14 @@ def __print_if_clean(environment, message: str):
 
 
 # Define target names...
-TARGET_NAME_BUILD_WHEELS = 'build_wheels'
-TARGET_NAME_INSTALL_WHEELS = 'install_wheels'
 TARGET_NAME_APIDOC = 'apidoc'
 TARGET_NAME_APIDOC_CPP = TARGET_NAME_APIDOC + '_cpp'
 TARGET_NAME_APIDOC_PYTHON = TARGET_NAME_APIDOC + '_python'
 TARGET_NAME_DOC = 'doc'
 
-VALID_TARGETS = {
-    TARGET_NAME_BUILD_WHEELS, TARGET_NAME_INSTALL_WHEELS, TARGET_NAME_APIDOC, TARGET_NAME_APIDOC_CPP,
-    TARGET_NAME_APIDOC_PYTHON, TARGET_NAME_DOC
-}
+VALID_TARGETS = {TARGET_NAME_APIDOC, TARGET_NAME_APIDOC_CPP, TARGET_NAME_APIDOC_PYTHON, TARGET_NAME_DOC}
 
-DEFAULT_TARGET = TARGET_NAME_INSTALL_WHEELS
+DEFAULT_TARGET = 'install_wheels'
 
 # Register modules...
 init_files = FileSearch().set_recursive(True).filter_by_name('__init__.py').list(Project.BuildSystem.root_directory)
@@ -75,34 +69,6 @@ if invalid_targets:
 # Create temporary file ".sconsign.dblite" in the build directory...
 env.SConsignFile(name=path.relpath(path.join(BUILD_MODULE.build_dir, '.sconsign'), BUILD_MODULE.root_dir))
 
-# Define targets for building and installing Python wheels...
-commands_build_wheels = []
-commands_install_wheels = []
-
-for subproject in PYTHON_MODULE.find_subprojects():
-    wheels = subproject.find_wheels()
-    targets_build_wheels = wheels if wheels else subproject.dist_dir
-
-    command_build_wheels = env.Command(targets_build_wheels, subproject.find_source_files(), action=build_python_wheel)
-    commands_build_wheels.append(command_build_wheels)
-
-    command_install_wheels = env.Command(subproject.root_dir, targets_build_wheels, action=install_python_wheels)
-    env.Depends(command_install_wheels, command_build_wheels)
-    commands_install_wheels.append(command_install_wheels)
-
-target_build_wheels = env.Alias(TARGET_NAME_BUILD_WHEELS, None, None)
-env.Depends(target_build_wheels, ['target_install'] + commands_build_wheels)
-
-target_install_wheels = env.Alias(TARGET_NAME_INSTALL_WHEELS, None, None)
-env.Depends(target_install_wheels, ['target_install'] + commands_install_wheels)
-
-# Define target for cleaning up Python wheels and associated build directories...
-if not COMMAND_LINE_TARGETS or TARGET_NAME_BUILD_WHEELS in COMMAND_LINE_TARGETS:
-    __print_if_clean(env, 'Removing Python wheels...')
-
-    for subproject in PYTHON_MODULE.find_subprojects(return_all=True):
-        env.Clean([target_build_wheels, DEFAULT_TARGET], subproject.build_dirs)
-
 # Define targets for generating the documentation...
 commands_apidoc_cpp = []
 commands_apidoc_python = []
@@ -128,7 +94,7 @@ for subproject in PYTHON_MODULE.find_subprojects():
     targets_apidoc_python = build_files if build_files else apidoc_subproject.build_dir
     command_apidoc_python = env.Command(targets_apidoc_python, subproject.find_source_files(), action=apidoc_python)
     env.NoClean(command_apidoc_python)
-    env.Depends(command_apidoc_python, target_install_wheels)
+    env.Depends(command_apidoc_python, 'install_wheels')
     commands_apidoc_python.append(command_apidoc_python)
 
 command_apidoc_python_tocfile = env.Command(DOC_MODULE.apidoc_tocfile_python, None, action=apidoc_python_tocfile)
