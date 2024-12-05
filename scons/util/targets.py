@@ -165,6 +165,15 @@ class BuildTarget(Target):
             :param modules:     A `ModuleRegistry` that can be used by the target for looking up modules
             """
 
+        def get_input_files(self, modules: ModuleRegistry) -> List[str]:
+            """
+            May be overridden by subclasses in order to return the input files required by the target.
+
+            :param modules: A `ModuleRegistry` that can be used by the target for looking up modules
+            :return:        A list that contains the input files
+            """
+            return []
+
         def get_output_files(self, modules: ModuleRegistry) -> List[str]:
             """
             May be overridden by subclasses in order to return the output files produced by the target.
@@ -229,11 +238,13 @@ class BuildTarget(Target):
             for runnable in self.runnables:
                 runnable.run(self.build_unit, module_registry)
 
+        input_files = reduce(lambda aggr, runnable: runnable.get_input_files(module_registry), self.runnables, [])
+        source = (input_files if len(input_files) > 1 else input_files[0]) if input_files else None
         output_files = reduce(lambda aggr, runnable: runnable.get_output_files(module_registry), self.runnables, [])
         target = (output_files if len(output_files) > 1 else output_files[0]) if output_files else None
 
         if target:
-            return environment.Command(target, None, action=lambda **_: action())
+            return environment.Command(target, source, action=lambda **_: action())
 
         return environment.AlwaysBuild(environment.Alias(self.name, None, action=lambda **_: action()))
 
