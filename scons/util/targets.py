@@ -11,6 +11,7 @@ from functools import reduce
 from typing import Any, Callable, Dict, Iterable, List, Optional, Set
 from uuid import uuid4
 
+from util.format import format_iterable
 from util.modules import ModuleRegistry
 from util.units import BuildUnit
 
@@ -35,6 +36,9 @@ class Target(ABC):
         """
         target_name: str
         clean_dependency: bool
+
+        def __str__(self) -> str:
+            return self.target_name
 
         def __eq__(self, other: 'Target.Dependency') -> bool:
             return self.target_name == other.target_name
@@ -186,6 +190,14 @@ class Target(ABC):
         :return:                A list that contains the files to be cleaned or None, if cleaning is not necessary
         """
         return None
+
+    def __str__(self) -> str:
+        result = type(self).__name__ + '{name="' + self.name + '"'
+
+        if self.dependencies:
+            result += ', dependencies={' + format_iterable(self.dependencies, delimiter='"') + '}'
+
+        return result + '}'
 
 
 class BuildTarget(Target):
@@ -385,6 +397,7 @@ class PhonyTarget(Target):
         return environment.AlwaysBuild(
             environment.Alias(self.name, None, action=lambda **_: self.action(module_registry)),
         )
+
 
 
 class TargetBuilder:
