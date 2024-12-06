@@ -3,8 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for checking the project's GitHub workflows for outdated Actions.
 """
-import sys
-
 from dataclasses import dataclass, replace
 from functools import cached_property, reduce
 from os import environ, path
@@ -14,6 +12,7 @@ from dependencies.github.pygithub import GithubApi
 from dependencies.github.pyyaml import YamlFile
 from util.env import get_env
 from util.files import FileSearch, FileType
+from util.log import Log
 from util.units import BuildUnit
 
 
@@ -149,8 +148,7 @@ class Workflow(YamlFile):
             try:
                 actions.add(Action.from_uses_clause(uses_clause))
             except ValueError as error:
-                print('Failed to parse uses-clause in workflow "' + self.file + '": ' + str(error))
-                sys.exit(-1)
+                raise RuntimeError('Failed to parse uses-clause in workflow "' + self.file + '"') from error
 
         return actions
 
@@ -243,8 +241,8 @@ class WorkflowUpdater:
         github_token = get_env(environ, self.ENV_GITHUB_TOKEN)
 
         if not github_token:
-            print('No GitHub API token is set. You can specify it via the environment variable ' + self.ENV_GITHUB_TOKEN
-                  + '.')
+            Log.warning('No GitHub API token is set. You can specify it via the environment variable %s.',
+                        WorkflowUpdater.ENV_GITHUB_TOKEN)
 
         return github_token
 
@@ -262,15 +260,14 @@ class WorkflowUpdater:
 
             return ActionVersion(latest_tag)
         except RuntimeError as error:
-            print('Unable to determine latest version of action "' + str(action) + '" hosted in repository "'
-                  + repository_name + '": ' + str(error))
-            sys.exit(-1)
+            raise RuntimeError('Unable to determine latest version of action "' + str(action)
+                               + '" hosted in repository "' + repository_name + '"') from error
 
     def __get_latest_action_version(self, action: Action) -> ActionVersion:
         latest_version = self.version_cache.get(action.name)
 
         if not latest_version:
-            print('Checking version of GitHub Action "' + action.name + '"...')
+            Log.info('Checking version of GitHub Action "%s"...', action.name)
             latest_version = self.__query_latest_action_version(action)
             self.version_cache[action.name] = latest_version
 
@@ -293,7 +290,7 @@ class WorkflowUpdater:
         workflows = set()
 
         for workflow_file in FileSearch().filter_by_file_type(FileType.yaml()).list(self.workflow_directory):
-            print('Searching for GitHub Actions in workflow "' + workflow_file + '"...')
+            Log.info('Searching for GitHub Actions in workflow "%s"...', workflow_file)
             workflows.add(Workflow(self.build_unit, workflow_file))
 
         return workflows

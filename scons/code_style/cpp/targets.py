@@ -7,6 +7,7 @@ from code_style.cpp.clang_format import ClangFormat
 from code_style.cpp.cpplint import CppLint
 from code_style.modules import CodeModule
 from util.files import FileType
+from util.log import Log
 from util.modules import ModuleRegistry
 from util.targets import PhonyTarget
 from util.units import BuildUnit
@@ -21,7 +22,7 @@ class CheckCppCodeStyle(PhonyTarget.Runnable):
 
     def run(self, build_unit: BuildUnit, modules: ModuleRegistry):
         for module in modules.lookup(MODULE_FILTER):
-            print('Checking C++ code style in directory "' + module.root_directory + '"...')
+            Log.info('Checking C++ code style in directory "%s"...', module.root_directory)
             ClangFormat(build_unit, module).run()
             CppLint(build_unit, module).run()
 
@@ -33,5 +34,5 @@ class EnforceCppCodeStyle(PhonyTarget.Runnable):
 
     def run(self, build_unit: BuildUnit, modules: ModuleRegistry):
         for module in modules.lookup(MODULE_FILTER):
-            print('Formatting C++ code in directory "' + module.root_directory + '"...')
+            Log.info('Formatting C++ code in directory "%s"...', module.root_directory)
             ClangFormat(build_unit, module, enforce_changes=True).run()

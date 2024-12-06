@@ -8,6 +8,7 @@ from code_style.python.isort import ISort
 from code_style.python.pylint import PyLint
 from code_style.python.yapf import Yapf
 from util.files import FileType
+from util.log import Log
 from util.modules import ModuleRegistry
 from util.targets import PhonyTarget
 from util.units import BuildUnit
@@ -24,7 +25,7 @@ class CheckPythonCodeStyle(PhonyTarget.Runnable):
 
     def run(self, build_unit: BuildUnit, modules: ModuleRegistry):
         for module in modules.lookup(PYTHON_MODULE_FILTER):
-            print('Checking Python code style in directory "' + module.root_directory + '"...')
+            Log.info('Checking Python code style in directory "%s"...', module.root_directory)
             ISort(build_unit, module).run()
             Yapf(build_unit, module).run()
             PyLint(build_unit, module).run()
@@ -37,7 +38,7 @@ class EnforcePythonCodeStyle(PhonyTarget.Runnable):
 
     def run(self, build_unit: BuildUnit, modules: ModuleRegistry):
         for module in modules.lookup(PYTHON_MODULE_FILTER):
-            print('Formatting Python code in directory "' + module.root_directory + '"...')
+            Log.info('Formatting Python code in directory "%s"...', module.root_directory)
             ISort(build_unit, module, enforce_changes=True).run()
             Yapf(build_unit, module, enforce_changes=True).run()
 
@@ -49,7 +50,7 @@ class CheckCythonCodeStyle(PhonyTarget.Runnable):
 
     def run(self, build_unit: BuildUnit, modules: ModuleRegistry):
         for module in modules.lookup(CYTHON_MODULE_FILTER):
-            print('Checking Cython code style in directory "' + module.root_directory + '"...')
+            Log.info('Checking Cython code style in directory "%s"...', module.root_directory)
             ISort(build_unit, module).run()
 
 
@@ -60,5 +61,5 @@ class EnforceCythonCodeStyle(PhonyTarget.Runnable):
 
     def run(self, build_unit: BuildUnit, modules: ModuleRegistry):
         for module in modules.lookup(CYTHON_MODULE_FILTER):
-            print('Formatting Cython code in directory "' + module.root_directory + '"...')
+            Log.info('Formatting Cython code in directory "%s"...', module.root_directory)
             ISort(build_unit, module, enforce_changes=True).run()

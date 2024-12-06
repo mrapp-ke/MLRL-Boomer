@@ -5,6 +5,8 @@ Provides utility functions for accessing environment variables.
 """
 from typing import List, Optional
 
+from util.log import Log
+
 
 def get_env(env, name: str, default: Optional[str] = None) -> Optional[str]:
     """
@@ -57,4 +59,4 @@ def set_env(env, name: str, value: str):
     :param value:   The value to be set
     """
     env[name] = value
-    print('Set environment variable "' + name + '" to value "' + value + '"')
+    Log.info('Set environment variable "%s" to value "%s"', name, value)

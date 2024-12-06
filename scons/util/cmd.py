@@ -10,6 +10,7 @@ from os import path
 from subprocess import CompletedProcess
 
 from util.format import format_iterable
+from util.log import Log
 from util.venv import in_virtual_environment
 
 
@@ -59,7 +60,7 @@ class Command:
             :return:                The output of the program
             """
             if self.print_command:
-                print('Running external command "' + command.print_options.format(command) + '"...')
+                Log.info('Running external command "%s"...', command.print_options.format(command))
 
             output = subprocess.run([command.command] + command.arguments,
                                     check=False,
@@ -74,10 +75,9 @@ class Command:
 
                 if self.exit_on_error:
                     if capture_output:
-                        print(str(output.stderr).strip())
+                        Log.info('%s', str(output.stderr).strip())
 
-                    print(message)
-                    sys.exit(exit_code)
+                    Log.error(message, exit_code=exit_code)
                 else:
                     raise RuntimeError(message)
 
