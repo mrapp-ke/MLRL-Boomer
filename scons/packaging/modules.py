@@ -52,3 +52,6 @@ class PythonPackageModule(Module):
         :return: A list that contains the paths to the wheel packages
         """
         return FileSearch().filter_by_suffix('whl').list(self.wheel_directory)
+
+    def __str__(self) -> str:
+        return 'PythonPackageModule {root_directory="' + self.root_directory + '"}'

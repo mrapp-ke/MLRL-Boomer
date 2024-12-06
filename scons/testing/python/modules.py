@@ -55,3 +55,6 @@ class PythonTestModule(TestModule):
             .filter_by_substrings(starts_with='test_') \
             .filter_by_file_type(FileType.python()) \
             .list(self.root_directory)
+
+    def __str__(self) -> str:
+        return 'PythonTestModule {root_directory="' + self.root_directory + '"}'

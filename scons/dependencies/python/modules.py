@@ -14,8 +14,8 @@ class DependencyType(Enum):
     """
     The type of the Python dependencies.
     """
-    BUILD_TIME = auto()
-    RUNTIME = auto()
+    BUILD_TIME = 'build-time'
+    RUNTIME = 'runtime'
 
 
 class PythonDependencyModule(Module):
@@ -59,3 +59,6 @@ class PythonDependencyModule(Module):
         :return: A list that contains the paths of the requirements files that have been found
         """
         return self.requirements_file_search.filter_by_name('requirements.txt').list(self.root_directory)
+
+    def __str__(self) -> str:
+        return 'PythonDependencyModule {dependency_type="' + self.dependency_type.value + '", root_directory="' + self.root_directory + '"}'
