@@ -5,6 +5,7 @@ Implements targets for updating the project's GitHub Actions.
 """
 from dependencies.github.actions import WorkflowUpdater
 from dependencies.table import Table
+from util.log import Log
 from util.modules import ModuleRegistry
 from util.targets import PhonyTarget
 from util.units import BuildUnit
@@ -27,10 +28,9 @@ class CheckGithubActions(PhonyTarget.Runnable):
                                   str(outdated_action.latest_version))
 
             table.sort_rows(0, 1)
-            print('The following GitHub Actions are outdated:\n')
-            print(str(table))
+            Log.info('The following GitHub Actions are outdated:\n\n%s', str(table))
         else:
-            print('All GitHub Actions are up-to-date!')
+            Log.info('All GitHub Actions are up-to-date!')
 
 
 class UpdateGithubActions(PhonyTarget.Runnable):
@@ -50,7 +50,6 @@ class UpdateGithubActions(PhonyTarget.Runnable):
                                   str(updated_action.previous.action.version), str(updated_action.updated.version))
 
             table.sort_rows(0, 1)
-            print('The following GitHub Actions have been updated:\n')
-            print(str(table))
+            Log.info('The following GitHub Actions have been updated:\n\n%s', str(table))
         else:
-            print('No GitHub Actions have been updated.')
+            Log.info('No GitHub Actions have been updated.')

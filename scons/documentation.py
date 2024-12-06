@@ -9,6 +9,7 @@ from typing import List
 from modules_old import CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from util.env import set_env
 from util.io import read_file, write_file
+from util.log import Log
 from util.run import Program
 
 
@@ -93,7 +94,7 @@ def apidoc_cpp(env, target, source):
 
         if apidoc_subproject:
             subproject_name = apidoc_subproject.name
-            print('Generating C++ API documentation for subproject "' + subproject_name + '"...')
+            Log.info('Generating C++ API documentation for subproject "%s"...', subproject_name)
             include_dir = path.join(apidoc_subproject.source_subproject.root_dir, 'include')
             build_dir = apidoc_subproject.build_dir
             __doxygen(project_name=subproject_name, input_dir=include_dir, output_dir=build_dir)
@@ -104,7 +105,7 @@ def apidoc_cpp_tocfile(**_):
     """
     Generates a tocfile referencing the C++ API documentation for all existing subprojects.
     """
-    print('Generating tocfile referencing the C++ API documentation for all subprojects...')
+    Log.info('Generating tocfile referencing the C++ API documentation for all subprojects...')
     tocfile_entries = []
 
     for subproject in CPP_MODULE.find_subprojects():
@@ -132,7 +133,7 @@ def apidoc_python(env, target, source):
         apidoc_subproject = DOC_MODULE.find_python_apidoc_subproject(target[0].path)
 
         if apidoc_subproject:
-            print('Generating Python API documentation for subproject "' + apidoc_subproject.name + '"...')
+            Log.info('Generating Python API documentation for subproject "%s"...', apidoc_subproject.name)
             build_dir = apidoc_subproject.build_dir
             makedirs(build_dir, exist_ok=True)
             __sphinx_apidoc(source_dir=apidoc_subproject.source_subproject.source_dir, output_dir=build_dir)
@@ -142,7 +143,7 @@ def apidoc_python_tocfile(**_):
     """
     Generates a tocfile referencing the Python API documentation for all existing subprojects.
     """
-    print('Generating tocfile referencing the Python API documentation for all subprojects...')
+    Log.info('Generating tocfile referencing the Python API documentation for all subprojects...')
     tocfile_entries = []
 
     for subproject in PYTHON_MODULE.find_subprojects():
@@ -160,5 +161,5 @@ def doc(**_):
     """
     Builds the documentation.
     """
-    print('Generating documentation...')
+    Log.info('Generating documentation...')
     __sphinx_build(source_dir=DOC_MODULE.root_dir, output_dir=DOC_MODULE.build_dir)

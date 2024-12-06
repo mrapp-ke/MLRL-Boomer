@@ -12,6 +12,7 @@ from functools import cached_property
 from typing import List, Optional
 
 from util.io import TextFile
+from util.log import Log
 from versioning.versioning import Version, get_current_version
 
 CHANGESET_FILE_MAIN = '.changelog-main.md'
@@ -261,7 +262,7 @@ class ChangelogFile(TextFile):
         :param release: The release to be added
         """
         formatted_release = str(release)
-        print('Adding new release to changelog file "' + self.file + '":\n\n' + formatted_release)
+        Log.info('Adding new release to changelog file "%s":\n\n%s', self.file, formatted_release)
         original_lines = self.lines
         modified_lines = []
         offset = 0
@@ -306,11 +307,10 @@ class ChangelogFile(TextFile):
 
 def __validate_changeset(changeset_file: str):
     try:
-        print('Validating changeset file "' + changeset_file + '"...')
+        Log.info('Validating changeset file "%s"...', changeset_file)
         ChangesetFile(changeset_file, accept_missing=True).validate()
     except ValueError as error:
-        print('Changeset file "' + changeset_file + '" is malformed!\n\n' + str(error))
-        sys.exit(-1)
+        Log.error('Changeset file "%s" is malformed!\n\n%s', changeset_file, str(error))
 
 
 def __merge_changesets(*changeset_files) -> List[Changeset]:
@@ -384,4 +384,4 @@ def print_latest_changelog():
     """
     Prints the changelog of the latest release.
     """
-    print(ChangelogFile().latest)
+    Log.info('%s', ChangelogFile().latest)

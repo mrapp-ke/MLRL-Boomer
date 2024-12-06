@@ -8,6 +8,7 @@ from functools import cached_property
 from typing import Optional
 
 from util.io import TextFile
+from util.log import Log
 
 
 @dataclass
@@ -90,7 +91,7 @@ class VersionFile(TextFile):
 
     def update(self, version: Version):
         self.write_lines(str(version))
-        print('Updated version to "' + str(version) + '"')
+        Log.info('Updated version to "%s"', str(version))
 
     def write_lines(self, *lines: str):
         super().write_lines(lines)
@@ -113,7 +114,7 @@ class DevelopmentVersionFile(TextFile):
 
     def update(self, development_version: int):
         self.write_lines(str(development_version))
-        print('Updated development version to "' + str(development_version) + '"')
+        Log.info('Updated development version to "%s"', str(development_version))
 
     def write_lines(self, *lines: str):
         super().write_lines(lines)
@@ -122,13 +123,13 @@ class DevelopmentVersionFile(TextFile):
 
 def __get_version_file() -> VersionFile:
     version_file = VersionFile()
-    print('Current version is "' + str(version_file.version) + '"')
+    Log.info('Current version is "%s"', str(version_file.version))
     return version_file
 
 
 def __get_development_version_file() -> DevelopmentVersionFile:
     version_file = DevelopmentVersionFile()
-    print('Current development version is "' + str(version_file.development_version) + '"')
+    Log.info('Current development version is "%s"', str(version_file.development_version))
     return version_file
 
 
@@ -145,7 +146,7 @@ def print_current_version():
     """
     Prints the project's current version.
     """
-    return print(str(get_current_version()))
+    return Log.info('%s', str(get_current_version()))
 
 
 def increment_development_version():

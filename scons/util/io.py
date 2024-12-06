@@ -67,7 +67,7 @@ class TextFile:
         """
         Clears the text file.
         """
-        print('Clearing file "' + self.file + '"...')
+        Log.info('Clearing file "%s"...', self.file)
         self.write_lines('')
 
     def __str__(self) -> str:

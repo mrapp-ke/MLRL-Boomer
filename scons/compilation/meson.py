@@ -8,6 +8,7 @@ from typing import List
 
 from compilation.build_options import BuildOptions
 from compilation.modules import CompilationModule
+from util.log import Log
 from util.run import Program
 from util.units import BuildUnit
 
@@ -80,7 +81,7 @@ class MesonConfigure(Meson):
         return not self.build_options
 
     def _before(self):
-        print('Configuring build options according to environment variables...')
+        Log.info('Configuring build options according to environment variables...')
 
 
 class MesonCompile(Meson):

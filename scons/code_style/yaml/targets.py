@@ -6,6 +6,7 @@ Implements targets for checking and enforcing code style definitions for YAML fi
 from code_style.modules import CodeModule
 from code_style.yaml.yamlfix import YamlFix
 from util.files import FileType
+from util.log import Log
 from util.modules import ModuleRegistry
 from util.targets import PhonyTarget
 from util.units import BuildUnit
@@ -20,7 +21,7 @@ class CheckYamlCodeStyle(PhonyTarget.Runnable):
 
     def run(self, build_unit: BuildUnit, modules: ModuleRegistry):
         for module in modules.lookup(MODULE_FILTER):
-            print('Checking YAML files in the directory "' + module.root_directory + '"...')
+            Log.info('Checking YAML files in the directory "%s"...', module.root_directory)
             YamlFix(build_unit, module).run()
 
 
@@ -31,5 +32,5 @@ class EnforceYamlCodeStyle(PhonyTarget.Runnable):
 
     def run(self, build_unit: BuildUnit, modules: ModuleRegistry):
         for module in modules.lookup(MODULE_FILTER):
-            print('Formatting YAML files in the directory "' + module.root_directory + '"...')
+            Log.info('Formatting YAML files in the directory "%s"...', module.root_directory)
             YamlFix(build_unit, module, enforce_changes=True).run()

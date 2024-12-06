@@ -10,6 +10,7 @@ from compilation.build_options import BuildOptions, EnvBuildOption
 from compilation.meson import MesonCompile, MesonConfigure, MesonInstall, MesonSetup
 from compilation.modules import CompilationModule
 from util.files import FileType
+from util.log import Log
 from util.modules import ModuleRegistry
 from util.targets import BuildTarget, PhonyTarget
 from util.units import BuildUnit
@@ -35,7 +36,7 @@ class SetupCython(BuildTarget.Runnable):
         return [module.build_directory for module in modules.lookup(MODULE_FILTER)]
 
     def get_clean_files(self, modules: ModuleRegistry) -> List[str]:
-        print('Removing Cython build files...')
+        Log.info('Removing Cython build files...')
         return super().get_clean_files(modules)
 
 
@@ -45,7 +46,7 @@ class CompileCython(PhonyTarget.Runnable):
     """
 
     def run(self, build_unit: BuildUnit, modules: ModuleRegistry):
-        print('Compiling Cython code...')
+        Log.info('Compiling Cython code...')
 
         for module in modules.lookup(MODULE_FILTER):
             MesonConfigure(build_unit, module, build_options=BUILD_OPTIONS)
@@ -58,12 +59,12 @@ class InstallCython(BuildTarget.Runnable):
     """
 
     def run(self, build_unit: BuildUnit, modules: ModuleRegistry):
-        print('Installing extension modules into source tree...')
+        Log.info('Installing extension modules into source tree...')
 
         for module in modules.lookup(MODULE_FILTER):
             MesonInstall(build_unit, module).run()
 
     def get_clean_files(self, modules: ModuleRegistry) -> List[str]:
-        print('Removing extension modules from source tree...')
+        Log.info('Removing extension modules from source tree...')
         compilation_modules = modules.lookup(MODULE_FILTER)
         return reduce(lambda aggr, module: aggr + module.find_installed_files(), compilation_modules, [])

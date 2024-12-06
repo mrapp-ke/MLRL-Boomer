@@ -6,6 +6,7 @@ Implements targets for checking and enforcing code style definitions for Markdow
 from code_style.markdown.mdformat import MdFormat
 from code_style.modules import CodeModule
 from util.files import FileType
+from util.log import Log
 from util.modules import ModuleRegistry
 from util.targets import PhonyTarget
 from util.units import BuildUnit
@@ -20,7 +21,7 @@ class CheckMarkdownCodeStyle(PhonyTarget.Runnable):
 
     def run(self, build_unit: BuildUnit, modules: ModuleRegistry):
         for module in modules.lookup(MODULE_FILTER):
-            print('Checking Markdown code style in the directory "' + module.root_directory + '"...')
+            Log.info('Checking Markdown code style in the directory "%s"...', module.root_directory)
             MdFormat(build_unit, module).run()
 
 
@@ -31,5 +32,5 @@ class EnforceMarkdownCodeStyle(PhonyTarget.Runnable):
 
     def run(self, build_unit: BuildUnit, modules: ModuleRegistry):
         for module in modules.lookup(MODULE_FILTER):
-            print('Formatting Markdown files in the directory "' + module.root_directory + '"...')
+            Log.info('Formatting Markdown files in the directory "%s"...', module.root_directory)
             MdFormat(build_unit, module, enforce_changes=True).run()

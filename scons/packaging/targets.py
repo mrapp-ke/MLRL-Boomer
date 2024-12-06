@@ -10,6 +10,7 @@ from packaging.build import Build
 from packaging.modules import PythonPackageModule
 from packaging.pip import PipInstallWheel
 from util.files import DirectorySearch, FileType
+from util.log import Log
 from util.modules import ModuleRegistry
 from util.paths import Project
 from util.targets import BuildTarget, PhonyTarget
@@ -29,7 +30,7 @@ class BuildPythonWheels(BuildTarget.Runnable):
 
     def run(self, build_unit: BuildUnit, modules: ModuleRegistry):
         for module in modules.lookup(self.module_filter):
-            print('Building Python wheels for directory "' + module.root_directory + '"...')
+            Log.info('Building Python wheels for directory "%s"...', module.root_directory)
             Build(build_unit, module).run()
 
     def get_input_files(self, modules: ModuleRegistry) -> List[str]:
@@ -49,7 +50,7 @@ class BuildPythonWheels(BuildTarget.Runnable):
         clean_files = []
 
         for module in modules.lookup(self.module_filter):
-            print('Removing Python wheels from directory "' + module.root_directory + '"...')
+            Log.info('Removing Python wheels from directory "%s"...', module.root_directory)
             clean_files.append(module.wheel_directory)
             clean_files.extend(
                 DirectorySearch() \
@@ -74,5 +75,5 @@ class InstallPythonWheels(PhonyTarget.Runnable):
 
     def run(self, _: BuildUnit, modules: ModuleRegistry):
         for module in modules.lookup(self.module_filter):
-            print('Installing Python wheels for directory "' + module.root_directory + '"...')
+            Log.info('Installing Python wheels for directory "%s"...', module.root_directory)
             PipInstallWheel().install_wheels(module.find_wheels())

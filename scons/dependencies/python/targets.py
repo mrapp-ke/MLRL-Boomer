@@ -8,6 +8,7 @@ from functools import reduce
 from dependencies.python.modules import DependencyType, PythonDependencyModule
 from dependencies.python.pip import PipList
 from dependencies.table import Table
+from util.log import Log
 from util.modules import ModuleRegistry
 from util.targets import PhonyTarget
 from util.units import BuildUnit
@@ -35,9 +36,9 @@ class CheckPythonDependencies(PhonyTarget.Runnable):
         requirements_files = reduce(lambda aggr, module: aggr + module.find_requirements_files(), dependency_modules,
                                     [])
         pip = PipList(*requirements_files)
-        print('Installing all dependencies...')
+        Log.info('Installing all dependencies...')
         pip.install_all_packages()
-        print('Checking for outdated dependencies...')
+        Log.info('Checking for outdated dependencies...')
         outdated_dependencies = pip.list_outdated_dependencies()
 
         if outdated_dependencies:
@@ -48,7 +49,6 @@ class CheckPythonDependencies(PhonyTarget.Runnable):
                               outdated_dependency.latest.version)
 
             table.sort_rows(0, 1)
-            print('The following dependencies are outdated:\n')
-            print(str(table))
+            Log.info('The following dependencies are outdated:\n\n%s', str(table))
         else:
-            print('All dependencies are up-to-date!')
+            Log.info('All dependencies are up-to-date!')

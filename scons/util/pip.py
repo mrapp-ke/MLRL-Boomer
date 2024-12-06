@@ -10,6 +10,7 @@ from typing import Dict, Optional, Set
 
 from util.cmd import Command as Cmd
 from util.io import TextFile
+from util.log import Log
 from util.units import BuildUnit
 
 
@@ -217,7 +218,7 @@ class Pip:
                         .print_arguments(True) \
                         .run()
                 else:
-                    print(stdout)
+                    Log.info(stdout)
         except RuntimeError:
             Pip.install_requirement(requirement)
 
