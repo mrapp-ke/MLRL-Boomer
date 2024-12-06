@@ -49,3 +49,6 @@ class CodeModule(Module):
         :return: A list that contains the paths of the source files that have been found
         """
         return self.source_file_search.filter_by_file_type(self.file_type).list(self.root_directory)
+
+    def __str__(self) -> str:
+        return 'CodeModule {file_type="' + str(self.file_type) + '", root_directory="' + self.root_directory + '"}'

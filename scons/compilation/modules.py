@@ -72,3 +72,7 @@ class CompilationModule(Module):
                 .list(self.install_directory)
 
         return []
+
+    def __str__(self) -> str:
+        return 'CompilationModule {file_type="' + str(
+            self.file_type) + '", root_directory=' + self.root_directory + '"}'

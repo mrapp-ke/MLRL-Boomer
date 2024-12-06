@@ -36,3 +36,6 @@ class CppTestModule(TestModule):
         The path to the directory, where build files are stored.
         """
         return path.join(self.root_directory, self.build_directory_name)
+
+    def __str__(self) -> str:
+        return 'CppTestModule {root_directory="' + self.root_directory + '"}'
