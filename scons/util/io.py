@@ -4,8 +4,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for reading and writing files.
 """
 from functools import cached_property
-from os import path
+from os import path, remove
+from shutil import rmtree
 from typing import List
+
+from util.log import Log
 
 ENCODING_UTF8 = 'utf-8'
 
@@ -26,6 +29,23 @@ def write_file(file: str):
     :param file: The file to be opened
     """
     return open(file, mode='w', encoding=ENCODING_UTF8)
+
+
+def delete_files(*files: str, accept_missing: bool = True):
+    """
+    Deletes one or several files or directories.
+
+    :param files:           The files or directories to be deleted
+    :param accept_missing:  True, if no error should be raised if the file is missing, False otherwise
+    """
+    for file in files:
+        if path.isdir(file):
+            Log.verbose('Deleting directory "%s"...', file)
+            rmtree(file)
+        else:
+            if not accept_missing or path.isfile(file):
+                Log.verbose('Deleting file "%s"...', file)
+                remove(file)
 
 
 class TextFile:
@@ -69,6 +89,12 @@ class TextFile:
         """
         Log.info('Clearing file "%s"...', self.file)
         self.write_lines('')
+
+    def delete(self):
+        """
+        Deletes the text file.
+        """
+        delete_files(self.file, accept_missing=self.accept_missing)
 
     def __str__(self) -> str:
         return self.file
