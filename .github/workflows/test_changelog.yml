@@ -33,7 +33,7 @@ jobs:
               - '.github/workflows/test_changelog.yml'
               - 'build'
               - 'build.bat'
-              - 'scons/**'
+              - 'build_system/**'
             bugfix:
               - *build_files
               - '.changelog-bugfix.md'
