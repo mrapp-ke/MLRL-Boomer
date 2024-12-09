@@ -34,7 +34,7 @@ jobs:
               - '.github/workflows/test_doc.yml'
               - 'build'
               - 'build.bat'
-              - 'scons/**'
+              - 'build_system/**'
             cpp: &cpp
               - *build_files
               - 'cpp/**/include/**'

@@ -25,7 +25,7 @@ class Project:
             build_directory_name:   The name of the build system's build directory
         """
 
-        root_directory = 'scons'
+        root_directory = 'build_system'
 
         build_directory_name = 'build'
 

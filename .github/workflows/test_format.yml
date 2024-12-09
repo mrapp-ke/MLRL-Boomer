@@ -33,7 +33,7 @@ jobs:
               - '.github/workflows/test_format.yml'
               - 'build'
               - 'build.bat'
-              - 'scons/**'
+              - 'build_system/**'
             cpp:
               - *build_files
               - '**/*.hpp'
