@@ -28,23 +28,23 @@ To be able to detect problems with the project's source code early during develo
    ```
 ````
 
-This will result in all tests being run and their results being reported. If the execution should be aborted as soon as a single test fails, the environment variable `SKIP_EARLY` can be used as shown below:
+This will result in all tests being run and their results being reported. If the execution should be aborted as soon as a single test fails, the environment variable `FAIL_FAST` can be used as shown below:
 
 ````{tab} Linux
    ```text
-   SKIP_EARLY=true ./build tests
+   FAIL_FAST=true ./build tests
    ```
 ````
 
 ````{tab} macOS
    ```text
-   SKIP_EARLY=true ./build tests
+   FAIL_FAST=true ./build tests
    ```
 ````
 
 ````{tab} Windows
    ```text
-   $env:SKIP_EARLY = "true"
+   $env:FAIL_FAST = "true"
    build.bat tests
    ```
 ````
