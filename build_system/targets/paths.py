@@ -3,6 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides paths within the project that are important for the build system.
 """
+from os import path
+
 from core.build_unit import BuildUnit
 from util.files import FileSearch
 
@@ -110,6 +112,8 @@ class Project:
         """
 
         root_directory = 'doc'
+
+        apidoc_directory = path.join(root_directory, 'developer_guide', 'api')
 
         @staticmethod
         def file_search() -> FileSearch:
