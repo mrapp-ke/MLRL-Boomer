@@ -5,11 +5,11 @@ Implements targets for checking and enforcing code style definitions for YAML fi
 """
 from code_style.modules import CodeModule
 from code_style.yaml.yamlfix import YamlFix
+from core.build_unit import BuildUnit
+from core.modules import Module
+from core.targets import PhonyTarget
 from util.files import FileType
 from util.log import Log
-from util.modules import Module
-from util.targets import PhonyTarget
-from util.units import BuildUnit
 
 MODULE_FILTER = CodeModule.Filter(FileType.yaml())
 

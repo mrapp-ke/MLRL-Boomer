@@ -6,8 +6,8 @@ Provides classes that provide access to Python code that can be built as wheel p
 from os import path
 from typing import List
 
+from core.modules import Module
 from util.files import FileSearch
-from util.modules import Module
 
 
 class PythonPackageModule(Module):

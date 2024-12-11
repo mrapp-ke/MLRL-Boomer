@@ -8,10 +8,10 @@ from dataclasses import dataclass
 from functools import reduce
 from typing import Dict, Optional, Set
 
+from core.build_unit import BuildUnit
 from util.cmd import Command as Cmd
 from util.io import TextFile
 from util.log import Log
-from util.units import BuildUnit
 
 
 @dataclass

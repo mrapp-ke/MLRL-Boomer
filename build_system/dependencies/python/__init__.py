@@ -3,11 +3,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines targets and modules for installing Python dependencies that are required by the project.
 """
+from core.build_unit import BuildUnit
+from core.targets import PhonyTarget, TargetBuilder
 from dependencies.python.modules import DependencyType, PythonDependencyModule
 from dependencies.python.targets import CheckPythonDependencies, InstallRuntimeDependencies
 from util.paths import Project
-from util.targets import PhonyTarget, TargetBuilder
-from util.units import BuildUnit
 
 VENV = 'venv'
 

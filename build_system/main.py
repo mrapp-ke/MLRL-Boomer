@@ -6,13 +6,13 @@ Initializes the build system and runs targets specified via command line argumen
 from argparse import ArgumentParser
 from typing import List
 
+from core.modules import Module, ModuleRegistry
+from core.targets import DependencyGraph, Target, TargetRegistry
 from util.files import FileSearch
 from util.format import format_iterable
 from util.log import Log
-from util.modules import Module, ModuleRegistry
 from util.paths import Project
 from util.reflection import import_source_file
-from util.targets import DependencyGraph, Target, TargetRegistry
 
 
 def __parse_command_line_arguments():

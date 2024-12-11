@@ -6,8 +6,8 @@ Provides classes that provide access to Python requirements files that belong to
 from enum import Enum, auto
 from typing import List
 
+from core.modules import Module
 from util.files import FileSearch
-from util.modules import Module
 
 
 class DependencyType(Enum):

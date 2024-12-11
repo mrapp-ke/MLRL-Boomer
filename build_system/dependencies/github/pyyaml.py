@@ -6,9 +6,9 @@ Provides classes for reading the contents of YAML files via "pyyaml".
 from functools import cached_property
 from typing import Dict
 
+from core.build_unit import BuildUnit
 from util.io import TextFile, read_file
 from util.pip import Pip
-from util.units import BuildUnit
 
 
 class YamlFile(TextFile):

@@ -4,8 +4,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow to run automated tests via the external program "meson".
 """
 from compilation.meson import Meson
+from core.build_unit import BuildUnit
 from testing.cpp.modules import CppTestModule
-from util.units import BuildUnit
 
 
 class MesonTest(Meson):

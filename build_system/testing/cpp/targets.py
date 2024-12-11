@@ -3,11 +3,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for testing C++ code.
 """
+from core.build_unit import BuildUnit
+from core.modules import Module
+from core.targets import BuildTarget, PhonyTarget
 from testing.cpp.meson import MesonTest
 from testing.cpp.modules import CppTestModule
-from util.modules import Module
-from util.targets import BuildTarget, PhonyTarget
-from util.units import BuildUnit
 
 
 class TestCpp(PhonyTarget.Runnable):

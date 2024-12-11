@@ -3,8 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for creating tables.
 """
+from core.build_unit import BuildUnit
 from util.pip import Pip
-from util.units import BuildUnit
 
 
 class Table:

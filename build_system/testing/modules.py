@@ -6,8 +6,8 @@ Provides classes that provide access to automated tests that belong to individua
 from abc import ABC
 from os import environ
 
+from core.modules import Module
 from util.env import get_env_bool
-from util.modules import Module
 
 
 class TestModule(Module, ABC):

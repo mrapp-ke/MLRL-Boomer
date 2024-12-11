@@ -5,8 +5,8 @@ Provides classes that provide access to directories and files that belong to ind
 """
 from typing import List
 
+from core.modules import Module
 from util.files import FileSearch, FileType
-from util.modules import Module
 
 
 class CodeModule(Module):

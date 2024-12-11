@@ -7,11 +7,11 @@ from code_style.modules import CodeModule
 from code_style.python.isort import ISort
 from code_style.python.pylint import PyLint
 from code_style.python.yapf import Yapf
+from core.build_unit import BuildUnit
+from core.modules import Module
+from core.targets import PhonyTarget
 from util.files import FileType
 from util.log import Log
-from util.modules import Module
-from util.targets import PhonyTarget
-from util.units import BuildUnit
 
 PYTHON_MODULE_FILTER = CodeModule.Filter(FileType.python())
 

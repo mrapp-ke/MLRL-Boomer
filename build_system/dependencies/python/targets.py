@@ -6,13 +6,13 @@ Implements targets for installing runtime requirements that are required by the 
 from functools import reduce
 from typing import List
 
+from core.build_unit import BuildUnit
+from core.modules import Module
+from core.targets import PhonyTarget
 from dependencies.python.modules import DependencyType, PythonDependencyModule
 from dependencies.python.pip import PipList
 from dependencies.table import Table
 from util.log import Log
-from util.modules import Module
-from util.targets import PhonyTarget
-from util.units import BuildUnit
 
 
 class InstallRuntimeDependencies(PhonyTarget.Runnable):

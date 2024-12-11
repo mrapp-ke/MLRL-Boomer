@@ -6,10 +6,10 @@ Defines targets and modules for compiling Cython code.
 from compilation.cpp import COMPILE_CPP
 from compilation.cython.targets import CompileCython, InstallCython, SetupCython
 from compilation.modules import CompilationModule
+from core.build_unit import BuildUnit
+from core.targets import PhonyTarget, TargetBuilder
 from util.files import FileType
 from util.paths import Project
-from util.targets import PhonyTarget, TargetBuilder
-from util.units import BuildUnit
 
 SETUP_CYTHON = 'setup_cython'
 

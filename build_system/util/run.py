@@ -5,9 +5,9 @@ Provides utility functions for running external programs during the build proces
 """
 from subprocess import CompletedProcess
 
+from core.build_unit import BuildUnit
 from util.cmd import Command
 from util.pip import Pip
-from util.units import BuildUnit
 
 
 class Program(Command):

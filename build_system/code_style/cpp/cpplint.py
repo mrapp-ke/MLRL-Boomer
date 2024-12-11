@@ -4,8 +4,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow to run the external program "cpplint".
 """
 from code_style.modules import CodeModule
+from core.build_unit import BuildUnit
 from util.run import Program
-from util.units import BuildUnit
 
 
 class CppLint(Program):

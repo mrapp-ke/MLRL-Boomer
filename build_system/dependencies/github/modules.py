@@ -5,8 +5,8 @@ Provides classes that provide access to GitHub workflows tha belong to individua
 """
 from typing import List
 
+from core.modules import Module
 from util.files import FileSearch, FileType
-from util.modules import Module
 
 
 class GithubWorkflowModule(Module):

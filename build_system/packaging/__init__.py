@@ -6,11 +6,11 @@ Defines targets and modules for building and install Python wheel packages.
 from os import path
 
 from compilation import INSTALL
+from core.build_unit import BuildUnit
+from core.targets import TargetBuilder
 from packaging.modules import PythonPackageModule
 from packaging.targets import BuildPythonWheels, InstallPythonWheels
 from util.paths import Project
-from util.targets import TargetBuilder
-from util.units import BuildUnit
 
 BUILD_WHEELS = 'build_wheels'
 

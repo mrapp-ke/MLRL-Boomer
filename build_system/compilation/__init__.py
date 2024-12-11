@@ -5,8 +5,8 @@ Defines targets for compiling code.
 """
 from compilation.cpp import COMPILE_CPP, INSTALL_CPP
 from compilation.cython import COMPILE_CYTHON, INSTALL_CYTHON
-from util.targets import TargetBuilder
-from util.units import BuildUnit
+from core.build_unit import BuildUnit
+from core.targets import TargetBuilder
 
 INSTALL = 'install'
 

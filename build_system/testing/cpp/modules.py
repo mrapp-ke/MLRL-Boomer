@@ -5,8 +5,8 @@ Provides classes that provide access to automated tests for C++ code that belong
 """
 from os import path
 
+from core.modules import Module
 from testing.modules import TestModule
-from util.modules import Module
 
 
 class CppTestModule(TestModule):

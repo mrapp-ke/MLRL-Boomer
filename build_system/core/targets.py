@@ -9,11 +9,11 @@ from functools import reduce
 from os import path
 from typing import Any, Callable, Dict, Iterable, List, Optional
 
+from core.build_unit import BuildUnit
+from core.modules import Module, ModuleRegistry
 from util.format import format_iterable
 from util.io import delete_files
 from util.log import Log
-from util.modules import Module, ModuleRegistry
-from util.units import BuildUnit
 
 
 class Target(ABC):

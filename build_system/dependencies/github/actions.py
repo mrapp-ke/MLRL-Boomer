@@ -8,12 +8,12 @@ from functools import cached_property, reduce
 from os import environ
 from typing import Dict, List, Optional, Set
 
+from core.build_unit import BuildUnit
 from dependencies.github.modules import GithubWorkflowModule
 from dependencies.github.pygithub import GithubApi
 from dependencies.github.pyyaml import YamlFile
 from util.env import get_env
 from util.log import Log
-from util.units import BuildUnit
 
 
 @dataclass

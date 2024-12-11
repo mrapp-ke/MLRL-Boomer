@@ -6,8 +6,8 @@ Provides classes that provide access to directories and files that belong to ind
 from os import path
 from typing import List, Optional
 
+from core.modules import Module
 from util.files import FileSearch, FileType
-from util.modules import Module
 
 
 class CompilationModule(Module):
