@@ -7,6 +7,7 @@ import sys
 
 from argparse import ArgumentParser
 from importlib.util import module_from_spec, spec_from_file_location
+from os import path
 from types import ModuleType
 from typing import List
 
@@ -15,7 +16,6 @@ from core.targets import DependencyGraph, Target, TargetRegistry
 from util.files import FileSearch
 from util.format import format_iterable
 from util.log import Log
-from util.paths import Project
 
 
 def __parse_command_line_arguments():
@@ -35,7 +35,7 @@ def __find_init_files() -> List[str]:
     return FileSearch() \
         .set_recursive(True) \
         .filter_by_name('__init__.py') \
-        .list(Project.BuildSystem.root_directory)
+        .list(path.dirname(__file__))
 
 
 def __import_source_file(source_file: str) -> ModuleType:
