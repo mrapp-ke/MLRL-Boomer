@@ -16,26 +16,18 @@ BUILD_WHEELS = 'build_wheels'
 
 INSTALL_WHEELS = 'install_wheels'
 
+TARGETS = TargetBuilder(BuildUnit('packaging')) \
+    .add_build_target(BUILD_WHEELS) \
+        .depends_on(INSTALL) \
+        .set_runnables(BuildPythonWheels()) \
+    .add_build_target(INSTALL_WHEELS) \
+        .depends_on(BUILD_WHEELS) \
+        .set_runnables(InstallPythonWheels()) \
+    .build()
+
 MODULES = [
     PythonPackageModule(
         root_directory=path.dirname(setup_file),
         wheel_directory_name=Project.Python.wheel_directory_name,
     ) for setup_file in Project.Python.file_search().filter_by_name('setup.py').list(Project.Python.root_directory)
 ]
-
-TARGETS = TargetBuilder(BuildUnit('packaging')) \
-    .add_phony_target(BUILD_WHEELS) \
-        .depends_on(INSTALL) \
-        .depends_on_build_targets(
-            MODULES,
-            lambda module, target_builder: target_builder.set_runnables(BuildPythonWheels(module.root_directory))
-        ) \
-        .nop() \
-    .add_phony_target(INSTALL_WHEELS) \
-        .depends_on(BUILD_WHEELS) \
-        .depends_on_phony_targets(
-            MODULES,
-            lambda module, target_builder: target_builder.set_runnables(InstallPythonWheels(module.root_directory))
-        ) \
-        .nop() \
-    .build()

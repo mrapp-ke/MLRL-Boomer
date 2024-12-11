@@ -12,7 +12,7 @@ from typing import Any, Callable, Dict, Iterable, List, Optional
 from util.format import format_iterable
 from util.io import delete_files
 from util.log import Log
-from util.modules import ModuleRegistry
+from util.modules import Module, ModuleRegistry
 from util.units import BuildUnit
 
 
@@ -201,7 +201,7 @@ class Target(ABC):
 
 class BuildTarget(Target):
     """
-    A build target, which executes a certain action and produces one or several output files.
+    A build target, which produces one or several output files from given input files.
     """
 
     class Runnable(ABC):
@@ -209,57 +209,66 @@ class BuildTarget(Target):
         An abstract base class for all classes that can be run via a build target.
         """
 
-        @abstractmethod
-        def run(self, build_unit: BuildUnit, modules: ModuleRegistry):
+        def __init__(self, module_filter: Module.Filter):
             """
-            Must be implemented by subclasses in order to run the target.
+            :param module_filter: A filter that matches the modules, the target should be applied to
+            """
+            self.module_filter = module_filter
+
+        @abstractmethod
+        def run(self, build_unit: BuildUnit, module: Module):
+            """
+            may be overridden by subclasses in order to apply the target to an individual module that matches the
+            filter.
 
             :param build_unit:  The build unit, the target belongs to
-            :param modules:     A `ModuleRegistry` that can be used by the target for looking up modules
+            :param module:      The module, the target should be applied to
             """
 
-        def get_input_files(self, modules: ModuleRegistry) -> List[str]:
+        def get_input_files(self, module: Module) -> List[str]:
             """
             May be overridden by subclasses in order to return the input files required by the target.
 
-            :param modules: A `ModuleRegistry` that can be used by the target for looking up modules
+            :param module:  The module, the target should be applied to
             :return:        A list that contains the input files
             """
             return []
 
-        def get_output_files(self, modules: ModuleRegistry) -> List[str]:
+        def get_output_files(self, module: Module) -> List[str]:
             """
             May be overridden by subclasses in order to return the output files produced by the target.
 
-            :param modules: A `ModuleRegistry` that can be used by the target for looking up modules
+            :param module:  The module, the target should be applied to
             :return:        A list that contains the output files
             """
             return []
 
-        def get_clean_files(self, modules: ModuleRegistry) -> List[str]:
+        def get_clean_files(self, module: Module) -> List[str]:
             """
             May be overridden by subclasses in order to return the output files produced by the target that must be
             cleaned.
 
-            :param modules: A `ModuleRegistry` that can be used by the target for looking up modules
+            :param module:  The module, the target should be applied to
             :return:        A list that contains the files to be cleaned
             """
-            return self.get_output_files(modules)
+            return self.get_output_files(module)
 
-        def output_files_exist(self, modules: ModuleRegistry) -> bool:
+        def output_files_exist(self, module: Module) -> bool:
             """
             Returns whether all output files produced by the target exist or not.
 
-            :param modules: A `ModuleRegistry` that can be used by the target for looking up modules
+            :param module:  The module, the target should be applied to
             :return:        True, if all output files exist, False otherwise
             """
-            output_files = self.get_output_files(modules)
+            output_files = self.get_output_files(module)
 
             if output_files:
                 missing_files = [output_file for output_file in output_files if not path.exists(output_file)]
 
                 if missing_files:
-                    Log.verbose('Target needs to be run, because the following output files do not exist:')
+                    Log.verbose(
+                        'Target needs to be applied to module %s, because the following output files do not exist:',
+                        str(module))
 
                     for missing_file in missing_files:
                         Log.verbose(' - %s', missing_file)
@@ -267,27 +276,29 @@ class BuildTarget(Target):
                     Log.verbose('')
                     return False
 
-                Log.verbose('All output files already exist.')
+                Log.verbose('All output files of module %s already exist.', str(module))
                 return True
 
             return False
 
-        def input_files_have_changed(self, modules: ModuleRegistry) -> bool:
+        def input_files_have_changed(self, module: Module) -> bool:
             """
             Returns whether any input files required by the target have changed since the target was run for the last
             time.
 
-            :param modules: A `ModuleRegistry` that can be used by the target for looking up modules
+            :param module:  The module, the target should be applied to
             :return:        True, if any input files have changed, False otherwise
             """
-            input_files = self.get_input_files(modules)
+            input_files = self.get_input_files(module)
 
             if input_files:
                 # TODO check timestamps or hashes
                 changed_files = input_files
 
                 if changed_files:
-                    Log.verbose('Target needs to be run, because the following input files have changed:\n')
+                    Log.verbose(
+                        'Target needs to be applied to module %s, because the following input files have changed:\n',
+                        str(module))
 
                     for input_file in input_files:
                         Log.verbose(' - %s', input_file)
@@ -295,7 +306,7 @@ class BuildTarget(Target):
                     Log.verbose('')
                     return True
 
-                Log.verbose('No input files have changed.')
+                Log.verbose('No input files of module %s have changed.', str(module))
                 return False
 
             return True
@@ -340,19 +351,24 @@ class BuildTarget(Target):
 
     def run(self, module_registry: ModuleRegistry):
         for runnable in self.runnables:
-            if not runnable.output_files_exist(module_registry):
-                if runnable.input_files_have_changed(module_registry):
-                    runnable.run(self.build_unit, module_registry)
+            modules = module_registry.lookup(runnable.module_filter)
+
+            for module in modules:
+                if not runnable.output_files_exist(module) or runnable.input_files_have_changed(module):
+                    runnable.run(self.build_unit, module)
 
     def clean(self, module_registry: ModuleRegistry):
         for runnable in self.runnables:
-            clean_files = runnable.get_clean_files(module_registry)
-            delete_files(*clean_files)
+            modules = module_registry.lookup(runnable.module_filter)
+
+            for module in modules:
+                clean_files = runnable.get_clean_files(module)
+                delete_files(*clean_files, accept_missing=True)
 
 
 class PhonyTarget(Target):
     """
-    A phony target, which executes a certain action and does not produce any output files.
+    A phony target, which executes a certain action unconditionally.
     """
 
     Function = Callable[[], None]
@@ -362,14 +378,30 @@ class PhonyTarget(Target):
         An abstract base class for all classes that can be run via a phony target.
         """
 
-        @abstractmethod
-        def run(self, build_unit: BuildUnit, modules: ModuleRegistry):
+        def __init__(self, module_filter: Module.Filter):
             """
-            Must be implemented by subclasses in order to run the target.
+            :param module_filter: A filter that matches the modules, the target should be applied to
+            """
+            self.module_filter = module_filter
+
+        def run_all(self, build_unit: BuildUnit, module: List[Module]):
+            """
+            May be overridden by subclasses in order to apply the target to all modules that match the filter.
 
             :param build_unit:  The build unit, the target belongs to
-            :param modules:     A `ModuleRegistry` that can be used by the target for looking up modules
+            :param module:      A list that contains the modules, the target should be applied to
             """
+            raise NotImplementedError('Class ' + type(self).__name__ + ' does not implement the "run_all" method')
+
+        def run(self, build_unit: BuildUnit, module: Module):
+            """
+            May be overridden by subclasses in order to apply the target to an individual module that matches the
+            filter.
+
+            :param build_unit:  The build unit, the target belongs to
+            :param module:      The module, the target should be applied to
+            """
+            raise NotImplementedError('Class ' + type(self).__name__ + ' does not implement the "run" method')
 
     class Builder(Target.Builder):
         """
@@ -420,7 +452,17 @@ class PhonyTarget(Target):
                     function()
 
                 for runnable in self.runnables:
-                    runnable.run(build_unit, module_registry)
+                    modules = module_registry.lookup(runnable.module_filter)
+
+                    try:
+                        runnable.run_all(build_unit, modules)
+                    except NotImplementedError:
+                        try:
+                            for module in modules:
+                                runnable.run(build_unit, module)
+                        except NotImplementedError as error:
+                            raise RuntimeError('Class ' + type(runnable).__name__
+                                               + ' must implement either the "run_all" or "run" method') from error
 
             return PhonyTarget(self.target_name, self.dependencies, action)
 

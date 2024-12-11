@@ -20,15 +20,8 @@ class PythonPackageModule(Module):
         A filter that matches modules that contain Python code that can be built as wheel packages.
         """
 
-        def __init__(self, *root_directories: str):
-            """
-            :param root_directories: The root directories of the modules to be matched
-            """
-            self.root_directories = set(root_directories)
-
         def matches(self, module: Module) -> bool:
-            return isinstance(module, PythonPackageModule) and (not self.root_directories
-                                                                or module.root_directory in self.root_directories)
+            return isinstance(module, PythonPackageModule)
 
     def __init__(self, root_directory: str, wheel_directory_name: str):
         """
