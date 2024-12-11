@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from functools import reduce
 from os import path
-from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from core.build_unit import BuildUnit
 from core.changes import ChangeDetection
@@ -46,17 +46,7 @@ class Target(ABC):
         An abstract base class for all builders that allow to configure and create targets.
         """
 
-        def __anonymous_target_name(self) -> str:
-            return 'anonymous-dependency-' + str(len(self.dependencies) + 1) + '-of-' + self.target_name
-
-        def __init__(self, parent_builder: Any, target_name: str):
-            """
-            :param parent_builder:  The builder, this builder has been created from
-            :param target_name:     The name of the target that is configured via the builder
-            """
-            self.parent_builder = parent_builder
-            self.target_name = target_name
-            self.child_builders = []
+        def __init__(self):
             self.dependency_names = set()
             self.dependencies = []
 
@@ -77,96 +67,14 @@ class Target(ABC):
 
             return self
 
-        def depends_on_build_target(self, clean_dependency: bool = True) -> 'BuildTarget.Builder':
-            """
-            Creates and returns a `BuildTarget.Builder` that allows to configure a build target, this target should
-            depend on.
-
-            :param clean_dependency:    True, if output files of the dependency should also be cleaned when cleaning the
-                                        output files of this target, False otherwise
-            :return:                    The `BuildTarget.Builder` that has been created
-            """
-            target_name = self.__anonymous_target_name()
-            target_builder = BuildTarget.Builder(self, target_name)
-            self.child_builders.append(target_builder)
-            self.depends_on(target_name, clean_dependencies=clean_dependency)
-            return target_builder
-
-        def depends_on_build_targets(self,
-                                     iterable: Iterable[Any],
-                                     target_configurator: Callable[[Any, 'BuildTarget.Builder'], None],
-                                     clean_dependencies: bool = True) -> 'Target.Builder':
-            """
-            Configures multiple build targets, one for each value in a given `Iterable`, this target should depend on.
-
-            :param iterable:            An `Iterable` that provides access to the values for which dependencies should
-                                        be created
-            :param target_configurator: A function that accepts one value in the `Iterable` at a time, as well as a
-                                        `BuildTarget.Builder` for configuring the corresponding dependency
-            :param clean_dependencies:  True, if output files of the dependencies should also be cleaned when cleaning
-                                        the output files of this target, False otherwise
-            :return:                    The `Target.Builder` itself
-            """
-            for value in iterable:
-                target_builder = self.depends_on_build_target(clean_dependency=clean_dependencies)
-                target_configurator(value, target_builder)
-
-            return self
-
-        def depends_on_phony_target(self, clean_dependency: bool = True) -> 'PhonyTarget.Builder':
-            """
-            Creates and returns a `PhonyTarget.Builder` that allows to configure a phony target, this target should
-            depend on.
-
-            :param clean_dependency:    True, if output files of the dependency should also be cleaned when cleaning the
-                                        output files of this target, False otherwise
-            :return:                    The `PhonyTarget.Builder` that has been created
-            """
-            target_name = self.__anonymous_target_name()
-            target_builder = PhonyTarget.Builder(self, target_name)
-            self.child_builders.append(target_builder)
-            self.depends_on(target_name, clean_dependencies=clean_dependency)
-            return target_builder
-
-        def depends_on_phony_targets(self,
-                                     iterable: Iterable[Any],
-                                     target_configurator: Callable[[Any, 'PhonyTarget.Builder'], None],
-                                     clean_dependencies: bool = True) -> 'Target.Builder':
-            """
-            Configures multiple phony targets, one for each value in a given `Iterable`, this target should depend on.
-
-            :param iterable:            An `Iterable` that provides access to the values for which dependencies should
-                                        be created
-            :param target_configurator: A function that accepts one value in the `Iterable` at a time, as well as a
-                                        `BuildTarget.Builder` for configuring the corresponding dependency
-            :param clean_dependencies:  True, if output files of the dependencies should also be cleaned when cleaning
-                                        the output files of this target, False otherwise
-            :return:                    The `Target.Builder` itself
-            """
-            for value in iterable:
-                target_builder = self.depends_on_phony_target(clean_dependency=clean_dependencies)
-                target_configurator(value, target_builder)
-
-            return self
-
         @abstractmethod
-        def _build(self, build_unit: BuildUnit) -> 'Target':
+        def build(self, build_unit: BuildUnit) -> 'Target':
             """
-            Must be implemented by subclasses in order to create the target that has been configured via the builder.
+            Creates and returns the target that has been configured via the builder.
 
             :param build_unit:  The build unit, the target belongs to
             :return:            The target that has been created
             """
-
-        def build(self, build_unit: BuildUnit) -> List['Target']:
-            """
-            Creates and returns all targets that have been configured via the builder.
-
-            :param build_unit:  The build unit, the target belongs to
-            :return:            The targets that have been created
-            """
-            return [self._build(build_unit)] + reduce(lambda aggr, builder: aggr + builder.build(build_unit),
-                                                      self.child_builders, [])
 
     def __init__(self, name: str, dependencies: List['Target.Dependency']):
         """
@@ -259,12 +167,14 @@ class BuildTarget(Target):
         A builder that allows to configure and create build targets.
         """
 
-        def __init__(self, parent_builder: Any, target_name: str):
+        def __init__(self, parent_builder: 'TargetBuilder', target_name: str):
             """
             :param parent_builder:  The builder, this builder has been created from
             :param target_name:     The name of the target that is configured via the builder
             """
-            super().__init__(parent_builder, target_name)
+            super().__init__()
+            self.parent_builder = parent_builder
+            self.target_name = target_name
             self.runnables = []
 
         def set_runnables(self, *runnables: 'BuildTarget.Runnable') -> Any:
@@ -277,7 +187,7 @@ class BuildTarget(Target):
             self.runnables = list(runnables)
             return self.parent_builder
 
-        def _build(self, build_unit: BuildUnit) -> Target:
+        def build(self, build_unit: BuildUnit) -> Target:
             return BuildTarget(self.target_name, self.dependencies, self.runnables, build_unit)
 
     def __get_missing_output_files(self, runnable: Runnable, module: Module) -> Tuple[List[str], List[str]]:
@@ -408,12 +318,14 @@ class PhonyTarget(Target):
         A builder that allows to configure and create phony targets.
         """
 
-        def __init__(self, parent_builder: Any, target_name: str):
+        def __init__(self, parent_builder: 'TargetBuilder', target_name: str):
             """
             :param parent_builder:  The builder, this builder has been created from
             :param target_name:     The name of the target that is configured via the builder
             """
-            super().__init__(parent_builder, target_name)
+            super().__init__()
+            self.parent_builder = parent_builder
+            self.target_name = target_name
             self.functions = []
             self.runnables = []
 
@@ -445,7 +357,7 @@ class PhonyTarget(Target):
             self.runnables = list(runnables)
             return self.parent_builder
 
-        def _build(self, build_unit: BuildUnit) -> Target:
+        def build(self, build_unit: BuildUnit) -> Target:
 
             def action(module_registry: ModuleRegistry):
                 for function in self.functions:
@@ -519,7 +431,7 @@ class TargetBuilder:
 
         :return: A list that stores the targets that have been created
         """
-        return reduce(lambda aggr, builder: aggr + builder.build(self.build_unit), self.target_builders, [])
+        return [builder.build(self.build_unit) for builder in self.target_builders]
 
 
 class DependencyGraph:
