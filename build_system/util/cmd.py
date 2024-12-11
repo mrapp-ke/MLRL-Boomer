@@ -11,7 +11,6 @@ from subprocess import CompletedProcess
 
 from util.format import format_iterable
 from util.log import Log
-from util.venv import in_virtual_environment
 
 
 class Command:
@@ -83,6 +82,10 @@ class Command:
 
             return output
 
+    @staticmethod
+    def __in_virtual_environment() -> bool:
+        return sys.prefix != sys.base_prefix
+
     def __init__(self,
                  command: str,
                  *arguments: str,
@@ -97,7 +100,7 @@ class Command:
         """
         self.command = command
 
-        if in_virtual_environment():
+        if self.__in_virtual_environment():
             # On Windows, we use the relative path to the command's executable within the virtual environment, if such
             # an executable exists. This circumvents situations where the PATH environment variable has not been updated
             # after activating the virtual environment. This can prevent the executables from being found or can lead to
