@@ -6,19 +6,19 @@ Provides classes that provide information about independent units of the build s
 from os import path
 from typing import List
 
-from util.paths import Project
-
 
 class BuildUnit:
     """
     An independent unit of the build system that may come with its own built-time dependencies.
     """
 
+    ROOT_DIRECTORY = 'build_system'
+
     def __init__(self, *subdirectories: str):
         """
         :param subdirectories: The subdirectories within the build system that lead to the root directory of this unit
         """
-        self.root_directory = path.join(Project.BuildSystem.root_directory, *subdirectories)
+        self.root_directory = path.join(self.ROOT_DIRECTORY, *subdirectories)
 
     def find_requirements_files(self) -> List[str]:
         """
@@ -27,7 +27,7 @@ class BuildUnit:
         requirements_files = []
         current_directory = self.root_directory
 
-        while path.basename(current_directory) != Project.BuildSystem.root_directory:
+        while path.basename(current_directory) != self.ROOT_DIRECTORY:
             requirements_file = path.join(current_directory, 'requirements.txt')
 
             if path.isfile(requirements_file):
