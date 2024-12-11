@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for reading and writing files.
 """
 from functools import cached_property
-from os import path, remove
+from os import makedirs, path, remove
 from shutil import rmtree
 from typing import List
 
@@ -46,6 +46,18 @@ def delete_files(*files: str, accept_missing: bool = True):
             if not accept_missing or path.isfile(file):
                 Log.verbose('Deleting file "%s"...', file)
                 remove(file)
+
+
+def create_directories(*directories: str):
+    """
+    Creates one or several directories, if they do not already exist.
+
+    :param directories: The directories to be created
+    """
+    for directory in directories:
+        if not path.isdir(directory):
+            Log.verbose('Creating directory "%s"...', directory)
+            makedirs(directory)
 
 
 class TextFile:
