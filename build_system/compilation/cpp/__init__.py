@@ -5,11 +5,11 @@ Defines targets and modules for compiling C++ code.
 """
 from compilation.cpp.targets import CompileCpp, InstallCpp, SetupCpp
 from compilation.modules import CompilationModule
+from core.build_unit import BuildUnit
+from core.targets import PhonyTarget, TargetBuilder
 from dependencies.python import VENV
 from util.files import FileType
 from util.paths import Project
-from util.targets import PhonyTarget, TargetBuilder
-from util.units import BuildUnit
 
 SETUP_CPP = 'setup_cpp'
 

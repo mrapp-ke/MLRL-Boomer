@@ -3,12 +3,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines targets and modules for testing Python code.
 """
+from core.build_unit import BuildUnit
+from core.targets import PhonyTarget, TargetBuilder
 from packaging import INSTALL_WHEELS
 from testing.python.modules import PythonTestModule
 from testing.python.targets import TestPython
 from util.paths import Project
-from util.targets import PhonyTarget, TargetBuilder
-from util.units import BuildUnit
 
 TESTS_PYTHON = 'tests_python'
 

@@ -3,13 +3,13 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for updating the project's GitHub Actions.
 """
+from core.build_unit import BuildUnit
+from core.modules import Module
+from core.targets import PhonyTarget
 from dependencies.github.actions import WorkflowUpdater
 from dependencies.github.modules import GithubWorkflowModule
 from dependencies.table import Table
 from util.log import Log
-from util.modules import Module
-from util.targets import PhonyTarget
-from util.units import BuildUnit
 
 MODULE_FILTER = GithubWorkflowModule.Filter()
 

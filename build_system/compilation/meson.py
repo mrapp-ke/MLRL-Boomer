@@ -8,9 +8,9 @@ from typing import List
 
 from compilation.build_options import BuildOptions
 from compilation.modules import CompilationModule
+from core.build_unit import BuildUnit
 from util.log import Log
 from util.run import Program
-from util.units import BuildUnit
 
 
 def build_options_as_meson_arguments(build_options: BuildOptions) -> List[str]:

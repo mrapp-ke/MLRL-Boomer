@@ -2,7 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that provide information about files and directories that belong to individual modules of the project
-to be dealt with by the build system.
+to be dealt with by the targets of the build system.
 """
 from abc import ABC
 from functools import reduce

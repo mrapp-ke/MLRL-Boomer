@@ -6,8 +6,8 @@ Provides classes that allow to run the external program "clang-format".
 from os import path
 
 from code_style.modules import CodeModule
+from core.build_unit import BuildUnit
 from util.run import Program
-from util.units import BuildUnit
 
 
 class ClangFormat(Program):

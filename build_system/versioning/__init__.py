@@ -1,8 +1,8 @@
 """
 Defines build targets for updating the project's version and changelog.
 """
-from util.targets import PhonyTarget, TargetBuilder
-from util.units import BuildUnit
+from core.build_unit import BuildUnit
+from core.targets import PhonyTarget, TargetBuilder
 from versioning.changelog import print_latest_changelog, update_changelog_bugfix, update_changelog_feature, \
     update_changelog_main, validate_changelog_bugfix, validate_changelog_feature, validate_changelog_main
 from versioning.versioning import apply_development_version, increment_development_version, increment_major_version, \

@@ -5,10 +5,10 @@ Defines targets and modules for checking and enforcing code style definitions fo
 """
 from code_style.markdown.targets import CheckMarkdownCodeStyle, EnforceMarkdownCodeStyle
 from code_style.modules import CodeModule
+from core.build_unit import BuildUnit
+from core.targets import PhonyTarget, TargetBuilder
 from util.files import FileSearch, FileType
 from util.paths import Project
-from util.targets import PhonyTarget, TargetBuilder
-from util.units import BuildUnit
 
 FORMAT_MARKDOWN = 'format_md'
 

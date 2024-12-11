@@ -3,9 +3,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow to run automated tests via the external program "unittest".
 """
+from core.build_unit import BuildUnit
 from testing.python.modules import PythonTestModule
 from util.run import PythonModule
-from util.units import BuildUnit
 
 
 class UnitTest:

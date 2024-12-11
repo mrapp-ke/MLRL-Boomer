@@ -5,8 +5,8 @@ Provides classes for accessing the GitHub API via "pygithub".
 """
 from typing import Optional
 
+from core.build_unit import BuildUnit
 from util.pip import Pip
-from util.units import BuildUnit
 
 
 class GithubApi:

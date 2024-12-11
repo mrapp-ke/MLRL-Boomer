@@ -6,9 +6,9 @@ Provides classes that provide access to automated tests for Python code that bel
 from os import path
 from typing import List
 
+from core.modules import Module
 from testing.modules import TestModule
 from util.files import FileSearch, FileType
-from util.modules import Module
 
 
 class PythonTestModule(TestModule):

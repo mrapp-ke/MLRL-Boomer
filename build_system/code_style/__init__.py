@@ -7,8 +7,8 @@ from code_style.cpp import FORMAT_CPP, TEST_FORMAT_CPP
 from code_style.markdown import FORMAT_MARKDOWN, TEST_FORMAT_MARKDOWN
 from code_style.python import FORMAT_PYTHON, TEST_FORMAT_PYTHON
 from code_style.yaml import FORMAT_YAML, TEST_FORMAT_YAML
-from util.targets import TargetBuilder
-from util.units import BuildUnit
+from core.build_unit import BuildUnit
+from core.targets import TargetBuilder
 
 TARGETS = TargetBuilder(BuildUnit('code_style')) \
     .add_phony_target('format') \

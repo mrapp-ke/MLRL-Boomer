@@ -6,11 +6,11 @@ Implements targets for checking and enforcing code style definitions for C++ fil
 from code_style.cpp.clang_format import ClangFormat
 from code_style.cpp.cpplint import CppLint
 from code_style.modules import CodeModule
+from core.build_unit import BuildUnit
+from core.modules import Module
+from core.targets import PhonyTarget
 from util.files import FileType
 from util.log import Log
-from util.modules import Module
-from util.targets import PhonyTarget
-from util.units import BuildUnit
 
 MODULE_FILTER = CodeModule.Filter(FileType.cpp())
 

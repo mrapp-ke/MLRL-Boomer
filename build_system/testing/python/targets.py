@@ -3,11 +3,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for testing Python code.
 """
+from core.build_unit import BuildUnit
+from core.modules import Module
+from core.targets import PhonyTarget
 from testing.python.modules import PythonTestModule
 from testing.python.unittest import UnitTest
-from util.modules import Module
-from util.targets import PhonyTarget
-from util.units import BuildUnit
 
 
 class TestPython(PhonyTarget.Runnable):

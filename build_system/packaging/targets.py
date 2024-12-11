@@ -5,15 +5,15 @@ Implements targets for building and installing wheel packages.
 """
 from typing import List
 
+from core.build_unit import BuildUnit
+from core.modules import Module
+from core.targets import BuildTarget
 from packaging.build import Build
 from packaging.modules import PythonPackageModule
 from packaging.pip import PipInstallWheel
 from util.files import DirectorySearch, FileType
 from util.log import Log
-from util.modules import Module
 from util.paths import Project
-from util.targets import BuildTarget
-from util.units import BuildUnit
 
 MODULE_FILTER = PythonPackageModule.Filter()
 

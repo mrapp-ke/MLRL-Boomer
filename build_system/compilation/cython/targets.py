@@ -8,11 +8,11 @@ from typing import List
 from compilation.build_options import BuildOptions, EnvBuildOption
 from compilation.meson import MesonCompile, MesonConfigure, MesonInstall, MesonSetup
 from compilation.modules import CompilationModule
+from core.build_unit import BuildUnit
+from core.modules import Module
+from core.targets import BuildTarget, PhonyTarget
 from util.files import FileType
 from util.log import Log
-from util.modules import Module
-from util.targets import BuildTarget, PhonyTarget
-from util.units import BuildUnit
 
 MODULE_FILTER = CompilationModule.Filter(FileType.cython())
 
