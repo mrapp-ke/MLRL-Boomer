@@ -4,11 +4,14 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements targets for updating the project's GitHub Actions.
 """
 from dependencies.github.actions import WorkflowUpdater
+from dependencies.github.modules import GithubWorkflowModule
 from dependencies.table import Table
 from util.log import Log
-from util.modules import ModuleRegistry
+from util.modules import Module
 from util.targets import PhonyTarget
 from util.units import BuildUnit
+
+MODULE_FILTER = GithubWorkflowModule.Filter()
 
 
 class CheckGithubActions(PhonyTarget.Runnable):
@@ -16,8 +19,11 @@ class CheckGithubActions(PhonyTarget.Runnable):
     Prints all outdated Actions used in the project's GitHub workflows.
     """
 
-    def run(self, build_unit: BuildUnit, _: ModuleRegistry):
-        outdated_workflows = WorkflowUpdater(build_unit).find_outdated_workflows()
+    def __init__(self):
+        super().__init__(MODULE_FILTER)
+
+    def run(self, build_unit: BuildUnit, module: Module):
+        outdated_workflows = WorkflowUpdater(build_unit, module).find_outdated_workflows()
 
         if outdated_workflows:
             table = Table(build_unit, 'Workflow', 'Action', 'Current version', 'Latest version')
@@ -38,8 +44,11 @@ class UpdateGithubActions(PhonyTarget.Runnable):
     Updates and prints all outdated Actions used in the project's GitHub workflows.
     """
 
-    def run(self, build_unit: BuildUnit, _: ModuleRegistry):
-        updated_workflows = WorkflowUpdater(build_unit).update_outdated_workflows()
+    def __init__(self):
+        super().__init__(MODULE_FILTER)
+
+    def run(self, build_unit: BuildUnit, module: Module):
+        updated_workflows = WorkflowUpdater(build_unit, module).update_outdated_workflows()
 
         if updated_workflows:
             table = Table(build_unit, 'Workflow', 'Action', 'Previous version', 'Updated version')

@@ -5,13 +5,13 @@ Provides utility functions for checking the project's GitHub workflows for outda
 """
 from dataclasses import dataclass, replace
 from functools import cached_property, reduce
-from os import environ, path
+from os import environ
 from typing import Dict, List, Optional, Set
 
+from dependencies.github.modules import GithubWorkflowModule
 from dependencies.github.pygithub import GithubApi
 from dependencies.github.pyyaml import YamlFile
 from util.env import get_env
-from util.files import FileSearch, FileType
 from util.log import Log
 from util.units import BuildUnit
 
@@ -237,8 +237,9 @@ class WorkflowUpdater:
         def __hash__(self) -> int:
             return hash(self.updated)
 
-    def __get_github_token(self) -> Optional[str]:
-        github_token = get_env(environ, self.ENV_GITHUB_TOKEN)
+    @staticmethod
+    def __get_github_token() -> Optional[str]:
+        github_token = get_env(environ, WorkflowUpdater.ENV_GITHUB_TOKEN)
 
         if not github_token:
             Log.warning('No GitHub API token is set. You can specify it via the environment variable %s.',
@@ -273,14 +274,15 @@ class WorkflowUpdater:
 
         return latest_version
 
-    def __init__(self, build_unit: BuildUnit, workflow_directory: str = path.join('.github', 'workflows')):
+    def __init__(self, build_unit: BuildUnit, module: GithubWorkflowModule):
         """
-        :param build_unit:          The build unit from which workflow definition files should be read
-        :param workflow_directory:  The path to the directory where the workflow definition files are located
+        :param build_unit:  The build unit from which workflow definition files should be read
+        :param module:      The module, that contains the workflow definition files
         """
         self.build_unit = build_unit
-        self.workflow_directory = workflow_directory
+        self.module = module
         self.version_cache = {}
+        self.github_token = WorkflowUpdater.__get_github_token()
 
     @cached_property
     def workflows(self) -> Set[Workflow]:
@@ -289,7 +291,7 @@ class WorkflowUpdater:
         """
         workflows = set()
 
-        for workflow_file in FileSearch().filter_by_file_type(FileType.yaml()).list(self.workflow_directory):
+        for workflow_file in self.module.find_workflow_files():
             Log.info('Searching for GitHub Actions in workflow "%s"...', workflow_file)
             workflows.add(Workflow(self.build_unit, workflow_file))
 

@@ -4,12 +4,13 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements targets for installing runtime requirements that are required by the project's source code.
 """
 from functools import reduce
+from typing import List
 
 from dependencies.python.modules import DependencyType, PythonDependencyModule
 from dependencies.python.pip import PipList
 from dependencies.table import Table
 from util.log import Log
-from util.modules import ModuleRegistry
+from util.modules import Module
 from util.targets import PhonyTarget
 from util.units import BuildUnit
 
@@ -19,10 +20,11 @@ class InstallRuntimeDependencies(PhonyTarget.Runnable):
     Installs all runtime dependencies that are required by the project's source code.
     """
 
-    def run(self, _: BuildUnit, modules: ModuleRegistry):
-        dependency_modules = modules.lookup(PythonDependencyModule.Filter(DependencyType.RUNTIME))
-        requirements_files = reduce(lambda aggr, module: aggr + module.find_requirements_files(), dependency_modules,
-                                    [])
+    def __init__(self):
+        super().__init__(PythonDependencyModule.Filter(DependencyType.RUNTIME))
+
+    def run_all(self, _: BuildUnit, modules: List[Module]):
+        requirements_files = reduce(lambda aggr, module: aggr + module.find_requirements_files(), modules, [])
         PipList(*requirements_files).install_all_packages()
 
 
@@ -31,10 +33,11 @@ class CheckPythonDependencies(PhonyTarget.Runnable):
     Installs all Python dependencies used by the project and checks for outdated ones.
     """
 
-    def run(self, build_unit: BuildUnit, modules: ModuleRegistry):
-        dependency_modules = modules.lookup(PythonDependencyModule.Filter())
-        requirements_files = reduce(lambda aggr, module: aggr + module.find_requirements_files(), dependency_modules,
-                                    [])
+    def __init__(self):
+        super().__init__(PythonDependencyModule.Filter())
+
+    def run_all(self, build_unit: BuildUnit, modules: List[Module]):
+        requirements_files = reduce(lambda aggr, module: aggr + module.find_requirements_files(), modules, [])
         pip = PipList(*requirements_files)
         Log.info('Installing all dependencies...')
         pip.install_all_packages()
