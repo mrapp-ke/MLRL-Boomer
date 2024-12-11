@@ -7,9 +7,10 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from functools import reduce
 from os import path
-from typing import Any, Callable, Dict, Iterable, List, Optional
+from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
 
 from core.build_unit import BuildUnit
+from core.changes import ChangeDetection
 from core.modules import Module, ModuleRegistry
 from util.format import format_iterable
 from util.io import delete_files
@@ -253,64 +254,6 @@ class BuildTarget(Target):
             """
             return self.get_output_files(module)
 
-        def output_files_exist(self, module: Module) -> bool:
-            """
-            Returns whether all output files produced by the target exist or not.
-
-            :param module:  The module, the target should be applied to
-            :return:        True, if all output files exist, False otherwise
-            """
-            output_files = self.get_output_files(module)
-
-            if output_files:
-                missing_files = [output_file for output_file in output_files if not path.exists(output_file)]
-
-                if missing_files:
-                    Log.verbose(
-                        'Target needs to be applied to module %s, because the following output files do not exist:',
-                        str(module))
-
-                    for missing_file in missing_files:
-                        Log.verbose(' - %s', missing_file)
-
-                    Log.verbose('')
-                    return False
-
-                Log.verbose('All output files of module %s already exist.', str(module))
-                return True
-
-            return False
-
-        def input_files_have_changed(self, module: Module) -> bool:
-            """
-            Returns whether any input files required by the target have changed since the target was run for the last
-            time.
-
-            :param module:  The module, the target should be applied to
-            :return:        True, if any input files have changed, False otherwise
-            """
-            input_files = self.get_input_files(module)
-
-            if input_files:
-                # TODO check timestamps or hashes
-                changed_files = input_files
-
-                if changed_files:
-                    Log.verbose(
-                        'Target needs to be applied to module %s, because the following input files have changed:\n',
-                        str(module))
-
-                    for input_file in input_files:
-                        Log.verbose(' - %s', input_file)
-
-                    Log.verbose('')
-                    return True
-
-                Log.verbose('No input files of module %s have changed.', str(module))
-                return False
-
-            return True
-
     class Builder(Target.Builder):
         """
         A builder that allows to configure and create build targets.
@@ -337,6 +280,58 @@ class BuildTarget(Target):
         def _build(self, build_unit: BuildUnit) -> Target:
             return BuildTarget(self.target_name, self.dependencies, self.runnables, build_unit)
 
+    def __get_missing_output_files(self, runnable: Runnable, module: Module) -> Tuple[List[str], List[str]]:
+        output_files = runnable.get_output_files(module)
+        missing_output_files = [output_file for output_file in output_files if not path.exists(output_file)]
+
+        if output_files:
+            if missing_output_files:
+                Log.verbose(
+                    'Target "%s" must be applied to module "%s", because the following output files do not exist:\n',
+                    self.name, str(module))
+
+                for missing_output_file in missing_output_files:
+                    Log.verbose(' - %s', missing_output_file)
+
+                Log.verbose('')
+            else:
+                Log.verbose('Target "%s" must not be applied to module "%s", because all output files already exist:\n',
+                            self.name, str(module))
+
+                for output_file in output_files:
+                    Log.verbose(' - %s', output_file)
+
+                Log.verbose('')
+
+        return output_files, missing_output_files
+
+    def __get_changed_input_files(self, runnable: Runnable, module: Module) -> Tuple[List[str], List[str]]:
+        input_files = runnable.get_input_files(module)
+        changed_input_files = [
+            input_file for input_file in input_files if self.change_detection.get_changed_files(module, *input_files)
+        ]
+
+        if input_files:
+            if changed_input_files:
+                Log.verbose(
+                    'Target "%s" must be applied to module "%s", because the following input files have changed:\n',
+                    self.name, str(module))
+
+                for changed_input_file in changed_input_files:
+                    Log.verbose(' - %s', changed_input_file)
+
+                Log.verbose('')
+            else:
+                Log.verbose('Target "%s" must not be applied to module "%s", because no input files have changed:\n',
+                            self.name, str(module))
+
+                for input_file in input_files:
+                    Log.verbose(' - %s', input_file)
+
+                Log.verbose('')
+
+        return input_files, changed_input_files
+
     def __init__(self, name: str, dependencies: List[Target.Dependency], runnables: List[Runnable],
                  build_unit: BuildUnit):
         """
@@ -348,14 +343,19 @@ class BuildTarget(Target):
         super().__init__(name, dependencies)
         self.runnables = runnables
         self.build_unit = build_unit
+        self.change_detection = ChangeDetection(path.join('build_system', 'build', self.name + '.json'))
 
     def run(self, module_registry: ModuleRegistry):
         for runnable in self.runnables:
             modules = module_registry.lookup(runnable.module_filter)
 
             for module in modules:
-                if not runnable.output_files_exist(module) or runnable.input_files_have_changed(module):
+                output_files, missing_output_files = self.__get_missing_output_files(runnable, module)
+                input_files, changed_input_files = self.__get_changed_input_files(runnable, module)
+
+                if (not output_files and not input_files) or missing_output_files or changed_input_files:
                     runnable.run(self.build_unit, module)
+                    self.change_detection.track_files(module, *input_files)
 
     def clean(self, module_registry: ModuleRegistry):
         for runnable in self.runnables:
