@@ -230,7 +230,7 @@ class Pip:
         self.requirements = RequirementsFiles(*requirements_files)
 
     @staticmethod
-    def for_build_unit(build_unit: BuildUnit = BuildUnit('util')):
+    def for_build_unit(build_unit: BuildUnit = BuildUnit.for_file(__file__)):
         """
         Creates and returns a new `Pip` instance for installing packages for a specific build unit.
 

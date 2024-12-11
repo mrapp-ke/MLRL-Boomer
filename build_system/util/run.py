@@ -20,7 +20,7 @@ class Program(Command):
         Allows to customize options for running an external program.
         """
 
-        def __init__(self, build_unit: BuildUnit = BuildUnit('util')):
+        def __init__(self, build_unit: BuildUnit = BuildUnit.for_file(__file__)):
             """
             :param build_unit: The build unit from which the program should be run
             """

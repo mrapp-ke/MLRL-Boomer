@@ -13,7 +13,7 @@ from targets.testing.python.targets import TestPython
 
 TESTS_PYTHON = 'tests_python'
 
-TARGETS = TargetBuilder(BuildUnit('targets', 'testing', 'python')) \
+TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
     .add_phony_target(TESTS_PYTHON) \
         .depends_on(INSTALL_WHEELS) \
         .set_runnables(TestPython()) \

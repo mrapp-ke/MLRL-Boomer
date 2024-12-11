@@ -11,7 +11,7 @@ from targets.code_style.markdown import FORMAT_MARKDOWN, TEST_FORMAT_MARKDOWN
 from targets.code_style.python import FORMAT_PYTHON, TEST_FORMAT_PYTHON
 from targets.code_style.yaml import FORMAT_YAML, TEST_FORMAT_YAML
 
-TARGETS = TargetBuilder(BuildUnit('targets', 'code_style')) \
+TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
     .add_phony_target('format') \
         .depends_on(FORMAT_PYTHON, FORMAT_CPP, FORMAT_MARKDOWN, FORMAT_YAML) \
         .nop() \

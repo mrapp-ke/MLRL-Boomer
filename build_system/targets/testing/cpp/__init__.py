@@ -13,7 +13,7 @@ from targets.testing.cpp.targets import TestCpp
 
 TESTS_CPP = 'tests_cpp'
 
-TARGETS = TargetBuilder(BuildUnit('targets', 'testing', 'cpp')) \
+TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
     .add_phony_target(TESTS_CPP) \
         .depends_on(COMPILE_CPP) \
         .set_runnables(TestCpp()) \

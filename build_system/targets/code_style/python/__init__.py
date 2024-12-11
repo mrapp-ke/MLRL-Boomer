@@ -16,7 +16,7 @@ FORMAT_PYTHON = 'format_python'
 
 TEST_FORMAT_PYTHON = 'test_format_python'
 
-TARGETS = TargetBuilder(BuildUnit('targets', 'code_style', 'python')) \
+TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
     .add_phony_target(FORMAT_PYTHON).set_runnables(EnforcePythonCodeStyle(), EnforceCythonCodeStyle()) \
     .add_phony_target(TEST_FORMAT_PYTHON).set_runnables(CheckPythonCodeStyle(), CheckCythonCodeStyle()) \
     .build()

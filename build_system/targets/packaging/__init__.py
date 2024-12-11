@@ -17,7 +17,7 @@ BUILD_WHEELS = 'build_wheels'
 
 INSTALL_WHEELS = 'install_wheels'
 
-TARGETS = TargetBuilder(BuildUnit('targets', 'packaging')) \
+TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
     .add_build_target(BUILD_WHEELS) \
         .depends_on(INSTALL) \
         .set_runnables(BuildPythonWheels()) \
