@@ -18,7 +18,7 @@ COMPILE_CYTHON = 'compile_cython'
 
 INSTALL_CYTHON = 'install_cython'
 
-TARGETS = TargetBuilder(BuildUnit('targets', 'compilation', 'cython')) \
+TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
     .add_build_target(SETUP_CYTHON) \
         .depends_on(COMPILE_CPP) \
         .set_runnables(SetupCython()) \

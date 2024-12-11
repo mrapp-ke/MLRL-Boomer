@@ -12,13 +12,32 @@ class BuildUnit:
     An independent unit of the build system that may come with its own built-time dependencies.
     """
 
-    ROOT_DIRECTORY = 'build_system'
+    BUILD_SYSTEM_DIRECTORY = 'build_system'
 
-    def __init__(self, *subdirectories: str):
+    BUILD_DIRECTORY_NAME = 'build'
+
+    def __init__(self, root_directory: str = BUILD_SYSTEM_DIRECTORY):
         """
-        :param subdirectories: The subdirectories within the build system that lead to the root directory of this unit
+        :param root_directory: The root directory of this unit
         """
-        self.root_directory = path.join(self.ROOT_DIRECTORY, *subdirectories)
+        self.root_directory = root_directory
+
+    @staticmethod
+    def for_file(file) -> 'BuildUnit':
+        """
+        Creates and returns a `BuildUnit` for a given file.
+
+        :param file:    The file for which a `BuildUnit` should be created
+        :return:        The `BuildUnit` that has been created
+        """
+        return BuildUnit(path.relpath(path.dirname(file), path.dirname(BuildUnit.BUILD_SYSTEM_DIRECTORY)))
+
+    @property
+    def build_directory(self) -> str:
+        """
+        The path to the build directory of this unit.
+        """
+        return path.join(self.root_directory, self.BUILD_DIRECTORY_NAME)
 
     def find_requirements_files(self) -> List[str]:
         """
@@ -27,7 +46,7 @@ class BuildUnit:
         requirements_files = []
         current_directory = self.root_directory
 
-        while path.basename(current_directory) != self.ROOT_DIRECTORY:
+        while path.basename(current_directory) != self.BUILD_SYSTEM_DIRECTORY:
             requirements_file = path.join(current_directory, 'requirements.txt')
 
             if path.isfile(requirements_file):

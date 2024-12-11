@@ -10,7 +10,7 @@ from targets.versioning.versioning import apply_development_version, increment_d
     increment_major_version, increment_minor_version, increment_patch_version, print_current_version, \
     reset_development_version
 
-TARGETS = TargetBuilder(BuildUnit('util')) \
+TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
     .add_phony_target('increment_development_version').set_functions(increment_development_version) \
     .add_phony_target('reset_development_version').set_functions(reset_development_version) \
     .add_phony_target('apply_development_version').set_functions(apply_development_version) \

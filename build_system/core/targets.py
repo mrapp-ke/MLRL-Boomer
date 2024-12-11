@@ -343,7 +343,7 @@ class BuildTarget(Target):
         super().__init__(name, dependencies)
         self.runnables = runnables
         self.build_unit = build_unit
-        self.change_detection = ChangeDetection(path.join('build_system', 'build', self.name + '.json'))
+        self.change_detection = ChangeDetection(path.join(BuildUnit().build_directory, self.name + '.json'))
 
     def run(self, module_registry: ModuleRegistry):
         for runnable in self.runnables:
@@ -484,7 +484,7 @@ class TargetBuilder:
     A builder that allows to configure and create multiple targets.
     """
 
-    def __init__(self, build_unit: BuildUnit = BuildUnit()):
+    def __init__(self, build_unit: BuildUnit):
         """
         :param build_unit: The build unit, the targets belong to
         """

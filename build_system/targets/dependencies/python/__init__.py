@@ -12,7 +12,7 @@ from targets.paths import Project
 
 VENV = 'venv'
 
-TARGETS = TargetBuilder(BuildUnit('targets', 'dependencies', 'python')) \
+TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
     .add_phony_target(VENV).set_runnables(InstallRuntimeDependencies()) \
     .add_phony_target('check_dependencies').set_runnables(CheckPythonDependencies()) \
     .build()

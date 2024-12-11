@@ -7,10 +7,10 @@ import sys
 
 from argparse import ArgumentParser
 from importlib.util import module_from_spec, spec_from_file_location
-from os import path
 from types import ModuleType
 from typing import List
 
+from core.build_unit import BuildUnit
 from core.modules import Module, ModuleRegistry
 from core.targets import DependencyGraph, Target, TargetRegistry
 from util.files import FileSearch
@@ -35,7 +35,7 @@ def __find_init_files() -> List[str]:
     return FileSearch() \
         .set_recursive(True) \
         .filter_by_name('__init__.py') \
-        .list(path.dirname(__file__))
+        .list(BuildUnit().root_directory)
 
 
 def __import_source_file(source_file: str) -> ModuleType:

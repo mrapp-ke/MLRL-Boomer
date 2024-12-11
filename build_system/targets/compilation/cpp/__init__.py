@@ -18,7 +18,7 @@ COMPILE_CPP = 'compile_cpp'
 
 INSTALL_CPP = 'install_cpp'
 
-TARGETS = TargetBuilder(BuildUnit('targets', 'compilation', 'cpp')) \
+TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
     .add_build_target(SETUP_CPP) \
         .depends_on(VENV) \
         .set_runnables(SetupCpp()) \

@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides paths within the project that are important for the build system.
 """
+from core.build_unit import BuildUnit
 from util.files import FileSearch
 
 
@@ -25,9 +26,9 @@ class Project:
             build_directory_name:   The name of the build system's build directory
         """
 
-        root_directory = 'build_system'
+        root_directory = BuildUnit.BUILD_SYSTEM_DIRECTORY
 
-        build_directory_name = 'build'
+        build_directory_name = BuildUnit.BUILD_DIRECTORY_NAME
 
         @staticmethod
         def file_search() -> FileSearch:

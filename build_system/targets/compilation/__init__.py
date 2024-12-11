@@ -11,7 +11,7 @@ from targets.compilation.cython import COMPILE_CYTHON, INSTALL_CYTHON
 
 INSTALL = 'install'
 
-TARGETS = TargetBuilder(BuildUnit('targets', 'compilation')) \
+TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
     .add_phony_target('compile') \
         .depends_on(COMPILE_CPP, COMPILE_CYTHON, clean_dependencies=True) \
         .nop() \
