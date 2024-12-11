@@ -39,7 +39,7 @@ class BuildPythonWheels(BuildTarget.Runnable):
         return file_search.list(module.root_directory)
 
     def get_output_files(self, module: Module) -> List[str]:
-        return module.wheel_directory
+        return [module.wheel_directory]
 
     def get_clean_files(self, module: Module) -> List[str]:
         clean_files = []
