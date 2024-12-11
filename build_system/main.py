@@ -3,7 +3,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Initializes the build system and runs targets specified via command line arguments.
 """
+import sys
+
 from argparse import ArgumentParser
+from importlib.util import module_from_spec, spec_from_file_location
+from types import ModuleType
 from typing import List
 
 from core.modules import Module, ModuleRegistry
@@ -12,7 +16,6 @@ from util.files import FileSearch
 from util.format import format_iterable
 from util.log import Log
 from util.paths import Project
-from util.reflection import import_source_file
 
 
 def __parse_command_line_arguments():
@@ -35,6 +38,17 @@ def __find_init_files() -> List[str]:
         .list(Project.BuildSystem.root_directory)
 
 
+def __import_source_file(source_file: str) -> ModuleType:
+    try:
+        spec = spec_from_file_location(source_file, source_file)
+        module = module_from_spec(spec)
+        sys.modules[source_file] = module
+        spec.loader.exec_module(module)
+        return module
+    except FileNotFoundError as error:
+        raise ImportError('Source file "' + source_file + '" not found') from error
+
+
 def __register_modules(init_files: List[str]) -> ModuleRegistry:
     Log.verbose('Registering modules...')
     module_registry = ModuleRegistry()
@@ -42,7 +56,7 @@ def __register_modules(init_files: List[str]) -> ModuleRegistry:
 
     for init_file in init_files:
         modules = [
-            module for module in getattr(import_source_file(init_file), 'MODULES', []) if isinstance(module, Module)
+            module for module in getattr(__import_source_file(init_file), 'MODULES', []) if isinstance(module, Module)
         ]
 
         if modules:
@@ -66,7 +80,7 @@ def __register_targets(init_files: List[str]) -> TargetRegistry:
 
     for init_file in init_files:
         targets = [
-            target for target in getattr(import_source_file(init_file), 'TARGETS', []) if isinstance(target, Target)
+            target for target in getattr(__import_source_file(init_file), 'TARGETS', []) if isinstance(target, Target)
         ]
 
         if targets:
