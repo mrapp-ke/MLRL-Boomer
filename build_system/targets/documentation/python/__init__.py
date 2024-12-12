@@ -9,14 +9,21 @@ from core.build_unit import BuildUnit
 from core.targets import TargetBuilder
 
 from targets.documentation.python.modules import PythonApidocModule
-from targets.documentation.python.targets import ApidocPython
+from targets.documentation.python.targets import ApidocIndexPython, ApidocPython
 from targets.packaging import INSTALL_WHEELS
 from targets.paths import Project
 
+APIDOC_PYTHON = 'apidoc_python'
+
+APIDOC_PYTHON_INDEX = 'apidoc_python_index'
+
 TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
-    .add_build_target('apidoc_python') \
+    .add_build_target(APIDOC_PYTHON) \
         .depends_on(INSTALL_WHEELS) \
         .set_runnables(ApidocPython()) \
+    .add_build_target(APIDOC_PYTHON_INDEX) \
+        .depends_on(APIDOC_PYTHON) \
+        .set_runnables(ApidocIndexPython()) \
     .build()
 
 MODULES = [

@@ -9,13 +9,15 @@ from typing import List
 from core.modules import Module
 from util.files import FileSearch, FileType
 
+from targets.documentation.modules import ApidocModule
 
-class CppApidocModule(Module):
+
+class CppApidocModule(ApidocModule):
     """
     A module that contains C++ code for which an API documentation can be generated.
     """
 
-    class Filter(Module.Filter):
+    class Filter(ApidocModule.Filter):
         """
         A filter that matches code modules.
         """
@@ -38,8 +40,8 @@ class CppApidocModule(Module):
         :param header_file_search:      The `FileSearch` that should be used to search for the header files to be
                                         included in the API documentation
         """
+        super().__init__(output_directory)
         self.root_directory = root_directory
-        self.output_directory = output_directory
         self.project_name = project_name
         self.include_directory_name = include_directory_name
         self.header_file_search = header_file_search
@@ -58,6 +60,10 @@ class CppApidocModule(Module):
         :return: A list that contains the header files that have been found
         """
         return self.header_file_search.filter_by_file_type(FileType.cpp()).list(self.include_directory)
+
+    def create_reference(self) -> str:
+        return 'Library libmlrl' + self.project_name + ' <' + path.join(path.basename(self.output_directory),
+                                                                        'filelist.rst') + '>'
 
     def __str__(self) -> str:
         return 'CppApidocModule {root_directory="' + self.root_directory + '"}'
