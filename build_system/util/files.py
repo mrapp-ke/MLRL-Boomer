@@ -164,6 +164,7 @@ class FileSearch:
     def __init__(self):
         self.hidden = False
         self.symlinks = True
+        self.excludes = []
         self.filters = []
         self.directory_search = DirectorySearch()
 
@@ -345,6 +346,29 @@ class FileSearch:
 
         return self
 
+    def exclude(self, *excludes: Filter) -> 'FileSearch':
+        """
+        Adds one or several filters that should be used for excluding files.
+
+        :param excludes:    The filters to be set
+        :return:            The `FileSearch` itself
+        """
+        self.excludes.extend(excludes)
+        return self
+
+    def exclude_by_name(self, *names: str) -> 'FileSearch':
+        """
+        Adds one or several filters that should be used for excluding files by their names.
+
+        :param names:   The names of the files to be excluded
+        :return:        The `FileSearch` itself
+        """
+
+        def filter_file(excluded_name: str, _: str, file_name: str):
+            return file_name == excluded_name
+
+        return self.exclude(*[partial(filter_file, name) for name in names])
+
     def list(self, *directories: str) -> List[str]:
         """
         Lists all files that can be found in given directories.
@@ -357,14 +381,17 @@ class FileSearch:
 
         def filter_file(file: str) -> bool:
             if path.isfile(file) and (self.symlinks or not path.islink(file)):
-                if not self.filters:
-                    return True
-
                 parent = path.dirname(file)
                 file_name = path.basename(file)
 
-                if reduce(lambda aggr, file_filter: aggr or file_filter(parent, file_name), self.filters, False):
-                    return True
+                if not self.filters:
+                    match = True
+                else:
+                    match = reduce(lambda aggr, file_filter: aggr or file_filter(parent, file_name), self.filters,
+                                   False)
+
+                exclude = reduce(lambda aggr, file_filter: aggr or file_filter(parent, file_name), self.excludes, False)
+                return match and not exclude
 
             return False
 
