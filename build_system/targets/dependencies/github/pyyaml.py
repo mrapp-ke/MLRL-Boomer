@@ -37,4 +37,8 @@ class YamlFile(TextFile):
 
     def write_lines(self, *lines: str):
         super().write_lines(lines)
-        del self.yaml_dict
+
+        try:
+            del self.yaml_dict
+        except AttributeError:
+            pass

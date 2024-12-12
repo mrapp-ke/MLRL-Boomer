@@ -93,7 +93,10 @@ class TextFile:
         with write_file(self.file) as file:
             file.writelines(lines)
 
-        del self.lines
+        try:
+            del self.lines
+        except AttributeError:
+            pass
 
     def clear(self):
         """

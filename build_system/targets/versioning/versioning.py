@@ -95,7 +95,11 @@ class VersionFile(TextFile):
 
     def write_lines(self, *lines: str):
         super().write_lines(lines)
-        del self.version
+
+        try:
+            del self.version
+        except AttributeError:
+            pass
 
 
 class DevelopmentVersionFile(TextFile):
@@ -118,7 +122,11 @@ class DevelopmentVersionFile(TextFile):
 
     def write_lines(self, *lines: str):
         super().write_lines(lines)
-        del self.development_version
+
+        try:
+            del self.development_version
+        except AttributeError:
+            pass
 
 
 def __get_version_file() -> VersionFile:

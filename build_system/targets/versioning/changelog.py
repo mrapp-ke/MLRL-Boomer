@@ -179,8 +179,16 @@ class ChangesetFile(TextFile):
 
     def write_lines(self, *lines: str):
         super().write_lines(lines)
-        del self.parsed_lines
-        del self.changesets
+
+        try:
+            del self.parsed_lines
+        except AttributeError:
+            pass
+
+        try:
+            del self.changesets
+        except AttributeError:
+            pass
 
 
 class ReleaseType(Enum):
