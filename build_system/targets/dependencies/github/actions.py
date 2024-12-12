@@ -179,8 +179,16 @@ class Workflow(YamlFile):
 
     def write_lines(self, *lines: str):
         super().write_lines(lines)
-        del self.uses_clauses
-        del self.actions
+
+        try:
+            del self.uses_clauses
+        except AttributeError:
+            pass
+
+        try:
+            del self.actions
+        except AttributeError:
+            pass
 
     def __eq__(self, other: 'Workflow') -> bool:
         return self.file == other.file

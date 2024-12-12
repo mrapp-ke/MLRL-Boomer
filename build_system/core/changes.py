@@ -47,7 +47,11 @@ class JsonFile(TextFile):
 
     def write_lines(self, *lines: str):
         super().write_lines(*lines)
-        del self.json
+
+        try:
+            del self.json
+        except AttributeError:
+            pass
 
 
 class ChangeDetection:
