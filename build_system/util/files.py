@@ -384,13 +384,20 @@ class FileType:
     Represents different types of files.
     """
 
-    def __init__(self, name: str, file_search_decorator: Callable[[FileSearch], None]):
+    def __init__(self,
+                 name: str,
+                 suffixes: Set[str],
+                 file_search_decorator: Optional[Callable[[FileSearch], None]] = None):
         """
         :param name:                    The name of the file type
-        :param file_search_decorator:   A function that adds a filter for this file type to a `FileSearch`
+        :param suffixes:                The suffixes that correspond to this file type (without leading dot)
+        :param file_search_decorator:   A function that adds a filter for this file type to a `FileSearch` or None, if a
+                                        filter should automatically be created
         """
         self.name = name
-        self.file_search_decorator = file_search_decorator
+        self.suffixes = suffixes
+        self.file_search_decorator = file_search_decorator if file_search_decorator else lambda file_search: file_search.filter_by_suffix(
+            *suffixes)
 
     @staticmethod
     def python() -> 'FileType':
@@ -399,7 +406,7 @@ class FileType:
 
         :return: The `FileType` that has been created
         """
-        return FileType('Python', lambda file_search: file_search.filter_by_suffix('py'))
+        return FileType(name='Python', suffixes={'py'})
 
     @staticmethod
     def cpp() -> 'FileType':
@@ -408,7 +415,7 @@ class FileType:
 
         :return: The `FileType` that has been created
         """
-        return FileType('C++', lambda file_search: file_search.filter_by_suffix('cpp', 'hpp'))
+        return FileType(name='C++', suffixes={'cpp', 'hpp'})
 
     @staticmethod
     def cython() -> 'FileType':
@@ -417,7 +424,7 @@ class FileType:
 
         :return: The `FileType` that has been created
         """
-        return FileType('Cython', lambda file_search: file_search.filter_by_suffix('pyx', 'pxd'))
+        return FileType(name='Cython', suffixes={'pyx', 'pxd'})
 
     @staticmethod
     def markdown() -> 'FileType':
@@ -426,7 +433,7 @@ class FileType:
 
         :return: The `FileType` that has been created
         """
-        return FileType('Markdown', lambda file_search: file_search.filter_by_suffix('md'))
+        return FileType(name='Markdown', suffixes={'md'})
 
     @staticmethod
     def yaml() -> 'FileType':
@@ -435,7 +442,7 @@ class FileType:
 
         :return: The `FileType` that has been created
         """
-        return FileType('YAML', lambda file_search: file_search.filter_by_suffix('yaml', 'yml'))
+        return FileType(name='YAML', suffixes={'yaml', 'yml'})
 
     @staticmethod
     def extension_module() -> 'FileType':
@@ -445,8 +452,9 @@ class FileType:
         :return: The `FileType` that has been created
         """
         return FileType(
-            'Extension module',
-            lambda file_search: file_search \
+            name='Extension module',
+            suffixes={'so', 'pyd', 'lib'},
+            file_search_decorator=lambda file_search: file_search \
                 .filter_by_substrings(not_starts_with='lib', ends_with='.so') \
                 .filter_by_substrings(ends_with='.pyd') \
                 .filter_by_substrings(not_starts_with='mlrl', ends_with='.lib'),
@@ -460,8 +468,9 @@ class FileType:
         :return: The `FileType` that has been created
         """
         return FileType(
-            'Shared library',
-            lambda file_search: file_search \
+            name='Shared library',
+            suffixes={'so', 'dylib', 'lib', 'dll'},
+            file_search_decorator=lambda file_search: file_search \
                 .filter_by_substrings(starts_with='lib', contains='.so') \
                 .filter_by_substrings(ends_with='.dylib') \
                 .filter_by_substrings(starts_with='mlrl', ends_with='.lib') \
