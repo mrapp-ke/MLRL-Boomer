@@ -115,6 +115,8 @@ class Project:
 
         apidoc_directory = path.join(root_directory, 'developer_guide', 'api')
 
+        build_directory_name = '_build'
+
         @staticmethod
         def file_search() -> FileSearch:
             """
@@ -124,7 +126,7 @@ class Project:
             """
             return FileSearch() \
                 .set_recursive(True) \
-                .exclude_subdirectories_by_name('_build')
+                .exclude_subdirectories_by_name(Project.Documentation.build_directory_name)
 
     class Github:
         """
