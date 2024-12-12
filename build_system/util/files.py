@@ -285,8 +285,8 @@ class FileSearch:
         :return:        The `FileSearch` itself
         """
 
-        def filter_file(filtered_names: Set[str], _: str, file_name: str):
-            return file_name in filtered_names
+        def filter_file(filtered_name: str, _: str, file_name: str):
+            return file_name == filtered_name
 
         return self.add_filters(*[partial(filter_file, name) for name in names])
 
