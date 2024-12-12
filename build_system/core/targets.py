@@ -124,15 +124,24 @@ class BuildTarget(Target):
             """
             self.module_filter = module_filter
 
-        @abstractmethod
+        def run_all(self, build_unit: BuildUnit, modules: List[Module]):
+            """
+            May be overridden by subclasses in order to apply the target to all modules that match the filter.
+
+            :param build_unit:  The build unit, the target belongs to
+            :param modules:      A list that contains the modules, the target should be applied to
+            """
+            raise NotImplementedError('Class ' + type(self).__name__ + ' does not implement the "run_all" method')
+
         def run(self, build_unit: BuildUnit, module: Module):
             """
-            may be overridden by subclasses in order to apply the target to an individual module that matches the
+            May be overridden by subclasses in order to apply the target to an individual module that matches the
             filter.
 
             :param build_unit:  The build unit, the target belongs to
             :param module:      The module, the target should be applied to
             """
+            raise NotImplementedError('Class ' + type(self).__name__ + ' does not implement the "run" method')
 
         def get_input_files(self, module: Module) -> List[str]:
             """
@@ -258,14 +267,29 @@ class BuildTarget(Target):
     def run(self, module_registry: ModuleRegistry):
         for runnable in self.runnables:
             modules = module_registry.lookup(runnable.module_filter)
+            modules_to_be_run = []
+            input_files_per_module = []
 
             for module in modules:
                 output_files, missing_output_files = self.__get_missing_output_files(runnable, module)
                 input_files, changed_input_files = self.__get_changed_input_files(runnable, module)
 
                 if (not output_files and not input_files) or missing_output_files or changed_input_files:
-                    runnable.run(self.build_unit, module)
-                    self.change_detection.track_files(module, *input_files)
+                    modules_to_be_run.append(module)
+                    input_files_per_module.append(input_files)
+
+            try:
+                runnable.run_all(self.build_unit, modules_to_be_run)
+            except NotImplementedError:
+                try:
+                    for module in modules_to_be_run:
+                        runnable.run(self.build_unit, module)
+                except NotImplementedError as error:
+                    raise RuntimeError('Class ' + type(runnable).__name__
+                                       + ' must implement either the "run_all" or "run" method') from error
+
+            for i, module in enumerate(modules_to_be_run):
+                self.change_detection.track_files(module, *input_files_per_module[i])
 
     def clean(self, module_registry: ModuleRegistry):
         for runnable in self.runnables:
@@ -294,12 +318,12 @@ class PhonyTarget(Target):
             """
             self.module_filter = module_filter
 
-        def run_all(self, build_unit: BuildUnit, module: List[Module]):
+        def run_all(self, build_unit: BuildUnit, modules: List[Module]):
             """
             May be overridden by subclasses in order to apply the target to all modules that match the filter.
 
             :param build_unit:  The build unit, the target belongs to
-            :param module:      A list that contains the modules, the target should be applied to
+            :param modules:     A list that contains the modules, the target should be applied to
             """
             raise NotImplementedError('Class ' + type(self).__name__ + ' does not implement the "run_all" method')
 
