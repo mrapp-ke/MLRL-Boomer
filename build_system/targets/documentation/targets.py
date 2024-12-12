@@ -13,7 +13,8 @@ from core.targets import BuildTarget
 from util.io import TextFile
 from util.log import Log
 
-from targets.documentation.modules import ApidocModule
+from targets.documentation.modules import ApidocModule, SphinxModule
+from targets.documentation.sphinx_build import SphinxBuild
 
 
 class ApidocIndex(BuildTarget.Runnable, ABC):
@@ -74,4 +75,27 @@ class ApidocIndex(BuildTarget.Runnable, ABC):
 
     def get_clean_files(self, module: Module) -> List[str]:
         Log.info('Removing index file referencing API documentation in directory "%s"', module.output_directory)
+        return super().get_clean_files(module)
+
+
+class BuildDocumentation(BuildTarget.Runnable):
+    """
+    Generates documentations.
+    """
+
+    def __init__(self):
+        super().__init__(SphinxModule.Filter())
+
+    def run(self, build_unit: BuildUnit, module: Module):
+        Log.info('Generating documentation for directory "%s"...', module.root_directory)
+        SphinxBuild(build_unit, module).run()
+
+    def get_input_files(self, module: Module) -> List[str]:
+        return module.find_source_files()
+
+    def get_output_files(self, module: Module) -> List[str]:
+        return [module.output_directory]
+
+    def get_clean_files(self, module: Module) -> List[str]:
+        Log.info('Removing documentation generated for directory "%s"...', module.root_directory)
         return super().get_clean_files(module)
