@@ -12,6 +12,9 @@ from util.log import Log
 
 from targets.documentation.python.modules import PythonApidocModule
 from targets.documentation.python.sphinx_apidoc import SphinxApidoc
+from targets.documentation.targets import ApidocIndex
+
+MODULE_FILTER = PythonApidocModule.Filter()
 
 
 class ApidocPython(BuildTarget.Runnable):
@@ -20,7 +23,7 @@ class ApidocPython(BuildTarget.Runnable):
     """
 
     def __init__(self):
-        super().__init__(PythonApidocModule.Filter())
+        super().__init__(MODULE_FILTER)
 
     def run(self, build_unit: BuildUnit, module: Module):
         Log.info('Generating Python API documentation for directory "%s"...', module.root_directory)
@@ -35,3 +38,12 @@ class ApidocPython(BuildTarget.Runnable):
     def get_clean_files(self, module: Module) -> List[str]:
         Log.info('Removing Python API documentation for directory "%s"...', module.root_directory)
         return super().get_clean_files(module)
+
+
+class ApidocIndexPython(ApidocIndex):
+    """
+    Generates index files referencing API documentations for Python code.
+    """
+
+    def __init__(self):
+        super().__init__(MODULE_FILTER)

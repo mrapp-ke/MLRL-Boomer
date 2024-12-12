@@ -13,6 +13,9 @@ from util.log import Log
 from targets.documentation.cpp.breathe_apidoc import BreatheApidoc
 from targets.documentation.cpp.doxygen import Doxygen
 from targets.documentation.cpp.modules import CppApidocModule
+from targets.documentation.targets import ApidocIndex
+
+MODULE_FILTER = CppApidocModule.Filter()
 
 
 class ApidocCpp(BuildTarget.Runnable):
@@ -21,7 +24,7 @@ class ApidocCpp(BuildTarget.Runnable):
     """
 
     def __init__(self):
-        super().__init__(CppApidocModule.Filter())
+        super().__init__(MODULE_FILTER)
 
     def run(self, build_unit: BuildUnit, module: Module):
         Log.info('Generating C++ API documentation for directory "%s"...', module.root_directory)
@@ -37,3 +40,12 @@ class ApidocCpp(BuildTarget.Runnable):
     def get_clean_files(self, module: Module) -> List[str]:
         Log.info('Removing C++ API documentation for directory "%s"...', module.root_directory)
         return super().get_clean_files(module)
+
+
+class ApidocIndexCpp(ApidocIndex):
+    """
+    Generates index files referencing API documentations for C++ code.
+    """
+
+    def __init__(self):
+        super().__init__(MODULE_FILTER)

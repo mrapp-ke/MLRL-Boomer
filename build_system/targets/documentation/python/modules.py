@@ -9,13 +9,15 @@ from typing import List
 from core.modules import Module
 from util.files import FileSearch, FileType
 
+from targets.documentation.modules import ApidocModule
 
-class PythonApidocModule(Module):
+
+class PythonApidocModule(ApidocModule):
     """
     A module that contains Python code for which an API documentation can be generated.
     """
 
-    class Filter(Module.Filter):
+    class Filter(ApidocModule.Filter):
         """
         A filter that matches code modules.
         """
@@ -36,8 +38,8 @@ class PythonApidocModule(Module):
         :param source_file_search:      The `FileSearch` that should be used to search for the header files to be included
                                         in the API documentation
         """
+        super().__init__(output_directory)
         self.root_directory = root_directory
-        self.output_directory = output_directory
         self.source_directory_name = source_directory_name
         self.source_file_search = source_file_search
 
@@ -55,6 +57,11 @@ class PythonApidocModule(Module):
         :return: A list that contains the source files that have been found
         """
         return self.source_file_search.filter_by_file_type(FileType.python()).list(self.source_directory)
+
+    def create_reference(self) -> str:
+        project_name = path.basename(self.output_directory)
+        return 'Package mlrl-' + path.basename(self.output_directory) + ' <' + path.join(
+            project_name, self.source_directory_name + '.' + project_name + '.rst') + '>'
 
     def __str__(self) -> str:
         return 'PythonApidocModule {root_directory="' + self.root_directory + '"}'

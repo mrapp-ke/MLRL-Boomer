@@ -9,12 +9,19 @@ from core.build_unit import BuildUnit
 from core.targets import TargetBuilder
 
 from targets.documentation.cpp.modules import CppApidocModule
-from targets.documentation.cpp.targets import ApidocCpp
+from targets.documentation.cpp.targets import ApidocCpp, ApidocIndexCpp
 from targets.paths import Project
 
+APIDOC_CPP = 'apidoc_cpp'
+
+APIDOC_CPP_INDEX = 'apidoc_cpp_index'
+
 TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
-    .add_build_target('apidoc_cpp') \
+    .add_build_target(APIDOC_CPP) \
         .set_runnables(ApidocCpp()) \
+    .add_build_target(APIDOC_CPP_INDEX) \
+        .depends_on(APIDOC_CPP) \
+        .set_runnables(ApidocIndexCpp()) \
     .build()
 
 MODULES = [
