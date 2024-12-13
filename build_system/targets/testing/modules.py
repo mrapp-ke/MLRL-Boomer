@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes that provide access to automated tests that belong to individual modules.
+Implements modules that provide access to automated tests.
 """
 from abc import ABC
 from os import environ
@@ -12,7 +12,7 @@ from util.env import get_env_bool
 
 class TestModule(Module, ABC):
     """
-    An abstract base class for all modules that contain automated tests.
+    An abstract base class for all modules that provide access to automated tests.
     """
 
     @property

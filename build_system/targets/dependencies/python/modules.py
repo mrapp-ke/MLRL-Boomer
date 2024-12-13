@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes that provide access to Python requirements files that belong to individual modules.
+Implements modules that provide access to Python requirements files.
 """
 from enum import Enum
 from typing import List
@@ -20,12 +20,12 @@ class DependencyType(Enum):
 
 class PythonDependencyModule(Module):
     """
-    A module that contains source code that comes with Python dependencies.
+    A module that provides access to Python requirements files.
     """
 
     class Filter(Module.Filter):
         """
-        A filter that matches modules that contain source that comes with Python dependencies.
+        A filter that matches modules of type `PythonDependencyModule`.
         """
 
         def __init__(self, *dependency_types: DependencyType):

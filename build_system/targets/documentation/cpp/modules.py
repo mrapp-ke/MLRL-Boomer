@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes that provide access to C++ code for which an API documentation can be generated.
+Implements modules that provide access to C++ code for which an API documentation can be generated.
 """
 from os import path
 from typing import List
@@ -14,12 +14,12 @@ from targets.documentation.modules import ApidocModule
 
 class CppApidocModule(ApidocModule):
     """
-    A module that contains C++ code for which an API documentation can be generated.
+    A module that provides access to C++ code for which an API documentation can be generated.
     """
 
     class Filter(ApidocModule.Filter):
         """
-        A filter that matches code modules.
+        A filter that matches modules of type `CppApidocModule`.
         """
 
         def matches(self, module: Module) -> bool:

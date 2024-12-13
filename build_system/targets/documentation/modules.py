@@ -12,12 +12,13 @@ from util.files import FileSearch
 
 class ApidocModule(Module, ABC):
     """
-    An abstract base class for all modules that contain code for which an API documentation can be generated.
+    An abstract base class for all modules that provide access to source code for which an API documentation can be
+    generated.
     """
 
     class Filter(Module.Filter, ABC):
         """
-        A filter that matches apidoc modules.
+        A filter that matches modules of type `ApidocModule`.
         """
 
     def __init__(self, output_directory: str):
@@ -37,12 +38,12 @@ class ApidocModule(Module, ABC):
 
 class SphinxModule(Module):
     """
-    A module that contains a Sphinx documentation.
+    A module that provides access to a Sphinx documentation.
     """
 
     class Filter(Module.Filter):
         """
-        A filter that matches sphinx modules.
+        A filter that matches modules of type `SphinxModule`.
         """
 
         def matches(self, module: Module) -> bool:

@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes that provide access to Python code that can be built as wheel packages.
+Implements modules that provide access to Python code that can be built as wheel packages.
 """
 from os import path
 from typing import List
@@ -12,12 +12,12 @@ from util.files import FileSearch
 
 class PythonPackageModule(Module):
     """
-    A module that contains Python code that can be built as wheel packages.
+    A module that provides access to Python code that can be built as wheel packages.
     """
 
     class Filter(Module.Filter):
         """
-        A filter that matches modules that contain Python code that can be built as wheel packages.
+        A filter that matches modules of type `PythonPackageModule`.
         """
 
         def matches(self, module: Module) -> bool:
