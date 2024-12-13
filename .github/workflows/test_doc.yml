@@ -34,15 +34,21 @@ jobs:
               - '.github/workflows/test_doc.yml'
               - 'build'
               - 'build.bat'
-              - 'build_system/**'
+              - 'build_system/main.py'
+              - 'build_system/core/**'
+              - 'build_system/util/**'
+              - 'build_system/targets/paths.py'
             cpp: &cpp
               - *build_files
+              - 'build_system/targets/documentation/cpp/*'
               - 'cpp/**/include/**'
             python: &python
               - *build_files
+              - 'build_system/targets/documentation/python/*'
               - 'python/**/mlrl/**'
             doc: &doc
               - *build_files
+              - 'build_system/targets/documentation/*'
               - 'doc/**'
             any:
               - *cpp
