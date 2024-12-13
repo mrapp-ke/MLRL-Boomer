@@ -51,11 +51,12 @@ class PythonTestModule(TestModule):
 
         :return: A list that contains the paths of the directories that have been found
         """
-        return self.test_file_search \
+        test_files = self.test_file_search \
             .exclude_subdirectories_by_name(self.build_directory_name) \
             .filter_by_substrings(starts_with='test_') \
             .filter_by_file_type(FileType.python()) \
             .list(self.root_directory)
+        return list({path.dirname(test_file) for test_file in test_files})
 
     def __str__(self) -> str:
         return 'PythonTestModule {root_directory="' + self.root_directory + '"}'
