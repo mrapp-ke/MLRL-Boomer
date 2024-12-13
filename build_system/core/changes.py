@@ -18,13 +18,6 @@ class JsonFile(TextFile):
     Allows to read and write the content of a JSON file.
     """
 
-    def __init__(self, file: str, accept_missing: bool = False):
-        """
-        :param file:            The path to the JSON file
-        :param accept_missing:  True, if no errors should be raised if the text file is missing, False otherwise
-        """
-        super().__init__(file, accept_missing)
-
     @cached_property
     def json(self) -> Dict:
         """

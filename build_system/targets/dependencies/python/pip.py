@@ -45,13 +45,6 @@ class PipList(Pip):
             super().__init__('list')
             self.add_conditional_arguments(outdated, '--outdated')
 
-    def __init__(self, *requirements_files: str):
-        """
-        :param requirements_files: The paths to the requirements files that specify the versions of the packages to be
-                                   installed
-        """
-        super().__init__(*requirements_files)
-
     def install_all_packages(self):
         """
         Installs all dependencies in the requirements file.

@@ -39,7 +39,7 @@ class Target(ABC):
             return self.target_name
 
         def __eq__(self, other) -> bool:
-            return type(self) == type(other) and self.target_name == other.target_name
+            return isinstance(other, type(self)) and self.target_name == other.target_name
 
     class Builder(ABC):
         """
@@ -143,6 +143,7 @@ class BuildTarget(Target):
             """
             raise NotImplementedError('Class ' + type(self).__name__ + ' does not implement the "run" method')
 
+        # pylint: disable=unused-argument
         def get_input_files(self, module: Module) -> List[str]:
             """
             May be overridden by subclasses in order to return the input files required by the target.
@@ -152,6 +153,7 @@ class BuildTarget(Target):
             """
             return []
 
+        # pylint: disable=unused-argument
         def get_output_files(self, module: Module) -> List[str]:
             """
             May be overridden by subclasses in order to return the output files produced by the target.
@@ -513,6 +515,8 @@ class DependencyGraph:
         def execute(self, module_registry: ModuleRegistry):
             """
             Must be implemented by subclasses in order to execute the node.
+
+            :param module_registry: A `ModuleRegistry` that may be used for looking up modules
             """
 
         @abstractmethod
@@ -527,7 +531,7 @@ class DependencyGraph:
             return '[' + self.target.name + ']'
 
         def __eq__(self, other) -> bool:
-            return type(self) == type(other) and self.target == other.target
+            return isinstance(other, type(self)) and self.target == other.target
 
     class RunNode(Node):
         """
@@ -606,6 +610,11 @@ class DependencyGraph:
             return copy
 
         def execute(self, module_registry: ModuleRegistry):
+            """
+            Executes all nodes in the sequence.
+
+            :param module_registry: A `ModuleRegistry` that may be used for looking up modules
+            """
             current_node = self.first
 
             while current_node:

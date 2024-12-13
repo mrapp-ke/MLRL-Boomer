@@ -3,8 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides actions for validating and updating the project's changelog.
 """
-import sys
-
 from dataclasses import dataclass, field
 from datetime import date
 from enum import Enum, auto
@@ -141,6 +139,9 @@ class ChangesetFile(TextFile):
 
     @cached_property
     def parsed_lines(self) -> List[Line]:
+        """
+        The lines in the changelog as `Line` objects.
+        """
         parsed_lines = []
 
         for i, line in enumerate(self.lines):
@@ -153,6 +154,9 @@ class ChangesetFile(TextFile):
 
     @cached_property
     def changesets(self) -> List[Changeset]:
+        """
+        A list that contains all changesets in the changelog.
+        """
         changesets = []
 
         for line in self.parsed_lines:
@@ -170,7 +174,7 @@ class ChangesetFile(TextFile):
         """
         previous_line = None
 
-        for i, current_line in enumerate(self.parsed_lines):
+        for current_line in self.parsed_lines:
             if current_line.line_type != LineType.BLANK:
                 self.__validate_line(current_line=current_line, previous_line=previous_line)
                 previous_line = current_line

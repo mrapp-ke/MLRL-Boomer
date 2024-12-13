@@ -22,13 +22,6 @@ class PipInstallWheel(Pip):
             """
             super().__init__('install', '--force-reinstall', '--no-deps', *wheels)
 
-    def __init__(self, *requirements_files: str):
-        """
-        :param requirements_files: The paths to the requirements files that specify the versions of the packages to be
-                                   installed
-        """
-        super().__init__(*requirements_files)
-
     def install_wheels(self, *wheels: str):
         """
         Installs several wheel packages.
