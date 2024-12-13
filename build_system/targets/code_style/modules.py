@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes that provide access to directories and files that belong to individual modules.
+Implements modules that provide access to source code.
 """
 from typing import List
 
@@ -11,12 +11,12 @@ from util.files import FileSearch, FileType
 
 class CodeModule(Module):
     """
-    A module that contains source code.
+    A module that provides access to source code.
     """
 
     class Filter(Module.Filter):
         """
-        A filter that matches code modules.
+        A filter that matches modules of type `CodeModule`.
         """
 
         def __init__(self, *file_types: FileType):

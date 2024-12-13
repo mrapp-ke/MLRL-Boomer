@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes that provide access to directories and files that belong to individual modules.
+Implements modules that provide access to source code that must be compiled.
 """
 from os import path
 from typing import List, Optional
@@ -12,12 +12,12 @@ from util.files import FileSearch, FileType
 
 class CompilationModule(Module):
     """
-    A module that contains source code that must be compiled.
+    A module that provides access to source code that must be compiled.
     """
 
     class Filter(Module.Filter):
         """
-        A filter that matches modules that contain source code that must be compiled.
+        A filter that matches modules of type `CompilationModule`.
         """
 
         def __init__(self, *file_types: FileType):

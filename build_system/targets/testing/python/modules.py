@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes that provide access to automated tests for Python code that belong to individual modules.
+Implements modules that provide access to automated tests for Python code.
 """
 from os import path
 from typing import List
@@ -14,12 +14,12 @@ from targets.testing.modules import TestModule
 
 class PythonTestModule(TestModule):
     """
-    A module that contains automated tests for Python code.
+    A module that provides access to automated tests for Python code.
     """
 
     class Filter(Module.Filter):
         """
-        A filter that matches modules that contain automated tests for Python code.
+        A filter that matches modules of type `PythonTestModule`.
         """
 
         def matches(self, module: Module) -> bool:

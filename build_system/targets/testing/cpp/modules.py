@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes that provide access to automated tests for C++ code that belong to individual modules.
+Implements modules that provide access to automated tests for C++ code.
 """
 from os import path
 
@@ -12,12 +12,12 @@ from targets.testing.modules import TestModule
 
 class CppTestModule(TestModule):
     """
-    A module that contains automated tests for C++ code.
+    A module that provides access to automated tests for C++ code.
     """
 
     class Filter(Module.Filter):
         """
-        A filter that matches modules that contain automated tests for C++ code.
+        A filter that matches modules of type `CppTestModule`.
         """
 
         def matches(self, module: Module) -> bool:

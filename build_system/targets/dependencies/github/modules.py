@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes that provide access to GitHub workflows tha belong to individual modules.
+Implements modules that provide access to GitHub workflows.
 """
 from typing import List
 
@@ -11,12 +11,12 @@ from util.files import FileSearch, FileType
 
 class GithubWorkflowModule(Module):
     """
-    A module that contains GitHub workflows.
+    A module that provides access to GitHub workflows.
     """
 
     class Filter(Module.Filter):
         """
-        A filter that matches modules that contain GitHub workflows.
+        A filter that matches modules of type `GithubWorkflowModule`.
         """
 
         def matches(self, module: Module) -> bool:
