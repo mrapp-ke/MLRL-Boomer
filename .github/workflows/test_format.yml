@@ -33,23 +33,31 @@ jobs:
               - '.github/workflows/test_format.yml'
               - 'build'
               - 'build.bat'
-              - 'build_system/**'
+              - 'build_system/main.py'
+              - 'build_system/core/**'
+              - 'build_system/util/**'
+              - 'build_system/targets/paths.py'
             cpp:
               - *build_files
+              - 'build_system/targets/code_style/*'
+              - 'build_system/targets/code_style/cpp/*'
+              - '.cpplint.cfg'
               - '**/*.hpp'
               - '**/*.cpp'
-              - '.clang-format'
             python:
               - *build_files
+              - 'build_system/targets/code_style/*'
+              - 'build_system/targets/code_style/python/*'
               - '**/*.py'
-              - '.isort.cfg'
-              - '.pylintrc'
-              - '.style.yapf'
             md:
               - *build_files
+              - 'build_system/targets/code_style/*'
+              - 'build_system/targets/code_style/markdown/*'
               - '**/*.md'
             yaml:
               - *build_files
+              - 'build_system/targets/code_style/*'
+              - 'build_system/targets/code_style/yaml/*'
               - '**/*.y*ml'
       - name: Check C++ code style
         if: steps.filter.outputs.cpp == 'true'
