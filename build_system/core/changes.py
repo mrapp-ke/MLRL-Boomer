@@ -10,7 +10,7 @@ from os import path
 from typing import Dict, List, Set
 
 from core.modules import Module
-from util.io import TextFile
+from util.io import TextFile, create_directories
 
 
 class JsonFile(TextFile):
@@ -66,6 +66,7 @@ class ChangeDetection:
             :param file: The path to the JSON file
             """
             super().__init__(file, accept_missing=True)
+            create_directories(path.dirname(file))
 
         def update(self, module_name: str, files: Set[str]):
             """
