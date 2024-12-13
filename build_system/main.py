@@ -8,7 +8,7 @@ import sys
 from argparse import ArgumentParser
 from importlib.util import module_from_spec, spec_from_file_location
 from types import ModuleType
-from typing import List
+from typing import List, Optional
 
 from core.build_unit import BuildUnit
 from core.modules import Module, ModuleRegistry
@@ -97,8 +97,30 @@ def __register_targets(init_files: List[str]) -> TargetRegistry:
     return target_registry
 
 
-def __create_dependency_graph(target_registry: TargetRegistry, args) -> DependencyGraph:
+def __find_default_target(init_files: List[str]) -> Optional[str]:
+    Log.verbose('Searching for default target...')
+    default_targets = []
+
+    for init_file in init_files:
+        default_target = getattr(__import_source_file(init_file), 'DEFAULT_TARGET', None)
+
+        if default_target and isinstance(default_target, str):
+            Log.verbose('Found default target "%s" defined in file "%s"', default_target, init_file)
+            default_targets.append(default_target)
+
+    if len(default_targets) > 1:
+        raise RuntimeError('Only one default target may be specified, but found: ' + format_iterable(default_targets))
+
+    if default_targets:
+        return default_targets[0]
+
+    Log.verbose('Found no default target.')
+    return None
+
+
+def __create_dependency_graph(target_registry: TargetRegistry, args, default_target: Optional[str]) -> DependencyGraph:
     targets = args.targets
+    targets = targets if targets else ([default_target] if default_target else [])
     clean = args.clean
     Log.verbose('Creating dependency graph for %s targets [%s]...', 'cleaning' if clean else 'running',
                 format_iterable(targets))
@@ -123,7 +145,8 @@ def main():
     init_files = __find_init_files()
     module_registry = __register_modules(init_files)
     target_registry = __register_targets(init_files)
-    dependency_graph = __create_dependency_graph(target_registry, args)
+    default_target = __find_default_target(init_files)
+    dependency_graph = __create_dependency_graph(target_registry, args, default_target=default_target)
     __execute_dependency_graph(dependency_graph, module_registry)
 
 
