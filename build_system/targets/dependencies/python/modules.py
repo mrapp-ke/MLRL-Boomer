@@ -61,4 +61,5 @@ class PythonDependencyModule(Module):
         return self.requirements_file_search.filter_by_name('requirements.txt').list(self.root_directory)
 
     def __str__(self) -> str:
-        return 'PythonDependencyModule {dependency_type="' + self.dependency_type.value + '", root_directory="' + self.root_directory + '"}'
+        return ('PythonDependencyModule {dependency_type="' + self.dependency_type.value + '", root_directory="'
+                + self.root_directory + '"}')

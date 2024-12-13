@@ -5,7 +5,7 @@ Implements targets for testing C++ code.
 """
 from core.build_unit import BuildUnit
 from core.modules import Module
-from core.targets import BuildTarget, PhonyTarget
+from core.targets import PhonyTarget
 
 from targets.testing.cpp.meson import MesonTest
 from targets.testing.cpp.modules import CppTestModule

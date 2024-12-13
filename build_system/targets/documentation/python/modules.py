@@ -35,8 +35,8 @@ class PythonApidocModule(ApidocModule):
         :param output_directory:        The path to the directory where the API documentation should be stored
         :param source_directory_name:   The name of the directory that contains the Python source files to be included
                                         in the API documentation
-        :param source_file_search:      The `FileSearch` that should be used to search for the header files to be included
-                                        in the API documentation
+        :param source_file_search:      The `FileSearch` that should be used to search for the header files to be
+                                        included in the API documentation
         """
         super().__init__(output_directory)
         self.root_directory = root_directory

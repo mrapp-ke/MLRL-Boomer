@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for listing files and directories.
 """
-from abc import abstractmethod
 from functools import partial, reduce
 from glob import glob
 from os import path
@@ -55,6 +54,37 @@ class DirectorySearch:
 
         return self.add_filters(*[partial(filter_directory, name) for name in names])
 
+    def filter_by_substrings(self,
+                             starts_with: Optional[str] = None,
+                             not_starts_with: Optional[str] = None,
+                             ends_with: Optional[str] = None,
+                             not_ends_with: Optional[str] = None,
+                             contains: Optional[str] = None,
+                             not_contains: Optional[str] = None) -> 'DirectorySearch':
+        """
+        Adds a filter that matches subdirectories based on whether their name contains specific substrings.
+
+        :param starts_with:     A substring, names must start with or None, if no restrictions should be imposed
+        :param not_starts_with: A substring, names must not start with or None, if no restrictions should be imposed
+        :param ends_with:       A substring, names must end with or None, if no restrictions should be imposed
+        :param not_ends_with:   A substring, names must not end with or None, if no restrictions should be imposed
+        :param contains:        A substring, names must contain or None, if no restrictions should be imposed
+        :param not_contains:    A substring, names must not contain or None, if no restrictions should be imposed
+        :return:                The `DirectorySearch` itself
+        """
+
+        def filter_directory(start: Optional[str], not_start: Optional[str], end: Optional[str], not_end: Optional[str],
+                             substring: Optional[str], not_substring: Optional[str], _: str, directory_name: str):
+            return (not start or directory_name.startswith(start)) \
+                and (not not_start or not directory_name.startswith(not_start)) \
+                and (not end or directory_name.endswith(end)) \
+                and (not not_end or directory_name.endswith(not_end)) \
+                and (not substring or directory_name.find(substring) >= 0) \
+                and (not not_substring or directory_name.find(not_substring) < 0)
+
+        return self.add_filters(
+            partial(filter_directory, starts_with, not_starts_with, ends_with, not_ends_with, contains, not_contains))
+
     def exclude(self, *excludes: Filter) -> 'DirectorySearch':
         """
         Adds one or several filters that should be used for excluding subdirectories.
@@ -86,8 +116,8 @@ class DirectorySearch:
                               contains: Optional[str] = None,
                               not_contains: Optional[str] = None) -> 'DirectorySearch':
         """
-        Adds a filter that that should be used for excluding subdirectories based on whether their name contains
-        specific substrings.
+        Adds a filter that should be used for excluding subdirectories based on whether their name contains specific
+        substrings.
 
         :param starts_with:     A substring, names must start with or None, if no restrictions should be imposed
         :param not_starts_with: A substring, names must not start with or None, if no restrictions should be imposed
@@ -99,13 +129,13 @@ class DirectorySearch:
         """
 
         def filter_directory(start: Optional[str], not_start: Optional[str], end: Optional[str], not_end: Optional[str],
-                             substring: Optional[str], not_substring: Optional[str], _: str, file_name: str):
-            return (not start or file_name.startswith(start)) \
-                and (not not_start or not file_name.startswith(not_start)) \
-                and (not end or file_name.endswith(end)) \
-                and (not not_end or file_name.endswith(not_end)) \
-                and (not substring or file_name.find(substring) >= 0) \
-                and (not not_substring or file_name.find(not_substring) < 0)
+                             substring: Optional[str], not_substring: Optional[str], _: str, directory_name: str):
+            return (not start or directory_name.startswith(start)) \
+                and (not not_start or not directory_name.startswith(not_start)) \
+                and (not end or directory_name.endswith(end)) \
+                and (not not_end or directory_name.endswith(not_end)) \
+                and (not substring or directory_name.find(substring) >= 0) \
+                and (not not_substring or directory_name.find(not_substring) < 0)
 
         return self.exclude(
             partial(filter_directory, starts_with, not_starts_with, ends_with, not_ends_with, contains, not_contains))
@@ -423,8 +453,10 @@ class FileType:
         """
         self.name = name
         self.suffixes = suffixes
-        self.file_search_decorator = file_search_decorator if file_search_decorator else lambda file_search: file_search.filter_by_suffix(
-            *suffixes)
+        self.file_search_decorator = file_search_decorator
+
+        if not self.file_search_decorator:
+            self.file_search_decorator = lambda file_search: file_search.filter_by_suffix(*suffixes)
 
     @staticmethod
     def python() -> 'FileType':

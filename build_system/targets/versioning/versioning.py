@@ -82,6 +82,9 @@ class VersionFile(TextFile):
 
     @cached_property
     def version(self) -> Version:
+        """
+        The version that is stored in the file.
+        """
         lines = self.lines
 
         if len(lines) != 1:
@@ -90,6 +93,11 @@ class VersionFile(TextFile):
         return Version.parse(lines[0])
 
     def update(self, version: Version):
+        """
+        Updates the version that is stored in the file.
+
+        :param version: The version to be stored
+        """
         self.write_lines(str(version))
         Log.info('Updated version to "%s"', str(version))
 
@@ -107,8 +115,14 @@ class DevelopmentVersionFile(TextFile):
     The file that stores the project's development version.
     """
 
+    def __init__(self):
+        super().__init__('.version-dev')
+
     @cached_property
     def development_version(self) -> int:
+        """
+        The development version that is stored in the file.
+        """
         lines = self.lines
 
         if len(lines) != 1:
@@ -117,6 +131,11 @@ class DevelopmentVersionFile(TextFile):
         return Version.parse_version_number(lines[0])
 
     def update(self, development_version: int):
+        """
+        Updates the development version that is stored in the file.
+
+        :param development_version: The development version to be stored
+        """
         self.write_lines(str(development_version))
         Log.info('Updated development version to "%s"', str(development_version))
 
@@ -162,7 +181,7 @@ def increment_development_version():
     Increments the development version.
     """
     version_file = __get_development_version_file()
-    version_file.update(version_file.dev + 1)
+    version_file.update(version_file.development_version + 1)
 
 
 def reset_development_version():
