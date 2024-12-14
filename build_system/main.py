@@ -120,11 +120,18 @@ def __find_default_target(init_files: List[str]) -> Optional[str]:
 
 def __create_dependency_graph(target_registry: TargetRegistry, args, default_target: Optional[str]) -> DependencyGraph:
     targets = args.targets
-    targets = targets if targets else ([default_target] if default_target else [])
     clean = args.clean
+    graph_type = DependencyGraph.Type.CLEAN if clean else DependencyGraph.Type.RUN
+
+    if not targets and default_target:
+        targets = [default_target]
+
+        if clean:
+            graph_type = DependencyGraph.Type.CLEAN_ALL
+
     Log.verbose('Creating dependency graph for %s targets [%s]...', 'cleaning' if clean else 'running',
                 format_iterable(targets))
-    dependency_graph = target_registry.create_dependency_graph(*targets, clean=clean)
+    dependency_graph = target_registry.create_dependency_graph(*targets, graph_type=graph_type)
     Log.verbose('Successfully created dependency graph:\n\n%s\n', str(dependency_graph))
     return dependency_graph
 
