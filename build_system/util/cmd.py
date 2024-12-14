@@ -45,6 +45,23 @@ class Command:
         Allows to customize options for running command line programs.
         """
 
+        @staticmethod
+        def __in_virtual_environment() -> bool:
+            return sys.prefix != sys.base_prefix
+
+        def __get_executable(self, command: 'Command') -> str:
+            if self.__in_virtual_environment():
+                # On Windows, we use the relative path to the command's executable within the virtual environment, if
+                # such an executable exists. This circumvents situations where the PATH environment variable has not
+                # been updated after activating the virtual environment. This can prevent the executables from being
+                # found or can lead to the wrong executable, from outside the virtual environment, being executed.
+                executable = path.join(sys.prefix, 'Scripts', command.command + '.exe')
+
+                if path.isfile(executable):
+                    return executable
+
+            return command.command
+
         def __init__(self):
             self.print_command = True
             self.exit_on_error = True
@@ -61,7 +78,7 @@ class Command:
             if self.print_command:
                 Log.info('Running external command "%s"...', command.print_options.format(command))
 
-            output = subprocess.run([command.command] + command.arguments,
+            output = subprocess.run([self.__get_executable(command)] + command.arguments,
                                     check=False,
                                     text=capture_output,
                                     capture_output=capture_output,
@@ -82,10 +99,6 @@ class Command:
 
             return output
 
-    @staticmethod
-    def __in_virtual_environment() -> bool:
-        return sys.prefix != sys.base_prefix
-
     def __init__(self,
                  command: str,
                  *arguments: str,
@@ -99,17 +112,6 @@ class Command:
                                 program
         """
         self.command = command
-
-        if self.__in_virtual_environment():
-            # On Windows, we use the relative path to the command's executable within the virtual environment, if such
-            # an executable exists. This circumvents situations where the PATH environment variable has not been updated
-            # after activating the virtual environment. This can prevent the executables from being found or can lead to
-            # the wrong executable, from outside the virtual environment, being executed.
-            executable = path.join(sys.prefix, 'Scripts', command + '.exe')
-
-            if path.isfile(executable):
-                self.command = executable
-
         self.arguments = list(arguments)
         self.print_options = print_options
         self.run_options = run_options
