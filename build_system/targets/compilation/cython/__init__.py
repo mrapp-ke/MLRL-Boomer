@@ -23,7 +23,7 @@ TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
         .depends_on(COMPILE_CPP) \
         .set_runnables(SetupCython()) \
     .add_phony_target(COMPILE_CYTHON) \
-        .depends_on(SETUP_CYTHON) \
+        .depends_on(SETUP_CYTHON, clean_dependencies=True) \
         .set_runnables(CompileCython()) \
     .add_build_target(INSTALL_CYTHON) \
         .depends_on(COMPILE_CYTHON) \
