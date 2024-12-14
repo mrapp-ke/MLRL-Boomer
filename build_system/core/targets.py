@@ -5,6 +5,7 @@ Provides base classes for defining individual targets of the build process.
 """
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from enum import Enum, auto
 from functools import reduce
 from os import path
 from typing import Any, Callable, Dict, List, Optional, Tuple
@@ -465,6 +466,14 @@ class DependencyGraph:
     A graph that determines the execution order of targets based on the dependencies between them.
     """
 
+    class Type(Enum):
+        """
+        All available types of dependency graphs.
+        """
+        RUN = auto()
+        CLEAN = auto()
+        CLEAN_ALL = auto()
+
     @dataclass
     class Node(ABC):
         """
@@ -480,34 +489,39 @@ class DependencyGraph:
         child: Optional['DependencyGraph.Node'] = None
 
         @staticmethod
-        def from_name(targets_by_name: Dict[str, Target], target_name: str, clean: bool) -> 'DependencyGraph.Node':
+        def from_name(targets_by_name: Dict[str, Target], target_name: str,
+                      graph_type: 'DependencyGraph.Type') -> 'DependencyGraph.Node':
             """
             Creates and returns a new node of a dependency graph corresponding to the target with a specific name.
 
             :param targets_by_name: A dictionary that stores all available targets by their names
             :param target_name:     The name of the target, the node should correspond to
-            :param clean:           True, if the target should be cleaned, False otherwise
+            :param graph_type:      The type of the dependency graph
             :return:                The node that has been created
             """
             target = targets_by_name[target_name]
-            return DependencyGraph.CleanNode(target) if clean else DependencyGraph.RunNode(target)
+            return DependencyGraph.RunNode(
+                target) if graph_type == DependencyGraph.Type.RUN else DependencyGraph.CleanNode(target)
 
         @staticmethod
         def from_dependency(targets_by_name: Dict[str, Target], dependency: Target.Dependency,
-                            clean: bool) -> Optional['DependencyGraph.Node']:
+                            graph_type: 'DependencyGraph.Type') -> Optional['DependencyGraph.Node']:
             """
             Creates and returns a new node of a dependency graph corresponding to the target referred to by a
             `Target.Dependency`.
 
             :param targets_by_name: A dictionary that stores all available targets by their names
             :param dependency:      The dependency referring to the target, the node should correspond to
-            :param clean:           True, if the target should be cleaned, False otherwise
+            :param graph_type:      The type of the dependency graph
             :return:                The node that has been created or None, if the dependency does not require a node to
                                     be created
             """
-            if not clean or dependency.clean_dependency:
+            if graph_type == DependencyGraph.Type.RUN \
+                    or graph_type == DependencyGraph.Type.CLEAN_ALL \
+                    or dependency.clean_dependency:
                 target = targets_by_name[dependency.target_name]
-                return DependencyGraph.CleanNode(target) if clean else DependencyGraph.RunNode(target)
+                return DependencyGraph.RunNode(
+                    target) if graph_type == DependencyGraph.Type.RUN else DependencyGraph.CleanNode(target)
 
             return None
 
@@ -635,18 +649,19 @@ class DependencyGraph:
             return result
 
     @staticmethod
-    def __expand_sequence(targets_by_name: Dict[str, Target], sequence: Sequence, clean: bool) -> List[Sequence]:
+    def __expand_sequence(targets_by_name: Dict[str, Target], sequence: Sequence,
+                          graph_type: 'DependencyGraph.Type') -> List[Sequence]:
         sequences = []
         dependencies = sequence.first.target.dependencies
 
         if dependencies:
             for dependency in dependencies:
-                new_node = DependencyGraph.Node.from_dependency(targets_by_name, dependency, clean=clean)
+                new_node = DependencyGraph.Node.from_dependency(targets_by_name, dependency, graph_type)
 
                 if new_node:
                     new_sequence = sequence.copy()
                     new_sequence.prepend(new_node)
-                    sequences.extend(DependencyGraph.__expand_sequence(targets_by_name, new_sequence, clean=clean))
+                    sequences.extend(DependencyGraph.__expand_sequence(targets_by_name, new_sequence, graph_type))
                 else:
                     sequences.append(sequence)
         else:
@@ -655,10 +670,11 @@ class DependencyGraph:
         return sequences
 
     @staticmethod
-    def __create_sequence(targets_by_name: Dict[str, Target], target_name: str, clean: bool) -> List[Sequence]:
-        node = DependencyGraph.Node.from_name(targets_by_name, target_name, clean=clean)
+    def __create_sequence(targets_by_name: Dict[str, Target], target_name: str,
+                          graph_type: 'DependencyGraph.Type') -> List[Sequence]:
+        node = DependencyGraph.Node.from_name(targets_by_name, target_name, graph_type)
         sequence = DependencyGraph.Sequence.from_node(node)
-        return DependencyGraph.__expand_sequence(targets_by_name, sequence, clean=clean)
+        return DependencyGraph.__expand_sequence(targets_by_name, sequence, graph_type)
 
     @staticmethod
     def __find_in_parents(node: Node, parent: Optional[Node]) -> Optional[Node]:
@@ -711,14 +727,14 @@ class DependencyGraph:
 
         return sequences[0]
 
-    def __init__(self, targets_by_name: Dict[str, Target], *target_names: str, clean: bool):
+    def __init__(self, targets_by_name: Dict[str, Target], *target_names: str, graph_type: 'DependencyGraph.Type'):
         """
         :param targets_by_name: A dictionary that stores all available targets by their names
         :param target_names:    The names of the targets to be included in the graph
-        :param clean:           True, if the targets should be cleaned, False otherwise
+        :param graph_type:      The type of the dependency graph
         """
         self.sequence = self.__merge_multiple_sequences(
-            reduce(lambda aggr, target_name: aggr + self.__create_sequence(targets_by_name, target_name, clean=clean),
+            reduce(lambda aggr, target_name: aggr + self.__create_sequence(targets_by_name, target_name, graph_type),
                    target_names, []))
 
     def execute(self, module_registry: ModuleRegistry):
@@ -755,12 +771,14 @@ class TargetRegistry:
 
         self.targets_by_name[target.name] = target
 
-    def create_dependency_graph(self, *target_names: str, clean: bool = False) -> DependencyGraph:
+    def create_dependency_graph(self,
+                                *target_names: str,
+                                graph_type: 'DependencyGraph.Type' = DependencyGraph.Type.RUN) -> DependencyGraph:
         """
         Creates and returns a `DependencyGraph` for each of the given targets.
 
         :param target_names:    The names of the targets for which graphs should be created
-        :param clean:           True, if the targets should be cleaned, False otherwise
+        :param graph_type:      The type of the dependency graph
         :return:                A list that contains the graphs that have been created
         """
         if not target_names:
@@ -771,4 +789,4 @@ class TargetRegistry:
         if invalid_targets:
             Log.error('The following targets are invalid: %s', format_iterable(invalid_targets))
 
-        return DependencyGraph(self.targets_by_name, *target_names, clean=clean)
+        return DependencyGraph(self.targets_by_name, *target_names, graph_type=graph_type)
