@@ -23,7 +23,7 @@ TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
         .depends_on(VENV) \
         .set_runnables(SetupCpp()) \
     .add_phony_target(COMPILE_CPP) \
-        .depends_on(SETUP_CPP) \
+        .depends_on(SETUP_CPP, clean_dependencies=True) \
         .set_runnables(CompileCpp()) \
     .add_build_target(INSTALL_CPP) \
         .depends_on(COMPILE_CPP) \
