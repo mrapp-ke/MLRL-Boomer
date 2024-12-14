@@ -30,7 +30,7 @@ class SetupCython(BuildTarget.Runnable):
         super().__init__(MODULE_FILTER)
 
     def run(self, build_unit: BuildUnit, module: Module):
-        MesonSetup(build_unit, module) \
+        MesonSetup(build_unit, module, build_options=BUILD_OPTIONS) \
             .add_dependencies('cython') \
             .run()
 
@@ -52,7 +52,7 @@ class CompileCython(PhonyTarget.Runnable):
 
     def run(self, build_unit: BuildUnit, module: Module):
         Log.info('Compiling Cython code in directory "%s"...', module.root_directory)
-        MesonConfigure(build_unit, module, build_options=BUILD_OPTIONS)
+        MesonConfigure(build_unit, module, build_options=BUILD_OPTIONS).run()
         MesonCompile(build_unit, module).run()
 
 
