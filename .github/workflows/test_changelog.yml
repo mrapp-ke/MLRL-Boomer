@@ -33,7 +33,11 @@ jobs:
               - '.github/workflows/test_changelog.yml'
               - 'build'
               - 'build.bat'
-              - 'scons/**'
+              - 'build_system/main.py'
+              - 'build_system/core/**'
+              - 'build_system/util/**'
+              - 'build_system/targets/paths.py'
+              - 'build_system/targets/versioning/*'
             bugfix:
               - *build_files
               - '.changelog-bugfix.md'
