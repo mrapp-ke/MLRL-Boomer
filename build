@@ -1,7 +1,7 @@
 #!/bin/sh
 
 VENV_DIR="venv"
-SCONS_DIR="scons"
+BUILD_SYSTEM_DIR="build_system"
 CLEAN=false
 
 set -e
@@ -22,13 +22,12 @@ fi
 
 if [ -d "$VENV_DIR" ]; then
     . $VENV_DIR/bin/activate
-    python3 -c "import sys; sys.path.append('$SCONS_DIR'); import dependencies; dependencies.install_build_dependencies('scons')"
-    scons --silent --file $SCONS_DIR/sconstruct.py $@
+    python3 $BUILD_SYSTEM_DIR/main.py $@
     deactivate
 fi
 
 if [ $CLEAN = true ] && [ -d $VENV_DIR ]; then
     echo "Removing virtual Python environment..."
     rm -rf $VENV_DIR
-    rm -rf $SCONS_DIR/build
+    rm -rf $BUILD_SYSTEM_DIR/build
 fi
