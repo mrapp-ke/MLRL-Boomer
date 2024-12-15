@@ -8,6 +8,7 @@
 #include "mlrl/common/statistics/statistics.hpp"
 
 #include <functional>
+#include <optional>
 
 namespace boosting {
 
@@ -34,11 +35,11 @@ namespace boosting {
              * Invokes one of the given visitor functions, depending on which one is able to handle the type of matrix
              * that is used to store the currently predicted scores.
              *
-             * @param denseVisitor  The visitor function for handling objects of the type `CContiguousView`
-             * @param sparseVisitor The visitor function for handling objects of the type `SparseSetView`
+             * @param denseVisitor  An optional visitor function for handling objects of the type `CContiguousView`
+             * @param sparseVisitor An optional visitor function for handling objects of the type `SparseSetView`
              */
-            virtual void visitScoreMatrix(DenseScoreMatrixVisitor denseVisitor,
-                                          SparseScoreMatrixVisitor sparseVisitor) const = 0;
+            virtual void visitScoreMatrix(std::optional<DenseScoreMatrixVisitor> denseVisitor,
+                                          std::optional<SparseScoreMatrixVisitor> sparseVisitor) const = 0;
     };
 
 }

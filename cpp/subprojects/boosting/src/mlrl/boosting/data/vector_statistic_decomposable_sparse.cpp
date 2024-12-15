@@ -118,13 +118,15 @@ namespace boosting {
         return iterator_ - rhs.iterator_;
     }
 
-    SparseDecomposableStatisticVector::SparseDecomposableStatisticVector(uint32 numElements, bool init)
+    SparseDecomposableStatisticVector::SparseDecomposableStatisticVector(const SparseSetView<Tuple<float64>>& view,
+                                                                         uint32 numElements, bool init)
         : ClearableViewDecorator<VectorDecorator<AllocatedVector<Triple<float64>>>>(
             AllocatedVector<Triple<float64>>(numElements, init)),
           sumOfWeights_(0) {}
 
     SparseDecomposableStatisticVector::SparseDecomposableStatisticVector(const SparseDecomposableStatisticVector& other)
-        : SparseDecomposableStatisticVector(other.getNumElements()) {
+        : ClearableViewDecorator<VectorDecorator<AllocatedVector<Triple<float64>>>>(
+            AllocatedVector<Triple<float64>>(other.getNumElements())) {
         util::copyView(other.view.cbegin(), this->view.begin(), this->getNumElements());
         sumOfWeights_ = other.sumOfWeights_;
     }

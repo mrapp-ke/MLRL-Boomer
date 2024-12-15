@@ -52,16 +52,21 @@ namespace boosting {
      * @tparam Loss                 The type of the loss function
      * @tparam OutputMatrix         The type of the matrix that provides access to the ground truth of the training
      *                              examples
+     * @tparam QuantizationMatrix   The type of the matrix that provides access to quantized gradients and Hessians
+     * @tparam StatisticVector      The type of the vectors that are used to store gradients and Hessians
      * @tparam EvaluationMeasure    The type of the evaluation that should be used to access the quality of predictions
      */
-    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure>
+    template<typename Loss, typename OutputMatrix, typename QuantizationMatrix, typename StatisticVector,
+             typename EvaluationMeasure>
     class DenseDecomposableStatistics final
-        : public AbstractDecomposableStatistics<OutputMatrix, DenseDecomposableStatisticVector,
+        : public AbstractDecomposableStatistics<OutputMatrix, QuantizationMatrix, StatisticVector,
                                                 DenseDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>,
                                                 Loss, EvaluationMeasure, IDecomposableRuleEvaluationFactory> {
         public:
 
             /**
+             * @param quantizationMatrixPtr An unique pointer to an object of template type `QuantizationMatrix` that
+             *                              provides access to quantized gradients and Hessians
              * @param lossPtr               An unique pointer to an object of template type `Loss` that implements the
              *                              loss function that should be used for calculating gradients and Hessians
              * @param evaluationMeasurePtr  An unique pointer to an object of template type `EvaluationMeasure` that
@@ -77,24 +82,28 @@ namespace boosting {
              * @param scoreMatrixPtr        An unique pointer to an object of type `NumericCContiguousMatrix` that
              *                              stores the currently predicted scores
              */
-            DenseDecomposableStatistics(std::unique_ptr<Loss> lossPtr,
+            DenseDecomposableStatistics(std::unique_ptr<QuantizationMatrix> quantizationMatrixPtr,
+                                        std::unique_ptr<Loss> lossPtr,
                                         std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
                                         const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
                                         const OutputMatrix& outputMatrix,
                                         std::unique_ptr<DenseDecomposableStatisticMatrix> statisticMatrixPtr,
                                         std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
-                : AbstractDecomposableStatistics<OutputMatrix, DenseDecomposableStatisticVector,
+                : AbstractDecomposableStatistics<OutputMatrix, QuantizationMatrix, StatisticVector,
                                                  DenseDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>,
                                                  Loss, EvaluationMeasure, IDecomposableRuleEvaluationFactory>(
-                    std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
-                    std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
+                    std::move(quantizationMatrixPtr), std::move(lossPtr), std::move(evaluationMeasurePtr),
+                    ruleEvaluationFactory, outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
 
             /**
              * @see `IBoostingStatistics::visitScoreMatrix`
              */
-            void visitScoreMatrix(IBoostingStatistics::DenseScoreMatrixVisitor denseVisitor,
-                                  IBoostingStatistics::SparseScoreMatrixVisitor sparseVisitor) const override {
-                denseVisitor(this->scoreMatrixPtr_->getView());
+            void visitScoreMatrix(
+              std::optional<IBoostingStatistics::DenseScoreMatrixVisitor> denseVisitor,
+              std::optional<IBoostingStatistics::SparseScoreMatrixVisitor> sparseVisitor) const override {
+                if (denseVisitor) {
+                    (*denseVisitor)(this->scoreMatrixPtr_->getView());
+                }
             }
     };
 
