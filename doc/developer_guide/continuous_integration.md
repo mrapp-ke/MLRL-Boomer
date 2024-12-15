@@ -46,3 +46,4 @@ The following CI jobs are used for building our software for different target pl
 The CI jobs listed below are run periodically to perform different maintenance tasks, such as the automatic update of dependencies.
 
 - `update_github_actions.yml` checks for outdated GitHub Actions used in workflow definition files. In cases where any updates are necessary, a pull request with the respective changes is opened. If the pull request passes all {ref}`necessary checks <ci-testing>`, it is merged automatically. Otherwise, manual intervention is needed.
+- `update_doxyfile.yml` updates the [Doxygen](https://sourceforge.net/projects/doxygen/) configuration file, required for generating API documentations for C++ code, to stay up-to-date as new versions of this software are released.
