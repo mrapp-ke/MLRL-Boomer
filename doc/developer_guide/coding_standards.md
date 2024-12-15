@@ -28,23 +28,23 @@ To be able to detect problems with the project's source code early during develo
    ```
 ````
 
-This will result in all tests being run and their results being reported. If the execution should be aborted as soon as a single test fails, the environment variable `SKIP_EARLY` can be used as shown below:
+This will result in all tests being run and their results being reported. If the execution should be aborted as soon as a single test fails, the environment variable `FAIL_FAST` can be used as shown below:
 
 ````{tab} Linux
    ```text
-   SKIP_EARLY=true ./build tests
+   FAIL_FAST=true ./build tests
    ```
 ````
 
 ````{tab} macOS
    ```text
-   SKIP_EARLY=true ./build tests
+   FAIL_FAST=true ./build tests
    ```
 ````
 
 ````{tab} Windows
    ```text
-   $env:SKIP_EARLY = "true"
+   $env:FAIL_FAST = "true"
    build.bat tests
    ```
 ````
@@ -65,10 +65,10 @@ The unit and integration tests are run automatically via {ref}`Continuous Integr
 
 We aim to enforce a consistent code style across the entire project. For this purpose, we employ the following tools:
 
-- For formatting the C++ code, we use [clang-format](https://clang.llvm.org/docs/ClangFormat.html). The desired C++ code style is defined in the file `.clang-format` in the project's root directory. In addition, [cpplint](https://github.com/cpplint/cpplint) is used for static code analysis. It uses the configuration file `CPPLINT.cfg`.
-- We use [YAPF](https://github.com/google/yapf) to enforce the Python code style defined in the file `.style.yapf`. In addition, [isort](https://github.com/PyCQA/isort) is used to keep the ordering of imports in Python and Cython source files consistent according to the configuration file `.isort.cfg` and [pylint](https://pylint.org/) is used to check for common issues in the Python code according to the configuration file `.pylintrc`.
+- For formatting the C++ code, we use [clang-format](https://clang.llvm.org/docs/ClangFormat.html). The desired C++ code style is defined in the file `build_system/code_style/cpp/.clang-format`. In addition, [cpplint](https://github.com/cpplint/cpplint) is used for static code analysis. It is configured according to the `.cpplint.cfg` files located in the directory `cpp` and its subdirectories.
+- We use [YAPF](https://github.com/google/yapf) to enforce the Python code style defined in the file `build_system/code_style/python/.style.yapf`. In addition, [isort](https://github.com/PyCQA/isort) is used to keep the ordering of imports in Python and Cython source files consistent according to the configuration file `build_system/code_style/python/.isort.cfg` and [pylint](https://pylint.org/) is used to check for common issues in the Python code according to the configuration file `build_system/code_style/python/.pylintrc`.
 - For applying a consistent style to Markdown files, including those used for writing the documentation, we use [mdformat](https://github.com/executablebooks/mdformat).
-- We apply [yamlfix](https://github.com/lyz-code/yamlfix) to YAML files to enforce the code style defined in the file `.yamlfix.toml`.
+- We apply [yamlfix](https://github.com/lyz-code/yamlfix) to YAML files to enforce the code style defined in the file `build_system/code_style/yaml/.yamlfix.toml`.
 
 If you have modified the project's source code, you can check whether it adheres to our coding standards via the following command:
 

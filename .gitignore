@@ -1,6 +1,6 @@
 # Build files
 __pycache__/
-scons/build/
+build_system/build/
 python/**/build/
 python/**/dist/
 python/**/*egg-info/
