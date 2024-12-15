@@ -7,7 +7,7 @@ on:
       - reopened
       - synchronize
     paths:
-      - .github/workflows/test_changelog.yml
+      - .github/workflows/update_github_actions.yml
       - build
       - build.bat
       - build_system/main.py
