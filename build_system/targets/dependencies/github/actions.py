@@ -178,7 +178,7 @@ class Workflow(YamlFile):
         self.write_lines(*updated_lines)
 
     def write_lines(self, *lines: str):
-        super().write_lines(lines)
+        super().write_lines(*lines)
 
         try:
             del self.uses_clauses
@@ -261,7 +261,7 @@ class WorkflowUpdater:
 
         try:
             latest_tag = GithubApi(self.build_unit) \
-                .set_token(self.__get_github_token()) \
+                .set_token(self.github_token) \
                 .open_repository(repository_name) \
                 .get_latest_release_tag()
 
