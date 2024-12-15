@@ -36,7 +36,11 @@ jobs:
               - '.github/workflows/template_publish_pure.yml'
               - 'build'
               - 'build.bat'
-              - 'scons/**'
+              - 'build_system/main.py'
+              - 'build_system/core/**'
+              - 'build_system/util/**'
+              - 'build_system/targets/paths.py'
+              - 'build_system/targets/packaging/*'
       - name: Read Python version
         uses: juliangruber/read-file-action@v1
         id: python_version
