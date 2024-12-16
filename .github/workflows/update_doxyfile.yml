@@ -40,6 +40,8 @@ jobs:
         with:
           app-id: ${{ secrets.TOKEN_APP_ID }}
           private-key: ${{ secrets.TOKEN_APP_SECRET }}
+      - name: Install Doxygen
+        uses: ssciwr/doxygen-install@v1
       - name: Update Doxyfile
         run: |
           ./build update_doxyfile
