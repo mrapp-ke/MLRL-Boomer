@@ -1,0 +1,62 @@
+---
+name: Update runtime dependencies
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    paths:
+      - .github/workflows/update_dependencies_runtime.yml
+      - build
+      - build.bat
+      - build_system/main.py
+      - build_system/core/**
+      - build_system/util/**
+      - build_system/targets/paths.py
+      - build_system/targets/dependencies/*
+      - build_system/targets/dependencies/python/*
+  schedule:
+    - cron: 0 3 * * 2
+  workflow_dispatch:
+jobs:
+  update_runtime_dependencies:
+    name: Update runtime dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: feature
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: .version-python
+      - name: Setup git
+        uses: fregante/setup-git-user@v2
+      - name: Generate token
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.TOKEN_APP_ID }}
+          private-key: ${{ secrets.TOKEN_APP_SECRET }}
+      - name: Update runtime dependencies
+        run: |
+          ./build update_runtime_dependencies
+          git add **/requirements.txt
+      - name: Submit pull request
+        id: pull-request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          commit-message: Update runtime dependencies.
+          branch: update-runtime-dependencies
+          title: Update runtime dependencies
+          labels: bot
+          assignees: mrapp-ke
+          body: Update the versions of outdated runtime dependencies.
+      - name: Enable auto-merge
+        if: ${{ steps.pull-request.outputs.pull-request-operation == 'created' }}
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: gh pr merge --merge --auto "${{ steps.pull-request.outputs.pull-request-number }}"
