@@ -3,10 +3,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for listing installed Python dependencies via pip.
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Set
 
-from util.pip import Package, Pip, Requirement, RequirementVersion
+from util.pip import Package, Pip, RequirementsFile, RequirementVersion
 
 
 @dataclass
@@ -96,3 +96,44 @@ class PipList(Pip):
                                    latest=RequirementVersion.parse(latest_version)))
 
         return outdated_dependencies
+
+    def update_outdated_dependencies(self) -> Set[Dependency]:
+        """
+        Updates all outdated Python dependencies that are currently installed.
+
+        :return: A set that contains all dependencies that have been updated
+        """
+        updated_dependencies = set()
+        separator = '.'
+
+        for outdated_dependency in self.list_outdated_dependencies():
+            latest_version = outdated_dependency.latest
+            latest_version_parts = [int(part) for part in latest_version.min_version.split(separator)]
+            requirements_file = RequirementsFile(outdated_dependency.requirements_file)
+            package = outdated_dependency.package
+            outdated_requirement = requirements_file.lookup_requirement(package)
+            outdated_version = outdated_requirement.version
+            updated_version = latest_version
+
+            if outdated_version.is_range():
+                min_version_parts = [int(part) for part in outdated_version.min_version.split(separator)]
+                max_version_parts = [int(part) for part in outdated_version.max_version.split(separator)]
+                num_version_numbers = min(len(min_version_parts), len(max_version_parts), len(latest_version_parts))
+
+                for i in range(num_version_numbers):
+                    min_version_parts[i] = latest_version_parts[i]
+                    max_version_parts[i] = latest_version_parts[i]
+
+                max_version_parts[num_version_numbers - 1] += 1
+                updated_version = RequirementVersion(
+                    min_version=separator.join([str(part) for part in min_version_parts[:num_version_numbers]]),
+                    max_version=separator.join([str(part) for part in max_version_parts[:num_version_numbers]]))
+
+            requirements_file.update(replace(outdated_requirement, version=updated_version))
+            updated_dependencies.add(
+                Dependency(requirements_file=outdated_dependency.requirements_file,
+                           package=package,
+                           outdated=outdated_version,
+                           latest=updated_version))
+
+        return updated_dependencies
