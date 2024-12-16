@@ -246,6 +246,52 @@ class RequirementsFiles(Requirements):
         return reduce(lambda aggr, requirements_file: aggr | requirements_file.requirements_by_package,
                       self.requirements_files, {})
 
+    def lookup_requirements_by_file(self,
+                                    *packages: Package,
+                                    accept_missing: bool = False) -> Dict[str, Set[Requirement]]:
+        """
+        Looks up the requirements for given packages in the requirements files.
+
+        :param packages:        The packages that should be looked up
+        :param accept_missing:  False, if an error should be raised if a package is not listed in any requirements file,
+                                True, if it should simply be ignored
+        :return:                A dictionary that contains the paths to requirements files, as well as their
+                                requirements for the given packages
+        """
+        requirements_by_file = {}
+
+        for package in packages:
+            found = False
+
+            for requirements_file in self.requirements_files:
+                requirement = requirements_file.requirements_by_package.get(package)
+
+                if requirement:
+                    requirements = requirements_by_file.setdefault(requirements_file.file, set())
+                    requirements.add(requirement)
+                    found = True
+
+            if not found and not accept_missing:
+                raise RuntimeError('Requirement for package "' + str(package) + '" not found')
+
+        return requirements_by_file
+
+    def lookup_requirement_by_file(self, package: Package, accept_missing: bool = False) -> Dict[str, Requirement]:
+        """
+        Looks up the requirement for a given package in the requirements files.
+
+        :param package:         The package that should be looked up
+        :param accept_missing:  False, if an error should be raised if the package is not listed any requirements file,
+                                True, if it should simply be ignored
+        :return:                A dictionary that contains the paths to requirements files, as well as their requirement
+                                for the given package
+        """
+        requirements_by_file = self.lookup_requirements_by_file(package, accept_missing=accept_missing)
+        return {
+            requirements_file: requirements.pop()
+            for requirements_file, requirements in requirements_by_file.items() if requirements
+        }
+
     def update(self, updated_requirement: Requirement):
         """
         Updates a given requirement, if it is included in one of the requirements files.

@@ -46,12 +46,11 @@ class CheckPythonDependencies(PhonyTarget.Runnable):
         outdated_dependencies = pip.list_outdated_dependencies()
 
         if outdated_dependencies:
-            table = Table(build_unit, 'Dependency', 'Installed version', 'Latest version')
+            table = Table(build_unit, 'Dependency', 'Requirements file', 'Installed version', 'Latest version')
 
             for outdated_dependency in outdated_dependencies:
-                table.add_row(str(outdated_dependency.installed.package),
-                              outdated_dependency.installed.version.min_version,
-                              outdated_dependency.latest.version.min_version)
+                table.add_row(str(outdated_dependency.package), outdated_dependency.requirements_file,
+                              outdated_dependency.outdated.min_version, outdated_dependency.latest.min_version)
 
             table.sort_rows(0, 1)
             Log.info('The following dependencies are outdated:\n\n%s', str(table))
