@@ -102,7 +102,7 @@ class VersionFile(TextFile):
         Log.info('Updated version to "%s"', str(version))
 
     def write_lines(self, *lines: str):
-        super().write_lines(lines)
+        super().write_lines(*lines)
 
         try:
             del self.version
@@ -140,7 +140,7 @@ class DevelopmentVersionFile(TextFile):
         Log.info('Updated development version to "%s"', str(development_version))
 
     def write_lines(self, *lines: str):
-        super().write_lines(lines)
+        super().write_lines(*lines)
 
         try:
             del self.development_version
