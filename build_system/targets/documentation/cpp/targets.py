@@ -7,11 +7,11 @@ from typing import List
 
 from core.build_unit import BuildUnit
 from core.modules import Module
-from core.targets import BuildTarget
+from core.targets import BuildTarget, PhonyTarget
 from util.log import Log
 
 from targets.documentation.cpp.breathe_apidoc import BreatheApidoc
-from targets.documentation.cpp.doxygen import Doxygen
+from targets.documentation.cpp.doxygen import Doxygen, DoxygenUpdate
 from targets.documentation.cpp.modules import CppApidocModule
 from targets.documentation.targets import ApidocIndex
 
@@ -49,3 +49,16 @@ class ApidocIndexCpp(ApidocIndex):
 
     def __init__(self):
         super().__init__(MODULE_FILTER)
+
+
+class UpdateDoxyfile(PhonyTarget.Runnable):
+    """
+    Updates the Doxyfile used for generating API documentations for C++ code.
+    """
+
+    def __init__(self):
+        super().__init__(MODULE_FILTER)
+
+    def run_all(self, build_unit: BuildUnit, _: List[Module]):
+        Log.info('Updating Doxyfile in directory "%s"...', build_unit.root_directory)
+        DoxygenUpdate(build_unit).run()
