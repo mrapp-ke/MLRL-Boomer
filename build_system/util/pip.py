@@ -42,6 +42,76 @@ class Package:
 
 
 @dataclass
+class RequirementVersion:
+    """
+    Specifies the version of a requirement.
+
+    Attributes:
+        min_version:    The maximum version number
+        max_version:    The minimum version number
+    """
+    min_version: str
+    max_version: str
+
+    PREFIX_EQ = '=='
+
+    PREFIX_GEQ = '>='
+
+    PREFIX_LE = '<'
+
+    @staticmethod
+    def parse(version: str) -> 'RequirementVersion':
+        """
+        Parses and returns the version of a requirement.
+
+        :param version: The version to be parsed
+        :return:        The version that has been parsed
+        """
+        parts = version.strip().split(',')
+
+        if len(parts) > 2:
+            raise ValueError(
+                'Version of requirement must consist of one or two version numbers, separated by comma, but got: '
+                + version)
+
+        first_part = parts[0].strip()
+
+        if len(parts) > 1:
+            if not first_part.startswith(RequirementVersion.PREFIX_GEQ):
+                raise ValueError('First version number of requirement must start with "' + RequirementVersion.PREFIX_GEQ
+                                 + '", but got: ' + version)
+
+            second_part = parts[1].strip()
+
+            if not second_part.startswith(RequirementVersion.PREFIX_LE):
+                raise ValueError('Second version number of requirement must start with "' + RequirementVersion.PREFIX_LE
+                                 + '", but got: ' + version)
+
+            return RequirementVersion(min_version=first_part[len(RequirementVersion.PREFIX_GEQ):].strip(),
+                                      max_version=second_part[len(RequirementVersion.PREFIX_LE):].strip())
+
+        version_number = first_part
+
+        if version_number.startswith(RequirementVersion.PREFIX_EQ):
+            version_number = version_number[len(RequirementVersion.PREFIX_EQ):].strip()
+
+        return RequirementVersion(min_version=version_number, max_version=version_number)
+
+    def is_range(self) -> bool:
+        """
+        Returns whether the version specifies a range of version numbers or not.
+
+        :return: True, if the version specifies a range of version numbers, False otherwise
+        """
+        return self.min_version != self.max_version
+
+    def __str__(self) -> str:
+        if self.is_range():
+            return self.PREFIX_GEQ + ' ' + self.min_version + ', ' + self.PREFIX_LE + ' ' + self.max_version
+        return self.PREFIX_EQ + ' ' + self.min_version
+
+
+@dataclass
 class Requirement:
     """
     A single requirement included in a requirements file, consisting of a Python package and an optional version.
@@ -51,7 +121,7 @@ class Requirement:
         version:    The version of the package or None, if no version is specified
     """
     package: Package
-    version: Optional[str] = None
+    version: Optional[RequirementVersion] = None
 
     @staticmethod
     def parse(requirement: str) -> 'Requirement':
@@ -63,11 +133,11 @@ class Requirement:
         """
         parts = requirement.split()
         package = Package(name=parts[0].strip())
-        version = ' '.join(parts[1:]).strip() if len(parts) > 1 else None
+        version = RequirementVersion.parse(' '.join(parts[1:])) if len(parts) > 1 else None
         return Requirement(package, version)
 
     def __str__(self) -> str:
-        return str(self.package) + (self.version if self.version else '')
+        return str(self.package) + (' ' + str(self.version) if self.version else '')
 
     def __eq__(self, other: 'Requirement') -> bool:
         return self.package == other.package
@@ -138,7 +208,8 @@ class RequirementsFile(TextFile, Requirements):
     def requirements_by_package(self) -> Dict[Package, Requirement]:
         return {
             requirement.package: requirement
-            for requirement in [Requirement.parse(line) for line in self.lines if line.strip('\n').strip()]
+            for requirement in
+            [Requirement.parse(line.strip('\n').strip()) for line in self.lines if line.strip('\n').strip()]
         }
 
 
