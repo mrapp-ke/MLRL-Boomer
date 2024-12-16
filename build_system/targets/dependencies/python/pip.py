@@ -12,20 +12,24 @@ from util.pip import Package, Pip, Requirement, RequirementVersion
 @dataclass
 class Dependency:
     """
-    Provides information about a dependency.
+    Provides information about an outdated dependency.
 
     Attributes:
-        installed:  The version of the dependency that is currently installed
-        latest:     The latest version of the dependency
+        requirements_file:  The path to the requirements file that defines the dependency
+        package:            The package, the dependency corresponds to
+        outdated:           The outdated version of the dependency
+        latest:             The latest version of the dependency
     """
-    installed: Requirement
-    latest: Requirement
+    requirements_file: str
+    package: Package
+    outdated: RequirementVersion
+    latest: RequirementVersion
 
     def __eq__(self, other: 'Dependency') -> bool:
-        return self.installed == other.installed
+        return self.requirements_file == other.requirements_file and self.package == other.package
 
     def __hash__(self) -> int:
-        return hash(self.installed)
+        return hash((self.requirements_file, self.package))
 
 
 class PipList(Pip):
@@ -79,13 +83,16 @@ class PipList(Pip):
                     + line)
 
             package = Package(parts[0])
-            requirement = self.requirements.lookup_requirement(package, accept_missing=True)
+            requirements_by_file = self.requirements.lookup_requirement_by_file(package, accept_missing=True)
 
-            if requirement and requirement.version:
-                installed_version = parts[1]
-                latest_version = parts[2]
-                outdated_dependencies.add(
-                    Dependency(installed=Requirement(package, version=RequirementVersion.parse(installed_version)),
-                               latest=Requirement(package, version=RequirementVersion.parse(latest_version))))
+            for requirements_file, requirement in requirements_by_file.items():
+                if requirement.version:
+                    installed_version = parts[1]
+                    latest_version = parts[2]
+                    outdated_dependencies.add(
+                        Dependency(requirements_file=requirements_file,
+                                   package=package,
+                                   outdated=RequirementVersion.parse(installed_version),
+                                   latest=RequirementVersion.parse(latest_version)))
 
         return outdated_dependencies
