@@ -182,7 +182,7 @@ class ChangesetFile(TextFile):
         self.__validate_line(current_line=None, previous_line=previous_line)
 
     def write_lines(self, *lines: str):
-        super().write_lines(lines)
+        super().write_lines(*lines)
 
         try:
             del self.parsed_lines
