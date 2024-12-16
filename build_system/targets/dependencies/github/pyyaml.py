@@ -33,10 +33,11 @@ class YamlFile(TextFile):
         # pylint: disable=import-outside-toplevel
         import yaml
         with read_file(self.file) as file:
-            return yaml.load(file.read(), Loader=yaml.CLoader)
+            yaml_dict = yaml.load(file.read(), Loader=yaml.CLoader)
+            return yaml_dict if yaml_dict else {}
 
     def write_lines(self, *lines: str):
-        super().write_lines(lines)
+        super().write_lines(*lines)
 
         try:
             del self.yaml_dict

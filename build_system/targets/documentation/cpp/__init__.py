@@ -9,7 +9,7 @@ from core.build_unit import BuildUnit
 from core.targets import TargetBuilder
 
 from targets.documentation.cpp.modules import CppApidocModule
-from targets.documentation.cpp.targets import ApidocCpp, ApidocIndexCpp
+from targets.documentation.cpp.targets import ApidocCpp, ApidocIndexCpp, UpdateDoxyfile
 from targets.paths import Project
 
 APIDOC_CPP = 'apidoc_cpp'
@@ -22,6 +22,8 @@ TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
     .add_build_target(APIDOC_CPP_INDEX) \
         .depends_on(APIDOC_CPP) \
         .set_runnables(ApidocIndexCpp()) \
+    .add_phony_target('update_doxyfile') \
+        .set_runnables(UpdateDoxyfile()) \
     .build()
 
 MODULES = [
