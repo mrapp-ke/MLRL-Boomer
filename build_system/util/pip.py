@@ -212,6 +212,26 @@ class RequirementsFile(TextFile, Requirements):
             [Requirement.parse(line.strip('\n').strip()) for line in self.lines if line.strip('\n').strip()]
         }
 
+    def update(self, updated_requirement: Requirement):
+        """
+        Updates a given requirement, if it is included in the requirements file.
+
+        :param updated_requirement: The requirement to be updated
+        """
+        new_lines = []
+
+        for line in self.lines:
+            new_lines.append(line)
+            line_stripped = line.strip('\n').strip()
+
+            if line_stripped:
+                requirement = Requirement.parse(line_stripped)
+
+                if requirement.package == updated_requirement.package:
+                    new_lines[-1] = str(updated_requirement) + '\n'
+
+        self.write_lines(*new_lines)
+
 
 class RequirementsFiles(Requirements):
     """
@@ -225,6 +245,15 @@ class RequirementsFiles(Requirements):
     def requirements_by_package(self) -> Dict[Package, Requirement]:
         return reduce(lambda aggr, requirements_file: aggr | requirements_file.requirements_by_package,
                       self.requirements_files, {})
+
+    def update(self, updated_requirement: Requirement):
+        """
+        Updates a given requirement, if it is included in one of the requirements files.
+
+        :param updated_requirement: The requirement to be updated
+        """
+        for requirements_file in self.requirements_files:
+            requirements_file.update(updated_requirement)
 
 
 class Pip:
