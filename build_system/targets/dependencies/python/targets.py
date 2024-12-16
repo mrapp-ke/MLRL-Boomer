@@ -34,13 +34,21 @@ class CheckPythonDependencies(PhonyTarget.Runnable):
     Installs all Python dependencies used by the project and checks for outdated ones.
     """
 
-    def __init__(self):
-        super().__init__(PythonDependencyModule.Filter())
+    def __init__(self, dependency_type: Optional[DependencyType] = None):
+        """
+        :param dependency_type: The type of the Python dependencies to be checked or None, if all dependencies should be
+                                updated
+        """
+        super().__init__(
+            PythonDependencyModule.Filter(dependency_type) if dependency_type else PythonDependencyModule.Filter())
+        self.dependency_type = dependency_type
 
     def run_all(self, build_unit: BuildUnit, modules: List[Module]):
         requirements_files = reduce(lambda aggr, module: aggr + module.find_requirements_files(), modules, [])
         pip = PipList(*requirements_files)
-        Log.info('Installing all dependencies...')
+        Log.info('Installing %s dependencies...',
+                 ('all build-time' if self.dependency_type == DependencyType.BUILD_TIME else 'all runtime')
+                 if self.dependency_type else 'all')
         pip.install_all_packages()
         Log.info('Checking for outdated dependencies...')
         outdated_dependencies = pip.list_outdated_dependencies()
