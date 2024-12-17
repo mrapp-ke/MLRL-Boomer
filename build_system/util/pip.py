@@ -324,49 +324,53 @@ class Pip:
         Allows to install requirements via the command `pip install`.
         """
 
-        def __init__(self, requirement: Requirement, dry_run: bool = False):
+        def __init__(self, *requirements: Requirement, dry_run: bool = False):
             """
-            :param requirement: The requirement be installed
+            :param requirement: The requirements to be installed
             :param dry_run:     True, if the --dry-run flag should be set, False otherwise
             """
-            super().__init__('install', str(requirement), '--upgrade', '--upgrade-strategy', 'eager', '--prefer-binary')
+            super().__init__('install', *[str(requirement) for requirement in requirements], '--upgrade',
+                             '--upgrade-strategy', 'eager', '--prefer-binary')
             self.add_conditional_arguments(dry_run, '--dry-run')
 
     @staticmethod
-    def __would_install_requirement(requirement: Requirement, stdout: str) -> bool:
+    def __would_install_requirements(stdout: str, *requirements: Requirement) -> bool:
         prefix = 'Would install'
 
         for line in stdout.split('\n'):
             if line.strip().startswith(prefix):
                 package = Package(line[len(prefix):].strip())
 
-                if package.normalized_name.find(requirement.package.normalized_name) >= 0:
-                    return True
+                for requirement in requirements:
+                    if package.normalized_name.find(requirement.package.normalized_name) >= 0:
+                        return True
 
         return False
 
     @staticmethod
-    def install_requirement(requirement: Requirement, dry_run: bool = False):
+    def install_requirements(*requirements: Requirement, dry_run: bool = False):
         """
-        Installs a requirement.
+        Installs one or several requirements.
 
-        :param requirement: The requirement to be installed
+        :param requirements:    The requirements to be installed
+        :param dry_run:         True, if pip's "--dry-run" option should be set, False otherwise
         """
-        try:
-            stdout = Pip.InstallCommand(requirement, dry_run=dry_run) \
-                .print_command(False) \
-                .exit_on_error(not dry_run) \
-                .capture_output()
+        if requirements:
+            try:
+                stdout = Pip.InstallCommand(*requirements, dry_run=dry_run) \
+                    .print_command(False) \
+                    .exit_on_error(not dry_run) \
+                    .capture_output()
 
-            if Pip.__would_install_requirement(requirement, stdout):
-                if dry_run:
-                    Pip.InstallCommand(requirement) \
-                        .print_arguments(True) \
-                        .run()
-                else:
-                    Log.info(stdout)
-        except RuntimeError:
-            Pip.install_requirement(requirement)
+                if Pip.__would_install_requirements(stdout, *requirements):
+                    if dry_run:
+                        Pip.InstallCommand(*requirements) \
+                            .print_arguments(True) \
+                            .run()
+                    else:
+                        Log.info(stdout)
+            except RuntimeError:
+                Pip.install_requirements(*requirements)
 
     def __init__(self, *requirements_files: str):
         """
@@ -395,6 +399,4 @@ class Pip:
         """
         packages = [Package(package_name) for package_name in package_names]
         requirements = self.requirements.lookup_requirements(*packages, accept_missing=accept_missing)
-
-        for requirement in requirements:
-            self.install_requirement(requirement, dry_run=True)
+        self.install_requirements(*requirements, dry_run=True)
