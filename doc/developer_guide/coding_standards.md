@@ -206,6 +206,30 @@ To ease the life of developers, the following command provided by the project's 
    ```
 ````
 
+Alternatively, the following command may be used to update the versions of outdated dependencies automatically:
+
+````{tab} Linux
+   ```text
+   ./build update_dependencies
+   ```
+````
+
+````{tab} macOS
+   ```text
+   ./build update_dependencies
+   ```
+````
+
+````{tab} Windows
+   ```
+   build.bat update_dependencies
+   ```
+````
+
+```{note}
+If you want to restrict the above commands to the build-time dependencies, required by the project's build system, or the runtime dependencies, required for running its algorithms, you can use the targets `check_build_dependencies`, `check_runtime_dependencies`, `update_build_dependencies`, and `update_runtime_dependencies` instead.
+```
+
 ### GitHub Actions
 
 Our {ref}`Continuous Integration <ci>` (CI) jobs heavily rely on so-called [Actions](https://github.com/marketplace?type=actions), which are reusable building blocks provided by third-party developers. As with all dependencies, updates to these Actions may introduce breaking changes. To reduce the risk of updates breaking our CI jobs, we pin the Actions to a certain version. Usually, we only restrict the major version required by a job, rather than specifying a specific version. This allows minor updates, which are less likely to cause problems, to take effect without manual intervention.
