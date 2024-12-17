@@ -53,8 +53,7 @@ class PipList(Pip):
         """
         Installs all dependencies in the requirements file.
         """
-        for requirement in self.requirements.requirements:
-            Pip.install_requirement(requirement, dry_run=True)
+        Pip.install_requirements(*self.requirements.requirements, dry_run=True)
 
     def list_outdated_dependencies(self) -> Set[Dependency]:
         """
