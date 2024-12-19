@@ -12,6 +12,7 @@ from mlrl.common.cython.partition_sampling cimport IRandomBiPartitionSamplingCon
 from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationConfig
 from mlrl.common.cython.probability_calibration cimport IJointProbabilityCalibrationModel, \
     IMarginalProbabilityCalibrationModel, JointProbabilityCalibrationModel, MarginalProbabilityCalibrationModel
+from mlrl.common.cython.rng cimport IRNGConfig
 from mlrl.common.cython.rule_induction cimport IBeamSearchTopDownRuleInductionConfig, IGreedyTopDownRuleInductionConfig
 from mlrl.common.cython.rule_model cimport IRuleModel, RuleModel
 from mlrl.common.cython.stopping_criterion cimport IPostPruningConfig, IPrePruningConfig, \
@@ -33,6 +34,13 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
         unique_ptr[IMarginalProbabilityCalibrationModel]& getMarginalProbabilityCalibrationModel()
 
         unique_ptr[IJointProbabilityCalibrationModel]& getJointProbabilityCalibrationModel()
+
+
+    cdef cppclass IRNGMixin:
+
+        # Functions:
+
+        IRNGConfig& useRNG()
 
 
     cdef cppclass ISequentialRuleModelAssemblageMixin:

@@ -313,7 +313,7 @@ namespace seco {
              */
             template<typename IndexVector>
             class WeightedStatisticsSubset final
-                : virtual public IWeightedStatisticsSubset,
+                : virtual public IResettableStatisticsSubset,
                   public AbstractStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
                                                   RuleEvaluationFactory, WeightVector, IndexVector> {
                 private:
@@ -329,37 +329,44 @@ namespace seco {
                 public:
 
                     /**
-                     * @param statistics    A reference to an object of type `WeightedStatistics` that stores the
-                     *                      confusion matrices
-                     * @param outputIndices A reference to an object of template type `IndexVector` that provides access
-                     *                      to the indices of the outputs that are included in the subset
+                     * @param statistics                A reference to an object of type `WeightedStatistics` that
+                     *                                  stores the confusion matrices
+                     * @param excludedStatisticIndices  A reference to an object of type `BinaryDokVector` that provides
+                     *                                  access to the indices of the statistics that should be excluded
+                     *                                  from the subset
+                     * @param outputIndices             A reference to an object of template type `IndexVector` that
+                     *                                  provides access to the indices of the outputs that are included
+                     *                                  in the subset
                      */
-                    WeightedStatisticsSubset(const WeightedStatistics& statistics, const IndexVector& outputIndices)
+                    WeightedStatisticsSubset(const WeightedStatistics& statistics,
+                                             const BinaryDokVector& excludedStatisticIndices,
+                                             const IndexVector& outputIndices)
                         : AbstractStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
                                                    RuleEvaluationFactory, WeightVector, IndexVector>(
                             statistics.labelMatrix_, statistics.coverageMatrix_, statistics.majorityLabelVector_,
                             statistics.totalSumVector_, statistics.ruleEvaluationFactory_, statistics.weights_,
                             outputIndices),
-                          subsetSumVector_(&statistics.subsetSumVector_), tmpVector_(outputIndices.getNumElements()) {}
-
-                    /**
-                     * @see `IWeightedStatisticsSubset::addToMissing`
-                     */
-                    void addToMissing(uint32 statisticIndex) override {
-                        // Allocate a vector for storing the totals sums of confusion matrices, if necessary...
-                        if (!totalCoverableSumVectorPtr_) {
+                          subsetSumVector_(&statistics.subsetSumVector_), tmpVector_(outputIndices.getNumElements()) {
+                        if (excludedStatisticIndices.getNumIndices() > 0) {
+                            // Allocate a vector for storing the totals sums of confusion matrices, if necessary...
                             totalCoverableSumVectorPtr_ = std::make_unique<ConfusionMatrixVector>(*subsetSumVector_);
                             subsetSumVector_ = totalCoverableSumVectorPtr_.get();
-                        }
 
-                        // For each output, subtract the confusion matrices of the example at the given index (weighted
-                        // by the given weight) from the total sum of confusion matrices...
-                        removeStatisticInternally(this->weights_, this->labelMatrix_, this->majorityLabelVector_,
-                                                  this->coverageMatrix_, *totalCoverableSumVectorPtr_, statisticIndex);
+                            for (auto it = excludedStatisticIndices.indices_cbegin();
+                                 it != excludedStatisticIndices.indices_cend(); it++) {
+                                // For each output, subtract the confusion matrices of the example at the given index
+                                // (weighted
+                                // by the given weight) from the total sum of confusion matrices...
+                                uint32 statisticIndex = *it;
+                                removeStatisticInternally(this->weights_, this->labelMatrix_,
+                                                          this->majorityLabelVector_, this->coverageMatrix_,
+                                                          *totalCoverableSumVectorPtr_, statisticIndex);
+                            }
+                        }
                     }
 
                     /**
-                     * @see `IWeightedStatisticsSubset::resetSubset`
+                     * @see `IResettableStatisticsSubset::resetSubset`
                      */
                     void resetSubset() override {
                         if (!accumulatedSumVectorPtr_) {
@@ -375,7 +382,7 @@ namespace seco {
                     }
 
                     /**
-                     * @see `IWeightedStatisticsSubset::calculateScoresAccumulated`
+                     * @see `IResettableStatisticsSubset::calculateScoresAccumulated`
                      */
                     const IScoreVector& calculateScoresAccumulated() override {
                         return this->ruleEvaluationPtr_->calculateScores(
@@ -384,7 +391,7 @@ namespace seco {
                     }
 
                     /**
-                     * @see `IWeightedStatisticsSubset::calculateScoresUncovered`
+                     * @see `IResettableStatisticsSubset::calculateScoresUncovered`
                      */
                     const IScoreVector& calculateScoresUncovered() override {
                         tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(),
@@ -395,7 +402,7 @@ namespace seco {
                     }
 
                     /**
-                     * @see `IWeightedStatisticsSubset::calculateScoresUncoveredAccumulated`
+                     * @see `IResettableStatisticsSubset::calculateScoresUncoveredAccumulated`
                      */
                     const IScoreVector& calculateScoresUncoveredAccumulated() override {
                         tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(),
@@ -462,14 +469,14 @@ namespace seco {
                   coverageMatrix_(statistics.coverageMatrix_) {}
 
             /**
-             * @see `IImmutableWeightedStatistics::getNumStatistics`
+             * @see `IStatisticsSpace::getNumStatistics`
              */
             uint32 getNumStatistics() const override {
                 return labelMatrix_.numRows;
             }
 
             /**
-             * @see `IImmutableWeightedStatistics::getNumOutputs`
+             * @see `IStatisticsSpace::getNumOutputs`
              */
             uint32 getNumOutputs() const override {
                 return labelMatrix_.numCols;
@@ -507,19 +514,22 @@ namespace seco {
             }
 
             /**
-             * @see `IImmutableWeightedStatistics::createSubset`
+             * @see `IStatisticsSpace::createSubset`
              */
-            std::unique_ptr<IWeightedStatisticsSubset> createSubset(
+            std::unique_ptr<IResettableStatisticsSubset> createSubset(
+              const BinaryDokVector& excludedStatisticIndices,
               const CompleteIndexVector& outputIndices) const override {
-                return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, outputIndices);
+                return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, excludedStatisticIndices,
+                                                                                       outputIndices);
             }
 
             /**
-             * @see `IImmutableWeightedStatistics::createSubset`
+             * @see `IStatisticsSpace::createSubset`
              */
-            std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-              const PartialIndexVector& outputIndices) const override {
-                return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, outputIndices);
+            std::unique_ptr<IResettableStatisticsSubset> createSubset(
+              const BinaryDokVector& excludedStatisticIndices, const PartialIndexVector& outputIndices) const override {
+                return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, excludedStatisticIndices,
+                                                                                      outputIndices);
             }
     };
 
@@ -573,6 +583,41 @@ namespace seco {
              typename RuleEvaluationFactory>
     class AbstractStatistics : virtual public ICoverageStatistics {
         private:
+
+            /**
+             * Allows updating statistics based on the predictions of a rule.
+             *
+             * @tparam Prediction The type of the predictions
+             */
+            template<typename Prediction>
+            class Update final : public IStatisticsUpdate {
+                private:
+
+                    AbstractStatistics& statistics_;
+
+                    const Prediction& prediction_;
+
+                public:
+
+                    /**
+                     * @param statistics    A reference to an object of type `AbstractStatistics` that should be used
+                     * @param prediction    The predictions of the rule
+                     */
+                    Update(AbstractStatistics& statistics, const Prediction& prediction)
+                        : statistics_(statistics), prediction_(prediction) {}
+
+                    void applyPrediction(uint32 statisticIndex) override {
+                        applyPredictionInternally(statisticIndex, prediction_, *statistics_.coverageMatrixPtr_,
+                                                  statistics_.majorityLabelVectorPtr_->cbegin(),
+                                                  statistics_.majorityLabelVectorPtr_->cend());
+                    }
+
+                    void revertPrediction(uint32 statisticIndex) override {
+                        revertPredictionInternally(statisticIndex, prediction_, *statistics_.coverageMatrixPtr_,
+                                                   statistics_.majorityLabelVectorPtr_->cbegin(),
+                                                   statistics_.majorityLabelVectorPtr_->cend());
+                    }
+            };
 
             const LabelMatrix& labelMatrix_;
 
@@ -630,39 +675,17 @@ namespace seco {
             }
 
             /**
-             * @see `IStatistics::applyPrediction`
+             * @see `IStatistics::createUpdate`
              */
-            void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
-                applyPredictionInternally<CompletePrediction, CoverageMatrix>(
-                  statisticIndex, prediction, *coverageMatrixPtr_, majorityLabelVectorPtr_->cbegin(),
-                  majorityLabelVectorPtr_->cend());
+            std::unique_ptr<IStatisticsUpdate> createUpdate(const CompletePrediction& prediction) override final {
+                return std::make_unique<Update<CompletePrediction>>(*this, prediction);
             }
 
             /**
-             * @see `IStatistics::applyPrediction`
+             * @see `IStatistics::createUpdate`
              */
-            void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
-                applyPredictionInternally<PartialPrediction, CoverageMatrix>(
-                  statisticIndex, prediction, *coverageMatrixPtr_, majorityLabelVectorPtr_->cbegin(),
-                  majorityLabelVectorPtr_->cend());
-            }
-
-            /**
-             * @see `IStatistics::revertPrediction`
-             */
-            void revertPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
-                revertPredictionInternally<CompletePrediction, CoverageMatrix>(
-                  statisticIndex, prediction, *coverageMatrixPtr_, majorityLabelVectorPtr_->cbegin(),
-                  majorityLabelVectorPtr_->cend());
-            }
-
-            /**
-             * @see `IStatistics::revertPrediction`
-             */
-            void revertPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
-                revertPredictionInternally<PartialPrediction, CoverageMatrix>(
-                  statisticIndex, prediction, *coverageMatrixPtr_, majorityLabelVectorPtr_->cbegin(),
-                  majorityLabelVectorPtr_->cend());
+            std::unique_ptr<IStatisticsUpdate> createUpdate(const PartialPrediction& prediction) override final {
+                return std::make_unique<Update<PartialPrediction>>(*this, prediction);
             }
 
             /**

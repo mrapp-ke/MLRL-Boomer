@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/iterator/diagonal_iterator.hpp"
+#include "mlrl/boosting/iterator/iterator_diagonal.hpp"
 #include "mlrl/boosting/util/dll_exports.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/data/view_matrix_composite.hpp"
@@ -54,7 +54,7 @@ namespace boosting {
             /**
              * An iterator that provides read-only access to the Hessians that correspond to the diagonal of the matrix.
              */
-            typedef DiagonalConstIterator<float64> hessian_diagonal_const_iterator;
+            typedef DiagonalIterator<const float64> hessian_diagonal_const_iterator;
 
             /**
              * Returns a `gradient_const_iterator` to the beginning of the gradients at a specific row.

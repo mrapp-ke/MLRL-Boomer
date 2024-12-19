@@ -21,6 +21,7 @@ from mlrl.common.cython.partition_sampling cimport ExampleWiseStratifiedBiPartit
     IExampleWiseStratifiedBiPartitionSamplingConfig, IOutputWiseStratifiedBiPartitionSamplingConfig, \
     IRandomBiPartitionSamplingConfig, OutputWiseStratifiedBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
 from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationConfig, SequentialPostOptimizationConfig
+from mlrl.common.cython.rng cimport IRNGConfig, RNGConfig
 from mlrl.common.cython.rule_induction cimport BeamSearchTopDownRuleInductionConfig, GreedyTopDownRuleInductionConfig, \
     IBeamSearchTopDownRuleInductionConfig, IGreedyTopDownRuleInductionConfig
 from mlrl.common.cython.stopping_criterion cimport IPostPruningConfig, IPrePruningConfig, \
@@ -49,8 +50,9 @@ from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, Defa
     NoPartitionSamplingMixin, NoPostProcessorMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, \
     NoSizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, OutputSamplingWithoutReplacementMixin, \
     ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, PostPruningMixin, \
-    PrePruningMixin, RandomBiPartitionSamplingMixin, RoundRobinOutputSamplingMixin, SequentialPostOptimizationMixin, \
-    SequentialRuleModelAssemblageMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
+    PrePruningMixin, RandomBiPartitionSamplingMixin, RNGMixin, RoundRobinOutputSamplingMixin, \
+    SequentialPostOptimizationMixin, SequentialRuleModelAssemblageMixin, SizeStoppingCriterionMixin, \
+    TimeStoppingCriterionMixin
 from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPartitionSamplingMixin, \
     ExampleWiseStratifiedInstanceSamplingMixin, OutputWiseStratifiedBiPartitionSamplingMixin, \
     OutputWiseStratifiedInstanceSamplingMixin
@@ -71,6 +73,7 @@ from mlrl.boosting.cython.learner_classification import AutomaticBinaryPredictor
 
 
 cdef class BoomerClassifierConfig(RuleLearnerConfig,
+                                  RNGMixin,
                                   AutomaticPartitionSamplingMixin,
                                   AutomaticFeatureBinningMixin,
                                   AutomaticParallelRuleRefinementMixin,
@@ -156,6 +159,12 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
 
     def __cinit__(self):
         self.config_ptr = createBoomerClassifierConfig()
+
+    def use_rng(self) -> RNGConfig:
+        cdef IRNGConfig* config_ptr = &self.config_ptr.get().useRNG()
+        cdef RNGConfig config = RNGConfig.__new__(RNGConfig)
+        config.config_ptr = config_ptr
+        return config
 
     def use_sequential_rule_model_assemblage(self):
         self.config_ptr.get().useSequentialRuleModelAssemblage()
