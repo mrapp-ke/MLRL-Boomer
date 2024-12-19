@@ -16,7 +16,7 @@ If you use the BOOMER algorithm in a scientific publication, we would appreciate
 
 ### Learning Gradient Boosted Multi-label Classification Rules
 
-The algorithm was first published in the following [paper](https://doi.org/10.1007/978-3-030-67664-3_8). A preprint version is publicly available on [arxiv.org](https://arxiv.org/pdf/2006.13346.pdf).
+The algorithm was first published in the following [paper](https://doi.org/10.1007/978-3-030-67664-3_8). A preprint version is publicly available on [arxiv.org](https://arxiv.org/pdf/2006.13346).
 
 *Michael Rapp, Eneldo Loza Mencía, Johannes Fürnkranz, Vu-Linh Nguyen and Eyke Hüllermeier. Learning Gradient Boosted Multi-label Classification Rules. In: Proceedings of the European Conference on Machine Learning and Knowledge Discovery (ECML-PKDD), pages 124-140, 2020, Springer.*
 
@@ -33,7 +33,7 @@ The algorithm was first published in the following [paper](https://doi.org/10.10
 
 ### Gradient-based Label Binning in Multi-label Classification
 
-Gradient-based label binning (GBLB), which is an extension to the original algorithm, was proposed in the following [paper](https://doi.org/10.1007/978-3-030-86523-8_28). A preprint version is available on [arxiv.org](https://arxiv.org/pdf/2106.11690.pdf).
+Gradient-based label binning (GBLB), which is an extension to the original algorithm, was proposed in the following [paper](https://doi.org/10.1007/978-3-030-86523-8_28). A preprint version is available on [arxiv.org](https://arxiv.org/pdf/2106.11690).
 
 *Michael Rapp, Eneldo Loza Mencía, Johannes Fürnkranz and Eyke Hüllermeier. Gradient-based Label Binning in Multi-label Classification. In: Proceedings of the European Conference on Machine Learning and Knowledge Discovery in Databases (ECML-PKDD), pages 462-477, 2021, Springer.*
 
@@ -68,7 +68,7 @@ A technical report on the implementation of the BOOMER algorithm was published f
 
 ### Multi-label Rule Learning
 
-An extensive discussion of the BOOMER algorithm, including a presentation of the conceptual framework it is based on, as well as a detailed explanation of several implementation details, can be found in the following [Ph.D. thesis](https://tuprints.ulb.tu-darmstadt.de/id/eprint/22099).
+An extensive discussion of the BOOMER algorithm, including a presentation of the conceptual framework it is based on, as well as a detailed explanation of several implementation details, can be found in the following [Ph.D. thesis](https://doi.org/10.26083/tuprints-00022099).
 
 *Michael Rapp. Multi-label Rule Learning, 2022, Technische Universität Darmstadt.*
 
@@ -109,18 +109,18 @@ If you are the author of a paper that you would like to be presented in this sec
 
 ### pRSL: Interpretable Multi-label Stacking by Learning Probabilistic Rules
 
-The BOOMER algorithm was used as a baseline in the experimental study that is included in the following paper, where a probabilistic rule stacking learner, which uses probabilistic propositional logic rules and belief propagation to combine the predictions of several classifiers, is proposed. A preprint of the paper is available at [arxiv.org](https://arxiv.org/pdf/2105.13850.pdf).
+The BOOMER algorithm was used as a baseline in the experimental study that is included in the following paper, where a probabilistic rule stacking learner, which uses probabilistic propositional logic rules and belief propagation to combine the predictions of several classifiers, is proposed. A preprint of the paper is available at [arxiv.org](https://arxiv.org/pdf/2105.13850).
 
 *Michael Kirchhof, Lena Schmid, Christopher Reining, Michael ten Hompel and Markus Pauly. pRSL: Interpretable Multi-label Stacking by Learning Probabilistic Rules. In: Proceedings of the Conference on Uncertainty in Artificial Intelligence (UAI), pages 461-470, 2021, PMLR.*
 
 ### Correlation-based Discovery of Disease Patterns for Syndromic Surveillance
 
-In the following [paper](https://www.frontiersin.org/article/10.3389/fdata.2021.784159), a novel rule learning approach for discovering syndrome definitions for the early detection of infectious diseases is presented. The implementation of the proposed method, which is available at [GitHub](https://github.com/mrapp-ke/SyndromeLearner), is based on this project's source code. A preprint of the paper is available at [arxiv.org](https://arxiv.org/pdf/2110.09208.pdf).
+In the following [paper](https://doi.org/10.3389/fdata.2021.784159), a novel rule learning approach for discovering syndrome definitions for the early detection of infectious diseases is presented. The implementation of the proposed method, which is available at [GitHub](https://github.com/mrapp-ke/SyndromeLearner), is based on this project's source code. A preprint of the paper is available at [arxiv.org](https://arxiv.org/pdf/2110.09208).
 
 *Michael Rapp, Moritz Kulessa, Eneldo Loza Mencía and Johannes Fürnkranz. Correlation-based Discovery of Disease Patterns for Syndromic Surveillance. In: Frontiers in Big Data (4), 2021, Frontiers Media SA.*
 
 ### A Flexible Class of Dependence-aware Multi-label Loss Functions
 
-In the following [paper](https://link.springer.com/article/10.1007/s10994-021-06107-2), the predictive performance of the BOOMER algorithm in terms of a family of novel multi-label evaluation measures is compared experimentally to several competitors. A preprint of the paper is available at [arxiv.org](https://arxiv.org/pdf/2011.00792.pdf).
+In the following [paper](https://doi.org/10.1007/s10994-021-06107-2), the predictive performance of the BOOMER algorithm in terms of a family of novel multi-label evaluation measures is compared experimentally to several competitors. A preprint of the paper is available at [arxiv.org](https://arxiv.org/pdf/2011.00792).
 
 *Eyke Hüllermeier, Marcel Wever, Eneldo Loza Mencía, Johannes Fürnkranz and Michael Rapp. A Flexible Class of Dependence-aware Multi-label Loss Functions. In: Machine Learning (111), pages 713-737, 2022, Springer.*

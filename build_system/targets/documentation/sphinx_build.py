@@ -16,12 +16,13 @@ class SphinxBuild(Program):
     Allows to run the external program "sphinx-build".
     """
 
-    def __init__(self, build_unit: BuildUnit, module: CppApidocModule):
+    def __init__(self, build_unit: BuildUnit, module: CppApidocModule, builder: str = 'html'):
         """
         :param build_unit:  The build unit from which the program should be run
         :param module:      The module, the program should be applied to
+        :param builder:     The Sphinx builder to be used
         """
-        super().__init__('sphinx-build', '--jobs', 'auto', module.root_directory,
+        super().__init__('sphinx-build', '--builder', builder, module.root_directory,
                          path.join(module.output_directory, 'html'))
         self.module = module
         self.print_arguments(True)

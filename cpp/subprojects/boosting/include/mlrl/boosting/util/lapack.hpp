@@ -49,7 +49,7 @@ namespace boosting {
 
             /**
              * Computes and returns the solution to a linear system A * X = B using LAPACK's DSYSV solver (see
-             * http://www.netlib.org/lapack/explore-html/d6/d0e/group__double_s_ysolve_ga9995c47692c9885ed5d6a6b431686f41.html).
+             * https://www.netlib.org/lapack/explore-html/d8/ddb/group__hesv_ga480a0e2d5cd7e1e85e674762ea2426f8.html#ga480a0e2d5cd7e1e85e674762ea2426f8).
              *
              * The function `queryDsysvLworkParameter` must be run beforehand to determine the optimal value for the
              * parameter "lwork" and to allocate a temporary array depending on this value.

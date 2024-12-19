@@ -31,9 +31,9 @@ namespace seco {
              * must be equal to or greater than 0. If a rule does not cover any elements, i.e., if
              * `CIN + CIP + CRN + CRP == 0`, the worst possible quality 0 must be returned.
              *
-             * According to the notation in http://www.ke.tu-darmstadt.de/bibtex/publications/show/3201, a confusion
-             * matrix consists of 8 elements, namely CIN, CIP, CRN, CRP, UIN, UIP, URN and URP. The individual symbols
-             * used in this notation have the following meaning:
+             * According to the notation in https://ke-tud.github.io/bibtex/attachments/single/432, a confusion matrix
+             * consists of 8 elements, namely CIN, CIP, CRN, CRP, UIN, UIP, URN and URP. The individual symbols used in
+             * this notation have the following meaning:
              *
              * - The first symbol denotes whether the corresponding labels are covered (C) or uncovered (U) by the rule.
              * - The second symbol denotes relevant (R) or irrelevant (I) labels according to the ground truth.
