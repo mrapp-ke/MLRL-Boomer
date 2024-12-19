@@ -57,7 +57,7 @@ jobs:
               - *build_files
               - 'build_system/targets/compilation/cython/*'
               - 'build_system/targets/testing/python/*'
-              - 'python/requirements.txt'
+              - 'python/**/requirements.txt'
               - 'python/**/mlrl/**'
             python_tests: &python_tests
               - *python
