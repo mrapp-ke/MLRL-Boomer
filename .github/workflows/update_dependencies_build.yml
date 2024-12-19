@@ -43,7 +43,7 @@ jobs:
       - name: Update build dependencies
         run: |
           ./build update_build_dependencies
-          git add **/requirements.txt
+          git add build_system/**/requirements.txt
       - name: Submit pull request
         id: pull-request
         uses: peter-evans/create-pull-request@v7
