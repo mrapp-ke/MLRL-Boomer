@@ -286,7 +286,7 @@ The wheel packages that have previously been created can finally be installed in
    ```
 ````
 
-After this final step has completed, the Python packages can be used from within the virtual environment once it has been [activated](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#activating-a-virtual-environment). To ensure that the installation of the wheel packages was successful, check if a `mlrl/` directory has been created in the `lib/` directory of the virtual environment (depending on the Python version, it should be located at `venv/lib/python3.10/site-packages/mlrl/` or similar). If this is the case, the algorithm can be used from within your own Python code. Alternatively, the command line API can be used to start an experiment (see {ref}`testbed`).
+After this final step has completed, the Python packages can be used from within the virtual environment once it has been [activated](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#activate-a-virtual-environment). To ensure that the installation of the wheel packages was successful, check if a `mlrl/` directory has been created in the `lib/` directory of the virtual environment (depending on the Python version, it should be located at `venv/lib/python3.10/site-packages/mlrl/` or similar). If this is the case, the algorithm can be used from within your own Python code. Alternatively, the command line API can be used to start an experiment (see {ref}`testbed`).
 
 ## Cleaning up Build Files
 
@@ -334,7 +334,7 @@ If you want to delete all compilation files that have previously been created, i
 
 ## Build Options
 
-Certain functionalities of the project can be enabled or disabled at compile-time via so-called build options. They can be specified in the configuration file [cpp/subprojects/common/meson.options](https://github.com/mrapp-ke/MLRL-Boomer/tree/main/cpp/subprojects/common/meson.options) or set via environment variables.
+Certain functionalities of the project can be enabled or disabled at compile-time via so-called build options. They can be specified in the configuration file {repo-file}`meson.options <cpp/subprojects/common/meson.options>` or set via environment variables.
 
 (testing-support)=
 

@@ -88,6 +88,7 @@ class BuildDocumentation(BuildTarget.Runnable):
 
     def run(self, build_unit: BuildUnit, module: Module):
         Log.info('Generating documentation for directory "%s"...', module.root_directory)
+        SphinxBuild(build_unit, module, builder='linkcheck').run()
         SphinxBuild(build_unit, module).run()
 
     def get_input_files(self, module: Module) -> List[str]:

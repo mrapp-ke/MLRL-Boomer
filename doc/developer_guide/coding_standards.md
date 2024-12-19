@@ -65,10 +65,10 @@ The unit and integration tests are run automatically via {ref}`Continuous Integr
 
 We aim to enforce a consistent code style across the entire project. For this purpose, we employ the following tools:
 
-- For formatting the C++ code, we use [clang-format](https://clang.llvm.org/docs/ClangFormat.html). The desired C++ code style is defined in the file `build_system/code_style/cpp/.clang-format`. In addition, [cpplint](https://github.com/cpplint/cpplint) is used for static code analysis. It is configured according to the `.cpplint.cfg` files located in the directory `cpp` and its subdirectories.
-- We use [YAPF](https://github.com/google/yapf) to enforce the Python code style defined in the file `build_system/code_style/python/.style.yapf`. In addition, [isort](https://github.com/PyCQA/isort) is used to keep the ordering of imports in Python and Cython source files consistent according to the configuration file `build_system/code_style/python/.isort.cfg` and [pylint](https://pylint.org/) is used to check for common issues in the Python code according to the configuration file `build_system/code_style/python/.pylintrc`.
-- For applying a consistent style to Markdown files, including those used for writing the documentation, we use [mdformat](https://github.com/executablebooks/mdformat).
-- We apply [yamlfix](https://github.com/lyz-code/yamlfix) to YAML files to enforce the code style defined in the file `build_system/code_style/yaml/.yamlfix.toml`.
+- For formatting the C++ code, we use [clang-format](https://clang.llvm.org/docs/ClangFormat.html). The desired C++ code style is defined in the file {repo-file}`.clang-format <build_system/targets/code_style/cpp/.clang-format>`. In addition, [cpplint](https://github.com/cpplint/cpplint) is used for static code analysis. It is configured according to the file {repo-file}`.cpplint.cfg <cpp/.cpplint.cfg>`.
+- We use [YAPF](https://github.com/google/yapf) to enforce the Python code style defined in the file {repo-file}`.style.yapf <build_system/targets/code_style/python/.style.yapf>`. In addition, [isort](https://github.com/PyCQA/isort) is used to keep the ordering of imports in Python and Cython source files consistent according to the configuration file {repo-file}`.isort.cfg <build_system/targets/code_style/python/.isort.cfg>` and [pylint](https://pylint.org/) is used to check for common issues in the Python code according to the configuration file {repo-file}`.pylintrc <build_system/targets/code_style/python/.pylintrc>`.
+- For applying a consistent style to Markdown files, including those used for writing the documentation, we use [mdformat](https://github.com/hukkin/mdformat).
+- We apply [yamlfix](https://github.com/lyz-code/yamlfix) to YAML files to enforce the code style defined in the file {repo-file}`.yamlfix.toml <build_system/targets/code_style/yaml/.yamlfix.toml>`.
 
 If you have modified the project's source code, you can check whether it adheres to our coding standards via the following command:
 
@@ -160,19 +160,19 @@ We do not allow directly pushing to the above branches. Instead, all changes mus
 
 ### Downstream Merges
 
-Once modifications to one of the branches have been merged, {ref}`Continuous Integration <ci>` jobs are used to automatically update downstream branches via pull requests. If all checks for such pull requests are successful, they are merged automatically. If there are any merge conflicts, they must be resolved manually. Following this procedure, changes to the feature branch are merged into the main branch, whereas changes to the bugfix branch are first merged into the feature branch and then into the main branch (see description of `merge_feature.yml` and `merge_bugfix.yml` in {ref}`ci-releases`).
+Once modifications to one of the branches have been merged, {ref}`Continuous Integration <ci>` jobs are used to automatically update downstream branches via pull requests. If all checks for such pull requests are successful, they are merged automatically. If there are any merge conflicts, they must be resolved manually. Following this procedure, changes to the feature branch are merged into the main branch, whereas changes to the bugfix branch are first merged into the feature branch and then into the main branch (see description of {repo-file}`merge_feature.yml <.github/workflows/merge_feature.yml>` and {repo-file}`merge_bugfix.yml <.github/workflows/merge_bugfix.yml>` in {ref}`ci-releases`).
 
 (triggering-releases)=
 
 ### Triggering Releases
 
-We use a {ref}`Continuous Integration <ci>` job for triggering a new release, including the changes of one of the branches mentioned above (see description of `release.yml` in {ref}`ci-releases`). Depending on the release branch, the job automatically collects the corresponding changelog entries from the files `.changelog-main.md`, `.changelog-feature.md`, and `.changelog-bugfix.md` and updates the file `CHANGELOG.md` in the project's root directory accordingly. Afterward, it will publish the new release on GitHub, which will in turn trigger the publishing of pre-built packages (see description of `publish.yml` in {ref}`ci-publishing`).
+We use a {ref}`Continuous Integration <ci>` job for triggering a new release, including the changes of one of the branches mentioned above (see description of {repo-file}`release.yml <.github/workflows/release.yml>` in {ref}`ci-releases`). Depending on the release branch, the job automatically collects the corresponding changelog entries from the files {repo-file}`.changelog-main.md`, {repo-file}`.changelog-feature.md`, and {repo-file}`.changelog-bugfix.md` and updates the file {repo-file}`CHANGELOG.md` in the project's root directory accordingly. Afterward, it will publish the new release on GitHub, which will in turn trigger the publishing of pre-built packages (see description of {repo-file}`publish.yml <.github/workflows/publish.yml>` in {ref}`ci-publishing`).
 
 (upstream-merges)=
 
 ### Upstream Merges
 
-Whenever a new release has been published, the release branch is merged into the upstream branches (see description of `merge_release.yml` in {ref}`ci-releases`), i.e., major releases result in the feature and bugfix branches being updated, whereas minor releases result in the bugfix branch being updated. The version of the release branch and the affected branches are updated accordingly. The file `.version` in the project's root directory specifies the version of each of these branches. Similarly, the file `.version-dev` keeps track of the version number used for development releases (see description of `publish_development.yml` in {ref}`ci-publishing`).
+Whenever a new release has been published, the release branch is merged into the upstream branches (see description of {repo-file}`merge_release.yml <.github/workflows/merge_release.yml>` in {ref}`ci-releases`), i.e., major releases result in the feature and bugfix branches being updated, whereas minor releases result in the bugfix branch being updated. The version of the release branch and the affected branches are updated accordingly. The file {repo-file}`.version` in the project's root directory specifies the version of each of these branches. Similarly, the file {repo-file}`.version-dev` keeps track of the version number used for development releases (see description of {repo-file}`publish_development.yml <.github/workflows/publish_development.yml>` in {ref}`ci-publishing`).
 
 (dependencies)=
 
@@ -232,7 +232,7 @@ If you want to restrict the above commands to the build-time dependencies, requi
 
 ### GitHub Actions
 
-Our {ref}`Continuous Integration <ci>` (CI) jobs heavily rely on so-called [Actions](https://github.com/marketplace?type=actions), which are reusable building blocks provided by third-party developers. As with all dependencies, updates to these Actions may introduce breaking changes. To reduce the risk of updates breaking our CI jobs, we pin the Actions to a certain version. Usually, we only restrict the major version required by a job, rather than specifying a specific version. This allows minor updates, which are less likely to cause problems, to take effect without manual intervention.
+Our {ref}`Continuous Integration <ci>` (CI) jobs heavily rely on so-called [Actions](https://docs.github.com/actions/sharing-automations/reusing-workflows), which are reusable building blocks provided by third-party developers. As with all dependencies, updates to these Actions may introduce breaking changes. To reduce the risk of updates breaking our CI jobs, we pin the Actions to a certain version. Usually, we only restrict the major version required by a job, rather than specifying a specific version. This allows minor updates, which are less likely to cause problems, to take effect without manual intervention.
 
 The project's build system allows to automatically check for outdated Actions used by the project's CI jobs. The following command prints a list of all outdated Actions:
 
