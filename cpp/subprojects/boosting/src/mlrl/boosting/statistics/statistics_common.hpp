@@ -136,12 +136,12 @@ namespace boosting {
      *                                  statistics
      */
     template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory, typename WeightVector>
-    class AbstractImmutableWeightedStatistics : virtual public IImmutableWeightedStatistics {
+    class AbstractWeightedStatistics : virtual public IStatisticsSpace {
         protected:
 
             /**
              * An abstract base class for all subsets of the gradients and Hessians that are stored by an instance of
-             * the class `AbstractImmutableWeightedStatistics`.
+             * the class `AbstractWeightedStatistics`.
              *
              * @tparam IndexVector The type of the vector that provides access to the indices of the outputs that are
              *                     included in the subset
@@ -150,7 +150,7 @@ namespace boosting {
             class AbstractWeightedStatisticsSubset
                 : public StatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector,
                                           IndexVector>,
-                  virtual public IWeightedStatisticsSubset {
+                  virtual public IResettableStatisticsSubset {
                 private:
 
                     StatisticVector tmpVector_;
@@ -168,14 +168,14 @@ namespace boosting {
                 public:
 
                     /**
-                     * @param statistics        A reference to an object of type `AbstractImmutableWeightedStatistics`
-                     *                          that stores the gradients and Hessians
+                     * @param statistics        A reference to an object of type `AbstractWeightedStatistics` that
+                     *                          stores the gradients and Hessians
                      * @param totalSumVector    A reference to an object of template type `StatisticVector` that stores
                      *                          the total sums of gradients and Hessians
                      * @param outputIndices     A reference to an object of template type `IndexVector` that provides
                      *                          access to the indices of the outputs that are included in the subset
                      */
-                    AbstractWeightedStatisticsSubset(const AbstractImmutableWeightedStatistics& statistics,
+                    AbstractWeightedStatisticsSubset(const AbstractWeightedStatistics& statistics,
                                                      const StatisticVector& totalSumVector,
                                                      const IndexVector& outputIndices)
                         : StatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector,
@@ -184,7 +184,7 @@ namespace boosting {
                           tmpVector_(outputIndices.getNumElements()), totalSumVector_(&totalSumVector) {}
 
                     /**
-                     * @see `IWeightedStatisticsSubset::resetSubset`
+                     * @see `IResettableStatisticsSubset::resetSubset`
                      */
                     void resetSubset() override final {
                         if (!accumulatedSumVectorPtr_) {
@@ -202,14 +202,14 @@ namespace boosting {
                     }
 
                     /**
-                     * @see `IWeightedStatisticsSubset::calculateScoresAccumulated`
+                     * @see `IResettableStatisticsSubset::calculateScoresAccumulated`
                      */
                     const IScoreVector& calculateScoresAccumulated() override final {
                         return this->ruleEvaluationPtr_->calculateScores(*accumulatedSumVectorPtr_);
                     }
 
                     /**
-                     * @see `IWeightedStatisticsSubset::calculateScoresUncovered`
+                     * @see `IResettableStatisticsSubset::calculateScoresUncovered`
                      */
                     const IScoreVector& calculateScoresUncovered() override final {
                         tmpVector_.difference(*totalSumVector_, this->outputIndices_, this->sumVector_);
@@ -217,7 +217,7 @@ namespace boosting {
                     }
 
                     /**
-                     * @see `IWeightedStatisticsSubset::calculateScoresUncoveredAccumulated`
+                     * @see `IResettableStatisticsSubset::calculateScoresUncoveredAccumulated`
                      */
                     const IScoreVector& calculateScoresUncoveredAccumulated() override final {
                         tmpVector_.difference(*totalSumVector_, this->outputIndices_, *accumulatedSumVectorPtr_);
@@ -255,20 +255,19 @@ namespace boosting {
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
              */
-            AbstractImmutableWeightedStatistics(const StatisticView& statisticView,
-                                                const RuleEvaluationFactory& ruleEvaluationFactory,
-                                                const WeightVector& weights)
+            AbstractWeightedStatistics(const StatisticView& statisticView,
+                                       const RuleEvaluationFactory& ruleEvaluationFactory, const WeightVector& weights)
                 : statisticView_(statisticView), ruleEvaluationFactory_(ruleEvaluationFactory), weights_(weights) {}
 
             /**
-             * @see `IImmutableWeightedStatistics::getNumStatistics`
+             * @see `IStatisticsSpace::getNumStatistics`
              */
             uint32 getNumStatistics() const override final {
                 return statisticView_.numRows;
             }
 
             /**
-             * @see `IImmutableWeightedStatistics::getNumOutputs`
+             * @see `IStatisticsSpace::getNumOutputs`
              */
             uint32 getNumOutputs() const override final {
                 return statisticView_.numCols;
@@ -314,9 +313,9 @@ namespace boosting {
      *                                  statistics
      */
     template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory, typename WeightVector>
-    class WeightedStatistics final : virtual public IWeightedStatistics,
-                                     public AbstractImmutableWeightedStatistics<StatisticVector, StatisticView,
-                                                                                RuleEvaluationFactory, WeightVector> {
+    class WeightedStatistics final
+        : virtual public IWeightedStatistics,
+          public AbstractWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector> {
         private:
 
             /**
@@ -328,7 +327,7 @@ namespace boosting {
              */
             template<typename IndexVector>
             class WeightedStatisticsSubset final
-                : public AbstractImmutableWeightedStatistics<
+                : public AbstractWeightedStatistics<
                     StatisticVector, StatisticView, RuleEvaluationFactory,
                     WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector> {
                 private:
@@ -338,35 +337,40 @@ namespace boosting {
                 public:
 
                     /**
-                     * @param statistics        A reference to an object of type `WeightedStatistics` that stores the
-                     *                          gradients and Hessians
-                     * @param totalSumVector    A reference to an object of template type `StatisticVector` that stores
-                     *                          the total sums of gradients and Hessians
-                     * @param outputIndices     A reference to an object of template type `IndexVector` that provides
-                     *                          access to the indices of the outputs that are included in the subset
+                     * @param statistics                A reference to an object of type `WeightedStatistics` that
+                     *                                  stores the gradients and Hessians
+                     * @param totalSumVector            A reference to an object of template type `StatisticVector` that
+                     *                                  stores the total sums of gradients and Hessians
+                     * @param excludedStatisticIndices  A reference to an object of type `BinaryDokVector` that provides
+                     *                                  access to the indices of the statistics that should be excluded
+                     *                                  from the subset
+                     * @param outputIndices             A reference to an object of template type `IndexVector` that
+                     *                                  provides access to the indices of the outputs that are included
+                     *                                  in the subset
                      */
                     WeightedStatisticsSubset(const WeightedStatistics& statistics,
-                                             const StatisticVector& totalSumVector, const IndexVector& outputIndices)
-                        : AbstractImmutableWeightedStatistics<
+                                             const StatisticVector& totalSumVector,
+                                             const BinaryDokVector& excludedStatisticIndices,
+                                             const IndexVector& outputIndices)
+                        : AbstractWeightedStatistics<
                             StatisticVector, StatisticView, RuleEvaluationFactory,
                             WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector>(statistics,
                                                                                                   totalSumVector,
-                                                                                                  outputIndices) {}
-
-                    /**
-                     * @see `IWeightedStatisticsSubset::addToMissing`
-                     */
-                    void addToMissing(uint32 statisticIndex) override {
-                        // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
-                        if (!totalCoverableSumVectorPtr_) {
+                                                                                                  outputIndices) {
+                        if (excludedStatisticIndices.getNumIndices() > 0) {
+                            // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
                             totalCoverableSumVectorPtr_ = std::make_unique<StatisticVector>(*this->totalSumVector_);
                             this->totalSumVector_ = totalCoverableSumVectorPtr_.get();
-                        }
 
-                        // Subtract the gradients and Hessians of the example at the given index (weighted by the given
-                        // weight) from the total sums of gradients and Hessians...
-                        removeStatisticInternally(this->weights_, this->statisticView_, *totalCoverableSumVectorPtr_,
-                                                  statisticIndex);
+                            for (auto it = excludedStatisticIndices.indices_cbegin();
+                                 it != excludedStatisticIndices.indices_cend(); it++) {
+                                // Subtract the gradients and Hessians of the example at the given index (weighted by
+                                // the given weight) from the total sums of gradients and Hessians...
+                                uint32 statisticIndex = *it;
+                                removeStatisticInternally(this->weights_, this->statisticView_,
+                                                          *totalCoverableSumVectorPtr_, statisticIndex);
+                            }
+                        }
                     }
             };
 
@@ -385,8 +389,8 @@ namespace boosting {
              */
             WeightedStatistics(const StatisticView& statisticView, const RuleEvaluationFactory& ruleEvaluationFactory,
                                const WeightVector& weights)
-                : AbstractImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                      WeightVector>(statisticView, ruleEvaluationFactory, weights),
+                : AbstractWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector>(
+                    statisticView, ruleEvaluationFactory, weights),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(statisticView.numCols, true)) {
                 uint32 numStatistics = weights.getNumElements();
 
@@ -399,8 +403,7 @@ namespace boosting {
              * @param statistics A reference to an object of type `WeightedStatistics` to be copied
              */
             WeightedStatistics(const WeightedStatistics& statistics)
-                : AbstractImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                      WeightVector>(
+                : AbstractWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector>(
                     statistics.statisticView_, statistics.ruleEvaluationFactory_, statistics.weights_),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(*statistics.totalSumVectorPtr_)) {}
 
@@ -434,21 +437,22 @@ namespace boosting {
             }
 
             /**
-             * @see `IImmutableWeightedStatistics::createSubset`
+             * @see `IWeightedStatistics::createSubset`
              */
-            std::unique_ptr<IWeightedStatisticsSubset> createSubset(
+            std::unique_ptr<IResettableStatisticsSubset> createSubset(
+              const BinaryDokVector& excludedStatisticIndices,
               const CompleteIndexVector& outputIndices) const override {
-                return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, *totalSumVectorPtr_,
-                                                                                       outputIndices);
+                return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(
+                  *this, *totalSumVectorPtr_, excludedStatisticIndices, outputIndices);
             }
 
             /**
-             * @see `IImmutableWeightedStatistics::createSubset`
+             * @see `IWeightedStatistics::createSubset`
              */
-            std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-              const PartialIndexVector& outputIndices) const override {
-                return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, *totalSumVectorPtr_,
-                                                                                      outputIndices);
+            std::unique_ptr<IResettableStatisticsSubset> createSubset(
+              const BinaryDokVector& excludedStatisticIndices, const PartialIndexVector& outputIndices) const override {
+                return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(
+                  *this, *totalSumVectorPtr_, excludedStatisticIndices, outputIndices);
             }
     };
 
@@ -485,6 +489,41 @@ namespace boosting {
     template<typename OutputMatrix, typename StatisticVector, typename StatisticMatrix, typename ScoreMatrix,
              typename LossFunction, typename EvaluationMeasure, typename RuleEvaluationFactory>
     class AbstractStatistics : virtual public IBoostingStatistics {
+        private:
+
+            /**
+             * Allows updating statistics based on the predictions of a rule.
+             *
+             * @tparam Prediction The type of the predictions
+             */
+            template<typename Prediction>
+            class Update final : public IStatisticsUpdate {
+                private:
+
+                    AbstractStatistics& statistics_;
+
+                    const Prediction& prediction_;
+
+                public:
+
+                    /**
+                     * @param statistics    A reference to an object of type `AbstractStatistics` that should be used
+                     * @param prediction    The predictions of the rule
+                     */
+                    Update(AbstractStatistics& statistics, const Prediction& prediction)
+                        : statistics_(statistics), prediction_(prediction) {}
+
+                    void applyPrediction(uint32 statisticIndex) override {
+                        applyPredictionInternally(statisticIndex, prediction_, *statistics_.scoreMatrixPtr_);
+                        statistics_.updateStatistics(statisticIndex, prediction_);
+                    }
+
+                    void revertPrediction(uint32 statisticIndex) override {
+                        revertPredictionInternally(statisticIndex, prediction_, *statistics_.scoreMatrixPtr_);
+                        statistics_.updateStatistics(statisticIndex, prediction_);
+                    }
+            };
+
         protected:
 
             /**
@@ -574,35 +613,17 @@ namespace boosting {
             }
 
             /**
-             * @see `IStatistics::applyPrediction`
+             * @see `IStatistics::createUpdate`
              */
-            void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
-                applyPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                this->updateStatistics(statisticIndex, prediction);
+            std::unique_ptr<IStatisticsUpdate> createUpdate(const CompletePrediction& prediction) override final {
+                return std::make_unique<Update<CompletePrediction>>(*this, prediction);
             }
 
             /**
-             * @see `IStatistics::applyPrediction`
+             * @see `IStatistics::createUpdate`
              */
-            void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
-                applyPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                this->updateStatistics(statisticIndex, prediction);
-            }
-
-            /**
-             * @see `IStatistics::revertPrediction`
-             */
-            void revertPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
-                revertPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                this->updateStatistics(statisticIndex, prediction);
-            }
-
-            /**
-             * @see `IStatistics::revertPrediction`
-             */
-            void revertPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
-                revertPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                this->updateStatistics(statisticIndex, prediction);
+            std::unique_ptr<IStatisticsUpdate> createUpdate(const PartialPrediction& prediction) override final {
+                return std::make_unique<Update<PartialPrediction>>(*this, prediction);
             }
 
             /**

@@ -8,12 +8,19 @@
 #include "mlrl/common/rule_refinement/score_processor.hpp"
 
 #include <memory>
+#include <utility>
 
 /**
  * An abstract base class for all classes that implement an algorithm for the induction of individual rules.
  */
 class AbstractRuleInduction : public IRuleInduction {
     private:
+
+        const std::unique_ptr<IRuleRefinement> ruleRefinementPtr_;
+
+        const std::unique_ptr<IRulePruning> rulePruningPtr_;
+
+        const std::unique_ptr<IPostProcessor> postProcessorPtr_;
 
         const bool recalculatePredictions_;
 
@@ -22,6 +29,8 @@ class AbstractRuleInduction : public IRuleInduction {
         /**
          * Must be implemented by subclasses in order to grow a rule.
          *
+         * @param ruleRefinement    A reference to an object of type `IRuleRefinement` that should be used to search for
+         *                          refinements
          * @param featureSpace      A reference to an object of type `IFeatureSpace` that provides access to the feature
          *                          space
          * @param outputIndices     A reference to an object of type `IIndexVector` that provides access to the indices
@@ -33,8 +42,6 @@ class AbstractRuleInduction : public IRuleInduction {
          *                          respectively
          * @param featureSampling   A reference to an object of type `IFeatureSampling` that should be used for sampling
          *                          the features that may be used by a new condition
-         * @param rng               A reference to an object of type `RNG` that implements the random number generator
-         *                          to be used
          * @param conditionListPtr  A reference to an unique pointer of type `ConditionList` that should be used to
          *                          store the conditions of the rule
          * @param headPtr           A reference to an unique pointer of type `IEvaluatedPrediction` that should be used
@@ -42,20 +49,28 @@ class AbstractRuleInduction : public IRuleInduction {
          * @return                  An unique pointer to an object of type `IFeatureSubspace` that has been used to
          *                          grow the rule
          */
-        virtual std::unique_ptr<IFeatureSubspace> growRule(IFeatureSpace& featureSpace,
-                                                           const IIndexVector& outputIndices,
-                                                           const IWeightVector& weights, IPartition& partition,
-                                                           IFeatureSampling& featureSampling, RNG& rng,
-                                                           std::unique_ptr<ConditionList>& conditionListPtr,
-                                                           std::unique_ptr<IEvaluatedPrediction>& headPtr) const = 0;
+        virtual std::unique_ptr<IFeatureSubspace> growRule(
+          const IRuleRefinement& ruleRefinement, IFeatureSpace& featureSpace, const IIndexVector& outputIndices,
+          const IWeightVector& weights, IPartition& partition, IFeatureSampling& featureSampling,
+          std::unique_ptr<ConditionList>& conditionListPtr, std::unique_ptr<IEvaluatedPrediction>& headPtr) const = 0;
 
     public:
 
         /**
-         * @param recalculatePredictions True, if the predictions of rules should be recalculated on all training
-         *                               examples, if some of the examples have zero weights, false otherwise
+         * @param ruleRefinementPtr         An unique pointer to an object of type `IRuleRefinement` to be used for
+         *                                  searching for the best refinements of existing rules
+         * @param rulePruningPtr            An unique pointer to an object of type `IRulePruning` to be used for pruning
+         *                                  rules
+         * @param postProcessorPtr          An unique pointer to an object of type `IPostProcessor` to be used for
+         *                                  post-processing the predictions of rules
+         * @param recalculatePredictions    True, if the predictions of rules should be recalculated on all training
+         *                                  examples, if some of the examples have zero weights, false otherwise
          */
-        explicit AbstractRuleInduction(bool recalculatePredictions) : recalculatePredictions_(recalculatePredictions) {}
+        explicit AbstractRuleInduction(std::unique_ptr<IRuleRefinement> ruleRefinementPtr,
+                                       std::unique_ptr<IRulePruning> rulePruningPtr,
+                                       std::unique_ptr<IPostProcessor> postProcessorPtr, bool recalculatePredictions)
+            : ruleRefinementPtr_(std::move(ruleRefinementPtr)), rulePruningPtr_(std::move(rulePruningPtr)),
+              postProcessorPtr_(std::move(postProcessorPtr)), recalculatePredictions_(recalculatePredictions) {}
 
         virtual ~AbstractRuleInduction() override {}
 
@@ -75,21 +90,24 @@ class AbstractRuleInduction : public IRuleInduction {
             ScoreProcessor scoreProcessor(defaultPredictionPtr);
             scoreProcessor.processScores(scoreVector);
 
+            std::unique_ptr<IStatisticsUpdate> statisticsUpdatePtr =
+              defaultPredictionPtr->createStatisticsUpdate(statistics);
+
             for (uint32 i = 0; i < numStatistics; i++) {
-                defaultPredictionPtr->apply(statistics, i);
+                statisticsUpdatePtr->applyPrediction(i);
             }
 
             modelBuilder.setDefaultRule(defaultPredictionPtr);
         }
 
         bool induceRule(IFeatureSpace& featureSpace, const IIndexVector& outputIndices, const IWeightVector& weights,
-                        IPartition& partition, IFeatureSampling& featureSampling, const IRulePruning& rulePruning,
-                        const IPostProcessor& postProcessor, RNG& rng,
+                        IPartition& partition, IFeatureSampling& featureSampling,
                         IModelBuilder& modelBuilder) const override final {
             std::unique_ptr<ConditionList> conditionListPtr;
             std::unique_ptr<IEvaluatedPrediction> headPtr;
-            std::unique_ptr<IFeatureSubspace> featureSubspacePtr = this->growRule(
-              featureSpace, outputIndices, weights, partition, featureSampling, rng, conditionListPtr, headPtr);
+            std::unique_ptr<IFeatureSubspace> featureSubspacePtr =
+              this->growRule(*ruleRefinementPtr_, featureSpace, outputIndices, weights, partition, featureSampling,
+                             conditionListPtr, headPtr);
 
             if (headPtr) {
                 if (weights.hasZeroWeights()) {
@@ -97,7 +115,7 @@ class AbstractRuleInduction : public IRuleInduction {
                     IStatisticsProvider& statisticsProvider = featureSpace.getStatisticsProvider();
                     statisticsProvider.switchToPruningRuleEvaluation();
                     std::unique_ptr<CoverageMask> coverageMaskPtr =
-                      rulePruning.prune(*featureSubspacePtr, partition, *conditionListPtr, *headPtr);
+                      rulePruningPtr_->prune(*featureSubspacePtr, partition, *conditionListPtr, *headPtr);
                     statisticsProvider.switchToRegularRuleEvaluation();
 
                     // Re-calculate the scores in the head based on the entire training data...
@@ -109,7 +127,7 @@ class AbstractRuleInduction : public IRuleInduction {
                 }
 
                 // Apply post-processor...
-                headPtr->postProcess(postProcessor);
+                headPtr->postProcess(*postProcessorPtr_);
 
                 // Update the statistics by applying the predictions of the new rule...
                 featureSubspacePtr->applyPrediction(*headPtr);

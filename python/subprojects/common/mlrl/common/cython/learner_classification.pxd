@@ -25,7 +25,7 @@ cdef extern from "mlrl/common/learner_classification.hpp" nogil:
         # Functions:
 
         unique_ptr[ITrainingResult] fit(const IFeatureInfo& featureInfo, const IColumnWiseFeatureMatrix& featureMatrix,
-                                        const IRowWiseLabelMatrix& labelMatrix, uint32 randomState) const
+                                        const IRowWiseLabelMatrix& labelMatrix) const
 
         bool canPredictScores(const IRowWiseFeatureMatrix&  featureMatrix, uint32 numLabels) const
 

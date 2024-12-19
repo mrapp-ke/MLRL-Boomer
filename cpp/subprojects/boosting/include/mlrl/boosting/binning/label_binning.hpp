@@ -113,7 +113,7 @@ namespace boosting {
     };
 
     /**
-     * Defines an interface for all factories that allows to create instances of the type `ILabelBinning`.
+     * Defines an interface for all factories that allow to create instances of the type `ILabelBinning`.
      */
     class ILabelBinningFactory {
         public:
