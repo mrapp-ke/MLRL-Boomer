@@ -334,7 +334,7 @@ If you want to delete all compilation files that have previously been created, i
 
 ## Build Options
 
-Certain functionalities of the project can be enabled or disabled at compile-time via so-called build options. They can be specified in the configuration file [cpp/subprojects/common/meson.options](https://github.com/mrapp-ke/MLRL-Boomer/blob/main/cpp/subprojects/common/meson.options) or set via environment variables.
+Certain functionalities of the project can be enabled or disabled at compile-time via so-called build options. They can be specified in the configuration file {repo-file}`meson.options <cpp/subprojects/common/meson.options>` or set via environment variables.
 
 (testing-support)=
 

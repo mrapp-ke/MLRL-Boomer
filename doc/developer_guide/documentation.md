@@ -58,7 +58,7 @@ By running the following command, the C++ API documentation is generated via Dox
    ```
 ````
 
-The resulting HTML files should be located in the directory `doc/apidoc/api/cpp/`.
+The resulting HTML files should be located in the directory `doc/developer_guide/api/cpp/`.
 
 ## Building the Python Apidocs
 
@@ -81,6 +81,8 @@ Similarly, the following command generates an API documentation from the project
    build.bat apidoc_python
    ```
 ````
+
+The files produced by the above command should be saved to the directory `doc/developer_guide/api/python/`.
 
 ```{note}
 If you want to generate the API documentation for the C++ and Python code simulatenously, it is possible to use the build target `apidoc` instead of `apidoc_cpp` and `apidoc_python`.
