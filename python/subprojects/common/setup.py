@@ -128,7 +128,7 @@ setup(name='mlrl-common',
       ],
       python_requires=PYTHON_VERSION,
       install_requires=[
-          find_dependencies(requirements_file=Path(__file__).resolve().parent.parent.parent / 'requirements.txt',
+          find_dependencies(requirements_file=Path(__file__).resolve().parent / 'requirements.txt',
                             dependency_names=['numpy', 'scipy', 'scikit-learn']),
       ],
       packages=find_packages(),

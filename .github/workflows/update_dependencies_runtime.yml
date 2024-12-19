@@ -43,7 +43,7 @@ jobs:
       - name: Update runtime dependencies
         run: |
           ./build update_runtime_dependencies
-          git add **/requirements.txt
+          git add python/**/requirements.txt
       - name: Submit pull request
         id: pull-request
         uses: peter-evans/create-pull-request@v7

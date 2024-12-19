@@ -66,7 +66,7 @@ setup(name='mlrl-testbed',
       python_requires=PYTHON_VERSION,
       install_requires=[
           'mlrl-common==' + VERSION,
-          *find_dependencies(requirements_file=Path(__file__).resolve().parent.parent.parent / 'requirements.txt',
+          *find_dependencies(requirements_file=Path(__file__).resolve().parent / 'requirements.txt',
                              dependency_names=['liac-arff', 'tabulate']),
       ],
       extras_require={
