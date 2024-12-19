@@ -6,8 +6,8 @@
 #include "mlrl/common/rule_evaluation/score_vector.hpp"
 
 /**
- * Defines an interface for all classes that provide access to a subset of the statistics that are stored by an instance
- * of the class `IStatistics` and allows to calculate the scores to be predicted by rules that cover such a subset.
+ * Defines an interface for all classes that provide access to a subset of the statistics and allows to calculate the
+ * scores to be predicted by rules that cover such a subset.
  */
 class IStatisticsSubset {
     public:
@@ -26,8 +26,8 @@ class IStatisticsSubset {
          * currently considered for refining a rule.
          *
          * This function must be called repeatedly for each statistic that is covered by the current condition,
-         * immediately after the invocation of the function `IImmutableWeightedStatistics::createSubset`. If a rule has
-         * already been refined, each of these statistics must have been marked as covered earlier via the function
+         * immediately after the invocation of the function `IWeightedStatistics::createSubset`. If a rule has already
+         * been refined, each of these statistics must have been marked as covered earlier via the function
          * `IWeightedStatistics::addCoveredStatistic` and must not have been marked as uncovered via the function
          * `IWeightedStatistics::removeCoveredStatistic`.
          *

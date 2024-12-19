@@ -15,10 +15,10 @@ namespace boosting {
     }
 
     AutomaticPartitionSamplingConfig::AutomaticPartitionSamplingConfig(
-      ReadableProperty<IGlobalPruningConfig> globalPruningConfig,
+      ReadableProperty<RNGConfig> rngConfig, ReadableProperty<IGlobalPruningConfig> globalPruningConfig,
       ReadableProperty<IMarginalProbabilityCalibratorConfig> marginalProbabilityCalibratorConfig,
       ReadableProperty<IJointProbabilityCalibratorConfig> jointProbabilityCalibratorConfig)
-        : globalPruningConfig_(globalPruningConfig),
+        : rngConfig_(rngConfig), globalPruningConfig_(globalPruningConfig),
           marginalProbabilityCalibratorConfig_(marginalProbabilityCalibratorConfig),
           jointProbabilityCalibratorConfig_(jointProbabilityCalibratorConfig) {}
 
@@ -26,7 +26,8 @@ namespace boosting {
       AutomaticPartitionSamplingConfig::createClassificationPartitionSamplingFactory() const {
         if (shouldUseHoldoutSet(globalPruningConfig_.get(), marginalProbabilityCalibratorConfig_.get(),
                                 jointProbabilityCalibratorConfig_.get())) {
-            return OutputWiseStratifiedBiPartitionSamplingConfig().createClassificationPartitionSamplingFactory();
+            return OutputWiseStratifiedBiPartitionSamplingConfig(rngConfig_)
+              .createClassificationPartitionSamplingFactory();
         }
 
         return NoPartitionSamplingConfig().createClassificationPartitionSamplingFactory();
@@ -36,7 +37,7 @@ namespace boosting {
       AutomaticPartitionSamplingConfig::createRegressionPartitionSamplingFactory() const {
         if (shouldUseHoldoutSet(globalPruningConfig_.get(), marginalProbabilityCalibratorConfig_.get(),
                                 jointProbabilityCalibratorConfig_.get())) {
-            return RandomBiPartitionSamplingConfig().createRegressionPartitionSamplingFactory();
+            return RandomBiPartitionSamplingConfig(rngConfig_).createRegressionPartitionSamplingFactory();
         }
 
         return NoPartitionSamplingConfig().createRegressionPartitionSamplingFactory();

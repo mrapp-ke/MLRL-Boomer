@@ -5,7 +5,8 @@
 
 #include "mlrl/common/input/interval.hpp"
 #include "mlrl/common/rule_refinement/coverage_mask.hpp"
-#include "mlrl/common/rule_refinement/feature_based_search.hpp"
+#include "mlrl/common/rule_refinement/refinement_comparator_fixed.hpp"
+#include "mlrl/common/rule_refinement/refinement_comparator_single.hpp"
 #include "mlrl/common/statistics/statistics_weighted.hpp"
 
 #include <memory>
@@ -20,47 +21,69 @@ class IFeatureVector {
         virtual ~IFeatureVector() {}
 
         /**
+         * Creates and returns an `IResettableStatisticsSubset` based on given statistics and this feature vector.
+         *
+         * @param statistics    A reference to an object of type `IWeightedStatisticss`, the subset should be based on
+         * @param outputIndices A reference to an object of type `CompleteIndexVector` that provides access to the
+         *                      indices of the outputs that should be included in the subset
+         * @return              An unique pointer to an object of type `IResettableStatisticsSubset` that has been
+         *                      created
+         */
+        virtual std::unique_ptr<IResettableStatisticsSubset> createStatisticsSubset(
+          const IWeightedStatistics& statistics, const CompleteIndexVector& outputIndices) const = 0;
+
+        /**
+         * Creates and returns an `IResettableStatisticsSubset` based on given statistics and this feature vector.
+         *
+         * @param statistics    A reference to an object of type `IWeightedStatisticss`, the subset should be based on
+         * @param outputIndices A reference to an object of type `PartialIndexVector` that provides access to the
+         *                      indices of the outputs that should be included in the subset
+         * @return              An unique pointer to an object of type `IResettableStatisticsSubset` that has been
+         *                      created
+         */
+        virtual std::unique_ptr<IResettableStatisticsSubset> createStatisticsSubset(
+          const IWeightedStatistics& statistics, const PartialIndexVector& outputIndices) const = 0;
+
+        /**
          * Conducts a search for the best refinement of an existing rule that can be created from a this feature vector.
          *
-         * @param featureBasedSearch            A reference to an object of type `FeatureBasedSearch` that should be
-         *                                      used for conducting the search
-         * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
-         *                                      provides access to weighted statistics about the quality of predictions
-         *                                      for training examples, which should serve as the basis for evaluating
-         *                                      the quality of potential refinements
          * @param comparator                    A reference to an object of type `SingleRefinementComparator` that
          *                                      should be used for comparing potential refinements
+         * @param statistics                    A reference to an object of type `IWeightedStatistics` that provides
+         *                                      access to weighted statistics about the quality of predictions for
+         *                                      training examples, which should serve as the basis for evaluating the
+         *                                      quality of potential refinements
+         * @param outputIndices                 A reference to an object of type `IIndexVector` that provides access to
+         *                                      the indices of the outputs for which refinements should predict
          * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
          *                                      by a refinement
          * @param minCoverage                   The minimum number of examples that must be covered by the refinement
          * @param refinement                    A reference to an object of type `Refinement` that should be used for
          *                                      storing the properties of the best refinement that is found
          */
-        virtual void searchForRefinement(FeatureBasedSearch& featureBasedSearch,
-                                         IWeightedStatisticsSubset& statisticsSubset,
-                                         SingleRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+        virtual void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
+                                         const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                          uint32 minCoverage, Refinement& refinement) const = 0;
 
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a this feature vector.
          *
-         * @param featureBasedSearch            A reference to an object of type `FeatureBasedSearch` that should be
-         *                                      used for conducting the search
-         * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
-         *                                      provides access to weighted statistics about the quality of predictions
-         *                                      for training examples, which should serve as the basis for evaluating
-         *                                      the quality of potential refinements
          * @param comparator                    A reference to an object of type `MultiRefinementComparator` that should
          *                                      be used for comparing potential refinements
+         * @param statistics                    A reference to an object of type `IWeightedStatistics` that provides
+         *                                      access to weighted statistics about the quality of predictions for
+         *                                      training examples, which should serve as the basis for evaluating the
+         *                                      quality of potential refinements
+         * @param outputIndices                 A reference to an object of type `IIndexVector` that provides access to
+         *                                      the indices of the outputs for which refinements should predict
          * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
          *                                      by a refinement
          * @param minCoverage                   The minimum number of examples that must be covered by the refinement
          * @param refinement                    A reference to an object of type `Refinement` that should be used for
          *                                      storing the properties of the best refinement that is found
          */
-        virtual void searchForRefinement(FeatureBasedSearch& featureBasedSearch,
-                                         IWeightedStatisticsSubset& statisticsSubset,
-                                         FixedRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+        virtual void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
+                                         const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                          uint32 minCoverage, Refinement& refinement) const = 0;
 
         /**
