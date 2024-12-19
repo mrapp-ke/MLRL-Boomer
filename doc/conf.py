@@ -33,6 +33,7 @@ extensions = [
     'breathe',
     'myst_parser',
     'sphinx.ext.autodoc',
+    'sphinx.ext.extlinks',
     'sphinx.ext.intersphinx',
     'sphinxext.opengraph',
     'sphinx_inline_tabs',
@@ -49,6 +50,12 @@ intersphinx_mapping = {
     'sklearn': ('https://scikit-learn.org/stable/', None),
     'scipy': ('https://docs.scipy.org/doc/scipy/', None),
     'numpy': ('https://numpy.org/doc/stable/', None),
+}
+
+# Aliases for external links
+extlinks = {
+    'repo-file': ('https://github.com/mrapp-ke/MLRL-Boomer/blob/main/%s', '%s'),
+    'repo-dir': ('https://github.com/mrapp-ke/MLRL-Boomer/tree/main/%s', '%s'),
 }
 
 # Breathe configuration
