@@ -52,6 +52,7 @@ class BoomerClassifier(ClassificationRuleLearner, ClassifierMixin):
                  parallel_statistic_update: Optional[str] = None,
                  parallel_prediction: Optional[str] = None):
         """
+        :param random_state:                        The seed to be used by RNGs. Must be at least 1
         :param statistic_format:                    The format to be used for representation of gradients and Hessians.
                                                     Must be 'dense', 'sparse' or 'auto', if the most suitable format
                                                     should be chosen automatically
@@ -144,7 +145,8 @@ class BoomerClassifier(ClassificationRuleLearner, ClassifierMixin):
                                                     parallel or not. Must be 'true' or 'false'. For additional options
                                                     refer to the documentation
         """
-        super().__init__(random_state, feature_format, output_format, prediction_format)
+        super().__init__(feature_format, output_format, prediction_format)
+        self.random_state = random_state
         self.statistic_format = statistic_format
         self.default_rule = default_rule
         self.rule_induction = rule_induction
@@ -211,6 +213,7 @@ class BoomerRegressor(RegressionRuleLearner, RegressorMixin):
                  parallel_statistic_update: Optional[str] = None,
                  parallel_prediction: Optional[str] = None):
         """
+        :param random_state:                    The seed to be used by RNGs. Must be at least 1
         :param statistic_format:                The format to be used for representation of gradients and Hessians. Must
                                                 be 'dense', 'sparse' or 'auto', if the most suitable format should be
                                                 chosen automatically
@@ -277,7 +280,8 @@ class BoomerRegressor(RegressionRuleLearner, RegressorMixin):
                                                 parallel or not. Must be 'true' or 'false'. For additional options refer
                                                 to the documentation
         """
-        super().__init__(random_state, feature_format, output_format, prediction_format)
+        super().__init__(feature_format, output_format, prediction_format)
+        self.random_state = random_state
         self.statistic_format = statistic_format
         self.default_rule = default_rule
         self.rule_induction = rule_induction

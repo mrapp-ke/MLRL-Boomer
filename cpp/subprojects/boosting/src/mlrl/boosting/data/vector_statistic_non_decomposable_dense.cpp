@@ -55,12 +55,12 @@ namespace boosting {
 
     DenseNonDecomposableStatisticVector::hessian_diagonal_const_iterator
       DenseNonDecomposableStatisticVector::hessians_diagonal_cbegin() const {
-        return DiagonalConstIterator<float64>(this->hessians_cbegin(), 0);
+        return hessian_diagonal_const_iterator(View<const float64>(this->hessians_cbegin()), 0);
     }
 
     DenseNonDecomposableStatisticVector::hessian_diagonal_const_iterator
       DenseNonDecomposableStatisticVector::hessians_diagonal_cend() const {
-        return DiagonalConstIterator<float64>(this->hessians_cbegin(), this->getNumHessians());
+        return hessian_diagonal_const_iterator(View<const float64>(this->hessians_cbegin()), this->getNumHessians());
     }
 
     uint32 DenseNonDecomposableStatisticVector::getNumGradients() const {

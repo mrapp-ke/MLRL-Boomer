@@ -18,7 +18,7 @@ cdef extern from "mlrl/common/learner_regression.hpp" nogil:
         # Functions:
 
         unique_ptr[ITrainingResult] fit(const IFeatureInfo& featureInfo, const IColumnWiseFeatureMatrix& featureMatrix,
-                                        const IRowWiseRegressionMatrix& regressionMatrix, uint32 randomState) const
+                                        const IRowWiseRegressionMatrix& regressionMatrix) const
 
         bool canPredictScores(const IRowWiseFeatureMatrix&  featureMatrix, uint32 numLabels) const
 
