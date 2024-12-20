@@ -504,6 +504,15 @@ class FileType:
         return FileType(name='YAML', suffixes={'yaml', 'yml'})
 
     @staticmethod
+    def toml() -> 'FileType':
+        """
+        Creates and returns a `FileType` that corresponds to TOML files.
+
+        :return: The `FileType` that has been created
+        """
+        return FileType(name='TOML', suffixes={'toml'})
+
+    @staticmethod
     def extension_module() -> 'FileType':
         """
         Creates and returns a `FileType` that corresponds to shared libraries.

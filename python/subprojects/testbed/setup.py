@@ -32,37 +32,7 @@ def find_dependencies(requirements_file, dependency_names):
     return dependencies
 
 
-setup(name='mlrl-testbed',
-      version=VERSION,
-      description='Provides utilities for the training and evaluation of machine learning algorithms',
-      long_description=(Path(__file__).resolve().parent / 'README.md').read_text(),
-      long_description_content_type='text/markdown',
-      author='Michael Rapp',
-      author_email='michael.rapp.ml@gmail.com',
-      url='https://github.com/mrapp-ke/MLRL-Boomer',
-      download_url='https://github.com/mrapp-ke/MLRL-Boomer/releases',
-      project_urls={
-          'Documentation': 'https://mlrl-boomer.readthedocs.io/en/latest',
-          'Issue Tracker': 'https://github.com/mrapp-ke/MLRL-Boomer/issues',
-      },
-      license='MIT',
-      classifiers=[
-          'Development Status :: 5 - Production/Stable',
-          'Intended Audience :: Science/Research',
-          'License :: OSI Approved :: MIT License',
-          'Programming Language :: Python :: 3',
-          'Operating System :: OS Independent',
-          'Topic :: Scientific/Engineering :: Artificial Intelligence',
-          'Topic :: Software Development :: Libraries :: Python Modules',
-      ],
-      keywords=[
-          'machine learning',
-          'scikit-learn',
-          'multi-label classification',
-          'rule learning',
-          'evaluation',
-      ],
-      platforms=['any'],
+setup(version=VERSION,
       python_requires=PYTHON_VERSION,
       install_requires=[
           'mlrl-common==' + VERSION,
@@ -73,6 +43,4 @@ setup(name='mlrl-testbed',
           'BOOMER': ['mlrl-boomer==' + VERSION],
           'SECO': ['mlrl-seco==' + VERSION],
       },
-      packages=find_packages(),
-      entry_points={'console_scripts': ['testbed=mlrl.testbed.main:main', ]},
-      zip_safe=True)
+      packages=find_packages())
