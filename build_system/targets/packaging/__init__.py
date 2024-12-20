@@ -28,7 +28,7 @@ TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
 
 MODULES = [
     PythonPackageModule(
-        root_directory=path.dirname(setup_file),
+        root_directory=path.dirname(file),
         wheel_directory_name=Project.Python.wheel_directory_name,
-    ) for setup_file in Project.Python.file_search().filter_by_name('setup.py').list(Project.Python.root_directory)
+    ) for file in Project.Python.file_search().filter_by_name('pyproject.toml').list(Project.Python.root_directory)
 ]
