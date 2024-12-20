@@ -66,45 +66,7 @@ def find_extensions(directory):
     return extensions
 
 
-setup(name='mlrl-seco',
-      version=VERSION,
-      description='A scikit-learn implementation of a separate-and-conquer multi-label rule learning algorithm',
-      long_description=(Path(__file__).resolve().parent / 'README.md').read_text(),
-      long_description_content_type='text/markdown',
-      author='Michael Rapp',
-      author_email='michael.rapp.ml@gmail.com',
-      url='https://github.com/mrapp-ke/MLRL-Boomer',
-      download_url='https://github.com/mrapp-ke/MLRL-Boomer/releases',
-      project_urls={
-          'Documentation': 'https://mlrl-boomer.readthedocs.io/en/latest',
-          'Issue Tracker': 'https://github.com/mrapp-ke/MLRL-Boomer/issues',
-      },
-      license='MIT',
-      classifiers=[
-          'Development Status :: 5 - Production/Stable',
-          'Intended Audience :: Science/Research',
-          'License :: OSI Approved :: MIT License',
-          'Programming Language :: C++',
-          'Programming Language :: Cython',
-          'Programming Language :: Python :: 3',
-          'Operating System :: POSIX :: Linux',
-          'Operating System :: MacOS',
-          'Operating System :: Microsoft :: Windows',
-          'Topic :: Scientific/Engineering :: Artificial Intelligence',
-          'Topic :: Software Development :: Libraries :: Python Modules',
-      ],
-      keywords=[
-          'machine learning',
-          'scikit-learn',
-          'multi-label classification',
-          'rule learning',
-          'separate-and-conquer',
-      ],
-      platforms=[
-          'Linux',
-          'MacOS',
-          'Windows',
-      ],
+setup(version=VERSION,
       python_requires=PYTHON_VERSION,
       install_requires=[
           'mlrl-common==' + VERSION,
@@ -114,5 +76,4 @@ setup(name='mlrl-seco',
       },
       packages=find_packages(),
       ext_modules=find_extensions('mlrl'),
-      cmdclass={'build_ext': PrecompiledExtensionBuilder},
-      zip_safe=True)
+      cmdclass={'build_ext': PrecompiledExtensionBuilder})

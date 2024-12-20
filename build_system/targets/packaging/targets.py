@@ -35,7 +35,13 @@ class BuildPythonWheels(BuildTarget.Runnable):
         file_search = Project.Python.file_search() \
             .set_symlinks(False) \
             .exclude_subdirectories_by_name(Project.Python.test_directory_name) \
-            .filter_by_file_type(FileType.python(), FileType.extension_module(), FileType.shared_library())
+            .filter_by_file_type(
+                FileType.python(),
+                FileType.markdown(),
+                FileType.toml(),
+                FileType.extension_module(),
+                FileType.shared_library(),
+            )
         return file_search.list(module.root_directory)
 
     def get_output_files(self, module: Module) -> List[str]:
