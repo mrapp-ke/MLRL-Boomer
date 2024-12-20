@@ -27,10 +27,10 @@ TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
     .build()
 
 MODULES = [
-    PythonApidocModule(root_directory=path.dirname(setup_file),
+    PythonApidocModule(root_directory=path.dirname(file),
                        output_directory=path.join(Project.Documentation.apidoc_directory, 'python',
-                                                  path.basename(path.dirname(setup_file))),
+                                                  path.basename(path.dirname(file))),
                        source_directory_name='mlrl',
                        source_file_search=Project.Python.file_search())
-    for setup_file in Project.Python.file_search().filter_by_name('setup.py').list(Project.Python.root_directory)
+    for file in Project.Python.file_search().filter_by_name('pyproject.toml').list(Project.Python.root_directory)
 ]
