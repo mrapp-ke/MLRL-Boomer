@@ -19,7 +19,7 @@ class Build(PythonModule):
         :param build_unit:  The build unit from which the program should be run
         :param module:      The module, the program should be applied to
         """
-        super().__init__('build', '--no-isolation', '--wheel', module.root_directory)
+        super().__init__('build', '--wheel', module.root_directory)
         self.print_arguments(True)
-        self.add_dependencies('wheel', 'setuptools')
+        self.add_dependencies('wheel')
         self.set_build_unit(build_unit)
