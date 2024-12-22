@@ -16,11 +16,6 @@ class ApidocModule(Module, ABC):
     generated.
     """
 
-    class Filter(Module.Filter, ABC):
-        """
-        A filter that matches modules of type `ApidocModule`.
-        """
-
     def __init__(self, output_directory: str):
         """
         :param output_directory: The path to the directory where the API documentation should be stored

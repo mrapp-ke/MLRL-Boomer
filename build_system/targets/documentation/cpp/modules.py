@@ -17,7 +17,7 @@ class CppApidocModule(ApidocModule):
     A module that provides access to C++ code for which an API documentation can be generated.
     """
 
-    class Filter(ApidocModule.Filter):
+    class Filter(Module.Filter):
         """
         A filter that matches modules of type `CppApidocModule`.
         """

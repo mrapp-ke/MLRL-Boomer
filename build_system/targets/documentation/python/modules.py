@@ -17,7 +17,7 @@ class PythonApidocModule(ApidocModule):
     A module that provides access to Python code for which an API documentation can be generated.
     """
 
-    class Filter(ApidocModule.Filter):
+    class Filter(Module.Filter):
         """
         A filter that matches modules of type `PythonApidocModule`.
         """
