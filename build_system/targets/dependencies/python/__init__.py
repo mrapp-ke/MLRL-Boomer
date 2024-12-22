@@ -34,9 +34,4 @@ MODULES = [
         root_directory=Project.Python.root_directory,
         requirements_file_search=Project.Python.file_search(),
     ),
-    PythonDependencyModule(
-        dependency_type=DependencyType.BUILD_TIME,
-        root_directory=Project.Documentation.root_directory,
-        requirements_file_search=Project.Documentation.file_search(),
-    ),
 ]
