@@ -31,7 +31,6 @@ MODULES = [
         root_directory=path.dirname(meson_file),
         output_directory=path.join(Project.Documentation.apidoc_directory, 'cpp',
                                    path.basename(path.dirname(meson_file))),
-        project_name=path.basename(path.dirname(meson_file)),
         include_directory_name='include',
     ) for meson_file in Project.Cpp.file_search().filter_by_name('meson.build').list(Project.Cpp.root_directory)
     if path.isdir(path.join(path.dirname(meson_file), 'include'))
