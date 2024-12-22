@@ -6,11 +6,11 @@ Provides classes that provide access to a Sphinx documentation.
 from abc import ABC, abstractmethod
 from typing import List
 
-from core.modules import Module
+from core.modules import Module, SubprojectModule
 from util.files import FileSearch
 
 
-class ApidocModule(Module, ABC):
+class ApidocModule(SubprojectModule, ABC):
     """
     An abstract base class for all modules that provide access to source code for which an API documentation can be
     generated.
