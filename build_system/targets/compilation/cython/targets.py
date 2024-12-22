@@ -6,7 +6,7 @@ Implements targets for compiling Cython code.
 from typing import List
 
 from core.build_unit import BuildUnit
-from core.modules import Module
+from core.modules import Module, SubprojectModule
 from core.targets import BuildTarget, PhonyTarget
 from util.files import FileType
 from util.log import Log
@@ -18,7 +18,7 @@ from targets.compilation.modules import CompilationModule
 MODULE_FILTER = CompilationModule.Filter(FileType.cython())
 
 BUILD_OPTIONS = BuildOptions() \
-        .add(EnvBuildOption(name='subprojects'))
+        .add(EnvBuildOption(name=SubprojectModule.ENV_SUBPROJECTS.lower()))
 
 
 class SetupCython(BuildTarget.Runnable):
