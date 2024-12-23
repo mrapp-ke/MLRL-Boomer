@@ -6,8 +6,10 @@ Provides classes that provide access to a Sphinx documentation.
 from abc import ABC, abstractmethod
 from typing import List
 
-from core.modules import Module, SubprojectModule
+from core.modules import Module
 from util.files import FileSearch
+
+from targets.modules import SubprojectModule
 
 
 class ApidocModule(SubprojectModule, ABC):

@@ -5,8 +5,9 @@ Implements modules that provide access to automated tests for Python code.
 """
 from os import environ, path
 
-from core.modules import Module, SubprojectModule
+from core.modules import Module
 
+from targets.modules import SubprojectModule
 from targets.testing.modules import TestModule
 
 
