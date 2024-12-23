@@ -33,7 +33,7 @@ MODULES = [
     ),
 ] + [
     PythonDependencyModule(dependency_type=DependencyType.RUNTIME,
-                           root_directory=path.dirname(file),
+                           root_directory=subproject,
                            requirements_file_search=Project.Python.file_search())
-    for file in Project.Python.file_search().filter_by_name('pyproject.toml').list(Project.Python.root_directory)
+    for subproject in Project.Python.find_subprojects()
 ]
