@@ -37,7 +37,7 @@ jobs:
               - 'build_system/main.py'
               - 'build_system/core/**'
               - 'build_system/util/**'
-              - 'build_system/targets/paths.py'
+              - 'build_system/targets/*.py'
             cpp: &cpp
               - *build_files
               - 'build_system/targets/documentation/cpp/*'
@@ -45,7 +45,7 @@ jobs:
             python: &python
               - *build_files
               - 'build_system/targets/documentation/python/*'
-              - 'python/**/mlrl/**'
+              - 'python/subprojects/**/mlrl/**'
             doc: &doc
               - *build_files
               - 'build_system/targets/documentation/*'
