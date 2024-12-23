@@ -6,10 +6,11 @@ Implements modules that provide access to Python code for which an API documenta
 from os import environ, path
 from typing import List
 
-from core.modules import Module, SubprojectModule
+from core.modules import Module
 from util.files import FileSearch, FileType
 
 from targets.documentation.modules import ApidocModule
+from targets.modules import SubprojectModule
 
 
 class PythonApidocModule(ApidocModule):

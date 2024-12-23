@@ -6,8 +6,10 @@ Implements modules that provide access to Python code that can be built as wheel
 from os import environ, path
 from typing import List
 
-from core.modules import Module, SubprojectModule
+from core.modules import Module
 from util.files import FileSearch
+
+from targets.modules import SubprojectModule
 
 
 class PythonPackageModule(SubprojectModule):

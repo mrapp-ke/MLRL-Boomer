@@ -7,8 +7,10 @@ from enum import Enum
 from os import environ, path
 from typing import List
 
-from core.modules import Module, SubprojectModule
+from core.modules import Module
 from util.files import FileSearch
+
+from targets.modules import SubprojectModule
 
 
 class DependencyType(Enum):

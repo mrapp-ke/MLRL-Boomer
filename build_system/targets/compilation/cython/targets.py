@@ -6,7 +6,7 @@ Implements targets for compiling Cython code.
 from typing import List
 
 from core.build_unit import BuildUnit
-from core.modules import Module, SubprojectModule
+from core.modules import Module
 from core.targets import BuildTarget, PhonyTarget
 from util.files import FileType
 from util.log import Log
@@ -14,6 +14,7 @@ from util.log import Log
 from targets.compilation.build_options import BuildOptions, EnvBuildOption
 from targets.compilation.meson import MesonCompile, MesonConfigure, MesonInstall, MesonSetup
 from targets.compilation.modules import CompilationModule
+from targets.modules import SubprojectModule
 
 MODULE_FILTER = CompilationModule.Filter(FileType.cython())
 
