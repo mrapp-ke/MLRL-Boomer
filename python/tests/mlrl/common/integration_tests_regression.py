@@ -36,6 +36,9 @@ class RegressionIntegrationTests(IntegrationTests, ABC):
 
     @classmethod
     def setUpClass(cls):
+        """
+        Sets up the test class.
+        """
         if cls is RegressionIntegrationTests:
             raise SkipTest(cls.__name__ + ' is an abstract base class')
 

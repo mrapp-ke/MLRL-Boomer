@@ -58,6 +58,9 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
 
     @classmethod
     def setUpClass(cls):
+        """
+        Sets up the test class.
+        """
         if cls is IntegrationTests:
             raise SkipTest(cls.__name__ + ' is an abstract base class')
         if not platform.startswith('linux'):
@@ -66,6 +69,9 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         super().setUpClass()
 
     def on_assertion_failure(self, message: str):
+        """
+        See `CmdBuilder.AssertionCallback.on_assertion_failure`.
+        """
         self.fail(message)
 
     def test_single_output(self):

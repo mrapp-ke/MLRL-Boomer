@@ -36,6 +36,9 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
 
     @classmethod
     def setUpClass(cls):
+        """
+        Sets up the test class.
+        """
         if cls is ClassificationIntegrationTests:
             raise SkipTest(cls.__name__ + ' is an abstract base class')
 
