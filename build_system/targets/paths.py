@@ -117,6 +117,19 @@ class Project:
                 .set_recursive(True) \
                 .exclude_subdirectories_by_name(Project.Cpp.build_directory_name)
 
+        @staticmethod
+        def find_subprojects() -> Set[str]:
+            """
+            Finds and returns the paths to all C++ subprojects.
+
+            :return: A set that contains the paths to all subprojects that have been found
+            """
+            return {
+                path.dirname(meson_file)
+                for meson_file in Project.Cpp.file_search().filter_by_name('meson.build').list(
+                    Project.Cpp.root_directory)
+            }
+
     class Documentation:
         """
         Provides paths within the project's documentation.
