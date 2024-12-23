@@ -51,7 +51,6 @@ class Project:
         Attributes:
             root_directory:                     The path to the Python code's root directory
             build_directory_name:               The name of the Python code's build directory
-            test_directory_name:                The name fo the directory that contains tests
             wheel_directory_name:               The name of the directory that contains wheel packages
             wheel_metadata_directory_suffix:    The suffix of the directory that contains the metadata of wheel packages
         """
@@ -59,8 +58,6 @@ class Project:
         root_directory = 'python'
 
         build_directory_name = 'build'
-
-        test_directory_name = 'tests'
 
         wheel_directory_name = 'dist'
 
