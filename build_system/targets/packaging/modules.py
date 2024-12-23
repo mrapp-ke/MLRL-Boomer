@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements modules that provide access to Python code that can be built as wheel packages.
 """
-from os import path
+from os import environ, path
 from typing import List
 
 from core.modules import Module, SubprojectModule
@@ -21,7 +21,7 @@ class PythonPackageModule(SubprojectModule):
         """
 
         def matches(self, module: Module) -> bool:
-            return isinstance(module, PythonPackageModule) and SubprojectModule.Filter.from_env().matches(module)
+            return isinstance(module, PythonPackageModule) and SubprojectModule.Filter.from_env(environ).matches(module)
 
     def __init__(self, root_directory: str, wheel_directory_name: str):
         """
