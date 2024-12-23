@@ -6,11 +6,11 @@ Implements modules that provide access to Python code that can be built as wheel
 from os import path
 from typing import List
 
-from core.modules import Module
+from core.modules import Module, SubprojectModule
 from util.files import FileSearch
 
 
-class PythonPackageModule(Module):
+class PythonPackageModule(SubprojectModule):
     """
     A module that provides access to Python code that can be built as wheel packages.
     """
@@ -21,7 +21,7 @@ class PythonPackageModule(Module):
         """
 
         def matches(self, module: Module) -> bool:
-            return isinstance(module, PythonPackageModule)
+            return isinstance(module, PythonPackageModule) and SubprojectModule.Filter.from_env().matches(module)
 
     def __init__(self, root_directory: str, wheel_directory_name: str):
         """
@@ -45,6 +45,10 @@ class PythonPackageModule(Module):
         :return: A list that contains the paths to the wheel packages
         """
         return FileSearch().filter_by_suffix('whl').list(self.wheel_directory)
+
+    @property
+    def subproject_name(self) -> str:
+        return path.basename(self.root_directory)
 
     def __str__(self) -> str:
         return 'PythonPackageModule {root_directory="' + self.root_directory + '"}'
