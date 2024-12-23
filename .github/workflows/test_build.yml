@@ -62,7 +62,7 @@ jobs:
             python_tests: &python_tests
               - *python
               - *cpp_tests
-              - 'python/**/tests/**' 
+              - 'python/tests/**' 
             any:
               - *cpp_tests
               - *python_tests
@@ -123,7 +123,7 @@ jobs:
         with:
           check_name: Python Test Results
           files: |
-            python/build/test-results/*.xml
+            python/tests/build/test-results/*.xml
   macos_build:
     needs: changes
     if: ${{ needs.changes.outputs.cpp == 'true' }}

@@ -1,0 +1,32 @@
+INFO Starting experiment using the classification algorithm "seco"...
+INFO Using separate training and test sets...
+DEBUG Parsing meta data from file "python/tests/res/data/langlog.xml"...
+DEBUG Loading data set from file "python/tests/res/data/langlog.arff"...
+INFO Fitting model to 978 training examples...
+DEBUG A sparse matrix with sparse value 1.0 is used to store the feature values of the training examples
+DEBUG A sparse matrix is used to store the labels of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 482 test examples...
+DEBUG A sparse matrix with sparse value 1.0 is used to store the feature values of the query examples
+DEBUG A sparse matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data:
+
+Example-wise F1          5.29
+Example-wise Jaccard     4.98
+Example-wise Precision   6.02
+Example-wise Recall     19.5
+Hamming Accuracy        97.27
+Hamming Loss             2.73
+Macro F1                 8.15
+Macro Jaccard            8.08
+Macro Precision         98.75
+Macro Recall             9.33
+Micro F1                 5.56
+Micro Jaccard            2.86
+Micro Precision          6.02
+Micro Recall             5.16
+Subset 0/1 Loss         95.85
+Subset Accuracy          4.15
+
+INFO Successfully finished after <duration>
