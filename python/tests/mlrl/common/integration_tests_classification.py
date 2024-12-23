@@ -17,6 +17,7 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
     problems.
     """
 
+    # pylint: disable=invalid-name
     def __init__(self,
                  dataset_default: str = DATASET_EMOTIONS,
                  dataset_numerical_sparse: str = DATASET_LANGLOG,

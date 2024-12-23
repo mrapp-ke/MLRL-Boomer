@@ -15,6 +15,7 @@ class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
     Defines a series of integration tests for the separate-and-conquer (SeCo) algorithm for classification problems.
     """
 
+    # pylint: disable=invalid-name
     def __init__(self, methodName='runTest'):
         super().__init__(methodName=methodName)
 

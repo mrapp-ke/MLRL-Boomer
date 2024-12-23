@@ -17,6 +17,7 @@ class BoomerRegressorIntegrationTests(RegressionIntegrationTests, BoomerIntegrat
     Defines a series of integration tests for the BOOMER algorithm for regression problems.
     """
 
+    # pylint: disable=invalid-name
     def __init__(self, methodName='runTest'):
         super().__init__(methodName=methodName)
 

@@ -15,6 +15,7 @@ class RegressionIntegrationTests(IntegrationTests, ABC):
     problems.
     """
 
+    # pylint: disable=invalid-name
     def __init__(self,
                  dataset_default: str = DATASET_ATP7D,
                  dataset_numerical_sparse: str = DATASET_ATP7D_NUMERICAL_SPARSE,
