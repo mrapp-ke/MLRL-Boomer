@@ -6,7 +6,6 @@ to be dealt with by the targets of the build system.
 """
 from abc import ABC, abstractmethod
 from functools import reduce
-from os import environ
 from typing import Dict, List, Optional, Set
 
 from util.env import get_env_array
@@ -60,7 +59,7 @@ class SubprojectModule(Module, ABC):
             self.subproject_names = subproject_names
 
         @staticmethod
-        def from_env(env: Dict = environ) -> 'SubprojectModule.Filter':
+        def from_env(env: Dict) -> 'SubprojectModule.Filter':
             """
             Creates and returns a `SubprojectModule.Filter` that filters modules by the subprojects given via the
             environment variable `SubprojectModule.ENV_SUBPROJECTS`.

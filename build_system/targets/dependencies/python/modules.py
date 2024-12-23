@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements modules that provide access to Python requirements files.
 """
 from enum import Enum
-from os import path
+from os import environ, path
 from typing import List
 
 from core.modules import Module, SubprojectModule
@@ -39,7 +39,7 @@ class PythonDependencyModule(SubprojectModule):
         def matches(self, module: Module) -> bool:
             return isinstance(module, PythonDependencyModule) and (
                 not self.dependency_types or module.dependency_type
-                in self.dependency_types) and SubprojectModule.Filter.from_env().matches(module)
+                in self.dependency_types) and SubprojectModule.Filter.from_env(environ).matches(module)
 
     def __init__(self,
                  dependency_type: DependencyType,

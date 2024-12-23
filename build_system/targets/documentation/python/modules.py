@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements modules that provide access to Python code for which an API documentation can be generated.
 """
-from os import path
+from os import environ, path
 from typing import List
 
 from core.modules import Module, SubprojectModule
@@ -23,7 +23,7 @@ class PythonApidocModule(ApidocModule):
         """
 
         def matches(self, module: Module) -> bool:
-            return isinstance(module, PythonApidocModule) and SubprojectModule.Filter.from_env().matches(module)
+            return isinstance(module, PythonApidocModule) and SubprojectModule.Filter.from_env(environ).matches(module)
 
     def __init__(self,
                  root_directory: str,
