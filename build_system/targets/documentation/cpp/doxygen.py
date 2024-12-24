@@ -32,10 +32,10 @@ class Doxygen(Program):
     @staticmethod
     def __create_environment(module: CppApidocModule) -> Dict:
         env = environ.copy()
-        set_env(env, 'DOXYGEN_PROJECT_NAME', 'libmlrl' + module.project_name)
+        set_env(env, 'DOXYGEN_PROJECT_NAME', 'libmlrl' + module.subproject_name)
         set_env(env, 'DOXYGEN_INPUT_DIR', module.include_directory)
         set_env(env, 'DOXYGEN_OUTPUT_DIR', module.output_directory)
-        set_env(env, 'DOXYGEN_PREDEFINED', 'MLRL' + module.project_name.upper() + '_API=')
+        set_env(env, 'DOXYGEN_PREDEFINED', 'MLRL' + module.subproject_name.upper() + '_API=')
         return env
 
     def __init__(self, build_unit: BuildUnit, module: CppApidocModule):

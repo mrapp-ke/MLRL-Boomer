@@ -45,12 +45,6 @@ class ApidocIndex(BuildTarget.Runnable, ABC):
     def __index_file(template: str) -> str:
         return path.join(path.dirname(template), 'index.md')
 
-    def __init__(self, module_filter: ApidocModule.Filter):
-        """
-        :param module_filter: A filter that matches the modules, the target should be applied to
-        """
-        super().__init__(module_filter)
-
     def run_all(self, _: BuildUnit, modules: List[Module]):
         for template, modules_in_directory in self.__get_templates_and_modules(modules).items():
             Log.info('Generating index file referencing API documentations from template "%s"...', template)

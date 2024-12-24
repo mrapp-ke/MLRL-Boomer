@@ -1,0 +1,19 @@
+INFO Starting experiment using the regression algorithm "boomer"...
+INFO Performing fold 1 of 10-fold cross validation...
+DEBUG Parsing meta data from file "python/tests/res/data/atp7d.xml"...
+DEBUG Loading data set from file "python/tests/res/data/atp7d.arff"...
+INFO Fold 1 / 10:
+DEBUG Loading model from file "python/tests/res/tmp/models/boomer_fold-1.model"...
+INFO Successfully loaded model from file "python/tests/res/tmp/models/boomer_fold-1.model"
+INFO Predicting for 30 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 1):
+
+Mean Absolute Error               29.36
+Mean Absolute Percentage Error     3.99
+Mean Squared Error              2139.56
+Median Absolute Error             17.04
+
+INFO Successfully finished after <duration>

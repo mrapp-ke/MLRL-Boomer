@@ -21,7 +21,7 @@ class BreatheApidoc(Program):
         :param build_unit:  The build unit from which the program should be run
         :param module:      The module, the program should be applied to
         """
-        super().__init__('breathe-apidoc', '--members', '--project', module.project_name, '-g', 'file', '-o',
+        super().__init__('breathe-apidoc', '--members', '--project', module.subproject_name, '-g', 'file', '-o',
                          module.output_directory, path.join(module.output_directory, 'xml'))
         self.module = module
         self.print_arguments(True)
