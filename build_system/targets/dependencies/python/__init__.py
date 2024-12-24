@@ -3,6 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines targets and modules for installing Python dependencies that are required by the project.
 """
+from os import path
+
 from core.build_unit import BuildUnit
 from core.targets import PhonyTarget, TargetBuilder
 
@@ -29,14 +31,9 @@ MODULES = [
         root_directory=Project.BuildSystem.root_directory,
         requirements_file_search=Project.BuildSystem.file_search(),
     ),
-    PythonDependencyModule(
-        dependency_type=DependencyType.RUNTIME,
-        root_directory=Project.Python.root_directory,
-        requirements_file_search=Project.Python.file_search(),
-    ),
-    PythonDependencyModule(
-        dependency_type=DependencyType.BUILD_TIME,
-        root_directory=Project.Documentation.root_directory,
-        requirements_file_search=Project.Documentation.file_search(),
-    ),
+] + [
+    PythonDependencyModule(dependency_type=DependencyType.RUNTIME,
+                           root_directory=subproject,
+                           requirements_file_search=Project.Python.file_search())
+    for subproject in Project.Python.find_subprojects()
 ]

@@ -28,11 +28,8 @@ TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
 
 MODULES = [
     CppApidocModule(
-        root_directory=path.dirname(meson_file),
-        output_directory=path.join(Project.Documentation.apidoc_directory, 'cpp',
-                                   path.basename(path.dirname(meson_file))),
-        project_name=path.basename(path.dirname(meson_file)),
+        root_directory=subproject,
+        output_directory=path.join(Project.Documentation.apidoc_directory, 'cpp', path.basename(subproject)),
         include_directory_name='include',
-    ) for meson_file in Project.Cpp.file_search().filter_by_name('meson.build').list(Project.Cpp.root_directory)
-    if path.isdir(path.join(path.dirname(meson_file), 'include'))
+    ) for subproject in Project.Cpp.find_subprojects() if path.isdir(path.join(subproject, 'include'))
 ]

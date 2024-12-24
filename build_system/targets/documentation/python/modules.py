@@ -3,13 +3,14 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements modules that provide access to Python code for which an API documentation can be generated.
 """
-from os import path
+from os import environ, path
 from typing import List
 
 from core.modules import Module
 from util.files import FileSearch, FileType
 
 from targets.documentation.modules import ApidocModule
+from targets.modules import SubprojectModule
 
 
 class PythonApidocModule(ApidocModule):
@@ -17,13 +18,13 @@ class PythonApidocModule(ApidocModule):
     A module that provides access to Python code for which an API documentation can be generated.
     """
 
-    class Filter(ApidocModule.Filter):
+    class Filter(Module.Filter):
         """
         A filter that matches modules of type `PythonApidocModule`.
         """
 
         def matches(self, module: Module) -> bool:
-            return isinstance(module, PythonApidocModule)
+            return isinstance(module, PythonApidocModule) and SubprojectModule.Filter.from_env(environ).matches(module)
 
     def __init__(self,
                  root_directory: str,
@@ -58,10 +59,13 @@ class PythonApidocModule(ApidocModule):
         """
         return self.source_file_search.filter_by_file_type(FileType.python()).list(self.source_directory)
 
+    @property
+    def subproject_name(self) -> str:
+        return path.basename(self.output_directory)
+
     def create_reference(self) -> str:
-        project_name = path.basename(self.output_directory)
         return 'Package mlrl-' + path.basename(self.output_directory) + ' <' + path.join(
-            project_name, self.source_directory_name + '.' + project_name + '.rst') + '>'
+            self.subproject_name, self.source_directory_name + '.' + self.subproject_name + '.rst') + '>'
 
     def __str__(self) -> str:
         return 'PythonApidocModule {root_directory="' + self.root_directory + '"}'

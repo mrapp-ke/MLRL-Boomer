@@ -28,7 +28,7 @@ TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
 
 MODULES = [
     PythonPackageModule(
-        root_directory=path.dirname(file),
+        root_directory=subproject,
         wheel_directory_name=Project.Python.wheel_directory_name,
-    ) for file in Project.Python.file_search().filter_by_name('pyproject.toml').list(Project.Python.root_directory)
+    ) for subproject in Project.Python.find_subprojects()
 ]

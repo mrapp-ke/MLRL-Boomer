@@ -36,7 +36,7 @@ jobs:
               - 'build_system/main.py'
               - 'build_system/core/**'
               - 'build_system/util/**'
-              - 'build_system/targets/paths.py'
+              - 'build_system/targets/*.py'
             cpp:
               - *build_files
               - 'build_system/targets/code_style/*'
