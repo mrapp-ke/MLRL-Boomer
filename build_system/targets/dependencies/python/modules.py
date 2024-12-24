@@ -40,8 +40,10 @@ class PythonDependencyModule(SubprojectModule):
 
         def matches(self, module: Module) -> bool:
             return isinstance(module, PythonDependencyModule) and (
-                not self.dependency_types or module.dependency_type
-                in self.dependency_types) and SubprojectModule.Filter.from_env(environ).matches(module)
+                not self.dependency_types
+                or module.dependency_type in self.dependency_types) and SubprojectModule.Filter.from_env(
+                    environ, always_match={SubprojectModule.SUBPROJECT_COMMON, SubprojectModule.SUBPROJECT_TESTBED
+                                           }).matches(module)
 
     def __init__(self,
                  dependency_type: DependencyType,
