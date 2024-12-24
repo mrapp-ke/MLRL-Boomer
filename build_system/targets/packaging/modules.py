@@ -23,7 +23,9 @@ class PythonPackageModule(SubprojectModule):
         """
 
         def matches(self, module: Module) -> bool:
-            return isinstance(module, PythonPackageModule) and SubprojectModule.Filter.from_env(environ).matches(module)
+            return isinstance(module, PythonPackageModule) and SubprojectModule.Filter.from_env(
+                environ, always_match={SubprojectModule.SUBPROJECT_COMMON, SubprojectModule.SUBPROJECT_TESTBED
+                                       }).matches(module)
 
     def __init__(self, root_directory: str, wheel_directory_name: str):
         """
