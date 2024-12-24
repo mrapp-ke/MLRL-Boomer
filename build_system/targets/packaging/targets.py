@@ -34,7 +34,6 @@ class BuildPythonWheels(BuildTarget.Runnable):
     def get_input_files(self, module: Module) -> List[str]:
         file_search = Project.Python.file_search() \
             .set_symlinks(False) \
-            .exclude_subdirectories_by_name(Project.Python.test_directory_name) \
             .filter_by_file_type(
                 FileType.python(),
                 FileType.markdown(),
