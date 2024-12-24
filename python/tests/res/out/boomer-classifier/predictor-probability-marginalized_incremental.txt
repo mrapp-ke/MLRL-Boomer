@@ -1,0 +1,551 @@
+INFO Starting experiment using the classification algorithm "boomer"...
+INFO Using separate training and test sets...
+DEBUG Parsing meta data from file "python/tests/res/data/emotions.xml"...
+DEBUG Loading data set from file "python/tests/res/data/emotions.arff"...
+DEBUG Loading model from file "python/tests/res/tmp/models/boomer_overall.model"...
+INFO Successfully loaded model from file "python/tests/res/tmp/models/boomer_overall.model"
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted probability estimates
+INFO Predicting for 196 test examples using a model of size 50...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 50:
+
+Coverage Error                    3.27
+Discounted Cumulative Gain        1.3
+Label Ranking Average Precision   0.73
+Mean Absolute Error               0.37
+Mean Absolute Percentage Error    7.2921e+14
+Mean Squared Error                0.18
+Median Absolute Error             0.3
+NDCG                             81.3
+Ranking Loss                      0.24
+
+INFO Predicting for 196 test examples using a model of size 100...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 100:
+
+Coverage Error                    3.14
+Discounted Cumulative Gain        1.33
+Label Ranking Average Precision   0.75
+Mean Absolute Error               0.35
+Mean Absolute Percentage Error    6.8603e+14
+Mean Squared Error                0.17
+Median Absolute Error             0.29
+NDCG                             83.31
+Ranking Loss                      0.21
+
+INFO Predicting for 196 test examples using a model of size 150...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 150:
+
+Coverage Error                    3.08
+Discounted Cumulative Gain        1.34
+Label Ranking Average Precision   0.75
+Mean Absolute Error               0.34
+Mean Absolute Percentage Error    6.64976e+14
+Mean Squared Error                0.17
+Median Absolute Error             0.28
+NDCG                             83.69
+Ranking Loss                      0.2
+
+INFO Predicting for 196 test examples using a model of size 200...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 200:
+
+Coverage Error                    3.03
+Discounted Cumulative Gain        1.35
+Label Ranking Average Precision   0.77
+Mean Absolute Error               0.33
+Mean Absolute Percentage Error    6.43303e+14
+Mean Squared Error                0.16
+Median Absolute Error             0.28
+NDCG                             84.78
+Ranking Loss                      0.2
+
+INFO Predicting for 196 test examples using a model of size 250...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 250:
+
+Coverage Error                    3.1
+Discounted Cumulative Gain        1.33
+Label Ranking Average Precision   0.76
+Mean Absolute Error               0.33
+Mean Absolute Percentage Error    6.22635e+14
+Mean Squared Error                0.17
+Median Absolute Error             0.28
+NDCG                             84.19
+Ranking Loss                      0.22
+
+INFO Predicting for 196 test examples using a model of size 300...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 300:
+
+Coverage Error                    3.15
+Discounted Cumulative Gain        1.33
+Label Ranking Average Precision   0.75
+Mean Absolute Error               0.32
+Mean Absolute Percentage Error    5.95534e+14
+Mean Squared Error                0.17
+Median Absolute Error             0.27
+NDCG                             84.16
+Ranking Loss                      0.23
+
+INFO Predicting for 196 test examples using a model of size 350...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 350:
+
+Coverage Error                    3.19
+Discounted Cumulative Gain        1.32
+Label Ranking Average Precision   0.74
+Mean Absolute Error               0.32
+Mean Absolute Percentage Error    5.81387e+14
+Mean Squared Error                0.17
+Median Absolute Error             0.27
+NDCG                             83.57
+Ranking Loss                      0.24
+
+INFO Predicting for 196 test examples using a model of size 400...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 400:
+
+Coverage Error                    3.3
+Discounted Cumulative Gain        1.31
+Label Ranking Average Precision   0.72
+Mean Absolute Error               0.32
+Mean Absolute Percentage Error    5.59729e+14
+Mean Squared Error                0.18
+Median Absolute Error             0.26
+NDCG                             82.69
+Ranking Loss                      0.27
+
+INFO Predicting for 196 test examples using a model of size 450...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 450:
+
+Coverage Error                    3.43
+Discounted Cumulative Gain        1.3
+Label Ranking Average Precision   0.71
+Mean Absolute Error               0.32
+Mean Absolute Percentage Error    5.38145e+14
+Mean Squared Error                0.18
+Median Absolute Error             0.25
+NDCG                             82.13
+Ranking Loss                      0.31
+
+INFO Predicting for 196 test examples using a model of size 500...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 500:
+
+Coverage Error                    3.47
+Discounted Cumulative Gain        1.29
+Label Ranking Average Precision   0.7
+Mean Absolute Error               0.32
+Mean Absolute Percentage Error    5.26557e+14
+Mean Squared Error                0.19
+Median Absolute Error             0.25
+NDCG                             81.58
+Ranking Loss                      0.32
+
+INFO Predicting for 196 test examples using a model of size 550...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 550:
+
+Coverage Error                    3.5
+Discounted Cumulative Gain        1.29
+Label Ranking Average Precision   0.7
+Mean Absolute Error               0.32
+Mean Absolute Percentage Error    5.18145e+14
+Mean Squared Error                0.19
+Median Absolute Error             0.25
+NDCG                             81.65
+Ranking Loss                      0.32
+
+INFO Predicting for 196 test examples using a model of size 600...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 600:
+
+Coverage Error                    3.57
+Discounted Cumulative Gain        1.29
+Label Ranking Average Precision   0.68
+Mean Absolute Error               0.32
+Mean Absolute Percentage Error    5.08631e+14
+Mean Squared Error                0.19
+Median Absolute Error             0.25
+NDCG                             81.07
+Ranking Loss                      0.34
+
+INFO Predicting for 196 test examples using a model of size 650...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 650:
+
+Coverage Error                    3.54
+Discounted Cumulative Gain        1.29
+Label Ranking Average Precision   0.69
+Mean Absolute Error               0.32
+Mean Absolute Percentage Error    5.06768e+14
+Mean Squared Error                0.19
+Median Absolute Error             0.24
+NDCG                             81.86
+Ranking Loss                      0.33
+
+INFO Predicting for 196 test examples using a model of size 700...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 700:
+
+Coverage Error                    3.63
+Discounted Cumulative Gain        1.28
+Label Ranking Average Precision   0.68
+Mean Absolute Error               0.32
+Mean Absolute Percentage Error    4.90329e+14
+Mean Squared Error                0.19
+Median Absolute Error             0.24
+NDCG                             81.17
+Ranking Loss                      0.36
+
+INFO Predicting for 196 test examples using a model of size 750...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 750:
+
+Coverage Error                    3.72
+Discounted Cumulative Gain        1.28
+Label Ranking Average Precision   0.67
+Mean Absolute Error               0.32
+Mean Absolute Percentage Error    4.78054e+14
+Mean Squared Error                0.2
+Median Absolute Error             0.23
+NDCG                             80.75
+Ranking Loss                      0.38
+
+INFO Predicting for 196 test examples using a model of size 800...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 800:
+
+Coverage Error                    3.77
+Discounted Cumulative Gain        1.28
+Label Ranking Average Precision   0.67
+Mean Absolute Error               0.32
+Mean Absolute Percentage Error    4.6889e+14
+Mean Squared Error                0.2
+Median Absolute Error             0.23
+NDCG                             80.93
+Ranking Loss                      0.39
+
+INFO Predicting for 196 test examples using a model of size 850...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 850:
+
+Coverage Error                    3.84
+Discounted Cumulative Gain        1.26
+Label Ranking Average Precision   0.65
+Mean Absolute Error               0.32
+Mean Absolute Percentage Error    4.5724e+14
+Mean Squared Error                0.21
+Median Absolute Error             0.23
+NDCG                             80.04
+Ranking Loss                      0.41
+
+INFO Predicting for 196 test examples using a model of size 900...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 900:
+
+Coverage Error                    3.81
+Discounted Cumulative Gain        1.27
+Label Ranking Average Precision   0.66
+Mean Absolute Error               0.32
+Mean Absolute Percentage Error    4.58109e+14
+Mean Squared Error                0.2
+Median Absolute Error             0.23
+NDCG                             80.34
+Ranking Loss                      0.4
+
+INFO Predicting for 196 test examples using a model of size 950...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 950:
+
+Coverage Error                    3.86
+Discounted Cumulative Gain        1.26
+Label Ranking Average Precision   0.65
+Mean Absolute Error               0.32
+Mean Absolute Percentage Error    4.50413e+14
+Mean Squared Error                0.21
+Median Absolute Error             0.22
+NDCG                             79.86
+Ranking Loss                      0.41
+
+INFO Predicting for 196 test examples using a model of size 1000...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 1000:
+
+Coverage Error                    3.85
+Discounted Cumulative Gain        1.26
+Label Ranking Average Precision   0.65
+Mean Absolute Error               0.32
+Mean Absolute Percentage Error    4.47013e+14
+Mean Squared Error                0.21
+Median Absolute Error             0.22
+NDCG                             79.99
+Ranking Loss                      0.41
+
+INFO Marginal probability calibration model:
+
+┌──────────────────────┬─────────────────────────┐
+│   Label 1 thresholds │   Label 1 probabilities │
+├──────────────────────┼─────────────────────────┤
+│               0      │                  0      │
+│               0.0023 │                  0.0667 │
+│               0.0055 │                  0.1667 │
+│               0.013  │                  0.2    │
+│               0.0182 │                  0.2667 │
+│               0.0764 │                  0.3333 │
+│               0.0853 │                  0.375  │
+│               0.1796 │                  0.3937 │
+│               0.5408 │                  0.5635 │
+│               0.9891 │                  1      │
+└──────────────────────┴─────────────────────────┘
+┌──────────────────────┬─────────────────────────┐
+│   Label 2 thresholds │   Label 2 probabilities │
+├──────────────────────┼─────────────────────────┤
+│               0      │                  0      │
+│               0.0007 │                  0.2125 │
+│               0.0077 │                  0.2778 │
+│               0.017  │                  0.2805 │
+│               0.0981 │                  0.3333 │
+│               0.1188 │                  0.4167 │
+│               0.4723 │                  0.5    │
+│               0.6811 │                  0.6071 │
+│               0.9247 │                  0.75   │
+│               0.9854 │                  1      │
+└──────────────────────┴─────────────────────────┘
+┌──────────────────────┬─────────────────────────┐
+│   Label 3 thresholds │   Label 3 probabilities │
+├──────────────────────┼─────────────────────────┤
+│               0      │                  0      │
+│               0.0262 │                  0.2    │
+│               0.0546 │                  0.35   │
+│               0.2309 │                  0.5096 │
+│               0.982  │                  0.5833 │
+│               0.9865 │                  0.8889 │
+│               0.9979 │                  1      │
+└──────────────────────┴─────────────────────────┘
+┌──────────────────────┬─────────────────────────┐
+│   Label 4 thresholds │   Label 4 probabilities │
+├──────────────────────┼─────────────────────────┤
+│               0      │                  0      │
+│               0.0007 │                  0.0217 │
+│               0.0424 │                  0.2    │
+│               0.1201 │                  0.3065 │
+│               0.6579 │                  0.625  │
+│               0.986  │                  1      │
+└──────────────────────┴─────────────────────────┘
+┌──────────────────────┬─────────────────────────┐
+│   Label 5 thresholds │   Label 5 probabilities │
+├──────────────────────┼─────────────────────────┤
+│               0      │                  0      │
+│               0.0009 │                  0.0769 │
+│               0.0039 │                  0.1339 │
+│               0.0093 │                  0.2511 │
+│               0.0854 │                  0.2708 │
+│               0.188  │                  0.3056 │
+│               0.3233 │                  0.4479 │
+│               0.8626 │                  0.75   │
+│               0.9379 │                  1      │
+└──────────────────────┴─────────────────────────┘
+┌──────────────────────┬─────────────────────────┐
+│   Label 6 thresholds │   Label 6 probabilities │
+├──────────────────────┼─────────────────────────┤
+│               0      │                  0      │
+│               0.0029 │                  0.0333 │
+│               0.0457 │                  0.3333 │
+│               0.0848 │                  0.4045 │
+│               0.8647 │                  0.5625 │
+│               0.9517 │                  0.6167 │
+│               0.9831 │                  1      │
+└──────────────────────┴─────────────────────────┘
+
+INFO Joint probability calibration model:
+
+┌─────────────────────────────┬────────────────────────────────┐
+│   Label vector 1 thresholds │   Label vector 1 probabilities │
+├─────────────────────────────┼────────────────────────────────┤
+│                      0      │                         0      │
+│                      0.0032 │                         0.0625 │
+│                      0.0307 │                         0.1556 │
+│                      0.3685 │                         0.375  │
+│                      0.5405 │                         0.5    │
+└─────────────────────────────┴────────────────────────────────┘
+┌─────────────────────────────┬────────────────────────────────┐
+│   Label vector 2 thresholds │   Label vector 2 probabilities │
+├─────────────────────────────┼────────────────────────────────┤
+│                      0      │                         0      │
+│                      0.0428 │                         0.2    │
+│                      0.0606 │                         0.3333 │
+└─────────────────────────────┴────────────────────────────────┘
+┌─────────────────────────────┬────────────────────────────────┐
+│   Label vector 3 thresholds │   Label vector 3 probabilities │
+├─────────────────────────────┼────────────────────────────────┤
+│                      0      │                         0.0034 │
+│                      0.0125 │                         0.1429 │
+│                      0.0204 │                         0.219  │
+└─────────────────────────────┴────────────────────────────────┘
+┌─────────────────────────────┬────────────────────────────────┐
+│   Label vector 4 thresholds │   Label vector 4 probabilities │
+├─────────────────────────────┼────────────────────────────────┤
+│                      0      │                         0.0076 │
+│                      0.0053 │                         0.2812 │
+│                      0.0343 │                         0.3167 │
+│                      0.1031 │                         0.375  │
+│                      0.1693 │                         0.5    │
+│                      0.2238 │                         0.7083 │
+│                      0.5607 │                         1      │
+└─────────────────────────────┴────────────────────────────────┘
+┌─────────────────────────────┬────────────────────────────────┐
+│   Label vector 5 thresholds │   Label vector 5 probabilities │
+├─────────────────────────────┼────────────────────────────────┤
+│                      0      │                         0      │
+│                      0.0005 │                         0.037  │
+│                      0.0126 │                         0.1915 │
+│                      0.0721 │                         0.2232 │
+│                      0.1454 │                         0.3333 │
+│                      0.1691 │                         0.8    │
+│                      0.3985 │                         1      │
+└─────────────────────────────┴────────────────────────────────┘
+┌─────────────────────────────┬────────────────────────────────┐
+│   Label vector 6 thresholds │   Label vector 6 probabilities │
+├─────────────────────────────┼────────────────────────────────┤
+│                      0      │                         0      │
+│                      0.0006 │                         0.0213 │
+│                      0.0489 │                         0.25   │
+│                      0.0951 │                         0.2857 │
+│                      0.1709 │                         0.5    │
+│                      0.3319 │                         0.7143 │
+└─────────────────────────────┴────────────────────────────────┘
+┌─────────────────────────────┬────────────────────────────────┐
+│   Label vector 7 thresholds │   Label vector 7 probabilities │
+├─────────────────────────────┼────────────────────────────────┤
+│                      0      │                         0      │
+│                      0.0629 │                         0.0667 │
+└─────────────────────────────┴────────────────────────────────┘
+┌─────────────────────────────┬────────────────────────────────┐
+│   Label vector 8 thresholds │   Label vector 8 probabilities │
+├─────────────────────────────┼────────────────────────────────┤
+│                      0      │                         0.0028 │
+│                      0.0008 │                         0.0303 │
+│                      0.0235 │                         0.1764 │
+│                      0.07   │                         0.25   │
+│                      0.0844 │                         0.3125 │
+│                      0.2439 │                         1      │
+└─────────────────────────────┴────────────────────────────────┘
+┌─────────────────────────────┬────────────────────────────────┐
+│   Label vector 9 thresholds │   Label vector 9 probabilities │
+├─────────────────────────────┼────────────────────────────────┤
+│                      0      │                         0.0011 │
+│                      0.0031 │                         0.1429 │
+│                      0.0075 │                         0.2083 │
+│                      0.0285 │                         0.2625 │
+│                      0.0493 │                         0.3301 │
+│                      0.137  │                         0.375  │
+│                      0.2284 │                         0.4167 │
+└─────────────────────────────┴────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 10 thresholds │   Label vector 10 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                       0      │                          0.1111 │
+│                       0      │                          0.2158 │
+│                       0.1125 │                          0.3    │
+│                       0.2484 │                          1      │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 11 thresholds │   Label vector 11 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                       0      │                          0      │
+│                       0.0054 │                          0.04   │
+│                       0.0269 │                          0.0625 │
+│                       0.0475 │                          0.1    │
+│                       0.0772 │                          0.2562 │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 12 thresholds │   Label vector 12 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                       0      │                          0      │
+│                       0.0116 │                          0.1667 │
+│                       0.0277 │                          0.194  │
+│                       0.1819 │                          0.336  │
+│                       0.6183 │                          1      │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 13 thresholds │   Label vector 13 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                       0      │                             0   │
+│                       0.2299 │                             0.2 │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 14 thresholds │   Label vector 14 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                       0      │                          0.0113 │
+│                       0.0024 │                          0.1429 │
+│                       0.0213 │                          0.1667 │
+│                       0.0305 │                          0.3083 │
+│                       0.0404 │                          0.45   │
+│                       0.0784 │                          0.4643 │
+│                       0.1102 │                          0.4747 │
+│                       0.2048 │                          0.8333 │
+│                       0.287  │                          1      │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 15 thresholds │   Label vector 15 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                       0      │                          0.0008 │
+│                       0.0138 │                          0.0794 │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 16 thresholds │   Label vector 16 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                       0      │                            0    │
+│                       0.0317 │                            0.05 │
+│                       0.1599 │                            1    │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 17 thresholds │   Label vector 17 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                       0      │                            0    │
+│                       0.0372 │                            0.25 │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 18 thresholds │   Label vector 18 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                            0 │                               0 │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 19 thresholds │   Label vector 19 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                       0      │                          0      │
+│                       0.0162 │                          0.0526 │
+│                       0.0476 │                          0.0909 │
+│                       0.2228 │                          0.5    │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 20 thresholds │   Label vector 20 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                       0      │                          0      │
+│                       0.0371 │                          0.0909 │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 21 thresholds │   Label vector 21 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                            0 │                               0 │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 22 thresholds │   Label vector 22 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                            0 │                               0 │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 23 thresholds │   Label vector 23 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                       0      │                          0.0063 │
+│                       0.0019 │                          0.0204 │
+│                       0.0448 │                          0.2464 │
+│                       0.1443 │                          1      │
+└──────────────────────────────┴─────────────────────────────────┘
+
+INFO Successfully finished after <duration>

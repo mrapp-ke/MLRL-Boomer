@@ -1,0 +1,152 @@
+INFO Starting experiment using the regression algorithm "boomer"...
+INFO Performing full 10-fold cross validation...
+DEBUG Parsing meta data from file "python/tests/res/data/atp7d.xml"...
+DEBUG Loading data set from file "python/tests/res/data/atp7d.arff"...
+INFO Fold 1 / 10:
+DEBUG Loading model from file "python/tests/res/tmp/models/boomer_fold-1.model"...
+INFO Successfully loaded model from file "python/tests/res/tmp/models/boomer_fold-1.model"
+INFO Predicting for 30 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 1):
+
+Mean Absolute Error               29.36
+Mean Absolute Percentage Error     3.99
+Mean Squared Error              2139.56
+Median Absolute Error             17.04
+
+INFO Fold 2 / 10:
+DEBUG Loading model from file "python/tests/res/tmp/models/boomer_fold-2.model"...
+INFO Successfully loaded model from file "python/tests/res/tmp/models/boomer_fold-2.model"
+INFO Predicting for 30 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 2):
+
+Mean Absolute Error               27.42
+Mean Absolute Percentage Error     0.9
+Mean Squared Error              1548.19
+Median Absolute Error             19.05
+
+INFO Fold 3 / 10:
+DEBUG Loading model from file "python/tests/res/tmp/models/boomer_fold-3.model"...
+INFO Successfully loaded model from file "python/tests/res/tmp/models/boomer_fold-3.model"
+INFO Predicting for 30 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 3):
+
+Mean Absolute Error               23.23
+Mean Absolute Percentage Error     0.64
+Mean Squared Error              1271.4
+Median Absolute Error             14.33
+
+INFO Fold 4 / 10:
+DEBUG Loading model from file "python/tests/res/tmp/models/boomer_fold-4.model"...
+INFO Successfully loaded model from file "python/tests/res/tmp/models/boomer_fold-4.model"
+INFO Predicting for 30 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 4):
+
+Mean Absolute Error               22.6
+Mean Absolute Percentage Error     0.72
+Mean Squared Error              1427.62
+Median Absolute Error             12.96
+
+INFO Fold 5 / 10:
+DEBUG Loading model from file "python/tests/res/tmp/models/boomer_fold-5.model"...
+INFO Successfully loaded model from file "python/tests/res/tmp/models/boomer_fold-5.model"
+INFO Predicting for 30 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 5):
+
+Mean Absolute Error               25.37
+Mean Absolute Percentage Error     0.81
+Mean Squared Error              1593.61
+Median Absolute Error             15.82
+
+INFO Fold 6 / 10:
+DEBUG Loading model from file "python/tests/res/tmp/models/boomer_fold-6.model"...
+INFO Successfully loaded model from file "python/tests/res/tmp/models/boomer_fold-6.model"
+INFO Predicting for 30 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 6):
+
+Mean Absolute Error               25.23
+Mean Absolute Percentage Error     0.42
+Mean Squared Error              1666.41
+Median Absolute Error             16.01
+
+INFO Fold 7 / 10:
+DEBUG Loading model from file "python/tests/res/tmp/models/boomer_fold-7.model"...
+INFO Successfully loaded model from file "python/tests/res/tmp/models/boomer_fold-7.model"
+INFO Predicting for 29 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 7):
+
+Mean Absolute Error               26.83
+Mean Absolute Percentage Error     1.02
+Mean Squared Error              1496.76
+Median Absolute Error             17.79
+
+INFO Fold 8 / 10:
+DEBUG Loading model from file "python/tests/res/tmp/models/boomer_fold-8.model"...
+INFO Successfully loaded model from file "python/tests/res/tmp/models/boomer_fold-8.model"
+INFO Predicting for 29 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 8):
+
+Mean Absolute Error               27.03
+Mean Absolute Percentage Error     2.05
+Mean Squared Error              2174.5
+Median Absolute Error             12.01
+
+INFO Fold 9 / 10:
+DEBUG Loading model from file "python/tests/res/tmp/models/boomer_fold-9.model"...
+INFO Successfully loaded model from file "python/tests/res/tmp/models/boomer_fold-9.model"
+INFO Predicting for 29 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 9):
+
+Mean Absolute Error               21.55
+Mean Absolute Percentage Error     1.94
+Mean Squared Error              1254.37
+Median Absolute Error             10.4
+
+INFO Fold 10 / 10:
+DEBUG Loading model from file "python/tests/res/tmp/models/boomer_fold-10.model"...
+INFO Successfully loaded model from file "python/tests/res/tmp/models/boomer_fold-10.model"
+INFO Predicting for 29 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 10):
+
+Mean Absolute Error               28.97
+Mean Absolute Percentage Error     2.35
+Mean Squared Error              1837.36
+Median Absolute Error             16.62
+
+INFO Evaluation result for test data (Average across 10 folds):
+
+Mean Absolute Error               25.76  ±2.52
+Mean Absolute Percentage Error     1.48  ±1.05
+Mean Squared Error              1640.98  ±305.88
+Median Absolute Error             15.2   ±2.59
+
+INFO Successfully finished after <duration>

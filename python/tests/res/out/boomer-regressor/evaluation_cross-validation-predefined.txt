@@ -1,0 +1,181 @@
+INFO Starting experiment using the regression algorithm "boomer"...
+INFO Performing full 10-fold cross validation...
+DEBUG Parsing meta data from file "python/tests/res/data/atp7d-predefined.xml"...
+DEBUG Loading data set from file "python/tests/res/data/atp7d-predefined_fold-1.arff"...
+DEBUG Loading data set from file "python/tests/res/data/atp7d-predefined_fold-2.arff"...
+DEBUG Loading data set from file "python/tests/res/data/atp7d-predefined_fold-3.arff"...
+DEBUG Loading data set from file "python/tests/res/data/atp7d-predefined_fold-4.arff"...
+DEBUG Loading data set from file "python/tests/res/data/atp7d-predefined_fold-5.arff"...
+DEBUG Loading data set from file "python/tests/res/data/atp7d-predefined_fold-6.arff"...
+DEBUG Loading data set from file "python/tests/res/data/atp7d-predefined_fold-7.arff"...
+DEBUG Loading data set from file "python/tests/res/data/atp7d-predefined_fold-8.arff"...
+DEBUG Loading data set from file "python/tests/res/data/atp7d-predefined_fold-9.arff"...
+DEBUG Loading data set from file "python/tests/res/data/atp7d-predefined_fold-10.arff"...
+INFO Fold 1 / 10:
+INFO Fitting model to 266 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 30 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 1):
+
+Mean Absolute Error               46.76
+Mean Absolute Percentage Error     0.74
+Mean Squared Error              3671.07
+Median Absolute Error             36.44
+
+INFO Fold 2 / 10:
+INFO Fitting model to 266 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 30 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 2):
+
+Mean Absolute Error               26.63
+Mean Absolute Percentage Error     0.94
+Mean Squared Error              1694.11
+Median Absolute Error             14.14
+
+INFO Fold 3 / 10:
+INFO Fitting model to 266 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 30 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 3):
+
+Mean Absolute Error               34.16
+Mean Absolute Percentage Error     1.73
+Mean Squared Error              3257.84
+Median Absolute Error             18.36
+
+INFO Fold 4 / 10:
+INFO Fitting model to 266 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 30 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 4):
+
+Mean Absolute Error               38.8
+Mean Absolute Percentage Error     1.93
+Mean Squared Error              3876.02
+Median Absolute Error             21.11
+
+INFO Fold 5 / 10:
+INFO Fitting model to 266 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 30 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 5):
+
+Mean Absolute Error              22.08
+Mean Absolute Percentage Error    0.63
+Mean Squared Error              995.76
+Median Absolute Error            17.9
+
+INFO Fold 6 / 10:
+INFO Fitting model to 266 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 30 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 6):
+
+Mean Absolute Error               38.05
+Mean Absolute Percentage Error     0.95
+Mean Squared Error              3911.8
+Median Absolute Error             22.12
+
+INFO Fold 7 / 10:
+INFO Fitting model to 267 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 29 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 7):
+
+Mean Absolute Error               50.85
+Mean Absolute Percentage Error     0.79
+Mean Squared Error              6178.9
+Median Absolute Error             27.84
+
+INFO Fold 8 / 10:
+INFO Fitting model to 267 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 29 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 8):
+
+Mean Absolute Error               53.7
+Mean Absolute Percentage Error     1.49
+Mean Squared Error              3973.22
+Median Absolute Error             51.51
+
+INFO Fold 9 / 10:
+INFO Fitting model to 267 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 29 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 9):
+
+Mean Absolute Error               65.25
+Mean Absolute Percentage Error     1.69
+Mean Squared Error              6175.73
+Median Absolute Error             55.1
+
+INFO Fold 10 / 10:
+INFO Fitting model to 267 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 29 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 10):
+
+Mean Absolute Error               80.75
+Mean Absolute Percentage Error    20.63
+Mean Squared Error              9593.91
+Median Absolute Error             81.71
+
+INFO Evaluation result for test data (Average across 10 folds):
+
+Mean Absolute Error               45.7   ±16.92
+Mean Absolute Percentage Error     3.15  ±5.84
+Mean Squared Error              4332.84  ±2338.61
+Median Absolute Error             34.62  ±20.67
+
+INFO Successfully finished after <duration>

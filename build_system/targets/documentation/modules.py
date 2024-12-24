@@ -9,17 +9,14 @@ from typing import List
 from core.modules import Module
 from util.files import FileSearch
 
+from targets.modules import SubprojectModule
 
-class ApidocModule(Module, ABC):
+
+class ApidocModule(SubprojectModule, ABC):
     """
     An abstract base class for all modules that provide access to source code for which an API documentation can be
     generated.
     """
-
-    class Filter(Module.Filter, ABC):
-        """
-        A filter that matches modules of type `ApidocModule`.
-        """
 
     def __init__(self, output_directory: str):
         """
