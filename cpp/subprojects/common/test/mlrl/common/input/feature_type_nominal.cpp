@@ -40,7 +40,7 @@ TEST(NominalFeatureTypeTest, createNominalFeatureVectorFromFortranContiguousView
         // Check dimensionality of feature vector...
         const NominalFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
-        EXPECT_EQ(featureVector.numValues, (uint32) 2);
+        EXPECT_EQ(featureVector.numBins, (uint32) 2);
 
         // Check for regular feature values...
         std::unordered_set<int32> values;
@@ -104,7 +104,7 @@ TEST(NominalFeatureTypeTest, createBinaryFeatureVectorFromFortranContiguousView)
         // Check dimensionality of feature vector...
         const BinaryFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
-        EXPECT_EQ(featureVector.numValues, (uint32) 1);
+        EXPECT_EQ(featureVector.numBins, (uint32) 1);
 
         // Check for regular feature values...
         int32 minorityValue = featureVector.values_cbegin()[0];
@@ -183,7 +183,7 @@ TEST(NominalFeatureTypeTest, createNominalFeatureVectorFromDenseCscView) {
         // Check dimensionality of feature vector...
         const NominalFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
-        EXPECT_EQ(featureVector.numValues, (uint32) 2);
+        EXPECT_EQ(featureVector.numBins, (uint32) 2);
 
         // Check for regular feature values...
         std::unordered_set<int32> values;
@@ -261,7 +261,7 @@ TEST(NominalFeatureTypeTest, createBinaryFeatureVectorFromDenseCscView) {
         // Check dimensionality of feature vector...
         const BinaryFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
-        EXPECT_EQ(featureVector.numValues, (uint32) 1);
+        EXPECT_EQ(featureVector.numBins, (uint32) 1);
 
         // Check for regular feature values...
         int32 minorityValue = featureVector.values_cbegin()[0];
@@ -347,7 +347,7 @@ TEST(NominalFeatureTypeTest, createNominalFeatureVectorFromCscView) {
         // Check dimensionality of feature vector...
         const NominalFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
-        EXPECT_EQ(featureVector.numValues, (uint32) 2);
+        EXPECT_EQ(featureVector.numBins, (uint32) 2);
 
         // Check for regular feature values...
         std::unordered_set<int32> values;
@@ -419,7 +419,7 @@ TEST(NominalFeatureTypeTest, createBinaryFeatureVectorFromCscView) {
         // Check dimensionality of feature vector...
         const BinaryFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
-        EXPECT_EQ(featureVector.numValues, (uint32) 1);
+        EXPECT_EQ(featureVector.numBins, (uint32) 1);
 
         // Check for regular feature values...
         int32 minorityValue = featureVector.values_cbegin()[0];
