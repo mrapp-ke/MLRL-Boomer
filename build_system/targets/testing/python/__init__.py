@@ -3,8 +3,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines targets and modules for testing Python code.
 """
+from functools import reduce
+from os import path
+
 from core.build_unit import BuildUnit
 from core.targets import PhonyTarget, TargetBuilder
+from util.files import FileType
 
 from targets.packaging import INSTALL_WHEELS
 from targets.paths import Project
@@ -21,9 +25,16 @@ TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
 
 MODULES = [
     PythonTestModule(
-        root_directory=Project.Python.root_directory,
-        build_directory_name=Project.Python.build_directory_name,
-        test_file_search=Project.Python.file_search() \
-            .filter_subdirectories_by_name(Project.Python.test_directory_name),
-    ),
+        root_directory=test_directory,
+        result_directory=path.join(Project.Python.root_directory, 'tests', Project.Python.build_directory_name,
+                                   'test-results'),
+    ) for test_directory in {
+        path.dirname(test_file) for test_file in reduce(
+            lambda aggr, suffix : aggr + Project.Python.file_search() \
+                .filter_by_substrings(starts_with='test_', ends_with='.' + suffix) \
+                .list(path.join(Project.Python.root_directory, 'tests')),
+            FileType.python().suffixes,
+            [],
+        )
+    }
 ]

@@ -3,14 +3,16 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements modules that provide access to Python code that can be built as wheel packages.
 """
-from os import path
+from os import environ, path
 from typing import List
 
 from core.modules import Module
 from util.files import FileSearch
 
+from targets.modules import SubprojectModule
 
-class PythonPackageModule(Module):
+
+class PythonPackageModule(SubprojectModule):
     """
     A module that provides access to Python code that can be built as wheel packages.
     """
@@ -21,7 +23,9 @@ class PythonPackageModule(Module):
         """
 
         def matches(self, module: Module) -> bool:
-            return isinstance(module, PythonPackageModule)
+            return isinstance(module, PythonPackageModule) and SubprojectModule.Filter.from_env(
+                environ, always_match={SubprojectModule.SUBPROJECT_COMMON, SubprojectModule.SUBPROJECT_TESTBED
+                                       }).matches(module)
 
     def __init__(self, root_directory: str, wheel_directory_name: str):
         """
@@ -45,6 +49,10 @@ class PythonPackageModule(Module):
         :return: A list that contains the paths to the wheel packages
         """
         return FileSearch().filter_by_suffix('whl').list(self.wheel_directory)
+
+    @property
+    def subproject_name(self) -> str:
+        return path.basename(self.root_directory)
 
     def __str__(self) -> str:
         return 'PythonPackageModule {root_directory="' + self.root_directory + '"}'

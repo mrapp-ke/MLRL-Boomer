@@ -1,0 +1,22 @@
+INFO Starting experiment using the classification algorithm "boomer"...
+INFO Using separate training and test sets...
+DEBUG Parsing meta data from file "python/tests/res/data/emotions.xml"...
+DEBUG Loading data set from file "python/tests/res/data/emotions.arff"...
+INFO Fitting model to 397 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 196 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Prediction characteristics for test data:
+
+Outputs                  6
+Output Density          26.19
+Output Sparsity         73.81
+Label Imbalance Ratio    2.17
+Label Cardinality        1.57
+Distinct Label Vectors  19
+
+INFO Successfully finished after <duration>

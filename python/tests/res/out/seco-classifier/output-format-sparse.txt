@@ -1,0 +1,32 @@
+INFO Starting experiment using the classification algorithm "seco"...
+INFO Using separate training and test sets...
+DEBUG Parsing meta data from file "python/tests/res/data/emotions.xml"...
+DEBUG Loading data set from file "python/tests/res/data/emotions.arff"...
+INFO Fitting model to 397 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A sparse matrix is used to store the labels of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 196 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data:
+
+Example-wise F1         53.72
+Example-wise Jaccard    44.55
+Example-wise Precision  63.06
+Example-wise Recall     59.18
+Hamming Accuracy        72.96
+Hamming Loss            27.04
+Macro F1                50.95
+Macro Jaccard           36.98
+Macro Precision         64.57
+Macro Recall            56.59
+Micro F1                58.16
+Micro Jaccard           41
+Micro Precision         57.4
+Micro Recall            58.93
+Subset 0/1 Loss         81.63
+Subset Accuracy         18.37
+
+INFO Successfully finished after <duration>
