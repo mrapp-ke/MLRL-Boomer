@@ -179,10 +179,8 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
             self.num_considered_rules = min(self.num_total_rules, self.num_considered_rules + step_size)
             return self.predictor.predict(self.num_considered_rules)
 
-    def __init__(self, random_state: Optional[int], feature_format: Optional[str], output_format: Optional[str],
-                 prediction_format: Optional[str]):
+    def __init__(self, feature_format: Optional[str], output_format: Optional[str], prediction_format: Optional[str]):
         """
-        :param random_state:        The seed to be used by RNGs. Must be at least 1
         :param feature_format:      The format to be used for the representation of the feature matrix. Must be
                                     `sparse`, `dense` or `auto`
         :param output_format:       The format to be used for the representation of the output matrix. Must be `sparse`,
@@ -191,7 +189,6 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
                                     `dense` or `auto`
         """
         super().__init__()
-        self.random_state = random_state
         self.feature_format = feature_format
         self.output_format = output_format
         self.prediction_format = prediction_format
@@ -206,8 +203,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         output_matrix = self.__create_row_wise_output_matrix(y)
         feature_info = self._create_feature_info(feature_matrix.get_num_features())
         learner = self._create_learner()
-        random_state = int(self.random_state) if self.random_state else 1
-        training_result = learner.fit(feature_info, feature_matrix, output_matrix, random_state)
+        training_result = learner.fit(feature_info, feature_matrix, output_matrix)
         self.num_outputs_ = training_result.num_outputs
         self.output_space_info_ = training_result.output_space_info
         self.marginal_probability_calibration_model_ = training_result.marginal_probability_calibration_model

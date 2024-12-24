@@ -53,7 +53,7 @@ void FixedRefinementComparator::pushRefinement(const Refinement& refinement, con
         scoreProcessor.processScores(scoreVector);
     }
 
-    std::sort(order_.begin(), order_.end(), [=](const Refinement& a, const Refinement& b) {
+    std::sort(order_.begin(), order_.end(), [this](const Refinement& a, const Refinement& b) {
         return ruleCompareFunction_.compare(*a.headPtr, *b.headPtr);
     });
 
