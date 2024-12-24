@@ -14,11 +14,12 @@ from util.log import Log
 from targets.compilation.build_options import BuildOptions, EnvBuildOption
 from targets.compilation.meson import MesonCompile, MesonConfigure, MesonInstall, MesonSetup
 from targets.compilation.modules import CompilationModule
+from targets.modules import SubprojectModule
 
 MODULE_FILTER = CompilationModule.Filter(FileType.cpp())
 
 BUILD_OPTIONS = BuildOptions() \
-        .add(EnvBuildOption(name='subprojects')) \
+        .add(EnvBuildOption(name=SubprojectModule.ENV_SUBPROJECTS.lower())) \
         .add(EnvBuildOption(name='test_support', subpackage='common')) \
         .add(EnvBuildOption(name='multi_threading_support', subpackage='common')) \
         .add(EnvBuildOption(name='gpu_support', subpackage='common'))

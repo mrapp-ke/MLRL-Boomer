@@ -1,0 +1,22 @@
+INFO Starting experiment using the regression algorithm "boomer"...
+INFO Using separate training and test sets...
+DEBUG Parsing meta data from file "python/tests/res/data/atp7d.xml"...
+DEBUG Loading data set from file "python/tests/res/data/atp7d.arff"...
+INFO Data characteristics:
+
+Examples            198
+Features            411
+Numerical Features  411
+Ordinal Features      0
+Nominal Features      0
+Feature Density      88.62
+Feature Sparsity     11.38
+Outputs               6
+Output Density      100
+Output Sparsity       0
+
+INFO Fitting model to 198 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+INFO Successfully finished after <duration>

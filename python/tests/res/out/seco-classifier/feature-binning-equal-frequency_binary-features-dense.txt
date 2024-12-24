@@ -1,0 +1,32 @@
+INFO Starting experiment using the classification algorithm "seco"...
+INFO Using separate training and test sets...
+DEBUG Parsing meta data from file "python/tests/res/data/enron.xml"...
+DEBUG Loading data set from file "python/tests/res/data/enron.arff"...
+INFO Fitting model to 1140 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A sparse matrix is used to store the labels of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 562 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A sparse matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data:
+
+Example-wise F1         49.99
+Example-wise Jaccard    36.58
+Example-wise Precision  49.85
+Example-wise Recall     56.26
+Hamming Accuracy        93.8
+Hamming Loss             6.2
+Macro F1                13.63
+Macro Jaccard           10.15
+Macro Precision         84.99
+Macro Recall            15.84
+Micro F1                53.63
+Micro Jaccard           36.64
+Micro Precision         51.08
+Micro Recall            56.45
+Subset 0/1 Loss         99.64
+Subset Accuracy          0.36
+
+INFO Successfully finished after <duration>

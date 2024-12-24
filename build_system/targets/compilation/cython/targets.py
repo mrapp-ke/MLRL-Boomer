@@ -14,11 +14,12 @@ from util.log import Log
 from targets.compilation.build_options import BuildOptions, EnvBuildOption
 from targets.compilation.meson import MesonCompile, MesonConfigure, MesonInstall, MesonSetup
 from targets.compilation.modules import CompilationModule
+from targets.modules import SubprojectModule
 
 MODULE_FILTER = CompilationModule.Filter(FileType.cython())
 
 BUILD_OPTIONS = BuildOptions() \
-        .add(EnvBuildOption(name='subprojects'))
+        .add(EnvBuildOption(name=SubprojectModule.ENV_SUBPROJECTS.lower()))
 
 
 class SetupCython(BuildTarget.Runnable):

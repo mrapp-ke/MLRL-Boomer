@@ -11,10 +11,13 @@ jobs:
     name: Detect changes
     runs-on: ubuntu-latest
     outputs:
+      cpp_boosting: ${{ steps.filter.outputs.cpp_boosting }}
+      cpp_seco: ${{ steps.filter.outputs.cpp_seco }}
       cpp: ${{ steps.filter.outputs.cpp }}
       cpp_tests: ${{ steps.filter.outputs.cpp_tests }}
-      python: ${{ steps.filter.outputs.python }}
       python_tests: ${{ steps.filter.outputs.python_tests }}
+      tests_boosting: ${{ steps.filter.outputs.tests_boosting }}
+      tests_seco: ${{ steps.filter.outputs.tests_seco }}
       any: ${{ steps.filter.outputs.any }}
     steps:
       - name: Look up Git repository in cache
@@ -38,34 +41,83 @@ jobs:
               - 'build_system/main.py'
               - 'build_system/core/**'
               - 'build_system/util/**'
-              - 'build_system/targets/paths.py'
+              - 'build_system/targets/*.py'
               - 'build_system/targets/compilation/*'
               - 'build_system/targets/testing/*'
-            cpp: &cpp
+            cpp_common: &cpp_common
               - *build_files
               - 'build_system/targets/compilation/cpp/*'
+              - 'cpp/**/meson.*'
+              - 'cpp/subprojects/common/include/**'
+              - 'cpp/subprojects/common/src/**'
+            cpp_boosting: &cpp_boosting
+              - *cpp_common
+              - 'cpp/subprojects/boosting/include/**'
+              - 'cpp/subprojects/boosting/src/**'
+            cpp_seco: &cpp_seco
+              - *cpp_common
+              - 'cpp/subprojects/seco/include/**'
+              - 'cpp/subprojects/seco/src/**'
+            cpp:
+              - *cpp_boosting
+              - *cpp_seco
+            cpp_tests_common: &cpp_tests_common
+              - *cpp_common
               - 'build_system/targets/testing/cpp/*'
-              - 'cpp/**/include/**'
-              - 'cpp/**/src/**'
-              - '**/*.pxd'
-              - '**/*.pyx'
-              - '**/meson.build'
-            cpp_tests: &cpp_tests
-              - *cpp
-              - 'cpp/**/test/**'
-            python: &python
-              - *build_files
+              - 'cpp/subprojects/common/test/**'
+            cpp_tests_boosting: &cpp_tests_boosting
+              - *cpp_tests_common
+              - *cpp_boosting
+              - 'cpp/subprojects/boosting/test/**'
+            cpp_tests_seco: &cpp_tests_seco
+              - *cpp_tests_common
+              - *cpp_seco
+              - 'cpp/subprojects/seco/test/**'
+            cpp_tests:
+              - *cpp_tests_boosting
+              - *cpp_tests_seco
+            python_tests_common: &python_tests_common
+              - *cpp_tests_common
               - 'build_system/targets/compilation/cython/*'
               - 'build_system/targets/testing/python/*'
-              - 'python/**/requirements.txt'
-              - 'python/**/mlrl/**'
-            python_tests: &python_tests
-              - *python
-              - *cpp_tests
-              - 'python/**/tests/**' 
+              - 'python/**/meson.*'
+              - 'python/subprojects/common/pyproject.toml'
+              - 'python/subprojects/common/requirements.txt'
+              - 'python/subprojects/common/setup.py'
+              - 'python/subprojects/common/mlrl/**'
+              - 'python/subprojects/testbed/pyproject.toml'
+              - 'python/subprojects/testbed/requirements.txt'
+              - 'python/subprojects/testbed/setup.py'
+              - 'python/subprojects/testbed/mlrl/**'
+              - 'python/tests/mlrl/common/**'
+            python_tests_boosting: &python_tests_boosting
+              - *python_tests_common
+              - *cpp_tests_boosting
+              - 'python/subprojects/boosting/pyproject.toml'
+              - 'python/subprojects/boosting/requirements.txt'
+              - 'python/subprojects/boosting/setup.py'
+              - 'python/subprojects/boosting/mlrl/**'
+              - 'python/tests/mlrl/boosting/**'
+            python_tests_seco: &python_tests_seco
+              - *python_tests_common
+              - *cpp_tests_seco
+              - 'python/subprojects/seco/pyproject.toml'
+              - 'python/subprojects/seco/requirements.txt'
+              - 'python/subprojects/seco/setup.py'
+              - 'python/subprojects/seco/mlrl/**'
+              - 'python/tests/mlrl/seco/**'
+            python_tests:
+              - *python_tests_boosting
+              - *python_tests_seco
+            tests_boosting: &tests_boosting
+              - *cpp_tests_boosting
+              - *python_tests_boosting
+            tests_seco: &tests_seco
+              - *cpp_tests_seco
+              - *python_tests_seco
             any:
-              - *cpp_tests
-              - *python_tests
+              - *tests_boosting
+              - *tests_seco
       - name: Save Git repository to cache
         uses: actions/cache/save@v4
         if: success() || failure()
@@ -101,12 +153,18 @@ jobs:
         uses: hendrikmuhs/ccache-action@v1
         with:
           key: ${{ runner.os }}-test-build-ccache
+      - name: Include subproject "boosting"
+        if: ${{ needs.changes.outputs.tests_boosting == 'true' }}
+        run: echo "INCLUDED_PROJECTS=$(echo "${INCLUDED_PROJECTS}boosting,")" >> $GITHUB_ENV
+      - name: Include subproject "seco"
+        if: ${{ needs.changes.outputs.tests_seco == 'true' }}
+        run: echo "INCLUDED_PROJECTS=$(echo "${INCLUDED_PROJECTS}seco,")" >> $GITHUB_ENV
       - name: Compile via GCC
-        if: ${{ needs.changes.outputs.cpp == 'true' }}
-        run: TEST_SUPPORT=enabled ./build compile_cpp
+        if: ${{ needs.changes.outputs.any == 'true' }}
+        run: SUBPROJECTS=$INCLUDED_PROJECTS TEST_SUPPORT=enabled ./build compile_cpp
       - name: Test C++ code
         if: ${{ needs.changes.outputs.cpp_tests == 'true' }}
-        run: ./build tests_cpp
+        run: SUBPROJECTS=$INCLUDED_PROJECTS ./build tests_cpp
       - name: Publish C++ test results
         if: ${{ needs.changes.outputs.cpp_tests == 'true' }} && (success() || failure())
         uses: EnricoMi/publish-unit-test-result-action@v2
@@ -116,14 +174,14 @@ jobs:
             cpp/build/meson-logs/testlog.junit.xml
       - name: Test Python code
         if: ${{ needs.changes.outputs.python_tests == 'true' }}
-        run: ./build tests_python
+        run: SUBPROJECTS=$INCLUDED_PROJECTS ./build tests_python
       - name: Publish Python test results
         if: ${{ needs.changes.outputs.python_tests == 'true' }} && (success() || failure())
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           check_name: Python Test Results
           files: |
-            python/build/test-results/*.xml
+            python/tests/build/test-results/*.xml
   macos_build:
     needs: changes
     if: ${{ needs.changes.outputs.cpp == 'true' }}
@@ -151,8 +209,14 @@ jobs:
         uses: hendrikmuhs/ccache-action@v1
         with:
           key: ${{ runner.os }}-test-build-ccache
+      - name: Include subproject "boosting"
+        if: ${{ needs.changes.outputs.cpp_boosting == 'true' }}
+        run: echo "INCLUDED_PROJECTS=$(echo "${INCLUDED_PROJECTS}boosting,")" >> $GITHUB_ENV
+      - name: Include subproject "seco"
+        if: ${{ needs.changes.outputs.cpp_seco == 'true' }}
+        run: echo "INCLUDED_PROJECTS=$(echo "${INCLUDED_PROJECTS}seco,")" >> $GITHUB_ENV
       - name: Compile via Clang
-        run: TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/opt/homebrew/opt/libomp/include/:/opt/homebrew/opt/opencl-clhpp-headers/include/
+        run: SUBPROJECTS=$INCLUDED_PROJECTS TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/opt/homebrew/opt/libomp/include/:/opt/homebrew/opt/opencl-clhpp-headers/include/
           LIBRARY_PATH=/opt/homebrew/opt/libomp/lib/ ./build compile
   windows_build:
     needs: changes
@@ -186,8 +250,15 @@ jobs:
           token: ${{ github.token }}
       - name: Prepare sccache
         uses: mozilla-actions/sccache-action@v0.0.7
+      - name: Include subproject "boosting"
+        if: ${{ needs.changes.outputs.cpp_boosting == 'true' }}
+        run: echo "INCLUDED_PROJECTS=$(echo "${env:INCLUDED_PROJECTS}boosting,")" >> $env:GITHUB_ENV
+      - name: Include subproject "seco"
+        if: ${{ needs.changes.outputs.cpp_seco == 'true' }}
+        run: echo "INCLUDED_PROJECTS=$(echo "${env:INCLUDED_PROJECTS}seco,")" >> $env:GITHUB_ENV
       - name: Compile via MSVC
         run: |-
+          $env:SUBPROJECTS = "$env:INCLUDED_PROJECTS"
           $env:TEST_SUPPORT = "disabled"
           $env:INCLUDE += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\include"
           $env:LIB += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\lib"
