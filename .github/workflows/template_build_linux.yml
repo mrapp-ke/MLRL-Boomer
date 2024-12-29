@@ -1,0 +1,64 @@
+---
+name: Test Linux build
+on:
+  workflow_call:
+    inputs:
+      subproject:
+        required: true
+        type: string
+      run_cpp_tests:
+        required: false
+        type: boolean
+      run_python_tests:
+        required: false
+        type: boolean
+jobs:
+  linux_build:
+    name: Test Linux build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .git/
+          key: test-build-cache-git-${{ github.run_id }}
+          restore-keys: |
+            test-build-cache-git
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: .version-python
+      - name: Install OpenCL
+        run: |
+          sudo apt update
+          sudo apt install -y opencl-headers ocl-icd-opencl-dev
+      - name: Install GoogleTest
+        run: sudo apt install -y googletest
+      - name: Prepare ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: ${{ runner.os }}-test-build-ccache-${{ inputs.subproject }}
+      - name: Compile via GCC
+        run: SUBPROJECTS=${{ inputs.subproject }} TEST_SUPPORT=enabled ./build compile_cpp
+      - name: Test C++ code
+        if: ${{ inputs.run_cpp_tests == true }}
+        run: SUBPROJECTS=${{ inputs.subproject }} ./build tests_cpp
+      - name: Upload C++ test results as artifacts
+        if: ${{ inputs.run_cpp_tests == true }} && (success() || failure())
+        uses: actions/upload-artifact@v4
+        with:
+          name: cpp-test-results-${{ inputs.subproject }}
+          path: cpp/build/meson-logs/testlog.junit.xml
+          if-no-files-found: error
+      - name: Test Python code
+        if: ${{ inputs.run_python_tests == true }}
+        run: SUBPROJECTS=${{ inputs.subproject }} ./build tests_python
+      - name: Upload Python test results as artifacts
+        if: ${{ inputs.run_python_tests == true }} && (success() || failure())
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-test-results-${{ inputs.subproject }}
+          path: python/tests/build/test-results/*.xml
+          if-no-files-found: error
