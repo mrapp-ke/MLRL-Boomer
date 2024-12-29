@@ -43,19 +43,23 @@ jobs:
               - 'build_system/util/**'
               - 'build_system/targets/*.py'
               - 'build_system/targets/compilation/*'
+              - 'build_system/targets/packaging/*'
               - 'build_system/targets/testing/*'
             cpp_common: &cpp_common
               - *build_files
               - 'build_system/targets/compilation/cpp/*'
-              - 'cpp/**/meson.*'
+              - 'cpp/meson.*'
+              - 'cpp/subprojects/common/meson.*'
               - 'cpp/subprojects/common/include/**'
               - 'cpp/subprojects/common/src/**'
             cpp_boosting: &cpp_boosting
               - *cpp_common
+              - 'cpp/subprojects/boosting/meson.*'
               - 'cpp/subprojects/boosting/include/**'
               - 'cpp/subprojects/boosting/src/**'
             cpp_seco: &cpp_seco
               - *cpp_common
+              - 'cpp/subprojects/seco/meson.*'
               - 'cpp/subprojects/seco/include/**'
               - 'cpp/subprojects/seco/src/**'
             cpp:
@@ -80,16 +84,20 @@ jobs:
               - *cpp_tests_common
               - 'build_system/targets/compilation/cython/*'
               - 'build_system/targets/testing/python/*'
-              - 'python/**/meson.*'
+              - 'python/meson.*'
+              - 'python/subprojects/common/meson.*'
               - 'python/subprojects/common/pyproject.toml'
               - 'python/subprojects/common/requirements.txt'
               - 'python/subprojects/common/setup.py'
               - 'python/subprojects/common/mlrl/**'
+              - 'python/subprojects/testbed/meson.*'
               - 'python/subprojects/testbed/pyproject.toml'
               - 'python/subprojects/testbed/requirements.txt'
               - 'python/subprojects/testbed/setup.py'
               - 'python/subprojects/testbed/mlrl/**'
               - 'python/tests/mlrl/common/**'
+              - 'python/tests/res/data/**'
+              - 'python/tests/res/in/**'
             python_tests_boosting: &python_tests_boosting
               - *python_tests_common
               - *cpp_tests_boosting
@@ -98,6 +106,7 @@ jobs:
               - 'python/subprojects/boosting/setup.py'
               - 'python/subprojects/boosting/mlrl/**'
               - 'python/tests/mlrl/boosting/**'
+              - 'python/tests/res/out/boosting/**'
             python_tests_seco: &python_tests_seco
               - *python_tests_common
               - *cpp_tests_seco
@@ -106,6 +115,7 @@ jobs:
               - 'python/subprojects/seco/setup.py'
               - 'python/subprojects/seco/mlrl/**'
               - 'python/tests/mlrl/seco/**'
+              - 'python/tests/res/out/seco/**'
             python_tests:
               - *python_tests_boosting
               - *python_tests_seco
