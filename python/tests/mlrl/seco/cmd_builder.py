@@ -38,7 +38,7 @@ class SeCoClassifierCmdBuilder(ClassificationCmdBuilder):
 
     def __init__(self, callback: CmdBuilder.AssertionCallback, dataset: str = DATASET_EMOTIONS):
         super().__init__(callback,
-                         expected_output_dir=path.join(DIR_OUT, 'seco-classifier'),
+                         expected_output_dir=path.join(DIR_OUT, 'seco', 'classification'),
                          model_file_name='seco',
                          runnable_module_name='mlrl.seco',
                          dataset=dataset)
