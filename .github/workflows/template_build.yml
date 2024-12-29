@@ -1,0 +1,38 @@
+---
+name: Test build
+on:
+  workflow_call:
+    inputs:
+      subproject:
+        required: true
+        type: string
+      compile:
+        required: false
+        type: boolean
+      run_cpp_tests:
+        required: false
+        type: boolean
+      run_python_tests:
+        required: false
+        type: boolean
+jobs:
+  linux_build:
+    if: ${{ inputs.compile == true || inputs.run_cpp_tests == true || inputs.run_python_tests == true }}
+    name: Test Linux build (${{ inputs.subproject }})
+    uses: ./.github/workflows/template_build_linux.yml
+    with:
+      subproject: ${{ inputs.subproject }}
+      run_cpp_tests: ${{ inputs.run_cpp_tests == true }}
+      run_python_tests: ${{ inputs.run_python_tests == true }}
+  macos_build:
+    if: ${{ inputs.compile == true }}
+    name: Test MacOS build (${{ inputs.subproject }})
+    uses: ./.github/workflows/template_build_macos.yml
+    with:
+      subproject: ${{ inputs.subproject }}
+  windows_build:
+    if: ${{ inputs.compile == true }}
+    name: Test windows build (${{ inputs.subproject }})
+    uses: ./.github/workflows/template_build_windows.yml
+    with:
+      subproject: ${{ inputs.subproject }}
