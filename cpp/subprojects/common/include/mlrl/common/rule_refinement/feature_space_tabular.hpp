@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/input/feature_binning.hpp"
+#include "mlrl/common/multi_threading/multi_threading.hpp"
 #include "mlrl/common/rule_refinement/feature_space.hpp"
 
 #include <memory>
@@ -16,7 +17,7 @@ class TabularFeatureSpaceFactory final : public IFeatureSpaceFactory {
 
         const std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr_;
 
-        const uint32 numThreads_;
+        const MultiThreadingSettings multiThreadingSettings_;
 
     public:
 
@@ -24,10 +25,11 @@ class TabularFeatureSpaceFactory final : public IFeatureSpaceFactory {
          * @param featureBinningFactoryPtr  An unique pointer to an object of type `IFeatureBinningFactory` that allows
          *                                  to create implementations of the binning method to be used for assigning
          *                                  numerical feature values to bins
-         * @param numThreads                The number of CPU threads to be used to update statistics in parallel. Must
-         *                                  be at least 1
+         * @param multiThreadingSettings    An object of type `MultiThreadingSettings` that stores the settings to be
+         *                                  used for updating statistics in parallel
          */
-        TabularFeatureSpaceFactory(std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr, uint32 numThreads);
+        TabularFeatureSpaceFactory(std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr,
+                                   MultiThreadingSettings multiThreadingSettings);
 
         std::unique_ptr<IFeatureSpace> create(const IColumnWiseFeatureMatrix& featureMatrix,
                                               const IFeatureInfo& featureInfo,

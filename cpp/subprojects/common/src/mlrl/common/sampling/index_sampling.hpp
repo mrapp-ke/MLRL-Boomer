@@ -30,7 +30,7 @@ static inline void sampleIndicesWithoutReplacementViaTrackingSelection(PartialIn
         uint32 sampledIndex;
 
         while (shouldContinue) {
-            uint32 randomIndex = rng.random(0, numTotal);
+            uint32 randomIndex = rng.randomInt(0, numTotal);
             sampledIndex = totalIterator[randomIndex];
             shouldContinue = !selectedIndices.insert(sampledIndex).second;
         }
@@ -59,7 +59,7 @@ static inline void sampleIndicesWithoutReplacementViaReservoirSampling(PartialIn
     }
 
     for (uint32 i = numSamples; i < numTotal; i++) {
-        uint32 randomIndex = rng.random(0, i + 1);
+        uint32 randomIndex = rng.randomInt(0, i + 1);
 
         if (randomIndex < numSamples) {
             sampleIterator[randomIndex] = totalIterator[i];
@@ -87,7 +87,7 @@ static inline void randomPermutation(FirstIterator firstIterator, SecondIterator
                                      uint32 numTotal, uint32 numPermutations, RNG& rng) {
     for (uint32 i = 0; i < numPermutations; i++) {
         // Swap elements at index i and at a randomly selected index...
-        uint32 randomIndex = rng.random(i, numTotal);
+        uint32 randomIndex = rng.randomInt(i, numTotal);
         uint32 tmp1 = i < numFirst ? firstIterator[i] : secondIterator[i - numFirst];
         uint32 tmp2;
 

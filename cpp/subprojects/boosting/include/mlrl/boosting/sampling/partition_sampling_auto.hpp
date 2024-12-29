@@ -23,6 +23,8 @@ namespace boosting {
                                                    public IRegressionPartitionSamplingConfig {
         private:
 
+            const ReadableProperty<RNGConfig> rngConfig_;
+
             const ReadableProperty<IGlobalPruningConfig> globalPruningConfig_;
 
             const ReadableProperty<IMarginalProbabilityCalibratorConfig> marginalProbabilityCalibratorConfig_;
@@ -32,6 +34,8 @@ namespace boosting {
         public:
 
             /**
+             * @param rngConfig                           A `ReadableProperty` that allows to access the `RNGConfig`
+             *                                            that stores the configuration of random number generators
              * @param globalPruningConfig                 A `ReadableProperty` that allows to access the
              *                                            `IGlobalPruningConfig` that stores the configuration of the
              *                                            method that is used for pruning entire rules
@@ -45,7 +49,7 @@ namespace boosting {
              *                                            for the calibration of joint probabilities
              */
             AutomaticPartitionSamplingConfig(
-              ReadableProperty<IGlobalPruningConfig> globalPruningConfig,
+              ReadableProperty<RNGConfig> rngConfig, ReadableProperty<IGlobalPruningConfig> globalPruningConfig,
               ReadableProperty<IMarginalProbabilityCalibratorConfig> marginalProbabilityCalibratorConfig,
               ReadableProperty<IJointProbabilityCalibratorConfig> jointProbabilityCalibratorConfig);
 
