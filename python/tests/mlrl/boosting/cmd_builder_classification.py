@@ -47,7 +47,7 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
 
     def __init__(self, callback: CmdBuilder.AssertionCallback, dataset: str = DATASET_EMOTIONS):
         super().__init__(callback,
-                         expected_output_dir=path.join(DIR_OUT, 'boomer-classifier'),
+                         expected_output_dir=path.join(DIR_OUT, 'boosting', 'classification'),
                          model_file_name='boomer',
                          runnable_module_name='mlrl.boosting',
                          dataset=dataset)
