@@ -13,12 +13,10 @@ jobs:
     outputs:
       cpp_boosting: ${{ steps.filter.outputs.cpp_boosting }}
       cpp_seco: ${{ steps.filter.outputs.cpp_seco }}
-      cpp: ${{ steps.filter.outputs.cpp }}
-      cpp_tests: ${{ steps.filter.outputs.cpp_tests }}
-      python_tests: ${{ steps.filter.outputs.python_tests }}
-      tests_boosting: ${{ steps.filter.outputs.tests_boosting }}
-      tests_seco: ${{ steps.filter.outputs.tests_seco }}
-      any: ${{ steps.filter.outputs.any }}
+      cpp_tests_boosting: ${{ steps.filter.outputs.cpp_tests_boosting }}
+      cpp_tests_seco: ${{ steps.filter.outputs.cpp_tests_seco }}
+      python_tests_boosting: ${{ steps.filter.outputs.python_tests_boosting }}
+      python_tests_seco: ${{ steps.filter.outputs.python_tests_seco }}
     steps:
       - name: Look up Git repository in cache
         uses: actions/cache/restore@v4
@@ -36,6 +34,7 @@ jobs:
           filters: |
             build_files: &build_files
               - '.github/workflows/test_build.yml'
+              - '.github/workflows/build/template_build_windows.yml'
               - 'build'
               - 'build.bat'
               - 'build_system/main.py'
@@ -62,9 +61,6 @@ jobs:
               - 'cpp/subprojects/seco/meson.*'
               - 'cpp/subprojects/seco/include/**'
               - 'cpp/subprojects/seco/src/**'
-            cpp:
-              - *cpp_boosting
-              - *cpp_seco
             cpp_tests_common: &cpp_tests_common
               - *cpp_common
               - 'build_system/targets/testing/cpp/*'
@@ -77,9 +73,6 @@ jobs:
               - *cpp_tests_common
               - *cpp_seco
               - 'cpp/subprojects/seco/test/**'
-            cpp_tests:
-              - *cpp_tests_boosting
-              - *cpp_tests_seco
             python_tests_common: &python_tests_common
               - *cpp_tests_common
               - 'build_system/targets/compilation/cython/*'
@@ -116,160 +109,61 @@ jobs:
               - 'python/subprojects/seco/mlrl/**'
               - 'python/tests/mlrl/seco/**'
               - 'python/tests/res/out/seco/**'
-            python_tests:
-              - *python_tests_boosting
-              - *python_tests_seco
-            tests_boosting: &tests_boosting
-              - *cpp_tests_boosting
-              - *python_tests_boosting
-            tests_seco: &tests_seco
-              - *cpp_tests_seco
-              - *python_tests_seco
-            any:
-              - *tests_boosting
-              - *tests_seco
       - name: Save Git repository to cache
         uses: actions/cache/save@v4
         if: success() || failure()
         with:
           path: .git/
           key: test-build-cache-git-${{ github.run_id }}
-  linux_build:
+  test_build:
     needs: changes
-    if: ${{ needs.changes.outputs.any == 'true' }}
-    name: Test Linux build
+    name: Test build
+    strategy:
+      fail-fast: false
+      matrix:
+        subproject:
+          - boosting
+          - seco
+    uses: ./.github/workflows/template_build.yml
+    with:
+      subproject: ${{ matrix.subproject }}
+      compile: ${{ needs.changes.outputs[format('cpp_{0}', matrix.subproject)] == 'true' }}
+      run_cpp_tests: ${{ needs.changes.outputs[format('cpp_tests_{0}', matrix.subproject)] == 'true' }}
+      run_python_tests: ${{ needs.changes.outputs[format('python_tests_{0}', matrix.subproject)] == 'true' }}
+  publish_test_results:
+    needs: test_build
+    if: always()
+    name: Publish test results
     runs-on: ubuntu-latest
     steps:
-      - name: Look up Git repository in cache
-        uses: actions/cache/restore@v4
+      - name: Download C++ test results
+        uses: actions/download-artifact@v4
         with:
-          path: .git/
-          key: test-build-cache-git-${{ github.run_id }}
-          restore-keys: |
-            test-build-cache-git
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version-file: .version-python
-      - name: Install OpenCL
-        run: |
-          sudo apt update
-          sudo apt install -y opencl-headers ocl-icd-opencl-dev
-      - name: Install GoogleTest
-        run: sudo apt install -y googletest
-      - name: Prepare ccache
-        uses: hendrikmuhs/ccache-action@v1
-        with:
-          key: ${{ runner.os }}-test-build-ccache
-      - name: Include subproject "boosting"
-        if: ${{ needs.changes.outputs.tests_boosting == 'true' }}
-        run: echo "INCLUDED_PROJECTS=$(echo "${INCLUDED_PROJECTS}boosting,")" >> $GITHUB_ENV
-      - name: Include subproject "seco"
-        if: ${{ needs.changes.outputs.tests_seco == 'true' }}
-        run: echo "INCLUDED_PROJECTS=$(echo "${INCLUDED_PROJECTS}seco,")" >> $GITHUB_ENV
-      - name: Compile via GCC
-        if: ${{ needs.changes.outputs.any == 'true' }}
-        run: SUBPROJECTS=$INCLUDED_PROJECTS TEST_SUPPORT=enabled ./build compile_cpp
-      - name: Test C++ code
-        if: ${{ needs.changes.outputs.cpp_tests == 'true' }}
-        run: SUBPROJECTS=$INCLUDED_PROJECTS ./build tests_cpp
+          pattern: cpp-test-results-*
+          path: cpp_test_results
       - name: Publish C++ test results
-        if: ${{ needs.changes.outputs.cpp_tests == 'true' }} && (success() || failure())
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           check_name: C++ Test Results
-          files: |
-            cpp/build/meson-logs/testlog.junit.xml
-      - name: Test Python code
-        if: ${{ needs.changes.outputs.python_tests == 'true' }}
-        run: SUBPROJECTS=$INCLUDED_PROJECTS ./build tests_python
+          files: cpp_test_results/**/*.xml
+      - name: Download Python test results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: python-test-results-*
+          path: python_test_results
       - name: Publish Python test results
-        if: ${{ needs.changes.outputs.python_tests == 'true' }} && (success() || failure())
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           check_name: Python Test Results
-          files: |
-            python/tests/build/test-results/*.xml
-  macos_build:
-    needs: changes
-    if: ${{ needs.changes.outputs.cpp == 'true' }}
-    name: Test MacOS build
-    runs-on: macos-latest
+          files: python_test_results/**/*.xml
+  check_success:
+    needs: test_build
+    if: always()
+    name: Test build succeeded
+    runs-on: ubuntu-latest
     steps:
-      - name: Look up Git repository in cache
-        uses: actions/cache/restore@v4
-        with:
-          path: .git/
-          key: test-build-cache-git-${{ github.run_id }}
-          restore-keys: |
-            test-build-cache-git
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version-file: .version-python
-      - name: Install OpenMP
-        run: brew install libomp
-      - name: Install OpenCL
-        run: brew install opencl-clhpp-headers
-      - name: Prepare ccache
-        uses: hendrikmuhs/ccache-action@v1
-        with:
-          key: ${{ runner.os }}-test-build-ccache
-      - name: Include subproject "boosting"
-        if: ${{ needs.changes.outputs.cpp_boosting == 'true' }}
-        run: echo "INCLUDED_PROJECTS=$(echo "${INCLUDED_PROJECTS}boosting,")" >> $GITHUB_ENV
-      - name: Include subproject "seco"
-        if: ${{ needs.changes.outputs.cpp_seco == 'true' }}
-        run: echo "INCLUDED_PROJECTS=$(echo "${INCLUDED_PROJECTS}seco,")" >> $GITHUB_ENV
-      - name: Compile via Clang
-        run: SUBPROJECTS=$INCLUDED_PROJECTS TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/opt/homebrew/opt/libomp/include/:/opt/homebrew/opt/opencl-clhpp-headers/include/
-          LIBRARY_PATH=/opt/homebrew/opt/libomp/lib/ ./build compile
-  windows_build:
-    needs: changes
-    if: ${{ needs.changes.outputs.cpp == 'true' }}
-    name: Test Windows build
-    runs-on: windows-latest
-    env:
-      SCCACHE_GHA_ENABLED: 'true'
-    steps:
-      - name: Look up Git repository in cache
-        uses: actions/cache/restore@v4
-        with:
-          enableCrossOsArchive: true
-          path: .git/
-          key: test-build-cache-git-${{ github.run_id }}
-          restore-keys: |
-            test-build-cache-git
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version-file: .version-python
-      - name: Prepare MSVC
-        uses: ilammy/msvc-dev-cmd@v1
-      - name: Install OpenCL
-        uses: johnwason/vcpkg-action@v6
-        with:
-          pkgs: opencl
-          triplet: x64-windows
-          token: ${{ github.token }}
-      - name: Prepare sccache
-        uses: mozilla-actions/sccache-action@v0.0.7
-      - name: Include subproject "boosting"
-        if: ${{ needs.changes.outputs.cpp_boosting == 'true' }}
-        run: echo "INCLUDED_PROJECTS=$(echo "${env:INCLUDED_PROJECTS}boosting,")" >> $env:GITHUB_ENV
-      - name: Include subproject "seco"
-        if: ${{ needs.changes.outputs.cpp_seco == 'true' }}
-        run: echo "INCLUDED_PROJECTS=$(echo "${env:INCLUDED_PROJECTS}seco,")" >> $env:GITHUB_ENV
-      - name: Compile via MSVC
+      - name: Check for success
         run: |-
-          $env:SUBPROJECTS = "$env:INCLUDED_PROJECTS"
-          $env:TEST_SUPPORT = "disabled"
-          $env:INCLUDE += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\include"
-          $env:LIB += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\lib"
-          ./build.bat compile
+          if [[ "${{ needs.test_build.result }}" != "success" ]]; then
+            exit 1
+          fi
