@@ -5,6 +5,7 @@
 
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_non_decomposable.hpp"
 #include "mlrl/boosting/statistics/statistics_decomposable.hpp"
+#include "mlrl/common/multi_threading/multi_threading.hpp"
 
 #include <memory>
 
@@ -43,18 +44,18 @@ namespace boosting {
              * Creates and returns an instance of type `IDecomposableStatistics` from the gradients and Hessians that
              * are stored by this object.
              *
-             * @param ruleEvaluationFactory A reference to an object of template type
-             *                              `DecomposableRuleEvaluationFactory` that allows to create instances of the
-             *                              class that is used for calculating the predictions of rules, as well as
-             *                              their overall quality
-             * @param numThreads            The number of threads that should be used to convert the statistics for
-             *                              individual examples in parallel
-             * @return                      An unique pointer to an object of type `IDecomposableStatistics` that has
-             *                              been created
+             * @param ruleEvaluationFactory   A reference to an object of template type
+             *                                `DecomposableRuleEvaluationFactory` that allows to create instances of the
+             *                                class that is used for calculating the predictions of rules, as well as
+             *                                their overall quality
+             * @param multiThreadingSettings  An object of type `MultiThreadingSettings` that stores the settings to be
+             *                                used for converting the statistics for individual examples in parallel
+             * @return                        An unique pointer to an object of type `IDecomposableStatistics` that has
+             *                                been created
              */
             virtual std::unique_ptr<IDecomposableStatistics<DecomposableRuleEvaluationFactory>>
               toDecomposableStatistics(const DecomposableRuleEvaluationFactory& ruleEvaluationFactory,
-                                       uint32 numThreads) = 0;
+                                       MultiThreadingSettings multiThreadingSettings) = 0;
     };
 
 }

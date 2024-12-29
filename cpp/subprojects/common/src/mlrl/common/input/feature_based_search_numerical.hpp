@@ -5,12 +5,12 @@
 
 #include "mlrl/common/input/feature_vector_numerical.hpp"
 #include "mlrl/common/rule_refinement/refinement.hpp"
-#include "mlrl/common/statistics/statistics_subset_weighted.hpp"
+#include "mlrl/common/statistics/statistics_subset_resettable.hpp"
 #include "mlrl/common/util/math.hpp"
 
 template<typename Comparator>
 static inline void searchForNumericalRefinementInternally(const NumericalFeatureVector& featureVector,
-                                                          IWeightedStatisticsSubset& statisticsSubset,
+                                                          IResettableStatisticsSubset& statisticsSubset,
                                                           Comparator& comparator, uint32 numExamplesWithNonZeroWeights,
                                                           uint32 minCoverage, Refinement& refinement) {
     float32 sparseValue = featureVector.sparseValue;

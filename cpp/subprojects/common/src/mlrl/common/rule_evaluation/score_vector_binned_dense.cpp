@@ -28,13 +28,15 @@ typename DenseBinnedScoreVector<IndexVector>::index_const_iterator DenseBinnedSc
 template<typename IndexVector>
 typename DenseBinnedScoreVector<IndexVector>::value_const_iterator DenseBinnedScoreVector<IndexVector>::values_cbegin()
   const {
-    return BinnedConstIterator<float64>(this->bin_indices_cbegin(), this->bin_values_cbegin());
+    return value_const_iterator(View<const uint32>(this->bin_indices_cbegin()),
+                                View<const float64>(this->bin_values_cbegin()), 0);
 }
 
 template<typename IndexVector>
 typename DenseBinnedScoreVector<IndexVector>::value_const_iterator DenseBinnedScoreVector<IndexVector>::values_cend()
   const {
-    return BinnedConstIterator<float64>(this->bin_indices_cend(), this->bin_values_cbegin());
+    return value_const_iterator(View<const uint32>(this->bin_indices_cbegin()),
+                                View<const float64>(this->bin_values_cbegin()), this->getNumElements());
 }
 
 template<typename IndexVector>
