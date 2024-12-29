@@ -1,0 +1,46 @@
+---
+name: Test Windows build
+on:
+  workflow_call:
+    inputs:
+      subproject:
+        required: true
+        type: string
+jobs:
+  windows_build:
+    name: Test Windows build
+    runs-on: windows-latest
+    env:
+      SCCACHE_GHA_ENABLED: 'true'
+    steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v4
+        with:
+          enableCrossOsArchive: true
+          path: .git/
+          key: test-build-cache-git-${{ github.run_id }}
+          restore-keys: |
+            test-build-cache-git
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: .version-python
+      - name: Prepare MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+      - name: Install OpenCL
+        uses: johnwason/vcpkg-action@v6
+        with:
+          pkgs: opencl
+          triplet: x64-windows
+          token: ${{ github.token }}
+      - name: Prepare sccache
+        uses: mozilla-actions/sccache-action@v0.0.7
+      - name: Compile via MSVC
+        run: |-
+          $env:SUBPROJECTS = "${{ inputs.subproject }}"
+          $env:TEST_SUPPORT = "disabled"
+          $env:INCLUDE += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\include"
+          $env:LIB += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\lib"
+          ./build.bat compile
