@@ -1,0 +1,37 @@
+---
+name: Test MacOS build
+on:
+  workflow_call:
+    inputs:
+      subproject:
+        required: true
+        type: string
+jobs:
+  macos_build:
+    name: Test MacOS build
+    runs-on: macos-latest
+    steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .git/
+          key: test-build-cache-git-${{ github.run_id }}
+          restore-keys: |
+            test-build-cache-git
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: .version-python
+      - name: Install OpenMP
+        run: brew install libomp
+      - name: Install OpenCL
+        run: brew install opencl-clhpp-headers
+      - name: Prepare ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: ${{ runner.os }}-test-build-ccache-${{ inputs.subproject }}
+      - name: Compile via Clang
+        run: SUBPROJECTS=${{ inputs.subproject }} TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/opt/homebrew/opt/libomp/include/:/opt/homebrew/opt/opencl-clhpp-headers/include/
+          LIBRARY_PATH=/opt/homebrew/opt/libomp/lib/ ./build compile
