@@ -17,10 +17,9 @@ namespace boosting {
         }
     }
 
-    static inline void addToSparseDecomposableStatisticVector(View<Triple<float64>>::iterator statistics,
-                                                              SparseSetView<Tuple<float64>>::value_const_iterator begin,
-                                                              SparseSetView<Tuple<float64>>::value_const_iterator end,
-                                                              float64 weight) {
+    static inline void addToSparseDecomposableStatisticVectorWeighted(
+      View<Triple<float64>>::iterator statistics, SparseSetView<Tuple<float64>>::value_const_iterator begin,
+      SparseSetView<Tuple<float64>>::value_const_iterator end, float64 weight) {
         uint32 numElements = end - begin;
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -150,8 +149,8 @@ namespace boosting {
     void SparseDecomposableStatisticVector::add(const SparseSetView<Tuple<float64>>& view, uint32 row, float64 weight) {
         if (!isEqualToZero(weight)) {
             sumOfWeights_ += weight;
-            addToSparseDecomposableStatisticVector(this->view.begin(), view.values_cbegin(row), view.values_cend(row),
-                                                   weight);
+            addToSparseDecomposableStatisticVectorWeighted(this->view.begin(), view.values_cbegin(row),
+                                                           view.values_cend(row), weight);
         }
     }
 
@@ -200,8 +199,8 @@ namespace boosting {
                                                         const CompleteIndexVector& indices, float64 weight) {
         if (!isEqualToZero(weight)) {
             sumOfWeights_ += weight;
-            addToSparseDecomposableStatisticVector(this->view.begin(), view.values_cbegin(row), view.values_cend(row),
-                                                   weight);
+            addToSparseDecomposableStatisticVectorWeighted(this->view.begin(), view.values_cbegin(row),
+                                                           view.values_cend(row), weight);
         }
     }
 
