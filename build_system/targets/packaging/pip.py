@@ -22,8 +22,29 @@ class PipInstallWheel(Pip):
             """
             super().__init__('install', '--force-reinstall', '--no-deps', *wheels)
 
+    class UninstallCommand(Pip.Command):
+        """
+        Allows to uninstall packages via the command `pip uninstall`.
+        """
+
+        def __init__(self, *package_names: str):
+            """
+            :param package_names: The names of the packages to be uninstalled
+            """
+            super().__init__('uninstall', '--yes', *package_names)
+
     def install_wheels(self, *wheels: str):
         """
         Installs several wheel packages.
+
+        :param wheels: The paths to the wheel packages to be installed
         """
         PipInstallWheel.InstallWheelCommand(*wheels).print_arguments(True).run()
+
+    def uninstall_packages(self, *package_names: str):
+        """
+        Uninstalls several packages.
+
+        :param package_names: The names of the packages to be uninstalled
+        """
+        PipInstallWheel.UninstallCommand(*package_names).print_arguments(True).run()
