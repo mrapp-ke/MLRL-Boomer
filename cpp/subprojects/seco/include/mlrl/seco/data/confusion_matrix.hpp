@@ -16,22 +16,22 @@ struct ConfusionMatrix final {
         /**
          * Irrelevant labels for which a rule predicts negatively.
          */
-        float64 in;
+        uint32 in;
 
         /**
          * Irrelevant labels for which a rule predicts positively.
          */
-        float64 ip;
+        uint32 ip;
 
         /**
          * Relevant labels for which a rule predicts negatively.
          */
-        float64 rn;
+        uint32 rn;
 
         /**
          * Relevant labels for which a rule predicts positively.
          */
-        float64 rp;
+        uint32 rp;
 
         /**
          * Assigns a specific value to the elements of this confusion matrix.
@@ -39,7 +39,7 @@ struct ConfusionMatrix final {
          * @param rhs   A reference to the value to be assigned
          * @return      A reference to the modified confusion matrix
          */
-        ConfusionMatrix& operator=(const float64& rhs) {
+        ConfusionMatrix& operator=(const uint32& rhs) {
             in = rhs;
             ip = rhs;
             rn = rhs;
@@ -53,7 +53,7 @@ struct ConfusionMatrix final {
          * @param rhs   A reference to the value to be added
          * @return      A reference to the modified confusion matrix
          */
-        ConfusionMatrix& operator+=(const float64& rhs) {
+        ConfusionMatrix& operator+=(const uint32& rhs) {
             in += rhs;
             ip += rhs;
             rn += rhs;
@@ -69,7 +69,7 @@ struct ConfusionMatrix final {
          * @param rhs   A reference to the value to be added
          * @return      The confusion matrix that has been created
          */
-        friend ConfusionMatrix operator+(ConfusionMatrix lhs, const float64& rhs) {
+        friend ConfusionMatrix operator+(ConfusionMatrix lhs, const uint32& rhs) {
             lhs += rhs;
             return lhs;
         }
@@ -107,7 +107,7 @@ struct ConfusionMatrix final {
          * @param rhs   A reference to the value to be subtracted
          * @return      A reference to the modified confusion matrix
          */
-        ConfusionMatrix& operator-=(const float64& rhs) {
+        ConfusionMatrix& operator-=(const uint32& rhs) {
             in -= rhs;
             ip -= rhs;
             rn -= rhs;
@@ -123,7 +123,7 @@ struct ConfusionMatrix final {
          * @param rhs   A reference to the value to be subtracted
          * @return      The confusion matrix that has been created
          */
-        friend ConfusionMatrix operator-(ConfusionMatrix lhs, const float64& rhs) {
+        friend ConfusionMatrix operator-(ConfusionMatrix lhs, const uint32& rhs) {
             lhs -= rhs;
             return lhs;
         }
@@ -161,7 +161,7 @@ struct ConfusionMatrix final {
          * @param rhs   A reference to the value to be multiplied by
          * @return      A reference to the modified confusion matrix
          */
-        ConfusionMatrix& operator*=(const float64& rhs) {
+        ConfusionMatrix& operator*=(const uint32& rhs) {
             in *= rhs;
             ip *= rhs;
             rn *= rhs;
@@ -177,7 +177,7 @@ struct ConfusionMatrix final {
          * @param rhs   A reference to the value to be multiplied by
          * @return      The confusion matrix that has been created
          */
-        friend ConfusionMatrix operator*(ConfusionMatrix lhs, const float64& rhs) {
+        friend ConfusionMatrix operator*(ConfusionMatrix lhs, const uint32& rhs) {
             lhs *= rhs;
             return lhs;
         }
@@ -189,7 +189,7 @@ struct ConfusionMatrix final {
          * @param majorityLabel The prediction of the default rule. The prediction is assumed to be the inverse
          * @return              A reference to a confusion matrix element
          */
-        float64& getElement(bool trueLabel, bool majorityLabel) {
+        uint32& getElement(bool trueLabel, bool majorityLabel) {
             if (trueLabel) {
                 return majorityLabel ? rn : rp;
             } else {

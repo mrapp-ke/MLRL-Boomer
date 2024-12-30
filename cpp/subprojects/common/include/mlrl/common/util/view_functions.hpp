@@ -101,7 +101,7 @@ namespace util {
      * @param weight        The weight, the elements in the view `b` should be multiplied by
      */
     template<typename IteratorA, typename IteratorB, typename Weight>
-    static inline void addToView(IteratorA a, IteratorB b, uint32 numElements, Weight weight) {
+    static inline void addToViewWeighted(IteratorA a, IteratorB b, uint32 numElements, Weight weight) {
         for (uint32 i = 0; i < numElements; i++) {
             a[i] += (b[i] * weight);
         }
@@ -145,7 +145,8 @@ namespace util {
      *                          view `b` that correspond to the elements in the view `a`
      */
     template<typename IteratorA, typename IteratorB, typename IndexIterator, typename Weight>
-    static inline void addToView(IteratorA a, IteratorB b, IndexIterator indices, uint32 numElements, Weight weight) {
+    static inline void addToViewWeighted(IteratorA a, IteratorB b, IndexIterator indices, uint32 numElements,
+                                         Weight weight) {
         for (uint32 i = 0; i < numElements; i++) {
             uint32 index = indices[i];
             a[i] += (b[index] * weight);
@@ -181,7 +182,7 @@ namespace util {
      * @param weight        The weight, the elements in the view `b` should be multiplied by
      */
     template<typename IteratorA, typename IteratorB, typename Weight>
-    static inline void removeFromView(IteratorA a, IteratorB b, uint32 numElements, Weight weight) {
+    static inline void removeFromViewWeighted(IteratorA a, IteratorB b, uint32 numElements, Weight weight) {
         for (uint32 i = 0; i < numElements; i++) {
             a[i] -= (b[i] * weight);
         }

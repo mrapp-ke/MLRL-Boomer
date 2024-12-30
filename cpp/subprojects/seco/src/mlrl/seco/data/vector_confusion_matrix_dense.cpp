@@ -10,7 +10,7 @@ namespace seco {
     static inline void addInternally(LabelIterator labelIterator,
                                      View<uint32>::const_iterator majorityLabelIndicesBegin,
                                      View<uint32>::const_iterator majorityLabelIndicesEnd,
-                                     DenseCoverageMatrix::value_const_iterator coverageIterator, float64 weight,
+                                     DenseCoverageMatrix::value_const_iterator coverageIterator, uint32 weight,
                                      DenseConfusionMatrixVector::iterator iterator, uint32 numLabels) {
         auto majorityIterator = createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
 
@@ -21,8 +21,32 @@ namespace seco {
                 bool trueLabel = *labelIterator;
                 bool majorityLabel = *majorityIterator;
                 ConfusionMatrix& confusionMatrix = iterator[i];
-                float64& element = confusionMatrix.getElement(trueLabel, majorityLabel);
+                uint32& element = confusionMatrix.getElement(trueLabel, majorityLabel);
                 element += weight;
+            }
+
+            labelIterator++;
+            majorityIterator++;
+        }
+    }
+
+    template<typename LabelIterator>
+    static inline void removeInternally(LabelIterator labelIterator,
+                                        View<uint32>::const_iterator majorityLabelIndicesBegin,
+                                        View<uint32>::const_iterator majorityLabelIndicesEnd,
+                                        DenseCoverageMatrix::value_const_iterator coverageIterator, uint32 weight,
+                                        DenseConfusionMatrixVector::iterator iterator, uint32 numLabels) {
+        auto majorityIterator = createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
+
+        for (uint32 i = 0; i < numLabels; i++) {
+            uint32 coverage = coverageIterator[i];
+
+            if (coverage == 0) {
+                bool trueLabel = *labelIterator;
+                bool majorityLabel = *majorityIterator;
+                ConfusionMatrix& confusionMatrix = iterator[i];
+                uint32& element = confusionMatrix.getElement(trueLabel, majorityLabel);
+                element -= weight;
             }
 
             labelIterator++;
@@ -46,7 +70,7 @@ namespace seco {
     void DenseConfusionMatrixVector::add(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                                          View<uint32>::const_iterator majorityLabelIndicesBegin,
                                          View<uint32>::const_iterator majorityLabelIndicesEnd,
-                                         const DenseCoverageMatrix& coverageMatrix, float64 weight) {
+                                         const DenseCoverageMatrix& coverageMatrix, uint32 weight) {
         addInternally(labelMatrix.values_cbegin(exampleIndex), majorityLabelIndicesBegin, majorityLabelIndicesEnd,
                       coverageMatrix.values_cbegin(exampleIndex), weight, this->begin(), this->getNumElements());
     }
@@ -54,7 +78,7 @@ namespace seco {
     void DenseConfusionMatrixVector::add(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                          View<uint32>::const_iterator majorityLabelIndicesBegin,
                                          View<uint32>::const_iterator majorityLabelIndicesEnd,
-                                         const DenseCoverageMatrix& coverageMatrix, float64 weight) {
+                                         const DenseCoverageMatrix& coverageMatrix, uint32 weight) {
         auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                labelMatrix.indices_cend(exampleIndex));
         addInternally(labelIterator, majorityLabelIndicesBegin, majorityLabelIndicesEnd,
@@ -64,26 +88,26 @@ namespace seco {
     void DenseConfusionMatrixVector::remove(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                                             View<uint32>::const_iterator majorityLabelIndicesBegin,
                                             View<uint32>::const_iterator majorityLabelIndicesEnd,
-                                            const DenseCoverageMatrix& coverageMatrix, float64 weight) {
-        addInternally(labelMatrix.values_cbegin(exampleIndex), majorityLabelIndicesBegin, majorityLabelIndicesEnd,
-                      coverageMatrix.values_cbegin(exampleIndex), -weight, this->begin(), this->getNumElements());
+                                            const DenseCoverageMatrix& coverageMatrix, uint32 weight) {
+        removeInternally(labelMatrix.values_cbegin(exampleIndex), majorityLabelIndicesBegin, majorityLabelIndicesEnd,
+                         coverageMatrix.values_cbegin(exampleIndex), weight, this->begin(), this->getNumElements());
     }
 
     void DenseConfusionMatrixVector::remove(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                             View<uint32>::const_iterator majorityLabelIndicesBegin,
                                             View<uint32>::const_iterator majorityLabelIndicesEnd,
-                                            const DenseCoverageMatrix& coverageMatrix, float64 weight) {
+                                            const DenseCoverageMatrix& coverageMatrix, uint32 weight) {
         auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                labelMatrix.indices_cend(exampleIndex));
-        addInternally(labelIterator, majorityLabelIndicesBegin, majorityLabelIndicesEnd,
-                      coverageMatrix.values_cbegin(exampleIndex), -weight, this->begin(), this->getNumElements());
+        removeInternally(labelIterator, majorityLabelIndicesBegin, majorityLabelIndicesEnd,
+                         coverageMatrix.values_cbegin(exampleIndex), weight, this->begin(), this->getNumElements());
     }
 
     void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                                                  View<uint32>::const_iterator majorityLabelIndicesBegin,
                                                  View<uint32>::const_iterator majorityLabelIndicesEnd,
                                                  const DenseCoverageMatrix& coverageMatrix,
-                                                 const CompleteIndexVector& indices, float64 weight) {
+                                                 const CompleteIndexVector& indices, uint32 weight) {
         addInternally(labelMatrix.values_cbegin(exampleIndex), majorityLabelIndicesBegin, majorityLabelIndicesEnd,
                       coverageMatrix.values_cbegin(exampleIndex), weight, this->begin(), this->getNumElements());
     }
@@ -92,7 +116,7 @@ namespace seco {
                                                  View<uint32>::const_iterator majorityLabelIndicesBegin,
                                                  View<uint32>::const_iterator majorityLabelIndicesEnd,
                                                  const DenseCoverageMatrix& coverageMatrix,
-                                                 const CompleteIndexVector& indices, float64 weight) {
+                                                 const CompleteIndexVector& indices, uint32 weight) {
         auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                labelMatrix.indices_cend(exampleIndex));
         addInternally(labelIterator, majorityLabelIndicesBegin, majorityLabelIndicesEnd,
@@ -103,7 +127,7 @@ namespace seco {
                                                  View<uint32>::const_iterator majorityLabelIndicesBegin,
                                                  View<uint32>::const_iterator majorityLabelIndicesEnd,
                                                  const DenseCoverageMatrix& coverageMatrix,
-                                                 const PartialIndexVector& indices, float64 weight) {
+                                                 const PartialIndexVector& indices, uint32 weight) {
         auto majorityIterator = createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
         typename DenseCoverageMatrix::value_const_iterator coverageIterator =
           coverageMatrix.values_cbegin(exampleIndex);
@@ -121,7 +145,7 @@ namespace seco {
                 std::advance(majorityIterator, index - previousIndex);
                 bool majorityLabel = *majorityIterator;
                 ConfusionMatrix& confusionMatrix = this->begin()[i];
-                float64& element = confusionMatrix.getElement(trueLabel, majorityLabel);
+                uint32& element = confusionMatrix.getElement(trueLabel, majorityLabel);
                 element += weight;
                 previousIndex = index;
             }
@@ -132,7 +156,7 @@ namespace seco {
                                                  View<uint32>::const_iterator majorityLabelIndicesBegin,
                                                  View<uint32>::const_iterator majorityLabelIndicesEnd,
                                                  const DenseCoverageMatrix& coverageMatrix,
-                                                 const PartialIndexVector& indices, float64 weight) {
+                                                 const PartialIndexVector& indices, uint32 weight) {
         auto majorityIterator = createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
         typename DenseCoverageMatrix::value_const_iterator coverageIterator =
           coverageMatrix.values_cbegin(exampleIndex);
@@ -152,7 +176,7 @@ namespace seco {
                 std::advance(majorityIterator, index - previousIndex);
                 bool majorityLabel = *majorityIterator;
                 ConfusionMatrix& confusionMatrix = this->begin()[i];
-                float64& element = confusionMatrix.getElement(trueLabel, majorityLabel);
+                uint32& element = confusionMatrix.getElement(trueLabel, majorityLabel);
                 element += weight;
                 previousIndex = index;
             }
