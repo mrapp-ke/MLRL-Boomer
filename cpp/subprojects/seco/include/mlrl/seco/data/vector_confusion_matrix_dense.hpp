@@ -55,7 +55,7 @@ namespace seco {
             void add(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                      View<uint32>::const_iterator majorityLabelIndicesBegin,
                      View<uint32>::const_iterator majorityLabelIndicesEnd, const DenseCoverageMatrix& coverageMatrix,
-                     float64 weight);
+                     uint32 weight);
 
             /**
              * Adds the confusion matrix elements that correspond to an example at a specific index to this vector. The
@@ -75,7 +75,7 @@ namespace seco {
             void add(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                      View<uint32>::const_iterator majorityLabelIndicesBegin,
                      View<uint32>::const_iterator majorityLabelIndicesEnd, const DenseCoverageMatrix& coverageMatrix,
-                     float64 weight);
+                     uint32 weight);
 
             /**
              * Removes the confusion matrix elements that correspond to an example at a specific index from this vector.
@@ -95,7 +95,7 @@ namespace seco {
             void remove(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                         View<uint32>::const_iterator majorityLabelIndicesBegin,
                         View<uint32>::const_iterator majorityLabelIndicesEnd, const DenseCoverageMatrix& coverageMatrix,
-                        float64 weight);
+                        uint32 weight);
 
             /**
              * Removes the confusion matrix elements that correspond to an example at a specific index from this vector.
@@ -115,7 +115,7 @@ namespace seco {
             void remove(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                         View<uint32>::const_iterator majorityLabelIndicesBegin,
                         View<uint32>::const_iterator majorityLabelIndicesEnd, const DenseCoverageMatrix& coverageMatrix,
-                        float64 weight);
+                        uint32 weight);
 
             /**
              * Adds certain confusion matrix elements in another vector, whose positions are given as a
@@ -139,7 +139,7 @@ namespace seco {
                              View<uint32>::const_iterator majorityLabelIndicesBegin,
                              View<uint32>::const_iterator majorityLabelIndicesEnd,
                              const DenseCoverageMatrix& coverageMatrix, const CompleteIndexVector& indices,
-                             float64 weight);
+                             uint32 weight);
 
             /**
              * Adds certain confusion matrix elements in another vector, whose positions are given as a
@@ -163,7 +163,7 @@ namespace seco {
                              View<uint32>::const_iterator majorityLabelIndicesBegin,
                              View<uint32>::const_iterator majorityLabelIndicesEnd,
                              const DenseCoverageMatrix& coverageMatrix, const CompleteIndexVector& indices,
-                             float64 weight);
+                             uint32 weight);
 
             /**
              * Adds certain confusion matrix elements in another vector, whose positions are given as a
@@ -187,7 +187,7 @@ namespace seco {
                              View<uint32>::const_iterator majorityLabelIndicesBegin,
                              View<uint32>::const_iterator majorityLabelIndicesEnd,
                              const DenseCoverageMatrix& coverageMatrix, const PartialIndexVector& indices,
-                             float64 weight);
+                             uint32 weight);
 
             /**
              * Adds certain confusion matrix elements in another vector, whose positions are given as a
@@ -211,7 +211,7 @@ namespace seco {
                              View<uint32>::const_iterator majorityLabelIndicesBegin,
                              View<uint32>::const_iterator majorityLabelIndicesEnd,
                              const DenseCoverageMatrix& coverageMatrix, const PartialIndexVector& indices,
-                             float64 weight);
+                             uint32 weight);
 
             /**
              * Sets the confusion matrix elements in this vector to the difference `first - second` between the elements
