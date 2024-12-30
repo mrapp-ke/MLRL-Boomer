@@ -41,7 +41,7 @@ namespace boosting {
              */
             void addToRow(uint32 row, View<Tuple<float64>>::const_iterator begin,
                           View<Tuple<float64>>::const_iterator end, float64 weight) {
-                util::addToView(this->view.values_begin(row), begin, this->getNumCols(), weight);
+                util::addToViewWeighted(this->view.values_begin(row), begin, this->getNumCols(), weight);
             }
     };
 
