@@ -22,7 +22,7 @@ on:
         required: false
 jobs:
   publish_platform_wheels:
-    name: Publish platform wheels
+    name: Publish ${{ inputs.subproject }} (platform)
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false

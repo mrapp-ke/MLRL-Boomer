@@ -34,6 +34,9 @@ jobs:
           filters: |
             build_files: &build_files
               - '.github/workflows/test_build.yml'
+              - '.github/workflows/build/template_build.yml'
+              - '.github/workflows/build/template_build_linux.yml'
+              - '.github/workflows/build/template_build_macos.yml'
               - '.github/workflows/build/template_build_windows.yml'
               - 'build'
               - 'build.bat'
