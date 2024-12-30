@@ -194,7 +194,7 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void add(const SparseSetView<Tuple<float64>>& view, uint32 row, float64 weight);
+            void add(const SparseSetView<Tuple<float64>>& view, uint32 row, uint32 weight);
 
             /**
              * Removes all gradients and Hessians in a single row of a `SparseSetView` from this vector.
@@ -214,7 +214,7 @@ namespace boosting {
              * @param row       The index of the row to be removed from this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void remove(const SparseSetView<Tuple<float64>>& view, uint32 row, float64 weight);
+            void remove(const SparseSetView<Tuple<float64>>& view, uint32 row, uint32 weight);
 
             /**
              * Adds certain gradients and Hessians in a single row of a `SparseSetView`, whose positions are given as a
@@ -250,7 +250,7 @@ namespace boosting {
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
             void addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row, const CompleteIndexVector& indices,
-                             float64 weight);
+                             uint32 weight);
 
             /**
              * Adds certain gradients and Hessians in a single row of a `SparsesetView`, whose positions are given as a
@@ -264,7 +264,7 @@ namespace boosting {
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
             void addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row, const PartialIndexVector& indices,
-                             float64 weight);
+                             uint32 weight);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
