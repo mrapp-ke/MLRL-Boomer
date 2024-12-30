@@ -30,7 +30,7 @@ namespace boosting {
     static inline void addStatisticToSubsetInternally(const WeightVector& weights, const StatisticView& statisticView,
                                                       StatisticVector& vector, const IndexVector& outputIndices,
                                                       uint32 statisticIndex) {
-        float64 weight = weights[statisticIndex];
+        uint32 weight = weights[statisticIndex];
         vector.addToSubset(statisticView, statisticIndex, outputIndices, weight);
     }
 
@@ -283,7 +283,7 @@ namespace boosting {
     template<typename WeightVector, typename StatisticView, typename StatisticVector>
     static inline void addStatisticInternally(const WeightVector& weights, const StatisticView& statisticView,
                                               StatisticVector& statisticVector, uint32 statisticIndex) {
-        float64 weight = weights[statisticIndex];
+        uint32 weight = weights[statisticIndex];
         statisticVector.add(statisticView, statisticIndex, weight);
     }
 
@@ -296,7 +296,7 @@ namespace boosting {
     template<typename WeightVector, typename StatisticView, typename StatisticVector>
     static inline void removeStatisticInternally(const WeightVector& weights, const StatisticView& statisticView,
                                                  StatisticVector& statisticVector, uint32 statisticIndex) {
-        float64 weight = weights[statisticIndex];
+        uint32 weight = weights[statisticIndex];
         statisticVector.remove(statisticView, statisticIndex, weight);
     }
 

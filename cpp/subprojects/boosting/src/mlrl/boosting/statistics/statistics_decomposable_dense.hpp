@@ -40,7 +40,7 @@ namespace boosting {
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
             void addToRow(uint32 row, View<Tuple<float64>>::const_iterator begin,
-                          View<Tuple<float64>>::const_iterator end, float64 weight) {
+                          View<Tuple<float64>>::const_iterator end, uint32 weight) {
                 util::addToViewWeighted(this->view.values_begin(row), begin, this->getNumCols(), weight);
             }
     };
