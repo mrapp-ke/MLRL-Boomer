@@ -30,7 +30,7 @@ namespace boosting {
 
     void DenseDecomposableStatisticVector::remove(const CContiguousView<Tuple<float64>>& view, uint32 row,
                                                   float64 weight) {
-        util::removeFromView(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
+        util::removeFromViewWeighted(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
     }
 
     void DenseDecomposableStatisticVector::addToSubset(const CContiguousView<Tuple<float64>>& view, uint32 row,

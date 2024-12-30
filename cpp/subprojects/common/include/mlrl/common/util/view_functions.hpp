@@ -182,7 +182,7 @@ namespace util {
      * @param weight        The weight, the elements in the view `b` should be multiplied by
      */
     template<typename IteratorA, typename IteratorB, typename Weight>
-    static inline void removeFromView(IteratorA a, IteratorB b, uint32 numElements, Weight weight) {
+    static inline void removeFromViewWeighted(IteratorA a, IteratorB b, uint32 numElements, Weight weight) {
         for (uint32 i = 0; i < numElements; i++) {
             a[i] -= (b[i] * weight);
         }

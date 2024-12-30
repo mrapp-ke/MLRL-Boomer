@@ -94,8 +94,9 @@ namespace boosting {
 
     void DenseNonDecomposableStatisticVector::remove(const DenseNonDecomposableStatisticView& view, uint32 row,
                                                      float64 weight) {
-        util::removeFromView(this->gradients_begin(), view.gradients_cbegin(row), this->getNumGradients(), weight);
-        util::removeFromView(this->hessians_begin(), view.hessians_cbegin(row), this->getNumHessians(), weight);
+        util::removeFromViewWeighted(this->gradients_begin(), view.gradients_cbegin(row), this->getNumGradients(),
+                                     weight);
+        util::removeFromViewWeighted(this->hessians_begin(), view.hessians_cbegin(row), this->getNumHessians(), weight);
     }
 
     void DenseNonDecomposableStatisticVector::addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
