@@ -21,7 +21,7 @@ namespace boosting {
 
     void DenseDecomposableStatisticVector::add(const CContiguousView<Tuple<float64>>& view, uint32 row,
                                                float64 weight) {
-        util::addToView(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
+        util::addToViewWeighted(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
     }
 
     void DenseDecomposableStatisticVector::remove(const CContiguousView<Tuple<float64>>& view, uint32 row) {
@@ -46,13 +46,13 @@ namespace boosting {
 
     void DenseDecomposableStatisticVector::addToSubset(const CContiguousView<Tuple<float64>>& view, uint32 row,
                                                        const CompleteIndexVector& indices, float64 weight) {
-        util::addToView(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
+        util::addToViewWeighted(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
     }
 
     void DenseDecomposableStatisticVector::addToSubset(const CContiguousView<Tuple<float64>>& view, uint32 row,
                                                        const PartialIndexVector& indices, float64 weight) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
-        util::addToView(this->begin(), view.values_cbegin(row), indexIterator, this->getNumElements(), weight);
+        util::addToViewWeighted(this->begin(), view.values_cbegin(row), indexIterator, this->getNumElements(), weight);
     }
 
     void DenseDecomposableStatisticVector::difference(const DenseDecomposableStatisticVector& first,
