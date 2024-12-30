@@ -47,7 +47,7 @@ namespace boosting {
         }
     }
 
-    static inline void removeFromSparseDecomposableStatisticVector(
+    static inline void removeFromSparseDecomposableStatisticVectorWeighted(
       View<Triple<float64>>::iterator statistics, SparseSetView<Tuple<float64>>::value_const_iterator begin,
       SparseSetView<Tuple<float64>>::value_const_iterator end, float64 weight) {
         uint32 numElements = end - begin;
@@ -163,8 +163,8 @@ namespace boosting {
                                                    float64 weight) {
         if (!isEqualToZero(weight)) {
             sumOfWeights_ -= weight;
-            removeFromSparseDecomposableStatisticVector(this->view.begin(), view.values_cbegin(row),
-                                                        view.values_cend(row), weight);
+            removeFromSparseDecomposableStatisticVectorWeighted(this->view.begin(), view.values_cbegin(row),
+                                                                view.values_cend(row), weight);
         }
     }
 
