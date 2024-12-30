@@ -18,76 +18,51 @@ on:
       pypi_password:
         required: false
 jobs:
-  publish_pure_testbed:
-    name: testbed (pure wheels)
+  publish_pure:
+    name: Publish pure wheels
+    strategy:
+      fail-fast: false
+      matrix:
+        subproject:
+          - testbed
     uses: ./.github/workflows/template_publish_pure.yml
     with:
-      subproject: testbed
+      subproject: ${{ matrix.subproject }}
       dev_release: ${{ inputs.dev_release }}
       pypi_repository: ${{ inputs.pypi_repository }}
     secrets:
       pypi_username: ${{ secrets.pypi_username}}
       pypi_password: ${{ secrets.pypi_password }}
-  publish_platform_common:
-    name: common (platform wheels)
+  publish_platform:
+    name: Publish platform wheels
+    strategy:
+      fail-fast: false
+      matrix:
+        subproject:
+          - common
+          - boosting
+          - seco
     uses: ./.github/workflows/template_publish_platform.yml
     with:
-      subproject: common
+      subproject: ${{ matrix.subproject }}
       python_version: ${{ inputs.python_version }}
       dev_release: ${{ inputs.dev_release }}
       pypi_repository: ${{ inputs.pypi_repository }}
     secrets:
       pypi_username: ${{ secrets.pypi_username}}
       pypi_password: ${{ secrets.pypi_password }}
-  publish_platform_boosting:
-    name: boosting (platform wheels)
-    uses: ./.github/workflows/template_publish_platform.yml
-    with:
-      subproject: boosting
-      python_version: ${{ inputs.python_version }}
-      dev_release: ${{ inputs.dev_release }}
-      pypi_repository: ${{ inputs.pypi_repository }}
-    secrets:
-      pypi_username: ${{ secrets.pypi_username}}
-      pypi_password: ${{ secrets.pypi_password }}
-  publish_platform_seco:
-    name: seco (platform wheels)
-    uses: ./.github/workflows/template_publish_platform.yml
-    with:
-      subproject: seco
-      python_version: ${{ inputs.python_version }}
-      dev_release: ${{ inputs.dev_release }}
-      pypi_repository: ${{ inputs.pypi_repository }}
-    secrets:
-      pypi_username: ${{ secrets.pypi_username}}
-      pypi_password: ${{ secrets.pypi_password }}
-  publish_non_native_common:
-    name: common (non-native platform wheels)
+  publish_non_native:
+    name: Publish non-native platform wheels
+    strategy:
+      fail-fast: false
+      matrix:
+        subproject:
+          - common
+          - boosting
+          - seco
     uses: ./.github/workflows/template_publish_non_native.yml
     with:
-      subproject: common
-      python_version: ${{ inputs.python_version }}
-      dev_release: ${{ inputs.dev_release }}
-      pypi_repository: ${{ inputs.pypi_repository }}
-    secrets:
-      pypi_username: ${{ secrets.pypi_username}}
-      pypi_password: ${{ secrets.pypi_password }}
-  publish_non_native_boosting:
-    name: boosting (non-native platform wheels)
-    uses: ./.github/workflows/template_publish_non_native.yml
-    with:
-      subproject: boosting
-      python_version: ${{ inputs.python_version }}
-      dev_release: ${{ inputs.dev_release }}
-      pypi_repository: ${{ inputs.pypi_repository }}
-    secrets:
-      pypi_username: ${{ secrets.pypi_username}}
-      pypi_password: ${{ secrets.pypi_password }}
-  publish_non_native_seco:
-    name: seco (non-native platform wheels)
-    uses: ./.github/workflows/template_publish_non_native.yml
-    with:
-      subproject: seco
+      subproject: ${{ matrix.subproject }}
       python_version: ${{ inputs.python_version }}
       dev_release: ${{ inputs.dev_release }}
       pypi_repository: ${{ inputs.pypi_repository }}
