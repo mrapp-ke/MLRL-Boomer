@@ -22,7 +22,7 @@ on:
         required: false
 jobs:
   publish_non_native_wheels:
-    name: Publish non-native platform wheels
+    name: Publish ${{ inputs.subproject }} (non-native)
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
