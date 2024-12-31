@@ -393,6 +393,13 @@ def update_changelog_bugfix():
     __update_changelog(ReleaseType.PATCH, CHANGESET_FILE_BUGFIX)
 
 
+def print_current_version():
+    """
+    Prints the project's current version.
+    """
+    return Log.info('%s', str(VersionFile().version))
+
+
 def print_latest_changelog():
     """
     Prints the changelog of the latest release.

@@ -62,13 +62,6 @@ def __get_development_version_file() -> DevelopmentVersionFile:
     return version_file
 
 
-def print_current_version():
-    """
-    Prints the project's current version.
-    """
-    return Log.info('%s', str(VersionFile().version))
-
-
 def increment_development_version():
     """
     Increments the development version.
