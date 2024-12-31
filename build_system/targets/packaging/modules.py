@@ -36,6 +36,13 @@ class PythonPackageModule(SubprojectModule):
         self.wheel_directory_name = wheel_directory_name
 
     @property
+    def package_name(self) -> str:
+        """
+        The name of the Python package.
+        """
+        return 'mlrl-' + self.subproject_name
+
+    @property
     def wheel_directory(self) -> str:
         """
         Returns the path of the directory that contains the wheel packages that have been built for the module.
