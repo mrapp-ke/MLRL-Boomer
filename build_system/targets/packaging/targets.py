@@ -14,6 +14,7 @@ from util.log import Log
 from targets.packaging.build import Build
 from targets.packaging.modules import PythonPackageModule
 from targets.packaging.pip import PipInstallWheel
+from targets.packaging.toml_file import TomlFile
 from targets.paths import Project
 
 MODULE_FILTER = PythonPackageModule.Filter()
@@ -76,5 +77,7 @@ class InstallPythonWheels(BuildTarget.Runnable):
 
     def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
         Log.info('Uninstalling Python packages for directory "%s"...', module.root_directory)
-        PipInstallWheel().uninstall_packages(module.package_name)
+        pyproject_toml_file = TomlFile(build_unit, module.pyproject_toml_file)
+        package_name = pyproject_toml_file.toml_dict['project']['name']
+        PipInstallWheel().uninstall_packages(package_name)
         return super().get_clean_files(build_unit, module)
