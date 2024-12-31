@@ -31,7 +31,7 @@ class BuildPythonWheels(BuildTarget.Runnable):
         Log.info('Building Python wheels for directory "%s"...', module.root_directory)
         Build(build_unit, module).run()
 
-    def get_input_files(self, module: Module) -> List[str]:
+    def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
         file_search = Project.Python.file_search() \
             .set_symlinks(False) \
             .filter_by_file_type(
@@ -43,10 +43,10 @@ class BuildPythonWheels(BuildTarget.Runnable):
             )
         return file_search.list(module.root_directory)
 
-    def get_output_files(self, module: Module) -> List[str]:
+    def get_output_files(self, _: BuildUnit, module: Module) -> List[str]:
         return [module.wheel_directory]
 
-    def get_clean_files(self, module: Module) -> List[str]:
+    def get_clean_files(self, _: BuildUnit, module: Module) -> List[str]:
         clean_files = []
         Log.info('Removing Python wheels from directory "%s"...', module.root_directory)
         clean_files.append(module.wheel_directory)
@@ -71,10 +71,10 @@ class InstallPythonWheels(BuildTarget.Runnable):
         Log.info('Installing Python wheels for directory "%s"...', module.root_directory)
         PipInstallWheel().install_wheels(*module.find_wheels())
 
-    def get_input_files(self, module: Module) -> List[str]:
+    def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
         return module.find_wheels()
 
-    def get_clean_files(self, module: Module) -> List[str]:
+    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
         Log.info('Uninstalling Python packages for directory "%s"...', module.root_directory)
         PipInstallWheel().uninstall_packages(module.package_name)
-        return super().get_clean_files(module)
+        return super().get_clean_files(build_unit, module)
