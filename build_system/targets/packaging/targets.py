@@ -73,3 +73,8 @@ class InstallPythonWheels(BuildTarget.Runnable):
 
     def get_input_files(self, module: Module) -> List[str]:
         return module.find_wheels()
+
+    def get_clean_files(self, module: Module) -> List[str]:
+        Log.info('Uninstalling Python packages for directory "%s"...', module.root_directory)
+        PipInstallWheel().uninstall_packages(module.package_name)
+        return super().get_clean_files(module)
