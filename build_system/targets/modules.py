@@ -47,7 +47,7 @@ class SubprojectModule(Module, ABC):
             """
             subproject_names = set(get_env_array(env, SubprojectModule.ENV_SUBPROJECTS))
 
-            if always_match:
+            if subproject_names and always_match:
                 subproject_names.update(always_match)
 
             return SubprojectModule.Filter(subproject_names)
