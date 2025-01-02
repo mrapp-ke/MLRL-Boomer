@@ -51,7 +51,7 @@ jobs:
         with:
           name: cpp-test-results-${{ inputs.subproject }}
           path: cpp/build/meson-logs/testlog.junit.xml
-          if-no-files-found: error
+          if-no-files-found: ignore
       - name: Test Python code
         if: ${{ inputs.run_python_tests == true }}
         run: SUBPROJECTS=${{ inputs.subproject }} ./build tests_python
@@ -61,4 +61,4 @@ jobs:
         with:
           name: python-test-results-${{ inputs.subproject }}
           path: python/tests/build/test-results/*.xml
-          if-no-files-found: error
+          if-no-files-found: ignore
