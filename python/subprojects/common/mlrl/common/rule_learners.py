@@ -31,10 +31,6 @@ from mlrl.common.format import format_enum_values
 from mlrl.common.mixins import ClassifierMixin, IncrementalClassifierMixin, IncrementalPredictor, \
     IncrementalRegressorMixin, NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, RegressorMixin
 
-KWARG_SPARSE_FEATURE_VALUE = 'sparse_feature_value'
-
-KWARG_MAX_RULES = 'max_rules'
-
 
 class SparsePolicy(Enum):
     """
@@ -110,6 +106,10 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
     """
     A scikit-learn implementation of a rule learning algorithm.
     """
+
+    KWARG_SPARSE_FEATURE_VALUE = 'sparse_feature_value'
+
+    KWARG_MAX_RULES = 'max_rules'
 
     class NativeIncrementalPredictor(IncrementalPredictor):
         """
@@ -236,7 +236,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
 
         if learner.can_predict_scores(feature_matrix, num_outputs):
             log.debug('A dense matrix is used to store the predicted scores')
-            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
+            max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
             return self._create_score_predictor(learner, self.model_, self.output_space_info_, num_outputs,
                                                 feature_matrix).predict(max_rules)
 
@@ -259,7 +259,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
             model = self.model_
             predictor = self._create_score_predictor(learner, model, self.output_space_info_, num_outputs,
                                                      feature_matrix)
-            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
+            max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():
                 return ClassificationRuleLearner.NativeIncrementalPredictor(
@@ -296,7 +296,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
                     `(num_examples, num_features)`, that stores the feature values of the training examples
         :return:    The matrix that has been created
         """
-        sparse_feature_value = float(kwargs.get(KWARG_SPARSE_FEATURE_VALUE, 0.0))
+        sparse_feature_value = float(kwargs.get(self.KWARG_SPARSE_FEATURE_VALUE, 0.0))
         x_sparse_format = SparseFormat.CSC
         x_sparse_policy = SparsePolicy.parse('feature_format', self.feature_format)
         x_enforce_sparse = x_sparse_policy.should_enforce_sparse(x, sparse_format=x_sparse_format, dtype=Float32)
@@ -329,7 +329,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
                                         only have an effect if `x` is a `scipy.sparse` matrix
         :return:                        A `RowWiseFeatureMatrix` that has been created
         """
-        sparse_feature_value = float(kwargs.get(KWARG_SPARSE_FEATURE_VALUE, 0.0))
+        sparse_feature_value = float(kwargs.get(self.KWARG_SPARSE_FEATURE_VALUE, 0.0))
         sparse_format = SparseFormat.CSR
         sparse_policy = SparsePolicy.parse('feature_format', self.feature_format)
         enforce_sparse = sparse_policy.should_enforce_sparse(x, sparse_format=sparse_format, dtype=Float32)
@@ -480,7 +480,7 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
 
         if learner.can_predict_probabilities(feature_matrix, num_outputs):
             log.debug('A dense matrix is used to store the predicted probability estimates')
-            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
+            max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
             return convert_into_sklearn_compatible_probabilities(
                 self._create_probability_predictor(learner, self.model_, self.output_space_info_,
                                                    self.marginal_probability_calibration_model_,
@@ -508,7 +508,7 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
                                                            self.marginal_probability_calibration_model_,
                                                            self.joint_probability_calibration_model_, num_outputs,
                                                            feature_matrix)
-            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
+            max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():
                 return ClassificationRuleLearner.NativeIncrementalProbabilityPredictor(
@@ -559,7 +559,7 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
         if learner.can_predict_binary(feature_matrix, num_outputs):
             sparse_predictions = self.sparse_predictions_
             log.debug('A %s matrix is used to store the predicted labels', 'sparse' if sparse_predictions else 'dense')
-            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
+            max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
             return self._create_binary_predictor(learner, self.model_, self.output_space_info_,
                                                  self.marginal_probability_calibration_model_,
                                                  self.joint_probability_calibration_model_, num_outputs, feature_matrix,
@@ -587,7 +587,7 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
                                                       self.marginal_probability_calibration_model_,
                                                       self.joint_probability_calibration_model_, num_outputs,
                                                       feature_matrix, sparse_predictions)
-            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
+            max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():
                 return ClassificationRuleLearner.NativeIncrementalPredictor(
