@@ -37,7 +37,7 @@ jobs:
               - 'build_system/core/**'
               - 'build_system/util/**'
               - 'build_system/targets/*.py'
-              - 'build_system/targets/versioning/*'
+              - 'build_system/targets/changelog/*'
             bugfix:
               - *build_files
               - '.changelog-bugfix.md'
