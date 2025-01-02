@@ -36,12 +36,12 @@ class SetupCpp(BuildTarget.Runnable):
     def run(self, build_unit: BuildUnit, module: Module):
         MesonSetup(build_unit, module, build_options=BUILD_OPTIONS).run()
 
-    def get_output_files(self, module: Module) -> List[str]:
+    def get_output_files(self, _: BuildUnit, module: Module) -> List[str]:
         return [module.build_directory]
 
-    def get_clean_files(self, module: Module) -> List[str]:
+    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
         Log.info('Removing C++ build files from directory "%s"...', module.root_directory)
-        return super().get_clean_files(module)
+        return super().get_clean_files(build_unit, module)
 
 
 class CompileCpp(PhonyTarget.Runnable):
@@ -70,6 +70,6 @@ class InstallCpp(BuildTarget.Runnable):
         Log.info('Installing shared libraries from directory "%s" into source tree...', module.root_directory)
         MesonInstall(build_unit, module).run()
 
-    def get_clean_files(self, module: Module) -> List[str]:
+    def get_clean_files(self, _: BuildUnit, module: Module) -> List[str]:
         Log.info('Removing shared libraries installed from directory "%s" from source tree...', module.root_directory)
         return module.find_installed_files()
