@@ -12,7 +12,7 @@ from typing import List, Optional
 from util.io import TextFile
 from util.log import Log
 
-from targets.versioning.versioning import Version, get_current_version
+from targets.version_files import Version, VersionFile
 
 CHANGESET_FILE_MAIN = '.changelog-main.md'
 
@@ -341,7 +341,7 @@ def __merge_changesets(*changeset_files) -> List[Changeset]:
 
 def __update_changelog(release_type: ReleaseType, *changeset_files):
     merged_changesets = __merge_changesets(*changeset_files)
-    new_release = Release(version=get_current_version(),
+    new_release = Release(version=VersionFile().version,
                           release_date=date.today(),
                           release_type=release_type,
                           changesets=merged_changesets)
@@ -391,6 +391,13 @@ def update_changelog_bugfix():
     Updates the project's changelog when releasing major updates.
     """
     __update_changelog(ReleaseType.PATCH, CHANGESET_FILE_BUGFIX)
+
+
+def print_current_version():
+    """
+    Prints the project's current version.
+    """
+    return Log.info('%s', str(VersionFile().version))
 
 
 def print_latest_changelog():
