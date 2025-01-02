@@ -9,8 +9,6 @@ from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin 
     MultiOutputMixin as SkLearnMultiOutputMixin, RegressorMixin as SkLearnRegressorMixin
 from sklearn.utils.validation import check_is_fitted
 
-KWARG_PREDICT_SCORES = 'predict_scores'
-
 
 class OrdinalFeatureSupportMixin(ABC):
     """
@@ -73,6 +71,8 @@ class ClassifierMixin(SkLearnBaseEstimator, SkLearnClassifierMixin, SkLearnMulti
     A mixin for all machine learning algorithms that can be applied to classification problems.
     """
 
+    KWARG_PREDICT_SCORES = 'predict_scores'
+
     # pylint: disable=attribute-defined-outside-init
     def fit(self, x, y, **kwargs):
         """
@@ -102,7 +102,7 @@ class ClassifierMixin(SkLearnBaseEstimator, SkLearnClassifierMixin, SkLearnMulti
         """
         check_is_fitted(self)
 
-        if bool(kwargs.get(KWARG_PREDICT_SCORES, False)):
+        if bool(kwargs.get(self.KWARG_PREDICT_SCORES, False)):
             return self._predict_scores(x, **kwargs)
         return self._predict_binary(x, **kwargs)
 
@@ -184,7 +184,7 @@ class IncrementalClassifierMixin(ABC):
         """
         check_is_fitted(self)
 
-        if bool(kwargs.get(KWARG_PREDICT_SCORES, False)):
+        if bool(kwargs.get(ClassifierMixin.KWARG_PREDICT_SCORES, False)):
             return self._predict_scores_incrementally(x, **kwargs)
         return self._predict_binary_incrementally(x, **kwargs)
 
