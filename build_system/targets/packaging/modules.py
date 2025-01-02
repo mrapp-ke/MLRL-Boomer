@@ -36,11 +36,11 @@ class PythonPackageModule(SubprojectModule):
         self.wheel_directory_name = wheel_directory_name
 
     @property
-    def package_name(self) -> str:
+    def pyproject_toml_file(self) -> str:
         """
-        The name of the Python package.
+        The path to the pyproject.toml file that specifies the meta-data of the package.
         """
-        return 'mlrl-' + self.subproject_name
+        return path.join(self.root_directory, 'pyproject.toml')
 
     @property
     def wheel_directory(self) -> str:

@@ -38,6 +38,6 @@ class SeCoRunnable(RuleLearnerRunnable):
         package_info = get_package_info()
         return Runnable.ProgramInfo(name='Multi-label SeCo',
                                     version=package_info.package_version,
-                                    year='2020 - 2024',
+                                    year='2020 - 2025',
                                     authors=['Michael Rapp et al.'],
                                     python_packages=[package_info])
