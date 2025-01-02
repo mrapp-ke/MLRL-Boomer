@@ -12,7 +12,7 @@ from typing import Any, Optional
 import numpy as np
 
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator
-from sklearn.utils import check_array
+from sklearn.utils.validation import check_array, validate_data
 
 from mlrl.common.arrays import SparseFormat, enforce_2d, enforce_dense, is_sparse, is_sparse_and_memory_efficient
 from mlrl.common.cython.feature_info import EqualFeatureInfo, FeatureInfo, MixedFeatureInfo
@@ -300,11 +300,9 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         x_sparse_format = SparseFormat.CSC
         x_sparse_policy = SparsePolicy.parse('feature_format', self.feature_format)
         x_enforce_sparse = x_sparse_policy.should_enforce_sparse(x, sparse_format=x_sparse_format, dtype=Float32)
-        x = self._validate_data(x if x_enforce_sparse else enforce_2d(
-            enforce_dense(x, order='F', dtype=Float32, sparse_value=sparse_feature_value)),
-                                accept_sparse=x_sparse_format.value,
-                                dtype=Float32,
-                                force_all_finite='allow-nan')
+        x = x if x_enforce_sparse else enforce_2d(
+            enforce_dense(x, order='F', dtype=Float32, sparse_value=sparse_feature_value))
+        x = validate_data(self, x=x, accept_sparse=x_sparse_format.value, dtype=Float32, force_all_finite='allow-nan')
 
         if is_sparse(x):
             log.debug(
@@ -333,12 +331,14 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         sparse_format = SparseFormat.CSR
         sparse_policy = SparsePolicy.parse('feature_format', self.feature_format)
         enforce_sparse = sparse_policy.should_enforce_sparse(x, sparse_format=sparse_format, dtype=Float32)
-        x = self._validate_data(x if enforce_sparse else enforce_2d(
-            enforce_dense(x, order='C', dtype=Float32, sparse_value=sparse_feature_value)),
-                                reset=False,
-                                accept_sparse=sparse_format.value,
-                                dtype=Float32,
-                                force_all_finite='allow-nan')
+        x = x if enforce_sparse else enforce_2d(
+            enforce_dense(x, order='C', dtype=Float32, sparse_value=sparse_feature_value))
+        x = validate_data(self,
+                          x=x,
+                          reset=False,
+                          accept_sparse=sparse_format.value,
+                          dtype=Float32,
+                          force_all_finite='allow-nan')
 
         if is_sparse(x):
             log.debug('A sparse matrix with sparse value %s is used to store the feature values of the query examples',
