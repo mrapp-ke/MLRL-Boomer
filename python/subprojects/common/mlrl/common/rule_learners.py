@@ -356,7 +356,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         Must be implemented by subclasses in order to create a matrix that provides row-wise access to the ground truth
         of training examples.
 
-        :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+        :param y:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                     `(num_examples, num_outputs)`, that stores the ground truth of the training examples
         :return:    The matrix that has been created
         """
