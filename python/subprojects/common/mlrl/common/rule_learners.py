@@ -196,12 +196,17 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
     # pylint: disable=attribute-defined-outside-init
     def _fit(self, x, y, **kwargs):
         """
-        :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
-                                       only have an effect if `x` is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray`
+        :keyword sparse_feature_value:      The value that should be used for sparse elements in the feature matrix.
+                                            Does only have an effect if `x` is a `scipy.sparse.spmatrix` or
+                                            `scipy.sparse.sparray`
+        :keyword nominal_feature_indices:   A `numpy.ndarray`, shape `(num_nominal_features)`, that stores the indices
+                                            of all nominal features
+        :keyword ordinal_feature_indices:   A `numpy.ndarray`, shape `(num_ordinal_features)`, that stores the indices
+                                            of all ordinal features
         """
         feature_matrix = self._create_column_wise_feature_matrix(x, **kwargs)
         output_matrix = self.__create_row_wise_output_matrix(y)
-        feature_info = self._create_feature_info(feature_matrix.get_num_features())
+        feature_info = self._create_feature_info(feature_matrix.get_num_features(), **kwargs)
         learner = self._create_learner()
         training_result = learner.fit(feature_info, feature_matrix, output_matrix)
         self.num_outputs_ = training_result.num_outputs
@@ -268,17 +273,37 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
 
         return super()._predict_scores_incrementally(x, **kwargs)
 
-    def _create_feature_info(self, num_features: int) -> FeatureInfo:
+    @staticmethod
+    def __create_feature_indices(input_name: str, **kwargs) -> np.ndarray:
+        """
+        Creates and returns an array that stores features indices.
+
+        :param input_name:  The name of the keyword argument, the indices should be obtained from
+        :return:            A `np.ndarray`, shape `(feature_indices)`, that stores the feature indices
+        """
+        feature_indices = kwargs.get(input_name)
+
+        if feature_indices:
+            feature_indices = enforce_dense(feature_indices, order='C', dtype=Uint32)
+            return check_array(feature_indices, ensure_2d=False, dtype=Uint32, input_name=input_name)
+
+        return np.empty(shape=0, dtype=Uint32)
+
+    def _create_feature_info(self, num_features: int, **kwargs) -> FeatureInfo:
         """
         Creates and returns a `FeatureInfo` that provides information about the types of individual features.
 
-        :param num_features:    The total number of available features
-        :return:                The `FeatureInfo` that has been created
+        :param num_features:                The total number of available features
+        :keyword nominal_feature_indices:   A `numpy.ndarray`, shape `(num_nominal_features)`, that stores the indices
+                                            of all nominal features
+        :keyword ordinal_feature_indices:   A `numpy.ndarray`, shape `(num_ordinal_features)`, that stores the indices
+                                            of all ordinal features
+        :return:                            The `FeatureInfo` that has been created
         """
-        ordinal_feature_indices = self.ordinal_feature_indices
-        nominal_feature_indices = self.nominal_feature_indices
-        num_ordinal_features = 0 if ordinal_feature_indices is None else len(ordinal_feature_indices)
-        num_nominal_features = 0 if nominal_feature_indices is None else len(nominal_feature_indices)
+        ordinal_feature_indices = self.__create_feature_indices(self.KWARG_ORDINAL_FEATURE_INDICES, **kwargs)
+        nominal_feature_indices = self.__create_feature_indices(self.KWARG_NOMINAL_FEATURE_INDICES, **kwargs)
+        num_ordinal_features = ordinal_feature_indices.shape[0]
+        num_nominal_features = nominal_feature_indices.shape[0]
 
         if num_ordinal_features == 0 and num_nominal_features == 0:
             return EqualFeatureInfo.create_numerical()
@@ -302,7 +327,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         x_enforce_sparse = x_sparse_policy.should_enforce_sparse(x, sparse_format=x_sparse_format, dtype=Float32)
         x = x if x_enforce_sparse else enforce_2d(
             enforce_dense(x, order='F', dtype=Float32, sparse_value=sparse_feature_value))
-        x = validate_data(self, x=x, accept_sparse=x_sparse_format.value, dtype=Float32, ensure_all_finite='allow-nan')
+        x = validate_data(self, X=x, accept_sparse=x_sparse_format.value, dtype=Float32, ensure_all_finite='allow-nan')
 
         if is_sparse(x):
             log.debug(
@@ -334,7 +359,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         x = x if enforce_sparse else enforce_2d(
             enforce_dense(x, order='C', dtype=Float32, sparse_value=sparse_feature_value))
         x = validate_data(self,
-                          x=x,
+                          X=x,
                           reset=False,
                           accept_sparse=sparse_format.value,
                           dtype=Float32,
