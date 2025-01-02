@@ -59,17 +59,17 @@ class ApidocIndex(BuildTarget.Runnable, ABC):
 
             TextFile(self.__index_file(template), accept_missing=True).write_lines(*new_lines)
 
-    def get_input_files(self, module: Module) -> List[str]:
+    def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
         template = self.__get_template(module)
         return [template] if template else []
 
-    def get_output_files(self, module: Module) -> List[str]:
+    def get_output_files(self, _: BuildUnit, module: Module) -> List[str]:
         template = self.__get_template(module)
         return [self.__index_file(template)] if template else []
 
-    def get_clean_files(self, module: Module) -> List[str]:
+    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
         Log.info('Removing index file referencing API documentation in directory "%s"', module.output_directory)
-        return super().get_clean_files(module)
+        return super().get_clean_files(build_unit, module)
 
 
 class BuildDocumentation(BuildTarget.Runnable):
@@ -85,12 +85,12 @@ class BuildDocumentation(BuildTarget.Runnable):
         SphinxBuild(build_unit, module, builder='linkcheck').run()
         SphinxBuild(build_unit, module).run()
 
-    def get_input_files(self, module: Module) -> List[str]:
+    def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
         return module.find_source_files()
 
-    def get_output_files(self, module: Module) -> List[str]:
+    def get_output_files(self, _: BuildUnit, module: Module) -> List[str]:
         return [module.output_directory]
 
-    def get_clean_files(self, module: Module) -> List[str]:
+    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
         Log.info('Removing documentation generated for directory "%s"...', module.root_directory)
-        return super().get_clean_files(module)
+        return super().get_clean_files(build_unit, module)
