@@ -302,7 +302,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         x_enforce_sparse = x_sparse_policy.should_enforce_sparse(x, sparse_format=x_sparse_format, dtype=Float32)
         x = x if x_enforce_sparse else enforce_2d(
             enforce_dense(x, order='F', dtype=Float32, sparse_value=sparse_feature_value))
-        x = validate_data(self, x=x, accept_sparse=x_sparse_format.value, dtype=Float32, force_all_finite='allow-nan')
+        x = validate_data(self, x=x, accept_sparse=x_sparse_format.value, dtype=Float32, ensure_all_finite='allow-nan')
 
         if is_sparse(x):
             log.debug(
@@ -338,7 +338,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
                           reset=False,
                           accept_sparse=sparse_format.value,
                           dtype=Float32,
-                          force_all_finite='allow-nan')
+                          ensure_all_finite='allow-nan')
 
         if is_sparse(x):
             log.debug('A sparse matrix with sparse value %s is used to store the feature values of the query examples',
