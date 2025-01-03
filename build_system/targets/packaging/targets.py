@@ -70,10 +70,11 @@ class InstallPythonWheels(BuildTarget.Runnable):
 
     def run(self, _: BuildUnit, module: Module):
         Log.info('Installing Python wheels for directory "%s"...', module.root_directory)
-        PipInstallWheel().install_wheels(*module.find_wheels())
+        PipInstallWheel().install_wheels(module.find_wheel())
 
     def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
-        return module.find_wheels()
+        wheel = module.find_wheel()
+        return [wheel] if wheel else []
 
     def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
         Log.info('Uninstalling Python packages for directory "%s"...', module.root_directory)
