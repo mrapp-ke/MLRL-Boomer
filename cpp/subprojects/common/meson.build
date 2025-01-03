@@ -7,6 +7,7 @@ source_files = [
     'src/mlrl/common/indices/index_vector_complete.cpp',
     'src/mlrl/common/indices/index_vector_partial.cpp',
     'src/mlrl/common/input/example_weights_equal.cpp',
+    'src/mlrl/common/input/example_weights_real_valued.cpp',
     'src/mlrl/common/input/feature_binning_equal_frequency.cpp',
     'src/mlrl/common/input/feature_binning_equal_width.cpp',
     'src/mlrl/common/input/feature_binning_no.cpp',
