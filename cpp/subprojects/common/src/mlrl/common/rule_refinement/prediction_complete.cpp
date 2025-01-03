@@ -79,6 +79,11 @@ std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
 }
 
 std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
+  const IStatistics& statistics, const DenseWeightVector<float32>& weights) const {
+    return statistics.createSubset(indexVector_, weights);
+}
+
+std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
   const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
@@ -90,6 +95,11 @@ std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
 
 std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
   const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const {
+    return statistics.createSubset(indexVector_, weights);
+}
+
+std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
+  const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
 

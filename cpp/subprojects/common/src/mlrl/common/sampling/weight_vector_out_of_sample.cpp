@@ -20,3 +20,4 @@ bool OutOfSampleWeightVector<WeightVector>::operator[](uint32 pos) const {
 template class OutOfSampleWeightVector<EqualWeightVector>;
 template class OutOfSampleWeightVector<BitWeightVector>;
 template class OutOfSampleWeightVector<DenseWeightVector<uint32>>;
+template class OutOfSampleWeightVector<DenseWeightVector<float32>>;

@@ -28,7 +28,7 @@ class AbstractRegressionRuleLearner : virtual public IRegressionRuleLearner {
 
         virtual ~AbstractRegressionRuleLearner() override {}
 
-        std::unique_ptr<ITrainingResult> fit(const IFeatureInfo& featureInfo,
+        std::unique_ptr<ITrainingResult> fit(const IExampleWeights& exampleWeights, const IFeatureInfo& featureInfo,
                                              const IColumnWiseFeatureMatrix& featureMatrix,
                                              const IRowWiseRegressionMatrix& regressionMatrix) const override {
             // Create stopping criteria...

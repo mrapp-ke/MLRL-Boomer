@@ -161,6 +161,32 @@ class IStatistics : public IStatisticsSpace {
          *
          * @param outputIndices A reference to an object of type `CompleteIndexVector` that provides access to the
          *                      indices of the outputs that should be included in the subset
+         * @param weights       A reference to an object of type `DenseWeightVector<float32>` that provides access to
+         *                      the weights of individual training examples
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
+                                                                const DenseWeightVector<float32>& weights) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those outputs, whose indices
+         * are provided by a specific `PartialIndexVector`.
+         *
+         * @param outputIndices A reference to an object of type `PartialIndexVector` that provides access to the
+         *                      indices of the outputs that should be included in the subset
+         * @param weights       A reference to an object of type `DenseWeightVector<float32>` that provides access to
+         *                      the weights of individual training examples
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
+                                                                const DenseWeightVector<float32>& weights) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those outputs, whose indices
+         * are provided by a specific `CompleteIndexVector`.
+         *
+         * @param outputIndices A reference to an object of type `CompleteIndexVector` that provides access to the
+         *                      indices of the outputs that should be included in the subset
          * @param weights       A reference to an object of type `OutOfSampleWeightVector<EqualWeightVector>` that
          *                      provides access to the weights of individual training examples
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
@@ -237,6 +263,34 @@ class IStatistics : public IStatisticsSpace {
           const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const = 0;
 
         /**
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those outputs, whose indices
+         * are provided by a specific `CompleteIndexVector`.
+         *
+         * @param outputIndices A reference to an object of type `CompleteIndexVector` that provides access to the
+         *                      indices of the outputs that should be included in the subset
+         * @param weights       A reference to an object of type `OutOfSampleWeightVector<DenseWeightVector<float32>>`
+         *                      that provides access to the weights of individual training examples
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(
+          const CompleteIndexVector& outputIndices,
+          const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those outputs, whose indices
+         * are provided by a specific `PartialIndexVector`.
+         *
+         * @param outputIndices A reference to an object of type `PartialIndexVector` that provides access to the
+         *                      indices of the outputs that should be included in the subset
+         * @param weights       A reference to an object of type `OutOfSampleWeightVector<DenseWeightVector<float32>>`
+         *                      that provides access to the weights of individual training examples
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(
+          const PartialIndexVector& outputIndices,
+          const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const = 0;
+
+        /**
          * Creates and returns a new object of type `IWeightedStatistics`.
          *
          * @param weights   A reference to an object of type `EqualWeightVector` that provides access to the weights of
@@ -264,4 +318,14 @@ class IStatistics : public IStatisticsSpace {
          */
         virtual std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
           const DenseWeightVector<uint32>& weights) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IWeightedStatistics`.
+         *
+         * @param weights   A reference to an object of type `DenseWeightVector<float32>` that provides access to the
+         *                  weights of individual training examples
+         * @return          An unique pointer to an object of type `IWeightedStatistics` that has been created
+         */
+        virtual std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
+          const DenseWeightVector<float32>& weights) const = 0;
 };

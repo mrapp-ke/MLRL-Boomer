@@ -701,6 +701,29 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& outputIndices,
+              const DenseWeightVector<float32>& weights) const override final {
+                return std::make_unique<
+                  StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
+                                   DenseWeightVector<float32>, CompleteIndexVector>>(
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+              const PartialIndexVector& outputIndices, const DenseWeightVector<float32>& weights) const override final {
+                return std::make_unique<
+                  StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
+                                   DenseWeightVector<float32>, PartialIndexVector>>(
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+              const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
                 return std::make_unique<
                   StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
@@ -769,6 +792,30 @@ namespace boosting {
             }
 
             /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+              const CompleteIndexVector& outputIndices,
+              const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override final {
+                return std::make_unique<
+                  StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
+                                   OutOfSampleWeightVector<DenseWeightVector<float32>>, CompleteIndexVector>>(
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+              const PartialIndexVector& outputIndices,
+              const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override final {
+                return std::make_unique<
+                  StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
+                                   OutOfSampleWeightVector<DenseWeightVector<float32>>, PartialIndexVector>>(
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
              * @see `IStatistics::createWeightedStatistics`
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
@@ -795,6 +842,16 @@ namespace boosting {
               const DenseWeightVector<uint32>& weights) const override final {
                 return std::make_unique<WeightedStatistics<StatisticVector, typename StatisticMatrix::view_type,
                                                            RuleEvaluationFactory, DenseWeightVector<uint32>>>(
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
+            }
+
+            /**
+             * @see `IStatistics::createWeightedStatistics`
+             */
+            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
+              const DenseWeightVector<float32>& weights) const override final {
+                return std::make_unique<WeightedStatistics<StatisticVector, typename StatisticMatrix::view_type,
+                                                           RuleEvaluationFactory, DenseWeightVector<float32>>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
             }
     };
