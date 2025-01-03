@@ -4,12 +4,13 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements modules that provide access to Python code that can be built as wheel packages.
 """
 from os import environ, path
-from typing import List
+from typing import Optional
 
 from core.modules import Module
 from util.files import FileSearch
 
 from targets.modules import SubprojectModule
+from targets.version_files import VersionFile
 
 
 class PythonPackageModule(SubprojectModule):
@@ -49,13 +50,17 @@ class PythonPackageModule(SubprojectModule):
         """
         return path.join(self.root_directory, self.wheel_directory_name)
 
-    def find_wheels(self) -> List[str]:
+    def find_wheel(self) -> Optional[str]:
         """
-        Finds and returns all wheel packages that have been built for the module.
+        Finds and returns the wheel package that has been built for the module.
 
-        :return: A list that contains the paths to the wheel packages
+        :return: The path to the wheel package or None, if no such package has been found
         """
-        return FileSearch().filter_by_suffix('whl').list(self.wheel_directory)
+        current_version = VersionFile().version
+        wheels = FileSearch() \
+            .filter_by_substrings(contains=str(current_version), ends_with='.whl') \
+            .list(self.wheel_directory)
+        return wheels[0] if wheels else None
 
     @property
     def subproject_name(self) -> str:
