@@ -3,6 +3,7 @@ project('common', 'cython', 'cpp')
 # Source files
 cython_dir = 'cython'
 cython_module_names = [
+    'example_weights',
     'feature_binning',
     'feature_info',
     'feature_matrix',
