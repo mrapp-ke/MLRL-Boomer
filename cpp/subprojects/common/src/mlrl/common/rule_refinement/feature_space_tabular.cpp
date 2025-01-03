@@ -368,6 +368,11 @@ class TabularFeatureSpace final : public IFeatureSpace {
             return std::make_unique<TabularFeatureSpace::FeatureSubspace<DenseWeightVector<uint32>>>(
               *this, std::move(weightedStatisticsPtr), weights);
         }
+
+        std::unique_ptr<IFeatureSubspace> createSubspace(const DenseWeightVector<float32>& weights) override {
+            // TODO Implement
+            return nullptr;
+        }
 };
 
 TabularFeatureSpaceFactory::TabularFeatureSpaceFactory(std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr,
