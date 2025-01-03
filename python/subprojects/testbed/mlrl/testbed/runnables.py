@@ -20,7 +20,7 @@ from mlrl.common.cython.validation import assert_greater, assert_greater_or_equa
 from mlrl.common.format import format_dict_keys, format_enum_values, format_iterable
 from mlrl.common.info import PythonPackageInfo
 from mlrl.common.options import BooleanOption, parse_param_and_options
-from mlrl.common.rule_learners import KWARG_SPARSE_FEATURE_VALUE, SparsePolicy
+from mlrl.common.rule_learners import RuleLearner, SparsePolicy
 
 from mlrl.testbed.characteristics import OPTION_DISTINCT_LABEL_VECTORS, OPTION_LABEL_CARDINALITY, \
     OPTION_LABEL_IMBALANCE_RATIO, OPTION_OUTPUT_DENSITY, OPTION_OUTPUT_SPARSITY, OPTION_OUTPUTS
@@ -1232,7 +1232,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                            train_evaluation: Optional[Evaluation], test_evaluation: Optional[Evaluation],
                            parameter_input: Optional[ParameterInput],
                            persistence: Optional[ModelPersistence]) -> Experiment:
-        kwargs = {KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
+        kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
         return Experiment(problem_type=problem_type,
                           base_learner=base_learner,
                           learner_name=learner_name,
