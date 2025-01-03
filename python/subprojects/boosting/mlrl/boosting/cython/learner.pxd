@@ -1,5 +1,6 @@
 from mlrl.boosting.cython.head_type cimport IDynamicPartialHeadConfig, IFixedPartialHeadConfig
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
+from mlrl.boosting.cython.quantization cimport IStochasticQuantizationConfig
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig
 
 ctypedef double (*DdotFunction)(int* n, double* dx, int* incx, double* dy, int* incy)
@@ -39,6 +40,19 @@ cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
         # Functions:
 
         IConstantShrinkageConfig& useConstantShrinkagePostProcessor()
+
+
+    cdef cppclass INoQuantizationMixin:
+
+        # Functions:
+
+        void useNoQuantization()
+
+    cdef cppclass IStochasticQuantizationMixin:
+
+        # Functions:
+
+        IStochasticQuantizationConfig& useStochasticQuantization()
 
 
     cdef cppclass INoL1RegularizationMixin:
