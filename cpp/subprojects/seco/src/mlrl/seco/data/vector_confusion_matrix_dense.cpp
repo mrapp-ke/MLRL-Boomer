@@ -20,7 +20,7 @@ namespace seco {
             if (coverage == 0) {
                 bool trueLabel = *labelIterator;
                 bool majorityLabel = *majorityIterator;
-                ConfusionMatrix& confusionMatrix = iterator[i];
+                ConfusionMatrix<uint32>& confusionMatrix = iterator[i];
                 uint32& element = confusionMatrix.getElement(trueLabel, majorityLabel);
                 element += weight;
             }
@@ -44,7 +44,7 @@ namespace seco {
             if (coverage == 0) {
                 bool trueLabel = *labelIterator;
                 bool majorityLabel = *majorityIterator;
-                ConfusionMatrix& confusionMatrix = iterator[i];
+                ConfusionMatrix<uint32>& confusionMatrix = iterator[i];
                 uint32& element = confusionMatrix.getElement(trueLabel, majorityLabel);
                 element -= weight;
             }
@@ -55,8 +55,8 @@ namespace seco {
     }
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(uint32 numElements, bool init)
-        : ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<ConfusionMatrix>>>(
-            AllocatedVector<ConfusionMatrix>(numElements, init)) {}
+        : ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<ConfusionMatrix<uint32>>>>(
+            AllocatedVector<ConfusionMatrix<uint32>>(numElements, init)) {}
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(const DenseConfusionMatrixVector& other)
         : DenseConfusionMatrixVector(other.getNumElements()) {
@@ -144,7 +144,7 @@ namespace seco {
                 bool trueLabel = labelIterator[index];
                 std::advance(majorityIterator, index - previousIndex);
                 bool majorityLabel = *majorityIterator;
-                ConfusionMatrix& confusionMatrix = this->begin()[i];
+                ConfusionMatrix<uint32>& confusionMatrix = this->begin()[i];
                 uint32& element = confusionMatrix.getElement(trueLabel, majorityLabel);
                 element += weight;
                 previousIndex = index;
@@ -175,7 +175,7 @@ namespace seco {
                 bool trueLabel = labelIndexIterator != labelIndicesEnd && *labelIndexIterator == index;
                 std::advance(majorityIterator, index - previousIndex);
                 bool majorityLabel = *majorityIterator;
-                ConfusionMatrix& confusionMatrix = this->begin()[i];
+                ConfusionMatrix<uint32>& confusionMatrix = this->begin()[i];
                 uint32& element = confusionMatrix.getElement(trueLabel, majorityLabel);
                 element += weight;
                 previousIndex = index;

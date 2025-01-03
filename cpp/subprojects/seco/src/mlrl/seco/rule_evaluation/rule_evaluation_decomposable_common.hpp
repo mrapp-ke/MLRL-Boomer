@@ -18,10 +18,10 @@ namespace seco {
      * @param heuristic                 The heuristic that should be used to assess the quality
      * @return                          The quality that has been calculated
      */
-    static inline float64 calculateOutputWiseQuality(const ConfusionMatrix& totalConfusionMatrix,
-                                                     const ConfusionMatrix& coveredConfusionMatrix,
+    static inline float64 calculateOutputWiseQuality(const ConfusionMatrix<uint32>& totalConfusionMatrix,
+                                                     const ConfusionMatrix<uint32>& coveredConfusionMatrix,
                                                      const IHeuristic& heuristic) {
-        const ConfusionMatrix uncoveredConfusionMatrix = totalConfusionMatrix - coveredConfusionMatrix;
+        const ConfusionMatrix<uint32> uncoveredConfusionMatrix = totalConfusionMatrix - coveredConfusionMatrix;
         return heuristic.evaluateConfusionMatrix(coveredConfusionMatrix.in, coveredConfusionMatrix.ip,
                                                  coveredConfusionMatrix.rn, coveredConfusionMatrix.rp,
                                                  uncoveredConfusionMatrix.in, uncoveredConfusionMatrix.ip,
