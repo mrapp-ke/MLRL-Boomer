@@ -29,6 +29,11 @@ class DenseWeightVector final : public DenseVectorDecorator<AllocatedVector<T>>,
         DenseWeightVector(uint32 numElements, bool init = false);
 
         /**
+         * The type of the weights, the vector provides access to.
+         */
+        typedef T weight_type;
+
+        /**
          * Returns the number of non-zero weights.
          *
          * @return The number of non-zero weights

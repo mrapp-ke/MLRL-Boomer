@@ -23,6 +23,11 @@ class EqualWeightVector final : public IWeightVector {
         EqualWeightVector(uint32 numElements);
 
         /**
+         * The type of the weights, the vector provides access to.
+         */
+        typedef uint32 weight_type;
+
+        /**
          * Returns the number of elements in the vector.
          *
          * @return The number of elements
@@ -42,7 +47,7 @@ class EqualWeightVector final : public IWeightVector {
          * @param pos   The position
          * @return      The weight at the specified position
          */
-        uint32 operator[](uint32 pos) const;
+        weight_type operator[](uint32 pos) const;
 
         bool hasZeroWeights() const override;
 
