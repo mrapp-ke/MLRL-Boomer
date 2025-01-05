@@ -82,7 +82,7 @@ namespace boosting {
     }
 
     void DenseNonDecomposableStatisticVector::add(const DenseNonDecomposableStatisticView& view, uint32 row,
-                                                  uint32 weight) {
+                                                  float64 weight) {
         util::addToViewWeighted(this->gradients_begin(), view.gradients_cbegin(row), this->getNumGradients(), weight);
         util::addToViewWeighted(this->hessians_begin(), view.hessians_cbegin(row), this->getNumHessians(), weight);
     }
@@ -93,7 +93,7 @@ namespace boosting {
     }
 
     void DenseNonDecomposableStatisticVector::remove(const DenseNonDecomposableStatisticView& view, uint32 row,
-                                                     uint32 weight) {
+                                                     float64 weight) {
         util::removeFromViewWeighted(this->gradients_begin(), view.gradients_cbegin(row), this->getNumGradients(),
                                      weight);
         util::removeFromViewWeighted(this->hessians_begin(), view.hessians_cbegin(row), this->getNumHessians(), weight);
@@ -119,13 +119,13 @@ namespace boosting {
     }
 
     void DenseNonDecomposableStatisticVector::addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
-                                                          const CompleteIndexVector& indices, uint32 weight) {
+                                                          const CompleteIndexVector& indices, float64 weight) {
         util::addToViewWeighted(this->gradients_begin(), view.gradients_cbegin(row), this->getNumGradients(), weight);
         util::addToViewWeighted(this->hessians_begin(), view.hessians_cbegin(row), this->getNumHessians(), weight);
     }
 
     void DenseNonDecomposableStatisticVector::addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
-                                                          const PartialIndexVector& indices, uint32 weight) {
+                                                          const PartialIndexVector& indices, float64 weight) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         util::addToViewWeighted(this->gradients_begin(), view.gradients_cbegin(row), indexIterator,
                                 this->getNumGradients(), weight);
