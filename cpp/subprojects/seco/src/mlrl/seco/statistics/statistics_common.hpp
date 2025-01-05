@@ -37,7 +37,7 @@ namespace seco {
                                                       const CoverageMatrix& coverageMatrix,
                                                       ConfusionMatrixVector& vector, const IndexVector& outputIndices,
                                                       uint32 statisticIndex) {
-        uint32 weight = weights[statisticIndex];
+        typename WeightVector::weight_type weight = weights[statisticIndex];
         vector.addToSubset(statisticIndex, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
                            coverageMatrix, outputIndices, weight);
     }
@@ -184,7 +184,7 @@ namespace seco {
         uint32 numStatistics = weights.getNumElements();
 
         for (uint32 i = 0; i < numStatistics; i++) {
-            uint32 weight = weights[i];
+            typename WeightVector::weight_type weight = weights[i];
             statisticVector.add(i, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
                                 coverageMatrix, weight);
         }
@@ -261,7 +261,7 @@ namespace seco {
                                               const BinarySparseArrayVector& majorityLabelVector,
                                               const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
                                               uint32 statisticIndex) {
-        uint32 weight = weights[statisticIndex];
+        typename WeightVector::weight_type weight = weights[statisticIndex];
         vector.add(statisticIndex, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
                    coverageMatrix, weight);
     }
@@ -280,7 +280,7 @@ namespace seco {
                                                  const BinarySparseArrayVector& majorityLabelVector,
                                                  const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
                                                  uint32 statisticIndex) {
-        uint32 weight = weights[statisticIndex];
+        typename WeightVector::weight_type weight = weights[statisticIndex];
         vector.remove(statisticIndex, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
                       coverageMatrix, weight);
     }
