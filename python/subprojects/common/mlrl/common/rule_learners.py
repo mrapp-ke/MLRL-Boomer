@@ -204,9 +204,9 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         :keyword ordinal_feature_indices:   A `numpy.ndarray`, shape `(num_ordinal_features)`, that stores the indices
                                             of all ordinal features
         """
-        feature_matrix = self._create_column_wise_feature_matrix(x, **kwargs)
+        feature_matrix = self.__create_column_wise_feature_matrix(x, **kwargs)
         output_matrix = self.__create_row_wise_output_matrix(y)
-        feature_info = self._create_feature_info(feature_matrix.get_num_features(), **kwargs)
+        feature_info = self.__create_feature_info(feature_matrix.get_num_features(), **kwargs)
         learner = self._create_learner()
         training_result = learner.fit(feature_info, feature_matrix, output_matrix)
         self.num_outputs_ = training_result.num_outputs
@@ -236,7 +236,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
                                        only have an effect if `x` is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray`
         """
         learner = self._create_learner()
-        feature_matrix = self._create_row_wise_feature_matrix(x, **kwargs)
+        feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
         num_outputs = self.num_outputs_
 
         if learner.can_predict_scores(feature_matrix, num_outputs):
@@ -256,7 +256,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
                                         if the number of rules should not be restricted
         """
         learner = self._create_learner()
-        feature_matrix = self._create_row_wise_feature_matrix(x, **kwargs)
+        feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
         num_outputs = self.num_outputs_
 
         if learner.can_predict_scores(feature_matrix, num_outputs):
@@ -289,7 +289,8 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
 
         return np.empty(shape=0, dtype=Uint32)
 
-    def _create_feature_info(self, num_features: int, **kwargs) -> FeatureInfo:
+    @staticmethod
+    def __create_feature_info(num_features: int, **kwargs) -> FeatureInfo:
         """
         Creates and returns a `FeatureInfo` that provides information about the types of individual features.
 
@@ -300,8 +301,10 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
                                             of all ordinal features
         :return:                            The `FeatureInfo` that has been created
         """
-        ordinal_feature_indices = self.__create_feature_indices(self.KWARG_ORDINAL_FEATURE_INDICES, **kwargs)
-        nominal_feature_indices = self.__create_feature_indices(self.KWARG_NOMINAL_FEATURE_INDICES, **kwargs)
+        ordinal_feature_indices = RuleLearner.__create_feature_indices(RuleLearner.KWARG_ORDINAL_FEATURE_INDICES,
+                                                                       **kwargs)
+        nominal_feature_indices = RuleLearner.__create_feature_indices(RuleLearner.KWARG_NOMINAL_FEATURE_INDICES,
+                                                                       **kwargs)
         num_ordinal_features = ordinal_feature_indices.shape[0]
         num_nominal_features = nominal_feature_indices.shape[0]
 
@@ -313,7 +316,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
             return EqualFeatureInfo.create_nominal()
         return MixedFeatureInfo(num_features, ordinal_feature_indices, nominal_feature_indices)
 
-    def _create_column_wise_feature_matrix(self, x, **kwargs) -> ColumnWiseFeatureMatrix:
+    def __create_column_wise_feature_matrix(self, x, **kwargs) -> ColumnWiseFeatureMatrix:
         """
         Creates and returns a matrix that provides column-wise access to the features of the training examples.
 
@@ -341,7 +344,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         log.debug('A dense matrix is used to store the feature values of the training examples')
         return FortranContiguousFeatureMatrix(x)
 
-    def _create_row_wise_feature_matrix(self, x, **kwargs) -> RowWiseFeatureMatrix:
+    def __create_row_wise_feature_matrix(self, x, **kwargs) -> RowWiseFeatureMatrix:
         """
         Creates and returns a matrix that provides row-wise access to the features of query examples.
 
@@ -472,10 +475,11 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
         return CContiguousLabelMatrix(y)
 
     @staticmethod
-    def _create_probability_predictor(learner: RuleLearnerWrapper, model: RuleModel, output_space_info: OutputSpaceInfo,
-                                      marginal_probability_calibration_model: MarginalProbabilityCalibrationModel,
-                                      joint_probability_calibration_model: JointProbabilityCalibrationModel,
-                                      num_labels: int, feature_matrix: RowWiseFeatureMatrix):
+    def __create_probability_predictor(learner: RuleLearnerWrapper, model: RuleModel,
+                                       output_space_info: OutputSpaceInfo,
+                                       marginal_probability_calibration_model: MarginalProbabilityCalibrationModel,
+                                       joint_probability_calibration_model: JointProbabilityCalibrationModel,
+                                       num_labels: int, feature_matrix: RowWiseFeatureMatrix):
         """
         Creates and returns a predictor for predicting probability estimates.
 
@@ -500,17 +504,17 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
                                        only have an effect if `x` is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray`
         """
         learner = self._create_learner()
-        feature_matrix = self._create_row_wise_feature_matrix(x, **kwargs)
+        feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
         num_outputs = self.num_outputs_
 
         if learner.can_predict_probabilities(feature_matrix, num_outputs):
             log.debug('A dense matrix is used to store the predicted probability estimates')
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
             return convert_into_sklearn_compatible_probabilities(
-                self._create_probability_predictor(learner, self.model_, self.output_space_info_,
-                                                   self.marginal_probability_calibration_model_,
-                                                   self.joint_probability_calibration_model_, num_outputs,
-                                                   feature_matrix).predict(max_rules))
+                self.__create_probability_predictor(learner, self.model_, self.output_space_info_,
+                                                    self.marginal_probability_calibration_model_,
+                                                    self.joint_probability_calibration_model_, num_outputs,
+                                                    feature_matrix).predict(max_rules))
 
         return super()._predict_proba(x, **kwargs)
 
@@ -523,16 +527,16 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
                                         if the number of rules should not be restricted
         """
         learner = self._create_learner()
-        feature_matrix = self._create_row_wise_feature_matrix(x, **kwargs)
+        feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
         num_outputs = self.num_outputs_
 
         if learner.can_predict_probabilities(feature_matrix, num_outputs):
             log.debug('A dense matrix is used to store the predicted probability estimates')
             model = self.model_
-            predictor = self._create_probability_predictor(learner, model, self.output_space_info_,
-                                                           self.marginal_probability_calibration_model_,
-                                                           self.joint_probability_calibration_model_, num_outputs,
-                                                           feature_matrix)
+            predictor = self.__create_probability_predictor(learner, model, self.output_space_info_,
+                                                            self.marginal_probability_calibration_model_,
+                                                            self.joint_probability_calibration_model_, num_outputs,
+                                                            feature_matrix)
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():
@@ -544,10 +548,10 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
         return super().predict_proba_incrementally(x, **kwargs)
 
     @staticmethod
-    def _create_binary_predictor(learner: RuleLearnerWrapper, model: RuleModel, output_space_info: OutputSpaceInfo,
-                                 marginal_probability_calibration_model: MarginalProbabilityCalibrationModel,
-                                 joint_probability_calibration_model: JointProbabilityCalibrationModel, num_labels: int,
-                                 feature_matrix: RowWiseFeatureMatrix, sparse: bool):
+    def __create_binary_predictor(learner: RuleLearnerWrapper, model: RuleModel, output_space_info: OutputSpaceInfo,
+                                  marginal_probability_calibration_model: MarginalProbabilityCalibrationModel,
+                                  joint_probability_calibration_model: JointProbabilityCalibrationModel,
+                                  num_labels: int, feature_matrix: RowWiseFeatureMatrix, sparse: bool):
         """
         Creates and returns a predictor for predicting binary labels.
 
@@ -578,17 +582,17 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
                                        only have an effect if `x` is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray`
         """
         learner = self._create_learner()
-        feature_matrix = self._create_row_wise_feature_matrix(x, **kwargs)
+        feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
         num_outputs = self.num_outputs_
 
         if learner.can_predict_binary(feature_matrix, num_outputs):
             sparse_predictions = self.sparse_predictions_
             log.debug('A %s matrix is used to store the predicted labels', 'sparse' if sparse_predictions else 'dense')
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
-            return self._create_binary_predictor(learner, self.model_, self.output_space_info_,
-                                                 self.marginal_probability_calibration_model_,
-                                                 self.joint_probability_calibration_model_, num_outputs, feature_matrix,
-                                                 sparse_predictions).predict(max_rules)
+            return self.__create_binary_predictor(learner, self.model_, self.output_space_info_,
+                                                  self.marginal_probability_calibration_model_,
+                                                  self.joint_probability_calibration_model_, num_outputs,
+                                                  feature_matrix, sparse_predictions).predict(max_rules)
 
         return super()._predict_binary(x, **kwargs)
 
@@ -601,17 +605,17 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
                                         if the number of rules should not be restricted
         """
         learner = self._create_learner()
-        feature_matrix = self._create_row_wise_feature_matrix(x, **kwargs)
+        feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
         num_outputs = self.num_outputs_
 
         if learner.can_predict_binary(feature_matrix, num_outputs):
             sparse_predictions = self.sparse_predictions_
             log.debug('A %s matrix is used to store the predicted labels', 'sparse' if sparse_predictions else 'dense')
             model = self.model_
-            predictor = self._create_binary_predictor(learner, model, self.output_space_info_,
-                                                      self.marginal_probability_calibration_model_,
-                                                      self.joint_probability_calibration_model_, num_outputs,
-                                                      feature_matrix, sparse_predictions)
+            predictor = self.__create_binary_predictor(learner, model, self.output_space_info_,
+                                                       self.marginal_probability_calibration_model_,
+                                                       self.joint_probability_calibration_model_, num_outputs,
+                                                       feature_matrix, sparse_predictions)
             max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():
