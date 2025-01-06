@@ -291,7 +291,11 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
 
         if feature_indices:
             feature_indices = enforce_dense(feature_indices, order='C', dtype=Uint32)
-            return check_array(feature_indices, ensure_2d=False, dtype=Uint32, input_name=input_name)
+            return check_array(feature_indices,
+                               ensure_2d=False,
+                               dtype=Uint32,
+                               ensure_non_negative=True,
+                               input_name=input_name)
 
         return np.empty(shape=0, dtype=Uint32)
 
@@ -334,6 +338,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
             example_weights = check_array(example_weights,
                                           ensure_2d=False,
                                           dtype=Float32,
+                                          ensure_non_negative=True,
                                           input_name=self.KWARG_EXAMPLE_WEIGHTS)
             return RealValuedExampleWeights(example_weights)
 
@@ -486,7 +491,8 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
     def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool, **_) -> Any:
         y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=Uint8)),
                         accept_sparse=sparse_format.value,
-                        dtype=Uint8)
+                        dtype=Uint8,
+                        ensure_non_negative=True)
 
         if is_sparse(y):
             log.debug('A sparse matrix is used to store the labels of the training examples')
