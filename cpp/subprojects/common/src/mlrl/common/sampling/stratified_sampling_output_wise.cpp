@@ -366,21 +366,12 @@ class StratificationMatrix final : public AllocatedBinaryCscView {
             : AllocatedBinaryCscView(std::move(other)) {}
 };
 
-template<typename LabelMatrix, typename IndexIterator>
-LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(std::unique_ptr<RNG> rngPtr,
-                                                                             const LabelMatrix& labelMatrix,
-                                                                             IndexIterator indicesBegin,
-                                                                             IndexIterator indicesEnd)
-    : rngPtr_(std::move(rngPtr)),
-      stratificationMatrix_(StratificationMatrix<LabelMatrix, IndexIterator>(
-        labelMatrix, CscLabelMatrix(labelMatrix, indicesBegin, indicesEnd), indicesBegin, indicesEnd)) {}
-
-template<typename LabelMatrix, typename IndexIterator>
-void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(BitWeightVector& weightVector,
-                                                                        float32 sampleSize, uint32 minSamples,
-                                                                        uint32 maxSamples) {
-    uint32 numRows = stratificationMatrix_.getNumRows();
-    uint32 numCols = stratificationMatrix_.getNumCols();
+template<typename WeightIterator, typename WeightVector, typename StratificationMatrix>
+static inline void sampleWeightsInternally(WeightVector& weightVector, WeightIterator weightIterator,
+                                           StratificationMatrix& stratificationMatrix, float32 sampleSize,
+                                           uint32 minSamples, uint32 maxSamples, RNG& rng) {
+    uint32 numRows = stratificationMatrix.getNumRows();
+    uint32 numCols = stratificationMatrix.getNumCols();
     uint32 numTotalSamples = util::calculateBoundedFraction(numRows, sampleSize, minSamples, maxSamples);
     uint32 numTotalOutOfSamples = numRows - numTotalSamples;
     uint32 numNonZeroWeights = 0;
@@ -388,21 +379,21 @@ void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(BitWeigh
 
     // For each column, assign a weight to the corresponding examples...
     for (uint32 i = 0; i < numCols; i++) {
-        auto exampleIndices = stratificationMatrix_.indices_begin(i);
-        uint32 numExamples = stratificationMatrix_.indices_end(i) - exampleIndices;
+        auto exampleIndices = stratificationMatrix.indices_begin(i);
+        uint32 numExamples = stratificationMatrix.indices_end(i) - exampleIndices;
         float32 numSamplesDecimal = sampleSize * numExamples;
         uint32 numDesiredSamples = numTotalSamples - numNonZeroWeights;
         uint32 numDesiredOutOfSamples = numTotalOutOfSamples - numZeroWeights;
-        uint32 numSamples = static_cast<uint32>(tiebreak(numDesiredSamples, numDesiredOutOfSamples, *rngPtr_)
-                                                  ? std::ceil(numSamplesDecimal)
-                                                  : std::floor(numSamplesDecimal));
+        uint32 numSamples =
+          static_cast<uint32>(tiebreak(numDesiredSamples, numDesiredOutOfSamples, rng) ? std::ceil(numSamplesDecimal)
+                                                                                       : std::floor(numSamplesDecimal));
         numNonZeroWeights += numSamples;
         numZeroWeights += (numExamples - numSamples);
         uint32 j;
 
         // Use the Fisher-Yates shuffle to randomly draw `numSamples` examples and set their weights to 1...
         for (j = 0; j < numSamples; j++) {
-            uint32 randomIndex = rngPtr_->randomInt(j, numExamples);
+            uint32 randomIndex = rng.randomInt(j, numExamples);
             uint32 exampleIndex = exampleIndices[randomIndex];
             exampleIndices[randomIndex] = exampleIndices[j];
             exampleIndices[j] = exampleIndex;
@@ -417,6 +408,31 @@ void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(BitWeigh
     }
 
     weightVector.setNumNonZeroWeights(numNonZeroWeights);
+}
+
+template<typename LabelMatrix, typename IndexIterator>
+LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(std::unique_ptr<RNG> rngPtr,
+                                                                             const LabelMatrix& labelMatrix,
+                                                                             IndexIterator indicesBegin,
+                                                                             IndexIterator indicesEnd)
+    : rngPtr_(std::move(rngPtr)),
+      stratificationMatrix_(StratificationMatrix<LabelMatrix, IndexIterator>(
+        labelMatrix, CscLabelMatrix(labelMatrix, indicesBegin, indicesEnd), indicesBegin, indicesEnd)) {}
+
+template<typename LabelMatrix, typename IndexIterator>
+void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(
+  BitWeightVector& weightVector, EqualWeightVector::const_iterator weightIterator, float32 sampleSize,
+  uint32 minSamples, uint32 maxSamples) {
+    sampleWeightsInternally(weightVector, weightIterator, stratificationMatrix_, sampleSize, minSamples, maxSamples,
+                            *rngPtr_);
+}
+
+template<typename LabelMatrix, typename IndexIterator>
+void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(
+  DenseWeightVector<float32>& weightVector, DenseWeightVector<float32>::const_iterator weightIterator,
+  float32 sampleSize, uint32 minSamples, uint32 maxSamples) {
+    sampleWeightsInternally(weightVector, weightIterator, stratificationMatrix_, sampleSize, minSamples, maxSamples,
+                            *rngPtr_);
 }
 
 template<typename LabelMatrix, typename IndexIterator>
