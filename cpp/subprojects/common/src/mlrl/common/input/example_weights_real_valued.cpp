@@ -1,5 +1,7 @@
 #include "mlrl/common/input/example_weights_real_valued.hpp"
 
+#include "mlrl/common/sampling/instance_sampling.hpp"
+#include "mlrl/common/sampling/partition.hpp"
 #include "mlrl/common/sampling/weight_vector_dense.hpp"
 
 /**
@@ -19,6 +21,18 @@ class RealValuedExampleWeights final : public IRealValuedExampleWeights {
 
         void setWeight(uint32 index, float32 weight) override {
             weightVector_[index] = weight;
+        }
+
+        virtual std::unique_ptr<IInstanceSampling> createInstanceSampling(
+          const IClassificationInstanceSamplingFactory& factory, const IRowWiseLabelMatrix& labelMatrix,
+          IStatistics& statistics, IPartition& partition) const override {
+            return partition.createInstanceSampling(factory, labelMatrix, statistics, weightVector_);
+        }
+
+        virtual std::unique_ptr<IInstanceSampling> createInstanceSampling(
+          const IRegressionInstanceSamplingFactory& factory, const IRowWiseRegressionMatrix& regressionMatrix,
+          IStatistics& statistics, IPartition& partition) const override {
+            return partition.createInstanceSampling(factory, regressionMatrix, statistics, weightVector_);
         }
 };
 

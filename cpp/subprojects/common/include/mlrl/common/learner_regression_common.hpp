@@ -75,8 +75,8 @@ class AbstractRegressionRuleLearner : virtual public IRegressionRuleLearner {
             // Create instance sampling...
             std::unique_ptr<IRegressionInstanceSamplingFactory> instanceSamplingFactoryPtr =
               configurator_.createRegressionInstanceSamplingFactory();
-            std::unique_ptr<IInstanceSampling> instanceSamplingPtr = partition.createInstanceSampling(
-              *instanceSamplingFactoryPtr, regressionMatrix, statisticsProviderPtr->get());
+            std::unique_ptr<IInstanceSampling> instanceSamplingPtr = exampleWeights.createInstanceSampling(
+              *instanceSamplingFactoryPtr, regressionMatrix, statisticsProviderPtr->get(), partition);
 
             // Create feature sampling...
             std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr =
