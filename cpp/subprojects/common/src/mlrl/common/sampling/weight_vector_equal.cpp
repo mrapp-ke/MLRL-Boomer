@@ -5,6 +5,14 @@
 
 EqualWeightVector::EqualWeightVector(uint32 numElements) : numElements_(numElements) {}
 
+EqualWeightVector::const_iterator EqualWeightVector::cbegin() const {
+    return EqualIterator<weight_type>(1);
+}
+
+EqualWeightVector::const_iterator EqualWeightVector::cend() const {
+    return EqualIterator<weight_type>(1, numElements_);
+}
+
 uint32 EqualWeightVector::getNumElements() const {
     return numElements_;
 }
