@@ -17,10 +17,10 @@ const IHead& RuleList::Rule::getHead() const {
     return *headPtr_;
 }
 
-void RuleList::Rule::visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
-                           IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                           IHead::CompleteHeadVisitor completeHeadVisitor,
-                           IHead::PartialHeadVisitor partialHeadVisitor) const {
+void RuleList::Rule::visit(std::optional<IBody::EmptyBodyVisitor> emptyBodyVisitor,
+                           std::optional<IBody::ConjunctiveBodyVisitor> conjunctiveBodyVisitor,
+                           std::optional<IHead::CompleteHeadVisitor> completeHeadVisitor,
+                           std::optional<IHead::PartialHeadVisitor> partialHeadVisitor) const {
     bodyPtr_->visit(emptyBodyVisitor, conjunctiveBodyVisitor);
     headPtr_->visit(completeHeadVisitor, partialHeadVisitor);
 }
@@ -131,18 +131,20 @@ bool RuleList::isDefaultRuleTakingPrecedence() const {
     return defaultRuleTakesPrecedence_;
 }
 
-void RuleList::visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                     IHead::CompleteHeadVisitor completeHeadVisitor,
-                     IHead::PartialHeadVisitor partialHeadVisitor) const {
+void RuleList::visit(std::optional<IBody::EmptyBodyVisitor> emptyBodyVisitor,
+                     std::optional<IBody::ConjunctiveBodyVisitor> conjunctiveBodyVisitor,
+                     std::optional<IHead::CompleteHeadVisitor> completeHeadVisitor,
+                     std::optional<IHead::PartialHeadVisitor> partialHeadVisitor) const {
     for (auto it = this->cbegin(); it != this->cend(); it++) {
         const Rule& rule = *it;
         rule.visit(emptyBodyVisitor, conjunctiveBodyVisitor, completeHeadVisitor, partialHeadVisitor);
     }
 }
 
-void RuleList::visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                         IHead::CompleteHeadVisitor completeHeadVisitor,
-                         IHead::PartialHeadVisitor partialHeadVisitor) const {
+void RuleList::visitUsed(std::optional<IBody::EmptyBodyVisitor> emptyBodyVisitor,
+                         std::optional<IBody::ConjunctiveBodyVisitor> conjunctiveBodyVisitor,
+                         std::optional<IHead::CompleteHeadVisitor> completeHeadVisitor,
+                         std::optional<IHead::PartialHeadVisitor> partialHeadVisitor) const {
     for (auto it = this->used_cbegin(); it != this->used_cend(); it++) {
         const Rule& rule = *it;
         rule.visit(emptyBodyVisitor, conjunctiveBodyVisitor, completeHeadVisitor, partialHeadVisitor);

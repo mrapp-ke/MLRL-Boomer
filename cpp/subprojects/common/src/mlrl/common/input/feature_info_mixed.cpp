@@ -1,20 +1,20 @@
 #include "mlrl/common/input/feature_info_mixed.hpp"
 
-#include "mlrl/common/data/vector_bit.hpp"
+#include "mlrl/common/data/vector_bit_binary.hpp"
 #include "mlrl/common/input/feature_type_nominal.hpp"
 #include "mlrl/common/input/feature_type_numerical.hpp"
 #include "mlrl/common/input/feature_type_ordinal.hpp"
 
 /**
- * An implementation of the type `IMixedFeatureInfo` that uses `BitVector`s to store whether individual features are
- * ordinal, nominal or numerical.
+ * An implementation of the type `IMixedFeatureInfo` that uses `BinaryBitVector`s to store whether individual features
+ * are ordinal, nominal or numerical.
  */
 class BitFeatureInfo final : public IMixedFeatureInfo {
     private:
 
-        BitVector ordinalBitVector_;
+        BinaryBitVector ordinalBitVector_;
 
-        BitVector nominalBitVector_;
+        BinaryBitVector nominalBitVector_;
 
     public:
 

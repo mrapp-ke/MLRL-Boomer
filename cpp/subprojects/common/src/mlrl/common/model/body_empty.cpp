@@ -10,6 +10,9 @@ bool EmptyBody::covers(View<uint32>::const_iterator indicesBegin, View<uint32>::
     return true;
 }
 
-void EmptyBody::visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor) const {
-    emptyBodyVisitor(*this);
+void EmptyBody::visit(std::optional<EmptyBodyVisitor> emptyBodyVisitor,
+                      std::optional<ConjunctiveBodyVisitor> conjunctiveBodyVisitor) const {
+    if (emptyBodyVisitor) {
+        (*emptyBodyVisitor)(*this);
+    }
 }
