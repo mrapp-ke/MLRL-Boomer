@@ -8,31 +8,31 @@ name = "mlrl-testbed"
 description = "Provides utilities for the training and evaluation of machine learning algorithms"
 readme = "README.md"
 authors = [
-    { name="Michael Rapp", email="michael.rapp.ml@gmail.com" },
+    { name = "Michael Rapp", email = "michael.rapp.ml@gmail.com" },
 ]
 keywords = [
+    "evaluation",
     "machine learning",
-    "scikit-learn",
     "multi-label classification",
     "multi-output regression",
     "multi-target regression",
     "rule learning",
-    "evaluation",
+    "scikit-learn",
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dynamic = [
-    "version",
-    "requires-python",
     "dependencies",
     "optional-dependencies",
+    "requires-python",
+    "version",
 ]
 
 [project.urls]
