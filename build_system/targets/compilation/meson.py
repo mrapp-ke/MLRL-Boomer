@@ -38,9 +38,9 @@ class Meson(Program, ABC):
 
     def __init__(self, build_unit: BuildUnit, meson_command: str, *arguments: str):
         """
-        :param build_unit:  The build unit from which the program should be run
-        :param program:     The meson command to be run
-        :param arguments:   Optional arguments to be passed to meson
+        :param build_unit:      The build unit from which the program should be run
+        :param meson_command:   The meson command to be run
+        :param arguments:       Optional arguments to be passed to meson
         """
         super().__init__('meson', meson_command, *arguments)
         self.print_arguments(True)
