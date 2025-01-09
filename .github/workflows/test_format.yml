@@ -7,17 +7,22 @@ on:
       - reopened
       - synchronize
 jobs:
-  test_format:
-    name: Check code style
+  changes:
+    name: Detect changes
     runs-on: ubuntu-latest
+    outputs:
+      cpp: ${{ steps.filter.outputs.cpp }}
+      python: ${{ steps.filter.outputs.python }}
+      md: ${{ steps.filter.outputs.md }}
+      yaml: ${{ steps.filter.outputs.yaml }}
+      toml: ${{ steps.filter.outputs.toml }}
     steps:
       - name: Look up Git repository in cache
         uses: actions/cache/restore@v4
         with:
           path: .git/
           key: test-format-cache-git-${{ github.run_id }}
-          restore-keys: |
-            test-format-cache-git
+          restore-keys: test-format-cache-git
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Python
@@ -60,24 +65,109 @@ jobs:
               - *build_files
               - 'build_system/targets/code_style/toml/*'
               - '**/*.toml'
-      - name: Check C++ code style
-        if: steps.filter.outputs.cpp == 'true'
-        run: ./build test_format_cpp
-      - name: Check Python code style
-        if: steps.filter.outputs.python == 'true'
-        run: ./build test_format_python
-      - name: Check Markdown code style
-        if: steps.filter.outputs.md == 'true'
-        run: ./build test_format_md
-      - name: Check YAML code style
-        if: steps.filter.outputs.yaml == 'true'
-        run: ./build test_format_yaml
-      - name: Check TOML code style
-        if: steps.filter.outputs.toml == 'true'
-        run: ./build test_format_toml
       - name: Save Git repository to cache
         uses: actions/cache/save@v4
         if: success() || failure()
         with:
           path: .git/
           key: test-format-cache-git-${{ github.run_id }}
+  test_format_cpp:
+    needs: changes
+    if: ${{ needs.changes.outputs.cpp == 'true' }}
+    name: Check C++ source files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .git/
+          key: test-format-cache-git-${{ github.run_id }}
+          restore-keys: test-format-cache-git
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: .version-python
+      - name: Check C++ source files
+        run: ./build test_format_cpp
+  test_format_python:
+    needs: changes
+    if: ${{ needs.changes.outputs.python == 'true' }}
+    name: Check Python source files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .git/
+          key: test-format-cache-git-${{ github.run_id }}
+          restore-keys: test-format-cache-git
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: .version-python
+      - name: Check Python source files
+        run: ./build test_format_python
+  test_format_md:
+    needs: changes
+    if: ${{ needs.changes.outputs.md == 'true' }}
+    name: Check Markdown files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .git/
+          key: test-format-cache-git-${{ github.run_id }}
+          restore-keys: test-format-cache-git
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: .version-python
+      - name: Check Markdown files
+        run: ./build test_format_md
+  test_format_yaml:
+    needs: changes
+    if: ${{ needs.changes.outputs.yaml == 'true' }}
+    name: Check YAML files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .git/
+          key: test-format-cache-git-${{ github.run_id }}
+          restore-keys: test-format-cache-git
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: .version-python
+      - name: Check YAML files
+        run: ./build test_format_yaml
+  test_format_toml:
+    needs: changes
+    if: ${{ needs.changes.outputs.toml == 'true' }}
+    name: Check TOML files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .git/
+          key: test-format-cache-git-${{ github.run_id }}
+          restore-keys: test-format-cache-git
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: .version-python
+      - name: Check TOML files
+        run: ./build test_format_toml
