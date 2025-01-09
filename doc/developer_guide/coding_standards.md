@@ -92,6 +92,7 @@ We aim to enforce a consistent code style across the entire project. For this pu
 - We use [YAPF](https://github.com/google/yapf) to enforce the Python code style defined in the file {repo-file}`.style.yapf <build_system/targets/code_style/python/.style.yapf>`. In addition, [isort](https://github.com/PyCQA/isort) is used to keep the ordering of imports in Python and Cython source files consistent according to the configuration file {repo-file}`.isort.cfg <build_system/targets/code_style/python/.isort.cfg>` and [pylint](https://pylint.org/) is used to check for common issues in the Python code according to the configuration file {repo-file}`.pylintrc <build_system/targets/code_style/python/.pylintrc>`.
 - For applying a consistent style to Markdown files, including those used for writing the documentation, we use [mdformat](https://github.com/hukkin/mdformat).
 - We apply [yamlfix](https://github.com/lyz-code/yamlfix) to YAML files to enforce the code style defined in the file {repo-file}`.yamlfix.toml <build_system/targets/code_style/yaml/.yamlfix.toml>`.
+- We use [taplo](https://github.com/tamasfe/taplo) for validating and formatting TOML files.
 
 If you have modified the project's source code, you can check whether it adheres to our coding standards via the following command:
 
@@ -114,7 +115,7 @@ If you have modified the project's source code, you can check whether it adheres
 ````
 
 ```{note}
-If you want to check for compliance with the C++ or Python code style independently, you can use the build target `test_format_cpp` or `test_format_python` instead of `test_format`. Using the build target `test_format_md` or `test_format_yaml` results in the style of Markdown or YAML files to be checked, respectively.
+If you want to check for compliance with the C++ or Python code style independently, you can use the build target `test_format_cpp` or `test_format_python` instead of `test_format`. Using the build target `test_format_md`, `test_format_yaml` or `test_format_toml` results in the style of Markdown, YAML or TOML files to be checked, respectively.
 ```
 
 In order to automatically format the project's source files according to our style guidelines, the following command can be used:
@@ -138,7 +139,7 @@ In order to automatically format the project's source files according to our sty
 ````
 
 ```{note}
-If you want to format only the C++ source files, you can specify the build target `format_cpp` instead of `format`. Accordingly, the target `format_python` may be used to format only the Python source files. If you want to format Markdown or YAML files, you should use the target `format_md` or `format_yaml`, respectively.
+If you want to format only the C++ source files, you can specify the build target `format_cpp` instead of `format`. Accordingly, the target `format_python` may be used to format only the Python source files. If you want to format Markdown, YAML or TOML files, you should use the target `format_md`, `format_yaml` or `format_toml`, respectively.
 ```
 
 Whenever any source files have been modified, a {ref}`Continuous Integration <ci>` job is run automatically to verify if they adhere to our code style guidelines.
