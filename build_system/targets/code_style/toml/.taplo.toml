@@ -1,0 +1,6 @@
+[formatting]
+allowed_blank_lines = 1
+array_auto_collapse = false
+column_width = 120
+indent_string = "    "
+reorder_arrays = true
