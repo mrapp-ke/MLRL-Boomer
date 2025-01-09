@@ -37,28 +37,29 @@ jobs:
               - 'build_system/core/**'
               - 'build_system/util/**'
               - 'build_system/targets/*.py'
+              - 'build_system/targets/code_style/*'
             cpp:
               - *build_files
-              - 'build_system/targets/code_style/*'
               - 'build_system/targets/code_style/cpp/*'
               - '.cpplint.cfg'
               - '**/*.hpp'
               - '**/*.cpp'
             python:
               - *build_files
-              - 'build_system/targets/code_style/*'
               - 'build_system/targets/code_style/python/*'
               - '**/*.py'
             md:
               - *build_files
-              - 'build_system/targets/code_style/*'
               - 'build_system/targets/code_style/markdown/*'
               - '**/*.md'
             yaml:
               - *build_files
-              - 'build_system/targets/code_style/*'
               - 'build_system/targets/code_style/yaml/*'
               - '**/*.y*ml'
+            toml:
+              - *build_files
+              - 'build_system/targets/code_style/toml/*'
+              - '**/*.toml'
       - name: Check C++ code style
         if: steps.filter.outputs.cpp == 'true'
         run: ./build test_format_cpp
@@ -71,6 +72,9 @@ jobs:
       - name: Check YAML code style
         if: steps.filter.outputs.yaml == 'true'
         run: ./build test_format_yaml
+      - name: Check TOML code style
+        if: steps.filter.outputs.toml == 'true'
+        run: ./build test_format_toml
       - name: Save Git repository to cache
         uses: actions/cache/save@v4
         if: success() || failure()
