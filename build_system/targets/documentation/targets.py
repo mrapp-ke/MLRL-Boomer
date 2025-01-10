@@ -82,7 +82,6 @@ class BuildDocumentation(BuildTarget.Runnable):
 
     def run(self, build_unit: BuildUnit, module: Module):
         Log.info('Generating documentation for directory "%s"...', module.root_directory)
-        SphinxBuild(build_unit, module, builder='linkcheck').run()
         SphinxBuild(build_unit, module).run()
 
     def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
@@ -94,3 +93,22 @@ class BuildDocumentation(BuildTarget.Runnable):
     def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
         Log.info('Removing documentation generated for directory "%s"...', module.root_directory)
         return super().get_clean_files(build_unit, module)
+
+
+class CheckLinks(BuildTarget.Runnable):
+    """
+    Checks external links in documentations.
+    """
+
+    def __init__(self):
+        super().__init__(SphinxModule.Filter())
+
+    def run(self, build_unit: BuildUnit, module: Module):
+        Log.info('Checking external links in documentation for directory "%s"...', module.root_directory)
+        SphinxBuild(build_unit, module, builder='linkcheck').run()
+
+    def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
+        return module.find_source_files()
+
+    def get_output_files(self, _: BuildUnit, module: Module) -> List[str]:
+        return [module.output_directory]
