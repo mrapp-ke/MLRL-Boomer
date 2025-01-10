@@ -21,8 +21,7 @@ jobs:
         with:
           path: .git/
           key: test-doc-cache-git-${{ github.run_id }}
-          restore-keys: |
-            test-doc-cache-git
+          restore-keys: test-doc-cache-git
       - name: Checkout
         uses: actions/checkout@v4
       - name: Detect changes
@@ -60,7 +59,7 @@ jobs:
         with:
           path: .git/
           key: test-doc-cache-git-${{ github.run_id }}
-  linux_build:
+  build_doc:
     needs: changes
     if: ${{ needs.changes.outputs.any == 'true' }}
     name: Test building documentation
@@ -71,8 +70,7 @@ jobs:
         with:
           path: .git/
           key: test-doc-cache-git-${{ github.run_id }}
-          restore-keys: |
-            test-doc-cache-git
+          restore-keys: test-doc-cache-git
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Python
@@ -82,7 +80,7 @@ jobs:
       - name: Prepare ccache
         uses: hendrikmuhs/ccache-action@v1
         with:
-          key: ${{ runner.os }}-test-doc-ccache
+          key: test-doc-ccache
       - name: Install Doxygen
         uses: ssciwr/doxygen-install@v1
       - name: Generate C++ Apidoc
@@ -97,3 +95,31 @@ jobs:
       - name: Generate Documentation
         if: ${{ needs.changes.outputs.doc == 'true' }}
         run: GPU_SUPPORT=disabled ./build doc
+  check_links:
+    needs: changes
+    if: ${{ needs.changes.outputs.any == 'true' }}
+    name: Check links in documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .git/
+          key: test-doc-cache-git-${{ github.run_id }}
+          restore-keys: test-doc-cache-git
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: .version-python
+      - name: Prepare ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: test-doc-ccache
+      - name: Install Doxygen
+        uses: ssciwr/doxygen-install@v1
+      - name: Install Roboto font
+        run: sudo apt install -y fonts-roboto
+      - name: Generate Documentation
+        run: GPU_SUPPORT=disabled ./build doc_check_links

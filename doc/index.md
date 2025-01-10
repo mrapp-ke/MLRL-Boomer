@@ -44,6 +44,7 @@ maxdepth: 2
 user_guide/boosting/index
 user_guide/seco/index
 user_guide/testbed/index
+user_guide/references
 ```
 
 ```{toctree}
@@ -67,9 +68,10 @@ caption: Further Information
 hidden: true
 maxdepth: 2
 ---
-misc/references
 misc/CHANGELOG
 misc/CONTRIBUTORS
 misc/CODE_OF_CONDUCT
 misc/LICENSE
+Source Code <https://github.com/mrapp-ke/MLRL-Boomer>
+Issue Tracker <https://github.com/mrapp-ke/MLRL-Boomer/issues>
 ```
