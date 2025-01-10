@@ -11,7 +11,7 @@ from core.targets import TargetBuilder
 from targets.documentation.cpp import APIDOC_CPP, APIDOC_CPP_INDEX
 from targets.documentation.modules import SphinxModule
 from targets.documentation.python import APIDOC_PYTHON, APIDOC_PYTHON_INDEX
-from targets.documentation.targets import BuildDocumentation
+from targets.documentation.targets import BuildDocumentation, CheckLinks
 from targets.paths import Project
 
 APIDOC_INDEX = 'apidoc_index'
@@ -26,6 +26,9 @@ TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
     .add_build_target('doc') \
         .depends_on(APIDOC_INDEX, clean_dependencies=True) \
         .set_runnables(BuildDocumentation()) \
+    .add_build_target('doc_check_links') \
+        .depends_on(APIDOC_INDEX) \
+        .set_runnables(CheckLinks()) \
     .build()
 
 MODULES = [
