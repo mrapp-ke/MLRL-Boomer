@@ -7,7 +7,7 @@ Depending on the dataset at hand, it might be desirable to apply pre-processing 
 ## One-Hot-Encoding
 
 ```{warning}
-When using the algorithms provided by this project, the use of one-hot-encoding is typically not adviced, as they can deal with nominal and binary features in a more efficient way. However, as argued below, it might still be useful for a fair comparison with machine learning approaches that cannot deal with such features.
+When using the algorithms provided by this project, the use of one-hot-encoding is typically not advised, as they can deal with nominal and binary features in a more efficient way. However, as argued below, it might still be useful for a fair comparison with machine learning approaches that cannot deal with such features.
 ```
 
 Not all machine learning methods can deal with nominal or binary features out-of-the-box. In such cases, it is necessary to pre-process the available data in order to convert these features into numerical ones. The most commonly used technique for this purpose is referred to as [one-hot-encoding](https://en.wikipedia.org/wiki/One-hot). It replaces each feature that comes with a predefined set of discrete values, with several numerical features corresponding to each of the potential values. The values for these newly added features are set to `1`, if an original data point was associated with the corresponding nominal value, or `0` otherwise. Because the resulting dataset typically entails more features than the original one, the use of one-hot-encoding often increases the computational costs and time needed for training a machine learning model.
