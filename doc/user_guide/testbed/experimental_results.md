@@ -102,7 +102,7 @@ In cases where the {ref}`evaluation results<output-evaluation-results>` obtained
    ```
 ````
 
-Alternatively, the argument `--store-predictions` can be used to save the predictions, as well as the ground truth, to [.arff](https://waikato.github.io/weka-wiki/formats_and_processing/arff_stable/) files:
+Alternatively, the argument `--store-predictions` can be used to save the predictions, as well as the ground truth, to [ARFF](https://waikato.github.io/weka-wiki/formats_and_processing/arff_stable/) files:
 
 ````{tab} BOOMER
    ```text
