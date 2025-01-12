@@ -91,7 +91,7 @@ class IFeatureSubspace {
         virtual std::unique_ptr<ICallback> createCallback(uint32 featureIndex) = 0;
 
         /**
-         * Filters the subspace such that it only includes those training examples that statisfy a specific condition.
+         * Filters the subspace such that it only includes those training examples that satisfy a specific condition.
          *
          * @param condition A reference to an object of type `Condition`
          */

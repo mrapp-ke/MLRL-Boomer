@@ -81,7 +81,7 @@ Similarly, the following command generates an API documentation from the project
 The files produced by the above command should be saved to the directory `doc/developer_guide/api/python/`.
 
 ```{note}
-If you want to generate the API documentation for the C++ and Python code simulatenously, it is possible to use the build target `apidoc` instead of `apidoc_cpp` and `apidoc_python`.
+If you want to generate the API documentation for the C++ and Python code simultaneously, it is possible to use the build target `apidoc` instead of `apidoc_cpp` and `apidoc_python`.
 ```
 
 ## Building the Final Documentation

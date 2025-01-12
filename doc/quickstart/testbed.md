@@ -43,12 +43,12 @@ Both arguments that are included in the above command are mandatory:
 
 The program expects the data set files to be provided in the [Mulan format](https://mulan.sourceforge.net/format.html). It requires two files to be present in the specified directory:
 
-1. An [.arff](https://waikato.github.io/weka-wiki/formats_and_processing/arff_stable/) file that specifies the feature values and ground truth of the training examples.
-2. An .xml file that specifies the names of the outputs.
+1. An [ARFF](https://waikato.github.io/weka-wiki/formats_and_processing/arff_stable/) file that specifies the feature values and ground truth of the training examples.
+2. An XML file that specifies the names of the outputs.
 
 The Mulan dataset format is commonly used for benchmark datasets that allow to compare the performance of different machine learning approaches in empirical studies. A collection of publicly available benchmark datasets is available [here](https://github.com/mrapp-ke/Boomer-Datasets).
 
-If an .xml file is not provided, the program tries to parse the number of outputs from the `@relation` declaration that is contained in the .arff file, as it is intended by the [MEKA project's dataset format](https://waikato.github.io/meka/datasets/). According to the MEKA format, the number of outputs may be specified by including the substring "-C L" in the `@relation` name, where "L" is the number of leading features in the dataset that should be treated as outputs.
+If an XML file is not provided, the program tries to parse the number of outputs from the `@relation` declaration that is contained in the ARFF file, as it is intended by the [MEKA project's dataset format](https://waikato.github.io/meka/datasets/). According to the MEKA format, the number of outputs may be specified by including the substring "-C L" in the `@relation` name, where "L" is the number of leading features in the dataset that should be treated as outputs.
 
 ### Regression Problems
 

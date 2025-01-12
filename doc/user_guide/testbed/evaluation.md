@@ -127,7 +127,7 @@ When providing the option `current_fold`, only a single fold, instead of the ent
 ### Evaluation on the Training Data
 
 ```{warning}
-The configuraton described in this section should only be used for testing purposes, as the evaluation results will be highly biased and overly optimistic.
+The configuration described in this section should only be used for testing purposes, as the evaluation results will be highly biased and overly optimistic.
 ```
 
 Sometimes, evaluating the performance of a model on the data it has been trained on can be helpful for analyzing the behavior of a machine learning algorithm, e.g., if one needs to check if the approach is able to fit the data accurately. For this purpose, the command line API allows to use the argument `--data-split none`, which results in the given data not being split at all. Instead, the learning algorithm is applied to the entire dataset and predictions are be obtained from the resulting model for the exact same data points. The argument can be specified as follows:

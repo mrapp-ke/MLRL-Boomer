@@ -259,11 +259,11 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--store-predictions` (Default value = `false`)
 
-  - `true` The predictions for individual examples and outputs are written into .arff files. Does only have an effect if the parameter `--output-dir` is specified.
+  - `true` The predictions for individual examples and outputs are written into ARFF files. Does only have an effect if the parameter `--output-dir` is specified.
 
     - `decimals` (Default value = `0`) The number of decimals to be used for real-valued predictions or 0, if the number of decimals should not be restricted.
 
-  - `false` Predictions are not written into .arff files.
+  - `false` Predictions are not written into ARFF files.
 
 (arguments-prediction-characteristics)=
 
@@ -399,7 +399,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--store-rules` (Default value = `false`)
 
-  - `true` The induced rules are written into a .txt file. Does only have an effect if the parameter `--output-dir` is specified. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
+  - `true` The induced rules are written into a TXT file. Does only have an effect if the parameter `--output-dir` is specified. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
     - `print_feature_names` (Default value = `true`) `true`, if the names of features should be printed instead of their indices, `false` otherwise.
     - `print_output_names` (Default value = `true`) `true`, if the names of outputs should be printed instead of their indices, `false` otherwise.
@@ -409,7 +409,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
     - `decimals_body` (Default value = `2`) The number of decimals to be used for numerical thresholds of conditions in a rule's body or 0, if the number of decimals should not be restricted.
     - `decimals_head` (Default value = `2`) The number of decimals to be used for predictions in a rule's head or 0, if the number of decimals should not be restricted.
 
-  - `false` The induced rules are not written into a .txt file.
+  - `false` The induced rules are not written into a TXT file.
 
 (arguments-probability-calibration-models)=
 
