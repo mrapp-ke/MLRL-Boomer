@@ -256,7 +256,7 @@ class RuleLearnerConfigurator {
          * learner for stopping the induction of new rules, depending on the number of rules learned so far.
          *
          * @return An unique pointer to an object of type `IStoppingCriterionFactory` that has been created or a null
-         *         pointer, if noch such stopping criterion should be used
+         *         pointer, if no such stopping criterion should be used
          */
         virtual std::unique_ptr<IStoppingCriterionFactory> createSizeStoppingCriterionFactory() const {
             return config_.getSizeStoppingCriterionConfig().get().createStoppingCriterionFactory();

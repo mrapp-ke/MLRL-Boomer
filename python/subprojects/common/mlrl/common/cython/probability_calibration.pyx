@@ -28,7 +28,7 @@ cdef class JointProbabilityCalibrationModel:
 
 class NoProbabilityCalibrationModel(ABC):
     """
-    Defines an inteface for all models for the calibration of probabilities that do not make any adjustments.
+    Defines an interface for all models for the calibration of probabilities that do not make any adjustments.
     """
     pass
 

@@ -1,6 +1,7 @@
 """
 This module provides rule learners that make use of the Separate-and-Conquer (SeCo) paradigm.
 """
+# pylint: disable=import-self
 from mlrl.seco.seco_learners import SeCoClassifier
 
 try:

@@ -104,7 +104,7 @@ class DenseScoreVector final : public ViewDecorator<AllocatedView<float64>>,
         bool isPartial() const;
 
         /**
-         * Returns whether the indices of the outputes for which the rule may predict are sorted in increasing order, or
+         * Returns whether the indices of the outputs for which the rule may predict are sorted in increasing order, or
          * not.
          *
          * @return True, if the indices of the outputs for which the rule may predict are sorted in increasing order,
