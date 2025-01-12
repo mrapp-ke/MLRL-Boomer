@@ -27,7 +27,7 @@ OPTION_SPARSE = 'sparse'
 
 class LabelVectorWriter(OutputWriter):
     """
-    Allows to write unique label vectors that are contained in a data set to one or severals sinks.
+    Allows to write unique label vectors that are contained in a data set to one or several sinks.
     """
 
     class LabelVectors(Formattable, Tabularizable):

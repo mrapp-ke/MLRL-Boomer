@@ -155,7 +155,7 @@ class Options:
 
         :param key:             The key
         :param default_value:   The default value to be returned, if no value is associated with the given key
-        :return:                THe value that is associated with the given key or the given default value
+        :return:                The value that is associated with the given key or the given default value
         """
         if key in self.dict:
             value = self.dict[key]
