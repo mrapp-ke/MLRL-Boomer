@@ -100,7 +100,7 @@ def format_table(rows, header=None, alignment=None) -> str:
 
     :param rows:        A list of lists that stores the tabular data
     :param header:      A list that stores the header columns
-    :param alignment:   A list of strings that specify the alignment of the corresponding colum as either 'left',
+    :param alignment:   A list of strings that specify the alignment of the corresponding column as either 'left',
                         'center', or 'right'
     :return:            The textual representation that has been created
     """

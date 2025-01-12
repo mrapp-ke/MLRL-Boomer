@@ -10,7 +10,7 @@
 /**
  * An iterator adaptor that adapts an iterator of a binary sparse vector, which provides access to a fixed number of
  * indices in increasing order, such that it acts as a forward iterator that returns a boolean value for each possible
- * index, corresponding to the value of the element at the respecitive index.
+ * index, corresponding to the value of the element at the respective index.
  *
  * @tparam IndexIterator The type of the iterator that provides access to the indices of all dense elements explicitly
  *                       stored in the vector
