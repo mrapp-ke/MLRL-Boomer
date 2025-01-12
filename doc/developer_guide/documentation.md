@@ -108,6 +108,29 @@ To generate the final documentation's HTML files via [sphinx](https://www.sphinx
 
 Afterward, the generated files can be found in the directory `doc/_build/html/`.
 
+`````{note}
+By default, the above command uses the [Sphinx builder](https://www.sphinx-doc.org/en/master/usage/builders/index.html) `html`. Alternatively, the environment variable `SPHINX_BUILDER` can be set to `linkcheck` to check the documentation for broken links:
+
+````{tab} Linux
+   ```text
+   SPHINX_BUILDER=linkcheck ./build doc
+   ```
+````
+
+````{tab} macOS
+   ```text
+   SPHINX_BUILDER=linkcheck ./build doc
+   ```
+````
+
+````{tab} Windows
+   ```text
+   $env:SPHINX_BUILDER = "linkcheck"
+   build.bat doc
+   ```
+````
+`````
+
 ## Cleaning up Build Files
 
 Files that have been generated via the above steps can be removed by invoking the respective commands with the command line argument `--clean`. A more detailed description of how to use this command line argument can be found in the section {ref}`compilation`.
