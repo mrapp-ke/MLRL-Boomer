@@ -32,7 +32,7 @@ It is not necessary to execute the steps below one after the other. Instead, run
 
 Whenever the documentation was updated or any C++ or Python source files have been modified, the above command must be run again in order to generate an updated version of the documentation that reflects the respective changes.
 
-## Building the C++ Apidocs
+## Building the C++ API Documentation
 
 By running the following command, the C++ API documentation is generated via Doxygen:
 
@@ -56,7 +56,7 @@ By running the following command, the C++ API documentation is generated via Dox
 
 The resulting HTML files should be located in the directory `doc/developer_guide/api/cpp/`.
 
-## Building the Python Apidocs
+## Building the Python API Documentation
 
 Similarly, the following command generates an API documentation from the project's Python code via [sphinx-apidoc](https://www.sphinx-doc.org/en/master/man/sphinx-apidoc.html):
 
