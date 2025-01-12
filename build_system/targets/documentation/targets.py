@@ -4,12 +4,13 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements targets for generating documentations.
 """
 from abc import ABC
-from os import path
+from os import environ, path
 from typing import Dict, List, Optional
 
 from core.build_unit import BuildUnit
 from core.modules import Module
 from core.targets import BuildTarget
+from util.env import get_env
 from util.io import TextFile
 from util.log import Log
 
@@ -77,12 +78,16 @@ class BuildDocumentation(BuildTarget.Runnable):
     Generates documentations.
     """
 
+    ENV_SPHINX_BUILDER = 'SPHINX_BUILDER'
+
     def __init__(self):
         super().__init__(SphinxModule.Filter())
 
     def run(self, build_unit: BuildUnit, module: Module):
-        Log.info('Generating documentation for directory "%s"...', module.root_directory)
-        SphinxBuild(build_unit, module).run()
+        sphinx_builder = get_env(environ, self.ENV_SPHINX_BUILDER, default='html')
+        Log.info('Building documentation for directory "%s" (using builder "%s")"...', module.root_directory,
+                 sphinx_builder)
+        SphinxBuild(build_unit, module, builder=sphinx_builder).run()
 
     def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
         return module.find_source_files()
@@ -91,24 +96,5 @@ class BuildDocumentation(BuildTarget.Runnable):
         return [module.output_directory]
 
     def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
-        Log.info('Removing documentation generated for directory "%s"...', module.root_directory)
+        Log.info('Removing documentation for directory "%s"...', module.root_directory)
         return super().get_clean_files(build_unit, module)
-
-
-class CheckLinks(BuildTarget.Runnable):
-    """
-    Checks external links in documentations.
-    """
-
-    def __init__(self):
-        super().__init__(SphinxModule.Filter())
-
-    def run(self, build_unit: BuildUnit, module: Module):
-        Log.info('Checking external links in documentation for directory "%s"...', module.root_directory)
-        SphinxBuild(build_unit, module, builder='linkcheck').run()
-
-    def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
-        return module.find_source_files()
-
-    def get_output_files(self, _: BuildUnit, module: Module) -> List[str]:
-        return [module.output_directory]
