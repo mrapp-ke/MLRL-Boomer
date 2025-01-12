@@ -3,7 +3,6 @@
  */
 #pragma once
 
-#include "mlrl/common/data/triple.hpp"
 #include "mlrl/common/data/tuple.hpp"
 #include "mlrl/common/data/view_matrix_sparse_set.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
@@ -12,12 +11,191 @@
 namespace boosting {
 
     /**
+     * An individual label space statistic that consists of a gradient, a Hessian and a weight.
+     *
+     * @tparam T The type of the gradient and Hessian
+     */
+    template<typename T>
+    struct SparseStatistic final {
+        public:
+
+            SparseStatistic() {}
+
+            /**
+             * @param gradient  The gradient
+             * @param hessian   The Hessian
+             * @param weight    The weight
+             */
+            SparseStatistic(T gradient, T hessian, T weight) : gradient(gradient), hessian(hessian), weight(weight) {}
+
+            /**
+             * The gradient.
+             */
+            T gradient;
+
+            /**
+             * The Hessian.
+             */
+            T hessian;
+
+            /**
+             * The weight.
+             */
+            T weight;
+
+            /**
+             * Assigns a specific value to the gradient, Hessian and weight of this statistic.
+             *
+             * @param rhs   A reference to the value to be assigned
+             * @return      A reference to the modified statistic
+             */
+            SparseStatistic<T>& operator=(const T& rhs) {
+                gradient = rhs;
+                hessian = rhs;
+                weight = rhs;
+                return *this;
+            }
+
+            /**
+             * Adds a specific value to the gradient, Hessian and weight of this statistic.
+             *
+             * @param rhs   A reference to the value to be added
+             * @return      A reference to the modified statistic
+             */
+            SparseStatistic<T>& operator+=(const T& rhs) {
+                gradient += rhs;
+                hessian += rhs;
+                weight += rhs;
+                return *this;
+            }
+
+            /**
+             * Creates and returns a new statistic that results from adding a specific value to the gradient, Hessian
+             * and weight of an existing statistic.
+             *
+             * @param lhs   The original statistic
+             * @param rhs   A reference to the value to be added
+             * @return      The statistic that has been created
+             */
+            friend SparseStatistic<T> operator+(SparseStatistic<T> lhs, const T& rhs) {
+                lhs += rhs;
+                return lhs;
+            }
+
+            /**
+             * Adds the gradient, Hessian and weight of a given statistic to the gradient, Hessian and weight of this
+             * statistic,
+             *
+             * @param rhs   A reference to the statistic, whose gradient, Hessian and weight should be added
+             * @return      A reference to the modified statistic
+             */
+            SparseStatistic<T>& operator+=(const SparseStatistic<T>& rhs) {
+                gradient += rhs.gradient;
+                hessian += rhs.hessian;
+                weight += rhs.weight;
+                return *this;
+            }
+
+            /**
+             * Creates and returns a new statistic that results from adding the gradient, Hessian and weight of a
+             * specific statistic to the gradient, Hessian and weight of an existing statistic.
+             *
+             * @param lhs   The original statistic
+             * @param rhs   A reference to the statistic, whose gradient, Hessian and weight should be added
+             * @return      The statistic that has been created
+             */
+            friend SparseStatistic<T> operator+(SparseStatistic<T> lhs, const SparseStatistic<T>& rhs) {
+                lhs += rhs;
+                return lhs;
+            }
+
+            /**
+             * Subtracts a specific value from the gradient, Hessian and weight of this statistic.
+             *
+             * @param rhs   A reference to the value to be subtracted
+             * @return      A reference to the modified statistic
+             */
+            SparseStatistic<T>& operator-=(const T& rhs) {
+                gradient -= rhs;
+                hessian -= rhs;
+                weight -= rhs;
+                return *this;
+            }
+
+            /**
+             * Creates and returns a new statistic that results from subtracting a specific value from the gradient,
+             * Hessian and weight of an existing statistic.
+             *
+             * @param lhs   The original statistic
+             * @param rhs   A reference to the value to be subtracted
+             * @return      The statistic that has been created
+             */
+            friend SparseStatistic<T> operator-(SparseStatistic<T> lhs, const T& rhs) {
+                lhs -= rhs;
+                return lhs;
+            }
+
+            /**
+             * Subtracts the gradient, Hessian and weight of a given statistic from the gradient, Hessian and weight of
+             * this statistic.
+             *
+             * @param rhs   A reference to the statistic, whose gradient, Hessian and weight should be subtracted
+             * @return      A reference to the modified statistic
+             */
+            SparseStatistic<T>& operator-=(const SparseStatistic<T>& rhs) {
+                gradient -= rhs.gradient;
+                hessian -= rhs.hessian;
+                weight -= rhs.weight;
+                return *this;
+            }
+
+            /**
+             * Creates and returns a new statistic that results from subtracting the gradient, Hessian and weight of a
+             * specific statistic from the gradient, Hessian and weight of an existing statistic.
+             *
+             * @param lhs   The original statistic
+             * @param rhs   A reference to the value to be subtracted
+             * @return      The statistic that has been created
+             */
+            friend SparseStatistic<T> operator-(SparseStatistic<T> lhs, const SparseStatistic<T>& rhs) {
+                lhs -= rhs;
+                return lhs;
+            }
+
+            /**
+             * Multiplies the gradient, Hessian and weight of this statistic with a specific value.
+             *
+             * @param rhs   A reference to the value to be multiplied by
+             * @return      A reference to the modified statistic
+             */
+            SparseStatistic<T>& operator*=(const T& rhs) {
+                gradient *= rhs;
+                hessian *= rhs;
+                weight *= rhs;
+                return *this;
+            }
+
+            /**
+             * Creates and returns a new statistic that results from multiplying the gradient, Hessian and weight of an
+             * existing statistic with a specific value.
+             *
+             * @param lhs   The original statistic
+             * @param rhs   A reference to the value to be multiplied by
+             * @return      The statistic that has been created
+             */
+            friend SparseStatistic<T> operator*(SparseStatistic<T> lhs, const T& rhs) {
+                lhs *= rhs;
+                return lhs;
+            }
+    };
+
+    /**
      * An one-dimensional vector that stores aggregated gradients and Hessians that have been calculated using a
      * decomposable loss function in a C-contiguous array. For each element in the vector a single gradient and Hessian,
      * as well as the sums of the weights of the aggregated gradients and Hessians, is stored.
      */
     class SparseDecomposableStatisticVector final
-        : public ClearableViewDecorator<VectorDecorator<AllocatedVector<Triple<float64>>>> {
+        : public ClearableViewDecorator<VectorDecorator<AllocatedVector<SparseStatistic<float64>>>> {
         private:
 
             /**
@@ -27,7 +205,7 @@ namespace boosting {
             class ConstIterator final {
                 private:
 
-                    View<Triple<float64>>::const_iterator iterator_;
+                    View<SparseStatistic<float64>>::const_iterator iterator_;
 
                     const float64 sumOfWeights_;
 
@@ -38,7 +216,7 @@ namespace boosting {
                      *                      `SparseDecomposableStatisticVector`
                      * @param sumOfWeights  The sum of the weights of all statistics that have been added to the vector
                      */
-                    ConstIterator(View<Triple<float64>>::const_iterator iterator, float64 sumOfWeights);
+                    ConstIterator(View<SparseStatistic<float64>>::const_iterator iterator, float64 sumOfWeights);
 
                     /**
                      * The type that is used to represent the difference between two iterators.
