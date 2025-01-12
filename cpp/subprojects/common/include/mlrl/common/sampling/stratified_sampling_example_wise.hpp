@@ -35,7 +35,7 @@ class ExampleWiseStratification final {
          * @param labelMatrix   A reference to an object of template type `LabelMatrix` that provides random or row-wise
          *                      access to the labels of the training examples
          * @param indicesBegin  An iterator to the beginning of the indices of the examples that should be considered
-         * @param indicesEnd    An iterator to the end of the indices of hte examples that should be considered
+         * @param indicesEnd    An iterator to the end of the indices of the examples that should be considered
          */
         ExampleWiseStratification(std::unique_ptr<RNG> rngPtr, const LabelMatrix& labelMatrix,
                                   IndexIterator indicesBegin, IndexIterator indicesEnd);
