@@ -16,9 +16,9 @@ template<typename Decorator>
 static inline std::optional<NumericalFeatureVector> createFilteredNumericalFeatureVectorView(
   const Decorator& decorator, std::unique_ptr<IFeatureVector>& existing, const Interval& interval) {
     const NumericalFeatureVector& featureVector = decorator.getView().firstView;
-    Tuple<uint32> tuple = getStartAndEndOfOpenInterval(interval, featureVector.numElements);
-    uint32 start = tuple.first;
-    uint32 end = tuple.second;
+    std::pair<uint32, uint32> pair = getStartAndEndOfOpenInterval(interval, featureVector.numElements);
+    uint32 start = pair.first;
+    uint32 end = pair.second;
     uint32 numFilteredElements = end - start;
 
     if (numFilteredElements > 0

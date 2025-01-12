@@ -3,7 +3,9 @@
  */
 #pragma once
 
-#include "mlrl/common/data/tuple.hpp"
+#include "mlrl/common/data/types.hpp"
+
+#include <utility>
 
 /**
  * Specifies the boundaries of an interval that includes/excludes certain elements in a vector.
@@ -58,28 +60,29 @@ struct Interval {
  *
  * @param interval  A reference to an object of type `Interval`
  * @param maxIndex  The maximum index of an open interval
- * @return          A `Tuple` that stores the start and end index
+ * @return          The start and end index
  */
-static inline Tuple<uint32> getStartAndEndOfOpenInterval(const Interval& interval, uint32 maxIndex) {
-    Tuple<uint32> tuple;
+static inline std::pair<uint32, uint32> getStartAndEndOfOpenInterval(const Interval& interval, uint32 maxIndex) {
+    uint32 start;
+    uint32 end;
 
     if (interval.inverse) {
         if (interval.start > 0) {
-            tuple.first = 0;
-            tuple.second = interval.start;
+            start = 0;
+            end = interval.start;
         } else {
-            tuple.first = interval.end;
-            tuple.second = maxIndex;
+            start = interval.end;
+            end = maxIndex;
         }
     } else {
-        tuple.first = interval.start;
+        start = interval.start;
 
-        if (tuple.first > 0) {
-            tuple.second = maxIndex;
+        if (start > 0) {
+            end = maxIndex;
         } else {
-            tuple.second = interval.end;
+            end = interval.end;
         }
     }
 
-    return tuple;
+    return std::make_pair(start, end);
 }
