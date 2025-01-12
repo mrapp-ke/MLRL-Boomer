@@ -11,7 +11,7 @@ Unlike pure Python programs, the C++ and Cython source files must be compiled fo
 As a prerequisite, a supported version of Python, a suitable C++ compiler, as well as optional libraries for multi-threading and GPU support, must be available on the host system. The installation of these software components depends on the operating system at hand. In the following, we provide installation instructions for the supported platforms.
 
 ```{tip}
-This project uses [Meson](https://mesonbuild.com/) as a build system for compiling C++ code. If available on the system, Meson automatically utilizes [Ccache](https://ccache.dev/) for caching previous compilations and detecting when the same compilation is being done again. Compared to the runtime without Ccache, where changes are only detected at the level of entire files, usage of this compiler cache can significantly speed up recompilation and therefore is strongly adviced.
+This project uses [Meson](https://mesonbuild.com/) as a build system for compiling C++ code. If available on the system, Meson automatically utilizes [Ccache](https://ccache.dev/) for caching previous compilations and detecting when the same compilation is being done again. Compared to the runtime without Ccache, where changes are only detected at the level of entire files, usage of this compiler cache can significantly speed up recompilation and therefore is strongly advised.
 ```
 
 ````{tab} Linux
@@ -36,7 +36,7 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
    * - **C++ compiler**
      - macOS relies on the [Clang](https://en.wikipedia.org/wiki/Clang) compiler for building C++ code. It is part of the [Xcode](https://developer.apple.com/support/xcode/) developer toolset.
    * - **GoogleTest**
-     - The [GoogleTest](https://github.com/google/googletest) framework must optionally be installed in order to compile the project with {ref}`testing support <testing-support>` enabled. It can easily be installed via [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) by runnig the command `brew install googletest`.
+     - The [GoogleTest](https://github.com/google/googletest) framework must optionally be installed in order to compile the project with {ref}`testing support <testing-support>` enabled. It can easily be installed via [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) by running the command `brew install googletest`.
    * - **OpenMP**
      - If the project should be compiled with {ref}`multi-threading support <multi-threading-support>` enabled, the [OpenMP](https://en.wikipedia.org/wiki/OpenMP) library must be installed. We recommend to install it via [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) by running the command `brew install libomp`.
    * - **OpenCL**
@@ -86,7 +86,7 @@ Whenever any C++, Cython or Python source files have been modified, the above co
 `````
 
 `````{note}
-As shown in the section {ref}`project-structure`, this project is organized in terms of several subprojects. By default, all of these subprojects are built when following the instructions below. However, the environment variable `SUBPROJECTS` may be used to restrict individual steps of the build process, such as the compilation of C++ and Cython code, the assemblage of Python packages, and the generation of apidocs, to a subset of the available subprojects. As shown below, multiple subprojects can be specified as a comma-separated list:
+As shown in the section {ref}`project-structure`, this project is organized in terms of several subprojects. By default, all of these subprojects are built when following the instructions below. However, the environment variable `SUBPROJECTS` may be used to restrict individual steps of the build process, such as the compilation of C++ and Cython code, the assemblage of Python packages, and the generation of API documentations, to a subset of the available subprojects. As shown below, multiple subprojects can be specified as a comma-separated list:
 
 ````{tab} Linux
    ```text
@@ -181,7 +181,7 @@ Once the compilation of the C++ code has completed, the Cython code, which allow
 As a result of executing the above command, the directory `python/build` should have been created. It contains Python extension modules for the respective target platform.
 
 ```{note}
-Instead of performing the previous steps one after the other, the build target `compile` can be specfied instead of `compile_cpp` and `compile_cython` to build the C++ and Cython source files in a single step.
+Instead of performing the previous steps one after the other, the build target `compile` can be specified instead of `compile_cpp` and `compile_cython` to build the C++ and Cython source files in a single step.
 ```
 
 ## Installing Shared Libraries
@@ -286,7 +286,7 @@ After this final step has completed, the Python packages can be used from within
 
 ## Cleaning up Build Files
 
-It is possible to delete the compilation files that result from an individual step of the build process mentioned above by using the command libe argument `--clean` or `-c`. This may be useful if you want to repeat a single or multiple steps of the build process from scratch in case anything went wrong. For example, to delete the C++ compilation files, the following command can be used:
+It is possible to delete the compilation files that result from an individual step of the build process mentioned above by using the command line argument `--clean` or `-c`. This may be useful if you want to repeat a single or multiple steps of the build process from scratch in case anything went wrong. For example, to delete the C++ compilation files, the following command can be used:
 
 ````{tab} Linux
    ```text
