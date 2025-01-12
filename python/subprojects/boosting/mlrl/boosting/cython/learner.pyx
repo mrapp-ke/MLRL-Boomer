@@ -5,6 +5,7 @@ from abc import ABC, abstractmethod
 
 from mlrl.boosting.cython.head_type import DynamicPartialHeadConfig, FixedPartialHeadConfig
 from mlrl.boosting.cython.post_processor import ConstantShrinkageConfig
+from mlrl.boosting.cython.quantization import StochasticQuantizationConfig
 from mlrl.boosting.cython.regularization import ManualRegularizationConfig
 
 
@@ -126,6 +127,37 @@ class L2RegularizationMixin(ABC):
         pass
              
              
+class NoQuantizationMixin(ABC):
+    """
+    Allows to configure a rule learner to not quantize statistics about the quality of predictions for the training
+    examples.
+    """
+
+    @abstractmethod
+    def use_no_quantization(self):
+        """
+        Configures the rule learner to not quantize statistics about the quality of predictions for the training
+        examples.
+        """
+        pass
+
+
+class StochasticQuantizationMixin(ABC):
+    """
+    Allows to configure a rule learner to quantize statistics using a stochastic rounding strategy.
+    """
+
+    @abstractmethod
+    def use_stochastic_quantization(self) -> StochasticQuanizationConfig:
+        """
+        Configures the rule learner to quantize statistics about the quality of predictions for the training examples
+        using a stochastic rounding strategy.
+
+        :return: A `StochasticQuantizationConfig` that allows further configuration of the quantization method
+        """
+        pass
+
+
 class CompleteHeadMixin(ABC):
     """
     Allows to configure a rule learner to induce rules with complete heads that predict for all available outputs.

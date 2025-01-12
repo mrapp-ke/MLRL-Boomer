@@ -2,7 +2,6 @@ project('common', 'cpp', meson_version : '>=1.1')
 
 # Source files
 source_files = [
-    'src/mlrl/common/data/vector_bit.cpp',
     'src/mlrl/common/iterator/iterator_index.cpp',
     'src/mlrl/common/indices/index_vector_complete.cpp',
     'src/mlrl/common/indices/index_vector_partial.cpp',
@@ -102,8 +101,9 @@ source_files = [
 # Test files
 test_files = [
     'test/mlrl/common/data/array.cpp',
-    'test/mlrl/common/data/vector_bit.cpp',
+    'test/mlrl/common/data/vector_bit_binary.cpp',
     'test/mlrl/common/data/vector_dense.cpp',
+    'test/mlrl/common/data/view_vector_bit.cpp',
     'test/mlrl/common/input/feature_binning_equal_frequency.cpp',
     'test/mlrl/common/input/feature_binning_equal_width.cpp',
     'test/mlrl/common/input/feature_type_nominal.cpp',

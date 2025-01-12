@@ -1,7 +1,7 @@
 #include "mlrl/seco/prediction/predictor_binary_output_wise.hpp"
 
 #include "mlrl/common/data/array.hpp"
-#include "mlrl/common/data/vector_bit.hpp"
+#include "mlrl/common/data/vector_bit_binary.hpp"
 #include "mlrl/common/iterator/iterator_forward_non_zero_index.hpp"
 #include "mlrl/common/iterator/iterator_index.hpp"
 #include "mlrl/common/model/head_complete.hpp"
@@ -10,7 +10,7 @@
 
 namespace seco {
 
-    static inline void applyHead(const CompleteHead& head, View<uint8>::iterator iterator, BitVector& mask) {
+    static inline void applyHead(const CompleteHead& head, View<uint8>::iterator iterator, BinaryBitVector& mask) {
         CompleteHead::value_const_iterator valueIterator = head.values_cbegin();
         uint32 numElements = head.getNumElements();
 
@@ -23,7 +23,7 @@ namespace seco {
         }
     }
 
-    static inline void applyHead(const PartialHead& head, View<uint8>::iterator iterator, BitVector& mask) {
+    static inline void applyHead(const PartialHead& head, View<uint8>::iterator iterator, BinaryBitVector& mask) {
         PartialHead::value_const_iterator valueIterator = head.values_cbegin();
         PartialHead::index_const_iterator indexIterator = head.indices_cbegin();
         uint32 numElements = head.getNumElements();
@@ -39,7 +39,7 @@ namespace seco {
         }
     }
 
-    static inline void applyHead(const IHead& head, View<uint8>::iterator scoreIterator, BitVector& mask) {
+    static inline void applyHead(const IHead& head, View<uint8>::iterator scoreIterator, BinaryBitVector& mask) {
         auto completeHeadVisitor = [&](const CompleteHead& head) {
             applyHead(head, scoreIterator, mask);
         };
@@ -54,7 +54,7 @@ namespace seco {
                                                    RuleList::const_iterator rulesEnd,
                                                    CContiguousView<uint8>& predictionMatrix, uint32 exampleIndex,
                                                    uint32 predictionIndex) {
-        BitVector mask(predictionMatrix.numCols, true);
+        BinaryBitVector mask(predictionMatrix.numCols, true);
 
         for (; rulesBegin != rulesEnd; rulesBegin++) {
             const RuleList::Rule& rule = *rulesBegin;
@@ -72,7 +72,7 @@ namespace seco {
                                                    RuleList::const_iterator rulesEnd,
                                                    CContiguousView<uint8>& predictionMatrix, uint32 exampleIndex,
                                                    uint32 predictionIndex) {
-        BitVector mask(predictionMatrix.numCols, true);
+        BinaryBitVector mask(predictionMatrix.numCols, true);
         uint32 numFeatures = featureMatrix.numCols;
         Array<float32> tmpArray1(numFeatures);
         Array<uint32> tmpArray2(numFeatures, true);
