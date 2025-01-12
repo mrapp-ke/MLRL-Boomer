@@ -21,7 +21,7 @@ class MLRLCOMMON_API ICsrRegressionMatrix : virtual public IRowWiseRegressionMat
  * Creates and returns a new object of the type `ICsrRegressionMatrix`.
  *
  * @param values    A pointer to an array of type `float32`, shape `(numDenseElements)`, that stores the values of all
- *                  dense elements exlicitly stored in the matrix
+ *                  dense elements explicitly stored in the matrix
  * @param indices   A pointer to an array of type `uint32`, shape `(numDenseElements)`, that stores the column indices
  *                  of all dense elements explicitly stored in the matrix
  * @param indptr    A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices of the first

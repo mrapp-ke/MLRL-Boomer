@@ -35,7 +35,8 @@ class IPrediction : public IIndexVector {
         /**
          * Post-processes the scores that are stored by this prediction.
          *
-         * @param postProcessor A reference to an object of type `IPostProcessor` that sould be used for post-processing
+         * @param postProcessor A reference to an object of type `IPostProcessor` that should be used for
+         *                      post-processing
          */
         virtual void postProcess(const IPostProcessor& postProcessor) = 0;
 

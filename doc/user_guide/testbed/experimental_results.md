@@ -102,7 +102,7 @@ In cases where the {ref}`evaluation results<output-evaluation-results>` obtained
    ```
 ````
 
-Alternatively, the argument `--store-predictions` can be used to save the predictions, as well as the ground truth, to [.arff](https://waikato.github.io/weka-wiki/formats_and_processing/arff_stable/) files:
+Alternatively, the argument `--store-predictions` can be used to save the predictions, as well as the ground truth, to [ARFF](https://waikato.github.io/weka-wiki/formats_and_processing/arff_stable/) files:
 
 ````{tab} BOOMER
    ```text
@@ -124,7 +124,7 @@ Alternatively, the argument `--store-predictions` can be used to save the predic
 ````
 
 ```{tip}
-Depending on the {ref}`type of predictions<prediction-types>`, the machine learning models used in an experiment are supposed to provide, the predictions stored in the resulting output files are either binary values (if binary predictions are provided), or real values (if scores or proability estimates are provided). When working with real-valued predictions, the option ``decimals`` may be supplied to the arguments ``--print-predictions`` and ``--store-predictions`` to specify the number of decimals that should be included in the output (see {ref}`here<arguments-predictions>` for more information).
+Depending on the {ref}`type of predictions<prediction-types>`, the machine learning models used in an experiment are supposed to provide, the predictions stored in the resulting output files are either binary values (if binary predictions are provided), or real values (if scores or probability estimates are provided). When working with real-valued predictions, the option ``decimals`` may be supplied to the arguments ``--print-predictions`` and ``--store-predictions`` to specify the number of decimals that should be included in the output (see {ref}`here<arguments-predictions>` for more information).
 ```
 
 When using {ref}`train-test splits<train-test-split>`, a single model is trained and queried for predictions for the test set. These predictions are written into a single output file. When {ref}`evaluating on the training data<evaluating-training-data>`, predictions are also obtained for the training set and written into an additional output file. The names of the output files indicate whether the predictions have been obtained for the training or test set, respectively:
@@ -266,7 +266,7 @@ If you prefer to write the statistics into a [.csv](https://en.wikipedia.org/wik
 ````
 
 ```{tip}
-As shown {ref}`here<arguments-data-characteristics>`, the arguments ``--print-data-characteristics`` and ``--store-data-characteristics`` come with several options that allow to exclude specific statistics from the respective output. It is also possible to specify whether percentages should be prefered for presenting the statistics. Additionally, the number of decimals to be included in the output can be limited.
+As shown {ref}`here<arguments-data-characteristics>`, the arguments ``--print-data-characteristics`` and ``--store-data-characteristics`` come with several options that allow to exclude specific statistics from the respective output. It is also possible to specify whether percentages should be preferred for presenting the statistics. Additionally, the number of decimals to be included in the output can be limited.
 ```
 
 The statistics provided by the previous commands are obtained on the training data and therefore depend on the strategy used for splitting a dataset into training and test sets. If {ref}`train-test splits<train-test-split>` are used, a single training set is used and its characteristics are saved to a file:
@@ -498,7 +498,7 @@ If not configured otherwise, the first rule in a model is a *default rule*. Unli
 {} => (output1 = -1.45, output2 = 1.45, output3 = -1.89, output4 = -1.94)
 ```
 
-In regression models, the predictions of individual rules sum up to the regression scores predicted by the overall model. In classification models, a rule's prediction for a particular label is positive, if most examples it covers are associated with the respective label, otherwise it is negative. The ratio between the number of examples that are associated with a label, and those that are not, affects the absolute size of the default prediction. Large values indicate a stong preference towards predicting a particular label as relevant or irrelevant, depending on the sign.
+In regression models, the predictions of individual rules sum up to the regression scores predicted by the overall model. In classification models, a rule's prediction for a particular label is positive, if most examples it covers are associated with the respective label, otherwise it is negative. The ratio between the number of examples that are associated with a label, and those that are not, affects the absolute size of the default prediction. Large values indicate a strong preference towards predicting a particular label as relevant or irrelevant, depending on the sign.
 
 The remaining rules only apply to examples that satisfy all the conditions in their bodies. For example, the body of the following rule consists of two conditions:
 
