@@ -1,6 +1,5 @@
 #include "mlrl/seco/rule_evaluation/rule_evaluation_decomposable_partial.hpp"
 
-#include "mlrl/common/data/tuple.hpp"
 #include "mlrl/common/data/vector_sparse_array.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 #include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
@@ -8,6 +7,7 @@
 #include "rule_evaluation_decomposable_common.hpp"
 
 #include <algorithm>
+#include <utility>
 
 namespace seco {
 
@@ -93,7 +93,7 @@ namespace seco {
 
             DenseScoreVector<PartialIndexVector> scoreVector_;
 
-            SparseArrayVector<Tuple<float64>> sortedVector_;
+            SparseArrayVector<std::pair<float64, bool>> sortedVector_;
 
             const std::unique_ptr<IHeuristic> heuristicPtr_;
 
@@ -125,22 +125,23 @@ namespace seco {
                 DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
                 auto labelIterator =
                   createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
-                SparseArrayVector<Tuple<float64>>::iterator sortedIterator = sortedVector_.begin();
+                SparseArrayVector<std::pair<float64, bool>>::iterator sortedIterator = sortedVector_.begin();
                 uint32 previousIndex = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
                     uint32 index = indexIterator[i];
                     std::advance(labelIterator, index - previousIndex);
-                    IndexedValue<Tuple<float64>>& entry = sortedIterator[i];
-                    Tuple<float64>& tuple = entry.value;
+                    IndexedValue<std::pair<float64, bool>>& entry = sortedIterator[i];
+                    std::pair<float64, bool>& pair = entry.value;
                     entry.index = index;
-                    tuple.first = calculateOutputWiseQuality(totalIterator[index], coveredIterator[i], *heuristicPtr_);
-                    tuple.second = (float64) !(*labelIterator);
+                    pair.first = calculateOutputWiseQuality(totalIterator[index], coveredIterator[i], *heuristicPtr_);
+                    pair.second = !(*labelIterator);
                     previousIndex = index;
                 }
 
                 std::sort(sortedIterator, sortedVector_.end(),
-                          [=](const IndexedValue<Tuple<float64>>& a, const IndexedValue<Tuple<float64>>& b) {
+                          [=](const IndexedValue<std::pair<float64, bool>>& a,
+                              const IndexedValue<std::pair<float64, bool>>& b) {
                     return a.value.first > b.value.first;
                 });
 
@@ -175,9 +176,9 @@ namespace seco {
                 PartialIndexVector::iterator predictedIndexIterator = indexVector_.begin();
 
                 for (uint32 i = 0; i < bestNumPredictions; i++) {
-                    const IndexedValue<Tuple<float64>>& entry = sortedIterator[i];
+                    const IndexedValue<std::pair<float64, bool>>& entry = sortedIterator[i];
                     predictedIndexIterator[i] = entry.index;
-                    valueIterator[i] = entry.value.second;
+                    valueIterator[i] = entry.value.second ? 1 : 0;
                 }
 
                 return scoreVector_;
