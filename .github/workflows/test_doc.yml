@@ -122,4 +122,4 @@ jobs:
       - name: Install Roboto font
         run: sudo apt install -y fonts-roboto
       - name: Generate Documentation
-        run: GPU_SUPPORT=disabled ./build doc_check_links
+        run: GPU_SUPPORT=disabled SPHINX_BUILDER=linkcheck ./build doc
