@@ -21,7 +21,7 @@ class MLRLCOMMON_API CompositeMatrix : public Matrix,
 
         /**
          * @param firstView     The first view, the matrix should be backed by
-         * @param secondView    The second view, the matrix shoul be backed by
+         * @param secondView    The second view, the matrix should be backed by
          * @param numRows       The number of rows in the matrix
          * @param numCols       The number of columns in the matrix
          */
