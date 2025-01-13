@@ -19,7 +19,7 @@ namespace boosting {
      * C-contiguous arrays.
      */
     class DenseDecomposableStatisticMatrix final
-        : public ClearableViewDecorator<MatrixDecorator<AllocatedCContiguousView<Tuple<float64>>>> {
+        : public ClearableViewDecorator<MatrixDecorator<AllocatedCContiguousView<Statistic<float64>>>> {
         public:
 
             /**
@@ -27,8 +27,8 @@ namespace boosting {
              * @param numCols   The number of columns in the matrix
              */
             DenseDecomposableStatisticMatrix(uint32 numRows, uint32 numCols)
-                : ClearableViewDecorator<MatrixDecorator<AllocatedCContiguousView<Tuple<float64>>>>(
-                    AllocatedCContiguousView<Tuple<float64>>(numRows, numCols)) {}
+                : ClearableViewDecorator<MatrixDecorator<AllocatedCContiguousView<Statistic<float64>>>>(
+                    AllocatedCContiguousView<Statistic<float64>>(numRows, numCols)) {}
 
             /**
              * Adds all gradients and Hessians in a vector to a specific row of this matrix. The gradients and Hessians
@@ -39,8 +39,8 @@ namespace boosting {
              * @param end       An iterator to the end of the vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToRow(uint32 row, View<Tuple<float64>>::const_iterator begin,
-                          View<Tuple<float64>>::const_iterator end, uint32 weight) {
+            void addToRow(uint32 row, View<Statistic<float64>>::const_iterator begin,
+                          View<Statistic<float64>>::const_iterator end, uint32 weight) {
                 util::addToViewWeighted(this->view.values_begin(row), begin, this->getNumCols(), weight);
             }
     };
