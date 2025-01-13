@@ -67,15 +67,15 @@ namespace boosting {
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
-                    const Tuple<float64>& tuple = statisticIterator[i];
-                    float64 score = calculateOutputWiseScore(tuple.first, tuple.second, l1RegularizationWeight_,
-                                                             l2RegularizationWeight_);
+                    const Statistic<float64>& statistic = statisticIterator[i];
+                    float64 score = calculateOutputWiseScore(statistic.gradient, statistic.hessian,
+                                                             l1RegularizationWeight_, l2RegularizationWeight_);
 
                     if (calculateWeightedScore(score, minAbsScore, exponent_) >= threshold) {
                         indexIterator[n] = outputIndexIterator[i];
                         valueIterator[n] = score;
-                        quality += calculateOutputWiseQuality(score, tuple.first, tuple.second, l1RegularizationWeight_,
-                                                              l2RegularizationWeight_);
+                        quality += calculateOutputWiseQuality(score, statistic.gradient, statistic.hessian,
+                                                              l1RegularizationWeight_, l2RegularizationWeight_);
                         n++;
                     }
                 }

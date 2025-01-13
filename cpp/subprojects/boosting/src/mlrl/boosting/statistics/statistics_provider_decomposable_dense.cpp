@@ -20,7 +20,7 @@ namespace boosting {
         const Loss* lossRawPtr = lossPtr.get();
         const OutputMatrix* outputMatrixPtr = &outputMatrix;
         const CContiguousView<float64>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
-        CContiguousView<Tuple<float64>>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
+        CContiguousView<Statistic<float64>>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(outputMatrixPtr) \

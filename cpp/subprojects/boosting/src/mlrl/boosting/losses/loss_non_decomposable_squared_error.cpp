@@ -15,7 +15,7 @@ namespace boosting {
     template<typename GroundTruthIterator>
     static inline void updateDecomposableStatisticsInternally(
       View<float64>::const_iterator scoreIterator, GroundTruthIterator groundTruthIterator,
-      View<Tuple<float64>>::iterator statisticIterator, uint32 numOutputs,
+      View<Statistic<float64>>::iterator statisticIterator, uint32 numOutputs,
       GroundTruthConversionFunction<GroundTruthIterator> groundTruthConversionFunction) {
         GroundTruthIterator groundTruthIterator2 = groundTruthIterator;
 
@@ -29,7 +29,7 @@ namespace boosting {
             bool trueLabel = *groundTruthIterator;
             float64 expectedScore = trueLabel ? 1 : -1;
             float64 x = (predictedScore * predictedScore) + (-2 * expectedScore * predictedScore) + 1;
-            statisticIterator[i].first = x;  // Temporarily store `x` in the array of gradients
+            statisticIterator[i].gradient = x;  // Temporarily store `x` in the array of gradients
             denominator += x;
             groundTruthIterator++;
         }
@@ -45,15 +45,15 @@ namespace boosting {
             float64 predictedScore = scoreIterator[i];
             bool trueLabel = *groundTruthIterator2;
             float64 expectedScore = trueLabel ? 1 : -1;
-            Tuple<float64>& tuple = statisticIterator[i];
-            float64 x = tuple.first;
+            Statistic<float64>& statistic = statisticIterator[i];
+            float64 x = statistic.gradient;
 
             // Calculate the gradient as `(predictedScore_i - expectedScore_i) / sqrt(x_1 + x_2 + ...)`...
-            tuple.first = util::divideOrZero<float64>(predictedScore - expectedScore, denominatorGradient);
+            statistic.gradient = util::divideOrZero<float64>(predictedScore - expectedScore, denominatorGradient);
 
             // Calculate the Hessian on the diagonal of the Hessian matrix as
             // `(x_1 + ... + x_i-1 + x_i+1 + ...) / (x_1 + x_2 + ...)^1.5`...
-            tuple.second = util::divideOrZero<float64>(denominator - x, denominatorHessian);
+            statistic.hessian = util::divideOrZero<float64>(denominator - x, denominatorHessian);
             groundTruthIterator2++;
         }
     }
@@ -156,33 +156,30 @@ namespace boosting {
                                                   public INonDecomposableRegressionLoss {
         public:
 
-            virtual void updateDecomposableStatistics(uint32 exampleIndex,
-                                                      const CContiguousView<const uint8>& labelMatrix,
-                                                      const CContiguousView<float64>& scoreMatrix,
-                                                      CompleteIndexVector::const_iterator indicesBegin,
-                                                      CompleteIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const override {
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+              const CContiguousView<float64>& scoreMatrix, CompleteIndexVector::const_iterator indicesBegin,
+              CompleteIndexVector::const_iterator indicesEnd,
+              CContiguousView<Statistic<float64>>& statisticView) const override {
                 updateDecomposableStatisticsInternally(
                   scoreMatrix.values_cbegin(exampleIndex), labelMatrix.values_cbegin(exampleIndex),
                   statisticView.values_begin(exampleIndex), labelMatrix.numCols, &binaryConversionFunction);
             }
 
-            virtual void updateDecomposableStatistics(uint32 exampleIndex,
-                                                      const CContiguousView<const uint8>& labelMatrix,
-                                                      const CContiguousView<float64>& scoreMatrix,
-                                                      PartialIndexVector::const_iterator indicesBegin,
-                                                      PartialIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const override {
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+              const CContiguousView<float64>& scoreMatrix, PartialIndexVector::const_iterator indicesBegin,
+              PartialIndexVector::const_iterator indicesEnd,
+              CContiguousView<Statistic<float64>>& statisticView) const override {
                 updateDecomposableStatisticsInternally(
                   scoreMatrix.values_cbegin(exampleIndex), labelMatrix.values_cbegin(exampleIndex),
                   statisticView.values_begin(exampleIndex), labelMatrix.numCols, &binaryConversionFunction);
             }
 
-            virtual void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                      const CContiguousView<float64>& scoreMatrix,
-                                                      CompleteIndexVector::const_iterator indicesBegin,
-                                                      CompleteIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const override {
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<float64>& scoreMatrix,
+              CompleteIndexVector::const_iterator indicesBegin, CompleteIndexVector::const_iterator indicesEnd,
+              CContiguousView<Statistic<float64>>& statisticView) const override {
                 auto groundTruthIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                              labelMatrix.indices_cend(exampleIndex));
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), groundTruthIterator,
@@ -190,11 +187,10 @@ namespace boosting {
                                                        &binaryConversionFunction);
             }
 
-            virtual void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                      const CContiguousView<float64>& scoreMatrix,
-                                                      PartialIndexVector::const_iterator indicesBegin,
-                                                      PartialIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const override {
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<float64>& scoreMatrix,
+              PartialIndexVector::const_iterator indicesBegin, PartialIndexVector::const_iterator indicesEnd,
+              CContiguousView<Statistic<float64>>& statisticView) const override {
                 auto groundTruthIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                              labelMatrix.indices_cend(exampleIndex));
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), groundTruthIterator,
@@ -207,7 +203,7 @@ namespace boosting {
                                               const CContiguousView<float64>& scoreMatrix,
                                               CompleteIndexVector::const_iterator indicesBegin,
                                               CompleteIndexVector::const_iterator indicesEnd,
-                                              CContiguousView<Tuple<float64>>& statisticView) const override {
+                                              CContiguousView<Statistic<float64>>& statisticView) const override {
                 updateDecomposableStatisticsInternally(
                   scoreMatrix.values_cbegin(exampleIndex), regressionMatrix.values_cbegin(exampleIndex),
                   statisticView.values_begin(exampleIndex), regressionMatrix.numCols, &scoreConversionFunction);
@@ -218,7 +214,7 @@ namespace boosting {
                                               const CContiguousView<float64>& scoreMatrix,
                                               PartialIndexVector::const_iterator indicesBegin,
                                               PartialIndexVector::const_iterator indicesEnd,
-                                              CContiguousView<Tuple<float64>>& statisticView) const override {
+                                              CContiguousView<Statistic<float64>>& statisticView) const override {
                 updateDecomposableStatisticsInternally(
                   scoreMatrix.values_cbegin(exampleIndex), regressionMatrix.values_cbegin(exampleIndex),
                   statisticView.values_begin(exampleIndex), regressionMatrix.numCols, &binaryConversionFunction);
@@ -228,7 +224,7 @@ namespace boosting {
                                               const CContiguousView<float64>& scoreMatrix,
                                               CompleteIndexVector::const_iterator indicesBegin,
                                               CompleteIndexVector::const_iterator indicesEnd,
-                                              CContiguousView<Tuple<float64>>& statisticView) const override {
+                                              CContiguousView<Statistic<float64>>& statisticView) const override {
                 auto groundTruthIterator = createSparseForwardIterator(
                   regressionMatrix.indices_cbegin(exampleIndex), regressionMatrix.indices_cend(exampleIndex),
                   regressionMatrix.values_cbegin(exampleIndex), regressionMatrix.values_cend(exampleIndex));
@@ -241,7 +237,7 @@ namespace boosting {
                                               const CContiguousView<float64>& scoreMatrix,
                                               PartialIndexVector::const_iterator indicesBegin,
                                               PartialIndexVector::const_iterator indicesEnd,
-                                              CContiguousView<Tuple<float64>>& statisticView) const override {
+                                              CContiguousView<Statistic<float64>>& statisticView) const override {
                 auto groundTruthIterator = createSparseForwardIterator(
                   regressionMatrix.indices_cbegin(exampleIndex), regressionMatrix.indices_cend(exampleIndex),
                   regressionMatrix.values_cbegin(exampleIndex), regressionMatrix.values_cend(exampleIndex));

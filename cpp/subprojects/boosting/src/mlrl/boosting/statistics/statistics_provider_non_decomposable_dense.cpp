@@ -112,7 +112,7 @@ namespace boosting {
                 uint32 numCols = this->statisticMatrixPtr_->getNumCols();
                 std::unique_ptr<DenseDecomposableStatisticMatrix> decomposableStatisticMatrixPtr =
                   std::make_unique<DenseDecomposableStatisticMatrix>(numRows, numCols);
-                CContiguousView<Tuple<float64>>* decomposableStatisticMatrixRawPtr =
+                CContiguousView<Statistic<float64>>* decomposableStatisticMatrixRawPtr =
                   &decomposableStatisticMatrixPtr->getView();
                 DenseNonDecomposableStatisticView* NonDecomposableStatisticViewRawPtr =
                   &this->statisticMatrixPtr_->getView();
@@ -123,7 +123,7 @@ namespace boosting {
       schedule(dynamic) num_threads(numThreads)
 #endif
                 for (int64 i = 0; i < numRows; i++) {
-                    CContiguousView<Tuple<float64>>::value_iterator iterator =
+                    CContiguousView<Statistic<float64>>::value_iterator iterator =
                       decomposableStatisticMatrixRawPtr->values_begin(i);
                     DenseNonDecomposableStatisticView::gradient_const_iterator gradientIterator =
                       NonDecomposableStatisticViewRawPtr->gradients_cbegin(i);
@@ -131,9 +131,9 @@ namespace boosting {
                       NonDecomposableStatisticViewRawPtr->hessians_diagonal_cbegin(i);
 
                     for (uint32 j = 0; j < numCols; j++) {
-                        Tuple<float64>& tuple = iterator[j];
-                        tuple.first = gradientIterator[j];
-                        tuple.second = hessianIterator[j];
+                        Statistic<float64>& statistic = iterator[j];
+                        statistic.gradient = gradientIterator[j];
+                        statistic.hessian = hessianIterator[j];
                     }
                 }
 

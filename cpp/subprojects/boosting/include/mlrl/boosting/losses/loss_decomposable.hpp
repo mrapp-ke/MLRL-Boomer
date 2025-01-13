@@ -3,8 +3,8 @@
  */
 #pragma once
 
+#include "mlrl/boosting/data/statistic.hpp"
 #include "mlrl/boosting/losses/loss.hpp"
-#include "mlrl/common/data/tuple.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/data/view_matrix_csr.hpp"
 #include "mlrl/common/data/view_matrix_csr_binary.hpp"
@@ -42,7 +42,7 @@ namespace boosting {
                                                       const CContiguousView<float64>& scoreMatrix,
                                                       CompleteIndexVector::const_iterator indicesBegin,
                                                       CompleteIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const = 0;
+                                                      CContiguousView<Statistic<float64>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -62,7 +62,7 @@ namespace boosting {
                                                       const CContiguousView<float64>& scoreMatrix,
                                                       PartialIndexVector::const_iterator indicesBegin,
                                                       PartialIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const = 0;
+                                                      CContiguousView<Statistic<float64>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -81,7 +81,7 @@ namespace boosting {
                                                       const CContiguousView<float64>& scoreMatrix,
                                                       CompleteIndexVector::const_iterator indicesBegin,
                                                       CompleteIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const = 0;
+                                                      CContiguousView<Statistic<float64>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -100,7 +100,7 @@ namespace boosting {
                                                       const CContiguousView<float64>& scoreMatrix,
                                                       PartialIndexVector::const_iterator indicesBegin,
                                                       PartialIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const = 0;
+                                                      CContiguousView<Statistic<float64>>& statisticView) const = 0;
     };
 
     /**
@@ -130,7 +130,7 @@ namespace boosting {
                                                       const CContiguousView<float64>& scoreMatrix,
                                                       CompleteIndexVector::const_iterator indicesBegin,
                                                       CompleteIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const = 0;
+                                                      CContiguousView<Statistic<float64>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the outputs, whose indices
@@ -150,7 +150,7 @@ namespace boosting {
                                                       const CContiguousView<float64>& scoreMatrix,
                                                       PartialIndexVector::const_iterator indicesBegin,
                                                       PartialIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const = 0;
+                                                      CContiguousView<Statistic<float64>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the outputs, whose indices
@@ -170,7 +170,7 @@ namespace boosting {
                                                       const CContiguousView<float64>& scoreMatrix,
                                                       CompleteIndexVector::const_iterator indicesBegin,
                                                       CompleteIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const = 0;
+                                                      CContiguousView<Statistic<float64>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the outputs, whose indices
@@ -190,7 +190,7 @@ namespace boosting {
                                                       const CContiguousView<float64>& scoreMatrix,
                                                       PartialIndexVector::const_iterator indicesBegin,
                                                       PartialIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const = 0;
+                                                      CContiguousView<Statistic<float64>>& statisticView) const = 0;
     };
 
     /**

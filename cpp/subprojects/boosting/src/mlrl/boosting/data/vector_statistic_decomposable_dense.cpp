@@ -3,8 +3,8 @@
 namespace boosting {
 
     DenseDecomposableStatisticVector::DenseDecomposableStatisticVector(uint32 numElements, bool init)
-        : ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<Tuple<float64>>>>(
-            AllocatedVector<Tuple<float64>>(numElements, init)) {}
+        : ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<Statistic<float64>>>>(
+            AllocatedVector<Statistic<float64>>(numElements, init)) {}
 
     DenseDecomposableStatisticVector::DenseDecomposableStatisticVector(const DenseDecomposableStatisticVector& other)
         : DenseDecomposableStatisticVector(other.getNumElements()) {
@@ -15,40 +15,41 @@ namespace boosting {
         util::addToView(this->begin(), vector.cbegin(), this->getNumElements());
     }
 
-    void DenseDecomposableStatisticVector::add(const CContiguousView<Tuple<float64>>& view, uint32 row) {
+    void DenseDecomposableStatisticVector::add(const CContiguousView<Statistic<float64>>& view, uint32 row) {
         util::addToView(this->begin(), view.values_cbegin(row), this->getNumElements());
     }
 
-    void DenseDecomposableStatisticVector::add(const CContiguousView<Tuple<float64>>& view, uint32 row, uint32 weight) {
+    void DenseDecomposableStatisticVector::add(const CContiguousView<Statistic<float64>>& view, uint32 row,
+                                               uint32 weight) {
         util::addToViewWeighted(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
     }
 
-    void DenseDecomposableStatisticVector::remove(const CContiguousView<Tuple<float64>>& view, uint32 row) {
+    void DenseDecomposableStatisticVector::remove(const CContiguousView<Statistic<float64>>& view, uint32 row) {
         util::removeFromView(this->begin(), view.values_cbegin(row), this->getNumElements());
     }
 
-    void DenseDecomposableStatisticVector::remove(const CContiguousView<Tuple<float64>>& view, uint32 row,
+    void DenseDecomposableStatisticVector::remove(const CContiguousView<Statistic<float64>>& view, uint32 row,
                                                   uint32 weight) {
         util::removeFromViewWeighted(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
     }
 
-    void DenseDecomposableStatisticVector::addToSubset(const CContiguousView<Tuple<float64>>& view, uint32 row,
+    void DenseDecomposableStatisticVector::addToSubset(const CContiguousView<Statistic<float64>>& view, uint32 row,
                                                        const CompleteIndexVector& indices) {
         util::addToView(this->begin(), view.values_cbegin(row), this->getNumElements());
     }
 
-    void DenseDecomposableStatisticVector::addToSubset(const CContiguousView<Tuple<float64>>& view, uint32 row,
+    void DenseDecomposableStatisticVector::addToSubset(const CContiguousView<Statistic<float64>>& view, uint32 row,
                                                        const PartialIndexVector& indices) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         util::addToView(this->begin(), view.values_cbegin(row), indexIterator, this->getNumElements());
     }
 
-    void DenseDecomposableStatisticVector::addToSubset(const CContiguousView<Tuple<float64>>& view, uint32 row,
+    void DenseDecomposableStatisticVector::addToSubset(const CContiguousView<Statistic<float64>>& view, uint32 row,
                                                        const CompleteIndexVector& indices, uint32 weight) {
         util::addToViewWeighted(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
     }
 
-    void DenseDecomposableStatisticVector::addToSubset(const CContiguousView<Tuple<float64>>& view, uint32 row,
+    void DenseDecomposableStatisticVector::addToSubset(const CContiguousView<Statistic<float64>>& view, uint32 row,
                                                        const PartialIndexVector& indices, uint32 weight) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         util::addToViewWeighted(this->begin(), view.values_cbegin(row), indexIterator, this->getNumElements(), weight);
