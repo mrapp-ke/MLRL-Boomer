@@ -3,8 +3,8 @@
  */
 #pragma once
 
+#include "mlrl/boosting/data/statistic.hpp"
 #include "mlrl/boosting/losses/loss_decomposable.hpp"
-#include "mlrl/common/data/tuple.hpp"
 #include "mlrl/common/data/view_matrix_sparse_set.hpp"
 #include "mlrl/common/measures/measure_evaluation_sparse.hpp"
 
@@ -44,7 +44,7 @@ namespace boosting {
                                                       const SparseSetView<float64>& scoreMatrix,
                                                       CompleteIndexVector::const_iterator indicesBegin,
                                                       CompleteIndexVector::const_iterator indicesEnd,
-                                                      SparseSetView<Tuple<float64>>& statisticView) const = 0;
+                                                      SparseSetView<Statistic<float64>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -64,7 +64,7 @@ namespace boosting {
                                                       const SparseSetView<float64>& scoreMatrix,
                                                       PartialIndexVector::const_iterator indicesBegin,
                                                       PartialIndexVector::const_iterator indicesEnd,
-                                                      SparseSetView<Tuple<float64>>& statisticView) const = 0;
+                                                      SparseSetView<Statistic<float64>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -83,7 +83,7 @@ namespace boosting {
                                                       const SparseSetView<float64>& scoreMatrix,
                                                       CompleteIndexVector::const_iterator indicesBegin,
                                                       CompleteIndexVector::const_iterator indicesEnd,
-                                                      SparseSetView<Tuple<float64>>& statisticView) const = 0;
+                                                      SparseSetView<Statistic<float64>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -102,7 +102,7 @@ namespace boosting {
                                                       const SparseSetView<float64>& scoreMatrix,
                                                       PartialIndexVector::const_iterator indicesBegin,
                                                       PartialIndexVector::const_iterator indicesEnd,
-                                                      SparseSetView<Tuple<float64>>& statisticView) const = 0;
+                                                      SparseSetView<Statistic<float64>>& statisticView) const = 0;
     };
 
     /**

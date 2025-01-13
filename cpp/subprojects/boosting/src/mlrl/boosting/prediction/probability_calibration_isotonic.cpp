@@ -79,7 +79,7 @@ namespace boosting {
                     calibrationModel.addBin(j, marginalProbability, trueProbability);
                 } else {
                     IsotonicProbabilityCalibrationModel::row bins = calibrationModel[j];
-                    Tuple<float64>& firstBin = bins[0];
+                    std::pair<float64, float64>& firstBin = bins[0];
                     uint32 numSparse = numSparsePerLabel[j] + 1;
 
                     if (numSparse > 1) {
@@ -136,7 +136,7 @@ namespace boosting {
 
         for (uint32 i = 0; i < numLabels; i++) {
             IsotonicProbabilityCalibrationModel::row bins = calibrationModel[i];
-            Tuple<float64>& firstBin = bins[0];
+            std::pair<float64, float64>& firstBin = bins[0];
             firstBin.second = (float64) numSparseRelevantPerLabel[i] / (float64) numSparsePerLabel[i];
         }
     }
