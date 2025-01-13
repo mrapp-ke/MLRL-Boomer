@@ -11,7 +11,7 @@ namespace boosting {
         const SparseStatistic<float64>& statistic = iterator_[index];
         float64 gradient = statistic.gradient;
         float64 hessian = statistic.hessian + (sumOfWeights_ - statistic.weight);
-        return Tuple<float64>(gradient, hessian);
+        return Statistic<float64>(gradient, hessian);
     }
 
     SparseDecomposableStatisticVector::ConstIterator::value_type
@@ -19,7 +19,7 @@ namespace boosting {
         const SparseStatistic<float64>& statistic = *iterator_;
         float64 gradient = statistic.gradient;
         float64 hessian = statistic.hessian + (sumOfWeights_ - statistic.weight);
-        return Tuple<float64>(gradient, hessian);
+        return Statistic<float64>(gradient, hessian);
     }
 
     SparseDecomposableStatisticVector::ConstIterator& SparseDecomposableStatisticVector::ConstIterator::operator++() {
@@ -57,63 +57,67 @@ namespace boosting {
         return iterator_ - rhs.iterator_;
     }
 
-    static inline void addToSparseDecomposableStatisticVector(View<SparseStatistic<float64>>::iterator statistics,
-                                                              SparseSetView<Tuple<float64>>::value_const_iterator begin,
-                                                              SparseSetView<Tuple<float64>>::value_const_iterator end) {
+    static inline void addToSparseDecomposableStatisticVector(
+      View<SparseStatistic<float64>>::iterator statistics,
+      SparseSetView<Statistic<float64>>::value_const_iterator begin,
+      SparseSetView<Statistic<float64>>::value_const_iterator end) {
         uint32 numElements = end - begin;
 
         for (uint32 i = 0; i < numElements; i++) {
-            const IndexedValue<Tuple<float64>>& entry = begin[i];
-            const Tuple<float64>& tuple = entry.value;
-            SparseStatistic<float64>& statistic = statistics[entry.index];
-            statistic.gradient += tuple.first;
-            statistic.hessian += tuple.second;
-            statistic.weight += 1;
+            const IndexedValue<Statistic<float64>>& entry = begin[i];
+            const Statistic<float64>& statistic = entry.value;
+            SparseStatistic<float64>& sparseStatistic = statistics[entry.index];
+            sparseStatistic.gradient += statistic.gradient;
+            sparseStatistic.hessian += statistic.hessian;
+            sparseStatistic.weight += 1;
         }
     }
 
     static inline void addToSparseDecomposableStatisticVectorWeighted(
-      View<SparseStatistic<float64>>::iterator statistics, SparseSetView<Tuple<float64>>::value_const_iterator begin,
-      SparseSetView<Tuple<float64>>::value_const_iterator end, uint32 weight) {
+      View<SparseStatistic<float64>>::iterator statistics,
+      SparseSetView<Statistic<float64>>::value_const_iterator begin,
+      SparseSetView<Statistic<float64>>::value_const_iterator end, uint32 weight) {
         uint32 numElements = end - begin;
 
         for (uint32 i = 0; i < numElements; i++) {
-            const IndexedValue<Tuple<float64>>& entry = begin[i];
-            const Tuple<float64>& tuple = entry.value;
-            SparseStatistic<float64>& statistic = statistics[entry.index];
-            statistic.gradient += (tuple.first * weight);
-            statistic.hessian += (tuple.second * weight);
-            statistic.weight += weight;
+            const IndexedValue<Statistic<float64>>& entry = begin[i];
+            const Statistic<float64>& statistic = entry.value;
+            SparseStatistic<float64>& sparseStatistic = statistics[entry.index];
+            sparseStatistic.gradient += (statistic.gradient * weight);
+            sparseStatistic.hessian += (statistic.hessian * weight);
+            sparseStatistic.weight += weight;
         }
     }
 
     static inline void removeFromSparseDecomposableStatisticVector(
-      View<SparseStatistic<float64>>::iterator statistics, SparseSetView<Tuple<float64>>::value_const_iterator begin,
-      SparseSetView<Tuple<float64>>::value_const_iterator end) {
+      View<SparseStatistic<float64>>::iterator statistics,
+      SparseSetView<Statistic<float64>>::value_const_iterator begin,
+      SparseSetView<Statistic<float64>>::value_const_iterator end) {
         uint32 numElements = end - begin;
 
         for (uint32 i = 0; i < numElements; i++) {
-            const IndexedValue<Tuple<float64>>& entry = begin[i];
-            const Tuple<float64>& tuple = entry.value;
-            SparseStatistic<float64>& statistic = statistics[entry.index];
-            statistic.gradient -= tuple.first;
-            statistic.hessian -= tuple.second;
-            statistic.weight -= 1;
+            const IndexedValue<Statistic<float64>>& entry = begin[i];
+            const Statistic<float64>& statistic = entry.value;
+            SparseStatistic<float64>& sparseStatistic = statistics[entry.index];
+            sparseStatistic.gradient -= statistic.gradient;
+            sparseStatistic.hessian -= statistic.hessian;
+            sparseStatistic.weight -= 1;
         }
     }
 
     static inline void removeFromSparseDecomposableStatisticVectorWeighted(
-      View<SparseStatistic<float64>>::iterator statistics, SparseSetView<Tuple<float64>>::value_const_iterator begin,
-      SparseSetView<Tuple<float64>>::value_const_iterator end, uint32 weight) {
+      View<SparseStatistic<float64>>::iterator statistics,
+      SparseSetView<Statistic<float64>>::value_const_iterator begin,
+      SparseSetView<Statistic<float64>>::value_const_iterator end, uint32 weight) {
         uint32 numElements = end - begin;
 
         for (uint32 i = 0; i < numElements; i++) {
-            const IndexedValue<Tuple<float64>>& entry = begin[i];
-            const Tuple<float64>& tuple = entry.value;
-            SparseStatistic<float64>& statistic = statistics[entry.index];
-            statistic.gradient -= (tuple.first * weight);
-            statistic.hessian -= (tuple.second * weight);
-            statistic.weight -= weight;
+            const IndexedValue<Statistic<float64>>& entry = begin[i];
+            const Statistic<float64>& statistic = entry.value;
+            SparseStatistic<float64>& sparseStatistic = statistics[entry.index];
+            sparseStatistic.gradient -= (statistic.gradient * weight);
+            sparseStatistic.hessian -= (statistic.hessian * weight);
+            sparseStatistic.weight -= weight;
         }
     }
 
@@ -141,12 +145,13 @@ namespace boosting {
         util::addToView(this->view.begin(), vector.view.cbegin(), this->getNumElements());
     }
 
-    void SparseDecomposableStatisticVector::add(const SparseSetView<Tuple<float64>>& view, uint32 row) {
+    void SparseDecomposableStatisticVector::add(const SparseSetView<Statistic<float64>>& view, uint32 row) {
         sumOfWeights_ += 1;
         addToSparseDecomposableStatisticVector(this->view.begin(), view.values_cbegin(row), view.values_cend(row));
     }
 
-    void SparseDecomposableStatisticVector::add(const SparseSetView<Tuple<float64>>& view, uint32 row, uint32 weight) {
+    void SparseDecomposableStatisticVector::add(const SparseSetView<Statistic<float64>>& view, uint32 row,
+                                                uint32 weight) {
         if (!isEqualToZero(weight)) {
             sumOfWeights_ += weight;
             addToSparseDecomposableStatisticVectorWeighted(this->view.begin(), view.values_cbegin(row),
@@ -154,12 +159,12 @@ namespace boosting {
         }
     }
 
-    void SparseDecomposableStatisticVector::remove(const SparseSetView<Tuple<float64>>& view, uint32 row) {
+    void SparseDecomposableStatisticVector::remove(const SparseSetView<Statistic<float64>>& view, uint32 row) {
         sumOfWeights_ -= 1;
         removeFromSparseDecomposableStatisticVector(this->view.begin(), view.values_cbegin(row), view.values_cend(row));
     }
 
-    void SparseDecomposableStatisticVector::remove(const SparseSetView<Tuple<float64>>& view, uint32 row,
+    void SparseDecomposableStatisticVector::remove(const SparseSetView<Statistic<float64>>& view, uint32 row,
                                                    uint32 weight) {
         if (!isEqualToZero(weight)) {
             sumOfWeights_ -= weight;
@@ -168,34 +173,34 @@ namespace boosting {
         }
     }
 
-    void SparseDecomposableStatisticVector::addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row,
+    void SparseDecomposableStatisticVector::addToSubset(const SparseSetView<Statistic<float64>>& view, uint32 row,
                                                         const CompleteIndexVector& indices) {
         sumOfWeights_ += 1;
         addToSparseDecomposableStatisticVector(this->view.begin(), view.values_cbegin(row), view.values_cend(row));
     }
 
-    void SparseDecomposableStatisticVector::addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row,
+    void SparseDecomposableStatisticVector::addToSubset(const SparseSetView<Statistic<float64>>& view, uint32 row,
                                                         const PartialIndexVector& indices) {
         sumOfWeights_ += 1;
-        SparseSetView<Tuple<float64>>::const_row viewRow = view[row];
+        SparseSetView<Statistic<float64>>::const_row viewRow = view[row];
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         uint32 numElements = indices.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
             uint32 index = indexIterator[i];
-            const IndexedValue<Tuple<float64>>* entry = viewRow[index];
+            const IndexedValue<Statistic<float64>>* entry = viewRow[index];
 
             if (entry) {
-                const Tuple<float64>& tuple = entry->value;
-                SparseStatistic<float64>& statistic = this->view.begin()[i];
-                statistic.gradient += (tuple.first);
-                statistic.hessian += (tuple.second);
-                statistic.weight += 1;
+                const Statistic<float64>& statistic = entry->value;
+                SparseStatistic<float64>& sparseStatistic = this->view.begin()[i];
+                sparseStatistic.gradient += (statistic.gradient);
+                sparseStatistic.hessian += (statistic.hessian);
+                sparseStatistic.weight += 1;
             }
         }
     }
 
-    void SparseDecomposableStatisticVector::addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row,
+    void SparseDecomposableStatisticVector::addToSubset(const SparseSetView<Statistic<float64>>& view, uint32 row,
                                                         const CompleteIndexVector& indices, uint32 weight) {
         if (!isEqualToZero(weight)) {
             sumOfWeights_ += weight;
@@ -204,24 +209,24 @@ namespace boosting {
         }
     }
 
-    void SparseDecomposableStatisticVector::addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row,
+    void SparseDecomposableStatisticVector::addToSubset(const SparseSetView<Statistic<float64>>& view, uint32 row,
                                                         const PartialIndexVector& indices, uint32 weight) {
         if (!isEqualToZero(weight)) {
             sumOfWeights_ += weight;
-            SparseSetView<Tuple<float64>>::const_row viewRow = view[row];
+            SparseSetView<Statistic<float64>>::const_row viewRow = view[row];
             PartialIndexVector::const_iterator indexIterator = indices.cbegin();
             uint32 numElements = indices.getNumElements();
 
             for (uint32 i = 0; i < numElements; i++) {
                 uint32 index = indexIterator[i];
-                const IndexedValue<Tuple<float64>>* entry = viewRow[index];
+                const IndexedValue<Statistic<float64>>* entry = viewRow[index];
 
                 if (entry) {
-                    const Tuple<float64>& tuple = entry->value;
-                    SparseStatistic<float64>& statistic = this->view.begin()[i];
-                    statistic.gradient += (tuple.first * weight);
-                    statistic.hessian += (tuple.second * weight);
-                    statistic.weight += weight;
+                    const Statistic<float64>& statistic = entry->value;
+                    SparseStatistic<float64>& sparseStatistic = this->view.begin()[i];
+                    sparseStatistic.gradient += (statistic.gradient * weight);
+                    sparseStatistic.hessian += (statistic.hessian * weight);
+                    sparseStatistic.weight += weight;
                 }
             }
         }

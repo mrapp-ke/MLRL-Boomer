@@ -45,15 +45,15 @@ namespace boosting {
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                const Tuple<float64>& firstTuple = statisticIterator[0];
-                float64 bestScore = calculateOutputWiseScore(firstTuple.first, firstTuple.second,
+                const Statistic<float64>& firstStatistic = statisticIterator[0];
+                float64 bestScore = calculateOutputWiseScore(firstStatistic.gradient, firstStatistic.hessian,
                                                              l1RegularizationWeight_, l2RegularizationWeight_);
                 uint32 bestIndex = 0;
 
                 for (uint32 i = 1; i < numElements; i++) {
-                    const Tuple<float64>& tuple = statisticIterator[i];
-                    float64 score = calculateOutputWiseScore(tuple.first, tuple.second, l1RegularizationWeight_,
-                                                             l2RegularizationWeight_);
+                    const Statistic<float64>& statistic = statisticIterator[i];
+                    float64 score = calculateOutputWiseScore(statistic.gradient, statistic.hessian,
+                                                             l1RegularizationWeight_, l2RegularizationWeight_);
 
                     if (std::abs(score) > std::abs(bestScore)) {
                         bestIndex = i;
@@ -64,8 +64,8 @@ namespace boosting {
                 DenseScoreVector<PartialIndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
                 valueIterator[0] = bestScore;
                 indexVector_.begin()[0] = outputIndices_.cbegin()[bestIndex];
-                scoreVector_.quality = calculateOutputWiseQuality(bestScore, statisticIterator[bestIndex].first,
-                                                                  statisticIterator[bestIndex].second,
+                scoreVector_.quality = calculateOutputWiseQuality(bestScore, statisticIterator[bestIndex].gradient,
+                                                                  statisticIterator[bestIndex].hessian,
                                                                   l1RegularizationWeight_, l2RegularizationWeight_);
                 return scoreVector_;
             }

@@ -12,7 +12,7 @@ namespace boosting {
      * A matrix that stores gradients and Hessians that have been calculated using a decomposable loss function in the
      * list of lists (LIL) format.
      */
-    class SparseDecomposableStatisticMatrix final : public MatrixDecorator<SparseSetView<Tuple<float64>>> {
+    class SparseDecomposableStatisticMatrix final : public MatrixDecorator<SparseSetView<Statistic<float64>>> {
         public:
 
             /**
@@ -20,7 +20,8 @@ namespace boosting {
              * @param numCols   The number of columns in the matrix
              */
             SparseDecomposableStatisticMatrix(uint32 numRows, uint32 numCols)
-                : MatrixDecorator<SparseSetView<Tuple<float64>>>(SparseSetView<Tuple<float64>>(numRows, numCols)) {}
+                : MatrixDecorator<SparseSetView<Statistic<float64>>>(
+                    SparseSetView<Statistic<float64>>(numRows, numCols)) {}
     };
 
     /**
@@ -95,7 +96,7 @@ namespace boosting {
         const ISparseDecomposableClassificationLoss* lossRawPtr = lossPtr.get();
         const OutputMatrix* outputMatrixPtr = &outputMatrix;
         const SparseSetView<float64>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
-        SparseSetView<Tuple<float64>>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
+        SparseSetView<Statistic<float64>>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(outputMatrixPtr) \

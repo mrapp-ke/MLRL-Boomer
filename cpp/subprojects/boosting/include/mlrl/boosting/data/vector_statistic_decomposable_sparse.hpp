@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/tuple.hpp"
+#include "mlrl/boosting/data/statistic.hpp"
 #include "mlrl/common/data/view_matrix_sparse_set.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
@@ -226,17 +226,17 @@ namespace boosting {
                     /**
                      * The type of the elements, the iterator provides access to.
                      */
-                    typedef const Tuple<float64> value_type;
+                    typedef const Statistic<float64> value_type;
 
                     /**
                      * The type of a pointer to an element, the iterator provides access to.
                      */
-                    typedef const Tuple<float64>* pointer;
+                    typedef const Statistic<float64>* pointer;
 
                     /**
                      * The type of a reference to an element, the iterator provides access to.
                      */
-                    typedef const Tuple<float64>& reference;
+                    typedef const Statistic<float64>& reference;
 
                     /**
                      * The tag that specifies the capabilities of the iterator.
@@ -361,7 +361,7 @@ namespace boosting {
              *              be added to this vector
              * @param row   The index of the row to be added to this vector
              */
-            void add(const SparseSetView<Tuple<float64>>& view, uint32 row);
+            void add(const SparseSetView<Statistic<float64>>& view, uint32 row);
 
             /**
              * Adds all gradients and Hessians in a single row of a `SparseSetView` to this vector. The gradients and
@@ -372,7 +372,7 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void add(const SparseSetView<Tuple<float64>>& view, uint32 row, uint32 weight);
+            void add(const SparseSetView<Statistic<float64>>& view, uint32 row, uint32 weight);
 
             /**
              * Removes all gradients and Hessians in a single row of a `SparseSetView` from this vector.
@@ -381,7 +381,7 @@ namespace boosting {
              *              be removed from this vector
              * @param row   The index of the row to be removed from this vector
              */
-            void remove(const SparseSetView<Tuple<float64>>& view, uint32 row);
+            void remove(const SparseSetView<Statistic<float64>>& view, uint32 row);
 
             /**
              * Removes all gradients and Hessians in a single row of a `SparseSetView` from this vector. The gradients
@@ -392,7 +392,7 @@ namespace boosting {
              * @param row       The index of the row to be removed from this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void remove(const SparseSetView<Tuple<float64>>& view, uint32 row, uint32 weight);
+            void remove(const SparseSetView<Statistic<float64>>& view, uint32 row, uint32 weight);
 
             /**
              * Adds certain gradients and Hessians in a single row of a `SparseSetView`, whose positions are given as a
@@ -403,7 +403,8 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
              */
-            void addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row, const CompleteIndexVector& indices);
+            void addToSubset(const SparseSetView<Statistic<float64>>& view, uint32 row,
+                             const CompleteIndexVector& indices);
 
             /**
              * Adds certain gradients and Hessians in a single row of a `SparseSetView`, whose positions are given as a
@@ -414,7 +415,8 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
              */
-            void addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row, const PartialIndexVector& indices);
+            void addToSubset(const SparseSetView<Statistic<float64>>& view, uint32 row,
+                             const PartialIndexVector& indices);
 
             /**
              * Adds certain gradients and Hessians in a single row of a `SparseSetView`, whose positions are given as a
@@ -427,8 +429,8 @@ namespace boosting {
              * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row, const CompleteIndexVector& indices,
-                             uint32 weight);
+            void addToSubset(const SparseSetView<Statistic<float64>>& view, uint32 row,
+                             const CompleteIndexVector& indices, uint32 weight);
 
             /**
              * Adds certain gradients and Hessians in a single row of a `SparsesetView`, whose positions are given as a
@@ -441,8 +443,8 @@ namespace boosting {
              * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row, const PartialIndexVector& indices,
-                             uint32 weight);
+            void addToSubset(const SparseSetView<Statistic<float64>>& view, uint32 row,
+                             const PartialIndexVector& indices, uint32 weight);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
