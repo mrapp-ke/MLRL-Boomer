@@ -18,13 +18,6 @@ jobs:
       python_tests_boosting: ${{ steps.filter.outputs.python_tests_boosting }}
       python_tests_seco: ${{ steps.filter.outputs.python_tests_seco }}
     steps:
-      - name: Look up Git repository in cache
-        uses: actions/cache/restore@v4
-        with:
-          path: .git/
-          key: test-build-cache-git-${{ github.run_id }}
-          restore-keys: |
-            test-build-cache-git
       - name: Checkout
         uses: actions/checkout@v4
       - name: Detect changes
@@ -112,12 +105,6 @@ jobs:
               - 'python/subprojects/seco/mlrl/**'
               - 'python/tests/mlrl/seco/**'
               - 'python/tests/res/out/seco/**'
-      - name: Save Git repository to cache
-        uses: actions/cache/save@v4
-        if: success() || failure()
-        with:
-          path: .git/
-          key: test-build-cache-git-${{ github.run_id }}
   test_build:
     needs: changes
     name: Test build
