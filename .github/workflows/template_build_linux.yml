@@ -17,13 +17,6 @@ jobs:
     name: Test Linux build
     runs-on: ubuntu-latest
     steps:
-      - name: Look up Git repository in cache
-        uses: actions/cache/restore@v4
-        with:
-          path: .git/
-          key: test-build-cache-git-${{ github.run_id }}
-          restore-keys: |
-            test-build-cache-git
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Python

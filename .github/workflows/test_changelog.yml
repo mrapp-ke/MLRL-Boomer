@@ -11,13 +11,6 @@ jobs:
     name: Validate changelog
     runs-on: ubuntu-latest
     steps:
-      - name: Look up Git repository in cache
-        uses: actions/cache/restore@v4
-        with:
-          path: .git/
-          key: test-changelog-cache-git-${{ github.run_id }}
-          restore-keys: |
-            test-changelog-cache-git
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Python
@@ -56,9 +49,3 @@ jobs:
       - name: Validate main changelog
         if: steps.filter.outputs.main == 'true'
         run: ./build validate_changelog_main
-      - name: Save Git repository to cache
-        uses: actions/cache/save@v4
-        if: success() || failure()
-        with:
-          path: .git/
-          key: test-changelog-cache-git-${{ github.run_id }}
