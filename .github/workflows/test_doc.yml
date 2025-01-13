@@ -16,12 +16,6 @@ jobs:
       doc: ${{ steps.filter.outputs.doc }}
       any: ${{ steps.filter.outputs.any }}
     steps:
-      - name: Look up Git repository in cache
-        uses: actions/cache/restore@v4
-        with:
-          path: .git/
-          key: test-doc-cache-git-${{ github.run_id }}
-          restore-keys: test-doc-cache-git
       - name: Checkout
         uses: actions/checkout@v4
       - name: Detect changes
@@ -53,24 +47,12 @@ jobs:
               - *cpp
               - *python
               - *doc
-      - name: Save Git repository to cache
-        uses: actions/cache/save@v4
-        if: success() || failure()
-        with:
-          path: .git/
-          key: test-doc-cache-git-${{ github.run_id }}
   build_doc:
     needs: changes
     if: ${{ needs.changes.outputs.any == 'true' }}
     name: Test building documentation
     runs-on: ubuntu-latest
     steps:
-      - name: Look up Git repository in cache
-        uses: actions/cache/restore@v4
-        with:
-          path: .git/
-          key: test-doc-cache-git-${{ github.run_id }}
-          restore-keys: test-doc-cache-git
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Python
@@ -101,12 +83,6 @@ jobs:
     name: Check links in documentation
     runs-on: ubuntu-latest
     steps:
-      - name: Look up Git repository in cache
-        uses: actions/cache/restore@v4
-        with:
-          path: .git/
-          key: test-doc-cache-git-${{ github.run_id }}
-          restore-keys: test-doc-cache-git
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Python
