@@ -26,7 +26,7 @@ namespace boosting {
      * @return                          The overall quality that has been calculated
      */
     template<typename ScoreIterator>
-    static inline float64 calculateBinnedScores(View<Tuple<float64>>::const_iterator statisticIterator,
+    static inline float64 calculateBinnedScores(View<Statistic<float64>>::const_iterator statisticIterator,
                                                 ScoreIterator scoreIterator, View<uint32>::const_iterator weights,
                                                 uint32 numElements, float64 l1RegularizationWeight,
                                                 float64 l2RegularizationWeight) {
@@ -34,11 +34,11 @@ namespace boosting {
 
         for (uint32 i = 0; i < numElements; i++) {
             uint32 weight = weights[i];
-            const Tuple<float64>& tuple = statisticIterator[i];
+            const Statistic<float64>& statistic = statisticIterator[i];
             float64 predictedScore = calculateOutputWiseScore(
-              tuple.first, tuple.second, weight * l1RegularizationWeight, weight * l2RegularizationWeight);
+              statistic.gradient, statistic.hessian, weight * l1RegularizationWeight, weight * l2RegularizationWeight);
             scoreIterator[i] = predictedScore;
-            quality += calculateOutputWiseQuality(predictedScore, tuple.first, tuple.second,
+            quality += calculateOutputWiseQuality(predictedScore, statistic.gradient, statistic.hessian,
                                                   weight * l1RegularizationWeight, weight * l2RegularizationWeight);
         }
 
@@ -62,7 +62,7 @@ namespace boosting {
 
             DenseBinnedScoreVector<IndexVector> scoreVector_;
 
-            DenseVector<Tuple<float64>> aggregatedStatisticVector_;
+            DenseVector<Statistic<float64>> aggregatedStatisticVector_;
 
             Array<uint32> numElementsPerBin_;
 
@@ -134,7 +134,8 @@ namespace boosting {
                 scoreVector_.setNumBins(numBins, false);
 
                 // Reset arrays to zero...
-                DenseVector<Tuple<float64>>::iterator aggregatedStatisticIterator = aggregatedStatisticVector_.begin();
+                DenseVector<Statistic<float64>>::iterator aggregatedStatisticIterator =
+                  aggregatedStatisticVector_.begin();
                 util::setViewToZeros(aggregatedStatisticIterator, numBins);
                 util::setViewToZeros(numElementsPerBin_.begin(), numBins);
 
@@ -182,9 +183,9 @@ namespace boosting {
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
-                    const Tuple<float64>& tuple = statisticIterator[i];
-                    criteria[i] = calculateOutputWiseScore(tuple.first, tuple.second, l1RegularizationWeight,
-                                                           l2RegularizationWeight);
+                    const Statistic<float64>& statistic = statisticIterator[i];
+                    criteria[i] = calculateOutputWiseScore(statistic.gradient, statistic.hessian,
+                                                           l1RegularizationWeight, l2RegularizationWeight);
                 }
 
                 return numCriteria;

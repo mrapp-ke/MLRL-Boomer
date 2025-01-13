@@ -43,9 +43,9 @@ namespace boosting {
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
-                    const Tuple<float64>& tuple = statisticIterator[i];
-                    float64 score = calculateOutputWiseScore(tuple.first, tuple.second, l1RegularizationWeight,
-                                                             l2RegularizationWeight);
+                    const Statistic<float64>& statistic = statisticIterator[i];
+                    float64 score = calculateOutputWiseScore(statistic.gradient, statistic.hessian,
+                                                             l1RegularizationWeight, l2RegularizationWeight);
 
                     if (calculateWeightedScore(score, minAbsScore, exponent_) >= threshold) {
                         indexIterator[n] = labelIndexIterator[i];
