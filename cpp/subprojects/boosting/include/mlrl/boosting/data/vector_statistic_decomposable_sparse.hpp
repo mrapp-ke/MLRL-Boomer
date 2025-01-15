@@ -13,9 +13,9 @@ namespace boosting {
     /**
      * An individual label space statistic that consists of a gradient, a Hessian and a weight.
      *
-     * @tparam T The type of the gradient and Hessian
+     * @tparam StatisticType The type of the gradient and Hessian
      */
-    template<typename T>
+    template<typename StatisticType>
     struct SparseStatistic final {
         public:
 
@@ -26,22 +26,23 @@ namespace boosting {
              * @param hessian   The Hessian
              * @param weight    The weight
              */
-            SparseStatistic(T gradient, T hessian, T weight) : gradient(gradient), hessian(hessian), weight(weight) {}
+            SparseStatistic(StatisticType gradient, StatisticType hessian, StatisticType weight)
+                : gradient(gradient), hessian(hessian), weight(weight) {}
 
             /**
              * The gradient.
              */
-            T gradient;
+            StatisticType gradient;
 
             /**
              * The Hessian.
              */
-            T hessian;
+            StatisticType hessian;
 
             /**
              * The weight.
              */
-            T weight;
+            StatisticType weight;
 
             /**
              * Assigns a specific value to the gradient, Hessian and weight of this statistic.
@@ -49,7 +50,7 @@ namespace boosting {
              * @param rhs   A reference to the value to be assigned
              * @return      A reference to the modified statistic
              */
-            SparseStatistic<T>& operator=(const T& rhs) {
+            SparseStatistic<StatisticType>& operator=(const StatisticType& rhs) {
                 gradient = rhs;
                 hessian = rhs;
                 weight = rhs;
@@ -62,7 +63,7 @@ namespace boosting {
              * @param rhs   A reference to the value to be added
              * @return      A reference to the modified statistic
              */
-            SparseStatistic<T>& operator+=(const T& rhs) {
+            SparseStatistic<StatisticType>& operator+=(const StatisticType& rhs) {
                 gradient += rhs;
                 hessian += rhs;
                 weight += rhs;
@@ -77,7 +78,8 @@ namespace boosting {
              * @param rhs   A reference to the value to be added
              * @return      The statistic that has been created
              */
-            friend SparseStatistic<T> operator+(SparseStatistic<T> lhs, const T& rhs) {
+            friend SparseStatistic<StatisticType> operator+(SparseStatistic<StatisticType> lhs,
+                                                            const StatisticType& rhs) {
                 lhs += rhs;
                 return lhs;
             }
@@ -89,7 +91,7 @@ namespace boosting {
              * @param rhs   A reference to the statistic, whose gradient, Hessian and weight should be added
              * @return      A reference to the modified statistic
              */
-            SparseStatistic<T>& operator+=(const SparseStatistic<T>& rhs) {
+            SparseStatistic<StatisticType>& operator+=(const SparseStatistic<StatisticType>& rhs) {
                 gradient += rhs.gradient;
                 hessian += rhs.hessian;
                 weight += rhs.weight;
@@ -104,7 +106,8 @@ namespace boosting {
              * @param rhs   A reference to the statistic, whose gradient, Hessian and weight should be added
              * @return      The statistic that has been created
              */
-            friend SparseStatistic<T> operator+(SparseStatistic<T> lhs, const SparseStatistic<T>& rhs) {
+            friend SparseStatistic<StatisticType> operator+(SparseStatistic<StatisticType> lhs,
+                                                            const SparseStatistic<StatisticType>& rhs) {
                 lhs += rhs;
                 return lhs;
             }
@@ -115,7 +118,7 @@ namespace boosting {
              * @param rhs   A reference to the value to be subtracted
              * @return      A reference to the modified statistic
              */
-            SparseStatistic<T>& operator-=(const T& rhs) {
+            SparseStatistic<StatisticType>& operator-=(const StatisticType& rhs) {
                 gradient -= rhs;
                 hessian -= rhs;
                 weight -= rhs;
@@ -130,7 +133,8 @@ namespace boosting {
              * @param rhs   A reference to the value to be subtracted
              * @return      The statistic that has been created
              */
-            friend SparseStatistic<T> operator-(SparseStatistic<T> lhs, const T& rhs) {
+            friend SparseStatistic<StatisticType> operator-(SparseStatistic<StatisticType> lhs,
+                                                            const StatisticType& rhs) {
                 lhs -= rhs;
                 return lhs;
             }
@@ -142,7 +146,7 @@ namespace boosting {
              * @param rhs   A reference to the statistic, whose gradient, Hessian and weight should be subtracted
              * @return      A reference to the modified statistic
              */
-            SparseStatistic<T>& operator-=(const SparseStatistic<T>& rhs) {
+            SparseStatistic<StatisticType>& operator-=(const SparseStatistic<StatisticType>& rhs) {
                 gradient -= rhs.gradient;
                 hessian -= rhs.hessian;
                 weight -= rhs.weight;
@@ -157,7 +161,8 @@ namespace boosting {
              * @param rhs   A reference to the value to be subtracted
              * @return      The statistic that has been created
              */
-            friend SparseStatistic<T> operator-(SparseStatistic<T> lhs, const SparseStatistic<T>& rhs) {
+            friend SparseStatistic<StatisticType> operator-(SparseStatistic<StatisticType> lhs,
+                                                            const SparseStatistic<StatisticType>& rhs) {
                 lhs -= rhs;
                 return lhs;
             }
@@ -168,7 +173,7 @@ namespace boosting {
              * @param rhs   A reference to the value to be multiplied by
              * @return      A reference to the modified statistic
              */
-            SparseStatistic<T>& operator*=(const T& rhs) {
+            SparseStatistic<StatisticType>& operator*=(const StatisticType& rhs) {
                 gradient *= rhs;
                 hessian *= rhs;
                 weight *= rhs;
@@ -183,7 +188,8 @@ namespace boosting {
              * @param rhs   A reference to the value to be multiplied by
              * @return      The statistic that has been created
              */
-            friend SparseStatistic<T> operator*(SparseStatistic<T> lhs, const T& rhs) {
+            friend SparseStatistic<StatisticType> operator*(SparseStatistic<StatisticType> lhs,
+                                                            const StatisticType& rhs) {
                 lhs *= rhs;
                 return lhs;
             }

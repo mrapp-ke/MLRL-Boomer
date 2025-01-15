@@ -10,9 +10,9 @@ namespace boosting {
     /**
      * An individual label space statistic that consists of a gradient and a Hessian.
      *
-     * @tparam T The type of the gradient and Hessian
+     * @tparam StatisticType The type of the gradient and Hessian
      */
-    template<typename T>
+    template<typename StatisticType>
     struct Statistic final {
         public:
 
@@ -22,17 +22,17 @@ namespace boosting {
              * @param gradient  The gradient
              * @param hessian   The Hessian
              */
-            Statistic(T gradient, T hessian) : gradient(gradient), hessian(hessian) {}
+            Statistic(StatisticType gradient, StatisticType hessian) : gradient(gradient), hessian(hessian) {}
 
             /**
              * The gradient.
              */
-            T gradient;
+            StatisticType gradient;
 
             /**
              * The Hessian.
              */
-            T hessian;
+            StatisticType hessian;
 
             /**
              * Assigns a specific value to the gradient and Hessian of this statistic.
@@ -40,7 +40,7 @@ namespace boosting {
              * @param rhs   A reference to the value to be assigned
              * @return      A reference to the modified statistic
              */
-            Statistic<T>& operator=(const T& rhs) {
+            Statistic<StatisticType>& operator=(const StatisticType& rhs) {
                 gradient = rhs;
                 hessian = rhs;
                 return *this;
@@ -52,7 +52,7 @@ namespace boosting {
              * @param rhs   A reference to the value to be added
              * @return      A reference to the modified statistic
              */
-            Statistic<T>& operator+=(const T& rhs) {
+            Statistic<StatisticType>& operator+=(const StatisticType& rhs) {
                 gradient += rhs;
                 hessian += rhs;
                 return *this;
@@ -66,7 +66,7 @@ namespace boosting {
              * @param rhs   A reference to the value to be added
              * @return      The statistic that has been created
              */
-            friend Statistic<T> operator+(Statistic<T> lhs, const T& rhs) {
+            friend Statistic<StatisticType> operator+(Statistic<StatisticType> lhs, const StatisticType& rhs) {
                 lhs += rhs;
                 return lhs;
             }
@@ -77,7 +77,7 @@ namespace boosting {
              * @param rhs   A reference to the statistic, whose gradient and Hessian should be added
              * @return      A reference to the modified statistic
              */
-            Statistic<T>& operator+=(const Statistic<T>& rhs) {
+            Statistic<StatisticType>& operator+=(const Statistic<StatisticType>& rhs) {
                 gradient += rhs.gradient;
                 hessian += rhs.hessian;
                 return *this;
@@ -91,7 +91,8 @@ namespace boosting {
              * @param rhs   A reference to the statistic, whose gradient and Hessian should be added
              * @return      The statistic that has been created
              */
-            friend Statistic<T> operator+(Statistic<T> lhs, const Statistic<T>& rhs) {
+            friend Statistic<StatisticType> operator+(Statistic<StatisticType> lhs,
+                                                      const Statistic<StatisticType>& rhs) {
                 lhs += rhs;
                 return lhs;
             }
@@ -102,7 +103,7 @@ namespace boosting {
              * @param rhs   A reference to the value to be subtracted
              * @return      A reference to the modified statistic
              */
-            Statistic<T>& operator-=(const T& rhs) {
+            Statistic<StatisticType>& operator-=(const StatisticType& rhs) {
                 gradient -= rhs;
                 hessian -= rhs;
                 return *this;
@@ -116,7 +117,7 @@ namespace boosting {
              * @param rhs   A reference to the value to be subtracted
              * @return      The statistic that has been created
              */
-            friend Statistic<T> operator-(Statistic<T> lhs, const T& rhs) {
+            friend Statistic<StatisticType> operator-(Statistic<StatisticType> lhs, const StatisticType& rhs) {
                 lhs -= rhs;
                 return lhs;
             }
@@ -127,7 +128,7 @@ namespace boosting {
              * @param rhs   A reference to the statistic, whose gradient and Hessian should be subtracted
              * @return      A reference to the modified statistic
              */
-            Statistic<T>& operator-=(const Statistic<T>& rhs) {
+            Statistic<StatisticType>& operator-=(const Statistic<StatisticType>& rhs) {
                 gradient -= rhs.gradient;
                 hessian -= rhs.hessian;
                 return *this;
@@ -141,7 +142,8 @@ namespace boosting {
              * @param rhs   A reference to the value to be subtracted
              * @return      The statistic that has been created
              */
-            friend Statistic<T> operator-(Statistic<T> lhs, const Statistic<T>& rhs) {
+            friend Statistic<StatisticType> operator-(Statistic<StatisticType> lhs,
+                                                      const Statistic<StatisticType>& rhs) {
                 lhs -= rhs;
                 return lhs;
             }
@@ -152,7 +154,7 @@ namespace boosting {
              * @param rhs   A reference to the value to be multiplied by
              * @return      A reference to the modified statistic
              */
-            Statistic<T>& operator*=(const T& rhs) {
+            Statistic<StatisticType>& operator*=(const StatisticType& rhs) {
                 gradient *= rhs;
                 hessian *= rhs;
                 return *this;
@@ -166,7 +168,7 @@ namespace boosting {
              * @param rhs   A reference to the value to be multiplied by
              * @return      The statistic that has been created
              */
-            friend Statistic<T> operator*(Statistic<T> lhs, const T& rhs) {
+            friend Statistic<StatisticType> operator*(Statistic<StatisticType> lhs, const StatisticType& rhs) {
                 lhs *= rhs;
                 return lhs;
             }
