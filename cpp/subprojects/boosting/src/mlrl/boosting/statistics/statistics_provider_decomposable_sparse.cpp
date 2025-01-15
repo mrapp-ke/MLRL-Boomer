@@ -32,7 +32,7 @@ namespace boosting {
      */
     template<typename OutputMatrix>
     class SparseDecomposableStatistics final
-        : public AbstractDecomposableStatistics<OutputMatrix, SparseDecomposableStatisticVector,
+        : public AbstractDecomposableStatistics<OutputMatrix, SparseDecomposableStatisticVector<uint32>,
                                                 SparseDecomposableStatisticMatrix, NumericSparseSetMatrix<float64>,
                                                 ISparseDecomposableClassificationLoss, ISparseEvaluationMeasure,
                                                 ISparseDecomposableRuleEvaluationFactory> {
@@ -61,7 +61,7 @@ namespace boosting {
                                          const OutputMatrix& outputMatrix,
                                          std::unique_ptr<SparseDecomposableStatisticMatrix> statisticViewPtr,
                                          std::unique_ptr<NumericSparseSetMatrix<float64>> scoreMatrixPtr)
-                : AbstractDecomposableStatistics<OutputMatrix, SparseDecomposableStatisticVector,
+                : AbstractDecomposableStatistics<OutputMatrix, SparseDecomposableStatisticVector<uint32>,
                                                  SparseDecomposableStatisticMatrix, NumericSparseSetMatrix<float64>,
                                                  ISparseDecomposableClassificationLoss, ISparseEvaluationMeasure,
                                                  ISparseDecomposableRuleEvaluationFactory>(

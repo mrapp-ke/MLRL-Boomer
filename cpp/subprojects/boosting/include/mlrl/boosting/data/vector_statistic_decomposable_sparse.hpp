@@ -106,11 +106,14 @@ namespace boosting {
 
     /**
      * An one-dimensional vector that stores aggregated gradients and Hessians that have been calculated using a
-     * decomposable loss function in a C-contiguous array. For each element in the vector a single gradient and Hessian,
-     * as well as the sums of the weights of the aggregated gradients and Hessians, is stored.
+     * decomposable loss function in a C-contiguous array. For each element in the vector, a single gradient and
+     * Hessian, as well as the sums of the weights of the aggregated gradients and Hessians, is stored.
+     *
+     * @tparam WeightType The type of the weights
      */
+    template<typename WeightType>
     class SparseDecomposableStatisticVector final
-        : public VectorDecorator<AllocatedVector<SparseStatistic<float64, float64>>> {
+        : public VectorDecorator<AllocatedVector<SparseStatistic<float64, WeightType>>> {
         private:
 
             /**
@@ -120,9 +123,9 @@ namespace boosting {
             class ConstIterator final {
                 private:
 
-                    View<SparseStatistic<float64, float64>>::const_iterator iterator_;
+                    typename View<SparseStatistic<float64, WeightType>>::const_iterator iterator_;
 
-                    const float64 sumOfWeights_;
+                    const WeightType sumOfWeights_;
 
                 public:
 
@@ -131,8 +134,8 @@ namespace boosting {
                      *                      `SparseDecomposableStatisticVector`
                      * @param sumOfWeights  The sum of the weights of all statistics that have been added to the vector
                      */
-                    ConstIterator(View<SparseStatistic<float64, float64>>::const_iterator iterator,
-                                  float64 sumOfWeights);
+                    ConstIterator(typename View<SparseStatistic<float64, WeightType>>::const_iterator iterator,
+                                  WeightType sumOfWeights);
 
                     /**
                      * The type that is used to represent the difference between two iterators.
@@ -227,7 +230,7 @@ namespace boosting {
                     difference_type operator-(const ConstIterator& rhs) const;
             };
 
-            float64 sumOfWeights_;
+            WeightType sumOfWeights_;
 
         public:
 
@@ -268,7 +271,7 @@ namespace boosting {
              * @param vector A reference to an object of type `SparseDecomposableStatisticVector` that stores the
              *               gradients and Hessians to be added to this vector
              */
-            void add(const SparseDecomposableStatisticVector& vector);
+            void add(const SparseDecomposableStatisticVector<WeightType>& vector);
 
             /**
              * Adds all gradients and Hessians in a single row of a `SparseSetView` to this vector.
@@ -288,7 +291,7 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void add(const SparseSetView<Statistic<float64>>& view, uint32 row, float64 weight);
+            void add(const SparseSetView<Statistic<float64>>& view, uint32 row, WeightType weight);
 
             /**
              * Removes all gradients and Hessians in a single row of a `SparseSetView` from this vector.
@@ -308,7 +311,7 @@ namespace boosting {
              * @param row       The index of the row to be removed from this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void remove(const SparseSetView<Statistic<float64>>& view, uint32 row, float64 weight);
+            void remove(const SparseSetView<Statistic<float64>>& view, uint32 row, WeightType weight);
 
             /**
              * Adds certain gradients and Hessians in a single row of a `SparseSetView`, whose positions are given as a
@@ -346,7 +349,7 @@ namespace boosting {
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
             void addToSubset(const SparseSetView<Statistic<float64>>& view, uint32 row,
-                             const CompleteIndexVector& indices, float64 weight);
+                             const CompleteIndexVector& indices, WeightType weight);
 
             /**
              * Adds certain gradients and Hessians in a single row of a `SparsesetView`, whose positions are given as a
@@ -360,7 +363,7 @@ namespace boosting {
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
             void addToSubset(const SparseSetView<Statistic<float64>>& view, uint32 row,
-                             const PartialIndexVector& indices, float64 weight);
+                             const PartialIndexVector& indices, WeightType weight);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
@@ -374,8 +377,9 @@ namespace boosting {
              * @param second        A reference to an object of type `SparseDecomposableStatisticVector` that stores the
              *                      gradients and Hessians in the second vector
              */
-            void difference(const SparseDecomposableStatisticVector& first, const CompleteIndexVector& firstIndices,
-                            const SparseDecomposableStatisticVector& second);
+            void difference(const SparseDecomposableStatisticVector<WeightType>& first,
+                            const CompleteIndexVector& firstIndices,
+                            const SparseDecomposableStatisticVector<WeightType>& second);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
@@ -389,8 +393,9 @@ namespace boosting {
              * @param second        A reference to an object of type `SparseDecomposableStatisticVector` that stores the
              *                      gradients and Hessians in the second vector
              */
-            void difference(const SparseDecomposableStatisticVector& first, const PartialIndexVector& firstIndices,
-                            const SparseDecomposableStatisticVector& second);
+            void difference(const SparseDecomposableStatisticVector<WeightType>& first,
+                            const PartialIndexVector& firstIndices,
+                            const SparseDecomposableStatisticVector<WeightType>& second);
 
             /**
              * Sets all gradients and Hessians stored in this vector to zero.
