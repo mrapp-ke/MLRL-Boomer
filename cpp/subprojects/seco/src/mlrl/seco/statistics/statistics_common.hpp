@@ -108,7 +108,7 @@ namespace seco {
              * An unique pointer to an object of type `IRuleEvaluation` that is used for calculating the predictions of
              * rules, as well as their overall quality.
              */
-            const std::unique_ptr<IRuleEvaluation> ruleEvaluationPtr_;
+            const std::unique_ptr<IRuleEvaluation<ConfusionMatrixVector>> ruleEvaluationPtr_;
 
         public:
 
@@ -137,7 +137,7 @@ namespace seco {
                 : sumVector_(outputIndices.getNumElements(), true), labelMatrix_(labelMatrix),
                   coverageMatrix_(coverageMatrix), majorityLabelVector_(majorityLabelVector),
                   totalSumVector_(totalSumVector), weights_(weights), outputIndices_(outputIndices),
-                  ruleEvaluationPtr_(ruleEvaluationFactory.create(outputIndices)) {}
+                  ruleEvaluationPtr_(ruleEvaluationFactory.create(sumVector_, outputIndices)) {}
 
             /**
              * @see `IStatisticsSubset::hasNonZeroWeight`
