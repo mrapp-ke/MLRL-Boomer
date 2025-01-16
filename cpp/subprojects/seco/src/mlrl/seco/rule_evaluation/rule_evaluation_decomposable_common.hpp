@@ -9,8 +9,9 @@
 namespace seco {
 
     /**
-     * Calculates and returns the quality of a rule's prediction for a single output.
+     * Calculates and returns the quality of a rule's prediction for a single output based on confusion matrices.
      *
+     * @tparam StatisticType            The type of the elements that are stored in the confusion matrices
      * @param totalConfusionMatrix      A reference to an object of type `ConfusionMatrix` that takes into account all
      *                                  examples
      * @param coveredConfusionMatrix    A reference to an object of type `ConfusionMatrix` that takes into account all
@@ -18,10 +19,11 @@ namespace seco {
      * @param heuristic                 The heuristic that should be used to assess the quality
      * @return                          The quality that has been calculated
      */
-    static inline float64 calculateOutputWiseQuality(const ConfusionMatrix<uint32>& totalConfusionMatrix,
-                                                     const ConfusionMatrix<uint32>& coveredConfusionMatrix,
+    template<typename StatisticType>
+    static inline float64 calculateOutputWiseQuality(const ConfusionMatrix<StatisticType>& totalConfusionMatrix,
+                                                     const ConfusionMatrix<StatisticType>& coveredConfusionMatrix,
                                                      const IHeuristic& heuristic) {
-        const ConfusionMatrix<uint32> uncoveredConfusionMatrix = totalConfusionMatrix - coveredConfusionMatrix;
+        const ConfusionMatrix<StatisticType> uncoveredConfusionMatrix = totalConfusionMatrix - coveredConfusionMatrix;
         return heuristic.evaluateConfusionMatrix(coveredConfusionMatrix.in, coveredConfusionMatrix.ip,
                                                  coveredConfusionMatrix.rn, coveredConfusionMatrix.rp,
                                                  uncoveredConfusionMatrix.in, uncoveredConfusionMatrix.ip,

@@ -13,9 +13,12 @@ namespace seco {
 
     /**
      * An one-dimensional vector that stores a fixed number of confusion matrices in a C-contiguous array.
+     *
+     * @tparam StatisticType The type of the elements stored in the confusion matrices
      */
+    template<typename StatisticType>
     class DenseConfusionMatrixVector final
-        : public ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<ConfusionMatrix<uint32>>>> {
+        : public ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<ConfusionMatrix<StatisticType>>>> {
         public:
 
             /**
@@ -35,7 +38,8 @@ namespace seco {
              * @param begin A `const_iterator` to the beginning of the other vector
              * @param end   A `const_iterator` to the end of the other vector
              */
-            void add(const_iterator begin, const_iterator end);
+            void add(typename View<ConfusionMatrix<StatisticType>>::const_iterator begin,
+                     typename View<ConfusionMatrix<StatisticType>>::const_iterator end);
 
             /**
              * Adds the confusion matrix elements that correspond to an example at a specific index to this vector. The
@@ -55,7 +59,7 @@ namespace seco {
             void add(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                      View<uint32>::const_iterator majorityLabelIndicesBegin,
                      View<uint32>::const_iterator majorityLabelIndicesEnd, const DenseCoverageMatrix& coverageMatrix,
-                     uint32 weight);
+                     StatisticType weight);
 
             /**
              * Adds the confusion matrix elements that correspond to an example at a specific index to this vector. The
@@ -75,7 +79,7 @@ namespace seco {
             void add(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                      View<uint32>::const_iterator majorityLabelIndicesBegin,
                      View<uint32>::const_iterator majorityLabelIndicesEnd, const DenseCoverageMatrix& coverageMatrix,
-                     uint32 weight);
+                     StatisticType weight);
 
             /**
              * Removes the confusion matrix elements that correspond to an example at a specific index from this vector.
@@ -95,7 +99,7 @@ namespace seco {
             void remove(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                         View<uint32>::const_iterator majorityLabelIndicesBegin,
                         View<uint32>::const_iterator majorityLabelIndicesEnd, const DenseCoverageMatrix& coverageMatrix,
-                        uint32 weight);
+                        StatisticType weight);
 
             /**
              * Removes the confusion matrix elements that correspond to an example at a specific index from this vector.
@@ -115,7 +119,7 @@ namespace seco {
             void remove(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                         View<uint32>::const_iterator majorityLabelIndicesBegin,
                         View<uint32>::const_iterator majorityLabelIndicesEnd, const DenseCoverageMatrix& coverageMatrix,
-                        uint32 weight);
+                        StatisticType weight);
 
             /**
              * Adds certain confusion matrix elements in another vector, whose positions are given as a
@@ -139,7 +143,7 @@ namespace seco {
                              View<uint32>::const_iterator majorityLabelIndicesBegin,
                              View<uint32>::const_iterator majorityLabelIndicesEnd,
                              const DenseCoverageMatrix& coverageMatrix, const CompleteIndexVector& indices,
-                             uint32 weight);
+                             StatisticType weight);
 
             /**
              * Adds certain confusion matrix elements in another vector, whose positions are given as a
@@ -163,7 +167,7 @@ namespace seco {
                              View<uint32>::const_iterator majorityLabelIndicesBegin,
                              View<uint32>::const_iterator majorityLabelIndicesEnd,
                              const DenseCoverageMatrix& coverageMatrix, const CompleteIndexVector& indices,
-                             uint32 weight);
+                             StatisticType weight);
 
             /**
              * Adds certain confusion matrix elements in another vector, whose positions are given as a
@@ -187,7 +191,7 @@ namespace seco {
                              View<uint32>::const_iterator majorityLabelIndicesBegin,
                              View<uint32>::const_iterator majorityLabelIndicesEnd,
                              const DenseCoverageMatrix& coverageMatrix, const PartialIndexVector& indices,
-                             uint32 weight);
+                             StatisticType weight);
 
             /**
              * Adds certain confusion matrix elements in another vector, whose positions are given as a
@@ -211,7 +215,7 @@ namespace seco {
                              View<uint32>::const_iterator majorityLabelIndicesBegin,
                              View<uint32>::const_iterator majorityLabelIndicesEnd,
                              const DenseCoverageMatrix& coverageMatrix, const PartialIndexVector& indices,
-                             uint32 weight);
+                             StatisticType weight);
 
             /**
              * Sets the confusion matrix elements in this vector to the difference `first - second` between the elements
@@ -225,8 +229,11 @@ namespace seco {
              * @param secondBegin  A `const_iterator` to the beginning of the second vector
              * @param secondEnd    A `const_iterator` to the end of the second vector
              */
-            void difference(const_iterator firstBegin, const_iterator firstEnd, const CompleteIndexVector& firstIndices,
-                            const_iterator secondBegin, const_iterator secondEnd);
+            void difference(typename View<ConfusionMatrix<StatisticType>>::const_iterator firstBegin,
+                            typename View<ConfusionMatrix<StatisticType>>::const_iterator firstEnd,
+                            const CompleteIndexVector& firstIndices,
+                            typename View<ConfusionMatrix<StatisticType>>::const_iterator secondBegin,
+                            typename View<ConfusionMatrix<StatisticType>>::const_iterator secondEnd);
 
             /**
              * Sets the confusion matrix elements in this vector to the difference `first - second` between the elements
@@ -240,8 +247,11 @@ namespace seco {
              * @param secondBegin   A `const_iterator` to the beginning of the second vector
              * @param secondEnd     A `const_iterator` to the end of the second vector
              */
-            void difference(const_iterator firstBegin, const_iterator firstEnd, const PartialIndexVector& firstIndices,
-                            const_iterator secondBegin, const_iterator secondEnd);
+            void difference(typename View<ConfusionMatrix<StatisticType>>::const_iterator firstBegin,
+                            typename View<ConfusionMatrix<StatisticType>>::const_iterator firstEnd,
+                            const PartialIndexVector& firstIndices,
+                            typename View<ConfusionMatrix<StatisticType>>::const_iterator secondBegin,
+                            typename View<ConfusionMatrix<StatisticType>>::const_iterator secondEnd);
     };
 
 }

@@ -12,7 +12,7 @@ namespace seco {
      */
     template<typename LabelMatrix>
     class DenseDecomposableStatistics final
-        : public AbstractDecomposableStatistics<LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector,
+        : public AbstractDecomposableStatistics<LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
                                                 IDecomposableRuleEvaluationFactory> {
         public:
 
@@ -31,7 +31,7 @@ namespace seco {
                                         std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr,
                                         std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
                                         const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory)
-                : AbstractDecomposableStatistics<LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector,
+                : AbstractDecomposableStatistics<LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
                                                  IDecomposableRuleEvaluationFactory>(
                     labelMatrix, std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr),
                     ruleEvaluationFactory) {}
