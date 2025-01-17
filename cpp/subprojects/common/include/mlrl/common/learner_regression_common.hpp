@@ -28,7 +28,7 @@ class AbstractRegressionRuleLearner : virtual public IRegressionRuleLearner {
 
         virtual ~AbstractRegressionRuleLearner() override {}
 
-        std::unique_ptr<ITrainingResult> fit(const IFeatureInfo& featureInfo,
+        std::unique_ptr<ITrainingResult> fit(const IExampleWeights& exampleWeights, const IFeatureInfo& featureInfo,
                                              const IColumnWiseFeatureMatrix& featureMatrix,
                                              const IRowWiseRegressionMatrix& regressionMatrix) const override {
             // Create stopping criteria...
@@ -75,8 +75,8 @@ class AbstractRegressionRuleLearner : virtual public IRegressionRuleLearner {
             // Create instance sampling...
             std::unique_ptr<IRegressionInstanceSamplingFactory> instanceSamplingFactoryPtr =
               configurator_.createRegressionInstanceSamplingFactory();
-            std::unique_ptr<IInstanceSampling> instanceSamplingPtr = partition.createInstanceSampling(
-              *instanceSamplingFactoryPtr, regressionMatrix, statisticsProviderPtr->get());
+            std::unique_ptr<IInstanceSampling> instanceSamplingPtr = exampleWeights.createInstanceSampling(
+              *instanceSamplingFactoryPtr, regressionMatrix, statisticsProviderPtr->get(), partition);
 
             // Create feature sampling...
             std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr =

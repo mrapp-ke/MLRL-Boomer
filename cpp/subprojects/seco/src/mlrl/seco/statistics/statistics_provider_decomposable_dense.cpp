@@ -6,14 +6,27 @@
 
 namespace seco {
 
+    template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector,
+             typename RuleEvaluationFactory, typename WeightVector, typename IndexVector>
+    static inline std::unique_ptr<IStatisticsSubset> createStatisticsSubsetInternally(
+      const LabelMatrix& labelMatrix, const CoverageMatrix& coverageMatrix,
+      const BinarySparseArrayVector& majorityLabelVector, const RuleEvaluationFactory& ruleEvaluationFactory,
+      const WeightVector& weights, const IndexVector& outputIndices) {
+        std::unique_ptr<ConfusionMatrixVector> totalSumVectorPtr =
+          std::make_unique<ConfusionMatrixVector>(labelMatrix.numRows, true);
+        return std::make_unique<StatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                 RuleEvaluationFactory, WeightVector, IndexVector>>(
+          std::move(totalSumVectorPtr), labelMatrix, coverageMatrix, majorityLabelVector, ruleEvaluationFactory,
+          weights, outputIndices);
+    }
+
     /**
      * Provides access to the elements of confusion matrices that are computed independently for each output and are
      * stored using dense data structures.
      */
     template<typename LabelMatrix>
     class DenseDecomposableStatistics final
-        : public AbstractDecomposableStatistics<LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector,
-                                                IDecomposableRuleEvaluationFactory> {
+        : public AbstractDecomposableStatistics<LabelMatrix, DenseCoverageMatrix, IDecomposableRuleEvaluationFactory> {
         public:
 
             /**
@@ -31,10 +44,257 @@ namespace seco {
                                         std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr,
                                         std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
                                         const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory)
-                : AbstractDecomposableStatistics<LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector,
-                                                 IDecomposableRuleEvaluationFactory>(
+                : AbstractDecomposableStatistics<LabelMatrix, DenseCoverageMatrix, IDecomposableRuleEvaluationFactory>(
                     labelMatrix, std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr),
                     ruleEvaluationFactory) {}
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
+                                                            const EqualWeightVector& weights) const override {
+                return createStatisticsSubsetInternally<
+                  LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
+                  IDecomposableRuleEvaluationFactory, EqualWeightVector, CompleteIndexVector>(
+                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
+                  *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
+                                                            const EqualWeightVector& weights) const override {
+                return createStatisticsSubsetInternally<
+                  LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
+                  IDecomposableRuleEvaluationFactory, EqualWeightVector, PartialIndexVector>(
+                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
+                  *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
+                                                            const BitWeightVector& weights) const override {
+                return createStatisticsSubsetInternally<
+                  LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
+                  IDecomposableRuleEvaluationFactory, BitWeightVector, CompleteIndexVector>(
+                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
+                  *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
+                                                            const BitWeightVector& weights) const override {
+                return createStatisticsSubsetInternally<
+                  LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
+                  IDecomposableRuleEvaluationFactory, BitWeightVector, PartialIndexVector>(
+                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
+                  *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
+                                                            const DenseWeightVector<uint32>& weights) const override {
+                return createStatisticsSubsetInternally<
+                  LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
+                  IDecomposableRuleEvaluationFactory, DenseWeightVector<uint32>, CompleteIndexVector>(
+                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
+                  *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
+                                                            const DenseWeightVector<uint32>& weights) const override {
+                return createStatisticsSubsetInternally<
+                  LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
+                  IDecomposableRuleEvaluationFactory, DenseWeightVector<uint32>, PartialIndexVector>(
+                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
+                  *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
+                                                            const DenseWeightVector<float32>& weights) const override {
+                return createStatisticsSubsetInternally<
+                  LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<float32>,
+                  IDecomposableRuleEvaluationFactory, DenseWeightVector<float32>, CompleteIndexVector>(
+                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
+                  *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
+                                                            const DenseWeightVector<float32>& weights) const override {
+                return createStatisticsSubsetInternally<
+                  LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<float32>,
+                  IDecomposableRuleEvaluationFactory, DenseWeightVector<float32>, PartialIndexVector>(
+                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
+                  *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+              const CompleteIndexVector& outputIndices,
+              const OutOfSampleWeightVector<EqualWeightVector>& weights) const override {
+                return createStatisticsSubsetInternally<
+                  LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
+                  IDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<EqualWeightVector>, CompleteIndexVector>(
+                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
+                  *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+              const PartialIndexVector& outputIndices,
+              const OutOfSampleWeightVector<EqualWeightVector>& weights) const override {
+                return createStatisticsSubsetInternally<
+                  LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
+                  IDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<EqualWeightVector>, PartialIndexVector>(
+                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
+                  *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+              const CompleteIndexVector& outputIndices,
+              const OutOfSampleWeightVector<BitWeightVector>& weights) const override {
+                return createStatisticsSubsetInternally<
+                  LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
+                  IDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<BitWeightVector>, CompleteIndexVector>(
+                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
+                  *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+              const PartialIndexVector& outputIndices,
+              const OutOfSampleWeightVector<BitWeightVector>& weights) const override {
+                return createStatisticsSubsetInternally<
+                  LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
+                  IDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<BitWeightVector>, PartialIndexVector>(
+                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
+                  *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+              const CompleteIndexVector& outputIndices,
+              const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override {
+                return createStatisticsSubsetInternally<
+                  LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
+                  IDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<DenseWeightVector<uint32>>,
+                  CompleteIndexVector>(this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
+                                       *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+              const PartialIndexVector& outputIndices,
+              const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override {
+                return createStatisticsSubsetInternally<
+                  LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
+                  IDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<DenseWeightVector<uint32>>,
+                  PartialIndexVector>(this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
+                                      *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+              const CompleteIndexVector& outputIndices,
+              const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override {
+                return createStatisticsSubsetInternally<
+                  LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
+                  IDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<DenseWeightVector<float32>>,
+                  CompleteIndexVector>(this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
+                                       *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+              const PartialIndexVector& outputIndices,
+              const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override {
+                return createStatisticsSubsetInternally<
+                  LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
+                  IDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<DenseWeightVector<float32>>,
+                  PartialIndexVector>(this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
+                                      *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createWeightedStatistics`
+             */
+            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
+              const EqualWeightVector& weights) const override {
+                return std::make_unique<
+                  WeightedStatistics<LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
+                                     IDecomposableRuleEvaluationFactory, EqualWeightVector>>(
+                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
+                  *this->ruleEvaluationFactory_, weights);
+            }
+
+            /**
+             * @see `IStatistics::createWeightedStatistics`
+             */
+            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
+              const BitWeightVector& weights) const override {
+                return std::make_unique<
+                  WeightedStatistics<LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
+                                     IDecomposableRuleEvaluationFactory, BitWeightVector>>(
+                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
+                  *this->ruleEvaluationFactory_, weights);
+            }
+
+            /**
+             * @see `IStatistics::createWeightedStatistics`
+             */
+            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
+              const DenseWeightVector<uint32>& weights) const override {
+                return std::make_unique<
+                  WeightedStatistics<LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
+                                     IDecomposableRuleEvaluationFactory, DenseWeightVector<uint32>>>(
+                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
+                  *this->ruleEvaluationFactory_, weights);
+            }
+
+            /**
+             * @see `IStatistics::createWeightedStatistics`
+             */
+            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
+              const DenseWeightVector<float32>& weights) const override {
+                return std::make_unique<
+                  WeightedStatistics<LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<float32>,
+                                     IDecomposableRuleEvaluationFactory, DenseWeightVector<float32>>>(
+                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
+                  *this->ruleEvaluationFactory_, weights);
+            }
     };
 
     static inline std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> createStatistics(

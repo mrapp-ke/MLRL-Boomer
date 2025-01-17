@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/common/input/example_weights.hpp"
 #include "mlrl/common/input/feature_info.hpp"
 #include "mlrl/common/input/feature_matrix_column_wise.hpp"
 #include "mlrl/common/input/feature_matrix_row_wise.hpp"
@@ -27,6 +28,8 @@ class MLRLCOMMON_API IClassificationRuleLearner {
         /**
          * Applies the rule learner to given training examples and corresponding ground truth labels.
          *
+         * @param exampleWeights    A reference to an object of type `IExampleWeights` that provides access to the
+         *                          weights of the training examples
          * @param featureInfo       A reference to an object of type `IFeatureInfo` that provides information about the
          *                          types of individual features
          * @param featureMatrix     A reference to an object of type `IColumnWiseFeatureMatrix` that provides
@@ -36,7 +39,8 @@ class MLRLCOMMON_API IClassificationRuleLearner {
          * @return                  An unique pointer to an object of type `ITrainingResult` that provides access to the
          *                          results of fitting the rule learner to the training data
          */
-        virtual std::unique_ptr<ITrainingResult> fit(const IFeatureInfo& featureInfo,
+        virtual std::unique_ptr<ITrainingResult> fit(const IExampleWeights& exampleWeights,
+                                                     const IFeatureInfo& featureInfo,
                                                      const IColumnWiseFeatureMatrix& featureMatrix,
                                                      const IRowWiseLabelMatrix& labelMatrix) const = 0;
 
