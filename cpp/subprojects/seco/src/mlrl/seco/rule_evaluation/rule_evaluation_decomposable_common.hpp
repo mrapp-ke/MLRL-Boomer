@@ -24,10 +24,11 @@ namespace seco {
                                                      const ConfusionMatrix<StatisticType>& coveredConfusionMatrix,
                                                      const IHeuristic& heuristic) {
         const ConfusionMatrix<StatisticType> uncoveredConfusionMatrix = totalConfusionMatrix - coveredConfusionMatrix;
-        return heuristic.evaluateConfusionMatrix(coveredConfusionMatrix.in, coveredConfusionMatrix.ip,
-                                                 coveredConfusionMatrix.rn, coveredConfusionMatrix.rp,
-                                                 uncoveredConfusionMatrix.in, uncoveredConfusionMatrix.ip,
-                                                 uncoveredConfusionMatrix.rn, uncoveredConfusionMatrix.rp);
+        return heuristic.evaluateConfusionMatrix(
+          (float32) coveredConfusionMatrix.in, (float32) coveredConfusionMatrix.ip, (float32) coveredConfusionMatrix.rn,
+          (float32) coveredConfusionMatrix.rp, (float32) uncoveredConfusionMatrix.in,
+          (float32) uncoveredConfusionMatrix.ip, (float32) uncoveredConfusionMatrix.rn,
+          (float32) uncoveredConfusionMatrix.rp);
     }
 
 }
