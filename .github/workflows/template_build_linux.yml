@@ -34,7 +34,7 @@ jobs:
         with:
           key: ${{ runner.os }}-test-build-ccache-${{ inputs.subproject }}
       - name: Compile via GCC
-        run: SUBPROJECTS=${{ inputs.subproject }} TEST_SUPPORT=enabled ./build compile_cpp
+        run: SUBPROJECTS=${{ inputs.subproject }} TEST_SUPPORT=enabled ./build compile
       - name: Test C++ code
         if: ${{ inputs.run_cpp_tests == true }}
         run: SUBPROJECTS=${{ inputs.subproject }} ./build tests_cpp
