@@ -5,6 +5,8 @@
 
 #include "mlrl/common/sampling/partition_bi.hpp"
 #include "mlrl/common/sampling/weight_vector_bit.hpp"
+#include "mlrl/common/sampling/weight_vector_dense.hpp"
+#include "mlrl/common/sampling/weight_vector_equal.hpp"
 
 #include <memory>
 #include <vector>
@@ -41,17 +43,34 @@ class ExampleWiseStratification final {
                                   IndexIterator indicesBegin, IndexIterator indicesEnd);
 
         /**
-         * Randomly selects a stratified sample of the available examples and sets their weights to 1, while the
-         * remaining weights are set to 0.
+         * Randomly selects a stratified sample of the available examples and sets the corresponding weights in a
+         * `BitWeightVector` to the value in the given iterator, while the remaining weights are set to 0.
          *
-         * @param weightVector  A reference to an object of type `BitWeightVector`, the weights should be written to
-         * @param sampleSize    The fraction of the available examples to be selected
-         * @param minSamples    The minimum number of examples to be included in the sample. Must be at least 1
-         * @param maxSamples    The maximum number of examples to be included in the sample. Must be at least
-         *                      `minSamples` or 0, if the number of examples should not be restricted
+         * @param weightVector      A reference to an object of type `BitWeightVector`, the weights should be written to
+         * @param weightIterator    An iterator that provides access to the weights of individual training examples
+         * @param sampleSize        The fraction of the available examples to be selected
+         * @param minSamples        The minimum number of examples to be included in the sample. Must be at least 1
+         * @param maxSamples        The maximum number of examples to be included in the sample. Must be at least
+         *                          `minSamples` or 0, if the number of examples should not be restricted
          */
-        void sampleWeights(BitWeightVector& weightVector, float32 sampleSize, uint32 minSamples,
-                           uint32 maxSamples) const;
+        void sampleWeights(BitWeightVector& weightVector, EqualWeightVector::const_iterator weightIterator,
+                           float32 sampleSize, uint32 minSamples, uint32 maxSamples) const;
+
+        /**
+         * Randomly selects a stratified sample of the available examples and sets the corresponding weights in a
+         * `DenseWeightVector<float32>` to the value in the given iterator, while the remaining weights are set to 0.
+         *
+         * @param weightVector      A reference to an object of type `DenseWeightVector<float32>`, the weights should be
+         *                          written to
+         * @param weightIterator    An iterator that provides access to the weights of individual training examples
+         * @param sampleSize        The fraction of the available examples to be selected
+         * @param minSamples        The minimum number of examples to be included in the sample. Must be at least 1
+         * @param maxSamples        The maximum number of examples to be included in the sample. Must be at least
+         *                          `minSamples` or 0, if the number of examples should not be restricted
+         */
+        void sampleWeights(DenseWeightVector<float32>& weightVector,
+                           DenseWeightVector<float32>::const_iterator weightIterator, float32 sampleSize,
+                           uint32 minSamples, uint32 maxSamples) const;
 
         /**
          * Randomly splits the available examples into two distinct sets and updates a given `BiPartition` accordingly.

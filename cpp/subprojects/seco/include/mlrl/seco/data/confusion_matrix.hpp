@@ -7,7 +7,10 @@
 
 /**
  * A confusion matrix.
+ *
+ * @tparam StatisticType The type of the elements stored in the confusion matrix
  */
+template<typename StatisticType>
 struct ConfusionMatrix final {
     public:
 
@@ -16,22 +19,22 @@ struct ConfusionMatrix final {
         /**
          * Irrelevant labels for which a rule predicts negatively.
          */
-        uint32 in;
+        StatisticType in;
 
         /**
          * Irrelevant labels for which a rule predicts positively.
          */
-        uint32 ip;
+        StatisticType ip;
 
         /**
          * Relevant labels for which a rule predicts negatively.
          */
-        uint32 rn;
+        StatisticType rn;
 
         /**
          * Relevant labels for which a rule predicts positively.
          */
-        uint32 rp;
+        StatisticType rp;
 
         /**
          * Assigns a specific value to the elements of this confusion matrix.
@@ -39,7 +42,7 @@ struct ConfusionMatrix final {
          * @param rhs   A reference to the value to be assigned
          * @return      A reference to the modified confusion matrix
          */
-        ConfusionMatrix& operator=(const uint32& rhs) {
+        ConfusionMatrix<StatisticType>& operator=(const StatisticType& rhs) {
             in = rhs;
             ip = rhs;
             rn = rhs;
@@ -53,7 +56,7 @@ struct ConfusionMatrix final {
          * @param rhs   A reference to the value to be added
          * @return      A reference to the modified confusion matrix
          */
-        ConfusionMatrix& operator+=(const uint32& rhs) {
+        ConfusionMatrix<StatisticType>& operator+=(const StatisticType& rhs) {
             in += rhs;
             ip += rhs;
             rn += rhs;
@@ -69,7 +72,7 @@ struct ConfusionMatrix final {
          * @param rhs   A reference to the value to be added
          * @return      The confusion matrix that has been created
          */
-        friend ConfusionMatrix operator+(ConfusionMatrix lhs, const uint32& rhs) {
+        friend ConfusionMatrix<StatisticType> operator+(ConfusionMatrix<StatisticType> lhs, const StatisticType& rhs) {
             lhs += rhs;
             return lhs;
         }
@@ -80,7 +83,7 @@ struct ConfusionMatrix final {
          * @param rhs   A reference to the confusion matrix, whose elements should be added
          * @return      A reference to the modified confusion matrix
          */
-        ConfusionMatrix& operator+=(const ConfusionMatrix& rhs) {
+        ConfusionMatrix<StatisticType>& operator+=(const ConfusionMatrix<StatisticType>& rhs) {
             in += rhs.in;
             ip += rhs.ip;
             rn += rhs.rn;
@@ -96,7 +99,8 @@ struct ConfusionMatrix final {
          * @param rhs   A reference to the confusion matrix, whose elements should be added
          * @return      The confusion matrix that has been created
          */
-        friend ConfusionMatrix operator+(ConfusionMatrix lhs, const ConfusionMatrix& rhs) {
+        friend ConfusionMatrix<StatisticType> operator+(ConfusionMatrix<StatisticType> lhs,
+                                                        const ConfusionMatrix<StatisticType>& rhs) {
             lhs += rhs;
             return lhs;
         }
@@ -107,7 +111,7 @@ struct ConfusionMatrix final {
          * @param rhs   A reference to the value to be subtracted
          * @return      A reference to the modified confusion matrix
          */
-        ConfusionMatrix& operator-=(const uint32& rhs) {
+        ConfusionMatrix<StatisticType>& operator-=(const StatisticType& rhs) {
             in -= rhs;
             ip -= rhs;
             rn -= rhs;
@@ -123,7 +127,7 @@ struct ConfusionMatrix final {
          * @param rhs   A reference to the value to be subtracted
          * @return      The confusion matrix that has been created
          */
-        friend ConfusionMatrix operator-(ConfusionMatrix lhs, const uint32& rhs) {
+        friend ConfusionMatrix<StatisticType> operator-(ConfusionMatrix<StatisticType> lhs, const StatisticType& rhs) {
             lhs -= rhs;
             return lhs;
         }
@@ -134,7 +138,7 @@ struct ConfusionMatrix final {
          * @param rhs   A reference to the confusion matrix, whose elements should be subtracted
          * @return      A reference to the modified confusion matrix
          */
-        ConfusionMatrix& operator-=(const ConfusionMatrix& rhs) {
+        ConfusionMatrix<StatisticType>& operator-=(const ConfusionMatrix<StatisticType>& rhs) {
             in -= rhs.in;
             ip -= rhs.ip;
             rn -= rhs.rn;
@@ -150,7 +154,8 @@ struct ConfusionMatrix final {
          * @param rhs   A reference to the value to be subtracted
          * @return      The confusion matrix that has been created
          */
-        friend ConfusionMatrix operator-(ConfusionMatrix lhs, const ConfusionMatrix& rhs) {
+        friend ConfusionMatrix<StatisticType> operator-(ConfusionMatrix<StatisticType> lhs,
+                                                        const ConfusionMatrix<StatisticType>& rhs) {
             lhs -= rhs;
             return lhs;
         }
@@ -161,7 +166,7 @@ struct ConfusionMatrix final {
          * @param rhs   A reference to the value to be multiplied by
          * @return      A reference to the modified confusion matrix
          */
-        ConfusionMatrix& operator*=(const uint32& rhs) {
+        ConfusionMatrix<StatisticType>& operator*=(const StatisticType& rhs) {
             in *= rhs;
             ip *= rhs;
             rn *= rhs;
@@ -177,7 +182,7 @@ struct ConfusionMatrix final {
          * @param rhs   A reference to the value to be multiplied by
          * @return      The confusion matrix that has been created
          */
-        friend ConfusionMatrix operator*(ConfusionMatrix lhs, const uint32& rhs) {
+        friend ConfusionMatrix<StatisticType> operator*(ConfusionMatrix<StatisticType> lhs, const StatisticType& rhs) {
             lhs *= rhs;
             return lhs;
         }
@@ -189,7 +194,7 @@ struct ConfusionMatrix final {
          * @param majorityLabel The prediction of the default rule. The prediction is assumed to be the inverse
          * @return              A reference to a confusion matrix element
          */
-        uint32& getElement(bool trueLabel, bool majorityLabel) {
+        StatisticType& getElement(bool trueLabel, bool majorityLabel) {
             if (trueLabel) {
                 return majorityLabel ? rn : rp;
             } else {

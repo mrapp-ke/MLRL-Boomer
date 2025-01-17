@@ -15,6 +15,7 @@ from sklearn.base import BaseEstimator as SkLearnBaseEstimator
 from sklearn.utils.validation import check_array, validate_data
 
 from mlrl.common.arrays import SparseFormat, enforce_2d, enforce_dense, is_sparse, is_sparse_and_memory_efficient
+from mlrl.common.cython.example_weights import EqualExampleWeights, ExampleWeights, RealValuedExampleWeights
 from mlrl.common.cython.feature_info import EqualFeatureInfo, FeatureInfo, MixedFeatureInfo
 from mlrl.common.cython.feature_matrix import CContiguousFeatureMatrix, ColumnWiseFeatureMatrix, CscFeatureMatrix, \
     CsrFeatureMatrix, FortranContiguousFeatureMatrix, RowWiseFeatureMatrix
@@ -106,6 +107,8 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
     """
     A scikit-learn implementation of a rule learning algorithm.
     """
+
+    KWARG_EXAMPLE_WEIGHTS = 'sample_weights'
 
     KWARG_SPARSE_FEATURE_VALUE = 'sparse_feature_value'
 
@@ -203,12 +206,15 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
                                             of all nominal features
         :keyword ordinal_feature_indices:   A `numpy.ndarray`, shape `(num_ordinal_features)`, that stores the indices
                                             of all ordinal features
+        :keyword sample_weights:            A `numpy.ndarray`, shape `(num_examples)`, that stores the weights of
+                                            individual training examples
         """
         feature_matrix = self._create_column_wise_feature_matrix(x, **kwargs)
         output_matrix = self.__create_row_wise_output_matrix(y)
         feature_info = self._create_feature_info(feature_matrix.get_num_features(), **kwargs)
+        example_weights = self._create_example_weights(feature_matrix.get_num_examples(), **kwargs)
         learner = self._create_learner()
-        training_result = learner.fit(feature_info, feature_matrix, output_matrix)
+        training_result = learner.fit(example_weights, feature_info, feature_matrix, output_matrix)
         self.num_outputs_ = training_result.num_outputs
         self.output_space_info_ = training_result.output_space_info
         self.marginal_probability_calibration_model_ = training_result.marginal_probability_calibration_model
@@ -285,7 +291,11 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
 
         if feature_indices:
             feature_indices = enforce_dense(feature_indices, order='C', dtype=Uint32)
-            return check_array(feature_indices, ensure_2d=False, dtype=Uint32, input_name=input_name)
+            return check_array(feature_indices,
+                               ensure_2d=False,
+                               dtype=Uint32,
+                               ensure_non_negative=True,
+                               input_name=input_name)
 
         return np.empty(shape=0, dtype=Uint32)
 
@@ -312,6 +322,27 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         if num_nominal_features == num_features:
             return EqualFeatureInfo.create_nominal()
         return MixedFeatureInfo(num_features, ordinal_feature_indices, nominal_feature_indices)
+
+    def _create_example_weights(self, num_examples: int, **kwargs) -> ExampleWeights:
+        """
+        Creates and returns the `ExampleWeights` that provide access to the weights of individual training examples.
+
+        :param num_examples:    The total number of available training examples
+        :return:                A `np.ndarray`, shape `(num_examples)`, that provides access to the weights of
+                                individual training examples
+        """
+        example_weights = kwargs.get(self.KWARG_EXAMPLE_WEIGHTS)
+
+        if example_weights:
+            example_weights = enforce_dense(example_weights, order='C', dtype=Float32)
+            example_weights = check_array(example_weights,
+                                          ensure_2d=False,
+                                          dtype=Float32,
+                                          ensure_non_negative=True,
+                                          input_name=self.KWARG_EXAMPLE_WEIGHTS)
+            return RealValuedExampleWeights(example_weights)
+
+        return EqualExampleWeights(num_examples)
 
     def _create_column_wise_feature_matrix(self, x, **kwargs) -> ColumnWiseFeatureMatrix:
         """
@@ -460,7 +491,8 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
     def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool, **_) -> Any:
         y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=Uint8)),
                         accept_sparse=sparse_format.value,
-                        dtype=Uint8)
+                        dtype=Uint8,
+                        ensure_non_negative=True)
 
         if is_sparse(y):
             log.debug('A sparse matrix is used to store the labels of the training examples')

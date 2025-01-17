@@ -172,7 +172,7 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void add(const DenseNonDecomposableStatisticView& view, uint32 row, uint32 weight);
+            void add(const DenseNonDecomposableStatisticView& view, uint32 row, float64 weight);
 
             /**
              * Removes all gradients and Hessians in a single row of a `DenseNonDecomposableStatisticView` from this
@@ -193,7 +193,7 @@ namespace boosting {
              * @param row       The index of the row to be removed from this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void remove(const DenseNonDecomposableStatisticView& view, uint32 row, uint32 weight);
+            void remove(const DenseNonDecomposableStatisticView& view, uint32 row, float64 weight);
 
             /**
              * Adds certain gradients and Hessians in another vector, whose positions are given as a
@@ -231,7 +231,7 @@ namespace boosting {
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
             void addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
-                             const CompleteIndexVector& indices, uint32 weight);
+                             const CompleteIndexVector& indices, float64 weight);
 
             /**
              * Adds certain gradients and Hessians in another vector, whose positions are given as a
@@ -245,7 +245,7 @@ namespace boosting {
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
             void addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
-                             const PartialIndexVector& indices, uint32 weight);
+                             const PartialIndexVector& indices, float64 weight);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients

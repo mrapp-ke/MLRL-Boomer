@@ -107,6 +107,18 @@ class IPrediction : public IIndexVector {
          * stored in this vector.
          *
          * @param statistics    A reference to an object of type `IStatistics` that should be used to create the subset
+         * @param weights       A reference to an object of type `DenseWeightVector<float32>` that provides access to
+         *                      the weights of individual training examples
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
+          const IStatistics& statistics, const DenseWeightVector<float32>& weights) const = 0;
+
+        /**
+         * Creates and returns a new subset of the given statistics that only contains the outputs whose indices are
+         * stored in this vector.
+         *
+         * @param statistics    A reference to an object of type `IStatistics` that should be used to create the subset
          * @param weights       A reference to an object of type `OutOfSampleWeightVector<EqualWeightVector>` that
          *                      provides access to the weights of individual training examples
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
@@ -137,6 +149,18 @@ class IPrediction : public IIndexVector {
          */
         virtual std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
           const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const = 0;
+
+        /**
+         * Creates and returns a new subset of the given statistics that only contains the outputs whose indices are
+         * stored in this vector.
+         *
+         * @param statistics    A reference to an object of type `IStatistics` that should be used to create the subset
+         * @param weights       A reference to an object of type `OutOfSampleWeightVector<DenseWeightVector<float32>>`
+         *                      that provides access to the weights of individual training examples
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
+          const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const = 0;
 
         /**
          * Creates and returns a head that contains the scores that are stored by this prediction.

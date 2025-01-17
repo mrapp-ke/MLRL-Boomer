@@ -13,9 +13,10 @@ namespace boosting {
     /**
      * An individual label space statistic that consists of a gradient, a Hessian and a weight.
      *
-     * @tparam T The type of the gradient and Hessian
+     * @tparam StatisticType    The type of the gradient and Hessian
+     * @tparam WeightType       The type of the weight
      */
-    template<typename T>
+    template<typename StatisticType, typename WeightType>
     struct SparseStatistic final {
         public:
 
@@ -26,61 +27,23 @@ namespace boosting {
              * @param hessian   The Hessian
              * @param weight    The weight
              */
-            SparseStatistic(T gradient, T hessian, T weight) : gradient(gradient), hessian(hessian), weight(weight) {}
+            SparseStatistic(StatisticType gradient, StatisticType hessian, WeightType weight)
+                : gradient(gradient), hessian(hessian), weight(weight) {}
 
             /**
              * The gradient.
              */
-            T gradient;
+            StatisticType gradient;
 
             /**
              * The Hessian.
              */
-            T hessian;
+            StatisticType hessian;
 
             /**
              * The weight.
              */
-            T weight;
-
-            /**
-             * Assigns a specific value to the gradient, Hessian and weight of this statistic.
-             *
-             * @param rhs   A reference to the value to be assigned
-             * @return      A reference to the modified statistic
-             */
-            SparseStatistic<T>& operator=(const T& rhs) {
-                gradient = rhs;
-                hessian = rhs;
-                weight = rhs;
-                return *this;
-            }
-
-            /**
-             * Adds a specific value to the gradient, Hessian and weight of this statistic.
-             *
-             * @param rhs   A reference to the value to be added
-             * @return      A reference to the modified statistic
-             */
-            SparseStatistic<T>& operator+=(const T& rhs) {
-                gradient += rhs;
-                hessian += rhs;
-                weight += rhs;
-                return *this;
-            }
-
-            /**
-             * Creates and returns a new statistic that results from adding a specific value to the gradient, Hessian
-             * and weight of an existing statistic.
-             *
-             * @param lhs   The original statistic
-             * @param rhs   A reference to the value to be added
-             * @return      The statistic that has been created
-             */
-            friend SparseStatistic<T> operator+(SparseStatistic<T> lhs, const T& rhs) {
-                lhs += rhs;
-                return lhs;
-            }
+            WeightType weight;
 
             /**
              * Adds the gradient, Hessian and weight of a given statistic to the gradient, Hessian and weight of this
@@ -89,7 +52,8 @@ namespace boosting {
              * @param rhs   A reference to the statistic, whose gradient, Hessian and weight should be added
              * @return      A reference to the modified statistic
              */
-            SparseStatistic<T>& operator+=(const SparseStatistic<T>& rhs) {
+            SparseStatistic<StatisticType, WeightType>& operator+=(
+              const SparseStatistic<StatisticType, WeightType>& rhs) {
                 gradient += rhs.gradient;
                 hessian += rhs.hessian;
                 weight += rhs.weight;
@@ -104,34 +68,9 @@ namespace boosting {
              * @param rhs   A reference to the statistic, whose gradient, Hessian and weight should be added
              * @return      The statistic that has been created
              */
-            friend SparseStatistic<T> operator+(SparseStatistic<T> lhs, const SparseStatistic<T>& rhs) {
+            friend SparseStatistic<StatisticType, WeightType> operator+(
+              SparseStatistic<StatisticType, WeightType> lhs, const SparseStatistic<StatisticType, WeightType>& rhs) {
                 lhs += rhs;
-                return lhs;
-            }
-
-            /**
-             * Subtracts a specific value from the gradient, Hessian and weight of this statistic.
-             *
-             * @param rhs   A reference to the value to be subtracted
-             * @return      A reference to the modified statistic
-             */
-            SparseStatistic<T>& operator-=(const T& rhs) {
-                gradient -= rhs;
-                hessian -= rhs;
-                weight -= rhs;
-                return *this;
-            }
-
-            /**
-             * Creates and returns a new statistic that results from subtracting a specific value from the gradient,
-             * Hessian and weight of an existing statistic.
-             *
-             * @param lhs   The original statistic
-             * @param rhs   A reference to the value to be subtracted
-             * @return      The statistic that has been created
-             */
-            friend SparseStatistic<T> operator-(SparseStatistic<T> lhs, const T& rhs) {
-                lhs -= rhs;
                 return lhs;
             }
 
@@ -142,7 +81,8 @@ namespace boosting {
              * @param rhs   A reference to the statistic, whose gradient, Hessian and weight should be subtracted
              * @return      A reference to the modified statistic
              */
-            SparseStatistic<T>& operator-=(const SparseStatistic<T>& rhs) {
+            SparseStatistic<StatisticType, WeightType>& operator-=(
+              const SparseStatistic<StatisticType, WeightType>& rhs) {
                 gradient -= rhs.gradient;
                 hessian -= rhs.hessian;
                 weight -= rhs.weight;
@@ -157,45 +97,23 @@ namespace boosting {
              * @param rhs   A reference to the value to be subtracted
              * @return      The statistic that has been created
              */
-            friend SparseStatistic<T> operator-(SparseStatistic<T> lhs, const SparseStatistic<T>& rhs) {
+            friend SparseStatistic<StatisticType, WeightType> operator-(
+              SparseStatistic<StatisticType, WeightType> lhs, const SparseStatistic<StatisticType, WeightType>& rhs) {
                 lhs -= rhs;
-                return lhs;
-            }
-
-            /**
-             * Multiplies the gradient, Hessian and weight of this statistic with a specific value.
-             *
-             * @param rhs   A reference to the value to be multiplied by
-             * @return      A reference to the modified statistic
-             */
-            SparseStatistic<T>& operator*=(const T& rhs) {
-                gradient *= rhs;
-                hessian *= rhs;
-                weight *= rhs;
-                return *this;
-            }
-
-            /**
-             * Creates and returns a new statistic that results from multiplying the gradient, Hessian and weight of an
-             * existing statistic with a specific value.
-             *
-             * @param lhs   The original statistic
-             * @param rhs   A reference to the value to be multiplied by
-             * @return      The statistic that has been created
-             */
-            friend SparseStatistic<T> operator*(SparseStatistic<T> lhs, const T& rhs) {
-                lhs *= rhs;
                 return lhs;
             }
     };
 
     /**
      * An one-dimensional vector that stores aggregated gradients and Hessians that have been calculated using a
-     * decomposable loss function in a C-contiguous array. For each element in the vector a single gradient and Hessian,
-     * as well as the sums of the weights of the aggregated gradients and Hessians, is stored.
+     * decomposable loss function in a C-contiguous array. For each element in the vector, a single gradient and
+     * Hessian, as well as the sums of the weights of the aggregated gradients and Hessians, is stored.
+     *
+     * @tparam WeightType The type of the weights
      */
+    template<typename WeightType>
     class SparseDecomposableStatisticVector final
-        : public ClearableViewDecorator<VectorDecorator<AllocatedVector<SparseStatistic<float64>>>> {
+        : public VectorDecorator<AllocatedVector<SparseStatistic<float64, WeightType>>> {
         private:
 
             /**
@@ -205,9 +123,9 @@ namespace boosting {
             class ConstIterator final {
                 private:
 
-                    View<SparseStatistic<float64>>::const_iterator iterator_;
+                    typename View<SparseStatistic<float64, WeightType>>::const_iterator iterator_;
 
-                    const float64 sumOfWeights_;
+                    const WeightType sumOfWeights_;
 
                 public:
 
@@ -216,7 +134,8 @@ namespace boosting {
                      *                      `SparseDecomposableStatisticVector`
                      * @param sumOfWeights  The sum of the weights of all statistics that have been added to the vector
                      */
-                    ConstIterator(View<SparseStatistic<float64>>::const_iterator iterator, float64 sumOfWeights);
+                    ConstIterator(typename View<SparseStatistic<float64, WeightType>>::const_iterator iterator,
+                                  WeightType sumOfWeights);
 
                     /**
                      * The type that is used to represent the difference between two iterators.
@@ -311,7 +230,7 @@ namespace boosting {
                     difference_type operator-(const ConstIterator& rhs) const;
             };
 
-            float64 sumOfWeights_;
+            WeightType sumOfWeights_;
 
         public:
 
@@ -352,7 +271,7 @@ namespace boosting {
              * @param vector A reference to an object of type `SparseDecomposableStatisticVector` that stores the
              *               gradients and Hessians to be added to this vector
              */
-            void add(const SparseDecomposableStatisticVector& vector);
+            void add(const SparseDecomposableStatisticVector<WeightType>& vector);
 
             /**
              * Adds all gradients and Hessians in a single row of a `SparseSetView` to this vector.
@@ -372,7 +291,7 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void add(const SparseSetView<Statistic<float64>>& view, uint32 row, uint32 weight);
+            void add(const SparseSetView<Statistic<float64>>& view, uint32 row, WeightType weight);
 
             /**
              * Removes all gradients and Hessians in a single row of a `SparseSetView` from this vector.
@@ -392,7 +311,7 @@ namespace boosting {
              * @param row       The index of the row to be removed from this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void remove(const SparseSetView<Statistic<float64>>& view, uint32 row, uint32 weight);
+            void remove(const SparseSetView<Statistic<float64>>& view, uint32 row, WeightType weight);
 
             /**
              * Adds certain gradients and Hessians in a single row of a `SparseSetView`, whose positions are given as a
@@ -430,7 +349,7 @@ namespace boosting {
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
             void addToSubset(const SparseSetView<Statistic<float64>>& view, uint32 row,
-                             const CompleteIndexVector& indices, uint32 weight);
+                             const CompleteIndexVector& indices, WeightType weight);
 
             /**
              * Adds certain gradients and Hessians in a single row of a `SparsesetView`, whose positions are given as a
@@ -444,7 +363,7 @@ namespace boosting {
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
             void addToSubset(const SparseSetView<Statistic<float64>>& view, uint32 row,
-                             const PartialIndexVector& indices, uint32 weight);
+                             const PartialIndexVector& indices, WeightType weight);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
@@ -458,8 +377,9 @@ namespace boosting {
              * @param second        A reference to an object of type `SparseDecomposableStatisticVector` that stores the
              *                      gradients and Hessians in the second vector
              */
-            void difference(const SparseDecomposableStatisticVector& first, const CompleteIndexVector& firstIndices,
-                            const SparseDecomposableStatisticVector& second);
+            void difference(const SparseDecomposableStatisticVector<WeightType>& first,
+                            const CompleteIndexVector& firstIndices,
+                            const SparseDecomposableStatisticVector<WeightType>& second);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
@@ -473,13 +393,14 @@ namespace boosting {
              * @param second        A reference to an object of type `SparseDecomposableStatisticVector` that stores the
              *                      gradients and Hessians in the second vector
              */
-            void difference(const SparseDecomposableStatisticVector& first, const PartialIndexVector& firstIndices,
-                            const SparseDecomposableStatisticVector& second);
+            void difference(const SparseDecomposableStatisticVector<WeightType>& first,
+                            const PartialIndexVector& firstIndices,
+                            const SparseDecomposableStatisticVector<WeightType>& second);
 
             /**
-             * @see `ClearableViewDecorator::clear`
+             * Sets all gradients and Hessians stored in this vector to zero.
              */
-            void clear() override;
+            void clear();
     };
 
 }

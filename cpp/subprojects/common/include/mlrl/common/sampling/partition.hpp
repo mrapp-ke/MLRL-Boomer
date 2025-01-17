@@ -4,6 +4,8 @@
 #pragma once
 
 #include "mlrl/common/rule_refinement/coverage_mask.hpp"
+#include "mlrl/common/sampling/weight_vector_dense.hpp"
+#include "mlrl/common/sampling/weight_vector_equal.hpp"
 #include "mlrl/common/util/quality.hpp"
 
 #include <memory>
@@ -47,17 +49,37 @@ class IPartition {
          * Creates and returns a new instance of the class `IInstanceSampling` that can be used in classification
          * problems, based on the type of this partition.
          *
-         * @param factory       A reference to an object of type `IClassificationInstanceSamplingFactory` that should be
-         *                       used to create the instance
-         * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
-         *                      the labels of individual training examples
-         * @param statistics    A reference to an object of type `IStatistics` that provides access to the statistics
-         *                      which serve as a basis for learning rules
-         * @return              An unique pointer to an object of type `IInstanceSampling` that has been created
+         * @param factory           A reference to an object of type `IClassificationInstanceSamplingFactory` that
+         *                          should be used to create the instance
+         * @param labelMatrix       A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access
+         *                          to the labels of individual training examples
+         * @param statistics        A reference to an object of type `IStatistics` that provides access to the
+         *                          statistics which serve as a basis for learning rules
+         * @param exampleWeights    A reference to an object of type `EqualWeightVector` that provides access to the
+         *                          weights of individual training examples
+         * @return                  An unique pointer to an object of type `IInstanceSampling` that has been created
          */
         virtual std::unique_ptr<IInstanceSampling> createInstanceSampling(
           const IClassificationInstanceSamplingFactory& factory, const IRowWiseLabelMatrix& labelMatrix,
-          IStatistics& statistics) = 0;
+          IStatistics& statistics, const EqualWeightVector& exampleWeights) = 0;
+
+        /**
+         * Creates and returns a new instance of the class `IInstanceSampling` that can be used in classification
+         * problems, based on the type of this partition.
+         *
+         * @param factory           A reference to an object of type `IClassificationInstanceSamplingFactory` that
+         *                          should be used to create the instance
+         * @param labelMatrix       A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access
+         *                          to the labels of individual training examples
+         * @param statistics        A reference to an object of type `IStatistics` that provides access to the
+         *                          statistics which serve as a basis for learning rules
+         * @param exampleWeights    A reference to an object of type `DenseWeightVector<float32>` that provides access
+         *                          to the weights of individual training examples
+         * @return                  An unique pointer to an object of type `IInstanceSampling` that has been created
+         */
+        virtual std::unique_ptr<IInstanceSampling> createInstanceSampling(
+          const IClassificationInstanceSamplingFactory& factory, const IRowWiseLabelMatrix& labelMatrix,
+          IStatistics& statistics, const DenseWeightVector<float32>& exampleWeights) = 0;
 
         /**
          * Creates and returns a new instance of the class `IInstanceSampling` that can be used in regression problems,
@@ -69,11 +91,31 @@ class IPartition {
          *                          access to the regression scores of individual training examples
          * @param statistics        A reference to an object of type `IStatistics` that provides access to the
          *                          statistics which serve as a basis for learning rules
+         * @param exampleWeights    A reference to an object of type `EqualWeightVector` that provides access to the
+         *                          weights of individual training examples
          * @return                  An unique pointer to an object of type `IInstanceSampling` that has been created
          */
         virtual std::unique_ptr<IInstanceSampling> createInstanceSampling(
           const IRegressionInstanceSamplingFactory& factory, const IRowWiseRegressionMatrix& regressionMatrix,
-          IStatistics& statistics) = 0;
+          IStatistics& statistics, const EqualWeightVector& exampleWeights) = 0;
+
+        /**
+         * Creates and returns a new instance of the class `IInstanceSampling` that can be used in regression problems,
+         * based on the type of this partition.
+         *
+         * @param factory           A reference to an object of type `IRegressionInstanceSamplingFactory` that should be
+         *                          used to create the instance
+         * @param regressionMatrix  A reference to an object of type `IRowWiseRegressionMatrix` that provides row-wise
+         *                          access to the regression scores of individual training examples
+         * @param statistics        A reference to an object of type `IStatistics` that provides access to the
+         *                          statistics which serve as a basis for learning rules
+         * @param exampleWeights    A reference to an object of type `DenseWeightVector<float64>` that provides access
+         *                          to the weights of individual training examples
+         * @return                  An unique pointer to an object of type `IInstanceSampling` that has been created
+         */
+        virtual std::unique_ptr<IInstanceSampling> createInstanceSampling(
+          const IRegressionInstanceSamplingFactory& factory, const IRowWiseRegressionMatrix& regressionMatrix,
+          IStatistics& statistics, const DenseWeightVector<float32>& exampleWeights) = 0;
 
         /**
          * Calculates and returns a numerical score that assesses the quality of a rule's prediction for all examples

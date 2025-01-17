@@ -28,7 +28,7 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
 
         virtual ~AbstractClassificationRuleLearner() override {}
 
-        std::unique_ptr<ITrainingResult> fit(const IFeatureInfo& featureInfo,
+        std::unique_ptr<ITrainingResult> fit(const IExampleWeights& exampleWeights, const IFeatureInfo& featureInfo,
                                              const IColumnWiseFeatureMatrix& featureMatrix,
                                              const IRowWiseLabelMatrix& labelMatrix) const override {
             // Create stopping criteria...
@@ -77,8 +77,8 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
             // Create instance sampling...
             std::unique_ptr<IClassificationInstanceSamplingFactory> instanceSamplingFactoryPtr =
               configurator_.createClassificationInstanceSamplingFactory();
-            std::unique_ptr<IInstanceSampling> instanceSamplingPtr =
-              partition.createInstanceSampling(*instanceSamplingFactoryPtr, labelMatrix, statisticsProviderPtr->get());
+            std::unique_ptr<IInstanceSampling> instanceSamplingPtr = exampleWeights.createInstanceSampling(
+              *instanceSamplingFactoryPtr, labelMatrix, statisticsProviderPtr->get(), partition);
 
             // Create feature sampling...
             std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr =

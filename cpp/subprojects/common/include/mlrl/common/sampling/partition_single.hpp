@@ -54,11 +54,21 @@ class SinglePartition final : public IPartition {
 
         std::unique_ptr<IInstanceSampling> createInstanceSampling(const IClassificationInstanceSamplingFactory& factory,
                                                                   const IRowWiseLabelMatrix& labelMatrix,
-                                                                  IStatistics& statistics) override;
+                                                                  IStatistics& statistics,
+                                                                  const EqualWeightVector& exampleWeights) override;
+
+        std::unique_ptr<IInstanceSampling> createInstanceSampling(
+          const IClassificationInstanceSamplingFactory& factory, const IRowWiseLabelMatrix& labelMatrix,
+          IStatistics& statistics, const DenseWeightVector<float32>& exampleWeights) override;
 
         std::unique_ptr<IInstanceSampling> createInstanceSampling(const IRegressionInstanceSamplingFactory& factory,
                                                                   const IRowWiseRegressionMatrix& regressionMatrix,
-                                                                  IStatistics& statistics) override;
+                                                                  IStatistics& statistics,
+                                                                  const EqualWeightVector& exampleWeights) override;
+
+        std::unique_ptr<IInstanceSampling> createInstanceSampling(
+          const IRegressionInstanceSamplingFactory& factory, const IRowWiseRegressionMatrix& regressionMatrix,
+          IStatistics& statistics, const DenseWeightVector<float32>& exampleWeights) override;
 
         Quality evaluateOutOfSample(const IFeatureSubspace& featureSubspace, const CoverageMask& coverageMask,
                                     const IPrediction& head) override;
