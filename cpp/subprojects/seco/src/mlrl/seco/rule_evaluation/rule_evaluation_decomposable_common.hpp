@@ -20,7 +20,7 @@ namespace seco {
      * @return                          The quality that has been calculated
      */
     template<typename StatisticType>
-    static inline float64 calculateOutputWiseQuality(const ConfusionMatrix<StatisticType>& totalConfusionMatrix,
+    static inline float32 calculateOutputWiseQuality(const ConfusionMatrix<StatisticType>& totalConfusionMatrix,
                                                      const ConfusionMatrix<StatisticType>& coveredConfusionMatrix,
                                                      const IHeuristic& heuristic) {
         const ConfusionMatrix<StatisticType> uncoveredConfusionMatrix = totalConfusionMatrix - coveredConfusionMatrix;

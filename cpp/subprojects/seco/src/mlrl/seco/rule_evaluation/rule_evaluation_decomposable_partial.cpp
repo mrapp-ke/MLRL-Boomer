@@ -11,7 +11,7 @@
 
 namespace seco {
 
-    static inline float64 calculateLiftedQuality(float64 quality, uint32 numPredictions,
+    static inline float32 calculateLiftedQuality(float32 quality, uint32 numPredictions,
                                                  const ILiftFunction& liftFunction) {
         return (quality / numPredictions) * liftFunction.calculateLift(numPredictions);
     }
@@ -61,7 +61,7 @@ namespace seco {
                 auto labelIterator =
                   createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
                 DenseScoreVector<PartialIndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
-                float64 sumOfQualities = 0;
+                float32 sumOfQualities = 0;
                 uint32 previousIndex = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
@@ -97,7 +97,7 @@ namespace seco {
 
             DenseScoreVector<PartialIndexVector> scoreVector_;
 
-            SparseArrayVector<std::pair<float64, bool>> sortedVector_;
+            SparseArrayVector<std::pair<float32, bool>> sortedVector_;
 
             const std::unique_ptr<IHeuristic> heuristicPtr_;
 
@@ -129,14 +129,14 @@ namespace seco {
                 typename StatisticVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
                 auto labelIterator =
                   createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
-                SparseArrayVector<std::pair<float64, bool>>::iterator sortedIterator = sortedVector_.begin();
+                SparseArrayVector<std::pair<float32, bool>>::iterator sortedIterator = sortedVector_.begin();
                 uint32 previousIndex = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
                     uint32 index = indexIterator[i];
                     std::advance(labelIterator, index - previousIndex);
-                    IndexedValue<std::pair<float64, bool>>& entry = sortedIterator[i];
-                    std::pair<float64, bool>& pair = entry.value;
+                    IndexedValue<std::pair<float32, bool>>& entry = sortedIterator[i];
+                    std::pair<float32, bool>& pair = entry.value;
                     entry.index = index;
                     pair.first = calculateOutputWiseQuality(totalIterator[index], coveredIterator[i], *heuristicPtr_);
                     pair.second = !(*labelIterator);
@@ -144,20 +144,20 @@ namespace seco {
                 }
 
                 std::sort(sortedIterator, sortedVector_.end(),
-                          [=](const IndexedValue<std::pair<float64, bool>>& a,
-                              const IndexedValue<std::pair<float64, bool>>& b) {
+                          [=](const IndexedValue<std::pair<float32, bool>>& a,
+                              const IndexedValue<std::pair<float32, bool>>& b) {
                     return a.value.first > b.value.first;
                 });
 
-                float64 sumOfQualities = sortedIterator[0].value.first;
-                float64 bestQuality = calculateLiftedQuality(sumOfQualities, 1, *liftFunctionPtr_);
+                float32 sumOfQualities = sortedIterator[0].value.first;
+                float32 bestQuality = calculateLiftedQuality(sumOfQualities, 1, *liftFunctionPtr_);
                 uint32 bestNumPredictions = 1;
-                float64 maxLift = liftFunctionPtr_->getMaxLift(bestNumPredictions);
+                float32 maxLift = liftFunctionPtr_->getMaxLift(bestNumPredictions);
 
                 for (uint32 i = 1; i < numElements; i++) {
                     uint32 numPredictions = i + 1;
                     sumOfQualities += sortedIterator[i].value.first;
-                    float64 quality = calculateLiftedQuality(sumOfQualities, numPredictions, *liftFunctionPtr_);
+                    float32 quality = calculateLiftedQuality(sumOfQualities, numPredictions, *liftFunctionPtr_);
 
                     if (quality > bestQuality) {
                         bestQuality = quality;
@@ -180,7 +180,7 @@ namespace seco {
                 PartialIndexVector::iterator predictedIndexIterator = indexVector_.begin();
 
                 for (uint32 i = 0; i < bestNumPredictions; i++) {
-                    const IndexedValue<std::pair<float64, bool>>& entry = sortedIterator[i];
+                    const IndexedValue<std::pair<float32, bool>>& entry = sortedIterator[i];
                     predictedIndexIterator[i] = entry.index;
                     valueIterator[i] = entry.value.second ? 1 : 0;
                 }

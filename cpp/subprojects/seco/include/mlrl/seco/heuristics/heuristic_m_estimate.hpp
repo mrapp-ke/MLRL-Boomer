@@ -27,7 +27,7 @@ namespace seco {
              *
              * @return The value of the "m" parameter
              */
-            virtual float64 getM() const = 0;
+            virtual float32 getM() const = 0;
 
             /**
              * Sets the value of the "m" parameter.
@@ -36,7 +36,7 @@ namespace seco {
              * @return  A reference to an object of type `IMEstimateConfig` that allows further configuration of the
              *          heuristic
              */
-            virtual IMEstimateConfig& setM(float64 m) = 0;
+            virtual IMEstimateConfig& setM(float32 m) = 0;
     };
 
     /**
@@ -48,15 +48,15 @@ namespace seco {
                                   public IMEstimateConfig {
         private:
 
-            float64 m_;
+            float32 m_;
 
         public:
 
             MEstimateConfig();
 
-            float64 getM() const override;
+            float32 getM() const override;
 
-            IMEstimateConfig& setM(float64 m) override;
+            IMEstimateConfig& setM(float32 m) override;
 
             std::unique_ptr<IHeuristicFactory> createHeuristicFactory() const override;
     };

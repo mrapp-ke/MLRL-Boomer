@@ -49,12 +49,12 @@ namespace seco {
                 typename StatisticVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();
                 typename StatisticVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
                 uint32 bestIndex = indexIterator[0];
-                float64 bestQuality =
+                float32 bestQuality =
                   calculateOutputWiseQuality(totalIterator[bestIndex], coveredIterator[0], *heuristicPtr_);
 
                 for (uint32 i = 1; i < numElements; i++) {
                     uint32 index = indexIterator[i];
-                    float64 quality =
+                    float32 quality =
                       calculateOutputWiseQuality(totalIterator[index], coveredIterator[i], *heuristicPtr_);
 
                     if (quality > bestQuality) {
