@@ -47,16 +47,20 @@ jobs:
               - 'cpp/subprojects/common/meson.*'
               - 'cpp/subprojects/common/include/**'
               - 'cpp/subprojects/common/src/**'
+              - 'python/meson.*'
+              - 'python/subprojects/common/meson.*'
             cpp_boosting: &cpp_boosting
               - *cpp_common
               - 'cpp/subprojects/boosting/meson.*'
               - 'cpp/subprojects/boosting/include/**'
               - 'cpp/subprojects/boosting/src/**'
+              - 'python/subprojects/boosting/meson.*'
             cpp_seco: &cpp_seco
               - *cpp_common
               - 'cpp/subprojects/seco/meson.*'
               - 'cpp/subprojects/seco/include/**'
               - 'cpp/subprojects/seco/src/**'
+              - 'python/subprojects/seco/meson.*'
             cpp_tests_common: &cpp_tests_common
               - *cpp_common
               - 'build_system/targets/testing/cpp/*'
@@ -73,13 +77,10 @@ jobs:
               - *cpp_tests_common
               - 'build_system/targets/compilation/cython/*'
               - 'build_system/targets/testing/python/*'
-              - 'python/meson.*'
-              - 'python/subprojects/common/meson.*'
               - 'python/subprojects/common/pyproject.toml'
               - 'python/subprojects/common/requirements.txt'
               - 'python/subprojects/common/setup.py'
               - 'python/subprojects/common/mlrl/**'
-              - 'python/subprojects/testbed/meson.*'
               - 'python/subprojects/testbed/pyproject.toml'
               - 'python/subprojects/testbed/requirements.txt'
               - 'python/subprojects/testbed/setup.py'
