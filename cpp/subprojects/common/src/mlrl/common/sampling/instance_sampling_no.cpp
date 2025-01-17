@@ -66,45 +66,98 @@ class NoInstanceSamplingFactory final : public IClassificationInstanceSamplingFa
     public:
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
-                                                  const SinglePartition& partition,
-                                                  IStatistics& statistics) const override {
+                                                  const SinglePartition& partition, IStatistics& statistics,
+                                                  const EqualWeightVector& exampleWeights) const override {
             return createNoInstanceSampling<const SinglePartition, EqualWeightVector>(partition);
         }
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
-                                                  BiPartition& partition, IStatistics& statistics) const override {
+                                                  const SinglePartition& partition, IStatistics& statistics,
+                                                  const DenseWeightVector<float32>& exampleWeights) const override {
+            return createNoInstanceSampling<const SinglePartition, EqualWeightVector>(partition);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
+                                                  BiPartition& partition, IStatistics& statistics,
+                                                  const EqualWeightVector& exampleWeights) const override {
+            return createNoInstanceSampling<BiPartition, BitWeightVector>(partition);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
+                                                  BiPartition& partition, IStatistics& statistics,
+                                                  const DenseWeightVector<float32>& exampleWeights) const override {
             return createNoInstanceSampling<BiPartition, BitWeightVector>(partition);
         }
 
         std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, const SinglePartition& partition,
-                                                  IStatistics& statistics) const override {
+                                                  IStatistics& statistics,
+                                                  const EqualWeightVector& exampleWeights) const override {
+            return createNoInstanceSampling<const SinglePartition, EqualWeightVector>(partition);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, const SinglePartition& partition,
+                                                  IStatistics& statistics,
+                                                  const DenseWeightVector<float32>& exampleWeights) const override {
             return createNoInstanceSampling<const SinglePartition, EqualWeightVector>(partition);
         }
 
         std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, BiPartition& partition,
-                                                  IStatistics& statistics) const override {
+                                                  IStatistics& statistics,
+                                                  const EqualWeightVector& exampleWeights) const override {
+            return createNoInstanceSampling<BiPartition, BitWeightVector>(partition);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, BiPartition& partition,
+                                                  IStatistics& statistics,
+                                                  const DenseWeightVector<float32>& exampleWeights) const override {
             return createNoInstanceSampling<BiPartition, BitWeightVector>(partition);
         }
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const float32>& regressionMatrix,
-                                                  const SinglePartition& partition,
-                                                  IStatistics& statistics) const override {
+                                                  const SinglePartition& partition, IStatistics& statistics,
+                                                  const EqualWeightVector& exampleWeights) const override {
             return createNoInstanceSampling<const SinglePartition, EqualWeightVector>(partition);
         }
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const float32>& regressionMatrix,
-                                                  BiPartition& partition, IStatistics& statistics) const override {
+                                                  const SinglePartition& partition, IStatistics& statistics,
+                                                  const DenseWeightVector<float32>& exampleWeights) const override {
+            return createNoInstanceSampling<const SinglePartition, EqualWeightVector>(partition);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CContiguousView<const float32>& regressionMatrix,
+                                                  BiPartition& partition, IStatistics& statistics,
+                                                  const EqualWeightVector& exampleWeights) const override {
+            return createNoInstanceSampling<BiPartition, BitWeightVector>(partition);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CContiguousView<const float32>& regressionMatrix,
+                                                  BiPartition& partition, IStatistics& statistics,
+                                                  const DenseWeightVector<float32>& exampleWeights) const override {
             return createNoInstanceSampling<BiPartition, BitWeightVector>(partition);
         }
 
         std::unique_ptr<IInstanceSampling> create(const CsrView<const float32>& regressionMatrix,
-                                                  const SinglePartition& partition,
-                                                  IStatistics& statistics) const override {
+                                                  const SinglePartition& partition, IStatistics& statistics,
+                                                  const EqualWeightVector& exampleWeights) const override {
             return createNoInstanceSampling<const SinglePartition, EqualWeightVector>(partition);
         }
 
         std::unique_ptr<IInstanceSampling> create(const CsrView<const float32>& regressionMatrix,
-                                                  BiPartition& partition, IStatistics& statistics) const override {
+                                                  const SinglePartition& partition, IStatistics& statistics,
+                                                  const DenseWeightVector<float32>& exampleWeights) const override {
+            return createNoInstanceSampling<const SinglePartition, EqualWeightVector>(partition);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CsrView<const float32>& regressionMatrix,
+                                                  BiPartition& partition, IStatistics& statistics,
+                                                  const EqualWeightVector& exampleWeights) const override {
+            return createNoInstanceSampling<BiPartition, BitWeightVector>(partition);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CsrView<const float32>& regressionMatrix,
+                                                  BiPartition& partition, IStatistics& statistics,
+                                                  const DenseWeightVector<float32>& exampleWeights) const override {
             return createNoInstanceSampling<BiPartition, BitWeightVector>(partition);
         }
 };

@@ -27,14 +27,26 @@ std::unique_ptr<IStoppingCriterion> SinglePartition::createStoppingCriterion(con
 
 std::unique_ptr<IInstanceSampling> SinglePartition::createInstanceSampling(
   const IClassificationInstanceSamplingFactory& factory, const IRowWiseLabelMatrix& labelMatrix,
-  IStatistics& statistics) {
-    return labelMatrix.createInstanceSampling(factory, *this, statistics);
+  IStatistics& statistics, const EqualWeightVector& exampleWeights) {
+    return labelMatrix.createInstanceSampling(factory, *this, statistics, exampleWeights);
+}
+
+std::unique_ptr<IInstanceSampling> SinglePartition::createInstanceSampling(
+  const IClassificationInstanceSamplingFactory& factory, const IRowWiseLabelMatrix& labelMatrix,
+  IStatistics& statistics, const DenseWeightVector<float32>& exampleWeights) {
+    return labelMatrix.createInstanceSampling(factory, *this, statistics, exampleWeights);
 }
 
 std::unique_ptr<IInstanceSampling> SinglePartition::createInstanceSampling(
   const IRegressionInstanceSamplingFactory& factory, const IRowWiseRegressionMatrix& regressionMatrix,
-  IStatistics& statistics) {
-    return regressionMatrix.createInstanceSampling(factory, *this, statistics);
+  IStatistics& statistics, const EqualWeightVector& exampleWeights) {
+    return regressionMatrix.createInstanceSampling(factory, *this, statistics, exampleWeights);
+}
+
+std::unique_ptr<IInstanceSampling> SinglePartition::createInstanceSampling(
+  const IRegressionInstanceSamplingFactory& factory, const IRowWiseRegressionMatrix& regressionMatrix,
+  IStatistics& statistics, const DenseWeightVector<float32>& exampleWeights) {
+    return regressionMatrix.createInstanceSampling(factory, *this, statistics, exampleWeights);
 }
 
 Quality SinglePartition::evaluateOutOfSample(const IFeatureSubspace& featureSubspace, const CoverageMask& coverageMask,

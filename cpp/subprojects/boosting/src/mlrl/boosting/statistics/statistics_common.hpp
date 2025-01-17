@@ -30,7 +30,7 @@ namespace boosting {
     static inline void addStatisticToSubsetInternally(const WeightVector& weights, const StatisticView& statisticView,
                                                       StatisticVector& vector, const IndexVector& outputIndices,
                                                       uint32 statisticIndex) {
-        uint32 weight = weights[statisticIndex];
+        typename WeightVector::weight_type weight = weights[statisticIndex];
         vector.addToSubset(statisticView, statisticIndex, outputIndices, weight);
     }
 
@@ -283,7 +283,7 @@ namespace boosting {
     template<typename WeightVector, typename StatisticView, typename StatisticVector>
     static inline void addStatisticInternally(const WeightVector& weights, const StatisticView& statisticView,
                                               StatisticVector& statisticVector, uint32 statisticIndex) {
-        uint32 weight = weights[statisticIndex];
+        typename WeightVector::weight_type weight = weights[statisticIndex];
         statisticVector.add(statisticView, statisticIndex, weight);
     }
 
@@ -296,7 +296,7 @@ namespace boosting {
     template<typename WeightVector, typename StatisticView, typename StatisticVector>
     static inline void removeStatisticInternally(const WeightVector& weights, const StatisticView& statisticView,
                                                  StatisticVector& statisticVector, uint32 statisticIndex) {
-        uint32 weight = weights[statisticIndex];
+        typename WeightVector::weight_type weight = weights[statisticIndex];
         statisticVector.remove(statisticView, statisticIndex, weight);
     }
 
@@ -476,7 +476,6 @@ namespace boosting {
      *
      * @tparam OutputMatrix             The type of the matrix that provides access to the ground truth of the training
      *                                  examples
-     * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticMatrix          The type of the matrix that provides access to the gradients and Hessians
      * @tparam ScoreMatrix              The type of the matrices that are used to store predicted scores
      * @tparam LossFunction             The type of the loss function that is used to calculate gradients and Hessians
@@ -486,8 +485,8 @@ namespace boosting {
      *                                  used for calculating the predictions of rules, as well as corresponding quality
      *                                  scores
      */
-    template<typename OutputMatrix, typename StatisticVector, typename StatisticMatrix, typename ScoreMatrix,
-             typename LossFunction, typename EvaluationMeasure, typename RuleEvaluationFactory>
+    template<typename OutputMatrix, typename StatisticMatrix, typename ScoreMatrix, typename LossFunction,
+             typename EvaluationMeasure, typename RuleEvaluationFactory>
     class AbstractStatistics : virtual public IBoostingStatistics {
         private:
 
@@ -631,171 +630,6 @@ namespace boosting {
              */
             float64 evaluatePrediction(uint32 statisticIndex) const override final {
                 return evaluationMeasurePtr_->evaluate(statisticIndex, outputMatrix_, scoreMatrixPtr_->getView());
-            }
-
-            /**
-             * @see `IStatistics::createSubset`
-             */
-            std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
-                                                            const EqualWeightVector& weights) const override final {
-                return std::make_unique<
-                  StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
-                                   EqualWeightVector, CompleteIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
-            }
-
-            /**
-             * @see `IStatistics::createSubset`
-             */
-            std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
-                                                            const EqualWeightVector& weights) const override final {
-                return std::make_unique<StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
-                                                         RuleEvaluationFactory, EqualWeightVector, PartialIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
-            }
-
-            /**
-             * @see `IStatistics::createSubset`
-             */
-            std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
-                                                            const BitWeightVector& weights) const override final {
-                return std::make_unique<StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
-                                                         RuleEvaluationFactory, BitWeightVector, CompleteIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
-            }
-
-            /**
-             * @see `IStatistics::createSubset`
-             */
-            std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
-                                                            const BitWeightVector& weights) const override final {
-                return std::make_unique<StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
-                                                         RuleEvaluationFactory, BitWeightVector, PartialIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
-            }
-
-            /**
-             * @see `IStatistics::createSubset`
-             */
-            std::unique_ptr<IStatisticsSubset> createSubset(
-              const CompleteIndexVector& outputIndices, const DenseWeightVector<uint32>& weights) const override final {
-                return std::make_unique<
-                  StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
-                                   DenseWeightVector<uint32>, CompleteIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
-            }
-
-            /**
-             * @see `IStatistics::createSubset`
-             */
-            std::unique_ptr<IStatisticsSubset> createSubset(
-              const PartialIndexVector& outputIndices, const DenseWeightVector<uint32>& weights) const override final {
-                return std::make_unique<
-                  StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
-                                   DenseWeightVector<uint32>, PartialIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
-            }
-
-            /**
-             * @see `IStatistics::createSubset`
-             */
-            std::unique_ptr<IStatisticsSubset> createSubset(
-              const CompleteIndexVector& outputIndices,
-              const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
-                return std::make_unique<
-                  StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
-                                   OutOfSampleWeightVector<EqualWeightVector>, CompleteIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
-            }
-
-            /**
-             * @see `IStatistics::createSubset`
-             */
-            std::unique_ptr<IStatisticsSubset> createSubset(
-              const PartialIndexVector& outputIndices,
-              const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
-                return std::make_unique<
-                  StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
-                                   OutOfSampleWeightVector<EqualWeightVector>, PartialIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
-            }
-
-            /**
-             * @see `IStatistics::createSubset`
-             */
-            std::unique_ptr<IStatisticsSubset> createSubset(
-              const CompleteIndexVector& outputIndices,
-              const OutOfSampleWeightVector<BitWeightVector>& weights) const override final {
-                return std::make_unique<
-                  StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
-                                   OutOfSampleWeightVector<BitWeightVector>, CompleteIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
-            }
-
-            /**
-             * @see `IStatistics::createSubset`
-             */
-            std::unique_ptr<IStatisticsSubset> createSubset(
-              const PartialIndexVector& outputIndices,
-              const OutOfSampleWeightVector<BitWeightVector>& weights) const override final {
-                return std::make_unique<
-                  StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
-                                   OutOfSampleWeightVector<BitWeightVector>, PartialIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
-            }
-
-            /**
-             * @see `IStatistics::createSubset`
-             */
-            std::unique_ptr<IStatisticsSubset> createSubset(
-              const CompleteIndexVector& outputIndices,
-              const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override final {
-                return std::make_unique<
-                  StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
-                                   OutOfSampleWeightVector<DenseWeightVector<uint32>>, CompleteIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
-            }
-
-            /**
-             * @see `IStatistics::createSubset`
-             */
-            std::unique_ptr<IStatisticsSubset> createSubset(
-              const PartialIndexVector& outputIndices,
-              const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override final {
-                return std::make_unique<
-                  StatisticsSubset<StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
-                                   OutOfSampleWeightVector<DenseWeightVector<uint32>>, PartialIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
-            }
-
-            /**
-             * @see `IStatistics::createWeightedStatistics`
-             */
-            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
-              const EqualWeightVector& weights) const override final {
-                return std::make_unique<WeightedStatistics<StatisticVector, typename StatisticMatrix::view_type,
-                                                           RuleEvaluationFactory, EqualWeightVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
-            }
-
-            /**
-             * @see `IStatistics::createWeightedStatistics`
-             */
-            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
-              const BitWeightVector& weights) const override final {
-                return std::make_unique<WeightedStatistics<StatisticVector, typename StatisticMatrix::view_type,
-                                                           RuleEvaluationFactory, BitWeightVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
-            }
-
-            /**
-             * @see `IStatistics::createWeightedStatistics`
-             */
-            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
-              const DenseWeightVector<uint32>& weights) const override final {
-                return std::make_unique<WeightedStatistics<StatisticVector, typename StatisticMatrix::view_type,
-                                                           RuleEvaluationFactory, DenseWeightVector<uint32>>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
             }
     };
 

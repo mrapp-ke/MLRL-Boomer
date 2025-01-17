@@ -109,6 +109,9 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>
           const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
+          const IStatistics& statistics, const DenseWeightVector<float32>& weights) const override;
+
+        std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
           const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
@@ -117,6 +120,10 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
           const IStatistics& statistics,
           const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override;
+
+        std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
+          const IStatistics& statistics,
+          const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override;
 
         std::unique_ptr<IStatisticsUpdate> createStatisticsUpdate(IStatistics& statistics) const override;
 
