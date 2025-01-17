@@ -6,11 +6,13 @@
 #include "mlrl/common/util/math.hpp"
 #include "mlrl/common/util/validation.hpp"
 
-static inline void sampleInternally(const SinglePartition& partition, float32 sampleSize, uint32 minSamples,
-                                    uint32 maxSamples, DenseWeightVector<uint32>& weightVector, RNG& rng) {
+template<typename ExampleWeights, typename WeightType>
+static inline void sampleInternally(const SinglePartition& partition, const ExampleWeights& exampleWeights,
+                                    float32 sampleSize, uint32 minSamples, uint32 maxSamples,
+                                    DenseWeightVector<WeightType>& weightVector, RNG& rng) {
     uint32 numExamples = partition.getNumElements();
     uint32 numSamples = util::calculateBoundedFraction(numExamples, sampleSize, minSamples, maxSamples);
-    typename DenseWeightVector<uint32>::iterator weightIterator = weightVector.begin();
+    typename DenseWeightVector<WeightType>::iterator weightIterator = weightVector.begin();
     util::setViewToZeros(weightIterator, numExamples);
     uint32 numNonZeroWeights = 0;
 
@@ -19,8 +21,9 @@ static inline void sampleInternally(const SinglePartition& partition, float32 sa
         uint32 randomIndex = rng.randomInt(0, numExamples);
 
         // Update weight at the selected index...
-        uint32 previousWeight = weightIterator[randomIndex];
-        weightIterator[randomIndex] = previousWeight + 1;
+        typename ExampleWeights::weight_type exampleWeight = exampleWeights[randomIndex];
+        WeightType previousWeight = weightIterator[randomIndex];
+        weightIterator[randomIndex] = previousWeight + exampleWeight;
 
         if (previousWeight == 0) {
             numNonZeroWeights++;
@@ -30,13 +33,15 @@ static inline void sampleInternally(const SinglePartition& partition, float32 sa
     weightVector.setNumNonZeroWeights(numNonZeroWeights);
 }
 
-static inline void sampleInternally(BiPartition& partition, float32 sampleSize, uint32 minSamples, uint32 maxSamples,
-                                    DenseWeightVector<uint32>& weightVector, RNG& rng) {
+template<typename ExampleWeights, typename WeightType>
+static inline void sampleInternally(BiPartition& partition, const ExampleWeights& exampleWeights, float32 sampleSize,
+                                    uint32 minSamples, uint32 maxSamples, DenseWeightVector<WeightType>& weightVector,
+                                    RNG& rng) {
     uint32 numExamples = partition.getNumElements();
     uint32 numTrainingExamples = partition.getNumFirst();
     uint32 numSamples = util::calculateBoundedFraction(numTrainingExamples, sampleSize, minSamples, maxSamples);
     BiPartition::const_iterator indexIterator = partition.first_cbegin();
-    typename DenseWeightVector<uint32>::iterator weightIterator = weightVector.begin();
+    typename DenseWeightVector<WeightType>::iterator weightIterator = weightVector.begin();
     util::setViewToZeros(weightIterator, numExamples);
     uint32 numNonZeroWeights = 0;
 
@@ -46,8 +51,9 @@ static inline void sampleInternally(BiPartition& partition, float32 sampleSize, 
         uint32 sampledIndex = indexIterator[randomIndex];
 
         // Update weight at the selected index...
-        uint32 previousWeight = weightIterator[sampledIndex];
-        weightIterator[sampledIndex] = previousWeight + 1;
+        typename ExampleWeights::weight_type exampleWeight = exampleWeights[sampledIndex];
+        WeightType previousWeight = weightIterator[sampledIndex];
+        weightIterator[sampledIndex] = previousWeight + exampleWeight;
 
         if (previousWeight == 0) {
             numNonZeroWeights++;
@@ -60,10 +66,12 @@ static inline void sampleInternally(BiPartition& partition, float32 sampleSize, 
 /**
  * Allows to select a subset of the available training examples with replacement.
  *
- * @tparam Partition The type of the object that provides access to the indices of the examples that are included in the
- *                   training set
+ * @tparam Partition      The type of the object that provides access to the indices of the examples that are included
+ *                        in the training set
+ * @tparam ExampleWeights The type of the object that provides access to the weights of individual training examples
+ * @tparam WeightType     The type of the weights of individual training examples in the sample
  */
-template<typename Partition>
+template<typename Partition, typename ExampleWeights, typename WeightType>
 class InstanceSamplingWithReplacement final : public IInstanceSampling {
     private:
 
@@ -71,34 +79,41 @@ class InstanceSamplingWithReplacement final : public IInstanceSampling {
 
         Partition& partition_;
 
+        const ExampleWeights& exampleWeights_;
+
         const float32 sampleSize_;
 
         const uint32 minSamples_;
 
         const uint32 maxSamples_;
 
-        DenseWeightVector<uint32> weightVector_;
+        DenseWeightVector<WeightType> weightVector_;
 
     public:
 
         /**
-         * @param rngPtr        An unique pointer to an object of type `RNG` that should be used for generating random
-         *                      numbers
-         * @param partition     A reference to an object of template type `Partition` that provides access to the
-         *                      indices of the examples that are included in the training set
-         * @param sampleSize    The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds
-         *                      to 60 % of the available examples). Must be in (0, 1]
-         * @param minSamples    The minimum number of examples to be included in the sample. Must be at least 1
-         * @param maxSamples    The maximum number of examples to be included in the sample. Must be at least
-         *                      `minSamples` or 0, if the number of examples should not be restricted
+         * @param rngPtr          An unique pointer to an object of type `RNG` that should be used for generating random
+         *                        numbers
+         * @param partition       A reference to an object of template type `Partition` that provides access to the
+         *                        indices of the examples that are included in the training set
+         * @param exampleWeights  A reference to an object of template type `ExampleWeights` that provides access to the
+         *                        weights of individual training examples
+         * @param sampleSize      The fraction of examples to be included in the sample (e.g. a value of 0.6 corresponds
+         *                        to 60 % of the available examples). Must be in (0, 1]
+         * @param minSamples      The minimum number of examples to be included in the sample. Must be at least 1
+         * @param maxSamples      The maximum number of examples to be included in the sample. Must be at least
+         *                        `minSamples` or 0, if the number of examples should not be restricted
          */
-        InstanceSamplingWithReplacement(std::unique_ptr<RNG> rngPtr, Partition& partition, float32 sampleSize,
-                                        uint32 minSamples, uint32 maxSamples)
-            : rngPtr_(std::move(rngPtr)), partition_(partition), sampleSize_(sampleSize), minSamples_(minSamples),
-              maxSamples_(maxSamples), weightVector_(partition.getNumElements()) {}
+        InstanceSamplingWithReplacement(std::unique_ptr<RNG> rngPtr, Partition& partition,
+                                        const ExampleWeights& exampleWeights, float32 sampleSize, uint32 minSamples,
+                                        uint32 maxSamples)
+            : rngPtr_(std::move(rngPtr)), partition_(partition), exampleWeights_(exampleWeights),
+              sampleSize_(sampleSize), minSamples_(minSamples), maxSamples_(maxSamples),
+              weightVector_(partition.getNumElements()) {}
 
         const IWeightVector& sample() override {
-            sampleInternally(partition_, sampleSize_, minSamples_, maxSamples_, weightVector_, *rngPtr_);
+            sampleInternally<ExampleWeights, WeightType>(partition_, exampleWeights_, sampleSize_, minSamples_,
+                                                         maxSamples_, weightVector_, *rngPtr_);
             return weightVector_;
         }
 };
@@ -136,54 +151,119 @@ class InstanceSamplingWithReplacementFactory final : public IClassificationInsta
               maxSamples_(maxSamples) {}
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
-                                                  const SinglePartition& partition,
-                                                  IStatistics& statistics) const override {
-            return std::make_unique<InstanceSamplingWithReplacement<const SinglePartition>>(
-              rngFactoryPtr_->create(), partition, sampleSize_, minSamples_, maxSamples_);
+                                                  const SinglePartition& partition, IStatistics& statistics,
+                                                  const EqualWeightVector& exampleWeights) const override {
+            return std::make_unique<InstanceSamplingWithReplacement<const SinglePartition, EqualWeightVector, uint32>>(
+              rngFactoryPtr_->create(), partition, exampleWeights, sampleSize_, minSamples_, maxSamples_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
-                                                  BiPartition& partition, IStatistics& statistics) const override {
-            return std::make_unique<InstanceSamplingWithReplacement<BiPartition>>(
-              rngFactoryPtr_->create(), partition, sampleSize_, minSamples_, maxSamples_);
+                                                  const SinglePartition& partition, IStatistics& statistics,
+                                                  const DenseWeightVector<float32>& exampleWeights) const override {
+            return std::make_unique<
+              InstanceSamplingWithReplacement<const SinglePartition, DenseWeightVector<float32>, float32>>(
+              rngFactoryPtr_->create(), partition, exampleWeights, sampleSize_, minSamples_, maxSamples_);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
+                                                  BiPartition& partition, IStatistics& statistics,
+                                                  const EqualWeightVector& exampleWeights) const override {
+            return std::make_unique<InstanceSamplingWithReplacement<BiPartition, EqualWeightVector, uint32>>(
+              rngFactoryPtr_->create(), partition, exampleWeights, sampleSize_, minSamples_, maxSamples_);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
+                                                  BiPartition& partition, IStatistics& statistics,
+                                                  const DenseWeightVector<float32>& exampleWeights) const override {
+            return std::make_unique<InstanceSamplingWithReplacement<BiPartition, DenseWeightVector<float32>, float32>>(
+              rngFactoryPtr_->create(), partition, exampleWeights, sampleSize_, minSamples_, maxSamples_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, const SinglePartition& partition,
-                                                  IStatistics& statistics) const override {
-            return std::make_unique<InstanceSamplingWithReplacement<const SinglePartition>>(
-              rngFactoryPtr_->create(), partition, sampleSize_, minSamples_, maxSamples_);
+                                                  IStatistics& statistics,
+                                                  const EqualWeightVector& exampleWeights) const override {
+            return std::make_unique<InstanceSamplingWithReplacement<const SinglePartition, EqualWeightVector, uint32>>(
+              rngFactoryPtr_->create(), partition, exampleWeights, sampleSize_, minSamples_, maxSamples_);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, const SinglePartition& partition,
+                                                  IStatistics& statistics,
+                                                  const DenseWeightVector<float32>& exampleWeights) const override {
+            return std::make_unique<
+              InstanceSamplingWithReplacement<const SinglePartition, DenseWeightVector<float32>, float32>>(
+              rngFactoryPtr_->create(), partition, exampleWeights, sampleSize_, minSamples_, maxSamples_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, BiPartition& partition,
-                                                  IStatistics& statistics) const override {
-            return std::make_unique<InstanceSamplingWithReplacement<BiPartition>>(
-              rngFactoryPtr_->create(), partition, sampleSize_, minSamples_, maxSamples_);
+                                                  IStatistics& statistics,
+                                                  const EqualWeightVector& exampleWeights) const override {
+            return std::make_unique<InstanceSamplingWithReplacement<BiPartition, EqualWeightVector, uint32>>(
+              rngFactoryPtr_->create(), partition, exampleWeights, sampleSize_, minSamples_, maxSamples_);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, BiPartition& partition,
+                                                  IStatistics& statistics,
+                                                  const DenseWeightVector<float32>& exampleWeights) const override {
+            return std::make_unique<InstanceSamplingWithReplacement<BiPartition, DenseWeightVector<float32>, float32>>(
+              rngFactoryPtr_->create(), partition, exampleWeights, sampleSize_, minSamples_, maxSamples_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const float32>& regressionMatrix,
-                                                  const SinglePartition& partition,
-                                                  IStatistics& statistics) const override {
-            return std::make_unique<InstanceSamplingWithReplacement<const SinglePartition>>(
-              rngFactoryPtr_->create(), partition, sampleSize_, minSamples_, maxSamples_);
+                                                  const SinglePartition& partition, IStatistics& statistics,
+                                                  const EqualWeightVector& exampleWeights) const override {
+            return std::make_unique<InstanceSamplingWithReplacement<const SinglePartition, EqualWeightVector, uint32>>(
+              rngFactoryPtr_->create(), partition, exampleWeights, sampleSize_, minSamples_, maxSamples_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const float32>& regressionMatrix,
-                                                  BiPartition& partition, IStatistics& statistics) const override {
-            return std::make_unique<InstanceSamplingWithReplacement<BiPartition>>(
-              rngFactoryPtr_->create(), partition, sampleSize_, minSamples_, maxSamples_);
+                                                  const SinglePartition& partition, IStatistics& statistics,
+                                                  const DenseWeightVector<float32>& exampleWeights) const override {
+            return std::make_unique<
+              InstanceSamplingWithReplacement<const SinglePartition, DenseWeightVector<float32>, float32>>(
+              rngFactoryPtr_->create(), partition, exampleWeights, sampleSize_, minSamples_, maxSamples_);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CContiguousView<const float32>& regressionMatrix,
+                                                  BiPartition& partition, IStatistics& statistics,
+                                                  const EqualWeightVector& exampleWeights) const override {
+            return std::make_unique<InstanceSamplingWithReplacement<BiPartition, EqualWeightVector, uint32>>(
+              rngFactoryPtr_->create(), partition, exampleWeights, sampleSize_, minSamples_, maxSamples_);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CContiguousView<const float32>& regressionMatrix,
+                                                  BiPartition& partition, IStatistics& statistics,
+                                                  const DenseWeightVector<float32>& exampleWeights) const override {
+            return std::make_unique<InstanceSamplingWithReplacement<BiPartition, DenseWeightVector<float32>, float32>>(
+              rngFactoryPtr_->create(), partition, exampleWeights, sampleSize_, minSamples_, maxSamples_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const CsrView<const float32>& regressionMatrix,
-                                                  const SinglePartition& partition,
-                                                  IStatistics& statistics) const override {
-            return std::make_unique<InstanceSamplingWithReplacement<const SinglePartition>>(
-              rngFactoryPtr_->create(), partition, sampleSize_, minSamples_, maxSamples_);
+                                                  const SinglePartition& partition, IStatistics& statistics,
+                                                  const EqualWeightVector& exampleWeights) const override {
+            return std::make_unique<InstanceSamplingWithReplacement<const SinglePartition, EqualWeightVector, uint32>>(
+              rngFactoryPtr_->create(), partition, exampleWeights, sampleSize_, minSamples_, maxSamples_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const CsrView<const float32>& regressionMatrix,
-                                                  BiPartition& partition, IStatistics& statistics) const override {
-            return std::make_unique<InstanceSamplingWithReplacement<BiPartition>>(
-              rngFactoryPtr_->create(), partition, sampleSize_, minSamples_, maxSamples_);
+                                                  const SinglePartition& partition, IStatistics& statistics,
+                                                  const DenseWeightVector<float32>& exampleWeights) const override {
+            return std::make_unique<
+              InstanceSamplingWithReplacement<const SinglePartition, DenseWeightVector<float32>, float32>>(
+              rngFactoryPtr_->create(), partition, exampleWeights, sampleSize_, minSamples_, maxSamples_);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CsrView<const float32>& regressionMatrix,
+                                                  BiPartition& partition, IStatistics& statistics,
+                                                  const EqualWeightVector& exampleWeights) const override {
+            return std::make_unique<InstanceSamplingWithReplacement<BiPartition, EqualWeightVector, uint32>>(
+              rngFactoryPtr_->create(), partition, exampleWeights, sampleSize_, minSamples_, maxSamples_);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CsrView<const float32>& regressionMatrix,
+                                                  BiPartition& partition, IStatistics& statistics,
+                                                  const DenseWeightVector<float32>& exampleWeights) const override {
+            return std::make_unique<InstanceSamplingWithReplacement<BiPartition, DenseWeightVector<float32>, float32>>(
+              rngFactoryPtr_->create(), partition, exampleWeights, sampleSize_, minSamples_, maxSamples_);
         }
 };
 

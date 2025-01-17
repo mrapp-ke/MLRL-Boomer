@@ -4,6 +4,7 @@
 from cython.operator cimport dereference
 from libcpp.utility cimport move
 
+from mlrl.common.cython.example_weights cimport ExampleWeights
 from mlrl.common.cython.feature_info cimport FeatureInfo
 from mlrl.common.cython.feature_matrix cimport ColumnWiseFeatureMatrix, RowWiseFeatureMatrix
 from mlrl.common.cython.label_matrix cimport RowWiseLabelMatrix
@@ -31,11 +32,13 @@ cdef class ClassificationRuleLearner:
     cdef IClassificationRuleLearner* get_classification_rule_learner_ptr(self):
         pass
 
-    def fit(self, FeatureInfo feature_info not None, ColumnWiseFeatureMatrix feature_matrix not None,
+    def fit(self, ExampleWeights example_weights not None, FeatureInfo feature_info not None,
+            ColumnWiseFeatureMatrix feature_matrix not None,
             RowWiseLabelMatrix label_matrix not None) -> TrainingResult:
         """
         Applies the rule learner to given training examples and corresponding ground truth labels.
 
+        :param example_weights: `ExampleWeights` that provide access to the weights of individual training examples
         :param feature_info:    A `FeatureInfo` that provides information about the types of individual features
         :param feature_matrix:  A `ColumnWiseFeatureMatrix` that provides column-wise access to the feature values of
                                 the training examples
@@ -45,6 +48,7 @@ cdef class ClassificationRuleLearner:
                                 the training data
         """
         cdef unique_ptr[ITrainingResult] training_result_ptr = self.get_classification_rule_learner_ptr().fit(
+            dereference(example_weights.get_example_weights_ptr()),
             dereference(feature_info.get_feature_info_ptr()),
             dereference(feature_matrix.get_column_wise_feature_matrix_ptr()),
             dereference(label_matrix.get_row_wise_label_matrix_ptr()))

@@ -13,10 +13,14 @@
  *                          training examples
  * @tparam IndexIterator    The type of the iterator that provides access to the indices of the examples that are
  *                          contained by the training set
+ * @tparam ExampleWeights   The type of the object that provides access to the weights of individual training examples
+ * @tparam WeightVector     The type of the vector, the weights of the sampled examples should be written to
  */
-template<typename LabelMatrix, typename IndexIterator>
+template<typename LabelMatrix, typename IndexIterator, typename ExampleWeights, typename WeightVector>
 class OutputWiseStratifiedSampling final : public IInstanceSampling {
     private:
+
+        const ExampleWeights exampleWeights_;
 
         const float32 sampleSize_;
 
@@ -24,33 +28,38 @@ class OutputWiseStratifiedSampling final : public IInstanceSampling {
 
         const uint32 maxSamples_;
 
-        BitWeightVector weightVector_;
+        WeightVector weightVector_;
 
         LabelWiseStratification<LabelMatrix, IndexIterator> stratification_;
 
     public:
 
         /**
-         * @param rngPtr        An unique pointer to an object of type `RNG` that should be used for generating random
-         *                      numbers
-         * @param labelMatrix   A reference to an object of template type `LabelMatrix` that provides random or
-         *                      row-wise access to the labels of the training examples
-         * @param indicesBegin  An iterator to the beginning of the indices of the examples that are contained by
-         *                      the training set
-         * @param indicesEnd    An iterator to the end of the indices of the examples that are contained by the
-         *                      training set
-         * @param sampleSize    The fraction of examples to be included in the sample (e.g. a value of 0.6
-         *                      corresponds to 60 % of the available examples). Must be in (0, 1]
+         * @param rngPtr          An unique pointer to an object of type `RNG` that should be used for generating random
+         *                        numbers
+         * @param labelMatrix     A reference to an object of template type `LabelMatrix` that provides random or
+         *                        row-wise access to the labels of the training examples
+         * @param indicesBegin    An iterator to the beginning of the indices of the examples that are contained by
+         *                        the training set
+         * @param indicesEnd      An iterator to the end of the indices of the examples that are contained by the
+         *                        training set
+         * @param exampleWeights  An object of template type `ExampleWeights` that provides access to the weights of
+         *                        individual training examples
+         * @param sampleSize      The fraction of examples to be included in the sample (e.g. a value of 0.6
+         *                        corresponds to 60 % of the available examples). Must be in (0, 1]
          */
         OutputWiseStratifiedSampling(std::unique_ptr<RNG> rngPtr, const LabelMatrix& labelMatrix,
-                                     IndexIterator indicesBegin, IndexIterator indicesEnd, float32 sampleSize,
-                                     uint32 minSamples, uint32 maxSamples)
-            : sampleSize_(sampleSize), minSamples_(minSamples), maxSamples_(maxSamples),
+                                     IndexIterator indicesBegin, IndexIterator indicesEnd,
+                                     const ExampleWeights& exampleWeights, float32 sampleSize, uint32 minSamples,
+                                     uint32 maxSamples)
+            : exampleWeights_(exampleWeights), sampleSize_(sampleSize), minSamples_(minSamples),
+              maxSamples_(maxSamples),
               weightVector_(labelMatrix.numRows, static_cast<uint32>(indicesEnd - indicesBegin) < labelMatrix.numRows),
               stratification_(std::move(rngPtr), labelMatrix, indicesBegin, indicesEnd) {}
 
         const IWeightVector& sample() override {
-            stratification_.sampleWeights(weightVector_, sampleSize_, minSamples_, maxSamples_);
+            stratification_.sampleWeights(weightVector_, exampleWeights_.cbegin(), sampleSize_, minSamples_,
+                                          maxSamples_);
             return weightVector_;
         }
 };
@@ -88,34 +97,77 @@ class OutputWiseStratifiedInstanceSamplingFactory final : public IClassification
               maxSamples_(maxSamples) {}
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
-                                                  const SinglePartition& partition,
-                                                  IStatistics& statistics) const override {
-            return std::make_unique<
-              OutputWiseStratifiedSampling<CContiguousView<const uint8>, SinglePartition::const_iterator>>(
-              rngFactoryPtr_->create(), labelMatrix, partition.cbegin(), partition.cend(), sampleSize_, minSamples_,
-              maxSamples_);
+                                                  const SinglePartition& partition, IStatistics& statistics,
+                                                  const EqualWeightVector& exampleWeights) const override {
+            return std::make_unique<OutputWiseStratifiedSampling<
+              CContiguousView<const uint8>, SinglePartition::const_iterator, EqualWeightVector, BitWeightVector>>(
+              rngFactoryPtr_->create(), labelMatrix, partition.cbegin(), partition.cend(), exampleWeights, sampleSize_,
+              minSamples_, maxSamples_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
-                                                  BiPartition& partition, IStatistics& statistics) const override {
+                                                  const SinglePartition& partition, IStatistics& statistics,
+                                                  const DenseWeightVector<float32>& exampleWeights) const override {
             return std::make_unique<
-              OutputWiseStratifiedSampling<CContiguousView<const uint8>, BiPartition::const_iterator>>(
-              rngFactoryPtr_->create(), labelMatrix, partition.first_cbegin(), partition.first_cend(), sampleSize_,
+              OutputWiseStratifiedSampling<CContiguousView<const uint8>, SinglePartition::const_iterator,
+                                           DenseWeightVector<float32>, DenseWeightVector<float32>>>(
+              rngFactoryPtr_->create(), labelMatrix, partition.cbegin(), partition.cend(), exampleWeights, sampleSize_,
+              minSamples_, maxSamples_);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
+                                                  BiPartition& partition, IStatistics& statistics,
+                                                  const EqualWeightVector& exampleWeights) const override {
+            return std::make_unique<OutputWiseStratifiedSampling<
+              CContiguousView<const uint8>, BiPartition::const_iterator, EqualWeightVector, BitWeightVector>>(
+              rngFactoryPtr_->create(), labelMatrix, partition.first_cbegin(), partition.first_cend(), exampleWeights,
+              sampleSize_, minSamples_, maxSamples_);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
+                                                  BiPartition& partition, IStatistics& statistics,
+                                                  const DenseWeightVector<float32>& exampleWeights) const override {
+            return std::make_unique<
+              OutputWiseStratifiedSampling<CContiguousView<const uint8>, BiPartition::const_iterator,
+                                           DenseWeightVector<float32>, DenseWeightVector<float32>>>(
+              rngFactoryPtr_->create(), labelMatrix, partition.first_cbegin(), partition.first_cend(), exampleWeights,
+              sampleSize_, minSamples_, maxSamples_);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, const SinglePartition& partition,
+                                                  IStatistics& statistics,
+                                                  const EqualWeightVector& exampleWeights) const override {
+            return std::make_unique<OutputWiseStratifiedSampling<BinaryCsrView, SinglePartition::const_iterator,
+                                                                 EqualWeightVector, BitWeightVector>>(
+              rngFactoryPtr_->create(), labelMatrix, partition.cbegin(), partition.cend(), exampleWeights, sampleSize_,
               minSamples_, maxSamples_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, const SinglePartition& partition,
-                                                  IStatistics& statistics) const override {
-            return std::make_unique<OutputWiseStratifiedSampling<BinaryCsrView, SinglePartition::const_iterator>>(
-              rngFactoryPtr_->create(), labelMatrix, partition.cbegin(), partition.cend(), sampleSize_, minSamples_,
-              maxSamples_);
+                                                  IStatistics& statistics,
+                                                  const DenseWeightVector<float32>& exampleWeights) const override {
+            return std::make_unique<OutputWiseStratifiedSampling<
+              BinaryCsrView, SinglePartition::const_iterator, DenseWeightVector<float32>, DenseWeightVector<float32>>>(
+              rngFactoryPtr_->create(), labelMatrix, partition.cbegin(), partition.cend(), exampleWeights, sampleSize_,
+              minSamples_, maxSamples_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, BiPartition& partition,
-                                                  IStatistics& statistics) const override {
-            return std::make_unique<OutputWiseStratifiedSampling<BinaryCsrView, BiPartition::const_iterator>>(
-              rngFactoryPtr_->create(), labelMatrix, partition.first_cbegin(), partition.first_cend(), sampleSize_,
-              minSamples_, maxSamples_);
+                                                  IStatistics& statistics,
+                                                  const EqualWeightVector& exampleWeights) const override {
+            return std::make_unique<OutputWiseStratifiedSampling<BinaryCsrView, BiPartition::const_iterator,
+                                                                 EqualWeightVector, BitWeightVector>>(
+              rngFactoryPtr_->create(), labelMatrix, partition.first_cbegin(), partition.first_cend(), exampleWeights,
+              sampleSize_, minSamples_, maxSamples_);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, BiPartition& partition,
+                                                  IStatistics& statistics,
+                                                  const DenseWeightVector<float32>& exampleWeights) const override {
+            return std::make_unique<OutputWiseStratifiedSampling<
+              BinaryCsrView, BiPartition::const_iterator, DenseWeightVector<float32>, DenseWeightVector<float32>>>(
+              rngFactoryPtr_->create(), labelMatrix, partition.first_cbegin(), partition.first_cend(), exampleWeights,
+              sampleSize_, minSamples_, maxSamples_);
         }
 };
 

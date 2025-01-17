@@ -20,7 +20,7 @@ namespace boosting {
     }
 
     void DenseDecomposableStatisticVector::add(const CContiguousView<Statistic<float64>>& view, uint32 row,
-                                               uint32 weight) {
+                                               float64 weight) {
         util::addToViewWeighted(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
     }
 
@@ -29,7 +29,7 @@ namespace boosting {
     }
 
     void DenseDecomposableStatisticVector::remove(const CContiguousView<Statistic<float64>>& view, uint32 row,
-                                                  uint32 weight) {
+                                                  float64 weight) {
         util::removeFromViewWeighted(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
     }
 
@@ -45,12 +45,12 @@ namespace boosting {
     }
 
     void DenseDecomposableStatisticVector::addToSubset(const CContiguousView<Statistic<float64>>& view, uint32 row,
-                                                       const CompleteIndexVector& indices, uint32 weight) {
+                                                       const CompleteIndexVector& indices, float64 weight) {
         util::addToViewWeighted(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
     }
 
     void DenseDecomposableStatisticVector::addToSubset(const CContiguousView<Statistic<float64>>& view, uint32 row,
-                                                       const PartialIndexVector& indices, uint32 weight) {
+                                                       const PartialIndexVector& indices, float64 weight) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         util::addToViewWeighted(this->begin(), view.values_cbegin(row), indexIterator, this->getNumElements(), weight);
     }

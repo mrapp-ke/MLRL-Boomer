@@ -32,10 +32,9 @@ namespace boosting {
      */
     template<typename OutputMatrix>
     class SparseDecomposableStatistics final
-        : public AbstractDecomposableStatistics<OutputMatrix, SparseDecomposableStatisticVector,
-                                                SparseDecomposableStatisticMatrix, NumericSparseSetMatrix<float64>,
-                                                ISparseDecomposableClassificationLoss, ISparseEvaluationMeasure,
-                                                ISparseDecomposableRuleEvaluationFactory> {
+        : public AbstractDecomposableStatistics<OutputMatrix, SparseDecomposableStatisticMatrix,
+                                                NumericSparseSetMatrix<float64>, ISparseDecomposableClassificationLoss,
+                                                ISparseEvaluationMeasure, ISparseDecomposableRuleEvaluationFactory> {
         public:
 
             /**
@@ -61,12 +60,248 @@ namespace boosting {
                                          const OutputMatrix& outputMatrix,
                                          std::unique_ptr<SparseDecomposableStatisticMatrix> statisticViewPtr,
                                          std::unique_ptr<NumericSparseSetMatrix<float64>> scoreMatrixPtr)
-                : AbstractDecomposableStatistics<OutputMatrix, SparseDecomposableStatisticVector,
-                                                 SparseDecomposableStatisticMatrix, NumericSparseSetMatrix<float64>,
-                                                 ISparseDecomposableClassificationLoss, ISparseEvaluationMeasure,
-                                                 ISparseDecomposableRuleEvaluationFactory>(
+                : AbstractDecomposableStatistics<OutputMatrix, SparseDecomposableStatisticMatrix,
+                                                 NumericSparseSetMatrix<float64>, ISparseDecomposableClassificationLoss,
+                                                 ISparseEvaluationMeasure, ISparseDecomposableRuleEvaluationFactory>(
                     std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
                     std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
+                                                            const EqualWeightVector& weights) const override {
+                return std::make_unique<StatisticsSubset<
+                  SparseDecomposableStatisticVector<uint32>, SparseDecomposableStatisticMatrix::view_type,
+                  ISparseDecomposableRuleEvaluationFactory, EqualWeightVector, CompleteIndexVector>>(
+                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
+                                                            const EqualWeightVector& weights) const override {
+                return std::make_unique<StatisticsSubset<
+                  SparseDecomposableStatisticVector<uint32>, SparseDecomposableStatisticMatrix::view_type,
+                  ISparseDecomposableRuleEvaluationFactory, EqualWeightVector, PartialIndexVector>>(
+                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
+                                                            const BitWeightVector& weights) const override {
+                return std::make_unique<StatisticsSubset<
+                  SparseDecomposableStatisticVector<uint32>, SparseDecomposableStatisticMatrix::view_type,
+                  ISparseDecomposableRuleEvaluationFactory, BitWeightVector, CompleteIndexVector>>(
+                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
+                                                            const BitWeightVector& weights) const override {
+                return std::make_unique<StatisticsSubset<
+                  SparseDecomposableStatisticVector<uint32>, SparseDecomposableStatisticMatrix::view_type,
+                  ISparseDecomposableRuleEvaluationFactory, BitWeightVector, PartialIndexVector>>(
+                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
+                                                            const DenseWeightVector<uint32>& weights) const override {
+                return std::make_unique<StatisticsSubset<
+                  SparseDecomposableStatisticVector<uint32>, SparseDecomposableStatisticMatrix::view_type,
+                  ISparseDecomposableRuleEvaluationFactory, DenseWeightVector<uint32>, CompleteIndexVector>>(
+                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
+                                                            const DenseWeightVector<uint32>& weights) const override {
+                return std::make_unique<StatisticsSubset<
+                  SparseDecomposableStatisticVector<uint32>, SparseDecomposableStatisticMatrix::view_type,
+                  ISparseDecomposableRuleEvaluationFactory, DenseWeightVector<uint32>, PartialIndexVector>>(
+                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+              const CompleteIndexVector& outputIndices,
+              const DenseWeightVector<float32>& weights) const override final {
+                return std::make_unique<StatisticsSubset<
+                  SparseDecomposableStatisticVector<float32>, SparseDecomposableStatisticMatrix::view_type,
+                  ISparseDecomposableRuleEvaluationFactory, DenseWeightVector<float32>, CompleteIndexVector>>(
+                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
+                                                            const DenseWeightVector<float32>& weights) const override {
+                return std::make_unique<StatisticsSubset<
+                  SparseDecomposableStatisticVector<float32>, SparseDecomposableStatisticMatrix::view_type,
+                  ISparseDecomposableRuleEvaluationFactory, DenseWeightVector<float32>, PartialIndexVector>>(
+                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+              const CompleteIndexVector& outputIndices,
+              const OutOfSampleWeightVector<EqualWeightVector>& weights) const override {
+                return std::make_unique<StatisticsSubset<
+                  SparseDecomposableStatisticVector<uint32>, SparseDecomposableStatisticMatrix::view_type,
+                  ISparseDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<EqualWeightVector>,
+                  CompleteIndexVector>>(this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights,
+                                        outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+              const PartialIndexVector& outputIndices,
+              const OutOfSampleWeightVector<EqualWeightVector>& weights) const override {
+                return std::make_unique<StatisticsSubset<
+                  SparseDecomposableStatisticVector<uint32>, SparseDecomposableStatisticMatrix::view_type,
+                  ISparseDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<EqualWeightVector>,
+                  PartialIndexVector>>(this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights,
+                                       outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+              const CompleteIndexVector& outputIndices,
+              const OutOfSampleWeightVector<BitWeightVector>& weights) const override {
+                return std::make_unique<StatisticsSubset<
+                  SparseDecomposableStatisticVector<uint32>, SparseDecomposableStatisticMatrix::view_type,
+                  ISparseDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<BitWeightVector>,
+                  CompleteIndexVector>>(this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights,
+                                        outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+              const PartialIndexVector& outputIndices,
+              const OutOfSampleWeightVector<BitWeightVector>& weights) const override {
+                return std::make_unique<StatisticsSubset<SparseDecomposableStatisticVector<uint32>,
+                                                         SparseDecomposableStatisticMatrix::view_type,
+                                                         ISparseDecomposableRuleEvaluationFactory,
+                                                         OutOfSampleWeightVector<BitWeightVector>, PartialIndexVector>>(
+                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+              const CompleteIndexVector& outputIndices,
+              const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override {
+                return std::make_unique<StatisticsSubset<
+                  SparseDecomposableStatisticVector<uint32>, SparseDecomposableStatisticMatrix::view_type,
+                  ISparseDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<DenseWeightVector<uint32>>,
+                  CompleteIndexVector>>(this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights,
+                                        outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+              const PartialIndexVector& outputIndices,
+              const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override {
+                return std::make_unique<StatisticsSubset<
+                  SparseDecomposableStatisticVector<uint32>, SparseDecomposableStatisticMatrix::view_type,
+                  ISparseDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<DenseWeightVector<uint32>>,
+                  PartialIndexVector>>(this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights,
+                                       outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+              const CompleteIndexVector& outputIndices,
+              const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override {
+                return std::make_unique<StatisticsSubset<
+                  SparseDecomposableStatisticVector<uint32>, SparseDecomposableStatisticMatrix::view_type,
+                  ISparseDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<DenseWeightVector<float32>>,
+                  CompleteIndexVector>>(this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights,
+                                        outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createSubset`
+             */
+            std::unique_ptr<IStatisticsSubset> createSubset(
+              const PartialIndexVector& outputIndices,
+              const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override {
+                return std::make_unique<StatisticsSubset<
+                  SparseDecomposableStatisticVector<uint32>, SparseDecomposableStatisticMatrix::view_type,
+                  ISparseDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<DenseWeightVector<float32>>,
+                  PartialIndexVector>>(this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights,
+                                       outputIndices);
+            }
+
+            /**
+             * @see `IStatistics::createWeightedStatistics`
+             */
+            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
+              const EqualWeightVector& weights) const override {
+                return std::make_unique<WeightedStatistics<
+                  SparseDecomposableStatisticVector<uint32>, SparseDecomposableStatisticMatrix::view_type,
+                  ISparseDecomposableRuleEvaluationFactory, EqualWeightVector>>(this->statisticMatrixPtr_->getView(),
+                                                                                *this->ruleEvaluationFactory_, weights);
+            }
+
+            /**
+             * @see `IStatistics::createWeightedStatistics`
+             */
+            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
+              const BitWeightVector& weights) const override {
+                return std::make_unique<WeightedStatistics<SparseDecomposableStatisticVector<uint32>,
+                                                           SparseDecomposableStatisticMatrix::view_type,
+                                                           ISparseDecomposableRuleEvaluationFactory, BitWeightVector>>(
+                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights);
+            }
+
+            /**
+             * @see `IStatistics::createWeightedStatistics`
+             */
+            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
+              const DenseWeightVector<uint32>& weights) const override {
+                return std::make_unique<WeightedStatistics<
+                  SparseDecomposableStatisticVector<uint32>, SparseDecomposableStatisticMatrix::view_type,
+                  ISparseDecomposableRuleEvaluationFactory, DenseWeightVector<uint32>>>(
+                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights);
+            }
+
+            /**
+             * @see `IStatistics::createWeightedStatistics`
+             */
+            std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
+              const DenseWeightVector<float32>& weights) const override {
+                return std::make_unique<WeightedStatistics<
+                  SparseDecomposableStatisticVector<float32>, SparseDecomposableStatisticMatrix::view_type,
+                  ISparseDecomposableRuleEvaluationFactory, DenseWeightVector<float32>>>(
+                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights);
+            }
 
             /**
              * @see `IBoostingStatistics::visitScoreMatrix`

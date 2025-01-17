@@ -2,6 +2,7 @@ from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
 
 from mlrl.common.cython._types cimport uint32
+from mlrl.common.cython.example_weights cimport IExampleWeights
 from mlrl.common.cython.feature_info cimport IFeatureInfo
 from mlrl.common.cython.feature_matrix cimport IColumnWiseFeatureMatrix, IRowWiseFeatureMatrix
 from mlrl.common.cython.instance_sampling cimport IExampleWiseStratifiedInstanceSamplingConfig, \
@@ -24,7 +25,8 @@ cdef extern from "mlrl/common/learner_classification.hpp" nogil:
 
         # Functions:
 
-        unique_ptr[ITrainingResult] fit(const IFeatureInfo& featureInfo, const IColumnWiseFeatureMatrix& featureMatrix,
+        unique_ptr[ITrainingResult] fit(const IExampleWeights& exampleWeights, const IFeatureInfo& featureInfo,
+                                        const IColumnWiseFeatureMatrix& featureMatrix,
                                         const IRowWiseLabelMatrix& labelMatrix) const
 
         bool canPredictScores(const IRowWiseFeatureMatrix&  featureMatrix, uint32 numLabels) const
