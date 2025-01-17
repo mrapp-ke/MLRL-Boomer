@@ -31,8 +31,8 @@ namespace util {
      * @param numElements   The number of elements in the view
      * @param value         The value to be set
      */
-    template<typename Iterator, typename T>
-    static inline void setViewToValue(Iterator iterator, uint32 numElements, T value) {
+    template<typename Iterator, typename Value>
+    static inline void setViewToValue(Iterator iterator, uint32 numElements, Value value) {
         std::fill(iterator, iterator + numElements, value);
     }
 
