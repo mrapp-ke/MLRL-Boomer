@@ -27,7 +27,7 @@ namespace seco {
              *
              * @return The value of the "beta" parameter
              */
-            virtual float64 getBeta() const = 0;
+            virtual float32 getBeta() const = 0;
 
             /**
              * Sets the value of the "beta" parameter
@@ -36,7 +36,7 @@ namespace seco {
              * @return      A reference to an object of type `IFMeasureConfig` that allows further configuration of the
              *              heuristic
              */
-            virtual IFMeasureConfig& setBeta(float64 beta) = 0;
+            virtual IFMeasureConfig& setBeta(float32 beta) = 0;
     };
 
     /**
@@ -49,15 +49,15 @@ namespace seco {
                                  public IFMeasureConfig {
         private:
 
-            float64 beta_;
+            float32 beta_;
 
         public:
 
             FMeasureConfig();
 
-            float64 getBeta() const override;
+            float32 getBeta() const override;
 
-            IFMeasureConfig& setBeta(float64 beta) override;
+            IFMeasureConfig& setBeta(float32 beta) override;
 
             std::unique_ptr<IHeuristicFactory> createHeuristicFactory() const override;
     };
