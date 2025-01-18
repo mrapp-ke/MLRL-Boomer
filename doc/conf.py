@@ -35,6 +35,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.extlinks',
     'sphinx.ext.intersphinx',
+    'sphinxcontrib.spelling',
     'sphinxext.opengraph',
     'sphinx_inline_tabs',
     'sphinx_copybutton',
