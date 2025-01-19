@@ -68,5 +68,16 @@ class SphinxModule(Module):
         """
         return self.source_file_search.list(self.root_directory)
 
+    def find_spelling_files(self) -> List[str]:
+        """
+        Finds and returns all files that contain information about spelling mistakes found in the documentation.
+
+        :return: A lis that contains the files that have been found
+        """
+        return FileSearch() \
+            .set_recursive(True) \
+            .filter_by_suffix('spelling') \
+            .list(self.output_directory)
+
     def __str__(self) -> str:
         return 'SphinxModule {root_directory="' + self.root_directory + '"}'
