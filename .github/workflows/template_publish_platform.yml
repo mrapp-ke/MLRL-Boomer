@@ -40,7 +40,7 @@ jobs:
         run: .\build.bat apply_development_version
       - name: Install OpenMP
         if: ${{ matrix.os == 'macos-latest' }}
-        run: brew install libomp
+        run: brew install libomp --verbose --build-from-source
       - name: Prepare MSVC
         if: ${{ matrix.os == 'windows-latest' }}
         uses: ilammy/msvc-dev-cmd@v1
