@@ -8,7 +8,7 @@
 /**
  * Defines an interface for all classes that provide access to a subset of the weighted statistics and allows to
  * calculate the scores to be predicted by rules that cover such a subset. In addition, the state of the subset can be
- * reset multiple times and the scores to be predicted by rules that cover the previous subsets can be calcualted as
+ * reset multiple times and the scores to be predicted by rules that cover the previous subsets can be calculated as
  * well.
  */
 class IResettableStatisticsSubset : virtual public IStatisticsSubset {
