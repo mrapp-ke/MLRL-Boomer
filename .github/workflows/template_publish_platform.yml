@@ -40,22 +40,23 @@ jobs:
       - name: Set version
         if: ${{ matrix.os == 'windows-latest' && inputs.dev_release == true }}
         run: .\build.bat apply_development_version
-      - name: Install OpenMP
-        if: ${{ matrix.os == 'macos-latest' }}
-        run: brew install libomp
       - name: Prepare MSVC
         if: ${{ matrix.os == 'windows-latest' }}
         uses: ilammy/msvc-dev-cmd@v1
       - name: Build package
         uses: pypa/cibuildwheel@v2.17
         env:
+          CIBW_BEFORE_ALL_MACOS: GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} ./build dependency_libomp
           CIBW_BEFORE_BUILD_LINUX: ./build --clean && SUBPROJECTS=${{ inputs.subproject }} TEST_SUPPORT=disabled GPU_SUPPORT=disabled
             ./build install
           CIBW_BEFORE_BUILD_MACOS: rm -rf venv && ./build --clean && SUBPROJECTS=${{ inputs.subproject }} TEST_SUPPORT=disabled
-            GPU_SUPPORT=disabled CPLUS_INCLUDE_PATH=/opt/homebrew/opt/libomp/include/ LIBRARY_PATH=/opt/homebrew/opt/libomp/lib/
+            GPU_SUPPORT=disabled CPLUS_INCLUDE_PATH=/Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/include/ LIBRARY_PATH=/Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/lib/
             ./build install
           CIBW_BEFORE_BUILD_WINDOWS: .\build.bat --clean && set SUBPROJECTS=${{ inputs.subproject }} && set TEST_SUPPORT=disabled
             && set GPU_SUPPORT=disabled && .\build.bat install
+          CIBW_REPAIR_WHEEL_COMMAND_MACOS: >
+            DYLD_LIBRARY_PATH=/Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/lib/ delocate-wheel  --require-archs {delocate_archs}
+            -w {dest_dir} -v {wheel}
           CIBW_BUILD_FRONTEND: build
           CIBW_ARCHS: auto64
           CIBW_SKIP: pp* *musllinux*
