@@ -121,3 +121,6 @@ jobs:
         run: sudo apt install -y fonts-roboto
       - name: Check for spelling mistakes in documentation
         run: GPU_SUPPORT=disabled SPHINX_BUILDER=spelling ./build doc
+      - name: Setup tmate session
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
