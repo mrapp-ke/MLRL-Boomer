@@ -9,6 +9,7 @@ from enum import Enum, auto
 from functools import cached_property
 from typing import List, Optional
 
+from core.build_unit import BuildUnit
 from util.io import TextFile
 from util.log import Log
 
@@ -351,56 +352,56 @@ def __update_changelog(release_type: ReleaseType, *changeset_files):
         ChangesetFile(changeset_file).clear()
 
 
-def validate_changelog_bugfix():
+def validate_changelog_bugfix(_: BuildUnit):
     """
     Validates the changelog file that lists bugfixes.
     """
     __validate_changeset(CHANGESET_FILE_BUGFIX)
 
 
-def validate_changelog_feature():
+def validate_changelog_feature(_: BuildUnit):
     """
     Validates the changelog file that lists new features.
     """
     __validate_changeset(CHANGESET_FILE_FEATURE)
 
 
-def validate_changelog_main():
+def validate_changelog_main(_: BuildUnit):
     """
     Validates the changelog file that lists major updates.
     """
     __validate_changeset(CHANGESET_FILE_MAIN)
 
 
-def update_changelog_main():
+def update_changelog_main(_: BuildUnit):
     """
     Updates the projects changelog when releasing bugfixes.
     """
     __update_changelog(ReleaseType.MAJOR, CHANGESET_FILE_MAIN, CHANGESET_FILE_FEATURE, CHANGESET_FILE_BUGFIX)
 
 
-def update_changelog_feature():
+def update_changelog_feature(_: BuildUnit):
     """
     Updates the project's changelog when releasing new features.
     """
     __update_changelog(ReleaseType.MINOR, CHANGESET_FILE_FEATURE, CHANGESET_FILE_BUGFIX)
 
 
-def update_changelog_bugfix():
+def update_changelog_bugfix(_: BuildUnit):
     """
     Updates the project's changelog when releasing major updates.
     """
     __update_changelog(ReleaseType.PATCH, CHANGESET_FILE_BUGFIX)
 
 
-def print_current_version():
+def print_current_version(_: BuildUnit):
     """
     Prints the project's current version.
     """
     return Log.info('%s', str(VersionFile().version))
 
 
-def print_latest_changelog():
+def print_latest_changelog(_: BuildUnit):
     """
     Prints the changelog of the latest release.
     """

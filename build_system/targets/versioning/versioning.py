@@ -6,6 +6,7 @@ Provides actions for updating the project's version.
 from dataclasses import replace
 from functools import cached_property
 
+from core.build_unit import BuildUnit
 from util.io import TextFile
 from util.log import Log
 
@@ -62,7 +63,7 @@ def __get_development_version_file() -> DevelopmentVersionFile:
     return version_file
 
 
-def increment_development_version():
+def increment_development_version(_: BuildUnit):
     """
     Increments the development version.
     """
@@ -70,7 +71,7 @@ def increment_development_version():
     version_file.update(version_file.development_version + 1)
 
 
-def reset_development_version():
+def reset_development_version(_: BuildUnit):
     """
     Resets the development version.
     """
@@ -78,7 +79,7 @@ def reset_development_version():
     version_file.update(0)
 
 
-def apply_development_version():
+def apply_development_version(_: BuildUnit):
     """
     Appends the development version to the current semantic version.
     """
@@ -87,7 +88,7 @@ def apply_development_version():
     version_file.update(replace(version_file.version, dev=development_version))
 
 
-def increment_patch_version():
+def increment_patch_version(_: BuildUnit):
     """
     Increments the patch version.
     """
@@ -96,7 +97,7 @@ def increment_patch_version():
     version_file.update(replace(version, patch=version.patch + 1))
 
 
-def increment_minor_version():
+def increment_minor_version(_: BuildUnit):
     """
     Increments the minor version.
     """
@@ -105,7 +106,7 @@ def increment_minor_version():
     version_file.update(replace(version, minor=version.minor + 1, patch=0))
 
 
-def increment_major_version():
+def increment_major_version(_: BuildUnit):
     """
     Increments the major version.
     """

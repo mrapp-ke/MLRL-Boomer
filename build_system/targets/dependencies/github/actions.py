@@ -5,16 +5,14 @@ Provides utility functions for checking the project's GitHub workflows for outda
 """
 from dataclasses import dataclass, replace
 from functools import cached_property, reduce
-from os import environ
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Set
 
 from core.build_unit import BuildUnit
-from util.env import get_env
 from util.log import Log
 
 from targets.dependencies.github.modules import GithubWorkflowModule
-from targets.dependencies.github.pygithub import GithubApi
 from targets.dependencies.github.pyyaml import YamlFile
+from targets.dependencies.pygithub import GithubApi
 
 
 @dataclass
@@ -202,8 +200,6 @@ class WorkflowUpdater:
     Allows checking the versions of GitHub Actions used in multiple workflows and updating outdated ones.
     """
 
-    ENV_GITHUB_TOKEN = 'GITHUB_TOKEN'
-
     @dataclass
     class OutdatedAction:
         """
@@ -246,24 +242,14 @@ class WorkflowUpdater:
         def __hash__(self) -> int:
             return hash(self.updated)
 
-    @staticmethod
-    def __get_github_token() -> Optional[str]:
-        github_token = get_env(environ, WorkflowUpdater.ENV_GITHUB_TOKEN)
-
-        if not github_token:
-            Log.warning('No GitHub API token is set. You can specify it via the environment variable %s.',
-                        WorkflowUpdater.ENV_GITHUB_TOKEN)
-
-        return github_token
-
     def __query_latest_action_version(self, action: Action) -> ActionVersion:
         repository_name = action.repository
 
         try:
-            latest_tag = GithubApi(self.build_unit) \
-                .set_token(self.github_token) \
+            latest_tag = self.github_api \
                 .open_repository(repository_name) \
-                .get_latest_release_tag()
+                .get_latest_release() \
+                .tag_name
 
             if not latest_tag:
                 raise RuntimeError('No releases available')
@@ -291,7 +277,7 @@ class WorkflowUpdater:
         self.build_unit = build_unit
         self.module = module
         self.version_cache = {}
-        self.github_token = WorkflowUpdater.__get_github_token()
+        self.github_api = GithubApi(build_unit).set_token_from_env()
 
     @cached_property
     def workflows(self) -> Set[Workflow]:

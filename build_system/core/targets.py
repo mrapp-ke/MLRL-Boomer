@@ -311,7 +311,7 @@ class PhonyTarget(Target):
     A phony target, which executes a certain action unconditionally.
     """
 
-    Function = Callable[[], None]
+    Function = Callable[[BuildUnit], None]
 
     class Runnable(ABC):
         """
@@ -391,7 +391,7 @@ class PhonyTarget(Target):
 
             def action(module_registry: ModuleRegistry):
                 for function in self.functions:
-                    function()
+                    function(build_unit)
 
                 for runnable in self.runnables:
                     modules = module_registry.lookup(runnable.module_filter)

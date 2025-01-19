@@ -28,9 +28,7 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-latest
           - macos-latest
-          - windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,15 +38,13 @@ jobs:
       - name: Set version
         if: ${{ matrix.os == 'windows-latest' && inputs.dev_release == true }}
         run: .\build.bat apply_development_version
-      - name: Install OpenMP
-        if: ${{ matrix.os == 'macos-latest' }}
-        run: brew install libomp
       - name: Prepare MSVC
         if: ${{ matrix.os == 'windows-latest' }}
         uses: ilammy/msvc-dev-cmd@v1
       - name: Build package
         uses: pypa/cibuildwheel@v2.17
         env:
+          CIBW_BEFORE_ALL_MACOS: GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} ./build dependency_libomp
           CIBW_BEFORE_BUILD_LINUX: ./build --clean && SUBPROJECTS=${{ inputs.subproject }} TEST_SUPPORT=disabled GPU_SUPPORT=disabled
             ./build install
           CIBW_BEFORE_BUILD_MACOS: rm -rf venv && ./build --clean && SUBPROJECTS=${{ inputs.subproject }} TEST_SUPPORT=disabled
