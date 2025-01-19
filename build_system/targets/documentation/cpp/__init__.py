@@ -20,7 +20,7 @@ TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
     .add_build_target(APIDOC_CPP) \
         .set_runnables(ApidocCpp()) \
     .add_build_target(APIDOC_CPP_INDEX) \
-        .depends_on(APIDOC_CPP) \
+        .depends_on(APIDOC_CPP, clean_dependencies=True) \
         .set_runnables(ApidocIndexCpp()) \
     .add_phony_target('update_doxyfile') \
         .set_runnables(UpdateDoxyfile()) \

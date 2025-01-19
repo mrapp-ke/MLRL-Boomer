@@ -62,7 +62,7 @@ jobs:
       - name: Prepare ccache
         uses: hendrikmuhs/ccache-action@v1
         with:
-          key: test-doc-ccache
+          key: build-doc-ccache
       - name: Install Doxygen
         uses: ssciwr/doxygen-install@v1
       - name: Generate C++ Apidoc
@@ -74,7 +74,7 @@ jobs:
       - name: Install Roboto font
         if: ${{ needs.changes.outputs.doc == 'true' }}
         run: sudo apt install -y fonts-roboto
-      - name: Generate Documentation
+      - name: Generate documentation
         if: ${{ needs.changes.outputs.doc == 'true' }}
         run: GPU_SUPPORT=disabled ./build doc
   check_links:
@@ -92,10 +92,35 @@ jobs:
       - name: Prepare ccache
         uses: hendrikmuhs/ccache-action@v1
         with:
-          key: test-doc-ccache
+          key: check-links-ccache
       - name: Install Doxygen
         uses: ssciwr/doxygen-install@v1
       - name: Install Roboto font
         run: sudo apt install -y fonts-roboto
-      - name: Generate Documentation
+      - name: Check links in documentation
         run: GPU_SUPPORT=disabled SPHINX_BUILDER=linkcheck ./build doc
+  check_spelling:
+    needs: changes
+    if: ${{ needs.changes.outputs.any == 'true' }}
+    name: Check for spelling mistakes in documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: .version-python
+      - name: Prepare ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: check-spelling-ccache
+      - name: Install Doxygen
+        uses: ssciwr/doxygen-install@v1
+      - name: Install Roboto font
+        run: sudo apt install -y fonts-roboto
+      - name: Check for spelling mistakes in documentation
+        run: GPU_SUPPORT=disabled SPHINX_BUILDER=spelling ./build doc
+      - name: Setup tmate session
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
