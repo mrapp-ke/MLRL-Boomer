@@ -111,8 +111,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version-file: .version-python
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
       - name: Prepare ccache
         uses: hendrikmuhs/ccache-action@v1
         with:
