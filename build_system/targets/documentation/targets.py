@@ -11,6 +11,7 @@ from core.build_unit import BuildUnit
 from core.modules import Module
 from core.targets import BuildTarget
 from util.env import get_env
+from util.format import format_iterable
 from util.io import TextFile
 from util.log import Log
 
@@ -82,19 +83,26 @@ class BuildDocumentation(BuildTarget.Runnable):
 
     def __init__(self):
         super().__init__(SphinxModule.Filter())
+        sphinx_builder = get_env(environ, self.ENV_SPHINX_BUILDER, default=SphinxBuild.BUILDER_HTML)
+        valid_builders = {SphinxBuild.BUILDER_HTML, SphinxBuild.BUILDER_LINKCHECK, SphinxBuild.BUILDER_SPELLING}
+
+        if sphinx_builder not in valid_builders:
+            Log.error('Command line argument %s must be one of {%s}, but got: "%s"', self.ENV_SPHINX_BUILDER,
+                      format_iterable(valid_builders, delimiter='"'), sphinx_builder)
+
+        self.sphinx_builder = sphinx_builder
 
     def run(self, build_unit: BuildUnit, module: Module):
-        sphinx_builder = get_env(environ, self.ENV_SPHINX_BUILDER, default='html')
         Log.info('Building documentation for directory "%s" (using builder "%s")"...', module.root_directory,
-                 sphinx_builder)
-        SphinxBuild(build_unit, module, builder=sphinx_builder).run()
+                 self.sphinx_builder)
+        SphinxBuild(build_unit, module, builder=self.sphinx_builder).run()
 
     def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
-        return module.find_source_files()
+        return module.find_source_files() if self.sphinx_builder == SphinxBuild.BUILDER_HTML else []
 
     def get_output_files(self, _: BuildUnit, module: Module) -> List[str]:
-        return [module.output_directory]
+        return [module.output_directory] if self.sphinx_builder == SphinxBuild.BUILDER_HTML else []
 
-    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
+    def get_clean_files(self, _: BuildUnit, module: Module) -> List[str]:
         Log.info('Removing documentation for directory "%s"...', module.root_directory)
-        return super().get_clean_files(build_unit, module)
+        return [module.output_directory]

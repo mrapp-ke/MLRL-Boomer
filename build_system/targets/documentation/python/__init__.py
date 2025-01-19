@@ -22,7 +22,7 @@ TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
         .depends_on(INSTALL_WHEELS) \
         .set_runnables(ApidocPython()) \
     .add_build_target(APIDOC_PYTHON_INDEX) \
-        .depends_on(APIDOC_PYTHON) \
+        .depends_on(APIDOC_PYTHON, clean_dependencies=True) \
         .set_runnables(ApidocIndexPython()) \
     .build()
 

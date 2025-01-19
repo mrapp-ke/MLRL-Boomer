@@ -129,6 +129,27 @@ By default, the above command uses the [Sphinx builder](https://www.sphinx-doc.o
    build.bat doc
    ```
 ````
+
+Similarly, setting the environment variable to the value `spelling` enables to check the documentation for spelling mistakes (this requires the [Enchant C library](https://pyenchant.github.io/pyenchant/install.html#installing-the-enchant-c-library) to be installed on the system):
+
+````{tab} Linux
+   ```text
+   SPHINX_BUILDER=spelling ./build doc
+   ```
+````
+
+````{tab} macOS
+   ```text
+   SPHINX_BUILDER=spelling ./build doc
+   ```
+````
+
+````{tab} Windows
+   ```text
+   $env:SPHINX_BUILDER = "spelling"
+   build.bat doc
+   ```
+````
 `````
 
 ## Cleaning up Build Files
