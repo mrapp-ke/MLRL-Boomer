@@ -44,7 +44,7 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         uses: ilammy/msvc-dev-cmd@v1
       - name: Build package
-        uses: pypa/cibuildwheel@v2.17
+        uses: pypa/cibuildwheel@v2.22
         env:
           CIBW_BEFORE_ALL_MACOS: GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} ./build dependency_libomp
           CIBW_BEFORE_BUILD_LINUX: ./build --clean && SUBPROJECTS=${{ inputs.subproject }} TEST_SUPPORT=disabled GPU_SUPPORT=disabled
