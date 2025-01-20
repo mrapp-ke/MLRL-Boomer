@@ -40,6 +40,8 @@ jobs:
               - 'build_system/targets/compilation/*'
               - 'build_system/targets/packaging/*'
               - 'build_system/targets/testing/*'
+              - 'build_system/targets/dependencies/*'
+              - 'build_system/targets/dependencies/macos/*'
             cpp_common: &cpp_common
               - *build_files
               - 'build_system/targets/compilation/cpp/*'

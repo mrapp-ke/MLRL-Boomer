@@ -34,6 +34,8 @@ jobs:
               - 'build_system/util/**'
               - 'build_system/targets/*.py'
               - 'build_system/targets/packaging/*'
+              - 'build_system/targets/dependencies/*'
+              - 'build_system/targets/dependencies/macos/*'
       - name: Read Python version
         uses: juliangruber/read-file-action@v1
         id: python_version
