@@ -9,16 +9,18 @@ namespace boosting {
         : l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight), blas_(blas),
           lapack_(lapack) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector>>
-      NonDecomposableCompleteRuleEvaluationFactory::create(const DenseNonDecomposableStatisticVector& statisticVector,
-                                                           const CompleteIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
+      NonDecomposableCompleteRuleEvaluationFactory::create(
+        const DenseNonDecomposableStatisticVector<float64>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
         return std::make_unique<DenseNonDecomposableCompleteRuleEvaluation<CompleteIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector>>
-      NonDecomposableCompleteRuleEvaluationFactory::create(const DenseNonDecomposableStatisticVector& statisticVector,
-                                                           const PartialIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
+      NonDecomposableCompleteRuleEvaluationFactory::create(
+        const DenseNonDecomposableStatisticVector<float64>& statisticVector,
+        const PartialIndexVector& indexVector) const {
         return std::make_unique<DenseNonDecomposableCompleteRuleEvaluation<PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
     }
