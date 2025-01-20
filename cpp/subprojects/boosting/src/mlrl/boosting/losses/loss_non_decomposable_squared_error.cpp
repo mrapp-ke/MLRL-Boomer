@@ -62,8 +62,8 @@ namespace boosting {
     template<typename GroundTruthIterator>
     static inline void updateNonDecomposableStatisticsInternally(
       View<float64>::const_iterator scoreIterator, GroundTruthIterator groundTruthIterator,
-      DenseNonDecomposableStatisticView::gradient_iterator gradientIterator,
-      DenseNonDecomposableStatisticView::hessian_iterator hessianIterator, uint32 numOutputs,
+      DenseNonDecomposableStatisticView<float64>::gradient_iterator gradientIterator,
+      DenseNonDecomposableStatisticView<float64>::hessian_iterator hessianIterator, uint32 numOutputs,
       GroundTruthConversionFunction<GroundTruthIterator> groundTruthConversionFunction) {
         typedef typename util::iterator_value<GroundTruthIterator> ground_truth_type;
         GroundTruthIterator groundTruthIterator2 = groundTruthIterator;
@@ -248,18 +248,19 @@ namespace boosting {
                                                        regressionMatrix.numCols, &scoreConversionFunction);
             }
 
-            void updateNonDecomposableStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-                                                 const CContiguousView<float64>& scoreMatrix,
-                                                 DenseNonDecomposableStatisticView& statisticView) const override {
+            void updateNonDecomposableStatistics(
+              uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+              const CContiguousView<float64>& scoreMatrix,
+              DenseNonDecomposableStatisticView<float64>& statisticView) const override {
                 updateNonDecomposableStatisticsInternally(
                   scoreMatrix.values_cbegin(exampleIndex), labelMatrix.values_cbegin(exampleIndex),
                   statisticView.gradients_begin(exampleIndex), statisticView.hessians_begin(exampleIndex),
                   labelMatrix.numCols, &binaryConversionFunction);
             }
 
-            void updateNonDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                 const CContiguousView<float64>& scoreMatrix,
-                                                 DenseNonDecomposableStatisticView& statisticView) const override {
+            void updateNonDecomposableStatistics(
+              uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<float64>& scoreMatrix,
+              DenseNonDecomposableStatisticView<float64>& statisticView) const override {
                 auto groundTruthIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                              labelMatrix.indices_cend(exampleIndex));
                 updateNonDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), groundTruthIterator,
@@ -268,19 +269,20 @@ namespace boosting {
                                                           labelMatrix.numCols, &binaryConversionFunction);
             }
 
-            void updateNonDecomposableStatistics(uint32 exampleIndex,
-                                                 const CContiguousView<const float32>& regressionMatrix,
-                                                 const CContiguousView<float64>& scoreMatrix,
-                                                 DenseNonDecomposableStatisticView& statisticView) const override {
+            void updateNonDecomposableStatistics(
+              uint32 exampleIndex, const CContiguousView<const float32>& regressionMatrix,
+              const CContiguousView<float64>& scoreMatrix,
+              DenseNonDecomposableStatisticView<float64>& statisticView) const override {
                 updateNonDecomposableStatisticsInternally(
                   scoreMatrix.values_cbegin(exampleIndex), regressionMatrix.values_cbegin(exampleIndex),
                   statisticView.gradients_begin(exampleIndex), statisticView.hessians_begin(exampleIndex),
                   regressionMatrix.numCols, &scoreConversionFunction);
             }
 
-            void updateNonDecomposableStatistics(uint32 exampleIndex, const CsrView<const float32>& regressionMatrix,
-                                                 const CContiguousView<float64>& scoreMatrix,
-                                                 DenseNonDecomposableStatisticView& statisticView) const override {
+            void updateNonDecomposableStatistics(
+              uint32 exampleIndex, const CsrView<const float32>& regressionMatrix,
+              const CContiguousView<float64>& scoreMatrix,
+              DenseNonDecomposableStatisticView<float64>& statisticView) const override {
                 auto groundTruthIterator = createSparseForwardIterator(
                   regressionMatrix.indices_cbegin(exampleIndex), regressionMatrix.indices_cend(exampleIndex),
                   regressionMatrix.values_cbegin(exampleIndex), regressionMatrix.values_cend(exampleIndex));
