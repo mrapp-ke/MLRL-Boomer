@@ -164,7 +164,7 @@ namespace boosting {
              *              gradients and Hessians to be added to this vector
              * @param row   The index of the row to be added to this vector
              */
-            void add(const DenseNonDecomposableStatisticView& view, uint32 row);
+            void add(const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row);
 
             /**
              * Adds all gradients and Hessians in a single row of a `DenseNonDecomposableStatisticView` to this vector.
@@ -175,7 +175,7 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void add(const DenseNonDecomposableStatisticView& view, uint32 row, StatisticType weight);
+            void add(const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, StatisticType weight);
 
             /**
              * Removes all gradients and Hessians in a single row of a `DenseNonDecomposableStatisticView` from this
@@ -185,7 +185,7 @@ namespace boosting {
              *              gradients and Hessians to be removed from this vector
              * @param row   The index of the row to be removed from this vector
              */
-            void remove(const DenseNonDecomposableStatisticView& view, uint32 row);
+            void remove(const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row);
 
             /**
              * Removes all gradients and Hessians in a single row of a `DenseNonDecomposableStatisticView` from this
@@ -196,7 +196,7 @@ namespace boosting {
              * @param row       The index of the row to be removed from this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void remove(const DenseNonDecomposableStatisticView& view, uint32 row, StatisticType weight);
+            void remove(const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, StatisticType weight);
 
             /**
              * Adds certain gradients and Hessians in another vector, whose positions are given as a
@@ -207,7 +207,7 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `CompleteIndexVector` that provides access to the indices
              */
-            void addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
+            void addToSubset(const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row,
                              const CompleteIndexVector& indices);
 
             /**
@@ -219,7 +219,7 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `PartialIndexVector` that provides access to the indices
              */
-            void addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
+            void addToSubset(const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row,
                              const PartialIndexVector& indices);
 
             /**
@@ -233,7 +233,7 @@ namespace boosting {
              * @param indices   A reference to a `CompleteIndexVector` that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
+            void addToSubset(const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row,
                              const CompleteIndexVector& indices, StatisticType weight);
 
             /**
@@ -247,7 +247,7 @@ namespace boosting {
              * @param indices   A reference to a `PartialIndexVector` that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
+            void addToSubset(const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row,
                              const PartialIndexVector& indices, StatisticType weight);
 
             /**
