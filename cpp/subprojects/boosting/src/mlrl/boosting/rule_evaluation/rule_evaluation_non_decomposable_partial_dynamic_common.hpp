@@ -25,8 +25,9 @@ namespace boosting {
      */
     template<typename ScoreIterator>
     static inline std::pair<float64, float64> getMinAndMaxScore(
-      ScoreIterator scoreIterator, DenseNonDecomposableStatisticVector::gradient_const_iterator gradientIterator,
-      DenseNonDecomposableStatisticVector::hessian_diagonal_const_iterator hessianIterator, uint32 numOutputs,
+      ScoreIterator scoreIterator,
+      DenseNonDecomposableStatisticVector<float64>::gradient_const_iterator gradientIterator,
+      DenseNonDecomposableStatisticVector<float64>::hessian_diagonal_const_iterator hessianIterator, uint32 numOutputs,
       float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
         float64 score = calculateOutputWiseScore(gradientIterator[0], hessianIterator[0], l1RegularizationWeight,
                                                  l2RegularizationWeight);
