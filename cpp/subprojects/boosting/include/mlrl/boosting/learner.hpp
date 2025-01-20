@@ -25,6 +25,8 @@
 #include "mlrl/boosting/statistics/statistic_format_dense.hpp"
 #include "mlrl/boosting/statistics/statistic_format_sparse.hpp"
 #include "mlrl/boosting/statistics/statistic_type.hpp"
+#include "mlrl/boosting/statistics/statistic_type_float32.hpp"
+#include "mlrl/boosting/statistics/statistic_type_float64.hpp"
 #include "mlrl/boosting/util/blas.hpp"
 #include "mlrl/boosting/util/lapack.hpp"
 #include "mlrl/common/learner.hpp"
@@ -299,6 +301,42 @@ namespace boosting {
                   this->getDefaultRuleConfig());
                 this->getClassificationStatisticsConfig().set(ptr);
                 this->getRegressionStatisticsConfig().set(ptr);
+            }
+    };
+
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to use 32-bit floating point values
+     * for representing gradients and Hessians.
+     */
+    class MLRLBOOSTING_API IFloat32StatisticsMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
+
+            virtual ~IFloat32StatisticsMixin() override {}
+
+            /**
+             * Configures the rule learner to use 32-bit floating point values for representing gradients and Hessians.
+             */
+            virtual void useFloat32Statistics() {
+                auto ptr = std::make_unique<Float32StatisticsConfig>();
+                this->getStatisticTypeConfig().set(std::move(ptr));
+            }
+    };
+
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to use 64-bit floating point values
+     * for representing gradients and Hessians.
+     */
+    class MLRLBOOSTING_API IFloat64StatisticsMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
+
+            virtual ~IFloat64StatisticsMixin() override {}
+
+            /**
+             * Configures the rule learner to use 64-bit floating point values for representing gradients and Hessians.
+             */
+            virtual void useFloat64Statistics() {
+                auto ptr = std::make_unique<Float64StatisticsConfig>();
+                this->getStatisticTypeConfig().set(std::move(ptr));
             }
     };
 
@@ -604,6 +642,8 @@ namespace boosting {
      */
     class MLRLBOOSTING_API IBoostedRuleLearnerMixin : virtual public IRuleLearnerMixin,
                                                       virtual public IDefaultRuleMixin,
+                                                      virtual public IFloat32StatisticsMixin,
+                                                      virtual public IFloat64StatisticsMixin,
                                                       virtual public INoL1RegularizationMixin,
                                                       virtual public INoL2RegularizationMixin,
                                                       virtual public INoLabelBinningMixin {
@@ -616,6 +656,7 @@ namespace boosting {
              */
             virtual void useDefaults() override {
                 IRuleLearnerMixin::useDefaults();
+                this->useFloat64Statistics();
                 this->useNoL1Regularization();
                 this->useNoL2Regularization();
                 this->useNoLabelBinning();
