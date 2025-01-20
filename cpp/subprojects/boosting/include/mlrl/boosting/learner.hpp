@@ -24,6 +24,7 @@
 #include "mlrl/boosting/statistics/statistic_format_auto.hpp"
 #include "mlrl/boosting/statistics/statistic_format_dense.hpp"
 #include "mlrl/boosting/statistics/statistic_format_sparse.hpp"
+#include "mlrl/boosting/statistics/statistic_type.hpp"
 #include "mlrl/boosting/util/blas.hpp"
 #include "mlrl/boosting/util/lapack.hpp"
 #include "mlrl/common/learner.hpp"
@@ -58,6 +59,12 @@ namespace boosting {
              *         of the statistics
              */
             virtual ReadableProperty<IStatisticsConfig> getStatisticsConfig() const = 0;
+
+            /**
+             * Returns a `Property` that allows to access the `IStatisticTypeConfig` that stores the configuration of
+             * the data type that should be used by the rule learner for representing gradients and Hessians.
+             */
+            virtual Property<IStatisticTypeConfig> getStatisticTypeConfig() = 0;
 
             /**
              * Returns a `SharedProperty` that allows to access the `IClassificationStatisticsConfig` that stores the
