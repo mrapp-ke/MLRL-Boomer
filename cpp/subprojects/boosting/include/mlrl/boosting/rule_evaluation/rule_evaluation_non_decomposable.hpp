@@ -34,8 +34,8 @@ namespace boosting {
              *                          the indices of the outputs for which the rules may predict
              * @return                  An unique pointer to an object of type `IRuleEvaluation` that has been created
              */
-            virtual std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector>> create(
-              const DenseNonDecomposableStatisticVector& statisticVector,
+            virtual std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>> create(
+              const DenseNonDecomposableStatisticVector<float64>& statisticVector,
               const CompleteIndexVector& indexVector) const = 0;
 
             /**
@@ -50,8 +50,8 @@ namespace boosting {
              *                          the indices of the outputs for which the rules may predict
              * @return                  An unique pointer to an object of type `IRuleEvaluation` that has been created
              */
-            virtual std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector>> create(
-              const DenseNonDecomposableStatisticVector& statisticVector,
+            virtual std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>> create(
+              const DenseNonDecomposableStatisticVector<float64>& statisticVector,
               const PartialIndexVector& indexVector) const = 0;
     };
 
