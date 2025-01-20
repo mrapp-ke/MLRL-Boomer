@@ -107,7 +107,7 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                             const EqualWeightVector& weights) const override {
-                return std::make_unique<StatisticsSubset<EqualWeightVector, CompleteIndexVector>>(
+                return std::make_unique<StatisticsSubset<EqualWeightVector, CompleteIndexVector, float64>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -116,7 +116,7 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                             const EqualWeightVector& weights) const override {
-                return std::make_unique<StatisticsSubset<EqualWeightVector, PartialIndexVector>>(
+                return std::make_unique<StatisticsSubset<EqualWeightVector, PartialIndexVector, float64>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -125,7 +125,7 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                             const BitWeightVector& weights) const override {
-                return std::make_unique<StatisticsSubset<BitWeightVector, CompleteIndexVector>>(
+                return std::make_unique<StatisticsSubset<BitWeightVector, CompleteIndexVector, float64>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -134,7 +134,7 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                             const BitWeightVector& weights) const override {
-                return std::make_unique<StatisticsSubset<BitWeightVector, PartialIndexVector>>(
+                return std::make_unique<StatisticsSubset<BitWeightVector, PartialIndexVector, float64>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -143,7 +143,7 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                             const DenseWeightVector<uint32>& weights) const override {
-                return std::make_unique<StatisticsSubset<DenseWeightVector<uint32>, CompleteIndexVector>>(
+                return std::make_unique<StatisticsSubset<DenseWeightVector<uint32>, CompleteIndexVector, float64>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -152,7 +152,7 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                             const DenseWeightVector<uint32>& weights) const override {
-                return std::make_unique<StatisticsSubset<DenseWeightVector<uint32>, PartialIndexVector>>(
+                return std::make_unique<StatisticsSubset<DenseWeightVector<uint32>, PartialIndexVector, float64>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -162,7 +162,7 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& outputIndices,
               const DenseWeightVector<float32>& weights) const override final {
-                return std::make_unique<StatisticsSubset<DenseWeightVector<float32>, CompleteIndexVector>>(
+                return std::make_unique<StatisticsSubset<DenseWeightVector<float32>, CompleteIndexVector, float64>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -171,7 +171,7 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                             const DenseWeightVector<float32>& weights) const override {
-                return std::make_unique<StatisticsSubset<DenseWeightVector<float32>, PartialIndexVector>>(
+                return std::make_unique<StatisticsSubset<DenseWeightVector<float32>, PartialIndexVector, float64>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -182,7 +182,7 @@ namespace boosting {
               const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<EqualWeightVector>& weights) const override {
                 return std::make_unique<
-                  StatisticsSubset<OutOfSampleWeightVector<EqualWeightVector>, CompleteIndexVector>>(
+                  StatisticsSubset<OutOfSampleWeightVector<EqualWeightVector>, CompleteIndexVector, float64>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -193,7 +193,7 @@ namespace boosting {
               const PartialIndexVector& outputIndices,
               const OutOfSampleWeightVector<EqualWeightVector>& weights) const override {
                 return std::make_unique<
-                  StatisticsSubset<OutOfSampleWeightVector<EqualWeightVector>, PartialIndexVector>>(
+                  StatisticsSubset<OutOfSampleWeightVector<EqualWeightVector>, PartialIndexVector, float64>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -204,7 +204,7 @@ namespace boosting {
               const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<BitWeightVector>& weights) const override {
                 return std::make_unique<
-                  StatisticsSubset<OutOfSampleWeightVector<BitWeightVector>, CompleteIndexVector>>(
+                  StatisticsSubset<OutOfSampleWeightVector<BitWeightVector>, CompleteIndexVector, float64>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -225,7 +225,7 @@ namespace boosting {
               const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override {
                 return std::make_unique<
-                  StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<uint32>>, CompleteIndexVector>>(
+                  StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<uint32>>, CompleteIndexVector, float64>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -236,7 +236,7 @@ namespace boosting {
               const PartialIndexVector& outputIndices,
               const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override {
                 return std::make_unique<
-                  StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<uint32>>, PartialIndexVector>>(
+                  StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<uint32>>, PartialIndexVector, float64>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -247,7 +247,7 @@ namespace boosting {
               const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override {
                 return std::make_unique<
-                  StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<float32>>, CompleteIndexVector>>(
+                  StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<float32>>, CompleteIndexVector, float64>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -258,7 +258,7 @@ namespace boosting {
               const PartialIndexVector& outputIndices,
               const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override {
                 return std::make_unique<
-                  StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<float32>>, PartialIndexVector>>(
+                  StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<float32>>, PartialIndexVector, float64>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -285,7 +285,7 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const DenseWeightVector<uint32>& weights) const override {
-                return std::make_unique<WeightedStatistics<DenseWeightVector<uint32>>>(
+                return std::make_unique<WeightedStatistics<DenseWeightVector<uint32>, float64>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights);
             }
 
@@ -294,7 +294,7 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const DenseWeightVector<float32>& weights) const override {
-                return std::make_unique<WeightedStatistics<DenseWeightVector<float32>>>(
+                return std::make_unique<WeightedStatistics<DenseWeightVector<float32>, float64>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights);
             }
 
