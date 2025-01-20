@@ -41,6 +41,20 @@ cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
         IConstantShrinkageConfig& useConstantShrinkagePostProcessor()
 
 
+    cdef cppclass IFloat32StatisticsMixin:
+
+        # Functions:
+
+        void useFloat32Statistics()
+
+
+    cdef cppclass IFloat64StatisticsMixin:
+
+        # Functions:
+
+        void useFloat64Statistics()
+
+
     cdef cppclass INoL1RegularizationMixin:
 
         # Functions:
