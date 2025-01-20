@@ -75,19 +75,20 @@ namespace boosting {
       float64 l1RegularizationWeight, float64 l2RegularizationWeight)
         : l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(const DenseDecomposableStatisticVector& statisticVector,
-                                                            const CompleteIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>>
+      DecomposableSingleOutputRuleEvaluationFactory::create(
+        const DenseDecomposableStatisticVector<float64>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
         return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVector, CompleteIndexVector>>(
+          DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVector<float64>, CompleteIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(const DenseDecomposableStatisticVector& statisticVector,
-                                                            const PartialIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>>
+      DecomposableSingleOutputRuleEvaluationFactory::create(
+        const DenseDecomposableStatisticVector<float64>& statisticVector, const PartialIndexVector& indexVector) const {
         return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVector, PartialIndexVector>>(
+          DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVector<float64>, PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 

@@ -91,19 +91,20 @@ namespace boosting {
         : threshold_(threshold), exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
           l2RegularizationWeight_(l2RegularizationWeight) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>>
-      DecomposableDynamicPartialRuleEvaluationFactory::create(const DenseDecomposableStatisticVector& statisticVector,
-                                                              const CompleteIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>>
+      DecomposableDynamicPartialRuleEvaluationFactory::create(
+        const DenseDecomposableStatisticVector<float64>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
         return std::make_unique<
-          DecomposableDynamicPartialRuleEvaluation<DenseDecomposableStatisticVector, CompleteIndexVector>>(
+          DecomposableDynamicPartialRuleEvaluation<DenseDecomposableStatisticVector<float64>, CompleteIndexVector>>(
           indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>>
-      DecomposableDynamicPartialRuleEvaluationFactory::create(const DenseDecomposableStatisticVector& statisticVector,
-                                                              const PartialIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>>
+      DecomposableDynamicPartialRuleEvaluationFactory::create(
+        const DenseDecomposableStatisticVector<float64>& statisticVector, const PartialIndexVector& indexVector) const {
         return std::make_unique<
-          DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVector, PartialIndexVector>>(
+          DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVector<float64>, PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
