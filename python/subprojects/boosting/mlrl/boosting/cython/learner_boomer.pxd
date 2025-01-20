@@ -21,9 +21,9 @@ from mlrl.common.cython.learner_regression cimport IRegressionRuleLearner, Regre
 from mlrl.boosting.cython.learner cimport DdotFunction, DspmvFunction, DsysvFunction, IAutomaticFeatureBinningMixin, \
     IAutomaticHeadMixin, IAutomaticParallelRuleRefinementMixin, IAutomaticParallelStatisticUpdateMixin, \
     ICompleteHeadMixin, IConstantShrinkageMixin, IDecomposableSquaredErrorLossMixin, IDynamicPartialHeadMixin, \
-    IFixedPartialHeadMixin, IL1RegularizationMixin, IL2RegularizationMixin, INoL1RegularizationMixin, \
-    INoL2RegularizationMixin, INonDecomposableSquaredErrorLossMixin, IOutputWiseScorePredictorMixin, \
-    ISingleOutputHeadMixin
+    IFixedPartialHeadMixin, IFloat32StatisticsMixin, IFloat64StatisticsMixin, IL1RegularizationMixin, \
+    IL2RegularizationMixin, INoL1RegularizationMixin, INoL2RegularizationMixin, INonDecomposableSquaredErrorLossMixin, \
+    IOutputWiseScorePredictorMixin, ISingleOutputHeadMixin
 from mlrl.boosting.cython.learner_classification cimport IAutomaticBinaryPredictorMixin, IAutomaticDefaultRuleMixin, \
     IAutomaticLabelBinningMixin, IAutomaticPartitionSamplingMixin, IAutomaticProbabilityPredictorMixin, \
     IAutomaticStatisticsMixin, IDecomposableLogisticLossMixin, IDecomposableSquaredHingeLossMixin, \
@@ -43,6 +43,8 @@ cdef extern from "mlrl/boosting/learner_boomer_classifier.hpp" namespace "boosti
         IAutomaticParallelRuleRefinementMixin,
         IAutomaticParallelStatisticUpdateMixin,
         IConstantShrinkageMixin,
+        IFloat32StatisticsMixin,
+        IFloat64StatisticsMixin,
         INoL1RegularizationMixin,
         IL1RegularizationMixin,
         INoL2RegularizationMixin,
@@ -140,6 +142,8 @@ cdef extern from "mlrl/boosting/learner_boomer_regressor.hpp" namespace "boostin
         IAutomaticParallelStatisticUpdateMixin,
         INoPostProcessorMixin,
         IConstantShrinkageMixin,
+        IFloat32StatisticsMixin,
+        IFloat64StatisticsMixin,
         INoL1RegularizationMixin,
         IL1RegularizationMixin,
         INoL2RegularizationMixin,
