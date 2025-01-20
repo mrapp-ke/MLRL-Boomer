@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 from ..common.cmd_builder import HOLDOUT_NO, HOLDOUT_RANDOM
 from ..common.decorators import skip_test_on_ci
 from .cmd_builder import GLOBAL_PRUNING_POST, GLOBAL_PRUNING_PRE, LOSS_SQUARED_ERROR_DECOMPOSABLE, \
-    LOSS_SQUARED_ERROR_NON_DECOMPOSABLE
+    LOSS_SQUARED_ERROR_NON_DECOMPOSABLE, STATISTIC_TYPE_FLOAT32, STATISTIC_TYPE_FLOAT64
 
 
 class BoomerIntegrationTestsMixin:
@@ -77,3 +77,19 @@ class BoomerIntegrationTestsMixin:
             .holdout(HOLDOUT_RANDOM) \
             .print_model_characteristics()
         builder.run_cmd('pre-pruning_random-holdout')
+
+    def test_float32_statistics(self):
+        """
+        Tests the BOOMER algorithm when using 32-bit floating point values for representing gradients and Hessians.
+        """
+        builder = self._create_cmd_builder() \
+            .statistic_type(STATISTIC_TYPE_FLOAT32)
+        builder.run_cmd('float32-statistics')
+
+    def test_float64_statistics(self):
+        """
+        Tests the BOOMER algorithm when using 64-bit floating point values for representing gradients and Hessians.
+        """
+        builder = self._create_cmd_builder() \
+            .statistic_type(STATISTIC_TYPE_FLOAT64)
+        builder.run_cmd('float64-statistics')
