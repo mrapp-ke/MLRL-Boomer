@@ -29,10 +29,10 @@ namespace boosting {
              *                      predicted scores
              * @param statisticView A reference to an object of type `DenseNonDecomposableStatisticView` to be updated
              */
-            virtual void updateNonDecomposableStatistics(uint32 exampleIndex,
-                                                         const CContiguousView<const uint8>& labelMatrix,
-                                                         const CContiguousView<float64>& scoreMatrix,
-                                                         DenseNonDecomposableStatisticView& statisticView) const = 0;
+            virtual void updateNonDecomposableStatistics(
+              uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+              const CContiguousView<float64>& scoreMatrix,
+              DenseNonDecomposableStatisticView<float64>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index.
@@ -44,9 +44,9 @@ namespace boosting {
              *                      predicted scores
              * @param statisticView A reference to an object of type `DenseNonDecomposableStatisticView` to be updated
              */
-            virtual void updateNonDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                         const CContiguousView<float64>& scoreMatrix,
-                                                         DenseNonDecomposableStatisticView& statisticView) const = 0;
+            virtual void updateNonDecomposableStatistics(
+              uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<float64>& scoreMatrix,
+              DenseNonDecomposableStatisticView<float64>& statisticView) const = 0;
     };
 
     /**
@@ -69,10 +69,10 @@ namespace boosting {
              * @param statisticView     A reference to an object of type `DenseNonDecomposableStatisticView` to be
              *                          updated
              */
-            virtual void updateNonDecomposableStatistics(uint32 exampleIndex,
-                                                         const CContiguousView<const float32>& regressionMatrix,
-                                                         const CContiguousView<float64>& scoreMatrix,
-                                                         DenseNonDecomposableStatisticView& statisticView) const = 0;
+            virtual void updateNonDecomposableStatistics(
+              uint32 exampleIndex, const CContiguousView<const float32>& regressionMatrix,
+              const CContiguousView<float64>& scoreMatrix,
+              DenseNonDecomposableStatisticView<float64>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index.
@@ -85,10 +85,10 @@ namespace boosting {
              * @param statisticView     A reference to an object of type `DenseNonDecomposableStatisticView` to be
              *                          updated
              */
-            virtual void updateNonDecomposableStatistics(uint32 exampleIndex,
-                                                         const CsrView<const float32>& regressionMatrix,
-                                                         const CContiguousView<float64>& scoreMatrix,
-                                                         DenseNonDecomposableStatisticView& statisticView) const = 0;
+            virtual void updateNonDecomposableStatistics(
+              uint32 exampleIndex, const CsrView<const float32>& regressionMatrix,
+              const CContiguousView<float64>& scoreMatrix,
+              DenseNonDecomposableStatisticView<float64>& statisticView) const = 0;
     };
 
     /**
