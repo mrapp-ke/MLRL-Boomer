@@ -31,12 +31,12 @@ namespace boosting {
             DecomposableSingleOutputRuleEvaluationFactory(float64 l1RegularizationWeight,
                                                           float64 l2RegularizationWeight);
 
-            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>> create(
-              const DenseDecomposableStatisticVector& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>> create(
+              const DenseDecomposableStatisticVector<float64>& statisticVector,
               const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>> create(
-              const DenseDecomposableStatisticVector& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>> create(
+              const DenseDecomposableStatisticVector<float64>& statisticVector,
               const PartialIndexVector& indexVector) const override;
 
             std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<uint32>>> create(
