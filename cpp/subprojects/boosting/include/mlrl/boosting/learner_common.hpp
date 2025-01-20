@@ -80,6 +80,12 @@ namespace boosting {
             std::unique_ptr<IHeadConfig> headConfigPtr_;
 
             /**
+             * An unique pointer that stores the configuration of the data type that should be used for representing
+             * gradients and Hessians.
+             */
+            std::unique_ptr<IStatisticTypeConfig> statisticTypeConfigPtr_;
+
+            /**
              * A shared pointer that stores the configuration of the statistics that should be use in classification
              * problems.
              */
@@ -127,6 +133,10 @@ namespace boosting {
 
             Property<IHeadConfig> getHeadConfig() override final {
                 return util::property(headConfigPtr_);
+            }
+
+            Property<IStatisticTypeConfig> getStatisticTypeConfig() override final {
+                return util::property(statisticTypeConfigPtr_);
             }
 
             ReadableProperty<IStatisticsConfig> getStatisticsConfig() const override final {
