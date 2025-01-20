@@ -75,8 +75,8 @@ namespace boosting {
     template<typename LabelIterator>
     static inline void updateNonDecomposableStatisticsInternally(
       View<float64>::const_iterator scoreIterator, LabelIterator labelIterator,
-      DenseNonDecomposableStatisticView::gradient_iterator gradientIterator,
-      DenseNonDecomposableStatisticView::hessian_iterator hessianIterator, uint32 numLabels) {
+      DenseNonDecomposableStatisticView<float64>::gradient_iterator gradientIterator,
+      DenseNonDecomposableStatisticView<float64>::hessian_iterator hessianIterator, uint32 numLabels) {
         // This implementation uses the so-called "exp-normalize-trick" to increase numerical stability (see, e.g.,
         // https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/). It is based on rewriting a fraction
         // of the form `exp(x_1) / (exp(x_1) + exp(x_2) + ...)` as
@@ -243,18 +243,19 @@ namespace boosting {
                                                        statisticView.values_begin(exampleIndex), labelMatrix.numCols);
             }
 
-            void updateNonDecomposableStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-                                                 const CContiguousView<float64>& scoreMatrix,
-                                                 DenseNonDecomposableStatisticView& statisticView) const override {
+            void updateNonDecomposableStatistics(
+              uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+              const CContiguousView<float64>& scoreMatrix,
+              DenseNonDecomposableStatisticView<float64>& statisticView) const override {
                 updateNonDecomposableStatisticsInternally(
                   scoreMatrix.values_cbegin(exampleIndex), labelMatrix.values_cbegin(exampleIndex),
                   statisticView.gradients_begin(exampleIndex), statisticView.hessians_begin(exampleIndex),
                   labelMatrix.numCols);
             }
 
-            void updateNonDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                 const CContiguousView<float64>& scoreMatrix,
-                                                 DenseNonDecomposableStatisticView& statisticView) const override {
+            void updateNonDecomposableStatistics(
+              uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<float64>& scoreMatrix,
+              DenseNonDecomposableStatisticView<float64>& statisticView) const override {
                 auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                        labelMatrix.indices_cend(exampleIndex));
                 updateNonDecomposableStatisticsInternally(
