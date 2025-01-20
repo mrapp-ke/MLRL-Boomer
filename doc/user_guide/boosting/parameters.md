@@ -542,6 +542,18 @@ The following parameters can be used to control various approximation and optimi
 `'sparse'`
 : A sparse format is used for the representation of gradients and Hessians, if supported by the loss function.
 
+(boosting_parameters_statistic_type)=
+
+### `statistic_type`
+
+> *Default value = `'float64'`.*
+
+`'32-bit'`
+: 32-bit floating point values are used for representing gradients and Hessians.
+
+`'64-bit'`
+: 64-bit floating point values are used for representing gradients and Hessians.
+
 ## Probability Calibration
 
 The following parameters enable to learn calibration models that should be included in a model and may result in more accurate probability estimates being predicted.
