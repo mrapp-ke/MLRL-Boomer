@@ -23,8 +23,8 @@ namespace boosting {
      */
     static inline void sortOutputWiseCriteria(
       SparseArrayVector<float64>::iterator tmpIterator,
-      DenseNonDecomposableStatisticVector::gradient_const_iterator gradientIterator,
-      DenseNonDecomposableStatisticVector::hessian_diagonal_const_iterator hessianIterator, uint32 numOutputs,
+      DenseNonDecomposableStatisticVector<float64>::gradient_const_iterator gradientIterator,
+      DenseNonDecomposableStatisticVector<float64>::hessian_diagonal_const_iterator hessianIterator, uint32 numOutputs,
       uint32 numPredictions, float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
         for (uint32 i = 0; i < numOutputs; i++) {
             IndexedValue<float64>& entry = tmpIterator[i];

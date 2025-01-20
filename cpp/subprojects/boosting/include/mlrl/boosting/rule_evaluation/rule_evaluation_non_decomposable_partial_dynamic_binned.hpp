@@ -64,12 +64,12 @@ namespace boosting {
               float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
               std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr, const Blas& blas, const Lapack& lapack);
 
-            std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector>> create(
-              const DenseNonDecomposableStatisticVector& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>> create(
+              const DenseNonDecomposableStatisticVector<float64>& statisticVector,
               const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector>> create(
-              const DenseNonDecomposableStatisticVector& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>> create(
+              const DenseNonDecomposableStatisticVector<float64>& statisticVector,
               const PartialIndexVector& indexVector) const override;
     };
 
