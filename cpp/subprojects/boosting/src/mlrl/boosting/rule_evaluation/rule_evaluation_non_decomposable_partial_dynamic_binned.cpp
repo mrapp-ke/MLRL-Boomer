@@ -16,7 +16,8 @@ namespace boosting {
      */
     template<typename IndexVector>
     class DenseNonDecomposableDynamicPartialBinnedRuleEvaluation final
-        : public AbstractNonDecomposableBinnedRuleEvaluation<DenseNonDecomposableStatisticVector, PartialIndexVector> {
+        : public AbstractNonDecomposableBinnedRuleEvaluation<DenseNonDecomposableStatisticVector<float64>,
+                                                             PartialIndexVector> {
         private:
 
             const IndexVector& labelIndices_;
@@ -29,13 +30,13 @@ namespace boosting {
 
         protected:
 
-            uint32 calculateOutputWiseCriteria(const DenseNonDecomposableStatisticVector& statisticVector,
+            uint32 calculateOutputWiseCriteria(const DenseNonDecomposableStatisticVector<float64>& statisticVector,
                                                float64* criteria, uint32 numCriteria, float64 l1RegularizationWeight,
                                                float64 l2RegularizationWeight) override {
                 uint32 numLabels = statisticVector.getNumGradients();
-                DenseNonDecomposableStatisticVector::gradient_const_iterator gradientIterator =
+                DenseNonDecomposableStatisticVector<float64>::gradient_const_iterator gradientIterator =
                   statisticVector.gradients_cbegin();
-                DenseNonDecomposableStatisticVector::hessian_diagonal_const_iterator hessianIterator =
+                DenseNonDecomposableStatisticVector<float64>::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
 
                 const std::pair<float64, float64> pair =
@@ -88,7 +89,8 @@ namespace boosting {
               const IndexVector& labelIndices, uint32 maxBins, std::unique_ptr<PartialIndexVector> indexVectorPtr,
               float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
               std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas, const Lapack& lapack)
-                : AbstractNonDecomposableBinnedRuleEvaluation<DenseNonDecomposableStatisticVector, PartialIndexVector>(
+                : AbstractNonDecomposableBinnedRuleEvaluation<DenseNonDecomposableStatisticVector<float64>,
+                                                              PartialIndexVector>(
                     *indexVectorPtr, true, maxBins, l1RegularizationWeight, l2RegularizationWeight,
                     std::move(binningPtr), blas, lapack),
                   labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)), threshold_(1.0 - threshold),
@@ -102,9 +104,10 @@ namespace boosting {
           l2RegularizationWeight_(l2RegularizationWeight), labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)),
           blas_(blas), lapack_(lapack) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector>>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
       NonDecomposableDynamicPartialBinnedRuleEvaluationFactory::create(
-        const DenseNonDecomposableStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
+        const DenseNonDecomposableStatisticVector<float64>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
         uint32 numElements = indexVector.getNumElements();
         std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(numElements);
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
@@ -114,9 +117,10 @@ namespace boosting {
           l2RegularizationWeight_, std::move(labelBinningPtr), blas_, lapack_);
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector>>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
       NonDecomposableDynamicPartialBinnedRuleEvaluationFactory::create(
-        const DenseNonDecomposableStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
+        const DenseNonDecomposableStatisticVector<float64>& statisticVector,
+        const PartialIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());
         return std::make_unique<DenseNonDecomposableCompleteBinnedRuleEvaluation<PartialIndexVector>>(
