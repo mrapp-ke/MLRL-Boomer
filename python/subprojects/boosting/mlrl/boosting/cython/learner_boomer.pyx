@@ -60,8 +60,9 @@ from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPar
 from mlrl.boosting.cython.learner import AutomaticFeatureBinningMixin, AutomaticHeadMixin, \
     AutomaticParallelRuleRefinementMixin, AutomaticParallelStatisticUpdateMixin, CompleteHeadMixin, \
     ConstantShrinkageMixin, DecomposableSquaredErrorLossMixin, DynamicPartialHeadMixin, FixedPartialHeadMixin, \
-    L1RegularizationMixin, L2RegularizationMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, \
-    NonDecomposableSquaredErrorLossMixin, OutputWiseScorePredictorMixin, SingleOutputHeadMixin
+    Float32StatisticsMixin, Float64StatisticsMixin, L1RegularizationMixin, L2RegularizationMixin, \
+    NoL1RegularizationMixin, NoL2RegularizationMixin, NonDecomposableSquaredErrorLossMixin, \
+    OutputWiseScorePredictorMixin, SingleOutputHeadMixin
 from mlrl.boosting.cython.learner_classification import AutomaticBinaryPredictorMixin, AutomaticDefaultRuleMixin, \
     AutomaticLabelBinningMixin, AutomaticPartitionSamplingMixin, AutomaticProbabilityPredictorMixin, \
     AutomaticStatisticsMixin, DecomposableLogisticLossMixin, DecomposableSquaredHingeLossMixin, DenseStatisticsMixin, \
@@ -79,6 +80,8 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
                                   AutomaticParallelRuleRefinementMixin,
                                   AutomaticParallelStatisticUpdateMixin,
                                   ConstantShrinkageMixin,
+                                  Float32StatisticsMixin,
+                                  Float64StatisticsMixin,
                                   NoL1RegularizationMixin,
                                   L1RegularizationMixin,
                                   NoL2RegularizationMixin,
@@ -444,6 +447,12 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
     def use_sparse_statistics(self):
         self.config_ptr.get().useSparseStatistics()
 
+    def use_float32_statistics(self):
+        self.config_ptr.get().useFloat32Statistics()
+
+    def use_float64_statistics(self):
+        self.config_ptr.get().useFloat64Statistics()
+
     def use_no_l1_regularization(self):
         self.config_ptr.get().useNoL1Regularization()
 
@@ -582,6 +591,8 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
                                  AutomaticParallelStatisticUpdateMixin,
                                  NoPostProcessorMixin,
                                  ConstantShrinkageMixin,
+                                 Float32StatisticsMixin,
+                                 Float64StatisticsMixin,
                                  NoL1RegularizationMixin,
                                  L1RegularizationMixin,
                                  NoL2RegularizationMixin,
@@ -867,6 +878,12 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
 
     def use_sparse_statistics(self):
         self.config_ptr.get().useSparseStatistics()
+
+    def use_float32_statistics(self):
+        self.config_ptr.get().useFloat32Statistics()
+
+    def use_float64_statistics(self):
+        self.config_ptr.get().useFloat64Statistics()
 
     def use_no_l1_regularization(self):
         self.config_ptr.get().useNoL1Regularization()
