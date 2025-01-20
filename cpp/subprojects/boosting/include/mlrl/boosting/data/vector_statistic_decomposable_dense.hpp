@@ -15,9 +15,12 @@ namespace boosting {
      * An one-dimensional vector that stores aggregated gradients and Hessians that have been calculated using a
      * decomposable loss function in a C-contiguous array. For each element in the vector a single gradient and Hessian
      * is stored.
+     *
+     * @tparam StatisticType The type of the gradient and Hessians
      */
+    template<typename StatisticType>
     class DenseDecomposableStatisticVector final
-        : public ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<Statistic<float64>>>> {
+        : public ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<Statistic<StatisticType>>>> {
         public:
 
             /**
@@ -30,7 +33,7 @@ namespace boosting {
             /**
              * @param other A reference to an object of type `DenseDecomposableStatisticVector` to be copied
              */
-            DenseDecomposableStatisticVector(const DenseDecomposableStatisticVector& other);
+            DenseDecomposableStatisticVector(const DenseDecomposableStatisticVector<StatisticType>& other);
 
             /**
              * Adds all gradients and Hessians in another vector to this vector.
@@ -38,7 +41,7 @@ namespace boosting {
              * @param vector A reference to an object of type `DenseDecomposableStatisticVector` that stores the
              *               gradients and Hessians to be added to this vector
              */
-            void add(const DenseDecomposableStatisticVector& vector);
+            void add(const DenseDecomposableStatisticVector<StatisticType>& vector);
 
             /**
              * Adds all gradients and Hessians in a single row of a `CContiguousView` to this vector.
@@ -47,7 +50,7 @@ namespace boosting {
              *              be added to this vector
              * @param row   The index of the row to be added to this vector
              */
-            void add(const CContiguousView<Statistic<float64>>& view, uint32 row);
+            void add(const CContiguousView<Statistic<StatisticType>>& view, uint32 row);
 
             /**
              * Adds all gradients and Hessians in a single row of a `CContiguousView` to this vector. The gradients and
@@ -58,7 +61,7 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void add(const CContiguousView<Statistic<float64>>& view, uint32 row, float64 weight);
+            void add(const CContiguousView<Statistic<StatisticType>>& view, uint32 row, StatisticType weight);
 
             /**
              * Removes all gradients and Hessians in a single row of a `CContiguousView` from this vector.
@@ -67,7 +70,7 @@ namespace boosting {
              *              be removed from this vector
              * @param row   The index of the row to be removed from this vector
              */
-            void remove(const CContiguousView<Statistic<float64>>& view, uint32 row);
+            void remove(const CContiguousView<Statistic<StatisticType>>& view, uint32 row);
 
             /**
              * Removes all gradients and Hessians in a single row of a `CContiguousView` from this vector. The gradients
@@ -78,7 +81,7 @@ namespace boosting {
              * @param row       The index of the row to be removed from this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void remove(const CContiguousView<Statistic<float64>>& view, uint32 row, float64 weight);
+            void remove(const CContiguousView<Statistic<StatisticType>>& view, uint32 row, StatisticType weight);
 
             /**
              * Adds certain gradients and Hessians in a single row of a `CContiguousView`, whose positions are given as
@@ -89,7 +92,7 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
              */
-            void addToSubset(const CContiguousView<Statistic<float64>>& view, uint32 row,
+            void addToSubset(const CContiguousView<Statistic<StatisticType>>& view, uint32 row,
                              const CompleteIndexVector& indices);
 
             /**
@@ -101,7 +104,7 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
              */
-            void addToSubset(const CContiguousView<Statistic<float64>>& view, uint32 row,
+            void addToSubset(const CContiguousView<Statistic<StatisticType>>& view, uint32 row,
                              const PartialIndexVector& indices);
 
             /**
@@ -115,8 +118,8 @@ namespace boosting {
              * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const CContiguousView<Statistic<float64>>& view, uint32 row,
-                             const CompleteIndexVector& indices, float64 weight);
+            void addToSubset(const CContiguousView<Statistic<StatisticType>>& view, uint32 row,
+                             const CompleteIndexVector& indices, StatisticType weight);
 
             /**
              * Adds certain gradients and Hessians in single row of a `CContiguousView`, whose positions are given as a
@@ -129,8 +132,8 @@ namespace boosting {
              * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const CContiguousView<Statistic<float64>>& view, uint32 row,
-                             const PartialIndexVector& indices, float64 weight);
+            void addToSubset(const CContiguousView<Statistic<StatisticType>>& view, uint32 row,
+                             const PartialIndexVector& indices, StatisticType weight);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
@@ -144,8 +147,9 @@ namespace boosting {
              * @param second        A reference to an object of type `DenseDecomposableStatisticVector` that stores the
              *                      gradients and Hessians in the second vector
              */
-            void difference(const DenseDecomposableStatisticVector& first, const CompleteIndexVector& firstIndices,
-                            const DenseDecomposableStatisticVector& second);
+            void difference(const DenseDecomposableStatisticVector<StatisticType>& first,
+                            const CompleteIndexVector& firstIndices,
+                            const DenseDecomposableStatisticVector<StatisticType>& second);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
@@ -159,8 +163,9 @@ namespace boosting {
              * @param second        A reference to an object of type `DenseDecomposableStatisticVector` that stores the
              *                      gradients and Hessians in the second vector
              */
-            void difference(const DenseDecomposableStatisticVector& first, const PartialIndexVector& firstIndices,
-                            const DenseDecomposableStatisticVector& second);
+            void difference(const DenseDecomposableStatisticVector<StatisticType>& first,
+                            const PartialIndexVector& firstIndices,
+                            const DenseDecomposableStatisticVector<StatisticType>& second);
     };
 
 }
