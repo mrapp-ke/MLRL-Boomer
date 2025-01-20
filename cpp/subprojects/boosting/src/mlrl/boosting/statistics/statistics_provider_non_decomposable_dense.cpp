@@ -15,7 +15,7 @@ namespace boosting {
      * using C-contiguous arrays.
      */
     class DenseNonDecomposableStatisticMatrix final
-        : public ClearableViewDecorator<MatrixDecorator<DenseNonDecomposableStatisticView>> {
+        : public ClearableViewDecorator<MatrixDecorator<DenseNonDecomposableStatisticView<float64>>> {
         public:
 
             /**
@@ -23,8 +23,8 @@ namespace boosting {
              * @param numCols The number of columns in the matrix
              */
             DenseNonDecomposableStatisticMatrix(uint32 numRows, uint32 numCols)
-                : ClearableViewDecorator<MatrixDecorator<DenseNonDecomposableStatisticView>>(
-                    DenseNonDecomposableStatisticView(numRows, numCols)) {}
+                : ClearableViewDecorator<MatrixDecorator<DenseNonDecomposableStatisticView<float64>>>(
+                    DenseNonDecomposableStatisticView<float64>(numRows, numCols)) {}
 
             /**
              * Adds all gradients and Hessians in a vector to a specific row of this matrix. The gradients and Hessians
@@ -348,7 +348,7 @@ namespace boosting {
                   std::make_unique<DenseDecomposableStatisticMatrix>(numRows, numCols);
                 CContiguousView<Statistic<float64>>* decomposableStatisticMatrixRawPtr =
                   &decomposableStatisticMatrixPtr->getView();
-                DenseNonDecomposableStatisticView* NonDecomposableStatisticViewRawPtr =
+                DenseNonDecomposableStatisticView<float64>* NonDecomposableStatisticViewRawPtr =
                   &this->statisticMatrixPtr_->getView();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
@@ -359,10 +359,10 @@ namespace boosting {
                 for (int64 i = 0; i < numRows; i++) {
                     CContiguousView<Statistic<float64>>::value_iterator iterator =
                       decomposableStatisticMatrixRawPtr->values_begin(i);
-                    DenseNonDecomposableStatisticView::gradient_const_iterator gradientIterator =
+                    typename DenseNonDecomposableStatisticView<float64>::gradient_const_iterator gradientIterator =
                       NonDecomposableStatisticViewRawPtr->gradients_cbegin(i);
-                    DenseNonDecomposableStatisticView::hessian_diagonal_const_iterator hessianIterator =
-                      NonDecomposableStatisticViewRawPtr->hessians_diagonal_cbegin(i);
+                    typename DenseNonDecomposableStatisticView<float64>::hessian_diagonal_const_iterator
+                      hessianIterator = NonDecomposableStatisticViewRawPtr->hessians_diagonal_cbegin(i);
 
                     for (uint32 j = 0; j < numCols; j++) {
                         Statistic<float64>& statistic = iterator[j];
@@ -392,7 +392,7 @@ namespace boosting {
         const Loss* lossRawPtr = lossPtr.get();
         const OutputMatrix* outputMatrixPtr = &outputMatrix;
         const CContiguousView<float64>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
-        DenseNonDecomposableStatisticView* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
+        DenseNonDecomposableStatisticView<float64>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(outputMatrixPtr) \
