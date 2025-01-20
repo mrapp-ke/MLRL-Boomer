@@ -16,7 +16,7 @@ namespace boosting {
      */
     template<typename IndexVector>
     class DenseNonDecomposableFixedPartialRuleEvaluation final
-        : public AbstractNonDecomposableRuleEvaluation<DenseNonDecomposableStatisticVector, IndexVector> {
+        : public AbstractNonDecomposableRuleEvaluation<DenseNonDecomposableStatisticVector<float64>, IndexVector> {
         private:
 
             const IndexVector& outputIndices_;
@@ -54,7 +54,7 @@ namespace boosting {
                                                            float64 l1RegularizationWeight,
                                                            float64 l2RegularizationWeight, const Blas& blas,
                                                            const Lapack& lapack)
-                : AbstractNonDecomposableRuleEvaluation<DenseNonDecomposableStatisticVector, IndexVector>(
+                : AbstractNonDecomposableRuleEvaluation<DenseNonDecomposableStatisticVector<float64>, IndexVector>(
                     numPredictions, lapack),
                   outputIndices_(outputIndices), indexVector_(numPredictions), scoreVector_(indexVector_, false),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
@@ -63,12 +63,13 @@ namespace boosting {
             /**
              * @see `IRuleEvaluation::evaluate`
              */
-            const IScoreVector& calculateScores(DenseNonDecomposableStatisticVector& statisticVector) override {
+            const IScoreVector& calculateScores(
+              DenseNonDecomposableStatisticVector<float64>& statisticVector) override {
                 uint32 numOutputs = statisticVector.getNumGradients();
                 uint32 numPredictions = indexVector_.getNumElements();
-                DenseNonDecomposableStatisticVector::gradient_const_iterator gradientIterator =
+                DenseNonDecomposableStatisticVector<float64>::gradient_const_iterator gradientIterator =
                   statisticVector.gradients_cbegin();
-                DenseNonDecomposableStatisticVector::hessian_diagonal_const_iterator hessianIterator =
+                DenseNonDecomposableStatisticVector<float64>::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
                 SparseArrayVector<float64>::iterator tmpIterator = tmpVector_.begin();
                 sortOutputWiseCriteria(tmpIterator, gradientIterator, hessianIterator, numOutputs, numPredictions,
@@ -119,18 +120,20 @@ namespace boosting {
           l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight), blas_(blas),
           lapack_(lapack) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector>>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
       NonDecomposableFixedPartialRuleEvaluationFactory::create(
-        const DenseNonDecomposableStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
+        const DenseNonDecomposableStatisticVector<float64>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
           util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
         return std::make_unique<DenseNonDecomposableFixedPartialRuleEvaluation<CompleteIndexVector>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector>>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
       NonDecomposableFixedPartialRuleEvaluationFactory::create(
-        const DenseNonDecomposableStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
+        const DenseNonDecomposableStatisticVector<float64>& statisticVector,
+        const PartialIndexVector& indexVector) const {
         return std::make_unique<DenseNonDecomposableCompleteRuleEvaluation<PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
     }
