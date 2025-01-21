@@ -11,12 +11,13 @@ namespace boosting {
      * their overall quality, based on the gradients and Hessians that are stored by a
      * `DenseNonDecomposableStatisticVector` using L1 and L2 regularization.
      *
-     * @tparam IndexVector The type of the vector that provides access to the indices of the outputs for which
-     *                     predictions should be calculated
+     * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
+     * @tparam IndexVector      The type of the vector that provides access to the indices of the outputs for which
+     *                          predictions should be calculated
      */
-    template<typename IndexVector>
+    template<typename StatisticVector, typename IndexVector>
     class DenseNonDecomposableFixedPartialRuleEvaluation final
-        : public AbstractNonDecomposableRuleEvaluation<DenseNonDecomposableStatisticVector<float64>, IndexVector> {
+        : public AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector> {
         private:
 
             const IndexVector& outputIndices_;
@@ -54,8 +55,7 @@ namespace boosting {
                                                            float64 l1RegularizationWeight,
                                                            float64 l2RegularizationWeight, const Blas& blas,
                                                            const Lapack& lapack)
-                : AbstractNonDecomposableRuleEvaluation<DenseNonDecomposableStatisticVector<float64>, IndexVector>(
-                    numPredictions, lapack),
+                : AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector>(numPredictions, lapack),
                   outputIndices_(outputIndices), indexVector_(numPredictions), scoreVector_(indexVector_, false),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
                   blas_(blas), lapack_(lapack), tmpVector_(outputIndices.getNumElements()) {}
@@ -63,13 +63,11 @@ namespace boosting {
             /**
              * @see `IRuleEvaluation::evaluate`
              */
-            const IScoreVector& calculateScores(
-              DenseNonDecomposableStatisticVector<float64>& statisticVector) override {
+            const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numOutputs = statisticVector.getNumGradients();
                 uint32 numPredictions = indexVector_.getNumElements();
-                DenseNonDecomposableStatisticVector<float64>::gradient_const_iterator gradientIterator =
-                  statisticVector.gradients_cbegin();
-                DenseNonDecomposableStatisticVector<float64>::hessian_diagonal_const_iterator hessianIterator =
+                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
+                typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
                 SparseArrayVector<float64>::iterator tmpIterator = tmpVector_.begin();
                 sortOutputWiseCriteria(tmpIterator, gradientIterator, hessianIterator, numOutputs, numPredictions,
@@ -126,7 +124,8 @@ namespace boosting {
         const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
           util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
-        return std::make_unique<DenseNonDecomposableFixedPartialRuleEvaluation<CompleteIndexVector>>(
+        return std::make_unique<DenseNonDecomposableFixedPartialRuleEvaluation<
+          DenseNonDecomposableStatisticVector<float64>, CompleteIndexVector>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
     }
 
