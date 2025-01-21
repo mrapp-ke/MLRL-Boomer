@@ -52,12 +52,12 @@ namespace boosting {
      * @param hessians          An iterator, the aggregated Hessians should be written to
      * @param maxBins           The maximum number of bins
      */
-    template<typename BinIndexIterator>
-    static inline void aggregateGradientsAndHessians(
-      DenseNonDecomposableStatisticVector<float64>::gradient_const_iterator gradientIterator,
-      DenseNonDecomposableStatisticVector<float64>::hessian_const_iterator hessianIterator, uint32 numElements,
-      BinIndexIterator binIndexIterator, View<uint32>::const_iterator binIndices, View<float64>::iterator gradients,
-      View<float64>::iterator hessians, uint32 maxBins) {
+    template<typename GradientIterator, typename HessianIterator, typename BinIndexIterator>
+    static inline void aggregateGradientsAndHessians(GradientIterator gradientIterator, HessianIterator hessianIterator,
+                                                     uint32 numElements, BinIndexIterator binIndexIterator,
+                                                     View<uint32>::const_iterator binIndices,
+                                                     View<float64>::iterator gradients,
+                                                     View<float64>::iterator hessians, uint32 maxBins) {
         for (uint32 i = 0; i < numElements; i++) {
             uint32 originalBinIndex = binIndexIterator[i];
 
@@ -246,8 +246,7 @@ namespace boosting {
                                                         float64 l2RegularizationWeight,
                                                         std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas,
                                                         const Lapack& lapack)
-                : AbstractNonDecomposableRuleEvaluation<DenseNonDecomposableStatisticVector<float64>, IndexVector>(
-                    maxBins, lapack),
+                : AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector>(maxBins, lapack),
                   maxBins_(maxBins), scoreVector_(labelIndices, maxBins + 1, indicesSorted),
                   aggregatedGradients_(maxBins), aggregatedHessians_(util::triangularNumber(maxBins)),
                   binIndices_(maxBins), numElementsPerBin_(maxBins), criteria_(labelIndices.getNumElements()),
@@ -261,8 +260,7 @@ namespace boosting {
             /**
              * @see `IRuleEvaluation::evaluate`
              */
-            const IScoreVector& calculateScores(
-              DenseNonDecomposableStatisticVector<float64>& statisticVector) override final {
+            const IScoreVector& calculateScores(StatisticVector& statisticVector) override final {
                 // Calculate label-wise criteria...
                 uint32 numCriteria =
                   this->calculateOutputWiseCriteria(statisticVector, criteria_.begin(), scoreVector_.getNumElements(),
