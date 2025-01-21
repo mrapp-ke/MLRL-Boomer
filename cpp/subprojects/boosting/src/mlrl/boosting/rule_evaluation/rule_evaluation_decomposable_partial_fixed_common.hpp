@@ -49,8 +49,8 @@ namespace boosting {
     template<typename StatisticIterator>
     static inline void sortOutputWiseScores(SparseArrayVector<float64>::iterator tmpIterator,
                                             StatisticIterator& statisticIterator, uint32 numOutputs,
-                                            uint32 numPredictions, float64 l1RegularizationWeight,
-                                            float64 l2RegularizationWeight) {
+                                            uint32 numPredictions, float32 l1RegularizationWeight,
+                                            float32 l2RegularizationWeight) {
         for (uint32 i = 0; i < numOutputs; i++) {
             const typename std::iterator_traits<StatisticIterator>::value_type& statistic = statisticIterator[i];
             IndexedValue<float64>& entry = tmpIterator[i];

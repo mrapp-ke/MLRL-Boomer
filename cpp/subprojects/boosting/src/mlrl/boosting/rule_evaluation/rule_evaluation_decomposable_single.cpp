@@ -23,9 +23,9 @@ namespace boosting {
 
             DenseScoreVector<PartialIndexVector> scoreVector_;
 
-            const float64 l1RegularizationWeight_;
+            const float32 l1RegularizationWeight_;
 
-            const float64 l2RegularizationWeight_;
+            const float32 l2RegularizationWeight_;
 
         public:
 
@@ -37,8 +37,8 @@ namespace boosting {
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              */
-            DecomposableSingleOutputRuleEvaluation(const IndexVector& outputIndices, float64 l1RegularizationWeight,
-                                                   float64 l2RegularizationWeight)
+            DecomposableSingleOutputRuleEvaluation(const IndexVector& outputIndices, float32 l1RegularizationWeight,
+                                                   float32 l2RegularizationWeight)
                 : outputIndices_(outputIndices), indexVector_(1), scoreVector_(indexVector_, true),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
 
@@ -73,7 +73,7 @@ namespace boosting {
     };
 
     DecomposableSingleOutputRuleEvaluationFactory::DecomposableSingleOutputRuleEvaluationFactory(
-      float64 l1RegularizationWeight, float64 l2RegularizationWeight)
+      float32 l1RegularizationWeight, float32 l2RegularizationWeight)
         : l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
 
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>>
