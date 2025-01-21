@@ -36,6 +36,11 @@ namespace boosting {
             DenseDecomposableStatisticVector(const DenseDecomposableStatisticVector<StatisticType>& other);
 
             /**
+             * The type of the elements in the vector.
+             */
+            typedef Statistic<StatisticType> value_type;
+
+            /**
              * Adds all gradients and Hessians in another vector to this vector.
              *
              * @param vector A reference to an object of type `DenseDecomposableStatisticVector` that stores the
