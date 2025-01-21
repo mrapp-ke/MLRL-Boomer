@@ -65,7 +65,7 @@ namespace boosting {
                     float64 predictedScore = entry.value;
                     indexIterator[i] = outputIndexIterator[index];
                     valueIterator[i] = predictedScore;
-                    const Statistic<float64>& statistic = statisticIterator[index];
+                    const typename StatisticVector::value_type& statistic = statisticIterator[index];
                     quality += calculateOutputWiseQuality(predictedScore, statistic.gradient, statistic.hessian,
                                                           l1RegularizationWeight_, l2RegularizationWeight_);
                 }

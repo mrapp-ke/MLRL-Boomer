@@ -8,6 +8,7 @@
 #include "rule_evaluation_decomposable_common.hpp"
 
 #include <algorithm>
+#include <iterator>
 
 namespace boosting {
 
@@ -51,7 +52,7 @@ namespace boosting {
                                             uint32 numPredictions, float64 l1RegularizationWeight,
                                             float64 l2RegularizationWeight) {
         for (uint32 i = 0; i < numOutputs; i++) {
-            const Statistic<float64>& statistic = statisticIterator[i];
+            const typename std::iterator_traits<StatisticIterator>::value_type& statistic = statisticIterator[i];
             IndexedValue<float64>& entry = tmpIterator[i];
             entry.index = i;
             entry.value = calculateOutputWiseScore(statistic.gradient, statistic.hessian, l1RegularizationWeight,
