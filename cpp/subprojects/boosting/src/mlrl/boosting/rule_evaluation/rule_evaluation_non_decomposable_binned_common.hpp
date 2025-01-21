@@ -113,7 +113,7 @@ namespace boosting {
      * @param l1RegularizationWeight    The L1 regularization weight to be added to the ordinates
      */
     static inline void addL1RegularizationWeight(View<float64>::iterator ordinates, uint32 numPredictions,
-                                                 View<uint32>::const_iterator weights, float64 l1RegularizationWeight) {
+                                                 View<uint32>::const_iterator weights, float32 l1RegularizationWeight) {
         for (uint32 i = 0; i < numPredictions; i++) {
             uint32 weight = weights[i];
             float64 gradient = ordinates[i];
@@ -130,7 +130,7 @@ namespace boosting {
      * @param l2RegularizationWeight    The L2 regularization weight to be added to the coefficients
      */
     static inline void addL2RegularizationWeight(View<float64>::iterator coefficients, uint32 numPredictions,
-                                                 View<uint32>::const_iterator weights, float64 l2RegularizationWeight) {
+                                                 View<uint32>::const_iterator weights, float32 l2RegularizationWeight) {
         for (uint32 i = 0; i < numPredictions; i++) {
             uint32 weight = weights[i];
             coefficients[(i * numPredictions) + i] += (weight * l2RegularizationWeight);
@@ -150,7 +150,7 @@ namespace boosting {
     template<typename ScoreIterator>
     static inline float64 calculateRegularizationTerm(ScoreIterator scores,
                                                       View<uint32>::const_iterator numElementsPerBin, uint32 numBins,
-                                                      float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
+                                                      float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
         float64 regularizationTerm;
 
         if (l1RegularizationWeight > 0) {
@@ -194,9 +194,9 @@ namespace boosting {
 
             Array<float64> criteria_;
 
-            const float64 l1RegularizationWeight_;
+            const float32 l1RegularizationWeight_;
 
-            const float64 l2RegularizationWeight_;
+            const float32 l2RegularizationWeight_;
 
             const std::unique_ptr<ILabelBinning> binningPtr_;
 
@@ -220,8 +220,8 @@ namespace boosting {
              */
             virtual uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector,
                                                        View<float64>::iterator criteria, uint32 numCriteria,
-                                                       float64 l1RegularizationWeight,
-                                                       float64 l2RegularizationWeight) = 0;
+                                                       float32 l1RegularizationWeight,
+                                                       float32 l2RegularizationWeight) = 0;
 
         public:
 
@@ -242,8 +242,8 @@ namespace boosting {
              *                                  routines
              */
             AbstractNonDecomposableBinnedRuleEvaluation(const IndexVector& labelIndices, bool indicesSorted,
-                                                        uint32 maxBins, float64 l1RegularizationWeight,
-                                                        float64 l2RegularizationWeight,
+                                                        uint32 maxBins, float32 l1RegularizationWeight,
+                                                        float32 l2RegularizationWeight,
                                                         std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas,
                                                         const Lapack& lapack)
                 : AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector>(maxBins, lapack),
@@ -350,8 +350,8 @@ namespace boosting {
 
             uint32 calculateOutputWiseCriteria(const DenseNonDecomposableStatisticVector<float64>& statisticVector,
                                                View<float64>::iterator criteria, uint32 numCriteria,
-                                               float64 l1RegularizationWeight,
-                                               float64 l2RegularizationWeight) override {
+                                               float32 l1RegularizationWeight,
+                                               float32 l2RegularizationWeight) override {
                 DenseNonDecomposableStatisticVector<float64>::gradient_const_iterator gradientIterator =
                   statisticVector.gradients_cbegin();
                 DenseNonDecomposableStatisticVector<float64>::hessian_diagonal_const_iterator hessianIterator =
@@ -383,8 +383,8 @@ namespace boosting {
              *                                  routines
              */
             DenseNonDecomposableCompleteBinnedRuleEvaluation(const IndexVector& labelIndices, uint32 maxBins,
-                                                             float64 l1RegularizationWeight,
-                                                             float64 l2RegularizationWeight,
+                                                             float32 l1RegularizationWeight,
+                                                             float32 l2RegularizationWeight,
                                                              std::unique_ptr<ILabelBinning> binningPtr,
                                                              const Blas& blas, const Lapack& lapack)
                 : AbstractNonDecomposableBinnedRuleEvaluation<DenseNonDecomposableStatisticVector<float64>,

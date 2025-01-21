@@ -31,8 +31,8 @@ namespace boosting {
         protected:
 
             uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector, float64* criteria,
-                                               uint32 numCriteria, float64 l1RegularizationWeight,
-                                               float64 l2RegularizationWeight) override {
+                                               uint32 numCriteria, float32 l1RegularizationWeight,
+                                               float32 l2RegularizationWeight) override {
                 uint32 numLabels = statisticVector.getNumGradients();
                 typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
                 typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
@@ -86,7 +86,7 @@ namespace boosting {
              */
             DenseNonDecomposableDynamicPartialBinnedRuleEvaluation(
               const IndexVector& labelIndices, uint32 maxBins, std::unique_ptr<PartialIndexVector> indexVectorPtr,
-              float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
+              float32 threshold, float32 exponent, float32 l1RegularizationWeight, float32 l2RegularizationWeight,
               std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas, const Lapack& lapack)
                 : AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector>(
                     *indexVectorPtr, true, maxBins, l1RegularizationWeight, l2RegularizationWeight,
@@ -96,7 +96,7 @@ namespace boosting {
     };
 
     NonDecomposableDynamicPartialBinnedRuleEvaluationFactory::NonDecomposableDynamicPartialBinnedRuleEvaluationFactory(
-      float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
+      float32 threshold, float32 exponent, float32 l1RegularizationWeight, float32 l2RegularizationWeight,
       std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr, const Blas& blas, const Lapack& lapack)
         : threshold_(threshold), exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
           l2RegularizationWeight_(l2RegularizationWeight), labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)),

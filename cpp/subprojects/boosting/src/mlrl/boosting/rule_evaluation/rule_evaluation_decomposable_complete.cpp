@@ -4,8 +4,8 @@
 
 namespace boosting {
 
-    DecomposableCompleteRuleEvaluationFactory::DecomposableCompleteRuleEvaluationFactory(float64 l1RegularizationWeight,
-                                                                                         float64 l2RegularizationWeight)
+    DecomposableCompleteRuleEvaluationFactory::DecomposableCompleteRuleEvaluationFactory(float32 l1RegularizationWeight,
+                                                                                         float32 l2RegularizationWeight)
         : l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
 
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>>

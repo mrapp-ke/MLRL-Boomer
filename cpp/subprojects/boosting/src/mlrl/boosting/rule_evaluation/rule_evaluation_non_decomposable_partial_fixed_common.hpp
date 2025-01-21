@@ -26,8 +26,8 @@ namespace boosting {
     template<typename GradientIterator, typename HessianIterator>
     static inline void sortOutputWiseCriteria(SparseArrayVector<float64>::iterator tmpIterator,
                                               GradientIterator gradientIterator, HessianIterator hessianIterator,
-                                              uint32 numOutputs, uint32 numPredictions, float64 l1RegularizationWeight,
-                                              float64 l2RegularizationWeight) {
+                                              uint32 numOutputs, uint32 numPredictions, float32 l1RegularizationWeight,
+                                              float32 l2RegularizationWeight) {
         for (uint32 i = 0; i < numOutputs; i++) {
             IndexedValue<float64>& entry = tmpIterator[i];
             entry.index = i;
