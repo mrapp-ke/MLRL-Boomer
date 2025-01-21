@@ -30,9 +30,9 @@ namespace boosting {
 
             const float64 exponent_;
 
-            const float64 l1RegularizationWeight_;
+            const float32 l1RegularizationWeight_;
 
-            const float64 l2RegularizationWeight_;
+            const float32 l2RegularizationWeight_;
 
             const Blas& blas_;
 
@@ -57,8 +57,8 @@ namespace boosting {
              *                                  routines
              */
             DenseNonDecomposableDynamicPartialRuleEvaluation(const IndexVector& outputIndices, float32 threshold,
-                                                             float32 exponent, float64 l1RegularizationWeight,
-                                                             float64 l2RegularizationWeight, const Blas& blas,
+                                                             float32 exponent, float32 l1RegularizationWeight,
+                                                             float32 l2RegularizationWeight, const Blas& blas,
                                                              const Lapack& lapack)
                 : AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector>(outputIndices.getNumElements(),
                                                                                       lapack),
@@ -124,7 +124,7 @@ namespace boosting {
     };
 
     NonDecomposableDynamicPartialRuleEvaluationFactory::NonDecomposableDynamicPartialRuleEvaluationFactory(
-      float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
+      float32 threshold, float32 exponent, float32 l1RegularizationWeight, float32 l2RegularizationWeight,
       const Blas& blas, const Lapack& lapack)
         : threshold_(threshold), exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
           l2RegularizationWeight_(l2RegularizationWeight), blas_(blas), lapack_(lapack) {}

@@ -28,8 +28,8 @@ namespace boosting {
         protected:
 
             uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector, float64* criteria,
-                                               uint32 numCriteria, float64 l1RegularizationWeight,
-                                               float64 l2RegularizationWeight) override {
+                                               uint32 numCriteria, float32 l1RegularizationWeight,
+                                               float32 l2RegularizationWeight) override {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 SparseArrayVector<float64>::iterator tmpIterator = tmpVector_.begin();
@@ -63,7 +63,7 @@ namespace boosting {
              */
             DecomposableFixedPartialBinnedRuleEvaluation(const IndexVector& labelIndices,
                                                          std::unique_ptr<PartialIndexVector> indexVectorPtr,
-                                                         float64 l1RegularizationWeight, float64 l2RegularizationWeight,
+                                                         float32 l1RegularizationWeight, float32 l2RegularizationWeight,
                                                          std::unique_ptr<ILabelBinning> binningPtr)
                 : AbstractDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector>(
                     *indexVectorPtr, false, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr)),
@@ -72,8 +72,8 @@ namespace boosting {
     };
 
     DecomposableFixedPartialBinnedRuleEvaluationFactory::DecomposableFixedPartialBinnedRuleEvaluationFactory(
-      float32 labelRatio, uint32 minLabels, uint32 maxLabels, float64 l1RegularizationWeight,
-      float64 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr)
+      float32 labelRatio, uint32 minLabels, uint32 maxLabels, float32 l1RegularizationWeight,
+      float32 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr)
         : labelRatio_(labelRatio), minLabels_(minLabels), maxLabels_(maxLabels),
           l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
           labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)) {}

@@ -29,8 +29,8 @@ namespace boosting {
     static inline std::pair<float64, float64> getMinAndMaxScore(ScoreIterator scoreIterator,
                                                                 GradientIterator gradientIterator,
                                                                 HessianIterator hessianIterator, uint32 numOutputs,
-                                                                float64 l1RegularizationWeight,
-                                                                float64 l2RegularizationWeight) {
+                                                                float32 l1RegularizationWeight,
+                                                                float32 l2RegularizationWeight) {
         float64 score = calculateOutputWiseScore(gradientIterator[0], hessianIterator[0], l1RegularizationWeight,
                                                  l2RegularizationWeight);
         scoreIterator[0] = score;

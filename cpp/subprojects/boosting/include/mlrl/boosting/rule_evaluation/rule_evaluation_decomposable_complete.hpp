@@ -16,9 +16,9 @@ namespace boosting {
     class DecomposableCompleteRuleEvaluationFactory final : public IDecomposableRuleEvaluationFactory {
         private:
 
-            const float64 l1RegularizationWeight_;
+            const float32 l1RegularizationWeight_;
 
-            const float64 l2RegularizationWeight_;
+            const float32 l2RegularizationWeight_;
 
         public:
 
@@ -28,7 +28,7 @@ namespace boosting {
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              */
-            DecomposableCompleteRuleEvaluationFactory(float64 l1RegularizationWeight, float64 l2RegularizationWeight);
+            DecomposableCompleteRuleEvaluationFactory(float32 l1RegularizationWeight, float32 l2RegularizationWeight);
 
             std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>> create(
               const DenseDecomposableStatisticVector<float64>& statisticVector,

@@ -26,9 +26,9 @@ namespace boosting {
 
             DenseScoreVector<PartialIndexVector> scoreVector_;
 
-            const float64 l1RegularizationWeight_;
+            const float32 l1RegularizationWeight_;
 
-            const float64 l2RegularizationWeight_;
+            const float32 l2RegularizationWeight_;
 
             const Blas& blas_;
 
@@ -52,8 +52,8 @@ namespace boosting {
              *                                  routines
              */
             DenseNonDecomposableFixedPartialRuleEvaluation(const IndexVector& outputIndices, uint32 numPredictions,
-                                                           float64 l1RegularizationWeight,
-                                                           float64 l2RegularizationWeight, const Blas& blas,
+                                                           float32 l1RegularizationWeight,
+                                                           float32 l2RegularizationWeight, const Blas& blas,
                                                            const Lapack& lapack)
                 : AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector>(numPredictions, lapack),
                   outputIndices_(outputIndices), indexVector_(numPredictions), scoreVector_(indexVector_, false),
@@ -112,8 +112,8 @@ namespace boosting {
     };
 
     NonDecomposableFixedPartialRuleEvaluationFactory::NonDecomposableFixedPartialRuleEvaluationFactory(
-      float32 outputRatio, uint32 minOutputs, uint32 maxOutputs, float64 l1RegularizationWeight,
-      float64 l2RegularizationWeight, const Blas& blas, const Lapack& lapack)
+      float32 outputRatio, uint32 minOutputs, uint32 maxOutputs, float32 l1RegularizationWeight,
+      float32 l2RegularizationWeight, const Blas& blas, const Lapack& lapack)
         : outputRatio_(outputRatio), minOutputs_(minOutputs), maxOutputs_(maxOutputs),
           l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight), blas_(blas),
           lapack_(lapack) {}
