@@ -22,9 +22,9 @@ namespace boosting {
 
             const uint32 maxOutputs_;
 
-            const float64 l1RegularizationWeight_;
+            const float32 l1RegularizationWeight_;
 
-            const float64 l2RegularizationWeight_;
+            const float32 l2RegularizationWeight_;
 
         public:
 
@@ -44,8 +44,8 @@ namespace boosting {
              *                                  scores to be predicted by rules
              */
             DecomposableFixedPartialRuleEvaluationFactory(float32 outputRatio, uint32 minOutputs, uint32 maxOutputs,
-                                                          float64 l1RegularizationWeight,
-                                                          float64 l2RegularizationWeight);
+                                                          float32 l1RegularizationWeight,
+                                                          float32 l2RegularizationWeight);
 
             std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>> create(
               const DenseDecomposableStatisticVector<float64>& statisticVector,

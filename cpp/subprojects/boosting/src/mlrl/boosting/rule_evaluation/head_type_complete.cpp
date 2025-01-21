@@ -17,8 +17,8 @@ namespace boosting {
       CompleteHeadConfig::createClassificationStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
         const IDecomposableClassificationLossConfig& lossConfig) const {
-        float64 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
-        float64 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
+        float32 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
+        float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
         MultiThreadingSettings multiThreadingSettings =
           multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs());
         std::unique_ptr<IDecomposableClassificationLossFactory> lossFactoryPtr =
@@ -70,8 +70,8 @@ namespace boosting {
     std::unique_ptr<IRegressionStatisticsProviderFactory> CompleteHeadConfig::createRegressionStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
       const IDecomposableRegressionLossConfig& lossConfig) const {
-        float64 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
-        float64 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
+        float32 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
+        float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
         MultiThreadingSettings multiThreadingSettings =
           multiThreadingConfig_.get().getSettings(featureMatrix, regressionMatrix.getNumOutputs());
         std::unique_ptr<IDecomposableRegressionLossFactory> lossFactoryPtr =

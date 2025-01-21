@@ -29,8 +29,8 @@ namespace boosting {
         protected:
 
             uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector, float64* criteria,
-                                               uint32 numCriteria, float64 l1RegularizationWeight,
-                                               float64 l2RegularizationWeight) override {
+                                               uint32 numCriteria, float32 l1RegularizationWeight,
+                                               float32 l2RegularizationWeight) override {
                 uint32 numOutputs = statisticVector.getNumGradients();
                 uint32 numPredictions = indexVectorPtr_->getNumElements();
                 typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
@@ -72,8 +72,8 @@ namespace boosting {
              */
             DenseNonDecomposableFixedPartialBinnedRuleEvaluation(const IndexVector& labelIndices, uint32 maxBins,
                                                                  std::unique_ptr<PartialIndexVector> indexVectorPtr,
-                                                                 float64 l1RegularizationWeight,
-                                                                 float64 l2RegularizationWeight,
+                                                                 float32 l1RegularizationWeight,
+                                                                 float32 l2RegularizationWeight,
                                                                  std::unique_ptr<ILabelBinning> binningPtr,
                                                                  const Blas& blas, const Lapack& lapack)
                 : AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector>(
@@ -84,8 +84,8 @@ namespace boosting {
     };
 
     NonDecomposableFixedPartialBinnedRuleEvaluationFactory::NonDecomposableFixedPartialBinnedRuleEvaluationFactory(
-      float32 labelRatio, uint32 minLabels, uint32 maxLabels, float64 l1RegularizationWeight,
-      float64 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr, const Blas& blas,
+      float32 labelRatio, uint32 minLabels, uint32 maxLabels, float32 l1RegularizationWeight,
+      float32 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr, const Blas& blas,
       const Lapack& lapack)
         : labelRatio_(labelRatio), minLabels_(minLabels), maxLabels_(maxLabels),
           l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
