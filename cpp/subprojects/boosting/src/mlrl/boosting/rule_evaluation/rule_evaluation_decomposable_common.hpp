@@ -10,17 +10,19 @@ namespace boosting {
     /**
      * Returns the L1 regularization weight to be added to a specific gradient.
      *
+     * @tparam StatisticType            The type of the gradient
      * @param gradient                  The gradient, the L1 regularization weight should be added to
      * @param l1RegularizationWeight    The L1 regularization weight
      * @return                          The L1 regularization weight to be added to the gradient
      */
-    static inline constexpr float64 getL1RegularizationWeight(float64 gradient, float64 l1RegularizationWeight) {
+    template<typename StatisticType>
+    static inline constexpr float32 getL1RegularizationWeight(StatisticType gradient, float32 l1RegularizationWeight) {
         if (gradient > l1RegularizationWeight) {
             return -l1RegularizationWeight;
         } else if (gradient < -l1RegularizationWeight) {
             return l1RegularizationWeight;
         } else {
-            return 0;
+            return 0.0f;
         }
     }
 
@@ -36,9 +38,9 @@ namespace boosting {
      * @return                          The predicted score that has been calculated
      */
     template<typename StatisticType>
-    static inline constexpr float64 calculateOutputWiseScore(StatisticType gradient, StatisticType hessian,
-                                                             float64 l1RegularizationWeight,
-                                                             float64 l2RegularizationWeight) {
+    static inline constexpr StatisticType calculateOutputWiseScore(StatisticType gradient, StatisticType hessian,
+                                                                   float32 l1RegularizationWeight,
+                                                                   float32 l2RegularizationWeight) {
         return util::divideOrZero(-gradient + getL1RegularizationWeight(gradient, l1RegularizationWeight),
                                   hessian + l2RegularizationWeight);
     }
@@ -57,7 +59,7 @@ namespace boosting {
      */
     template<typename StatisticType>
     static inline float64 calculateOutputWiseQuality(float64 score, StatisticType gradient, StatisticType hessian,
-                                                     float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
+                                                     float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
         float64 scorePow = score * score;
         float64 quality = (gradient * score) + (0.5 * hessian * scorePow);
         float64 l1RegularizationTerm = l1RegularizationWeight * std::abs(score);

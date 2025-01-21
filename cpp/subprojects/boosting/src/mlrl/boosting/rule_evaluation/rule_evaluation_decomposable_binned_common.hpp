@@ -29,7 +29,7 @@ namespace boosting {
     template<typename StatisticIterator, typename ScoreIterator>
     static inline float64 calculateBinnedScores(StatisticIterator statisticIterator, ScoreIterator scoreIterator,
                                                 View<uint32>::const_iterator weights, uint32 numElements,
-                                                float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
+                                                float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
         float64 quality = 0;
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -68,9 +68,9 @@ namespace boosting {
 
             Array<float64> criteria_;
 
-            const float64 l1RegularizationWeight_;
+            const float32 l1RegularizationWeight_;
 
-            const float64 l2RegularizationWeight_;
+            const float32 l2RegularizationWeight_;
 
             const std::unique_ptr<ILabelBinning> binningPtr_;
 
@@ -90,8 +90,8 @@ namespace boosting {
              */
             virtual uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector,
                                                        View<float64>::iterator criteria, uint32 numCriteria,
-                                                       float64 l1RegularizationWeight,
-                                                       float64 l2RegularizationWeight) = 0;
+                                                       float32 l1RegularizationWeight,
+                                                       float32 l2RegularizationWeight) = 0;
 
         public:
 
@@ -107,7 +107,7 @@ namespace boosting {
              *                                  used to assign labels to bins
              */
             AbstractDecomposableBinnedRuleEvaluation(const IndexVector& labelIndices, bool indicesSorted,
-                                                     float64 l1RegularizationWeight, float64 l2RegularizationWeight,
+                                                     float32 l1RegularizationWeight, float32 l2RegularizationWeight,
                                                      std::unique_ptr<ILabelBinning> binningPtr)
                 : maxBins_(binningPtr->getMaxBins(labelIndices.getNumElements())),
                   scoreVector_(labelIndices, maxBins_ + 1, indicesSorted), aggregatedStatisticVector_(maxBins_),
@@ -178,8 +178,8 @@ namespace boosting {
         protected:
 
             uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector, View<float64>::iterator criteria,
-                                               uint32 numCriteria, float64 l1RegularizationWeight,
-                                               float64 l2RegularizationWeight) override {
+                                               uint32 numCriteria, float32 l1RegularizationWeight,
+                                               float32 l2RegularizationWeight) override {
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
@@ -203,8 +203,8 @@ namespace boosting {
              * @param binningPtr                An unique pointer to an object of type `ILabelBinning` that should be
              *                                  used to assign labels to bins
              */
-            DecomposableCompleteBinnedRuleEvaluation(const IndexVector& labelIndices, float64 l1RegularizationWeight,
-                                                     float64 l2RegularizationWeight,
+            DecomposableCompleteBinnedRuleEvaluation(const IndexVector& labelIndices, float32 l1RegularizationWeight,
+                                                     float32 l2RegularizationWeight,
                                                      std::unique_ptr<ILabelBinning> binningPtr)
                 : AbstractDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector>(
                     labelIndices, true, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr)) {}

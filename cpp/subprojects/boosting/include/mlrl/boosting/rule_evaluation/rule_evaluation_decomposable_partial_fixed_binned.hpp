@@ -24,9 +24,9 @@ namespace boosting {
 
             const uint32 maxLabels_;
 
-            const float64 l1RegularizationWeight_;
+            const float32 l1RegularizationWeight_;
 
-            const float64 l2RegularizationWeight_;
+            const float32 l2RegularizationWeight_;
 
             const std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr_;
 
@@ -50,8 +50,8 @@ namespace boosting {
              *                                  allows to create the implementation to be used to assign labels to bins
              */
             DecomposableFixedPartialBinnedRuleEvaluationFactory(
-              float32 labelRatio, uint32 minLabels, uint32 maxLabels, float64 l1RegularizationWeight,
-              float64 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr);
+              float32 labelRatio, uint32 minLabels, uint32 maxLabels, float32 l1RegularizationWeight,
+              float32 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr);
 
             std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>> create(
               const DenseDecomposableStatisticVector<float64>& statisticVector,
