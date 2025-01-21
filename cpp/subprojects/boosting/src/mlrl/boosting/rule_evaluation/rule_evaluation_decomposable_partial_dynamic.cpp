@@ -28,9 +28,9 @@ namespace boosting {
 
             const float64 exponent_;
 
-            const float64 l1RegularizationWeight_;
+            const float32 l1RegularizationWeight_;
 
-            const float64 l2RegularizationWeight_;
+            const float32 l2RegularizationWeight_;
 
         public:
 
@@ -47,8 +47,8 @@ namespace boosting {
              *                                  scores to be predicted by rules
              */
             DecomposableDynamicPartialRuleEvaluation(const IndexVector& outputIndices, float32 threshold,
-                                                     float32 exponent, float64 l1RegularizationWeight,
-                                                     float64 l2RegularizationWeight)
+                                                     float32 exponent, float32 l1RegularizationWeight,
+                                                     float32 l2RegularizationWeight)
                 : outputIndices_(outputIndices), indexVector_(outputIndices.getNumElements()),
                   scoreVector_(indexVector_, true), threshold_(1.0 - threshold), exponent_(exponent),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
@@ -87,7 +87,7 @@ namespace boosting {
     };
 
     DecomposableDynamicPartialRuleEvaluationFactory::DecomposableDynamicPartialRuleEvaluationFactory(
-      float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight)
+      float32 threshold, float32 exponent, float32 l1RegularizationWeight, float32 l2RegularizationWeight)
         : threshold_(threshold), exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
           l2RegularizationWeight_(l2RegularizationWeight) {}
 

@@ -39,7 +39,7 @@ namespace boosting {
      * @param l2RegularizationWeight    The L2 regularization weight to be added to the coefficients
      */
     static inline void addL2RegularizationWeight(View<float64>::iterator coefficients, uint32 numPredictions,
-                                                 float64 l2RegularizationWeight) {
+                                                 float32 l2RegularizationWeight) {
         if (l2RegularizationWeight > 0) {
             for (uint32 i = 0; i < numPredictions; i++) {
                 coefficients[(i * numPredictions) + i] += l2RegularizationWeight;
@@ -70,7 +70,7 @@ namespace boosting {
      * @param l1RegularizationWeight    The L1 regularization weight to be added to the ordinates
      **/
     static inline void addL1RegularizationWeight(View<float64>::iterator ordinates, uint32 numPredictions,
-                                                 float64 l1RegularizationWeight) {
+                                                 float32 l1RegularizationWeight) {
         if (l1RegularizationWeight > 0) {
             for (uint32 i = 0; i < numPredictions; i++) {
                 float64 gradient = ordinates[i];
@@ -112,7 +112,7 @@ namespace boosting {
      */
     template<typename ScoreIterator>
     static inline float64 calculateRegularizationTerm(ScoreIterator scores, uint32 numPredictions,
-                                                      float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
+                                                      float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
         float64 regularizationTerm;
 
         if (l1RegularizationWeight > 0) {
@@ -143,9 +143,9 @@ namespace boosting {
 
             DenseScoreVector<IndexVector> scoreVector_;
 
-            const float64 l1RegularizationWeight_;
+            const float32 l1RegularizationWeight_;
 
-            const float64 l2RegularizationWeight_;
+            const float32 l2RegularizationWeight_;
 
             const Blas& blas_;
 
@@ -165,8 +165,8 @@ namespace boosting {
              * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
              *                                  routines
              */
-            DenseNonDecomposableCompleteRuleEvaluation(const IndexVector& outputIndices, float64 l1RegularizationWeight,
-                                                       float64 l2RegularizationWeight, const Blas& blas,
+            DenseNonDecomposableCompleteRuleEvaluation(const IndexVector& outputIndices, float32 l1RegularizationWeight,
+                                                       float32 l2RegularizationWeight, const Blas& blas,
                                                        const Lapack& lapack)
                 : AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector>(outputIndices.getNumElements(),
                                                                                       lapack),

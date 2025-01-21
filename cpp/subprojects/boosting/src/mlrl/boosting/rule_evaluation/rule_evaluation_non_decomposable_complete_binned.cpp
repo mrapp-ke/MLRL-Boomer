@@ -5,7 +5,7 @@
 namespace boosting {
 
     NonDecomposableCompleteBinnedRuleEvaluationFactory::NonDecomposableCompleteBinnedRuleEvaluationFactory(
-      float64 l1RegularizationWeight, float64 l2RegularizationWeight,
+      float32 l1RegularizationWeight, float32 l2RegularizationWeight,
       std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr, const Blas& blas, const Lapack& lapack)
         : l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
           labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)), blas_(blas), lapack_(lapack) {}
