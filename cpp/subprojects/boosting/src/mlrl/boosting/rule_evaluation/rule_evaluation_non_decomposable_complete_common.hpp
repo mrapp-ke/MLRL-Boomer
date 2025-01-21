@@ -132,12 +132,13 @@ namespace boosting {
      * Allows to calculate the predictions of complete rules, as well as their overall quality, based on the gradients
      * and Hessians that are stored by a `DenseNonDecomposableStatisticVector` using L1 and L2 regularization.
      *
-     * @tparam IndexVector The type of the vector that provides access to the indices of the outputs for which
-     *                     predictions should be calculated
+     * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
+     * @tparam IndexVector      The type of the vector that provides access to the indices of the outputs for which
+     *                          predictions should be calculated
      */
-    template<typename IndexVector>
+    template<typename StatisticVector, typename IndexVector>
     class DenseNonDecomposableCompleteRuleEvaluation final
-        : public AbstractNonDecomposableRuleEvaluation<DenseNonDecomposableStatisticVector<float64>, IndexVector> {
+        : public AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector> {
         private:
 
             DenseScoreVector<IndexVector> scoreVector_;
@@ -167,16 +168,15 @@ namespace boosting {
             DenseNonDecomposableCompleteRuleEvaluation(const IndexVector& outputIndices, float64 l1RegularizationWeight,
                                                        float64 l2RegularizationWeight, const Blas& blas,
                                                        const Lapack& lapack)
-                : AbstractNonDecomposableRuleEvaluation<DenseNonDecomposableStatisticVector<float64>, IndexVector>(
-                    outputIndices.getNumElements(), lapack),
+                : AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector>(outputIndices.getNumElements(),
+                                                                                      lapack),
                   scoreVector_(outputIndices, true), l1RegularizationWeight_(l1RegularizationWeight),
                   l2RegularizationWeight_(l2RegularizationWeight), blas_(blas), lapack_(lapack) {}
 
             /**
              * @see `IRuleEvaluation::evaluate`
              */
-            const IScoreVector& calculateScores(
-              DenseNonDecomposableStatisticVector<float64>& statisticVector) override {
+            const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numPredictions = scoreVector_.getNumElements();
 
                 // Copy Hessians to the matrix of coefficients and add the L2 regularization weight to its diagonal...
