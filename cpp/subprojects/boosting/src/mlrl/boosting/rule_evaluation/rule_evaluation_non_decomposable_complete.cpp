@@ -13,7 +13,8 @@ namespace boosting {
       NonDecomposableCompleteRuleEvaluationFactory::create(
         const DenseNonDecomposableStatisticVector<float64>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        return std::make_unique<DenseNonDecomposableCompleteRuleEvaluation<CompleteIndexVector>>(
+        return std::make_unique<DenseNonDecomposableCompleteRuleEvaluation<DenseNonDecomposableStatisticVector<float64>,
+                                                                           CompleteIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
     }
 
@@ -21,7 +22,8 @@ namespace boosting {
       NonDecomposableCompleteRuleEvaluationFactory::create(
         const DenseNonDecomposableStatisticVector<float64>& statisticVector,
         const PartialIndexVector& indexVector) const {
-        return std::make_unique<DenseNonDecomposableCompleteRuleEvaluation<PartialIndexVector>>(
+        return std::make_unique<
+          DenseNonDecomposableCompleteRuleEvaluation<DenseNonDecomposableStatisticVector<float64>, PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
     }
 
