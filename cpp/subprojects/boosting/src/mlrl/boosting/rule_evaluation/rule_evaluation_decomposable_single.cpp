@@ -45,13 +45,13 @@ namespace boosting {
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                const Statistic<float64>& firstStatistic = statisticIterator[0];
+                const typename StatisticVector::value_type& firstStatistic = statisticIterator[0];
                 float64 bestScore = calculateOutputWiseScore(firstStatistic.gradient, firstStatistic.hessian,
                                                              l1RegularizationWeight_, l2RegularizationWeight_);
                 uint32 bestIndex = 0;
 
                 for (uint32 i = 1; i < numElements; i++) {
-                    const Statistic<float64>& statistic = statisticIterator[i];
+                    const typename StatisticVector::value_type& statistic = statisticIterator[i];
                     float64 score = calculateOutputWiseScore(statistic.gradient, statistic.hessian,
                                                              l1RegularizationWeight_, l2RegularizationWeight_);
 
@@ -64,9 +64,10 @@ namespace boosting {
                 DenseScoreVector<PartialIndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
                 valueIterator[0] = bestScore;
                 indexVector_.begin()[0] = outputIndices_.cbegin()[bestIndex];
-                const Statistic<float64>& statistic = statisticIterator[bestIndex];
-                scoreVector_.quality = calculateOutputWiseQuality(bestScore, statistic.gradient, statistic.hessian,
-                                                                  l1RegularizationWeight_, l2RegularizationWeight_);
+                const typename StatisticVector::value_type& bestStatistic = statisticIterator[bestIndex];
+                scoreVector_.quality =
+                  calculateOutputWiseQuality(bestScore, bestStatistic.gradient, bestStatistic.hessian,
+                                             l1RegularizationWeight_, l2RegularizationWeight_);
                 return scoreVector_;
             }
     };
