@@ -11,13 +11,13 @@ namespace boosting {
      * `DenseNonDecomposableStatisticVector` using L1 and L2 regularization. The labels are assigned to bins based on
      * the gradients and Hessians.
      *
-     * @tparam IndexVector The type of the vector that provides access to the indices of the labels for which
-     *                     predictions should be calculated
+     * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
+     * @tparam IndexVector      The type of the vector that provides access to the indices of the labels for which
+     *                          predictions should be calculated
      */
-    template<typename IndexVector>
+    template<typename StatisticVector, typename IndexVector>
     class DenseNonDecomposableFixedPartialBinnedRuleEvaluation final
-        : public AbstractNonDecomposableBinnedRuleEvaluation<DenseNonDecomposableStatisticVector<float64>,
-                                                             PartialIndexVector> {
+        : public AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector> {
         private:
 
             const IndexVector& labelIndices_;
@@ -28,14 +28,13 @@ namespace boosting {
 
         protected:
 
-            uint32 calculateOutputWiseCriteria(const DenseNonDecomposableStatisticVector<float64>& statisticVector,
-                                               float64* criteria, uint32 numCriteria, float64 l1RegularizationWeight,
+            uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector, float64* criteria,
+                                               uint32 numCriteria, float64 l1RegularizationWeight,
                                                float64 l2RegularizationWeight) override {
                 uint32 numOutputs = statisticVector.getNumGradients();
                 uint32 numPredictions = indexVectorPtr_->getNumElements();
-                DenseNonDecomposableStatisticVector<float64>::gradient_const_iterator gradientIterator =
-                  statisticVector.gradients_cbegin();
-                DenseNonDecomposableStatisticVector<float64>::hessian_diagonal_const_iterator hessianIterator =
+                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
+                typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
                 SparseArrayVector<float64>::iterator tmpIterator = tmpVector_.begin();
                 sortOutputWiseCriteria(tmpIterator, gradientIterator, hessianIterator, numOutputs, numPredictions,
@@ -77,8 +76,7 @@ namespace boosting {
                                                                  float64 l2RegularizationWeight,
                                                                  std::unique_ptr<ILabelBinning> binningPtr,
                                                                  const Blas& blas, const Lapack& lapack)
-                : AbstractNonDecomposableBinnedRuleEvaluation<DenseNonDecomposableStatisticVector<float64>,
-                                                              PartialIndexVector>(
+                : AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector>(
                     *indexVectorPtr, false, maxBins, l1RegularizationWeight, l2RegularizationWeight,
                     std::move(binningPtr), blas, lapack),
                   labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)),
@@ -102,7 +100,8 @@ namespace boosting {
         std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(numPredictions);
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         uint32 maxBins = labelBinningPtr->getMaxBins(numPredictions);
-        return std::make_unique<DenseNonDecomposableFixedPartialBinnedRuleEvaluation<CompleteIndexVector>>(
+        return std::make_unique<DenseNonDecomposableFixedPartialBinnedRuleEvaluation<
+          DenseNonDecomposableStatisticVector<float64>, CompleteIndexVector>>(
           indexVector, maxBins, std::move(indexVectorPtr), l1RegularizationWeight_, l2RegularizationWeight_,
           std::move(labelBinningPtr), blas_, lapack_);
     }
