@@ -249,6 +249,11 @@ namespace boosting {
               const SparseDecomposableStatisticVector<StatisticType, WeightType>& other);
 
             /**
+             * The type of the elements in the vector.
+             */
+            typedef Statistic<StatisticType> value_type;
+
+            /**
              * An iterator that provides read-only access to the elements in the vector.
              */
             typedef ConstIterator const_iterator;
