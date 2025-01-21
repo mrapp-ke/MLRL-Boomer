@@ -16,7 +16,8 @@ namespace boosting {
     /**
      * Calculates the score to be predicted for individual bins and returns the overall quality of the predictions.
      *
-     * @tparam ScoreIterator            The type of the iterator that provides access to the gradients and Hessians
+     * @tparam StatisticIterator        The type of the iterator that provides access to the gradients and Hessians
+     * @tparam ScoreIterator            The type of the iterator, the calculated scores should be written to
      * @param statisticIterator         An iterator that provides random access to the gradients and Hessians
      * @param scoreIterator             An iterator, the calculated scores should be written to
      * @param weights                   An iterator to the weights of individual bins
@@ -25,16 +26,15 @@ namespace boosting {
      * @param l2RegularizationWeight    The L2 regularization weight
      * @return                          The overall quality that has been calculated
      */
-    template<typename ScoreIterator>
-    static inline float64 calculateBinnedScores(View<Statistic<float64>>::const_iterator statisticIterator,
-                                                ScoreIterator scoreIterator, View<uint32>::const_iterator weights,
-                                                uint32 numElements, float64 l1RegularizationWeight,
-                                                float64 l2RegularizationWeight) {
+    template<typename StatisticIterator, typename ScoreIterator>
+    static inline float64 calculateBinnedScores(StatisticIterator statisticIterator, ScoreIterator scoreIterator,
+                                                View<uint32>::const_iterator weights, uint32 numElements,
+                                                float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
         float64 quality = 0;
 
         for (uint32 i = 0; i < numElements; i++) {
             uint32 weight = weights[i];
-            const Statistic<float64>& statistic = statisticIterator[i];
+            const typename std::iterator_traits<StatisticIterator>::value_type& statistic = statisticIterator[i];
             float64 predictedScore = calculateOutputWiseScore(
               statistic.gradient, statistic.hessian, weight * l1RegularizationWeight, weight * l2RegularizationWeight);
             scoreIterator[i] = predictedScore;
