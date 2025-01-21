@@ -37,10 +37,12 @@ namespace boosting {
      * `b = max(0, x)`, to increase numerical stability (see, e.g., section "Log-sum-exp for computing the
      * log-distribution" in https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/).
      *
-     * @param x The value `x`
-     * @return  The value that has been calculated
+     * @tparam T    The type of the value `x`
+     * @param x     The value `x`
+     * @return      The value that has been calculated
      */
-    static inline constexpr float64 logSumExp(float64 x) {
+    template<typename T>
+    static inline constexpr T logSumExp(T x) {
         if (x > 0) {
             return x + std::log(std::exp(0 - x) + 1);
         } else {
