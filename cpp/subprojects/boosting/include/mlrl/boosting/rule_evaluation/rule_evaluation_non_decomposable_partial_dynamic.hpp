@@ -22,9 +22,9 @@ namespace boosting {
 
             const float32 exponent_;
 
-            const float64 l1RegularizationWeight_;
+            const float32 l1RegularizationWeight_;
 
-            const float64 l2RegularizationWeight_;
+            const float32 l2RegularizationWeight_;
 
             const Blas& blas_;
 
@@ -54,8 +54,8 @@ namespace boosting {
              *                                  routines
              */
             NonDecomposableDynamicPartialRuleEvaluationFactory(float32 threshold, float32 exponent,
-                                                               float64 l1RegularizationWeight,
-                                                               float64 l2RegularizationWeight, const Blas& blas,
+                                                               float32 l1RegularizationWeight,
+                                                               float32 l2RegularizationWeight, const Blas& blas,
                                                                const Lapack& lapack);
 
             std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>> create(

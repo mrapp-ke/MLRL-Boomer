@@ -13,7 +13,7 @@ namespace boosting {
     class NoRegularizationConfig final : public IRegularizationConfig {
         public:
 
-            float64 getWeight() const override;
+            float32 getWeight() const override;
     };
 
 }

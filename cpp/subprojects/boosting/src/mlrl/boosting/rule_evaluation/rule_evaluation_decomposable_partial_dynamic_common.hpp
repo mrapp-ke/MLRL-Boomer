@@ -23,8 +23,8 @@ namespace boosting {
      */
     template<typename StatisticIterator>
     static inline std::pair<float64, float64> getMinAndMaxScore(StatisticIterator& statisticIterator, uint32 numOutputs,
-                                                                float64 l1RegularizationWeight,
-                                                                float64 l2RegularizationWeight) {
+                                                                float32 l1RegularizationWeight,
+                                                                float32 l2RegularizationWeight) {
         const typename std::iterator_traits<StatisticIterator>::value_type& firstStatistic = statisticIterator[0];
         float64 maxAbsScore = std::abs(calculateOutputWiseScore(firstStatistic.gradient, firstStatistic.hessian,
                                                                 l1RegularizationWeight, l2RegularizationWeight));

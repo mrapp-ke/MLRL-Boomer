@@ -24,9 +24,9 @@ namespace boosting {
 
             DenseScoreVector<PartialIndexVector> scoreVector_;
 
-            const float64 l1RegularizationWeight_;
+            const float32 l1RegularizationWeight_;
 
-            const float64 l2RegularizationWeight_;
+            const float32 l2RegularizationWeight_;
 
             SparseArrayVector<float64> tmpVector_;
 
@@ -42,7 +42,7 @@ namespace boosting {
              *                                  scores to be predicted by rules
              */
             DecomposableFixedPartialRuleEvaluation(const IndexVector& outputIndices, uint32 numPredictions,
-                                                   float64 l1RegularizationWeight, float64 l2RegularizationWeight)
+                                                   float32 l1RegularizationWeight, float32 l2RegularizationWeight)
                 : outputIndices_(outputIndices), indexVector_(numPredictions), scoreVector_(indexVector_, false),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
                   tmpVector_(outputIndices.getNumElements()) {}
@@ -76,8 +76,8 @@ namespace boosting {
     };
 
     DecomposableFixedPartialRuleEvaluationFactory::DecomposableFixedPartialRuleEvaluationFactory(
-      float32 outputRatio, uint32 minOutputs, uint32 maxOutputs, float64 l1RegularizationWeight,
-      float64 l2RegularizationWeight)
+      float32 outputRatio, uint32 minOutputs, uint32 maxOutputs, float32 l1RegularizationWeight,
+      float32 l2RegularizationWeight)
         : outputRatio_(outputRatio), minOutputs_(minOutputs), maxOutputs_(maxOutputs),
           l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
 
