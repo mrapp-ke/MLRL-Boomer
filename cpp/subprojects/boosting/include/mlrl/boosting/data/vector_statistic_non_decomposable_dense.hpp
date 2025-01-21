@@ -38,6 +38,11 @@ namespace boosting {
             DenseNonDecomposableStatisticVector(const DenseNonDecomposableStatisticVector<StatisticType>& other);
 
             /**
+             * The type of the gradients and Hessians in the vector.
+             */
+            typedef StatisticType statistic_type;
+
+            /**
              * An iterator that provides access to the gradients in the vector and allows to modify them.
              */
             typedef typename View<StatisticType>::iterator gradient_iterator;
