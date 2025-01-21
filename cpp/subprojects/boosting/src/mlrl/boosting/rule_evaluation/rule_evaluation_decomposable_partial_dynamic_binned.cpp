@@ -43,7 +43,7 @@ namespace boosting {
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
-                    const Statistic<float64>& statistic = statisticIterator[i];
+                    const typename StatisticVector::value_type& statistic = statisticIterator[i];
                     float64 score = calculateOutputWiseScore(statistic.gradient, statistic.hessian,
                                                              l1RegularizationWeight, l2RegularizationWeight);
 
