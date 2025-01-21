@@ -120,15 +120,17 @@ namespace util {
      * stability (see, e.g., section "Numerically stable sigmoid function" in
      * https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/).
      *
-     * @param x The value `x`
-     * @return  The value that has been calculated
+     * @tparam T    The type of the value `x`
+     * @param x     The value `x`
+     * @return      The value that has been calculated
      */
-    static inline constexpr float64 logisticFunction(float64 x) {
+    template<typename T>
+    static inline constexpr T logisticFunction(T x) {
         if (x < 0) {
-            float64 exponential = std::exp(x);  // Evaluates to 0 for large x, resulting in 0 ultimately
+            T exponential = std::exp(x);  // Evaluates to 0 for large x, resulting in 0 ultimately
             return exponential / (1 + exponential);
         } else {
-            float64 exponential = std::exp(-x);  // Evaluates to 0 for large x, resulting in 1 ultimately
+            T exponential = std::exp(-x);  // Evaluates to 0 for large x, resulting in 1 ultimately
             return 1 / (1 + exponential);
         }
     }
