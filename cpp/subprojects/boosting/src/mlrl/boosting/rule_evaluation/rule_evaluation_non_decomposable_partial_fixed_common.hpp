@@ -12,6 +12,8 @@ namespace boosting {
      * Calculates scores that assess the quality of optimal predictions for each output and sorts them, such that the
      * first `numPredictions` elements are the best-rated ones.
      *
+     * @tparam GradientIterator         The type of the iterator that provides access to the gradients
+     * @tparam HessianIterator          The type of the iterator that provides access to the Hessians
      * @param tmpIterator               An iterator that provides random access to a temporary array, which should be
      *                                  used to store the sorted scores and their original indices
      * @param gradientIterator          An iterator that provides access to the gradient for each output
@@ -21,11 +23,11 @@ namespace boosting {
      * @param l1RegularizationWeight    The l2 regularization weight
      * @param l2RegularizationWeight    The L1 regularization weight
      */
-    static inline void sortOutputWiseCriteria(
-      SparseArrayVector<float64>::iterator tmpIterator,
-      DenseNonDecomposableStatisticVector<float64>::gradient_const_iterator gradientIterator,
-      DenseNonDecomposableStatisticVector<float64>::hessian_diagonal_const_iterator hessianIterator, uint32 numOutputs,
-      uint32 numPredictions, float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
+    template<typename GradientIterator, typename HessianIterator>
+    static inline void sortOutputWiseCriteria(SparseArrayVector<float64>::iterator tmpIterator,
+                                              GradientIterator gradientIterator, HessianIterator hessianIterator,
+                                              uint32 numOutputs, uint32 numPredictions, float64 l1RegularizationWeight,
+                                              float64 l2RegularizationWeight) {
         for (uint32 i = 0; i < numOutputs; i++) {
             IndexedValue<float64>& entry = tmpIterator[i];
             entry.index = i;
