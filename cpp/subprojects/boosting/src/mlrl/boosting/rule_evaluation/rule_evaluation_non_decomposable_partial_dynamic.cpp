@@ -11,12 +11,13 @@ namespace boosting {
      * determined dynamically, as well as their overall quality, based on the gradients and Hessians that are stored by
      * a `DenseNonDecomposableStatisticVector` using L1 and L2 regularization.
      *
-     * @tparam IndexVector The type of the vector that provides access to the indices of the outputs for which
-     *                     predictions should be calculated
+     * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
+     * @tparam IndexVector      The type of the vector that provides access to the indices of the outputs for which
+     *                          predictions should be calculated
      */
-    template<typename IndexVector>
+    template<typename StatisticVector, typename IndexVector>
     class DenseNonDecomposableDynamicPartialRuleEvaluation final
-        : public AbstractNonDecomposableRuleEvaluation<DenseNonDecomposableStatisticVector<float64>, IndexVector> {
+        : public AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector> {
         private:
 
             const IndexVector& outputIndices_;
@@ -59,8 +60,8 @@ namespace boosting {
                                                              float32 exponent, float64 l1RegularizationWeight,
                                                              float64 l2RegularizationWeight, const Blas& blas,
                                                              const Lapack& lapack)
-                : AbstractNonDecomposableRuleEvaluation<DenseNonDecomposableStatisticVector<float64>, IndexVector>(
-                    outputIndices.getNumElements(), lapack),
+                : AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector>(outputIndices.getNumElements(),
+                                                                                      lapack),
                   outputIndices_(outputIndices), indexVector_(outputIndices.getNumElements()),
                   scoreVector_(indexVector_, true), threshold_(1.0 - threshold), exponent_(exponent),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
@@ -69,12 +70,10 @@ namespace boosting {
             /**
              * @see `IRuleEvaluation::evaluate`
              */
-            const IScoreVector& calculateScores(
-              DenseNonDecomposableStatisticVector<float64>& statisticVector) override {
+            const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numOutputs = statisticVector.getNumGradients();
-                DenseNonDecomposableStatisticVector<float64>::gradient_const_iterator gradientIterator =
-                  statisticVector.gradients_cbegin();
-                DenseNonDecomposableStatisticVector<float64>::hessian_diagonal_const_iterator hessianIterator =
+                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
+                typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
                 typename DenseScoreVector<IndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
                 const std::pair<float64, float64> pair =
@@ -134,7 +133,8 @@ namespace boosting {
       NonDecomposableDynamicPartialRuleEvaluationFactory::create(
         const DenseNonDecomposableStatisticVector<float64>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        return std::make_unique<DenseNonDecomposableDynamicPartialRuleEvaluation<CompleteIndexVector>>(
+        return std::make_unique<DenseNonDecomposableDynamicPartialRuleEvaluation<
+          DenseNonDecomposableStatisticVector<float64>, CompleteIndexVector>>(
           indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
     }
 
