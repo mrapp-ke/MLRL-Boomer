@@ -28,13 +28,15 @@ namespace boosting {
      * Calculates and returns the optimal score to be predicted for a single output, based on the corresponding gradient
      * and Hessian and taking L1 and L2 regularization into account.
      *
+     * @tparam StatisticType            The type of the gradient and Hessian
      * @param gradient                  The gradient that corresponds to the output
      * @param hessian                   The Hessian that corresponds to the output
      * @param l1RegularizationWeight    The weight of the L1 regularization
      * @param l2RegularizationWeight    The weight of the L2 regularization
      * @return                          The predicted score that has been calculated
      */
-    static inline constexpr float64 calculateOutputWiseScore(float64 gradient, float64 hessian,
+    template<typename StatisticType>
+    static inline constexpr float64 calculateOutputWiseScore(StatisticType gradient, StatisticType hessian,
                                                              float64 l1RegularizationWeight,
                                                              float64 l2RegularizationWeight) {
         return util::divideOrZero(-gradient + getL1RegularizationWeight(gradient, l1RegularizationWeight),
@@ -45,6 +47,7 @@ namespace boosting {
      * Calculates and returns the quality of the prediction for a single output, taking L1 and L2 regularization into
      * account.
      *
+     * @tparam StatisticType            The type of the gradient and Hessian
      * @param score                     The predicted score
      * @param gradient                  The gradient
      * @param hessian                   The Hessian
@@ -52,7 +55,8 @@ namespace boosting {
      * @param l2RegularizationWeight    The weight of the L2 regularization
      * @return                          The quality that has been calculated
      */
-    static inline float64 calculateOutputWiseQuality(float64 score, float64 gradient, float64 hessian,
+    template<typename StatisticType>
+    static inline float64 calculateOutputWiseQuality(float64 score, StatisticType gradient, StatisticType hessian,
                                                      float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
         float64 scorePow = score * score;
         float64 quality = (gradient * score) + (0.5 * hessian * scorePow);
