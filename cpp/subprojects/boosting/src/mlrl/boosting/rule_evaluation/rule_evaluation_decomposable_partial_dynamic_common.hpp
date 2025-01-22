@@ -55,8 +55,8 @@ namespace boosting {
      * @param exponent      An exponent that is used to weigh the estimated predictive quality for individual outputs
      * @return              The threshold that has been calculated
      */
-    static inline float64 calculateThreshold(float64 minAbsScore, float64 maxAbsScore, float64 threshold,
-                                             float64 exponent) {
+    static inline float64 calculateThreshold(float64 minAbsScore, float64 maxAbsScore, float32 threshold,
+                                             float32 exponent) {
         return std::pow(maxAbsScore - minAbsScore, exponent) * threshold;
     }
 
@@ -69,7 +69,7 @@ namespace boosting {
      * @param exponent      An exponent that is used to weigh the estimated predictive quality for individual outputs
      * @return              The weighted score that has been calculated
      */
-    static inline float64 calculateWeightedScore(float64 score, float64 minAbsScore, float64 exponent) {
+    static inline float64 calculateWeightedScore(float64 score, float64 minAbsScore, float32 exponent) {
         return std::pow(std::abs(score) - minAbsScore, exponent);
     }
 
