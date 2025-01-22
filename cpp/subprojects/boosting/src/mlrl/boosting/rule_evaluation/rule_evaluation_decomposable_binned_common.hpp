@@ -8,6 +8,7 @@
 #include "mlrl/common/rule_evaluation/score_vector_binned_dense.hpp"
 #include "rule_evaluation_decomposable_common.hpp"
 
+#include <iterator>
 #include <memory>
 #include <utility>
 
@@ -27,16 +28,17 @@ namespace boosting {
      * @return                          The overall quality that has been calculated
      */
     template<typename StatisticIterator, typename ScoreIterator>
-    static inline float64 calculateBinnedScores(StatisticIterator statisticIterator, ScoreIterator scoreIterator,
-                                                View<uint32>::const_iterator weights, uint32 numElements,
-                                                float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
-        float64 quality = 0;
+    static inline typename std::iterator_traits<StatisticIterator>::value_type::statistic_type calculateBinnedScores(
+      StatisticIterator statisticIterator, ScoreIterator scoreIterator, View<uint32>::const_iterator weights,
+      uint32 numElements, float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
+        typename std::iterator_traits<StatisticIterator>::value_type::statistic_type quality = 0;
 
         for (uint32 i = 0; i < numElements; i++) {
             uint32 weight = weights[i];
             const typename std::iterator_traits<StatisticIterator>::value_type& statistic = statisticIterator[i];
-            float64 predictedScore = calculateOutputWiseScore(
-              statistic.gradient, statistic.hessian, weight * l1RegularizationWeight, weight * l2RegularizationWeight);
+            typename std::iterator_traits<StatisticIterator>::value_type::statistic_type predictedScore =
+              calculateOutputWiseScore(statistic.gradient, statistic.hessian, weight * l1RegularizationWeight,
+                                       weight * l2RegularizationWeight);
             scoreIterator[i] = predictedScore;
             quality += calculateOutputWiseQuality(predictedScore, statistic.gradient, statistic.hessian,
                                                   weight * l1RegularizationWeight, weight * l2RegularizationWeight);
