@@ -45,11 +45,11 @@ namespace boosting {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 typename DenseScoreVector<IndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
-                typename StatisticVector::value_type::statistic_type quality = 0;
+                typename StatisticVector::statistic_type quality = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
                     const typename StatisticVector::value_type& statistic = statisticIterator[i];
-                    typename StatisticVector::value_type::statistic_type predictedScore = calculateOutputWiseScore(
+                    typename StatisticVector::statistic_type predictedScore = calculateOutputWiseScore(
                       statistic.gradient, statistic.hessian, l1RegularizationWeight_, l2RegularizationWeight_);
                     valueIterator[i] = predictedScore;
                     quality += calculateOutputWiseQuality(predictedScore, statistic.gradient, statistic.hessian,

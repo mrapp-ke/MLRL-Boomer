@@ -31,16 +31,15 @@ namespace boosting {
 
             uint32 calculateOutputWiseCriteria(
               const StatisticVector& statisticVector,
-              typename View<typename StatisticVector::value_type::statistic_type>::iterator criteria,
-              uint32 numCriteria, float32 l1RegularizationWeight, float32 l2RegularizationWeight) override {
+              typename View<typename StatisticVector::statistic_type>::iterator criteria, uint32 numCriteria,
+              float32 l1RegularizationWeight, float32 l2RegularizationWeight) override {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                const std::pair<typename StatisticVector::value_type::statistic_type,
-                                typename StatisticVector::value_type::statistic_type>
+                const std::pair<typename StatisticVector::statistic_type, typename StatisticVector::statistic_type>
                   pair =
                     getMinAndMaxScore(statisticIterator, numElements, l1RegularizationWeight, l2RegularizationWeight);
-                typename StatisticVector::value_type::statistic_type minAbsScore = pair.first;
-                typename StatisticVector::value_type::statistic_type threshold =
+                typename StatisticVector::statistic_type minAbsScore = pair.first;
+                typename StatisticVector::statistic_type threshold =
                   calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
                 PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
                 typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
@@ -48,7 +47,7 @@ namespace boosting {
 
                 for (uint32 i = 0; i < numElements; i++) {
                     const typename StatisticVector::value_type& statistic = statisticIterator[i];
-                    typename StatisticVector::value_type::statistic_type score = calculateOutputWiseScore(
+                    typename StatisticVector::statistic_type score = calculateOutputWiseScore(
                       statistic.gradient, statistic.hessian, l1RegularizationWeight, l2RegularizationWeight);
 
                     if (calculateWeightedScore(score, minAbsScore, exponent_) >= threshold) {

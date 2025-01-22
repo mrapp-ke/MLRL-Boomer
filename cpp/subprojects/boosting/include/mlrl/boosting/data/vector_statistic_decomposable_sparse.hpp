@@ -254,6 +254,11 @@ namespace boosting {
             typedef Statistic<StatisticType> value_type;
 
             /**
+             * The type of the gradients and Hessians.
+             */
+            typedef StatisticType statistic_type;
+
+            /**
              * An iterator that provides read-only access to the elements in the vector.
              */
             typedef ConstIterator const_iterator;
