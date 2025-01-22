@@ -27,9 +27,10 @@ namespace boosting {
 
         protected:
 
-            uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector, float64* criteria,
-                                               uint32 numCriteria, float32 l1RegularizationWeight,
-                                               float32 l2RegularizationWeight) override {
+            uint32 calculateOutputWiseCriteria(
+              const StatisticVector& statisticVector,
+              typename View<typename StatisticVector::value_type::statistic_type>::iterator criteria,
+              uint32 numCriteria, float32 l1RegularizationWeight, float32 l2RegularizationWeight) override {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 SparseArrayVector<float64>::iterator tmpIterator = tmpVector_.begin();
