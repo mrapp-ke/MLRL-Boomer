@@ -36,7 +36,7 @@ namespace boosting {
         }
 
         std::partial_sort(tmpIterator, &tmpIterator[numPredictions], &tmpIterator[numOutputs],
-                          CompareOutputWiseCriteria());
+                          CompareOutputWiseCriteria<IndexedValue<float64>>());
     }
 
 }
