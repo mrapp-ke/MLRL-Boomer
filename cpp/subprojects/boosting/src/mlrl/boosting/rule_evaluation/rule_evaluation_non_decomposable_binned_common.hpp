@@ -40,8 +40,7 @@ namespace boosting {
     /**
      * Aggregates the gradients and Hessians of all elements that have been assigned to the same bin.
      *
-     * @tparam BinIndexIterator The type of the iterator that provides access to the indices of the bins individual
-     *                          elements have been assigned to
+     * @tparam StatisticType    The type of the gradients and Hessians
      * @param gradientIterator  An iterator that provides random access to the gradients
      * @param hessianIterator   An iterator that provides random access to the Hessians
      * @param numElements       The total number of available elements
@@ -52,12 +51,13 @@ namespace boosting {
      * @param hessians          An iterator, the aggregated Hessians should be written to
      * @param maxBins           The maximum number of bins
      */
-    template<typename GradientIterator, typename HessianIterator, typename BinIndexIterator>
-    static inline void aggregateGradientsAndHessians(GradientIterator gradientIterator, HessianIterator hessianIterator,
-                                                     uint32 numElements, BinIndexIterator binIndexIterator,
+    template<typename StatisticType>
+    static inline void aggregateGradientsAndHessians(typename View<StatisticType>::const_iterator gradientIterator,
+                                                     typename View<StatisticType>::const_iterator hessianIterator,
+                                                     uint32 numElements, View<uint32>::iterator binIndexIterator,
                                                      View<uint32>::const_iterator binIndices,
-                                                     View<float64>::iterator gradients,
-                                                     View<float64>::iterator hessians, uint32 maxBins) {
+                                                     typename View<StatisticType>::iterator gradients,
+                                                     typename View<StatisticType>::iterator hessians, uint32 maxBins) {
         for (uint32 i = 0; i < numElements; i++) {
             uint32 originalBinIndex = binIndexIterator[i];
 
@@ -301,9 +301,10 @@ namespace boosting {
                     // Aggregate gradients and Hessians...
                     util::setViewToZeros(aggregatedGradients_.begin(), numBins);
                     util::setViewToZeros(aggregatedHessians_.begin(), util::triangularNumber(numBins));
-                    aggregateGradientsAndHessians(statisticVector.gradients_cbegin(), statisticVector.hessians_cbegin(),
-                                                  numCriteria, binIndexIterator, binIndices_.cbegin(),
-                                                  aggregatedGradients_.begin(), aggregatedHessians_.begin(), maxBins_);
+                    aggregateGradientsAndHessians<float64>(
+                      statisticVector.gradients_cbegin(), statisticVector.hessians_cbegin(), numCriteria,
+                      binIndexIterator, binIndices_.cbegin(), aggregatedGradients_.begin(), aggregatedHessians_.begin(),
+                      maxBins_);
 
                     // Copy Hessians to the matrix of coefficients and add regularization weight to its diagonal...
                     copyCoefficients<float64>(aggregatedHessians_.cbegin(), this->dsysvTmpArray1_.begin(), numBins);
