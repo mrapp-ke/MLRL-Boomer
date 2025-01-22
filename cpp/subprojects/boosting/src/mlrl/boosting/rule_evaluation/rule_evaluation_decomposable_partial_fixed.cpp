@@ -28,7 +28,7 @@ namespace boosting {
 
             const float32 l2RegularizationWeight_;
 
-            SparseArrayVector<float64> tmpVector_;
+            SparseArrayVector<typename StatisticVector::statistic_type> tmpVector_;
 
         public:
 
@@ -51,18 +51,19 @@ namespace boosting {
                 uint32 numElements = statisticVector.getNumElements();
                 uint32 numPredictions = indexVector_.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                SparseArrayVector<float64>::iterator tmpIterator = tmpVector_.begin();
+                typename SparseArrayVector<typename StatisticVector::statistic_type>::iterator tmpIterator =
+                  tmpVector_.begin();
                 sortOutputWiseScores(tmpIterator, statisticIterator, numElements, numPredictions,
                                      l1RegularizationWeight_, l2RegularizationWeight_);
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
                 DenseScoreVector<PartialIndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
                 typename IndexVector::const_iterator outputIndexIterator = outputIndices_.cbegin();
-                float64 quality = 0;
+                typename StatisticVector::statistic_type quality = 0;
 
                 for (uint32 i = 0; i < numPredictions; i++) {
-                    const IndexedValue<float64>& entry = tmpIterator[i];
+                    const IndexedValue<typename StatisticVector::statistic_type>& entry = tmpIterator[i];
                     uint32 index = entry.index;
-                    float64 predictedScore = entry.value;
+                    typename StatisticVector::statistic_type predictedScore = entry.value;
                     indexIterator[i] = outputIndexIterator[index];
                     valueIterator[i] = predictedScore;
                     const typename StatisticVector::value_type& statistic = statisticIterator[index];
