@@ -22,18 +22,21 @@ namespace boosting {
      * @return                          A `std::pair` that stores the minimum and maximum absolute score
      */
     template<typename StatisticIterator>
-    static inline std::pair<float64, float64> getMinAndMaxScore(StatisticIterator& statisticIterator, uint32 numOutputs,
-                                                                float32 l1RegularizationWeight,
-                                                                float32 l2RegularizationWeight) {
+    static inline std::pair<typename std::iterator_traits<StatisticIterator>::value_type::statistic_type,
+                            typename std::iterator_traits<StatisticIterator>::value_type::statistic_type>
+      getMinAndMaxScore(StatisticIterator& statisticIterator, uint32 numOutputs, float32 l1RegularizationWeight,
+                        float32 l2RegularizationWeight) {
         const typename std::iterator_traits<StatisticIterator>::value_type& firstStatistic = statisticIterator[0];
-        float64 maxAbsScore = std::abs(calculateOutputWiseScore(firstStatistic.gradient, firstStatistic.hessian,
-                                                                l1RegularizationWeight, l2RegularizationWeight));
-        float64 minAbsScore = maxAbsScore;
+        typename std::iterator_traits<StatisticIterator>::value_type::statistic_type maxAbsScore =
+          std::abs(calculateOutputWiseScore(firstStatistic.gradient, firstStatistic.hessian, l1RegularizationWeight,
+                                            l2RegularizationWeight));
+        typename std::iterator_traits<StatisticIterator>::value_type::statistic_type minAbsScore = maxAbsScore;
 
         for (uint32 i = 1; i < numOutputs; i++) {
             const typename std::iterator_traits<StatisticIterator>::value_type& statistic = statisticIterator[i];
-            float64 absScore = std::abs(calculateOutputWiseScore(statistic.gradient, statistic.hessian,
-                                                                 l1RegularizationWeight, l2RegularizationWeight));
+            typename std::iterator_traits<StatisticIterator>::value_type::statistic_type absScore =
+              std::abs(calculateOutputWiseScore(statistic.gradient, statistic.hessian, l1RegularizationWeight,
+                                                l2RegularizationWeight));
 
             if (absScore > maxAbsScore) {
                 maxAbsScore = absScore;
