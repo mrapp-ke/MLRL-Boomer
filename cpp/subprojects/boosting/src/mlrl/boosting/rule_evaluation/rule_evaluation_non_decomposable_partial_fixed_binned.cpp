@@ -112,7 +112,8 @@ namespace boosting {
         const PartialIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());
-        return std::make_unique<DenseNonDecomposableCompleteBinnedRuleEvaluation<PartialIndexVector>>(
+        return std::make_unique<DenseNonDecomposableCompleteBinnedRuleEvaluation<
+          DenseNonDecomposableStatisticVector<float64>, PartialIndexVector>>(
           indexVector, maxBins, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr), blas_,
           lapack_);
     }
