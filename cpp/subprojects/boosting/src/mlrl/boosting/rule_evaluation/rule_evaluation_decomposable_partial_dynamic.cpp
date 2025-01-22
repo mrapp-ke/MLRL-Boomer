@@ -56,22 +56,21 @@ namespace boosting {
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                const std::pair<typename StatisticVector::value_type::statistic_type,
-                                typename StatisticVector::value_type::statistic_type>
+                const std::pair<typename StatisticVector::statistic_type, typename StatisticVector::statistic_type>
                   pair =
                     getMinAndMaxScore(statisticIterator, numElements, l1RegularizationWeight_, l2RegularizationWeight_);
-                typename StatisticVector::value_type::statistic_type minAbsScore = pair.first;
-                typename StatisticVector::value_type::statistic_type threshold =
+                typename StatisticVector::statistic_type minAbsScore = pair.first;
+                typename StatisticVector::statistic_type threshold =
                   calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
                 DenseScoreVector<PartialIndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
                 typename IndexVector::const_iterator outputIndexIterator = outputIndices_.cbegin();
-                typename StatisticVector::value_type::statistic_type quality = 0;
+                typename StatisticVector::statistic_type quality = 0;
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
                     const typename StatisticVector::value_type& statistic = statisticIterator[i];
-                    typename StatisticVector::value_type::statistic_type score = calculateOutputWiseScore(
+                    typename StatisticVector::statistic_type score = calculateOutputWiseScore(
                       statistic.gradient, statistic.hessian, l1RegularizationWeight_, l2RegularizationWeight_);
 
                     if (calculateWeightedScore(score, minAbsScore, exponent_) >= threshold) {
