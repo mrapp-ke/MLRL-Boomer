@@ -306,7 +306,7 @@ namespace boosting {
                     // Copy gradients to the vector of ordinates...
                     typename DenseBinnedScoreVector<IndexVector>::bin_value_iterator binValueIterator =
                       scoreVector_.bin_values_begin();
-                    copyOrdinates(aggregatedGradients_.cbegin(), binValueIterator, numBins);
+                    copyOrdinates<float64>(aggregatedGradients_.cbegin(), binValueIterator, numBins);
                     addL1RegularizationWeight(binValueIterator, numBins, numElementsPerBin_.cbegin(),
                                               l1RegularizationWeight_);
 
