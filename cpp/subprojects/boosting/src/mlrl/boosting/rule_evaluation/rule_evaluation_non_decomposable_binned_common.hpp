@@ -316,9 +316,9 @@ namespace boosting {
                                   this->dsysvTmpArray3_.begin(), binValueIterator, numBins, this->dsysvLwork_);
 
                     // Calculate the overall quality...
-                    float64 quality = calculateOverallQuality(binValueIterator, aggregatedGradients_.begin(),
-                                                              aggregatedHessians_.begin(), this->dspmvTmpArray_.begin(),
-                                                              numBins, blas_);
+                    float64 quality = calculateOverallQuality<float64>(binValueIterator, aggregatedGradients_.begin(),
+                                                                       aggregatedHessians_.begin(),
+                                                                       this->dspmvTmpArray_.begin(), numBins, blas_);
 
                     // Evaluate regularization term...
                     quality += calculateRegularizationTerm(binValueIterator, numElementsPerBin_.cbegin(), numBins,
