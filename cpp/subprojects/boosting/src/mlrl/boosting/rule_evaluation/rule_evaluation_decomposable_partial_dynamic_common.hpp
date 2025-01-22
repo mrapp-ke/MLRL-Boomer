@@ -4,9 +4,9 @@
 #pragma once
 
 #include "mlrl/boosting/data/vector_statistic_decomposable_dense.hpp"
+#include "mlrl/common/util/iterators.hpp"
 #include "rule_evaluation_decomposable_common.hpp"
 
-#include <iterator>
 #include <utility>
 
 namespace boosting {
@@ -22,19 +22,19 @@ namespace boosting {
      * @return                          A `std::pair` that stores the minimum and maximum absolute score
      */
     template<typename StatisticIterator>
-    static inline std::pair<typename std::iterator_traits<StatisticIterator>::value_type::statistic_type,
-                            typename std::iterator_traits<StatisticIterator>::value_type::statistic_type>
+    static inline std::pair<typename util::iterator_value<StatisticIterator>::statistic_type,
+                            typename util::iterator_value<StatisticIterator>::statistic_type>
       getMinAndMaxScore(StatisticIterator& statisticIterator, uint32 numOutputs, float32 l1RegularizationWeight,
                         float32 l2RegularizationWeight) {
-        const typename std::iterator_traits<StatisticIterator>::value_type& firstStatistic = statisticIterator[0];
-        typename std::iterator_traits<StatisticIterator>::value_type::statistic_type maxAbsScore =
+        const typename util::iterator_value<StatisticIterator>& firstStatistic = statisticIterator[0];
+        typename util::iterator_value<StatisticIterator>::statistic_type maxAbsScore =
           std::abs(calculateOutputWiseScore(firstStatistic.gradient, firstStatistic.hessian, l1RegularizationWeight,
                                             l2RegularizationWeight));
-        typename std::iterator_traits<StatisticIterator>::value_type::statistic_type minAbsScore = maxAbsScore;
+        typename util::iterator_value<StatisticIterator>::statistic_type minAbsScore = maxAbsScore;
 
         for (uint32 i = 1; i < numOutputs; i++) {
-            const typename std::iterator_traits<StatisticIterator>::value_type& statistic = statisticIterator[i];
-            typename std::iterator_traits<StatisticIterator>::value_type::statistic_type absScore =
+            const typename util::iterator_value<StatisticIterator>& statistic = statisticIterator[i];
+            typename util::iterator_value<StatisticIterator>::statistic_type absScore =
               std::abs(calculateOutputWiseScore(statistic.gradient, statistic.hessian, l1RegularizationWeight,
                                                 l2RegularizationWeight));
 

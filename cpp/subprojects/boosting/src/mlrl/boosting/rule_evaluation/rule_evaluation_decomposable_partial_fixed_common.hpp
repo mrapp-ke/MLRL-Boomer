@@ -5,10 +5,10 @@
 
 #include "mlrl/boosting/data/vector_statistic_decomposable_dense.hpp"
 #include "mlrl/common/data/vector_sparse_array.hpp"
+#include "mlrl/common/util/iterators.hpp"
 #include "rule_evaluation_decomposable_common.hpp"
 
 #include <algorithm>
-#include <iterator>
 
 namespace boosting {
 
@@ -52,7 +52,7 @@ namespace boosting {
                                             uint32 numPredictions, float32 l1RegularizationWeight,
                                             float32 l2RegularizationWeight) {
         for (uint32 i = 0; i < numOutputs; i++) {
-            const typename std::iterator_traits<StatisticIterator>::value_type& statistic = statisticIterator[i];
+            const typename util::iterator_value<StatisticIterator>& statistic = statisticIterator[i];
             IndexedValue<float64>& entry = tmpIterator[i];
             entry.index = i;
             entry.value = calculateOutputWiseScore(statistic.gradient, statistic.hessian, l1RegularizationWeight,
