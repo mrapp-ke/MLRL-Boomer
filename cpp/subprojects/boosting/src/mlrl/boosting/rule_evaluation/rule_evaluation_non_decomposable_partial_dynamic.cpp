@@ -115,8 +115,8 @@ namespace boosting {
                                           statisticVector.hessians_begin(), this->dspmvTmpArray_.begin(), n, blas_);
 
                 // Evaluate regularization term...
-                quality +=
-                  calculateRegularizationTerm(valueIterator, n, l1RegularizationWeight_, l2RegularizationWeight_);
+                quality += calculateRegularizationTerm<float64>(valueIterator, n, l1RegularizationWeight_,
+                                                                l2RegularizationWeight_);
 
                 scoreVector_.quality = quality;
                 return scoreVector_;
