@@ -66,13 +66,13 @@ namespace boosting {
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
                 DenseScoreVector<PartialIndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
                 typename IndexVector::const_iterator outputIndexIterator = outputIndices_.cbegin();
-                float64 quality = 0;
+                typename StatisticVector::value_type::statistic_type quality = 0;
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
                     const typename StatisticVector::value_type& statistic = statisticIterator[i];
-                    float64 score = calculateOutputWiseScore(statistic.gradient, statistic.hessian,
-                                                             l1RegularizationWeight_, l2RegularizationWeight_);
+                    typename StatisticVector::value_type::statistic_type score = calculateOutputWiseScore(
+                      statistic.gradient, statistic.hessian, l1RegularizationWeight_, l2RegularizationWeight_);
 
                     if (calculateWeightedScore(score, minAbsScore, exponent_) >= threshold) {
                         indexIterator[n] = outputIndexIterator[i];
