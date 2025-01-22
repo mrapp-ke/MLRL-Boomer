@@ -48,8 +48,8 @@ namespace boosting {
 
                 for (uint32 i = 0; i < numElements; i++) {
                     const typename StatisticVector::value_type& statistic = statisticIterator[i];
-                    float64 score = calculateOutputWiseScore(statistic.gradient, statistic.hessian,
-                                                             l1RegularizationWeight, l2RegularizationWeight);
+                    typename StatisticVector::value_type::statistic_type score = calculateOutputWiseScore(
+                      statistic.gradient, statistic.hessian, l1RegularizationWeight, l2RegularizationWeight);
 
                     if (calculateWeightedScore(score, minAbsScore, exponent_) >= threshold) {
                         indexIterator[n] = labelIndexIterator[i];
