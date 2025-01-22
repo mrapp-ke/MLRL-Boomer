@@ -186,15 +186,17 @@ namespace boosting {
                 uint32 numPredictions = scoreVector_.getNumElements();
 
                 // Copy Hessians to the matrix of coefficients and add the L2 regularization weight to its diagonal...
-                copyCoefficients<float64>(statisticVector.hessians_cbegin(), this->dsysvTmpArray1_.begin(),
-                                          numPredictions);
-                addL2RegularizationWeight<float64>(this->dsysvTmpArray1_.begin(), numPredictions,
-                                                   l2RegularizationWeight_);
+                copyCoefficients<typename StatisticVector::statistic_type>(
+                  statisticVector.hessians_cbegin(), this->dsysvTmpArray1_.begin(), numPredictions);
+                addL2RegularizationWeight<typename StatisticVector::statistic_type>(
+                  this->dsysvTmpArray1_.begin(), numPredictions, l2RegularizationWeight_);
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
                 typename DenseScoreVector<IndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
-                copyOrdinates<float64>(statisticVector.gradients_cbegin(), valueIterator, numPredictions);
-                addL1RegularizationWeight<float64>(valueIterator, numPredictions, l1RegularizationWeight_);
+                copyOrdinates<typename StatisticVector::statistic_type>(statisticVector.gradients_cbegin(),
+                                                                        valueIterator, numPredictions);
+                addL1RegularizationWeight<typename StatisticVector::statistic_type>(valueIterator, numPredictions,
+                                                                                    l1RegularizationWeight_);
 
                 // Calculate the scores to be predicted for individual outputs by solving a system of linear
                 // equations...
@@ -202,13 +204,14 @@ namespace boosting {
                               this->dsysvTmpArray3_.begin(), valueIterator, numPredictions, this->dsysvLwork_);
 
                 // Calculate the overall quality...
-                float64 quality = calculateOverallQuality<float64>(valueIterator, statisticVector.gradients_begin(),
-                                                                   statisticVector.hessians_begin(),
-                                                                   this->dspmvTmpArray_.begin(), numPredictions, blas_);
+                typename StatisticVector::statistic_type quality =
+                  calculateOverallQuality<typename StatisticVector::statistic_type>(
+                    valueIterator, statisticVector.gradients_begin(), statisticVector.hessians_begin(),
+                    this->dspmvTmpArray_.begin(), numPredictions, blas_);
 
                 // Evaluate regularization term...
-                quality += calculateRegularizationTerm<float64>(valueIterator, numPredictions, l1RegularizationWeight_,
-                                                                l2RegularizationWeight_);
+                quality += calculateRegularizationTerm<typename StatisticVector::statistic_type>(
+                  valueIterator, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
 
                 scoreVector_.quality = quality;
                 return scoreVector_;
