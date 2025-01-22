@@ -109,16 +109,17 @@ namespace boosting {
     /**
      * Calculates and returns the regularization term.
      *
-     * @tparam ScoreIterator            The type of the iterator that provides access to the predicted scores
+     * @tparam StatisticType            The type of the predicted scores
      * @param scores                    An iterator that provides random access to the predicted scores
      * @param numPredictions            The number of predictions
      * @param l1RegularizationWeight    The weight of the L1 regularization term
      * @param l2RegularizationWeight    The weight of the L2 regularization term
      */
-    template<typename ScoreIterator>
-    static inline float64 calculateRegularizationTerm(ScoreIterator scores, uint32 numPredictions,
-                                                      float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
-        float64 regularizationTerm;
+    template<typename StatisticType>
+    static inline StatisticType calculateRegularizationTerm(typename View<StatisticType>::const_iterator scores,
+                                                            uint32 numPredictions, float32 l1RegularizationWeight,
+                                                            float32 l2RegularizationWeight) {
+        StatisticType regularizationTerm;
 
         if (l1RegularizationWeight > 0) {
             regularizationTerm = l1RegularizationWeight * util::l1Norm(scores, numPredictions);
@@ -206,8 +207,8 @@ namespace boosting {
                                                           this->dspmvTmpArray_.begin(), numPredictions, blas_);
 
                 // Evaluate regularization term...
-                quality += calculateRegularizationTerm(valueIterator, numPredictions, l1RegularizationWeight_,
-                                                       l2RegularizationWeight_);
+                quality += calculateRegularizationTerm<float64>(valueIterator, numPredictions, l1RegularizationWeight_,
+                                                                l2RegularizationWeight_);
 
                 scoreVector_.quality = quality;
                 return scoreVector_;
