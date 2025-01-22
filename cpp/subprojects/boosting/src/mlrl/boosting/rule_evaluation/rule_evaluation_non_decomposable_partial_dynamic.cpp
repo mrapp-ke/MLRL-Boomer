@@ -98,7 +98,7 @@ namespace boosting {
                 }
 
                 indexVector_.setNumElements(n, false);
-                addL1RegularizationWeight(valueIterator, n, l1RegularizationWeight_);
+                addL1RegularizationWeight<float64>(valueIterator, n, l1RegularizationWeight_);
 
                 // Copy Hessians to the matrix of coefficients and add the L2 regularization weight to its diagonal...
                 copyCoefficients(statisticVector.hessians_cbegin(), indexIterator, this->dsysvTmpArray1_.begin(), n);
