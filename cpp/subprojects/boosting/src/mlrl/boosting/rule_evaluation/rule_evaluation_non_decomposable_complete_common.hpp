@@ -34,12 +34,14 @@ namespace boosting {
     /**
      * Adds a L2 regularization weight to the diagonal of a matrix of coefficients.
      *
+     * @tparam StatisticType            The type of the coefficients
      * @param coefficients              An iterator, the regularization weight should be added to
      * @param numPredictions            The number of coefficients on the diagonal
      * @param l2RegularizationWeight    The L2 regularization weight to be added to the coefficients
      */
-    static inline void addL2RegularizationWeight(View<float64>::iterator coefficients, uint32 numPredictions,
-                                                 float32 l2RegularizationWeight) {
+    template<typename StatisticType>
+    static inline void addL2RegularizationWeight(typename View<StatisticType>::iterator coefficients,
+                                                 uint32 numPredictions, float32 l2RegularizationWeight) {
         if (l2RegularizationWeight > 0) {
             for (uint32 i = 0; i < numPredictions; i++) {
                 coefficients[(i * numPredictions) + i] += l2RegularizationWeight;
@@ -182,7 +184,8 @@ namespace boosting {
                 // Copy Hessians to the matrix of coefficients and add the L2 regularization weight to its diagonal...
                 copyCoefficients<float64>(statisticVector.hessians_cbegin(), this->dsysvTmpArray1_.begin(),
                                           numPredictions);
-                addL2RegularizationWeight(this->dsysvTmpArray1_.begin(), numPredictions, l2RegularizationWeight_);
+                addL2RegularizationWeight<float64>(this->dsysvTmpArray1_.begin(), numPredictions,
+                                                   l2RegularizationWeight_);
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
                 typename DenseScoreVector<IndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
