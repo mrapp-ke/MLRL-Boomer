@@ -49,7 +49,7 @@ namespace boosting {
      * Calculates and returns the quality of the prediction for a single output, taking L1 and L2 regularization into
      * account.
      *
-     * @tparam StatisticType            The type of the gradient and Hessian
+     * @tparam StatisticType            The type of the predicted score, gradient and Hessian
      * @param score                     The predicted score
      * @param gradient                  The gradient
      * @param hessian                   The Hessian
@@ -58,12 +58,13 @@ namespace boosting {
      * @return                          The quality that has been calculated
      */
     template<typename StatisticType>
-    static inline float64 calculateOutputWiseQuality(float64 score, StatisticType gradient, StatisticType hessian,
-                                                     float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
-        float64 scorePow = score * score;
-        float64 quality = (gradient * score) + (0.5 * hessian * scorePow);
-        float64 l1RegularizationTerm = l1RegularizationWeight * std::abs(score);
-        float64 l2RegularizationTerm = 0.5 * l2RegularizationWeight * scorePow;
+    static inline StatisticType calculateOutputWiseQuality(StatisticType score, StatisticType gradient,
+                                                           StatisticType hessian, float32 l1RegularizationWeight,
+                                                           float32 l2RegularizationWeight) {
+        StatisticType scorePow = score * score;
+        StatisticType quality = (gradient * score) + (0.5 * hessian * scorePow);
+        StatisticType l1RegularizationTerm = l1RegularizationWeight * std::abs(score);
+        StatisticType l2RegularizationTerm = 0.5 * l2RegularizationWeight * scorePow;
         return quality + l1RegularizationTerm + l2RegularizationTerm;
     }
 
