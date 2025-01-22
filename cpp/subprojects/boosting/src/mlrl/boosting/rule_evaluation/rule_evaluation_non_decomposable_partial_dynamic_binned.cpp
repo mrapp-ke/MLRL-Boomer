@@ -24,9 +24,9 @@ namespace boosting {
 
             const std::unique_ptr<PartialIndexVector> indexVectorPtr_;
 
-            const float64 threshold_;
+            const float32 threshold_;
 
-            const float64 exponent_;
+            const float32 exponent_;
 
         protected:
 
@@ -91,7 +91,7 @@ namespace boosting {
                 : AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector>(
                     *indexVectorPtr, true, maxBins, l1RegularizationWeight, l2RegularizationWeight,
                     std::move(binningPtr), blas, lapack),
-                  labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)), threshold_(1.0 - threshold),
+                  labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)), threshold_(1.0f - threshold),
                   exponent_(exponent) {}
     };
 
