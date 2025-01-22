@@ -88,8 +88,8 @@ namespace boosting {
                 addL1RegularizationWeight<float64>(valueIterator, numPredictions, l1RegularizationWeight_);
 
                 // Copy Hessians to the matrix of coefficients and add the L2 regularization weight to its diagonal...
-                copyCoefficients(statisticVector.hessians_cbegin(), indexIterator, this->dsysvTmpArray1_.begin(),
-                                 numPredictions);
+                copyCoefficients<float64, PartialIndexVector::iterator>(
+                  statisticVector.hessians_cbegin(), indexIterator, this->dsysvTmpArray1_.begin(), numPredictions);
                 addL2RegularizationWeight<float64>(this->dsysvTmpArray1_.begin(), numPredictions,
                                                    l2RegularizationWeight_);
 
