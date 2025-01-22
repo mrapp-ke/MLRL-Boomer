@@ -25,12 +25,12 @@ namespace boosting {
             /**
              * A pointer to a temporary array that is used for executing the LAPACK routine DSPMV.
              */
-            Array<float64> dspmvTmpArray_;
+            Array<typename StatisticVector::statistic_type> dspmvTmpArray_;
 
             /**
              * A pointer to a temporary array that is used for executing the LAPACK routine DSYSV.
              */
-            Array<float64> dsysvTmpArray1_;
+            Array<typename StatisticVector::statistic_type> dsysvTmpArray1_;
 
             /**
              * A pointer to a second temporary array that is used for executing the LAPACK routine DSYSV.
