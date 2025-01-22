@@ -23,7 +23,7 @@ namespace boosting {
 
             const std::unique_ptr<PartialIndexVector> indexVectorPtr_;
 
-            SparseArrayVector<float64> tmpVector_;
+            SparseArrayVector<typename StatisticVector::statistic_type> tmpVector_;
 
         protected:
 
@@ -33,14 +33,15 @@ namespace boosting {
               float32 l1RegularizationWeight, float32 l2RegularizationWeight) override {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                SparseArrayVector<float64>::iterator tmpIterator = tmpVector_.begin();
+                typename SparseArrayVector<typename StatisticVector::statistic_type>::iterator tmpIterator =
+                  tmpVector_.begin();
                 sortOutputWiseScores(tmpIterator, statisticIterator, numElements, numCriteria, l1RegularizationWeight,
                                      l2RegularizationWeight);
                 PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
                 typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
-                    const IndexedValue<float64>& entry = tmpIterator[i];
+                    const IndexedValue<typename StatisticVector::statistic_type>& entry = tmpIterator[i];
                     indexIterator[i] = labelIndexIterator[entry.index];
                     criteria[i] = entry.value;
                 }
