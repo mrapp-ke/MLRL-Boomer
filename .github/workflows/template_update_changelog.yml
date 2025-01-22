@@ -43,7 +43,7 @@ jobs:
           ./build update_changelog_${{ inputs.release_branch }}
           git add .changelog-*.md
           git add CHANGELOG.md
-          git commit -m "[Bot] Update changelog."
+          git commit -m "Update changelog."
           git push
       - name: Save release version to output
         id: print-version
