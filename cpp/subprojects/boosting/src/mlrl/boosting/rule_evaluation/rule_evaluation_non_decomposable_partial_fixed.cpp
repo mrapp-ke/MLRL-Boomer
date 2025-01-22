@@ -85,7 +85,7 @@ namespace boosting {
                     valueIterator[i] = -gradientIterator[index];
                 }
 
-                addL1RegularizationWeight(valueIterator, numPredictions, l1RegularizationWeight_);
+                addL1RegularizationWeight<float64>(valueIterator, numPredictions, l1RegularizationWeight_);
 
                 // Copy Hessians to the matrix of coefficients and add the L2 regularization weight to its diagonal...
                 copyCoefficients(statisticVector.hessians_cbegin(), indexIterator, this->dsysvTmpArray1_.begin(),
