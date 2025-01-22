@@ -13,14 +13,14 @@ namespace boosting {
     /**
      * Copies Hessians from an iterator to a matrix of coefficients that may be passed to LAPACK's DSYSV routine.
      *
-     * @tparam HessianIterator  The type of the iterator that provides access to the Hessians
+     * @tparam StatisticType    The type of the Hessians
      * @param hessianIterator   An iterator that provides random access to the Hessians
      * @param coefficients      An iterator, the Hessians should be copied to
      * @param n                 The dimensionality of the matrix of coefficients
      */
-    template<typename HessianIterator>
-    static inline void copyCoefficients(HessianIterator hessianIterator, View<float64>::iterator coefficients,
-                                        uint32 n) {
+    template<typename StatisticType>
+    static inline void copyCoefficients(typename View<StatisticType>::const_iterator hessianIterator,
+                                        typename View<StatisticType>::iterator coefficients, uint32 n) {
         for (uint32 c = 0; c < n; c++) {
             uint32 offset = c * n;
 
@@ -180,7 +180,8 @@ namespace boosting {
                 uint32 numPredictions = scoreVector_.getNumElements();
 
                 // Copy Hessians to the matrix of coefficients and add the L2 regularization weight to its diagonal...
-                copyCoefficients(statisticVector.hessians_cbegin(), this->dsysvTmpArray1_.begin(), numPredictions);
+                copyCoefficients<float64>(statisticVector.hessians_cbegin(), this->dsysvTmpArray1_.begin(),
+                                          numPredictions);
                 addL2RegularizationWeight(this->dsysvTmpArray1_.begin(), numPredictions, l2RegularizationWeight_);
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
