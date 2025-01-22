@@ -124,13 +124,16 @@ namespace boosting {
     /**
      * Adds a L2 regularization weight to the diagonal of a matrix of coefficients.
      *
+     * @tparam StatisticType            The type of the coefficients
      * @param coefficients              An iterator, the regularization weight should be added to
      * @param numPredictions            The number of coefficients on the diagonal
      * @param weights                   An iterator to the weight of each coefficient
      * @param l2RegularizationWeight    The L2 regularization weight to be added to the coefficients
      */
-    static inline void addL2RegularizationWeight(View<float64>::iterator coefficients, uint32 numPredictions,
-                                                 View<uint32>::const_iterator weights, float32 l2RegularizationWeight) {
+    template<typename StatisticType>
+    static inline void addL2RegularizationWeight(typename View<StatisticType>::iterator coefficients,
+                                                 uint32 numPredictions, View<uint32>::const_iterator weights,
+                                                 float32 l2RegularizationWeight) {
         for (uint32 i = 0; i < numPredictions; i++) {
             uint32 weight = weights[i];
             coefficients[(i * numPredictions) + i] += (weight * l2RegularizationWeight);
@@ -300,8 +303,8 @@ namespace boosting {
 
                     // Copy Hessians to the matrix of coefficients and add regularization weight to its diagonal...
                     copyCoefficients<float64>(aggregatedHessians_.cbegin(), this->dsysvTmpArray1_.begin(), numBins);
-                    addL2RegularizationWeight(this->dsysvTmpArray1_.begin(), numBins, numElementsPerBin_.cbegin(),
-                                              l2RegularizationWeight_);
+                    addL2RegularizationWeight<float64>(this->dsysvTmpArray1_.begin(), numBins,
+                                                       numElementsPerBin_.cbegin(), l2RegularizationWeight_);
 
                     // Copy gradients to the vector of ordinates...
                     typename DenseBinnedScoreVector<IndexVector>::bin_value_iterator binValueIterator =
