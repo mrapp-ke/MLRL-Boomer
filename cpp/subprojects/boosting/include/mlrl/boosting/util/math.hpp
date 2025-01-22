@@ -4,8 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/types.hpp"
-
-#include <iterator>
+#include "mlrl/common/util/iterators.hpp"
 
 namespace util {
 
@@ -29,8 +28,8 @@ namespace util {
      * @return          The L1 norm
      */
     template<typename Iterator>
-    static inline constexpr typename std::iterator_traits<Iterator>::value_type l1Norm(Iterator iterator, uint32 n) {
-        typename std::iterator_traits<Iterator>::value_type result = 0;
+    static inline constexpr typename util::iterator_value<Iterator> l1Norm(Iterator iterator, uint32 n) {
+        typename util::iterator_value<Iterator> result = 0;
 
         for (uint32 i = 0; i < n; i++) {
             result += std::abs(iterator[i]);
@@ -53,10 +52,9 @@ namespace util {
      * @return                  The L1 norm
      */
     template<typename Iterator, typename WeightIterator>
-    static inline constexpr typename std::iterator_traits<Iterator>::value_type l1Norm(Iterator iterator,
-                                                                                       WeightIterator weightIterator,
-                                                                                       uint32 n) {
-        typename std::iterator_traits<Iterator>::value_type result = 0;
+    static inline constexpr typename util::iterator_value<Iterator> l1Norm(Iterator iterator,
+                                                                           WeightIterator weightIterator, uint32 n) {
+        typename util::iterator_value<Iterator> result = 0;
 
         for (uint32 i = 0; i < n; i++) {
             result += (std::abs(iterator[i]) * weightIterator[i]);
@@ -76,11 +74,11 @@ namespace util {
      * @return          The square of the L2 norm
      */
     template<typename Iterator>
-    static inline constexpr typename std::iterator_traits<Iterator>::value_type l2NormPow(Iterator iterator, uint32 n) {
-        typename std::iterator_traits<Iterator>::value_type result = 0;
+    static inline constexpr typename util::iterator_value<Iterator> l2NormPow(Iterator iterator, uint32 n) {
+        typename util::iterator_value<Iterator> result = 0;
 
         for (uint32 i = 0; i < n; i++) {
-            typename std::iterator_traits<Iterator>::value_type value = iterator[i];
+            typename util::iterator_value<Iterator> value = iterator[i];
             result += (value * value);
         }
 
@@ -102,13 +100,12 @@ namespace util {
      * @return                  The square of the L2 norm
      */
     template<typename Iterator, typename WeightIterator>
-    static inline constexpr typename std::iterator_traits<Iterator>::value_type l2NormPow(Iterator iterator,
-                                                                                          WeightIterator weightIterator,
-                                                                                          uint32 n) {
-        typename std::iterator_traits<Iterator>::value_type result = 0;
+    static inline constexpr typename util::iterator_value<Iterator> l2NormPow(Iterator iterator,
+                                                                              WeightIterator weightIterator, uint32 n) {
+        typename util::iterator_value<Iterator> result = 0;
 
         for (uint32 i = 0; i < n; i++) {
-            typename std::iterator_traits<Iterator>::value_type value = iterator[i];
+            typename util::iterator_value<Iterator> value = iterator[i];
             result += ((value * value) * weightIterator[i]);
         }
 

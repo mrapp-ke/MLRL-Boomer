@@ -6,6 +6,7 @@
 #include "mlrl/boosting/losses/loss_decomposable.hpp"
 #include "mlrl/common/iterator/iterator_forward_sparse.hpp"
 #include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
+#include "mlrl/common/util/iterators.hpp"
 #include "mlrl/common/util/math.hpp"
 
 #include <algorithm>
@@ -18,7 +19,7 @@ namespace boosting {
                                                               GroundTruthIterator groundTruthIterator,
                                                               uint32 numOutputs, UpdateFunction updateFunction) {
         for (uint32 i = 0; i < numOutputs; i++) {
-            typename std::iterator_traits<GroundTruthIterator>::value_type groundTruth = *groundTruthIterator;
+            typename util::iterator_value<GroundTruthIterator> groundTruth = *groundTruthIterator;
             float64 predictedScore = scoreIterator[i];
             Statistic<float64>& statistic = statisticIterator[i];
             (*updateFunction)(groundTruth, predictedScore, statistic.gradient, statistic.hessian);
@@ -34,7 +35,7 @@ namespace boosting {
                                                               uint32 numOutputs, UpdateFunction updateFunction) {
         for (uint32 i = 0; i < numOutputs; i++) {
             uint32 index = indexIterator[i];
-            typename std::iterator_traits<GroundTruthIterator>::value_type groundTruth = groundTruthIterator[index];
+            typename util::iterator_value<GroundTruthIterator> groundTruth = groundTruthIterator[index];
             float64 predictedScore = scoreIterator[index];
             Statistic<float64>& statistic = statisticIterator[index];
             (*updateFunction)(groundTruth, predictedScore, statistic.gradient, statistic.hessian);
@@ -49,7 +50,7 @@ namespace boosting {
 
         for (uint32 i = 0; i < numOutputs; i++) {
             float64 predictedScore = scoreIterator[i];
-            typename std::iterator_traits<GroundTruthIterator>::value_type groundTruth = *groundTruthIterator;
+            typename util::iterator_value<GroundTruthIterator> groundTruth = *groundTruthIterator;
             float64 score = (*evaluateFunction)(groundTruth, predictedScore);
             mean = util::iterativeArithmeticMean<float64>(i + 1, score, mean);
             groundTruthIterator++;

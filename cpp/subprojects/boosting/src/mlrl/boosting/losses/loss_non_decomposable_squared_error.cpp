@@ -2,6 +2,7 @@
 
 #include "mlrl/common/iterator/iterator_forward_sparse.hpp"
 #include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
+#include "mlrl/common/util/iterators.hpp"
 #include "mlrl/common/util/math.hpp"
 
 #include <functional>
@@ -9,8 +10,7 @@
 namespace boosting {
 
     template<typename GroundTruthIterator>
-    using GroundTruthConversionFunction =
-      std::function<float32(typename std::iterator_traits<GroundTruthIterator>::value_type)>;
+    using GroundTruthConversionFunction = std::function<float32(typename util::iterator_value<GroundTruthIterator>)>;
 
     template<typename GroundTruthIterator>
     static inline void updateDecomposableStatisticsInternally(
@@ -74,7 +74,7 @@ namespace boosting {
 
         for (uint32 i = 0; i < numOutputs; i++) {
             float64 predictedScore = scoreIterator[i];
-            typename std::iterator_traits<GroundTruthIterator>::value_type groundTruth = *groundTruthIterator;
+            typename util::iterator_value<GroundTruthIterator> groundTruth = *groundTruthIterator;
             float64 expectedScore = groundTruthConversionFunction(groundTruth);
             float64 x = (predictedScore * predictedScore) + (-2 * expectedScore * predictedScore) + 1;
             gradientIterator[i] = x;  // Temporarily store `x` in the array of gradients
@@ -91,7 +91,7 @@ namespace boosting {
         // Calculate the gradients and Hessians...
         for (uint32 i = 0; i < numOutputs; i++) {
             float64 predictedScore = scoreIterator[i];
-            typename std::iterator_traits<GroundTruthIterator>::value_type groundTruth = *groundTruthIterator2;
+            typename util::iterator_value<GroundTruthIterator> groundTruth = *groundTruthIterator2;
             float64 expectedScore = groundTruthConversionFunction(groundTruth);
             float64 x = gradientIterator[i];
 
@@ -102,7 +102,7 @@ namespace boosting {
 
             for (uint32 j = 0; j < i; j++) {
                 float64 predictedScore2 = scoreIterator[j];
-                typename std::iterator_traits<GroundTruthIterator>::value_type groundTruth2 = *groundTruthIterator4;
+                typename util::iterator_value<GroundTruthIterator> groundTruth2 = *groundTruthIterator4;
                 float64 expectedScore2 = groundTruthConversionFunction(groundTruth2);
                 *hessianIterator = util::divideOrZero<float64>(
                   -(predictedScore - expectedScore) * (predictedScore2 - expectedScore2), denominatorHessian);
