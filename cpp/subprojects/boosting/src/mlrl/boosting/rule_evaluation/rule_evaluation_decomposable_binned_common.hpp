@@ -66,7 +66,7 @@ namespace boosting {
 
             Array<uint32> numElementsPerBin_;
 
-            Array<float64> criteria_;
+            Array<typename StatisticVector::value_type::statistic_type> criteria_;
 
             const float32 l1RegularizationWeight_;
 
@@ -88,10 +88,10 @@ namespace boosting {
              * @param l2RegularizationWeight    The L2 regularization weight
              * @return                          The number of output-wise criteria that have been calculated
              */
-            virtual uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector,
-                                                       View<float64>::iterator criteria, uint32 numCriteria,
-                                                       float32 l1RegularizationWeight,
-                                                       float32 l2RegularizationWeight) = 0;
+            virtual uint32 calculateOutputWiseCriteria(
+              const StatisticVector& statisticVector,
+              typename View<typename StatisticVector::value_type::statistic_type>::iterator criteria,
+              uint32 numCriteria, float32 l1RegularizationWeight, float32 l2RegularizationWeight) = 0;
 
         public:
 
@@ -177,9 +177,10 @@ namespace boosting {
         : public AbstractDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector> {
         protected:
 
-            uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector, View<float64>::iterator criteria,
-                                               uint32 numCriteria, float32 l1RegularizationWeight,
-                                               float32 l2RegularizationWeight) override {
+            uint32 calculateOutputWiseCriteria(
+              const StatisticVector& statisticVector,
+              typename View<typename StatisticVector::value_type::statistic_type>::iterator criteria,
+              uint32 numCriteria, float32 l1RegularizationWeight, float32 l2RegularizationWeight) override {
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
