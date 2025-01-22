@@ -49,14 +49,15 @@ namespace boosting {
      * Calculates and returns the threshold that should be used to decide whether a rule should predict for an output or
      * not.
      *
+     * @tparam T The type of the scores
      * @param minAbsScore   The minimum absolute score to be predicted for an output
      * @param maxAbsScore   The maximum absolute score to be predicted for an output
      * @param threshold     A threshold that affects for how many outputs the rule heads should predict
      * @param exponent      An exponent that is used to weigh the estimated predictive quality for individual outputs
      * @return              The threshold that has been calculated
      */
-    static inline float64 calculateThreshold(float64 minAbsScore, float64 maxAbsScore, float32 threshold,
-                                             float32 exponent) {
+    template<typename T>
+    static inline T calculateThreshold(T minAbsScore, T maxAbsScore, float32 threshold, float32 exponent) {
         return std::pow(maxAbsScore - minAbsScore, exponent) * threshold;
     }
 
