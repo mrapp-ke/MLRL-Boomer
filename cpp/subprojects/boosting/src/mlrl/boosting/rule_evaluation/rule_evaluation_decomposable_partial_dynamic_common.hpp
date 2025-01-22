@@ -64,12 +64,14 @@ namespace boosting {
      * Weighs and returns the score that is predicted for a particular output, depending on the minimum absolute score
      * that has been determined via the function `getMinMaxScore` and a given exponent.
      *
+     * @tparam T            The type of the score
      * @param score         The score to be predicted
      * @param minAbsScore   The minimum absolute score to be predicted for an output
      * @param exponent      An exponent that is used to weigh the estimated predictive quality for individual outputs
      * @return              The weighted score that has been calculated
      */
-    static inline float64 calculateWeightedScore(float64 score, float64 minAbsScore, float32 exponent) {
+    template<typename T>
+    static inline T calculateWeightedScore(T score, T minAbsScore, float32 exponent) {
         return std::pow(std::abs(score) - minAbsScore, exponent);
     }
 
