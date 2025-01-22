@@ -107,16 +107,19 @@ namespace boosting {
     /**
      * Adds a L1 regularization weight to a vector of ordinates.
      *
+     * @tparam StatisticType            The type of the ordinates
      * @param ordinates                 An iterator, the L1 regularization weight should be added to
      * @param numPredictions            The number of ordinates
      * @param weights                   An iterator to the weight of each ordinate
      * @param l1RegularizationWeight    The L1 regularization weight to be added to the ordinates
      */
-    static inline void addL1RegularizationWeight(View<float64>::iterator ordinates, uint32 numPredictions,
-                                                 View<uint32>::const_iterator weights, float32 l1RegularizationWeight) {
+    template<typename StatisticType>
+    static inline void addL1RegularizationWeight(typename View<StatisticType>::iterator ordinates,
+                                                 uint32 numPredictions, View<uint32>::const_iterator weights,
+                                                 float32 l1RegularizationWeight) {
         for (uint32 i = 0; i < numPredictions; i++) {
             uint32 weight = weights[i];
-            float64 gradient = ordinates[i];
+            StatisticType gradient = ordinates[i];
             ordinates[i] += (weight * getL1RegularizationWeight(gradient, l1RegularizationWeight));
         }
     }
@@ -310,8 +313,8 @@ namespace boosting {
                     typename DenseBinnedScoreVector<IndexVector>::bin_value_iterator binValueIterator =
                       scoreVector_.bin_values_begin();
                     copyOrdinates<float64>(aggregatedGradients_.cbegin(), binValueIterator, numBins);
-                    addL1RegularizationWeight(binValueIterator, numBins, numElementsPerBin_.cbegin(),
-                                              l1RegularizationWeight_);
+                    addL1RegularizationWeight<float64>(binValueIterator, numBins, numElementsPerBin_.cbegin(),
+                                                       l1RegularizationWeight_);
 
                     // Calculate the scores to be predicted for the individual labels by solving a system of linear
                     // equations...
