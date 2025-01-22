@@ -87,9 +87,7 @@ namespace boosting {
     /**
      * Calculates and returns the overall quality of predictions for several outputs.
      *
-     * @tparam ScoreIterator    The type of the iterator that provides access to the predicted scores
-     * @tparam GradientIterator The type of the iterator that provides access to the gradients
-     * @tparam HessianIterator  The type of the iterator that provides access to the Hessians
+     * @tparam StatisticType    The type of predictions, gradients and Hessians
      * @param scores            An iterator that provides random access to the predicted scores
      * @param gradients         An iterator that provides random access to the gradients
      * @param hessians          An iterator that provides random access to the Hessians
@@ -98,10 +96,12 @@ namespace boosting {
      * @param blas              A reference to an object of type `Blas` that allows to execute different BLAS routines
      * @return                  The quality that has been calculated
      */
-    template<typename ScoreIterator, typename GradientIterator, typename HessianIterator>
-    static inline float64 calculateOverallQuality(ScoreIterator scores, GradientIterator gradients,
-                                                  HessianIterator hessians, View<float64>::iterator tmpArray,
-                                                  uint32 numPredictions, const Blas& blas) {
+    template<typename StatisticType>
+    static inline StatisticType calculateOverallQuality(typename View<StatisticType>::iterator scores,
+                                                        typename View<StatisticType>::iterator gradients,
+                                                        typename View<StatisticType>::iterator hessians,
+                                                        typename View<StatisticType>::iterator tmpArray,
+                                                        uint32 numPredictions, const Blas& blas) {
         blas.dspmv(hessians, scores, tmpArray, numPredictions);
         return blas.ddot(scores, gradients, numPredictions) + (0.5 * blas.ddot(scores, tmpArray, numPredictions));
     }
@@ -202,9 +202,9 @@ namespace boosting {
                               this->dsysvTmpArray3_.begin(), valueIterator, numPredictions, this->dsysvLwork_);
 
                 // Calculate the overall quality...
-                float64 quality = calculateOverallQuality(valueIterator, statisticVector.gradients_begin(),
-                                                          statisticVector.hessians_begin(),
-                                                          this->dspmvTmpArray_.begin(), numPredictions, blas_);
+                float64 quality = calculateOverallQuality<float64>(valueIterator, statisticVector.gradients_begin(),
+                                                                   statisticVector.hessians_begin(),
+                                                                   this->dspmvTmpArray_.begin(), numPredictions, blas_);
 
                 // Evaluate regularization term...
                 quality += calculateRegularizationTerm<float64>(valueIterator, numPredictions, l1RegularizationWeight_,
