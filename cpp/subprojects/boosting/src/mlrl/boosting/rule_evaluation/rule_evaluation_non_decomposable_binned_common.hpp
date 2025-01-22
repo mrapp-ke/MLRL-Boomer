@@ -146,18 +146,19 @@ namespace boosting {
     /**
      * Calculates and returns the regularization term.
      *
-     * @tparam ScoreIterator            The type of the iterator that provides access to the predicted scores
+     * @tparam StatisticType            The type of the predicted scores
      * @param scores                    An iterator that provides random access to the predicted scores
      * @param numElementsPerBin         An iterator to the number of elements per bin
      * @param numBins                   The number of bins
      * @param l1RegularizationWeight    The weight of the L1 regularization term
      * @param l2RegularizationWeight    The weight of the L2 regularization term
      */
-    template<typename ScoreIterator>
-    static inline float64 calculateRegularizationTerm(ScoreIterator scores,
-                                                      View<uint32>::const_iterator numElementsPerBin, uint32 numBins,
-                                                      float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
-        float64 regularizationTerm;
+    template<typename StatisticType>
+    static inline StatisticType calculateRegularizationTerm(typename View<StatisticType>::const_iterator scores,
+                                                            View<uint32>::const_iterator numElementsPerBin,
+                                                            uint32 numBins, float32 l1RegularizationWeight,
+                                                            float32 l2RegularizationWeight) {
+        StatisticType regularizationTerm;
 
         if (l1RegularizationWeight > 0) {
             regularizationTerm = l1RegularizationWeight * util::l1Norm(scores, numElementsPerBin, numBins);
@@ -327,7 +328,8 @@ namespace boosting {
                                                                        this->dspmvTmpArray_.begin(), numBins, blas_);
 
                     // Evaluate regularization term...
-                    quality += calculateRegularizationTerm(binValueIterator, numElementsPerBin_.cbegin(), numBins,
+                    quality +=
+                      calculateRegularizationTerm<float64>(binValueIterator, numElementsPerBin_.cbegin(), numBins,
                                                            l1RegularizationWeight_, l2RegularizationWeight_);
 
                     scoreVector_.quality = quality;
