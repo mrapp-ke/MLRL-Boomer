@@ -299,7 +299,7 @@ namespace boosting {
                                                   aggregatedGradients_.begin(), aggregatedHessians_.begin(), maxBins_);
 
                     // Copy Hessians to the matrix of coefficients and add regularization weight to its diagonal...
-                    copyCoefficients(aggregatedHessians_.cbegin(), this->dsysvTmpArray1_.begin(), numBins);
+                    copyCoefficients<float64>(aggregatedHessians_.cbegin(), this->dsysvTmpArray1_.begin(), numBins);
                     addL2RegularizationWeight(this->dsysvTmpArray1_.begin(), numBins, numElementsPerBin_.cbegin(),
                                               l2RegularizationWeight_);
 
