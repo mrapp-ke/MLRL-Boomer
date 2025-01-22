@@ -68,15 +68,17 @@ namespace boosting {
     /**
      * Adds a L1 regularization weight to a vector of ordinates.
      *
+     * @tparam StatisticType            The type of the ordinates
      * @param ordinates                 An iterator, the L1 regularization weight should be added to
      * @param numPredictions            The number of ordinates
      * @param l1RegularizationWeight    The L1 regularization weight to be added to the ordinates
      **/
-    static inline void addL1RegularizationWeight(View<float64>::iterator ordinates, uint32 numPredictions,
-                                                 float32 l1RegularizationWeight) {
+    template<typename StatisticType>
+    static inline void addL1RegularizationWeight(typename View<StatisticType>::iterator ordinates,
+                                                 uint32 numPredictions, float32 l1RegularizationWeight) {
         if (l1RegularizationWeight > 0) {
             for (uint32 i = 0; i < numPredictions; i++) {
-                float64 gradient = ordinates[i];
+                StatisticType gradient = ordinates[i];
                 ordinates[i] += getL1RegularizationWeight(gradient, l1RegularizationWeight);
             }
         }
@@ -191,7 +193,7 @@ namespace boosting {
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
                 typename DenseScoreVector<IndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
                 copyOrdinates<float64>(statisticVector.gradients_cbegin(), valueIterator, numPredictions);
-                addL1RegularizationWeight(valueIterator, numPredictions, l1RegularizationWeight_);
+                addL1RegularizationWeight<float64>(valueIterator, numPredictions, l1RegularizationWeight_);
 
                 // Calculate the scores to be predicted for individual outputs by solving a system of linear
                 // equations...
