@@ -46,14 +46,14 @@ namespace boosting {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 const typename StatisticVector::value_type& firstStatistic = statisticIterator[0];
-                float64 bestScore = calculateOutputWiseScore(firstStatistic.gradient, firstStatistic.hessian,
-                                                             l1RegularizationWeight_, l2RegularizationWeight_);
+                typename StatisticVector::value_type::statistic_type bestScore = calculateOutputWiseScore(
+                  firstStatistic.gradient, firstStatistic.hessian, l1RegularizationWeight_, l2RegularizationWeight_);
                 uint32 bestIndex = 0;
 
                 for (uint32 i = 1; i < numElements; i++) {
                     const typename StatisticVector::value_type& statistic = statisticIterator[i];
-                    float64 score = calculateOutputWiseScore(statistic.gradient, statistic.hessian,
-                                                             l1RegularizationWeight_, l2RegularizationWeight_);
+                    typename StatisticVector::value_type::statistic_type score = calculateOutputWiseScore(
+                      statistic.gradient, statistic.hessian, l1RegularizationWeight_, l2RegularizationWeight_);
 
                     if (std::abs(score) > std::abs(bestScore)) {
                         bestIndex = i;
