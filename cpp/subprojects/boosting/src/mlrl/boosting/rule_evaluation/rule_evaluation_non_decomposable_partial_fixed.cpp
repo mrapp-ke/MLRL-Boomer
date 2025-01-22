@@ -104,8 +104,8 @@ namespace boosting {
                                                           this->dspmvTmpArray_.begin(), numPredictions, blas_);
 
                 // Evaluate regularization term...
-                quality += calculateRegularizationTerm(valueIterator, numPredictions, l1RegularizationWeight_,
-                                                       l2RegularizationWeight_);
+                quality += calculateRegularizationTerm<float64>(valueIterator, numPredictions, l1RegularizationWeight_,
+                                                                l2RegularizationWeight_);
 
                 scoreVector_.quality = quality;
                 return scoreVector_;
