@@ -66,7 +66,7 @@ namespace boosting {
 
             Array<uint32> numElementsPerBin_;
 
-            Array<typename StatisticVector::value_type::statistic_type> criteria_;
+            Array<typename StatisticVector::statistic_type> criteria_;
 
             const float32 l1RegularizationWeight_;
 
@@ -90,8 +90,8 @@ namespace boosting {
              */
             virtual uint32 calculateOutputWiseCriteria(
               const StatisticVector& statisticVector,
-              typename View<typename StatisticVector::value_type::statistic_type>::iterator criteria,
-              uint32 numCriteria, float32 l1RegularizationWeight, float32 l2RegularizationWeight) = 0;
+              typename View<typename StatisticVector::statistic_type>::iterator criteria, uint32 numCriteria,
+              float32 l1RegularizationWeight, float32 l2RegularizationWeight) = 0;
 
         public:
 
@@ -179,8 +179,8 @@ namespace boosting {
 
             uint32 calculateOutputWiseCriteria(
               const StatisticVector& statisticVector,
-              typename View<typename StatisticVector::value_type::statistic_type>::iterator criteria,
-              uint32 numCriteria, float32 l1RegularizationWeight, float32 l2RegularizationWeight) override {
+              typename View<typename StatisticVector::statistic_type>::iterator criteria, uint32 numCriteria,
+              float32 l1RegularizationWeight, float32 l2RegularizationWeight) override {
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
