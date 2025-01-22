@@ -52,13 +52,14 @@ namespace boosting {
     /**
      * Copies gradients from an iterator to a vector of ordinates that may be passed to LAPACK's DSYSV routine.
      *
-     * @tparam GradientIterator The type of the iterator that provides access to the gradients
+     * @tparam StatisticType    The type of the gradients
      * @param gradientIterator  An iterator that provides random access to the gradients
      * @param ordinates         An iterator, the gradients should be copied to
      * @param n                 The number of gradients
      */
-    template<typename GradientIterator>
-    static inline void copyOrdinates(GradientIterator gradientIterator, View<float64>::iterator ordinates, uint32 n) {
+    template<typename StatisticType>
+    static inline void copyOrdinates(typename View<StatisticType>::const_iterator gradientIterator,
+                                     typename View<StatisticType>::iterator ordinates, uint32 n) {
         for (uint32 i = 0; i < n; i++) {
             ordinates[i] = -gradientIterator[i];
         }
@@ -189,7 +190,7 @@ namespace boosting {
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
                 typename DenseScoreVector<IndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
-                copyOrdinates(statisticVector.gradients_cbegin(), valueIterator, numPredictions);
+                copyOrdinates<float64>(statisticVector.gradients_cbegin(), valueIterator, numPredictions);
                 addL1RegularizationWeight(valueIterator, numPredictions, l1RegularizationWeight_);
 
                 // Calculate the scores to be predicted for individual outputs by solving a system of linear
