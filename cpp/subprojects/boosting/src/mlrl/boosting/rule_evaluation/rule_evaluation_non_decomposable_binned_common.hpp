@@ -347,22 +347,20 @@ namespace boosting {
      * and Hessians that are stored by a `DenseNonDecomposableStatisticVector` using L1 and L2 regularization. The
      * labels are assigned to bins based on the gradients and Hessians.
      *
-     * @tparam IndexVector The type of the vector that provides access to the labels for which predictions should be
-     *                     calculated
+     * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
+     * @tparam IndexVector      The type of the vector that provides access to the labels for which predictions should
+     *                          be calculated
      */
-    template<typename IndexVector>
+    template<typename StatisticVector, typename IndexVector>
     class DenseNonDecomposableCompleteBinnedRuleEvaluation final
-        : public AbstractNonDecomposableBinnedRuleEvaluation<DenseNonDecomposableStatisticVector<float64>,
-                                                             IndexVector> {
+        : public AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector> {
         protected:
 
-            uint32 calculateOutputWiseCriteria(const DenseNonDecomposableStatisticVector<float64>& statisticVector,
-                                               View<float64>::iterator criteria, uint32 numCriteria,
-                                               float32 l1RegularizationWeight,
+            uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector, View<float64>::iterator criteria,
+                                               uint32 numCriteria, float32 l1RegularizationWeight,
                                                float32 l2RegularizationWeight) override {
-                DenseNonDecomposableStatisticVector<float64>::gradient_const_iterator gradientIterator =
-                  statisticVector.gradients_cbegin();
-                DenseNonDecomposableStatisticVector<float64>::hessian_diagonal_const_iterator hessianIterator =
+                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
+                typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
@@ -395,8 +393,7 @@ namespace boosting {
                                                              float32 l2RegularizationWeight,
                                                              std::unique_ptr<ILabelBinning> binningPtr,
                                                              const Blas& blas, const Lapack& lapack)
-                : AbstractNonDecomposableBinnedRuleEvaluation<DenseNonDecomposableStatisticVector<float64>,
-                                                              IndexVector>(
+                : AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector>(
                     labelIndices, true, maxBins, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr),
                     blas, lapack) {}
     };
