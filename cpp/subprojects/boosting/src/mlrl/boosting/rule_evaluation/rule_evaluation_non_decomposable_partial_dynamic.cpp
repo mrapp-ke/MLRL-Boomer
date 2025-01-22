@@ -26,9 +26,9 @@ namespace boosting {
 
             DenseScoreVector<PartialIndexVector> scoreVector_;
 
-            const float64 threshold_;
+            const float32 threshold_;
 
-            const float64 exponent_;
+            const float32 exponent_;
 
             const float32 l1RegularizationWeight_;
 
@@ -63,7 +63,7 @@ namespace boosting {
                 : AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector>(outputIndices.getNumElements(),
                                                                                       lapack),
                   outputIndices_(outputIndices), indexVector_(outputIndices.getNumElements()),
-                  scoreVector_(indexVector_, true), threshold_(1.0 - threshold), exponent_(exponent),
+                  scoreVector_(indexVector_, true), threshold_(1.0f - threshold), exponent_(exponent),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
                   blas_(blas), lapack_(lapack) {}
 
