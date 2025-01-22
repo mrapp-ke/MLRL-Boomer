@@ -110,9 +110,9 @@ namespace boosting {
                               this->dsysvTmpArray3_.begin(), valueIterator, n, this->dsysvLwork_);
 
                 // Calculate the overall quality...
-                float64 quality =
-                  calculateOverallQuality(valueIterator, statisticVector.gradients_begin(),
-                                          statisticVector.hessians_begin(), this->dspmvTmpArray_.begin(), n, blas_);
+                float64 quality = calculateOverallQuality<float64>(valueIterator, statisticVector.gradients_begin(),
+                                                                   statisticVector.hessians_begin(),
+                                                                   this->dspmvTmpArray_.begin(), n, blas_);
 
                 // Evaluate regularization term...
                 quality += calculateRegularizationTerm<float64>(valueIterator, n, l1RegularizationWeight_,
