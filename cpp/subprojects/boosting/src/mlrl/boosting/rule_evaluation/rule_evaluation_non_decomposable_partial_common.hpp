@@ -8,7 +8,7 @@
 namespace boosting {
 
     /**
-     * Copies Hessians from an iterator to a matrix of coefficients that may be passed to LAPACK's DSYSV routine. Only
+     * Copies Hessians from an iterator to a matrix of coefficients that may be passed to LAPACK's SYSV routine. Only
      * the Hessians that correspond to the indices in a second iterator are taken into account.
      *
      * @tparam StatisticType  The type of the iterator that provides access to the Hessians
