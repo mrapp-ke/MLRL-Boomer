@@ -6,23 +6,6 @@ tocdepth: 2
 
 # Release Notes
 
-## Version 0.11.2 (Jan. 22nd, 2025)
-
-A bugfix release that comes with the following changes.
-
-### Fixes
-
-- When building macOS packages, we do now manually compile OpenMP to ensure that the bundled library matches the target platform.
-
-### Quality-of-Life Improvements
-
-- The build system now uses a lightweight custom implementation instead of [SCons](https://scons.org/) and is better modularized to avoid unnecessary runs of Continuous Integration jobs when only certain parts of it are modified.
-- Releases are now automated via Continuous Integration, including the update of the project's changelog.
-- The presentation of algorithmic parameters in the documentation has been improved.
-- Continuous Integration is now used to automatically update outdated GitHub Actions, outdated Python dependencies, and the Doxygen configuration on a regular basis.
-- Continuous Integration is now used to check the documentation for broken links and spelling mistakes.
-- The syntax of TOML files is now validated by applying [taplo](https://github.com/tamasfe/taplo) via Continuous Integration.
-
 ## Version 0.11.1 (Sep. 24th, 2024)
 
 A bugfix release that fixes the following issues:
