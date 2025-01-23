@@ -32,9 +32,9 @@ namespace boosting {
 
             const std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr_;
 
-            const Blas& blas_;
+            const BlasFactory& blasFactory_;
 
-            const Lapack& lapack_;
+            const LapackFactory& lapackFactory_;
 
         public:
 
@@ -54,15 +54,15 @@ namespace boosting {
              *                                  scores to be predicted by rules
              * @param labelBinningFactoryPtr    An unique pointer to an object of type `ILabelBinningFactory` that
              *                                  allows to create the implementation to be used to assign labels to bins
-             * @param blas                      A reference to an object of type `Blas` that allows to execute BLAS
-             *                                  routines
-             * @param lapack                    An reference to an object of type `Lapack` that allows to execute BLAS
-             *                                  routines
+             * @param blasFactory               A reference to an object of type `BlasFactory` that allows to create
+             *                                  objects for executing BLAS routines
+             * @param lapackFactory             An reference to an object of type `LapackFactory` that allows to create
+             *                                  objects for executing BLAS routines
              */
             NonDecomposableFixedPartialBinnedRuleEvaluationFactory(
               float32 labelRatio, uint32 minLabels, uint32 maxLabels, float32 l1RegularizationWeight,
               float32 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr,
-              const Blas& blas, const Lapack& lapack);
+              const BlasFactory& blasFactory, const LapackFactory& lapackFactory);
 
             std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>> create(
               const DenseNonDecomposableStatisticVector<float64>& statisticVector,
