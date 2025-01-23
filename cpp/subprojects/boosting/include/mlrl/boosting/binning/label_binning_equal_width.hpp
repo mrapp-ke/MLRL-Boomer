@@ -125,17 +125,17 @@ namespace boosting {
               createDecomposableDynamicPartialRuleEvaluationFactory(float32 threshold, float32 exponent) const override;
 
             std::unique_ptr<INonDecomposableRuleEvaluationFactory> createNonDecomposableCompleteRuleEvaluationFactory(
-              const Blas& blas, const Lapack& lapack) const override;
+              const BlasFactory& blasFactory, const LapackFactory& lapackFactory) const override;
 
             std::unique_ptr<INonDecomposableRuleEvaluationFactory>
               createNonDecomposableFixedPartialRuleEvaluationFactory(float32 outputRatio, uint32 minOutputs,
-                                                                     uint32 maxOutputs, const Blas& blas,
-                                                                     const Lapack& lapack) const override;
+                                                                     uint32 maxOutputs, const BlasFactory& blasFactory,
+                                                                     const LapackFactory& lapackFactory) const override;
 
             std::unique_ptr<INonDecomposableRuleEvaluationFactory>
-              createNonDecomposableDynamicPartialRuleEvaluationFactory(float32 threshold, float32 exponent,
-                                                                       const Blas& blas,
-                                                                       const Lapack& lapack) const override;
+              createNonDecomposableDynamicPartialRuleEvaluationFactory(
+                float32 threshold, float32 exponent, const BlasFactory& blasFactory,
+                const LapackFactory& lapackFactory) const override;
     };
 
 }

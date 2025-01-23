@@ -48,7 +48,8 @@ namespace boosting {
     std::unique_ptr<IClassificationStatisticsProviderFactory>
       CompleteHeadConfig::createClassificationStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-        const INonDecomposableClassificationLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
+        const INonDecomposableClassificationLossConfig& lossConfig, const BlasFactory& blasFactory,
+        const LapackFactory& lapackFactory) const {
         MultiThreadingSettings multiThreadingSettings =
           multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs());
         std::unique_ptr<INonDecomposableClassificationLossFactory> lossFactoryPtr =
@@ -56,11 +57,11 @@ namespace boosting {
         std::unique_ptr<IClassificationEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
           lossConfig.createClassificationEvaluationMeasureFactory();
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
-          labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
+          labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blasFactory, lapackFactory);
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-          labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
+          labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blasFactory, lapackFactory);
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-          labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
+          labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blasFactory, lapackFactory);
         return std::make_unique<DenseNonDecomposableClassificationStatisticsProviderFactory>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr),
@@ -92,7 +93,8 @@ namespace boosting {
 
     std::unique_ptr<IRegressionStatisticsProviderFactory> CompleteHeadConfig::createRegressionStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
-      const INonDecomposableRegressionLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
+      const INonDecomposableRegressionLossConfig& lossConfig, const BlasFactory& blasFactory,
+      const LapackFactory& lapackFactory) const {
         MultiThreadingSettings multiThreadingSettings =
           multiThreadingConfig_.get().getSettings(featureMatrix, regressionMatrix.getNumOutputs());
         std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr =
@@ -100,11 +102,11 @@ namespace boosting {
         std::unique_ptr<IRegressionEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
           lossConfig.createRegressionEvaluationMeasureFactory();
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
-          labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
+          labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blasFactory, lapackFactory);
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-          labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
+          labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blasFactory, lapackFactory);
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-          labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
+          labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blasFactory, lapackFactory);
         return std::make_unique<DenseNonDecomposableRegressionStatisticsProviderFactory>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr),

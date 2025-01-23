@@ -30,9 +30,9 @@ namespace boosting {
 
             const float32 l2RegularizationWeight_;
 
-            const Blas& blas_;
+            const std::unique_ptr<Blas<typename StatisticVector::statistic_type>> blasPtr_;
 
-            const Lapack& lapack_;
+            const std::unique_ptr<Lapack<typename StatisticVector::statistic_type>> lapackPtr_;
 
             SparseArrayVector<float64> tmpVector_;
 
@@ -46,19 +46,20 @@ namespace boosting {
              *                                  scores to be predicted by rules
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
-             * @param blas                      A reference to an object of type `Blas` that allows to execute BLAS
-             *                                  routines
-             * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
-             *                                  routines
+             * @param blasPtr                   An unique pointer to an object of type `Blas` that allows to execute
+             *                                  BLAS routines
+             * @param lapackPtr                 An unique pointer to an object of type `Lapack` that allows to execute
+             *                                  LAPACK routines
              */
-            DenseNonDecomposableFixedPartialRuleEvaluation(const IndexVector& outputIndices, uint32 numPredictions,
-                                                           float32 l1RegularizationWeight,
-                                                           float32 l2RegularizationWeight, const Blas& blas,
-                                                           const Lapack& lapack)
-                : AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector>(numPredictions, lapack),
+            DenseNonDecomposableFixedPartialRuleEvaluation(
+              const IndexVector& outputIndices, uint32 numPredictions, float32 l1RegularizationWeight,
+              float32 l2RegularizationWeight, std::unique_ptr<Blas<typename StatisticVector::statistic_type>> blasPtr,
+              std::unique_ptr<Lapack<typename StatisticVector::statistic_type>> lapackPtr)
+                : AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector>(numPredictions, *lapackPtr),
                   outputIndices_(outputIndices), indexVector_(numPredictions), scoreVector_(indexVector_, false),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
-                  blas_(blas), lapack_(lapack), tmpVector_(outputIndices.getNumElements()) {}
+                  blasPtr_(std::move(blasPtr)), lapackPtr_(std::move(lapackPtr)),
+                  tmpVector_(outputIndices.getNumElements()) {}
 
             /**
              * @see `IRuleEvaluation::evaluate`
@@ -89,19 +90,19 @@ namespace boosting {
 
                 // Copy Hessians to the matrix of coefficients and add the L2 regularization weight to its diagonal...
                 copyCoefficients<float64, PartialIndexVector::iterator>(
-                  statisticVector.hessians_cbegin(), indexIterator, this->dsysvTmpArray1_.begin(), numPredictions);
-                addL2RegularizationWeight<float64>(this->dsysvTmpArray1_.begin(), numPredictions,
+                  statisticVector.hessians_cbegin(), indexIterator, this->sysvTmpArray1_.begin(), numPredictions);
+                addL2RegularizationWeight<float64>(this->sysvTmpArray1_.begin(), numPredictions,
                                                    l2RegularizationWeight_);
 
                 // Calculate the scores to be predicted for individual outputs by solving a system of linear
                 // equations...
-                lapack_.dsysv(this->dsysvTmpArray1_.begin(), this->dsysvTmpArray2_.begin(),
-                              this->dsysvTmpArray3_.begin(), valueIterator, numPredictions, this->dsysvLwork_);
+                lapackPtr_->sysv(this->sysvTmpArray1_.begin(), this->sysvTmpArray2_.begin(),
+                                 this->sysvTmpArray3_.begin(), valueIterator, numPredictions, this->sysvLwork_);
 
                 // Calculate the overall quality...
-                float64 quality = calculateOverallQuality<float64>(valueIterator, statisticVector.gradients_begin(),
-                                                                   statisticVector.hessians_begin(),
-                                                                   this->dspmvTmpArray_.begin(), numPredictions, blas_);
+                float64 quality = calculateOverallQuality<float64>(
+                  valueIterator, statisticVector.gradients_begin(), statisticVector.hessians_begin(),
+                  this->spmvTmpArray_.begin(), numPredictions, *blasPtr_);
 
                 // Evaluate regularization term...
                 quality += calculateRegularizationTerm<float64>(valueIterator, numPredictions, l1RegularizationWeight_,
@@ -114,10 +115,10 @@ namespace boosting {
 
     NonDecomposableFixedPartialRuleEvaluationFactory::NonDecomposableFixedPartialRuleEvaluationFactory(
       float32 outputRatio, uint32 minOutputs, uint32 maxOutputs, float32 l1RegularizationWeight,
-      float32 l2RegularizationWeight, const Blas& blas, const Lapack& lapack)
+      float32 l2RegularizationWeight, const BlasFactory& blasFactory, const LapackFactory& lapackFactory)
         : outputRatio_(outputRatio), minOutputs_(minOutputs), maxOutputs_(maxOutputs),
-          l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight), blas_(blas),
-          lapack_(lapack) {}
+          l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
+          blasFactory_(blasFactory), lapackFactory_(lapackFactory) {}
 
     std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
       NonDecomposableFixedPartialRuleEvaluationFactory::create(
@@ -127,7 +128,8 @@ namespace boosting {
           util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
         return std::make_unique<DenseNonDecomposableFixedPartialRuleEvaluation<
           DenseNonDecomposableStatisticVector<float64>, CompleteIndexVector>>(
-          indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
+          indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create64Bit(),
+          lapackFactory_.create64Bit());
     }
 
     std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
@@ -136,7 +138,8 @@ namespace boosting {
         const PartialIndexVector& indexVector) const {
         return std::make_unique<
           DenseNonDecomposableCompleteRuleEvaluation<DenseNonDecomposableStatisticVector<float64>, PartialIndexVector>>(
-          indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create64Bit(),
+          lapackFactory_.create64Bit());
     }
 
 }

@@ -62,15 +62,15 @@ namespace boosting {
 
     std::unique_ptr<IClassificationStatisticsProviderFactory>
       DecomposableSquaredErrorLossConfig::createClassificationStatisticsProviderFactory(
-        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-        const Lapack& lapack, bool preferSparseStatistics) const {
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const BlasFactory& blasFactory,
+        const LapackFactory& lapackFactory, bool preferSparseStatistics) const {
         return headConfig_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
     }
 
     std::unique_ptr<IRegressionStatisticsProviderFactory>
       DecomposableSquaredErrorLossConfig::createRegressionStatisticsProviderFactory(
-        const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
-        const Lapack& lapack, bool preferSparseStatistics) const {
+        const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+        const BlasFactory& blasFactory, const LapackFactory& lapackFactory, bool preferSparseStatistics) const {
         return headConfig_.get().createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, *this);
     }
 
