@@ -66,7 +66,8 @@ namespace boosting {
     std::unique_ptr<IClassificationStatisticsProviderFactory>
       SingleOutputHeadConfig::createClassificationStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-        const INonDecomposableClassificationLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
+        const INonDecomposableClassificationLossConfig& lossConfig, const BlasFactory& blasFactory,
+        const LapackFactory& lapackFactory) const {
         float32 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
         MultiThreadingSettings multiThreadingSettings =
@@ -76,7 +77,7 @@ namespace boosting {
         std::unique_ptr<IClassificationEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
           lossConfig.createNonDecomposableClassificationLossFactory();
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
-          labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
+          labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blasFactory, lapackFactory);
         std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
           std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(l1RegularizationWeight,
                                                                           l2RegularizationWeight);
@@ -118,7 +119,8 @@ namespace boosting {
     std::unique_ptr<IRegressionStatisticsProviderFactory>
       SingleOutputHeadConfig::createRegressionStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
-        const INonDecomposableRegressionLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
+        const INonDecomposableRegressionLossConfig& lossConfig, const BlasFactory& blasFactory,
+        const LapackFactory& lapackFactory) const {
         float32 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
         MultiThreadingSettings multiThreadingSettings =
@@ -128,7 +130,7 @@ namespace boosting {
         std::unique_ptr<IRegressionEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
           lossConfig.createNonDecomposableRegressionLossFactory();
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
-          labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
+          labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blasFactory, lapackFactory);
         std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
           std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(l1RegularizationWeight,
                                                                           l2RegularizationWeight);

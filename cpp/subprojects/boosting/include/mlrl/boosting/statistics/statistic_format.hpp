@@ -70,15 +70,18 @@ namespace boosting {
              *                      feature values of the training examples
              * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access
              *                      to the labels of the training examples
-             * @param blas          A reference to an object of type `Blas` that allows to execute BLAS routines
-             * @param lapack        A reference to an object of type `Lapack` that allows to execute LAPACK routines
+             * @param blasFactory   A reference to an object of type `BlasFactory` that allows to create objects for
+             *                      executing BLAS routines
+             * @param lapackFactory A reference to an object of type `LapackFactory` that allows to create object for
+             *                      executing LAPACK routines
              * @return              An unique pointer to an object of type `IClassificationStatisticsProviderFactory`
              *                      that has been created
              */
             virtual std::unique_ptr<IClassificationStatisticsProviderFactory>
               createClassificationStatisticsProviderFactory(const IFeatureMatrix& featureMatrix,
-                                                            const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-                                                            const Lapack& lapack) const = 0;
+                                                            const IRowWiseLabelMatrix& labelMatrix,
+                                                            const BlasFactory& blasFactory,
+                                                            const LapackFactory& lapackFactory) const = 0;
     };
 
     /**
@@ -98,14 +101,16 @@ namespace boosting {
              *                          feature values of the training examples
              * @param regressionMatrix  A reference to an object of type `IRowWiseRegressionMatrix` that provides
              *                          row-wise access to the regression scores of the training examples
-             * @param blas              A reference to an object of type `Blas` that allows to execute BLAS routines
-             * @param lapack            A reference to an object of type `Lapack` that allows to execute LAPACK routines
+             * @param blasFactory       A reference to an object of type `BlasFactory` that allows to create objects for
+             *                          executing BLAS routines
+             * @param lapackFactory     A reference to an object of type `LapackFactory` that allows to create objects
+             *                          for executing LAPACK routines
              * @return                  An unique pointer to an object of type `IRegressionStatisticsProviderFactory`
              *                          that has been created
              */
             virtual std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
-              const Lapack& lapack) const = 0;
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+              const BlasFactory& blasFactory, const LapackFactory& lapackFactory) const = 0;
     };
 
 };

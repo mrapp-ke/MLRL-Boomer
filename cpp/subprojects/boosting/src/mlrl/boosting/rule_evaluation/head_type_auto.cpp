@@ -40,11 +40,12 @@ namespace boosting {
     std::unique_ptr<IClassificationStatisticsProviderFactory>
       AutomaticHeadConfig::createClassificationStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-        const INonDecomposableClassificationLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
+        const INonDecomposableClassificationLossConfig& lossConfig, const BlasFactory& blasFactory,
+        const LapackFactory& lapackFactory) const {
         CompleteHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, l1RegularizationConfig_,
                                       l2RegularizationConfig_);
-        return headConfig.createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig, blas,
-                                                                        lapack);
+        return headConfig.createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig,
+                                                                        blasFactory, lapackFactory);
     }
 
     std::unique_ptr<IRegressionStatisticsProviderFactory>
@@ -59,11 +60,12 @@ namespace boosting {
     std::unique_ptr<IRegressionStatisticsProviderFactory>
       AutomaticHeadConfig::createRegressionStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
-        const INonDecomposableRegressionLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
+        const INonDecomposableRegressionLossConfig& lossConfig, const BlasFactory& blasFactory,
+        const LapackFactory& lapackFactory) const {
         CompleteHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, l1RegularizationConfig_,
                                       l2RegularizationConfig_);
-        return headConfig.createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, lossConfig, blas,
-                                                                    lapack);
+        return headConfig.createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, lossConfig,
+                                                                    blasFactory, lapackFactory);
     }
 
     bool AutomaticHeadConfig::isPartial() const {

@@ -65,31 +65,31 @@ namespace boosting {
              *                                  scores to be predicted by rules
              * @param binningPtr                An unique pointer to an object of type `ILabelBinning` that should be
              *                                  used to assign labels to bins
-             * @param blas                      A reference to an object of type `Blas` that allows to execute BLAS
-             *                                  routines
-             * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
-             *                                  routines
+             * @param blasPtr                   An unique pointer to an object of type `Blas` that allows to execute
+             *                                  BLAS routines
+             * @param lapackPtr                 An unique pointer to an object of type `Lapack` that allows to execute
+             *                                  LAPACK routines
              */
-            DenseNonDecomposableFixedPartialBinnedRuleEvaluation(const IndexVector& labelIndices, uint32 maxBins,
-                                                                 std::unique_ptr<PartialIndexVector> indexVectorPtr,
-                                                                 float32 l1RegularizationWeight,
-                                                                 float32 l2RegularizationWeight,
-                                                                 std::unique_ptr<ILabelBinning> binningPtr,
-                                                                 const Blas& blas, const Lapack& lapack)
+            DenseNonDecomposableFixedPartialBinnedRuleEvaluation(
+              const IndexVector& labelIndices, uint32 maxBins, std::unique_ptr<PartialIndexVector> indexVectorPtr,
+              float32 l1RegularizationWeight, float32 l2RegularizationWeight, std::unique_ptr<ILabelBinning> binningPtr,
+              std::unique_ptr<Blas<typename StatisticVector::statistic_type>> blasPtr,
+              std::unique_ptr<Lapack<typename StatisticVector::statistic_type>> lapackPtr)
                 : AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector>(
                     *indexVectorPtr, false, maxBins, l1RegularizationWeight, l2RegularizationWeight,
-                    std::move(binningPtr), blas, lapack),
+                    std::move(binningPtr), std::move(blasPtr), std::move(lapackPtr)),
                   labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)),
                   tmpVector_(labelIndices.getNumElements()) {}
     };
 
     NonDecomposableFixedPartialBinnedRuleEvaluationFactory::NonDecomposableFixedPartialBinnedRuleEvaluationFactory(
       float32 labelRatio, uint32 minLabels, uint32 maxLabels, float32 l1RegularizationWeight,
-      float32 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr, const Blas& blas,
-      const Lapack& lapack)
+      float32 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr,
+      const BlasFactory& blasFactory, const LapackFactory& lapackFactory)
         : labelRatio_(labelRatio), minLabels_(minLabels), maxLabels_(maxLabels),
           l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
-          labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)), blas_(blas), lapack_(lapack) {}
+          labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)), blasFactory_(blasFactory),
+          lapackFactory_(lapackFactory) {}
 
     std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
       NonDecomposableFixedPartialBinnedRuleEvaluationFactory::create(
@@ -103,7 +103,7 @@ namespace boosting {
         return std::make_unique<DenseNonDecomposableFixedPartialBinnedRuleEvaluation<
           DenseNonDecomposableStatisticVector<float64>, CompleteIndexVector>>(
           indexVector, maxBins, std::move(indexVectorPtr), l1RegularizationWeight_, l2RegularizationWeight_,
-          std::move(labelBinningPtr), blas_, lapack_);
+          std::move(labelBinningPtr), blasFactory_.create64Bit(), lapackFactory_.create64Bit());
     }
 
     std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
@@ -114,8 +114,8 @@ namespace boosting {
         uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());
         return std::make_unique<DenseNonDecomposableCompleteBinnedRuleEvaluation<
           DenseNonDecomposableStatisticVector<float64>, PartialIndexVector>>(
-          indexVector, maxBins, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr), blas_,
-          lapack_);
+          indexVector, maxBins, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr),
+          blasFactory_.create64Bit(), lapackFactory_.create64Bit());
     }
 
 }
