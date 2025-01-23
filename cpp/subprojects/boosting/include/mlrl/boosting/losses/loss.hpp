@@ -84,10 +84,10 @@ namespace boosting {
              *                                  to the feature values of the training examples
              * @param labelMatrix               A reference to an object of type `IRowWiseLabelMatrix` that provides
              *                                  access to the labels of the training examples
-             * @param blas                      A reference to an object of type `Blas` that allows to execute BLAS
-             *                                  routines
-             * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
-             *                                  routines
+             * @param blasFactory               A reference to an object of type `BlasFactory` that allows to create
+             *                                  objects for executing BLAS routines
+             * @param lapackFactory             A reference to an object of type `LapackFactory` that allows to create
+             *                                  objects for executing LAPACK routines
              * @param preferSparseStatistics    True, if a sparse representation of statistics should be preferred, if
              *                                  possible, false otherwise
              * @return                          An unique pointer to an object of type
@@ -95,8 +95,9 @@ namespace boosting {
              */
             virtual std::unique_ptr<IClassificationStatisticsProviderFactory>
               createClassificationStatisticsProviderFactory(const IFeatureMatrix& featureMatrix,
-                                                            const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-                                                            const Lapack& lapack,
+                                                            const IRowWiseLabelMatrix& labelMatrix,
+                                                            const BlasFactory& blasFactory,
+                                                            const LapackFactory& lapackFactory,
                                                             bool preferSparseStatistics) const = 0;
 
             /**
@@ -155,18 +156,19 @@ namespace boosting {
              *                                  to the feature values of the training examples
              * @param regressionMatrix          A reference to an object of type `IRowWiseRegressionMatrix` that
              *                                  provides access to the regression scores of the training examples
-             * @param blas                      A reference to an object of type `Blas` that allows to execute BLAS
-             *                                  routines
-             * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
-             *                                  routines
+             * @param blasFactory               A reference to an object of type `BlasFactory` that allows to create
+             *                                  objects for executing BLAS routines
+             * @param lapackFactory             A reference to an object of type `LapackFactory` that allows to create
+             *                                  objects for executing LAPACK routines
              * @param preferSparseStatistics    True, if a sparse representation of statistics should be preferred, if
              *                                  possible, false otherwise
              * @return                          An unique pointer to an object of type
              *                                  `IRegressionStatisticsProviderFactory` that has been created
              */
             virtual std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
-              const Lapack& lapack, bool preferSparseStatistics) const = 0;
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+              const BlasFactory& blasFactory, const LapackFactory& lapackFactory,
+              bool preferSparseStatistics) const = 0;
 
             /**
              * Creates and returns a new object of type `IRegressionEvaluationMeasureFactory` according to the specified

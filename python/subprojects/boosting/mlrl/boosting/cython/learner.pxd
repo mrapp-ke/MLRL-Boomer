@@ -1,15 +1,24 @@
+from mlrl.common.cython._types cimport float32, float64
+
 from mlrl.boosting.cython.head_type cimport IDynamicPartialHeadConfig, IFixedPartialHeadConfig
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig
 
-ctypedef double (*DdotFunction)(int* n, double* dx, int* incx, double* dy, int* incy)
+ctypedef float32 (*SdotFunction)(int* n, float32* x, int* incx, float32* y, int* incy)
 
-ctypedef void (*DspmvFunction)(char* uplo, int* n, double* alpha, double* ap, double* x, int* incx, double* beta,
-                               double* y, int* incy)
+ctypedef float64 (*DdotFunction)(int* n, float64* x, int* incx, float64* y, int* incy)
 
-ctypedef void (*DsysvFunction)(char* uplo, int* n, int* nrhs, double* a, int* lda, int* ipiv, double* b, int* ldb,
-                               double* work, int* lwork, int* info)
+ctypedef void (*SspmvFunction)(char* uplo, int* n, float32* alpha, float32* ap, float32* x, int* incx, float32* beta,
+                               float32* y, int* incy)
 
+ctypedef void (*DspmvFunction)(char* uplo, int* n, float64* alpha, float64* ap, float64* x, int* incx, float64* beta,
+                               float64* y, int* incy)
+
+ctypedef void (*SsysvFunction)(char* uplo, int* n, int* nrhs, float32* a, int* lda, int* ipiv, float32* b, int* ldb,
+                               float32* work, int* lwork, int* info)
+
+ctypedef void (*DsysvFunction)(char* uplo, int* n, int* nrhs, float64* a, int* lda, int* ipiv, float64* b, int* ldb,
+                               float64* work, int* lwork, int* info)
 
 cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
 

@@ -235,38 +235,40 @@ namespace boosting {
     }
 
     std::unique_ptr<INonDecomposableRuleEvaluationFactory>
-      EqualWidthLabelBinningConfig::createNonDecomposableCompleteRuleEvaluationFactory(const Blas& blas,
-                                                                                       const Lapack& lapack) const {
+      EqualWidthLabelBinningConfig::createNonDecomposableCompleteRuleEvaluationFactory(
+        const BlasFactory& blasFactory, const LapackFactory& lapackFactory) const {
         float32 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
         std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =
           std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
         return std::make_unique<NonDecomposableCompleteBinnedRuleEvaluationFactory>(
-          l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr), blas, lapack);
+          l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr), blasFactory,
+          lapackFactory);
     }
 
     std::unique_ptr<INonDecomposableRuleEvaluationFactory>
       EqualWidthLabelBinningConfig::createNonDecomposableFixedPartialRuleEvaluationFactory(
-        float32 outputRatio, uint32 minOutputs, uint32 maxOutputs, const Blas& blas, const Lapack& lapack) const {
+        float32 outputRatio, uint32 minOutputs, uint32 maxOutputs, const BlasFactory& blasFactory,
+        const LapackFactory& lapackFactory) const {
         float32 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
         std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =
           std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
         return std::make_unique<NonDecomposableFixedPartialBinnedRuleEvaluationFactory>(
           outputRatio, minOutputs, maxOutputs, l1RegularizationWeight, l2RegularizationWeight,
-          std::move(labelBinningFactoryPtr), blas, lapack);
+          std::move(labelBinningFactoryPtr), blasFactory, lapackFactory);
     }
 
     std::unique_ptr<INonDecomposableRuleEvaluationFactory>
       EqualWidthLabelBinningConfig::createNonDecomposableDynamicPartialRuleEvaluationFactory(
-        float32 threshold, float32 exponent, const Blas& blas, const Lapack& lapack) const {
+        float32 threshold, float32 exponent, const BlasFactory& blasFactory, const LapackFactory& lapackFactory) const {
         float32 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
         std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr =
           std::make_unique<EqualWidthLabelBinningFactory>(binRatio_, minBins_, maxBins_);
         return std::make_unique<NonDecomposableDynamicPartialBinnedRuleEvaluationFactory>(
-          threshold, exponent, l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr), blas,
-          lapack);
+          threshold, exponent, l1RegularizationWeight, l2RegularizationWeight, std::move(labelBinningFactoryPtr),
+          blasFactory, lapackFactory);
     }
 
 }
