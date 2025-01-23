@@ -385,18 +385,18 @@ namespace boosting {
 
     std::unique_ptr<IClassificationStatisticsProviderFactory>
       NonDecomposableSquaredErrorLossConfig::createClassificationStatisticsProviderFactory(
-        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-        const Lapack& lapack, bool preferSparseStatistics) const {
-        return headConfig_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, *this, blas,
-                                                                               lapack);
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const BlasFactory& blasFactory,
+        const LapackFactory& lapackFactory, bool preferSparseStatistics) const {
+        return headConfig_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, *this,
+                                                                               blasFactory, lapackFactory);
     }
 
     std::unique_ptr<IRegressionStatisticsProviderFactory>
       NonDecomposableSquaredErrorLossConfig::createRegressionStatisticsProviderFactory(
-        const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
-        const Lapack& lapack, bool preferSparseStatistics) const {
-        return headConfig_.get().createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, *this, blas,
-                                                                           lapack);
+        const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+        const BlasFactory& blasFactory, const LapackFactory& lapackFactory, bool preferSparseStatistics) const {
+        return headConfig_.get().createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, *this,
+                                                                           blasFactory, lapackFactory);
     }
 
     std::unique_ptr<IMarginalProbabilityFunctionFactory>

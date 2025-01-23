@@ -207,9 +207,9 @@ namespace boosting {
 
             const std::unique_ptr<ILabelBinning> binningPtr_;
 
-            const Blas& blas_;
+            const std::unique_ptr<Blas<typename StatisticVector::statistic_type>> blasPtr_;
 
-            const Lapack& lapack_;
+            const std::unique_ptr<Lapack<typename StatisticVector::statistic_type>> lapackPtr_;
 
         protected:
 
@@ -243,22 +243,22 @@ namespace boosting {
              *                                  scores to be predicted by rules
              * @param binningPtr                An unique pointer to an object of type `ILabelBinning` that should be
              *                                  used to assign labels to bins
-             * @param blas                      A reference to an object of type `Blas` that allows to execute BLAS
-             *                                  routines
-             * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
-             *                                  routines
+             * @param blasPtr                   An unique pointer to an object of type `Blas` that allows to execute
+             *                                  BLAS routines
+             * @param lapackPtr                 An unique pointer to an object of type `Lapack` that allows to execute
+             *                                  LAPACK routines
              */
-            AbstractNonDecomposableBinnedRuleEvaluation(const IndexVector& labelIndices, bool indicesSorted,
-                                                        uint32 maxBins, float32 l1RegularizationWeight,
-                                                        float32 l2RegularizationWeight,
-                                                        std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas,
-                                                        const Lapack& lapack)
-                : AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector>(maxBins, lapack),
+            AbstractNonDecomposableBinnedRuleEvaluation(
+              const IndexVector& labelIndices, bool indicesSorted, uint32 maxBins, float32 l1RegularizationWeight,
+              float32 l2RegularizationWeight, std::unique_ptr<ILabelBinning> binningPtr,
+              std::unique_ptr<Blas<typename StatisticVector::statistic_type>> blasPtr,
+              std::unique_ptr<Lapack<typename StatisticVector::statistic_type>> lapackPtr)
+                : AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector>(maxBins, *lapackPtr),
                   maxBins_(maxBins), scoreVector_(labelIndices, maxBins + 1, indicesSorted),
                   aggregatedGradients_(maxBins), aggregatedHessians_(util::triangularNumber(maxBins)),
                   binIndices_(maxBins), numElementsPerBin_(maxBins), criteria_(labelIndices.getNumElements()),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
-                  binningPtr_(std::move(binningPtr)), blas_(blas), lapack_(lapack) {
+                  binningPtr_(std::move(binningPtr)), blasPtr_(std::move(blasPtr)), lapackPtr_(std::move(lapackPtr)) {
                 // The last bin is used for labels for which the corresponding criterion is zero. For this particular
                 // bin, the prediction is always zero.
                 scoreVector_.bin_values_begin()[maxBins_] = 0;
@@ -307,8 +307,8 @@ namespace boosting {
                       maxBins_);
 
                     // Copy Hessians to the matrix of coefficients and add regularization weight to its diagonal...
-                    copyCoefficients<float64>(aggregatedHessians_.cbegin(), this->dsysvTmpArray1_.begin(), numBins);
-                    addL2RegularizationWeight<float64>(this->dsysvTmpArray1_.begin(), numBins,
+                    copyCoefficients<float64>(aggregatedHessians_.cbegin(), this->sysvTmpArray1_.begin(), numBins);
+                    addL2RegularizationWeight<float64>(this->sysvTmpArray1_.begin(), numBins,
                                                        numElementsPerBin_.cbegin(), l2RegularizationWeight_);
 
                     // Copy gradients to the vector of ordinates...
@@ -320,13 +320,13 @@ namespace boosting {
 
                     // Calculate the scores to be predicted for the individual labels by solving a system of linear
                     // equations...
-                    lapack_.dsysv(this->dsysvTmpArray1_.begin(), this->dsysvTmpArray2_.begin(),
-                                  this->dsysvTmpArray3_.begin(), binValueIterator, numBins, this->dsysvLwork_);
+                    lapackPtr_->sysv(this->sysvTmpArray1_.begin(), this->sysvTmpArray2_.begin(),
+                                     this->sysvTmpArray3_.begin(), binValueIterator, numBins, this->sysvLwork_);
 
                     // Calculate the overall quality...
                     float64 quality = calculateOverallQuality<float64>(binValueIterator, aggregatedGradients_.begin(),
                                                                        aggregatedHessians_.begin(),
-                                                                       this->dspmvTmpArray_.begin(), numBins, blas_);
+                                                                       this->spmvTmpArray_.begin(), numBins, *blasPtr_);
 
                     // Evaluate regularization term...
                     quality +=
@@ -384,19 +384,19 @@ namespace boosting {
              *                                  scores to be predicted by rules
              * @param binningPtr                An unique pointer to an object of type `ILabelBinning` that should be
              *                                  used to assign labels to bins
-             * @param blas                      A reference to an object of type `Blas` that allows to execute BLAS
-             *                                  routines
-             * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
-             *                                  routines
+             * @param blasPtr                   An unique pointer to an object of type `Blas` that allows to execute
+             *                                  BLAS routines
+             * @param lapackPtr                 An unique pointer to an object of type `Lapack` that allows to execute
+             *                                  LAPACK routines
              */
-            DenseNonDecomposableCompleteBinnedRuleEvaluation(const IndexVector& labelIndices, uint32 maxBins,
-                                                             float32 l1RegularizationWeight,
-                                                             float32 l2RegularizationWeight,
-                                                             std::unique_ptr<ILabelBinning> binningPtr,
-                                                             const Blas& blas, const Lapack& lapack)
+            DenseNonDecomposableCompleteBinnedRuleEvaluation(
+              const IndexVector& labelIndices, uint32 maxBins, float32 l1RegularizationWeight,
+              float32 l2RegularizationWeight, std::unique_ptr<ILabelBinning> binningPtr,
+              std::unique_ptr<Blas<typename StatisticVector::statistic_type>> blasPtr,
+              std::unique_ptr<Lapack<typename StatisticVector::statistic_type>> lapackPtr)
                 : AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector>(
                     labelIndices, true, maxBins, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr),
-                    blas, lapack) {}
+                    std::move(blasPtr), std::move(lapackPtr)) {}
     };
 
 }
