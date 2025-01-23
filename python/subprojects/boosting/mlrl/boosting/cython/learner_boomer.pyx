@@ -2,8 +2,8 @@
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from libcpp.utility cimport move
-from scipy.linalg.cython_blas cimport ddot, dspmv
-from scipy.linalg.cython_lapack cimport dsysv
+from scipy.linalg.cython_blas cimport ddot, dspmv, sdot, sspmv
+from scipy.linalg.cython_lapack cimport dsysv, ssysv
 
 from mlrl.common.cython.feature_binning cimport EqualFrequencyFeatureBinningConfig, EqualWidthFeatureBinningConfig, \
     IEqualFrequencyFeatureBinningConfig, IEqualWidthFeatureBinningConfig
@@ -578,7 +578,7 @@ cdef class BoomerClassifier(ClassificationRuleLearner):
         """
         :param config: The configuration that should be used by the rule learner
         """
-        self.rule_learner_ptr = createBoomerClassifier(move(config.config_ptr), ddot, dspmv, dsysv)
+        self.rule_learner_ptr = createBoomerClassifier(move(config.config_ptr), sdot, ddot, sspmv, dspmv, ssysv, dsysv)
 
     cdef IClassificationRuleLearner* get_classification_rule_learner_ptr(self):
         return self.rule_learner_ptr.get()
@@ -922,7 +922,7 @@ cdef class BoomerRegressor(RegressionRuleLearner):
         """
         :param config: The configuration that should be used by the rule learner
         """
-        self.rule_learner_ptr = createBoomerRegressor(move(config.config_ptr), ddot, dspmv, dsysv)
+        self.rule_learner_ptr = createBoomerRegressor(move(config.config_ptr), sdot, ddot, sspmv, dspmv, ssysv, dsysv)
 
     cdef IRegressionRuleLearner* get_regression_rule_learner_ptr(self):
         return self.rule_learner_ptr.get()

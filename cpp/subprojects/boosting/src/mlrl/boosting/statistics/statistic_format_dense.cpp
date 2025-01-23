@@ -9,10 +9,10 @@ namespace boosting {
     std::unique_ptr<IClassificationStatisticsProviderFactory>
       DenseStatisticsConfig::createClassificationStatisticsProviderFactory(const IFeatureMatrix& featureMatrix,
                                                                            const IRowWiseLabelMatrix& labelMatrix,
-                                                                           const Blas& blas,
-                                                                           const Lapack& lapack) const {
-        return classificationLossConfig_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix,
-                                                                                             blas, lapack, false);
+                                                                           const BlasFactory& blasFactory,
+                                                                           const LapackFactory& lapackFactory) const {
+        return classificationLossConfig_.get().createClassificationStatisticsProviderFactory(
+          featureMatrix, labelMatrix, blasFactory, lapackFactory, false);
     }
 
     bool DenseStatisticsConfig::isDense() const {
@@ -26,9 +26,10 @@ namespace boosting {
     std::unique_ptr<IRegressionStatisticsProviderFactory>
       DenseStatisticsConfig::createRegressionStatisticsProviderFactory(const IFeatureMatrix& featureMatrix,
                                                                        const IRowWiseRegressionMatrix& regressionMatrix,
-                                                                       const Blas& blas, const Lapack& lapack) const {
+                                                                       const BlasFactory& blasFactory,
+                                                                       const LapackFactory& lapackFactory) const {
         return regressionLossConfig_.get().createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix,
-                                                                                     blas, lapack, false);
+                                                                                     blasFactory, lapackFactory, false);
     }
 
 }
