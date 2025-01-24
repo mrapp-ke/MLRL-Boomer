@@ -24,7 +24,7 @@ namespace boosting {
 
             const std::unique_ptr<PartialIndexVector> indexVectorPtr_;
 
-            SparseArrayVector<float64> tmpVector_;
+            SparseArrayVector<typename StatisticVector::statistic_type> tmpVector_;
 
         protected:
 
@@ -37,14 +37,18 @@ namespace boosting {
                 typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
                 typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
-                SparseArrayVector<float64>::iterator tmpIterator = tmpVector_.begin();
-                sortOutputWiseCriteria(tmpIterator, gradientIterator, hessianIterator, numOutputs, numPredictions,
-                                       l1RegularizationWeight, l2RegularizationWeight);
+                typename SparseArrayVector<typename StatisticVector::statistic_type>::iterator tmpIterator =
+                  tmpVector_.begin();
+                sortOutputWiseCriteria<typename StatisticVector::statistic_type,
+                                       typename StatisticVector::gradient_const_iterator,
+                                       typename StatisticVector::hessian_diagonal_const_iterator>(
+                  tmpIterator, gradientIterator, hessianIterator, numOutputs, numPredictions, l1RegularizationWeight,
+                  l2RegularizationWeight);
                 PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
                 typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
-                    const IndexedValue<float64>& entry = tmpIterator[i];
+                    const IndexedValue<typename StatisticVector::statistic_type>& entry = tmpIterator[i];
                     indexIterator[i] = labelIndexIterator[entry.index];
                     criteria[i] = entry.value;
                 }
