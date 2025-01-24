@@ -22,7 +22,7 @@ namespace boosting {
 
             PartialIndexVector indexVector_;
 
-            DenseScoreVector<PartialIndexVector> scoreVector_;
+            DenseScoreVector<typename StatisticVector::statistic_type, PartialIndexVector> scoreVector_;
 
             const float32 l1RegularizationWeight_;
 
@@ -56,7 +56,8 @@ namespace boosting {
                 sortOutputWiseScores(tmpIterator, statisticIterator, numElements, numPredictions,
                                      l1RegularizationWeight_, l2RegularizationWeight_);
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
-                DenseScoreVector<PartialIndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
+                typename DenseScoreVector<typename StatisticVector::statistic_type, PartialIndexVector>::value_iterator
+                  valueIterator = scoreVector_.values_begin();
                 typename IndexVector::const_iterator outputIndexIterator = outputIndices_.cbegin();
                 typename StatisticVector::statistic_type quality = 0;
 
