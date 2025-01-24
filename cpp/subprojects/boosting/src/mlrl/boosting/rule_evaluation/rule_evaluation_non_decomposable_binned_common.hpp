@@ -189,7 +189,7 @@ namespace boosting {
 
             const uint32 maxBins_;
 
-            DenseBinnedScoreVector<IndexVector> scoreVector_;
+            DenseBinnedScoreVector<typename StatisticVector::statistic_type, IndexVector> scoreVector_;
 
             Array<typename StatisticVector::statistic_type> aggregatedGradients_;
 
@@ -283,7 +283,8 @@ namespace boosting {
 
                     // Apply binning method in order to aggregate the gradients and Hessians that belong to the same
                     // bins...
-                    typename DenseBinnedScoreVector<IndexVector>::bin_index_iterator binIndexIterator =
+                    typename DenseBinnedScoreVector<typename StatisticVector::statistic_type,
+                                                    IndexVector>::bin_index_iterator binIndexIterator =
                       scoreVector_.bin_indices_begin();
                     auto callback = [=, this](uint32 binIndex, uint32 labelIndex) {
                         numElementsPerBin_[binIndex] += 1;
@@ -313,7 +314,8 @@ namespace boosting {
                       this->sysvTmpArray1_.begin(), numBins, numElementsPerBin_.cbegin(), l2RegularizationWeight_);
 
                     // Copy gradients to the vector of ordinates...
-                    typename DenseBinnedScoreVector<IndexVector>::bin_value_iterator binValueIterator =
+                    typename DenseBinnedScoreVector<typename StatisticVector::statistic_type,
+                                                    IndexVector>::bin_value_iterator binValueIterator =
                       scoreVector_.bin_values_begin();
                     copyOrdinates<float64>(aggregatedGradients_.cbegin(), binValueIterator, numBins);
                     addL1RegularizationWeight<float64>(binValueIterator, numBins, numElementsPerBin_.cbegin(),

@@ -147,7 +147,7 @@ namespace boosting {
         : public AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector> {
         private:
 
-            DenseScoreVector<IndexVector> scoreVector_;
+            DenseScoreVector<typename StatisticVector::statistic_type, IndexVector> scoreVector_;
 
             const float32 l1RegularizationWeight_;
 
@@ -194,7 +194,8 @@ namespace boosting {
                   this->sysvTmpArray1_.begin(), numPredictions, l2RegularizationWeight_);
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
-                typename DenseScoreVector<IndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
+                typename DenseScoreVector<typename StatisticVector::statistic_type, IndexVector>::value_iterator
+                  valueIterator = scoreVector_.values_begin();
                 copyOrdinates<typename StatisticVector::statistic_type>(statisticVector.gradients_cbegin(),
                                                                         valueIterator, numPredictions);
                 addL1RegularizationWeight<typename StatisticVector::statistic_type>(valueIterator, numPredictions,
