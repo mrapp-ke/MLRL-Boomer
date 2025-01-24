@@ -20,27 +20,27 @@ namespace boosting {
         : public AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector> {
         private:
 
+            typedef typename StatisticVector::statistic_type statistic_type;
+
             const IndexVector& labelIndices_;
 
             const std::unique_ptr<PartialIndexVector> indexVectorPtr_;
 
-            SparseArrayVector<typename StatisticVector::statistic_type> tmpVector_;
+            SparseArrayVector<statistic_type> tmpVector_;
 
         protected:
 
-            uint32 calculateOutputWiseCriteria(
-              const StatisticVector& statisticVector,
-              typename View<typename StatisticVector::statistic_type>::iterator criteria, uint32 numCriteria,
-              float32 l1RegularizationWeight, float32 l2RegularizationWeight) override {
+            uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector,
+                                               typename View<statistic_type>::iterator criteria, uint32 numCriteria,
+                                               float32 l1RegularizationWeight,
+                                               float32 l2RegularizationWeight) override {
                 uint32 numOutputs = statisticVector.getNumGradients();
                 uint32 numPredictions = indexVectorPtr_->getNumElements();
                 typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
                 typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
-                typename SparseArrayVector<typename StatisticVector::statistic_type>::iterator tmpIterator =
-                  tmpVector_.begin();
-                sortOutputWiseCriteria<typename StatisticVector::statistic_type,
-                                       typename StatisticVector::gradient_const_iterator,
+                typename SparseArrayVector<statistic_type>::iterator tmpIterator = tmpVector_.begin();
+                sortOutputWiseCriteria<statistic_type, typename StatisticVector::gradient_const_iterator,
                                        typename StatisticVector::hessian_diagonal_const_iterator>(
                   tmpIterator, gradientIterator, hessianIterator, numOutputs, numPredictions, l1RegularizationWeight,
                   l2RegularizationWeight);
@@ -48,7 +48,7 @@ namespace boosting {
                 typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
-                    const IndexedValue<typename StatisticVector::statistic_type>& entry = tmpIterator[i];
+                    const IndexedValue<statistic_type>& entry = tmpIterator[i];
                     indexIterator[i] = labelIndexIterator[entry.index];
                     criteria[i] = entry.value;
                 }
@@ -78,8 +78,7 @@ namespace boosting {
             DenseNonDecomposableFixedPartialBinnedRuleEvaluation(
               const IndexVector& labelIndices, uint32 maxBins, std::unique_ptr<PartialIndexVector> indexVectorPtr,
               float32 l1RegularizationWeight, float32 l2RegularizationWeight, std::unique_ptr<ILabelBinning> binningPtr,
-              std::unique_ptr<Blas<typename StatisticVector::statistic_type>> blasPtr,
-              std::unique_ptr<Lapack<typename StatisticVector::statistic_type>> lapackPtr)
+              std::unique_ptr<Blas<statistic_type>> blasPtr, std::unique_ptr<Lapack<statistic_type>> lapackPtr)
                 : AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector>(
                     *indexVectorPtr, false, maxBins, l1RegularizationWeight, l2RegularizationWeight,
                     std::move(binningPtr), std::move(blasPtr), std::move(lapackPtr)),

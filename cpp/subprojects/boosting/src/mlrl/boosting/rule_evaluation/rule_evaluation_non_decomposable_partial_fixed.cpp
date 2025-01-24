@@ -20,21 +20,23 @@ namespace boosting {
         : public AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector> {
         private:
 
+            typedef typename StatisticVector::statistic_type statistic_type;
+
             const IndexVector& outputIndices_;
 
             PartialIndexVector indexVector_;
 
-            DenseScoreVector<typename StatisticVector::statistic_type, PartialIndexVector> scoreVector_;
+            DenseScoreVector<statistic_type, PartialIndexVector> scoreVector_;
 
             const float32 l1RegularizationWeight_;
 
             const float32 l2RegularizationWeight_;
 
-            const std::unique_ptr<Blas<typename StatisticVector::statistic_type>> blasPtr_;
+            const std::unique_ptr<Blas<statistic_type>> blasPtr_;
 
-            const std::unique_ptr<Lapack<typename StatisticVector::statistic_type>> lapackPtr_;
+            const std::unique_ptr<Lapack<statistic_type>> lapackPtr_;
 
-            SparseArrayVector<typename StatisticVector::statistic_type> tmpVector_;
+            SparseArrayVector<statistic_type> tmpVector_;
 
         public:
 
@@ -51,10 +53,11 @@ namespace boosting {
              * @param lapackPtr                 An unique pointer to an object of type `Lapack` that allows to execute
              *                                  LAPACK routines
              */
-            DenseNonDecomposableFixedPartialRuleEvaluation(
-              const IndexVector& outputIndices, uint32 numPredictions, float32 l1RegularizationWeight,
-              float32 l2RegularizationWeight, std::unique_ptr<Blas<typename StatisticVector::statistic_type>> blasPtr,
-              std::unique_ptr<Lapack<typename StatisticVector::statistic_type>> lapackPtr)
+            DenseNonDecomposableFixedPartialRuleEvaluation(const IndexVector& outputIndices, uint32 numPredictions,
+                                                           float32 l1RegularizationWeight,
+                                                           float32 l2RegularizationWeight,
+                                                           std::unique_ptr<Blas<statistic_type>> blasPtr,
+                                                           std::unique_ptr<Lapack<statistic_type>> lapackPtr)
                 : AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector>(numPredictions, *lapackPtr),
                   outputIndices_(outputIndices), indexVector_(numPredictions), scoreVector_(indexVector_, false),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
@@ -70,35 +73,32 @@ namespace boosting {
                 typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
                 typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
-                typename SparseArrayVector<typename StatisticVector::statistic_type>::iterator tmpIterator =
-                  tmpVector_.begin();
-                sortOutputWiseCriteria<typename StatisticVector::statistic_type,
-                                       typename StatisticVector::gradient_const_iterator,
+                typename SparseArrayVector<statistic_type>::iterator tmpIterator = tmpVector_.begin();
+                sortOutputWiseCriteria<statistic_type, typename StatisticVector::gradient_const_iterator,
                                        typename StatisticVector::hessian_diagonal_const_iterator>(
                   tmpIterator, gradientIterator, hessianIterator, numOutputs, numPredictions, l1RegularizationWeight_,
                   l2RegularizationWeight_);
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
-                typename DenseScoreVector<typename StatisticVector::statistic_type, IndexVector>::value_iterator
-                  valueIterator = scoreVector_.values_begin();
+                typename DenseScoreVector<statistic_type, IndexVector>::value_iterator valueIterator =
+                  scoreVector_.values_begin();
                 typename IndexVector::const_iterator outputIndexIterator = outputIndices_.cbegin();
 
                 for (uint32 i = 0; i < numPredictions; i++) {
-                    const IndexedValue<typename StatisticVector::statistic_type>& entry = tmpIterator[i];
+                    const IndexedValue<statistic_type>& entry = tmpIterator[i];
                     uint32 index = entry.index;
                     indexIterator[i] = outputIndexIterator[index];
                     valueIterator[i] = -gradientIterator[index];
                 }
 
-                addL1RegularizationWeight<typename StatisticVector::statistic_type>(valueIterator, numPredictions,
-                                                                                    l1RegularizationWeight_);
+                addL1RegularizationWeight<statistic_type>(valueIterator, numPredictions, l1RegularizationWeight_);
 
                 // Copy Hessians to the matrix of coefficients and add the L2 regularization weight to its diagonal...
-                copyCoefficients<typename StatisticVector::statistic_type, PartialIndexVector::iterator>(
+                copyCoefficients<statistic_type, PartialIndexVector::iterator>(
                   statisticVector.hessians_cbegin(), indexIterator, this->sysvTmpArray1_.begin(), numPredictions);
-                addL2RegularizationWeight<typename StatisticVector::statistic_type>(
-                  this->sysvTmpArray1_.begin(), numPredictions, l2RegularizationWeight_);
+                addL2RegularizationWeight<statistic_type>(this->sysvTmpArray1_.begin(), numPredictions,
+                                                          l2RegularizationWeight_);
 
                 // Calculate the scores to be predicted for individual outputs by solving a system of linear
                 // equations...
@@ -106,13 +106,12 @@ namespace boosting {
                                  this->sysvTmpArray3_.begin(), valueIterator, numPredictions, this->sysvLwork_);
 
                 // Calculate the overall quality...
-                typename StatisticVector::statistic_type quality =
-                  calculateOverallQuality<typename StatisticVector::statistic_type>(
-                    valueIterator, statisticVector.gradients_begin(), statisticVector.hessians_begin(),
-                    this->spmvTmpArray_.begin(), numPredictions, *blasPtr_);
+                statistic_type quality = calculateOverallQuality<statistic_type>(
+                  valueIterator, statisticVector.gradients_begin(), statisticVector.hessians_begin(),
+                  this->spmvTmpArray_.begin(), numPredictions, *blasPtr_);
 
                 // Evaluate regularization term...
-                quality += calculateRegularizationTerm<typename StatisticVector::statistic_type>(
+                quality += calculateRegularizationTerm<statistic_type>(
                   valueIterator, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
 
                 scoreVector_.quality = quality;

@@ -19,6 +19,8 @@ namespace boosting {
         : public AbstractDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector> {
         private:
 
+            typedef typename StatisticVector::statistic_type statistic_type;
+
             const IndexVector& labelIndices_;
 
             const std::unique_ptr<PartialIndexVector> indexVectorPtr_;
@@ -29,26 +31,24 @@ namespace boosting {
 
         protected:
 
-            uint32 calculateOutputWiseCriteria(
-              const StatisticVector& statisticVector,
-              typename View<typename StatisticVector::statistic_type>::iterator criteria, uint32 numCriteria,
-              float32 l1RegularizationWeight, float32 l2RegularizationWeight) override {
+            uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector,
+                                               typename View<statistic_type>::iterator criteria, uint32 numCriteria,
+                                               float32 l1RegularizationWeight,
+                                               float32 l2RegularizationWeight) override {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                const std::pair<typename StatisticVector::statistic_type, typename StatisticVector::statistic_type>
-                  pair =
-                    getMinAndMaxScore(statisticIterator, numElements, l1RegularizationWeight, l2RegularizationWeight);
-                typename StatisticVector::statistic_type minAbsScore = pair.first;
-                typename StatisticVector::statistic_type threshold =
-                  calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
+                const std::pair<statistic_type, statistic_type> pair =
+                  getMinAndMaxScore(statisticIterator, numElements, l1RegularizationWeight, l2RegularizationWeight);
+                statistic_type minAbsScore = pair.first;
+                statistic_type threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
                 PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
                 typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
                     const typename StatisticVector::value_type& statistic = statisticIterator[i];
-                    typename StatisticVector::statistic_type score = calculateOutputWiseScore(
-                      statistic.gradient, statistic.hessian, l1RegularizationWeight, l2RegularizationWeight);
+                    statistic_type score = calculateOutputWiseScore(statistic.gradient, statistic.hessian,
+                                                                    l1RegularizationWeight, l2RegularizationWeight);
 
                     if (calculateWeightedScore(score, minAbsScore, exponent_) >= threshold) {
                         indexIterator[n] = labelIndexIterator[i];
