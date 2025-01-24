@@ -18,17 +18,19 @@ namespace boosting {
     class DecomposableFixedPartialRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
         private:
 
+            typedef typename StatisticVector::statistic_type statistic_type;
+
             const IndexVector& outputIndices_;
 
             PartialIndexVector indexVector_;
 
-            DenseScoreVector<typename StatisticVector::statistic_type, PartialIndexVector> scoreVector_;
+            DenseScoreVector<statistic_type, PartialIndexVector> scoreVector_;
 
             const float32 l1RegularizationWeight_;
 
             const float32 l2RegularizationWeight_;
 
-            SparseArrayVector<typename StatisticVector::statistic_type> tmpVector_;
+            SparseArrayVector<statistic_type> tmpVector_;
 
         public:
 
@@ -51,20 +53,19 @@ namespace boosting {
                 uint32 numElements = statisticVector.getNumElements();
                 uint32 numPredictions = indexVector_.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                typename SparseArrayVector<typename StatisticVector::statistic_type>::iterator tmpIterator =
-                  tmpVector_.begin();
+                typename SparseArrayVector<statistic_type>::iterator tmpIterator = tmpVector_.begin();
                 sortOutputWiseScores(tmpIterator, statisticIterator, numElements, numPredictions,
                                      l1RegularizationWeight_, l2RegularizationWeight_);
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
-                typename DenseScoreVector<typename StatisticVector::statistic_type, PartialIndexVector>::value_iterator
-                  valueIterator = scoreVector_.values_begin();
+                typename DenseScoreVector<statistic_type, PartialIndexVector>::value_iterator valueIterator =
+                  scoreVector_.values_begin();
                 typename IndexVector::const_iterator outputIndexIterator = outputIndices_.cbegin();
-                typename StatisticVector::statistic_type quality = 0;
+                statistic_type quality = 0;
 
                 for (uint32 i = 0; i < numPredictions; i++) {
-                    const IndexedValue<typename StatisticVector::statistic_type>& entry = tmpIterator[i];
+                    const IndexedValue<statistic_type>& entry = tmpIterator[i];
                     uint32 index = entry.index;
-                    typename StatisticVector::statistic_type predictedScore = entry.value;
+                    statistic_type predictedScore = entry.value;
                     indexIterator[i] = outputIndexIterator[index];
                     valueIterator[i] = predictedScore;
                     const typename StatisticVector::value_type& statistic = statisticIterator[index];

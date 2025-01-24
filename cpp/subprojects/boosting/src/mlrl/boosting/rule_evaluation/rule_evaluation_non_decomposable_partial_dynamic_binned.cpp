@@ -20,6 +20,8 @@ namespace boosting {
         : public AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector> {
         private:
 
+            typedef typename StatisticVector::statistic_type statistic_type;
+
             const IndexVector& labelIndices_;
 
             const std::unique_ptr<PartialIndexVector> indexVectorPtr_;
@@ -30,30 +32,28 @@ namespace boosting {
 
         protected:
 
-            uint32 calculateOutputWiseCriteria(
-              const StatisticVector& statisticVector,
-              typename View<typename StatisticVector::statistic_type>::iterator criteria, uint32 numCriteria,
-              float32 l1RegularizationWeight, float32 l2RegularizationWeight) override {
+            uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector,
+                                               typename View<statistic_type>::iterator criteria, uint32 numCriteria,
+                                               float32 l1RegularizationWeight,
+                                               float32 l2RegularizationWeight) override {
                 uint32 numLabels = statisticVector.getNumGradients();
                 typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
                 typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
 
-                const std::pair<typename StatisticVector::statistic_type, typename StatisticVector::statistic_type>
-                  pair = getMinAndMaxScore<typename StatisticVector::statistic_type,
-                                           typename StatisticVector::gradient_const_iterator,
-                                           typename StatisticVector::hessian_diagonal_const_iterator>(
+                const std::pair<statistic_type, statistic_type> pair =
+                  getMinAndMaxScore<statistic_type, typename StatisticVector::gradient_const_iterator,
+                                    typename StatisticVector::hessian_diagonal_const_iterator>(
                     criteria, gradientIterator, hessianIterator, numLabels, l1RegularizationWeight,
                     l2RegularizationWeight);
-                typename StatisticVector::statistic_type minAbsScore = pair.first;
-                typename StatisticVector::statistic_type threshold =
-                  calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
+                statistic_type minAbsScore = pair.first;
+                statistic_type threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
                 PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
                 typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numLabels; i++) {
-                    typename StatisticVector::statistic_type score = criteria[i];
+                    statistic_type score = criteria[i];
 
                     if (calculateWeightedScore(score, minAbsScore, exponent_) >= threshold) {
                         indexIterator[n] = labelIndexIterator[i];
@@ -92,9 +92,8 @@ namespace boosting {
             DenseNonDecomposableDynamicPartialBinnedRuleEvaluation(
               const IndexVector& labelIndices, uint32 maxBins, std::unique_ptr<PartialIndexVector> indexVectorPtr,
               float32 threshold, float32 exponent, float32 l1RegularizationWeight, float32 l2RegularizationWeight,
-              std::unique_ptr<ILabelBinning> binningPtr,
-              std::unique_ptr<Blas<typename StatisticVector::statistic_type>> blasPtr,
-              std::unique_ptr<Lapack<typename StatisticVector::statistic_type>> lapackPtr)
+              std::unique_ptr<ILabelBinning> binningPtr, std::unique_ptr<Blas<statistic_type>> blasPtr,
+              std::unique_ptr<Lapack<statistic_type>> lapackPtr)
                 : AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector>(
                     *indexVectorPtr, true, maxBins, l1RegularizationWeight, l2RegularizationWeight,
                     std::move(binningPtr), std::move(blasPtr), std::move(lapackPtr)),

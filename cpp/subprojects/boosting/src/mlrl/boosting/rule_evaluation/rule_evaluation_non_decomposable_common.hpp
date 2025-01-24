@@ -20,17 +20,21 @@ namespace boosting {
      */
     template<typename StatisticVector, typename IndexVector>
     class AbstractNonDecomposableRuleEvaluation : public IRuleEvaluation<StatisticVector> {
+        private:
+
+            typedef typename StatisticVector::statistic_type statistic_type;
+
         protected:
 
             /**
              * A pointer to a temporary array that is used for executing the LAPACK routine SPMV.
              */
-            Array<typename StatisticVector::statistic_type> spmvTmpArray_;
+            Array<statistic_type> spmvTmpArray_;
 
             /**
              * A pointer to a temporary array that is used for executing the LAPACK routine SYSV.
              */
-            Array<typename StatisticVector::statistic_type> sysvTmpArray1_;
+            Array<statistic_type> sysvTmpArray1_;
 
             /**
              * A pointer to a second temporary array that is used for executing the LAPACK routine SYSV.
@@ -45,7 +49,7 @@ namespace boosting {
             /**
              * A pointer to a third temporary array that is used for executing the LAPACK routine SYSV.
              */
-            Array<typename StatisticVector::statistic_type> sysvTmpArray3_;
+            Array<statistic_type> sysvTmpArray3_;
 
         public:
 
@@ -54,8 +58,7 @@ namespace boosting {
              * @param lapack            A reference to an object of type `Lapack` that allows to execute different
              *                          LAPACK routines
              */
-            AbstractNonDecomposableRuleEvaluation(uint32 numPredictions,
-                                                  const Lapack<typename StatisticVector::statistic_type>& lapack)
+            AbstractNonDecomposableRuleEvaluation(uint32 numPredictions, const Lapack<statistic_type>& lapack)
                 : spmvTmpArray_(numPredictions), sysvTmpArray1_(numPredictions * numPredictions),
                   sysvTmpArray2_(numPredictions), sysvLwork_(lapack.querySysvLworkParameter(
                                                     sysvTmpArray1_.begin(), spmvTmpArray_.begin(), numPredictions)),
