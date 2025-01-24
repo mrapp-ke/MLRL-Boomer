@@ -28,9 +28,10 @@ namespace boosting {
 
         protected:
 
-            uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector, float64* criteria,
-                                               uint32 numCriteria, float32 l1RegularizationWeight,
-                                               float32 l2RegularizationWeight) override {
+            uint32 calculateOutputWiseCriteria(
+              const StatisticVector& statisticVector,
+              typename View<typename StatisticVector::statistic_type>::iterator criteria, uint32 numCriteria,
+              float32 l1RegularizationWeight, float32 l2RegularizationWeight) override {
                 uint32 numOutputs = statisticVector.getNumGradients();
                 uint32 numPredictions = indexVectorPtr_->getNumElements();
                 typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
