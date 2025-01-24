@@ -18,11 +18,13 @@ namespace boosting {
     class DecomposableDynamicPartialRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
         private:
 
+            typedef typename StatisticVector::statistic_type statistic_type;
+
             const IndexVector& outputIndices_;
 
             PartialIndexVector indexVector_;
 
-            DenseScoreVector<typename StatisticVector::statistic_type, PartialIndexVector> scoreVector_;
+            DenseScoreVector<statistic_type, PartialIndexVector> scoreVector_;
 
             const float32 threshold_;
 
@@ -56,23 +58,21 @@ namespace boosting {
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                const std::pair<typename StatisticVector::statistic_type, typename StatisticVector::statistic_type>
-                  pair =
-                    getMinAndMaxScore(statisticIterator, numElements, l1RegularizationWeight_, l2RegularizationWeight_);
-                typename StatisticVector::statistic_type minAbsScore = pair.first;
-                typename StatisticVector::statistic_type threshold =
-                  calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
+                const std::pair<statistic_type, statistic_type> pair =
+                  getMinAndMaxScore(statisticIterator, numElements, l1RegularizationWeight_, l2RegularizationWeight_);
+                statistic_type minAbsScore = pair.first;
+                statistic_type threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
-                typename DenseScoreVector<typename StatisticVector::statistic_type, PartialIndexVector>::value_iterator
-                  valueIterator = scoreVector_.values_begin();
+                typename DenseScoreVector<statistic_type, PartialIndexVector>::value_iterator valueIterator =
+                  scoreVector_.values_begin();
                 typename IndexVector::const_iterator outputIndexIterator = outputIndices_.cbegin();
-                typename StatisticVector::statistic_type quality = 0;
+                statistic_type quality = 0;
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
                     const typename StatisticVector::value_type& statistic = statisticIterator[i];
-                    typename StatisticVector::statistic_type score = calculateOutputWiseScore(
-                      statistic.gradient, statistic.hessian, l1RegularizationWeight_, l2RegularizationWeight_);
+                    statistic_type score = calculateOutputWiseScore(statistic.gradient, statistic.hessian,
+                                                                    l1RegularizationWeight_, l2RegularizationWeight_);
 
                     if (calculateWeightedScore(score, minAbsScore, exponent_) >= threshold) {
                         indexIterator[n] = outputIndexIterator[i];
