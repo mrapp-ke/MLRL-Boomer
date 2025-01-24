@@ -317,9 +317,10 @@ namespace boosting {
                     typename DenseBinnedScoreVector<typename StatisticVector::statistic_type,
                                                     IndexVector>::bin_value_iterator binValueIterator =
                       scoreVector_.bin_values_begin();
-                    copyOrdinates<float64>(aggregatedGradients_.cbegin(), binValueIterator, numBins);
-                    addL1RegularizationWeight<float64>(binValueIterator, numBins, numElementsPerBin_.cbegin(),
-                                                       l1RegularizationWeight_);
+                    copyOrdinates<typename StatisticVector::statistic_type>(aggregatedGradients_.cbegin(),
+                                                                            binValueIterator, numBins);
+                    addL1RegularizationWeight<typename StatisticVector::statistic_type>(
+                      binValueIterator, numBins, numElementsPerBin_.cbegin(), l1RegularizationWeight_);
 
                     // Calculate the scores to be predicted for the individual labels by solving a system of linear
                     // equations...
@@ -327,14 +328,15 @@ namespace boosting {
                                      this->sysvTmpArray3_.begin(), binValueIterator, numBins, this->sysvLwork_);
 
                     // Calculate the overall quality...
-                    float64 quality = calculateOverallQuality<float64>(binValueIterator, aggregatedGradients_.begin(),
-                                                                       aggregatedHessians_.begin(),
-                                                                       this->spmvTmpArray_.begin(), numBins, *blasPtr_);
+                    typename StatisticVector::statistic_type quality =
+                      calculateOverallQuality<typename StatisticVector::statistic_type>(
+                        binValueIterator, aggregatedGradients_.begin(), aggregatedHessians_.begin(),
+                        this->spmvTmpArray_.begin(), numBins, *blasPtr_);
 
                     // Evaluate regularization term...
-                    quality +=
-                      calculateRegularizationTerm<float64>(binValueIterator, numElementsPerBin_.cbegin(), numBins,
-                                                           l1RegularizationWeight_, l2RegularizationWeight_);
+                    quality += calculateRegularizationTerm<typename StatisticVector::statistic_type>(
+                      binValueIterator, numElementsPerBin_.cbegin(), numBins, l1RegularizationWeight_,
+                      l2RegularizationWeight_);
 
                     scoreVector_.quality = quality;
                 } else {
