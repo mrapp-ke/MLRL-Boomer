@@ -76,19 +76,23 @@ namespace boosting {
                 typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
                 typename DenseScoreVector<IndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
-                const std::pair<float64, float64> pair =
-                  getMinAndMaxScore(valueIterator, gradientIterator, hessianIterator, numOutputs,
-                                    l1RegularizationWeight_, l2RegularizationWeight_);
-                float64 minAbsScore = pair.first;
+                const std::pair<typename StatisticVector::statistic_type, typename StatisticVector::statistic_type>
+                  pair = getMinAndMaxScore<typename StatisticVector::statistic_type,
+                                           typename StatisticVector::gradient_const_iterator,
+                                           typename StatisticVector::hessian_diagonal_const_iterator>(
+                    valueIterator, gradientIterator, hessianIterator, numOutputs, l1RegularizationWeight_,
+                    l2RegularizationWeight_);
+                typename StatisticVector::statistic_type minAbsScore = pair.first;
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
-                float64 threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
+                typename StatisticVector::statistic_type threshold =
+                  calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
                 typename IndexVector::const_iterator outputIndexIterator = outputIndices_.cbegin();
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numOutputs; i++) {
-                    float64 score = valueIterator[i];
+                    typename StatisticVector::statistic_type score = valueIterator[i];
 
                     if (calculateWeightedScore(score, minAbsScore, exponent_) >= threshold) {
                         indexIterator[n] = outputIndexIterator[i];
