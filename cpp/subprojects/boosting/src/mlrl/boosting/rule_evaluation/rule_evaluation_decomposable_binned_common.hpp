@@ -65,7 +65,7 @@ namespace boosting {
 
             DenseBinnedScoreVector<statistic_type, IndexVector> scoreVector_;
 
-            DenseVector<typename StatisticVector::value_type> aggregatedStatisticVector_;
+            DenseVector<Statistic<statistic_type>> aggregatedStatisticVector_;
 
             Array<uint32> numElementsPerBin_;
 
@@ -137,7 +137,7 @@ namespace boosting {
                 scoreVector_.setNumBins(numBins, false);
 
                 // Reset arrays to zero...
-                typename DenseVector<typename StatisticVector::value_type>::iterator aggregatedStatisticIterator =
+                typename DenseVector<Statistic<statistic_type>>::iterator aggregatedStatisticIterator =
                   aggregatedStatisticVector_.begin();
                 util::setViewToZeros(aggregatedStatisticIterator, numBins);
                 util::setViewToZeros(numElementsPerBin_.begin(), numBins);
@@ -191,7 +191,7 @@ namespace boosting {
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
-                    const typename StatisticVector::value_type& statistic = statisticIterator[i];
+                    const Statistic<statistic_type>& statistic = statisticIterator[i];
                     criteria[i] = calculateOutputWiseScore(statistic.gradient, statistic.hessian,
                                                            l1RegularizationWeight, l2RegularizationWeight);
                 }
