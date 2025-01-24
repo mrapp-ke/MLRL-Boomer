@@ -249,11 +249,6 @@ namespace boosting {
               const SparseDecomposableStatisticVector<StatisticType, WeightType>& other);
 
             /**
-             * The type of the elements in the vector.
-             */
-            typedef Statistic<StatisticType> value_type;
-
-            /**
              * The type of the gradients and Hessians.
              */
             typedef StatisticType statistic_type;
