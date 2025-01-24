@@ -17,11 +17,13 @@ namespace boosting {
     class DecomposableSingleOutputRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
         private:
 
+            typedef typename StatisticVector::statistic_type statistic_type;
+
             const IndexVector& outputIndices_;
 
             PartialIndexVector indexVector_;
 
-            DenseScoreVector<typename StatisticVector::statistic_type, PartialIndexVector> scoreVector_;
+            DenseScoreVector<statistic_type, PartialIndexVector> scoreVector_;
 
             const float32 l1RegularizationWeight_;
 
@@ -46,14 +48,14 @@ namespace boosting {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 const typename StatisticVector::value_type& firstStatistic = statisticIterator[0];
-                typename StatisticVector::statistic_type bestScore = calculateOutputWiseScore(
-                  firstStatistic.gradient, firstStatistic.hessian, l1RegularizationWeight_, l2RegularizationWeight_);
+                statistic_type bestScore = calculateOutputWiseScore(firstStatistic.gradient, firstStatistic.hessian,
+                                                                    l1RegularizationWeight_, l2RegularizationWeight_);
                 uint32 bestIndex = 0;
 
                 for (uint32 i = 1; i < numElements; i++) {
                     const typename StatisticVector::value_type& statistic = statisticIterator[i];
-                    typename StatisticVector::statistic_type score = calculateOutputWiseScore(
-                      statistic.gradient, statistic.hessian, l1RegularizationWeight_, l2RegularizationWeight_);
+                    statistic_type score = calculateOutputWiseScore(statistic.gradient, statistic.hessian,
+                                                                    l1RegularizationWeight_, l2RegularizationWeight_);
 
                     if (std::abs(score) > std::abs(bestScore)) {
                         bestIndex = i;
@@ -61,8 +63,8 @@ namespace boosting {
                     }
                 }
 
-                typename DenseScoreVector<typename StatisticVector::statistic_type, PartialIndexVector>::value_iterator
-                  valueIterator = scoreVector_.values_begin();
+                typename DenseScoreVector<statistic_type, PartialIndexVector>::value_iterator valueIterator =
+                  scoreVector_.values_begin();
                 valueIterator[0] = bestScore;
                 indexVector_.begin()[0] = outputIndices_.cbegin()[bestIndex];
                 const typename StatisticVector::value_type& bestStatistic = statisticIterator[bestIndex];
