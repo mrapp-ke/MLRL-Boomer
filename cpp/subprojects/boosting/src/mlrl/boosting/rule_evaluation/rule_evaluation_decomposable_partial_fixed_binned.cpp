@@ -19,29 +19,30 @@ namespace boosting {
         : public AbstractDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector> {
         private:
 
+            typedef typename StatisticVector::statistic_type statistic_type;
+
             const IndexVector& labelIndices_;
 
             const std::unique_ptr<PartialIndexVector> indexVectorPtr_;
 
-            SparseArrayVector<typename StatisticVector::statistic_type> tmpVector_;
+            SparseArrayVector<statistic_type> tmpVector_;
 
         protected:
 
-            uint32 calculateOutputWiseCriteria(
-              const StatisticVector& statisticVector,
-              typename View<typename StatisticVector::statistic_type>::iterator criteria, uint32 numCriteria,
-              float32 l1RegularizationWeight, float32 l2RegularizationWeight) override {
+            uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector,
+                                               typename View<statistic_type>::iterator criteria, uint32 numCriteria,
+                                               float32 l1RegularizationWeight,
+                                               float32 l2RegularizationWeight) override {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                typename SparseArrayVector<typename StatisticVector::statistic_type>::iterator tmpIterator =
-                  tmpVector_.begin();
+                typename SparseArrayVector<statistic_type>::iterator tmpIterator = tmpVector_.begin();
                 sortOutputWiseScores(tmpIterator, statisticIterator, numElements, numCriteria, l1RegularizationWeight,
                                      l2RegularizationWeight);
                 PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
                 typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
-                    const IndexedValue<typename StatisticVector::statistic_type>& entry = tmpIterator[i];
+                    const IndexedValue<statistic_type>& entry = tmpIterator[i];
                     indexIterator[i] = labelIndexIterator[entry.index];
                     criteria[i] = entry.value;
                 }
