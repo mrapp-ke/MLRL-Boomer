@@ -20,7 +20,7 @@ namespace boosting {
     class DecomposableCompleteRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
         private:
 
-            DenseScoreVector<IndexVector> scoreVector_;
+            DenseScoreVector<typename StatisticVector::statistic_type, IndexVector> scoreVector_;
 
             const float32 l1RegularizationWeight_;
 
@@ -44,7 +44,8 @@ namespace boosting {
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                typename DenseScoreVector<IndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
+                typename DenseScoreVector<typename StatisticVector::statistic_type, IndexVector>::value_iterator
+                  valueIterator = scoreVector_.values_begin();
                 typename StatisticVector::statistic_type quality = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
