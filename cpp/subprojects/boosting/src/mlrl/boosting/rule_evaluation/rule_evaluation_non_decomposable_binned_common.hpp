@@ -187,19 +187,21 @@ namespace boosting {
         : public AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector> {
         private:
 
+            typedef typename StatisticVector::statistic_type statistic_type;
+
             const uint32 maxBins_;
 
-            DenseBinnedScoreVector<typename StatisticVector::statistic_type, IndexVector> scoreVector_;
+            DenseBinnedScoreVector<statistic_type, IndexVector> scoreVector_;
 
-            Array<typename StatisticVector::statistic_type> aggregatedGradients_;
+            Array<statistic_type> aggregatedGradients_;
 
-            Array<typename StatisticVector::statistic_type> aggregatedHessians_;
+            Array<statistic_type> aggregatedHessians_;
 
             Array<uint32> binIndices_;
 
             Array<uint32> numElementsPerBin_;
 
-            Array<typename StatisticVector::statistic_type> criteria_;
+            Array<statistic_type> criteria_;
 
             const float32 l1RegularizationWeight_;
 
@@ -207,9 +209,9 @@ namespace boosting {
 
             const std::unique_ptr<ILabelBinning> binningPtr_;
 
-            const std::unique_ptr<Blas<typename StatisticVector::statistic_type>> blasPtr_;
+            const std::unique_ptr<Blas<statistic_type>> blasPtr_;
 
-            const std::unique_ptr<Lapack<typename StatisticVector::statistic_type>> lapackPtr_;
+            const std::unique_ptr<Lapack<statistic_type>> lapackPtr_;
 
         protected:
 
@@ -225,10 +227,10 @@ namespace boosting {
              * @param l2RegularizationWeight    The L2 regularization weight
              * @return                          The number of output-wise criteria that have been calculated
              */
-            virtual uint32 calculateOutputWiseCriteria(
-              const StatisticVector& statisticVector,
-              typename View<typename StatisticVector::statistic_type>::iterator criteria, uint32 numCriteria,
-              float32 l1RegularizationWeight, float32 l2RegularizationWeight) = 0;
+            virtual uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector,
+                                                       typename View<statistic_type>::iterator criteria,
+                                                       uint32 numCriteria, float32 l1RegularizationWeight,
+                                                       float32 l2RegularizationWeight) = 0;
 
         public:
 
@@ -248,11 +250,12 @@ namespace boosting {
              * @param lapackPtr                 An unique pointer to an object of type `Lapack` that allows to execute
              *                                  LAPACK routines
              */
-            AbstractNonDecomposableBinnedRuleEvaluation(
-              const IndexVector& labelIndices, bool indicesSorted, uint32 maxBins, float32 l1RegularizationWeight,
-              float32 l2RegularizationWeight, std::unique_ptr<ILabelBinning> binningPtr,
-              std::unique_ptr<Blas<typename StatisticVector::statistic_type>> blasPtr,
-              std::unique_ptr<Lapack<typename StatisticVector::statistic_type>> lapackPtr)
+            AbstractNonDecomposableBinnedRuleEvaluation(const IndexVector& labelIndices, bool indicesSorted,
+                                                        uint32 maxBins, float32 l1RegularizationWeight,
+                                                        float32 l2RegularizationWeight,
+                                                        std::unique_ptr<ILabelBinning> binningPtr,
+                                                        std::unique_ptr<Blas<statistic_type>> blasPtr,
+                                                        std::unique_ptr<Lapack<statistic_type>> lapackPtr)
                 : AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector>(maxBins, *lapackPtr),
                   maxBins_(maxBins), scoreVector_(labelIndices, maxBins + 1, indicesSorted),
                   aggregatedGradients_(maxBins), aggregatedHessians_(util::triangularNumber(maxBins)),
@@ -283,8 +286,7 @@ namespace boosting {
 
                     // Apply binning method in order to aggregate the gradients and Hessians that belong to the same
                     // bins...
-                    typename DenseBinnedScoreVector<typename StatisticVector::statistic_type,
-                                                    IndexVector>::bin_index_iterator binIndexIterator =
+                    typename DenseBinnedScoreVector<statistic_type, IndexVector>::bin_index_iterator binIndexIterator =
                       scoreVector_.bin_indices_begin();
                     auto callback = [=, this](uint32 binIndex, uint32 labelIndex) {
                         numElementsPerBin_[binIndex] += 1;
@@ -302,25 +304,23 @@ namespace boosting {
                     // Aggregate gradients and Hessians...
                     util::setViewToZeros(aggregatedGradients_.begin(), numBins);
                     util::setViewToZeros(aggregatedHessians_.begin(), util::triangularNumber(numBins));
-                    aggregateGradientsAndHessians<typename StatisticVector::statistic_type>(
+                    aggregateGradientsAndHessians<statistic_type>(
                       statisticVector.gradients_cbegin(), statisticVector.hessians_cbegin(), numCriteria,
                       binIndexIterator, binIndices_.cbegin(), aggregatedGradients_.begin(), aggregatedHessians_.begin(),
                       maxBins_);
 
                     // Copy Hessians to the matrix of coefficients and add regularization weight to its diagonal...
-                    copyCoefficients<typename StatisticVector::statistic_type>(aggregatedHessians_.cbegin(),
-                                                                               this->sysvTmpArray1_.begin(), numBins);
-                    addL2RegularizationWeight<typename StatisticVector::statistic_type>(
-                      this->sysvTmpArray1_.begin(), numBins, numElementsPerBin_.cbegin(), l2RegularizationWeight_);
+                    copyCoefficients<statistic_type>(aggregatedHessians_.cbegin(), this->sysvTmpArray1_.begin(),
+                                                     numBins);
+                    addL2RegularizationWeight<statistic_type>(this->sysvTmpArray1_.begin(), numBins,
+                                                              numElementsPerBin_.cbegin(), l2RegularizationWeight_);
 
                     // Copy gradients to the vector of ordinates...
-                    typename DenseBinnedScoreVector<typename StatisticVector::statistic_type,
-                                                    IndexVector>::bin_value_iterator binValueIterator =
+                    typename DenseBinnedScoreVector<statistic_type, IndexVector>::bin_value_iterator binValueIterator =
                       scoreVector_.bin_values_begin();
-                    copyOrdinates<typename StatisticVector::statistic_type>(aggregatedGradients_.cbegin(),
-                                                                            binValueIterator, numBins);
-                    addL1RegularizationWeight<typename StatisticVector::statistic_type>(
-                      binValueIterator, numBins, numElementsPerBin_.cbegin(), l1RegularizationWeight_);
+                    copyOrdinates<statistic_type>(aggregatedGradients_.cbegin(), binValueIterator, numBins);
+                    addL1RegularizationWeight<statistic_type>(binValueIterator, numBins, numElementsPerBin_.cbegin(),
+                                                              l1RegularizationWeight_);
 
                     // Calculate the scores to be predicted for the individual labels by solving a system of linear
                     // equations...
@@ -328,13 +328,12 @@ namespace boosting {
                                      this->sysvTmpArray3_.begin(), binValueIterator, numBins, this->sysvLwork_);
 
                     // Calculate the overall quality...
-                    typename StatisticVector::statistic_type quality =
-                      calculateOverallQuality<typename StatisticVector::statistic_type>(
-                        binValueIterator, aggregatedGradients_.begin(), aggregatedHessians_.begin(),
-                        this->spmvTmpArray_.begin(), numBins, *blasPtr_);
+                    statistic_type quality = calculateOverallQuality<statistic_type>(
+                      binValueIterator, aggregatedGradients_.begin(), aggregatedHessians_.begin(),
+                      this->spmvTmpArray_.begin(), numBins, *blasPtr_);
 
                     // Evaluate regularization term...
-                    quality += calculateRegularizationTerm<typename StatisticVector::statistic_type>(
+                    quality += calculateRegularizationTerm<statistic_type>(
                       binValueIterator, numElementsPerBin_.cbegin(), numBins, l1RegularizationWeight_,
                       l2RegularizationWeight_);
 
@@ -360,12 +359,16 @@ namespace boosting {
     template<typename StatisticVector, typename IndexVector>
     class DenseNonDecomposableCompleteBinnedRuleEvaluation final
         : public AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector> {
+        private:
+
+            typedef typename StatisticVector::statistic_type statistic_type;
+
         protected:
 
-            uint32 calculateOutputWiseCriteria(
-              const StatisticVector& statisticVector,
-              typename View<typename StatisticVector::statistic_type>::iterator criteria, uint32 numCriteria,
-              float32 l1RegularizationWeight, float32 l2RegularizationWeight) override {
+            uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector,
+                                               typename View<statistic_type>::iterator criteria, uint32 numCriteria,
+                                               float32 l1RegularizationWeight,
+                                               float32 l2RegularizationWeight) override {
                 typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
                 typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
@@ -395,11 +398,12 @@ namespace boosting {
              * @param lapackPtr                 An unique pointer to an object of type `Lapack` that allows to execute
              *                                  LAPACK routines
              */
-            DenseNonDecomposableCompleteBinnedRuleEvaluation(
-              const IndexVector& labelIndices, uint32 maxBins, float32 l1RegularizationWeight,
-              float32 l2RegularizationWeight, std::unique_ptr<ILabelBinning> binningPtr,
-              std::unique_ptr<Blas<typename StatisticVector::statistic_type>> blasPtr,
-              std::unique_ptr<Lapack<typename StatisticVector::statistic_type>> lapackPtr)
+            DenseNonDecomposableCompleteBinnedRuleEvaluation(const IndexVector& labelIndices, uint32 maxBins,
+                                                             float32 l1RegularizationWeight,
+                                                             float32 l2RegularizationWeight,
+                                                             std::unique_ptr<ILabelBinning> binningPtr,
+                                                             std::unique_ptr<Blas<statistic_type>> blasPtr,
+                                                             std::unique_ptr<Lapack<statistic_type>> lapackPtr)
                 : AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector>(
                     labelIndices, true, maxBins, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr),
                     std::move(blasPtr), std::move(lapackPtr)) {}
