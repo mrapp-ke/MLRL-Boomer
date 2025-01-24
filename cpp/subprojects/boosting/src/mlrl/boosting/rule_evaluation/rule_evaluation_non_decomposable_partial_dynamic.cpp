@@ -24,7 +24,7 @@ namespace boosting {
 
             PartialIndexVector indexVector_;
 
-            DenseScoreVector<PartialIndexVector> scoreVector_;
+            DenseScoreVector<typename StatisticVector::statistic_type, PartialIndexVector> scoreVector_;
 
             const float32 threshold_;
 
@@ -75,7 +75,8 @@ namespace boosting {
                 typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
                 typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
-                typename DenseScoreVector<IndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
+                typename DenseScoreVector<typename StatisticVector::statistic_type, IndexVector>::value_iterator
+                  valueIterator = scoreVector_.values_begin();
                 const std::pair<typename StatisticVector::statistic_type, typename StatisticVector::statistic_type>
                   pair = getMinAndMaxScore<typename StatisticVector::statistic_type,
                                            typename StatisticVector::gradient_const_iterator,

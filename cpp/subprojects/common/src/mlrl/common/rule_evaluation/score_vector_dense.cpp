@@ -5,65 +5,73 @@
 #include "mlrl/common/rule_refinement/prediction.hpp"
 #include "mlrl/common/rule_refinement/score_processor.hpp"
 
-template<typename IndexVector>
-DenseScoreVector<IndexVector>::DenseScoreVector(const IndexVector& outputIndices, bool sorted)
-    : ViewDecorator<AllocatedView<float64>>(AllocatedView<float64>(outputIndices.getNumElements())),
+template<typename ScoreType, typename IndexVector>
+DenseScoreVector<ScoreType, IndexVector>::DenseScoreVector(const IndexVector& outputIndices, bool sorted)
+    : ViewDecorator<AllocatedView<ScoreType>>(AllocatedView<ScoreType>(outputIndices.getNumElements())),
       outputIndices_(outputIndices), sorted_(sorted) {}
 
-template<typename IndexVector>
-typename DenseScoreVector<IndexVector>::index_const_iterator DenseScoreVector<IndexVector>::indices_cbegin() const {
+template<typename ScoreType, typename IndexVector>
+typename DenseScoreVector<ScoreType, IndexVector>::index_const_iterator
+  DenseScoreVector<ScoreType, IndexVector>::indices_cbegin() const {
     return outputIndices_.cbegin();
 }
 
-template<typename IndexVector>
-typename DenseScoreVector<IndexVector>::index_const_iterator DenseScoreVector<IndexVector>::indices_cend() const {
+template<typename ScoreType, typename IndexVector>
+typename DenseScoreVector<ScoreType, IndexVector>::index_const_iterator
+  DenseScoreVector<ScoreType, IndexVector>::indices_cend() const {
     return outputIndices_.cend();
 }
 
-template<typename IndexVector>
-typename DenseScoreVector<IndexVector>::value_iterator DenseScoreVector<IndexVector>::values_begin() {
+template<typename ScoreType, typename IndexVector>
+typename DenseScoreVector<ScoreType, IndexVector>::value_iterator
+  DenseScoreVector<ScoreType, IndexVector>::values_begin() {
     return this->view.begin();
 }
 
-template<typename IndexVector>
-typename DenseScoreVector<IndexVector>::value_iterator DenseScoreVector<IndexVector>::values_end() {
+template<typename ScoreType, typename IndexVector>
+typename DenseScoreVector<ScoreType, IndexVector>::value_iterator
+  DenseScoreVector<ScoreType, IndexVector>::values_end() {
     return &this->view.array[this->getNumElements()];
 }
 
-template<typename IndexVector>
-typename DenseScoreVector<IndexVector>::value_const_iterator DenseScoreVector<IndexVector>::values_cbegin() const {
+template<typename ScoreType, typename IndexVector>
+typename DenseScoreVector<ScoreType, IndexVector>::value_const_iterator
+  DenseScoreVector<ScoreType, IndexVector>::values_cbegin() const {
     return this->view.cbegin();
 }
 
-template<typename IndexVector>
-typename DenseScoreVector<IndexVector>::value_const_iterator DenseScoreVector<IndexVector>::values_cend() const {
+template<typename ScoreType, typename IndexVector>
+typename DenseScoreVector<ScoreType, IndexVector>::value_const_iterator
+  DenseScoreVector<ScoreType, IndexVector>::values_cend() const {
     return &this->view.array[this->getNumElements()];
 }
 
-template<typename IndexVector>
-uint32 DenseScoreVector<IndexVector>::getNumElements() const {
+template<typename ScoreType, typename IndexVector>
+uint32 DenseScoreVector<ScoreType, IndexVector>::getNumElements() const {
     return outputIndices_.getNumElements();
 }
 
-template<typename IndexVector>
-bool DenseScoreVector<IndexVector>::isPartial() const {
+template<typename ScoreType, typename IndexVector>
+bool DenseScoreVector<ScoreType, IndexVector>::isPartial() const {
     return outputIndices_.isPartial();
 }
 
-template<typename IndexVector>
-bool DenseScoreVector<IndexVector>::isSorted() const {
+template<typename ScoreType, typename IndexVector>
+bool DenseScoreVector<ScoreType, IndexVector>::isSorted() const {
     return sorted_;
 }
 
-template<typename IndexVector>
-void DenseScoreVector<IndexVector>::updatePrediction(IPrediction& prediction) const {
+template<typename ScoreType, typename IndexVector>
+void DenseScoreVector<ScoreType, IndexVector>::updatePrediction(IPrediction& prediction) const {
     prediction.set(this->values_cbegin(), this->values_cend());
 }
 
-template<typename IndexVector>
-void DenseScoreVector<IndexVector>::processScores(ScoreProcessor& scoreProcessor) const {
+template<typename ScoreType, typename IndexVector>
+void DenseScoreVector<ScoreType, IndexVector>::processScores(ScoreProcessor& scoreProcessor) const {
     scoreProcessor.processScores(*this);
 }
 
-template class DenseScoreVector<PartialIndexVector>;
-template class DenseScoreVector<CompleteIndexVector>;
+template class DenseScoreVector<float32, PartialIndexVector>;
+template class DenseScoreVector<float64, PartialIndexVector>;
+template class DenseScoreVector<float32, CompleteIndexVector>;
+template class DenseScoreVector<float64, CompleteIndexVector>;
