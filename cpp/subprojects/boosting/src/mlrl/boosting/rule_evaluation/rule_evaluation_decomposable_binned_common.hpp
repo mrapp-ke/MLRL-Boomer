@@ -61,7 +61,7 @@ namespace boosting {
 
             const uint32 maxBins_;
 
-            DenseBinnedScoreVector<IndexVector> scoreVector_;
+            DenseBinnedScoreVector<typename StatisticVector::statistic_type, IndexVector> scoreVector_;
 
             DenseVector<typename StatisticVector::value_type> aggregatedStatisticVector_;
 
@@ -142,7 +142,8 @@ namespace boosting {
 
                 // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                typename DenseBinnedScoreVector<IndexVector>::bin_index_iterator binIndexIterator =
+                typename DenseBinnedScoreVector<typename StatisticVector::statistic_type,
+                                                IndexVector>::bin_index_iterator binIndexIterator =
                   scoreVector_.bin_indices_begin();
                 auto callback = [=, this](uint32 binIndex, uint32 labelIndex) {
                     aggregatedStatisticIterator[binIndex] += statisticIterator[labelIndex];
@@ -155,7 +156,8 @@ namespace boosting {
                 binningPtr_->createBins(labelInfo, criteria_.cbegin(), numCriteria, callback, zeroCallback);
 
                 // Compute predictions, as well as their overall quality...
-                typename DenseBinnedScoreVector<IndexVector>::bin_value_iterator binValueIterator =
+                typename DenseBinnedScoreVector<typename StatisticVector::statistic_type,
+                                                IndexVector>::bin_value_iterator binValueIterator =
                   scoreVector_.bin_values_begin();
                 scoreVector_.quality =
                   calculateBinnedScores(aggregatedStatisticIterator, binValueIterator, numElementsPerBin_.cbegin(),
