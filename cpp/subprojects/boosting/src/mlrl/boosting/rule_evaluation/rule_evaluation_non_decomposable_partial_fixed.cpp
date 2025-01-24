@@ -34,7 +34,7 @@ namespace boosting {
 
             const std::unique_ptr<Lapack<typename StatisticVector::statistic_type>> lapackPtr_;
 
-            SparseArrayVector<float64> tmpVector_;
+            SparseArrayVector<typename StatisticVector::statistic_type> tmpVector_;
 
         public:
 
@@ -70,9 +70,13 @@ namespace boosting {
                 typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
                 typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
-                SparseArrayVector<float64>::iterator tmpIterator = tmpVector_.begin();
-                sortOutputWiseCriteria(tmpIterator, gradientIterator, hessianIterator, numOutputs, numPredictions,
-                                       l1RegularizationWeight_, l2RegularizationWeight_);
+                typename SparseArrayVector<typename StatisticVector::statistic_type>::iterator tmpIterator =
+                  tmpVector_.begin();
+                sortOutputWiseCriteria<typename StatisticVector::statistic_type,
+                                       typename StatisticVector::gradient_const_iterator,
+                                       typename StatisticVector::hessian_diagonal_const_iterator>(
+                  tmpIterator, gradientIterator, hessianIterator, numOutputs, numPredictions, l1RegularizationWeight_,
+                  l2RegularizationWeight_);
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
@@ -80,7 +84,7 @@ namespace boosting {
                 typename IndexVector::const_iterator outputIndexIterator = outputIndices_.cbegin();
 
                 for (uint32 i = 0; i < numPredictions; i++) {
-                    const IndexedValue<float64>& entry = tmpIterator[i];
+                    const IndexedValue<typename StatisticVector::statistic_type>& entry = tmpIterator[i];
                     uint32 index = entry.index;
                     indexIterator[i] = outputIndexIterator[index];
                     valueIterator[i] = -gradientIterator[index];
