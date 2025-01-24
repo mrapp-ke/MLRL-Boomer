@@ -191,15 +191,15 @@ namespace boosting {
 
             DenseBinnedScoreVector<IndexVector> scoreVector_;
 
-            Array<float64> aggregatedGradients_;
+            Array<typename StatisticVector::statistic_type> aggregatedGradients_;
 
-            Array<float64> aggregatedHessians_;
+            Array<typename StatisticVector::statistic_type> aggregatedHessians_;
 
             Array<uint32> binIndices_;
 
             Array<uint32> numElementsPerBin_;
 
-            Array<float64> criteria_;
+            Array<typename StatisticVector::statistic_type> criteria_;
 
             const float32 l1RegularizationWeight_;
 
@@ -225,10 +225,10 @@ namespace boosting {
              * @param l2RegularizationWeight    The L2 regularization weight
              * @return                          The number of output-wise criteria that have been calculated
              */
-            virtual uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector,
-                                                       View<float64>::iterator criteria, uint32 numCriteria,
-                                                       float32 l1RegularizationWeight,
-                                                       float32 l2RegularizationWeight) = 0;
+            virtual uint32 calculateOutputWiseCriteria(
+              const StatisticVector& statisticVector,
+              typename View<typename StatisticVector::statistic_type>::iterator criteria, uint32 numCriteria,
+              float32 l1RegularizationWeight, float32 l2RegularizationWeight) = 0;
 
         public:
 
@@ -301,15 +301,16 @@ namespace boosting {
                     // Aggregate gradients and Hessians...
                     util::setViewToZeros(aggregatedGradients_.begin(), numBins);
                     util::setViewToZeros(aggregatedHessians_.begin(), util::triangularNumber(numBins));
-                    aggregateGradientsAndHessians<float64>(
+                    aggregateGradientsAndHessians<typename StatisticVector::statistic_type>(
                       statisticVector.gradients_cbegin(), statisticVector.hessians_cbegin(), numCriteria,
                       binIndexIterator, binIndices_.cbegin(), aggregatedGradients_.begin(), aggregatedHessians_.begin(),
                       maxBins_);
 
                     // Copy Hessians to the matrix of coefficients and add regularization weight to its diagonal...
-                    copyCoefficients<float64>(aggregatedHessians_.cbegin(), this->sysvTmpArray1_.begin(), numBins);
-                    addL2RegularizationWeight<float64>(this->sysvTmpArray1_.begin(), numBins,
-                                                       numElementsPerBin_.cbegin(), l2RegularizationWeight_);
+                    copyCoefficients<typename StatisticVector::statistic_type>(aggregatedHessians_.cbegin(),
+                                                                               this->sysvTmpArray1_.begin(), numBins);
+                    addL2RegularizationWeight<typename StatisticVector::statistic_type>(
+                      this->sysvTmpArray1_.begin(), numBins, numElementsPerBin_.cbegin(), l2RegularizationWeight_);
 
                     // Copy gradients to the vector of ordinates...
                     typename DenseBinnedScoreVector<IndexVector>::bin_value_iterator binValueIterator =
@@ -357,9 +358,10 @@ namespace boosting {
         : public AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector> {
         protected:
 
-            uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector, View<float64>::iterator criteria,
-                                               uint32 numCriteria, float32 l1RegularizationWeight,
-                                               float32 l2RegularizationWeight) override {
+            uint32 calculateOutputWiseCriteria(
+              const StatisticVector& statisticVector,
+              typename View<typename StatisticVector::statistic_type>::iterator criteria, uint32 numCriteria,
+              float32 l1RegularizationWeight, float32 l2RegularizationWeight) override {
                 typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
                 typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
