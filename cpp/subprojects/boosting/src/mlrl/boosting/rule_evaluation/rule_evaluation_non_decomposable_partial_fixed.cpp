@@ -91,13 +91,14 @@ namespace boosting {
                     valueIterator[i] = -gradientIterator[index];
                 }
 
-                addL1RegularizationWeight<float64>(valueIterator, numPredictions, l1RegularizationWeight_);
+                addL1RegularizationWeight<typename StatisticVector::statistic_type>(valueIterator, numPredictions,
+                                                                                    l1RegularizationWeight_);
 
                 // Copy Hessians to the matrix of coefficients and add the L2 regularization weight to its diagonal...
-                copyCoefficients<float64, PartialIndexVector::iterator>(
+                copyCoefficients<typename StatisticVector::statistic_type, PartialIndexVector::iterator>(
                   statisticVector.hessians_cbegin(), indexIterator, this->sysvTmpArray1_.begin(), numPredictions);
-                addL2RegularizationWeight<float64>(this->sysvTmpArray1_.begin(), numPredictions,
-                                                   l2RegularizationWeight_);
+                addL2RegularizationWeight<typename StatisticVector::statistic_type>(
+                  this->sysvTmpArray1_.begin(), numPredictions, l2RegularizationWeight_);
 
                 // Calculate the scores to be predicted for individual outputs by solving a system of linear
                 // equations...
@@ -105,13 +106,14 @@ namespace boosting {
                                  this->sysvTmpArray3_.begin(), valueIterator, numPredictions, this->sysvLwork_);
 
                 // Calculate the overall quality...
-                float64 quality = calculateOverallQuality<float64>(
-                  valueIterator, statisticVector.gradients_begin(), statisticVector.hessians_begin(),
-                  this->spmvTmpArray_.begin(), numPredictions, *blasPtr_);
+                typename StatisticVector::statistic_type quality =
+                  calculateOverallQuality<typename StatisticVector::statistic_type>(
+                    valueIterator, statisticVector.gradients_begin(), statisticVector.hessians_begin(),
+                    this->spmvTmpArray_.begin(), numPredictions, *blasPtr_);
 
                 // Evaluate regularization term...
-                quality += calculateRegularizationTerm<float64>(valueIterator, numPredictions, l1RegularizationWeight_,
-                                                                l2RegularizationWeight_);
+                quality += calculateRegularizationTerm<typename StatisticVector::statistic_type>(
+                  valueIterator, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
 
                 scoreVector_.quality = quality;
                 return scoreVector_;
