@@ -39,17 +39,21 @@ namespace boosting {
                 typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
 
-                const std::pair<float64, float64> pair =
-                  getMinAndMaxScore(criteria, gradientIterator, hessianIterator, numLabels, l1RegularizationWeight,
-                                    l2RegularizationWeight);
-                float64 minAbsScore = pair.first;
-                float64 threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
+                const std::pair<typename StatisticVector::statistic_type, typename StatisticVector::statistic_type>
+                  pair = getMinAndMaxScore<typename StatisticVector::statistic_type,
+                                           typename StatisticVector::gradient_const_iterator,
+                                           typename StatisticVector::hessian_diagonal_const_iterator>(
+                    criteria, gradientIterator, hessianIterator, numLabels, l1RegularizationWeight,
+                    l2RegularizationWeight);
+                typename StatisticVector::statistic_type minAbsScore = pair.first;
+                typename StatisticVector::statistic_type threshold =
+                  calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
                 PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
                 typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numLabels; i++) {
-                    float64 score = criteria[i];
+                    typename StatisticVector::statistic_type score = criteria[i];
 
                     if (calculateWeightedScore(score, minAbsScore, exponent_) >= threshold) {
                         indexIterator[n] = labelIndexIterator[i];
