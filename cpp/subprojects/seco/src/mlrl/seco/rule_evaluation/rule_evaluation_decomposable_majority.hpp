@@ -24,7 +24,7 @@ namespace seco {
     class DecomposableMajorityRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
         private:
 
-            DenseScoreVector<IndexVector> scoreVector_;
+            DenseScoreVector<float32, IndexVector> scoreVector_;
 
         public:
 
@@ -40,8 +40,9 @@ namespace seco {
                                                 View<uint32>::const_iterator majorityLabelIndicesEnd,
                                                 const StatisticVector& confusionMatricesTotal,
                                                 const StatisticVector& confusionMatricesCovered) override {
-                typename DenseScoreVector<IndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
-                typename DenseScoreVector<IndexVector>::index_const_iterator indexIterator =
+                typename DenseScoreVector<float32, IndexVector>::value_iterator valueIterator =
+                  scoreVector_.values_begin();
+                typename DenseScoreVector<float32, IndexVector>::index_const_iterator indexIterator =
                   scoreVector_.indices_cbegin();
                 auto labelIterator =
                   createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
@@ -51,7 +52,7 @@ namespace seco {
                 for (uint32 i = 0; i < numElements; i++) {
                     uint32 index = indexIterator[i];
                     std::advance(labelIterator, index - previousIndex);
-                    valueIterator[i] = (float64) *labelIterator;
+                    valueIterator[i] = (float32) *labelIterator;
                     previousIndex = index;
                 }
 

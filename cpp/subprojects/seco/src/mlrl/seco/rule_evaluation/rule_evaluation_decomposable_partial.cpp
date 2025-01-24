@@ -27,7 +27,7 @@ namespace seco {
     class DecomposableCompleteRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
         private:
 
-            DenseScoreVector<PartialIndexVector> scoreVector_;
+            DenseScoreVector<float32, PartialIndexVector> scoreVector_;
 
             const std::unique_ptr<IHeuristic> heuristicPtr_;
 
@@ -54,20 +54,21 @@ namespace seco {
                                                 const StatisticVector& confusionMatricesTotal,
                                                 const StatisticVector& confusionMatricesCovered) override {
                 uint32 numElements = scoreVector_.getNumElements();
-                DenseScoreVector<PartialIndexVector>::index_const_iterator indexIterator =
+                typename DenseScoreVector<float32, PartialIndexVector>::index_const_iterator indexIterator =
                   scoreVector_.indices_cbegin();
                 typename StatisticVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();
                 typename StatisticVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
                 auto labelIterator =
                   createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
-                DenseScoreVector<PartialIndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
+                typename DenseScoreVector<float32, PartialIndexVector>::value_iterator valueIterator =
+                  scoreVector_.values_begin();
                 float32 sumOfQualities = 0;
                 uint32 previousIndex = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
                     uint32 index = indexIterator[i];
                     std::advance(labelIterator, index - previousIndex);
-                    valueIterator[i] = (float64) !(*labelIterator);
+                    valueIterator[i] = (float32) !(*labelIterator);
                     sumOfQualities +=
                       calculateOutputWiseQuality(totalIterator[index], coveredIterator[i], *heuristicPtr_);
                     previousIndex = index;
@@ -95,7 +96,7 @@ namespace seco {
 
             PartialIndexVector indexVector_;
 
-            DenseScoreVector<PartialIndexVector> scoreVector_;
+            DenseScoreVector<float32, PartialIndexVector> scoreVector_;
 
             SparseArrayVector<std::pair<float32, bool>> sortedVector_;
 
@@ -176,13 +177,14 @@ namespace seco {
 
                 indexVector_.setNumElements(bestNumPredictions, false);
                 scoreVector_.quality = bestQuality;
-                DenseScoreVector<PartialIndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
+                typename DenseScoreVector<float32, PartialIndexVector>::value_iterator valueIterator =
+                  scoreVector_.values_begin();
                 PartialIndexVector::iterator predictedIndexIterator = indexVector_.begin();
 
                 for (uint32 i = 0; i < bestNumPredictions; i++) {
                     const IndexedValue<std::pair<float32, bool>>& entry = sortedIterator[i];
                     predictedIndexIterator[i] = entry.index;
-                    valueIterator[i] = entry.value.second ? 1 : 0;
+                    valueIterator[i] = (float32) entry.value.second;
                 }
 
                 return scoreVector_;
