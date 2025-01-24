@@ -147,15 +147,17 @@ namespace boosting {
         : public AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector> {
         private:
 
-            DenseScoreVector<typename StatisticVector::statistic_type, IndexVector> scoreVector_;
+            typedef typename StatisticVector::statistic_type statistic_type;
+
+            DenseScoreVector<statistic_type, IndexVector> scoreVector_;
 
             const float32 l1RegularizationWeight_;
 
             const float32 l2RegularizationWeight_;
 
-            const std::unique_ptr<Blas<typename StatisticVector::statistic_type>> blasPtr_;
+            const std::unique_ptr<Blas<statistic_type>> blasPtr_;
 
-            const std::unique_ptr<Lapack<typename StatisticVector::statistic_type>> lapackPtr_;
+            const std::unique_ptr<Lapack<statistic_type>> lapackPtr_;
 
         public:
 
@@ -171,10 +173,10 @@ namespace boosting {
              * @param lapackPtr                 An unique pointer to an object of type `Lapack` that allows to execute
              *                                  LAPACK routines
              */
-            DenseNonDecomposableCompleteRuleEvaluation(
-              const IndexVector& outputIndices, float32 l1RegularizationWeight, float32 l2RegularizationWeight,
-              std::unique_ptr<Blas<typename StatisticVector::statistic_type>> blasPtr,
-              std::unique_ptr<Lapack<typename StatisticVector::statistic_type>> lapackPtr)
+            DenseNonDecomposableCompleteRuleEvaluation(const IndexVector& outputIndices, float32 l1RegularizationWeight,
+                                                       float32 l2RegularizationWeight,
+                                                       std::unique_ptr<Blas<statistic_type>> blasPtr,
+                                                       std::unique_ptr<Lapack<statistic_type>> lapackPtr)
                 : AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector>(outputIndices.getNumElements(),
                                                                                       *lapackPtr),
                   scoreVector_(outputIndices, true), l1RegularizationWeight_(l1RegularizationWeight),
@@ -188,18 +190,16 @@ namespace boosting {
                 uint32 numPredictions = scoreVector_.getNumElements();
 
                 // Copy Hessians to the matrix of coefficients and add the L2 regularization weight to its diagonal...
-                copyCoefficients<typename StatisticVector::statistic_type>(
-                  statisticVector.hessians_cbegin(), this->sysvTmpArray1_.begin(), numPredictions);
-                addL2RegularizationWeight<typename StatisticVector::statistic_type>(
-                  this->sysvTmpArray1_.begin(), numPredictions, l2RegularizationWeight_);
+                copyCoefficients<statistic_type>(statisticVector.hessians_cbegin(), this->sysvTmpArray1_.begin(),
+                                                 numPredictions);
+                addL2RegularizationWeight<statistic_type>(this->sysvTmpArray1_.begin(), numPredictions,
+                                                          l2RegularizationWeight_);
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
-                typename DenseScoreVector<typename StatisticVector::statistic_type, IndexVector>::value_iterator
-                  valueIterator = scoreVector_.values_begin();
-                copyOrdinates<typename StatisticVector::statistic_type>(statisticVector.gradients_cbegin(),
-                                                                        valueIterator, numPredictions);
-                addL1RegularizationWeight<typename StatisticVector::statistic_type>(valueIterator, numPredictions,
-                                                                                    l1RegularizationWeight_);
+                typename DenseScoreVector<statistic_type, IndexVector>::value_iterator valueIterator =
+                  scoreVector_.values_begin();
+                copyOrdinates<statistic_type>(statisticVector.gradients_cbegin(), valueIterator, numPredictions);
+                addL1RegularizationWeight<statistic_type>(valueIterator, numPredictions, l1RegularizationWeight_);
 
                 // Calculate the scores to be predicted for individual outputs by solving a system of linear
                 // equations...
@@ -207,13 +207,12 @@ namespace boosting {
                                  this->sysvTmpArray3_.begin(), valueIterator, numPredictions, this->sysvLwork_);
 
                 // Calculate the overall quality...
-                typename StatisticVector::statistic_type quality =
-                  calculateOverallQuality<typename StatisticVector::statistic_type>(
-                    valueIterator, statisticVector.gradients_begin(), statisticVector.hessians_begin(),
-                    this->spmvTmpArray_.begin(), numPredictions, *blasPtr_);
+                statistic_type quality = calculateOverallQuality<statistic_type>(
+                  valueIterator, statisticVector.gradients_begin(), statisticVector.hessians_begin(),
+                  this->spmvTmpArray_.begin(), numPredictions, *blasPtr_);
 
                 // Evaluate regularization term...
-                quality += calculateRegularizationTerm<typename StatisticVector::statistic_type>(
+                quality += calculateRegularizationTerm<statistic_type>(
                   valueIterator, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
 
                 scoreVector_.quality = quality;
