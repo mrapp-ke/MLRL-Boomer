@@ -88,7 +88,15 @@ void PartialPrediction::postProcess(const IPostProcessor& postProcessor) {
     postProcessor.postProcess(this->values_begin(), this->values_end());
 }
 
+void PartialPrediction::set(View<float32>::const_iterator begin, View<float32>::const_iterator end) {
+    util::copyView(begin, this->view.begin(), this->getNumElements());
+}
+
 void PartialPrediction::set(View<float64>::const_iterator begin, View<float64>::const_iterator end) {
+    util::copyView(begin, this->view.begin(), this->getNumElements());
+}
+
+void PartialPrediction::set(BinnedIterator<const float32> begin, BinnedIterator<const float32> end) {
     util::copyView(begin, this->view.begin(), this->getNumElements());
 }
 

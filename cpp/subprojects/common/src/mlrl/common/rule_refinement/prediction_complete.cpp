@@ -42,7 +42,15 @@ void CompletePrediction::postProcess(const IPostProcessor& postProcessor) {
     postProcessor.postProcess(this->values_begin(), this->values_end());
 }
 
+void CompletePrediction::set(View<float32>::const_iterator begin, View<float32>::const_iterator end) {
+    util::copyView(begin, this->view.begin(), this->getNumElements());
+}
+
 void CompletePrediction::set(View<float64>::const_iterator begin, View<float64>::const_iterator end) {
+    util::copyView(begin, this->view.begin(), this->getNumElements());
+}
+
+void CompletePrediction::set(BinnedIterator<const float32> begin, BinnedIterator<const float32> end) {
     util::copyView(begin, this->view.begin(), this->getNumElements());
 }
 

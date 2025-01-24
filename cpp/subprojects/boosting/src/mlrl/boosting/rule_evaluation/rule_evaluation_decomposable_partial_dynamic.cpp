@@ -22,7 +22,7 @@ namespace boosting {
 
             PartialIndexVector indexVector_;
 
-            DenseScoreVector<PartialIndexVector> scoreVector_;
+            DenseScoreVector<typename StatisticVector::statistic_type, PartialIndexVector> scoreVector_;
 
             const float32 threshold_;
 
@@ -63,7 +63,8 @@ namespace boosting {
                 typename StatisticVector::statistic_type threshold =
                   calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
-                DenseScoreVector<PartialIndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
+                typename DenseScoreVector<typename StatisticVector::statistic_type, PartialIndexVector>::value_iterator
+                  valueIterator = scoreVector_.values_begin();
                 typename IndexVector::const_iterator outputIndexIterator = outputIndices_.cbegin();
                 typename StatisticVector::statistic_type quality = 0;
                 uint32 n = 0;

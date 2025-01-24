@@ -24,7 +24,7 @@ namespace boosting {
 
             PartialIndexVector indexVector_;
 
-            DenseScoreVector<PartialIndexVector> scoreVector_;
+            DenseScoreVector<typename StatisticVector::statistic_type, PartialIndexVector> scoreVector_;
 
             const float32 l1RegularizationWeight_;
 
@@ -80,7 +80,8 @@ namespace boosting {
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
-                typename DenseScoreVector<IndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
+                typename DenseScoreVector<typename StatisticVector::statistic_type, IndexVector>::value_iterator
+                  valueIterator = scoreVector_.values_begin();
                 typename IndexVector::const_iterator outputIndexIterator = outputIndices_.cbegin();
 
                 for (uint32 i = 0; i < numPredictions; i++) {
