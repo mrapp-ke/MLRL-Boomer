@@ -46,7 +46,7 @@ namespace boosting {
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
-                    const typename StatisticVector::value_type& statistic = statisticIterator[i];
+                    const Statistic<statistic_type>& statistic = statisticIterator[i];
                     statistic_type score = calculateOutputWiseScore(statistic.gradient, statistic.hessian,
                                                                     l1RegularizationWeight, l2RegularizationWeight);
 
