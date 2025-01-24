@@ -59,15 +59,17 @@ namespace boosting {
     class AbstractDecomposableBinnedRuleEvaluation : public IRuleEvaluation<StatisticVector> {
         private:
 
+            typedef typename StatisticVector::statistic_type statistic_type;
+
             const uint32 maxBins_;
 
-            DenseBinnedScoreVector<typename StatisticVector::statistic_type, IndexVector> scoreVector_;
+            DenseBinnedScoreVector<statistic_type, IndexVector> scoreVector_;
 
             DenseVector<typename StatisticVector::value_type> aggregatedStatisticVector_;
 
             Array<uint32> numElementsPerBin_;
 
-            Array<typename StatisticVector::statistic_type> criteria_;
+            Array<statistic_type> criteria_;
 
             const float32 l1RegularizationWeight_;
 
@@ -89,10 +91,10 @@ namespace boosting {
              * @param l2RegularizationWeight    The L2 regularization weight
              * @return                          The number of output-wise criteria that have been calculated
              */
-            virtual uint32 calculateOutputWiseCriteria(
-              const StatisticVector& statisticVector,
-              typename View<typename StatisticVector::statistic_type>::iterator criteria, uint32 numCriteria,
-              float32 l1RegularizationWeight, float32 l2RegularizationWeight) = 0;
+            virtual uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector,
+                                                       typename View<statistic_type>::iterator criteria,
+                                                       uint32 numCriteria, float32 l1RegularizationWeight,
+                                                       float32 l2RegularizationWeight) = 0;
 
         public:
 
@@ -142,8 +144,7 @@ namespace boosting {
 
                 // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                typename DenseBinnedScoreVector<typename StatisticVector::statistic_type,
-                                                IndexVector>::bin_index_iterator binIndexIterator =
+                typename DenseBinnedScoreVector<statistic_type, IndexVector>::bin_index_iterator binIndexIterator =
                   scoreVector_.bin_indices_begin();
                 auto callback = [=, this](uint32 binIndex, uint32 labelIndex) {
                     aggregatedStatisticIterator[binIndex] += statisticIterator[labelIndex];
@@ -156,8 +157,7 @@ namespace boosting {
                 binningPtr_->createBins(labelInfo, criteria_.cbegin(), numCriteria, callback, zeroCallback);
 
                 // Compute predictions, as well as their overall quality...
-                typename DenseBinnedScoreVector<typename StatisticVector::statistic_type,
-                                                IndexVector>::bin_value_iterator binValueIterator =
+                typename DenseBinnedScoreVector<statistic_type, IndexVector>::bin_value_iterator binValueIterator =
                   scoreVector_.bin_values_begin();
                 scoreVector_.quality =
                   calculateBinnedScores(aggregatedStatisticIterator, binValueIterator, numElementsPerBin_.cbegin(),
@@ -178,12 +178,16 @@ namespace boosting {
     template<typename StatisticVector, typename IndexVector>
     class DecomposableCompleteBinnedRuleEvaluation final
         : public AbstractDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector> {
+        private:
+
+            typedef typename StatisticVector::statistic_type statistic_type;
+
         protected:
 
-            uint32 calculateOutputWiseCriteria(
-              const StatisticVector& statisticVector,
-              typename View<typename StatisticVector::statistic_type>::iterator criteria, uint32 numCriteria,
-              float32 l1RegularizationWeight, float32 l2RegularizationWeight) override {
+            uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector,
+                                               typename View<statistic_type>::iterator criteria, uint32 numCriteria,
+                                               float32 l1RegularizationWeight,
+                                               float32 l2RegularizationWeight) override {
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
