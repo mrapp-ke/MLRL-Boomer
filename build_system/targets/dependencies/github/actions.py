@@ -121,33 +121,21 @@ class Actions(Workflow):
     TAG_USES = 'uses'
 
     @cached_property
-    def uses_clauses(self) -> List[str]:
-        """
-        A list that contains all uses-clauses in the workflow.
-        """
-        uses_clauses = []
-
-        for job in self.find_tag(self.yaml_dict, 'jobs', default={}).values():
-            for step in self.find_tag(job, 'steps', default=[]):
-                uses_clause = self.find_tag(step, self.TAG_USES)
-
-                if uses_clause:
-                    uses_clauses.append(uses_clause)
-
-        return uses_clauses
-
-    @cached_property
     def actions(self) -> Set[Action]:
         """
         A set that contains all GitHub Actions used in the workflow.
         """
         actions = set()
 
-        for uses_clause in self.uses_clauses:
-            try:
-                actions.add(Action.from_uses_clause(uses_clause))
-            except ValueError as error:
-                raise RuntimeError('Failed to parse uses-clause in workflow "' + self.file + '"') from error
+        for job in self.find_tag(self.yaml_dict, 'jobs', default={}).values():
+            for step in self.find_tag(job, 'steps', default=[]):
+                uses_clause = self.find_tag(step, self.TAG_USES)
+
+                if uses_clause:
+                    try:
+                        actions.add(Action.from_uses_clause(uses_clause))
+                    except ValueError as error:
+                        raise RuntimeError('Failed to parse uses-clause in workflow "' + self.file + '"') from error
 
         return actions
 
@@ -177,11 +165,6 @@ class Actions(Workflow):
 
     def write_lines(self, *lines: str):
         super().write_lines(*lines)
-
-        try:
-            del self.uses_clauses
-        except AttributeError:
-            pass
 
         try:
             del self.actions
