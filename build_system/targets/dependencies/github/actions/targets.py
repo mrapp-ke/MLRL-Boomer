@@ -8,7 +8,7 @@ from core.modules import Module
 from core.targets import PhonyTarget
 from util.log import Log
 
-from targets.dependencies.github.actions import ActionUpdater
+from targets.dependencies.github.actions.actions import ActionUpdater
 from targets.dependencies.github.modules import GithubWorkflowModule
 from targets.dependencies.table import Table
 

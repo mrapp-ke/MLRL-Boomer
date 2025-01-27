@@ -16,6 +16,7 @@ on:
       - build_system/targets/paths.py
       - build_system/targets/dependencies/*
       - build_system/targets/dependencies/github/*
+      - build_system/targets/dependencies/github/actions/*
   schedule:
     - cron: 0 3 * * 0
   workflow_dispatch:
