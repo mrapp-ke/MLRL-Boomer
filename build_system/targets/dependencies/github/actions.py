@@ -11,7 +11,7 @@ from core.build_unit import BuildUnit
 from util.log import Log
 
 from targets.dependencies.github.modules import GithubWorkflowModule
-from targets.dependencies.github.pyyaml import YamlFile
+from targets.dependencies.github.workflows import Workflow, Workflows
 from targets.dependencies.pygithub import GithubApi
 
 
@@ -113,9 +113,9 @@ class Action:
         return hash(str(self))
 
 
-class Workflow(YamlFile):
+class Actions(Workflow):
     """
-    A GitHub workflow.
+    Allows to access and update the GitHub Actions in a workflow.
     """
 
     TAG_USES = 'uses'
@@ -127,9 +127,9 @@ class Workflow(YamlFile):
         """
         uses_clauses = []
 
-        for job in self.yaml_dict.get('jobs', {}).values():
-            for step in job.get('steps', []):
-                uses_clause = step.get(self.TAG_USES, None)
+        for job in self.find_tag(self.yaml_dict, 'jobs', default={}).values():
+            for step in self.find_tag(job, 'steps', default=[]):
+                uses_clause = self.find_tag(step, self.TAG_USES)
 
                 if uses_clause:
                     uses_clauses.append(uses_clause)
@@ -186,9 +186,10 @@ class Workflow(YamlFile):
         try:
             del self.actions
         except AttributeError:
+            pass
 
 
-class WorkflowUpdater:
+class WorkflowUpdater(Workflows):
     """
     Allows checking the versions of GitHub Actions used in multiple workflows and updating outdated ones.
     """
@@ -267,25 +268,11 @@ class WorkflowUpdater:
         :param build_unit:  The build unit from which workflow definition files should be read
         :param module:      The module, that contains the workflow definition files
         """
-        self.build_unit = build_unit
-        self.module = module
+        super().__init__(build_unit, module)
         self.version_cache = {}
         self.github_api = GithubApi(build_unit).set_token_from_env()
 
-    @cached_property
-    def workflows(self) -> Set[Workflow]:
-        """
-        All GitHub workflows that are defined in the directory where workflow definition files are located.
-        """
-        workflows = set()
-
-        for workflow_file in self.module.find_workflow_files():
-            Log.info('Searching for GitHub Actions in workflow "%s"...', workflow_file)
-            workflows.add(Workflow(self.build_unit, workflow_file))
-
-        return workflows
-
-    def find_outdated_workflows(self) -> Dict[Workflow, Set[OutdatedAction]]:
+    def find_outdated_workflows(self) -> Dict[Actions, Set[OutdatedAction]]:
         """
         Finds and returns all workflows with outdated GitHub actions.
 
@@ -294,6 +281,9 @@ class WorkflowUpdater:
         outdated_workflows = {}
 
         for workflow in self.workflows:
+            Log.info('Searching for GitHub Actions in workflow "%s"...', workflow.file)
+            workflow = Actions(self.build_unit, file=workflow.file)
+
             for action in workflow.actions:
                 latest_version = self.__get_latest_action_version(action)
 
@@ -303,7 +293,7 @@ class WorkflowUpdater:
 
         return outdated_workflows
 
-    def update_outdated_workflows(self) -> Dict[Workflow, Set[UpdatedAction]]:
+    def update_outdated_workflows(self) -> Dict[Actions, Set[UpdatedAction]]:
         """
         Updates all workflows with outdated GitHub Actions.
 
