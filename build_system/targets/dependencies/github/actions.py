@@ -186,13 +186,6 @@ class Workflow(YamlFile):
         try:
             del self.actions
         except AttributeError:
-            pass
-
-    def __eq__(self, other: 'Workflow') -> bool:
-        return self.file == other.file
-
-    def __hash__(self) -> int:
-        return hash(self.file)
 
 
 class WorkflowUpdater:
