@@ -189,7 +189,7 @@ class Actions(Workflow):
             pass
 
 
-class WorkflowUpdater(Workflows):
+class ActionUpdater(Workflows):
     """
     Allows checking the versions of GitHub Actions used in multiple workflows and updating outdated ones.
     """
@@ -209,7 +209,7 @@ class WorkflowUpdater(Workflows):
         def __str__(self) -> str:
             return str(self.action)
 
-        def __eq__(self, other: 'WorkflowUpdater.OutdatedAction') -> bool:
+        def __eq__(self, other: 'ActionUpdater.OutdatedAction') -> bool:
             return self.action == other.action
 
         def __hash__(self) -> int:
@@ -224,13 +224,13 @@ class WorkflowUpdater(Workflows):
             previous:   The previous Action
             updated:    The updated Action
         """
-        previous: 'WorkflowUpdater.OutdatedAction'
+        previous: 'ActionUpdater.OutdatedAction'
         updated: Action
 
         def __str__(self) -> str:
             return str(self.updated)
 
-        def __eq__(self, other: 'WorkflowUpdater.UpdatedAction') -> bool:
+        def __eq__(self, other: 'ActionUpdater.UpdatedAction') -> bool:
             return self.updated == other.updated
 
         def __hash__(self) -> int:
@@ -289,7 +289,7 @@ class WorkflowUpdater(Workflows):
 
                 if action.version < latest_version:
                     outdated_actions = outdated_workflows.setdefault(workflow, set())
-                    outdated_actions.add(WorkflowUpdater.OutdatedAction(action, latest_version))
+                    outdated_actions.add(ActionUpdater.OutdatedAction(action, latest_version))
 
         return outdated_workflows
 
@@ -312,7 +312,7 @@ class WorkflowUpdater(Workflows):
                 updated_version = ActionVersion.from_version_numbers(*latest_version_numbers[:max_version_numbers])
                 updated_actions = updated_workflows.setdefault(workflow, updated_actions)
                 updated_action = replace(outdated_action.action, version=updated_version)
-                updated_actions.add(WorkflowUpdater.UpdatedAction(previous=outdated_action, updated=updated_action))
+                updated_actions.add(ActionUpdater.UpdatedAction(previous=outdated_action, updated=updated_action))
 
             workflow.update_actions(*[updated_action.updated for updated_action in updated_actions])
 
