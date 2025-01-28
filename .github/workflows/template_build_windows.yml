@@ -9,7 +9,7 @@ on:
 jobs:
   windows_build:
     name: Test Windows build
-    runs-on: windows-latest
+    runs-on: windows-2025
     env:
       SCCACHE_GHA_ENABLED: 'true'
     steps:
