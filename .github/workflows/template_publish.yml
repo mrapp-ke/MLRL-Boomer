@@ -51,21 +51,3 @@ jobs:
     secrets:
       pypi_username: ${{ secrets.pypi_username}}
       pypi_password: ${{ secrets.pypi_password }}
-  publish_non_native:
-    name: Publish non-native platform wheels
-    strategy:
-      fail-fast: false
-      matrix:
-        subproject:
-          - common
-          - boosting
-          - seco
-    uses: ./.github/workflows/template_publish_non_native.yml
-    with:
-      subproject: ${{ matrix.subproject }}
-      python_version: ${{ inputs.python_version }}
-      dev_release: ${{ inputs.dev_release }}
-      pypi_repository: ${{ inputs.pypi_repository }}
-    secrets:
-      pypi_username: ${{ secrets.pypi_username}}
-      pypi_password: ${{ secrets.pypi_password }}
