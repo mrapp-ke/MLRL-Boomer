@@ -32,7 +32,6 @@ jobs:
       - name: Compile via MSVC
         run: |-
           $env:SUBPROJECTS = "${{ inputs.subproject }}"
-          $env:TEST_SUPPORT = "disabled"
           $env:INCLUDE += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\include"
           $env:LIB += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\lib"
           ./build.bat compile
