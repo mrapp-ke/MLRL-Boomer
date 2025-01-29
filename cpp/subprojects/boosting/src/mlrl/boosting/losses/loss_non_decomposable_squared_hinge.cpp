@@ -228,7 +228,7 @@ namespace boosting {
      * An implementation of the type `INonDecomposableClassificationLoss` that implements a multivariate variant of the
      * squared hinge loss that is non-decomposable.
      */
-    class NonDecomposableSquaredHingeLoss final : public INonDecomposableClassificationLoss {
+    class NonDecomposableSquaredHingeLoss final : public INonDecomposableClassificationLoss<float64> {
         public:
 
             virtual void updateDecomposableStatistics(
@@ -329,7 +329,7 @@ namespace boosting {
     class NonDecomposableSquaredHingeLossFactory final : public INonDecomposableClassificationLossFactory {
         public:
 
-            std::unique_ptr<INonDecomposableClassificationLoss> createNonDecomposableClassificationLoss()
+            std::unique_ptr<INonDecomposableClassificationLoss<float64>> createNonDecomposableClassificationLoss()
               const override {
                 return std::make_unique<NonDecomposableSquaredHingeLoss>();
             }
