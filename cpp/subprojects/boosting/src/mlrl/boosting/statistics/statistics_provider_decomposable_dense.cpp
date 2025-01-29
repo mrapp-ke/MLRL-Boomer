@@ -95,7 +95,7 @@ namespace boosting {
       const CContiguousView<const float32>& regressionMatrix) const {
         std::unique_ptr<IDecomposableRegressionLoss<float64>> lossPtr =
           lossFactoryPtr_->createDecomposableRegressionLoss();
-        std::unique_ptr<IRegressionEvaluationMeasure> evaluationMeasurePtr =
+        std::unique_ptr<IRegressionEvaluationMeasure<float64>> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createRegressionEvaluationMeasure();
         std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> statisticsPtr =
           createStatistics(std::move(lossPtr), std::move(evaluationMeasurePtr), *defaultRuleEvaluationFactoryPtr_,
@@ -108,7 +108,7 @@ namespace boosting {
       const CsrView<const float32>& regressionMatrix) const {
         std::unique_ptr<IDecomposableRegressionLoss<float64>> lossPtr =
           lossFactoryPtr_->createDecomposableRegressionLoss();
-        std::unique_ptr<IRegressionEvaluationMeasure> evaluationMeasurePtr =
+        std::unique_ptr<IRegressionEvaluationMeasure<float64>> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createRegressionEvaluationMeasure();
         std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> statisticsPtr =
           createStatistics(std::move(lossPtr), std::move(evaluationMeasurePtr), *defaultRuleEvaluationFactoryPtr_,
