@@ -427,7 +427,7 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProvider> DenseNonDecomposableClassificationStatisticsProviderFactory::create(
       const CContiguousView<const uint8>& labelMatrix) const {
-        std::unique_ptr<INonDecomposableClassificationLoss> lossPtr =
+        std::unique_ptr<INonDecomposableClassificationLoss<float64>> lossPtr =
           lossFactoryPtr_->createNonDecomposableClassificationLoss();
         std::unique_ptr<IClassificationEvaluationMeasure> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createClassificationEvaluationMeasure();
@@ -442,7 +442,7 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProvider> DenseNonDecomposableClassificationStatisticsProviderFactory::create(
       const BinaryCsrView& labelMatrix) const {
-        std::unique_ptr<INonDecomposableClassificationLoss> lossPtr =
+        std::unique_ptr<INonDecomposableClassificationLoss<float64>> lossPtr =
           lossFactoryPtr_->createNonDecomposableClassificationLoss();
         std::unique_ptr<IClassificationEvaluationMeasure> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createClassificationEvaluationMeasure();
@@ -518,7 +518,7 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProvider> DenseConvertibleNonDecomposableClassificationStatisticsProviderFactory::create(
       const CContiguousView<const uint8>& labelMatrix) const {
-        std::unique_ptr<INonDecomposableClassificationLoss> lossPtr =
+        std::unique_ptr<INonDecomposableClassificationLoss<float64>> lossPtr =
           lossFactoryPtr_->createNonDecomposableClassificationLoss();
         std::unique_ptr<IClassificationEvaluationMeasure> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createClassificationEvaluationMeasure();
@@ -534,7 +534,7 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProvider> DenseConvertibleNonDecomposableClassificationStatisticsProviderFactory::create(
       const BinaryCsrView& labelMatrix) const {
-        std::unique_ptr<INonDecomposableClassificationLoss> lossPtr =
+        std::unique_ptr<INonDecomposableClassificationLoss<float64>> lossPtr =
           lossFactoryPtr_->createNonDecomposableClassificationLoss();
         std::unique_ptr<IClassificationEvaluationMeasure> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createClassificationEvaluationMeasure();
