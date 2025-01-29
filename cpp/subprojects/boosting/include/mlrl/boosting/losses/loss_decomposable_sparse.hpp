@@ -17,14 +17,14 @@ namespace boosting {
      * To meet this requirement, the gradients and Hessians that are computed by the loss function should be zero, if
      * the prediction for a label is correct.
      */
-    class ISparseDecomposableClassificationLoss : virtual public IDecomposableClassificationLoss,
+    class ISparseDecomposableClassificationLoss : virtual public IDecomposableClassificationLoss<float64>,
                                                   public ISparseEvaluationMeasure {
         public:
 
             virtual ~ISparseDecomposableClassificationLoss() override {}
 
             // Keep functions from the parent class rather than hiding them
-            using IDecomposableClassificationLoss::updateDecomposableStatistics;
+            using IDecomposableClassificationLoss<float64>::updateDecomposableStatistics;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -127,7 +127,7 @@ namespace boosting {
             /**
              * @see `IDecomposableClassificationLossFactory::createDecomposableClassificationLoss`
              */
-            std::unique_ptr<IDecomposableClassificationLoss> createDecomposableClassificationLoss()
+            std::unique_ptr<IDecomposableClassificationLoss<float64>> createDecomposableClassificationLoss()
               const override final {
                 return this->createSparseDecomposableClassificationLoss();
             }
