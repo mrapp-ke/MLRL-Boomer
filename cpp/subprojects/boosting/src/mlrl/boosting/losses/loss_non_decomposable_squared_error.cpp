@@ -154,7 +154,7 @@ namespace boosting {
      * An implementation of the type `INonDecomposableClassificationLoss` that implements a multivariate variant of the
      * squared error loss that is non-decomposable.
      */
-    class NonDecomposableSquaredErrorLoss final : public INonDecomposableClassificationLoss,
+    class NonDecomposableSquaredErrorLoss final : public INonDecomposableClassificationLoss<float64>,
                                                   public INonDecomposableRegressionLoss {
         public:
 
@@ -355,7 +355,7 @@ namespace boosting {
                                                          public INonDecomposableRegressionLossFactory {
         public:
 
-            std::unique_ptr<INonDecomposableClassificationLoss> createNonDecomposableClassificationLoss()
+            std::unique_ptr<INonDecomposableClassificationLoss<float64>> createNonDecomposableClassificationLoss()
               const override {
                 return std::make_unique<NonDecomposableSquaredErrorLoss>();
             }
