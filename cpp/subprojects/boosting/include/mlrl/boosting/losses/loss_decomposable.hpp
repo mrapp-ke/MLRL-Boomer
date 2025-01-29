@@ -22,7 +22,7 @@ namespace boosting {
      */
     template<typename StatisticType>
     class IDecomposableClassificationLoss : virtual public IClassificationLoss<StatisticType>,
-                                            virtual public IClassificationEvaluationMeasure {
+                                            virtual public IClassificationEvaluationMeasure<StatisticType> {
         public:
 
             virtual ~IDecomposableClassificationLoss() override {}
