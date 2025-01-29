@@ -445,7 +445,7 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProvider> DenseNonDecomposableRegressionStatisticsProviderFactory::create(
       const CContiguousView<const float32>& regressionMatrix) const {
-        std::unique_ptr<INonDecomposableRegressionLoss> lossPtr =
+        std::unique_ptr<INonDecomposableRegressionLoss<float64>> lossPtr =
           lossFactoryPtr_->createNonDecomposableRegressionLoss();
         std::unique_ptr<IRegressionEvaluationMeasure> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createRegressionEvaluationMeasure();
@@ -461,7 +461,7 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProvider> DenseNonDecomposableRegressionStatisticsProviderFactory::create(
       const CsrView<const float32>& regressionMatrix) const {
-        std::unique_ptr<INonDecomposableRegressionLoss> lossPtr =
+        std::unique_ptr<INonDecomposableRegressionLoss<float64>> lossPtr =
           lossFactoryPtr_->createNonDecomposableRegressionLoss();
         std::unique_ptr<IRegressionEvaluationMeasure> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createRegressionEvaluationMeasure();
@@ -539,7 +539,7 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProvider> DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory::create(
       const CContiguousView<const float32>& regressionMatrix) const {
-        std::unique_ptr<INonDecomposableRegressionLoss> lossPtr =
+        std::unique_ptr<INonDecomposableRegressionLoss<float64>> lossPtr =
           lossFactoryPtr_->createNonDecomposableRegressionLoss();
         std::unique_ptr<IRegressionEvaluationMeasure> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createRegressionEvaluationMeasure();
@@ -556,7 +556,7 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProvider> DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory::create(
       const CsrView<const float32>& regressionMatrix) const {
-        std::unique_ptr<INonDecomposableRegressionLoss> lossPtr =
+        std::unique_ptr<INonDecomposableRegressionLoss<float64>> lossPtr =
           lossFactoryPtr_->createNonDecomposableRegressionLoss();
         std::unique_ptr<IRegressionEvaluationMeasure> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createRegressionEvaluationMeasure();

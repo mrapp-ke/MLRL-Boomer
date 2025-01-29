@@ -155,7 +155,7 @@ namespace boosting {
      * squared error loss that is non-decomposable.
      */
     class NonDecomposableSquaredErrorLoss final : public INonDecomposableClassificationLoss<float64>,
-                                                  public INonDecomposableRegressionLoss {
+                                                  public INonDecomposableRegressionLoss<float64> {
         public:
 
             virtual void updateDecomposableStatistics(
@@ -360,7 +360,8 @@ namespace boosting {
                 return std::make_unique<NonDecomposableSquaredErrorLoss>();
             }
 
-            std::unique_ptr<INonDecomposableRegressionLoss> createNonDecomposableRegressionLoss() const override {
+            std::unique_ptr<INonDecomposableRegressionLoss<float64>> createNonDecomposableRegressionLoss()
+              const override {
                 return std::make_unique<NonDecomposableSquaredErrorLoss>();
             }
 
