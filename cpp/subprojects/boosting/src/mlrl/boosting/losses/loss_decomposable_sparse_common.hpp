@@ -141,7 +141,7 @@ namespace boosting {
      * label, respectively.
      */
     class SparseDecomposableClassificationLoss final : public DecomposableClassificationLoss,
-                                                       public ISparseDecomposableClassificationLoss {
+                                                       public ISparseDecomposableClassificationLoss<float64> {
         public:
 
             /**
