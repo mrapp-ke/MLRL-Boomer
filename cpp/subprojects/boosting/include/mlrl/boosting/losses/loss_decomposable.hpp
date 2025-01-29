@@ -104,7 +104,10 @@ namespace boosting {
 
     /**
      * Defines an interface for all decomposable loss functions that can be used in regression problems.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
+    template<typename StatisticType>
     class IDecomposableRegressionLoss : virtual public IRegressionLoss,
                                         virtual public IRegressionEvaluationMeasure {
         public:
@@ -124,12 +127,11 @@ namespace boosting {
              * @param indicesEnd        A `CompleteIndexVector::const_iterator` to the end of the output indices
              * @param statisticView     A reference to an object of type `CContiguousView` to be updated
              */
-            virtual void updateDecomposableStatistics(uint32 exampleIndex,
-                                                      const CContiguousView<const float32>& regressionMatrix,
-                                                      const CContiguousView<float64>& scoreMatrix,
-                                                      CompleteIndexVector::const_iterator indicesBegin,
-                                                      CompleteIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Statistic<float64>>& statisticView) const = 0;
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const CContiguousView<const float32>& regressionMatrix,
+              const CContiguousView<StatisticType>& scoreMatrix, CompleteIndexVector::const_iterator indicesBegin,
+              CompleteIndexVector::const_iterator indicesEnd,
+              CContiguousView<Statistic<StatisticType>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the outputs, whose indices
@@ -144,12 +146,11 @@ namespace boosting {
              * @param indicesEnd        A `PartialIndexVector::const_iterator` to the end of the output indices
              * @param statisticView     A reference to an object of type `CContiguousView` to be updated
              */
-            virtual void updateDecomposableStatistics(uint32 exampleIndex,
-                                                      const CContiguousView<const float32>& regressionMatrix,
-                                                      const CContiguousView<float64>& scoreMatrix,
-                                                      PartialIndexVector::const_iterator indicesBegin,
-                                                      PartialIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Statistic<float64>>& statisticView) const = 0;
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const CContiguousView<const float32>& regressionMatrix,
+              const CContiguousView<StatisticType>& scoreMatrix, PartialIndexVector::const_iterator indicesBegin,
+              PartialIndexVector::const_iterator indicesEnd,
+              CContiguousView<Statistic<StatisticType>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the outputs, whose indices
@@ -164,12 +165,11 @@ namespace boosting {
              * @param indicesEnd        A `CompleteIndexVector::const_iterator` to the end of the output indices
              * @param statisticView     A reference to an object of type `CContiguousView` to be updated
              */
-            virtual void updateDecomposableStatistics(uint32 exampleIndex,
-                                                      const CsrView<const float32>& regressionMatrix,
-                                                      const CContiguousView<float64>& scoreMatrix,
-                                                      CompleteIndexVector::const_iterator indicesBegin,
-                                                      CompleteIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Statistic<float64>>& statisticView) const = 0;
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const CsrView<const float32>& regressionMatrix,
+              const CContiguousView<StatisticType>& scoreMatrix, CompleteIndexVector::const_iterator indicesBegin,
+              CompleteIndexVector::const_iterator indicesEnd,
+              CContiguousView<Statistic<StatisticType>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the outputs, whose indices
@@ -184,12 +184,11 @@ namespace boosting {
              * @param indicesEnd        A `PartialIndexVector::const_iterator` to the end of the output indices
              * @param statisticView     A reference to an object of type `CContiguousView` to be updated
              */
-            virtual void updateDecomposableStatistics(uint32 exampleIndex,
-                                                      const CsrView<const float32>& regressionMatrix,
-                                                      const CContiguousView<float64>& scoreMatrix,
-                                                      PartialIndexVector::const_iterator indicesBegin,
-                                                      PartialIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Statistic<float64>>& statisticView) const = 0;
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const CsrView<const float32>& regressionMatrix,
+              const CContiguousView<StatisticType>& scoreMatrix, PartialIndexVector::const_iterator indicesBegin,
+              PartialIndexVector::const_iterator indicesEnd,
+              CContiguousView<Statistic<StatisticType>>& statisticView) const = 0;
     };
 
     /**
@@ -225,7 +224,7 @@ namespace boosting {
              *
              * @return An unique pointer to an object of type `IDecomposableRegressionLoss` that has been created
              */
-            virtual std::unique_ptr<IDecomposableRegressionLoss> createDecomposableRegressionLoss() const = 0;
+            virtual std::unique_ptr<IDecomposableRegressionLoss<float64>> createDecomposableRegressionLoss() const = 0;
     };
 
     /**
