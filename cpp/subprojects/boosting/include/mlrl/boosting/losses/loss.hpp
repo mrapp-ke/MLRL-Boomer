@@ -21,7 +21,7 @@ namespace boosting {
     /**
      * Defines an interface for all loss functions that can be used in classification problems.
      */
-    class IClassificationLoss : public IDistanceMeasure {
+    class IClassificationLoss : public IDistanceMeasure<float64> {
         public:
 
             virtual ~IClassificationLoss() override {}
