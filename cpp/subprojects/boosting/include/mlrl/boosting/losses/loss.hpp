@@ -20,8 +20,11 @@ namespace boosting {
 
     /**
      * Defines an interface for all loss functions that can be used in classification problems.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
-    class IClassificationLoss : public IDistanceMeasure<float64> {
+    template<typename StatisticType>
+    class IClassificationLoss : public IDistanceMeasure<StatisticType> {
         public:
 
             virtual ~IClassificationLoss() override {}
