@@ -73,14 +73,15 @@ namespace boosting {
              * @param scoreMatrixPtr        An unique pointer to an object of type `NumericSparseSetMatrix` that stores
              *                              the currently predicted scores
              */
-            SparseDecomposableStatistics(std::unique_ptr<ISparseDecomposableClassificationLoss> lossPtr,
+            SparseDecomposableStatistics(std::unique_ptr<ISparseDecomposableClassificationLoss<float64>> lossPtr,
                                          std::unique_ptr<ISparseEvaluationMeasure> evaluationMeasurePtr,
                                          const ISparseDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
                                          const OutputMatrix& outputMatrix,
                                          std::unique_ptr<SparseDecomposableStatisticMatrix<float64>> statisticViewPtr,
                                          std::unique_ptr<NumericSparseSetMatrix<float64>> scoreMatrixPtr)
                 : AbstractDecomposableStatistics<OutputMatrix, SparseDecomposableStatisticMatrix<float64>,
-                                                 NumericSparseSetMatrix<float64>, ISparseDecomposableClassificationLoss,
+                                                 NumericSparseSetMatrix<float64>,
+                                                 ISparseDecomposableClassificationLoss<float64>,
                                                  ISparseEvaluationMeasure, ISparseDecomposableRuleEvaluationFactory>(
                     std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
                     std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
@@ -299,7 +300,7 @@ namespace boosting {
       MultiThreadingSettings multiThreadingSettings, const OutputMatrix& outputMatrix) {
         uint32 numExamples = outputMatrix.numRows;
         uint32 numOutputs = outputMatrix.numCols;
-        std::unique_ptr<ISparseDecomposableClassificationLoss> lossPtr =
+        std::unique_ptr<ISparseDecomposableClassificationLoss<float64>> lossPtr =
           lossFactory.createSparseDecomposableClassificationLoss();
         std::unique_ptr<ISparseEvaluationMeasure> evaluationMeasurePtr =
           evaluationMeasureFactory.createSparseEvaluationMeasure();
@@ -307,7 +308,7 @@ namespace boosting {
           std::make_unique<SparseDecomposableStatisticMatrix<float64>>(numExamples, numOutputs);
         std::unique_ptr<NumericSparseSetMatrix<float64>> scoreMatrixPtr =
           std::make_unique<NumericSparseSetMatrix<float64>>(numExamples, numOutputs);
-        const ISparseDecomposableClassificationLoss* lossRawPtr = lossPtr.get();
+        const ISparseDecomposableClassificationLoss<float64>* lossRawPtr = lossPtr.get();
         const OutputMatrix* outputMatrixPtr = &outputMatrix;
         const SparseSetView<float64>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
         SparseSetView<Statistic<float64>>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();

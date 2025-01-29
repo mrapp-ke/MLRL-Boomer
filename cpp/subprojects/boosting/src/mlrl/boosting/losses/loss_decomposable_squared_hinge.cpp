@@ -46,7 +46,7 @@ namespace boosting {
     class DecomposableSquaredHingeLossFactory final : public ISparseDecomposableClassificationLossFactory {
         public:
 
-            std::unique_ptr<ISparseDecomposableClassificationLoss> createSparseDecomposableClassificationLoss()
+            std::unique_ptr<ISparseDecomposableClassificationLoss<float64>> createSparseDecomposableClassificationLoss()
               const override {
                 return std::make_unique<SparseDecomposableClassificationLoss>(&updateGradientAndHessian,
                                                                               &evaluatePrediction);
