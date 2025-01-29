@@ -16,13 +16,14 @@ on:
       - build_system/targets/paths.py
       - build_system/targets/dependencies/*
       - build_system/targets/dependencies/github/*
+      - build_system/targets/dependencies/github/actions/*
   schedule:
     - cron: 0 3 * * 0
   workflow_dispatch:
 jobs:
   update_github_actions:
     name: Update GitHub Actions
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4

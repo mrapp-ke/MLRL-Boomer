@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-latest
+          - ubuntu-24.04
           - ubuntu-24.04-arm
     steps:
       - name: Checkout
@@ -32,7 +32,7 @@ jobs:
       - name: Install OpenCL
         run: sudo apt update && sudo apt install -y opencl-headers ocl-icd-opencl-dev
       - name: Install GoogleTest
-        if: ${{ matrix.os == 'ubuntu-latest' && inputs.run_cpp_tests == true}}
+        if: ${{ matrix.os == 'ubuntu-24.04' && inputs.run_cpp_tests == true}}
         run: sudo apt install -y googletest
       - name: Prepare ccache
         uses: hendrikmuhs/ccache-action@v1
@@ -41,20 +41,20 @@ jobs:
       - name: Compile via GCC
         run: SUBPROJECTS=${{ inputs.subproject }} ./build compile
       - name: Test C++ code
-        if: ${{ matrix.os == 'ubuntu-latest' && inputs.run_cpp_tests == true }}
+        if: ${{ matrix.os == 'ubuntu-24.04' && inputs.run_cpp_tests == true }}
         run: SUBPROJECTS=${{ inputs.subproject }} ./build tests_cpp
       - name: Upload C++ test results as artifacts
-        if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' && inputs.run_cpp_tests == true }}
+        if: ${{ !cancelled() && matrix.os == 'ubuntu-24.04' && inputs.run_cpp_tests == true }}
         uses: actions/upload-artifact@v4
         with:
           name: cpp-test-results-${{ inputs.subproject }}
           path: cpp/build/meson-logs/testlog.junit.xml
           if-no-files-found: ignore
       - name: Test Python code
-        if: ${{ matrix.os == 'ubuntu-latest' && inputs.run_python_tests == true }}
+        if: ${{ matrix.os == 'ubuntu-24.04' && inputs.run_python_tests == true }}
         run: SUBPROJECTS=${{ inputs.subproject }} ./build tests_python
       - name: Upload Python test results as artifacts
-        if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' && inputs.run_python_tests == true }}
+        if: ${{ !cancelled() && matrix.os == 'ubuntu-24.04' && inputs.run_python_tests == true }}
         uses: actions/upload-artifact@v4
         with:
           name: python-test-results-${{ inputs.subproject }}
