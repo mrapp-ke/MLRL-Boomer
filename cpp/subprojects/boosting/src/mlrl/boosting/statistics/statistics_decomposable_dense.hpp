@@ -17,9 +17,12 @@ namespace boosting {
     /**
      * A matrix that stores gradients and Hessians that have been calculated using a decomposable loss function using
      * C-contiguous arrays.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians
      */
+    template<typename StatisticType>
     class DenseDecomposableStatisticMatrix final
-        : public ClearableViewDecorator<MatrixDecorator<AllocatedCContiguousView<Statistic<float64>>>> {
+        : public ClearableViewDecorator<MatrixDecorator<AllocatedCContiguousView<Statistic<StatisticType>>>> {
         public:
 
             /**
@@ -27,8 +30,8 @@ namespace boosting {
              * @param numCols   The number of columns in the matrix
              */
             DenseDecomposableStatisticMatrix(uint32 numRows, uint32 numCols)
-                : ClearableViewDecorator<MatrixDecorator<AllocatedCContiguousView<Statistic<float64>>>>(
-                    AllocatedCContiguousView<Statistic<float64>>(numRows, numCols)) {}
+                : ClearableViewDecorator<MatrixDecorator<AllocatedCContiguousView<Statistic<StatisticType>>>>(
+                    AllocatedCContiguousView<Statistic<StatisticType>>(numRows, numCols)) {}
 
             /**
              * Adds all gradients and Hessians in a vector to a specific row of this matrix. The gradients and Hessians
@@ -39,8 +42,8 @@ namespace boosting {
              * @param end       An iterator to the end of the vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToRow(uint32 row, View<Statistic<float64>>::const_iterator begin,
-                          View<Statistic<float64>>::const_iterator end, uint32 weight) {
+            void addToRow(uint32 row, typename View<Statistic<StatisticType>>::const_iterator begin,
+                          typename View<Statistic<StatisticType>>::const_iterator end, uint32 weight) {
                 util::addToViewWeighted(this->view.values_begin(row), begin, this->getNumCols(), weight);
             }
     };
@@ -56,7 +59,7 @@ namespace boosting {
      */
     template<typename Loss, typename OutputMatrix, typename EvaluationMeasure>
     class DenseDecomposableStatistics final
-        : public AbstractDecomposableStatistics<OutputMatrix, DenseDecomposableStatisticMatrix,
+        : public AbstractDecomposableStatistics<OutputMatrix, DenseDecomposableStatisticMatrix<float64>,
                                                 NumericCContiguousMatrix<float64>, Loss, EvaluationMeasure,
                                                 IDecomposableRuleEvaluationFactory> {
         private:
@@ -94,9 +97,9 @@ namespace boosting {
                                         std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
                                         const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
                                         const OutputMatrix& outputMatrix,
-                                        std::unique_ptr<DenseDecomposableStatisticMatrix> statisticMatrixPtr,
+                                        std::unique_ptr<DenseDecomposableStatisticMatrix<float64>> statisticMatrixPtr,
                                         std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
-                : AbstractDecomposableStatistics<OutputMatrix, DenseDecomposableStatisticMatrix,
+                : AbstractDecomposableStatistics<OutputMatrix, DenseDecomposableStatisticMatrix<float64>,
                                                  NumericCContiguousMatrix<float64>, Loss, EvaluationMeasure,
                                                  IDecomposableRuleEvaluationFactory>(
                     std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
