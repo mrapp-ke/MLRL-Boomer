@@ -12,9 +12,12 @@ namespace boosting {
 
     /**
      * Defines an interface for all non-decomposable loss functions that can be used in classification problems.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
+    template<typename StatisticType>
     class INonDecomposableClassificationLoss : virtual public IClassificationLoss,
-                                               virtual public IDecomposableClassificationLoss<float64> {
+                                               virtual public IDecomposableClassificationLoss<StatisticType> {
         public:
 
             virtual ~INonDecomposableClassificationLoss() override {}
@@ -31,8 +34,8 @@ namespace boosting {
              */
             virtual void updateNonDecomposableStatistics(
               uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-              const CContiguousView<float64>& scoreMatrix,
-              DenseNonDecomposableStatisticView<float64>& statisticView) const = 0;
+              const CContiguousView<StatisticType>& scoreMatrix,
+              DenseNonDecomposableStatisticView<StatisticType>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index.
@@ -45,8 +48,8 @@ namespace boosting {
              * @param statisticView A reference to an object of type `DenseNonDecomposableStatisticView` to be updated
              */
             virtual void updateNonDecomposableStatistics(
-              uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<float64>& scoreMatrix,
-              DenseNonDecomposableStatisticView<float64>& statisticView) const = 0;
+              uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<StatisticType>& scoreMatrix,
+              DenseNonDecomposableStatisticView<StatisticType>& statisticView) const = 0;
     };
 
     /**
@@ -105,8 +108,8 @@ namespace boosting {
              *
              * @return An unique pointer to an object of type `INonDecomposableClassificationLoss` that has been created
              */
-            virtual std::unique_ptr<INonDecomposableClassificationLoss> createNonDecomposableClassificationLoss()
-              const = 0;
+            virtual std::unique_ptr<INonDecomposableClassificationLoss<float64>>
+              createNonDecomposableClassificationLoss() const = 0;
 
             std::unique_ptr<IDecomposableClassificationLoss<float64>> createDecomposableClassificationLoss()
               const override final {
