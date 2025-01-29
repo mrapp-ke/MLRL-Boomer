@@ -55,7 +55,10 @@ class IClassificationEvaluationMeasure {
 /**
  * Defines an interface for all measures that can be used in regression problems to assess the quality of predictions
  * for certain examples by comparing them to the corresponding ground truth regression scores.
+ *
+ * @tparam ScoreType The type of the predicted scores
  */
+template<typename ScoreType>
 class IRegressionEvaluationMeasure {
     public:
 
@@ -73,8 +76,8 @@ class IRegressionEvaluationMeasure {
          *                          predicted scores
          * @return                  The numerical score that has been calculated
          */
-        virtual float64 evaluate(uint32 exampleIndex, const CContiguousView<const float32>& regressionMatrix,
-                                 const CContiguousView<float64>& scoreMatrix) const = 0;
+        virtual ScoreType evaluate(uint32 exampleIndex, const CContiguousView<const float32>& regressionMatrix,
+                                   const CContiguousView<ScoreType>& scoreMatrix) const = 0;
 
         /**
          * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
@@ -88,8 +91,8 @@ class IRegressionEvaluationMeasure {
          *                          predicted scores
          * @return                  The numerical score that has been calculated
          */
-        virtual float64 evaluate(uint32 exampleIndex, const CsrView<const float32>& regressionMatrix,
-                                 const CContiguousView<float64>& scoreMatrix) const = 0;
+        virtual ScoreType evaluate(uint32 exampleIndex, const CsrView<const float32>& regressionMatrix,
+                                   const CContiguousView<ScoreType>& scoreMatrix) const = 0;
 };
 
 /**
@@ -122,5 +125,5 @@ class IRegressionEvaluationMeasureFactory {
          *
          * @return An unique pointer to an object of type `IRegressionEvaluationMeasure` that has been created
          */
-        virtual std::unique_ptr<IRegressionEvaluationMeasure> createRegressionEvaluationMeasure() const = 0;
+        virtual std::unique_ptr<IRegressionEvaluationMeasure<float64>> createRegressionEvaluationMeasure() const = 0;
 };
