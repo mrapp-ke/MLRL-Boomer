@@ -16,7 +16,7 @@ namespace boosting {
      * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
     template<typename StatisticType>
-    class INonDecomposableClassificationLoss : virtual public IClassificationLoss,
+    class INonDecomposableClassificationLoss : virtual public IClassificationLoss<StatisticType>,
                                                virtual public IDecomposableClassificationLoss<StatisticType> {
         public:
 
