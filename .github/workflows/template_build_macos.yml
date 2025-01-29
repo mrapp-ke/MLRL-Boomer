@@ -26,5 +26,5 @@ jobs:
         with:
           key: ${{ runner.os }}-test-build-ccache-${{ inputs.subproject }}
       - name: Compile via Clang
-        run: SUBPROJECTS=${{ inputs.subproject }} TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/include/:/opt/homebrew/opt/opencl-clhpp-headers/include/
+        run: SUBPROJECTS=${{ inputs.subproject }} CPLUS_INCLUDE_PATH=/Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/include/:/opt/homebrew/opt/opencl-clhpp-headers/include/
           LIBRARY_PATH=/Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/lib/ ./build compile
