@@ -10,9 +10,12 @@
 #include <memory>
 
 /**
- * Defines an interface for all measures that may be used to compare predictions for individual examples to the
- * corresponding ground truth labels in order to obtain a distance.
+ * Defines an interface for all measures that may be used to compare scores that are predicted for individual examples
+ * to the corresponding ground truth labels in order to obtain a distance.
+ *
+ * @tparam ScoreType The type of the predicted scores
  */
+template<typename ScoreType>
 class IDistanceMeasure {
     public:
 
@@ -27,9 +30,9 @@ class IDistanceMeasure {
          * @param scoresEnd         An iterator to the end of the predicted scores
          * @return                  The distance that has been calculated
          */
-        virtual float64 measureDistance(uint32 labelVectorIndex, const LabelVector& labelVector,
-                                        View<float64>::const_iterator scoresBegin,
-                                        View<float64>::const_iterator scoresEnd) const = 0;
+        virtual ScoreType measureDistance(uint32 labelVectorIndex, const LabelVector& labelVector,
+                                          typename View<ScoreType>::const_iterator scoresBegin,
+                                          typename View<ScoreType>::const_iterator scoresEnd) const = 0;
 
         /**
          * Searches among the label vectors contained in a `LabelVectorSet` and returns the one that is closest to the
@@ -42,19 +45,19 @@ class IDistanceMeasure {
          * @return                      A reference to an object of type `LabelVector` that has been found
          */
         virtual const LabelVector& getClosestLabelVector(const LabelVectorSet& labelVectorSet,
-                                                         View<float64>::const_iterator scoresBegin,
-                                                         View<float64>::const_iterator scoresEnd) const {
+                                                         typename View<ScoreType>::const_iterator scoresBegin,
+                                                         typename View<ScoreType>::const_iterator scoresEnd) const {
             LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
             LabelVectorSet::frequency_const_iterator frequencyIterator = labelVectorSet.frequencies_cbegin();
             uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
             const LabelVector* closestLabelVector = labelVectorIterator[0].get();
             uint32 maxFrequency = frequencyIterator[0];
-            float64 minDistance = this->measureDistance(0, *closestLabelVector, scoresBegin, scoresEnd);
+            ScoreType minDistance = this->measureDistance(0, *closestLabelVector, scoresBegin, scoresEnd);
 
             for (uint32 i = 1; i < numLabelVectors; i++) {
                 const LabelVector& labelVector = *labelVectorIterator[i];
                 uint32 frequency = frequencyIterator[i];
-                float64 distance = this->measureDistance(i, labelVector, scoresBegin, scoresEnd);
+                ScoreType distance = this->measureDistance(i, labelVector, scoresBegin, scoresEnd);
 
                 if (distance < minDistance || (distance == minDistance && frequency > maxFrequency)) {
                     closestLabelVector = &labelVector;
@@ -87,7 +90,7 @@ class IDistanceMeasureFactory {
          * @return                                      An unique pointer to an object of type `IDistanceMeasure` that
          *                                              has been created
          */
-        virtual std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
+        virtual std::unique_ptr<IDistanceMeasure<float64>> createDistanceMeasure(
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const = 0;
 };
