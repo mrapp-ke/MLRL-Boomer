@@ -14,7 +14,7 @@ namespace boosting {
      * Defines an interface for all non-decomposable loss functions that can be used in classification problems.
      */
     class INonDecomposableClassificationLoss : virtual public IClassificationLoss,
-                                               virtual public IDecomposableClassificationLoss {
+                                               virtual public IDecomposableClassificationLoss<float64> {
         public:
 
             virtual ~INonDecomposableClassificationLoss() override {}
@@ -108,7 +108,7 @@ namespace boosting {
             virtual std::unique_ptr<INonDecomposableClassificationLoss> createNonDecomposableClassificationLoss()
               const = 0;
 
-            std::unique_ptr<IDecomposableClassificationLoss> createDecomposableClassificationLoss()
+            std::unique_ptr<IDecomposableClassificationLoss<float64>> createDecomposableClassificationLoss()
               const override final {
                 return this->createNonDecomposableClassificationLoss();
             }

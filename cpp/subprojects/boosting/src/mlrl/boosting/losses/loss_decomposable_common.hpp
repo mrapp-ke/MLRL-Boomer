@@ -64,7 +64,7 @@ namespace boosting {
      * "evaluation function" for updating the gradients and Hessians and evaluating the predictions for an individual
      * label, respectively.
      */
-    class DecomposableClassificationLoss : virtual public IDecomposableClassificationLoss {
+    class DecomposableClassificationLoss : virtual public IDecomposableClassificationLoss<float64> {
         public:
 
             /**
