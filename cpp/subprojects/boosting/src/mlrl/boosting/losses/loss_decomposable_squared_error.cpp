@@ -43,7 +43,7 @@ namespace boosting {
                                                                     &evaluatePredictionRegression);
             }
 
-            std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
+            std::unique_ptr<IDistanceMeasure<float64>> createDistanceMeasure(
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const override {
                 return this->createDecomposableClassificationLoss();
