@@ -9,7 +9,7 @@ on:
 jobs:
   changes:
     name: Detect changes
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       cpp: ${{ steps.filter.outputs.cpp }}
       python: ${{ steps.filter.outputs.python }}
@@ -51,7 +51,7 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.any == 'true' }}
     name: Test building documentation
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -81,7 +81,7 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.any == 'true' }}
     name: Check links in documentation
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -103,7 +103,7 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.any == 'true' }}
     name: Check for spelling mistakes in documentation
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4

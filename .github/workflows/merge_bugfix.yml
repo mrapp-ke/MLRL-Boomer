@@ -7,7 +7,7 @@ on:
 jobs:
   merge_bugfix:
     name: Merge bugfix into feature branch
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: "!contains(github.event.head_commit.message, '[Bot]')"
     steps:
       - name: Checkout

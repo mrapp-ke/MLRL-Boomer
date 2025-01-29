@@ -9,7 +9,7 @@ on:
 jobs:
   changes:
     name: Detect changes
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       cpp_boosting: ${{ steps.filter.outputs.cpp_boosting }}
       cpp_seco: ${{ steps.filter.outputs.cpp_seco }}
@@ -127,7 +127,7 @@ jobs:
     needs: test_build
     if: always()
     name: Publish test results
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Download C++ test results
         uses: actions/download-artifact@v4
@@ -153,7 +153,7 @@ jobs:
     needs: test_build
     if: always()
     name: Test build succeeded
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Check for success
         run: |-
