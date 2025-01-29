@@ -16,15 +16,18 @@ namespace boosting {
      * Defines an interface for all decomposable loss functions that are suited for the use of sparse data structures.
      * To meet this requirement, the gradients and Hessians that are computed by the loss function should be zero, if
      * the prediction for a label is correct.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
-    class ISparseDecomposableClassificationLoss : virtual public IDecomposableClassificationLoss<float64>,
+    template<typename StatisticType>
+    class ISparseDecomposableClassificationLoss : virtual public IDecomposableClassificationLoss<StatisticType>,
                                                   public ISparseEvaluationMeasure {
         public:
 
             virtual ~ISparseDecomposableClassificationLoss() override {}
 
             // Keep functions from the parent class rather than hiding them
-            using IDecomposableClassificationLoss<float64>::updateDecomposableStatistics;
+            using IDecomposableClassificationLoss<StatisticType>::updateDecomposableStatistics;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -41,10 +44,10 @@ namespace boosting {
              */
             virtual void updateDecomposableStatistics(uint32 exampleIndex,
                                                       const CContiguousView<const uint8>& labelMatrix,
-                                                      const SparseSetView<float64>& scoreMatrix,
+                                                      const SparseSetView<StatisticType>& scoreMatrix,
                                                       CompleteIndexVector::const_iterator indicesBegin,
                                                       CompleteIndexVector::const_iterator indicesEnd,
-                                                      SparseSetView<Statistic<float64>>& statisticView) const = 0;
+                                                      SparseSetView<Statistic<StatisticType>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -61,10 +64,10 @@ namespace boosting {
              */
             virtual void updateDecomposableStatistics(uint32 exampleIndex,
                                                       const CContiguousView<const uint8>& labelMatrix,
-                                                      const SparseSetView<float64>& scoreMatrix,
+                                                      const SparseSetView<StatisticType>& scoreMatrix,
                                                       PartialIndexVector::const_iterator indicesBegin,
                                                       PartialIndexVector::const_iterator indicesEnd,
-                                                      SparseSetView<Statistic<float64>>& statisticView) const = 0;
+                                                      SparseSetView<Statistic<StatisticType>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -80,10 +83,10 @@ namespace boosting {
              * @param statisticView A reference to an object of type `SparseSetView` to be updated
              */
             virtual void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                      const SparseSetView<float64>& scoreMatrix,
+                                                      const SparseSetView<StatisticType>& scoreMatrix,
                                                       CompleteIndexVector::const_iterator indicesBegin,
                                                       CompleteIndexVector::const_iterator indicesEnd,
-                                                      SparseSetView<Statistic<float64>>& statisticView) const = 0;
+                                                      SparseSetView<Statistic<StatisticType>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -99,10 +102,10 @@ namespace boosting {
              * @param statisticView A reference to an object of type `SparseSetView` to be updated
              */
             virtual void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                      const SparseSetView<float64>& scoreMatrix,
+                                                      const SparseSetView<StatisticType>& scoreMatrix,
                                                       PartialIndexVector::const_iterator indicesBegin,
                                                       PartialIndexVector::const_iterator indicesEnd,
-                                                      SparseSetView<Statistic<float64>>& statisticView) const = 0;
+                                                      SparseSetView<Statistic<StatisticType>>& statisticView) const = 0;
     };
 
     /**
@@ -121,8 +124,8 @@ namespace boosting {
              * @return An unique pointer to an object of type `ISparseDecomposableClassificationLoss` that has been
              *         created
              */
-            virtual std::unique_ptr<ISparseDecomposableClassificationLoss> createSparseDecomposableClassificationLoss()
-              const = 0;
+            virtual std::unique_ptr<ISparseDecomposableClassificationLoss<float64>>
+              createSparseDecomposableClassificationLoss() const = 0;
 
             /**
              * @see `IDecomposableClassificationLossFactory::createDecomposableClassificationLoss`
