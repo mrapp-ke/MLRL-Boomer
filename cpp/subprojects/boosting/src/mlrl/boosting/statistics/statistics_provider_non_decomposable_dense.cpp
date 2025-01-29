@@ -13,9 +13,12 @@ namespace boosting {
     /**
      * A matrix that stores gradients and Hessians that have been calculated using a non-decomposable loss function
      * using C-contiguous arrays.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians
      */
+    template<typename StatisticType>
     class DenseNonDecomposableStatisticMatrix final
-        : public ClearableViewDecorator<MatrixDecorator<DenseNonDecomposableStatisticView<float64>>> {
+        : public ClearableViewDecorator<MatrixDecorator<DenseNonDecomposableStatisticView<StatisticType>>> {
         public:
 
             /**
@@ -23,8 +26,8 @@ namespace boosting {
              * @param numCols The number of columns in the matrix
              */
             DenseNonDecomposableStatisticMatrix(uint32 numRows, uint32 numCols)
-                : ClearableViewDecorator<MatrixDecorator<DenseNonDecomposableStatisticView<float64>>>(
-                    DenseNonDecomposableStatisticView<float64>(numRows, numCols)) {}
+                : ClearableViewDecorator<MatrixDecorator<DenseNonDecomposableStatisticView<StatisticType>>>(
+                    DenseNonDecomposableStatisticView<StatisticType>(numRows, numCols)) {}
 
             /**
              * Adds all gradients and Hessians in a vector to a specific row of this matrix. The gradients and Hessians
@@ -60,7 +63,7 @@ namespace boosting {
     template<typename Loss, typename OutputMatrix, typename EvaluationMeasure>
     class DenseNonDecomposableStatistics final
         : public AbstractNonDecomposableStatistics<
-            OutputMatrix, DenseNonDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>, Loss,
+            OutputMatrix, DenseNonDecomposableStatisticMatrix<float64>, NumericCContiguousMatrix<float64>, Loss,
             EvaluationMeasure, INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory> {
         private:
 
@@ -93,14 +96,13 @@ namespace boosting {
              * @param scoreMatrixPtr        An unique pointer to an object of type `NumericCContiguousMatrix` that
              *                              stores the currently predicted scores
              */
-            DenseNonDecomposableStatistics(std::unique_ptr<Loss> lossPtr,
-                                           std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
-                                           const INonDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
-                                           const OutputMatrix& outputMatrix,
-                                           std::unique_ptr<DenseNonDecomposableStatisticMatrix> statisticMatrixPtr,
-                                           std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
+            DenseNonDecomposableStatistics(
+              std::unique_ptr<Loss> lossPtr, std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
+              const INonDecomposableRuleEvaluationFactory& ruleEvaluationFactory, const OutputMatrix& outputMatrix,
+              std::unique_ptr<DenseNonDecomposableStatisticMatrix<float64>> statisticMatrixPtr,
+              std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
                 : AbstractNonDecomposableStatistics<
-                    OutputMatrix, DenseNonDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>, Loss,
+                    OutputMatrix, DenseNonDecomposableStatisticMatrix<float64>, NumericCContiguousMatrix<float64>, Loss,
                     EvaluationMeasure, INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory>(
                     std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
                     std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
@@ -359,8 +361,8 @@ namespace boosting {
                        MultiThreadingSettings multiThreadingSettings, const OutputMatrix& outputMatrix) {
         uint32 numExamples = outputMatrix.numRows;
         uint32 numOutputs = outputMatrix.numCols;
-        std::unique_ptr<DenseNonDecomposableStatisticMatrix> statisticMatrixPtr =
-          std::make_unique<DenseNonDecomposableStatisticMatrix>(numExamples, numOutputs);
+        std::unique_ptr<DenseNonDecomposableStatisticMatrix<float64>> statisticMatrixPtr =
+          std::make_unique<DenseNonDecomposableStatisticMatrix<float64>>(numExamples, numOutputs);
         std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr =
           std::make_unique<NumericCContiguousMatrix<float64>>(numExamples, numOutputs, true);
         const Loss* lossRawPtr = lossPtr.get();
