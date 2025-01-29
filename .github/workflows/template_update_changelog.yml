@@ -19,7 +19,7 @@ on:
 jobs:
   update_changelog:
     name: Update changelog
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       release_version: ${{ steps.print-version.outputs.version }}
       latest_changelog: ${{ steps.print-latest-changelog.outputs.changelog }}

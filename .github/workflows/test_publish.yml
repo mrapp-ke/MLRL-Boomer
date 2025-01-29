@@ -9,7 +9,7 @@ on:
 jobs:
   changes:
     name: Detect changes
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       build_files: ${{ steps.filter.outputs.build_files }}
       python_version: ${{ steps.python_version.outputs.content }}
@@ -51,7 +51,7 @@ jobs:
     needs: test_release
     if: ${{ always() && needs.changes.outputs.build_files == 'true' }}
     name: Test publishing packages succeeded
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Check for success
         run: |-

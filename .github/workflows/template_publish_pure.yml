@@ -20,7 +20,7 @@ on:
 jobs:
   publish_pure_wheels:
     name: Publish ${{ inputs.subproject }} (pure)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
