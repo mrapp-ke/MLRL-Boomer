@@ -10,9 +10,12 @@
 #include <memory>
 
 /**
- * Defines an interface for all measures that can be used in classification problems to assess the quality of
- * predictions for certain examples by comparing them to the corresponding ground truth labels.
+ * Defines an interface for all measures that can be used in classification problems to assess the quality of scores
+ * that are predicted for certain examples by comparing them to the corresponding ground truth labels.
+ *
+ * @tparam ScoreType The type of the predicted scores
  */
+template<typename ScoreType>
 class IClassificationEvaluationMeasure {
     public:
 
@@ -30,8 +33,8 @@ class IClassificationEvaluationMeasure {
          *                      scores
          * @return              The numerical score that has been calculated
          */
-        virtual float64 evaluate(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-                                 const CContiguousView<float64>& scoreMatrix) const = 0;
+        virtual ScoreType evaluate(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+                                   const CContiguousView<ScoreType>& scoreMatrix) const = 0;
 
         /**
          * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
@@ -45,8 +48,8 @@ class IClassificationEvaluationMeasure {
          *                      scores
          * @return              The numerical score that has been calculated
          */
-        virtual float64 evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                 const CContiguousView<float64>& scoreMatrix) const = 0;
+        virtual ScoreType evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
+                                   const CContiguousView<ScoreType>& scoreMatrix) const = 0;
 };
 
 /**
@@ -102,7 +105,8 @@ class IClassificationEvaluationMeasureFactory {
          *
          * @return An unique pointer to an object of type `IClassificationEvaluationMeasure` that has been created
          */
-        virtual std::unique_ptr<IClassificationEvaluationMeasure> createClassificationEvaluationMeasure() const = 0;
+        virtual std::unique_ptr<IClassificationEvaluationMeasure<float64>> createClassificationEvaluationMeasure()
+          const = 0;
 };
 
 /**

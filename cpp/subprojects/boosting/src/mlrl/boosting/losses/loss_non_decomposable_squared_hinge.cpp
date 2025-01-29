@@ -340,7 +340,8 @@ namespace boosting {
                 return this->createNonDecomposableClassificationLoss();
             }
 
-            std::unique_ptr<IClassificationEvaluationMeasure> createClassificationEvaluationMeasure() const override {
+            std::unique_ptr<IClassificationEvaluationMeasure<float64>> createClassificationEvaluationMeasure()
+              const override {
                 return this->createNonDecomposableClassificationLoss();
             }
     };
