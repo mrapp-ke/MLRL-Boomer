@@ -7,7 +7,7 @@ on:
 jobs:
   read_python_version:
     name: Read Python version
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       python_version: ${{ steps.python_version.outputs.content }}
     steps:

@@ -14,7 +14,7 @@ jobs:
   update_development_version:
     name: Update development version
     if: "!contains(github.event.head_commit.message, '[Bot]')"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Generate token
         uses: actions/create-github-app-token@v1
@@ -36,7 +36,7 @@ jobs:
           git push
   read_python_version:
     name: Read Python version
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       python_version: ${{ steps.python_version.outputs.content }}
     steps:
