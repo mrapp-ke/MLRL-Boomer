@@ -53,7 +53,7 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProvider> DenseDecomposableClassificationStatisticsProviderFactory::create(
       const CContiguousView<const uint8>& labelMatrix) const {
-        std::unique_ptr<IDecomposableClassificationLoss> lossPtr =
+        std::unique_ptr<IDecomposableClassificationLoss<float64>> lossPtr =
           lossFactoryPtr_->createDecomposableClassificationLoss();
         std::unique_ptr<IClassificationEvaluationMeasure> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createClassificationEvaluationMeasure();
@@ -66,7 +66,7 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProvider> DenseDecomposableClassificationStatisticsProviderFactory::create(
       const BinaryCsrView& labelMatrix) const {
-        std::unique_ptr<IDecomposableClassificationLoss> lossPtr =
+        std::unique_ptr<IDecomposableClassificationLoss<float64>> lossPtr =
           lossFactoryPtr_->createDecomposableClassificationLoss();
         std::unique_ptr<IClassificationEvaluationMeasure> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createClassificationEvaluationMeasure();
