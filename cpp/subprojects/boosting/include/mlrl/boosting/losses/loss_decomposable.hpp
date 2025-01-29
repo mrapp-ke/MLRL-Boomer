@@ -109,7 +109,7 @@ namespace boosting {
      */
     template<typename StatisticType>
     class IDecomposableRegressionLoss : virtual public IRegressionLoss,
-                                        virtual public IRegressionEvaluationMeasure {
+                                        virtual public IRegressionEvaluationMeasure<StatisticType> {
         public:
 
             virtual ~IDecomposableRegressionLoss() override {}
