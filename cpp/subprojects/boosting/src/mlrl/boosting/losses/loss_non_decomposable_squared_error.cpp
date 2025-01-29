@@ -376,7 +376,7 @@ namespace boosting {
                 return this->createNonDecomposableClassificationLoss();
             }
 
-            std::unique_ptr<IRegressionEvaluationMeasure> createRegressionEvaluationMeasure() const override {
+            std::unique_ptr<IRegressionEvaluationMeasure<float64>> createRegressionEvaluationMeasure() const override {
                 return this->createNonDecomposableRegressionLoss();
             }
     };
