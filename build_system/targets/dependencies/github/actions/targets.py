@@ -8,7 +8,7 @@ from core.modules import Module
 from core.targets import PhonyTarget
 from util.log import Log
 
-from targets.dependencies.github.actions import WorkflowUpdater
+from targets.dependencies.github.actions.actions import ActionUpdater
 from targets.dependencies.github.modules import GithubWorkflowModule
 from targets.dependencies.table import Table
 
@@ -24,7 +24,7 @@ class CheckGithubActions(PhonyTarget.Runnable):
         super().__init__(MODULE_FILTER)
 
     def run(self, build_unit: BuildUnit, module: Module):
-        outdated_workflows = WorkflowUpdater(build_unit, module).find_outdated_workflows()
+        outdated_workflows = ActionUpdater(build_unit, module).find_outdated_workflows()
 
         if outdated_workflows:
             table = Table(build_unit, 'Workflow', 'Action', 'Current version', 'Latest version')
@@ -49,7 +49,7 @@ class UpdateGithubActions(PhonyTarget.Runnable):
         super().__init__(MODULE_FILTER)
 
     def run(self, build_unit: BuildUnit, module: Module):
-        updated_workflows = WorkflowUpdater(build_unit, module).update_outdated_workflows()
+        updated_workflows = ActionUpdater(build_unit, module).update_outdated_workflows()
 
         if updated_workflows:
             table = Table(build_unit, 'Workflow', 'Action', 'Previous version', 'Updated version')
