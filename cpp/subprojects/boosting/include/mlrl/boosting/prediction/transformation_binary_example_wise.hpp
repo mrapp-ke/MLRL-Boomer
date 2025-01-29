@@ -21,7 +21,7 @@ namespace boosting {
 
             const LabelVectorSet& labelVectorSet_;
 
-            const std::unique_ptr<IDistanceMeasure> distanceMeasurePtr_;
+            const std::unique_ptr<IDistanceMeasure<float64>> distanceMeasurePtr_;
 
         public:
 
@@ -32,7 +32,7 @@ namespace boosting {
              *                              the distance measure for comparing scores to known label vectors
              */
             ExampleWiseBinaryTransformation(const LabelVectorSet& labelVectorSet,
-                                            std::unique_ptr<IDistanceMeasure> distanceMeasurePtr);
+                                            std::unique_ptr<IDistanceMeasure<float64>> distanceMeasurePtr);
 
             void apply(View<float64>::const_iterator scoresBegin, View<float64>::const_iterator scoresEnd,
                        View<uint8>::iterator predictionBegin, View<uint8>::iterator predictionEnd) const override;
