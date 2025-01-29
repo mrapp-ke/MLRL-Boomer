@@ -11,7 +11,7 @@ from core.build_unit import BuildUnit
 from util.log import Log
 
 from targets.dependencies.github.modules import GithubWorkflowModule
-from targets.dependencies.github.pyyaml import YamlFile
+from targets.dependencies.github.workflows import Workflow, Workflows
 from targets.dependencies.pygithub import GithubApi
 
 
@@ -113,28 +113,12 @@ class Action:
         return hash(str(self))
 
 
-class Workflow(YamlFile):
+class Actions(Workflow):
     """
-    A GitHub workflow.
+    Allows to access and update the GitHub Actions in a workflow.
     """
 
     TAG_USES = 'uses'
-
-    @cached_property
-    def uses_clauses(self) -> List[str]:
-        """
-        A list that contains all uses-clauses in the workflow.
-        """
-        uses_clauses = []
-
-        for job in self.yaml_dict.get('jobs', {}).values():
-            for step in job.get('steps', []):
-                uses_clause = step.get(self.TAG_USES, None)
-
-                if uses_clause:
-                    uses_clauses.append(uses_clause)
-
-        return uses_clauses
 
     @cached_property
     def actions(self) -> Set[Action]:
@@ -143,11 +127,15 @@ class Workflow(YamlFile):
         """
         actions = set()
 
-        for uses_clause in self.uses_clauses:
-            try:
-                actions.add(Action.from_uses_clause(uses_clause))
-            except ValueError as error:
-                raise RuntimeError('Failed to parse uses-clause in workflow "' + self.file + '"') from error
+        for job in self.find_tag(self.yaml_dict, 'jobs', default={}).values():
+            for step in self.find_tag(job, 'steps', default=[]):
+                uses_clause = self.find_tag(step, self.TAG_USES)
+
+                if uses_clause:
+                    try:
+                        actions.add(Action.from_uses_clause(uses_clause))
+                    except ValueError as error:
+                        raise RuntimeError('Failed to parse uses-clause in workflow "' + self.file + '"') from error
 
         return actions
 
@@ -179,23 +167,12 @@ class Workflow(YamlFile):
         super().write_lines(*lines)
 
         try:
-            del self.uses_clauses
-        except AttributeError:
-            pass
-
-        try:
             del self.actions
         except AttributeError:
             pass
 
-    def __eq__(self, other: 'Workflow') -> bool:
-        return self.file == other.file
 
-    def __hash__(self) -> int:
-        return hash(self.file)
-
-
-class WorkflowUpdater:
+class ActionUpdater(Workflows):
     """
     Allows checking the versions of GitHub Actions used in multiple workflows and updating outdated ones.
     """
@@ -215,7 +192,7 @@ class WorkflowUpdater:
         def __str__(self) -> str:
             return str(self.action)
 
-        def __eq__(self, other: 'WorkflowUpdater.OutdatedAction') -> bool:
+        def __eq__(self, other: 'ActionUpdater.OutdatedAction') -> bool:
             return self.action == other.action
 
         def __hash__(self) -> int:
@@ -230,13 +207,13 @@ class WorkflowUpdater:
             previous:   The previous Action
             updated:    The updated Action
         """
-        previous: 'WorkflowUpdater.OutdatedAction'
+        previous: 'ActionUpdater.OutdatedAction'
         updated: Action
 
         def __str__(self) -> str:
             return str(self.updated)
 
-        def __eq__(self, other: 'WorkflowUpdater.UpdatedAction') -> bool:
+        def __eq__(self, other: 'ActionUpdater.UpdatedAction') -> bool:
             return self.updated == other.updated
 
         def __hash__(self) -> int:
@@ -274,25 +251,11 @@ class WorkflowUpdater:
         :param build_unit:  The build unit from which workflow definition files should be read
         :param module:      The module, that contains the workflow definition files
         """
-        self.build_unit = build_unit
-        self.module = module
+        super().__init__(build_unit, module)
         self.version_cache = {}
         self.github_api = GithubApi(build_unit).set_token_from_env()
 
-    @cached_property
-    def workflows(self) -> Set[Workflow]:
-        """
-        All GitHub workflows that are defined in the directory where workflow definition files are located.
-        """
-        workflows = set()
-
-        for workflow_file in self.module.find_workflow_files():
-            Log.info('Searching for GitHub Actions in workflow "%s"...', workflow_file)
-            workflows.add(Workflow(self.build_unit, workflow_file))
-
-        return workflows
-
-    def find_outdated_workflows(self) -> Dict[Workflow, Set[OutdatedAction]]:
+    def find_outdated_workflows(self) -> Dict[Actions, Set[OutdatedAction]]:
         """
         Finds and returns all workflows with outdated GitHub actions.
 
@@ -301,16 +264,19 @@ class WorkflowUpdater:
         outdated_workflows = {}
 
         for workflow in self.workflows:
+            Log.info('Searching for GitHub Actions in workflow "%s"...', workflow.file)
+            workflow = Actions(self.build_unit, file=workflow.file)
+
             for action in workflow.actions:
                 latest_version = self.__get_latest_action_version(action)
 
                 if action.version < latest_version:
                     outdated_actions = outdated_workflows.setdefault(workflow, set())
-                    outdated_actions.add(WorkflowUpdater.OutdatedAction(action, latest_version))
+                    outdated_actions.add(ActionUpdater.OutdatedAction(action, latest_version))
 
         return outdated_workflows
 
-    def update_outdated_workflows(self) -> Dict[Workflow, Set[UpdatedAction]]:
+    def update_outdated_workflows(self) -> Dict[Actions, Set[UpdatedAction]]:
         """
         Updates all workflows with outdated GitHub Actions.
 
@@ -329,7 +295,7 @@ class WorkflowUpdater:
                 updated_version = ActionVersion.from_version_numbers(*latest_version_numbers[:max_version_numbers])
                 updated_actions = updated_workflows.setdefault(workflow, updated_actions)
                 updated_action = replace(outdated_action.action, version=updated_version)
-                updated_actions.add(WorkflowUpdater.UpdatedAction(previous=outdated_action, updated=updated_action))
+                updated_actions.add(ActionUpdater.UpdatedAction(previous=outdated_action, updated=updated_action))
 
             workflow.update_actions(*[updated_action.updated for updated_action in updated_actions])
 

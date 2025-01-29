@@ -28,21 +28,21 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-latest
+          - ubuntu-24.04
           - ubuntu-24.04-arm
-          - macos-latest
-          - windows-latest
+          - macos-15
+          - windows-2025
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set version
-        if: ${{ matrix.os != 'windows-latest' && inputs.dev_release == true }}
+        if: ${{ matrix.os != 'windows-2025' && inputs.dev_release == true }}
         run: ./build apply_development_version
       - name: Set version
-        if: ${{ matrix.os == 'windows-latest' && inputs.dev_release == true }}
+        if: ${{ matrix.os == 'windows-2025' && inputs.dev_release == true }}
         run: .\build.bat apply_development_version
       - name: Prepare MSVC
-        if: ${{ matrix.os == 'windows-latest' }}
+        if: ${{ matrix.os == 'windows-2025' }}
         uses: ilammy/msvc-dev-cmd@v1
       - name: Build package
         uses: pypa/cibuildwheel@v2.22

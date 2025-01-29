@@ -113,3 +113,9 @@ class TextFile:
 
     def __str__(self) -> str:
         return self.file
+
+    def __eq__(self, other: 'TextFile') -> bool:
+        return self.file == other.file
+
+    def __hash__(self) -> int:
+        return hash(self.file)
