@@ -53,7 +53,7 @@ namespace boosting {
      * Defines an interface for all non-decomposable loss functions that can be used in regression problems.
      */
     class INonDecomposableRegressionLoss : virtual public IRegressionLoss,
-                                           virtual public IDecomposableRegressionLoss {
+                                           virtual public IDecomposableRegressionLoss<float64> {
         public:
 
             virtual ~INonDecomposableRegressionLoss() override {}
@@ -130,7 +130,8 @@ namespace boosting {
              */
             virtual std::unique_ptr<INonDecomposableRegressionLoss> createNonDecomposableRegressionLoss() const = 0;
 
-            std::unique_ptr<IDecomposableRegressionLoss> createDecomposableRegressionLoss() const override final {
+            std::unique_ptr<IDecomposableRegressionLoss<float64>> createDecomposableRegressionLoss()
+              const override final {
                 return this->createNonDecomposableRegressionLoss();
             }
     };

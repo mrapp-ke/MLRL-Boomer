@@ -38,7 +38,7 @@ namespace boosting {
                                                                         &evaluatePredictionClassification);
             }
 
-            std::unique_ptr<IDecomposableRegressionLoss> createDecomposableRegressionLoss() const override {
+            std::unique_ptr<IDecomposableRegressionLoss<float64>> createDecomposableRegressionLoss() const override {
                 return std::make_unique<DecomposableRegressionLoss>(&updateGradientAndHessianRegression,
                                                                     &evaluatePredictionRegression);
             }

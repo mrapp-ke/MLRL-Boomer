@@ -201,7 +201,7 @@ namespace boosting {
      * "evaluation function" for updating the gradients and Hessians and evaluating the predictions for an individual
      * output, respectively.
      */
-    class DecomposableRegressionLoss : virtual public IDecomposableRegressionLoss {
+    class DecomposableRegressionLoss : virtual public IDecomposableRegressionLoss<float64> {
         public:
 
             /**
