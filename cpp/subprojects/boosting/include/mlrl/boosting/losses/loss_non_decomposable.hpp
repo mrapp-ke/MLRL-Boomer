@@ -54,9 +54,12 @@ namespace boosting {
 
     /**
      * Defines an interface for all non-decomposable loss functions that can be used in regression problems.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
+    template<typename StatisticType>
     class INonDecomposableRegressionLoss : virtual public IRegressionLoss,
-                                           virtual public IDecomposableRegressionLoss<float64> {
+                                           virtual public IDecomposableRegressionLoss<StatisticType> {
         public:
 
             virtual ~INonDecomposableRegressionLoss() override {}
@@ -74,8 +77,8 @@ namespace boosting {
              */
             virtual void updateNonDecomposableStatistics(
               uint32 exampleIndex, const CContiguousView<const float32>& regressionMatrix,
-              const CContiguousView<float64>& scoreMatrix,
-              DenseNonDecomposableStatisticView<float64>& statisticView) const = 0;
+              const CContiguousView<StatisticType>& scoreMatrix,
+              DenseNonDecomposableStatisticView<StatisticType>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index.
@@ -90,8 +93,8 @@ namespace boosting {
              */
             virtual void updateNonDecomposableStatistics(
               uint32 exampleIndex, const CsrView<const float32>& regressionMatrix,
-              const CContiguousView<float64>& scoreMatrix,
-              DenseNonDecomposableStatisticView<float64>& statisticView) const = 0;
+              const CContiguousView<StatisticType>& scoreMatrix,
+              DenseNonDecomposableStatisticView<StatisticType>& statisticView) const = 0;
     };
 
     /**
@@ -131,7 +134,8 @@ namespace boosting {
              *
              * @return An unique pointer to an object of type `INonDecomposableRegressionLoss` that has been created
              */
-            virtual std::unique_ptr<INonDecomposableRegressionLoss> createNonDecomposableRegressionLoss() const = 0;
+            virtual std::unique_ptr<INonDecomposableRegressionLoss<float64>> createNonDecomposableRegressionLoss()
+              const = 0;
 
             std::unique_ptr<IDecomposableRegressionLoss<float64>> createDecomposableRegressionLoss()
               const override final {
