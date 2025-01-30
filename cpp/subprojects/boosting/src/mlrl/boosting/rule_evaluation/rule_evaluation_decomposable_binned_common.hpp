@@ -31,12 +31,13 @@ namespace boosting {
     static inline typename util::iterator_value<StatisticIterator>::statistic_type calculateBinnedScores(
       StatisticIterator statisticIterator, ScoreIterator scoreIterator, View<uint32>::const_iterator weights,
       uint32 numElements, float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
-        typename util::iterator_value<StatisticIterator>::statistic_type quality = 0;
+        typedef typename util::iterator_value<ScoreIterator> statistic_type;
+        statistic_type quality = 0;
 
         for (uint32 i = 0; i < numElements; i++) {
             uint32 weight = weights[i];
-            const typename util::iterator_value<StatisticIterator>& statistic = statisticIterator[i];
-            typename util::iterator_value<StatisticIterator>::statistic_type predictedScore = calculateOutputWiseScore(
+            const Statistic<statistic_type>& statistic = statisticIterator[i];
+            statistic_type predictedScore = calculateOutputWiseScore(
               statistic.gradient, statistic.hessian, weight * l1RegularizationWeight, weight * l2RegularizationWeight);
             scoreIterator[i] = predictedScore;
             quality += calculateOutputWiseQuality(predictedScore, statistic.gradient, statistic.hessian,

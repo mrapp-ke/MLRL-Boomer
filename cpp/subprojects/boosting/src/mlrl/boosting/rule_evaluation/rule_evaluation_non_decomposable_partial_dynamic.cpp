@@ -104,12 +104,11 @@ namespace boosting {
                 }
 
                 indexVector_.setNumElements(n, false);
-                addL1RegularizationWeight<statistic_type>(valueIterator, n, l1RegularizationWeight_);
+                addL1RegularizationWeight(valueIterator, n, l1RegularizationWeight_);
 
                 // Copy Hessians to the matrix of coefficients and add the L2 regularization weight to its diagonal...
-                copyCoefficients<statistic_type, PartialIndexVector::iterator>(
-                  statisticVector.hessians_cbegin(), indexIterator, this->sysvTmpArray1_.begin(), n);
-                addL2RegularizationWeight<statistic_type>(this->sysvTmpArray1_.begin(), n, l2RegularizationWeight_);
+                copyCoefficients(statisticVector.hessians_cbegin(), indexIterator, this->sysvTmpArray1_.begin(), n);
+                addL2RegularizationWeight(this->sysvTmpArray1_.begin(), n, l2RegularizationWeight_);
 
                 // Calculate the scores to be predicted for individual outputs by solving a system of linear
                 // equations...
@@ -117,13 +116,13 @@ namespace boosting {
                                  this->sysvTmpArray3_.begin(), valueIterator, n, this->sysvLwork_);
 
                 // Calculate the overall quality...
-                statistic_type quality = calculateOverallQuality<statistic_type>(
-                  valueIterator, statisticVector.gradients_begin(), statisticVector.hessians_begin(),
-                  this->spmvTmpArray_.begin(), n, *blasPtr_);
+                statistic_type quality =
+                  calculateOverallQuality(valueIterator, statisticVector.gradients_begin(),
+                                          statisticVector.hessians_begin(), this->spmvTmpArray_.begin(), n, *blasPtr_);
 
                 // Evaluate regularization term...
-                quality += calculateRegularizationTerm<statistic_type>(valueIterator, n, l1RegularizationWeight_,
-                                                                       l2RegularizationWeight_);
+                quality +=
+                  calculateRegularizationTerm(valueIterator, n, l1RegularizationWeight_, l2RegularizationWeight_);
 
                 scoreVector_.quality = quality;
                 return scoreVector_;
