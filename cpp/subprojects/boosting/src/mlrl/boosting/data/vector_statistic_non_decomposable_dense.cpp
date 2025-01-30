@@ -55,12 +55,12 @@ namespace boosting {
 
     DenseNonDecomposableStatisticVector::hessian_diagonal_const_iterator
       DenseNonDecomposableStatisticVector::hessians_diagonal_cbegin() const {
-        return DiagonalConstIterator<float64>(this->hessians_cbegin(), 0);
+        return hessian_diagonal_const_iterator(View<const float64>(this->hessians_cbegin()), 0);
     }
 
     DenseNonDecomposableStatisticVector::hessian_diagonal_const_iterator
       DenseNonDecomposableStatisticVector::hessians_diagonal_cend() const {
-        return DiagonalConstIterator<float64>(this->hessians_cbegin(), this->getNumHessians());
+        return hessian_diagonal_const_iterator(View<const float64>(this->hessians_cbegin()), this->getNumHessians());
     }
 
     uint32 DenseNonDecomposableStatisticVector::getNumGradients() const {
@@ -83,8 +83,8 @@ namespace boosting {
 
     void DenseNonDecomposableStatisticVector::add(const DenseNonDecomposableStatisticView& view, uint32 row,
                                                   float64 weight) {
-        util::addToView(this->gradients_begin(), view.gradients_cbegin(row), this->getNumGradients(), weight);
-        util::addToView(this->hessians_begin(), view.hessians_cbegin(row), this->getNumHessians(), weight);
+        util::addToViewWeighted(this->gradients_begin(), view.gradients_cbegin(row), this->getNumGradients(), weight);
+        util::addToViewWeighted(this->hessians_begin(), view.hessians_cbegin(row), this->getNumHessians(), weight);
     }
 
     void DenseNonDecomposableStatisticVector::remove(const DenseNonDecomposableStatisticView& view, uint32 row) {
@@ -94,8 +94,9 @@ namespace boosting {
 
     void DenseNonDecomposableStatisticVector::remove(const DenseNonDecomposableStatisticView& view, uint32 row,
                                                      float64 weight) {
-        util::removeFromView(this->gradients_begin(), view.gradients_cbegin(row), this->getNumGradients(), weight);
-        util::removeFromView(this->hessians_begin(), view.hessians_cbegin(row), this->getNumHessians(), weight);
+        util::removeFromViewWeighted(this->gradients_begin(), view.gradients_cbegin(row), this->getNumGradients(),
+                                     weight);
+        util::removeFromViewWeighted(this->hessians_begin(), view.hessians_cbegin(row), this->getNumHessians(), weight);
     }
 
     void DenseNonDecomposableStatisticVector::addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
@@ -119,21 +120,21 @@ namespace boosting {
 
     void DenseNonDecomposableStatisticVector::addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
                                                           const CompleteIndexVector& indices, float64 weight) {
-        util::addToView(this->gradients_begin(), view.gradients_cbegin(row), this->getNumGradients(), weight);
-        util::addToView(this->hessians_begin(), view.hessians_cbegin(row), this->getNumHessians(), weight);
+        util::addToViewWeighted(this->gradients_begin(), view.gradients_cbegin(row), this->getNumGradients(), weight);
+        util::addToViewWeighted(this->hessians_begin(), view.hessians_cbegin(row), this->getNumHessians(), weight);
     }
 
     void DenseNonDecomposableStatisticVector::addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
                                                           const PartialIndexVector& indices, float64 weight) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
-        util::addToView(this->gradients_begin(), view.gradients_cbegin(row), indexIterator, this->getNumGradients(),
-                        weight);
+        util::addToViewWeighted(this->gradients_begin(), view.gradients_cbegin(row), indexIterator,
+                                this->getNumGradients(), weight);
         DenseNonDecomposableStatisticView::hessian_const_iterator hessiansBegin = view.hessians_cbegin(row);
 
         for (uint32 i = 0; i < this->getNumGradients(); i++) {
             uint32 index = indexIterator[i];
-            util::addToView(&this->hessians_begin()[util::triangularNumber(i)],
-                            &hessiansBegin[util::triangularNumber(index)], indexIterator, i + 1, weight);
+            util::addToViewWeighted(&this->hessians_begin()[util::triangularNumber(i)],
+                                    &hessiansBegin[util::triangularNumber(index)], indexIterator, i + 1, weight);
         }
     }
 

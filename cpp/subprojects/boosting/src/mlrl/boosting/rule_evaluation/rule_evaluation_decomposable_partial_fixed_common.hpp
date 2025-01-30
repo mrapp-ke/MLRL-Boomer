@@ -51,11 +51,11 @@ namespace boosting {
                                             uint32 numPredictions, float64 l1RegularizationWeight,
                                             float64 l2RegularizationWeight) {
         for (uint32 i = 0; i < numOutputs; i++) {
-            const Tuple<float64>& tuple = statisticIterator[i];
+            const Statistic<float64>& statistic = statisticIterator[i];
             IndexedValue<float64>& entry = tmpIterator[i];
             entry.index = i;
-            entry.value =
-              calculateOutputWiseScore(tuple.first, tuple.second, l1RegularizationWeight, l2RegularizationWeight);
+            entry.value = calculateOutputWiseScore(statistic.gradient, statistic.hessian, l1RegularizationWeight,
+                                                   l2RegularizationWeight);
         }
 
         std::partial_sort(tmpIterator, &tmpIterator[numPredictions], &tmpIterator[numOutputs],

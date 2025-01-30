@@ -8,7 +8,7 @@ namespace boosting {
     template<typename LabelIterator>
     static inline void updateDecomposableStatisticsInternally(View<float64>::const_iterator scoreIterator,
                                                               LabelIterator labelIterator,
-                                                              View<Tuple<float64>>::iterator statisticIterator,
+                                                              View<Statistic<float64>>::iterator statisticIterator,
                                                               uint32 numLabels) {
         LabelIterator labelIterator2 = labelIterator;
 
@@ -37,7 +37,7 @@ namespace boosting {
                 }
             }
 
-            statisticIterator[i].first = x;  // Temporarily store `x` in the array of gradients
+            statisticIterator[i].gradient = x;  // Temporarily store `x` in the array of gradients
             denominator += x;
             labelIterator++;
         }
@@ -52,14 +52,14 @@ namespace boosting {
         for (uint32 i = 0; i < numLabels; i++) {
             float64 predictedScore = scoreIterator[i];
             bool trueLabel = *labelIterator2;
-            Tuple<float64>& tuple = statisticIterator[i];
+            Statistic<float64>& statistic = statisticIterator[i];
             float64 gradient;
             float64 hessian;
 
             if (trueLabel) {
                 if (predictedScore < 1) {
                     gradient = util::divideOrZero<float64>(predictedScore - 1, denominatorGradient);
-                    hessian = util::divideOrZero<float64>(denominator - tuple.first, denominatorHessian);
+                    hessian = util::divideOrZero<float64>(denominator - statistic.gradient, denominatorHessian);
                 } else {
                     gradient = 0;
                     hessian = 1;
@@ -67,15 +67,15 @@ namespace boosting {
             } else {
                 if (predictedScore > 0) {
                     gradient = util::divideOrZero<float64>(predictedScore, denominatorGradient);
-                    hessian = util::divideOrZero<float64>(denominator - tuple.first, denominatorHessian);
+                    hessian = util::divideOrZero<float64>(denominator - statistic.gradient, denominatorHessian);
                 } else {
                     gradient = 0;
                     hessian = 1;
                 }
             }
 
-            tuple.first = gradient;
-            tuple.second = hessian;
+            statistic.gradient = gradient;
+            statistic.hessian = hessian;
             labelIterator2++;
         }
     }
@@ -231,44 +231,40 @@ namespace boosting {
     class NonDecomposableSquaredHingeLoss final : public INonDecomposableClassificationLoss {
         public:
 
-            virtual void updateDecomposableStatistics(uint32 exampleIndex,
-                                                      const CContiguousView<const uint8>& labelMatrix,
-                                                      const CContiguousView<float64>& scoreMatrix,
-                                                      CompleteIndexVector::const_iterator indicesBegin,
-                                                      CompleteIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const override {
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+              const CContiguousView<float64>& scoreMatrix, CompleteIndexVector::const_iterator indicesBegin,
+              CompleteIndexVector::const_iterator indicesEnd,
+              CContiguousView<Statistic<float64>>& statisticView) const override {
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex),
                                                        labelMatrix.values_cbegin(exampleIndex),
                                                        statisticView.values_begin(exampleIndex), labelMatrix.numCols);
             }
 
-            virtual void updateDecomposableStatistics(uint32 exampleIndex,
-                                                      const CContiguousView<const uint8>& labelMatrix,
-                                                      const CContiguousView<float64>& scoreMatrix,
-                                                      PartialIndexVector::const_iterator indicesBegin,
-                                                      PartialIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const override {
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+              const CContiguousView<float64>& scoreMatrix, PartialIndexVector::const_iterator indicesBegin,
+              PartialIndexVector::const_iterator indicesEnd,
+              CContiguousView<Statistic<float64>>& statisticView) const override {
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex),
                                                        labelMatrix.values_cbegin(exampleIndex),
                                                        statisticView.values_begin(exampleIndex), labelMatrix.numCols);
             }
 
-            virtual void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                      const CContiguousView<float64>& scoreMatrix,
-                                                      CompleteIndexVector::const_iterator indicesBegin,
-                                                      CompleteIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const override {
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<float64>& scoreMatrix,
+              CompleteIndexVector::const_iterator indicesBegin, CompleteIndexVector::const_iterator indicesEnd,
+              CContiguousView<Statistic<float64>>& statisticView) const override {
                 auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                        labelMatrix.indices_cend(exampleIndex));
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator,
                                                        statisticView.values_begin(exampleIndex), labelMatrix.numCols);
             }
 
-            virtual void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                      const CContiguousView<float64>& scoreMatrix,
-                                                      PartialIndexVector::const_iterator indicesBegin,
-                                                      PartialIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const override {
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<float64>& scoreMatrix,
+              PartialIndexVector::const_iterator indicesBegin, PartialIndexVector::const_iterator indicesEnd,
+              CContiguousView<Statistic<float64>>& statisticView) const override {
                 auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                        labelMatrix.indices_cend(exampleIndex));
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator,

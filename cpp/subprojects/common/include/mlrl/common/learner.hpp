@@ -31,6 +31,7 @@
 #include "mlrl/common/rule_model_assemblage/rule_model_assemblage_sequential.hpp"
 #include "mlrl/common/rule_pruning/rule_pruning_irep.hpp"
 #include "mlrl/common/rule_pruning/rule_pruning_no.hpp"
+#include "mlrl/common/rule_refinement/rule_refinement_statistics_based.hpp"
 #include "mlrl/common/sampling/feature_sampling_no.hpp"
 #include "mlrl/common/sampling/feature_sampling_without_replacement.hpp"
 #include "mlrl/common/sampling/instance_sampling_no.hpp"
@@ -157,6 +158,15 @@ class MLRLCOMMON_API IRuleLearnerConfig {
         virtual RuleCompareFunction getRuleCompareFunction() const = 0;
 
         /**
+         * Returns a `Property` that allows to access the `RNGConfig` that stores the configuration of random number
+         * generators.
+         *
+         * @return A `Property` that allows to access the `RNGConfig` that stores the configuration of random number
+         *         generators
+         */
+        virtual Property<RNGConfig> getRNGConfig() = 0;
+
+        /**
          * Returns a `Property` that allows to access the `IDefaultRuleConfig` that stores the configuration of the
          * default rule.
          *
@@ -182,6 +192,15 @@ class MLRLCOMMON_API IRuleLearnerConfig {
          *         algorithm for the induction of individual rules
          */
         virtual Property<IRuleInductionConfig> getRuleInductionConfig() = 0;
+
+        /**
+         * Returns a `Property` that allows to access the `IRuleRefinementConfig` that stores the configuration of the
+         * method for finding the best refinements of existing rules.
+         *
+         * @return A `Property` that allows to access the `IRuleRefinementConfig` that stores the configuration of the
+         *         method for finding the best refinements of existing rules
+         */
+        virtual Property<IRuleRefinementConfig> getRuleRefinementConfig() = 0;
 
         /**
          * Returns a `Property` that allows to access the `IFeatureBinningConfig` that stores the configuration of the
@@ -387,6 +406,29 @@ class MLRLCOMMON_API IRuleLearnerConfig {
 };
 
 /**
+ * Defines an interface for all classes that allow to configure the random number generators (RNGs) that are used by a
+ * rule learner.
+ */
+class MLRLCOMMON_API IRNGMixin : virtual public IRuleLearnerConfig {
+    public:
+
+        virtual ~IRNGMixin() override {}
+
+        /**
+         * Configures the random number generators that are used by the rule learner.
+         *
+         * @return A reference to an object of type `RNGConfig` that allows further configuration of the random number
+         *         generators
+         */
+        virtual RNGConfig& useRNG() {
+            auto ptr = std::make_unique<RNGConfig>();
+            RNGConfig& ref = *ptr;
+            this->getRNGConfig().set(std::move(ptr));
+            return ref;
+        }
+};
+
+/**
  * Defines an interface for all classes that allow to configure a rule learner to use an algorithm that sequentially
  * induces several rules.
  */
@@ -400,8 +442,8 @@ class MLRLCOMMON_API ISequentialRuleModelAssemblageMixin : virtual public IRuleL
          * with a default rule, that are added to a rule-based model.
          */
         virtual void useSequentialRuleModelAssemblage() {
-            this->getRuleModelAssemblageConfig().set(
-              std::make_unique<SequentialRuleModelAssemblageConfig>(this->getDefaultRuleConfig()));
+            this->getRuleModelAssemblageConfig().set(std::make_unique<SequentialRuleModelAssemblageConfig>(
+              this->getRuleInductionConfig(), this->getDefaultRuleConfig()));
         }
 };
 
@@ -437,8 +479,9 @@ class MLRLCOMMON_API IGreedyTopDownRuleInductionMixin : virtual public IRuleLear
          *         configuration of the algorithm for the induction of individual rules
          */
         virtual IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() {
-            auto ptr = std::make_unique<GreedyTopDownRuleInductionConfig>(this->getRuleCompareFunction(),
-                                                                          this->getParallelRuleRefinementConfig());
+            auto ptr = std::make_unique<GreedyTopDownRuleInductionConfig>(
+              this->getRuleCompareFunction(), this->getRuleRefinementConfig(), this->getRulePruningConfig(),
+              this->getPostProcessorConfig());
             IGreedyTopDownRuleInductionConfig& ref = *ptr;
             this->getRuleInductionConfig().set(std::move(ptr));
             return ref;
@@ -460,8 +503,9 @@ class MLRLCOMMON_API IBeamSearchTopDownRuleInductionMixin : virtual public IRule
          *         of the algorithm for the induction of individual rules
          */
         virtual IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() {
-            auto ptr = std::make_unique<BeamSearchTopDownRuleInductionConfig>(this->getRuleCompareFunction(),
-                                                                              this->getParallelRuleRefinementConfig());
+            auto ptr = std::make_unique<BeamSearchTopDownRuleInductionConfig>(
+              this->getRuleCompareFunction(), this->getRuleRefinementConfig(), this->getRulePruningConfig(),
+              this->getPostProcessorConfig());
             IBeamSearchTopDownRuleInductionConfig& ref = *ptr;
             this->getRuleInductionConfig().set(std::move(ptr));
             return ref;
@@ -580,7 +624,7 @@ class MLRLCOMMON_API IOutputSamplingWithoutReplacementMixin : virtual public IRu
          *         configuration of the sampling method
          */
         virtual IOutputSamplingWithoutReplacementConfig& useOutputSamplingWithoutReplacement() {
-            auto ptr = std::make_unique<OutputSamplingWithoutReplacementConfig>();
+            auto ptr = std::make_unique<OutputSamplingWithoutReplacementConfig>(this->getRNGConfig());
             IOutputSamplingWithoutReplacementConfig& ref = *ptr;
             this->getOutputSamplingConfig().set(std::move(ptr));
             return ref;
@@ -641,7 +685,7 @@ class MLRLCOMMON_API IInstanceSamplingWithReplacementMixin : virtual public IRul
          *         configuration of the method for sampling instances
          */
         virtual IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement() {
-            auto ptr = std::make_shared<InstanceSamplingWithReplacementConfig>();
+            auto ptr = std::make_shared<InstanceSamplingWithReplacementConfig>(this->getRNGConfig());
             IInstanceSamplingWithReplacementConfig& ref = *ptr;
             this->getClassificationInstanceSamplingConfig().set(ptr);
             this->getRegressionInstanceSamplingConfig().set(ptr);
@@ -666,7 +710,7 @@ class MLRLCOMMON_API IInstanceSamplingWithoutReplacementMixin : virtual public I
          *         configuration of the method for sampling instances
          */
         virtual IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement() {
-            auto ptr = std::make_shared<InstanceSamplingWithoutReplacementConfig>();
+            auto ptr = std::make_shared<InstanceSamplingWithoutReplacementConfig>(this->getRNGConfig());
             IInstanceSamplingWithoutReplacementConfig& ref = *ptr;
             this->getClassificationInstanceSamplingConfig().set(ptr);
             this->getRegressionInstanceSamplingConfig().set(ptr);
@@ -707,7 +751,7 @@ class MLRLCOMMON_API IFeatureSamplingWithoutReplacementMixin : virtual public IR
          *         configuration of the method for sampling features
          */
         virtual IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() {
-            auto ptr = std::make_unique<FeatureSamplingWithoutReplacementConfig>();
+            auto ptr = std::make_unique<FeatureSamplingWithoutReplacementConfig>(this->getRNGConfig());
             IFeatureSamplingWithoutReplacementConfig& ref = *ptr;
             this->getFeatureSamplingConfig().set(std::move(ptr));
             return ref;
@@ -752,7 +796,7 @@ class MLRLCOMMON_API IRandomBiPartitionSamplingMixin : virtual public IRuleLearn
          *         of the method for partitioning the available training examples into a training set and a holdout set
          */
         virtual IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() {
-            auto ptr = std::make_shared<RandomBiPartitionSamplingConfig>();
+            auto ptr = std::make_shared<RandomBiPartitionSamplingConfig>(this->getRNGConfig());
             IRandomBiPartitionSamplingConfig& ref = *ptr;
             this->getClassificationPartitionSamplingConfig().set(ptr);
             this->getRegressionPartitionSamplingConfig().set(ptr);
@@ -831,6 +875,25 @@ class MLRLCOMMON_API IParallelRuleRefinementMixin : virtual public IRuleLearnerC
             IManualMultiThreadingConfig& ref = *ptr;
             this->getParallelRuleRefinementConfig().set(std::move(ptr));
             return ref;
+        }
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a rule learner to not use any multi-threading for the
+ * parallel aggregation of statistics into histograms.
+ */
+class MLRLCOMMON_API INoParallelStatisticAggregationMixin : virtual public IRuleLearnerConfig {
+    public:
+
+        virtual ~INoParallelStatisticAggregationMixin() override {}
+
+        /**
+         * Configures the rule learner to not use any multi-threading for the parallel aggregation of statistics into
+         * histograms.
+         */
+        virtual void useNoParallelStatisticAggregation() {
+            this->getRuleRefinementConfig().set(
+              std::make_unique<StatisticsBasedRuleRefinementConfig>(this->getParallelRuleRefinementConfig()));
         }
 };
 
@@ -1097,7 +1160,7 @@ class MLRLCOMMON_API ISequentialPostOptimizationMixin : virtual public IRuleLear
          *         configuration of the post-optimization method
          */
         virtual ISequentialPostOptimizationConfig& useSequentialPostOptimization() {
-            auto ptr = std::make_unique<SequentialPostOptimizationConfig>();
+            auto ptr = std::make_unique<SequentialPostOptimizationConfig>(this->getRuleInductionConfig());
             ISequentialPostOptimizationConfig& ref = *ptr;
             this->getSequentialPostOptimizationConfig().set(std::move(ptr));
             return ref;
@@ -1189,6 +1252,7 @@ class MLRLCOMMON_API INoBinaryPredictorMixin : virtual public IRuleLearnerConfig
  * Defines an interface for all classes that allow to configure a rule learner to use a simple default configuration.
  */
 class MLRLCOMMON_API IRuleLearnerMixin : virtual public IRuleLearnerConfig,
+                                         virtual public IRNGMixin,
                                          virtual public IDefaultRuleMixin,
                                          virtual public INoFeatureBinningMixin,
                                          virtual public INoOutputSamplingMixin,
@@ -1197,6 +1261,7 @@ class MLRLCOMMON_API IRuleLearnerMixin : virtual public IRuleLearnerConfig,
                                          virtual public INoPartitionSamplingMixin,
                                          virtual public INoRulePruningMixin,
                                          virtual public INoParallelRuleRefinementMixin,
+                                         virtual public INoParallelStatisticAggregationMixin,
                                          virtual public INoParallelStatisticUpdateMixin,
                                          virtual public INoParallelPredictionMixin,
                                          virtual public INoSizeStoppingCriterionMixin,
@@ -1214,6 +1279,7 @@ class MLRLCOMMON_API IRuleLearnerMixin : virtual public IRuleLearnerConfig,
         virtual ~IRuleLearnerMixin() override {}
 
         virtual void useDefaults() override {
+            this->useRNG();
             this->useDefaultRule();
             this->useNoFeatureBinning();
             this->useNoOutputSampling();
@@ -1222,6 +1288,7 @@ class MLRLCOMMON_API IRuleLearnerMixin : virtual public IRuleLearnerConfig,
             this->useNoPartitionSampling();
             this->useNoRulePruning();
             this->useNoParallelRuleRefinement();
+            this->useNoParallelStatisticAggregation();
             this->useNoParallelStatisticUpdate();
             this->useNoParallelPrediction();
             this->useNoSizeStoppingCriterion();
