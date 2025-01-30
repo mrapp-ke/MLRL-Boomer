@@ -7,13 +7,14 @@
 
 namespace boosting {
 
-    static inline void updateGradientAndHessian(float64 invertedExpectedScore, float64 x, float64 max, float64 sumExp,
-                                                float64& gradient, float64& hessian) {
+    template<typename StatisticType>
+    static inline void updateGradientAndHessian(StatisticType invertedExpectedScore, StatisticType x, StatisticType max,
+                                                StatisticType sumExp, StatisticType& gradient, StatisticType& hessian) {
         // Calculate the gradient that corresponds to the current label. The gradient calculates as
         // `-expectedScore_c * exp(x_c) / (1 + exp(x_1) + exp(x_2) + ...)`, which can be rewritten as
         // `-expectedScore_c * (exp(x_c - max) / sumExp)`
-        float64 xExp = std::exp(x - max);
-        float64 tmp = util::divideOrZero<float64>(xExp, sumExp);
+        StatisticType xExp = std::exp(x - max);
+        StatisticType tmp = util::divideOrZero(xExp, sumExp);
         gradient = invertedExpectedScore * tmp;
 
         // Calculate the Hessian on the diagonal of the Hessian matrix that corresponds to the current label. Such
@@ -72,11 +73,13 @@ namespace boosting {
         }
     }
 
-    template<typename LabelIterator>
-    static inline void updateNonDecomposableStatisticsInternally(
-      View<float64>::const_iterator scoreIterator, LabelIterator labelIterator,
-      DenseNonDecomposableStatisticView<float64>::gradient_iterator gradientIterator,
-      DenseNonDecomposableStatisticView<float64>::hessian_iterator hessianIterator, uint32 numLabels) {
+    template<typename ScoreIterator, typename LabelIterator, typename GradientIterator, typename HessianIterator>
+    static inline void updateNonDecomposableStatisticsInternally(ScoreIterator scoreIterator,
+                                                                 LabelIterator labelIterator,
+                                                                 GradientIterator gradientIterator,
+                                                                 HessianIterator hessianIterator, uint32 numLabels) {
+        typedef typename util::iterator_value<GradientIterator> statistic_type;
+
         // This implementation uses the so-called "exp-normalize-trick" to increase numerical stability (see, e.g.,
         // https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/). It is based on rewriting a fraction
         // of the form `exp(x_1) / (exp(x_1) + exp(x_2) + ...)` as
@@ -88,13 +91,13 @@ namespace boosting {
 
         // For each label `c`, calculate `x = -expectedScore_c * predictedScore_c` and find the largest and second
         // largest values (that must be greater than 0, because `exp(1) = 0`) among all of them...
-        float64 max = 0;   // The largest value
-        float64 max2 = 0;  // The second largest value
+        statistic_type max = 0;   // The largest value
+        statistic_type max2 = 0;  // The second largest value
 
         for (uint32 c = 0; c < numLabels; c++) {
-            float64 predictedScore = scoreIterator[c];
+            statistic_type predictedScore = scoreIterator[c];
             bool trueLabel = *labelIterator;
-            float64 x = trueLabel ? -predictedScore : predictedScore;
+            statistic_type x = trueLabel ? -predictedScore : predictedScore;
             gradientIterator[c] = x;  // Temporarily store `x` in the array of gradients
 
             if (x > max) {
@@ -112,26 +115,26 @@ namespace boosting {
         max2 += max;
 
         // Calculate `sumExp = exp(0 - max) + exp(x_1 - max) + exp(x_2 - max) + ...`
-        float64 sumExp = std::exp(0.0 - max);
-        float64 zeroExp = std::exp(0.0 - max2);
-        float64 sumExp2 = zeroExp;
+        statistic_type sumExp = std::exp(0.0 - max);
+        statistic_type zeroExp = std::exp(0.0 - max2);
+        statistic_type sumExp2 = zeroExp;
 
         for (uint32 c = 0; c < numLabels; c++) {
-            float64 x = gradientIterator[c];
+            statistic_type x = gradientIterator[c];
             sumExp += std::exp(x - max);
             sumExp2 += std::exp(x - max2);
         }
 
         // Calculate `zeroExp / sumExp2` (it is needed multiple times for calculating Hessians that belong to the upper
         // triangle of the Hessian matrix)...
-        zeroExp = util::divideOrZero<float64>(zeroExp, sumExp2);
+        zeroExp = util::divideOrZero(zeroExp, sumExp2);
 
         // Calculate the gradients and Hessians...
         for (uint32 c = 0; c < numLabels; c++) {
-            float64 predictedScore = scoreIterator[c];
+            statistic_type predictedScore = scoreIterator[c];
             bool trueLabel = *labelIterator2;
-            float64 invertedExpectedScore = trueLabel ? -1 : 1;
-            float64 x = predictedScore * invertedExpectedScore;
+            statistic_type invertedExpectedScore = trueLabel ? -1 : 1;
+            statistic_type x = predictedScore * invertedExpectedScore;
 
             // Calculate the Hessians that belong to the part of the Hessian matrix' upper triangle that corresponds to
             // the current label. Such Hessian calculates as
@@ -140,12 +143,12 @@ namespace boosting {
             LabelIterator labelIterator4 = labelIterator3;
 
             for (uint32 r = 0; r < c; r++) {
-                float64 predictedScore2 = scoreIterator[r];
+                statistic_type predictedScore2 = scoreIterator[r];
                 bool trueLabel2 = *labelIterator4;
-                float64 expectedScore2 = trueLabel2 ? 1 : -1;
-                float64 x2 = predictedScore2 * -expectedScore2;
+                statistic_type expectedScore2 = trueLabel2 ? 1 : -1;
+                statistic_type x2 = predictedScore2 * -expectedScore2;
                 *hessianIterator = invertedExpectedScore * expectedScore2
-                                   * util::divideOrZero<float64>(std::exp(x + x2 - max2), sumExp2) * zeroExp;
+                                   * util::divideOrZero(std::exp(x + x2 - max2), sumExp2) * zeroExp;
                 hessianIterator++;
                 labelIterator4++;
             }
@@ -156,9 +159,12 @@ namespace boosting {
         }
     }
 
-    template<typename LabelIterator>
-    static inline float64 evaluateInternally(View<float64>::const_iterator scoreIterator, LabelIterator labelIterator,
-                                             uint32 numLabels) {
+    template<typename ScoreIterator, typename LabelIterator>
+    static inline typename util::iterator_value<ScoreIterator> evaluateInternally(ScoreIterator scoreIterator,
+                                                                                  LabelIterator labelIterator,
+                                                                                  uint32 numLabels) {
+        typedef typename util::iterator_value<ScoreIterator> score_type;
+
         // The example-wise logistic loss calculates as
         // `log(1 + exp(-expectedScore_1 * predictedScore_1) + ... + exp(-expectedScore_2 * predictedScore_2) + ...)`.
         // In the following, we exploit the identity
@@ -166,14 +172,14 @@ namespace boosting {
         // `max = max(x_1, x_2, ...)`, to increase numerical stability (see, e.g., section "Log-sum-exp for computing
         // the log-distribution" in https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/).
         LabelIterator labelIterator2 = labelIterator;
-        float64 max = 0;
+        score_type max = 0;
 
         // For each label `i`, calculate `x = -expectedScore_i * predictedScore_i` and find the largest value (that must
         // be greater than 0, because `exp(1) = 0`) among all of them...
         for (uint32 i = 0; i < numLabels; i++) {
             bool trueLabel = *labelIterator;
-            float64 predictedScore = scoreIterator[i];
-            float64 x = trueLabel ? -predictedScore : predictedScore;
+            score_type predictedScore = scoreIterator[i];
+            score_type x = trueLabel ? -predictedScore : predictedScore;
 
             if (x > max) {
                 max = x;
@@ -183,12 +189,12 @@ namespace boosting {
         }
 
         // Calculate the example-wise loss as `max + log(exp(0 - max) + exp(x_1 - max) + ...)`...
-        float64 sumExp = std::exp(0 - max);
+        score_type sumExp = std::exp(0 - max);
 
         for (uint32 i = 0; i < numLabels; i++) {
             bool trueLabel = *labelIterator2;
-            float64 predictedScore = scoreIterator[i];
-            float64 x = trueLabel ? -predictedScore : predictedScore;
+            score_type predictedScore = scoreIterator[i];
+            score_type x = trueLabel ? -predictedScore : predictedScore;
             sumExp += std::exp(x - max);
             labelIterator2++;
         }
@@ -199,15 +205,18 @@ namespace boosting {
     /**
      * An implementation of the type `INonDecomposableClassificationLoss` that implements a multivariate variant of the
      * logistic loss that is non-decomposable.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
-    class NonDecomposableLogisticLoss final : public INonDecomposableClassificationLoss<float64> {
+    template<typename StatisticType>
+    class NonDecomposableLogisticLoss final : public INonDecomposableClassificationLoss<StatisticType> {
         public:
 
             virtual void updateDecomposableStatistics(
               uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-              const CContiguousView<float64>& scoreMatrix, CompleteIndexVector::const_iterator indicesBegin,
+              const CContiguousView<StatisticType>& scoreMatrix, CompleteIndexVector::const_iterator indicesBegin,
               CompleteIndexVector::const_iterator indicesEnd,
-              CContiguousView<Statistic<float64>>& statisticView) const override {
+              CContiguousView<Statistic<StatisticType>>& statisticView) const override {
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex),
                                                        labelMatrix.values_cbegin(exampleIndex),
                                                        statisticView.values_begin(exampleIndex), labelMatrix.numCols);
@@ -215,18 +224,18 @@ namespace boosting {
 
             virtual void updateDecomposableStatistics(
               uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-              const CContiguousView<float64>& scoreMatrix, PartialIndexVector::const_iterator indicesBegin,
+              const CContiguousView<StatisticType>& scoreMatrix, PartialIndexVector::const_iterator indicesBegin,
               PartialIndexVector::const_iterator indicesEnd,
-              CContiguousView<Statistic<float64>>& statisticView) const override {
+              CContiguousView<Statistic<StatisticType>>& statisticView) const override {
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex),
                                                        labelMatrix.values_cbegin(exampleIndex),
                                                        statisticView.values_begin(exampleIndex), labelMatrix.numCols);
             }
 
             virtual void updateDecomposableStatistics(
-              uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<float64>& scoreMatrix,
+              uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<StatisticType>& scoreMatrix,
               CompleteIndexVector::const_iterator indicesBegin, CompleteIndexVector::const_iterator indicesEnd,
-              CContiguousView<Statistic<float64>>& statisticView) const override {
+              CContiguousView<Statistic<StatisticType>>& statisticView) const override {
                 auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                        labelMatrix.indices_cend(exampleIndex));
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator,
@@ -234,9 +243,9 @@ namespace boosting {
             }
 
             virtual void updateDecomposableStatistics(
-              uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<float64>& scoreMatrix,
+              uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<StatisticType>& scoreMatrix,
               PartialIndexVector::const_iterator indicesBegin, PartialIndexVector::const_iterator indicesEnd,
-              CContiguousView<Statistic<float64>>& statisticView) const override {
+              CContiguousView<Statistic<StatisticType>>& statisticView) const override {
                 auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                        labelMatrix.indices_cend(exampleIndex));
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator,
@@ -245,8 +254,8 @@ namespace boosting {
 
             void updateNonDecomposableStatistics(
               uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-              const CContiguousView<float64>& scoreMatrix,
-              DenseNonDecomposableStatisticView<float64>& statisticView) const override {
+              const CContiguousView<StatisticType>& scoreMatrix,
+              DenseNonDecomposableStatisticView<StatisticType>& statisticView) const override {
                 updateNonDecomposableStatisticsInternally(
                   scoreMatrix.values_cbegin(exampleIndex), labelMatrix.values_cbegin(exampleIndex),
                   statisticView.gradients_begin(exampleIndex), statisticView.hessians_begin(exampleIndex),
@@ -254,8 +263,8 @@ namespace boosting {
             }
 
             void updateNonDecomposableStatistics(
-              uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<float64>& scoreMatrix,
-              DenseNonDecomposableStatisticView<float64>& statisticView) const override {
+              uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<StatisticType>& scoreMatrix,
+              DenseNonDecomposableStatisticView<StatisticType>& statisticView) const override {
                 auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                        labelMatrix.indices_cend(exampleIndex));
                 updateNonDecomposableStatisticsInternally(
@@ -266,8 +275,8 @@ namespace boosting {
             /**
              * @see `IClassificationEvaluationMeasure::evaluate`
              */
-            float64 evaluate(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-                             const CContiguousView<float64>& scoreMatrix) const override {
+            StatisticType evaluate(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+                                   const CContiguousView<StatisticType>& scoreMatrix) const override {
                 return evaluateInternally(scoreMatrix.values_cbegin(exampleIndex),
                                           labelMatrix.values_cbegin(exampleIndex), labelMatrix.numCols);
             }
@@ -275,8 +284,8 @@ namespace boosting {
             /**
              * @see `IClassificationEvaluationMeasure::evaluate`
              */
-            float64 evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                             const CContiguousView<float64>& scoreMatrix) const override {
+            StatisticType evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
+                                   const CContiguousView<StatisticType>& scoreMatrix) const override {
                 auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                        labelMatrix.indices_cend(exampleIndex));
                 return evaluateInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator, labelMatrix.numCols);
@@ -285,9 +294,9 @@ namespace boosting {
             /**
              * @see `IDistanceMeasure::measureDistance`
              */
-            float64 measureDistance(uint32 labelVectorIndex, const LabelVector& labelVector,
-                                    View<float64>::const_iterator scoresBegin,
-                                    View<float64>::const_iterator scoresEnd) const override {
+            StatisticType measureDistance(uint32 labelVectorIndex, const LabelVector& labelVector,
+                                          typename View<StatisticType>::const_iterator scoresBegin,
+                                          typename View<StatisticType>::const_iterator scoresEnd) const override {
                 auto labelIterator = createBinarySparseForwardIterator(labelVector.cbegin(), labelVector.cend());
                 uint32 numLabels = scoresEnd - scoresBegin;
                 return evaluateInternally(scoresBegin, labelIterator, numLabels);
@@ -303,7 +312,7 @@ namespace boosting {
 
             std::unique_ptr<INonDecomposableClassificationLoss<float64>> createNonDecomposableClassificationLoss()
               const override {
-                return std::make_unique<NonDecomposableLogisticLoss>();
+                return std::make_unique<NonDecomposableLogisticLoss<float64>>();
             }
 
             std::unique_ptr<IDistanceMeasure<float64>> createDistanceMeasure(
