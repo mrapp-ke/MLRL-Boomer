@@ -13,20 +13,20 @@ namespace boosting {
     /**
      * Copies Hessians from an iterator to a matrix of coefficients that may be passed to LAPACK's SYSV routine.
      *
-     * @tparam StatisticType    The type of the Hessians
-     * @param hessianIterator   An iterator that provides random access to the Hessians
-     * @param coefficients      An iterator, the Hessians should be copied to
-     * @param n                 The dimensionality of the matrix of coefficients
+     * @tparam HessianIterator      The type of the iterator that provides access to the Hessians
+     * @tparam CoefficientIterator  The type of the iterator, the Hessians should be copied to
+     * @param hessians              An iterator that provides random access to the Hessians
+     * @param coefficients          An iterator, the Hessians should be copied to
+     * @param n                     The dimensionality of the matrix of coefficients
      */
-    template<typename StatisticType>
-    static inline void copyCoefficients(typename View<StatisticType>::const_iterator hessianIterator,
-                                        typename View<StatisticType>::iterator coefficients, uint32 n) {
+    template<typename HessianIterator, typename CoefficientIterator>
+    static inline void copyCoefficients(HessianIterator hessians, CoefficientIterator coefficients, uint32 n) {
         for (uint32 c = 0; c < n; c++) {
             uint32 offset = c * n;
 
             for (uint32 r = 0; r <= c; r++) {
-                coefficients[offset + r] = *hessianIterator;
-                hessianIterator++;
+                coefficients[offset + r] = *hessians;
+                hessians++;
             }
         }
     }
@@ -34,14 +34,14 @@ namespace boosting {
     /**
      * Adds a L2 regularization weight to the diagonal of a matrix of coefficients.
      *
-     * @tparam StatisticType            The type of the coefficients
+     * @tparam CoefficientIterator      The type of the iterator that provides access to the coefficients
      * @param coefficients              An iterator, the regularization weight should be added to
      * @param numPredictions            The number of coefficients on the diagonal
      * @param l2RegularizationWeight    The L2 regularization weight to be added to the coefficients
      */
-    template<typename StatisticType>
-    static inline void addL2RegularizationWeight(typename View<StatisticType>::iterator coefficients,
-                                                 uint32 numPredictions, float32 l2RegularizationWeight) {
+    template<typename CoefficientIterator>
+    static inline void addL2RegularizationWeight(CoefficientIterator coefficients, uint32 numPredictions,
+                                                 float32 l2RegularizationWeight) {
         if (l2RegularizationWeight > 0) {
             for (uint32 i = 0; i < numPredictions; i++) {
                 coefficients[(i * numPredictions) + i] += l2RegularizationWeight;
@@ -52,33 +52,33 @@ namespace boosting {
     /**
      * Copies gradients from an iterator to a vector of ordinates that may be passed to LAPACK's SYSV routine.
      *
-     * @tparam StatisticType    The type of the gradients
-     * @param gradientIterator  An iterator that provides random access to the gradients
+     * @tparam GradientIterator The type of the iterator that provides access to the gradients
+     * @tparam OrdinateIterator The type of the iterator, the gradients should be copied to
+     * @param gradients         An iterator that provides random access to the gradients
      * @param ordinates         An iterator, the gradients should be copied to
-     * @param n                 The number of gradients
+     * @param numGradients      The number of gradients
      */
-    template<typename StatisticType>
-    static inline void copyOrdinates(typename View<StatisticType>::const_iterator gradientIterator,
-                                     typename View<StatisticType>::iterator ordinates, uint32 n) {
-        for (uint32 i = 0; i < n; i++) {
-            ordinates[i] = -gradientIterator[i];
+    template<typename GradientIterator, typename OrdinateIterator>
+    static inline void copyOrdinates(GradientIterator gradients, OrdinateIterator ordinates, uint32 numGradients) {
+        for (uint32 i = 0; i < numGradients; i++) {
+            ordinates[i] = -gradients[i];
         }
     }
 
     /**
      * Adds a L1 regularization weight to a vector of ordinates.
      *
-     * @tparam StatisticType            The type of the ordinates
+     * @tparam OrdinateIterator         The type of the iterator that provides access to the ordinates
      * @param ordinates                 An iterator, the L1 regularization weight should be added to
      * @param numPredictions            The number of ordinates
      * @param l1RegularizationWeight    The L1 regularization weight to be added to the ordinates
      **/
-    template<typename StatisticType>
-    static inline void addL1RegularizationWeight(typename View<StatisticType>::iterator ordinates,
-                                                 uint32 numPredictions, float32 l1RegularizationWeight) {
+    template<typename OrdinateIterator>
+    static inline void addL1RegularizationWeight(OrdinateIterator ordinates, uint32 numPredictions,
+                                                 float32 l1RegularizationWeight) {
         if (l1RegularizationWeight > 0) {
             for (uint32 i = 0; i < numPredictions; i++) {
-                StatisticType gradient = ordinates[i];
+                typename util::iterator_value<OrdinateIterator> gradient = ordinates[i];
                 ordinates[i] += getL1RegularizationWeight(gradient, l1RegularizationWeight);
             }
         }
@@ -87,7 +87,9 @@ namespace boosting {
     /**
      * Calculates and returns the overall quality of predictions for several outputs.
      *
-     * @tparam StatisticType    The type of predictions, gradients and Hessians
+     * @tparam ScoreIterator    The type of the iterator that provides access to the predicted scores
+     * @tparam GradientIterator The type of the iterator that provides access to the gradients
+     * @tparam HessianIterator  The type of the iterator that provides access to the Hessians
      * @param scores            An iterator that provides random access to the predicted scores
      * @param gradients         An iterator that provides random access to the gradients
      * @param hessians          An iterator that provides random access to the Hessians
@@ -96,12 +98,11 @@ namespace boosting {
      * @param blas              A reference to an object of type `Blas` that allows to execute different BLAS routines
      * @return                  The quality that has been calculated
      */
-    template<typename StatisticType>
-    static inline StatisticType calculateOverallQuality(typename View<StatisticType>::iterator scores,
-                                                        typename View<StatisticType>::iterator gradients,
-                                                        typename View<StatisticType>::iterator hessians,
-                                                        typename View<StatisticType>::iterator tmpArray,
-                                                        uint32 numPredictions, const Blas<StatisticType>& blas) {
+    template<typename ScoreIterator, typename GradientIterator, typename HessianIterator>
+    static inline typename util::iterator_value<GradientIterator> calculateOverallQuality(
+      ScoreIterator scores, GradientIterator gradients, HessianIterator hessians,
+      typename View<typename util::iterator_value<GradientIterator>>::iterator tmpArray, uint32 numPredictions,
+      const Blas<typename util::iterator_value<GradientIterator>>& blas) {
         blas.spmv(hessians, scores, tmpArray, numPredictions);
         return blas.dot(scores, gradients, numPredictions) + (0.5 * blas.dot(scores, tmpArray, numPredictions));
     }
@@ -109,17 +110,16 @@ namespace boosting {
     /**
      * Calculates and returns the regularization term.
      *
-     * @tparam StatisticType            The type of the predicted scores
+     * @tparam ScoreIterator            The type of the iterator that provides access to the predicted scores
      * @param scores                    An iterator that provides random access to the predicted scores
      * @param numPredictions            The number of predictions
      * @param l1RegularizationWeight    The weight of the L1 regularization term
      * @param l2RegularizationWeight    The weight of the L2 regularization term
      */
-    template<typename StatisticType>
-    static inline StatisticType calculateRegularizationTerm(typename View<StatisticType>::const_iterator scores,
-                                                            uint32 numPredictions, float32 l1RegularizationWeight,
-                                                            float32 l2RegularizationWeight) {
-        StatisticType regularizationTerm;
+    template<typename ScoreIterator>
+    static inline typename util::iterator_value<ScoreIterator> calculateRegularizationTerm(
+      ScoreIterator scores, uint32 numPredictions, float32 l1RegularizationWeight, float32 l2RegularizationWeight) {
+        typename util::iterator_value<ScoreIterator> regularizationTerm;
 
         if (l1RegularizationWeight > 0) {
             regularizationTerm = l1RegularizationWeight * util::l1Norm(scores, numPredictions);
@@ -190,16 +190,14 @@ namespace boosting {
                 uint32 numPredictions = scoreVector_.getNumElements();
 
                 // Copy Hessians to the matrix of coefficients and add the L2 regularization weight to its diagonal...
-                copyCoefficients<statistic_type>(statisticVector.hessians_cbegin(), this->sysvTmpArray1_.begin(),
-                                                 numPredictions);
-                addL2RegularizationWeight<statistic_type>(this->sysvTmpArray1_.begin(), numPredictions,
-                                                          l2RegularizationWeight_);
+                copyCoefficients(statisticVector.hessians_cbegin(), this->sysvTmpArray1_.begin(), numPredictions);
+                addL2RegularizationWeight(this->sysvTmpArray1_.begin(), numPredictions, l2RegularizationWeight_);
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
                 typename DenseScoreVector<statistic_type, IndexVector>::value_iterator valueIterator =
                   scoreVector_.values_begin();
-                copyOrdinates<statistic_type>(statisticVector.gradients_cbegin(), valueIterator, numPredictions);
-                addL1RegularizationWeight<statistic_type>(valueIterator, numPredictions, l1RegularizationWeight_);
+                copyOrdinates(statisticVector.gradients_cbegin(), valueIterator, numPredictions);
+                addL1RegularizationWeight(valueIterator, numPredictions, l1RegularizationWeight_);
 
                 // Calculate the scores to be predicted for individual outputs by solving a system of linear
                 // equations...
@@ -207,13 +205,13 @@ namespace boosting {
                                  this->sysvTmpArray3_.begin(), valueIterator, numPredictions, this->sysvLwork_);
 
                 // Calculate the overall quality...
-                statistic_type quality = calculateOverallQuality<statistic_type>(
+                statistic_type quality = calculateOverallQuality(
                   valueIterator, statisticVector.gradients_begin(), statisticVector.hessians_begin(),
                   this->spmvTmpArray_.begin(), numPredictions, *blasPtr_);
 
                 // Evaluate regularization term...
-                quality += calculateRegularizationTerm<statistic_type>(
-                  valueIterator, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
+                quality += calculateRegularizationTerm(valueIterator, numPredictions, l1RegularizationWeight_,
+                                                       l2RegularizationWeight_);
 
                 scoreVector_.quality = quality;
                 return scoreVector_;
