@@ -74,10 +74,8 @@ namespace boosting {
                 typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
                 typename SparseArrayVector<statistic_type>::iterator tmpIterator = tmpVector_.begin();
-                sortOutputWiseCriteria<statistic_type, typename StatisticVector::gradient_const_iterator,
-                                       typename StatisticVector::hessian_diagonal_const_iterator>(
-                  tmpIterator, gradientIterator, hessianIterator, numOutputs, numPredictions, l1RegularizationWeight_,
-                  l2RegularizationWeight_);
+                sortOutputWiseCriteria(tmpIterator, gradientIterator, hessianIterator, numOutputs, numPredictions,
+                                       l1RegularizationWeight_, l2RegularizationWeight_);
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
@@ -92,13 +90,12 @@ namespace boosting {
                     valueIterator[i] = -gradientIterator[index];
                 }
 
-                addL1RegularizationWeight<statistic_type>(valueIterator, numPredictions, l1RegularizationWeight_);
+                addL1RegularizationWeight(valueIterator, numPredictions, l1RegularizationWeight_);
 
                 // Copy Hessians to the matrix of coefficients and add the L2 regularization weight to its diagonal...
-                copyCoefficients<statistic_type, PartialIndexVector::iterator>(
-                  statisticVector.hessians_cbegin(), indexIterator, this->sysvTmpArray1_.begin(), numPredictions);
-                addL2RegularizationWeight<statistic_type>(this->sysvTmpArray1_.begin(), numPredictions,
-                                                          l2RegularizationWeight_);
+                copyCoefficients(statisticVector.hessians_cbegin(), indexIterator, this->sysvTmpArray1_.begin(),
+                                 numPredictions);
+                addL2RegularizationWeight(this->sysvTmpArray1_.begin(), numPredictions, l2RegularizationWeight_);
 
                 // Calculate the scores to be predicted for individual outputs by solving a system of linear
                 // equations...
@@ -106,13 +103,13 @@ namespace boosting {
                                  this->sysvTmpArray3_.begin(), valueIterator, numPredictions, this->sysvLwork_);
 
                 // Calculate the overall quality...
-                statistic_type quality = calculateOverallQuality<statistic_type>(
+                statistic_type quality = calculateOverallQuality(
                   valueIterator, statisticVector.gradients_begin(), statisticVector.hessians_begin(),
                   this->spmvTmpArray_.begin(), numPredictions, *blasPtr_);
 
                 // Evaluate regularization term...
-                quality += calculateRegularizationTerm<statistic_type>(
-                  valueIterator, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
+                quality += calculateRegularizationTerm(valueIterator, numPredictions, l1RegularizationWeight_,
+                                                       l2RegularizationWeight_);
 
                 scoreVector_.quality = quality;
                 return scoreVector_;
