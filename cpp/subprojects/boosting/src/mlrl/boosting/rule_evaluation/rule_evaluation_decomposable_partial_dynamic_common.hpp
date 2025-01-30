@@ -26,17 +26,16 @@ namespace boosting {
                             typename util::iterator_value<StatisticIterator>::statistic_type>
       getMinAndMaxScore(StatisticIterator& statisticIterator, uint32 numOutputs, float32 l1RegularizationWeight,
                         float32 l2RegularizationWeight) {
-        const typename util::iterator_value<StatisticIterator>& firstStatistic = statisticIterator[0];
-        typename util::iterator_value<StatisticIterator>::statistic_type maxAbsScore =
-          std::abs(calculateOutputWiseScore(firstStatistic.gradient, firstStatistic.hessian, l1RegularizationWeight,
-                                            l2RegularizationWeight));
-        typename util::iterator_value<StatisticIterator>::statistic_type minAbsScore = maxAbsScore;
+        typedef typename util::iterator_value<StatisticIterator>::statistic_type statistic_type;
+        const Statistic<statistic_type>& firstStatistic = statisticIterator[0];
+        statistic_type maxAbsScore = std::abs(calculateOutputWiseScore(firstStatistic.gradient, firstStatistic.hessian,
+                                                                       l1RegularizationWeight, l2RegularizationWeight));
+        statistic_type minAbsScore = maxAbsScore;
 
         for (uint32 i = 1; i < numOutputs; i++) {
-            const typename util::iterator_value<StatisticIterator>& statistic = statisticIterator[i];
-            typename util::iterator_value<StatisticIterator>::statistic_type absScore =
-              std::abs(calculateOutputWiseScore(statistic.gradient, statistic.hessian, l1RegularizationWeight,
-                                                l2RegularizationWeight));
+            const Statistic<statistic_type>& statistic = statisticIterator[i];
+            statistic_type absScore = std::abs(calculateOutputWiseScore(
+              statistic.gradient, statistic.hessian, l1RegularizationWeight, l2RegularizationWeight));
 
             if (absScore > maxAbsScore) {
                 maxAbsScore = absScore;
