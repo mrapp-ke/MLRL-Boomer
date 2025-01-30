@@ -64,10 +64,8 @@ namespace boosting {
              */
             std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override {
-                return configPtr_->getClassificationStatisticsConfig()
-                  .get()
-                  .createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, blasFactory_,
-                                                                 lapackFactory_);
+                return configPtr_->getStatisticTypeConfig().get().createClassificationStatisticsProviderFactory(
+                  featureMatrix, labelMatrix, blasFactory_, lapackFactory_);
             }
 
             /**
@@ -75,7 +73,7 @@ namespace boosting {
              */
             std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix) const override {
-                return configPtr_->getRegressionStatisticsConfig().get().createRegressionStatisticsProviderFactory(
+                return configPtr_->getStatisticTypeConfig().get().createRegressionStatisticsProviderFactory(
                   featureMatrix, regressionMatrix, blasFactory_, lapackFactory_);
             }
     };

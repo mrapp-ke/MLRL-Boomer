@@ -317,7 +317,8 @@ namespace boosting {
              * Configures the rule learner to use 32-bit floating point values for representing gradients and Hessians.
              */
             virtual void useFloat32Statistics() {
-                auto ptr = std::make_unique<Float32StatisticsConfig>();
+                auto ptr = std::make_unique<Float32StatisticsConfig>(this->getClassificationStatisticsConfig(),
+                                                                     this->getRegressionStatisticsConfig());
                 this->getStatisticTypeConfig().set(std::move(ptr));
             }
     };
@@ -335,7 +336,8 @@ namespace boosting {
              * Configures the rule learner to use 64-bit floating point values for representing gradients and Hessians.
              */
             virtual void useFloat64Statistics() {
-                auto ptr = std::make_unique<Float64StatisticsConfig>();
+                auto ptr = std::make_unique<Float64StatisticsConfig>(this->getClassificationStatisticsConfig(),
+                                                                     this->getRegressionStatisticsConfig());
                 this->getStatisticTypeConfig().set(std::move(ptr));
             }
     };
