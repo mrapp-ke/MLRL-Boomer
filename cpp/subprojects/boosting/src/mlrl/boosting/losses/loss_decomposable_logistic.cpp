@@ -50,11 +50,12 @@ namespace boosting {
         }
     }
 
-    static inline void updateGradientAndHessian(bool trueLabel, float64 predictedScore, float64& gradient,
-                                                float64& hessian) {
+    template<typename StatisticType>
+    static inline void updateGradientAndHessian(bool trueLabel, StatisticType predictedScore, StatisticType& gradient,
+                                                StatisticType& hessian) {
         // The gradient computes as `-expectedScore / (1 + exp(expectedScore * predictedScore))`, or as
         // `1 / (1 + exp(-predictedScore)) - 1` if `trueLabel == true`, `1 / (1 + exp(-predictedScore))`, otherwise...
-        float64 logistic = util::logisticFunction(predictedScore);
+        StatisticType logistic = util::logisticFunction(predictedScore);
         gradient = trueLabel ? logistic - 1.0 : logistic;
 
         // The Hessian computes as `exp(expectedScore * predictedScore) / (1 + exp(expectedScore * predictedScore))^2`,
@@ -62,9 +63,10 @@ namespace boosting {
         hessian = logistic - squaredLogisticFunction(predictedScore);
     }
 
-    static inline float64 evaluatePrediction(bool trueLabel, float64 predictedScore) {
+    template<typename ScoreType>
+    static inline ScoreType evaluatePrediction(bool trueLabel, ScoreType predictedScore) {
         // The logistic loss calculates as `log(1 + exp(-expectedScore * predictedScore))`...
-        float64 x = trueLabel ? -predictedScore : predictedScore;
+        ScoreType x = trueLabel ? -predictedScore : predictedScore;
         return logSumExp(x);
     }
 
@@ -77,8 +79,8 @@ namespace boosting {
 
             std::unique_ptr<IDecomposableClassificationLoss<float64>> createDecomposableClassificationLoss()
               const override {
-                return std::make_unique<DecomposableClassificationLoss<float64>>(&updateGradientAndHessian,
-                                                                                 &evaluatePrediction);
+                return std::make_unique<DecomposableClassificationLoss<float64>>(&updateGradientAndHessian<float64>,
+                                                                                 &evaluatePrediction<float64>);
             }
 
             std::unique_ptr<IDistanceMeasure<float64>> createDistanceMeasure(
