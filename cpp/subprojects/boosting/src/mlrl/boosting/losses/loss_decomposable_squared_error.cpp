@@ -4,23 +4,27 @@
 
 namespace boosting {
 
-    static inline void updateGradientAndHessianRegression(float32 expectedScore, float64 predictedScore,
-                                                          float64& gradient, float64& hessian) {
-        gradient = (predictedScore - (float64) expectedScore);
+    template<typename StatisticType>
+    static inline void updateGradientAndHessianRegression(float32 expectedScore, StatisticType predictedScore,
+                                                          StatisticType& gradient, StatisticType& hessian) {
+        gradient = (predictedScore - (StatisticType) expectedScore);
         hessian = 1;
     }
 
-    static inline void updateGradientAndHessianClassification(bool trueLabel, float64 predictedScore, float64& gradient,
-                                                              float64& hessian) {
+    template<typename StatisticType>
+    static inline void updateGradientAndHessianClassification(bool trueLabel, StatisticType predictedScore,
+                                                              StatisticType& gradient, StatisticType& hessian) {
         updateGradientAndHessianRegression(trueLabel ? 1.0f : -1.0f, predictedScore, gradient, hessian);
     }
 
-    static inline float64 evaluatePredictionRegression(float32 expectedScore, float64 predictedScore) {
-        float64 difference = ((float64) expectedScore - predictedScore);
+    template<typename ScoreType>
+    static inline ScoreType evaluatePredictionRegression(float32 expectedScore, ScoreType predictedScore) {
+        ScoreType difference = ((ScoreType) expectedScore - predictedScore);
         return difference * difference;
     }
 
-    static inline float64 evaluatePredictionClassification(bool trueLabel, float64 predictedScore) {
+    template<typename ScoreType>
+    static inline ScoreType evaluatePredictionClassification(bool trueLabel, ScoreType predictedScore) {
         return evaluatePredictionRegression(trueLabel ? 1.0 : -1.0, predictedScore);
     }
 
@@ -35,12 +39,12 @@ namespace boosting {
             std::unique_ptr<IDecomposableClassificationLoss<float64>> createDecomposableClassificationLoss()
               const override {
                 return std::make_unique<DecomposableClassificationLoss<float64>>(
-                  &updateGradientAndHessianClassification, &evaluatePredictionClassification);
+                  &updateGradientAndHessianClassification<float64>, &evaluatePredictionClassification<float64>);
             }
 
             std::unique_ptr<IDecomposableRegressionLoss<float64>> createDecomposableRegressionLoss() const override {
-                return std::make_unique<DecomposableRegressionLoss<float64>>(&updateGradientAndHessianRegression,
-                                                                             &evaluatePredictionRegression);
+                return std::make_unique<DecomposableRegressionLoss<float64>>(
+                  &updateGradientAndHessianRegression<float64>, &evaluatePredictionRegression<float64>);
             }
 
             std::unique_ptr<IDistanceMeasure<float64>> createDistanceMeasure(
