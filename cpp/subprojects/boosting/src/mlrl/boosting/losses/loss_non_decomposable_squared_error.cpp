@@ -17,6 +17,7 @@ namespace boosting {
       View<float64>::const_iterator scoreIterator, GroundTruthIterator groundTruthIterator,
       View<Tuple<float64>>::iterator statisticIterator, uint32 numOutputs,
       GroundTruthConversionFunction<GroundTruthIterator> groundTruthConversionFunction) {
+        typedef typename std::iterator_traits<GroundTruthIterator>::value_type ground_truth_type;
         GroundTruthIterator groundTruthIterator2 = groundTruthIterator;
 
         // For each output `i`, calculate `x_i = predictedScore_i^2 + (-2 * expectedScore_i * predictedScore_i) + 1` and
@@ -26,8 +27,8 @@ namespace boosting {
 
         for (uint32 i = 0; i < numOutputs; i++) {
             float64 predictedScore = scoreIterator[i];
-            bool trueLabel = *groundTruthIterator;
-            float64 expectedScore = trueLabel ? 1 : -1;
+            ground_truth_type groundTruth = *groundTruthIterator;
+            float64 expectedScore = groundTruthConversionFunction(groundTruth);
             float64 x = (predictedScore * predictedScore) + (-2 * expectedScore * predictedScore) + 1;
             statisticIterator[i].first = x;  // Temporarily store `x` in the array of gradients
             denominator += x;
@@ -43,8 +44,8 @@ namespace boosting {
         // Calculate the gradients and Hessians...
         for (uint32 i = 0; i < numOutputs; i++) {
             float64 predictedScore = scoreIterator[i];
-            bool trueLabel = *groundTruthIterator2;
-            float64 expectedScore = trueLabel ? 1 : -1;
+            ground_truth_type groundTruth = *groundTruthIterator2;
+            float64 expectedScore = groundTruthConversionFunction(groundTruth);
             Tuple<float64>& tuple = statisticIterator[i];
             float64 x = tuple.first;
 
@@ -64,6 +65,7 @@ namespace boosting {
       DenseNonDecomposableStatisticView::gradient_iterator gradientIterator,
       DenseNonDecomposableStatisticView::hessian_iterator hessianIterator, uint32 numOutputs,
       GroundTruthConversionFunction<GroundTruthIterator> groundTruthConversionFunction) {
+        typedef typename std::iterator_traits<GroundTruthIterator>::value_type ground_truth_type;
         GroundTruthIterator groundTruthIterator2 = groundTruthIterator;
         GroundTruthIterator groundTruthIterator3 = groundTruthIterator;
 
@@ -74,7 +76,7 @@ namespace boosting {
 
         for (uint32 i = 0; i < numOutputs; i++) {
             float64 predictedScore = scoreIterator[i];
-            typename std::iterator_traits<GroundTruthIterator>::value_type groundTruth = *groundTruthIterator;
+            ground_truth_type groundTruth = *groundTruthIterator;
             float64 expectedScore = groundTruthConversionFunction(groundTruth);
             float64 x = (predictedScore * predictedScore) + (-2 * expectedScore * predictedScore) + 1;
             gradientIterator[i] = x;  // Temporarily store `x` in the array of gradients
@@ -91,7 +93,7 @@ namespace boosting {
         // Calculate the gradients and Hessians...
         for (uint32 i = 0; i < numOutputs; i++) {
             float64 predictedScore = scoreIterator[i];
-            typename std::iterator_traits<GroundTruthIterator>::value_type groundTruth = *groundTruthIterator2;
+            ground_truth_type groundTruth = *groundTruthIterator2;
             float64 expectedScore = groundTruthConversionFunction(groundTruth);
             float64 x = gradientIterator[i];
 
@@ -102,7 +104,7 @@ namespace boosting {
 
             for (uint32 j = 0; j < i; j++) {
                 float64 predictedScore2 = scoreIterator[j];
-                typename std::iterator_traits<GroundTruthIterator>::value_type groundTruth2 = *groundTruthIterator4;
+                ground_truth_type groundTruth2 = *groundTruthIterator4;
                 float64 expectedScore2 = groundTruthConversionFunction(groundTruth2);
                 *hessianIterator = util::divideOrZero<float64>(
                   -(predictedScore - expectedScore) * (predictedScore2 - expectedScore2), denominatorHessian);
