@@ -83,7 +83,7 @@ namespace boosting {
         std::unique_ptr<INonDecomposableClassificationLossFactory> lossFactoryPtr =
           lossConfig.createNonDecomposableClassificationLossFactory();
         std::unique_ptr<IClassificationEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
-          lossConfig.createNonDecomposableClassificationLossFactory();
+          lossConfig.createClassificationEvaluationMeasureFactory();
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
           labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
@@ -129,7 +129,7 @@ namespace boosting {
         std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr =
           lossConfig.createNonDecomposableRegressionLossFactory();
         std::unique_ptr<IRegressionEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
-          lossConfig.createNonDecomposableRegressionLossFactory();
+          lossConfig.createRegressionEvaluationMeasureFactory();
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
           labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
