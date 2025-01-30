@@ -77,7 +77,8 @@ namespace boosting {
 
             std::unique_ptr<IDecomposableClassificationLoss<float64>> createDecomposableClassificationLoss()
               const override {
-                return std::make_unique<DecomposableClassificationLoss>(&updateGradientAndHessian, &evaluatePrediction);
+                return std::make_unique<DecomposableClassificationLoss<float64>>(&updateGradientAndHessian,
+                                                                                 &evaluatePrediction);
             }
 
             std::unique_ptr<IDistanceMeasure<float64>> createDistanceMeasure(
