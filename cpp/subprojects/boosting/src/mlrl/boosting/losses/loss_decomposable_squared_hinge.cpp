@@ -4,8 +4,9 @@
 
 namespace boosting {
 
-    static inline void updateGradientAndHessian(bool trueLabel, float64 predictedScore, float64& gradient,
-                                                float64& hessian) {
+    template<typename StatisticType>
+    static inline void updateGradientAndHessian(bool trueLabel, StatisticType predictedScore, StatisticType& gradient,
+                                                StatisticType& hessian) {
         if (trueLabel) {
             if (predictedScore < 1) {
                 gradient = (predictedScore - 1);
@@ -23,7 +24,8 @@ namespace boosting {
         hessian = 1;
     }
 
-    static inline float64 evaluatePrediction(bool trueLabel, float64 predictedScore) {
+    template<typename ScoreType>
+    static inline ScoreType evaluatePrediction(bool trueLabel, ScoreType predictedScore) {
         if (trueLabel) {
             if (predictedScore < 1) {
                 return (1 - predictedScore) * (1 - predictedScore);
@@ -48,8 +50,8 @@ namespace boosting {
 
             std::unique_ptr<ISparseDecomposableClassificationLoss<float64>> createSparseDecomposableClassificationLoss()
               const override {
-                return std::make_unique<SparseDecomposableClassificationLoss<float64>>(&updateGradientAndHessian,
-                                                                                       &evaluatePrediction);
+                return std::make_unique<SparseDecomposableClassificationLoss<float64>>(
+                  &updateGradientAndHessian<float64>, &evaluatePrediction<float64>);
             }
 
             std::unique_ptr<IDistanceMeasure<float64>> createDistanceMeasure(
