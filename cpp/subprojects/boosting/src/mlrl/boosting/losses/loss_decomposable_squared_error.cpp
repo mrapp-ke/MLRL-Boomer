@@ -39,8 +39,8 @@ namespace boosting {
             }
 
             std::unique_ptr<IDecomposableRegressionLoss<float64>> createDecomposableRegressionLoss() const override {
-                return std::make_unique<DecomposableRegressionLoss>(&updateGradientAndHessianRegression,
-                                                                    &evaluatePredictionRegression);
+                return std::make_unique<DecomposableRegressionLoss<float64>>(&updateGradientAndHessianRegression,
+                                                                             &evaluatePredictionRegression);
             }
 
             std::unique_ptr<IDistanceMeasure<float64>> createDistanceMeasure(
