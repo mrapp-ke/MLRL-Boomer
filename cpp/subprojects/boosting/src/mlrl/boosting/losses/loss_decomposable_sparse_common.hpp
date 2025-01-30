@@ -19,7 +19,7 @@ namespace boosting {
                                             SparseSetView<float64>::value_const_iterator& scoreIterator,
                                             SparseSetView<float64>::value_const_iterator scoresEnd,
                                             Statistic<float64>& statistic,
-                                            DecomposableClassificationLoss::UpdateFunction updateFunction) {
+                                            DecomposableClassificationLoss<float64>::UpdateFunction updateFunction) {
         uint32 outputIndex = indexIterator == indicesEnd ? LIMIT : *indexIterator;
         uint32 scoreIndex = scoreIterator == scoresEnd ? LIMIT : (*scoreIterator).index;
 
@@ -42,11 +42,11 @@ namespace boosting {
     }
 
     template<typename IndexIterator>
-    static inline uint32 fetchNextNonZeroStatistic(IndexIterator& indexIterator, IndexIterator indicesEnd,
-                                                   SparseSetView<float64>::value_const_iterator& scoreIterator,
-                                                   SparseSetView<float64>::value_const_iterator scoresEnd,
-                                                   Statistic<float64>& statistic,
-                                                   DecomposableClassificationLoss::UpdateFunction updateFunction) {
+    static inline uint32 fetchNextNonZeroStatistic(
+      IndexIterator& indexIterator, IndexIterator indicesEnd,
+      SparseSetView<float64>::value_const_iterator& scoreIterator,
+      SparseSetView<float64>::value_const_iterator scoresEnd, Statistic<float64>& statistic,
+      DecomposableClassificationLoss<float64>::UpdateFunction updateFunction) {
         uint32 index =
           fetchNextStatistic(indexIterator, indicesEnd, scoreIterator, scoresEnd, statistic, updateFunction);
 
@@ -61,7 +61,7 @@ namespace boosting {
     static inline void updateDecomposableStatisticsInternally(
       IndexIterator indicesBegin, IndexIterator indicesEnd, SparseSetView<float64>::value_const_iterator scoresBegin,
       SparseSetView<float64>::value_const_iterator scoresEnd, SparseSetView<Statistic<float64>>::row row,
-      DecomposableClassificationLoss::UpdateFunction updateFunction) {
+      DecomposableClassificationLoss<float64>::UpdateFunction updateFunction) {
         row.clear();
         Statistic<float64> statistic;
         uint32 index;
@@ -75,10 +75,11 @@ namespace boosting {
     }
 
     template<typename IndexIterator>
-    static inline uint32 fetchNextEvaluation(IndexIterator& indexIterator, IndexIterator indicesEnd,
-                                             SparseSetView<float64>::value_const_iterator& scoreIterator,
-                                             SparseSetView<float64>::value_const_iterator scoresEnd, float64& score,
-                                             DecomposableClassificationLoss::EvaluateFunction evaluateFunction) {
+    static inline uint32 fetchNextEvaluation(
+      IndexIterator& indexIterator, IndexIterator indicesEnd,
+      SparseSetView<float64>::value_const_iterator& scoreIterator,
+      SparseSetView<float64>::value_const_iterator scoresEnd, float64& score,
+      DecomposableClassificationLoss<float64>::EvaluateFunction evaluateFunction) {
         uint32 outputIndex = indexIterator == indicesEnd ? LIMIT : *indexIterator;
         uint32 scoreIndex = scoreIterator == scoresEnd ? LIMIT : (*scoreIterator).index;
 
@@ -101,11 +102,11 @@ namespace boosting {
     }
 
     template<typename IndexIterator>
-    static inline uint32 fetchNextNonZeroEvaluation(IndexIterator& indexIterator, IndexIterator indicesEnd,
-                                                    SparseSetView<float64>::value_const_iterator& scoreIterator,
-                                                    SparseSetView<float64>::value_const_iterator scoresEnd,
-                                                    float64& score,
-                                                    DecomposableClassificationLoss::EvaluateFunction evaluateFunction) {
+    static inline uint32 fetchNextNonZeroEvaluation(
+      IndexIterator& indexIterator, IndexIterator indicesEnd,
+      SparseSetView<float64>::value_const_iterator& scoreIterator,
+      SparseSetView<float64>::value_const_iterator scoresEnd, float64& score,
+      DecomposableClassificationLoss<float64>::EvaluateFunction evaluateFunction) {
         uint32 index =
           fetchNextEvaluation(indexIterator, indicesEnd, scoreIterator, scoresEnd, score, evaluateFunction);
 
@@ -120,7 +121,7 @@ namespace boosting {
     static inline float64 evaluateInternally(IndexIterator indicesBegin, IndexIterator indicesEnd,
                                              SparseSetView<float64>::value_const_iterator scoresBegin,
                                              SparseSetView<float64>::value_const_iterator scoresEnd,
-                                             DecomposableClassificationLoss::EvaluateFunction evaluateFunction,
+                                             DecomposableClassificationLoss<float64>::EvaluateFunction evaluateFunction,
                                              uint32 numLabels) {
         float64 mean = 0;
         float64 score = 0;
@@ -140,7 +141,7 @@ namespace boosting {
      * "evaluation function" for updating the gradients and Hessians and evaluation the predictions for an individual
      * label, respectively.
      */
-    class SparseDecomposableClassificationLoss final : public DecomposableClassificationLoss,
+    class SparseDecomposableClassificationLoss final : public DecomposableClassificationLoss<float64>,
                                                        public ISparseDecomposableClassificationLoss<float64> {
         public:
 
@@ -149,7 +150,7 @@ namespace boosting {
              * @param evaluateFunction  The "evaluation function" to be used for evaluating predictions
              */
             SparseDecomposableClassificationLoss(UpdateFunction updateFunction, EvaluateFunction evaluateFunction)
-                : DecomposableClassificationLoss(updateFunction, evaluateFunction) {}
+                : DecomposableClassificationLoss<float64>(updateFunction, evaluateFunction) {}
 
             // Keep functions from the parent class rather than hiding them.
             using DecomposableClassificationLoss::evaluate;
