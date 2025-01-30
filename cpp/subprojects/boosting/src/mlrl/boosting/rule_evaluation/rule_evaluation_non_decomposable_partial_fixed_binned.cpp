@@ -40,10 +40,8 @@ namespace boosting {
                 typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
                 typename SparseArrayVector<statistic_type>::iterator tmpIterator = tmpVector_.begin();
-                sortOutputWiseCriteria<statistic_type, typename StatisticVector::gradient_const_iterator,
-                                       typename StatisticVector::hessian_diagonal_const_iterator>(
-                  tmpIterator, gradientIterator, hessianIterator, numOutputs, numPredictions, l1RegularizationWeight,
-                  l2RegularizationWeight);
+                sortOutputWiseCriteria(tmpIterator, gradientIterator, hessianIterator, numOutputs, numPredictions,
+                                       l1RegularizationWeight, l2RegularizationWeight);
                 PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
                 typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
 
