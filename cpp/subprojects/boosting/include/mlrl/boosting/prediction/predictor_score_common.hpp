@@ -170,12 +170,13 @@ namespace boosting {
 
                 protected:
 
-                    DensePredictionMatrix<float64>& applyNext(const FeatureMatrix& featureMatrix, uint32 numThreads,
+                    DensePredictionMatrix<float64>& applyNext(const FeatureMatrix& featureMatrix,
+                                                              MultiThreadingSettings multiThreadingSettings,
                                                               typename Model::const_iterator rulesBegin,
                                                               typename Model::const_iterator rulesEnd) override {
                         ScorePredictionDelegate<FeatureMatrix, Model> delegate(predictionMatrix_.getView());
-                        PredictionDispatcher<float64, FeatureMatrix, Model>().predict(delegate, featureMatrix,
-                                                                                      rulesBegin, rulesEnd, numThreads);
+                        PredictionDispatcher<float64, FeatureMatrix, Model>().predict(
+                          delegate, featureMatrix, rulesBegin, rulesEnd, multiThreadingSettings);
                         return predictionMatrix_;
                     }
 
@@ -183,7 +184,7 @@ namespace boosting {
 
                     IncrementalPredictor(const ScorePredictor& predictor, uint32 maxRules)
                         : AbstractIncrementalPredictor<FeatureMatrix, Model, DensePredictionMatrix<float64>>(
-                            predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
+                            predictor.featureMatrix_, predictor.model_, predictor.multiThreadingSettings_, maxRules),
                           predictionMatrix_(predictor.featureMatrix_.numRows, predictor.numOutputs_, true) {}
             };
 
@@ -193,21 +194,23 @@ namespace boosting {
 
             const uint32 numOutputs_;
 
-            const uint32 numThreads_;
+            const MultiThreadingSettings multiThreadingSettings_;
 
         public:
 
             /**
-             * @param featureMatrix A reference to an object of template type `FeatureMatrix` that provides row-wise
-             *                      access to the feature values of the query examples
-             * @param model         A reference to an object of template type `Model` that should be used to obtain
-             *                      predictions
-             * @param numOutputs    The number of outputs to predict for
-             * @param numThreads    The number of CPU threads to be used to make predictions for different query
-             *                      examples in parallel. Must be at least 1
+             * @param featureMatrix             A reference to an object of template type `FeatureMatrix` that provides
+             *                                  row-wise access to the feature values of the query examples
+             * @param model                     A reference to an object of template type `Model` that should be used to
+             *                                  obtain predictions
+             * @param numOutputs                The number of outputs to predict for
+             * @param multiThreadingSettings    An object of type `MultiThreadingSettings` that stores the settings to
+             *                                  be used for making predictions for different query examples in parallel
              */
-            ScorePredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numOutputs, uint32 numThreads)
-                : featureMatrix_(featureMatrix), model_(model), numOutputs_(numOutputs), numThreads_(numThreads) {}
+            ScorePredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numOutputs,
+                           MultiThreadingSettings multiThreadingSettings)
+                : featureMatrix_(featureMatrix), model_(model), numOutputs_(numOutputs),
+                  multiThreadingSettings_(multiThreadingSettings) {}
 
             /**
              * @see `IPredictor::predict`
@@ -217,7 +220,8 @@ namespace boosting {
                   std::make_unique<DensePredictionMatrix<float64>>(featureMatrix_.numRows, numOutputs_, true);
                 ScorePredictionDelegate<FeatureMatrix, Model> delegate(predictionMatrixPtr->getView());
                 PredictionDispatcher<float64, FeatureMatrix, Model>().predict(
-                  delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
+                  delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules),
+                  multiThreadingSettings_);
                 return predictionMatrixPtr;
             }
 

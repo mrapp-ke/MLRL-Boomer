@@ -6,11 +6,11 @@
 #include "feature_based_search_binned_common.hpp"
 #include "mlrl/common/input/feature_vector_binned.hpp"
 #include "mlrl/common/rule_refinement/refinement.hpp"
-#include "mlrl/common/statistics/statistics_subset_weighted.hpp"
+#include "mlrl/common/statistics/statistics_subset_resettable.hpp"
 
 template<typename Comparator>
 static inline void searchForBinnedRefinementInternally(const BinnedFeatureVector& featureVector,
-                                                       IWeightedStatisticsSubset& statisticsSubset,
+                                                       IResettableStatisticsSubset& statisticsSubset,
                                                        Comparator& comparator, uint32 numExamplesWithNonZeroWeights,
                                                        uint32 minCoverage, Refinement& refinement) {
     // Mark all examples corresponding to the first bin with index `i < sparseBinIndex` as covered...
