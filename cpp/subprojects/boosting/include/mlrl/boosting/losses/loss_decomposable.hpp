@@ -196,7 +196,7 @@ namespace boosting {
      * `IDecomposableClassificationLoss`.
      */
     class IDecomposableClassificationLossFactory : public IClassificationEvaluationMeasureFactory,
-                                                   public IDistanceMeasureFactory {
+                                                   public IDistanceMeasureFactory<float64> {
         public:
 
             virtual ~IDecomposableClassificationLossFactory() override {}
@@ -269,7 +269,7 @@ namespace boosting {
                 return this->createDecomposableClassificationLossFactory();
             }
 
-            std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory() const override final {
+            std::unique_ptr<IDistanceMeasureFactory<float64>> createDistanceMeasureFactory() const override final {
                 return this->createDecomposableClassificationLossFactory();
             }
     };

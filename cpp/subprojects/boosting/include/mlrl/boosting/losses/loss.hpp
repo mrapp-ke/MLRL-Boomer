@@ -119,7 +119,7 @@ namespace boosting {
              *
              * @return An unique pointer to an object of type `IDistanceMeasureFactory` that has been created
              */
-            virtual std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory() const = 0;
+            virtual std::unique_ptr<IDistanceMeasureFactory<float64>> createDistanceMeasureFactory() const = 0;
 
             /**
              * Creates and returns a new object of type `IMarginalProbabilityFunctionFactory` according to the specified
