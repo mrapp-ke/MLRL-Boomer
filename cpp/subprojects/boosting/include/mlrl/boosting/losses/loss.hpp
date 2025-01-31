@@ -110,7 +110,7 @@ namespace boosting {
              * @return An unique pointer to an object of type `IClassificationEvaluationMeasureFactory` that has been
              *         created
              */
-            virtual std::unique_ptr<IClassificationEvaluationMeasureFactory>
+            virtual std::unique_ptr<IClassificationEvaluationMeasureFactory<float64>>
               createClassificationEvaluationMeasureFactory() const = 0;
 
             /**
