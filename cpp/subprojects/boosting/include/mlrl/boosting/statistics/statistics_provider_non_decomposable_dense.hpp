@@ -89,7 +89,7 @@ namespace boosting {
 
             const std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr_;
 
-            const std::unique_ptr<IRegressionEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
+            const std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr_;
 
             const std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
 
@@ -128,7 +128,7 @@ namespace boosting {
              */
             DenseNonDecomposableRegressionStatisticsProviderFactory(
               std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr,
-              std::unique_ptr<IRegressionEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
+              std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr,
               std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
               std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
               std::unique_ptr<INonDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
@@ -224,7 +224,7 @@ namespace boosting {
 
             const std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr_;
 
-            const std::unique_ptr<IRegressionEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
+            const std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr_;
 
             const std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
 
@@ -263,7 +263,7 @@ namespace boosting {
              */
             DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory(
               std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr,
-              std::unique_ptr<IRegressionEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
+              std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr,
               std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
