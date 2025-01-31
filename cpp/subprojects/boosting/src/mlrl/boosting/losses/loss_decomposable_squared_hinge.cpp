@@ -45,7 +45,7 @@ namespace boosting {
      * Allows to create instances of the type `IDecomposableClassificationLoss` that implement a multivariate variant of
      * the squared hinge loss that is decomposable.
      */
-    class DecomposableSquaredHingeLossFactory final : public ISparseDecomposableClassificationLossFactory {
+    class DecomposableSquaredHingeLossFactory final : public ISparseDecomposableClassificationLossFactory<float64> {
         public:
 
             std::unique_ptr<ISparseDecomposableClassificationLoss<float64>> createSparseDecomposableClassificationLoss()
@@ -95,7 +95,7 @@ namespace boosting {
         return 0.5;
     }
 
-    std::unique_ptr<ISparseDecomposableClassificationLossFactory>
+    std::unique_ptr<ISparseDecomposableClassificationLossFactory<float64>>
       DecomposableSquaredHingeLossConfig::createSparseDecomposableClassificationLossFactory() const {
         return std::make_unique<DecomposableSquaredHingeLossFactory>();
     }
