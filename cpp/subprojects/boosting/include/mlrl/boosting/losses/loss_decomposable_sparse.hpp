@@ -112,7 +112,7 @@ namespace boosting {
      * Defines an interface for all factories that allow to create instances of the type
      * `ISparseDecomposableClassificationLoss`.
      */
-    class ISparseDecomposableClassificationLossFactory : public IDecomposableClassificationLossFactory,
+    class ISparseDecomposableClassificationLossFactory : public IDecomposableClassificationLossFactory<float64>,
                                                          public ISparseEvaluationMeasureFactory<float64> {
         public:
 
@@ -172,8 +172,8 @@ namespace boosting {
                 return this->createSparseDecomposableClassificationLossFactory();
             }
 
-            std::unique_ptr<IDecomposableClassificationLossFactory> createDecomposableClassificationLossFactory()
-              const override final {
+            std::unique_ptr<IDecomposableClassificationLossFactory<float64>>
+              createDecomposableClassificationLossFactory() const override final {
                 return this->createSparseDecomposableClassificationLossFactory();
             }
 

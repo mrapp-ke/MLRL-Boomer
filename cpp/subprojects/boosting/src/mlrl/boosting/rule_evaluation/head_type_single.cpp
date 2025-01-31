@@ -22,7 +22,7 @@ namespace boosting {
         float32 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
         MultiThreadingSettings multiThreadingSettings =
           multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs());
-        std::unique_ptr<IDecomposableClassificationLossFactory> lossFactoryPtr =
+        std::unique_ptr<IDecomposableClassificationLossFactory<float64>> lossFactoryPtr =
           lossConfig.createDecomposableClassificationLossFactory();
         std::unique_ptr<IClassificationEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr =
           lossConfig.createClassificationEvaluationMeasureFactory();

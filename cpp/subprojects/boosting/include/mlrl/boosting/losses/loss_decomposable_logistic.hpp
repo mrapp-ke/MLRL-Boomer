@@ -40,8 +40,8 @@ namespace boosting {
 
             float64 getDefaultPrediction() const override;
 
-            std::unique_ptr<IDecomposableClassificationLossFactory> createDecomposableClassificationLossFactory()
-              const override;
+            std::unique_ptr<IDecomposableClassificationLossFactory<float64>>
+              createDecomposableClassificationLossFactory() const override;
     };
 
 }

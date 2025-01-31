@@ -101,7 +101,7 @@ namespace boosting {
      * Defines an interface for all factories that allow to create instances of the type
      * `INonDecomposableClassificationLoss`.
      */
-    class INonDecomposableClassificationLossFactory : public IDecomposableClassificationLossFactory {
+    class INonDecomposableClassificationLossFactory : public IDecomposableClassificationLossFactory<float64> {
         public:
 
             virtual ~INonDecomposableClassificationLossFactory() override {}

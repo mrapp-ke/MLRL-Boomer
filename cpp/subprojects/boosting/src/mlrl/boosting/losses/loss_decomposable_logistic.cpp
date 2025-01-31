@@ -74,7 +74,7 @@ namespace boosting {
      * Allows to create instances of the type `IDecomposableClassificationLoss` that implement a multivariate variant of
      * the logistic loss that is decomposable.
      */
-    class DecomposableLogisticLossFactory final : public IDecomposableClassificationLossFactory {
+    class DecomposableLogisticLossFactory final : public IDecomposableClassificationLossFactory<float64> {
         public:
 
             std::unique_ptr<IDecomposableClassificationLoss<float64>> createDecomposableClassificationLoss()
@@ -119,7 +119,7 @@ namespace boosting {
         return 0;
     }
 
-    std::unique_ptr<IDecomposableClassificationLossFactory>
+    std::unique_ptr<IDecomposableClassificationLossFactory<float64>>
       DecomposableLogisticLossConfig::createDecomposableClassificationLossFactory() const {
         return std::make_unique<DecomposableLogisticLossFactory>();
     }
