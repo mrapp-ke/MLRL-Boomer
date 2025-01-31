@@ -10,11 +10,12 @@
  * An one-dimensional vector that stores the scores that may be predicted by a rule, as well as an overall quality
  * score that assesses the overall quality of the rule, in a C-contiguous array.
  *
+ * @tparam ScoreType   The type of the predicted scores
  * @tparam IndexVector The type of the vector that provides access to the indices of the outputs for which the rule may
  *                     predict
  */
-template<typename IndexVector>
-class DenseScoreVector final : public ViewDecorator<AllocatedView<float64>>,
+template<typename ScoreType, typename IndexVector>
+class DenseScoreVector final : public ViewDecorator<AllocatedView<ScoreType>>,
                                virtual public IScoreVector {
     private:
 
@@ -40,12 +41,12 @@ class DenseScoreVector final : public ViewDecorator<AllocatedView<float64>>,
         /**
          * An iterator that provides access to the predicted scores and allows to modify them.
          */
-        typedef View<float64>::iterator value_iterator;
+        typedef typename View<ScoreType>::iterator value_iterator;
 
         /**
          * An iterator that provides read-only access to the predicted scores.
          */
-        typedef View<float64>::const_iterator value_const_iterator;
+        typedef typename View<ScoreType>::const_iterator value_const_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices.

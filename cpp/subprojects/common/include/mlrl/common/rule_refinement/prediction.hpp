@@ -42,7 +42,17 @@ class IPrediction : public IIndexVector {
         virtual void postProcess(const IPostProcessor& postProcessor) = 0;
 
         /**
-         * Sets the scores that are stored by this prediction to the values in a given iterator.
+         * Sets the scores that are stored by this prediction to the values in a given `View::const_iterator` that
+         * provides access to 32-bit floating point values.
+         *
+         * @param begin An iterator to the beginning of the values to be set
+         * @param end   An iterator to the end of the values to be set
+         */
+        virtual void set(View<float32>::const_iterator begin, View<float32>::const_iterator end) = 0;
+
+        /**
+         * Sets the scores that are stored by this prediction to the values in a given `View::const_iterator` that
+         * provides access to 64-bit floating point values.
          *
          * @param begin An iterator to the beginning of the values to be set
          * @param end   An iterator to the end of the values to be set
@@ -50,7 +60,17 @@ class IPrediction : public IIndexVector {
         virtual void set(View<float64>::const_iterator begin, View<float64>::const_iterator end) = 0;
 
         /**
-         * Sets the scores that are stored by this prediction to the values in a given iterator.
+         * Sets the scores that are stored by this prediction to the values in a given `BinnedIterator` that provides
+         * access to 32-bit floating point values.
+         *
+         * @param begin An iterator to the beginning of the values to be set
+         * @param end   An iterator to the end of the values to be set
+         */
+        virtual void set(BinnedIterator<const float32> begin, BinnedIterator<const float32> end) = 0;
+
+        /**
+         * Sets the scores that are stored by this prediction to the values in a given `BinnedIterator` that provides
+         * access to 64-bit floating point values.
          *
          * @param begin An iterator to the beginning of the values to be set
          * @param end   An iterator to the end of the values to be set

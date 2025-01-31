@@ -4,23 +4,27 @@
 
 namespace boosting {
 
-    static inline void updateGradientAndHessianRegression(float32 expectedScore, float64 predictedScore,
-                                                          float64& gradient, float64& hessian) {
-        gradient = (predictedScore - (float64) expectedScore);
+    template<typename StatisticType>
+    static inline void updateGradientAndHessianRegression(float32 expectedScore, StatisticType predictedScore,
+                                                          StatisticType& gradient, StatisticType& hessian) {
+        gradient = (predictedScore - (StatisticType) expectedScore);
         hessian = 1;
     }
 
-    static inline void updateGradientAndHessianClassification(bool trueLabel, float64 predictedScore, float64& gradient,
-                                                              float64& hessian) {
+    template<typename StatisticType>
+    static inline void updateGradientAndHessianClassification(bool trueLabel, StatisticType predictedScore,
+                                                              StatisticType& gradient, StatisticType& hessian) {
         updateGradientAndHessianRegression(trueLabel ? 1.0f : -1.0f, predictedScore, gradient, hessian);
     }
 
-    static inline float64 evaluatePredictionRegression(float32 expectedScore, float64 predictedScore) {
-        float64 difference = ((float64) expectedScore - predictedScore);
+    template<typename ScoreType>
+    static inline ScoreType evaluatePredictionRegression(float32 expectedScore, ScoreType predictedScore) {
+        ScoreType difference = ((ScoreType) expectedScore - predictedScore);
         return difference * difference;
     }
 
-    static inline float64 evaluatePredictionClassification(bool trueLabel, float64 predictedScore) {
+    template<typename ScoreType>
+    static inline ScoreType evaluatePredictionClassification(bool trueLabel, ScoreType predictedScore) {
         return evaluatePredictionRegression(trueLabel ? 1.0 : -1.0, predictedScore);
     }
 
@@ -32,27 +36,29 @@ namespace boosting {
                                                       public IDecomposableRegressionLossFactory {
         public:
 
-            std::unique_ptr<IDecomposableClassificationLoss> createDecomposableClassificationLoss() const override {
-                return std::make_unique<DecomposableClassificationLoss>(&updateGradientAndHessianClassification,
-                                                                        &evaluatePredictionClassification);
+            std::unique_ptr<IDecomposableClassificationLoss<float64>> createDecomposableClassificationLoss()
+              const override {
+                return std::make_unique<DecomposableClassificationLoss<float64>>(
+                  &updateGradientAndHessianClassification<float64>, &evaluatePredictionClassification<float64>);
             }
 
-            std::unique_ptr<IDecomposableRegressionLoss> createDecomposableRegressionLoss() const override {
-                return std::make_unique<DecomposableRegressionLoss>(&updateGradientAndHessianRegression,
-                                                                    &evaluatePredictionRegression);
+            std::unique_ptr<IDecomposableRegressionLoss<float64>> createDecomposableRegressionLoss() const override {
+                return std::make_unique<DecomposableRegressionLoss<float64>>(
+                  &updateGradientAndHessianRegression<float64>, &evaluatePredictionRegression<float64>);
             }
 
-            std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
+            std::unique_ptr<IDistanceMeasure<float64>> createDistanceMeasure(
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const override {
                 return this->createDecomposableClassificationLoss();
             }
 
-            std::unique_ptr<IClassificationEvaluationMeasure> createClassificationEvaluationMeasure() const override {
+            std::unique_ptr<IClassificationEvaluationMeasure<float64>> createClassificationEvaluationMeasure()
+              const override {
                 return this->createDecomposableClassificationLoss();
             }
 
-            std::unique_ptr<IRegressionEvaluationMeasure> createRegressionEvaluationMeasure() const override {
+            std::unique_ptr<IRegressionEvaluationMeasure<float64>> createRegressionEvaluationMeasure() const override {
                 return this->createDecomposableRegressionLoss();
             }
     };
@@ -62,15 +68,15 @@ namespace boosting {
 
     std::unique_ptr<IClassificationStatisticsProviderFactory>
       DecomposableSquaredErrorLossConfig::createClassificationStatisticsProviderFactory(
-        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-        const Lapack& lapack, bool preferSparseStatistics) const {
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const BlasFactory& blasFactory,
+        const LapackFactory& lapackFactory, bool preferSparseStatistics) const {
         return headConfig_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
     }
 
     std::unique_ptr<IRegressionStatisticsProviderFactory>
       DecomposableSquaredErrorLossConfig::createRegressionStatisticsProviderFactory(
-        const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
-        const Lapack& lapack, bool preferSparseStatistics) const {
+        const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+        const BlasFactory& blasFactory, const LapackFactory& lapackFactory, bool preferSparseStatistics) const {
         return headConfig_.get().createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, *this);
     }
 

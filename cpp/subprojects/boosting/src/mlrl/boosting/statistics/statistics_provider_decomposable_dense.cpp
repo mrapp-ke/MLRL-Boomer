@@ -13,8 +13,8 @@ namespace boosting {
       const OutputMatrix& outputMatrix) {
         uint32 numExamples = outputMatrix.numRows;
         uint32 numOutputs = outputMatrix.numCols;
-        std::unique_ptr<DenseDecomposableStatisticMatrix> statisticMatrixPtr =
-          std::make_unique<DenseDecomposableStatisticMatrix>(numExamples, numOutputs);
+        std::unique_ptr<DenseDecomposableStatisticMatrix<float64>> statisticMatrixPtr =
+          std::make_unique<DenseDecomposableStatisticMatrix<float64>>(numExamples, numOutputs);
         std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr =
           std::make_unique<NumericCContiguousMatrix<float64>>(numExamples, numOutputs, true);
         const Loss* lossRawPtr = lossPtr.get();
@@ -53,9 +53,9 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProvider> DenseDecomposableClassificationStatisticsProviderFactory::create(
       const CContiguousView<const uint8>& labelMatrix) const {
-        std::unique_ptr<IDecomposableClassificationLoss> lossPtr =
+        std::unique_ptr<IDecomposableClassificationLoss<float64>> lossPtr =
           lossFactoryPtr_->createDecomposableClassificationLoss();
-        std::unique_ptr<IClassificationEvaluationMeasure> evaluationMeasurePtr =
+        std::unique_ptr<IClassificationEvaluationMeasure<float64>> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createClassificationEvaluationMeasure();
         std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> statisticsPtr =
           createStatistics(std::move(lossPtr), std::move(evaluationMeasurePtr), *defaultRuleEvaluationFactoryPtr_,
@@ -66,9 +66,9 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProvider> DenseDecomposableClassificationStatisticsProviderFactory::create(
       const BinaryCsrView& labelMatrix) const {
-        std::unique_ptr<IDecomposableClassificationLoss> lossPtr =
+        std::unique_ptr<IDecomposableClassificationLoss<float64>> lossPtr =
           lossFactoryPtr_->createDecomposableClassificationLoss();
-        std::unique_ptr<IClassificationEvaluationMeasure> evaluationMeasurePtr =
+        std::unique_ptr<IClassificationEvaluationMeasure<float64>> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createClassificationEvaluationMeasure();
         std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> statisticsPtr =
           createStatistics(std::move(lossPtr), std::move(evaluationMeasurePtr), *defaultRuleEvaluationFactoryPtr_,
@@ -93,8 +93,9 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProvider> DenseDecomposableRegressionStatisticsProviderFactory::create(
       const CContiguousView<const float32>& regressionMatrix) const {
-        std::unique_ptr<IDecomposableRegressionLoss> lossPtr = lossFactoryPtr_->createDecomposableRegressionLoss();
-        std::unique_ptr<IRegressionEvaluationMeasure> evaluationMeasurePtr =
+        std::unique_ptr<IDecomposableRegressionLoss<float64>> lossPtr =
+          lossFactoryPtr_->createDecomposableRegressionLoss();
+        std::unique_ptr<IRegressionEvaluationMeasure<float64>> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createRegressionEvaluationMeasure();
         std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> statisticsPtr =
           createStatistics(std::move(lossPtr), std::move(evaluationMeasurePtr), *defaultRuleEvaluationFactoryPtr_,
@@ -105,8 +106,9 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProvider> DenseDecomposableRegressionStatisticsProviderFactory::create(
       const CsrView<const float32>& regressionMatrix) const {
-        std::unique_ptr<IDecomposableRegressionLoss> lossPtr = lossFactoryPtr_->createDecomposableRegressionLoss();
-        std::unique_ptr<IRegressionEvaluationMeasure> evaluationMeasurePtr =
+        std::unique_ptr<IDecomposableRegressionLoss<float64>> lossPtr =
+          lossFactoryPtr_->createDecomposableRegressionLoss();
+        std::unique_ptr<IRegressionEvaluationMeasure<float64>> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createRegressionEvaluationMeasure();
         std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> statisticsPtr =
           createStatistics(std::move(lossPtr), std::move(evaluationMeasurePtr), *defaultRuleEvaluationFactoryPtr_,
