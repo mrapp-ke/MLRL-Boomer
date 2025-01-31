@@ -137,7 +137,7 @@ namespace boosting {
         std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
           std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(l1RegularizationWeight,
                                                                           l2RegularizationWeight);
-        return std::make_unique<DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory>(
+        return std::make_unique<DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory<float64>>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr),
           multiThreadingSettings);
