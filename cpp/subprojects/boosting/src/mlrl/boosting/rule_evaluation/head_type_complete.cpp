@@ -52,7 +52,7 @@ namespace boosting {
         const LapackFactory& lapackFactory) const {
         MultiThreadingSettings multiThreadingSettings =
           multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs());
-        std::unique_ptr<INonDecomposableClassificationLossFactory> lossFactoryPtr =
+        std::unique_ptr<INonDecomposableClassificationLossFactory<float64>> lossFactoryPtr =
           lossConfig.createNonDecomposableClassificationLossFactory();
         std::unique_ptr<IClassificationEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr =
           lossConfig.createClassificationEvaluationMeasureFactory();
