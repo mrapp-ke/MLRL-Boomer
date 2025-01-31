@@ -226,14 +226,17 @@ namespace boosting {
      * Allows to create instances of the class `IStatisticsProvider` that provide access to an object of type
      * `INonDecomposableStatistics`, which uses dense data structures to store the statistics and can be converted into
      * an object of type `IDecomposableStatistics`.
+     *
+     * @tparam StatisticType The type of the statistics
      */
+    template<typename StatisticType>
     class DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory final
         : public IRegressionStatisticsProviderFactory {
         private:
 
-            const std::unique_ptr<INonDecomposableRegressionLossFactory<float64>> lossFactoryPtr_;
+            const std::unique_ptr<INonDecomposableRegressionLossFactory<StatisticType>> lossFactoryPtr_;
 
-            const std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr_;
+            const std::unique_ptr<IRegressionEvaluationMeasureFactory<StatisticType>> evaluationMeasureFactoryPtr_;
 
             const std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
 
@@ -271,8 +274,8 @@ namespace boosting {
              *                                          parallel
              */
             DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory(
-              std::unique_ptr<INonDecomposableRegressionLossFactory<float64>> lossFactoryPtr,
-              std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr,
+              std::unique_ptr<INonDecomposableRegressionLossFactory<StatisticType>> lossFactoryPtr,
+              std::unique_ptr<IRegressionEvaluationMeasureFactory<StatisticType>> evaluationMeasureFactoryPtr,
               std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
