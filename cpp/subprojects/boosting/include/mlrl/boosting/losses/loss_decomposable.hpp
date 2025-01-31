@@ -194,9 +194,12 @@ namespace boosting {
     /**
      * Defines an interface for all factories that allow to create instances of the type
      * `IDecomposableClassificationLoss`.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
-    class IDecomposableClassificationLossFactory : public IClassificationEvaluationMeasureFactory<float64>,
-                                                   public IDistanceMeasureFactory<float64> {
+    template<typename StatisticType>
+    class IDecomposableClassificationLossFactory : public IClassificationEvaluationMeasureFactory<StatisticType>,
+                                                   public IDistanceMeasureFactory<StatisticType> {
         public:
 
             virtual ~IDecomposableClassificationLossFactory() override {}
@@ -206,8 +209,8 @@ namespace boosting {
              *
              * @return An unique pointer to an object of type `IDecomposableClassificationLoss` that has been created
              */
-            virtual std::unique_ptr<IDecomposableClassificationLoss<float64>> createDecomposableClassificationLoss()
-              const = 0;
+            virtual std::unique_ptr<IDecomposableClassificationLoss<StatisticType>>
+              createDecomposableClassificationLoss() const = 0;
     };
 
     /**
@@ -261,7 +264,7 @@ namespace boosting {
              * @return An unique pointer to an object of type `IDecomposableClassificationLossFactory` that has been
              *         created
              */
-            virtual std::unique_ptr<IDecomposableClassificationLossFactory>
+            virtual std::unique_ptr<IDecomposableClassificationLossFactory<float64>>
               createDecomposableClassificationLossFactory() const = 0;
 
             std::unique_ptr<IClassificationEvaluationMeasureFactory<float64>>

@@ -22,7 +22,7 @@ namespace boosting {
         : public IClassificationStatisticsProviderFactory {
         private:
 
-            const std::unique_ptr<IDecomposableClassificationLossFactory> lossFactoryPtr_;
+            const std::unique_ptr<IDecomposableClassificationLossFactory<float64>> lossFactoryPtr_;
 
             const std::unique_ptr<IClassificationEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr_;
 
@@ -62,7 +62,7 @@ namespace boosting {
              *                                          parallel
              */
             DenseDecomposableClassificationStatisticsProviderFactory(
-              std::unique_ptr<IDecomposableClassificationLossFactory> lossFactoryPtr,
+              std::unique_ptr<IDecomposableClassificationLossFactory<float64>> lossFactoryPtr,
               std::unique_ptr<IClassificationEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
