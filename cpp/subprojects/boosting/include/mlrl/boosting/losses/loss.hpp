@@ -180,8 +180,8 @@ namespace boosting {
              * @return An unique pointer to an object of type `IRegressionEvaluationMeasureFactory` that has been
              *         created
              */
-            virtual std::unique_ptr<IRegressionEvaluationMeasureFactory> createRegressionEvaluationMeasureFactory()
-              const = 0;
+            virtual std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>>
+              createRegressionEvaluationMeasureFactory() const = 0;
     };
 
 };

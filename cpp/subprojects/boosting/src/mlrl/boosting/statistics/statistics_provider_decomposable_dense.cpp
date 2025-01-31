@@ -79,7 +79,7 @@ namespace boosting {
 
     DenseDecomposableRegressionStatisticsProviderFactory::DenseDecomposableRegressionStatisticsProviderFactory(
       std::unique_ptr<IDecomposableRegressionLossFactory> lossFactoryPtr,
-      std::unique_ptr<IRegressionEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
+      std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr,
       std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
       std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
       std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,

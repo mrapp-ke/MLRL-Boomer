@@ -117,7 +117,10 @@ class IClassificationEvaluationMeasureFactory {
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `IRegressionEvaluationMeasure`.
+ *
+ * @tparam ScoreType The type of the predicted scores
  */
+template<typename ScoreType>
 class IRegressionEvaluationMeasureFactory {
     public:
 
@@ -128,5 +131,5 @@ class IRegressionEvaluationMeasureFactory {
          *
          * @return An unique pointer to an object of type `IRegressionEvaluationMeasure` that has been created
          */
-        virtual std::unique_ptr<IRegressionEvaluationMeasure<float64>> createRegressionEvaluationMeasure() const = 0;
+        virtual std::unique_ptr<IRegressionEvaluationMeasure<ScoreType>> createRegressionEvaluationMeasure() const = 0;
 };
