@@ -24,7 +24,7 @@ namespace boosting {
 
             const std::unique_ptr<ISparseDecomposableClassificationLossFactory> lossFactoryPtr_;
 
-            const std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
+            const std::unique_ptr<ISparseEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr_;
 
             const std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr_;
 
@@ -57,7 +57,7 @@ namespace boosting {
              */
             SparseDecomposableClassificationStatisticsProviderFactory(
               std::unique_ptr<ISparseDecomposableClassificationLossFactory> lossFactoryPtr,
-              std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
+              std::unique_ptr<ISparseEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr,
               std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
               std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
               MultiThreadingSettings multiThreadingSettings);
