@@ -39,7 +39,7 @@ namespace boosting {
         const IDecomposableClassificationLossConfig& lossConfig) const {
         MultiThreadingSettings multiThreadingSettings =
           multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs());
-        std::unique_ptr<IDecomposableClassificationLossFactory> lossFactoryPtr =
+        std::unique_ptr<IDecomposableClassificationLossFactory<float64>> lossFactoryPtr =
           lossConfig.createDecomposableClassificationLossFactory();
         std::unique_ptr<IClassificationEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr =
           lossConfig.createClassificationEvaluationMeasureFactory();
