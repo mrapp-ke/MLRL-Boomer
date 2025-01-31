@@ -117,7 +117,7 @@ namespace boosting {
         MultiThreadingSettings multiThreadingSettings =
           multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs());
         float32 outputRatio = calculateOutputRatio(outputRatio_, labelMatrix);
-        std::unique_ptr<INonDecomposableClassificationLossFactory> lossFactoryPtr =
+        std::unique_ptr<INonDecomposableClassificationLossFactory<float64>> lossFactoryPtr =
           lossConfig.createNonDecomposableClassificationLossFactory();
         std::unique_ptr<IClassificationEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr =
           lossConfig.createClassificationEvaluationMeasureFactory();
