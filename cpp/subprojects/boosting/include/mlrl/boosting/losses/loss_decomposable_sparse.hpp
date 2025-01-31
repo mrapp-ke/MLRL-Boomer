@@ -21,7 +21,7 @@ namespace boosting {
      */
     template<typename StatisticType>
     class ISparseDecomposableClassificationLoss : virtual public IDecomposableClassificationLoss<StatisticType>,
-                                                  public ISparseEvaluationMeasure {
+                                                  public ISparseEvaluationMeasure<StatisticType> {
         public:
 
             virtual ~ISparseDecomposableClassificationLoss() override {}
@@ -138,7 +138,7 @@ namespace boosting {
             /**
              * @see `ISparseEvaluationMeasureFactory::createSparseEvaluationMeasure`
              */
-            std::unique_ptr<ISparseEvaluationMeasure> createSparseEvaluationMeasure() const override final {
+            std::unique_ptr<ISparseEvaluationMeasure<float64>> createSparseEvaluationMeasure() const override final {
                 return this->createSparseDecomposableClassificationLoss();
             }
     };
