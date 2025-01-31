@@ -105,7 +105,7 @@ namespace boosting {
         const IDecomposableRegressionLossConfig& lossConfig) const {
         MultiThreadingSettings multiThreadingSettings =
           multiThreadingConfig_.get().getSettings(featureMatrix, regressionMatrix.getNumOutputs());
-        std::unique_ptr<IDecomposableRegressionLossFactory> lossFactoryPtr =
+        std::unique_ptr<IDecomposableRegressionLossFactory<float64>> lossFactoryPtr =
           lossConfig.createDecomposableRegressionLossFactory();
         std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr =
           lossConfig.createRegressionEvaluationMeasureFactory();
