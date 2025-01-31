@@ -6,6 +6,19 @@ tocdepth: 2
 
 # Release Notes
 
+## Version 0.11.3 (Jan. 30th, 2025)
+
+A bugfix release that comes with the following changes.
+
+### Fixes
+
+- Fixed faulty calculation of gradients and Hessians when using the BOOMER regression algorithm with the command line arguments `--loss squared-error-non-decomposable` and `--head-type single`.
+
+### Quality-of-Life Improvements
+
+- Linux ARM64 packages are now build natively instead of using virtualization, which speeds up the build process tremendously.
+- Continuous Integration is now used to automatically update the versions of GitHub runners on a regular basis.
+
 ## Version 0.11.2 (Jan. 23rd, 2025)
 
 A bugfix release that comes with the following changes.
