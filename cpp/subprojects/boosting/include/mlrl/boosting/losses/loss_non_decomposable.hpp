@@ -210,7 +210,7 @@ namespace boosting {
             virtual std::unique_ptr<INonDecomposableRegressionLossFactory> createNonDecomposableRegressionLossFactory()
               const = 0;
 
-            std::unique_ptr<IRegressionEvaluationMeasureFactory> createRegressionEvaluationMeasureFactory()
+            std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> createRegressionEvaluationMeasureFactory()
               const override final {
                 return this->createNonDecomposableRegressionLossFactory();
             }
