@@ -86,13 +86,16 @@ namespace boosting {
     /**
      * Allows to create instances of the class `IStatisticsProvider` that can be used in regression problems and provide
      * access to an object of type `INonDecomposableStatistics` using dense data structures for storing the statistics.
+     *
+     * @tparam StatisticType The type of the statistics
      */
+    template<typename StatisticType>
     class DenseNonDecomposableRegressionStatisticsProviderFactory final : public IRegressionStatisticsProviderFactory {
         private:
 
-            const std::unique_ptr<INonDecomposableRegressionLossFactory<float64>> lossFactoryPtr_;
+            const std::unique_ptr<INonDecomposableRegressionLossFactory<StatisticType>> lossFactoryPtr_;
 
-            const std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr_;
+            const std::unique_ptr<IRegressionEvaluationMeasureFactory<StatisticType>> evaluationMeasureFactoryPtr_;
 
             const std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
 
@@ -130,8 +133,8 @@ namespace boosting {
              *                                          parallel
              */
             DenseNonDecomposableRegressionStatisticsProviderFactory(
-              std::unique_ptr<INonDecomposableRegressionLossFactory<float64>> lossFactoryPtr,
-              std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr,
+              std::unique_ptr<INonDecomposableRegressionLossFactory<StatisticType>> lossFactoryPtr,
+              std::unique_ptr<IRegressionEvaluationMeasureFactory<StatisticType>> evaluationMeasureFactoryPtr,
               std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
               std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
               std::unique_ptr<INonDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
