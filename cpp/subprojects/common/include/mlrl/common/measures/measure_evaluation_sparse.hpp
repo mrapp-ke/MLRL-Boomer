@@ -10,9 +10,12 @@
 #include <memory>
 
 /**
- * Defines an interface for all measures that may be used to assess the quality of predictions for certain examples,
- * which are stored using sparse data structures, by comparing them to the corresponding ground truth labels.
+ * Defines an interface for all measures that may be used to assess the quality of scores that are predicted for certain
+ * examples, which are stored using sparse data structures, by comparing them to the corresponding ground truth labels.
+ *
+ * @tparam ScoreType The type of the predicted scores
  */
+template<typename ScoreType>
 class ISparseEvaluationMeasure {
     public:
 
@@ -30,8 +33,8 @@ class ISparseEvaluationMeasure {
          *                      scores
          * @return              The numerical score that has been calculated
          */
-        virtual float64 evaluate(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-                                 const SparseSetView<float64>& scoreMatrix) const = 0;
+        virtual ScoreType evaluate(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+                                   const SparseSetView<ScoreType>& scoreMatrix) const = 0;
 
         /**
          * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
@@ -45,8 +48,8 @@ class ISparseEvaluationMeasure {
          *                      scores
          * @return              The numerical score that has been calculated
          */
-        virtual float64 evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                 const SparseSetView<float64>& scoreMatrix) const = 0;
+        virtual ScoreType evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
+                                   const SparseSetView<ScoreType>& scoreMatrix) const = 0;
 };
 
 /**
@@ -62,5 +65,5 @@ class ISparseEvaluationMeasureFactory {
          *
          * @return An unique pointer to an object of type `ISparseEvaluationMeasure` that has been created
          */
-        virtual std::unique_ptr<ISparseEvaluationMeasure> createSparseEvaluationMeasure() const = 0;
+        virtual std::unique_ptr<ISparseEvaluationMeasure<float64>> createSparseEvaluationMeasure() const = 0;
 };
