@@ -111,9 +111,12 @@ namespace boosting {
     /**
      * Defines an interface for all factories that allow to create instances of the type
      * `ISparseDecomposableClassificationLoss`.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
-    class ISparseDecomposableClassificationLossFactory : public IDecomposableClassificationLossFactory<float64>,
-                                                         public ISparseEvaluationMeasureFactory<float64> {
+    template<typename StatisticType>
+    class ISparseDecomposableClassificationLossFactory : public IDecomposableClassificationLossFactory<StatisticType>,
+                                                         public ISparseEvaluationMeasureFactory<StatisticType> {
         public:
 
             virtual ~ISparseDecomposableClassificationLossFactory() override {}
@@ -124,13 +127,13 @@ namespace boosting {
              * @return An unique pointer to an object of type `ISparseDecomposableClassificationLoss` that has been
              *         created
              */
-            virtual std::unique_ptr<ISparseDecomposableClassificationLoss<float64>>
+            virtual std::unique_ptr<ISparseDecomposableClassificationLoss<StatisticType>>
               createSparseDecomposableClassificationLoss() const = 0;
 
             /**
              * @see `IDecomposableClassificationLossFactory::createDecomposableClassificationLoss`
              */
-            std::unique_ptr<IDecomposableClassificationLoss<float64>> createDecomposableClassificationLoss()
+            std::unique_ptr<IDecomposableClassificationLoss<StatisticType>> createDecomposableClassificationLoss()
               const override final {
                 return this->createSparseDecomposableClassificationLoss();
             }
@@ -138,7 +141,8 @@ namespace boosting {
             /**
              * @see `ISparseEvaluationMeasureFactory::createSparseEvaluationMeasure`
              */
-            std::unique_ptr<ISparseEvaluationMeasure<float64>> createSparseEvaluationMeasure() const override final {
+            std::unique_ptr<ISparseEvaluationMeasure<StatisticType>> createSparseEvaluationMeasure()
+              const override final {
                 return this->createSparseDecomposableClassificationLoss();
             }
     };
@@ -159,7 +163,7 @@ namespace boosting {
              * @return An unique pointer to an object of type `ISparseDecomposableClassificationLossFactory` that has
              *         been created
              */
-            virtual std::unique_ptr<ISparseDecomposableClassificationLossFactory>
+            virtual std::unique_ptr<ISparseDecomposableClassificationLossFactory<float64>>
               createSparseDecomposableClassificationLossFactory() const = 0;
 
             /**
