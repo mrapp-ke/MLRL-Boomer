@@ -104,7 +104,7 @@ namespace boosting {
         std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
           labelBinningConfig_.get().createDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs_,
                                                                                         maxOutputs_);
-        return std::make_unique<SparseDecomposableClassificationStatisticsProviderFactory>(
+        return std::make_unique<SparseDecomposableClassificationStatisticsProviderFactory<float64>>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
           std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
     }
