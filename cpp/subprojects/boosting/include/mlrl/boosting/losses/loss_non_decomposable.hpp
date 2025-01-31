@@ -180,8 +180,8 @@ namespace boosting {
             virtual std::unique_ptr<INonDecomposableClassificationLossFactory>
               createNonDecomposableClassificationLossFactory() const = 0;
 
-            std::unique_ptr<IClassificationEvaluationMeasureFactory> createClassificationEvaluationMeasureFactory()
-              const override final {
+            std::unique_ptr<IClassificationEvaluationMeasureFactory<float64>>
+              createClassificationEvaluationMeasureFactory() const override final {
                 return this->createNonDecomposableClassificationLossFactory();
             }
 

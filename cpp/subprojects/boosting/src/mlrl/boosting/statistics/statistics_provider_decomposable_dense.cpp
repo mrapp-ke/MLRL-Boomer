@@ -39,7 +39,7 @@ namespace boosting {
 
     DenseDecomposableClassificationStatisticsProviderFactory::DenseDecomposableClassificationStatisticsProviderFactory(
       std::unique_ptr<IDecomposableClassificationLossFactory> lossFactoryPtr,
-      std::unique_ptr<IClassificationEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
+      std::unique_ptr<IClassificationEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr,
       std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
       std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
       std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
