@@ -113,7 +113,7 @@ namespace boosting {
      * `ISparseDecomposableClassificationLoss`.
      */
     class ISparseDecomposableClassificationLossFactory : public IDecomposableClassificationLossFactory,
-                                                         public ISparseEvaluationMeasureFactory {
+                                                         public ISparseEvaluationMeasureFactory<float64> {
         public:
 
             virtual ~ISparseDecomposableClassificationLossFactory() override {}
@@ -168,7 +168,7 @@ namespace boosting {
              *
              * @return An unique pointer to an object of type `ISparseEvaluationMeasureFactory` that has been created
              */
-            std::unique_ptr<ISparseEvaluationMeasureFactory> createSparseEvaluationMeasureFactory() const {
+            std::unique_ptr<ISparseEvaluationMeasureFactory<float64>> createSparseEvaluationMeasureFactory() const {
                 return this->createSparseDecomposableClassificationLossFactory();
             }
 

@@ -63,7 +63,7 @@ namespace boosting {
           multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs());
         std::unique_ptr<ISparseDecomposableClassificationLossFactory> lossFactoryPtr =
           lossConfig.createSparseDecomposableClassificationLossFactory();
-        std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
+        std::unique_ptr<ISparseEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr =
           lossConfig.createSparseEvaluationMeasureFactory();
         std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
           labelBinningConfig_.get().createDecomposableDynamicPartialRuleEvaluationFactory(threshold_, exponent_);
