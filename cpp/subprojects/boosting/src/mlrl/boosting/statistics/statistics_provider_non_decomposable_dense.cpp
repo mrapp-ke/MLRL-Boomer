@@ -430,7 +430,7 @@ namespace boosting {
     }
 
     DenseNonDecomposableRegressionStatisticsProviderFactory::DenseNonDecomposableRegressionStatisticsProviderFactory(
-      std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr,
+      std::unique_ptr<INonDecomposableRegressionLossFactory<float64>> lossFactoryPtr,
       std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr,
       std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
       std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
@@ -524,7 +524,7 @@ namespace boosting {
 
     DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory::
       DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory(
-        std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr,
+        std::unique_ptr<INonDecomposableRegressionLossFactory<float64>> lossFactoryPtr,
         std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr,
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
         std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
