@@ -49,7 +49,7 @@ namespace boosting {
             std::unique_ptr<IDecomposableClassificationLossFactory<float64>>
               createDecomposableClassificationLossFactory() const override;
 
-            std::unique_ptr<IDecomposableRegressionLossFactory> createDecomposableRegressionLossFactory()
+            std::unique_ptr<IDecomposableRegressionLossFactory<float64>> createDecomposableRegressionLossFactory()
               const override;
     };
 

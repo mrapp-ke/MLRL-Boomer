@@ -87,7 +87,7 @@ namespace boosting {
     class DenseDecomposableRegressionStatisticsProviderFactory final : public IRegressionStatisticsProviderFactory {
         private:
 
-            const std::unique_ptr<IDecomposableRegressionLossFactory> lossFactoryPtr_;
+            const std::unique_ptr<IDecomposableRegressionLossFactory<float64>> lossFactoryPtr_;
 
             const std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr_;
 
@@ -127,7 +127,7 @@ namespace boosting {
              *                                          parallel
              */
             DenseDecomposableRegressionStatisticsProviderFactory(
-              std::unique_ptr<IDecomposableRegressionLossFactory> lossFactoryPtr,
+              std::unique_ptr<IDecomposableRegressionLossFactory<float64>> lossFactoryPtr,
               std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
