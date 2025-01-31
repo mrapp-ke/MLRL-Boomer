@@ -129,7 +129,7 @@ namespace boosting {
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
           labelBinningConfig_.get().createNonDecomposableFixedPartialRuleEvaluationFactory(
             outputRatio, minOutputs_, maxOutputs_, blasFactory, lapackFactory);
-        return std::make_unique<DenseNonDecomposableClassificationStatisticsProviderFactory>(
+        return std::make_unique<DenseNonDecomposableClassificationStatisticsProviderFactory<float64>>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr),
           multiThreadingSettings);
