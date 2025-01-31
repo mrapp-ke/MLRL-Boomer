@@ -61,7 +61,7 @@ namespace boosting {
         const ISparseDecomposableClassificationLossConfig& lossConfig) const {
         MultiThreadingSettings multiThreadingSettings =
           multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs());
-        std::unique_ptr<ISparseDecomposableClassificationLossFactory> lossFactoryPtr =
+        std::unique_ptr<ISparseDecomposableClassificationLossFactory<float64>> lossFactoryPtr =
           lossConfig.createSparseDecomposableClassificationLossFactory();
         std::unique_ptr<ISparseEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr =
           lossConfig.createSparseEvaluationMeasureFactory();
