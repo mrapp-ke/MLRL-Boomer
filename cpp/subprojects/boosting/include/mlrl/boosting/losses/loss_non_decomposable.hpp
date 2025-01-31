@@ -126,8 +126,11 @@ namespace boosting {
     /**
      * Defines an interface for all factories that allow to create instances of the type
      * `INonDecomposableRegressionLoss`.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
-    class INonDecomposableRegressionLossFactory : public IDecomposableRegressionLossFactory<float64> {
+    template<typename StatisticType>
+    class INonDecomposableRegressionLossFactory : public IDecomposableRegressionLossFactory<StatisticType> {
         public:
 
             virtual ~INonDecomposableRegressionLossFactory() override {}
@@ -137,10 +140,10 @@ namespace boosting {
              *
              * @return An unique pointer to an object of type `INonDecomposableRegressionLoss` that has been created
              */
-            virtual std::unique_ptr<INonDecomposableRegressionLoss<float64>> createNonDecomposableRegressionLoss()
+            virtual std::unique_ptr<INonDecomposableRegressionLoss<StatisticType>> createNonDecomposableRegressionLoss()
               const = 0;
 
-            std::unique_ptr<IDecomposableRegressionLoss<float64>> createDecomposableRegressionLoss()
+            std::unique_ptr<IDecomposableRegressionLoss<StatisticType>> createDecomposableRegressionLoss()
               const override final {
                 return this->createNonDecomposableRegressionLoss();
             }
@@ -210,8 +213,8 @@ namespace boosting {
              * @return An unique pointer to an object of type `INonDecomposableRegressionLossFactory` that has been
              *         created
              */
-            virtual std::unique_ptr<INonDecomposableRegressionLossFactory> createNonDecomposableRegressionLossFactory()
-              const = 0;
+            virtual std::unique_ptr<INonDecomposableRegressionLossFactory<float64>>
+              createNonDecomposableRegressionLossFactory() const = 0;
 
             std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> createRegressionEvaluationMeasureFactory()
               const override final {
