@@ -294,7 +294,7 @@ namespace boosting {
 
     template<typename OutputMatrix>
     static inline std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> createStatistics(
-      const ISparseDecomposableClassificationLossFactory& lossFactory,
+      const ISparseDecomposableClassificationLossFactory<float64>& lossFactory,
       const ISparseEvaluationMeasureFactory<float64>& evaluationMeasureFactory,
       const ISparseDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
       MultiThreadingSettings multiThreadingSettings, const OutputMatrix& outputMatrix) {
@@ -330,7 +330,7 @@ namespace boosting {
 
     SparseDecomposableClassificationStatisticsProviderFactory::
       SparseDecomposableClassificationStatisticsProviderFactory(
-        std::unique_ptr<ISparseDecomposableClassificationLossFactory> lossFactoryPtr,
+        std::unique_ptr<ISparseDecomposableClassificationLossFactory<float64>> lossFactoryPtr,
         std::unique_ptr<ISparseEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr,
         std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
         std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
