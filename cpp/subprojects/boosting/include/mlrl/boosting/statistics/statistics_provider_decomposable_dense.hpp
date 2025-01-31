@@ -17,14 +17,17 @@ namespace boosting {
      * Allows to create instances of the class `IStatisticsProvider` that can be used in classification problems and
      * provide access to an object of type `IDecomposableStatistics` using dense data structures for storing the
      * statistics.
+     *
+     * @tparam StatisticType The type of the statistics
      */
+    template<typename StatisticType>
     class DenseDecomposableClassificationStatisticsProviderFactory final
         : public IClassificationStatisticsProviderFactory {
         private:
 
-            const std::unique_ptr<IDecomposableClassificationLossFactory<float64>> lossFactoryPtr_;
+            const std::unique_ptr<IDecomposableClassificationLossFactory<StatisticType>> lossFactoryPtr_;
 
-            const std::unique_ptr<IClassificationEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr_;
+            const std::unique_ptr<IClassificationEvaluationMeasureFactory<StatisticType>> evaluationMeasureFactoryPtr_;
 
             const std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
 
@@ -62,8 +65,8 @@ namespace boosting {
              *                                          parallel
              */
             DenseDecomposableClassificationStatisticsProviderFactory(
-              std::unique_ptr<IDecomposableClassificationLossFactory<float64>> lossFactoryPtr,
-              std::unique_ptr<IClassificationEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr,
+              std::unique_ptr<IDecomposableClassificationLossFactory<StatisticType>> lossFactoryPtr,
+              std::unique_ptr<IClassificationEvaluationMeasureFactory<StatisticType>> evaluationMeasureFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
