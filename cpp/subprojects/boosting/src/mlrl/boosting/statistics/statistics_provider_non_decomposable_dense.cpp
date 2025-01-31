@@ -410,10 +410,11 @@ namespace boosting {
           std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
     }
 
-    DenseNonDecomposableClassificationStatisticsProviderFactory::
+    template<typename StatisticType>
+    DenseNonDecomposableClassificationStatisticsProviderFactory<StatisticType>::
       DenseNonDecomposableClassificationStatisticsProviderFactory(
-        std::unique_ptr<INonDecomposableClassificationLossFactory<float64>> lossFactoryPtr,
-        std::unique_ptr<IClassificationEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr,
+        std::unique_ptr<INonDecomposableClassificationLossFactory<StatisticType>> lossFactoryPtr,
+        std::unique_ptr<IClassificationEvaluationMeasureFactory<StatisticType>> evaluationMeasureFactoryPtr,
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
@@ -425,11 +426,13 @@ namespace boosting {
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)),
           multiThreadingSettings_(multiThreadingSettings) {}
 
-    std::unique_ptr<IStatisticsProvider> DenseNonDecomposableClassificationStatisticsProviderFactory::create(
-      const CContiguousView<const uint8>& labelMatrix) const {
-        std::unique_ptr<INonDecomposableClassificationLoss<float64>> lossPtr =
+    template<typename StatisticType>
+    std::unique_ptr<IStatisticsProvider>
+      DenseNonDecomposableClassificationStatisticsProviderFactory<StatisticType>::create(
+        const CContiguousView<const uint8>& labelMatrix) const {
+        std::unique_ptr<INonDecomposableClassificationLoss<StatisticType>> lossPtr =
           lossFactoryPtr_->createNonDecomposableClassificationLoss();
-        std::unique_ptr<IClassificationEvaluationMeasure<float64>> evaluationMeasurePtr =
+        std::unique_ptr<IClassificationEvaluationMeasure<StatisticType>> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createClassificationEvaluationMeasure();
         std::unique_ptr<
           INonDecomposableStatistics<INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory>>
@@ -440,11 +443,13 @@ namespace boosting {
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
-    std::unique_ptr<IStatisticsProvider> DenseNonDecomposableClassificationStatisticsProviderFactory::create(
-      const BinaryCsrView& labelMatrix) const {
-        std::unique_ptr<INonDecomposableClassificationLoss<float64>> lossPtr =
+    template<typename StatisticType>
+    std::unique_ptr<IStatisticsProvider>
+      DenseNonDecomposableClassificationStatisticsProviderFactory<StatisticType>::create(
+        const BinaryCsrView& labelMatrix) const {
+        std::unique_ptr<INonDecomposableClassificationLoss<StatisticType>> lossPtr =
           lossFactoryPtr_->createNonDecomposableClassificationLoss();
-        std::unique_ptr<IClassificationEvaluationMeasure<float64>> evaluationMeasurePtr =
+        std::unique_ptr<IClassificationEvaluationMeasure<StatisticType>> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createClassificationEvaluationMeasure();
         std::unique_ptr<
           INonDecomposableStatistics<INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory>>
@@ -454,6 +459,8 @@ namespace boosting {
           NonDecomposableStatisticsProvider<INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
+
+    template class DenseNonDecomposableClassificationStatisticsProviderFactory<float64>;
 
     DenseNonDecomposableRegressionStatisticsProviderFactory::DenseNonDecomposableRegressionStatisticsProviderFactory(
       std::unique_ptr<INonDecomposableRegressionLossFactory<float64>> lossFactoryPtr,
