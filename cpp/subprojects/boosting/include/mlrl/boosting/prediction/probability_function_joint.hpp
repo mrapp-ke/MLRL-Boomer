@@ -108,7 +108,7 @@ namespace boosting {
     /**
      * Defines an interface for all factories that allow to create instances of the type `IJointProbabilityFunction`.
      */
-    class IJointProbabilityFunctionFactory : public IDistanceMeasureFactory {
+    class IJointProbabilityFunctionFactory : public IDistanceMeasureFactory<float64> {
         public:
 
             virtual ~IJointProbabilityFunctionFactory() override {}

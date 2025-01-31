@@ -72,7 +72,10 @@ class IDistanceMeasure {
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `IDistanceMeasure`.
+ *
+ * @tparam ScoreType The type of the predicted scores
  */
+template<typename ScoreType>
 class IDistanceMeasureFactory {
     public:
 
@@ -90,7 +93,7 @@ class IDistanceMeasureFactory {
          * @return                                      An unique pointer to an object of type `IDistanceMeasure` that
          *                                              has been created
          */
-        virtual std::unique_ptr<IDistanceMeasure<float64>> createDistanceMeasure(
+        virtual std::unique_ptr<IDistanceMeasure<ScoreType>> createDistanceMeasure(
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const = 0;
 };
