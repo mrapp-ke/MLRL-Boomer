@@ -54,7 +54,10 @@ class ISparseEvaluationMeasure {
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `ISparseEvaluationMeasure`.
+ *
+ * @tparam ScoreType The type of the predicted scores
  */
+template<typename ScoreType>
 class ISparseEvaluationMeasureFactory {
     public:
 
@@ -65,5 +68,5 @@ class ISparseEvaluationMeasureFactory {
          *
          * @return An unique pointer to an object of type `ISparseEvaluationMeasure` that has been created
          */
-        virtual std::unique_ptr<ISparseEvaluationMeasure<float64>> createSparseEvaluationMeasure() const = 0;
+        virtual std::unique_ptr<ISparseEvaluationMeasure<ScoreType>> createSparseEvaluationMeasure() const = 0;
 };
