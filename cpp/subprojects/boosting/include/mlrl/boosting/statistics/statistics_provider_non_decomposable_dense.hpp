@@ -87,7 +87,7 @@ namespace boosting {
     class DenseNonDecomposableRegressionStatisticsProviderFactory final : public IRegressionStatisticsProviderFactory {
         private:
 
-            const std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr_;
+            const std::unique_ptr<INonDecomposableRegressionLossFactory<float64>> lossFactoryPtr_;
 
             const std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr_;
 
@@ -127,7 +127,7 @@ namespace boosting {
              *                                          parallel
              */
             DenseNonDecomposableRegressionStatisticsProviderFactory(
-              std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr,
+              std::unique_ptr<INonDecomposableRegressionLossFactory<float64>> lossFactoryPtr,
               std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr,
               std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
               std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
@@ -222,7 +222,7 @@ namespace boosting {
         : public IRegressionStatisticsProviderFactory {
         private:
 
-            const std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr_;
+            const std::unique_ptr<INonDecomposableRegressionLossFactory<float64>> lossFactoryPtr_;
 
             const std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr_;
 
@@ -262,7 +262,7 @@ namespace boosting {
              *                                          parallel
              */
             DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory(
-              std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr,
+              std::unique_ptr<INonDecomposableRegressionLossFactory<float64>> lossFactoryPtr,
               std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr,
               std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,

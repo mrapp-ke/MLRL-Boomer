@@ -97,7 +97,7 @@ namespace boosting {
       const LapackFactory& lapackFactory) const {
         MultiThreadingSettings multiThreadingSettings =
           multiThreadingConfig_.get().getSettings(featureMatrix, regressionMatrix.getNumOutputs());
-        std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr =
+        std::unique_ptr<INonDecomposableRegressionLossFactory<float64>> lossFactoryPtr =
           lossConfig.createNonDecomposableRegressionLossFactory();
         std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr =
           lossConfig.createRegressionEvaluationMeasureFactory();
