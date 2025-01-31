@@ -35,10 +35,10 @@ namespace boosting {
      */
     template<typename OutputMatrix>
     class SparseDecomposableStatistics final
-        : public AbstractDecomposableStatistics<OutputMatrix, SparseDecomposableStatisticMatrix<float64>,
-                                                NumericSparseSetMatrix<float64>,
-                                                ISparseDecomposableClassificationLoss<float64>,
-                                                ISparseEvaluationMeasure, ISparseDecomposableRuleEvaluationFactory> {
+        : public AbstractDecomposableStatistics<
+            OutputMatrix, SparseDecomposableStatisticMatrix<float64>, NumericSparseSetMatrix<float64>,
+            ISparseDecomposableClassificationLoss<float64>, ISparseEvaluationMeasure<float64>,
+            ISparseDecomposableRuleEvaluationFactory> {
         public:
 
             /**
@@ -59,17 +59,17 @@ namespace boosting {
              *                              the currently predicted scores
              */
             SparseDecomposableStatistics(std::unique_ptr<ISparseDecomposableClassificationLoss<float64>> lossPtr,
-                                         std::unique_ptr<ISparseEvaluationMeasure> evaluationMeasurePtr,
+                                         std::unique_ptr<ISparseEvaluationMeasure<float64>> evaluationMeasurePtr,
                                          const ISparseDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
                                          const OutputMatrix& outputMatrix,
                                          std::unique_ptr<SparseDecomposableStatisticMatrix<float64>> statisticViewPtr,
                                          std::unique_ptr<NumericSparseSetMatrix<float64>> scoreMatrixPtr)
-                : AbstractDecomposableStatistics<OutputMatrix, SparseDecomposableStatisticMatrix<float64>,
-                                                 NumericSparseSetMatrix<float64>,
-                                                 ISparseDecomposableClassificationLoss<float64>,
-                                                 ISparseEvaluationMeasure, ISparseDecomposableRuleEvaluationFactory>(
-                    std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
-                    std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
+                : AbstractDecomposableStatistics<
+                    OutputMatrix, SparseDecomposableStatisticMatrix<float64>, NumericSparseSetMatrix<float64>,
+                    ISparseDecomposableClassificationLoss<float64>, ISparseEvaluationMeasure<float64>,
+                    ISparseDecomposableRuleEvaluationFactory>(std::move(lossPtr), std::move(evaluationMeasurePtr),
+                                                              ruleEvaluationFactory, outputMatrix,
+                                                              std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
 
             /**
              * @see `IStatistics::createSubset`
@@ -338,7 +338,7 @@ namespace boosting {
         uint32 numOutputs = outputMatrix.numCols;
         std::unique_ptr<ISparseDecomposableClassificationLoss<float64>> lossPtr =
           lossFactory.createSparseDecomposableClassificationLoss();
-        std::unique_ptr<ISparseEvaluationMeasure> evaluationMeasurePtr =
+        std::unique_ptr<ISparseEvaluationMeasure<float64>> evaluationMeasurePtr =
           evaluationMeasureFactory.createSparseEvaluationMeasure();
         std::unique_ptr<SparseDecomposableStatisticMatrix<float64>> statisticMatrixPtr =
           std::make_unique<SparseDecomposableStatisticMatrix<float64>>(numExamples, numOutputs);
