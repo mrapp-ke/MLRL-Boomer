@@ -306,22 +306,25 @@ namespace boosting {
     /**
      * Allows to create instances of the type `INonDecomposableClassificationLoss` that implement a multivariate variant
      * of the logistic loss that is non-decomposable.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
-    class NonDecomposableLogisticLossFactory final : public INonDecomposableClassificationLossFactory<float64> {
+    template<typename StatisticType>
+    class NonDecomposableLogisticLossFactory final : public INonDecomposableClassificationLossFactory<StatisticType> {
         public:
 
-            std::unique_ptr<INonDecomposableClassificationLoss<float64>> createNonDecomposableClassificationLoss()
+            std::unique_ptr<INonDecomposableClassificationLoss<StatisticType>> createNonDecomposableClassificationLoss()
               const override {
-                return std::make_unique<NonDecomposableLogisticLoss<float64>>();
+                return std::make_unique<NonDecomposableLogisticLoss<StatisticType>>();
             }
 
-            std::unique_ptr<IDistanceMeasure<float64>> createDistanceMeasure(
+            std::unique_ptr<IDistanceMeasure<StatisticType>> createDistanceMeasure(
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const override {
                 return this->createNonDecomposableClassificationLoss();
             }
 
-            std::unique_ptr<IClassificationEvaluationMeasure<float64>> createClassificationEvaluationMeasure()
+            std::unique_ptr<IClassificationEvaluationMeasure<StatisticType>> createClassificationEvaluationMeasure()
               const override {
                 return this->createNonDecomposableClassificationLoss();
             }
@@ -354,7 +357,7 @@ namespace boosting {
 
     std::unique_ptr<INonDecomposableClassificationLossFactory<float64>>
       NonDecomposableLogisticLossConfig::createNonDecomposableClassificationLossFactory() const {
-        return std::make_unique<NonDecomposableLogisticLossFactory>();
+        return std::make_unique<NonDecomposableLogisticLossFactory<float64>>();
     }
 
 }
