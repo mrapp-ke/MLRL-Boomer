@@ -73,23 +73,26 @@ namespace boosting {
     /**
      * Allows to create instances of the type `IDecomposableClassificationLoss` that implement a multivariate variant of
      * the logistic loss that is decomposable.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
-    class DecomposableLogisticLossFactory final : public IDecomposableClassificationLossFactory<float64> {
+    template<typename StatisticType>
+    class DecomposableLogisticLossFactory final : public IDecomposableClassificationLossFactory<StatisticType> {
         public:
 
-            std::unique_ptr<IDecomposableClassificationLoss<float64>> createDecomposableClassificationLoss()
+            std::unique_ptr<IDecomposableClassificationLoss<StatisticType>> createDecomposableClassificationLoss()
               const override {
-                return std::make_unique<DecomposableClassificationLoss<float64>>(&updateGradientAndHessian<float64>,
-                                                                                 &evaluatePrediction<float64>);
+                return std::make_unique<DecomposableClassificationLoss<StatisticType>>(
+                  &updateGradientAndHessian<StatisticType>, &evaluatePrediction<StatisticType>);
             }
 
-            std::unique_ptr<IDistanceMeasure<float64>> createDistanceMeasure(
+            std::unique_ptr<IDistanceMeasure<StatisticType>> createDistanceMeasure(
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const override {
                 return this->createDecomposableClassificationLoss();
             }
 
-            std::unique_ptr<IClassificationEvaluationMeasure<float64>> createClassificationEvaluationMeasure()
+            std::unique_ptr<IClassificationEvaluationMeasure<StatisticType>> createClassificationEvaluationMeasure()
               const override {
                 return this->createDecomposableClassificationLoss();
             }
@@ -121,7 +124,7 @@ namespace boosting {
 
     std::unique_ptr<IDecomposableClassificationLossFactory<float64>>
       DecomposableLogisticLossConfig::createDecomposableClassificationLossFactory() const {
-        return std::make_unique<DecomposableLogisticLossFactory>();
+        return std::make_unique<DecomposableLogisticLossFactory<float64>>();
     }
 
 }
