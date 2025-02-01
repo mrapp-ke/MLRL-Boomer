@@ -355,33 +355,38 @@ namespace boosting {
     /**
      * Allows to create instances of the type `INonDecomposableClassificationLoss` that implement a multivariate variant
      * of the squared error loss that is non-decomposable.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
-    class NonDecomposableSquaredErrorLossFactory final : public INonDecomposableClassificationLossFactory<float64>,
-                                                         public INonDecomposableRegressionLossFactory<float64> {
+    template<typename StatisticType>
+    class NonDecomposableSquaredErrorLossFactory final
+        : public INonDecomposableClassificationLossFactory<StatisticType>,
+          public INonDecomposableRegressionLossFactory<StatisticType> {
         public:
 
-            std::unique_ptr<INonDecomposableClassificationLoss<float64>> createNonDecomposableClassificationLoss()
+            std::unique_ptr<INonDecomposableClassificationLoss<StatisticType>> createNonDecomposableClassificationLoss()
               const override {
-                return std::make_unique<NonDecomposableSquaredErrorLoss<float64>>();
+                return std::make_unique<NonDecomposableSquaredErrorLoss<StatisticType>>();
             }
 
-            std::unique_ptr<INonDecomposableRegressionLoss<float64>> createNonDecomposableRegressionLoss()
+            std::unique_ptr<INonDecomposableRegressionLoss<StatisticType>> createNonDecomposableRegressionLoss()
               const override {
-                return std::make_unique<NonDecomposableSquaredErrorLoss<float64>>();
+                return std::make_unique<NonDecomposableSquaredErrorLoss<StatisticType>>();
             }
 
-            std::unique_ptr<IDistanceMeasure<float64>> createDistanceMeasure(
+            std::unique_ptr<IDistanceMeasure<StatisticType>> createDistanceMeasure(
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const override {
                 return this->createNonDecomposableClassificationLoss();
             }
 
-            std::unique_ptr<IClassificationEvaluationMeasure<float64>> createClassificationEvaluationMeasure()
+            std::unique_ptr<IClassificationEvaluationMeasure<StatisticType>> createClassificationEvaluationMeasure()
               const override {
                 return this->createNonDecomposableClassificationLoss();
             }
 
-            std::unique_ptr<IRegressionEvaluationMeasure<float64>> createRegressionEvaluationMeasure() const override {
+            std::unique_ptr<IRegressionEvaluationMeasure<StatisticType>> createRegressionEvaluationMeasure()
+              const override {
                 return this->createNonDecomposableRegressionLoss();
             }
     };
@@ -422,12 +427,12 @@ namespace boosting {
 
     std::unique_ptr<INonDecomposableClassificationLossFactory<float64>>
       NonDecomposableSquaredErrorLossConfig::createNonDecomposableClassificationLossFactory() const {
-        return std::make_unique<NonDecomposableSquaredErrorLossFactory>();
+        return std::make_unique<NonDecomposableSquaredErrorLossFactory<float64>>();
     }
 
     std::unique_ptr<INonDecomposableRegressionLossFactory<float64>>
       NonDecomposableSquaredErrorLossConfig::createNonDecomposableRegressionLossFactory() const {
-        return std::make_unique<NonDecomposableSquaredErrorLossFactory>();
+        return std::make_unique<NonDecomposableSquaredErrorLossFactory<float64>>();
     }
 
 }
