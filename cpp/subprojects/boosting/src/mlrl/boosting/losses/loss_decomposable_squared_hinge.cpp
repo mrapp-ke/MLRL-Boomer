@@ -44,23 +44,27 @@ namespace boosting {
     /**
      * Allows to create instances of the type `IDecomposableClassificationLoss` that implement a multivariate variant of
      * the squared hinge loss that is decomposable.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
-    class DecomposableSquaredHingeLossFactory final : public ISparseDecomposableClassificationLossFactory<float64> {
+    template<typename StatisticType>
+    class DecomposableSquaredHingeLossFactory final
+        : public ISparseDecomposableClassificationLossFactory<StatisticType> {
         public:
 
-            std::unique_ptr<ISparseDecomposableClassificationLoss<float64>> createSparseDecomposableClassificationLoss()
-              const override {
-                return std::make_unique<SparseDecomposableClassificationLoss<float64>>(
-                  &updateGradientAndHessian<float64>, &evaluatePrediction<float64>);
+            std::unique_ptr<ISparseDecomposableClassificationLoss<StatisticType>>
+              createSparseDecomposableClassificationLoss() const override {
+                return std::make_unique<SparseDecomposableClassificationLoss<StatisticType>>(
+                  &updateGradientAndHessian<StatisticType>, &evaluatePrediction<StatisticType>);
             }
 
-            std::unique_ptr<IDistanceMeasure<float64>> createDistanceMeasure(
+            std::unique_ptr<IDistanceMeasure<StatisticType>> createDistanceMeasure(
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const override {
                 return this->createSparseDecomposableClassificationLoss();
             }
 
-            std::unique_ptr<IClassificationEvaluationMeasure<float64>> createClassificationEvaluationMeasure()
+            std::unique_ptr<IClassificationEvaluationMeasure<StatisticType>> createClassificationEvaluationMeasure()
               const override {
                 return this->createSparseDecomposableClassificationLoss();
             }
@@ -97,7 +101,7 @@ namespace boosting {
 
     std::unique_ptr<ISparseDecomposableClassificationLossFactory<float64>>
       DecomposableSquaredHingeLossConfig::createSparseDecomposableClassificationLossFactory() const {
-        return std::make_unique<DecomposableSquaredHingeLossFactory>();
+        return std::make_unique<DecomposableSquaredHingeLossFactory<float64>>();
     }
 
 }
