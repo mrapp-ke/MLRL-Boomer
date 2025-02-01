@@ -31,34 +31,40 @@ namespace boosting {
     /**
      * Allows to create instances of the type `IDecomposableClassificationLoss` that implement a multivariate variant of
      * the squared error loss that is decomposable.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
-    class DecomposableSquaredErrorLossFactory final : public IDecomposableClassificationLossFactory<float64>,
-                                                      public IDecomposableRegressionLossFactory<float64> {
+    template<typename StatisticType>
+    class DecomposableSquaredErrorLossFactory final : public IDecomposableClassificationLossFactory<StatisticType>,
+                                                      public IDecomposableRegressionLossFactory<StatisticType> {
         public:
 
-            std::unique_ptr<IDecomposableClassificationLoss<float64>> createDecomposableClassificationLoss()
+            std::unique_ptr<IDecomposableClassificationLoss<StatisticType>> createDecomposableClassificationLoss()
               const override {
-                return std::make_unique<DecomposableClassificationLoss<float64>>(
-                  &updateGradientAndHessianClassification<float64>, &evaluatePredictionClassification<float64>);
+                return std::make_unique<DecomposableClassificationLoss<StatisticType>>(
+                  &updateGradientAndHessianClassification<StatisticType>,
+                  &evaluatePredictionClassification<StatisticType>);
             }
 
-            std::unique_ptr<IDecomposableRegressionLoss<float64>> createDecomposableRegressionLoss() const override {
-                return std::make_unique<DecomposableRegressionLoss<float64>>(
-                  &updateGradientAndHessianRegression<float64>, &evaluatePredictionRegression<float64>);
+            std::unique_ptr<IDecomposableRegressionLoss<StatisticType>> createDecomposableRegressionLoss()
+              const override {
+                return std::make_unique<DecomposableRegressionLoss<StatisticType>>(
+                  &updateGradientAndHessianRegression<StatisticType>, &evaluatePredictionRegression<StatisticType>);
             }
 
-            std::unique_ptr<IDistanceMeasure<float64>> createDistanceMeasure(
+            std::unique_ptr<IDistanceMeasure<StatisticType>> createDistanceMeasure(
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const override {
                 return this->createDecomposableClassificationLoss();
             }
 
-            std::unique_ptr<IClassificationEvaluationMeasure<float64>> createClassificationEvaluationMeasure()
+            std::unique_ptr<IClassificationEvaluationMeasure<StatisticType>> createClassificationEvaluationMeasure()
               const override {
                 return this->createDecomposableClassificationLoss();
             }
 
-            std::unique_ptr<IRegressionEvaluationMeasure<float64>> createRegressionEvaluationMeasure() const override {
+            std::unique_ptr<IRegressionEvaluationMeasure<StatisticType>> createRegressionEvaluationMeasure()
+              const override {
                 return this->createDecomposableRegressionLoss();
             }
     };
@@ -96,12 +102,12 @@ namespace boosting {
 
     std::unique_ptr<IDecomposableClassificationLossFactory<float64>>
       DecomposableSquaredErrorLossConfig::createDecomposableClassificationLossFactory() const {
-        return std::make_unique<DecomposableSquaredErrorLossFactory>();
+        return std::make_unique<DecomposableSquaredErrorLossFactory<float64>>();
     }
 
     std::unique_ptr<IDecomposableRegressionLossFactory<float64>>
       DecomposableSquaredErrorLossConfig::createDecomposableRegressionLossFactory() const {
-        return std::make_unique<DecomposableSquaredErrorLossFactory>();
+        return std::make_unique<DecomposableSquaredErrorLossFactory<float64>>();
     }
 
 }
