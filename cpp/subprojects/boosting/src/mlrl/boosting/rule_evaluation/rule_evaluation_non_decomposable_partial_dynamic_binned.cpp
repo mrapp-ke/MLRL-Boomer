@@ -109,6 +109,33 @@ namespace boosting {
           l2RegularizationWeight_(l2RegularizationWeight), labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)),
           blasFactory_(blasFactory), lapackFactory_(lapackFactory) {}
 
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float32>>>
+      NonDecomposableDynamicPartialBinnedRuleEvaluationFactory::create(
+        const DenseNonDecomposableStatisticVector<float32>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
+        uint32 numElements = indexVector.getNumElements();
+        std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(numElements);
+        std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
+        uint32 maxBins = labelBinningPtr->getMaxBins(numElements);
+        return std::make_unique<DenseNonDecomposableDynamicPartialBinnedRuleEvaluation<
+          DenseNonDecomposableStatisticVector<float32>, CompleteIndexVector>>(
+          indexVector, maxBins, std::move(indexVectorPtr), threshold_, exponent_, l1RegularizationWeight_,
+          l2RegularizationWeight_, std::move(labelBinningPtr), blasFactory_.create32Bit(),
+          lapackFactory_.create32Bit());
+    }
+
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float32>>>
+      NonDecomposableDynamicPartialBinnedRuleEvaluationFactory::create(
+        const DenseNonDecomposableStatisticVector<float32>& statisticVector,
+        const PartialIndexVector& indexVector) const {
+        std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
+        uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());
+        return std::make_unique<DenseNonDecomposableCompleteBinnedRuleEvaluation<
+          DenseNonDecomposableStatisticVector<float32>, PartialIndexVector>>(
+          indexVector, maxBins, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr),
+          blasFactory_.create32Bit(), lapackFactory_.create32Bit());
+    }
+
     std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
       NonDecomposableDynamicPartialBinnedRuleEvaluationFactory::create(
         const DenseNonDecomposableStatisticVector<float64>& statisticVector,
