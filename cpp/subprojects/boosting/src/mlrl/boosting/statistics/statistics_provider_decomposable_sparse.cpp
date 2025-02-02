@@ -387,5 +387,6 @@ namespace boosting {
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
+    template class SparseDecomposableClassificationStatisticsProviderFactory<float32>;
     template class SparseDecomposableClassificationStatisticsProviderFactory<float64>;
 }
