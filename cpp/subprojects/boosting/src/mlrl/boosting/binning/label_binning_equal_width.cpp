@@ -41,8 +41,8 @@ namespace boosting {
                 return util::calculateBoundedFraction(numLabels, binRatio_, minBins_, maxBins_) + 1;
             }
 
-            LabelInfo getLabelInfo(View<float64>::const_iterator criteria, uint32 numCriteria) const override {
-                LabelInfo labelInfo;
+            LabelInfo<float64> getLabelInfo(View<float64>::const_iterator criteria, uint32 numCriteria) const override {
+                LabelInfo<float64> labelInfo;
                 labelInfo.numNegativeBins = 0;
                 labelInfo.numPositiveBins = 0;
 
@@ -92,7 +92,7 @@ namespace boosting {
                 return labelInfo;
             }
 
-            void createBins(LabelInfo labelInfo, View<float64>::const_iterator criteria, uint32 numCriteria,
+            void createBins(LabelInfo<float64> labelInfo, View<float64>::const_iterator criteria, uint32 numCriteria,
                             Callback callback, ZeroCallback zeroCallback) const override {
                 uint32 numNegativeBins = labelInfo.numNegativeBins;
                 float64 minNegative = labelInfo.minNegative;
