@@ -161,7 +161,11 @@ namespace boosting {
             EqualWidthLabelBinningFactory(float32 binRatio, uint32 minBins, uint32 maxBins)
                 : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {}
 
-            std::unique_ptr<ILabelBinning<float64>> create() const override {
+            std::unique_ptr<ILabelBinning<float32>> create32Bit() const override {
+                return std::make_unique<EqualWidthLabelBinning<float32>>(binRatio_, minBins_, maxBins_);
+            }
+
+            std::unique_ptr<ILabelBinning<float64>> create64Bit() const override {
                 return std::make_unique<EqualWidthLabelBinning<float64>>(binRatio_, minBins_, maxBins_);
             }
     };

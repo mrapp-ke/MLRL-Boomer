@@ -16,7 +16,7 @@ namespace boosting {
       NonDecomposableCompleteBinnedRuleEvaluationFactory::create(
         const DenseNonDecomposableStatisticVector<float64>& statisticVector,
         const CompleteIndexVector& indexVector) const {
-        std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create();
+        std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
         uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());
         return std::make_unique<DenseNonDecomposableCompleteBinnedRuleEvaluation<
           DenseNonDecomposableStatisticVector<float64>, CompleteIndexVector>>(
@@ -28,7 +28,7 @@ namespace boosting {
       NonDecomposableCompleteBinnedRuleEvaluationFactory::create(
         const DenseNonDecomposableStatisticVector<float64>& statisticVector,
         const PartialIndexVector& indexVector) const {
-        std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create();
+        std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
         uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());
         return std::make_unique<DenseNonDecomposableCompleteBinnedRuleEvaluation<
           DenseNonDecomposableStatisticVector<float64>, PartialIndexVector>>(
