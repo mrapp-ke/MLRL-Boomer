@@ -42,6 +42,14 @@ namespace boosting {
                                                          const BlasFactory& blasFactory,
                                                          const LapackFactory& lapackFactory);
 
+            std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float32>>> create(
+              const DenseNonDecomposableStatisticVector<float32>& statisticVector,
+              const CompleteIndexVector& indexVector) const override;
+
+            std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float32>>> create(
+              const DenseNonDecomposableStatisticVector<float32>& statisticVector,
+              const PartialIndexVector& indexVector) const override;
+
             std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>> create(
               const DenseNonDecomposableStatisticVector<float64>& statisticVector,
               const CompleteIndexVector& indexVector) const override;

@@ -123,6 +123,28 @@ namespace boosting {
           l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
           blasFactory_(blasFactory), lapackFactory_(lapackFactory) {}
 
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float32>>>
+      NonDecomposableFixedPartialRuleEvaluationFactory::create(
+        const DenseNonDecomposableStatisticVector<float32>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
+        uint32 numPredictions =
+          util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
+        return std::make_unique<DenseNonDecomposableFixedPartialRuleEvaluation<
+          DenseNonDecomposableStatisticVector<float32>, CompleteIndexVector>>(
+          indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create32Bit(),
+          lapackFactory_.create32Bit());
+    }
+
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float32>>>
+      NonDecomposableFixedPartialRuleEvaluationFactory::create(
+        const DenseNonDecomposableStatisticVector<float32>& statisticVector,
+        const PartialIndexVector& indexVector) const {
+        return std::make_unique<
+          DenseNonDecomposableCompleteRuleEvaluation<DenseNonDecomposableStatisticVector<float32>, PartialIndexVector>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create32Bit(),
+          lapackFactory_.create32Bit());
+    }
+
     std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
       NonDecomposableFixedPartialRuleEvaluationFactory::create(
         const DenseNonDecomposableStatisticVector<float64>& statisticVector,
