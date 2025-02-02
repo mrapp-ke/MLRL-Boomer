@@ -133,7 +133,7 @@ namespace boosting {
                                                     l1RegularizationWeight_, l2RegularizationWeight_);
 
                 // Obtain information about the bins to be used...
-                LabelInfo labelInfo = binningPtr_->getLabelInfo(criteria_.cbegin(), numCriteria);
+                LabelInfo<float64> labelInfo = binningPtr_->getLabelInfo(criteria_.cbegin(), numCriteria);
                 uint32 numBins = labelInfo.numPositiveBins + labelInfo.numNegativeBins;
                 scoreVector_.setNumBins(numBins, false);
 
