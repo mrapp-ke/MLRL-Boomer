@@ -54,8 +54,11 @@ namespace boosting {
     };
 
     /**
-     * Defines an interface for methods that assign labels to bins, based on the corresponding gradients and Hessians.
+     * Defines an interface for methods that assign labels to bins, based on corresponding criteria.
+     *
+     * @tparam CriteriaType The type of the criteria
      */
+    template<typename CriteriaType>
     class ILabelBinning {
         public:
 
@@ -95,8 +98,8 @@ namespace boosting {
              * @param numCriteria   The number of label-wise criteria
              * @return              A struct of type `LabelInfo` that stores the information
              */
-            virtual LabelInfo<float64> getLabelInfo(View<float64>::const_iterator criteria,
-                                                    uint32 numCriteria) const = 0;
+            virtual LabelInfo<CriteriaType> getLabelInfo(typename View<CriteriaType>::const_iterator criteria,
+                                                         uint32 numCriteria) const = 0;
 
             /**
              * Assigns the labels to bins based on label-wise criteria.
@@ -110,8 +113,9 @@ namespace boosting {
              * @param zeroCallback  A callback that is invoked when a label for which the criterion is zero is
              *                      encountered
              */
-            virtual void createBins(LabelInfo<float64> labelInfo, View<float64>::const_iterator criteria,
-                                    uint32 numCriteria, Callback callback, ZeroCallback zeroCallback) const = 0;
+            virtual void createBins(LabelInfo<CriteriaType> labelInfo,
+                                    typename View<CriteriaType>::const_iterator criteria, uint32 numCriteria,
+                                    Callback callback, ZeroCallback zeroCallback) const = 0;
     };
 
     /**
@@ -127,7 +131,7 @@ namespace boosting {
              *
              * @return An unique pointer to an object of type `ILabelBinning` that has been created
              */
-            virtual std::unique_ptr<ILabelBinning> create() const = 0;
+            virtual std::unique_ptr<ILabelBinning<float64>> create() const = 0;
     };
 
     /**
