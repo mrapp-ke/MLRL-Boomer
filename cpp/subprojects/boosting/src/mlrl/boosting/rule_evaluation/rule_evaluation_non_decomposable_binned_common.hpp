@@ -207,7 +207,7 @@ namespace boosting {
 
             const float32 l2RegularizationWeight_;
 
-            const std::unique_ptr<ILabelBinning> binningPtr_;
+            const std::unique_ptr<ILabelBinning<statistic_type>> binningPtr_;
 
             const std::unique_ptr<Blas<statistic_type>> blasPtr_;
 
@@ -253,7 +253,7 @@ namespace boosting {
             AbstractNonDecomposableBinnedRuleEvaluation(const IndexVector& labelIndices, bool indicesSorted,
                                                         uint32 maxBins, float32 l1RegularizationWeight,
                                                         float32 l2RegularizationWeight,
-                                                        std::unique_ptr<ILabelBinning> binningPtr,
+                                                        std::unique_ptr<ILabelBinning<statistic_type>> binningPtr,
                                                         std::unique_ptr<Blas<statistic_type>> blasPtr,
                                                         std::unique_ptr<Lapack<statistic_type>> lapackPtr)
                 : AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector>(maxBins, *lapackPtr),
@@ -277,7 +277,7 @@ namespace boosting {
                                                     l1RegularizationWeight_, l2RegularizationWeight_);
 
                 // Obtain information about the bins to be used...
-                LabelInfo<float64> labelInfo = binningPtr_->getLabelInfo(criteria_.cbegin(), numCriteria);
+                LabelInfo<statistic_type> labelInfo = binningPtr_->getLabelInfo(criteria_.cbegin(), numCriteria);
                 uint32 numBins = labelInfo.numPositiveBins + labelInfo.numNegativeBins;
 
                 if (numBins > 0) {
@@ -398,7 +398,7 @@ namespace boosting {
             DenseNonDecomposableCompleteBinnedRuleEvaluation(const IndexVector& labelIndices, uint32 maxBins,
                                                              float32 l1RegularizationWeight,
                                                              float32 l2RegularizationWeight,
-                                                             std::unique_ptr<ILabelBinning> binningPtr,
+                                                             std::unique_ptr<ILabelBinning<statistic_type>> binningPtr,
                                                              std::unique_ptr<Blas<statistic_type>> blasPtr,
                                                              std::unique_ptr<Lapack<statistic_type>> lapackPtr)
                 : AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector>(

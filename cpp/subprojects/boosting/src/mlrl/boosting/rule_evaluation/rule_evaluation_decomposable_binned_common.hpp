@@ -76,7 +76,7 @@ namespace boosting {
 
             const float32 l2RegularizationWeight_;
 
-            const std::unique_ptr<ILabelBinning> binningPtr_;
+            const std::unique_ptr<ILabelBinning<statistic_type>> binningPtr_;
 
         protected:
 
@@ -112,7 +112,7 @@ namespace boosting {
              */
             AbstractDecomposableBinnedRuleEvaluation(const IndexVector& labelIndices, bool indicesSorted,
                                                      float32 l1RegularizationWeight, float32 l2RegularizationWeight,
-                                                     std::unique_ptr<ILabelBinning> binningPtr)
+                                                     std::unique_ptr<ILabelBinning<statistic_type>> binningPtr)
                 : maxBins_(binningPtr->getMaxBins(labelIndices.getNumElements())),
                   scoreVector_(labelIndices, maxBins_ + 1, indicesSorted), aggregatedStatisticVector_(maxBins_),
                   numElementsPerBin_(maxBins_), criteria_(labelIndices.getNumElements()),
@@ -133,7 +133,7 @@ namespace boosting {
                                                     l1RegularizationWeight_, l2RegularizationWeight_);
 
                 // Obtain information about the bins to be used...
-                LabelInfo<float64> labelInfo = binningPtr_->getLabelInfo(criteria_.cbegin(), numCriteria);
+                LabelInfo<statistic_type> labelInfo = binningPtr_->getLabelInfo(criteria_.cbegin(), numCriteria);
                 uint32 numBins = labelInfo.numPositiveBins + labelInfo.numNegativeBins;
                 scoreVector_.setNumBins(numBins, false);
 
@@ -214,7 +214,7 @@ namespace boosting {
              */
             DecomposableCompleteBinnedRuleEvaluation(const IndexVector& labelIndices, float32 l1RegularizationWeight,
                                                      float32 l2RegularizationWeight,
-                                                     std::unique_ptr<ILabelBinning> binningPtr)
+                                                     std::unique_ptr<ILabelBinning<statistic_type>> binningPtr)
                 : AbstractDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector>(
                     labelIndices, true, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr)) {}
     };
