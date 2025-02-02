@@ -334,7 +334,9 @@ namespace boosting {
              * @see `IBoostingStatistics::visitScoreMatrix`
              */
             void visitScoreMatrix(
+              IBoostingStatistics::DenseScoreMatrixVisitor<float32> dense32BitVisitor,
               IBoostingStatistics::DenseScoreMatrixVisitor<float64> dense64BitVisitor,
+              IBoostingStatistics::SparseScoreMatrixVisitor<float32> sparse32BitVisitor,
               IBoostingStatistics::SparseScoreMatrixVisitor<float64> sparse64BitVisitor) const override {
                 dense64BitVisitor(this->scoreMatrixPtr_->getView());
             }

@@ -150,17 +150,26 @@ namespace boosting {
         std::unique_ptr<IsotonicProbabilityCalibrationModel> calibrationModelPtr =
           std::make_unique<IsotonicProbabilityCalibrationModel>(numLabels);
         const IBoostingStatistics& boostingStatistics = dynamic_cast<const IBoostingStatistics&>(statistics);
-        auto denseVisitor = [=, &marginalProbabilityFunction,
-                             &calibrationModelPtr](const CContiguousView<float64>& scoreMatrix) {
+        auto dense32BitVisitor = [=, &marginalProbabilityFunction,
+                                  &calibrationModelPtr](const CContiguousView<float32>& scoreMatrix) {
+            // TODO Implement
+        };
+        auto dense64BitVisitor = [=, &marginalProbabilityFunction,
+                                  &calibrationModelPtr](const CContiguousView<float64>& scoreMatrix) {
             extractThresholdsAndProbabilities(indexIterator, numExamples, numLabels, *calibrationModelPtr, labelMatrix,
                                               scoreMatrix, marginalProbabilityFunction);
         };
-        auto sparseVisitor = [=, &marginalProbabilityFunction,
-                              &calibrationModelPtr](const SparseSetView<float64>& scoreMatrix) {
+        auto sparse32BitVisitor = [=, &marginalProbabilityFunction,
+                                   &calibrationModelPtr](const SparseSetView<float32>& scoreMatrix) {
+            // TODO Implement
+        };
+        auto sparse64BitVisitor = [=, &marginalProbabilityFunction,
+                                   &calibrationModelPtr](const SparseSetView<float64>& scoreMatrix) {
             extractThresholdsAndProbabilities(indexIterator, numExamples, numLabels, *calibrationModelPtr, labelMatrix,
                                               scoreMatrix, marginalProbabilityFunction);
         };
-        boostingStatistics.visitScoreMatrix(denseVisitor, sparseVisitor);
+        boostingStatistics.visitScoreMatrix(dense32BitVisitor, dense64BitVisitor, sparse32BitVisitor,
+                                            sparse64BitVisitor);
 
         // Build and return the isotonic calibration model...
         calibrationModelPtr->fit();
@@ -474,17 +483,26 @@ namespace boosting {
         std::unique_ptr<IsotonicProbabilityCalibrationModel> calibrationModelPtr =
           std::make_unique<IsotonicProbabilityCalibrationModel>(numLabelVectors);
         const IBoostingStatistics& boostingStatistics = dynamic_cast<const IBoostingStatistics&>(statistics);
-        auto denseVisitor = [=, &jointProbabilityFunction, &calibrationModelPtr,
-                             &labelVectorSet](const CContiguousView<float64>& scoreMatrix) {
+        auto dense32BitVisitor = [=, &jointProbabilityFunction, &calibrationModelPtr,
+                                  &labelVectorSet](const CContiguousView<float32>& scoreMatrix) {
+            // TODO Implement
+        };
+        auto dense64BitVisitor = [=, &jointProbabilityFunction, &calibrationModelPtr,
+                                  &labelVectorSet](const CContiguousView<float64>& scoreMatrix) {
             extractThresholdsAndProbabilities(indexIterator, numExamples, *calibrationModelPtr, labelMatrix,
                                               scoreMatrix, jointProbabilityFunction, labelVectorSet);
         };
-        auto sparseVisitor = [=, &jointProbabilityFunction, &calibrationModelPtr,
-                              &labelVectorSet](const SparseSetView<float64>& scoreMatrix) {
+        auto sparse32BitVisitor = [=, &jointProbabilityFunction, &calibrationModelPtr,
+                                   &labelVectorSet](const SparseSetView<float32>& scoreMatrix) {
+            // TODO Implement
+        };
+        auto sparse64BitVisitor = [=, &jointProbabilityFunction, &calibrationModelPtr,
+                                   &labelVectorSet](const SparseSetView<float64>& scoreMatrix) {
             extractThresholdsAndProbabilities(indexIterator, numExamples, *calibrationModelPtr, labelMatrix,
                                               scoreMatrix, jointProbabilityFunction, labelVectorSet);
         };
-        boostingStatistics.visitScoreMatrix(denseVisitor, sparseVisitor);
+        boostingStatistics.visitScoreMatrix(dense32BitVisitor, dense64BitVisitor, sparse32BitVisitor,
+                                            sparse64BitVisitor);
 
         // Build and return the isotonic calibration model...
         calibrationModelPtr->fit();
