@@ -14,10 +14,11 @@
 namespace boosting {
 
     /**
-     * Stores information about a vector that provides access to the statistics for individual labels. This includes the
-     * number of positive and negative bins, the labels should be assigned to, as well as the minimum and maximum
-     * statistic in the vector.
+     * Stores information about a vector that provides access to the binning criteria for individual labels. This
+     * includes the number of positive and negative bins, the labels should be assigned to, as well as the minimum and
+     * maximum criterion in the vector.
      */
+    template<typename CriterionType>
     struct LabelInfo final {
         public:
 
@@ -29,12 +30,12 @@ namespace boosting {
             /**
              * The minimum among all statistics that belong to the positive bins.
              */
-            float64 minPositive;
+            CriterionType minPositive;
 
             /**
              * The maximum among all statistics that belong to the positive bins.
              */
-            float64 maxPositive;
+            CriterionType maxPositive;
 
             /**
              * The number of negative bins.
@@ -44,12 +45,12 @@ namespace boosting {
             /**
              * The minimum among all statistics that belong to the negative bins.
              */
-            float64 minNegative;
+            CriterionType minNegative;
 
             /**
              * The maximum among all statistics that belong to the negative bins.
              */
-            float64 maxNegative;
+            CriterionType maxNegative;
     };
 
     /**
@@ -94,7 +95,8 @@ namespace boosting {
              * @param numCriteria   The number of label-wise criteria
              * @return              A struct of type `LabelInfo` that stores the information
              */
-            virtual LabelInfo getLabelInfo(View<float64>::const_iterator criteria, uint32 numCriteria) const = 0;
+            virtual LabelInfo<float64> getLabelInfo(View<float64>::const_iterator criteria,
+                                                    uint32 numCriteria) const = 0;
 
             /**
              * Assigns the labels to bins based on label-wise criteria.
@@ -108,8 +110,8 @@ namespace boosting {
              * @param zeroCallback  A callback that is invoked when a label for which the criterion is zero is
              *                      encountered
              */
-            virtual void createBins(LabelInfo labelInfo, View<float64>::const_iterator criteria, uint32 numCriteria,
-                                    Callback callback, ZeroCallback zeroCallback) const = 0;
+            virtual void createBins(LabelInfo<float64> labelInfo, View<float64>::const_iterator criteria,
+                                    uint32 numCriteria, Callback callback, ZeroCallback zeroCallback) const = 0;
     };
 
     /**
