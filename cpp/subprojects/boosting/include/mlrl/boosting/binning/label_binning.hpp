@@ -127,11 +127,18 @@ namespace boosting {
             virtual ~ILabelBinningFactory() {}
 
             /**
-             * Creates and returns a new object of type `ILabelBinning`.
+             * Creates and returns a new object of type `ILabelBinning<float32>`.
              *
-             * @return An unique pointer to an object of type `ILabelBinning` that has been created
+             * @return An unique pointer to an object of type `ILabelBinning<float32>` that has been created
              */
-            virtual std::unique_ptr<ILabelBinning<float64>> create() const = 0;
+            virtual std::unique_ptr<ILabelBinning<float32>> create32Bit() const = 0;
+
+            /**
+             * Creates and returns a new object of type `ILabelBinning<float64>`.
+             *
+             * @return An unique pointer to an object of type `ILabelBinning<float64>` that has been created
+             */
+            virtual std::unique_ptr<ILabelBinning<float64>> create64Bit() const = 0;
     };
 
     /**
