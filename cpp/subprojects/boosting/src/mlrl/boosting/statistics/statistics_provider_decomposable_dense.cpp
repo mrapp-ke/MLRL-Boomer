@@ -84,6 +84,7 @@ namespace boosting {
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
+    template class DenseDecomposableClassificationStatisticsProviderFactory<float32>;
     template class DenseDecomposableClassificationStatisticsProviderFactory<float64>;
 
     template<typename StatisticType>
@@ -130,6 +131,7 @@ namespace boosting {
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
+    template class DenseDecomposableRegressionStatisticsProviderFactory<float32>;
     template class DenseDecomposableRegressionStatisticsProviderFactory<float64>;
 
 }

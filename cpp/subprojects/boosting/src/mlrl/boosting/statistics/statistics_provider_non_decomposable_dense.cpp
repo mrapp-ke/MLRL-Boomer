@@ -447,6 +447,7 @@ namespace boosting {
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
+    template class DenseNonDecomposableClassificationStatisticsProviderFactory<float32>;
     template class DenseNonDecomposableClassificationStatisticsProviderFactory<float64>;
 
     template<typename StatisticType>
@@ -499,6 +500,7 @@ namespace boosting {
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
+    template class DenseNonDecomposableRegressionStatisticsProviderFactory<float32>;
     template class DenseNonDecomposableRegressionStatisticsProviderFactory<float64>;
 
     template<typename StatisticType>
@@ -553,6 +555,7 @@ namespace boosting {
           multiThreadingSettings_);
     }
 
+    template class DenseConvertibleNonDecomposableClassificationStatisticsProviderFactory<float32>;
     template class DenseConvertibleNonDecomposableClassificationStatisticsProviderFactory<float64>;
 
     template<typename StatisticType>
@@ -609,6 +612,7 @@ namespace boosting {
           multiThreadingSettings_);
     }
 
+    template class DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory<float32>;
     template class DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory<float64>;
 
 }
