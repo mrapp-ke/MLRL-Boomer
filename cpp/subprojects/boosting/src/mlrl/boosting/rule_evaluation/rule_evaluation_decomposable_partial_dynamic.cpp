@@ -94,6 +94,23 @@ namespace boosting {
         : threshold_(threshold), exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
           l2RegularizationWeight_(l2RegularizationWeight) {}
 
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float32>>>
+      DecomposableDynamicPartialRuleEvaluationFactory::create(
+        const DenseDecomposableStatisticVector<float32>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
+        return std::make_unique<
+          DecomposableDynamicPartialRuleEvaluation<DenseDecomposableStatisticVector<float32>, CompleteIndexVector>>(
+          indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_);
+    }
+
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float32>>>
+      DecomposableDynamicPartialRuleEvaluationFactory::create(
+        const DenseDecomposableStatisticVector<float32>& statisticVector, const PartialIndexVector& indexVector) const {
+        return std::make_unique<
+          DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVector<float32>, PartialIndexVector>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
+    }
+
     std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>>
       DecomposableDynamicPartialRuleEvaluationFactory::create(
         const DenseDecomposableStatisticVector<float64>& statisticVector,
