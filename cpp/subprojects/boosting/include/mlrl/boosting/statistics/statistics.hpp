@@ -36,12 +36,18 @@ namespace boosting {
              * Invokes one of the given visitor functions, depending on which one is able to handle the type of matrix
              * that is used to store the currently predicted scores.
              *
+             * @param dense32BitVisitor     The visitor function for handling objects of the type
+             *                              `CContiguousView<float32>`
              * @param dense64BitVisitor     The visitor function for handling objects of the type
              *                              `CContiguousView<float64>`
+             * @param sparse32BitVisitor    The visitor function for handling objects of the type
+             *                              `SparseSetView<float32>`
              * @param sparse64BitVisitor    The visitor function for handling objects of the type
              *                              `SparseSetView<float64>`
              */
-            virtual void visitScoreMatrix(DenseScoreMatrixVisitor<float64> dense64BitVisitor,
+            virtual void visitScoreMatrix(DenseScoreMatrixVisitor<float32> dense32BitVisitor,
+                                          DenseScoreMatrixVisitor<float64> dense64BitVisitor,
+                                          SparseScoreMatrixVisitor<float32> sparse32BitVisitor,
                                           SparseScoreMatrixVisitor<float64> sparse64BitVisitor) const = 0;
     };
 
