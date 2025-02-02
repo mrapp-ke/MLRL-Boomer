@@ -75,8 +75,9 @@ namespace boosting {
              */
             DenseNonDecomposableFixedPartialBinnedRuleEvaluation(
               const IndexVector& labelIndices, uint32 maxBins, std::unique_ptr<PartialIndexVector> indexVectorPtr,
-              float32 l1RegularizationWeight, float32 l2RegularizationWeight, std::unique_ptr<ILabelBinning> binningPtr,
-              std::unique_ptr<Blas<statistic_type>> blasPtr, std::unique_ptr<Lapack<statistic_type>> lapackPtr)
+              float32 l1RegularizationWeight, float32 l2RegularizationWeight,
+              std::unique_ptr<ILabelBinning<statistic_type>> binningPtr, std::unique_ptr<Blas<statistic_type>> blasPtr,
+              std::unique_ptr<Lapack<statistic_type>> lapackPtr)
                 : AbstractNonDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector>(
                     *indexVectorPtr, false, maxBins, l1RegularizationWeight, l2RegularizationWeight,
                     std::move(binningPtr), std::move(blasPtr), std::move(lapackPtr)),
@@ -100,7 +101,7 @@ namespace boosting {
         uint32 numPredictions =
           util::calculateBoundedFraction(statisticVector.getNumGradients(), labelRatio_, minLabels_, maxLabels_);
         std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(numPredictions);
-        std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
+        std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create();
         uint32 maxBins = labelBinningPtr->getMaxBins(numPredictions);
         return std::make_unique<DenseNonDecomposableFixedPartialBinnedRuleEvaluation<
           DenseNonDecomposableStatisticVector<float64>, CompleteIndexVector>>(
@@ -112,7 +113,7 @@ namespace boosting {
       NonDecomposableFixedPartialBinnedRuleEvaluationFactory::create(
         const DenseNonDecomposableStatisticVector<float64>& statisticVector,
         const PartialIndexVector& indexVector) const {
-        std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
+        std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create();
         uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());
         return std::make_unique<DenseNonDecomposableCompleteBinnedRuleEvaluation<
           DenseNonDecomposableStatisticVector<float64>, PartialIndexVector>>(
