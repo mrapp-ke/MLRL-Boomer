@@ -10,19 +10,20 @@
 
 namespace boosting {
 
-    template<typename IndexIterator>
+    template<typename ScoreType, typename IndexIterator>
     static inline void extractThresholdsAndProbabilities(
       IndexIterator indexIterator, uint32 numExamples, uint32 numLabels,
       IsotonicProbabilityCalibrationModel& calibrationModel, const CContiguousView<const uint8>& labelMatrix,
-      const CContiguousView<float64>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {
+      const CContiguousView<ScoreType>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {
         for (uint32 i = 0; i < numExamples; i++) {
             uint32 exampleIndex = indexIterator[i];
             CContiguousView<const uint8>::value_const_iterator labelIterator = labelMatrix.values_cbegin(exampleIndex);
-            CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
+            typename CContiguousView<ScoreType>::value_const_iterator scoreIterator =
+              scoreMatrix.values_cbegin(exampleIndex);
 
             for (uint32 j = 0; j < numLabels; j++) {
                 float64 trueProbability = labelIterator[j] ? 1 : 0;
-                float64 score = scoreIterator[j];
+                ScoreType score = scoreIterator[j];
                 float64 marginalProbability =
                   marginalProbabilityFunction.transformScoreIntoMarginalProbability(j, score);
                 calibrationModel.addBin(j, marginalProbability, trueProbability);
@@ -30,20 +31,21 @@ namespace boosting {
         }
     }
 
-    template<typename IndexIterator>
+    template<typename ScoreType, typename IndexIterator>
     static inline void extractThresholdsAndProbabilities(
       IndexIterator indexIterator, uint32 numExamples, uint32 numLabels,
       IsotonicProbabilityCalibrationModel& calibrationModel, const BinaryCsrView& labelMatrix,
-      const CContiguousView<float64>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {
+      const CContiguousView<ScoreType>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {
         for (uint32 i = 0; i < numExamples; i++) {
             uint32 exampleIndex = indexIterator[i];
             auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                    labelMatrix.indices_cend(exampleIndex));
-            CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
+            typename CContiguousView<ScoreType>::value_const_iterator scoreIterator =
+              scoreMatrix.values_cbegin(exampleIndex);
 
             for (uint32 j = 0; j < numLabels; j++) {
                 float64 trueProbability = (*labelIterator) ? 1 : 0;
-                float64 score = scoreIterator[j];
+                ScoreType score = scoreIterator[j];
                 float64 marginalProbability =
                   marginalProbabilityFunction.transformScoreIntoMarginalProbability(j, score);
                 calibrationModel.addBin(j, marginalProbability, trueProbability);
@@ -52,11 +54,11 @@ namespace boosting {
         }
     }
 
-    template<typename IndexIterator>
+    template<typename ScoreType, typename IndexIterator>
     static inline void extractThresholdsAndProbabilities(
       IndexIterator indexIterator, uint32 numExamples, uint32 numLabels,
       IsotonicProbabilityCalibrationModel& calibrationModel, const CContiguousView<const uint8>& labelMatrix,
-      const SparseSetView<float64>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {
+      const SparseSetView<ScoreType>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {
         for (uint32 i = 0; i < numLabels; i++) {
             calibrationModel.addBin(i, 0, 0);
         }
@@ -66,14 +68,14 @@ namespace boosting {
         for (uint32 i = 0; i < numExamples; i++) {
             uint32 exampleIndex = indexIterator[i];
             CContiguousView<const uint8>::value_const_iterator labelIterator = labelMatrix.values_cbegin(exampleIndex);
-            SparseSetView<float64>::const_row scoreRow = scoreMatrix[exampleIndex];
+            typename SparseSetView<ScoreType>::const_row scoreRow = scoreMatrix[exampleIndex];
 
             for (uint32 j = 0; j < numLabels; j++) {
                 float64 trueProbability = labelIterator[j] ? 1 : 0;
-                const IndexedValue<float64>* entry = scoreRow[j];
+                const IndexedValue<ScoreType>* entry = scoreRow[j];
 
                 if (entry) {
-                    float64 score = entry->value;
+                    ScoreType score = entry->value;
                     float64 marginalProbability =
                       marginalProbabilityFunction.transformScoreIntoMarginalProbability(j, score);
                     calibrationModel.addBin(j, marginalProbability, trueProbability);
@@ -94,11 +96,11 @@ namespace boosting {
         }
     }
 
-    template<typename IndexIterator>
+    template<typename ScoreType, typename IndexIterator>
     static inline void extractThresholdsAndProbabilities(
       IndexIterator indexIterator, uint32 numExamples, uint32 numLabels,
       IsotonicProbabilityCalibrationModel& calibrationModel, const BinaryCsrView& labelMatrix,
-      const SparseSetView<float64>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {
+      const SparseSetView<ScoreType>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {
         for (uint32 i = 0; i < numLabels; i++) {
             calibrationModel.addBin(i, 0, 0);
         }
@@ -119,9 +121,9 @@ namespace boosting {
             }
 
             for (auto it = scoreMatrix.values_cbegin(exampleIndex); it != scoreMatrix.values_cend(exampleIndex); it++) {
-                const IndexedValue<float64>& entry = *it;
+                const IndexedValue<ScoreType>& entry = *it;
                 uint32 labelIndex = entry.index;
-                float64 score = entry.value;
+                ScoreType score = entry.value;
                 float64 marginalProbability =
                   marginalProbabilityFunction.transformScoreIntoMarginalProbability(labelIndex, score);
                 bool trueLabel = std::binary_search(labelIndicesBegin, labelIndicesEnd, labelIndex);
@@ -150,17 +152,32 @@ namespace boosting {
         std::unique_ptr<IsotonicProbabilityCalibrationModel> calibrationModelPtr =
           std::make_unique<IsotonicProbabilityCalibrationModel>(numLabels);
         const IBoostingStatistics& boostingStatistics = dynamic_cast<const IBoostingStatistics&>(statistics);
-        auto denseVisitor = [=, &marginalProbabilityFunction,
-                             &calibrationModelPtr](const CContiguousView<float64>& scoreMatrix) {
-            extractThresholdsAndProbabilities(indexIterator, numExamples, numLabels, *calibrationModelPtr, labelMatrix,
-                                              scoreMatrix, marginalProbabilityFunction);
+        auto dense32BitVisitor = [=, &marginalProbabilityFunction,
+                                  &calibrationModelPtr](const CContiguousView<float32>& scoreMatrix) {
+            extractThresholdsAndProbabilities<float32, IndexIterator>(indexIterator, numExamples, numLabels,
+                                                                      *calibrationModelPtr, labelMatrix, scoreMatrix,
+                                                                      marginalProbabilityFunction);
         };
-        auto sparseVisitor = [=, &marginalProbabilityFunction,
-                              &calibrationModelPtr](const SparseSetView<float64>& scoreMatrix) {
-            extractThresholdsAndProbabilities(indexIterator, numExamples, numLabels, *calibrationModelPtr, labelMatrix,
-                                              scoreMatrix, marginalProbabilityFunction);
+        auto dense64BitVisitor = [=, &marginalProbabilityFunction,
+                                  &calibrationModelPtr](const CContiguousView<float64>& scoreMatrix) {
+            extractThresholdsAndProbabilities<float64, IndexIterator>(indexIterator, numExamples, numLabels,
+                                                                      *calibrationModelPtr, labelMatrix, scoreMatrix,
+                                                                      marginalProbabilityFunction);
         };
-        boostingStatistics.visitScoreMatrix(denseVisitor, sparseVisitor);
+        auto sparse32BitVisitor = [=, &marginalProbabilityFunction,
+                                   &calibrationModelPtr](const SparseSetView<float32>& scoreMatrix) {
+            extractThresholdsAndProbabilities<float32, IndexIterator>(indexIterator, numExamples, numLabels,
+                                                                      *calibrationModelPtr, labelMatrix, scoreMatrix,
+                                                                      marginalProbabilityFunction);
+        };
+        auto sparse64BitVisitor = [=, &marginalProbabilityFunction,
+                                   &calibrationModelPtr](const SparseSetView<float64>& scoreMatrix) {
+            extractThresholdsAndProbabilities<float64, IndexIterator>(indexIterator, numExamples, numLabels,
+                                                                      *calibrationModelPtr, labelMatrix, scoreMatrix,
+                                                                      marginalProbabilityFunction);
+        };
+        boostingStatistics.visitScoreMatrix(dense32BitVisitor, dense64BitVisitor, sparse32BitVisitor,
+                                            sparse64BitVisitor);
 
         // Build and return the isotonic calibration model...
         calibrationModelPtr->fit();
@@ -349,11 +366,11 @@ namespace boosting {
         return true;
     }
 
-    template<typename IndexIterator>
+    template<typename ScoreType, typename IndexIterator>
     static inline void extractThresholdsAndProbabilities(IndexIterator indexIterator, uint32 numExamples,
                                                          IsotonicProbabilityCalibrationModel& calibrationModel,
                                                          const CContiguousView<const uint8>& labelMatrix,
-                                                         const CContiguousView<float64>& scoreMatrix,
+                                                         const CContiguousView<ScoreType>& scoreMatrix,
                                                          const IJointProbabilityFunction& jointProbabilityFunction,
                                                          const LabelVectorSet& labelVectorSet) {
         LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
@@ -370,8 +387,10 @@ namespace boosting {
                 auto labelIndicesEnd = createNonZeroIndexForwardIterator(labelMatrix.values_cend(exampleIndex),
                                                                          labelMatrix.values_cend(exampleIndex));
                 float64 trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
-                CContiguousView<float64>::value_const_iterator scoresBegin = scoreMatrix.values_cbegin(exampleIndex);
-                CContiguousView<float64>::value_const_iterator scoresEnd = scoreMatrix.values_cend(exampleIndex);
+                typename CContiguousView<ScoreType>::value_const_iterator scoresBegin =
+                  scoreMatrix.values_cbegin(exampleIndex);
+                typename CContiguousView<ScoreType>::value_const_iterator scoresEnd =
+                  scoreMatrix.values_cend(exampleIndex);
                 float64 jointProbability =
                   jointProbabilityFunction.transformScoresIntoJointProbability(i, labelVector, scoresBegin, scoresEnd);
                 bins.emplace_back(jointProbability, trueProbability);
@@ -379,11 +398,11 @@ namespace boosting {
         }
     }
 
-    template<typename IndexIterator>
+    template<typename ScoreType, typename IndexIterator>
     static inline void extractThresholdsAndProbabilities(IndexIterator indexIterator, uint32 numExamples,
                                                          IsotonicProbabilityCalibrationModel& calibrationModel,
                                                          const BinaryCsrView& labelMatrix,
-                                                         const CContiguousView<float64>& scoreMatrix,
+                                                         const CContiguousView<ScoreType>& scoreMatrix,
                                                          const IJointProbabilityFunction& jointProbabilityFunction,
                                                          const LabelVectorSet& labelVectorSet) {
         LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
@@ -398,8 +417,10 @@ namespace boosting {
                 BinaryCsrView::index_const_iterator labelIndicesBegin = labelMatrix.indices_cbegin(exampleIndex);
                 BinaryCsrView::index_const_iterator labelIndicesEnd = labelMatrix.indices_cend(exampleIndex);
                 float64 trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
-                CContiguousView<float64>::value_const_iterator scoresBegin = scoreMatrix.values_cbegin(exampleIndex);
-                CContiguousView<float64>::value_const_iterator scoresEnd = scoreMatrix.values_cend(exampleIndex);
+                typename CContiguousView<ScoreType>::value_const_iterator scoresBegin =
+                  scoreMatrix.values_cbegin(exampleIndex);
+                typename CContiguousView<ScoreType>::value_const_iterator scoresEnd =
+                  scoreMatrix.values_cend(exampleIndex);
                 float64 jointProbability =
                   jointProbabilityFunction.transformScoresIntoJointProbability(i, labelVector, scoresBegin, scoresEnd);
                 bins.emplace_back(jointProbability, trueProbability);
@@ -407,11 +428,11 @@ namespace boosting {
         }
     }
 
-    template<typename IndexIterator>
+    template<typename ScoreType, typename IndexIterator>
     static inline void extractThresholdsAndProbabilities(IndexIterator indexIterator, uint32 numExamples,
                                                          IsotonicProbabilityCalibrationModel& calibrationModel,
                                                          const CContiguousView<const uint8>& labelMatrix,
-                                                         const SparseSetView<float64>& scoreMatrix,
+                                                         const SparseSetView<ScoreType>& scoreMatrix,
                                                          const IJointProbabilityFunction& jointProbabilityFunction,
                                                          const LabelVectorSet& labelVectorSet) {
         LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
@@ -429,7 +450,7 @@ namespace boosting {
                 auto labelIndicesEnd = createNonZeroIndexForwardIterator(labelMatrix.values_cend(exampleIndex),
                                                                          labelMatrix.values_cend(exampleIndex));
                 float64 trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
-                SparseSetView<float64>::const_row scores = scoreMatrix[exampleIndex];
+                typename SparseSetView<ScoreType>::const_row scores = scoreMatrix[exampleIndex];
                 float64 jointProbability =
                   jointProbabilityFunction.transformScoresIntoJointProbability(i, labelVector, scores, numLabels);
                 bins.emplace_back(jointProbability, trueProbability);
@@ -437,11 +458,11 @@ namespace boosting {
         }
     }
 
-    template<typename IndexIterator>
+    template<typename ScoreType, typename IndexIterator>
     static inline void extractThresholdsAndProbabilities(IndexIterator indexIterator, uint32 numExamples,
                                                          IsotonicProbabilityCalibrationModel& calibrationModel,
                                                          const BinaryCsrView& labelMatrix,
-                                                         const SparseSetView<float64>& scoreMatrix,
+                                                         const SparseSetView<ScoreType>& scoreMatrix,
                                                          const IJointProbabilityFunction& jointProbabilityFunction,
                                                          const LabelVectorSet& labelVectorSet) {
         LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
@@ -457,7 +478,7 @@ namespace boosting {
                 BinaryCsrView::index_const_iterator labelIndicesBegin = labelMatrix.indices_cbegin(exampleIndex);
                 BinaryCsrView::index_const_iterator labelIndicesEnd = labelMatrix.indices_cend(exampleIndex);
                 float64 trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
-                SparseSetView<float64>::const_row scores = scoreMatrix[exampleIndex];
+                typename SparseSetView<ScoreType>::const_row scores = scoreMatrix[exampleIndex];
                 float64 jointProbability =
                   jointProbabilityFunction.transformScoresIntoJointProbability(i, labelVector, scores, numLabels);
                 bins.emplace_back(jointProbability, trueProbability);
@@ -474,17 +495,32 @@ namespace boosting {
         std::unique_ptr<IsotonicProbabilityCalibrationModel> calibrationModelPtr =
           std::make_unique<IsotonicProbabilityCalibrationModel>(numLabelVectors);
         const IBoostingStatistics& boostingStatistics = dynamic_cast<const IBoostingStatistics&>(statistics);
-        auto denseVisitor = [=, &jointProbabilityFunction, &calibrationModelPtr,
-                             &labelVectorSet](const CContiguousView<float64>& scoreMatrix) {
-            extractThresholdsAndProbabilities(indexIterator, numExamples, *calibrationModelPtr, labelMatrix,
-                                              scoreMatrix, jointProbabilityFunction, labelVectorSet);
+        auto dense32BitVisitor = [=, &jointProbabilityFunction, &calibrationModelPtr,
+                                  &labelVectorSet](const CContiguousView<float32>& scoreMatrix) {
+            extractThresholdsAndProbabilities<float32, IndexIterator>(indexIterator, numExamples, *calibrationModelPtr,
+                                                                      labelMatrix, scoreMatrix,
+                                                                      jointProbabilityFunction, labelVectorSet);
         };
-        auto sparseVisitor = [=, &jointProbabilityFunction, &calibrationModelPtr,
-                              &labelVectorSet](const SparseSetView<float64>& scoreMatrix) {
-            extractThresholdsAndProbabilities(indexIterator, numExamples, *calibrationModelPtr, labelMatrix,
-                                              scoreMatrix, jointProbabilityFunction, labelVectorSet);
+        auto dense64BitVisitor = [=, &jointProbabilityFunction, &calibrationModelPtr,
+                                  &labelVectorSet](const CContiguousView<float64>& scoreMatrix) {
+            extractThresholdsAndProbabilities<float64, IndexIterator>(indexIterator, numExamples, *calibrationModelPtr,
+                                                                      labelMatrix, scoreMatrix,
+                                                                      jointProbabilityFunction, labelVectorSet);
         };
-        boostingStatistics.visitScoreMatrix(denseVisitor, sparseVisitor);
+        auto sparse32BitVisitor = [=, &jointProbabilityFunction, &calibrationModelPtr,
+                                   &labelVectorSet](const SparseSetView<float32>& scoreMatrix) {
+            extractThresholdsAndProbabilities<float32, IndexIterator>(indexIterator, numExamples, *calibrationModelPtr,
+                                                                      labelMatrix, scoreMatrix,
+                                                                      jointProbabilityFunction, labelVectorSet);
+        };
+        auto sparse64BitVisitor = [=, &jointProbabilityFunction, &calibrationModelPtr,
+                                   &labelVectorSet](const SparseSetView<float64>& scoreMatrix) {
+            extractThresholdsAndProbabilities<float64, IndexIterator>(indexIterator, numExamples, *calibrationModelPtr,
+                                                                      labelMatrix, scoreMatrix,
+                                                                      jointProbabilityFunction, labelVectorSet);
+        };
+        boostingStatistics.visitScoreMatrix(dense32BitVisitor, dense64BitVisitor, sparse32BitVisitor,
+                                            sparse64BitVisitor);
 
         // Build and return the isotonic calibration model...
         calibrationModelPtr->fit();
