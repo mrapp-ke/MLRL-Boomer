@@ -23,22 +23,26 @@ namespace boosting {
             /**
              * A visitor function for handling score matrices of the type `CContiguousView`.
              */
-            typedef std::function<void(const CContiguousView<float64>&)> DenseScoreMatrixVisitor;
+            template<typename ScoreType>
+            using DenseScoreMatrixVisitor = std::function<void(const CContiguousView<ScoreType>&)>;
 
             /**
              * A visitor function for handling score matrices of the type `SparseSetView`.
              */
-            typedef std::function<void(const SparseSetView<float64>&)> SparseScoreMatrixVisitor;
+            template<typename ScoreType>
+            using SparseScoreMatrixVisitor = std::function<void(const SparseSetView<ScoreType>&)>;
 
             /**
              * Invokes one of the given visitor functions, depending on which one is able to handle the type of matrix
              * that is used to store the currently predicted scores.
              *
-             * @param denseVisitor  The visitor function for handling objects of the type `CContiguousView`
-             * @param sparseVisitor The visitor function for handling objects of the type `SparseSetView`
+             * @param dense64BitVisitor     The visitor function for handling objects of the type
+             *                              `CContiguousView<float64>`
+             * @param sparse64BitVisitor    The visitor function for handling objects of the type
+             *                              `SparseSetView<float64>`
              */
-            virtual void visitScoreMatrix(DenseScoreMatrixVisitor denseVisitor,
-                                          SparseScoreMatrixVisitor sparseVisitor) const = 0;
+            virtual void visitScoreMatrix(DenseScoreMatrixVisitor<float64> dense64BitVisitor,
+                                          SparseScoreMatrixVisitor<float64> sparse64BitVisitor) const = 0;
     };
 
 }
