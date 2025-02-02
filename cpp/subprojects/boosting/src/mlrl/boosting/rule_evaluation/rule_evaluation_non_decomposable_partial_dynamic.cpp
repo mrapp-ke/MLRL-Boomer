@@ -135,6 +135,26 @@ namespace boosting {
         : threshold_(threshold), exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
           l2RegularizationWeight_(l2RegularizationWeight), blasFactory_(blasFactory), lapackFactory_(lapackFactory) {}
 
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float32>>>
+      NonDecomposableDynamicPartialRuleEvaluationFactory::create(
+        const DenseNonDecomposableStatisticVector<float32>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
+        return std::make_unique<DenseNonDecomposableDynamicPartialRuleEvaluation<
+          DenseNonDecomposableStatisticVector<float32>, CompleteIndexVector>>(
+          indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_,
+          blasFactory_.create32Bit(), lapackFactory_.create32Bit());
+    }
+
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float32>>>
+      NonDecomposableDynamicPartialRuleEvaluationFactory::create(
+        const DenseNonDecomposableStatisticVector<float32>& statisticVector,
+        const PartialIndexVector& indexVector) const {
+        return std::make_unique<
+          DenseNonDecomposableCompleteRuleEvaluation<DenseNonDecomposableStatisticVector<float32>, PartialIndexVector>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create32Bit(),
+          lapackFactory_.create32Bit());
+    }
+
     std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
       NonDecomposableDynamicPartialRuleEvaluationFactory::create(
         const DenseNonDecomposableStatisticVector<float64>& statisticVector,
