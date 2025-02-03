@@ -70,6 +70,22 @@ namespace boosting {
               const DenseDecomposableStatisticVector<float64>& statisticVector,
               const PartialIndexVector& indexVector) const override;
 
+            std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, uint32>>> create(
+              const SparseDecomposableStatisticVector<float32, uint32>& statisticVector,
+              const CompleteIndexVector& indexVector) const override;
+
+            std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, uint32>>> create(
+              const SparseDecomposableStatisticVector<float32, uint32>& statisticVector,
+              const PartialIndexVector& indexVector) const override;
+
+            virtual std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, float32>>> create(
+              const SparseDecomposableStatisticVector<float32, float32>& statisticVector,
+              const CompleteIndexVector& indexVector) const override;
+
+            virtual std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, float32>>> create(
+              const SparseDecomposableStatisticVector<float32, float32>& statisticVector,
+              const PartialIndexVector& indexVector) const override;
+
             std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float64, uint32>>> create(
               const SparseDecomposableStatisticVector<float64, uint32>& statisticVector,
               const CompleteIndexVector& indexVector) const override;
@@ -78,11 +94,11 @@ namespace boosting {
               const SparseDecomposableStatisticVector<float64, uint32>& statisticVector,
               const PartialIndexVector& indexVector) const override;
 
-            virtual std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float64, float32>>> create(
+            std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float64, float32>>> create(
               const SparseDecomposableStatisticVector<float64, float32>& statisticVector,
               const CompleteIndexVector& indexVector) const override;
 
-            virtual std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float64, float32>>> create(
+            std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float64, float32>>> create(
               const SparseDecomposableStatisticVector<float64, float32>& statisticVector,
               const PartialIndexVector& indexVector) const override;
     };
