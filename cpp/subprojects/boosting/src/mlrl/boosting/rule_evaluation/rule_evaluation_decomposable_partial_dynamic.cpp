@@ -128,6 +128,42 @@ namespace boosting {
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, uint32>>>
+      DecomposableDynamicPartialRuleEvaluationFactory::create(
+        const SparseDecomposableStatisticVector<float32, uint32>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
+        return std::make_unique<DecomposableDynamicPartialRuleEvaluation<
+          SparseDecomposableStatisticVector<float32, uint32>, CompleteIndexVector>>(
+          indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_);
+    }
+
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, uint32>>>
+      DecomposableDynamicPartialRuleEvaluationFactory::create(
+        const SparseDecomposableStatisticVector<float32, uint32>& statisticVector,
+        const PartialIndexVector& indexVector) const {
+        return std::make_unique<
+          DecomposableCompleteRuleEvaluation<SparseDecomposableStatisticVector<float32, uint32>, PartialIndexVector>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
+    }
+
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, float32>>>
+      DecomposableDynamicPartialRuleEvaluationFactory::create(
+        const SparseDecomposableStatisticVector<float32, float32>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
+        return std::make_unique<DecomposableDynamicPartialRuleEvaluation<
+          SparseDecomposableStatisticVector<float32, float32>, CompleteIndexVector>>(
+          indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_);
+    }
+
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, float32>>>
+      DecomposableDynamicPartialRuleEvaluationFactory::create(
+        const SparseDecomposableStatisticVector<float32, float32>& statisticVector,
+        const PartialIndexVector& indexVector) const {
+        return std::make_unique<
+          DecomposableCompleteRuleEvaluation<SparseDecomposableStatisticVector<float32, float32>, PartialIndexVector>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
+    }
+
     std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float64, uint32>>>
       DecomposableDynamicPartialRuleEvaluationFactory::create(
         const SparseDecomposableStatisticVector<float64, uint32>& statisticVector,
