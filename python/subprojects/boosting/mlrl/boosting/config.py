@@ -14,9 +14,9 @@ from mlrl.common.options import BooleanOption, Options
 
 from mlrl.boosting.cython.learner import AutomaticFeatureBinningMixin, AutomaticParallelRuleRefinementMixin, \
     AutomaticParallelStatisticUpdateMixin, CompleteHeadMixin, ConstantShrinkageMixin, \
-    DecomposableSquaredErrorLossMixin, DynamicPartialHeadMixin, FixedPartialHeadMixin, L1RegularizationMixin, \
-    L2RegularizationMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, NonDecomposableSquaredErrorLossMixin, \
-    SingleOutputHeadMixin
+    DecomposableSquaredErrorLossMixin, DynamicPartialHeadMixin, FixedPartialHeadMixin, Float32StatisticsMixin, \
+    Float64StatisticsMixin, L1RegularizationMixin, L2RegularizationMixin, NoL1RegularizationMixin, \
+    NoL2RegularizationMixin, NonDecomposableSquaredErrorLossMixin, SingleOutputHeadMixin
 from mlrl.boosting.cython.learner_classification import AutomaticBinaryPredictorMixin, AutomaticDefaultRuleMixin, \
     AutomaticLabelBinningMixin, AutomaticPartitionSamplingMixin, AutomaticProbabilityPredictorMixin, \
     AutomaticStatisticsMixin, DecomposableLogisticLossMixin, DecomposableSquaredHingeLossMixin, DenseStatisticsMixin, \
@@ -125,6 +125,27 @@ class ShrinkageParameter(FloatParameter):
             config.use_no_post_processor()
         else:
             config.use_constant_shrinkage_post_processor().set_shrinkage(value)
+
+
+class StatisticTypeParameter(NominalParameter):
+    """
+    A parameter that allows to configure the data type that should be used for representing gradients and Hessians.
+    """
+
+    STATISTIC_TYPE_FLOAT32 = 'float32'
+
+    STATISTIC_TYPE_FLOAT64 = 'float64'
+
+    def __init__(self):
+        super().__init__(name='statistic_type', description='The data type for representing gradients and Hessians')
+        self.add_value(name=self.STATISTIC_TYPE_FLOAT32, mixin=Float32StatisticsMixin)
+        self.add_value(name=self.STATISTIC_TYPE_FLOAT64, mixin=Float64StatisticsMixin)
+
+    def _configure(self, config, value: str, _: Optional[Options]):
+        if value == self.STATISTIC_TYPE_FLOAT32:
+            config.use_float32_statistics()
+        elif value == self.STATISTIC_TYPE_FLOAT64:
+            config.use_float64_statistics()
 
 
 class L1RegularizationParameter(FloatParameter):
@@ -485,6 +506,7 @@ BOOMER_CLASSIFIER_PARAMETERS = RULE_LEARNER_PARAMETERS | {
     ExtendedParallelRuleRefinementParameter(),
     ExtendedParallelStatisticUpdateParameter(),
     ShrinkageParameter(),
+    StatisticTypeParameter(),
     L1RegularizationParameter(),
     L2RegularizationParameter(),
     DefaultRuleParameter(),
@@ -504,6 +526,7 @@ BOOMER_REGRESSOR_PARAMETERS = RULE_LEARNER_PARAMETERS | {
     ExtendedParallelRuleRefinementParameter(),
     ExtendedParallelStatisticUpdateParameter(),
     ShrinkageParameter(),
+    StatisticTypeParameter(),
     L1RegularizationParameter(),
     L2RegularizationParameter(),
     DefaultRuleParameter(),

@@ -17,15 +17,17 @@ namespace boosting {
     class DecomposableSingleOutputRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
         private:
 
+            typedef typename StatisticVector::statistic_type statistic_type;
+
             const IndexVector& outputIndices_;
 
             PartialIndexVector indexVector_;
 
-            DenseScoreVector<PartialIndexVector> scoreVector_;
+            DenseScoreVector<statistic_type, PartialIndexVector> scoreVector_;
 
-            const float64 l1RegularizationWeight_;
+            const float32 l1RegularizationWeight_;
 
-            const float64 l2RegularizationWeight_;
+            const float32 l2RegularizationWeight_;
 
         public:
 
@@ -37,23 +39,23 @@ namespace boosting {
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              */
-            DecomposableSingleOutputRuleEvaluation(const IndexVector& outputIndices, float64 l1RegularizationWeight,
-                                                   float64 l2RegularizationWeight)
+            DecomposableSingleOutputRuleEvaluation(const IndexVector& outputIndices, float32 l1RegularizationWeight,
+                                                   float32 l2RegularizationWeight)
                 : outputIndices_(outputIndices), indexVector_(1), scoreVector_(indexVector_, true),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
 
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                const Statistic<float64>& firstStatistic = statisticIterator[0];
-                float64 bestScore = calculateOutputWiseScore(firstStatistic.gradient, firstStatistic.hessian,
-                                                             l1RegularizationWeight_, l2RegularizationWeight_);
+                const Statistic<statistic_type>& firstStatistic = statisticIterator[0];
+                statistic_type bestScore = calculateOutputWiseScore(firstStatistic.gradient, firstStatistic.hessian,
+                                                                    l1RegularizationWeight_, l2RegularizationWeight_);
                 uint32 bestIndex = 0;
 
                 for (uint32 i = 1; i < numElements; i++) {
-                    const Statistic<float64>& statistic = statisticIterator[i];
-                    float64 score = calculateOutputWiseScore(statistic.gradient, statistic.hessian,
-                                                             l1RegularizationWeight_, l2RegularizationWeight_);
+                    const Statistic<statistic_type>& statistic = statisticIterator[i];
+                    statistic_type score = calculateOutputWiseScore(statistic.gradient, statistic.hessian,
+                                                                    l1RegularizationWeight_, l2RegularizationWeight_);
 
                     if (std::abs(score) > std::abs(bestScore)) {
                         bestIndex = i;
@@ -61,68 +63,125 @@ namespace boosting {
                     }
                 }
 
-                DenseScoreVector<PartialIndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
+                typename DenseScoreVector<statistic_type, PartialIndexVector>::value_iterator valueIterator =
+                  scoreVector_.values_begin();
                 valueIterator[0] = bestScore;
                 indexVector_.begin()[0] = outputIndices_.cbegin()[bestIndex];
-                const Statistic<float64>& statistic = statisticIterator[bestIndex];
-                scoreVector_.quality = calculateOutputWiseQuality(bestScore, statistic.gradient, statistic.hessian,
-                                                                  l1RegularizationWeight_, l2RegularizationWeight_);
+                const Statistic<statistic_type>& bestStatistic = statisticIterator[bestIndex];
+                scoreVector_.quality =
+                  calculateOutputWiseQuality(bestScore, bestStatistic.gradient, bestStatistic.hessian,
+                                             l1RegularizationWeight_, l2RegularizationWeight_);
                 return scoreVector_;
             }
     };
 
     DecomposableSingleOutputRuleEvaluationFactory::DecomposableSingleOutputRuleEvaluationFactory(
-      float64 l1RegularizationWeight, float64 l2RegularizationWeight)
+      float32 l1RegularizationWeight, float32 l2RegularizationWeight)
         : l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(const DenseDecomposableStatisticVector& statisticVector,
-                                                            const CompleteIndexVector& indexVector) const {
-        return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVector, CompleteIndexVector>>(
-          indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
-    }
-
-    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>>
-      DecomposableSingleOutputRuleEvaluationFactory::create(const DenseDecomposableStatisticVector& statisticVector,
-                                                            const PartialIndexVector& indexVector) const {
-        return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVector, PartialIndexVector>>(
-          indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
-    }
-
-    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<uint32>>>
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float32>>>
       DecomposableSingleOutputRuleEvaluationFactory::create(
-        const SparseDecomposableStatisticVector<uint32>& statisticVector,
+        const DenseDecomposableStatisticVector<float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<SparseDecomposableStatisticVector<uint32>, CompleteIndexVector>>(
+          DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVector<float32>, CompleteIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<uint32>>>
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float32>>>
       DecomposableSingleOutputRuleEvaluationFactory::create(
-        const SparseDecomposableStatisticVector<uint32>& statisticVector, const PartialIndexVector& indexVector) const {
+        const DenseDecomposableStatisticVector<float32>& statisticVector, const PartialIndexVector& indexVector) const {
         return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<SparseDecomposableStatisticVector<uint32>, PartialIndexVector>>(
+          DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVector<float32>, PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32>>>
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>>
       DecomposableSingleOutputRuleEvaluationFactory::create(
-        const SparseDecomposableStatisticVector<float32>& statisticVector,
+        const DenseDecomposableStatisticVector<float64>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<SparseDecomposableStatisticVector<float32>, CompleteIndexVector>>(
+          DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVector<float64>, CompleteIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32>>>
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>>
       DecomposableSingleOutputRuleEvaluationFactory::create(
-        const SparseDecomposableStatisticVector<float32>& statisticVector,
+        const DenseDecomposableStatisticVector<float64>& statisticVector, const PartialIndexVector& indexVector) const {
+        return std::make_unique<
+          DecomposableSingleOutputRuleEvaluation<DenseDecomposableStatisticVector<float64>, PartialIndexVector>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
+    }
+
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, uint32>>>
+      DecomposableSingleOutputRuleEvaluationFactory::create(
+        const SparseDecomposableStatisticVector<float32, uint32>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
+        return std::make_unique<DecomposableSingleOutputRuleEvaluation<
+          SparseDecomposableStatisticVector<float32, uint32>, CompleteIndexVector>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
+    }
+
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, uint32>>>
+      DecomposableSingleOutputRuleEvaluationFactory::create(
+        const SparseDecomposableStatisticVector<float32, uint32>& statisticVector,
         const PartialIndexVector& indexVector) const {
-        return std::make_unique<
-          DecomposableSingleOutputRuleEvaluation<SparseDecomposableStatisticVector<float32>, PartialIndexVector>>(
+        return std::make_unique<DecomposableSingleOutputRuleEvaluation<
+          SparseDecomposableStatisticVector<float32, uint32>, PartialIndexVector>>(indexVector, l1RegularizationWeight_,
+                                                                                   l2RegularizationWeight_);
+    }
+
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, float32>>>
+      DecomposableSingleOutputRuleEvaluationFactory::create(
+        const SparseDecomposableStatisticVector<float32, float32>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
+        return std::make_unique<DecomposableSingleOutputRuleEvaluation<
+          SparseDecomposableStatisticVector<float32, float32>, CompleteIndexVector>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
+    }
+
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, float32>>>
+      DecomposableSingleOutputRuleEvaluationFactory::create(
+        const SparseDecomposableStatisticVector<float32, float32>& statisticVector,
+        const PartialIndexVector& indexVector) const {
+        return std::make_unique<DecomposableSingleOutputRuleEvaluation<
+          SparseDecomposableStatisticVector<float32, float32>, PartialIndexVector>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
+    }
+
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float64, uint32>>>
+      DecomposableSingleOutputRuleEvaluationFactory::create(
+        const SparseDecomposableStatisticVector<float64, uint32>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
+        return std::make_unique<DecomposableSingleOutputRuleEvaluation<
+          SparseDecomposableStatisticVector<float64, uint32>, CompleteIndexVector>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
+    }
+
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float64, uint32>>>
+      DecomposableSingleOutputRuleEvaluationFactory::create(
+        const SparseDecomposableStatisticVector<float64, uint32>& statisticVector,
+        const PartialIndexVector& indexVector) const {
+        return std::make_unique<DecomposableSingleOutputRuleEvaluation<
+          SparseDecomposableStatisticVector<float64, uint32>, PartialIndexVector>>(indexVector, l1RegularizationWeight_,
+                                                                                   l2RegularizationWeight_);
+    }
+
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float64, float32>>>
+      DecomposableSingleOutputRuleEvaluationFactory::create(
+        const SparseDecomposableStatisticVector<float64, float32>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
+        return std::make_unique<DecomposableSingleOutputRuleEvaluation<
+          SparseDecomposableStatisticVector<float64, float32>, CompleteIndexVector>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
+    }
+
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float64, float32>>>
+      DecomposableSingleOutputRuleEvaluationFactory::create(
+        const SparseDecomposableStatisticVector<float64, float32>& statisticVector,
+        const PartialIndexVector& indexVector) const {
+        return std::make_unique<DecomposableSingleOutputRuleEvaluation<
+          SparseDecomposableStatisticVector<float64, float32>, PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 

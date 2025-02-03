@@ -17,7 +17,7 @@ namespace boosting {
      * Defines an interface for all classes that allow to transform the scores that are predicted an example into a
      * joint probability that corresponds to the chance of a label vector being correct.
      */
-    class IJointProbabilityFunction : public IDistanceMeasure {
+    class IJointProbabilityFunction : public IDistanceMeasure<float64> {
         public:
 
             virtual ~IJointProbabilityFunction() override {}
@@ -108,7 +108,7 @@ namespace boosting {
     /**
      * Defines an interface for all factories that allow to create instances of the type `IJointProbabilityFunction`.
      */
-    class IJointProbabilityFunctionFactory : public IDistanceMeasureFactory {
+    class IJointProbabilityFunctionFactory : public IDistanceMeasureFactory<float64> {
         public:
 
             virtual ~IJointProbabilityFunctionFactory() override {}
@@ -132,7 +132,7 @@ namespace boosting {
             /**
              * @see `IDistanceMeasureFactory::createDistanceMeasure`
              */
-            std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
+            std::unique_ptr<IDistanceMeasure<float64>> createDistanceMeasure(
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const override final {
                 return this->create(marginalProbabilityCalibrationModel, jointProbabilityCalibrationModel);

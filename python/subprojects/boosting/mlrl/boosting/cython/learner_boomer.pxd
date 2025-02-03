@@ -21,9 +21,9 @@ from mlrl.common.cython.learner_regression cimport IRegressionRuleLearner, Regre
 from mlrl.boosting.cython.learner cimport DdotFunction, DspmvFunction, DsysvFunction, IAutomaticFeatureBinningMixin, \
     IAutomaticHeadMixin, IAutomaticParallelRuleRefinementMixin, IAutomaticParallelStatisticUpdateMixin, \
     ICompleteHeadMixin, IConstantShrinkageMixin, IDecomposableSquaredErrorLossMixin, IDynamicPartialHeadMixin, \
-    IFixedPartialHeadMixin, IL1RegularizationMixin, IL2RegularizationMixin, INoL1RegularizationMixin, \
-    INoL2RegularizationMixin, INonDecomposableSquaredErrorLossMixin, IOutputWiseScorePredictorMixin, \
-    ISingleOutputHeadMixin
+    IFixedPartialHeadMixin, IFloat32StatisticsMixin, IFloat64StatisticsMixin, IL1RegularizationMixin, \
+    IL2RegularizationMixin, INoL1RegularizationMixin, INoL2RegularizationMixin, INonDecomposableSquaredErrorLossMixin, \
+    IOutputWiseScorePredictorMixin, ISingleOutputHeadMixin, SdotFunction, SspmvFunction, SsysvFunction
 from mlrl.boosting.cython.learner_classification cimport IAutomaticBinaryPredictorMixin, IAutomaticDefaultRuleMixin, \
     IAutomaticLabelBinningMixin, IAutomaticPartitionSamplingMixin, IAutomaticProbabilityPredictorMixin, \
     IAutomaticStatisticsMixin, IDecomposableLogisticLossMixin, IDecomposableSquaredHingeLossMixin, \
@@ -43,6 +43,8 @@ cdef extern from "mlrl/boosting/learner_boomer_classifier.hpp" namespace "boosti
         IAutomaticParallelRuleRefinementMixin,
         IAutomaticParallelStatisticUpdateMixin,
         IConstantShrinkageMixin,
+        IFloat32StatisticsMixin,
+        IFloat64StatisticsMixin,
         INoL1RegularizationMixin,
         IL1RegularizationMixin,
         INoL2RegularizationMixin,
@@ -127,8 +129,9 @@ cdef extern from "mlrl/boosting/learner_boomer_classifier.hpp" namespace "boosti
 
 
     unique_ptr[IBoomerClassifier] createBoomerClassifier(unique_ptr[IBoomerClassifierConfig] configPtr,
-                                                         DdotFunction ddotFunction, DspmvFunction dspmvFunction, 
-                                                         DsysvFunction dsysvFunction)
+                                                         SdotFunction sdotFunction, DdotFunction ddotFunction,
+                                                         SspmvFunction sspmvFunction, DspmvFunction dspmvFunction,
+                                                         SsysvFunction ssysvFunction, DsysvFunction dsysvFunction)
 
 
 cdef extern from "mlrl/boosting/learner_boomer_regressor.hpp" namespace "boosting" nogil:
@@ -140,6 +143,8 @@ cdef extern from "mlrl/boosting/learner_boomer_regressor.hpp" namespace "boostin
         IAutomaticParallelStatisticUpdateMixin,
         INoPostProcessorMixin,
         IConstantShrinkageMixin,
+        IFloat32StatisticsMixin,
+        IFloat64StatisticsMixin,
         INoL1RegularizationMixin,
         IL1RegularizationMixin,
         INoL2RegularizationMixin,
@@ -201,8 +206,9 @@ cdef extern from "mlrl/boosting/learner_boomer_regressor.hpp" namespace "boostin
 
 
     unique_ptr[IBoomerRegressor] createBoomerRegressor(unique_ptr[IBoomerRegressorConfig] configPtr,
-                                                       DdotFunction ddotFunction, DspmvFunction dspmvFunction,
-                                                       DsysvFunction dsysvFunction)
+                                                       SdotFunction sdotFunction, DdotFunction ddotFunction,
+                                                       SspmvFunction sspmvFunction, DspmvFunction dspmvFunction,
+                                                       SsysvFunction ssysvFunction, DsysvFunction dsysvFunction)
 
 
 cdef class BoomerClassifierConfig(RuleLearnerConfig):

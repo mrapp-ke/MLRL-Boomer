@@ -14,10 +14,11 @@
 namespace boosting {
 
     /**
-     * Stores information about a vector that provides access to the statistics for individual labels. This includes the
-     * number of positive and negative bins, the labels should be assigned to, as well as the minimum and maximum
-     * statistic in the vector.
+     * Stores information about a vector that provides access to the binning criteria for individual labels. This
+     * includes the number of positive and negative bins, the labels should be assigned to, as well as the minimum and
+     * maximum criterion in the vector.
      */
+    template<typename CriterionType>
     struct LabelInfo final {
         public:
 
@@ -29,12 +30,12 @@ namespace boosting {
             /**
              * The minimum among all statistics that belong to the positive bins.
              */
-            float64 minPositive;
+            CriterionType minPositive;
 
             /**
              * The maximum among all statistics that belong to the positive bins.
              */
-            float64 maxPositive;
+            CriterionType maxPositive;
 
             /**
              * The number of negative bins.
@@ -44,17 +45,20 @@ namespace boosting {
             /**
              * The minimum among all statistics that belong to the negative bins.
              */
-            float64 minNegative;
+            CriterionType minNegative;
 
             /**
              * The maximum among all statistics that belong to the negative bins.
              */
-            float64 maxNegative;
+            CriterionType maxNegative;
     };
 
     /**
-     * Defines an interface for methods that assign labels to bins, based on the corresponding gradients and Hessians.
+     * Defines an interface for methods that assign labels to bins, based on corresponding criteria.
+     *
+     * @tparam CriteriaType The type of the criteria
      */
+    template<typename CriteriaType>
     class ILabelBinning {
         public:
 
@@ -94,7 +98,8 @@ namespace boosting {
              * @param numCriteria   The number of label-wise criteria
              * @return              A struct of type `LabelInfo` that stores the information
              */
-            virtual LabelInfo getLabelInfo(View<float64>::const_iterator criteria, uint32 numCriteria) const = 0;
+            virtual LabelInfo<CriteriaType> getLabelInfo(typename View<CriteriaType>::const_iterator criteria,
+                                                         uint32 numCriteria) const = 0;
 
             /**
              * Assigns the labels to bins based on label-wise criteria.
@@ -108,7 +113,8 @@ namespace boosting {
              * @param zeroCallback  A callback that is invoked when a label for which the criterion is zero is
              *                      encountered
              */
-            virtual void createBins(LabelInfo labelInfo, View<float64>::const_iterator criteria, uint32 numCriteria,
+            virtual void createBins(LabelInfo<CriteriaType> labelInfo,
+                                    typename View<CriteriaType>::const_iterator criteria, uint32 numCriteria,
                                     Callback callback, ZeroCallback zeroCallback) const = 0;
     };
 
@@ -121,11 +127,18 @@ namespace boosting {
             virtual ~ILabelBinningFactory() {}
 
             /**
-             * Creates and returns a new object of type `ILabelBinning`.
+             * Creates and returns a new object of type `ILabelBinning<float32>`.
              *
-             * @return An unique pointer to an object of type `ILabelBinning` that has been created
+             * @return An unique pointer to an object of type `ILabelBinning<float32>` that has been created
              */
-            virtual std::unique_ptr<ILabelBinning> create() const = 0;
+            virtual std::unique_ptr<ILabelBinning<float32>> create32Bit() const = 0;
+
+            /**
+             * Creates and returns a new object of type `ILabelBinning<float64>`.
+             *
+             * @return An unique pointer to an object of type `ILabelBinning<float64>` that has been created
+             */
+            virtual std::unique_ptr<ILabelBinning<float64>> create64Bit() const = 0;
     };
 
     /**
@@ -178,48 +191,56 @@ namespace boosting {
              * Creates and returns a new object of type `INonDecomposableRuleEvaluationFactory` that allows to calculate
              * the predictions of complete rules according to the specified configuration.
              *
-             * @param blas      A reference to an object of type `Blas` that allows to execute BLAS routines
-             * @param lapack    A reference to an object of type `Lapack` that allows to execute LAPACK routines
-             * @return          An unique pointer to an object of type `INonDecomposableRuleEvaluationFactory` that has
-             *                  been created
+             * @param blasFactory   A reference to an object of type `BlasFactory` that allows to create objects for
+             *                      executing BLAS routines
+             * @param lapackFactory A reference to an object of type `LapackFactory` that allows to create objects for
+             *                      executing LAPACK routines
+             * @return              An unique pointer to an object of type `INonDecomposableRuleEvaluationFactory` that
+             *                      has been created
              */
             virtual std::unique_ptr<INonDecomposableRuleEvaluationFactory>
-              createNonDecomposableCompleteRuleEvaluationFactory(const Blas& blas, const Lapack& lapack) const = 0;
+              createNonDecomposableCompleteRuleEvaluationFactory(const BlasFactory& blasFactory,
+                                                                 const LapackFactory& lapackFactory) const = 0;
 
             /**
              * Creates and returns a new object of type `INonDecomposableRuleEvaluationFactory` that allows to calculate
              * the predictions of partial rules, which predict for a predefined number of outputs, according to the
              * specified configuration.
              *
-             * @param outputRatio A percentage that specifies for how many outputs the rule heads should predict
-             * @param minOutputs  The minimum number of outputs for which the rule heads should predict
-             * @param maxOutputs  The maximum number of outputs for which the rule heads should predict
-             * @param blas        A reference to an object of type `Blas` that allows to execute BLAS routines
-             * @param lapack      A reference to an object of type `Lapack` that allows to execute LAPACK routines
-             * @return            An unique pointer to an object of type `INonDecomposableRuleEvaluationFactory` that
-             *                    has been created
+             * @param outputRatio   A percentage that specifies for how many outputs the rule heads should predict
+             * @param minOutputs    The minimum number of outputs for which the rule heads should predict
+             * @param maxOutputs    The maximum number of outputs for which the rule heads should predict
+             * @param blasFactory   A reference to an object of type `BlasFactory` that allows to create objects for
+             *                      executing BLAS routines
+             * @param lapackFactory A reference to an object of type `LapackFactory` that allows to create objects for
+             *                      executing LAPACK routines
+             * @return              An unique pointer to an object of type `INonDecomposableRuleEvaluationFactory` that
+             *                      has been created
              */
             virtual std::unique_ptr<INonDecomposableRuleEvaluationFactory>
               createNonDecomposableFixedPartialRuleEvaluationFactory(float32 outputRatio, uint32 minOutputs,
-                                                                     uint32 maxOutputs, const Blas& blas,
-                                                                     const Lapack& lapack) const = 0;
+                                                                     uint32 maxOutputs, const BlasFactory& blasFactory,
+                                                                     const LapackFactory& lapackFactory) const = 0;
 
             /**
              * Creates and returns a new object of type `INonDecomposableRuleEvaluationFactory` that allows to calculate
              * the predictions of partial rules, which predict for a subset of the available labels that is determined
              * dynamically, according to the specified configuration.
              *
-             * @param threshold A threshold that affects for how many labels the rule heads should predict
-             * @param exponent  An exponent that is used to weigh the estimated predictive quality for individual labels
-             * @param blas      A reference to an object of type `Blas` that allows to execute BLAS routines
-             * @param lapack    A reference to an object of type `Lapack` that allows to execute LAPACK routines
-             * @return          An unique pointer to an object of type `INonDecomposableRuleEvaluationFactory` that has
-             *                  been created
+             * @param threshold     A threshold that affects for how many labels the rule heads should predict
+             * @param exponent      An exponent that is used to weigh the estimated predictive quality for individual
+             *                      labels
+             * @param blasFactory   A reference to an object of type `BlasFactory` that allows to create objects for
+             *                      executing BLAS routines
+             * @param lapackFactory A reference to an object of type `LapackFactory` that allows to create objects for
+             *                      executing LAPACK routines
+             * @return              An unique pointer to an object of type `INonDecomposableRuleEvaluationFactory` that
+             *                      has been created
              */
             virtual std::unique_ptr<INonDecomposableRuleEvaluationFactory>
               createNonDecomposableDynamicPartialRuleEvaluationFactory(float32 threshold, float32 exponent,
-                                                                       const Blas& blas,
-                                                                       const Lapack& lapack) const = 0;
+                                                                       const BlasFactory& blasFactory,
+                                                                       const LapackFactory& lapackFactory) const = 0;
     };
 
 }

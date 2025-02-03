@@ -122,7 +122,11 @@ class PartialPrediction final : public ResizableVectorDecorator<VectorDecorator<
 
         void postProcess(const IPostProcessor& postProcessor) override;
 
+        void set(View<float32>::const_iterator begin, View<float32>::const_iterator end) override final;
+
         void set(View<float64>::const_iterator begin, View<float64>::const_iterator end) override final;
+
+        void set(BinnedIterator<const float32> begin, BinnedIterator<const float32> end) override final;
 
         void set(BinnedIterator<const float64> begin, BinnedIterator<const float64> end) override final;
 
