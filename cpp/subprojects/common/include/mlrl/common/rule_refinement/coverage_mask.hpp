@@ -8,12 +8,6 @@
 
 #include <memory>
 
-// Forward declarations
-class IFeatureSubspace;
-class SinglePartition;
-class BiPartition;
-class IPrediction;
-
 /**
  * Allows to check whether individual examples are covered by a rule or not. For each example, an integer is stored in a
  * vector that may be updated when the rule is refined. If the value that corresponds to a certain example is equal to
