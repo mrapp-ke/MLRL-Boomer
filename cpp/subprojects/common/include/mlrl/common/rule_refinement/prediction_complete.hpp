@@ -90,11 +90,14 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>
 
         void set(View<float64>::const_iterator begin, View<float64>::const_iterator end) override final;
 
-        void set(BinnedConstIterator<float64> begin, BinnedConstIterator<float64> end) override final;
+        void set(BinnedIterator<const float64> begin, BinnedIterator<const float64> end) override final;
 
         bool isPartial() const override;
 
         uint32 getIndex(uint32 pos) const override;
+
+        void visit(PartialIndexVectorVisitor partialIndexVectorVisitor,
+                   CompleteIndexVectorVisitor completeIndexVectorVisitor) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(const IStatistics& statistics,
                                                                   const EqualWeightVector& weights) const override;
@@ -106,6 +109,9 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>
           const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
+          const IStatistics& statistics, const DenseWeightVector<float32>& weights) const override;
+
+        std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
           const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
@@ -115,12 +121,11 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>
           const IStatistics& statistics,
           const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override;
 
-        std::unique_ptr<IRuleRefinement> createRuleRefinement(IFeatureSubspace& featureSubspace,
-                                                              uint32 featureIndex) const override;
+        std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
+          const IStatistics& statistics,
+          const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override;
 
-        void apply(IStatistics& statistics, uint32 statisticIndex) const override;
-
-        void revert(IStatistics& statistics, uint32 statisticIndex) const override;
+        std::unique_ptr<IStatisticsUpdate> createStatisticsUpdate(IStatistics& statistics) const override;
 
         std::unique_ptr<IHead> createHead() const override;
 };

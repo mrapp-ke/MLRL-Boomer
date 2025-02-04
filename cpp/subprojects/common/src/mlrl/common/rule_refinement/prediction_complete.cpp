@@ -46,7 +46,7 @@ void CompletePrediction::set(View<float64>::const_iterator begin, View<float64>:
     util::copyView(begin, this->view.begin(), this->getNumElements());
 }
 
-void CompletePrediction::set(BinnedConstIterator<float64> begin, BinnedConstIterator<float64> end) {
+void CompletePrediction::set(BinnedIterator<const float64> begin, BinnedIterator<const float64> end) {
     util::copyView(begin, this->view.begin(), this->getNumElements());
 }
 
@@ -56,6 +56,11 @@ bool CompletePrediction::isPartial() const {
 
 uint32 CompletePrediction::getIndex(uint32 pos) const {
     return indexVector_.getIndex(pos);
+}
+
+void CompletePrediction::visit(PartialIndexVectorVisitor partialIndexVectorVisitor,
+                               CompleteIndexVectorVisitor completeIndexVectorVisitor) const {
+    completeIndexVectorVisitor(indexVector_);
 }
 
 std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(const IStatistics& statistics,
@@ -74,6 +79,11 @@ std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
 }
 
 std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
+  const IStatistics& statistics, const DenseWeightVector<float32>& weights) const {
+    return statistics.createSubset(indexVector_, weights);
+}
+
+std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
   const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
@@ -88,17 +98,13 @@ std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
     return statistics.createSubset(indexVector_, weights);
 }
 
-std::unique_ptr<IRuleRefinement> CompletePrediction::createRuleRefinement(IFeatureSubspace& featureSubspace,
-                                                                          uint32 featureIndex) const {
-    return indexVector_.createRuleRefinement(featureSubspace, featureIndex);
+std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
+  const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const {
+    return statistics.createSubset(indexVector_, weights);
 }
 
-void CompletePrediction::apply(IStatistics& statistics, uint32 statisticIndex) const {
-    statistics.applyPrediction(statisticIndex, *this);
-}
-
-void CompletePrediction::revert(IStatistics& statistics, uint32 statisticIndex) const {
-    statistics.revertPrediction(statisticIndex, *this);
+std::unique_ptr<IStatisticsUpdate> CompletePrediction::createStatisticsUpdate(IStatistics& statistics) const {
+    return statistics.createUpdate(*this);
 }
 
 std::unique_ptr<IHead> CompletePrediction::createHead() const {

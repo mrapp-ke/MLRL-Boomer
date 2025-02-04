@@ -24,11 +24,13 @@ class WeightedStatistics final : public IWeightedStatistics {
             throw std::runtime_error("not implemented");
         }
 
-        std::unique_ptr<IWeightedStatisticsSubset> createSubset(const CompleteIndexVector&) const override {
+        std::unique_ptr<IResettableStatisticsSubset> createSubset(const BinaryDokVector& excludedStatisticIndices,
+                                                                  const CompleteIndexVector&) const override {
             throw std::runtime_error("not implemented");
         }
 
-        std::unique_ptr<IWeightedStatisticsSubset> createSubset(const PartialIndexVector&) const override {
+        std::unique_ptr<IResettableStatisticsSubset> createSubset(const BinaryDokVector& excludedStatisticIndices,
+                                                                  const PartialIndexVector&) const override {
             throw std::runtime_error("not implemented");
         }
 

@@ -6,6 +6,7 @@
 
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
+#include "mlrl/seco/data/vector_confusion_matrix_dense.hpp"
 #include "mlrl/seco/rule_evaluation/rule_evaluation.hpp"
 
 #include <memory>
@@ -26,21 +27,61 @@ namespace seco {
              * Creates and returns a new object of type `IRuleEvaluation` that allows to calculate the predictions of
              * rules that predict for all available labels.
              *
-             * @param indexVector   A reference to an object of type `CompleteIndexVector` that provides access to the
-             *                      indices of the labels for which the rules may predict
-             * @return              An unique pointer to an object of type `IRuleEvaluation` that has been created
+             * @param statisticVector   A reference to an object of type `DenseConfusionMatrixVector<uint32>`. This
+             *                          vector is only used to identify the function that is able to deal with this
+             *                          particular type of vector via function overloading
+             * @param indexVector       A reference to an object of type `CompleteIndexVector` that provides access to
+             *                          the indices of the labels for which the rules may predict
+             * @return                  An unique pointer to an object of type `IRuleEvaluation` that has been created
              */
-            virtual std::unique_ptr<IRuleEvaluation> create(const CompleteIndexVector& indexVector) const = 0;
+            virtual std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<uint32>>> create(
+              const DenseConfusionMatrixVector<uint32>& statisticVector,
+              const CompleteIndexVector& indexVector) const = 0;
 
             /**
              * Creates and returns a new object of type `IRuleEvaluation` that allows to calculate the predictions of
              * rules that predict for a subset of the available labels.
              *
-             * @param indexVector   A reference to an object of type `PartialIndexVector` that provides access to the
-             *                      indices of the labels for which the rules may predict
-             * @return              An unique pointer to an object of type `IRuleEvaluation` that has been created
+             * @param statisticVector   A reference to an object of type `DenseConfusionMatrixVector<uint32>`. This
+             *                          vector is only used to identify the function that is able to deal with this
+             *                          particular type of vector via function overloading
+             * @param indexVector       A reference to an object of type `PartialIndexVector` that provides access to
+             *                          the indices of the labels for which the rules may predict
+             * @return                  An unique pointer to an object of type `IRuleEvaluation` that has been created
              */
-            virtual std::unique_ptr<IRuleEvaluation> create(const PartialIndexVector& indexVector) const = 0;
+            virtual std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<uint32>>> create(
+              const DenseConfusionMatrixVector<uint32>& statisticVector,
+              const PartialIndexVector& indexVector) const = 0;
+
+            /**
+             * Creates and returns a new object of type `IRuleEvaluation` that allows to calculate the predictions of
+             * rules that predict for all available labels.
+             *
+             * @param statisticVector   A reference to an object of type `DenseConfusionMatrixVector<float32>`. This
+             *                          vector is only used to identify the function that is able to deal with this
+             *                          particular type of vector via function overloading
+             * @param indexVector       A reference to an object of type `CompleteIndexVector` that provides access to
+             *                          the indices of the labels for which the rules may predict
+             * @return                  An unique pointer to an object of type `IRuleEvaluation` that has been created
+             */
+            virtual std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<float32>>> create(
+              const DenseConfusionMatrixVector<float32>& statisticVector,
+              const CompleteIndexVector& indexVector) const = 0;
+
+            /**
+             * Creates and returns a new object of type `IRuleEvaluation` that allows to calculate the predictions of
+             * rules that predict for a subset of the available labels.
+             *
+             * @param statisticVector   A reference to an object of type `DenseConfusionMatrixVector<float32>`. This
+             *                          vector is only used to identify the function that is able to deal with this
+             *                          particular type of vector via function overloading
+             * @param indexVector       A reference to an object of type `PartialIndexVector` that provides access to
+             *                          the indices of the labels for which the rules may predict
+             * @return                  An unique pointer to an object of type `IRuleEvaluation` that has been created
+             */
+            virtual std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<float32>>> create(
+              const DenseConfusionMatrixVector<float32>& statisticVector,
+              const PartialIndexVector& indexVector) const = 0;
     };
 
 }
