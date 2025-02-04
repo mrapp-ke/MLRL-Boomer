@@ -306,10 +306,10 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices) 
     if (filteredDecorator) {
         // Check filtered indices...
         const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
-        EXPECT_EQ(filteredFeatureVector.numValues, interval.end - interval.start);
+        EXPECT_EQ(filteredFeatureVector.numBins, interval.end - interval.start);
         OrdinalFeatureVector::value_const_iterator valuesBegin = filteredFeatureVector.values_cbegin();
 
-        for (uint32 i = 0; i < filteredFeatureVector.numValues; i++) {
+        for (uint32 i = 0; i < filteredFeatureVector.numBins; i++) {
             EXPECT_EQ(valuesBegin[i], (int32) (interval.start + i));
             OrdinalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
             OrdinalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
@@ -353,10 +353,10 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithI
     if (filteredDecorator) {
         // Check filtered indices...
         const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
-        EXPECT_EQ(filteredFeatureVector.numValues, interval.end - interval.start);
+        EXPECT_EQ(filteredFeatureVector.numBins, interval.end - interval.start);
         OrdinalFeatureVector::value_const_iterator valuesBegin = filteredFeatureVector.values_cbegin();
 
-        for (uint32 i = 0; i < filteredFeatureVector.numValues; i++) {
+        for (uint32 i = 0; i < filteredFeatureVector.numBins; i++) {
             EXPECT_EQ(valuesBegin[i], (int32) (interval.start + i));
             OrdinalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
             OrdinalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
@@ -399,10 +399,10 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesIn
     if (filteredDecorator) {
         // Check filtered indices...
         const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
-        EXPECT_EQ(filteredFeatureVector.numValues, interval.end - interval.start);
+        EXPECT_EQ(filteredFeatureVector.numBins, interval.end - interval.start);
         OrdinalFeatureVector::value_const_iterator valuesBegin = filteredFeatureVector.values_cbegin();
 
-        for (uint32 i = 0; i < filteredFeatureVector.numValues; i++) {
+        for (uint32 i = 0; i < filteredFeatureVector.numBins; i++) {
             EXPECT_EQ(valuesBegin[i], (int32) i);
             OrdinalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
             OrdinalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
@@ -446,10 +446,10 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithI
     if (filteredDecorator) {
         // Check filtered indices...
         const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
-        EXPECT_EQ(filteredFeatureVector.numValues, interval.end - interval.start);
+        EXPECT_EQ(filteredFeatureVector.numBins, interval.end - interval.start);
         OrdinalFeatureVector::value_const_iterator valuesBegin = filteredFeatureVector.values_cbegin();
 
-        for (uint32 i = 0; i < filteredFeatureVector.numValues; i++) {
+        for (uint32 i = 0; i < filteredFeatureVector.numBins; i++) {
             EXPECT_EQ(valuesBegin[i], (int32) i);
             OrdinalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
             OrdinalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);

@@ -24,15 +24,15 @@ namespace boosting {
     static inline std::pair<float64, float64> getMinAndMaxScore(StatisticIterator& statisticIterator, uint32 numOutputs,
                                                                 float64 l1RegularizationWeight,
                                                                 float64 l2RegularizationWeight) {
-        const Tuple<float64>& firstTuple = statisticIterator[0];
-        float64 maxAbsScore = std::abs(calculateOutputWiseScore(firstTuple.first, firstTuple.second,
+        const Statistic<float64>& firstStatistic = statisticIterator[0];
+        float64 maxAbsScore = std::abs(calculateOutputWiseScore(firstStatistic.gradient, firstStatistic.hessian,
                                                                 l1RegularizationWeight, l2RegularizationWeight));
         float64 minAbsScore = maxAbsScore;
 
         for (uint32 i = 1; i < numOutputs; i++) {
-            const Tuple<float64>& tuple = statisticIterator[i];
-            float64 absScore = std::abs(
-              calculateOutputWiseScore(tuple.first, tuple.second, l1RegularizationWeight, l2RegularizationWeight));
+            const Statistic<float64>& statistic = statisticIterator[i];
+            float64 absScore = std::abs(calculateOutputWiseScore(statistic.gradient, statistic.hessian,
+                                                                 l1RegularizationWeight, l2RegularizationWeight));
 
             if (absScore > maxAbsScore) {
                 maxAbsScore = absScore;

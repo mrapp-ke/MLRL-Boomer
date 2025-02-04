@@ -15,6 +15,7 @@
 // Forward declarations
 class IPostProcessor;
 class IStatistics;
+class IStatisticsUpdate;
 class IStatisticsSubset;
 class IHead;
 
@@ -54,23 +55,16 @@ class IPrediction : public IIndexVector {
          * @param begin An iterator to the beginning of the values to be set
          * @param end   An iterator to the end of the values to be set
          */
-        virtual void set(BinnedConstIterator<float64> begin, BinnedConstIterator<float64> end) = 0;
+        virtual void set(BinnedIterator<const float64> begin, BinnedIterator<const float64> end) = 0;
 
         /**
-         * Updates given statistics by applying this prediction.
+         * Creates and returns an object of type `IStatistics::IUpdate` that allows updating given `IStatistics` based
+         * on this prediction.
          *
-         * @param statistics        A reference to an object of type `IStatistics` to be updated
-         * @param statisticIndex    The index of the statistic to be updated
+         * @param statistics  A reference to an object of type `IStatistics` that should be updated
+         * @return            An unique pointer to an object of type `IStatistics::IUpdate` that has been created
          */
-        virtual void apply(IStatistics& statistics, uint32 statisticIndex) const = 0;
-
-        /**
-         * Updates given statistics by reverting this prediction.
-         *
-         * @param statistics        A reference to an object of type `IStatistics` to be updated
-         * @param statisticIndex    The index of the statistic to be updated
-         */
-        virtual void revert(IStatistics& statistics, uint32 statisticIndex) const = 0;
+        virtual std::unique_ptr<IStatisticsUpdate> createStatisticsUpdate(IStatistics& statistics) const = 0;
 
         /**
          * Creates and returns a new subset of the given statistics that only contains the outputs whose indices are
@@ -113,6 +107,18 @@ class IPrediction : public IIndexVector {
          * stored in this vector.
          *
          * @param statistics    A reference to an object of type `IStatistics` that should be used to create the subset
+         * @param weights       A reference to an object of type `DenseWeightVector<float32>` that provides access to
+         *                      the weights of individual training examples
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
+          const IStatistics& statistics, const DenseWeightVector<float32>& weights) const = 0;
+
+        /**
+         * Creates and returns a new subset of the given statistics that only contains the outputs whose indices are
+         * stored in this vector.
+         *
+         * @param statistics    A reference to an object of type `IStatistics` that should be used to create the subset
          * @param weights       A reference to an object of type `OutOfSampleWeightVector<EqualWeightVector>` that
          *                      provides access to the weights of individual training examples
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
@@ -143,6 +149,18 @@ class IPrediction : public IIndexVector {
          */
         virtual std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
           const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const = 0;
+
+        /**
+         * Creates and returns a new subset of the given statistics that only contains the outputs whose indices are
+         * stored in this vector.
+         *
+         * @param statistics    A reference to an object of type `IStatistics` that should be used to create the subset
+         * @param weights       A reference to an object of type `OutOfSampleWeightVector<DenseWeightVector<float32>>`
+         *                      that provides access to the weights of individual training examples
+         * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
+          const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const = 0;
 
         /**
          * Creates and returns a head that contains the scores that are stored by this prediction.

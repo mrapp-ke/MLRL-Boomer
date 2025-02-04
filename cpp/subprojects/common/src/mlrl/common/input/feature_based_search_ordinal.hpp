@@ -6,15 +6,16 @@
 #include "feature_based_search_binned_common.hpp"
 #include "mlrl/common/input/feature_vector_ordinal.hpp"
 #include "mlrl/common/rule_refinement/refinement.hpp"
+#include "mlrl/common/statistics/statistics_subset_resettable.hpp"
 
 template<typename Comparator>
 static inline void searchForOrdinalRefinementInternally(const OrdinalFeatureVector& featureVector,
-                                                        IWeightedStatisticsSubset& statisticsSubset,
+                                                        IResettableStatisticsSubset& statisticsSubset,
                                                         Comparator& comparator, uint32 numExamplesWithNonZeroWeights,
                                                         uint32 minCoverage, Refinement& refinement) {
     // Mark all examples corresponding to the first ordinal feature value `f < majorityValue` as covered...
     NominalFeatureVector::value_const_iterator valueIterator = featureVector.values_cbegin();
-    uint32 numValues = featureVector.numValues;
+    uint32 numValues = featureVector.numBins;
     int32 majorityValue = featureVector.majorityValue;
     uint32 numCovered = 0;
     int64 i = 0;
