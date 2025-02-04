@@ -60,5 +60,6 @@ namespace boosting {
         }
     }
 
+    template class NumericCContiguousMatrix<float32>;
     template class NumericCContiguousMatrix<float64>;
 }
