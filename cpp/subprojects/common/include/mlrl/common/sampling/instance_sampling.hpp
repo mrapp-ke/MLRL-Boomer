@@ -7,14 +7,16 @@
 #include "mlrl/common/data/view_matrix_csr.hpp"
 #include "mlrl/common/data/view_matrix_csr_binary.hpp"
 #include "mlrl/common/random/rng.hpp"
-#include "mlrl/common/sampling/partition_bi.hpp"
-#include "mlrl/common/sampling/partition_single.hpp"
 #include "mlrl/common/sampling/weight_vector.hpp"
 #include "mlrl/common/sampling/weight_vector_dense.hpp"
 #include "mlrl/common/sampling/weight_vector_equal.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
 
 #include <memory>
+
+// Forward declarations
+class BiPartition;
+class SinglePartition;
 
 /**
  * Defines an interface for all classes that implement a method for sampling training examples.
