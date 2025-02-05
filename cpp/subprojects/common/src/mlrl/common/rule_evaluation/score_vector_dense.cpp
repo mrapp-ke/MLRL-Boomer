@@ -1,7 +1,6 @@
 #include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
 
 #include "mlrl/common/rule_refinement/prediction.hpp"
-#include "mlrl/common/rule_refinement/score_processor.hpp"
 
 static inline void visitInternally(const DenseScoreVector<CompleteIndexVector>& scoreVector,
                                    IScoreVector::DenseVisitor<CompleteIndexVector> completeVisitor,
@@ -76,11 +75,6 @@ void DenseScoreVector<IndexVector>::visit(DenseVisitor<CompleteIndexVector> comp
 template<typename IndexVector>
 void DenseScoreVector<IndexVector>::updatePrediction(IPrediction& prediction) const {
     prediction.set(this->values_cbegin(), this->values_cend());
-}
-
-template<typename IndexVector>
-void DenseScoreVector<IndexVector>::processScores(ScoreProcessor& scoreProcessor) const {
-    scoreProcessor.processScores(*this);
 }
 
 template class DenseScoreVector<PartialIndexVector>;

@@ -117,6 +117,4 @@ class DenseScoreVector final : public ViewDecorator<AllocatedView<float64>>,
                    DenseBinnedVisitor<PartialIndexVector> partialDenseBinnedVisitor) const override;
 
         void updatePrediction(IPrediction& prediction) const override;
-
-        void processScores(ScoreProcessor& scoreProcessor) const override;
 };
