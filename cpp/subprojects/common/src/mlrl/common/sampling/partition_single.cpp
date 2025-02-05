@@ -3,7 +3,7 @@
 #include "mlrl/common/input/regression_matrix_row_wise.hpp"
 #include "mlrl/common/prediction/probability_calibration_joint.hpp"
 #include "mlrl/common/rule_refinement/feature_subspace.hpp"
-#include "mlrl/common/rule_refinement/prediction.hpp"
+#include "mlrl/common/rule_refinement/prediction_evaluated.hpp"
 #include "mlrl/common/sampling/instance_sampling.hpp"
 #include "mlrl/common/stopping/stopping_criterion.hpp"
 
@@ -55,8 +55,8 @@ Quality SinglePartition::evaluateOutOfSample(const IFeatureSubspace& featureSubs
 }
 
 void SinglePartition::recalculatePrediction(const IFeatureSubspace& featureSubspace, const CoverageMask& coverageMask,
-                                            IPrediction& head) {
-    featureSubspace.recalculatePrediction(*this, coverageMask, head);
+                                            std::unique_ptr<IEvaluatedPrediction>& headPtr) {
+    featureSubspace.recalculatePrediction(*this, coverageMask, headPtr);
 }
 
 std::unique_ptr<IMarginalProbabilityCalibrationModel> SinglePartition::fitMarginalProbabilityCalibrationModel(
