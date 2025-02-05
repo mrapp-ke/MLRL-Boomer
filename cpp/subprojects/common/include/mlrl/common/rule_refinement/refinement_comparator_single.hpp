@@ -48,7 +48,7 @@ class SingleRefinementComparator final {
         iterator begin();
 
         /**
-         * Returns an `iterator to the worst end of the refinements.
+         * Returns an `iterator to the end of the refinements.
          *
          * @return An `iterator` to the end
          */
