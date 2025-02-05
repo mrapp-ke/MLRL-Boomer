@@ -192,6 +192,4 @@ class DenseBinnedScoreVector final
                    DenseBinnedVisitor<PartialIndexVector> partialDenseBinnedVisitor) const override;
 
         void updatePrediction(IPrediction& prediction) const override;
-
-        void processScores(ScoreProcessor& scoreProcessor) const override;
 };

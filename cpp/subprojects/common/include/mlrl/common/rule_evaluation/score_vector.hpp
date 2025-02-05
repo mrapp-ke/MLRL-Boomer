@@ -10,7 +10,6 @@
 #include <functional>
 
 // Forward declarations
-class ScoreProcessor;
 class IPrediction;
 
 template<typename IndexVector>
@@ -70,11 +69,4 @@ class IScoreVector : public Quality {
          * @param prediction A reference to an object of type `IPrediction` that should be updated
          */
         virtual void updatePrediction(IPrediction& prediction) const = 0;
-
-        /**
-         * Passes the scores to an `ScoreProcessor` in order to convert them into the head of a rule.
-         *
-         * @param scoreProcessor A reference to an object of type `ScoreProcessor`, the scores should be passed to
-         */
-        virtual void processScores(ScoreProcessor& scoreProcessor) const = 0;
 };
