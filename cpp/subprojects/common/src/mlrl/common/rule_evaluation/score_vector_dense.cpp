@@ -1,9 +1,19 @@
 #include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
 
-#include "mlrl/common/indices/index_vector_complete.hpp"
-#include "mlrl/common/indices/index_vector_partial.hpp"
 #include "mlrl/common/rule_refinement/prediction.hpp"
 #include "mlrl/common/rule_refinement/score_processor.hpp"
+
+static inline void visitInternally(const DenseScoreVector<CompleteIndexVector>& scoreVector,
+                                   IScoreVector::DenseVisitor<CompleteIndexVector> completeVisitor,
+                                   IScoreVector::DenseVisitor<PartialIndexVector> partialVisitor) {
+    completeVisitor(scoreVector);
+}
+
+static inline void visitInternally(const DenseScoreVector<PartialIndexVector>& scoreVector,
+                                   IScoreVector::DenseVisitor<CompleteIndexVector> completeVisitor,
+                                   IScoreVector::DenseVisitor<PartialIndexVector> partialVisitor) {
+    partialVisitor(scoreVector);
+}
 
 template<typename IndexVector>
 DenseScoreVector<IndexVector>::DenseScoreVector(const IndexVector& outputIndices, bool sorted)
@@ -53,6 +63,14 @@ bool DenseScoreVector<IndexVector>::isPartial() const {
 template<typename IndexVector>
 bool DenseScoreVector<IndexVector>::isSorted() const {
     return sorted_;
+}
+
+template<typename IndexVector>
+void DenseScoreVector<IndexVector>::visit(DenseVisitor<CompleteIndexVector> completeDenseVisitor,
+                                          DenseVisitor<PartialIndexVector> partialDenseVisitor,
+                                          DenseBinnedVisitor<CompleteIndexVector> completeDenseBinnedVisitor,
+                                          DenseBinnedVisitor<PartialIndexVector> partialDenseBinnedVisitor) const {
+    visitInternally(*this, completeDenseVisitor, partialDenseVisitor);
 }
 
 template<typename IndexVector>
