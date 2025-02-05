@@ -6,7 +6,7 @@
 #include "mlrl/common/input/feature_vector.hpp"
 #include "mlrl/common/model/condition.hpp"
 #include "mlrl/common/rule_refinement/coverage_mask.hpp"
-#include "mlrl/common/rule_refinement/prediction.hpp"
+#include "mlrl/common/rule_refinement/prediction_evaluated.hpp"
 #include "mlrl/common/sampling/partition_bi.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
 
@@ -169,10 +169,11 @@ class IFeatureSubspace {
          *                      of the training examples that belong to the training set
          * @param coverageMask  A reference to an object of type `CoverageMask` that keeps track of the examples that
          *                      are covered by the rule
-         * @param head          A reference to an object of type `IPrediction` to be updated
+         * @param headPtr       A reference to an unique pointer that stores an object of type `IEvaluatedPrediction` to
+         *                      be updated
          */
         virtual void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageMask,
-                                           IPrediction& head) const = 0;
+                                           std::unique_ptr<IEvaluatedPrediction>& headPtr) const = 0;
 
         /**
          * Recalculates and updates a rule's prediction based on all examples in the training set that are marked as
@@ -185,10 +186,11 @@ class IFeatureSubspace {
          *                      the training examples that belong to the training set
          * @param coverageMask  A reference to an object of type `CoverageMask` that keeps track of the examples that
          *                      are covered by the rule
-         * @param head          A reference to an object of type `IPrediction` to be updated
+         * @param headPtr       A reference to an unique pointer that stores an object of type `IEvaluatedPrediction` to
+         *                      be updated
          */
         virtual void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageMask,
-                                           IPrediction& head) const = 0;
+                                           std::unique_ptr<IEvaluatedPrediction>& headPtr) const = 0;
 
         /**
          * Updates the statistics that correspond to the training examples included in this subspace based on the

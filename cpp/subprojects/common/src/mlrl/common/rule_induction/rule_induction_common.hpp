@@ -122,7 +122,7 @@ class AbstractRuleInduction : public IRuleInduction {
                     if (recalculatePredictions_) {
                         const CoverageMask& coverageMask =
                           coverageMaskPtr ? *coverageMaskPtr : featureSubspacePtr->getCoverageMask();
-                        partition.recalculatePrediction(*featureSubspacePtr, coverageMask, *headPtr);
+                        partition.recalculatePrediction(*featureSubspacePtr, coverageMask, headPtr);
                     }
                 }
 
