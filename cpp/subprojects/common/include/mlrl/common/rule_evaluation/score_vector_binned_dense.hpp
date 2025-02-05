@@ -186,6 +186,11 @@ class DenseBinnedScoreVector final
          */
         bool isSorted() const;
 
+        void visit(DenseVisitor<CompleteIndexVector> completeDenseVisitor,
+                   DenseVisitor<PartialIndexVector> partialDenseVisitor,
+                   DenseBinnedVisitor<CompleteIndexVector> completeDenseBinnedVisitor,
+                   DenseBinnedVisitor<PartialIndexVector> partialDenseBinnedVisitor) const override;
+
         void updatePrediction(IPrediction& prediction) const override;
 
         void processScores(ScoreProcessor& scoreProcessor) const override;
