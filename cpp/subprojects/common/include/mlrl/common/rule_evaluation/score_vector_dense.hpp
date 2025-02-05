@@ -3,7 +3,6 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view.hpp"
 #include "mlrl/common/rule_evaluation/score_vector.hpp"
 
 /**
@@ -112,7 +111,8 @@ class DenseScoreVector final : public ViewDecorator<AllocatedView<float64>>,
          */
         bool isSorted() const;
 
-        void updatePrediction(IPrediction& prediction) const override;
-
-        void processScores(ScoreProcessor& scoreProcessor) const override;
+        void visit(DenseVisitor<CompleteIndexVector> completeDenseVisitor,
+                   DenseVisitor<PartialIndexVector> partialDenseVisitor,
+                   DenseBinnedVisitor<CompleteIndexVector> completeDenseBinnedVisitor,
+                   DenseBinnedVisitor<PartialIndexVector> partialDenseBinnedVisitor) const override;
 };

@@ -1,10 +1,13 @@
 #include "mlrl/common/rule_refinement/score_processor.hpp"
 
+#include "mlrl/common/rule_evaluation/score_vector_binned_dense.hpp"
+#include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
 #include "mlrl/common/rule_refinement/prediction_complete.hpp"
 #include "mlrl/common/rule_refinement/prediction_partial.hpp"
 
-template<typename T>
-static inline void processCompleteScores(std::unique_ptr<IEvaluatedPrediction>& existingHeadPtr, const T& scoreVector) {
+template<typename ScoreVector>
+static inline void processCompleteScores(std::unique_ptr<IEvaluatedPrediction>& existingHeadPtr,
+                                         const ScoreVector& scoreVector) {
     CompletePrediction* existingHead = dynamic_cast<CompletePrediction*>(existingHeadPtr.get());
     uint32 numElements = scoreVector.getNumElements();
 
@@ -18,8 +21,9 @@ static inline void processCompleteScores(std::unique_ptr<IEvaluatedPrediction>& 
     existingHead->quality = scoreVector.quality;
 }
 
-template<typename T>
-static inline void processPartialScores(std::unique_ptr<IEvaluatedPrediction>& existingHeadPtr, const T& scoreVector) {
+template<typename ScoreVector>
+static inline void processPartialScores(std::unique_ptr<IEvaluatedPrediction>& existingHeadPtr,
+                                        const ScoreVector& scoreVector) {
     PartialPrediction* existingHead = dynamic_cast<PartialPrediction*>(existingHeadPtr.get());
     uint32 numElements = scoreVector.getNumElements();
 
@@ -43,22 +47,18 @@ static inline void processPartialScores(std::unique_ptr<IEvaluatedPrediction>& e
 
 ScoreProcessor::ScoreProcessor(std::unique_ptr<IEvaluatedPrediction>& headPtr) : headPtr_(headPtr) {}
 
-void ScoreProcessor::processScores(const DenseScoreVector<CompleteIndexVector>& scoreVector) {
-    processCompleteScores(headPtr_, scoreVector);
-}
-
-void ScoreProcessor::processScores(const DenseScoreVector<PartialIndexVector>& scoreVector) {
-    processPartialScores(headPtr_, scoreVector);
-}
-
-void ScoreProcessor::processScores(const DenseBinnedScoreVector<CompleteIndexVector>& scoreVector) {
-    processCompleteScores(headPtr_, scoreVector);
-}
-
-void ScoreProcessor::processScores(const DenseBinnedScoreVector<PartialIndexVector>& scoreVector) {
-    processPartialScores(headPtr_, scoreVector);
-}
-
 void ScoreProcessor::processScores(const IScoreVector& scoreVector) {
-    scoreVector.processScores(*this);
+    auto completeDenseVisitor = [this](const DenseScoreVector<CompleteIndexVector>& scoreVector) {
+        processCompleteScores(headPtr_, scoreVector);
+    };
+    auto partialDenseVisitor = [this](const DenseScoreVector<PartialIndexVector>& scoreVector) {
+        processPartialScores(headPtr_, scoreVector);
+    };
+    auto completeDenseBinnedVisitor = [this](const DenseBinnedScoreVector<CompleteIndexVector>& scoreVector) {
+        processCompleteScores(headPtr_, scoreVector);
+    };
+    auto partialDenseBinnedVisitor = [this](const DenseBinnedScoreVector<PartialIndexVector>& scoreVector) {
+        processPartialScores(headPtr_, scoreVector);
+    };
+    scoreVector.visit(completeDenseVisitor, partialDenseVisitor, completeDenseBinnedVisitor, partialDenseBinnedVisitor);
 }

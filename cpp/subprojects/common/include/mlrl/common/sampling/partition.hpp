@@ -21,6 +21,7 @@ class IRowWiseRegressionMatrix;
 class IStatistics;
 class IFeatureSubspace;
 class IPrediction;
+class IEvaluatedPrediction;
 class IMarginalProbabilityCalibrationModel;
 class IMarginalProbabilityCalibrator;
 class IJointProbabilityCalibrationModel;
@@ -141,10 +142,11 @@ class IPartition {
          *                        the prediction
          * @param coverageMask    A reference to an object of type `CoverageMask` that keeps track of the examples that
          *                        are covered by the rule
-         * @param head            A reference to an object of type `IPrediction` to be updated
+         * @param headPtr         A reference to an unique pointer that stores an object of type `IEvaluatedPrediction`
+         *                        to be updated
          */
         virtual void recalculatePrediction(const IFeatureSubspace& featureSubspace, const CoverageMask& coverageMask,
-                                           IPrediction& head) = 0;
+                                           std::unique_ptr<IEvaluatedPrediction>& headPtr) = 0;
 
         /**
          * Fits and returns a model for the calibration of marginal probabilities, based on the type of this partition.
