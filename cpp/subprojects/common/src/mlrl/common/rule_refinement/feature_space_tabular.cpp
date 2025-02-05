@@ -1,6 +1,7 @@
 #include "mlrl/common/rule_refinement/feature_space_tabular.hpp"
 
 #include "mlrl/common/multi_threading/multi_threading.hpp"
+#include "mlrl/common/rule_refinement/score_processor.hpp"
 #include "mlrl/common/util/openmp.hpp"
 
 #include <unordered_map>
@@ -27,9 +28,9 @@ static inline Quality evaluateOutOfSampleInternally(IndexIterator indexIterator,
 template<typename IndexIterator>
 static inline void recalculatePredictionInternally(IndexIterator indexIterator, uint32 numExamples,
                                                    const CoverageMask& coverageMask, const IStatistics& statistics,
-                                                   IPrediction& prediction) {
+                                                   std::unique_ptr<IEvaluatedPrediction>& predictionPtr) {
     EqualWeightVector weights(numExamples);
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics, weights);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = predictionPtr->createStatisticsSubset(statistics, weights);
 
     for (uint32 i = 0; i < numExamples; i++) {
         uint32 exampleIndex = indexIterator[i];
@@ -40,7 +41,8 @@ static inline void recalculatePredictionInternally(IndexIterator indexIterator, 
     }
 
     const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
-    scoreVector.updatePrediction(prediction);
+    ScoreProcessor scoreProcessor(predictionPtr);
+    scoreProcessor.processScores(scoreVector);
 }
 
 /**
@@ -256,17 +258,17 @@ class TabularFeatureSpace final : public IFeatureSpace {
                 }
 
                 void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageMask,
-                                           IPrediction& head) const override {
+                                           std::unique_ptr<IEvaluatedPrediction>& headPtr) const override {
                     recalculatePredictionInternally<SinglePartition::const_iterator>(
                       partition.cbegin(), partition.getNumElements(), coverageMask,
-                      featureSpace_.statisticsProvider_.get(), head);
+                      featureSpace_.statisticsProvider_.get(), headPtr);
                 }
 
                 void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageMask,
-                                           IPrediction& head) const override {
+                                           std::unique_ptr<IEvaluatedPrediction>& headPtr) const override {
                     recalculatePredictionInternally<BiPartition::const_iterator>(
                       partition.first_cbegin(), partition.getNumFirst(), coverageMask,
-                      featureSpace_.statisticsProvider_.get(), head);
+                      featureSpace_.statisticsProvider_.get(), headPtr);
                 }
 
                 void applyPrediction(const IPrediction& prediction) override {
