@@ -10,8 +10,6 @@
 #include <functional>
 
 // Forward declarations
-class IPrediction;
-
 template<typename IndexVector>
 class DenseScoreVector;
 
@@ -62,11 +60,4 @@ class IScoreVector : public Quality {
                            DenseVisitor<PartialIndexVector> partialDenseVisitor,
                            DenseBinnedVisitor<CompleteIndexVector> completeDenseBinnedVisitor,
                            DenseBinnedVisitor<PartialIndexVector> partialDenseBinnedVisitor) const = 0;
-
-        /**
-         * Sets the scores of a specific prediction to the scores that are stored in this vector.
-         *
-         * @param prediction A reference to an object of type `IPrediction` that should be updated
-         */
-        virtual void updatePrediction(IPrediction& prediction) const = 0;
 };
