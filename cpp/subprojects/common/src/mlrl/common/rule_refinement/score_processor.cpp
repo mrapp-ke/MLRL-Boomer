@@ -5,8 +5,9 @@
 #include "mlrl/common/rule_refinement/prediction_complete.hpp"
 #include "mlrl/common/rule_refinement/prediction_partial.hpp"
 
-template<typename T>
-static inline void processCompleteScores(std::unique_ptr<IEvaluatedPrediction>& existingHeadPtr, const T& scoreVector) {
+template<typename ScoreVector>
+static inline void processCompleteScores(std::unique_ptr<IEvaluatedPrediction>& existingHeadPtr,
+                                         const ScoreVector& scoreVector) {
     CompletePrediction* existingHead = dynamic_cast<CompletePrediction*>(existingHeadPtr.get());
     uint32 numElements = scoreVector.getNumElements();
 
@@ -20,8 +21,9 @@ static inline void processCompleteScores(std::unique_ptr<IEvaluatedPrediction>& 
     existingHead->quality = scoreVector.quality;
 }
 
-template<typename T>
-static inline void processPartialScores(std::unique_ptr<IEvaluatedPrediction>& existingHeadPtr, const T& scoreVector) {
+template<typename ScoreVector>
+static inline void processPartialScores(std::unique_ptr<IEvaluatedPrediction>& existingHeadPtr,
+                                        const ScoreVector& scoreVector) {
     PartialPrediction* existingHead = dynamic_cast<PartialPrediction*>(existingHeadPtr.get());
     uint32 numElements = scoreVector.getNumElements();
 
