@@ -146,7 +146,7 @@ class BiPartition final : public VectorDecorator<AllocatedVector<uint32>>,
                                     const IPrediction& head) override;
 
         void recalculatePrediction(const IFeatureSubspace& featureSubspace, const CoverageMask& coverageMask,
-                                   IPrediction& head) override;
+                                   std::unique_ptr<IEvaluatedPrediction>& headPtr) override;
 
         std::unique_ptr<IMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
           const IMarginalProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
