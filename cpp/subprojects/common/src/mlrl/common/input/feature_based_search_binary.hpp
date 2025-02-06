@@ -20,17 +20,17 @@ static inline void searchForBinaryRefinementInternally(const BinaryFeatureVector
     // examples...
     if (numCovered >= minCoverage) {
         // Determine the best prediction for the examples corresponding to the minority value...
-        const IScoreVector& scoreVector = statisticsSubset.calculateScores();
+        std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScores();
 
         // Check if the quality of the prediction is better than the quality of the current rule...
-        if (comparator.isImprovement(scoreVector)) {
+        if (comparator.isImprovement(*updateCandidatePtr)) {
             refinement.start = 0;
             refinement.end = 1;
             refinement.inverse = false;
             refinement.numCovered = numCovered;
             refinement.comparator = NOMINAL_EQ;
             refinement.threshold = featureVector.values_cbegin()[0];
-            comparator.pushRefinement(refinement, scoreVector);
+            comparator.pushRefinement(refinement, *updateCandidatePtr);
         }
     }
 
@@ -40,17 +40,17 @@ static inline void searchForBinaryRefinementInternally(const BinaryFeatureVector
 
     if (numUncovered >= minCoverage) {
         // Determine the best prediction for the examples corresponding to the majority value...
-        const IScoreVector& scoreVector = statisticsSubset.calculateScoresUncovered();
+        std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScoresUncovered();
 
         // Check if the quality of the prediction is better than the quality of the current rule...
-        if (comparator.isImprovement(scoreVector)) {
+        if (comparator.isImprovement(*updateCandidatePtr)) {
             refinement.start = 0;
             refinement.end = 1;
             refinement.inverse = true;
             refinement.numCovered = numUncovered;
             refinement.comparator = NOMINAL_EQ;
             refinement.threshold = featureVector.majorityValue;
-            comparator.pushRefinement(refinement, scoreVector);
+            comparator.pushRefinement(refinement, *updateCandidatePtr);
         }
     }
 }

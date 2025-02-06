@@ -22,7 +22,7 @@ static inline Quality evaluateOutOfSampleInternally(IndexIterator indexIterator,
         }
     }
 
-    return statisticsSubsetPtr->calculateScores();
+    return *statisticsSubsetPtr->calculateScores();
 }
 
 template<typename IndexIterator>
@@ -40,9 +40,9 @@ static inline void recalculatePredictionInternally(IndexIterator indexIterator, 
         }
     }
 
-    const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
+    std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubsetPtr->calculateScores();
     ScoreProcessor scoreProcessor(predictionPtr);
-    scoreProcessor.processScores(scoreVector);
+    scoreProcessor.processScores(*updateCandidatePtr);
 }
 
 /**

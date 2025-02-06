@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/common/rule_evaluation/score_vector.hpp"
 #include "mlrl/common/rule_refinement/prediction_evaluated.hpp"
+#include "mlrl/common/statistics/statistics_update_candidate.hpp"
 
 #include <memory>
 
@@ -26,9 +26,11 @@ class ScoreProcessor {
         explicit ScoreProcessor(std::unique_ptr<IEvaluatedPrediction>& headPtr);
 
         /**
-         * Processes the scores that are stored by a `IScoreVector` in order to convert them into the head of a rule.
+         * Processes the scores that are stored by `StatisticsUpdateCandidate` in order to convert them into the head of
+         * a rule.
          *
-         * @param scoreVector A reference to an object of type `IScoreVector` that stores the scores to be processed
+         * @param scores A reference to an object of type `StatisticsUpdateCandidate` that stores the scores to be
+         *               processed
          */
-        void processScores(const IScoreVector& scoreVector);
+        void processScores(const StatisticsUpdateCandidate& scores);
 };
