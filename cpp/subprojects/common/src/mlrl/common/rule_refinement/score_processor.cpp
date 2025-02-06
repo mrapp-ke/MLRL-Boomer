@@ -47,18 +47,22 @@ static inline void processPartialScores(std::unique_ptr<IEvaluatedPrediction>& e
 
 ScoreProcessor::ScoreProcessor(std::unique_ptr<IEvaluatedPrediction>& headPtr) : headPtr_(headPtr) {}
 
-void ScoreProcessor::processScores(const IScoreVector& scoreVector) {
-    auto completeDenseVisitor = [this](const DenseScoreVector<CompleteIndexVector>& scoreVector) {
+void ScoreProcessor::processScores(const StatisticsUpdateCandidate& scores) {
+    auto completeDenseVisitor = [this](const DenseScoreVector<CompleteIndexVector>& scoreVector,
+                                       IStatisticsUpdateFactory& statisticsUpdateFactory) {
         processCompleteScores(headPtr_, scoreVector);
     };
-    auto partialDenseVisitor = [this](const DenseScoreVector<PartialIndexVector>& scoreVector) {
+    auto partialDenseVisitor = [this](const DenseScoreVector<PartialIndexVector>& scoreVector,
+                                      IStatisticsUpdateFactory& statisticsUpdateFactory) {
         processPartialScores(headPtr_, scoreVector);
     };
-    auto completeDenseBinnedVisitor = [this](const DenseBinnedScoreVector<CompleteIndexVector>& scoreVector) {
+    auto completeDenseBinnedVisitor = [this](const DenseBinnedScoreVector<CompleteIndexVector>& scoreVector,
+                                             IStatisticsUpdateFactory& statisticsUpdateFactory) {
         processCompleteScores(headPtr_, scoreVector);
     };
-    auto partialDenseBinnedVisitor = [this](const DenseBinnedScoreVector<PartialIndexVector>& scoreVector) {
+    auto partialDenseBinnedVisitor = [this](const DenseBinnedScoreVector<PartialIndexVector>& scoreVector,
+                                            IStatisticsUpdateFactory& statisticsUpdateFactory) {
         processPartialScores(headPtr_, scoreVector);
     };
-    scoreVector.visit(completeDenseVisitor, partialDenseVisitor, completeDenseBinnedVisitor, partialDenseBinnedVisitor);
+    scores.visit(completeDenseVisitor, partialDenseVisitor, completeDenseBinnedVisitor, partialDenseBinnedVisitor);
 }
