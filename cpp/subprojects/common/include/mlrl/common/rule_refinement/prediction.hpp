@@ -42,22 +42,6 @@ class IPrediction : public IIndexVector {
         virtual void postProcess(const IPostProcessor& postProcessor) = 0;
 
         /**
-         * Sets the scores that are stored by this prediction to the values in a given iterator.
-         *
-         * @param begin An iterator to the beginning of the values to be set
-         * @param end   An iterator to the end of the values to be set
-         */
-        virtual void set(View<float64>::const_iterator begin, View<float64>::const_iterator end) = 0;
-
-        /**
-         * Sets the scores that are stored by this prediction to the values in a given iterator.
-         *
-         * @param begin An iterator to the beginning of the values to be set
-         * @param end   An iterator to the end of the values to be set
-         */
-        virtual void set(BinnedIterator<const float64> begin, BinnedIterator<const float64> end) = 0;
-
-        /**
          * Creates and returns an object of type `IStatistics::IUpdate` that allows updating given `IStatistics` based
          * on this prediction.
          *
