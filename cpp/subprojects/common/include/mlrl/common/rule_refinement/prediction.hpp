@@ -42,11 +42,11 @@ class IPrediction : public IIndexVector {
         virtual void postProcess(const IPostProcessor& postProcessor) = 0;
 
         /**
-         * Creates and returns an object of type `IStatistics::IUpdate` that allows updating given `IStatistics` based
-         * on this prediction.
+         * Creates and returns an object of type `IStatisticsUpdate` that allows updating given `IStatistics` based on
+         * this prediction.
          *
          * @param statistics  A reference to an object of type `IStatistics` that should be updated
-         * @return            An unique pointer to an object of type `IStatistics::IUpdate` that has been created
+         * @return            An unique pointer to an object of type `IStatisticsUpdate` that has been created
          */
         virtual std::unique_ptr<IStatisticsUpdate> createStatisticsUpdate(IStatistics& statistics) const = 0;
 
