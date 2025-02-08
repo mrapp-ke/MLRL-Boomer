@@ -312,7 +312,7 @@ namespace seco {
              *                     included in the subset
              */
             template<typename IndexVector>
-            class WeightedStatisticsSubset final
+            class StatisticsSubset final
                 : virtual public IResettableStatisticsSubset,
                   public AbstractStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
                                                   RuleEvaluationFactory, WeightVector, IndexVector> {
@@ -338,9 +338,8 @@ namespace seco {
                      *                                  provides access to the indices of the outputs that are included
                      *                                  in the subset
                      */
-                    WeightedStatisticsSubset(const WeightedStatistics& statistics,
-                                             const BinaryDokVector& excludedStatisticIndices,
-                                             const IndexVector& outputIndices)
+                    StatisticsSubset(const WeightedStatistics& statistics,
+                                     const BinaryDokVector& excludedStatisticIndices, const IndexVector& outputIndices)
                         : AbstractStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
                                                    RuleEvaluationFactory, WeightVector, IndexVector>(
                             statistics.labelMatrix_, statistics.coverageMatrix_, statistics.majorityLabelVector_,
@@ -519,8 +518,8 @@ namespace seco {
             std::unique_ptr<IResettableStatisticsSubset> createSubset(
               const BinaryDokVector& excludedStatisticIndices,
               const CompleteIndexVector& outputIndices) const override {
-                return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, excludedStatisticIndices,
-                                                                                       outputIndices);
+                return std::make_unique<StatisticsSubset<CompleteIndexVector>>(*this, excludedStatisticIndices,
+                                                                               outputIndices);
             }
 
             /**
@@ -528,8 +527,8 @@ namespace seco {
              */
             std::unique_ptr<IResettableStatisticsSubset> createSubset(
               const BinaryDokVector& excludedStatisticIndices, const PartialIndexVector& outputIndices) const override {
-                return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, excludedStatisticIndices,
-                                                                                      outputIndices);
+                return std::make_unique<StatisticsSubset<PartialIndexVector>>(*this, excludedStatisticIndices,
+                                                                              outputIndices);
             }
     };
 
