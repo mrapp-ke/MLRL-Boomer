@@ -11,35 +11,10 @@
 #include "mlrl/common/sampling/weight_vector_equal.hpp"
 #include "mlrl/common/sampling/weight_vector_out_of_sample.hpp"
 #include "mlrl/common/statistics/statistics_space.hpp"
+#include "mlrl/common/statistics/statistics_update.hpp"
 #include "mlrl/common/statistics/statistics_weighted.hpp"
 
 #include <memory>
-
-/**
- * Defines an interface for all classes that allow updating statistics.
- */
-class IStatisticsUpdate {
-    public:
-
-        virtual ~IStatisticsUpdate() {}
-
-        /**
-         * Updates a specific statistic.
-         *
-         * This function must be called for each statistic that is covered by a new rule before learning the
-         * next rule.
-         *
-         * @param statisticIndex The index of the statistic that should be updated
-         */
-        virtual void applyPrediction(uint32 statisticIndex) = 0;
-
-        /**
-         * Reverts a specific statistic that has previously been updated via the function `applyPrediction`.
-         *
-         * @param statisticIndex The index of the statistic that should be updated
-         */
-        virtual void revertPrediction(uint32 statisticIndex) = 0;
-};
 
 /**
  * Defines an interface for all classes that provide access to statistics about the quality of predictions for training
