@@ -33,8 +33,8 @@ FixedRefinementComparator::iterator FixedRefinementComparator::end() {
     return order_.end();
 }
 
-bool FixedRefinementComparator::isImprovement(const IScoreVector& scoreVector) const {
-    return ruleCompareFunction_.compare(scoreVector, minQuality_);
+bool FixedRefinementComparator::isImprovement(const Quality& quality) const {
+    return ruleCompareFunction_.compare(quality, minQuality_);
 }
 
 void FixedRefinementComparator::pushRefinement(const Refinement& refinement, const IScoreVector& scoreVector) {
