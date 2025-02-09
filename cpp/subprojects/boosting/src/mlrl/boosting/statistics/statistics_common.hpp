@@ -38,8 +38,8 @@ namespace boosting {
      * A subset of gradients and Hessians that are calculated according to a loss function and are accessible via a
      * view.
      *
+     * @tparam State                    The type of the state of the boosting process
      * @tparam StatisticVector          The type of the vector that is used to store the sums of gradients and Hessians
-     * @tparam StatisticView            The type of the view that provides access to the gradients and Hessians
      * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
      *                                  used for calculating the predictions of rules, as well as corresponding quality
      *                                  scores
@@ -48,7 +48,7 @@ namespace boosting {
      * @tparam IndexVector              The type of the vector that provides access to the indices of the outputs that
      *                                  are included in the subset
      */
-    template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory, typename WeightVector,
+    template<typename State, typename StatisticVector, typename RuleEvaluationFactory, typename WeightVector,
              typename IndexVector>
     class StatisticsSubset : virtual public IStatisticsSubset {
         protected:
@@ -59,10 +59,9 @@ namespace boosting {
             StatisticVector sumVector_;
 
             /**
-             * A reference to an object of template type `StatisticView` that provides access to the gradients and
-             * Hessians.
+             * A reference to an object of template type `State` that represents the state of the boosting process.
              */
-            const StatisticView& statisticView_;
+            const State& state_;
 
             /**
              * A reference to an object of template type `WeightVector` that provides access to the weights of
@@ -85,8 +84,8 @@ namespace boosting {
         public:
 
             /**
-             * @param statisticView         A reference to an object of template type `StatisticView` that provides
-             *                              access to the gradients and Hessians
+             * @param state                 A reference to an object of template type `State` that represents the state
+             *                              of the boosting process
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
              *                              allows to create instances of the class that is used for calculating the
              *                              predictions of rules, as well as their overall quality
@@ -95,9 +94,9 @@ namespace boosting {
              * @param outputIndices         A reference to an object of template type `IndexVector` that provides access
              *                              to the indices of the outputs that are included in the subset
              */
-            StatisticsSubset(const StatisticView& statisticView, const RuleEvaluationFactory& ruleEvaluationFactory,
+            StatisticsSubset(const State& state, const RuleEvaluationFactory& ruleEvaluationFactory,
                              const WeightVector& weights, const IndexVector& outputIndices)
-                : sumVector_(outputIndices.getNumElements(), true), statisticView_(statisticView), weights_(weights),
+                : sumVector_(outputIndices.getNumElements(), true), state_(state), weights_(weights),
                   outputIndices_(outputIndices),
                   ruleEvaluationPtr_(ruleEvaluationFactory.create(sumVector_, outputIndices)) {}
 
@@ -112,7 +111,8 @@ namespace boosting {
              * @see `IStatisticsSubset::addToSubset`
              */
             void addToSubset(uint32 statisticIndex) override final {
-                addStatisticToSubsetInternally(weights_, statisticView_, sumVector_, outputIndices_, statisticIndex);
+                addStatisticToSubsetInternally(weights_, state_.statisticMatrixPtr->getView(), sumVector_,
+                                               outputIndices_, statisticIndex);
             }
 
             /**
@@ -127,15 +127,15 @@ namespace boosting {
      * An abstract base class for all statistics that provide access to gradients and Hessians that are calculated
      * according to a loss function.
      *
+     * @tparam State                    The type of the state of the boosting process
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
-     * @tparam StatisticView            The type of the view that provides access to the gradients and Hessians
      * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
      *                                  used for calculating the predictions of rules, as well as corresponding quality
      *                                  scores
      * @tparam WeightVector             The type of the vector that provides access to the weights of individual
      *                                  statistics
      */
-    template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory, typename WeightVector>
+    template<typename State, typename StatisticVector, typename RuleEvaluationFactory, typename WeightVector>
     class AbstractStatisticsSpace : virtual public IStatisticsSpace {
         protected:
 
@@ -147,9 +147,9 @@ namespace boosting {
              *                     included in the subset
              */
             template<typename IndexVector>
-            class AbstractStatisticsSubset : public StatisticsSubset<StatisticVector, StatisticView,
-                                                                     RuleEvaluationFactory, WeightVector, IndexVector>,
-                                             virtual public IResettableStatisticsSubset {
+            class AbstractStatisticsSubset
+                : public StatisticsSubset<State, StatisticVector, RuleEvaluationFactory, WeightVector, IndexVector>,
+                  virtual public IResettableStatisticsSubset {
                 private:
 
                     StatisticVector tmpVector_;
@@ -176,9 +176,8 @@ namespace boosting {
                      */
                     AbstractStatisticsSubset(const AbstractStatisticsSpace& statistics,
                                              const StatisticVector& totalSumVector, const IndexVector& outputIndices)
-                        : StatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector,
-                                           IndexVector>(statistics.statisticView_, statistics.ruleEvaluationFactory_,
-                                                        statistics.weights_, outputIndices),
+                        : StatisticsSubset<State, StatisticVector, RuleEvaluationFactory, WeightVector, IndexVector>(
+                            statistics.state_, statistics.ruleEvaluationFactory_, statistics.weights_, outputIndices),
                           tmpVector_(outputIndices.getNumElements()), totalSumVector_(&totalSumVector) {}
 
                     /**
@@ -226,9 +225,9 @@ namespace boosting {
         protected:
 
             /**
-             * A reference to an object of template type `StatisticView` that stores the gradients and Hessians.
+             * A reference to an object of template type `State` that represents the state of the boosting process.
              */
-            const StatisticView& statisticView_;
+            const State& state_;
 
             /**
              * A reference to an object of template type `RuleEvaluationFactory` that is used to create instances of the
@@ -245,30 +244,30 @@ namespace boosting {
         public:
 
             /**
-             * @param statisticView         A reference to an object of template type `StatisticView` that provides
-             *                              access to the gradients and Hessians
+             * @param state                 A reference to an object of template type `State` that represents the state
+             *                              of the boosting process
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
              *                              allows to create instances of the class that should be used for calculating
              *                              the predictions of rules, as well as their overall quality
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
              */
-            AbstractStatisticsSpace(const StatisticView& statisticView,
-                                    const RuleEvaluationFactory& ruleEvaluationFactory, const WeightVector& weights)
-                : statisticView_(statisticView), ruleEvaluationFactory_(ruleEvaluationFactory), weights_(weights) {}
+            AbstractStatisticsSpace(const State& state, const RuleEvaluationFactory& ruleEvaluationFactory,
+                                    const WeightVector& weights)
+                : state_(state), ruleEvaluationFactory_(ruleEvaluationFactory), weights_(weights) {}
 
             /**
              * @see `IStatisticsSpace::getNumStatistics`
              */
             uint32 getNumStatistics() const override final {
-                return statisticView_.numRows;
+                return state_.statisticMatrixPtr->getNumRows();
             }
 
             /**
              * @see `IStatisticsSpace::getNumOutputs`
              */
             uint32 getNumOutputs() const override final {
-                return statisticView_.numCols;
+                return state_.statisticMatrixPtr->getNumCols();
             }
     };
 
@@ -302,18 +301,18 @@ namespace boosting {
      * Provides access to weighted gradients and Hessians that are calculated according to a loss function and allows to
      * update the gradients and Hessians after a new rule has been learned.
      *
+     * @tparam State                    The type of the state of the boosting process
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
-     * @tparam StatisticView            The type of the view that provides access to the gradients and Hessians
      * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
      *                                  used for calculating the predictions of rules, as well as corresponding quality
      *                                  scores
      * @tparam WeightVector             The type of the vector that provides access to the weights of individual
      *                                  statistics
      */
-    template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory, typename WeightVector>
+    template<typename State, typename StatisticVector, typename RuleEvaluationFactory, typename WeightVector>
     class WeightedStatistics final
         : virtual public IWeightedStatistics,
-          public AbstractStatisticsSpace<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector> {
+          public AbstractStatisticsSpace<State, StatisticVector, RuleEvaluationFactory, WeightVector> {
         private:
 
             /**
@@ -325,7 +324,7 @@ namespace boosting {
              */
             template<typename IndexVector>
             class StatisticsSubset final
-                : public AbstractStatisticsSpace<StatisticVector, StatisticView, RuleEvaluationFactory,
+                : public AbstractStatisticsSpace<State, StatisticVector, RuleEvaluationFactory,
                                                  WeightVector>::template AbstractStatisticsSubset<IndexVector> {
                 private:
 
@@ -347,7 +346,7 @@ namespace boosting {
                      */
                     StatisticsSubset(const WeightedStatistics& statistics, const StatisticVector& totalSumVector,
                                      const BinaryDokVector& excludedStatisticIndices, const IndexVector& outputIndices)
-                        : AbstractStatisticsSpace<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector>::
+                        : AbstractStatisticsSpace<State, StatisticVector, RuleEvaluationFactory, WeightVector>::
                             template AbstractStatisticsSubset<IndexVector>(statistics, totalSumVector, outputIndices) {
                         if (excludedStatisticIndices.getNumIndices() > 0) {
                             // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
@@ -359,7 +358,7 @@ namespace boosting {
                                 // Subtract the gradients and Hessians of the example at the given index (weighted by
                                 // the given weight) from the total sums of gradients and Hessians...
                                 uint32 statisticIndex = *it;
-                                removeStatisticInternally(this->weights_, this->statisticView_,
+                                removeStatisticInternally(this->weights_, this->state_.statisticMatrixPtr->getView(),
                                                           *totalCoverableSumVectorPtr_, statisticIndex);
                             }
                         }
@@ -371,23 +370,23 @@ namespace boosting {
         public:
 
             /**
-             * @param statisticView         A reference to an object of template type `StatisticView` that provides
-             *                              access to the gradients and Hessians
+             * @param state                 A reference to an object of template type `State` that represents the state
+             *                              of the boosting process
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
              *                              allows to create instances of the class that should be used for calculating
              *                              the predictions of rules, as well as their overall quality
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
              */
-            WeightedStatistics(const StatisticView& statisticView, const RuleEvaluationFactory& ruleEvaluationFactory,
+            WeightedStatistics(const State& state, const RuleEvaluationFactory& ruleEvaluationFactory,
                                const WeightVector& weights)
-                : AbstractStatisticsSpace<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector>(
-                    statisticView, ruleEvaluationFactory, weights),
-                  totalSumVectorPtr_(std::make_unique<StatisticVector>(statisticView.numCols, true)) {
+                : AbstractStatisticsSpace<State, StatisticVector, RuleEvaluationFactory, WeightVector>(
+                    state, ruleEvaluationFactory, weights),
+                  totalSumVectorPtr_(std::make_unique<StatisticVector>(state.statisticMatrixPtr->getNumCols(), true)) {
                 uint32 numStatistics = weights.getNumElements();
 
                 for (uint32 i = 0; i < numStatistics; i++) {
-                    addStatisticInternally(weights, statisticView, *totalSumVectorPtr_, i);
+                    addStatisticInternally(weights, state.statisticMatrixPtr->getView(), *totalSumVectorPtr_, i);
                 }
             }
 
@@ -395,8 +394,8 @@ namespace boosting {
              * @param statistics A reference to an object of type `WeightedStatistics` to be copied
              */
             WeightedStatistics(const WeightedStatistics& statistics)
-                : AbstractStatisticsSpace<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector>(
-                    statistics.statisticView_, statistics.ruleEvaluationFactory_, statistics.weights_),
+                : AbstractStatisticsSpace<State, StatisticVector, RuleEvaluationFactory, WeightVector>(
+                    statistics.state_, statistics.ruleEvaluationFactory_, statistics.weights_),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(*statistics.totalSumVectorPtr_)) {}
 
             /**
@@ -404,7 +403,7 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> copy() const override {
                 return std::make_unique<
-                  WeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector>>(*this);
+                  WeightedStatistics<State, StatisticVector, RuleEvaluationFactory, WeightVector>>(*this);
             }
 
             /**
@@ -418,14 +417,16 @@ namespace boosting {
              * @see `IWeightedStatistics::addCoveredStatistic`
              */
             void addCoveredStatistic(uint32 statisticIndex) override {
-                addStatisticInternally(this->weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
+                addStatisticInternally(this->weights_, this->state_.statisticMatrixPtr->getView(), *totalSumVectorPtr_,
+                                       statisticIndex);
             }
 
             /**
              * @see `IWeightedStatistics::removeCoveredStatistic`
              */
             void removeCoveredStatistic(uint32 statisticIndex) override {
-                removeStatisticInternally(this->weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
+                removeStatisticInternally(this->weights_, this->state_.statisticMatrixPtr->getView(),
+                                          *totalSumVectorPtr_, statisticIndex);
             }
 
             /**
