@@ -449,20 +449,6 @@ namespace boosting {
             }
     };
 
-    template<typename Prediction, typename ScoreMatrix>
-    static inline void applyPredictionInternally(uint32 statisticIndex, const Prediction& prediction,
-                                                 ScoreMatrix& scoreMatrix) {
-        scoreMatrix.addToRowFromSubset(statisticIndex, prediction.values_cbegin(), prediction.values_cend(),
-                                       prediction.indices_cbegin(), prediction.indices_cend());
-    }
-
-    template<typename Prediction, typename ScoreMatrix>
-    static inline void revertPredictionInternally(uint32 statisticIndex, const Prediction& prediction,
-                                                  ScoreMatrix& scoreMatrix) {
-        scoreMatrix.removeFromRowFromSubset(statisticIndex, prediction.values_cbegin(), prediction.values_cend(),
-                                            prediction.indices_cbegin(), prediction.indices_cend());
-    }
-
     /**
      * An abstract base class for all statistics that provide access to gradients and Hessians that are calculated
      * according to a loss function.
@@ -500,15 +486,13 @@ namespace boosting {
                     Update(State& state, const Prediction& prediction) : state_(state), prediction_(prediction) {}
 
                     void applyPrediction(uint32 statisticIndex) override {
-                        applyPredictionInternally(statisticIndex, prediction_, *state_.scoreMatrixPtr);
-                        state_.updateStatistics(statisticIndex, prediction_.indices_cbegin(),
-                                                prediction_.indices_cend());
+                        state_.update(statisticIndex, prediction_.values_cbegin(), prediction_.values_cend(),
+                                      prediction_.indices_cbegin(), prediction_.indices_cend());
                     }
 
                     void revertPrediction(uint32 statisticIndex) override {
-                        revertPredictionInternally(statisticIndex, prediction_, *state_.scoreMatrixPtr);
-                        state_.updateStatistics(statisticIndex, prediction_.indices_cbegin(),
-                                                prediction_.indices_cend());
+                        state_.revert(statisticIndex, prediction_.values_cbegin(), prediction_.values_cend(),
+                                      prediction_.indices_cbegin(), prediction_.indices_cend());
                     }
             };
 
