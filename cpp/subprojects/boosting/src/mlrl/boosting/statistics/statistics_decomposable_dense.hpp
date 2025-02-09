@@ -97,7 +97,8 @@ namespace boosting {
                 return std::make_unique<
                   StatisticsSubset<DenseDecomposableStatisticVector, DenseDecomposableStatisticMatrix::view_type,
                                    IDecomposableRuleEvaluationFactory, EqualWeightVector, CompleteIndexVector>>(
-                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->statisticMatrixPtr->getView(), *this->ruleEvaluationFactory_, weights,
+                  outputIndices);
             }
 
             /**
@@ -108,7 +109,8 @@ namespace boosting {
                 return std::make_unique<
                   StatisticsSubset<DenseDecomposableStatisticVector, DenseDecomposableStatisticMatrix::view_type,
                                    IDecomposableRuleEvaluationFactory, EqualWeightVector, PartialIndexVector>>(
-                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->statisticMatrixPtr->getView(), *this->ruleEvaluationFactory_, weights,
+                  outputIndices);
             }
 
             /**
@@ -119,7 +121,8 @@ namespace boosting {
                 return std::make_unique<
                   StatisticsSubset<DenseDecomposableStatisticVector, DenseDecomposableStatisticMatrix::view_type,
                                    IDecomposableRuleEvaluationFactory, BitWeightVector, CompleteIndexVector>>(
-                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->statisticMatrixPtr->getView(), *this->ruleEvaluationFactory_, weights,
+                  outputIndices);
             }
 
             /**
@@ -130,7 +133,8 @@ namespace boosting {
                 return std::make_unique<
                   StatisticsSubset<DenseDecomposableStatisticVector, DenseDecomposableStatisticMatrix::view_type,
                                    IDecomposableRuleEvaluationFactory, BitWeightVector, PartialIndexVector>>(
-                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->statisticMatrixPtr->getView(), *this->ruleEvaluationFactory_, weights,
+                  outputIndices);
             }
 
             /**
@@ -141,7 +145,8 @@ namespace boosting {
                 return std::make_unique<
                   StatisticsSubset<DenseDecomposableStatisticVector, DenseDecomposableStatisticMatrix::view_type,
                                    IDecomposableRuleEvaluationFactory, DenseWeightVector<uint32>, CompleteIndexVector>>(
-                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->statisticMatrixPtr->getView(), *this->ruleEvaluationFactory_, weights,
+                  outputIndices);
             }
 
             /**
@@ -152,7 +157,8 @@ namespace boosting {
                 return std::make_unique<
                   StatisticsSubset<DenseDecomposableStatisticVector, DenseDecomposableStatisticMatrix::view_type,
                                    IDecomposableRuleEvaluationFactory, DenseWeightVector<uint32>, PartialIndexVector>>(
-                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->statisticMatrixPtr->getView(), *this->ruleEvaluationFactory_, weights,
+                  outputIndices);
             }
 
             /**
@@ -164,7 +170,8 @@ namespace boosting {
                 return std::make_unique<StatisticsSubset<
                   DenseDecomposableStatisticVector, DenseDecomposableStatisticMatrix::view_type,
                   IDecomposableRuleEvaluationFactory, DenseWeightVector<float32>, CompleteIndexVector>>(
-                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->statisticMatrixPtr->getView(), *this->ruleEvaluationFactory_, weights,
+                  outputIndices);
             }
 
             /**
@@ -175,7 +182,8 @@ namespace boosting {
                 return std::make_unique<
                   StatisticsSubset<DenseDecomposableStatisticVector, DenseDecomposableStatisticMatrix::view_type,
                                    IDecomposableRuleEvaluationFactory, DenseWeightVector<float32>, PartialIndexVector>>(
-                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->statisticMatrixPtr->getView(), *this->ruleEvaluationFactory_, weights,
+                  outputIndices);
             }
 
             /**
@@ -187,7 +195,8 @@ namespace boosting {
                 return std::make_unique<StatisticsSubset<
                   DenseDecomposableStatisticVector, DenseDecomposableStatisticMatrix::view_type,
                   IDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<EqualWeightVector>, CompleteIndexVector>>(
-                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->statisticMatrixPtr->getView(), *this->ruleEvaluationFactory_, weights,
+                  outputIndices);
             }
 
             /**
@@ -199,7 +208,8 @@ namespace boosting {
                 return std::make_unique<StatisticsSubset<
                   DenseDecomposableStatisticVector, DenseDecomposableStatisticMatrix::view_type,
                   IDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<EqualWeightVector>, PartialIndexVector>>(
-                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->statisticMatrixPtr->getView(), *this->ruleEvaluationFactory_, weights,
+                  outputIndices);
             }
 
             /**
@@ -211,7 +221,8 @@ namespace boosting {
                 return std::make_unique<StatisticsSubset<
                   DenseDecomposableStatisticVector, DenseDecomposableStatisticMatrix::view_type,
                   IDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<BitWeightVector>, CompleteIndexVector>>(
-                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->statisticMatrixPtr->getView(), *this->ruleEvaluationFactory_, weights,
+                  outputIndices);
             }
 
             /**
@@ -223,7 +234,8 @@ namespace boosting {
                 return std::make_unique<StatisticsSubset<
                   DenseDecomposableStatisticVector, DenseDecomposableStatisticMatrix::view_type,
                   IDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<BitWeightVector>, PartialIndexVector>>(
-                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->statisticMatrixPtr->getView(), *this->ruleEvaluationFactory_, weights,
+                  outputIndices);
             }
 
             /**
@@ -236,7 +248,8 @@ namespace boosting {
                   StatisticsSubset<DenseDecomposableStatisticVector, DenseDecomposableStatisticMatrix::view_type,
                                    IDecomposableRuleEvaluationFactory,
                                    OutOfSampleWeightVector<DenseWeightVector<uint32>>, CompleteIndexVector>>(
-                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->statisticMatrixPtr->getView(), *this->ruleEvaluationFactory_, weights,
+                  outputIndices);
             }
 
             /**
@@ -249,7 +262,8 @@ namespace boosting {
                   StatisticsSubset<DenseDecomposableStatisticVector, DenseDecomposableStatisticMatrix::view_type,
                                    IDecomposableRuleEvaluationFactory,
                                    OutOfSampleWeightVector<DenseWeightVector<uint32>>, PartialIndexVector>>(
-                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->statisticMatrixPtr->getView(), *this->ruleEvaluationFactory_, weights,
+                  outputIndices);
             }
 
             /**
@@ -262,7 +276,8 @@ namespace boosting {
                   StatisticsSubset<DenseDecomposableStatisticVector, DenseDecomposableStatisticMatrix::view_type,
                                    IDecomposableRuleEvaluationFactory,
                                    OutOfSampleWeightVector<DenseWeightVector<float32>>, CompleteIndexVector>>(
-                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->statisticMatrixPtr->getView(), *this->ruleEvaluationFactory_, weights,
+                  outputIndices);
             }
 
             /**
@@ -275,7 +290,8 @@ namespace boosting {
                   StatisticsSubset<DenseDecomposableStatisticVector, DenseDecomposableStatisticMatrix::view_type,
                                    IDecomposableRuleEvaluationFactory,
                                    OutOfSampleWeightVector<DenseWeightVector<float32>>, PartialIndexVector>>(
-                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->statisticMatrixPtr->getView(), *this->ruleEvaluationFactory_, weights,
+                  outputIndices);
             }
 
             /**
@@ -286,7 +302,7 @@ namespace boosting {
                 return std::make_unique<
                   WeightedStatistics<DenseDecomposableStatisticVector, DenseDecomposableStatisticMatrix::view_type,
                                      IDecomposableRuleEvaluationFactory, EqualWeightVector>>(
-                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights);
+                  this->statePtr_->statisticMatrixPtr->getView(), *this->ruleEvaluationFactory_, weights);
             }
 
             /**
@@ -297,7 +313,7 @@ namespace boosting {
                 return std::make_unique<
                   WeightedStatistics<DenseDecomposableStatisticVector, DenseDecomposableStatisticMatrix::view_type,
                                      IDecomposableRuleEvaluationFactory, BitWeightVector>>(
-                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights);
+                  this->statePtr_->statisticMatrixPtr->getView(), *this->ruleEvaluationFactory_, weights);
             }
 
             /**
@@ -308,7 +324,7 @@ namespace boosting {
                 return std::make_unique<
                   WeightedStatistics<DenseDecomposableStatisticVector, DenseDecomposableStatisticMatrix::view_type,
                                      IDecomposableRuleEvaluationFactory, DenseWeightVector<uint32>>>(
-                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights);
+                  this->statePtr_->statisticMatrixPtr->getView(), *this->ruleEvaluationFactory_, weights);
             }
 
             /**
@@ -319,7 +335,7 @@ namespace boosting {
                 return std::make_unique<
                   WeightedStatistics<DenseDecomposableStatisticVector, DenseDecomposableStatisticMatrix::view_type,
                                      IDecomposableRuleEvaluationFactory, DenseWeightVector<float32>>>(
-                  this->statisticMatrixPtr_->getView(), *this->ruleEvaluationFactory_, weights);
+                  this->statePtr_->statisticMatrixPtr->getView(), *this->ruleEvaluationFactory_, weights);
             }
 
             /**
@@ -327,7 +343,7 @@ namespace boosting {
              */
             void visitScoreMatrix(IBoostingStatistics::DenseScoreMatrixVisitor denseVisitor,
                                   IBoostingStatistics::SparseScoreMatrixVisitor sparseVisitor) const override {
-                denseVisitor(this->scoreMatrixPtr_->getView());
+                denseVisitor(this->statePtr_->scoreMatrixPtr->getView());
             }
     };
 
