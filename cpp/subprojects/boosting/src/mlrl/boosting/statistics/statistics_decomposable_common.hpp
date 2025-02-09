@@ -5,22 +5,9 @@
 
 #include "mlrl/boosting/statistics/statistics_decomposable.hpp"
 #include "statistics_common.hpp"
-
-#include <memory>
-#include <utility>
+#include "statistics_state_decomposable.hpp"
 
 namespace boosting {
-
-    template<typename Prediction, typename OutputMatrix, typename StatisticView, typename ScoreMatrix,
-             typename LossFunction>
-    static inline void updateDecomposableStatisticsInternally(uint32 statisticIndex, const Prediction& prediction,
-                                                              const OutputMatrix& outputMatrix,
-                                                              StatisticView& statisticView, ScoreMatrix& scoreMatrix,
-                                                              const LossFunction& lossFunction) {
-        lossFunction.updateDecomposableStatistics(statisticIndex, outputMatrix, scoreMatrix,
-                                                  prediction.indices_cbegin(), prediction.indices_cend(),
-                                                  statisticView);
-    }
 
     /**
      * An abstract base class for all statistics that provide access to gradients and Hessians that are calculated
@@ -40,23 +27,10 @@ namespace boosting {
     template<typename OutputMatrix, typename StatisticMatrix, typename ScoreMatrix, typename LossFunction,
              typename EvaluationMeasure, typename RuleEvaluationFactory>
     class AbstractDecomposableStatistics
-        : public AbstractStatistics<OutputMatrix, StatisticMatrix, ScoreMatrix, LossFunction, EvaluationMeasure,
-                                    RuleEvaluationFactory>,
+        : public AbstractStatistics<
+            DecomposableStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, LossFunction>, EvaluationMeasure,
+            RuleEvaluationFactory>,
           virtual public IDecomposableStatistics<RuleEvaluationFactory> {
-        protected:
-
-            void updateStatistics(uint32 statisticIndex, const CompletePrediction& prediction) override final {
-                updateDecomposableStatisticsInternally(statisticIndex, prediction, this->outputMatrix_,
-                                                       this->statisticMatrixPtr_->getView(),
-                                                       this->scoreMatrixPtr_->getView(), *(this->lossPtr_));
-            }
-
-            void updateStatistics(uint32 statisticIndex, const PartialPrediction& prediction) override final {
-                updateDecomposableStatisticsInternally(statisticIndex, prediction, this->outputMatrix_,
-                                                       this->statisticMatrixPtr_->getView(),
-                                                       this->scoreMatrixPtr_->getView(), *(this->lossPtr_));
-            }
-
         public:
 
             /**
@@ -82,10 +56,13 @@ namespace boosting {
                                            const OutputMatrix& outputMatrix,
                                            std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                                            std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
-                : AbstractStatistics<OutputMatrix, StatisticMatrix, ScoreMatrix, LossFunction, EvaluationMeasure,
-                                     RuleEvaluationFactory>(std::move(lossPtr), std::move(evaluationMeasurePtr),
-                                                            ruleEvaluationFactory, outputMatrix,
-                                                            std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
+                : AbstractStatistics<
+                    DecomposableStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, LossFunction>,
+                    EvaluationMeasure, RuleEvaluationFactory>(
+                    std::make_unique<
+                      DecomposableStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, LossFunction>>(
+                      outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr), std::move(lossPtr)),
+                    std::move(evaluationMeasurePtr), ruleEvaluationFactory) {}
 
             /**
              * @see `IDecomposableStatistics::setRuleEvaluationFactory`

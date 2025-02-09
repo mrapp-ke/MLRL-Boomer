@@ -466,24 +466,19 @@ namespace boosting {
      * An abstract base class for all statistics that provide access to gradients and Hessians that are calculated
      * according to a loss function.
      *
-     * @tparam OutputMatrix             The type of the matrix that provides access to the ground truth of the training
-     *                                  examples
-     * @tparam StatisticMatrix          The type of the matrix that provides access to the gradients and Hessians
-     * @tparam ScoreMatrix              The type of the matrix that is used to store predicted scores
-     * @tparam LossFunction             The type of the loss function that is used to calculate gradients and Hessians
+     * @tparam State                    The type of the state of the boosting process
      * @tparam EvaluationMeasure        The type of the evaluation measure that is used to assess the quality of
      *                                  predictions for a specific statistic
      * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
      *                                  used for calculating the predictions of rules, as well as corresponding quality
      *                                  scores
      */
-    template<typename OutputMatrix, typename StatisticMatrix, typename ScoreMatrix, typename LossFunction,
-             typename EvaluationMeasure, typename RuleEvaluationFactory>
+    template<typename State, typename EvaluationMeasure, typename RuleEvaluationFactory>
     class AbstractStatistics : virtual public IBoostingStatistics {
         private:
 
             /**
-             * Allows updating statistics based on the predictions of a rule.
+             * Allows updating the state of statistics based on the predictions of a rule.
              *
              * @tparam Prediction The type of the predictions
              */
@@ -491,36 +486,37 @@ namespace boosting {
             class Update final : public IStatisticsUpdate {
                 private:
 
-                    AbstractStatistics& statistics_;
+                    State& state_;
 
                     const Prediction& prediction_;
 
                 public:
 
                     /**
-                     * @param statistics    A reference to an object of type `AbstractStatistics` that should be used
+                     * @param state         A reference to an object of template type `State` that should be updated
                      * @param prediction    The predictions of the rule
                      */
-                    Update(AbstractStatistics& statistics, const Prediction& prediction)
-                        : statistics_(statistics), prediction_(prediction) {}
+                    Update(State& state, const Prediction& prediction) : state_(state), prediction_(prediction) {}
 
                     void applyPrediction(uint32 statisticIndex) override {
-                        applyPredictionInternally(statisticIndex, prediction_, *statistics_.scoreMatrixPtr_);
-                        statistics_.updateStatistics(statisticIndex, prediction_);
+                        applyPredictionInternally(statisticIndex, prediction_, *state_.scoreMatrixPtr);
+                        state_.updateStatistics(statisticIndex, prediction_.indices_cbegin(),
+                                                prediction_.indices_cend());
                     }
 
                     void revertPrediction(uint32 statisticIndex) override {
-                        revertPredictionInternally(statisticIndex, prediction_, *statistics_.scoreMatrixPtr_);
-                        statistics_.updateStatistics(statisticIndex, prediction_);
+                        revertPredictionInternally(statisticIndex, prediction_, *state_.scoreMatrixPtr);
+                        state_.updateStatistics(statisticIndex, prediction_.indices_cbegin(),
+                                                prediction_.indices_cend());
                     }
             };
 
         protected:
 
             /**
-             * An unique pointer to the loss function that should be used for calculating gradients and Hessians.
+             * An unique pointer to the state of the boosting process.
              */
-            std::unique_ptr<LossFunction> lossPtr_;
+            const std::unique_ptr<State> statePtr_;
 
             /**
              * An unique pointer to the evaluation measure that should be used to assess the quality of predictions for
@@ -534,94 +530,57 @@ namespace boosting {
              */
             const RuleEvaluationFactory* ruleEvaluationFactory_;
 
-            /**
-             * The output matrix that provides access to the ground truth of the training examples.
-             */
-            const OutputMatrix& outputMatrix_;
-
-            /**
-             * An unique pointer to an object of template type `StatisticMatrix` that stores the gradients and Hessians.
-             */
-            const std::unique_ptr<StatisticMatrix> statisticMatrixPtr_;
-
-            /**
-             * An unique pointer to an object of template type `ScoreMatrix` that stores the currently predicted scores.
-             */
-            std::unique_ptr<ScoreMatrix> scoreMatrixPtr_;
-
-            /**
-             * Must be implemented by subclasses in order to update the statistics for all available outputs at a
-             * specific index.
-             */
-            virtual void updateStatistics(uint32 statisticIndex, const CompletePrediction& prediction) = 0;
-
-            /**
-             * Must be implemented by subclasses in order to update the statistics for a subset of the available outputs
-             * at a specific index.
-             */
-            virtual void updateStatistics(uint32 statisticIndex, const PartialPrediction& prediction) = 0;
-
         public:
 
             /**
-             * @param lossPtr               An unique pointer to an object of template type `LossFunction` that
-             *                              implements the loss function that should be used for calculating gradients
-             *                              and Hessians
+             * @param statePtr              An unique pointer to an object of template type `State` that represents the
+             *                              state of the boosting process and allows to update it
              * @param evaluationMeasurePtr  An unique pointer to an object of template type `EvaluationMeasure` that
              *                              implements the evaluation measure that should be used to assess the quality
              *                              of predictions for a specific statistic
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
              *                              allows to create instances of the class that should be used for calculating
              *                              the predictions of rules, as well as their overall quality
-             * @param outputMatrix          A reference to an object of template type `OutputMatrix` that provides
-             *                              access to the ground truth of the training examples
-             * @param statisticMatrixPtr    An unique pointer to an object of template type `StatisticMatrix` that
-             *                              provides access to the gradients and Hessians
-             * @param scoreMatrixPtr        An unique pointer to an object of template type `ScoreMatrix` that stores
-             *                              the currently predicted scores
              */
-            AbstractStatistics(std::unique_ptr<LossFunction> lossPtr,
-                               std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
-                               const RuleEvaluationFactory& ruleEvaluationFactory, const OutputMatrix& outputMatrix,
-                               std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
-                               std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
-                : lossPtr_(std::move(lossPtr)), evaluationMeasurePtr_(std::move(evaluationMeasurePtr)),
-                  ruleEvaluationFactory_(&ruleEvaluationFactory), outputMatrix_(outputMatrix),
-                  statisticMatrixPtr_(std::move(statisticMatrixPtr)), scoreMatrixPtr_(std::move(scoreMatrixPtr)) {}
+            AbstractStatistics(std::unique_ptr<State> statePtr, std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
+                               const RuleEvaluationFactory& ruleEvaluationFactory)
+                : statePtr_(std::move(statePtr)), evaluationMeasurePtr_(std::move(evaluationMeasurePtr)),
+                  ruleEvaluationFactory_(&ruleEvaluationFactory) {}
 
             /**
              * @see `IStatistics::getNumStatistics`
              */
             uint32 getNumStatistics() const override final {
-                return statisticMatrixPtr_->getNumRows();
+                return statePtr_->statisticMatrixPtr->getNumRows();
             }
 
             /**
              * @see `IStatistics::getNumOutputs`
              */
             uint32 getNumOutputs() const override final {
-                return statisticMatrixPtr_->getNumCols();
+                return statePtr_->statisticMatrixPtr->getNumCols();
             }
 
             /**
              * @see `IStatistics::createUpdate`
              */
             std::unique_ptr<IStatisticsUpdate> createUpdate(const CompletePrediction& prediction) override final {
-                return std::make_unique<Update<CompletePrediction>>(*this, prediction);
+                return std::make_unique<Update<CompletePrediction>>(*statePtr_, prediction);
             }
 
             /**
              * @see `IStatistics::createUpdate`
              */
             std::unique_ptr<IStatisticsUpdate> createUpdate(const PartialPrediction& prediction) override final {
-                return std::make_unique<Update<PartialPrediction>>(*this, prediction);
+                return std::make_unique<Update<PartialPrediction>>(*statePtr_, prediction);
             }
 
             /**
              * @see `IStatistics::evaluatePrediction`
              */
             float64 evaluatePrediction(uint32 statisticIndex) const override final {
-                return evaluationMeasurePtr_->evaluate(statisticIndex, outputMatrix_, scoreMatrixPtr_->getView());
+                return evaluationMeasurePtr_->evaluate(statisticIndex, statePtr_->outputMatrix,
+                                                       statePtr_->scoreMatrixPtr->getView());
             }
     };
 

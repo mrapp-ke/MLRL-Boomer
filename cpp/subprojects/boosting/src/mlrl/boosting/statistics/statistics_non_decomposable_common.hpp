@@ -5,20 +5,9 @@
 
 #include "mlrl/boosting/statistics/statistics_non_decomposable.hpp"
 #include "statistics_common.hpp"
-
-#include <memory>
-#include <utility>
+#include "statistics_state_non_decomposable.hpp"
 
 namespace boosting {
-
-    template<typename OutputMatrix, typename StatisticView, typename ScoreMatrix, typename LossFunction>
-    static inline void updateNonDecomposableStatisticsInternally(uint32 statisticIndex,
-                                                                 const OutputMatrix& outputMatrix,
-                                                                 StatisticView& statisticView, ScoreMatrix& scoreMatrix,
-                                                                 const LossFunction& lossFunction) {
-        lossFunction.updateNonDecomposableStatistics(statisticIndex, outputMatrix, scoreMatrix.getView(),
-                                                     statisticView);
-    }
 
     /**
      * An abstract base class for all statistics that provide access to gradients and Hessians that are calculated
@@ -45,24 +34,11 @@ namespace boosting {
              typename EvaluationMeasure, typename NonDecomposableRuleEvaluationFactory,
              typename DecomposableRuleEvaluationFactory>
     class AbstractNonDecomposableStatistics
-        : public AbstractStatistics<OutputMatrix, StatisticMatrix, ScoreMatrix, LossFunction, EvaluationMeasure,
-                                    NonDecomposableRuleEvaluationFactory>,
+        : public AbstractStatistics<
+            NonDecomposableStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, LossFunction>, EvaluationMeasure,
+            NonDecomposableRuleEvaluationFactory>,
           virtual public INonDecomposableStatistics<NonDecomposableRuleEvaluationFactory,
                                                     DecomposableRuleEvaluationFactory> {
-        protected:
-
-            void updateStatistics(uint32 statisticIndex, const CompletePrediction& prediction) override final {
-                updateNonDecomposableStatisticsInternally(statisticIndex, this->outputMatrix_,
-                                                          this->statisticMatrixPtr_->getView(),
-                                                          *(this->scoreMatrixPtr_), *(this->lossPtr_));
-            }
-
-            void updateStatistics(uint32 statisticIndex, const PartialPrediction& prediction) override final {
-                updateNonDecomposableStatisticsInternally(statisticIndex, this->outputMatrix_,
-                                                          this->statisticMatrixPtr_->getView(),
-                                                          *(this->scoreMatrixPtr_), *(this->lossPtr_));
-            }
-
         public:
 
             /**
@@ -89,10 +65,13 @@ namespace boosting {
                                               const OutputMatrix& outputMatrix,
                                               std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                                               std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
-                : AbstractStatistics<OutputMatrix, StatisticMatrix, ScoreMatrix, LossFunction, EvaluationMeasure,
-                                     NonDecomposableRuleEvaluationFactory>(
-                    std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
-                    std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
+                : AbstractStatistics<
+                    NonDecomposableStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, LossFunction>,
+                    EvaluationMeasure, NonDecomposableRuleEvaluationFactory>(
+                    std::make_unique<
+                      NonDecomposableStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, LossFunction>>(
+                      outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr), std::move(lossPtr)),
+                    std::move(evaluationMeasurePtr), ruleEvaluationFactory) {}
 
             /**
              * @see `INonDecomposableStatistics::setRuleEvaluationFactory`
