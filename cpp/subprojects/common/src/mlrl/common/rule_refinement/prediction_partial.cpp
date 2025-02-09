@@ -145,10 +145,6 @@ std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(
     return statistics.createSubset(indexVector_, weights);
 }
 
-std::unique_ptr<IStatisticsUpdate> PartialPrediction::createStatisticsUpdate(IStatistics& statistics) const {
-    return statistics.createUpdate(*this);
-}
-
 void PartialPrediction::applyPrediction(uint32 statisticIndex) {
     statisticsUpdatePtr_->applyPrediction(statisticIndex);
 }

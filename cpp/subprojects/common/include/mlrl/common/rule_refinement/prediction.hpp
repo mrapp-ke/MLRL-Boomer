@@ -41,15 +41,6 @@ class IPrediction : public IIndexVector,
         virtual void postProcess(const IPostProcessor& postProcessor) = 0;
 
         /**
-         * Creates and returns an object of type `IStatisticsUpdate` that allows updating given `IStatistics` based on
-         * this prediction.
-         *
-         * @param statistics  A reference to an object of type `IStatistics` that should be updated
-         * @return            An unique pointer to an object of type `IStatisticsUpdate` that has been created
-         */
-        virtual std::unique_ptr<IStatisticsUpdate> createStatisticsUpdate(IStatistics& statistics) const = 0;
-
-        /**
          * Creates and returns a new subset of the given statistics that only contains the outputs whose indices are
          * stored in this vector.
          *

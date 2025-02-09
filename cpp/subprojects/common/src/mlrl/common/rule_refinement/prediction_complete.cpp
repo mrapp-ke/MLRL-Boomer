@@ -97,10 +97,6 @@ std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
     return statistics.createSubset(indexVector_, weights);
 }
 
-std::unique_ptr<IStatisticsUpdate> CompletePrediction::createStatisticsUpdate(IStatistics& statistics) const {
-    return statistics.createUpdate(*this);
-}
-
 void CompletePrediction::applyPrediction(uint32 statisticIndex) {
     statisticsUpdatePtr_->applyPrediction(statisticIndex);
 }

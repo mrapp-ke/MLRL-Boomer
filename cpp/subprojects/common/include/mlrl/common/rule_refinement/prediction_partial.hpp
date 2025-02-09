@@ -163,8 +163,6 @@ class PartialPrediction final : public VectorDecorator<ResizableVector<float64>>
           const IStatistics& statistics,
           const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override;
 
-        std::unique_ptr<IStatisticsUpdate> createStatisticsUpdate(IStatistics& statistics) const override;
-
         void applyPrediction(uint32 statisticIndex) override;
 
         void revertPrediction(uint32 statisticIndex) override;

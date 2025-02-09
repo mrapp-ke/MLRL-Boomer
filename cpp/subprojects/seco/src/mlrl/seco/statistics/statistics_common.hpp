@@ -583,20 +583,6 @@ namespace seco {
             }
 
             /**
-             * @see `IStatistics::createUpdate`
-             */
-            std::unique_ptr<IStatisticsUpdate> createUpdate(const CompletePrediction& prediction) override final {
-                return std::make_unique<Update<CompletePrediction>>(*statePtr_, prediction);
-            }
-
-            /**
-             * @see `IStatistics::createUpdate`
-             */
-            std::unique_ptr<IStatisticsUpdate> createUpdate(const PartialPrediction& prediction) override final {
-                return std::make_unique<Update<PartialPrediction>>(*statePtr_, prediction);
-            }
-
-            /**
              * @see `IStatistics::evaluatePrediction`
              */
             float64 evaluatePrediction(uint32 statisticIndex) const override final {
