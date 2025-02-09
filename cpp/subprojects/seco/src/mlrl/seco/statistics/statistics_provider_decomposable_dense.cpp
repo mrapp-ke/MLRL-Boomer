@@ -56,8 +56,8 @@ namespace seco {
                 return createStatisticsSubsetInternally<
                   LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
                   IDecomposableRuleEvaluationFactory, EqualWeightVector, CompleteIndexVector>(
-                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
-                  *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->labelMatrix, *this->statePtr_->coverageMatrixPtr,
+                  *this->statePtr_->majorityLabelVectorPtr, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -68,8 +68,8 @@ namespace seco {
                 return createStatisticsSubsetInternally<
                   LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
                   IDecomposableRuleEvaluationFactory, EqualWeightVector, PartialIndexVector>(
-                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
-                  *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->labelMatrix, *this->statePtr_->coverageMatrixPtr,
+                  *this->statePtr_->majorityLabelVectorPtr, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -80,8 +80,8 @@ namespace seco {
                 return createStatisticsSubsetInternally<
                   LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
                   IDecomposableRuleEvaluationFactory, BitWeightVector, CompleteIndexVector>(
-                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
-                  *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->labelMatrix, *this->statePtr_->coverageMatrixPtr,
+                  *this->statePtr_->majorityLabelVectorPtr, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -92,8 +92,8 @@ namespace seco {
                 return createStatisticsSubsetInternally<
                   LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
                   IDecomposableRuleEvaluationFactory, BitWeightVector, PartialIndexVector>(
-                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
-                  *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->labelMatrix, *this->statePtr_->coverageMatrixPtr,
+                  *this->statePtr_->majorityLabelVectorPtr, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -104,8 +104,8 @@ namespace seco {
                 return createStatisticsSubsetInternally<
                   LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
                   IDecomposableRuleEvaluationFactory, DenseWeightVector<uint32>, CompleteIndexVector>(
-                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
-                  *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->labelMatrix, *this->statePtr_->coverageMatrixPtr,
+                  *this->statePtr_->majorityLabelVectorPtr, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -116,8 +116,8 @@ namespace seco {
                 return createStatisticsSubsetInternally<
                   LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
                   IDecomposableRuleEvaluationFactory, DenseWeightVector<uint32>, PartialIndexVector>(
-                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
-                  *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->labelMatrix, *this->statePtr_->coverageMatrixPtr,
+                  *this->statePtr_->majorityLabelVectorPtr, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -128,8 +128,8 @@ namespace seco {
                 return createStatisticsSubsetInternally<
                   LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<float32>,
                   IDecomposableRuleEvaluationFactory, DenseWeightVector<float32>, CompleteIndexVector>(
-                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
-                  *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->labelMatrix, *this->statePtr_->coverageMatrixPtr,
+                  *this->statePtr_->majorityLabelVectorPtr, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -140,8 +140,8 @@ namespace seco {
                 return createStatisticsSubsetInternally<
                   LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<float32>,
                   IDecomposableRuleEvaluationFactory, DenseWeightVector<float32>, PartialIndexVector>(
-                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
-                  *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->labelMatrix, *this->statePtr_->coverageMatrixPtr,
+                  *this->statePtr_->majorityLabelVectorPtr, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -153,8 +153,8 @@ namespace seco {
                 return createStatisticsSubsetInternally<
                   LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
                   IDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<EqualWeightVector>, CompleteIndexVector>(
-                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
-                  *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->labelMatrix, *this->statePtr_->coverageMatrixPtr,
+                  *this->statePtr_->majorityLabelVectorPtr, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -166,8 +166,8 @@ namespace seco {
                 return createStatisticsSubsetInternally<
                   LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
                   IDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<EqualWeightVector>, PartialIndexVector>(
-                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
-                  *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->labelMatrix, *this->statePtr_->coverageMatrixPtr,
+                  *this->statePtr_->majorityLabelVectorPtr, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -179,8 +179,8 @@ namespace seco {
                 return createStatisticsSubsetInternally<
                   LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
                   IDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<BitWeightVector>, CompleteIndexVector>(
-                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
-                  *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->labelMatrix, *this->statePtr_->coverageMatrixPtr,
+                  *this->statePtr_->majorityLabelVectorPtr, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -192,8 +192,8 @@ namespace seco {
                 return createStatisticsSubsetInternally<
                   LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
                   IDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<BitWeightVector>, PartialIndexVector>(
-                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
-                  *this->ruleEvaluationFactory_, weights, outputIndices);
+                  this->statePtr_->labelMatrix, *this->statePtr_->coverageMatrixPtr,
+                  *this->statePtr_->majorityLabelVectorPtr, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
@@ -205,8 +205,9 @@ namespace seco {
                 return createStatisticsSubsetInternally<
                   LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
                   IDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<DenseWeightVector<uint32>>,
-                  CompleteIndexVector>(this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
-                                       *this->ruleEvaluationFactory_, weights, outputIndices);
+                  CompleteIndexVector>(this->statePtr_->labelMatrix, *this->statePtr_->coverageMatrixPtr,
+                                       *this->statePtr_->majorityLabelVectorPtr, *this->ruleEvaluationFactory_, weights,
+                                       outputIndices);
             }
 
             /**
@@ -218,8 +219,9 @@ namespace seco {
                 return createStatisticsSubsetInternally<
                   LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
                   IDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<DenseWeightVector<uint32>>,
-                  PartialIndexVector>(this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
-                                      *this->ruleEvaluationFactory_, weights, outputIndices);
+                  PartialIndexVector>(this->statePtr_->labelMatrix, *this->statePtr_->coverageMatrixPtr,
+                                      *this->statePtr_->majorityLabelVectorPtr, *this->ruleEvaluationFactory_, weights,
+                                      outputIndices);
             }
 
             /**
@@ -231,8 +233,9 @@ namespace seco {
                 return createStatisticsSubsetInternally<
                   LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
                   IDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<DenseWeightVector<float32>>,
-                  CompleteIndexVector>(this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
-                                       *this->ruleEvaluationFactory_, weights, outputIndices);
+                  CompleteIndexVector>(this->statePtr_->labelMatrix, *this->statePtr_->coverageMatrixPtr,
+                                       *this->statePtr_->majorityLabelVectorPtr, *this->ruleEvaluationFactory_, weights,
+                                       outputIndices);
             }
 
             /**
@@ -244,8 +247,9 @@ namespace seco {
                 return createStatisticsSubsetInternally<
                   LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
                   IDecomposableRuleEvaluationFactory, OutOfSampleWeightVector<DenseWeightVector<float32>>,
-                  PartialIndexVector>(this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
-                                      *this->ruleEvaluationFactory_, weights, outputIndices);
+                  PartialIndexVector>(this->statePtr_->labelMatrix, *this->statePtr_->coverageMatrixPtr,
+                                      *this->statePtr_->majorityLabelVectorPtr, *this->ruleEvaluationFactory_, weights,
+                                      outputIndices);
             }
 
             /**
@@ -256,8 +260,8 @@ namespace seco {
                 return std::make_unique<
                   WeightedStatistics<LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
                                      IDecomposableRuleEvaluationFactory, EqualWeightVector>>(
-                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
-                  *this->ruleEvaluationFactory_, weights);
+                  this->statePtr_->labelMatrix, *this->statePtr_->coverageMatrixPtr,
+                  *this->statePtr_->majorityLabelVectorPtr, *this->ruleEvaluationFactory_, weights);
             }
 
             /**
@@ -268,8 +272,8 @@ namespace seco {
                 return std::make_unique<
                   WeightedStatistics<LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
                                      IDecomposableRuleEvaluationFactory, BitWeightVector>>(
-                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
-                  *this->ruleEvaluationFactory_, weights);
+                  this->statePtr_->labelMatrix, *this->statePtr_->coverageMatrixPtr,
+                  *this->statePtr_->majorityLabelVectorPtr, *this->ruleEvaluationFactory_, weights);
             }
 
             /**
@@ -280,8 +284,8 @@ namespace seco {
                 return std::make_unique<
                   WeightedStatistics<LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<uint32>,
                                      IDecomposableRuleEvaluationFactory, DenseWeightVector<uint32>>>(
-                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
-                  *this->ruleEvaluationFactory_, weights);
+                  this->statePtr_->labelMatrix, *this->statePtr_->coverageMatrixPtr,
+                  *this->statePtr_->majorityLabelVectorPtr, *this->ruleEvaluationFactory_, weights);
             }
 
             /**
@@ -292,8 +296,8 @@ namespace seco {
                 return std::make_unique<
                   WeightedStatistics<LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector<float32>,
                                      IDecomposableRuleEvaluationFactory, DenseWeightVector<float32>>>(
-                  this->labelMatrix_, *this->coverageMatrixPtr_, *this->majorityLabelVectorPtr_,
-                  *this->ruleEvaluationFactory_, weights);
+                  this->statePtr_->labelMatrix, *this->statePtr_->coverageMatrixPtr,
+                  *this->statePtr_->majorityLabelVectorPtr, *this->ruleEvaluationFactory_, weights);
             }
     };
 

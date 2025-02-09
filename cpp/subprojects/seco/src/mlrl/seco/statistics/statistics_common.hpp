@@ -532,38 +532,15 @@ namespace seco {
             }
     };
 
-    template<typename Prediction, typename CoverageMatrix>
-    static inline void applyPredictionInternally(uint32 statisticIndex, const Prediction& prediction,
-                                                 CoverageMatrix& coverageMatrix,
-                                                 View<uint32>::const_iterator majorityLabelIndicesBegin,
-                                                 View<uint32>::const_iterator majorityLabelIndicesEnd) {
-        coverageMatrix.increaseCoverage(statisticIndex, majorityLabelIndicesBegin, majorityLabelIndicesEnd,
-                                        prediction.values_cbegin(), prediction.values_cend(),
-                                        prediction.indices_cbegin(), prediction.indices_cend());
-    }
-
-    template<typename Prediction, typename CoverageMatrix>
-    static inline void revertPredictionInternally(uint32 statisticIndex, const Prediction& prediction,
-                                                  CoverageMatrix& coverageMatrix,
-                                                  View<uint32>::const_iterator majorityLabelIndicesBegin,
-                                                  View<uint32>::const_iterator majorityLabelIndicesEnd) {
-        coverageMatrix.decreaseCoverage(statisticIndex, majorityLabelIndicesBegin, majorityLabelIndicesEnd,
-                                        prediction.values_cbegin(), prediction.values_cend(),
-                                        prediction.indices_cbegin(), prediction.indices_cend());
-    }
-
     /**
      * An abstract base class for all statistics that provide access to the elements of confusion matrices.
      *
-     * @tparam LabelMatrix              The type of the matrix that provides access to the labels of the training
-     *                                  examples
-     * @tparam CoverageMatrix           The type of the matrix that is used to store how often individual examples and
-     *                                  labels have been covered
+     * @tparam State                    The type of the state of the covering process
      * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
      *                                  used for calculating the predictions of rules, as well as corresponding quality
      *                                  scores
      */
-    template<typename LabelMatrix, typename CoverageMatrix, typename RuleEvaluationFactory>
+    template<typename State, typename RuleEvaluationFactory>
     class AbstractStatistics : virtual public ICoverageStatistics {
         private:
 
@@ -576,50 +553,35 @@ namespace seco {
             class Update final : public IStatisticsUpdate {
                 private:
 
-                    AbstractStatistics& statistics_;
+                    State& state_;
 
                     const Prediction& prediction_;
 
                 public:
 
                     /**
-                     * @param statistics    A reference to an object of type `AbstractStatistics` that should be used
+                     * @param statistics    A reference to an object of template type `State` that should be updated
                      * @param prediction    The predictions of the rule
                      */
-                    Update(AbstractStatistics& statistics, const Prediction& prediction)
-                        : statistics_(statistics), prediction_(prediction) {}
+                    Update(State& state, const Prediction& prediction) : state_(state), prediction_(prediction) {}
 
                     void applyPrediction(uint32 statisticIndex) override {
-                        applyPredictionInternally(statisticIndex, prediction_, *statistics_.coverageMatrixPtr_,
-                                                  statistics_.majorityLabelVectorPtr_->cbegin(),
-                                                  statistics_.majorityLabelVectorPtr_->cend());
+                        state_.update(statisticIndex, prediction_.values_cbegin(), prediction_.values_cend(),
+                                      prediction_.indices_cbegin(), prediction_.indices_cend());
                     }
 
                     void revertPrediction(uint32 statisticIndex) override {
-                        revertPredictionInternally(statisticIndex, prediction_, *statistics_.coverageMatrixPtr_,
-                                                   statistics_.majorityLabelVectorPtr_->cbegin(),
-                                                   statistics_.majorityLabelVectorPtr_->cend());
+                        state_.revert(statisticIndex, prediction_.values_cbegin(), prediction_.values_cend(),
+                                      prediction_.indices_cbegin(), prediction_.indices_cend());
                     }
             };
 
         protected:
 
             /**
-             * The label matrix that provides access to the labels of the training examples.
+             * An unique pointer to the state of the covering process.
              */
-            const LabelMatrix& labelMatrix_;
-
-            /**
-             * An unique pointer to an object of type `BinarySparseArrayVector` that stores the predictions of the
-             * default rule.
-             */
-            const std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr_;
-
-            /**
-             * An unique pointer to an object of template type `CoverageMatrix` that stores how often individual
-             * examples and labels have been covered.
-             */
-            const std::unique_ptr<CoverageMatrix> coverageMatrixPtr_;
+            const std::unique_ptr<State> statePtr_;
 
             /**
              * A pointer to an object of template type `RuleEvaluationFactory` that allows to create instances of the
@@ -630,56 +592,48 @@ namespace seco {
         public:
 
             /**
-             * @param labelMatrix               A reference to an object of template type `LabelMatrix` that provides
-             *                                  access to the labels of the training examples
-             * @param coverageMatrixPtr         An unique pointer to an object of template type `CoverageMatrix` that
-             *                                  stores how often individual examples and labels have been covered
-             * @param majorityLabelVectorPtr    An unique pointer to an object of type `BinarySparseArrayVector` that
-             *                                  stores the predictions of the default rule
-             * @param ruleEvaluationFactory     A reference to an object of template type `RuleEvaluationFactory` that
-             *                                  allows to create instances of the class that should be used for
-             *                                  calculating the predictions of rules, as well as corresponding quality
-             *                                  scores
+             * @param statePtr              An unique pointer to an object of template type `State` that represents the
+             *                              state of the covering process and allows to update it
+             * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
+             *                              allows to create instances of the class that should be used for calculating
+             *                              the predictions of rules, as well as corresponding quality scores
              */
-            AbstractStatistics(const LabelMatrix& labelMatrix, std::unique_ptr<CoverageMatrix> coverageMatrixPtr,
-                               std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
-                               const RuleEvaluationFactory& ruleEvaluationFactory)
-                : labelMatrix_(labelMatrix), majorityLabelVectorPtr_(std::move(majorityLabelVectorPtr)),
-                  coverageMatrixPtr_(std::move(coverageMatrixPtr)), ruleEvaluationFactory_(&ruleEvaluationFactory) {}
+            AbstractStatistics(std::unique_ptr<State> statePtr, const RuleEvaluationFactory& ruleEvaluationFactory)
+                : statePtr_(std::move(statePtr)), ruleEvaluationFactory_(&ruleEvaluationFactory) {}
 
             /**
              * @see `ICoverageStatistics::getSumOfUncoveredWeights`
              */
             float64 getSumOfUncoveredWeights() const override final {
-                return coverageMatrixPtr_->getSumOfUncoveredWeights();
+                return statePtr_->coverageMatrixPtr->getSumOfUncoveredWeights();
             }
 
             /**
              * @see `IStatistics::getNumStatistics`
              */
             uint32 getNumStatistics() const override final {
-                return labelMatrix_.numRows;
+                return statePtr_->labelMatrix.numRows;
             }
 
             /**
              * @see `IStatistics::getNumOutputs`
              */
             uint32 getNumOutputs() const override final {
-                return labelMatrix_.numCols;
+                return statePtr_->labelMatrix.numCols;
             }
 
             /**
              * @see `IStatistics::createUpdate`
              */
             std::unique_ptr<IStatisticsUpdate> createUpdate(const CompletePrediction& prediction) override final {
-                return std::make_unique<Update<CompletePrediction>>(*this, prediction);
+                return std::make_unique<Update<CompletePrediction>>(*statePtr_, prediction);
             }
 
             /**
              * @see `IStatistics::createUpdate`
              */
             std::unique_ptr<IStatisticsUpdate> createUpdate(const PartialPrediction& prediction) override final {
-                return std::make_unique<Update<PartialPrediction>>(*this, prediction);
+                return std::make_unique<Update<PartialPrediction>>(*statePtr_, prediction);
             }
 
             /**

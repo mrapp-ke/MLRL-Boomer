@@ -6,6 +6,7 @@
 #include "mlrl/common/data/vector_sparse_array_binary.hpp"
 #include "mlrl/seco/statistics/statistics_decomposable.hpp"
 #include "statistics_common.hpp"
+#include "statistics_state.hpp"
 
 #include <memory>
 #include <utility>
@@ -26,7 +27,7 @@ namespace seco {
      */
     template<typename LabelMatrix, typename CoverageMatrix, typename RuleEvaluationFactory>
     class AbstractDecomposableStatistics
-        : public AbstractStatistics<LabelMatrix, CoverageMatrix, RuleEvaluationFactory>,
+        : public AbstractStatistics<StatisticsState<LabelMatrix, CoverageMatrix>, RuleEvaluationFactory>,
           virtual public IDecomposableStatistics<RuleEvaluationFactory> {
         public:
 
@@ -46,8 +47,9 @@ namespace seco {
                                            std::unique_ptr<CoverageMatrix> coverageMatrixPtr,
                                            std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
                                            const RuleEvaluationFactory& ruleEvaluationFactory)
-                : AbstractStatistics<LabelMatrix, CoverageMatrix, RuleEvaluationFactory>(
-                    labelMatrix, std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr),
+                : AbstractStatistics<StatisticsState<LabelMatrix, CoverageMatrix>, RuleEvaluationFactory>(
+                    std::make_unique<StatisticsState<LabelMatrix, CoverageMatrix>>(
+                      labelMatrix, std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr)),
                     ruleEvaluationFactory) {}
 
             /**
