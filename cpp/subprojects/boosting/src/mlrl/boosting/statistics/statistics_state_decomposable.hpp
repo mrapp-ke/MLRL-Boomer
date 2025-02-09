@@ -19,6 +19,22 @@ namespace boosting {
     template<typename OutputMatrix, typename StatisticMatrix, typename ScoreMatrix, typename LossFunction>
     class DecomposableStatisticsState final
         : public AbstractStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, LossFunction> {
+        protected:
+
+            void updateStatistics(uint32 statisticIndex, CompleteIndexVector::const_iterator indicesBegin,
+                                  CompleteIndexVector::const_iterator indicesEnd) override {
+                this->lossFunctionPtr->updateDecomposableStatistics(statisticIndex, this->outputMatrix,
+                                                                    this->scoreMatrixPtr->getView(), indicesBegin,
+                                                                    indicesEnd, this->statisticMatrixPtr->getView());
+            }
+
+            void updateStatistics(uint32 statisticIndex, PartialIndexVector::const_iterator indicesBegin,
+                                  PartialIndexVector::const_iterator indicesEnd) override {
+                this->lossFunctionPtr->updateDecomposableStatistics(statisticIndex, this->outputMatrix,
+                                                                    this->scoreMatrixPtr->getView(), indicesBegin,
+                                                                    indicesEnd, this->statisticMatrixPtr->getView());
+            }
+
         public:
 
             /**
@@ -39,20 +55,6 @@ namespace boosting {
                 : AbstractStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, LossFunction>(
                     outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr),
                     std::move(lossFunctionPtr)) {}
-
-            void updateStatistics(uint32 statisticIndex, CompleteIndexVector::const_iterator indicesBegin,
-                                  CompleteIndexVector::const_iterator indicesEnd) override {
-                this->lossFunctionPtr->updateDecomposableStatistics(statisticIndex, this->outputMatrix,
-                                                                    this->scoreMatrixPtr->getView(), indicesBegin,
-                                                                    indicesEnd, this->statisticMatrixPtr->getView());
-            }
-
-            void updateStatistics(uint32 statisticIndex, PartialIndexVector::const_iterator indicesBegin,
-                                  PartialIndexVector::const_iterator indicesEnd) override {
-                this->lossFunctionPtr->updateDecomposableStatistics(statisticIndex, this->outputMatrix,
-                                                                    this->scoreMatrixPtr->getView(), indicesBegin,
-                                                                    indicesEnd, this->statisticMatrixPtr->getView());
-            }
     };
 
 }

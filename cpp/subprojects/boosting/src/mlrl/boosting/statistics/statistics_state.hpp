@@ -49,6 +49,32 @@ namespace boosting {
              */
             std::unique_ptr<LossFunction> lossFunctionPtr;
 
+        protected:
+
+            /**
+             * Must be implemented by subclasses in order to update the statistics for all available outputs at a
+             * specific index.
+             *
+             * @param statisticIndex    The index of the statistics to be updated
+             * @param indicesBegin      An iterator to the beginning of the output indices
+             * @param indicesEnd        An iterator to the end of the output indices
+             */
+            virtual void updateStatistics(uint32 statisticIndex, CompleteIndexVector::const_iterator indicesBegin,
+                                          CompleteIndexVector::const_iterator indicesEnd) = 0;
+
+            /**
+             * Must be implemented by subclasses in order to update the statistics for a subset of the available outputs
+             * at a specific index.
+             *
+             * @param statisticIndex    The index of the statistics to be updated
+             * @param indicesBegin      An iterator to the beginning of the output indices
+             * @param indicesEnd        An iterator to the end of the output indices
+             */
+            virtual void updateStatistics(uint32 statisticIndex, PartialIndexVector::const_iterator indicesBegin,
+                                          PartialIndexVector::const_iterator indicesEnd) = 0;
+
+        public:
+
             /**
              * @param outputMatrix          A reference to an object of template type `OutputMatrix` that provides
              *                              access to the ground truth of the training examples
@@ -69,28 +95,74 @@ namespace boosting {
             virtual ~AbstractStatisticsState() {}
 
             /**
-             * Must be implemented by subclasses in order to update the statistics for all available outputs at a
+             * Adds given scores to the predictions for all available outputs and updates affected statistics at a
              * specific index.
              *
-             * @param indicesBegin  An iterator to the beginning of the indices of the outputs for which statistics
-             *                      should be updated
-             * @param indicesEnd    An iterator to the end of the indices of the outputs for which statistics should be
-             *                      updated
+             * @param statisticIndex    The index of the statistics to be updated
+             * @param scoresBegin       An iterator to the beginning of the scores to be added
+             * @param scoresEnd         An iterator to the end of the scores to be added
+             * @param indicesBegin      An iterator to the beginning of the output indices
+             * @param indicesEnd        An iterator to the end of the output indices
              */
-            virtual void updateStatistics(uint32 statisticIndex, CompleteIndexVector::const_iterator indicesBegin,
-                                          CompleteIndexVector::const_iterator indicesEnd) = 0;
+            void update(uint32 statisticIndex, View<float64>::const_iterator scoresBegin,
+                        View<float64>::const_iterator scoresEnd, CompleteIndexVector::const_iterator indicesBegin,
+                        CompleteIndexVector::const_iterator indicesEnd) {
+                scoreMatrixPtr->addToRowFromSubset(statisticIndex, scoresBegin, scoresEnd, indicesBegin, indicesEnd);
+                updateStatistics(statisticIndex, indicesBegin, indicesEnd);
+            }
 
             /**
-             * Must be implemented by subclasses in order to update the statistics for a subset of the available outputs
-             * at a specific index.
+             * Adds given scores to the predictions for a subset of the available outputs and updates affected
+             * statistics at a specific index.
              *
-             * @param indicesBegin  An iterator to the beginning of the indices of the outputs for which statistics
-             *                      should be updated
-             * @param indicesEnd    An iterator to the end of the indices of the outputs for which statistics should be
-             *                      updated
+             * @param statisticIndex    The index of the statistics to be updated
+             * @param scoresBegin       An iterator to the beginning of the scores to be added
+             * @param scoresEnd         An iterator to the end of the scores to be added
+             * @param indicesBegin      An iterator to the beginning of the output indices
+             * @param indicesEnd        An iterator to the end of the output indices
              */
-            virtual void updateStatistics(uint32 statisticIndex, PartialIndexVector::const_iterator indicesBegin,
-                                          PartialIndexVector::const_iterator indicesEnd) = 0;
+            void update(uint32 statisticIndex, View<float64>::const_iterator scoresBegin,
+                        View<float64>::const_iterator scoresEnd, PartialIndexVector::const_iterator indicesBegin,
+                        PartialIndexVector::const_iterator indicesEnd) {
+                scoreMatrixPtr->addToRowFromSubset(statisticIndex, scoresBegin, scoresEnd, indicesBegin, indicesEnd);
+                updateStatistics(statisticIndex, indicesBegin, indicesEnd);
+            }
+
+            /**
+             * Removes given scores from the predictions for all available outputs and updates affected statistics at a
+             * specific index.
+             *
+             * @param statisticIndex    The index of the statistics to be updated
+             * @param scoresBegin       An iterator to the beginning of the scores to be removed
+             * @param scoresEnd         An iterator to the end of the scores to be removed
+             * @param indicesBegin      An iterator to the beginning of the output indices
+             * @param indicesEnd        An iterator to the end of the output indices
+             */
+            void revert(uint32 statisticIndex, View<float64>::const_iterator scoresBegin,
+                        View<float64>::const_iterator scoresEnd, CompleteIndexVector::const_iterator indicesBegin,
+                        CompleteIndexVector::const_iterator indicesEnd) {
+                scoreMatrixPtr->removeFromRowFromSubset(statisticIndex, scoresBegin, scoresEnd, indicesBegin,
+                                                        indicesEnd);
+                updateStatistics(statisticIndex, indicesBegin, indicesEnd);
+            }
+
+            /**
+             * Removes given scores from the predictions for a subset of the available outputs and updates affected
+             * statistics at a specific index.
+             *
+             * @param statisticIndex    The index of the statistics to be updated
+             * @param scoresBegin       An iterator to the beginning of the scores to be removed
+             * @param scoresEnd         An iterator to the end of the scores to be removed
+             * @param indicesBegin      An iterator to the beginning of the output indices
+             * @param indicesEnd        An iterator to the end of the output indices
+             */
+            void revert(uint32 statisticIndex, View<float64>::const_iterator scoresBegin,
+                        View<float64>::const_iterator scoresEnd, PartialIndexVector::const_iterator indicesBegin,
+                        PartialIndexVector::const_iterator indicesEnd) {
+                scoreMatrixPtr->removeFromRowFromSubset(statisticIndex, scoresBegin, scoresEnd, indicesBegin,
+                                                        indicesEnd);
+                updateStatistics(statisticIndex, indicesBegin, indicesEnd);
+            }
     };
 
 }
