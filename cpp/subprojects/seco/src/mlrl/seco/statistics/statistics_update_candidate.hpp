@@ -20,14 +20,14 @@ namespace seco {
 
         protected:
 
-            void invokeVisitor(DenseVisitor<CompleteIndexVector> visitor,
-                               const DenseScoreVector<CompleteIndexVector>& scoreVector) const override {
+            void invokeVisitor(DenseVisitor<float32, CompleteIndexVector> visitor,
+                               const DenseScoreVector<float32, CompleteIndexVector>& scoreVector) const override {
                 StatisticsUpdateFactory<State> statisticsUpdateFactory(state_);
                 visitor(scoreVector, statisticsUpdateFactory);
             }
 
-            void invokeVisitor(DenseVisitor<PartialIndexVector> visitor,
-                               const DenseScoreVector<PartialIndexVector>& scoreVector) const override {
+            void invokeVisitor(DenseVisitor<float32, PartialIndexVector> visitor,
+                               const DenseScoreVector<float32, PartialIndexVector>& scoreVector) const override {
                 StatisticsUpdateFactory<State> statisticsUpdateFactory(state_);
                 visitor(scoreVector, statisticsUpdateFactory);
             }
