@@ -37,20 +37,20 @@ bool FixedRefinementComparator::isImprovement(const Quality& quality) const {
     return ruleCompareFunction_.compare(quality, minQuality_);
 }
 
-void FixedRefinementComparator::pushRefinement(const Refinement& refinement, const IScoreVector& scoreVector) {
+void FixedRefinementComparator::pushRefinement(const Refinement& refinement, const StatisticsUpdateCandidate& scores) {
     auto numRefinements = order_.size();
 
     if (numRefinements < maxRefinements_) {
         Refinement& newRefinement = refinements_[numRefinements];
         newRefinement = refinement;
         ScoreProcessor scoreProcessor(newRefinement.headPtr);
-        scoreProcessor.processScores(scoreVector);
+        scoreProcessor.processScores(scores);
         order_.push_back(newRefinement);
     } else {
         Refinement& worstRefinement = order_.back();
         worstRefinement = refinement;
         ScoreProcessor scoreProcessor(worstRefinement.headPtr);
-        scoreProcessor.processScores(scoreVector);
+        scoreProcessor.processScores(scores);
     }
 
     std::sort(order_.begin(), order_.end(), [this](const Refinement& a, const Refinement& b) {

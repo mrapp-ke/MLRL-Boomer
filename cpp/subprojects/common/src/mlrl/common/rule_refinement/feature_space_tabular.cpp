@@ -22,7 +22,7 @@ static inline Quality evaluateOutOfSampleInternally(IndexIterator indexIterator,
         }
     }
 
-    return statisticsSubsetPtr->calculateScores();
+    return *statisticsSubsetPtr->calculateScores();
 }
 
 template<typename IndexIterator>
@@ -40,9 +40,9 @@ static inline void recalculatePredictionInternally(IndexIterator indexIterator, 
         }
     }
 
-    const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
+    std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubsetPtr->calculateScores();
     ScoreProcessor scoreProcessor(predictionPtr);
-    scoreProcessor.processScores(scoreVector);
+    scoreProcessor.processScores(*updateCandidatePtr);
 }
 
 /**
@@ -271,42 +271,36 @@ class TabularFeatureSpace final : public IFeatureSpace {
                       featureSpace_.statisticsProvider_.get(), headPtr);
                 }
 
-                void applyPrediction(const IPrediction& prediction) override {
+                void applyPrediction(IPrediction& prediction) override {
                     IStatistics& statistics = featureSpace_.statisticsProvider_.get();
                     uint32 numStatistics = statistics.getNumStatistics();
                     const CoverageMask* coverageMaskPtr = &coverageMask_;
-                    std::unique_ptr<IStatisticsUpdate> statisticsUpdatePtr =
-                      prediction.createStatisticsUpdate(statistics);
-                    IStatisticsUpdate* statisticsUpdateRawPtr = statisticsUpdatePtr.get();
+                    IPrediction* predictionPtr = &prediction;
 
 #if MULTI_THREADING_SUPPORT_ENABLED
-    #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) \
-      firstprivate(statisticsUpdateRawPtr) schedule(dynamic) \
-      num_threads(featureSpace_.multiThreadingSettings_.numThreads)
+    #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) firstprivate(predictionPtr) \
+      schedule(dynamic) num_threads(featureSpace_.multiThreadingSettings_.numThreads)
 #endif
                     for (int64 i = 0; i < numStatistics; i++) {
                         if ((*coverageMaskPtr)[i]) {
-                            statisticsUpdateRawPtr->applyPrediction(i);
+                            predictionPtr->applyPrediction(i);
                         }
                     }
                 }
 
-                void revertPrediction(const IPrediction& prediction) override {
+                void revertPrediction(IPrediction& prediction) override {
                     IStatistics& statistics = featureSpace_.statisticsProvider_.get();
                     uint32 numStatistics = statistics.getNumStatistics();
                     const CoverageMask* coverageMaskPtr = &coverageMask_;
-                    std::unique_ptr<IStatisticsUpdate> statisticsUpdatePtr =
-                      prediction.createStatisticsUpdate(statistics);
-                    IStatisticsUpdate* statisticsUpdateRawPtr = statisticsUpdatePtr.get();
+                    IPrediction* predictionPtr = &prediction;
 
 #if MULTI_THREADING_SUPPORT_ENABLED
-    #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) \
-      firstprivate(statisticsUpdateRawPtr) schedule(dynamic) \
-      num_threads(featureSpace_.multiThreadingSettings_.numThreads)
+    #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) firstprivate(predictionPtr) \
+      schedule(dynamic) num_threads(featureSpace_.multiThreadingSettings_.numThreads)
 #endif
                     for (int64 i = 0; i < numStatistics; i++) {
                         if ((*coverageMaskPtr)[i]) {
-                            statisticsUpdateRawPtr->revertPrediction(i);
+                            predictionPtr->revertPrediction(i);
                         }
                     }
                 }
