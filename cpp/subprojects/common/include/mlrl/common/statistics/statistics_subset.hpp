@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/rule_evaluation/score_vector.hpp"
+#include "mlrl/common/statistics/statistics_update_candidate.hpp"
 
 /**
  * Defines an interface for all classes that provide access to a subset of the statistics and allows to calculate the
@@ -45,8 +45,9 @@ class IStatisticsSubset {
          * to the subset via the function `addToSubset`, as well as a numerical score that assesses the overall quality
          * of the predicted scores.
          *
-         * @return A reference to an object of type `IScoreVector` that stores the scores to be predicted by the rule
-         *         for each considered output, as well as a numerical score that assesses their overall quality
+         * @return An unique pointer to an object of type `StatisticsUpdateCandidate` that stores the scores to be
+         *         predicted by the rule for each considered output, as well as a numerical score that assesses their
+         *         overall quality
          */
-        virtual const IScoreVector& calculateScores() = 0;
+        virtual std::unique_ptr<StatisticsUpdateCandidate> calculateScores() = 0;
 };

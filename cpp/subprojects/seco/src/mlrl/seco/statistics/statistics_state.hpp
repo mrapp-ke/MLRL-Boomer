@@ -4,8 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/vector_sparse_array_binary.hpp"
-#include "mlrl/common/indices/index_vector_complete.hpp"
-#include "mlrl/common/indices/index_vector_partial.hpp"
+#include "mlrl/common/statistics/statistics_state.hpp"
 
 #include <memory>
 
@@ -23,7 +22,7 @@ namespace seco {
      *                          have been covered
      */
     template<typename LabelMatrix, typename CoverageMatrix>
-    class StatisticsState final {
+    class StatisticsState final : public IStatisticsState {
         public:
 
             /**
@@ -57,73 +56,33 @@ namespace seco {
                 : labelMatrix(labelMatrix), coverageMatrixPtr(std::move(coverageMatrixPtr)),
                   majorityLabelVectorPtr(std::move(majorityLabelVectorPtr)) {}
 
-            /**
-             * Adds given scores to the predictions for all available outputs and updates affected statistics at a
-             * specific index.
-             *
-             * @param statisticIndex    The index of the statistics to be updated
-             * @param scoresBegin       An iterator to the beginning of the scores to be added
-             * @param scoresEnd         An iterator to the end of the scores to be added
-             * @param indicesBegin      An iterator to the beginning of the output indices
-             * @param indicesEnd        An iterator to the end of the output indices
-             */
             void update(uint32 statisticIndex, View<float64>::const_iterator scoresBegin,
                         View<float64>::const_iterator scoresEnd, CompleteIndexVector::const_iterator indicesBegin,
-                        CompleteIndexVector::const_iterator indicesEnd) {
+                        CompleteIndexVector::const_iterator indicesEnd) override {
                 coverageMatrixPtr->increaseCoverage(statisticIndex, majorityLabelVectorPtr->cbegin(),
                                                     majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd,
                                                     indicesBegin, indicesEnd);
             }
 
-            /**
-             * Adds given scores to the predictions for a subset of the available outputs and updates affected
-             * statistics at a specific index.
-             *
-             * @param statisticIndex    The index of the statistics to be updated
-             * @param scoresBegin       An iterator to the beginning of the scores to be added
-             * @param scoresEnd         An iterator to the end of the scores to be added
-             * @param indicesBegin      An iterator to the beginning of the output indices
-             * @param indicesEnd        An iterator to the end of the output indices
-             */
             void update(uint32 statisticIndex, View<float64>::const_iterator scoresBegin,
                         View<float64>::const_iterator scoresEnd, PartialIndexVector::const_iterator indicesBegin,
-                        PartialIndexVector::const_iterator indicesEnd) {
+                        PartialIndexVector::const_iterator indicesEnd) override {
                 coverageMatrixPtr->increaseCoverage(statisticIndex, majorityLabelVectorPtr->cbegin(),
                                                     majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd,
                                                     indicesBegin, indicesEnd);
             }
 
-            /**
-             * Removes given scores from the predictions for all available outputs and updates affected statistics at a
-             * specific index.
-             *
-             * @param statisticIndex    The index of the statistics to be updated
-             * @param scoresBegin       An iterator to the beginning of the scores to be removed
-             * @param scoresEnd         An iterator to the end of the scores to be removed
-             * @param indicesBegin      An iterator to the beginning of the output indices
-             * @param indicesEnd        An iterator to the end of the output indices
-             */
             void revert(uint32 statisticIndex, View<float64>::const_iterator scoresBegin,
                         View<float64>::const_iterator scoresEnd, CompleteIndexVector::const_iterator indicesBegin,
-                        CompleteIndexVector::const_iterator indicesEnd) {
+                        CompleteIndexVector::const_iterator indicesEnd) override {
                 coverageMatrixPtr->decreaseCoverage(statisticIndex, majorityLabelVectorPtr->cbegin(),
                                                     majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd,
                                                     indicesBegin, indicesEnd);
             }
 
-            /**
-             * Removes given scores from the predictions for a subset of the available outputs and updates affected
-             * statistics at a specific index.
-             *
-             * @param statisticIndex    The index of the statistics to be updated
-             * @param scoresBegin       An iterator to the beginning of the scores to be removed
-             * @param scoresEnd         An iterator to the end of the scores to be removed
-             * @param indicesBegin      An iterator to the beginning of the output indices
-             * @param indicesEnd        An iterator to the end of the output indices
-             */
             void revert(uint32 statisticIndex, View<float64>::const_iterator scoresBegin,
                         View<float64>::const_iterator scoresEnd, PartialIndexVector::const_iterator indicesBegin,
-                        PartialIndexVector::const_iterator indicesEnd) {
+                        PartialIndexVector::const_iterator indicesEnd) override {
                 coverageMatrixPtr->decreaseCoverage(statisticIndex, majorityLabelVectorPtr->cbegin(),
                                                     majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd,
                                                     indicesBegin, indicesEnd);

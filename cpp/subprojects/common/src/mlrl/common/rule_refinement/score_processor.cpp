@@ -7,13 +7,14 @@
 
 template<typename ScoreVector>
 static inline void processCompleteScores(std::unique_ptr<IEvaluatedPrediction>& existingHeadPtr,
-                                         const ScoreVector& scoreVector) {
+                                         const ScoreVector& scoreVector,
+                                         IStatisticsUpdateFactory& statisticsUpdateFactory) {
     CompletePrediction* existingHead = dynamic_cast<CompletePrediction*>(existingHeadPtr.get());
     uint32 numElements = scoreVector.getNumElements();
 
     if (!existingHead) {
         // Create a new head, if necessary...
-        existingHeadPtr = std::make_unique<CompletePrediction>(numElements);
+        existingHeadPtr = std::make_unique<CompletePrediction>(numElements, statisticsUpdateFactory);
         existingHead = static_cast<CompletePrediction*>(existingHeadPtr.get());
     }
 
@@ -23,18 +24,20 @@ static inline void processCompleteScores(std::unique_ptr<IEvaluatedPrediction>& 
 
 template<typename ScoreVector>
 static inline void processPartialScores(std::unique_ptr<IEvaluatedPrediction>& existingHeadPtr,
-                                        const ScoreVector& scoreVector) {
+                                        const ScoreVector& scoreVector,
+                                        IStatisticsUpdateFactory& statisticsUpdateFactory) {
     PartialPrediction* existingHead = dynamic_cast<PartialPrediction*>(existingHeadPtr.get());
     uint32 numElements = scoreVector.getNumElements();
 
     if (!existingHead) {
         // Create a new head, if necessary...
-        existingHeadPtr = std::make_unique<PartialPrediction>(numElements, scoreVector.isSorted());
+        existingHeadPtr =
+          std::make_unique<PartialPrediction>(numElements, scoreVector.isSorted(), statisticsUpdateFactory);
         existingHead = static_cast<PartialPrediction*>(existingHeadPtr.get());
     } else {
         // Adjust the size of the existing head, if necessary...
         if (existingHead->getNumElements() != numElements) {
-            existingHead->setNumElements(numElements, false);
+            existingHead->setNumElements(statisticsUpdateFactory, numElements, false);
         }
 
         existingHead->setSorted(scoreVector.isSorted());
@@ -47,18 +50,22 @@ static inline void processPartialScores(std::unique_ptr<IEvaluatedPrediction>& e
 
 ScoreProcessor::ScoreProcessor(std::unique_ptr<IEvaluatedPrediction>& headPtr) : headPtr_(headPtr) {}
 
-void ScoreProcessor::processScores(const IScoreVector& scoreVector) {
-    auto completeDenseVisitor = [this](const DenseScoreVector<CompleteIndexVector>& scoreVector) {
-        processCompleteScores(headPtr_, scoreVector);
+void ScoreProcessor::processScores(const StatisticsUpdateCandidate& scores) {
+    auto completeDenseVisitor = [this](const DenseScoreVector<CompleteIndexVector>& scoreVector,
+                                       IStatisticsUpdateFactory& statisticsUpdateFactory) {
+        processCompleteScores(headPtr_, scoreVector, statisticsUpdateFactory);
     };
-    auto partialDenseVisitor = [this](const DenseScoreVector<PartialIndexVector>& scoreVector) {
-        processPartialScores(headPtr_, scoreVector);
+    auto partialDenseVisitor = [this](const DenseScoreVector<PartialIndexVector>& scoreVector,
+                                      IStatisticsUpdateFactory& statisticsUpdateFactory) {
+        processPartialScores(headPtr_, scoreVector, statisticsUpdateFactory);
     };
-    auto completeDenseBinnedVisitor = [this](const DenseBinnedScoreVector<CompleteIndexVector>& scoreVector) {
-        processCompleteScores(headPtr_, scoreVector);
+    auto completeDenseBinnedVisitor = [this](const DenseBinnedScoreVector<CompleteIndexVector>& scoreVector,
+                                             IStatisticsUpdateFactory& statisticsUpdateFactory) {
+        processCompleteScores(headPtr_, scoreVector, statisticsUpdateFactory);
     };
-    auto partialDenseBinnedVisitor = [this](const DenseBinnedScoreVector<PartialIndexVector>& scoreVector) {
-        processPartialScores(headPtr_, scoreVector);
+    auto partialDenseBinnedVisitor = [this](const DenseBinnedScoreVector<PartialIndexVector>& scoreVector,
+                                            IStatisticsUpdateFactory& statisticsUpdateFactory) {
+        processPartialScores(headPtr_, scoreVector, statisticsUpdateFactory);
     };
-    scoreVector.visit(completeDenseVisitor, partialDenseVisitor, completeDenseBinnedVisitor, partialDenseBinnedVisitor);
+    scores.visit(completeDenseVisitor, partialDenseVisitor, completeDenseBinnedVisitor, partialDenseBinnedVisitor);
 }
