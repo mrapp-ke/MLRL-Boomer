@@ -112,67 +112,114 @@ class StatisticsUpdateCandidate : public Quality {
         /**
          * A visitor function for handling objects of type `DenseScoreVector`.
          *
-         * @tparam IndexVector The type of the vector that provides access to the indices of the outputs, the predicted
-         *                     scores correspond to
+         * @tparam ScoreType    The type of the scores that stored by the vector
+         * @tparam IndexVector  The type of the vector that provides access to the indices of the outputs, the predicted
+         *                      scores correspond to
          */
-        template<typename IndexVector>
-        using DenseVisitor = std::function<void(const DenseScoreVector<IndexVector>&, IStatisticsUpdateFactory&)>;
+        template<typename ScoreType, typename IndexVector>
+        using DenseVisitor =
+          std::function<void(const DenseScoreVector<ScoreType, IndexVector>&, IStatisticsUpdateFactory&)>;
 
         /**
          * A visitor function for handling objects of type `DenseBinnedScoreVector`.
          *
-         * @tparam IndexVector The type of the vector that provides access to the indices of the outputs, the predicted
-         *                     scores correspond to
+         * @tparam ScoreType    The type of the scores that stored by the vector
+         * @tparam IndexVector  The type of the vector that provides access to the indices of the outputs, the predicted
+         *                      scores correspond to
          */
-        template<typename IndexVector>
+        template<typename ScoreType, typename IndexVector>
         using DenseBinnedVisitor =
-          std::function<void(const DenseBinnedScoreVector<IndexVector>&, IStatisticsUpdateFactory&)>;
+          std::function<void(const DenseBinnedScoreVector<ScoreType, IndexVector>&, IStatisticsUpdateFactory&)>;
 
     protected:
 
         /**
          * May be overridden by subclasses in order to invoke a given `DenseVisitor` for handling objects of type
-         * `DenseScoreVector<CompleteIndexVector>`.
+         * `DenseScoreVector<float32, CompleteIndexVector>`.
          *
          * @param visitor       The visitor to be invoked
-         * @param scoreVector   A reference to an object of type `DenseScoreVector<CompleteIndexVector>` to be handled
-         *                      by the visitor
+         * @param scoreVector   A reference to an object of type `DenseScoreVector<float32, CompleteIndexVector>` to be
+         *                      handled by the visitor
          */
-        virtual void invokeVisitor(DenseVisitor<CompleteIndexVector> visitor,
-                                   const DenseScoreVector<CompleteIndexVector>& scoreVector) const;
+        virtual void invokeVisitor(DenseVisitor<float32, CompleteIndexVector> visitor,
+                                   const DenseScoreVector<float32, CompleteIndexVector>& scoreVector) const;
 
         /**
          * May be overridden by subclasses in order to invoke a given `DenseVisitor` for handling objects of type
-         * `DenseScoreVector<PartialIndexVector>`.
+         * `DenseScoreVector<float32, PartialIndexVector>`.
          *
          * @param visitor       The visitor to be invoked
-         * @param scoreVector   A reference to an object of type `DenseScoreVector<PartialIndexVector>` to be handled by
-         *                      the visitor
+         * @param scoreVector   A reference to an object of type `DenseScoreVector<float32, PartialIndexVector>` to be
+         *                      handled by the visitor
          */
-        virtual void invokeVisitor(DenseVisitor<PartialIndexVector> visitor,
-                                   const DenseScoreVector<PartialIndexVector>& scoreVector) const;
+        virtual void invokeVisitor(DenseVisitor<float32, PartialIndexVector> visitor,
+                                   const DenseScoreVector<float32, PartialIndexVector>& scoreVector) const;
+
+        /**
+         * May be overridden by subclasses in order to invoke a given `DenseVisitor` for handling objects of type
+         * `DenseScoreVector<float64, CompleteIndexVector>`.
+         *
+         * @param visitor       The visitor to be invoked
+         * @param scoreVector   A reference to an object of type `DenseScoreVector<float64, CompleteIndexVector>` to be
+         *                      handled by the visitor
+         */
+        virtual void invokeVisitor(DenseVisitor<float64, CompleteIndexVector> visitor,
+                                   const DenseScoreVector<float64, CompleteIndexVector>& scoreVector) const;
+
+        /**
+         * May be overridden by subclasses in order to invoke a given `DenseVisitor` for handling objects of type
+         * `DenseScoreVector<float64, PartialIndexVector>`.
+         *
+         * @param visitor       The visitor to be invoked
+         * @param scoreVector   A reference to an object of type `DenseScoreVector<float64, PartialIndexVector>` to be
+         *                      handled by the visitor
+         */
+        virtual void invokeVisitor(DenseVisitor<float64, PartialIndexVector> visitor,
+                                   const DenseScoreVector<float64, PartialIndexVector>& scoreVector) const;
 
         /**
          * May be overridden by subclasses in order to invoke a given `DenseBinnedVisitor` for handling objects of type
-         * `DenseBinnedScoreVector<CompleteIndexVector>`.
+         * `DenseBinnedScoreVector<float32, CompleteIndexVector>`.
          *
          * @param visitor       The visitor to be invoked
-         * @param scoreVector   A reference to an object of type `DenseBinnedScoreVector<CompleteIndexVector>` to be
-         *                      handled by the visitor
+         * @param scoreVector   A reference to an object of type `DenseBinnedScoreVector<float32, CompleteIndexVector>`
+         *                      to be handled by the visitor
          */
-        virtual void invokeVisitor(DenseBinnedVisitor<CompleteIndexVector> visitor,
-                                   const DenseBinnedScoreVector<CompleteIndexVector>& scoreVector) const;
+        virtual void invokeVisitor(DenseBinnedVisitor<float32, CompleteIndexVector> visitor,
+                                   const DenseBinnedScoreVector<float32, CompleteIndexVector>& scoreVector) const;
 
         /**
          * May be overridden by subclasses in order to invoke a given `DenseBinnedVisitor` for handling objects of type
-         * `DenseBinnedScoreVector<PartialIndexVector>`.
+         * `DenseBinnedScoreVector<float32, PartialIndexVector>`.
          *
          * @param visitor       The visitor to be invoked
-         * @param scoreVector   A reference to an object of type `DenseBinnedScoreVector<PartialIndexVector>` to be
-         *                      handled by the visitor
+         * @param scoreVector   A reference to an object of type `DenseBinnedScoreVector<float32, PartialIndexVector>`
+         *                      to be handled by the visitor
          */
-        virtual void invokeVisitor(DenseBinnedVisitor<PartialIndexVector> visitor,
-                                   const DenseBinnedScoreVector<PartialIndexVector>& scoreVector) const;
+        virtual void invokeVisitor(DenseBinnedVisitor<float32, PartialIndexVector> visitor,
+                                   const DenseBinnedScoreVector<float32, PartialIndexVector>& scoreVector) const;
+
+        /**
+         * May be overridden by subclasses in order to invoke a given `DenseBinnedVisitor` for handling objects of type
+         * `DenseBinnedScoreVector<float64, CompleteIndexVector>`.
+         *
+         * @param visitor       The visitor to be invoked
+         * @param scoreVector   A reference to an object of type `DenseBinnedScoreVector<float64, CompleteIndexVector>`
+         *                      to be handled by the visitor
+         */
+        virtual void invokeVisitor(DenseBinnedVisitor<float64, CompleteIndexVector> visitor,
+                                   const DenseBinnedScoreVector<float64, CompleteIndexVector>& scoreVector) const;
+
+        /**
+         * May be overridden by subclasses in order to invoke a given `DenseBinnedVisitor` for handling objects of type
+         * `DenseBinnedScoreVector<float64, PartialIndexVector>`.
+         *
+         * @param visitor       The visitor to be invoked
+         * @param scoreVector   A reference to an object of type `DenseBinnedScoreVector<float64, PartialIndexVector>`
+         *                      to be handled by the visitor
+         */
+        virtual void invokeVisitor(DenseBinnedVisitor<float64, PartialIndexVector> visitor,
+                                   const DenseBinnedScoreVector<float64, PartialIndexVector>& scoreVector) const;
 
     public:
 
@@ -187,17 +234,29 @@ class StatisticsUpdateCandidate : public Quality {
          * Invokes one of the given visitor functions, depending on which one is able to handle the particular type of
          * vector that stores the calculated scores.
          *
-         * @param completeDenseVisitor          The visitor function for handling objects of type
-         *                                      `DenseScoreVector<CompleteIndexVector>`
-         * @param partialDenseVisitor           The visitor function for handling objects of type
-         *                                      `DenseScoreVector<PartialIndexVector>`
-         * @param completeDenseBinnedVisitor    The visitor function for handling objects of type
-         *                                      `DenseBinnedScoreVector<CompleteIndexVector>`
-         * @param partialDenseBinnedVisitor     The visitor function for handling objects of type
-         *                                      `DenseBinnedScoreVector<PartialIndexVector>`
+         * @param completeDense32BitVisitor         The visitor function for handling objects of type
+         *                                          `DenseScoreVector<float32, CompleteIndexVector>`
+         * @param partialDense32BitVisitor          The visitor function for handling objects of type
+         *                                          `DenseScoreVector<float32, PartialIndexVector>`
+         * @param completeDense64BitVisitor         The visitor function for handling objects of type
+         *                                          `DenseScoreVector<float64, CompleteIndexVector>`
+         * @param partialDense64BitVisitor          The visitor function for handling objects of type
+         *                                          `DenseScoreVector<float64, PartialIndexVector>`
+         * @param completeDenseBinned32BitVisitor   The visitor function for handling objects of type
+         *                                          `DenseBinnedScoreVector<float32, CompleteIndexVector>`
+         * @param partialDenseBinned32BitVisitor    The visitor function for handling objects of type
+         *                                          `DenseBinnedScoreVector<float32, PartialIndexVector>`
+         * @param completeDenseBinned64BitVisitor   The visitor function for handling objects of type
+         *                                          `DenseBinnedScoreVector<float32, CompleteIndexVector>`
+         * @param partialDenseBinned64BitVisitor    The visitor function for handling objects of type
+         *                                          `DenseBinnedScoreVector<float64, PartialIndexVector>`
          */
-        void visit(DenseVisitor<CompleteIndexVector> completeDenseVisitor,
-                   DenseVisitor<PartialIndexVector> partialDenseVisitor,
-                   DenseBinnedVisitor<CompleteIndexVector> completeDenseBinnedVisitor,
-                   DenseBinnedVisitor<PartialIndexVector> partialDenseBinnedVisitor) const;
+        void visit(DenseVisitor<float32, CompleteIndexVector> completeDense32BitVisitor,
+                   DenseVisitor<float32, PartialIndexVector> partialDense32BitVisitor,
+                   DenseVisitor<float64, CompleteIndexVector> completeDense64BitVisitor,
+                   DenseVisitor<float64, PartialIndexVector> partialDense64BitVisitor,
+                   DenseBinnedVisitor<float32, CompleteIndexVector> completeDenseBinned32BitVisitor,
+                   DenseBinnedVisitor<float32, PartialIndexVector> partialDenseBinned32BitVisitor,
+                   DenseBinnedVisitor<float64, CompleteIndexVector> completeDenseBinned64BitVisitor,
+                   DenseBinnedVisitor<float64, PartialIndexVector> partialDenseBinned64BitVisitor) const;
 };

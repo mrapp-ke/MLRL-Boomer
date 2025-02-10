@@ -51,21 +51,41 @@ static inline void processPartialScores(std::unique_ptr<IEvaluatedPrediction>& e
 ScoreProcessor::ScoreProcessor(std::unique_ptr<IEvaluatedPrediction>& headPtr) : headPtr_(headPtr) {}
 
 void ScoreProcessor::processScores(const StatisticsUpdateCandidate& scores) {
-    auto completeDenseVisitor = [this](const DenseScoreVector<CompleteIndexVector>& scoreVector,
-                                       IStatisticsUpdateFactory& statisticsUpdateFactory) {
+    auto completeDense32BitVisitor = [this](const DenseScoreVector<float32, CompleteIndexVector>& scoreVector,
+                                            IStatisticsUpdateFactory& statisticsUpdateFactory) {
         processCompleteScores(headPtr_, scoreVector, statisticsUpdateFactory);
     };
-    auto partialDenseVisitor = [this](const DenseScoreVector<PartialIndexVector>& scoreVector,
-                                      IStatisticsUpdateFactory& statisticsUpdateFactory) {
+    auto partialDense32BitVisitor = [this](const DenseScoreVector<float32, PartialIndexVector>& scoreVector,
+                                           IStatisticsUpdateFactory& statisticsUpdateFactory) {
         processPartialScores(headPtr_, scoreVector, statisticsUpdateFactory);
     };
-    auto completeDenseBinnedVisitor = [this](const DenseBinnedScoreVector<CompleteIndexVector>& scoreVector,
+    auto completeDense64BitVisitor = [this](const DenseScoreVector<float64, CompleteIndexVector>& scoreVector,
+                                            IStatisticsUpdateFactory& statisticsUpdateFactory) {
+        processCompleteScores(headPtr_, scoreVector, statisticsUpdateFactory);
+    };
+    auto partialDense64BitVisitor = [this](const DenseScoreVector<float64, PartialIndexVector>& scoreVector,
+                                           IStatisticsUpdateFactory& statisticsUpdateFactory) {
+        processPartialScores(headPtr_, scoreVector, statisticsUpdateFactory);
+    };
+    auto completeDenseBinned32BitVisitor = [this](
+                                             const DenseBinnedScoreVector<float32, CompleteIndexVector>& scoreVector,
                                              IStatisticsUpdateFactory& statisticsUpdateFactory) {
         processCompleteScores(headPtr_, scoreVector, statisticsUpdateFactory);
     };
-    auto partialDenseBinnedVisitor = [this](const DenseBinnedScoreVector<PartialIndexVector>& scoreVector,
-                                            IStatisticsUpdateFactory& statisticsUpdateFactory) {
+    auto partialDenseBinned32BitVisitor = [this](const DenseBinnedScoreVector<float32, PartialIndexVector>& scoreVector,
+                                                 IStatisticsUpdateFactory& statisticsUpdateFactory) {
         processPartialScores(headPtr_, scoreVector, statisticsUpdateFactory);
     };
-    scores.visit(completeDenseVisitor, partialDenseVisitor, completeDenseBinnedVisitor, partialDenseBinnedVisitor);
+    auto completeDenseBinned64BitVisitor = [this](
+                                             const DenseBinnedScoreVector<float64, CompleteIndexVector>& scoreVector,
+                                             IStatisticsUpdateFactory& statisticsUpdateFactory) {
+        processCompleteScores(headPtr_, scoreVector, statisticsUpdateFactory);
+    };
+    auto partialDenseBinned64BitVisitor = [this](const DenseBinnedScoreVector<float64, PartialIndexVector>& scoreVector,
+                                                 IStatisticsUpdateFactory& statisticsUpdateFactory) {
+        processPartialScores(headPtr_, scoreVector, statisticsUpdateFactory);
+    };
+    scores.visit(completeDense32BitVisitor, partialDense32BitVisitor, completeDense64BitVisitor,
+                 partialDense64BitVisitor, completeDenseBinned32BitVisitor, partialDenseBinned32BitVisitor,
+                 completeDenseBinned64BitVisitor, partialDenseBinned64BitVisitor);
 }
