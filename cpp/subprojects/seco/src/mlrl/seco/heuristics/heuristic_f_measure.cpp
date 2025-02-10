@@ -12,28 +12,28 @@ namespace seco {
     class FMeasure final : public IHeuristic {
         private:
 
-            const float64 beta_;
+            const float32 beta_;
 
         public:
 
             /**
              * @param beta The value of the "beta" parameter. Must be at least 0
              */
-            FMeasure(float64 beta) : beta_(beta) {}
+            FMeasure(float32 beta) : beta_(beta) {}
 
-            float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                            float64 uip, float64 urn, float64 urp) const override {
+            float32 evaluateConfusionMatrix(float32 cin, float32 cip, float32 crn, float32 crp, float32 uin,
+                                            float32 uip, float32 urn, float32 urp) const override {
                 if (std::isinf(beta_)) {
                     // Equivalent to recall
                     return recall(cin, crp, uin, urp);
                 } else if (beta_ > 0) {
                     // Weighted harmonic mean between precision and recall
-                    float64 betaPow = beta_ * beta_;
-                    float64 numCoveredEqual = cin + crp;
-                    float64 numUncoveredCorrect = uin + urp;
-                    float64 numCoveredIncorrect = cip + crn;
-                    float64 numerator = (1 + betaPow) * numCoveredEqual;
-                    float64 denominator = numerator + (betaPow * numUncoveredCorrect) + numCoveredIncorrect;
+                    float32 betaPow = beta_ * beta_;
+                    float32 numCoveredEqual = cin + crp;
+                    float32 numUncoveredCorrect = uin + urp;
+                    float32 numCoveredIncorrect = cip + crn;
+                    float32 numerator = (1 + betaPow) * numCoveredEqual;
+                    float32 denominator = numerator + (betaPow * numUncoveredCorrect) + numCoveredIncorrect;
                     return util::divideOrZero(numerator, denominator);
                 } else {
                     // Equivalent to precision
@@ -51,28 +51,28 @@ namespace seco {
     class FMeasureFactory final : public IHeuristicFactory {
         private:
 
-            const float64 beta_;
+            const float32 beta_;
 
         public:
 
             /**
              * @param beta The value of the "beta" parameter. Must be at least 0
              */
-            FMeasureFactory(float64 beta) : beta_(beta) {}
+            FMeasureFactory(float32 beta) : beta_(beta) {}
 
             std::unique_ptr<IHeuristic> create() const override {
                 return std::make_unique<FMeasure>(beta_);
             }
     };
 
-    FMeasureConfig::FMeasureConfig() : beta_(0.25) {}
+    FMeasureConfig::FMeasureConfig() : beta_(0.25f) {}
 
-    float64 FMeasureConfig::getBeta() const {
+    float32 FMeasureConfig::getBeta() const {
         return beta_;
     }
 
-    IFMeasureConfig& FMeasureConfig::setBeta(float64 beta) {
-        util::assertGreaterOrEqual<float64>("beta", beta, 0);
+    IFMeasureConfig& FMeasureConfig::setBeta(float32 beta) {
+        util::assertGreaterOrEqual<float32>("beta", beta, 0);
         beta_ = beta;
         return *this;
     }

@@ -3,8 +3,6 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_vector.hpp"
-#include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/rule_refinement/prediction_evaluated.hpp"
 
 #include <memory>
@@ -18,12 +16,15 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>
 
         const CompleteIndexVector indexVector_;
 
+        const std::unique_ptr<IStatisticsUpdate> statisticsUpdatePtr_;
+
     public:
 
         /**
-         * @param numElements The number of outputs for which the rule predicts
+         * @param numElements             The number of outputs for which the rule predicts
+         * @param statisticsUpdateFactory A reference to an object of type `IStatisticsUpdateFactory`
          */
-        CompletePrediction(uint32 numElements);
+        CompletePrediction(uint32 numElements, IStatisticsUpdateFactory& statisticsUpdateFactory);
 
         /**
          * An iterator that provides access to the predicted scores and allows to modify them.
@@ -88,13 +89,12 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>
 
         void postProcess(const IPostProcessor& postProcessor) override;
 
-        void set(View<float64>::const_iterator begin, View<float64>::const_iterator end) override final;
-
-        void set(BinnedConstIterator<float64> begin, BinnedConstIterator<float64> end) override final;
-
         bool isPartial() const override;
 
         uint32 getIndex(uint32 pos) const override;
+
+        void visit(PartialIndexVectorVisitor partialIndexVectorVisitor,
+                   CompleteIndexVectorVisitor completeIndexVectorVisitor) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(const IStatistics& statistics,
                                                                   const EqualWeightVector& weights) const override;
@@ -106,6 +106,9 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>
           const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
+          const IStatistics& statistics, const DenseWeightVector<float32>& weights) const override;
+
+        std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
           const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
@@ -115,12 +118,13 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>
           const IStatistics& statistics,
           const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override;
 
-        std::unique_ptr<IRuleRefinement> createRuleRefinement(IFeatureSubspace& featureSubspace,
-                                                              uint32 featureIndex) const override;
+        std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
+          const IStatistics& statistics,
+          const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override;
 
-        void apply(IStatistics& statistics, uint32 statisticIndex) const override;
+        void applyPrediction(uint32 statisticIndex) override;
 
-        void revert(IStatistics& statistics, uint32 statisticIndex) const override;
+        void revertPrediction(uint32 statisticIndex) override;
 
         std::unique_ptr<IHead> createHead() const override;
 };

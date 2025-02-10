@@ -318,6 +318,7 @@ class Experiment(DataSplitter.Callback):
         problem_type = self.problem_type
         base_learner = self.base_learner
         current_learner = clone(base_learner)
+        fit_kwargs = self.fit_kwargs if self.fit_kwargs else {}
 
         # Apply parameter setting, if necessary...
         parameter_input = self.parameter_input
@@ -335,11 +336,13 @@ class Experiment(DataSplitter.Callback):
 
         # Set the indices of ordinal features, if supported...
         if isinstance(current_learner, OrdinalFeatureSupportMixin):
-            current_learner.ordinal_feature_indices = meta_data.get_feature_indices({FeatureType.ORDINAL})
+            fit_kwargs[OrdinalFeatureSupportMixin.KWARG_ORDINAL_FEATURE_INDICES] = meta_data.get_feature_indices(
+                {FeatureType.ORDINAL})
 
         # Set the indices of nominal features, if supported...
         if isinstance(current_learner, NominalFeatureSupportMixin):
-            current_learner.nominal_feature_indices = meta_data.get_feature_indices({FeatureType.NOMINAL})
+            fit_kwargs[NominalFeatureSupportMixin.KWARG_NOMINAL_FEATURE_INDICES] = meta_data.get_feature_indices(
+                {FeatureType.NOMINAL})
 
         # Load model from disk, if possible, otherwise train a new model...
         loaded_learner = self.__load_model(data_split)
@@ -353,7 +356,6 @@ class Experiment(DataSplitter.Callback):
             train_time = 0
         else:
             log.info('Fitting model to %s training examples...', train_x.shape[0])
-            fit_kwargs = self.fit_kwargs if self.fit_kwargs else {}
             train_time = self.__train(current_learner, train_x, train_y, **fit_kwargs)
             log.info('Successfully fit model in %s', format_duration(train_time))
 
