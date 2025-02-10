@@ -45,10 +45,12 @@ jobs:
             cpp_common: &cpp_common
               - *build_files
               - 'build_system/targets/compilation/cpp/*'
+              - '.version-cpp'
               - 'cpp/meson.*'
               - 'cpp/subprojects/common/meson.*'
               - 'cpp/subprojects/common/include/**'
               - 'cpp/subprojects/common/src/**'
+              - '.version-python'
               - 'python/meson.*'
               - 'python/subprojects/common/meson.*'
             cpp_boosting: &cpp_boosting

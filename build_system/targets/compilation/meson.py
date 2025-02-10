@@ -12,16 +12,17 @@ from util.run import Program
 
 from targets.compilation.build_options import BuildOptions
 from targets.compilation.modules import CompilationModule
+from targets.compilation.version_files import CppVersionFile
 
 
-def build_options_as_meson_arguments(build_options: BuildOptions) -> List[str]:
+def get_meson_arguments(build_options: BuildOptions) -> List[str]:
     """
     Returns a list of arguments that can be passed to meson for setting build options.
 
     :param build_options:   The build options
     :return:                A list of arguments
     """
-    arguments = []
+    arguments = ['-D', 'cpp_std=' + CppVersionFile().version]
 
     for build_option in build_options:
         if build_option:
@@ -58,7 +59,7 @@ class MesonSetup(Meson):
         :param module:          The module, the program should be applied to
         :param build_options:   The build options to be used
         """
-        super().__init__(build_unit, 'setup', *build_options_as_meson_arguments(build_options), module.build_directory,
+        super().__init__(build_unit, 'setup', *get_meson_arguments(build_options), module.build_directory,
                          module.root_directory)
         self.add_dependencies('ninja')
 
@@ -74,8 +75,7 @@ class MesonConfigure(Meson):
         :param module:          The module, the program should be applied to
         :param build_options:   The build options to be used
         """
-        super().__init__(build_unit, 'configure', *build_options_as_meson_arguments(build_options),
-                         module.build_directory)
+        super().__init__(build_unit, 'configure', *get_meson_arguments(build_options), module.build_directory)
         self.build_options = build_options
 
     def _should_be_skipped(self) -> bool:
