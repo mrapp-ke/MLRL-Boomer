@@ -3,26 +3,25 @@
  */
 #pragma once
 
-#include "mlrl/common/indices/index_vector.hpp"
-#include "mlrl/common/iterator/iterator_binned.hpp"
 #include "mlrl/common/sampling/weight_vector_bit.hpp"
 #include "mlrl/common/sampling/weight_vector_dense.hpp"
 #include "mlrl/common/sampling/weight_vector_equal.hpp"
 #include "mlrl/common/sampling/weight_vector_out_of_sample.hpp"
+#include "mlrl/common/statistics/statistics_update.hpp"
 
 #include <memory>
 
 // Forward declarations
 class IPostProcessor;
 class IStatistics;
-class IStatisticsUpdate;
 class IStatisticsSubset;
 class IHead;
 
 /**
  * Defines an interface for all classes that store the scores that are predicted by a rule.
  */
-class IPrediction : public IIndexVector {
+class IPrediction : public IIndexVector,
+                    public IStatisticsUpdate {
     public:
 
         virtual ~IPrediction() override {}
@@ -40,15 +39,6 @@ class IPrediction : public IIndexVector {
          *                      post-processing
          */
         virtual void postProcess(const IPostProcessor& postProcessor) = 0;
-
-        /**
-         * Creates and returns an object of type `IStatisticsUpdate` that allows updating given `IStatistics` based on
-         * this prediction.
-         *
-         * @param statistics  A reference to an object of type `IStatistics` that should be updated
-         * @return            An unique pointer to an object of type `IStatisticsUpdate` that has been created
-         */
-        virtual std::unique_ptr<IStatisticsUpdate> createStatisticsUpdate(IStatistics& statistics) const = 0;
 
         /**
          * Creates and returns a new subset of the given statistics that only contains the outputs whose indices are

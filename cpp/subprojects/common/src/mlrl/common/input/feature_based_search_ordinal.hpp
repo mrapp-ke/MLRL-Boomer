@@ -37,17 +37,17 @@ static inline void searchForOrdinalRefinementInternally(const OrdinalFeatureVect
             // Check if a condition using the <= operator covers at least `minCoverage` examples...
             if (numCovered >= minCoverage) {
                 // Determine the best prediction for the examples covered by a condition using the <= operator...
-                const IScoreVector& scoreVector = statisticsSubset.calculateScores();
+                std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScores();
 
                 // Check if the quality of the prediction is better than the quality of the current rule...
-                if (comparator.isImprovement(scoreVector)) {
+                if (comparator.isImprovement(*updateCandidatePtr)) {
                     refinement.start = 0;
                     refinement.end = i;
                     refinement.inverse = false;
                     refinement.numCovered = numCovered;
                     refinement.comparator = ORDINAL_LEQ;
                     refinement.threshold = previousValue;
-                    comparator.pushRefinement(refinement, scoreVector);
+                    comparator.pushRefinement(refinement, *updateCandidatePtr);
                 }
             }
 
@@ -56,17 +56,18 @@ static inline void searchForOrdinalRefinementInternally(const OrdinalFeatureVect
 
             if (numUncovered >= minCoverage) {
                 // Determine the best prediction for examples covered by a condition using the > operator...
-                const IScoreVector& scoreVector = statisticsSubset.calculateScoresUncovered();
+                std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+                  statisticsSubset.calculateScoresUncovered();
 
                 // Check if the quality of the prediction is better than the quality of the current rule...
-                if (comparator.isImprovement(scoreVector)) {
+                if (comparator.isImprovement(*updateCandidatePtr)) {
                     refinement.start = 0;
                     refinement.end = i;
                     refinement.inverse = true;
                     refinement.numCovered = numUncovered;
                     refinement.comparator = ORDINAL_GR;
                     refinement.threshold = previousValue;
-                    comparator.pushRefinement(refinement, scoreVector);
+                    comparator.pushRefinement(refinement, *updateCandidatePtr);
                 }
             }
 
@@ -98,17 +99,17 @@ static inline void searchForOrdinalRefinementInternally(const OrdinalFeatureVect
             // Check if a condition using the > operator covers at least `minCoverage` examples...
             if (numCovered >= minCoverage) {
                 // Determine the best prediction for the covered examples...
-                const IScoreVector& scoreVector = statisticsSubset.calculateScores();
+                std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScores();
 
                 // Check if the quality of the prediction is better than the quality of the current rule...
-                if (comparator.isImprovement(scoreVector)) {
+                if (comparator.isImprovement(*updateCandidatePtr)) {
                     refinement.start = i + 1;
                     refinement.end = numValues;
                     refinement.inverse = false;
                     refinement.numCovered = numCovered;
                     refinement.comparator = ORDINAL_GR;
                     refinement.threshold = currentValue;
-                    comparator.pushRefinement(refinement, scoreVector);
+                    comparator.pushRefinement(refinement, *updateCandidatePtr);
                 }
             }
 
@@ -117,17 +118,18 @@ static inline void searchForOrdinalRefinementInternally(const OrdinalFeatureVect
 
             if (numUncovered >= minCoverage) {
                 // Determine the best prediction for the covered examples...
-                const IScoreVector& scoreVector = statisticsSubset.calculateScoresUncovered();
+                std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+                  statisticsSubset.calculateScoresUncovered();
 
                 // Check if the quality of the prediction is better than the quality of the current rule...
-                if (comparator.isImprovement(scoreVector)) {
+                if (comparator.isImprovement(*updateCandidatePtr)) {
                     refinement.start = i + 1;
                     refinement.end = numValues;
                     refinement.inverse = true;
                     refinement.numCovered = numUncovered;
                     refinement.comparator = ORDINAL_LEQ;
                     refinement.threshold = currentValue;
-                    comparator.pushRefinement(refinement, scoreVector);
+                    comparator.pushRefinement(refinement, *updateCandidatePtr);
                 }
             }
 
@@ -140,17 +142,17 @@ static inline void searchForOrdinalRefinementInternally(const OrdinalFeatureVect
     // Check if the condition `f > majorityValue` covers at least `minCoverage` examples...
     if (numCovered >= minCoverage) {
         // Determine the best prediction for examples covered by the condition...
-        const IScoreVector& scoreVector = statisticsSubset.calculateScores();
+        std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScores();
 
         // Check if the quality of the prediction is better than the quality of the current rule...
-        if (comparator.isImprovement(scoreVector)) {
+        if (comparator.isImprovement(*updateCandidatePtr)) {
             refinement.start = firstValueGreaterThanMajorityValue;
             refinement.end = numValues;
             refinement.numCovered = numCovered;
             refinement.inverse = false;
             refinement.comparator = ORDINAL_GR;
             refinement.threshold = majorityValue;
-            comparator.pushRefinement(refinement, scoreVector);
+            comparator.pushRefinement(refinement, *updateCandidatePtr);
         }
     }
 
@@ -159,17 +161,17 @@ static inline void searchForOrdinalRefinementInternally(const OrdinalFeatureVect
 
     if (numUncovered >= minCoverage) {
         // Determine the best prediction for examples covered by the condition...
-        const IScoreVector& scoreVector = statisticsSubset.calculateScoresUncovered();
+        std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScoresUncovered();
 
         // Check if the quality of the prediction is better than the quality of the current rule...
-        if (comparator.isImprovement(scoreVector)) {
+        if (comparator.isImprovement(*updateCandidatePtr)) {
             refinement.start = firstValueGreaterThanMajorityValue;
             refinement.end = numValues;
             refinement.numCovered = numUncovered;
             refinement.inverse = true;
             refinement.comparator = ORDINAL_LEQ;
             refinement.threshold = majorityValue;
-            comparator.pushRefinement(refinement, scoreVector);
+            comparator.pushRefinement(refinement, *updateCandidatePtr);
         }
     }
 
@@ -179,17 +181,18 @@ static inline void searchForOrdinalRefinementInternally(const OrdinalFeatureVect
         // Check if the condition `f <= lastValueLessThanMajorityValue` covers at least `minCoverage` examples...
         if (numCoveredLessThanMajorityValue >= minCoverage) {
             // Determine the best prediction for the examples covered by the condition...
-            const IScoreVector& scoreVector = statisticsSubset.calculateScoresAccumulated();
+            std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+              statisticsSubset.calculateScoresAccumulated();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
-            if (comparator.isImprovement(scoreVector)) {
+            if (comparator.isImprovement(*updateCandidatePtr)) {
                 refinement.start = 0;
                 refinement.end = firstValueGreaterThanMajorityValue;
                 refinement.numCovered = numCoveredLessThanMajorityValue;
                 refinement.inverse = false;
                 refinement.comparator = ORDINAL_LEQ;
                 refinement.threshold = lastValueLessThanMajorityValue;
-                comparator.pushRefinement(refinement, scoreVector);
+                comparator.pushRefinement(refinement, *updateCandidatePtr);
             }
         }
 
@@ -198,17 +201,18 @@ static inline void searchForOrdinalRefinementInternally(const OrdinalFeatureVect
 
         if (numUncovered >= minCoverage) {
             // Determine the best prediction for the examples covered by the condition...
-            const IScoreVector& scoreVector = statisticsSubset.calculateScoresUncoveredAccumulated();
+            std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+              statisticsSubset.calculateScoresUncoveredAccumulated();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
-            if (comparator.isImprovement(scoreVector)) {
+            if (comparator.isImprovement(*updateCandidatePtr)) {
                 refinement.start = 0;
                 refinement.end = firstValueGreaterThanMajorityValue;
                 refinement.numCovered = numUncovered;
                 refinement.inverse = true;
                 refinement.comparator = ORDINAL_GR;
                 refinement.threshold = lastValueLessThanMajorityValue;
-                comparator.pushRefinement(refinement, scoreVector);
+                comparator.pushRefinement(refinement, *updateCandidatePtr);
             }
         }
     }

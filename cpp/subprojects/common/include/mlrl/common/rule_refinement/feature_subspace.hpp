@@ -198,7 +198,7 @@ class IFeatureSubspace {
          *
          * @param prediction A reference to an object of type `IPrediction` that stores the prediction of the rule
          */
-        virtual void applyPrediction(const IPrediction& prediction) = 0;
+        virtual void applyPrediction(IPrediction& prediction) = 0;
 
         /**
          * Reverts the statistics that correspond to the training examples included in this subspace based on the
@@ -206,5 +206,5 @@ class IFeatureSubspace {
          *
          * @param prediction A reference to an object of type `IPrediction` that stores the prediction of the rule
          */
-        virtual void revertPrediction(const IPrediction& prediction) = 0;
+        virtual void revertPrediction(IPrediction& prediction) = 0;
 };
