@@ -38,10 +38,11 @@ class IResettableStatisticsSubset : virtual public IStatisticsSubset {
          * `IWeightedStatistics::createSubset` are taken into account even if the function `resetSubset` was called
          * since then.
          *
-         * @return A reference to an object of type `IScoreVector` that stores the scores to be predicted by the rule
-         *         for each considered output, as well as a numerical score that assesses their overall quality
+         * @return An unique pointer to an object of type `StatisticsUpdateCandidate` that stores the scores to be
+         *         predicted by the rule for each considered output, as well as a numerical score that assesses their
+         *         overall quality
          */
-        virtual const IScoreVector& calculateScoresAccumulated() = 0;
+        virtual std::unique_ptr<StatisticsUpdateCandidate> calculateScoresAccumulated() = 0;
 
         /**
          * Calculates and returns the scores to be predicted by a rule that covers all statistics that correspond to the
@@ -50,10 +51,11 @@ class IResettableStatisticsSubset : virtual public IStatisticsSubset {
          * `IWeightedStatistics::removeCoveredStatistic`, as well as a numerical score that assesses the quality of the
          * predicted scores.
          *
-         * @return A reference to an object of type `IScoreVector` that stores the scores to be predicted by the rule
-         *         for each considered output, as well as a numerical score that assesses their overall quality
+         * @return An unique pointer to an object of type `StatisticsUpdateCandidate` that stores the scores to be
+                   predicted by the rule for each considered output, as well as a numerical score that assesses their
+                   overall quality
          */
-        virtual const IScoreVector& calculateScoresUncovered() = 0;
+        virtual std::unique_ptr<StatisticsUpdateCandidate> calculateScoresUncovered() = 0;
 
         /**
          * Calculates and returns the scores to be predicted by a rule that covers all statistics that correspond to the
@@ -64,8 +66,9 @@ class IResettableStatisticsSubset : virtual public IStatisticsSubset {
          * `IWeightedStatistics::createSubset` are taken into account even if the function `resetSubset` was called
          * since then.
          *
-         * @return A reference to an object of type `IScoreVector` that stores the scores to be predicted by the rule
-         *         for each considered output, as well as a numerical score that assesses their overall quality
+         * @return An unique pointer to an object of type `StatisticsUpdateCandidate` that stores the scores to be
+         *         predicted by the rule for each considered output, as well as a numerical score that assesses their
+         *         overall quality
          */
-        virtual const IScoreVector& calculateScoresUncoveredAccumulated() = 0;
+        virtual std::unique_ptr<StatisticsUpdateCandidate> calculateScoresUncoveredAccumulated() = 0;
 };

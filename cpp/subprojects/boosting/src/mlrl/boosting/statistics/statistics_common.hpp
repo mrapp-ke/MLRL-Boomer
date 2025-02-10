@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/boosting/statistics/statistics.hpp"
+#include "statistics_update_candidate.hpp"
 
 #include <memory>
 #include <utility>
@@ -61,7 +62,7 @@ namespace boosting {
             /**
              * A reference to an object of template type `State` that represents the state of the boosting process.
              */
-            const State& state_;
+            State& state_;
 
             /**
              * A reference to an object of template type `WeightVector` that provides access to the weights of
@@ -94,7 +95,7 @@ namespace boosting {
              * @param outputIndices         A reference to an object of template type `IndexVector` that provides access
              *                              to the indices of the outputs that are included in the subset
              */
-            StatisticsSubset(const State& state, const RuleEvaluationFactory& ruleEvaluationFactory,
+            StatisticsSubset(State& state, const RuleEvaluationFactory& ruleEvaluationFactory,
                              const WeightVector& weights, const IndexVector& outputIndices)
                 : sumVector_(outputIndices.getNumElements(), true), state_(state), weights_(weights),
                   outputIndices_(outputIndices),
@@ -118,8 +119,9 @@ namespace boosting {
             /**
              * @see `IStatisticsSubset::calculateScores`
              */
-            const IScoreVector& calculateScores() override final {
-                return ruleEvaluationPtr_->calculateScores(sumVector_);
+            std::unique_ptr<StatisticsUpdateCandidate> calculateScores() override final {
+                const IScoreVector& scoreVector = ruleEvaluationPtr_->calculateScores(sumVector_);
+                return std::make_unique<BoostingStatisticsUpdateCandidate<State>>(state_, scoreVector);
             }
     };
 
@@ -201,24 +203,28 @@ namespace boosting {
                     /**
                      * @see `IResettableStatisticsSubset::calculateScoresAccumulated`
                      */
-                    const IScoreVector& calculateScoresAccumulated() override final {
-                        return this->ruleEvaluationPtr_->calculateScores(*accumulatedSumVectorPtr_);
+                    std::unique_ptr<StatisticsUpdateCandidate> calculateScoresAccumulated() override final {
+                        const IScoreVector& scoreVector =
+                          this->ruleEvaluationPtr_->calculateScores(*accumulatedSumVectorPtr_);
+                        return std::make_unique<BoostingStatisticsUpdateCandidate<State>>(this->state_, scoreVector);
                     }
 
                     /**
                      * @see `IResettableStatisticsSubset::calculateScoresUncovered`
                      */
-                    const IScoreVector& calculateScoresUncovered() override final {
+                    std::unique_ptr<StatisticsUpdateCandidate> calculateScoresUncovered() override final {
                         tmpVector_.difference(*totalSumVector_, this->outputIndices_, this->sumVector_);
-                        return this->ruleEvaluationPtr_->calculateScores(tmpVector_);
+                        const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(tmpVector_);
+                        return std::make_unique<BoostingStatisticsUpdateCandidate<State>>(this->state_, scoreVector);
                     }
 
                     /**
                      * @see `IResettableStatisticsSubset::calculateScoresUncoveredAccumulated`
                      */
-                    const IScoreVector& calculateScoresUncoveredAccumulated() override final {
+                    std::unique_ptr<StatisticsUpdateCandidate> calculateScoresUncoveredAccumulated() override final {
                         tmpVector_.difference(*totalSumVector_, this->outputIndices_, *accumulatedSumVectorPtr_);
-                        return this->ruleEvaluationPtr_->calculateScores(tmpVector_);
+                        const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(tmpVector_);
+                        return std::make_unique<BoostingStatisticsUpdateCandidate<State>>(this->state_, scoreVector);
                     }
             };
 
@@ -227,7 +233,7 @@ namespace boosting {
             /**
              * A reference to an object of template type `State` that represents the state of the boosting process.
              */
-            const State& state_;
+            State& state_;
 
             /**
              * A reference to an object of template type `RuleEvaluationFactory` that is used to create instances of the
@@ -252,7 +258,7 @@ namespace boosting {
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
              */
-            AbstractStatisticsSpace(const State& state, const RuleEvaluationFactory& ruleEvaluationFactory,
+            AbstractStatisticsSpace(State& state, const RuleEvaluationFactory& ruleEvaluationFactory,
                                     const WeightVector& weights)
                 : state_(state), ruleEvaluationFactory_(ruleEvaluationFactory), weights_(weights) {}
 
@@ -378,7 +384,7 @@ namespace boosting {
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
              */
-            WeightedStatistics(const State& state, const RuleEvaluationFactory& ruleEvaluationFactory,
+            WeightedStatistics(State& state, const RuleEvaluationFactory& ruleEvaluationFactory,
                                const WeightVector& weights)
                 : AbstractStatisticsSpace<State, StatisticVector, RuleEvaluationFactory, WeightVector>(
                     state, ruleEvaluationFactory, weights),
@@ -544,20 +550,6 @@ namespace boosting {
              */
             uint32 getNumOutputs() const override final {
                 return statePtr_->statisticMatrixPtr->getNumCols();
-            }
-
-            /**
-             * @see `IStatistics::createUpdate`
-             */
-            std::unique_ptr<IStatisticsUpdate> createUpdate(const CompletePrediction& prediction) override final {
-                return std::make_unique<Update<CompletePrediction>>(*statePtr_, prediction);
-            }
-
-            /**
-             * @see `IStatistics::createUpdate`
-             */
-            std::unique_ptr<IStatisticsUpdate> createUpdate(const PartialPrediction& prediction) override final {
-                return std::make_unique<Update<PartialPrediction>>(*statePtr_, prediction);
             }
 
             /**

@@ -24,17 +24,17 @@ static inline void searchForNominalRefinementInternally(const NominalFeatureVect
         // Check if a condition using the == operator covers at least `minCoverage` examples...
         if (numCovered >= minCoverage) {
             // Determine the best prediction for the examples covered by a condition using the == operator...
-            const IScoreVector& scoreVector = statisticsSubset.calculateScores();
+            std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScores();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
-            if (comparator.isImprovement(scoreVector)) {
+            if (comparator.isImprovement(*updateCandidatePtr)) {
                 refinement.start = i;
                 refinement.end = i + 1;
                 refinement.inverse = false;
                 refinement.numCovered = numCovered;
                 refinement.comparator = NOMINAL_EQ;
                 refinement.threshold = valueIterator[i];
-                comparator.pushRefinement(refinement, scoreVector);
+                comparator.pushRefinement(refinement, *updateCandidatePtr);
             }
         }
 
@@ -43,17 +43,17 @@ static inline void searchForNominalRefinementInternally(const NominalFeatureVect
 
         if (numUncovered >= minCoverage) {
             // Determine the best prediction for the examples covered by a condition using the != operator...
-            const IScoreVector& scoreVector = statisticsSubset.calculateScoresUncovered();
+            std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScoresUncovered();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
-            if (comparator.isImprovement(scoreVector)) {
+            if (comparator.isImprovement(*updateCandidatePtr)) {
                 refinement.start = i;
                 refinement.end = i + 1;
                 refinement.inverse = true;
                 refinement.numCovered = numUncovered;
                 refinement.comparator = NOMINAL_NEQ;
                 refinement.threshold = valueIterator[i];
-                comparator.pushRefinement(refinement, scoreVector);
+                comparator.pushRefinement(refinement, *updateCandidatePtr);
             }
         }
 
@@ -68,17 +68,17 @@ static inline void searchForNominalRefinementInternally(const NominalFeatureVect
     // `minCoverage` examples...
     if (numExamplesWithMinorityValue >= minCoverage) {
         // Determine the best prediction for the examples corresponding to one of the minority values...
-        const IScoreVector& scoreVector = statisticsSubset.calculateScoresAccumulated();
+        std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScoresAccumulated();
 
         // Check if the quality of the prediction is better than the quality of the current rule...
-        if (comparator.isImprovement(scoreVector)) {
+        if (comparator.isImprovement(*updateCandidatePtr)) {
             refinement.start = 0;
             refinement.end = numValues;
             refinement.inverse = false;
             refinement.numCovered = numExamplesWithMinorityValue;
             refinement.comparator = NOMINAL_NEQ;
             refinement.threshold = featureVector.majorityValue;
-            comparator.pushRefinement(refinement, scoreVector);
+            comparator.pushRefinement(refinement, *updateCandidatePtr);
         }
     }
 
@@ -88,17 +88,18 @@ static inline void searchForNominalRefinementInternally(const NominalFeatureVect
 
     if (numExamplesWithMajorityValue >= minCoverage) {
         // Determine the best prediction for the examples corresponding to the majority value...
-        const IScoreVector& scoreVector = statisticsSubset.calculateScoresUncoveredAccumulated();
+        std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+          statisticsSubset.calculateScoresUncoveredAccumulated();
 
         // Check if the quality of the prediction is better than the quality of the current rule...
-        if (comparator.isImprovement(scoreVector)) {
+        if (comparator.isImprovement(*updateCandidatePtr)) {
             refinement.start = 0;
             refinement.end = numValues;
             refinement.inverse = true;
             refinement.numCovered = numExamplesWithMajorityValue;
             refinement.comparator = NOMINAL_EQ;
             refinement.threshold = featureVector.majorityValue;
-            comparator.pushRefinement(refinement, scoreVector);
+            comparator.pushRefinement(refinement, *updateCandidatePtr);
         }
     }
 }

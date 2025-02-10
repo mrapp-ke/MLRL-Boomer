@@ -4,14 +4,11 @@
  */
 #pragma once
 
-#include "mlrl/common/rule_refinement/prediction_complete.hpp"
-#include "mlrl/common/rule_refinement/prediction_partial.hpp"
 #include "mlrl/common/sampling/weight_vector_bit.hpp"
 #include "mlrl/common/sampling/weight_vector_dense.hpp"
 #include "mlrl/common/sampling/weight_vector_equal.hpp"
 #include "mlrl/common/sampling/weight_vector_out_of_sample.hpp"
 #include "mlrl/common/statistics/statistics_space.hpp"
-#include "mlrl/common/statistics/statistics_update.hpp"
 #include "mlrl/common/statistics/statistics_weighted.hpp"
 
 #include <memory>
@@ -24,24 +21,6 @@ class IStatistics : public IStatisticsSpace {
     public:
 
         virtual ~IStatistics() override {}
-
-        /**
-         * Creates and returns a new object of type `IStatisticsUpdate` that allows updating the statistics based on the
-         * predictions of a rule that predicts for all available outputs.
-         *
-         * @param prediction A reference to an object of type `CompletePrediction` that stores the scores that are
-         *                   predicted by the rule
-         */
-        virtual std::unique_ptr<IStatisticsUpdate> createUpdate(const CompletePrediction& prediction) = 0;
-
-        /**
-         * Creates and returns a new object of type `IStatisticsUpdate` that allows updating the statistics based on the
-         * predictions of a rule that predicts for a subset of the available outputs.
-         *
-         * @param prediction A reference to an object of type `PartialPrediction` that stores the scores that are
-         *                   predicted by the rule
-         */
-        virtual std::unique_ptr<IStatisticsUpdate> createUpdate(const PartialPrediction& prediction) = 0;
 
         /**
          * Calculates and returns a numerical score that assesses the quality of the current predictions for a specific
