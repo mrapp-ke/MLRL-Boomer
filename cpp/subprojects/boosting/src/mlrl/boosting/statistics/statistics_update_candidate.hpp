@@ -20,26 +20,50 @@ namespace boosting {
 
         protected:
 
-            void invokeVisitor(DenseVisitor<CompleteIndexVector> visitor,
-                               const DenseScoreVector<CompleteIndexVector>& scoreVector) const override {
+            void invokeVisitor(DenseVisitor<float32, CompleteIndexVector> visitor,
+                               const DenseScoreVector<float32, CompleteIndexVector>& scoreVector) const override {
                 StatisticsUpdateFactory<State> statisticsUpdateFactory(state_);
                 visitor(scoreVector, statisticsUpdateFactory);
             }
 
-            void invokeVisitor(DenseVisitor<PartialIndexVector> visitor,
-                               const DenseScoreVector<PartialIndexVector>& scoreVector) const override {
+            void invokeVisitor(DenseVisitor<float32, PartialIndexVector> visitor,
+                               const DenseScoreVector<float32, PartialIndexVector>& scoreVector) const override {
                 StatisticsUpdateFactory<State> statisticsUpdateFactory(state_);
                 visitor(scoreVector, statisticsUpdateFactory);
             }
 
-            void invokeVisitor(DenseBinnedVisitor<CompleteIndexVector> visitor,
-                               const DenseBinnedScoreVector<CompleteIndexVector>& scoreVector) const override {
+            void invokeVisitor(DenseVisitor<float64, CompleteIndexVector> visitor,
+                               const DenseScoreVector<float64, CompleteIndexVector>& scoreVector) const override {
                 StatisticsUpdateFactory<State> statisticsUpdateFactory(state_);
                 visitor(scoreVector, statisticsUpdateFactory);
             }
 
-            void invokeVisitor(DenseBinnedVisitor<PartialIndexVector> visitor,
-                               const DenseBinnedScoreVector<PartialIndexVector>& scoreVector) const override {
+            void invokeVisitor(DenseVisitor<float64, PartialIndexVector> visitor,
+                               const DenseScoreVector<float64, PartialIndexVector>& scoreVector) const override {
+                StatisticsUpdateFactory<State> statisticsUpdateFactory(state_);
+                visitor(scoreVector, statisticsUpdateFactory);
+            }
+
+            void invokeVisitor(DenseBinnedVisitor<float32, CompleteIndexVector> visitor,
+                               const DenseBinnedScoreVector<float32, CompleteIndexVector>& scoreVector) const override {
+                StatisticsUpdateFactory<State> statisticsUpdateFactory(state_);
+                visitor(scoreVector, statisticsUpdateFactory);
+            }
+
+            void invokeVisitor(DenseBinnedVisitor<float32, PartialIndexVector> visitor,
+                               const DenseBinnedScoreVector<float32, PartialIndexVector>& scoreVector) const override {
+                StatisticsUpdateFactory<State> statisticsUpdateFactory(state_);
+                visitor(scoreVector, statisticsUpdateFactory);
+            }
+
+            void invokeVisitor(DenseBinnedVisitor<float64, CompleteIndexVector> visitor,
+                               const DenseBinnedScoreVector<float64, CompleteIndexVector>& scoreVector) const override {
+                StatisticsUpdateFactory<State> statisticsUpdateFactory(state_);
+                visitor(scoreVector, statisticsUpdateFactory);
+            }
+
+            void invokeVisitor(DenseBinnedVisitor<float64, PartialIndexVector> visitor,
+                               const DenseBinnedScoreVector<float64, PartialIndexVector>& scoreVector) const override {
                 StatisticsUpdateFactory<State> statisticsUpdateFactory(state_);
                 visitor(scoreVector, statisticsUpdateFactory);
             }
