@@ -64,16 +64,20 @@ namespace boosting {
                                                 IDecomposableRuleEvaluationFactory> {
         private:
 
-            using StatisticsState = DecomposableStatisticsState<OutputMatrix, DenseDecomposableStatisticMatrix,
-                                                                NumericCContiguousMatrix<float64>, Loss>;
+            template<typename StatisticType>
+            using StatisticsState =
+              DecomposableStatisticsState<OutputMatrix, DenseDecomposableStatisticMatrix<StatisticType>,
+                                          NumericCContiguousMatrix<StatisticType>, Loss>;
 
-            template<typename WeightVector, typename IndexVector>
-            using StatisticsSubset = StatisticsSubset<StatisticsState, DenseDecomposableStatisticVector,
-                                                      IDecomposableRuleEvaluationFactory, WeightVector, IndexVector>;
+            template<typename WeightVector, typename IndexVector, typename StatisticType>
+            using StatisticsSubset =
+              StatisticsSubset<StatisticsState<StatisticType>, DenseDecomposableStatisticVector<StatisticType>,
+                               IDecomposableRuleEvaluationFactory, WeightVector, IndexVector>;
 
-            template<typename WeightVector>
-            using WeightedStatistics = WeightedStatistics<StatisticsState, DenseDecomposableStatisticVector,
-                                                          IDecomposableRuleEvaluationFactory, WeightVector>;
+            template<typename WeightVector, typename StatisticType>
+            using WeightedStatistics =
+              WeightedStatistics<StatisticsState<StatisticType>, DenseDecomposableStatisticVector<StatisticType>,
+                                 IDecomposableRuleEvaluationFactory, WeightVector>;
 
         public:
 
@@ -217,7 +221,8 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const PartialIndexVector& outputIndices,
               const OutOfSampleWeightVector<BitWeightVector>& weights) const override {
-                return std::make_unique<StatisticsSubset<OutOfSampleWeightVector<BitWeightVector>, PartialIndexVector>>(
+                return std::make_unique<
+                  StatisticsSubset<OutOfSampleWeightVector<BitWeightVector>, PartialIndexVector, float64>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -270,8 +275,8 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const EqualWeightVector& weights) const override {
-                return std::make_unique<WeightedStatistics<EqualWeightVector>>(*this->statePtr_,
-                                                                               *this->ruleEvaluationFactory_, weights);
+                return std::make_unique<WeightedStatistics<EqualWeightVector, float64>>(
+                  *this->statePtr_, *this->ruleEvaluationFactory_, weights);
             }
 
             /**
@@ -279,8 +284,8 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const BitWeightVector& weights) const override {
-                return std::make_unique<WeightedStatistics<BitWeightVector>>(*this->statePtr_,
-                                                                             *this->ruleEvaluationFactory_, weights);
+                return std::make_unique<WeightedStatistics<BitWeightVector, float64>>(
+                  *this->statePtr_, *this->ruleEvaluationFactory_, weights);
             }
 
             /**
