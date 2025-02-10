@@ -6,14 +6,15 @@
 #include "feature_based_search_binned_common.hpp"
 #include "mlrl/common/input/feature_vector_nominal.hpp"
 #include "mlrl/common/rule_refinement/refinement.hpp"
+#include "mlrl/common/statistics/statistics_subset_resettable.hpp"
 
 template<typename Comparator>
 static inline void searchForNominalRefinementInternally(const NominalFeatureVector& featureVector,
-                                                        IWeightedStatisticsSubset& statisticsSubset,
+                                                        IResettableStatisticsSubset& statisticsSubset,
                                                         Comparator& comparator, uint32 numExamplesWithNonZeroWeights,
                                                         uint32 minCoverage, Refinement& refinement) {
     NominalFeatureVector::value_const_iterator valueIterator = featureVector.values_cbegin();
-    uint32 numValues = featureVector.numValues;
+    uint32 numValues = featureVector.numBins;
     uint32 numExamplesWithMinorityValue = 0;
 
     for (uint32 i = 0; i < numValues; i++) {

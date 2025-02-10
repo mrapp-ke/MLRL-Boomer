@@ -48,11 +48,11 @@ namespace boosting {
                 float64 quality = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
-                    const Tuple<float64>& tuple = statisticIterator[i];
-                    float64 predictedScore = calculateOutputWiseScore(tuple.first, tuple.second,
+                    const Statistic<float64>& statistic = statisticIterator[i];
+                    float64 predictedScore = calculateOutputWiseScore(statistic.gradient, statistic.hessian,
                                                                       l1RegularizationWeight_, l2RegularizationWeight_);
                     valueIterator[i] = predictedScore;
-                    quality += calculateOutputWiseQuality(predictedScore, tuple.first, tuple.second,
+                    quality += calculateOutputWiseQuality(predictedScore, statistic.gradient, statistic.hessian,
                                                           l1RegularizationWeight_, l2RegularizationWeight_);
                 }
 

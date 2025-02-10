@@ -56,6 +56,6 @@ class CompleteIndexVector final : public IIndexVector {
 
         uint32 getIndex(uint32 pos) const override;
 
-        std::unique_ptr<IRuleRefinement> createRuleRefinement(IFeatureSubspace& featureSubspace,
-                                                              uint32 featureIndex) const override;
+        void visit(PartialIndexVectorVisitor partialIndexVectorVisitor,
+                   CompleteIndexVectorVisitor completeIndexVectorVisitor) const override;
 };
