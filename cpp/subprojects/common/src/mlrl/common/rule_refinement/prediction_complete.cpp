@@ -5,8 +5,10 @@
 #include "mlrl/common/rule_refinement/rule_refinement.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
 
-CompletePrediction::CompletePrediction(uint32 numElements)
-    : VectorDecorator<AllocatedVector<float64>>(AllocatedVector<float64>(numElements)), indexVector_(numElements) {}
+CompletePrediction::CompletePrediction(uint32 numElements, IStatisticsUpdateFactory& statisticsUpdateFactory)
+    : VectorDecorator<AllocatedVector<float64>>(AllocatedVector<float64>(numElements)), indexVector_(numElements),
+      statisticsUpdatePtr_(statisticsUpdateFactory.create(indexVector_.cbegin(), indexVector_.cend(),
+                                                          this->view.cbegin(), this->view.cend())) {}
 
 CompletePrediction::value_iterator CompletePrediction::values_begin() {
     return this->view.begin();
@@ -97,6 +99,14 @@ std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
 
 std::unique_ptr<IStatisticsUpdate> CompletePrediction::createStatisticsUpdate(IStatistics& statistics) const {
     return statistics.createUpdate(*this);
+}
+
+void CompletePrediction::applyPrediction(uint32 statisticIndex) {
+    statisticsUpdatePtr_->applyPrediction(statisticIndex);
+}
+
+void CompletePrediction::revertPrediction(uint32 statisticIndex) {
+    statisticsUpdatePtr_->revertPrediction(statisticIndex);
 }
 
 std::unique_ptr<IHead> CompletePrediction::createHead() const {

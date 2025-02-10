@@ -3,8 +3,6 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_vector.hpp"
-#include "mlrl/common/indices/index_vector_partial.hpp"
 #include "mlrl/common/rule_refinement/prediction_evaluated.hpp"
 
 #include <memory>
@@ -12,7 +10,7 @@
 /**
  * Stores the scores that are predicted by a rule that predicts for a subset of the available outputs.
  */
-class PartialPrediction final : public ResizableVectorDecorator<VectorDecorator<ResizableVector<float64>>>,
+class PartialPrediction final : public VectorDecorator<ResizableVector<float64>>,
                                 public IEvaluatedPrediction {
     private:
 
@@ -20,14 +18,17 @@ class PartialPrediction final : public ResizableVectorDecorator<VectorDecorator<
 
         bool sorted_;
 
+        std::unique_ptr<IStatisticsUpdate> statisticsUpdatePtr_;
+
     public:
 
         /**
-         * @param numElements   The number of outputs for which the rule predicts
-         * @param sorted        True, if the scores that are stored by this prediction are sorted in increasing order by
-         *                      the corresponding output indices, false otherwise
+         * @param numElements             The number of outputs for which the rule predicts
+         * @param sorted                  True, if the scores that are stored by this prediction are sorted in
+         *                                increasing order by the corresponding output indices, false otherwise
+         * @param statisticsUpdateFactory A reference to an object of type `IStatisticsUpdateFactory`
          */
-        PartialPrediction(uint32 numElements, bool sorted);
+        PartialPrediction(uint32 numElements, bool sorted, IStatisticsUpdateFactory& statisticsUpdateFactory);
 
         /**
          * An iterator that provides access to the predicted scores and allows to modify them.
@@ -114,9 +115,16 @@ class PartialPrediction final : public ResizableVectorDecorator<VectorDecorator<
          */
         void setSorted(bool sorted);
 
-        uint32 getNumElements() const override;
+        /**
+         * Sets the number of elements in the vector.
+         *
+         * @param statisticsUpdateFactory A reference to an object of type `IStatisticsUpdateFactory`
+         * @param numElements             The number of elements to be set
+         * @param freeMemory              True, if unused memory should be freed, if possible, false otherwise
+         */
+        void setNumElements(IStatisticsUpdateFactory& statisticsUpdateFactory, uint32 numElements, bool freeMemory);
 
-        void setNumElements(uint32 numElements, bool freeMemory) override;
+        uint32 getNumElements() const override;
 
         void sort() override;
 
@@ -156,6 +164,10 @@ class PartialPrediction final : public ResizableVectorDecorator<VectorDecorator<
           const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override;
 
         std::unique_ptr<IStatisticsUpdate> createStatisticsUpdate(IStatistics& statistics) const override;
+
+        void applyPrediction(uint32 statisticIndex) override;
+
+        void revertPrediction(uint32 statisticIndex) override;
 
         std::unique_ptr<IHead> createHead() const override;
 };
