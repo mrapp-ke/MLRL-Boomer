@@ -1,4 +1,4 @@
-from mlrl.common.cython._types cimport float64, uint32
+from mlrl.common.cython._types cimport float32, uint32
 
 
 cdef extern from "mlrl/seco/lift_functions/lift_function_peak.hpp" namespace "seco" nogil:
@@ -11,13 +11,13 @@ cdef extern from "mlrl/seco/lift_functions/lift_function_peak.hpp" namespace "se
 
         IPeakLiftFunctionConfig& setPeakLabel(uint32 peakLabel) except +
 
-        float64 getMaxLift() const
+        float32 getMaxLift() const
 
-        IPeakLiftFunctionConfig& setMaxLift(float64 maxLift) except +
+        IPeakLiftFunctionConfig& setMaxLift(float32 maxLift) except +
 
-        float64 getCurvature() const
+        float32 getCurvature() const
 
-        IPeakLiftFunctionConfig& setCurvature(float64 curvature) except +
+        IPeakLiftFunctionConfig& setCurvature(float32 curvature) except +
 
 
 cdef extern from "mlrl/seco/lift_functions/lift_function_kln.hpp" namespace "seco" nogil:
@@ -26,9 +26,9 @@ cdef extern from "mlrl/seco/lift_functions/lift_function_kln.hpp" namespace "sec
 
         # Functions:
 
-        float64 getK() const
+        float32 getK() const
 
-        IKlnLiftFunctionConfig& setK(float64 k) except +
+        IKlnLiftFunctionConfig& setK(float32 k) except +
 
 
 cdef class PeakLiftFunctionConfig:

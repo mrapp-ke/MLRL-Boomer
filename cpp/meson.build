@@ -1,4 +1,4 @@
-project('mlrl', default_options : ['cpp_std=c++17', 'buildtype=release', 'werror=true'])
+project('mlrl', default_options : ['cpp_std=c++20', 'buildtype=release', 'werror=true'])
 
 subprojects = get_option('subprojects')
 

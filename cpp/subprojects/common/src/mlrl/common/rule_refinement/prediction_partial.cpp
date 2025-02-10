@@ -88,20 +88,17 @@ void PartialPrediction::postProcess(const IPostProcessor& postProcessor) {
     postProcessor.postProcess(this->values_begin(), this->values_end());
 }
 
-void PartialPrediction::set(View<float64>::const_iterator begin, View<float64>::const_iterator end) {
-    util::copyView(begin, this->view.begin(), this->getNumElements());
-}
-
-void PartialPrediction::set(BinnedConstIterator<float64> begin, BinnedConstIterator<float64> end) {
-    util::copyView(begin, this->view.begin(), this->getNumElements());
-}
-
 bool PartialPrediction::isPartial() const {
     return true;
 }
 
 uint32 PartialPrediction::getIndex(uint32 pos) const {
     return indexVector_.getIndex(pos);
+}
+
+void PartialPrediction::visit(PartialIndexVectorVisitor partialIndexVectorVisitor,
+                              CompleteIndexVectorVisitor completeIndexVectorVisitor) const {
+    partialIndexVectorVisitor(indexVector_);
 }
 
 std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(const IStatistics& statistics,
@@ -120,6 +117,11 @@ std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(
 }
 
 std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(
+  const IStatistics& statistics, const DenseWeightVector<float32>& weights) const {
+    return statistics.createSubset(indexVector_, weights);
+}
+
+std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(
   const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
@@ -134,17 +136,13 @@ std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(
     return statistics.createSubset(indexVector_, weights);
 }
 
-std::unique_ptr<IRuleRefinement> PartialPrediction::createRuleRefinement(IFeatureSubspace& featureSubspace,
-                                                                         uint32 featureIndex) const {
-    return indexVector_.createRuleRefinement(featureSubspace, featureIndex);
+std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(
+  const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const {
+    return statistics.createSubset(indexVector_, weights);
 }
 
-void PartialPrediction::apply(IStatistics& statistics, uint32 statisticIndex) const {
-    statistics.applyPrediction(statisticIndex, *this);
-}
-
-void PartialPrediction::revert(IStatistics& statistics, uint32 statisticIndex) const {
-    statistics.revertPrediction(statisticIndex, *this);
+std::unique_ptr<IStatisticsUpdate> PartialPrediction::createStatisticsUpdate(IStatistics& statistics) const {
+    return statistics.createUpdate(*this);
 }
 
 std::unique_ptr<IHead> PartialPrediction::createHead() const {

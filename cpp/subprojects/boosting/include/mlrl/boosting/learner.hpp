@@ -146,7 +146,7 @@ namespace boosting {
              */
             virtual void useAutomaticPartitionSampling() {
                 auto ptr = std::make_shared<AutomaticPartitionSamplingConfig>(
-                  this->getGlobalPruningConfig(), this->getMarginalProbabilityCalibratorConfig(),
+                  this->getRNGConfig(), this->getGlobalPruningConfig(), this->getMarginalProbabilityCalibratorConfig(),
                   this->getJointProbabilityCalibratorConfig());
                 this->getClassificationPartitionSamplingConfig().set(ptr);
                 this->getRegressionPartitionSamplingConfig().set(ptr);

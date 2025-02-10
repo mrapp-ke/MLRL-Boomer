@@ -1,4 +1,4 @@
-project('mlrl-python', default_options : ['cpp_std=c++17', 'buildtype=release'])
+project('mlrl-python', default_options : ['cpp_std=c++20', 'buildtype=release'])
 
 subprojects = get_option('subprojects')
 
