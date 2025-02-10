@@ -335,9 +335,17 @@ The seed to be used by random number generators. The given value must be at leas
 `'without-replacement'`
   The outputs to be considered when learning a new rule are chosen randomly. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
 
-    - `num_samples` *(Default value = `1`)*
+    - `sample_size` *(Default value = `0.33`)*
     
-      The number of outputs to be included in a sample. The given value must be at least 1.
+      The percentage of outputs to be included in a sample. For example, a value of 0.6 corresponds to 60% of the outputs. The given value must be in (0, 1\].
+
+    - `min_samples` *(Default value = `1`)*
+
+      The minimum number of outputs to be included in a sample. The given value must be at least 1.
+
+    - `max_samples` *(Default value = `1`)*
+
+      The maximum number of outputs to be included in a sample. The given value must be at least the value of `min_samples` or 0, if the number of outputs should not be restricted.
 ```
 
 (seco_parameters_feature_sampling)=
@@ -356,6 +364,14 @@ The seed to be used by random number generators. The given value must be at leas
     - `sample_size` *(Default value = `0`)*
     
       The percentage of features to be included in a sample. For example, a value of 0.6 corresponds to 60% of the features. The given value must be in (0, 1\] or 0, if the sample size should be calculated as log2(A - 1) + 1), where A denotes the number of available features.
+
+    - `min_samples` *(Default value = `1`)*
+
+      The minimum number of features to be included in a sample. The given value must be at least 1.
+
+    - `max_samples` *(Default value = `0`)*
+
+      The maximum number of features to be included in a sample. The given value must be at least the value of `min_samples` or 0, if the number of features should not be restricted.
 
     - `num_retained` *(Default value = `0`)*
     
@@ -379,12 +395,28 @@ The seed to be used by random number generators. The given value must be at leas
     
       The percentage of examples to be included in a sample. For example, a value of 0.6 corresponds to 60% of the available examples. The given value must be in the range (0, 1).
 
+    - `min_samples` *(Default value = `1`)*
+
+      The minimum number of examples to be included in a sample. The given value must be at least 1.
+
+    - `max_samples` *(Default value = `0`)*
+
+      The maximum number of examples to be included in a sample. The given value must be at least the value of `min_samples` or 0, if the number of examples should not be restricted.
+
 `'without-replacement'`
   The training examples to be considered for learning a new rule are selected randomly without replacement. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
 
     - `sample_size` *(Default value = `0.66`)*
     
       The percentage of examples to be included in a sample. For example, a value of 0.6 corresponds to 60% of the available examples. The given value must be in the range (0, 1).
+
+    - `min_samples` *(Default value = `1`)*
+
+      The minimum number of examples to be included in a sample. The given value must be at least 1.
+
+    - `max_samples` *(Default value = `0`)*
+
+      The maximum number of examples to be included in a sample. The given value must be at least the value of `min_samples` or 0, if the number of examples should not be restricted.
 
 `'stratified-output-wise'`
   The training examples to be considered for learning a new rule are selected according to an iterative stratified sampling method that ensures that for each label the proportion of relevant and irrelevant examples is maintained. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
@@ -393,12 +425,28 @@ The seed to be used by random number generators. The given value must be at leas
     
       The percentage of examples to be included in a sample. For example, a value of 0.6 corresponds to 60% of the available examples. The given value must be in the range (0, 1).
 
+    - `min_samples` *(Default value = `1`)*
+
+      The minimum number of examples to be included in a sample. The given value must be at least 1.
+
+    - `max_samples` *(Default value = `0`)*
+
+      The maximum number of examples to be included in a sample. The given value must be at least the value of `min_samples` or 0, if the number of examples should not be restricted.
+
 `'stratified-example-wise'`
   The training examples to be considered for learning a new rule are selected according to stratified sampling method, where distinct label vectors are treated as individual classes. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
 
     - `sample_size` *(Default value = `0.66`)*
     
       The percentage of examples to be included in a sample. For example, a value of 0.6 corresponds to 60% of the available examples. The given value must be in the range (0, 1).
+
+    - `min_samples` *(Default value = `1`)*
+
+      The minimum number of examples to be included in a sample. The given value must be at least 1.
+
+    - `max_samples` *(Default value = `0`)*
+
+      The maximum number of examples to be included in a sample. The given value must be at least the value of `min_samples` or 0, if the number of examples should not be restricted.
 ```
 
 ## Approximations and Optimizations

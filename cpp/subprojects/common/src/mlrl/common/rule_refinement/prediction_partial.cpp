@@ -6,9 +6,10 @@
 #include "mlrl/common/rule_refinement/rule_refinement.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
 
-PartialPrediction::PartialPrediction(uint32 numElements, bool sorted)
-    : ResizableVectorDecorator<VectorDecorator<ResizableVector<float64>>>(ResizableVector<float64>(numElements)),
-      indexVector_(numElements), sorted_(sorted) {}
+PartialPrediction::PartialPrediction(uint32 numElements, bool sorted, IStatisticsUpdateFactory& statisticsUpdateFactory)
+    : VectorDecorator<ResizableVector<float64>>(ResizableVector<float64>(numElements)), indexVector_(numElements),
+      sorted_(sorted), statisticsUpdatePtr_(statisticsUpdateFactory.create(indexVector_.cbegin(), indexVector_.cend(),
+                                                                           this->view.cbegin(), this->view.cend())) {}
 
 PartialPrediction::value_iterator PartialPrediction::values_begin() {
     return this->view.begin();
@@ -43,12 +44,15 @@ PartialPrediction::index_const_iterator PartialPrediction::indices_cend() const 
 }
 
 uint32 PartialPrediction::getNumElements() const {
-    return ResizableVectorDecorator<VectorDecorator<ResizableVector<float64>>>::getNumElements();
+    return VectorDecorator<ResizableVector<float64>>::getNumElements();
 }
 
-void PartialPrediction::setNumElements(uint32 numElements, bool freeMemory) {
-    ResizableVectorDecorator<VectorDecorator<ResizableVector<float64>>>::setNumElements(numElements, freeMemory);
+void PartialPrediction::setNumElements(IStatisticsUpdateFactory& statisticsUpdateFactory, uint32 numElements,
+                                       bool freeMemory) {
+    this->view.resize(numElements, freeMemory);
     indexVector_.setNumElements(numElements, freeMemory);
+    statisticsUpdatePtr_ = statisticsUpdateFactory.create(this->indices_cbegin(), this->indices_cend(),
+                                                          this->values_cbegin(), this->values_cend());
 }
 
 void PartialPrediction::setSorted(bool sorted) {
@@ -88,20 +92,17 @@ void PartialPrediction::postProcess(const IPostProcessor& postProcessor) {
     postProcessor.postProcess(this->values_begin(), this->values_end());
 }
 
-void PartialPrediction::set(View<float64>::const_iterator begin, View<float64>::const_iterator end) {
-    util::copyView(begin, this->view.begin(), this->getNumElements());
-}
-
-void PartialPrediction::set(BinnedConstIterator<float64> begin, BinnedConstIterator<float64> end) {
-    util::copyView(begin, this->view.begin(), this->getNumElements());
-}
-
 bool PartialPrediction::isPartial() const {
     return true;
 }
 
 uint32 PartialPrediction::getIndex(uint32 pos) const {
     return indexVector_.getIndex(pos);
+}
+
+void PartialPrediction::visit(PartialIndexVectorVisitor partialIndexVectorVisitor,
+                              CompleteIndexVectorVisitor completeIndexVectorVisitor) const {
+    partialIndexVectorVisitor(indexVector_);
 }
 
 std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(const IStatistics& statistics,
@@ -120,6 +121,11 @@ std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(
 }
 
 std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(
+  const IStatistics& statistics, const DenseWeightVector<float32>& weights) const {
+    return statistics.createSubset(indexVector_, weights);
+}
+
+std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(
   const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
@@ -134,17 +140,17 @@ std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(
     return statistics.createSubset(indexVector_, weights);
 }
 
-std::unique_ptr<IRuleRefinement> PartialPrediction::createRuleRefinement(IFeatureSubspace& featureSubspace,
-                                                                         uint32 featureIndex) const {
-    return indexVector_.createRuleRefinement(featureSubspace, featureIndex);
+std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(
+  const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const {
+    return statistics.createSubset(indexVector_, weights);
 }
 
-void PartialPrediction::apply(IStatistics& statistics, uint32 statisticIndex) const {
-    statistics.applyPrediction(statisticIndex, *this);
+void PartialPrediction::applyPrediction(uint32 statisticIndex) {
+    statisticsUpdatePtr_->applyPrediction(statisticIndex);
 }
 
-void PartialPrediction::revert(IStatistics& statistics, uint32 statisticIndex) const {
-    statistics.revertPrediction(statisticIndex, *this);
+void PartialPrediction::revertPrediction(uint32 statisticIndex) {
+    statisticsUpdatePtr_->revertPrediction(statisticIndex);
 }
 
 std::unique_ptr<IHead> PartialPrediction::createHead() const {

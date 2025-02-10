@@ -46,7 +46,7 @@ class DenseBinnedScoreVector final
         /**
          * An iterator that provides read-only access to the predicted scores that correspond to individual outputs.
          */
-        typedef BinnedConstIterator<float64> value_const_iterator;
+        typedef BinnedIterator<const float64> value_const_iterator;
 
         /**
          * An iterator that provides access to the indices that correspond to individual bins and allows to modify them.
@@ -186,7 +186,8 @@ class DenseBinnedScoreVector final
          */
         bool isSorted() const;
 
-        void updatePrediction(IPrediction& prediction) const override;
-
-        void processScores(ScoreProcessor& scoreProcessor) const override;
+        void visit(DenseVisitor<CompleteIndexVector> completeDenseVisitor,
+                   DenseVisitor<PartialIndexVector> partialDenseVisitor,
+                   DenseBinnedVisitor<CompleteIndexVector> completeDenseBinnedVisitor,
+                   DenseBinnedVisitor<PartialIndexVector> partialDenseBinnedVisitor) const override;
 };

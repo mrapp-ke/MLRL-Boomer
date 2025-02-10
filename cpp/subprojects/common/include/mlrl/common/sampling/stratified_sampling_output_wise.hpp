@@ -7,6 +7,10 @@
 #include "mlrl/common/data/view_matrix_csc_binary.hpp"
 #include "mlrl/common/sampling/partition_bi.hpp"
 #include "mlrl/common/sampling/weight_vector_bit.hpp"
+#include "mlrl/common/sampling/weight_vector_dense.hpp"
+#include "mlrl/common/sampling/weight_vector_equal.hpp"
+
+#include <memory>
 
 /**
  * Implements iterative stratified sampling for selecting a subset of the available training examples as proposed in the
@@ -24,34 +28,57 @@ template<typename LabelMatrix, typename IndexIterator>
 class LabelWiseStratification final {
     private:
 
+        const std::unique_ptr<RNG> rngPtr_;
+
         BinarySparseMatrixDecorator<AllocatedBinaryCscView> stratificationMatrix_;
 
     public:
 
         /**
+         * @param rngPtr        An unique pointer to an object of type `RNG` that should be used for generating random
+         *                      numbers
          * @param labelMatrix   A reference to an object of template type `LabelMatrix` that provides random or row-wise
          *                      access to the labels of the training examples
          * @param indicesBegin  An iterator to the beginning of the indices of the examples that should be considered
          * @param indicesEnd    An iterator to the end of the indices of the examples that should be considered
          */
-        LabelWiseStratification(const LabelMatrix& labelMatrix, IndexIterator indicesBegin, IndexIterator indicesEnd);
+        LabelWiseStratification(std::unique_ptr<RNG> rngPtr, const LabelMatrix& labelMatrix, IndexIterator indicesBegin,
+                                IndexIterator indicesEnd);
 
         /**
-         * Randomly selects a stratified sample of the available examples and sets their weights to 1, while the
-         * remaining weights are set to 0.
+         * Randomly selects a stratified sample of the available examples and sets the corresponding weights in a
+         * `BitWeightVector` to the value in a given iterator, while the remaining weights are set to 0.
          *
-         * @param weightVector  A reference to an object of type `BitWeightVector`, the weights should be written to
-         * @param sampleSize    The fraction of the available examples to be selected
-         * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be
-         *                      used
+         * @param weightVector      A reference to an object of type `BitWeightVector`, the weights should be written to
+         * @param weightIterator    An iterator that provides access to the weights of individual training examples
+         * @param sampleSize        The fraction of the available examples to be selected
+         * @param minSamples        The minimum number of examples to be included in the sample. Must be at least 1
+         * @param maxSamples        The maximum number of examples to be included in the sample. Must be at least
+         *                          `minSamples` or 0, if the number of examples should not be restricted
          */
-        void sampleWeights(BitWeightVector& weightVector, float32 sampleSize, RNG& rng);
+        void sampleWeights(BitWeightVector& weightVector, EqualWeightVector::const_iterator weightIterator,
+                           float32 sampleSize, uint32 minSamples, uint32 maxSamples);
+
+        /**
+         * Randomly selects a stratified sample of the available examples and sets the corresponding weights in a
+         * `DenseWeightVector<float32>` to the value in a given iterator, while the remaining weights are set to 0.
+         *
+         * @param weightVector      A reference to an object of type `DenseWeightVector<float32>`, the weights should be
+         *                          written to
+         * @param weightIterator    An iterator that provides access to the weights of individual training examples
+         * @param sampleSize        The fraction of the available examples to be selected
+         * @param minSamples        The minimum number of examples to be included in the sample. Must be at least 1
+         * @param maxSamples        The maximum number of examples to be included in the sample. Must be at least
+         *                          `minSamples` or 0, if the number of examples should not be restricted
+         */
+        void sampleWeights(DenseWeightVector<float32>& weightVector,
+                           DenseWeightVector<float32>::const_iterator weightIterator, float32 sampleSize,
+                           uint32 minSamples, uint32 maxSamples);
 
         /**
          * Randomly splits the available examples into two distinct sets and updates a given `BiPartition` accordingly.
          *
          * @param partition A reference to an object of type `BiPartition` to be updated
-         * @param rng       A reference to an object of type `RNG`, implementing the random number generator to be used
          */
-        void sampleBiPartition(BiPartition& partition, RNG& rng);
+        void sampleBiPartition(BiPartition& partition);
 };

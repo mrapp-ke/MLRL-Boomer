@@ -26,6 +26,11 @@ class OutOfSampleWeightVector final {
         OutOfSampleWeightVector(const WeightVector& vector);
 
         /**
+         * The type of the weights, the vector provides access to.
+         */
+        typedef uint32 weight_type;
+
+        /**
          * Returns the number of elements in the vector.
          *
          * @return The number of elements
@@ -38,5 +43,5 @@ class OutOfSampleWeightVector final {
          * @param pos   The position
          * @return      The weight at the specified position
          */
-        bool operator[](uint32 pos) const;
+        weight_type operator[](uint32 pos) const;
 };

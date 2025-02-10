@@ -5,7 +5,7 @@
 
 #include "mlrl/common/indices/index_vector.hpp"
 #include "mlrl/common/input/output_matrix.hpp"
-#include "mlrl/common/sampling/random.hpp"
+#include "mlrl/common/random/rng.hpp"
 
 #include <memory>
 
@@ -20,11 +20,10 @@ class IOutputSampling {
         /**
          * Creates and returns a sample of the available outputs.
          *
-         * @param rng   A reference to an object of type `RNG`, implementing the random number generator to be used
-         * @return      A reference to an object of type `IIndexVector` that provides access to the indices of the
-         *              outputs that are contained in the sample
+         * @return A reference to an object of type `IIndexVector` that provides access to the indices of the outputs
+         *         that are contained in the sample
          */
-        virtual const IIndexVector& sample(RNG& rng) = 0;
+        virtual const IIndexVector& sample() = 0;
 };
 
 /**
