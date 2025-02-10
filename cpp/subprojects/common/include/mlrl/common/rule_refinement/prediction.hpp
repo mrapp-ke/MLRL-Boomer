@@ -3,26 +3,25 @@
  */
 #pragma once
 
-#include "mlrl/common/indices/index_vector.hpp"
-#include "mlrl/common/iterator/iterator_binned.hpp"
 #include "mlrl/common/sampling/weight_vector_bit.hpp"
 #include "mlrl/common/sampling/weight_vector_dense.hpp"
 #include "mlrl/common/sampling/weight_vector_equal.hpp"
 #include "mlrl/common/sampling/weight_vector_out_of_sample.hpp"
+#include "mlrl/common/statistics/statistics_update.hpp"
 
 #include <memory>
 
 // Forward declarations
 class IPostProcessor;
 class IStatistics;
-class IStatisticsUpdate;
 class IStatisticsSubset;
 class IHead;
 
 /**
  * Defines an interface for all classes that store the scores that are predicted by a rule.
  */
-class IPrediction : public IIndexVector {
+class IPrediction : public IIndexVector,
+                    public IStatisticsUpdate {
     public:
 
         virtual ~IPrediction() override {}

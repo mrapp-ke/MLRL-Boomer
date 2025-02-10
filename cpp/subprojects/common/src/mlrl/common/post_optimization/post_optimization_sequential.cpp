@@ -78,7 +78,7 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
                 for (auto it = modelBuilder_.begin(); it != modelBuilder_.end(); it++) {
                     IntermediateModelBuilder::IntermediateRule& intermediateRule = *it;
                     const ConditionList& conditionList = *intermediateRule.first;
-                    const IEvaluatedPrediction& prediction = *intermediateRule.second;
+                    IEvaluatedPrediction& prediction = *intermediateRule.second;
 
                     // Create a new subset of the given thresholds...
                     const IWeightVector& weights = instanceSampling.sample();
