@@ -1,4 +1,4 @@
-from mlrl.common.cython._types cimport float64
+from mlrl.common.cython._types cimport float32
 
 
 cdef extern from "mlrl/boosting/post_processing/shrinkage_constant.hpp" namespace "boosting" nogil:
@@ -7,9 +7,9 @@ cdef extern from "mlrl/boosting/post_processing/shrinkage_constant.hpp" namespac
 
         # Functions:
 
-        float64 getShrinkage() const
+        float32 getShrinkage() const
 
-        IConstantShrinkageConfig& setShrinkage(float64 shrinkage) except +
+        IConstantShrinkageConfig& setShrinkage(float32 shrinkage) except +
 
 
 cdef class ConstantShrinkageConfig:
