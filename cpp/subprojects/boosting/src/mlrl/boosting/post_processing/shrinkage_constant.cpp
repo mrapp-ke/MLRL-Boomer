@@ -4,6 +4,15 @@
 
 namespace boosting {
 
+    template<typename ScoreIterator>
+    static inline void postProcessInternally(ScoreIterator scoresBegin, ScoreIterator scoresEnd, float32 shrinkage) {
+        uint32 numElements = scoresEnd - scoresBegin;
+
+        for (uint32 i = 0; i < numElements; i++) {
+            scoresBegin[i] *= shrinkage;
+        }
+    }
+
     /**
      * Post-processes the predictions of rules by shrinking their weights by a constant shrinkage parameter.
      */
@@ -22,12 +31,15 @@ namespace boosting {
             /**
              * @see `IPostProcessor::postProcess`
              */
-            void postProcess(View<float64>::iterator begin, View<float64>::iterator end) const override {
-                uint32 numElements = end - begin;
+            void postProcess(View<float32>::iterator begin, View<float32>::iterator end) const override {
+                postProcessInternally(begin, end, shrinkage_);
+            }
 
-                for (uint32 i = 0; i < numElements; i++) {
-                    begin[i] *= shrinkage_;
-                }
+            /**
+             * @see `IPostProcessor::postProcess`
+             */
+            void postProcess(View<float64>::iterator begin, View<float64>::iterator end) const override {
+                postProcessInternally(begin, end, shrinkage_);
             }
     };
 
