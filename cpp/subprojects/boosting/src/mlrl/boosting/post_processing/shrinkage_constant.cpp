@@ -10,14 +10,14 @@ namespace boosting {
     class ConstantShrinkage final : public IPostProcessor {
         private:
 
-            const float64 shrinkage_;
+            const float32 shrinkage_;
 
         public:
 
             /**
              * @param shrinkage The shrinkage parameter. Must be in (0, 1)
              */
-            ConstantShrinkage(float64 shrinkage) : shrinkage_(shrinkage) {}
+            ConstantShrinkage(float32 shrinkage) : shrinkage_(shrinkage) {}
 
             /**
              * @see `IPostProcessor::postProcess`
@@ -38,14 +38,14 @@ namespace boosting {
     class ConstantShrinkageFactory final : public IPostProcessorFactory {
         private:
 
-            const float64 shrinkage_;
+            const float32 shrinkage_;
 
         public:
 
             /**
              * @param shrinkage The value of the "shrinkage" parameter. Must be in (0, 1)
              */
-            ConstantShrinkageFactory(float64 shrinkage) : shrinkage_(shrinkage) {}
+            ConstantShrinkageFactory(float32 shrinkage) : shrinkage_(shrinkage) {}
 
             /**
              * @see `IPostProcessorFactory::create`
@@ -55,15 +55,15 @@ namespace boosting {
             }
     };
 
-    ConstantShrinkageConfig::ConstantShrinkageConfig() : shrinkage_(0.3) {}
+    ConstantShrinkageConfig::ConstantShrinkageConfig() : shrinkage_(0.3f) {}
 
-    float64 ConstantShrinkageConfig::getShrinkage() const {
+    float32 ConstantShrinkageConfig::getShrinkage() const {
         return shrinkage_;
     }
 
-    IConstantShrinkageConfig& ConstantShrinkageConfig::setShrinkage(float64 shrinkage) {
-        util::assertGreater<float64>("shrinkage", shrinkage, 0);
-        util::assertLess<float64>("shrinkage", shrinkage, 1);
+    IConstantShrinkageConfig& ConstantShrinkageConfig::setShrinkage(float32 shrinkage) {
+        util::assertGreater<float32>("shrinkage", shrinkage, 0);
+        util::assertLess<float32>("shrinkage", shrinkage, 1);
         shrinkage_ = shrinkage;
         return *this;
     }
