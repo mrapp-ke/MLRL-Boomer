@@ -12,10 +12,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data:
 
-Mean Absolute Error                89.98
-Mean Absolute Percentage Error      1.51
-Mean Squared Error              13373.6
-Median Absolute Error              70.15
+Mean Absolute Error                98.25
+Mean Absolute Percentage Error      1.13
+Mean Squared Error              16477.5
+Median Absolute Error              69.95
 
 INFO Model characteristics:
 
@@ -23,20 +23,20 @@ INFO Model characteristics:
 │ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
 ├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
 │ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-│ 111 local rules               │     187 │                  52.41% │                 47.59% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 53 local rules                │      80 │                  51.25% │                 48.75% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
 └───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
 
 ┌────────────────────────────────┬─────────┬────────────┬────────────┐
 │ Statistics about predictions   │   Total │   Positive │   Negative │
 ├────────────────────────────────┼─────────┼────────────┼────────────┤
 │ Default rule                   │       6 │      0.00% │    100.00% │
-│ 111 local rules                │     222 │     70.27% │     29.73% │
+│ 53 local rules                 │     106 │     62.26% │     37.74% │
 └────────────────────────────────┴─────────┴────────────┴────────────┘
 
 ┌─────────────────────────────┬───────────┬───────────┬───────────┐
 │ Statistics per local rule   │   Minimum │   Average │   Maximum │
 ├─────────────────────────────┼───────────┼───────────┼───────────┤
-│ Conditions                  │         1 │      1.68 │         5 │
+│ Conditions                  │         1 │      1.51 │         3 │
 │ Predictions                 │         2 │      2    │         2 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 

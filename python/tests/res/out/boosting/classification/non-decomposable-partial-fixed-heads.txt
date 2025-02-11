@@ -12,22 +12,22 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data:
 
-Example-wise F1         63.08
-Example-wise Jaccard    54.97
+Example-wise F1         62.91
+Example-wise Jaccard    54.72
 Example-wise Precision  71
-Example-wise Recall     61.39
-Hamming Accuracy        80.02
-Hamming Loss            19.98
-Macro F1                62.79
-Macro Jaccard           47.14
-Macro Precision         72.39
-Macro Recall            58.34
-Micro F1                65.49
-Micro Jaccard           48.69
-Micro Precision         72.88
-Micro Recall            59.47
-Subset 0/1 Loss         70.92
-Subset Accuracy         29.08
+Example-wise Recall     61.14
+Hamming Accuracy        79.93
+Hamming Loss            20.07
+Macro F1                62.41
+Macro Jaccard           46.85
+Macro Precision         72.12
+Macro Recall            58.03
+Micro F1                65.29
+Micro Jaccard           48.47
+Micro Precision         72.79
+Micro Recall            59.2
+Subset 0/1 Loss         71.43
+Subset Accuracy         28.57
 
 INFO Model characteristics:
 
@@ -35,7 +35,7 @@ INFO Model characteristics:
 │ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
 ├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
 │ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-│ 999 local rules               │    5794 │                  56.06% │                 43.94% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 999 local rules               │    5794 │                  56.04% │                 43.96% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
 └───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
 
 ┌────────────────────────────────┬─────────┬────────────┬────────────┐
