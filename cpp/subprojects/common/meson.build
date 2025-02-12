@@ -129,10 +129,8 @@ install_root = meson.current_source_dir() / '../../../python/subprojects'
 install_dir = install_root / meson.project_name() / 'mlrl' / meson.project_name() / 'cython/'
 
 # Obtain information about the library
-lib_name = 'mlrl' + meson.project_name()
-full_version = meson.project_version()
-version_numbers = full_version.split('.')
-library_version = '.'.join([version_numbers[0], version_numbers[1], version_numbers[2]])
+library_name = 'mlrl' + meson.project_name()
+library_version = meson.project_version()
 target_architecture = host_machine.cpu_family() + '-' + host_machine.system()
 
 # Check build options
@@ -141,8 +139,8 @@ gpu_support_enabled = get_option('gpu_support').enabled()
 
 # Set configuration options
 configuration = configuration_data()
-configuration.set('mlrlcommon_library_name', 'lib' + lib_name)
-configuration.set('mlrlcommon_library_version', full_version)
+configuration.set('mlrlcommon_library_name', 'lib' + library_name)
+configuration.set('mlrlcommon_library_version', library_version)
 configuration.set('mlrlcommon_target_architecture', target_architecture)
 configuration.set10('multi_threading_support_enabled', multi_threading_support_enabled)
 configuration.set10('gpu_support_enabled', gpu_support_enabled)
@@ -187,9 +185,9 @@ else
 endif
 
 # Library declaration
-common_lib = library(lib_name, source_files, include_directories : include_dir, cpp_args : cpp_args,
+common_lib = library(library_name, source_files, include_directories : include_dir, cpp_args : cpp_args,
                      link_args : link_args, version : library_version, install : true, install_dir : install_dir)
-common_static_lib = static_library(lib_name, source_files, include_directories : include_dir, cpp_args : cpp_args,
+common_static_lib = static_library(library_name, source_files, include_directories : include_dir, cpp_args : cpp_args,
                                    link_args : link_args)
 common_dep = declare_dependency(include_directories : include_dir, link_with : common_static_lib)
 
@@ -206,7 +204,7 @@ if gtest_test_dep.found()
         common_test_dep
     ]
 
-    test_name = lib_name + 'tests'
+    test_name = library_name + 'tests'
     common_tests = executable(test_name, test_files, dependencies : test_dependencies)
     test(test_name, common_tests)
 endif
