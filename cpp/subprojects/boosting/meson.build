@@ -96,15 +96,14 @@ install_root = common_project.get_variable('install_root')
 install_dir = install_root / meson.project_name() / 'mlrl' / meson.project_name() / 'cython/'
 
 # Obtain information about the library
-lib_name = 'mlrl' + meson.project_name()
-full_version = common_project.get_variable('full_version')
-library_version = common_project.get_variable('library_version')
+library_name = 'mlrl' + meson.project_name()
+library_version = meson.project_version()
 target_architecture = common_project.get_variable('target_architecture')
 
 # Set configuration options
 configuration = configuration_data()
-configuration.set('mlrlboosting_library_name', 'lib' + lib_name)
-configuration.set('mlrlboosting_library_version', full_version)
+configuration.set('mlrlboosting_library_name', 'lib' + library_name)
+configuration.set('mlrlboosting_library_version', library_version)
 configuration.set('mlrlboosting_target_architecture', target_architecture)
 configure_file(input : 'include/mlrl/boosting/config.hpp.in', output : 'config.hpp', configuration: configuration)
 
@@ -116,7 +115,7 @@ if host_machine.system() == 'windows'
     cpp_args += '-DMLRLBOOSTING_EXPORTS'
 endif
 
-boosting_lib = library(lib_name, source_files, include_directories : include_dir, dependencies : dependencies,
+boosting_lib = library(library_name, source_files, include_directories : include_dir, dependencies : dependencies,
                        cpp_args : cpp_args, link_args : link_args, version : library_version, install : true,
                        install_dir : install_dir)
 
@@ -132,7 +131,7 @@ if gtest_test_dep.found()
         declare_dependency(include_directories : [include_dir, include_directories('src')], link_with : boosting_lib)
     ]
 
-    test_name = lib_name + 'tests'
+    test_name = library_name + 'tests'
     boosting_tests = executable(test_name, test_files, dependencies : test_dependencies)
     test(test_name, boosting_tests)
 endif
