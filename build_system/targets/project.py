@@ -3,11 +3,15 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides information about the project that is important to the build system.
 """
-from os import path
+from dataclasses import replace
+from os import environ, path
 from typing import Set
 
 from core.build_unit import BuildUnit
+from util.env import get_env, get_env_bool
 from util.files import FileSearch
+
+from targets.version_files import DevelopmentVersionFile, Version, VersionFile
 
 
 class Project:
@@ -19,6 +23,22 @@ class Project:
     """
 
     root_directory = '.'
+
+    @staticmethod
+    def version(release: bool = False) -> Version:
+        """
+        Returns the current version of the project.
+
+        :param release: True, if the release version should be returned, False, if the development version should be
+                        returned
+        :return:        The current version of the project
+        """
+        version = VersionFile().version
+
+        if release or (get_env_bool(environ, 'READTHEDOCS') and get_env(environ, 'READTHEDOCS_VERSION_TYPE') == 'tag'):
+            return version
+
+        return replace(version, dev=DevelopmentVersionFile().development_version)
 
     class BuildSystem:
         """

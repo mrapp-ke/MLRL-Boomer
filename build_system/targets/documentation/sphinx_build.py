@@ -13,7 +13,7 @@ from util.log import Log
 from util.run import Program
 
 from targets.documentation.modules import SphinxModule
-from targets.version_files import get_project_version
+from targets.project import Project
 
 
 class SphinxBuild(Program):
@@ -30,7 +30,7 @@ class SphinxBuild(Program):
     @staticmethod
     def __create_environment() -> Dict:
         env = environ.copy()
-        set_env(env, 'PROJECT_VERSION', str(get_project_version()))
+        set_env(env, 'PROJECT_VERSION', str(Project.version()))
         return env
 
     def __init__(self, build_unit: BuildUnit, module: SphinxModule, builder: str):
