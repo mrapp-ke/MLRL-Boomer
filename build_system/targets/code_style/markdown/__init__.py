@@ -9,7 +9,7 @@ from util.files import FileSearch, FileType
 
 from targets.code_style.markdown.targets import CheckMarkdownCodeStyle, EnforceMarkdownCodeStyle
 from targets.code_style.modules import CodeModule
-from targets.paths import Project
+from targets.project import Project
 
 FORMAT_MARKDOWN = 'format_md'
 

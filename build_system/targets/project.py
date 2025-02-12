@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides paths within the project that are important for the build system.
+Provides information about the project that is important to the build system.
 """
 from os import path
 from typing import Set
@@ -12,7 +12,7 @@ from util.files import FileSearch
 
 class Project:
     """
-    Provides paths within the project.
+    Provides information about the project in general.
 
     Attributes:
         root_directory: The path to the project's root directory
@@ -22,7 +22,7 @@ class Project:
 
     class BuildSystem:
         """
-        Provides paths within the project's build system.
+        Provides information about the project's build system.
 
         Attributes:
             root_directory:         The path to the build system's root directory
@@ -46,7 +46,7 @@ class Project:
 
     class Python:
         """
-        Provides paths within the project's Python code.
+        Provides information about the project's Python code.
 
         Attributes:
             root_directory:                     The path to the Python code's root directory
@@ -92,7 +92,7 @@ class Project:
 
     class Cpp:
         """
-        Provides paths within the project's C++ code.
+        Provides information about the project's C++ code.
 
         Attributes:
             root_directory:         The path to the C++ code's root directory
@@ -129,7 +129,7 @@ class Project:
 
     class Documentation:
         """
-        Provides paths within the project's documentation.
+        Provides information about the project's documentation.
 
         Attributes:
             root_directory: The path to the documentation's root directory
@@ -154,7 +154,7 @@ class Project:
 
     class Github:
         """
-        Provides paths within the project's GitHub-related files.
+        Provides information about the project's GitHub-related files.
 
         Attributes:
             root_directory: The path to the root directory that contains all GitHub-related files
