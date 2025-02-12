@@ -1,4 +1,4 @@
-project('common', 'cpp', meson_version : '>=1.1')
+project('common', 'cpp', meson_version : '>=1.1', version : files('../../../.version'))
 
 # Source files
 source_files = [
@@ -130,8 +130,7 @@ install_dir = install_root / meson.project_name() / 'mlrl' / meson.project_name(
 
 # Obtain information about the library
 lib_name = 'mlrl' + meson.project_name()
-fs = import('fs')
-full_version = fs.read('../../../.version')
+full_version = meson.project_version()
 version_numbers = full_version.split('.')
 library_version = '.'.join([version_numbers[0], version_numbers[1], version_numbers[2]])
 target_architecture = host_machine.cpu_family() + '-' + host_machine.system()
