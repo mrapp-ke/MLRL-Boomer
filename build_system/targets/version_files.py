@@ -4,10 +4,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utilities for reading and writing version files.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from functools import cached_property
+from os import environ
 from typing import Optional
 
+from util.env import get_env, get_env_bool
 from util.io import TextFile
 from util.log import Log
 
@@ -67,7 +69,7 @@ class Version:
     def __str__(self) -> str:
         version = str(self.major) + '.' + str(self.minor) + '.' + str(self.patch)
 
-        if self.dev:
+        if self.dev is not None:
             version += '.dev' + str(self.dev)
 
         return version
@@ -109,3 +111,57 @@ class VersionFile(TextFile):
             del self.version
         except AttributeError:
             pass
+
+
+class DevelopmentVersionFile(TextFile):
+    """
+    The file that stores the project's development version.
+    """
+
+    def __init__(self):
+        super().__init__('.version-dev')
+
+    @cached_property
+    def development_version(self) -> int:
+        """
+        The development version that is stored in the file.
+        """
+        lines = self.lines
+
+        if len(lines) != 1:
+            raise ValueError('File "' + self.file + '" must contain exactly one line')
+
+        return Version.parse_version_number(lines[0])
+
+    def update(self, development_version: int):
+        """
+        Updates the development version that is stored in the file.
+
+        :param development_version: The development version to be stored
+        """
+        self.write_lines(str(development_version))
+        Log.info('Updated development version to "%s"', str(development_version))
+
+    def write_lines(self, *lines: str):
+        super().write_lines(*lines)
+
+        try:
+            del self.development_version
+        except AttributeError:
+            pass
+
+
+def get_project_version(release: bool = False) -> Version:
+    """
+    Returns the current version of the project.
+
+    :param release: True, if the release version should be returned, False, if the development version should be
+                    returned
+    :return:        The current version of the project
+    """
+    version = VersionFile().version
+
+    if release or (get_env_bool(environ, 'READTHEDOCS') and get_env(environ, 'READTHEDOCS_VERSION_TYPE') == 'tag'):
+        return version
+
+    return replace(version, dev=DevelopmentVersionFile().development_version)
