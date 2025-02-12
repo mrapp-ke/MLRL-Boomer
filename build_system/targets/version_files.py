@@ -4,10 +4,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utilities for reading and writing version files.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from functools import cached_property
+from os import environ
 from typing import Optional
 
+from util.env import get_env, get_env_bool
 from util.io import TextFile
 from util.log import Log
 
@@ -67,7 +69,7 @@ class Version:
     def __str__(self) -> str:
         version = str(self.major) + '.' + str(self.minor) + '.' + str(self.patch)
 
-        if self.dev:
+        if self.dev is not None:
             version += '.dev' + str(self.dev)
 
         return version
@@ -147,3 +149,19 @@ class DevelopmentVersionFile(TextFile):
             del self.development_version
         except AttributeError:
             pass
+
+
+def get_project_version(release: bool = False) -> Version:
+    """
+    Returns the current version of the project.
+
+    :param release: True, if the release version should be returned, False, if the development version should be
+                    returned
+    :return:        The current version of the project
+    """
+    version = VersionFile().version
+
+    if release or (get_env_bool(environ, 'READTHEDOCS') and get_env(environ, 'READTHEDOCS_VERSION_TYPE') == 'tag'):
+        return version
+
+    return replace(version, dev=DevelopmentVersionFile().development_version)
