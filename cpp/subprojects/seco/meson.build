@@ -1,4 +1,4 @@
-project('seco', 'cpp')
+project('seco', 'cpp', version : files('../../../.version'))
 
 # Source files
 source_files = [
