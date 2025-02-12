@@ -1,4 +1,4 @@
-project('boosting', 'cython', 'cpp')
+project('boosting', 'cython', 'cpp', version : files('../../../.version'))
 
 # Source files
 cython_dir = 'cython'
