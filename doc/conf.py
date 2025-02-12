@@ -5,7 +5,7 @@ This file only contains a selection of the most common options. For a full list 
 https://www.sphinx-doc.org/en/master/usage/configuration.html
 """
 # pylint: disable=redefined-builtin,invalid-name
-from os import listdir
+from os import environ, listdir
 from pathlib import Path
 
 # -- Path setup --------------------------------------------------------------
@@ -22,7 +22,7 @@ copyright = '2020-2025, Michael Rapp et al.'
 author = 'Michael Rapp et al.'
 
 # The full version, including alpha/beta/rc tags
-release = (Path(__file__).resolve().parent.parent / '.version').read_text()
+release = environ.get('PROJECT_VERSION', 'n/a')
 
 # -- General configuration ---------------------------------------------------
 

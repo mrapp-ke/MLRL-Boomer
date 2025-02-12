@@ -3,14 +3,17 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow to run the external program "sphinx-build".
 """
-from os import path
+from os import environ, path
+from typing import Dict
 
 from core.build_unit import BuildUnit
+from util.env import set_env
 from util.io import delete_files
 from util.log import Log
 from util.run import Program
 
 from targets.documentation.modules import SphinxModule
+from targets.version_files import get_project_version
 
 
 class SphinxBuild(Program):
@@ -24,6 +27,12 @@ class SphinxBuild(Program):
 
     BUILDER_SPELLING = 'spelling'
 
+    @staticmethod
+    def __create_environment() -> Dict:
+        env = environ.copy()
+        set_env(env, 'PROJECT_VERSION', str(get_project_version()))
+        return env
+
     def __init__(self, build_unit: BuildUnit, module: SphinxModule, builder: str):
         """
         :param build_unit:  The build unit from which the program should be run
@@ -36,6 +45,7 @@ class SphinxBuild(Program):
         self.builder = builder
         self.print_arguments(True)
         self.install_program(False)
+        self.use_environment(self.__create_environment())
         self.set_build_unit(build_unit)
         self.add_dependencies(
             'furo',

@@ -13,7 +13,7 @@ from core.build_unit import BuildUnit
 from util.io import TextFile
 from util.log import Log
 
-from targets.version_files import Version, VersionFile
+from targets.version_files import Version, get_project_version
 
 CHANGESET_FILE_MAIN = '.changelog-main.md'
 
@@ -342,7 +342,7 @@ def __merge_changesets(*changeset_files) -> List[Changeset]:
 
 def __update_changelog(release_type: ReleaseType, *changeset_files):
     merged_changesets = __merge_changesets(*changeset_files)
-    new_release = Release(version=VersionFile().version,
+    new_release = Release(version=get_project_version(release=True),
                           release_date=date.today(),
                           release_type=release_type,
                           changesets=merged_changesets)
@@ -398,7 +398,7 @@ def print_current_version(_: BuildUnit):
     """
     Prints the project's current version.
     """
-    return Log.info('%s', str(VersionFile().version))
+    return Log.info('%s', str(get_project_version(release=True)))
 
 
 def print_latest_changelog(_: BuildUnit):

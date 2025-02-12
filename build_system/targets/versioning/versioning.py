@@ -4,51 +4,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides actions for updating the project's version.
 """
 from dataclasses import replace
-from functools import cached_property
 
 from core.build_unit import BuildUnit
-from util.io import TextFile
 from util.log import Log
 
-from targets.version_files import Version, VersionFile
-
-
-class DevelopmentVersionFile(TextFile):
-    """
-    The file that stores the project's development version.
-    """
-
-    def __init__(self):
-        super().__init__('.version-dev')
-
-    @cached_property
-    def development_version(self) -> int:
-        """
-        The development version that is stored in the file.
-        """
-        lines = self.lines
-
-        if len(lines) != 1:
-            raise ValueError('File "' + self.file + '" must contain exactly one line')
-
-        return Version.parse_version_number(lines[0])
-
-    def update(self, development_version: int):
-        """
-        Updates the development version that is stored in the file.
-
-        :param development_version: The development version to be stored
-        """
-        self.write_lines(str(development_version))
-        Log.info('Updated development version to "%s"', str(development_version))
-
-    def write_lines(self, *lines: str):
-        super().write_lines(*lines)
-
-        try:
-            del self.development_version
-        except AttributeError:
-            pass
+from targets.version_files import DevelopmentVersionFile, VersionFile
 
 
 def __get_version_file() -> VersionFile:

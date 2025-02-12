@@ -10,7 +10,7 @@ from core.modules import Module
 from util.files import FileSearch
 
 from targets.modules import SubprojectModule
-from targets.version_files import VersionFile
+from targets.version_files import get_project_version
 
 
 class PythonPackageModule(SubprojectModule):
@@ -56,9 +56,8 @@ class PythonPackageModule(SubprojectModule):
 
         :return: The path to the wheel package or None, if no such package has been found
         """
-        current_version = VersionFile().version
         wheels = FileSearch() \
-            .filter_by_substrings(contains=str(current_version), ends_with='.whl') \
+            .filter_by_substrings(contains=str(get_project_version(release=True)), ends_with='.whl') \
             .list(self.wheel_directory)
         return wheels[0] if wheels else None
 
