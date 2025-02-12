@@ -12,12 +12,13 @@
  * same prediction is made, as well as a numerical score that assesses the overall quality of the rule, in a
  * C-contiguous array.
  *
+ * @tparam ScoreType   The type of the predicted scores
  * @tparam IndexVector The type of the vector that provides access to the indices of the outputs for which the rule may
  *                     predict
  */
-template<typename IndexVector>
+template<typename ScoreType, typename IndexVector>
 class DenseBinnedScoreVector final
-    : public BinnedVectorDecorator<ViewDecorator<CompositeVector<AllocatedVector<uint32>, ResizableVector<float64>>>>,
+    : public BinnedVectorDecorator<ViewDecorator<CompositeVector<AllocatedVector<uint32>, ResizableVector<ScoreType>>>>,
       virtual public IScoreVector {
     private:
 
@@ -46,7 +47,7 @@ class DenseBinnedScoreVector final
         /**
          * An iterator that provides read-only access to the predicted scores that correspond to individual outputs.
          */
-        typedef BinnedIterator<const float64> value_const_iterator;
+        typedef BinnedIterator<const ScoreType> value_const_iterator;
 
         /**
          * An iterator that provides access to the indices that correspond to individual bins and allows to modify them.
@@ -62,12 +63,12 @@ class DenseBinnedScoreVector final
          * An iterator that provides access to the predicted scores that correspond to individual bins and allows to
          * modify them.
          */
-        typedef typename View<float64>::iterator bin_value_iterator;
+        typedef typename View<ScoreType>::iterator bin_value_iterator;
 
         /**
          * An iterator that provides read-only access to the predicted scores that correspond to individual bins.
          */
-        typedef typename View<float64>::const_iterator bin_value_const_iterator;
+        typedef typename View<ScoreType>::const_iterator bin_value_const_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices that correspond to individual outputs.
@@ -186,8 +187,12 @@ class DenseBinnedScoreVector final
          */
         bool isSorted() const;
 
-        void visit(DenseVisitor<CompleteIndexVector> completeDenseVisitor,
-                   DenseVisitor<PartialIndexVector> partialDenseVisitor,
-                   DenseBinnedVisitor<CompleteIndexVector> completeDenseBinnedVisitor,
-                   DenseBinnedVisitor<PartialIndexVector> partialDenseBinnedVisitor) const override;
+        void visit(DenseVisitor<float32, CompleteIndexVector> completeDense32BitVisitor,
+                   DenseVisitor<float32, PartialIndexVector> partialDense32BitVisitor,
+                   DenseVisitor<float64, CompleteIndexVector> completeDense64BitVisitor,
+                   DenseVisitor<float64, PartialIndexVector> partialDense64BitVisitor,
+                   DenseBinnedVisitor<float32, CompleteIndexVector> completeDenseBinned32BitVisitor,
+                   DenseBinnedVisitor<float32, PartialIndexVector> partialDenseBinned32BitVisitor,
+                   DenseBinnedVisitor<float64, CompleteIndexVector> completeDenseBinned64BitVisitor,
+                   DenseBinnedVisitor<float64, PartialIndexVector> partialDenseBinned64BitVisitor) const override;
 };
