@@ -9,7 +9,7 @@ from util.files import FileSearch, FileType
 
 from targets.code_style.modules import CodeModule
 from targets.code_style.yaml.targets import CheckYamlCodeStyle, EnforceYamlCodeStyle
-from targets.paths import Project
+from targets.project import Project
 
 FORMAT_YAML = 'format_yaml'
 
