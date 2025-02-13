@@ -347,6 +347,23 @@ class Pip:
 
         return False
 
+    def __init__(self, *requirements_files: str):
+        """
+        :param requirements_files: The paths to the requirements files that specify the versions of the packages to be
+                                   installed
+        """
+        self.requirements = RequirementsFiles(*requirements_files)
+
+    @staticmethod
+    def for_build_unit(build_unit: BuildUnit = BuildUnit.for_file(__file__)):
+        """
+        Creates and returns a new `Pip` instance for installing packages for a specific build unit.
+
+        :param build_unit:  The build unit for which packages should be installed
+        :return:            The `Pip` instance that has been created
+        """
+        return Pip(*build_unit.find_requirements_files())
+
     @staticmethod
     def install_requirements(*requirements: Requirement, dry_run: bool = False):
         """
@@ -371,23 +388,6 @@ class Pip:
                         Log.info(stdout)
             except RuntimeError:
                 Pip.install_requirements(*requirements)
-
-    def __init__(self, *requirements_files: str):
-        """
-        :param requirements_files: The paths to the requirements files that specify the versions of the packages to be
-                                   installed
-        """
-        self.requirements = RequirementsFiles(*requirements_files)
-
-    @staticmethod
-    def for_build_unit(build_unit: BuildUnit = BuildUnit.for_file(__file__)):
-        """
-        Creates and returns a new `Pip` instance for installing packages for a specific build unit.
-
-        :param build_unit:  The build unit for which packages should be installed
-        :return:            The `Pip` instance that has been created
-        """
-        return Pip(*build_unit.find_requirements_files())
 
     def install_packages(self, *package_names: str, accept_missing: bool = False):
         """
