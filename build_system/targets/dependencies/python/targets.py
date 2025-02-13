@@ -26,8 +26,7 @@ class InstallPythonDependencies(PhonyTarget.Runnable):
         :param dependency_type: The type of the Python dependencies to be installed or None, if all dependencies should
                                 be installed
         """
-        super().__init__(
-            PythonDependencyModule.Filter(dependency_type) if dependency_type else PythonDependencyModule.Filter())
+        super().__init__(PythonDependencyModule.Filter())
         self.dependency_type = dependency_type
 
     def _after_installation(self, build_unit: BuildUnit, pip: PipList):
@@ -39,7 +38,8 @@ class InstallPythonDependencies(PhonyTarget.Runnable):
         """
 
     def run_all(self, build_unit: BuildUnit, modules: List[Module]):
-        requirements_files = reduce(lambda aggr, module: aggr + module.find_requirements_files(), modules, [])
+        requirements_files = reduce(lambda aggr, module: aggr + module.find_requirements_files(self.dependency_type),
+                                    modules, [])
         pip = PipList(*requirements_files)
         Log.info('Installing %s dependencies...',
                  ('all build-time' if self.dependency_type == DependencyType.BUILD_TIME else 'all runtime')
