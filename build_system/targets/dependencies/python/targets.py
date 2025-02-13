@@ -61,7 +61,7 @@ class CheckPythonDependencies(InstallPythonDependencies):
             table = Table(build_unit, 'Dependency', 'Requirements file', 'Current version', 'Latest version')
 
             for outdated_dependency in outdated_dependencies:
-                table.add_row(str(outdated_dependency.package), outdated_dependency.requirements_file,
+                table.add_row(str(outdated_dependency.package), str(outdated_dependency.requirements_file),
                               str(outdated_dependency.outdated), outdated_dependency.latest.min_version)
 
             table.sort_rows(0, 1)
@@ -83,7 +83,7 @@ class UpdatePythonDependencies(InstallPythonDependencies):
             table = Table(build_unit, 'Dependency', 'Requirements file', 'Previous version', 'Updated version')
 
             for updated_dependency in updated_dependencies:
-                table.add_row(str(updated_dependency.package), updated_dependency.requirements_file,
+                table.add_row(str(updated_dependency.package), str(updated_dependency.requirements_file),
                               str(updated_dependency.outdated), str(updated_dependency.latest))
 
             table.sort_rows(0, 1)

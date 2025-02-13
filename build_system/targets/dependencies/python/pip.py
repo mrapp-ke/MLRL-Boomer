@@ -7,7 +7,7 @@ from dataclasses import dataclass, replace
 from functools import reduce
 from typing import Set
 
-from util.pip import Package, Pip, RequirementsTextFile, RequirementVersion
+from util.pip import Package, Pip, RequirementsFile, RequirementsTextFile, RequirementVersion
 
 
 @dataclass
@@ -21,7 +21,7 @@ class Dependency:
         outdated:           The outdated version of the dependency
         latest:             The latest version of the dependency
     """
-    requirements_file: str
+    requirements_file: RequirementsFile
     package: Package
     outdated: RequirementVersion
     latest: RequirementVersion
@@ -93,7 +93,7 @@ class PipList(Pip):
                 if outdated_version:
                     latest_version = parts[2]
                     outdated_dependencies.add(
-                        Dependency(requirements_file=requirements_file.path,
+                        Dependency(requirements_file=requirements_file,
                                    package=Package(package_name),
                                    outdated=outdated_version,
                                    latest=RequirementVersion.parse(latest_version)))
@@ -134,7 +134,7 @@ class PipList(Pip):
 
             requirements_text_file.update(replace(outdated_requirement, version=updated_version))
             updated_dependencies.add(
-                Dependency(requirements_file=outdated_dependency.requirements_file,
+                Dependency(requirements_file=requirements_text_file,
                            package=package,
                            outdated=outdated_version,
                            latest=updated_version))
