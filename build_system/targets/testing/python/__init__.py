@@ -11,7 +11,7 @@ from core.targets import PhonyTarget, TargetBuilder
 from util.files import FileType
 
 from targets.packaging import INSTALL_WHEELS
-from targets.paths import Project
+from targets.project import Project
 from targets.testing.python.modules import PythonTestModule
 from targets.testing.python.targets import TestPython
 

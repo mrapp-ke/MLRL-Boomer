@@ -10,7 +10,7 @@ from util.files import FileType
 from targets.compilation.cpp import COMPILE_CPP
 from targets.compilation.cython.targets import CompileCython, InstallCython, SetupCython
 from targets.compilation.modules import CompilationModule
-from targets.paths import Project
+from targets.project import Project
 
 SETUP_CYTHON = 'setup_cython'
 

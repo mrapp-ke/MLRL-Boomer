@@ -12,7 +12,7 @@ from targets.documentation.cpp import APIDOC_CPP, APIDOC_CPP_INDEX
 from targets.documentation.modules import SphinxModule
 from targets.documentation.python import APIDOC_PYTHON, APIDOC_PYTHON_INDEX
 from targets.documentation.targets import BuildDocumentation
-from targets.paths import Project
+from targets.project import Project
 
 APIDOC_INDEX = 'apidoc_index'
 
