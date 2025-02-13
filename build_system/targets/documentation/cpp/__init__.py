@@ -10,7 +10,7 @@ from core.targets import TargetBuilder
 
 from targets.documentation.cpp.modules import CppApidocModule
 from targets.documentation.cpp.targets import ApidocCpp, ApidocIndexCpp, UpdateDoxyfile
-from targets.paths import Project
+from targets.project import Project
 
 APIDOC_CPP = 'apidoc_cpp'
 
