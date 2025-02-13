@@ -161,17 +161,17 @@ class Requirements(ABC):
     @property
     def requirements(self) -> Set[Requirement]:
         """
-        A set that contains all requirements in the requirements file
+        A set that contains all requirements.
         """
         return set(self.requirements_by_package.values())
 
     def lookup_requirements(self, *packages: Package, accept_missing: bool = False) -> Set[Requirement]:
         """
-        Looks up the requirements for given packages in the requirements file.
+        Looks up the requirements for given packages.
 
         :param packages:        The packages that should be looked up
-        :param accept_missing:  False, if an error should be raised if a package is not listed in the requirements file,
-                                True, if it should simply be ignored
+        :param accept_missing:  False, if an error should be raised if the requirement for a package is not found, True,
+                                if it should simply be ignored
         :return:                A set that contains the requirements for the given packages
         """
         requirements = set()
@@ -188,11 +188,11 @@ class Requirements(ABC):
 
     def lookup_requirement(self, package: Package, accept_missing: bool = False) -> Optional[Requirement]:
         """
-        Looks up the requirement for a given package in the requirements file.
+        Looks up the requirement for a given package.
 
         :param package:         The package that should be looked up
-        :param accept_missing:  False, if an error should be raised if the package is not listed in the requirements
-                                file, True, if it should simply be ignored
+        :param accept_missing:  False, if an error should be raised if the requirement for the package is not found,
+                                True, if it should simply be ignored
         :return:                The requirement for the given package
         """
         requirements = self.lookup_requirements(package, accept_missing=accept_missing)
@@ -391,11 +391,11 @@ class Pip:
 
     def install_packages(self, *package_names: str, accept_missing: bool = False):
         """
-        Installs one or several dependencies in the requirements file.
+        Installs one or several dependencies.
 
         :param package_names:   The names of the packages that should be installed
-        :param accept_missing:  False, if an error should be raised if a package is not listed in the requirements file,
-                                True, if it should simply be ignored
+        :param accept_missing:  False, if an error should be raised if the requirement for a package is not found, True,
+                                if it should simply be ignored
         """
         packages = [Package(package_name) for package_name in package_names]
         requirements = self.requirements.lookup_requirements(*packages, accept_missing=accept_missing)
