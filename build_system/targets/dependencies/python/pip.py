@@ -6,7 +6,7 @@ Provides classes for listing installed Python dependencies via pip.
 from dataclasses import dataclass, replace
 from typing import Set
 
-from util.pip import Package, Pip, RequirementsFile, RequirementVersion
+from util.pip import Package, Pip, RequirementsTextFile, RequirementVersion
 
 
 @dataclass
@@ -109,9 +109,9 @@ class PipList(Pip):
         for outdated_dependency in self.list_outdated_dependencies():
             latest_version = outdated_dependency.latest
             latest_version_parts = [int(part) for part in latest_version.min_version.split(separator)]
-            requirements_file = RequirementsFile(outdated_dependency.requirements_file)
+            requirements_text_file = RequirementsTextFile(outdated_dependency.requirements_file)
             package = outdated_dependency.package
-            outdated_requirement = requirements_file.lookup_requirement(package)
+            outdated_requirement = requirements_text_file.lookup_requirement(package)
             outdated_version = outdated_requirement.version
             updated_version = latest_version
 

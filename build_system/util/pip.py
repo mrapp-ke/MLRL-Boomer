@@ -199,7 +199,7 @@ class Requirements(ABC):
         return requirements.pop() if requirements else None
 
 
-class RequirementsFile(TextFile, Requirements):
+class RequirementsTextFile(TextFile, Requirements):
     """
     Represents a specific requirements.txt file.
     """
@@ -239,7 +239,7 @@ class RequirementsFiles(Requirements):
     """
 
     def __init__(self, *requirements_files: str):
-        self.requirements_files = [RequirementsFile(requirements_file) for requirements_file in requirements_files]
+        self.requirements_files = [RequirementsTextFile(requirements_file) for requirements_file in requirements_files]
 
     @property
     def requirements_by_package(self) -> Dict[Package, Requirement]:
