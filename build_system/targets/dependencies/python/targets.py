@@ -40,7 +40,7 @@ class InstallPythonDependencies(PhonyTarget.Runnable):
 
     def run_all(self, build_unit: BuildUnit, modules: List[Module]):
         requirements_files = reduce(lambda aggr, module: aggr + module.find_requirements_files(), modules, [])
-        pip = PipList(*[file.file for file in requirements_files])
+        pip = PipList(*requirements_files)
         Log.info('Installing %s dependencies...',
                  ('all build-time' if self.dependency_type == DependencyType.BUILD_TIME else 'all runtime')
                  if self.dependency_type else 'all')

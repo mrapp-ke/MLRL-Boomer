@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for listing installed Python dependencies via pip.
 """
 from dataclasses import dataclass, replace
+from functools import reduce
 from typing import Set
 
 from util.pip import Package, Pip, RequirementsTextFile, RequirementVersion
@@ -53,7 +54,9 @@ class PipList(Pip):
         """
         Installs all dependencies in the requirements file.
         """
-        Pip.install_requirements(*self.requirements.requirements, dry_run=True)
+        requirements = reduce(lambda aggr, requirements_file: aggr | requirements_file.requirements,
+                              self.requirements_files, set())
+        Pip.install_requirements(*requirements, dry_run=True)
 
     def list_outdated_dependencies(self) -> Set[Dependency]:
         """
@@ -81,17 +84,17 @@ class PipList(Pip):
                     'Output of command "pip list" is expected to be a table with at least three columns, but got:'
                     + line)
 
-            package = Package(parts[0])
-            requirements_by_file = self.requirements.lookup_requirement_by_file(package, accept_missing=True)
+            package_name = parts[0]
+            looked_up_requirements = self.lookup_requirement(package_name, accept_missing=True)
 
-            for requirements_file, requirement in requirements_by_file.items():
+            for requirements_file, requirement in looked_up_requirements.items():
                 outdated_version = requirement.version
 
                 if outdated_version:
                     latest_version = parts[2]
                     outdated_dependencies.add(
-                        Dependency(requirements_file=requirements_file,
-                                   package=package,
+                        Dependency(requirements_file=requirements_file.path,
+                                   package=Package(package_name),
                                    outdated=outdated_version,
                                    latest=RequirementVersion.parse(latest_version)))
 
