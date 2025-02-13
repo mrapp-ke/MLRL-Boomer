@@ -11,7 +11,7 @@ from core.targets import TargetBuilder
 from targets.documentation.python.modules import PythonApidocModule
 from targets.documentation.python.targets import ApidocIndexPython, ApidocPython
 from targets.packaging import INSTALL_WHEELS
-from targets.paths import Project
+from targets.project import Project
 
 APIDOC_PYTHON = 'apidoc_python'
 
