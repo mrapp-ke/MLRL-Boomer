@@ -58,11 +58,11 @@ class CheckPythonDependencies(InstallPythonDependencies):
         outdated_dependencies = pip.list_outdated_dependencies()
 
         if outdated_dependencies:
-            table = Table(build_unit, 'Dependency', 'Requirements file', 'Installed version', 'Latest version')
+            table = Table(build_unit, 'Dependency', 'Requirements file', 'Current version', 'Latest version')
 
             for outdated_dependency in outdated_dependencies:
                 table.add_row(str(outdated_dependency.package), outdated_dependency.requirements_file,
-                              outdated_dependency.outdated.min_version, outdated_dependency.latest.min_version)
+                              str(outdated_dependency.outdated), outdated_dependency.latest.min_version)
 
             table.sort_rows(0, 1)
             Log.info('The following dependencies are outdated:\n\n%s', str(table))
