@@ -7,10 +7,12 @@ from enum import Enum
 from os import path
 from typing import List
 
+from core.build_unit import BuildUnit
 from core.modules import Module
 from util.files import FileSearch
 from util.pip import RequirementsFile, RequirementsTextFile
 
+from targets.dependencies.python.pyproject_toml_file import PyprojectTomlFile
 from targets.modules import SubprojectModule
 
 
@@ -48,10 +50,11 @@ class PythonDependencyModule(SubprojectModule):
         self.root_directory = root_directory
         self.requirements_file_search = requirements_file_search
 
-    def find_requirements_files(self, dependency_type: DependencyType) -> List[RequirementsFile]:
+    def find_requirements_files(self, build_unit: BuildUnit, dependency_type: DependencyType) -> List[RequirementsFile]:
         """
         Finds and returns all requirements files that belong to the module and match a given `DependencyType`.
 
+        :param build_unit:      The `BuildUnit` from which this method is invoked
         :param dependency_type: The `DependencyType` to be matched
         :return:                A list that contains the requirements files that have been found
         """
@@ -62,6 +65,12 @@ class PythonDependencyModule(SubprojectModule):
                 RequirementsTextFile(file)
                 for file in self.requirements_file_search.filter_by_name('requirements.txt').list(self.root_directory)
             ])
+
+        if dependency_type == DependencyType.BUILD_TIME:
+            pyproject_toml_file = path.join(self.root_directory, 'pyproject.toml')
+
+            if path.isfile(pyproject_toml_file):
+                requirements_files.append(PyprojectTomlFile(build_unit, pyproject_toml_file))
 
         return requirements_files
 
