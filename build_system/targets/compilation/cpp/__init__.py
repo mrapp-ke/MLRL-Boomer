@@ -10,7 +10,7 @@ from util.files import FileType
 from targets.compilation.cpp.targets import CompileCpp, InstallCpp, SetupCpp
 from targets.compilation.modules import CompilationModule
 from targets.dependencies.python import VENV
-from targets.paths import Project
+from targets.project import Project
 
 SETUP_CPP = 'setup_cpp'
 

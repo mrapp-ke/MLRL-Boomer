@@ -9,7 +9,7 @@ from util.files import FileSearch, FileType
 
 from targets.code_style.modules import CodeModule
 from targets.code_style.toml.targets import CheckTomlCodeStyle, EnforceTomlCodeStyle
-from targets.paths import Project
+from targets.project import Project
 
 FORMAT_TOML = 'format_toml'
 

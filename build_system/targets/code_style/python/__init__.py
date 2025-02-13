@@ -10,7 +10,7 @@ from util.files import FileType
 from targets.code_style.modules import CodeModule
 from targets.code_style.python.targets import CheckCythonCodeStyle, CheckPythonCodeStyle, EnforceCythonCodeStyle, \
     EnforcePythonCodeStyle
-from targets.paths import Project
+from targets.project import Project
 
 FORMAT_PYTHON = 'format_python'
 

@@ -7,7 +7,7 @@ from core.build_unit import BuildUnit
 from core.targets import PhonyTarget, TargetBuilder
 
 from targets.compilation.cpp import COMPILE_CPP
-from targets.paths import Project
+from targets.project import Project
 from targets.testing.cpp.modules import CppTestModule
 from targets.testing.cpp.targets import TestCpp
 
