@@ -254,29 +254,6 @@ class RequirementsTextFile(TextFile, RequirementsFile):
         self.write_lines(*new_lines)
 
 
-class RequirementsFiles(RequirementsFile):
-    """
-    Represents multiple requirements.txt files.
-    """
-
-    def __init__(self, *requirements_files: str):
-        self.requirements_files = [RequirementsTextFile(requirements_file) for requirements_file in requirements_files]
-
-    @property
-    def requirements_by_package(self) -> Dict[Package, Requirement]:
-        return reduce(lambda aggr, requirements_file: aggr | requirements_file.requirements_by_package,
-                      self.requirements_files, {})
-
-    def update(self, updated_requirement: Requirement):
-        """
-        Updates a given requirement, if it is included in one of the requirements files.
-
-        :param updated_requirement: The requirement to be updated
-        """
-        for requirements_file in self.requirements_files:
-            requirements_file.update(updated_requirement)
-
-
 class Pip:
     """
     Allows to install Python packages via pip.
