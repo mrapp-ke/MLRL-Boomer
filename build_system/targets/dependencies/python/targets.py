@@ -38,8 +38,8 @@ class InstallPythonDependencies(PhonyTarget.Runnable):
         """
 
     def run_all(self, build_unit: BuildUnit, modules: List[Module]):
-        requirements_files = reduce(lambda aggr, module: aggr + module.find_requirements_files(self.dependency_type),
-                                    modules, [])
+        requirements_files = reduce(
+            lambda aggr, module: aggr + module.find_requirements_files(build_unit, self.dependency_type), modules, [])
         pip = PipList(*requirements_files)
         Log.info('Installing %s dependencies...',
                  ('all build-time' if self.dependency_type == DependencyType.BUILD_TIME else 'all runtime')
@@ -58,7 +58,7 @@ class CheckPythonDependencies(InstallPythonDependencies):
         outdated_dependencies = pip.list_outdated_dependencies()
 
         if outdated_dependencies:
-            table = Table(build_unit, 'Dependency', 'Requirements file', 'Current version', 'Latest version')
+            table = Table(build_unit, 'Dependency', 'Declaring file', 'Current version', 'Latest version')
 
             for outdated_dependency in outdated_dependencies:
                 table.add_row(str(outdated_dependency.package), str(outdated_dependency.requirements_file),
@@ -80,7 +80,7 @@ class UpdatePythonDependencies(InstallPythonDependencies):
         updated_dependencies = pip.update_outdated_dependencies()
 
         if updated_dependencies:
-            table = Table(build_unit, 'Dependency', 'Requirements file', 'Previous version', 'Updated version')
+            table = Table(build_unit, 'Dependency', 'Declaring file', 'Previous version', 'Updated version')
 
             for updated_dependency in updated_dependencies:
                 table.add_row(str(updated_dependency.package), str(updated_dependency.requirements_file),
