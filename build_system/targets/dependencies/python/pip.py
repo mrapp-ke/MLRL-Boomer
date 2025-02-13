@@ -85,13 +85,14 @@ class PipList(Pip):
             requirements_by_file = self.requirements.lookup_requirement_by_file(package, accept_missing=True)
 
             for requirements_file, requirement in requirements_by_file.items():
-                if requirement.version:
-                    installed_version = parts[1]
+                outdated_version = requirement.version
+
+                if outdated_version:
                     latest_version = parts[2]
                     outdated_dependencies.add(
                         Dependency(requirements_file=requirements_file,
                                    package=package,
-                                   outdated=RequirementVersion.parse(installed_version),
+                                   outdated=outdated_version,
                                    latest=RequirementVersion.parse(latest_version)))
 
         return outdated_dependencies
