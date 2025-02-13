@@ -9,6 +9,7 @@ from typing import List
 
 from core.modules import Module
 from util.files import FileSearch
+from util.pip import RequirementsFile, RequirementsTextFile
 
 from targets.modules import SubprojectModule
 
@@ -58,13 +59,16 @@ class PythonDependencyModule(SubprojectModule):
         self.root_directory = root_directory
         self.requirements_file_search = requirements_file_search
 
-    def find_requirements_files(self) -> List[str]:
+    def find_requirements_files(self) -> List[RequirementsFile]:
         """
         Finds and returns all requirements files that belong to the module.
 
-        :return: A list that contains the paths of the requirements files that have been found
+        :return: A list that contains the requirements files that have been found
         """
-        return self.requirements_file_search.filter_by_name('requirements.txt').list(self.root_directory)
+        return [
+            RequirementsTextFile(file)
+            for file in self.requirements_file_search.filter_by_name('requirements.txt').list(self.root_directory)
+        ]
 
     @property
     def subproject_name(self) -> str:
