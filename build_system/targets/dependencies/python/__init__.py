@@ -9,14 +9,14 @@ from core.build_unit import BuildUnit
 from core.targets import PhonyTarget, TargetBuilder
 
 from targets.dependencies.python.modules import DependencyType, PythonDependencyModule
-from targets.dependencies.python.targets import CheckPythonDependencies, InstallRuntimeDependencies, \
+from targets.dependencies.python.targets import CheckPythonDependencies, InstallPythonDependencies, \
     UpdatePythonDependencies
 from targets.project import Project
 
 VENV = 'venv'
 
 TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
-    .add_phony_target(VENV).set_runnables(InstallRuntimeDependencies()) \
+    .add_phony_target(VENV).set_runnables(InstallPythonDependencies(DependencyType.RUNTIME)) \
     .add_phony_target('check_runtime_dependencies').set_runnables(CheckPythonDependencies(DependencyType.RUNTIME)) \
     .add_phony_target('check_build_dependencies').set_runnables(CheckPythonDependencies(DependencyType.BUILD_TIME)) \
     .add_phony_target('check_dependencies').set_runnables(CheckPythonDependencies()) \
