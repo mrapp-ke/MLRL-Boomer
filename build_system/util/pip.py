@@ -146,22 +146,22 @@ class Requirement:
         return hash(self.package)
 
 
-class Requirements(ABC):
+class RequirementsFile(ABC):
     """
-    An abstract base class for all classes that provide access to requirements.
+    An abstract base class for all classes that provide access to requirements stored in a file.
     """
 
     @property
     @abstractmethod
     def requirements_by_package(self) -> Dict[Package, Requirement]:
         """
-        A dictionary that contains all requirements by their package.
+        A dictionary that contains all requirements in the file by their package.
         """
 
     @property
     def requirements(self) -> Set[Requirement]:
         """
-        A set that contains all requirements.
+        A set that contains all requirements in the file.
         """
         return set(self.requirements_by_package.values())
 
@@ -199,7 +199,7 @@ class Requirements(ABC):
         return requirements.pop() if requirements else None
 
 
-class RequirementsTextFile(TextFile, Requirements):
+class RequirementsTextFile(TextFile, RequirementsFile):
     """
     Represents a specific requirements.txt file.
     """
@@ -233,7 +233,7 @@ class RequirementsTextFile(TextFile, Requirements):
         self.write_lines(*new_lines)
 
 
-class RequirementsFiles(Requirements):
+class RequirementsFiles(RequirementsFile):
     """
     Represents multiple requirements.txt files.
     """

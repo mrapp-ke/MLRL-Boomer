@@ -129,7 +129,7 @@ class PipList(Pip):
                     min_version=separator.join([str(part) for part in min_version_parts[:num_version_numbers]]),
                     max_version=separator.join([str(part) for part in max_version_parts[:num_version_numbers]]))
 
-            requirements_file.update(replace(outdated_requirement, version=updated_version))
+            requirements_text_file.update(replace(outdated_requirement, version=updated_version))
             updated_dependencies.add(
                 Dependency(requirements_file=outdated_dependency.requirements_file,
                            package=package,
