@@ -173,6 +173,15 @@ class RequirementsFile(ABC):
         """
         return set(self.requirements_by_package.values())
 
+    @abstractmethod
+    def update(self, outdated_requirement: Requirement, updated_requirement: Requirement):
+        """
+        Updates a given requirement, if it is included in the requirements file.
+
+        :param outdated_requirement:    The outdated requirement
+        :param updated_requirement:     The requirement to be updated
+        """
+
     def lookup_requirements(self, *packages: Package, accept_missing: bool = False) -> Set[Requirement]:
         """
         Looks up the requirements for given packages.
@@ -233,12 +242,7 @@ class RequirementsTextFile(TextFile, RequirementsFile):
             [Requirement.parse(line.strip('\n').strip()) for line in self.lines if line.strip('\n').strip()]
         }
 
-    def update(self, updated_requirement: Requirement):
-        """
-        Updates a given requirement, if it is included in the requirements file.
-
-        :param updated_requirement: The requirement to be updated
-        """
+    def update(self, _: Requirement, updated_requirement: Requirement):
         new_lines = []
 
         for line in self.lines:

@@ -25,3 +25,15 @@ class PyprojectTomlFile(TomlFile, RequirementsFile):
             requirement.package: requirement
             for requirement in [Requirement.parse(requirement.strip('\n').strip()) for requirement in requirements]
         }
+
+    def update(self, outdated_requirement: Requirement, updated_requirement: Requirement):
+        outdated_requirement_string = str(outdated_requirement)
+        new_lines = []
+
+        for line in self.lines:
+            if line.find(outdated_requirement_string) >= 0:
+                line = line.replace(outdated_requirement_string, str(updated_requirement))
+
+            new_lines.append(line)
+
+        self.write_lines(*new_lines)
