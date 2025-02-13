@@ -9,7 +9,7 @@ from util.files import FileType
 
 from targets.code_style.cpp.targets import CheckCppCodeStyle, EnforceCppCodeStyle
 from targets.code_style.modules import CodeModule
-from targets.paths import Project
+from targets.project import Project
 
 FORMAT_CPP = 'format_cpp'
 

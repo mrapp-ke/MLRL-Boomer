@@ -6,7 +6,7 @@ Provides classes that allow to run automated tests via the external program "uni
 from core.build_unit import BuildUnit
 from util.run import PythonModule
 
-from targets.paths import Project
+from targets.project import Project
 from targets.testing.python.modules import PythonTestModule
 
 

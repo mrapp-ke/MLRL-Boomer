@@ -11,7 +11,7 @@ from core.targets import TargetBuilder
 from targets.compilation import INSTALL
 from targets.packaging.modules import PythonPackageModule
 from targets.packaging.targets import BuildPythonWheels, InstallPythonWheels
-from targets.paths import Project
+from targets.project import Project
 
 BUILD_WHEELS = 'build_wheels'
 

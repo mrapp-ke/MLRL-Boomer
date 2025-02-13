@@ -11,7 +11,7 @@ from core.targets import PhonyTarget, TargetBuilder
 from targets.dependencies.python.modules import DependencyType, PythonDependencyModule
 from targets.dependencies.python.targets import CheckPythonDependencies, InstallRuntimeDependencies, \
     UpdatePythonDependencies
-from targets.paths import Project
+from targets.project import Project
 
 VENV = 'venv'
 

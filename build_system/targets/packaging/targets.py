@@ -15,7 +15,7 @@ from targets.packaging.build import Build
 from targets.packaging.modules import PythonPackageModule
 from targets.packaging.pip import PipInstallWheel
 from targets.packaging.toml_file import TomlFile
-from targets.paths import Project
+from targets.project import Project
 
 MODULE_FILTER = PythonPackageModule.Filter()
 
