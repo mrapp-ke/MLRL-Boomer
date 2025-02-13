@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements modules that provide access to Python requirements files.
 """
 from enum import Enum
-from os import environ, path
+from os import path
 from typing import List
 
 from core.modules import Module
@@ -32,19 +32,8 @@ class PythonDependencyModule(SubprojectModule):
         A filter that matches modules of type `PythonDependencyModule`.
         """
 
-        def __init__(self, *dependency_types: DependencyType):
-            """
-            :param dependency_types: The type of the Python dependencies of the modules to be matched or None, if no
-                                     restrictions should be imposed on the types of dependencies
-            """
-            self.dependency_types = set(dependency_types)
-
         def matches(self, module: Module) -> bool:
-            return isinstance(module, PythonDependencyModule) and (
-                not self.dependency_types
-                or module.dependency_type in self.dependency_types) and SubprojectModule.Filter.from_env(
-                    environ, always_match={SubprojectModule.SUBPROJECT_COMMON, SubprojectModule.SUBPROJECT_TESTBED
-                                           }).matches(module)
+            return isinstance(module, PythonDependencyModule)
 
     def __init__(self,
                  dependency_type: DependencyType,
@@ -59,16 +48,22 @@ class PythonDependencyModule(SubprojectModule):
         self.root_directory = root_directory
         self.requirements_file_search = requirements_file_search
 
-    def find_requirements_files(self) -> List[RequirementsFile]:
+    def find_requirements_files(self, dependency_type: DependencyType) -> List[RequirementsFile]:
         """
-        Finds and returns all requirements files that belong to the module.
+        Finds and returns all requirements files that belong to the module and match a given `DependencyType`.
 
-        :return: A list that contains the requirements files that have been found
+        :param dependency_type: The `DependencyType` to be matched
+        :return:                A list that contains the requirements files that have been found
         """
-        return [
-            RequirementsTextFile(file)
-            for file in self.requirements_file_search.filter_by_name('requirements.txt').list(self.root_directory)
-        ]
+        requirements_files = []
+
+        if self.dependency_type == dependency_type:
+            requirements_files.extend([
+                RequirementsTextFile(file)
+                for file in self.requirements_file_search.filter_by_name('requirements.txt').list(self.root_directory)
+            ])
+
+        return requirements_files
 
     @property
     def subproject_name(self) -> str:
