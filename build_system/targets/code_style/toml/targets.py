@@ -23,7 +23,7 @@ class CheckTomlCodeStyle(PhonyTarget.Runnable):
     """
 
     SCHEMAS = {
-        'pyproject.toml': 'https://json.schemastore.org/pyproject.json',
+        'pyproject.template.toml': 'https://json.schemastore.org/pyproject.json',
     }
 
     def __init__(self):
