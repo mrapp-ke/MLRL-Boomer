@@ -3,13 +3,15 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for building and installing wheel packages.
 """
-from typing import List
+from os import path
+from typing import Dict, List
 
 from core.build_unit import BuildUnit
 from core.modules import Module
 from core.targets import BuildTarget
 from util.files import DirectorySearch, FileType
 from util.log import Log
+from util.pip import Package, Requirement, RequirementsTextFile, RequirementVersion
 from util.toml_file import TomlFile
 
 from targets.packaging.build import Build
@@ -27,21 +29,42 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
     """
 
     @staticmethod
+    def __get_requirements(template_file: TomlFile) -> Dict[str, Requirement]:
+        requirements = {}
+        dependencies = template_file.toml_dict['project'].get('dependencies', [])
+
+        if dependencies:
+            requirements_file = RequirementsTextFile(path.join(path.dirname(template_file.file), 'requirements.txt'))
+
+            for dependency in dependencies:
+                package = Package(dependency)
+
+                if dependency.startswith('mlrl-'):
+                    requirement = Requirement(package, RequirementVersion.parse(str(Project.version())))
+                else:
+                    requirement = requirements_file.lookup_requirement(package)
+
+                requirements[dependency] = requirement
+
+        return requirements
+
+    @staticmethod
     def __generate_pyproject_toml(template_file: TomlFile) -> List[str]:
-        project_section = '[project]'
+        requirements = GeneratePyprojectTomlFiles.__get_requirements(template_file)
         new_lines = []
-        success = False
 
         for line in template_file.lines:
-            new_lines.append(line)
-
-            if line.strip('\n').strip() == project_section:
+            if line.strip('\n').strip() == '[project]':
+                new_lines.append(line)
                 new_lines.append('version = "' + str(Project.version()) + '"\n')
                 new_lines.append('requires-python = "' + PythonVersionFile().version + '"\n')
-                success = True
+            else:
+                for dependency, requirement in requirements.items():
+                    if dependency in line:
+                        line = line.replace(dependency, str(requirement))
+                        break
 
-        if not success:
-            raise RuntimeError('Could not find section "' + project_section + '" in file "' + template_file.file + '"')
+                new_lines.append(line)
 
         return new_lines
 
