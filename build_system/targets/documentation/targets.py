@@ -27,7 +27,7 @@ class ApidocIndex(BuildTarget.Runnable, ABC):
     @staticmethod
     def __get_template(module: ApidocModule) -> Optional[str]:
         parent_directory = path.dirname(module.output_directory)
-        template = path.join(parent_directory, 'index.md.template')
+        template = path.join(parent_directory, 'index.template.md')
         return template if path.isfile(template) else None
 
     @staticmethod
