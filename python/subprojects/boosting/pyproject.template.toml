@@ -36,9 +36,9 @@ classifiers = [
 dependencies = [
     "mlrl-common",
 ]
-dynamic = [
-    "optional-dependencies",
-]
+
+[project.optional-dependencies]
+testbed = ["mlrl-testbed"]
 
 [project.urls]
 homepage = "https://github.com/mrapp-ke/MLRL-Boomer"

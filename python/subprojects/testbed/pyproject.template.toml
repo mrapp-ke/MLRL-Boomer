@@ -34,9 +34,6 @@ dependencies = [
     "mlrl-common",
     "tabulate",
 ]
-dynamic = [
-    "optional-dependencies",
-]
 
 [project.urls]
 homepage = "https://github.com/mrapp-ke/MLRL-Boomer"

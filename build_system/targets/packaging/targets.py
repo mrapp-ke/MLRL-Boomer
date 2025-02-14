@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for building and installing wheel packages.
 """
+from functools import reduce
 from os import path
 from typing import Dict, List
 
@@ -31,12 +32,16 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
     @staticmethod
     def __get_requirements(template_file: TomlFile) -> Dict[str, Requirement]:
         requirements = {}
-        dependencies = template_file.toml_dict['project'].get('dependencies', [])
+        project_dict = template_file.toml_dict['project']
+        mandatory_dependencies = project_dict.get('dependencies', [])
+        optional_dependencies = reduce(lambda aggr, dependency_list: aggr + dependency_list,
+                                       project_dict.get('optional-dependencies', {}).values(), [])
+        all_dependencies = mandatory_dependencies + optional_dependencies
 
-        if dependencies:
+        if all_dependencies:
             requirements_file = RequirementsTextFile(path.join(path.dirname(template_file.file), 'requirements.txt'))
 
-            for dependency in dependencies:
+            for dependency in all_dependencies:
                 package = Package(dependency)
 
                 if dependency.startswith('mlrl-'):

@@ -37,9 +37,6 @@ dependencies = [
     "scikit-learn",
     "scipy",
 ]
-dynamic = [
-    "optional-dependencies",
-]
 
 [project.urls]
 homepage = "https://github.com/mrapp-ke/MLRL-Boomer"
