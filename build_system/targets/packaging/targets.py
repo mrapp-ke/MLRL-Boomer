@@ -3,8 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for building and installing wheel packages.
 """
-import shutil
-
 from typing import List
 
 from core.build_unit import BuildUnit
@@ -13,6 +11,7 @@ from core.targets import BuildTarget
 from util.files import DirectorySearch, FileType
 from util.log import Log
 from util.toml_file import TomlFile
+from util.io import TextFile
 
 from targets.packaging.build import Build
 from targets.packaging.modules import PythonPackageModule
@@ -27,12 +26,27 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
     Generates pyproject.toml files.
     """
 
+    @staticmethod
+    def __set_project_version(lines: List[str]) -> List[str]:
+        new_lines = []
+
+        for line in lines:
+            new_lines.append(line)
+
+            if line.strip('\n').strip() == '[project]':
+                new_lines.append('version = "' + str(Project.version()) + '"\n')
+
+        return new_lines
+
     def __init__(self):
         super().__init__(MODULE_FILTER)
 
     def run(self, _: BuildUnit, module: Module):
-        Log.info('Generating pyproject.toml file for directory "%s"...', module.root_directory)
-        shutil.copy(module.pyproject_toml_template_file, module.pyproject_toml_file)
+        Log.info('Generating pyproject.toml file in directory "%s"...', module.root_directory)
+        template_file = TextFile(module.pyproject_toml_template_file)
+        lines = self.__set_project_version(template_file.lines)
+        pyproject_toml_file = TextFile(module.pyproject_toml_file)
+        pyproject_toml_file.write_lines(*lines)
 
     def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
         return [module.pyproject_toml_template_file]
