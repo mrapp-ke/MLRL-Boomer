@@ -10,6 +10,7 @@ from typing import Dict, Optional, Set
 
 from core.build_unit import BuildUnit
 from util.cmd import Command as Cmd
+from util.format import format_iterable
 from util.io import TextFile
 from util.log import Log
 
@@ -146,32 +147,48 @@ class Requirement:
         return hash(self.package)
 
 
-class Requirements(ABC):
+class RequirementsFile(ABC):
     """
-    An abstract base class for all classes that provide access to requirements.
+    An abstract base class for all classes that provide access to requirements stored in a file.
     """
+
+    @property
+    @abstractmethod
+    def path(self) -> str:
+        """
+        The path to the file.
+        """
 
     @property
     @abstractmethod
     def requirements_by_package(self) -> Dict[Package, Requirement]:
         """
-        A dictionary that contains all requirements by their package.
+        A dictionary that contains all requirements in the file by their package.
         """
 
     @property
     def requirements(self) -> Set[Requirement]:
         """
-        A set that contains all requirements in the requirements file
+        A set that contains all requirements in the file.
         """
         return set(self.requirements_by_package.values())
 
+    @abstractmethod
+    def update(self, outdated_requirement: Requirement, updated_requirement: Requirement):
+        """
+        Updates a given requirement, if it is included in the requirements file.
+
+        :param outdated_requirement:    The outdated requirement
+        :param updated_requirement:     The requirement to be updated
+        """
+
     def lookup_requirements(self, *packages: Package, accept_missing: bool = False) -> Set[Requirement]:
         """
-        Looks up the requirements for given packages in the requirements file.
+        Looks up the requirements for given packages.
 
         :param packages:        The packages that should be looked up
-        :param accept_missing:  False, if an error should be raised if a package is not listed in the requirements file,
-                                True, if it should simply be ignored
+        :param accept_missing:  False, if an error should be raised if the requirement for a package is not found, True,
+                                if it should simply be ignored
         :return:                A set that contains the requirements for the given packages
         """
         requirements = set()
@@ -188,21 +205,34 @@ class Requirements(ABC):
 
     def lookup_requirement(self, package: Package, accept_missing: bool = False) -> Optional[Requirement]:
         """
-        Looks up the requirement for a given package in the requirements file.
+        Looks up the requirement for a given package.
 
         :param package:         The package that should be looked up
-        :param accept_missing:  False, if an error should be raised if the package is not listed in the requirements
-                                file, True, if it should simply be ignored
+        :param accept_missing:  False, if an error should be raised if the requirement for the package is not found,
+                                True, if it should simply be ignored
         :return:                The requirement for the given package
         """
         requirements = self.lookup_requirements(package, accept_missing=accept_missing)
         return requirements.pop() if requirements else None
 
+    def __str__(self) -> str:
+        return self.path
 
-class RequirementsFile(TextFile, Requirements):
+    def __eq__(self, other: 'RequirementsFile') -> bool:
+        return isinstance(other, type(self)) and self.path == other.path
+
+    def __hash__(self) -> int:
+        return hash(self.path)
+
+
+class RequirementsTextFile(TextFile, RequirementsFile):
     """
     Represents a specific requirements.txt file.
     """
+
+    @property
+    def path(self) -> str:
+        return self.file
 
     @property
     def requirements_by_package(self) -> Dict[Package, Requirement]:
@@ -212,12 +242,7 @@ class RequirementsFile(TextFile, Requirements):
             [Requirement.parse(line.strip('\n').strip()) for line in self.lines if line.strip('\n').strip()]
         }
 
-    def update(self, updated_requirement: Requirement):
-        """
-        Updates a given requirement, if it is included in the requirements file.
-
-        :param updated_requirement: The requirement to be updated
-        """
+    def update(self, _: Requirement, updated_requirement: Requirement):
         new_lines = []
 
         for line in self.lines:
@@ -231,75 +256,6 @@ class RequirementsFile(TextFile, Requirements):
                     new_lines[-1] = str(updated_requirement) + '\n'
 
         self.write_lines(*new_lines)
-
-
-class RequirementsFiles(Requirements):
-    """
-    Represents multiple requirements.txt files.
-    """
-
-    def __init__(self, *requirements_files: str):
-        self.requirements_files = [RequirementsFile(requirements_file) for requirements_file in requirements_files]
-
-    @property
-    def requirements_by_package(self) -> Dict[Package, Requirement]:
-        return reduce(lambda aggr, requirements_file: aggr | requirements_file.requirements_by_package,
-                      self.requirements_files, {})
-
-    def lookup_requirements_by_file(self,
-                                    *packages: Package,
-                                    accept_missing: bool = False) -> Dict[str, Set[Requirement]]:
-        """
-        Looks up the requirements for given packages in the requirements files.
-
-        :param packages:        The packages that should be looked up
-        :param accept_missing:  False, if an error should be raised if a package is not listed in any requirements file,
-                                True, if it should simply be ignored
-        :return:                A dictionary that contains the paths to requirements files, as well as their
-                                requirements for the given packages
-        """
-        requirements_by_file = {}
-
-        for package in packages:
-            found = False
-
-            for requirements_file in self.requirements_files:
-                requirement = requirements_file.requirements_by_package.get(package)
-
-                if requirement:
-                    requirements = requirements_by_file.setdefault(requirements_file.file, set())
-                    requirements.add(requirement)
-                    found = True
-
-            if not found and not accept_missing:
-                raise RuntimeError('Requirement for package "' + str(package) + '" not found')
-
-        return requirements_by_file
-
-    def lookup_requirement_by_file(self, package: Package, accept_missing: bool = False) -> Dict[str, Requirement]:
-        """
-        Looks up the requirement for a given package in the requirements files.
-
-        :param package:         The package that should be looked up
-        :param accept_missing:  False, if an error should be raised if the package is not listed any requirements file,
-                                True, if it should simply be ignored
-        :return:                A dictionary that contains the paths to requirements files, as well as their requirement
-                                for the given package
-        """
-        requirements_by_file = self.lookup_requirements_by_file(package, accept_missing=accept_missing)
-        return {
-            requirements_file: requirements.pop()
-            for requirements_file, requirements in requirements_by_file.items() if requirements
-        }
-
-    def update(self, updated_requirement: Requirement):
-        """
-        Updates a given requirement, if it is included in one of the requirements files.
-
-        :param updated_requirement: The requirement to be updated
-        """
-        for requirements_file in self.requirements_files:
-            requirements_file.update(updated_requirement)
 
 
 class Pip:
@@ -347,12 +303,11 @@ class Pip:
 
         return False
 
-    def __init__(self, *requirements_files: str):
+    def __init__(self, *requirements_files: RequirementsFile):
         """
-        :param requirements_files: The paths to the requirements files that specify the versions of the packages to be
-                                   installed
+        :param requirements_files: The requirements files that specify the versions of the packages to be installed
         """
-        self.requirements = RequirementsFiles(*requirements_files)
+        self.requirements_files = list(requirements_files)
 
     @staticmethod
     def for_build_unit(build_unit: BuildUnit = BuildUnit.for_file(__file__)):
@@ -362,7 +317,7 @@ class Pip:
         :param build_unit:  The build unit for which packages should be installed
         :return:            The `Pip` instance that has been created
         """
-        return Pip(*build_unit.find_requirements_files())
+        return Pip(*[RequirementsTextFile(file) for file in build_unit.find_requirements_files()])
 
     @staticmethod
     def install_requirements(*requirements: Requirement, dry_run: bool = False):
@@ -389,14 +344,62 @@ class Pip:
             except RuntimeError:
                 Pip.install_requirements(*requirements)
 
-    def install_packages(self, *package_names: str, accept_missing: bool = False):
+    def lookup_requirements(self,
+                            *package_names: str,
+                            accept_missing: bool = False) -> Dict[RequirementsFile, Set[Requirement]]:
         """
-        Installs one or several dependencies in the requirements file.
+        Looks up the requirements for given packages.
 
-        :param package_names:   The names of the packages that should be installed
-        :param accept_missing:  False, if an error should be raised if a package is not listed in the requirements file,
-                                True, if it should simply be ignored
+        :param package_names:   The names of the packages that should be looked up
+        :param accept_missing:  False, if an error should be raised if the requirement for a package is not found, True,
+                                if it should simply be ignored
+        :return:                A dictionary that contains requirement files, as well as their requirements for the
+                                given packages
         """
         packages = [Package(package_name) for package_name in package_names]
-        requirements = self.requirements.lookup_requirements(*packages, accept_missing=accept_missing)
-        self.install_requirements(*requirements, dry_run=True)
+        missing_package_names = set(package_names)
+        result = {}
+
+        for requirements_file in self.requirements_files:
+            requirements = requirements_file.lookup_requirements(*packages, accept_missing=True)
+
+            for requirement in requirements:
+                missing_package_names.discard(requirement.package.name)
+                result.setdefault(requirements_file, set()).add(requirement)
+
+        if missing_package_names and not accept_missing:
+            raise RuntimeError('Requirements for packages ' + format_iterable(missing_package_names, delimiter='"')
+                               + ' not found')
+
+        return result
+
+    def lookup_requirement(self,
+                           package_name: str,
+                           accept_missing: bool = False) -> Dict[RequirementsFile, Requirement]:
+        """
+        Looks up the requirement for a given package.
+
+        :param package_name:    The name of the package that should be looked up
+        :param accept_missing:  False, if an error should be raised if the requirement for the package is not found,
+                                True, if it should simply be ignored
+        :return:                A dictionary that contains requirement files, as well as their requirements for the
+                                given packages
+        """
+        looked_up_requirements = self.lookup_requirements(package_name, accept_missing=accept_missing)
+        return {
+            requirements_file: requirements.pop()
+            for requirements_file, requirements in looked_up_requirements.items() if requirements
+        }
+
+    def install_packages(self, *package_names: str, accept_missing: bool = False):
+        """
+        Installs one or several dependencies.
+
+        :param package_names:   The names of the packages that should be installed
+        :param accept_missing:  False, if an error should be raised if the requirement for a package is not found, True,
+                                if it should simply be ignored
+        """
+        looked_up_requirements = self.lookup_requirements(*package_names, accept_missing=accept_missing)
+        requirements_to_be_installed = reduce(lambda aggr, requirements: aggr | requirements,
+                                              looked_up_requirements.values(), set())
+        self.install_requirements(*requirements_to_be_installed, dry_run=True)
