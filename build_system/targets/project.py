@@ -35,7 +35,8 @@ class Project:
         """
         version = VersionFile().version
 
-        if release or (get_env_bool(environ, 'READTHEDOCS') and get_env(environ, 'READTHEDOCS_VERSION_TYPE') == 'tag'):
+        if release or get_env_bool(environ, 'RELEASE') or (get_env_bool(environ, 'READTHEDOCS')
+                                                           and get_env(environ, 'READTHEDOCS_VERSION_TYPE') == 'tag'):
             return version
 
         return replace(version, dev=DevelopmentVersionFile().development_version)
