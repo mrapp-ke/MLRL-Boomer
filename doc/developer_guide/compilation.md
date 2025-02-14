@@ -236,9 +236,33 @@ As a result, the compilation files that can be found in the `python/build/` dire
 Instead of executing the above commands one after the other, the build target `install` can be used instead of `install_cpp` and `install_cython` to copy both, the shared libraries and the extension modules, into the source tree.
 ```
 
+## Generating `pyproject.toml` files
+
+Once the compilation files have been copied into the Python source tree, [`pyproject.toml`](https://packaging.python.org/en/latest/guides/writing-pyproject-toml/) files that provide meta-data for the project's individual Python modules must be generated via the following command:
+
+````{tab} Linux
+   ```text
+   ./build pyproject_toml
+   ```
+````
+
+````{tab} macOS
+   ```text
+   ./build pyproject_toml
+   ```
+````
+
+````{tab} Windows
+   ```text
+   build.bat pyproject_toml
+   ```
+````
+
+As a result of running the above command, `pyproject.toml` files should have been created inside the directories that correspond to the individual Python modules (e.g., in the directory `python/subprojects/common/`).
+
 ## Building Wheel Packages
 
-Once the compilation files have been copied into the Python source tree, wheel packages can be built for the individual Python modules via the following command:
+Based on the `pyproject.toml` files generated in the previous step, wheel packages can be built for the individual Python modules via the following command:
 
 ````{tab} Linux
    ```text
