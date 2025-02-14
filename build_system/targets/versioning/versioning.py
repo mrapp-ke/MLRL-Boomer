@@ -39,15 +39,6 @@ def reset_development_version(_: BuildUnit):
     version_file.update(0)
 
 
-def apply_development_version(_: BuildUnit):
-    """
-    Appends the development version to the current semantic version.
-    """
-    version_file = __get_version_file()
-    development_version = __get_development_version_file().development_version
-    version_file.update(replace(version_file.version, dev=development_version))
-
-
 def increment_patch_version(_: BuildUnit):
     """
     Increments the patch version.

@@ -5,36 +5,38 @@ requires = [
 ]
 
 [project]
-name = "mlrl-testbed"
-description = "Provides utilities for the training and evaluation of machine learning algorithms"
+name = "mlrl-seco"
+description = "A scikit-learn implementation of a Separate-and-Conquer (SeCo) multi-label rule learning algorithm"
 readme = "README.md"
 authors = [
     { name = "Michael Rapp", email = "michael.rapp.ml@gmail.com" },
 ]
 keywords = [
-    "evaluation",
     "machine learning",
     "multi-label classification",
-    "multi-output regression",
-    "multi-target regression",
     "rule learning",
     "scikit-learn",
+    "separate-and-conquer",
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: C++",
+    "Programming Language :: Cython",
     "Programming Language :: Python :: 3",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dynamic = [
-    "dependencies",
-    "optional-dependencies",
-    "requires-python",
-    "version",
+dependencies = [
+    "mlrl-common",
 ]
+
+[project.optional-dependencies]
+testbed = ["mlrl-testbed"]
 
 [project.urls]
 homepage = "https://github.com/mrapp-ke/MLRL-Boomer"
@@ -43,6 +45,3 @@ download = "https://github.com/mrapp-ke/MLRL-Boomer/releases"
 changelog = "https://raw.githubusercontent.com/mrapp-ke/MLRL-Boomer/refs/heads/main/CHANGELOG.md"
 documentation = "https://mlrl-boomer.readthedocs.io/en/latest"
 issues = "https://github.com/mrapp-ke/MLRL-Boomer/issues"
-
-[project.scripts]
-testbed = "mlrl.testbed.main:main"

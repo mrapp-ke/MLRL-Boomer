@@ -30,7 +30,18 @@ def get_env_bool(env: Dict, name: str, default: bool = False) -> bool:
     :return:        The value of the environment variable
     """
     value = get_env(env, name)
-    return bool(value) if value else default
+
+    if value:
+        value_lower = value.strip().lower()
+
+        if value_lower == 'true':
+            return True
+        if value_lower == 'false':
+            return False
+        raise ValueError('Value of environment variable "' + name + '" must be "true" or "false", but is "' + value
+                         + '"')
+
+    return default
 
 
 def get_env_array(env: Dict, name: str, default: Optional[List[str]] = None) -> List[str]:

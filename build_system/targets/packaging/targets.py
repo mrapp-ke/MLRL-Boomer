@@ -3,21 +3,94 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for building and installing wheel packages.
 """
-from typing import List
+from functools import reduce
+from os import path
+from typing import Dict, List
 
 from core.build_unit import BuildUnit
 from core.modules import Module
 from core.targets import BuildTarget
 from util.files import DirectorySearch, FileType
 from util.log import Log
+from util.pip import Package, Requirement, RequirementsTextFile, RequirementVersion
 from util.toml_file import TomlFile
 
 from targets.packaging.build import Build
 from targets.packaging.modules import PythonPackageModule
 from targets.packaging.pip import PipInstallWheel
+from targets.packaging.version_files import PythonVersionFile
 from targets.project import Project
 
 MODULE_FILTER = PythonPackageModule.Filter()
+
+
+class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
+    """
+    Generates pyproject.toml files.
+    """
+
+    @staticmethod
+    def __get_requirements(template_file: TomlFile) -> Dict[str, Requirement]:
+        requirements = {}
+        project_dict = template_file.toml_dict['project']
+        mandatory_dependencies = project_dict.get('dependencies', [])
+        optional_dependencies = reduce(lambda aggr, dependency_list: aggr + dependency_list,
+                                       project_dict.get('optional-dependencies', {}).values(), [])
+        all_dependencies = mandatory_dependencies + optional_dependencies
+
+        if all_dependencies:
+            requirements_file = RequirementsTextFile(path.join(path.dirname(template_file.file), 'requirements.txt'))
+
+            for dependency in all_dependencies:
+                package = Package(dependency)
+
+                if dependency.startswith('mlrl-'):
+                    requirement = Requirement(package, RequirementVersion.parse(str(Project.version())))
+                else:
+                    requirement = requirements_file.lookup_requirement(package)
+
+                requirements[dependency] = requirement
+
+        return requirements
+
+    @staticmethod
+    def __generate_pyproject_toml(template_file: TomlFile) -> List[str]:
+        requirements = GeneratePyprojectTomlFiles.__get_requirements(template_file)
+        new_lines = []
+
+        for line in template_file.lines:
+            if line.strip('\n').strip() == '[project]':
+                new_lines.append(line)
+                new_lines.append('version = "' + str(Project.version()) + '"\n')
+                new_lines.append('requires-python = "' + PythonVersionFile().version + '"\n')
+            else:
+                for dependency, requirement in requirements.items():
+                    if dependency in line:
+                        line = line.replace(dependency, str(requirement))
+                        break
+
+                new_lines.append(line)
+
+        return new_lines
+
+    def __init__(self):
+        super().__init__(MODULE_FILTER)
+
+    def run(self, build_unit: BuildUnit, module: Module):
+        Log.info('Generating pyproject.toml file in directory "%s"...', module.root_directory)
+        template_file = TomlFile(build_unit, module.pyproject_toml_template_file)
+        pyproject_toml_file = TomlFile(build_unit, module.pyproject_toml_file)
+        pyproject_toml_file.write_lines(*self.__generate_pyproject_toml(template_file))
+
+    def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
+        return [module.pyproject_toml_template_file]
+
+    def get_output_files(self, _: BuildUnit, module: Module) -> List[str]:
+        return [module.pyproject_toml_file]
+
+    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
+        Log.info('Removing pyproject.toml file from directory "%s"', module.root_directory)
+        return super().get_clean_files(build_unit, module)
 
 
 class BuildPythonWheels(BuildTarget.Runnable):
@@ -78,7 +151,7 @@ class InstallPythonWheels(BuildTarget.Runnable):
 
     def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
         Log.info('Uninstalling Python packages for directory "%s"...', module.root_directory)
-        pyproject_toml_file = TomlFile(build_unit, module.pyproject_toml_file)
+        pyproject_toml_file = TomlFile(build_unit, module.pyproject_toml_template_file)
         package_name = pyproject_toml_file.toml_dict['project']['name']
         PipInstallWheel().uninstall_packages(package_name)
         return super().get_clean_files(build_unit, module)
