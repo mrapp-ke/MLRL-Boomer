@@ -11,11 +11,11 @@ from core.targets import BuildTarget
 from util.files import DirectorySearch, FileType
 from util.log import Log
 from util.toml_file import TomlFile
-from util.io import TextFile
 
 from targets.packaging.build import Build
 from targets.packaging.modules import PythonPackageModule
 from targets.packaging.pip import PipInstallWheel
+from targets.packaging.version_files import PythonVersionFile
 from targets.project import Project
 
 MODULE_FILTER = PythonPackageModule.Filter()
@@ -27,26 +27,32 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
     """
 
     @staticmethod
-    def __set_project_version(lines: List[str]) -> List[str]:
+    def __generate_pyproject_toml(template_file: TomlFile) -> List[str]:
+        project_section = '[project]'
         new_lines = []
+        success = False
 
-        for line in lines:
+        for line in template_file.lines:
             new_lines.append(line)
 
-            if line.strip('\n').strip() == '[project]':
+            if line.strip('\n').strip() == project_section:
                 new_lines.append('version = "' + str(Project.version()) + '"\n')
+                new_lines.append('requires-python = "' + PythonVersionFile().version + '"\n')
+                success = True
+
+        if not success:
+            raise RuntimeError('Could not find section "' + project_section + '" in file "' + template_file.file + '"')
 
         return new_lines
 
     def __init__(self):
         super().__init__(MODULE_FILTER)
 
-    def run(self, _: BuildUnit, module: Module):
+    def run(self, build_unit: BuildUnit, module: Module):
         Log.info('Generating pyproject.toml file in directory "%s"...', module.root_directory)
-        template_file = TextFile(module.pyproject_toml_template_file)
-        lines = self.__set_project_version(template_file.lines)
-        pyproject_toml_file = TextFile(module.pyproject_toml_file)
-        pyproject_toml_file.write_lines(*lines)
+        template_file = TomlFile(build_unit, module.pyproject_toml_template_file)
+        pyproject_toml_file = TomlFile(build_unit, module.pyproject_toml_file)
+        pyproject_toml_file.write_lines(*self.__generate_pyproject_toml(template_file))
 
     def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
         return [module.pyproject_toml_template_file]

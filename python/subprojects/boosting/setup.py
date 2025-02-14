@@ -11,8 +11,6 @@ from setuptools.command.build_ext import build_ext
 
 VERSION = (Path(__file__).resolve().parent.parent.parent.parent / '.version').read_text()
 
-PYTHON_VERSION = (Path(__file__).resolve().parent.parent.parent.parent / '.version-python').read_text()
-
 
 class PrecompiledExtension(Extension):
     """
@@ -66,8 +64,7 @@ def find_extensions(directory):
     return extensions
 
 
-setup(python_requires=PYTHON_VERSION,
-      install_requires=[
+setup(install_requires=[
           'mlrl-common==' + VERSION,
       ],
       extras_require={
