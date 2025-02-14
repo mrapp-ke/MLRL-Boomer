@@ -35,7 +35,6 @@ dynamic = [
     "dependencies",
     "optional-dependencies",
     "requires-python",
-    "version",
 ]
 
 [project.urls]

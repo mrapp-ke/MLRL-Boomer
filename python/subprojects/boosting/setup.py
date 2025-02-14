@@ -66,8 +66,7 @@ def find_extensions(directory):
     return extensions
 
 
-setup(version=VERSION,
-      python_requires=PYTHON_VERSION,
+setup(python_requires=PYTHON_VERSION,
       install_requires=[
           'mlrl-common==' + VERSION,
       ],
