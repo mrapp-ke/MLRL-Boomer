@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for listing installed Python dependencies via pip.
 """
 from dataclasses import dataclass, replace
+from functools import reduce
 from typing import Set
 
 from util.pip import Package, Pip, RequirementsFile, RequirementVersion
@@ -20,7 +21,7 @@ class Dependency:
         outdated:           The outdated version of the dependency
         latest:             The latest version of the dependency
     """
-    requirements_file: str
+    requirements_file: RequirementsFile
     package: Package
     outdated: RequirementVersion
     latest: RequirementVersion
@@ -53,7 +54,9 @@ class PipList(Pip):
         """
         Installs all dependencies in the requirements file.
         """
-        Pip.install_requirements(*self.requirements.requirements, dry_run=True)
+        requirements = reduce(lambda aggr, requirements_file: aggr | requirements_file.requirements,
+                              self.requirements_files, set())
+        Pip.install_requirements(*requirements, dry_run=True)
 
     def list_outdated_dependencies(self) -> Set[Dependency]:
         """
@@ -81,17 +84,17 @@ class PipList(Pip):
                     'Output of command "pip list" is expected to be a table with at least three columns, but got:'
                     + line)
 
-            package = Package(parts[0])
-            requirements_by_file = self.requirements.lookup_requirement_by_file(package, accept_missing=True)
+            package_name = parts[0]
+            looked_up_requirements = self.lookup_requirement(package_name, accept_missing=True)
 
-            for requirements_file, requirement in requirements_by_file.items():
+            for requirements_file, requirement in looked_up_requirements.items():
                 outdated_version = requirement.version
 
                 if outdated_version:
                     latest_version = parts[2]
                     outdated_dependencies.add(
                         Dependency(requirements_file=requirements_file,
-                                   package=package,
+                                   package=Package(package_name),
                                    outdated=outdated_version,
                                    latest=RequirementVersion.parse(latest_version)))
 
@@ -109,10 +112,7 @@ class PipList(Pip):
         for outdated_dependency in self.list_outdated_dependencies():
             latest_version = outdated_dependency.latest
             latest_version_parts = [int(part) for part in latest_version.min_version.split(separator)]
-            requirements_file = RequirementsFile(outdated_dependency.requirements_file)
-            package = outdated_dependency.package
-            outdated_requirement = requirements_file.lookup_requirement(package)
-            outdated_version = outdated_requirement.version
+            outdated_version = outdated_dependency.outdated
             updated_version = latest_version
 
             if outdated_version.is_range():
@@ -129,11 +129,14 @@ class PipList(Pip):
                     min_version=separator.join([str(part) for part in min_version_parts[:num_version_numbers]]),
                     max_version=separator.join([str(part) for part in max_version_parts[:num_version_numbers]]))
 
-            requirements_file.update(replace(outdated_requirement, version=updated_version))
-            updated_dependencies.add(
-                Dependency(requirements_file=outdated_dependency.requirements_file,
-                           package=package,
-                           outdated=outdated_version,
-                           latest=updated_version))
+            looked_up_requirements = self.lookup_requirement(outdated_dependency.package.name)
+
+            for requirements_file, outdated_requirement in looked_up_requirements.items():
+                requirements_file.update(outdated_requirement, replace(outdated_requirement, version=updated_version))
+                updated_dependencies.add(
+                    Dependency(requirements_file=requirements_file,
+                               package=outdated_dependency.package,
+                               outdated=outdated_version,
+                               latest=updated_version))
 
         return updated_dependencies
