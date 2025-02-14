@@ -64,32 +64,6 @@ def find_extensions(directory):
     return extensions
 
 
-def find_dependencies(requirements_file, dependency_names):
-    """
-    Finds and returns dependencies with given names.
-
-    :param requirements_file:   The path to the requirements.txt file where the dependency versions are specified
-    :param dependency_names:    A list that contains the names of the dependencies to be found
-    :return:                    A list that contains all dependencies that have been found
-    """
-    requirements = {line.split(' ')[0]: line for line in requirements_file.read_text().split('\n')}
-    dependencies = []
-
-    for dependency_name in dependency_names:
-        match = requirements.get(dependency_name)
-
-        if match is None:
-            raise RuntimeError('Failed to determine required version of dependency "' + dependency_name + '"')
-
-        dependencies.append(str(match))
-
-    return dependencies
-
-
-setup(install_requires=[
-          find_dependencies(requirements_file=Path(__file__).resolve().parent / 'requirements.txt',
-                            dependency_names=['numpy', 'scipy', 'scikit-learn']),
-      ],
-      packages=find_packages(),
+setup(packages=find_packages(),
       ext_modules=find_extensions('mlrl'),
       cmdclass={'build_ext': PrecompiledExtensionBuilder})

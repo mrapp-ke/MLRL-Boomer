@@ -64,12 +64,9 @@ def find_extensions(directory):
     return extensions
 
 
-setup(install_requires=[
-          'mlrl-common==' + VERSION,
-      ],
-      extras_require={
-          'MLRL_TESTBED': ['mlrl-testbed==' + VERSION],
-      },
+setup(extras_require={
+    'MLRL_TESTBED': ['mlrl-testbed==' + VERSION],
+},
       packages=find_packages(),
       ext_modules=find_extensions('mlrl'),
       cmdclass={'build_ext': PrecompiledExtensionBuilder})
