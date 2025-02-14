@@ -10,11 +10,11 @@ from core.modules import Module
 from core.targets import BuildTarget
 from util.files import DirectorySearch, FileType
 from util.log import Log
+from util.toml_file import TomlFile
 
 from targets.packaging.build import Build
 from targets.packaging.modules import PythonPackageModule
 from targets.packaging.pip import PipInstallWheel
-from targets.packaging.toml_file import TomlFile
 from targets.project import Project
 
 MODULE_FILTER = PythonPackageModule.Filter()
