@@ -6,7 +6,7 @@ on:
       subproject:
         required: true
         type: string
-      dev_release:
+      release:
         required: false
         type: boolean
       pypi_repository:
@@ -24,12 +24,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Set version
-        if: ${{ inputs.dev_release == true }}
-        run: ./build apply_development_version
       - name: Build package
         run: |
-          SUBPROJECTS=${{ inputs.subproject }} ./build build_wheels
+          RELEASE=${{ inputs.release == true }} SUBPROJECTS=${{ inputs.subproject }} ./build build_wheels
           mkdir wheelhouse
           cp python/subprojects/**/dist/*.whl wheelhouse/
       - name: Setup Python
