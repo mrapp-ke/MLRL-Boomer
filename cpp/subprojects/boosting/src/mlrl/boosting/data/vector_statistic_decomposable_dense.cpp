@@ -2,71 +2,92 @@
 
 namespace boosting {
 
-    DenseDecomposableStatisticVector::DenseDecomposableStatisticVector(uint32 numElements, bool init)
-        : ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<Statistic<float64>>>>(
-            AllocatedVector<Statistic<float64>>(numElements, init)) {}
+    template<typename StatisticType>
+    DenseDecomposableStatisticVector<StatisticType>::DenseDecomposableStatisticVector(uint32 numElements, bool init)
+        : ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<Statistic<StatisticType>>>>(
+            AllocatedVector<Statistic<StatisticType>>(numElements, init)) {}
 
-    DenseDecomposableStatisticVector::DenseDecomposableStatisticVector(const DenseDecomposableStatisticVector& other)
-        : DenseDecomposableStatisticVector(other.getNumElements()) {
+    template<typename StatisticType>
+    DenseDecomposableStatisticVector<StatisticType>::DenseDecomposableStatisticVector(
+      const DenseDecomposableStatisticVector<StatisticType>& other)
+        : DenseDecomposableStatisticVector<StatisticType>(other.getNumElements()) {
         util::copyView(other.cbegin(), this->begin(), this->getNumElements());
     }
 
-    void DenseDecomposableStatisticVector::add(const DenseDecomposableStatisticVector& vector) {
+    template<typename StatisticType>
+    void DenseDecomposableStatisticVector<StatisticType>::add(
+      const DenseDecomposableStatisticVector<StatisticType>& vector) {
         util::addToView(this->begin(), vector.cbegin(), this->getNumElements());
     }
 
-    void DenseDecomposableStatisticVector::add(const CContiguousView<Statistic<float64>>& view, uint32 row) {
+    template<typename StatisticType>
+    void DenseDecomposableStatisticVector<StatisticType>::add(const CContiguousView<Statistic<StatisticType>>& view,
+                                                              uint32 row) {
         util::addToView(this->begin(), view.values_cbegin(row), this->getNumElements());
     }
 
-    void DenseDecomposableStatisticVector::add(const CContiguousView<Statistic<float64>>& view, uint32 row,
-                                               float64 weight) {
+    template<typename StatisticType>
+    void DenseDecomposableStatisticVector<StatisticType>::add(const CContiguousView<Statistic<StatisticType>>& view,
+                                                              uint32 row, StatisticType weight) {
         util::addToViewWeighted(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
     }
 
-    void DenseDecomposableStatisticVector::remove(const CContiguousView<Statistic<float64>>& view, uint32 row) {
+    template<typename StatisticType>
+    void DenseDecomposableStatisticVector<StatisticType>::remove(const CContiguousView<Statistic<StatisticType>>& view,
+                                                                 uint32 row) {
         util::removeFromView(this->begin(), view.values_cbegin(row), this->getNumElements());
     }
 
-    void DenseDecomposableStatisticVector::remove(const CContiguousView<Statistic<float64>>& view, uint32 row,
-                                                  float64 weight) {
+    template<typename StatisticType>
+    void DenseDecomposableStatisticVector<StatisticType>::remove(const CContiguousView<Statistic<StatisticType>>& view,
+                                                                 uint32 row, StatisticType weight) {
         util::removeFromViewWeighted(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
     }
 
-    void DenseDecomposableStatisticVector::addToSubset(const CContiguousView<Statistic<float64>>& view, uint32 row,
-                                                       const CompleteIndexVector& indices) {
+    template<typename StatisticType>
+    void DenseDecomposableStatisticVector<StatisticType>::addToSubset(
+      const CContiguousView<Statistic<StatisticType>>& view, uint32 row, const CompleteIndexVector& indices) {
         util::addToView(this->begin(), view.values_cbegin(row), this->getNumElements());
     }
 
-    void DenseDecomposableStatisticVector::addToSubset(const CContiguousView<Statistic<float64>>& view, uint32 row,
-                                                       const PartialIndexVector& indices) {
+    template<typename StatisticType>
+    void DenseDecomposableStatisticVector<StatisticType>::addToSubset(
+      const CContiguousView<Statistic<StatisticType>>& view, uint32 row, const PartialIndexVector& indices) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         util::addToView(this->begin(), view.values_cbegin(row), indexIterator, this->getNumElements());
     }
 
-    void DenseDecomposableStatisticVector::addToSubset(const CContiguousView<Statistic<float64>>& view, uint32 row,
-                                                       const CompleteIndexVector& indices, float64 weight) {
+    template<typename StatisticType>
+    void DenseDecomposableStatisticVector<StatisticType>::addToSubset(
+      const CContiguousView<Statistic<StatisticType>>& view, uint32 row, const CompleteIndexVector& indices,
+      StatisticType weight) {
         util::addToViewWeighted(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
     }
 
-    void DenseDecomposableStatisticVector::addToSubset(const CContiguousView<Statistic<float64>>& view, uint32 row,
-                                                       const PartialIndexVector& indices, float64 weight) {
+    template<typename StatisticType>
+    void DenseDecomposableStatisticVector<StatisticType>::addToSubset(
+      const CContiguousView<Statistic<StatisticType>>& view, uint32 row, const PartialIndexVector& indices,
+      StatisticType weight) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         util::addToViewWeighted(this->begin(), view.values_cbegin(row), indexIterator, this->getNumElements(), weight);
     }
 
-    void DenseDecomposableStatisticVector::difference(const DenseDecomposableStatisticVector& first,
-                                                      const CompleteIndexVector& firstIndices,
-                                                      const DenseDecomposableStatisticVector& second) {
+    template<typename StatisticType>
+    void DenseDecomposableStatisticVector<StatisticType>::difference(
+      const DenseDecomposableStatisticVector<StatisticType>& first, const CompleteIndexVector& firstIndices,
+      const DenseDecomposableStatisticVector<StatisticType>& second) {
         util::setViewToDifference(this->begin(), first.cbegin(), second.cbegin(), this->getNumElements());
     }
 
-    void DenseDecomposableStatisticVector::difference(const DenseDecomposableStatisticVector& first,
-                                                      const PartialIndexVector& firstIndices,
-                                                      const DenseDecomposableStatisticVector& second) {
+    template<typename StatisticType>
+    void DenseDecomposableStatisticVector<StatisticType>::difference(
+      const DenseDecomposableStatisticVector<StatisticType>& first, const PartialIndexVector& firstIndices,
+      const DenseDecomposableStatisticVector<StatisticType>& second) {
         PartialIndexVector::const_iterator indexIterator = firstIndices.cbegin();
         util::setViewToDifference(this->begin(), first.cbegin(), second.cbegin(), indexIterator,
                                   this->getNumElements());
     }
 
+    template class DenseDecomposableStatisticVector<float32>;
+    template class DenseDecomposableStatisticVector<float64>;
 }

@@ -12,17 +12,17 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data:
 
-Mean Absolute Error               31.75
-Mean Absolute Percentage Error     1.93
-Mean Squared Error              2186.38
-Median Absolute Error             19.35
+Mean Absolute Error               31.74
+Mean Absolute Percentage Error     1.94
+Mean Squared Error              2184.09
+Median Absolute Error             19.82
 
 INFO Model characteristics:
 
 ┌───────────────────────────────┬─────────┬─────────────────────────┬────────────────────────┬───────────────────────┬──────────────────────┬───────────────────────┬───────────────────────┐
 │ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
 ├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
-│ 1000 local rules              │    3324 │                  55.11% │                 44.89% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 1000 local rules              │    3324 │                  55.05% │                 44.95% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
 └───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
 
 ┌────────────────────────────────┬─────────┬────────────┬────────────┐

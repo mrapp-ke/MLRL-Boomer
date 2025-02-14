@@ -2,8 +2,8 @@
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from libcpp.utility cimport move
-from scipy.linalg.cython_blas cimport ddot, dspmv
-from scipy.linalg.cython_lapack cimport dsysv
+from scipy.linalg.cython_blas cimport ddot, dspmv, sdot, sspmv
+from scipy.linalg.cython_lapack cimport dsysv, ssysv
 
 from mlrl.common.cython.feature_binning cimport EqualFrequencyFeatureBinningConfig, EqualWidthFeatureBinningConfig, \
     IEqualFrequencyFeatureBinningConfig, IEqualWidthFeatureBinningConfig
@@ -60,8 +60,9 @@ from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPar
 from mlrl.boosting.cython.learner import AutomaticFeatureBinningMixin, AutomaticHeadMixin, \
     AutomaticParallelRuleRefinementMixin, AutomaticParallelStatisticUpdateMixin, CompleteHeadMixin, \
     ConstantShrinkageMixin, DecomposableSquaredErrorLossMixin, DynamicPartialHeadMixin, FixedPartialHeadMixin, \
-    L1RegularizationMixin, L2RegularizationMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, \
-    NonDecomposableSquaredErrorLossMixin, OutputWiseScorePredictorMixin, SingleOutputHeadMixin
+    Float32StatisticsMixin, Float64StatisticsMixin, L1RegularizationMixin, L2RegularizationMixin, \
+    NoL1RegularizationMixin, NoL2RegularizationMixin, NonDecomposableSquaredErrorLossMixin, \
+    OutputWiseScorePredictorMixin, SingleOutputHeadMixin
 from mlrl.boosting.cython.learner_classification import AutomaticBinaryPredictorMixin, AutomaticDefaultRuleMixin, \
     AutomaticLabelBinningMixin, AutomaticPartitionSamplingMixin, AutomaticProbabilityPredictorMixin, \
     AutomaticStatisticsMixin, DecomposableLogisticLossMixin, DecomposableSquaredHingeLossMixin, DenseStatisticsMixin, \
@@ -79,6 +80,8 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
                                   AutomaticParallelRuleRefinementMixin,
                                   AutomaticParallelStatisticUpdateMixin,
                                   ConstantShrinkageMixin,
+                                  Float32StatisticsMixin,
+                                  Float64StatisticsMixin,
                                   NoL1RegularizationMixin,
                                   L1RegularizationMixin,
                                   NoL2RegularizationMixin,
@@ -444,6 +447,12 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
     def use_sparse_statistics(self):
         self.config_ptr.get().useSparseStatistics()
 
+    def use_32_bit_statistics(self):
+        self.config_ptr.get().use32BitStatistics()
+
+    def use_64_bit_statistics(self):
+        self.config_ptr.get().use64BitStatistics()
+
     def use_no_l1_regularization(self):
         self.config_ptr.get().useNoL1Regularization()
 
@@ -569,7 +578,7 @@ cdef class BoomerClassifier(ClassificationRuleLearner):
         """
         :param config: The configuration that should be used by the rule learner
         """
-        self.rule_learner_ptr = createBoomerClassifier(move(config.config_ptr), ddot, dspmv, dsysv)
+        self.rule_learner_ptr = createBoomerClassifier(move(config.config_ptr), sdot, ddot, sspmv, dspmv, ssysv, dsysv)
 
     cdef IClassificationRuleLearner* get_classification_rule_learner_ptr(self):
         return self.rule_learner_ptr.get()
@@ -582,6 +591,8 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
                                  AutomaticParallelStatisticUpdateMixin,
                                  NoPostProcessorMixin,
                                  ConstantShrinkageMixin,
+                                 Float32StatisticsMixin,
+                                 Float64StatisticsMixin,
                                  NoL1RegularizationMixin,
                                  L1RegularizationMixin,
                                  NoL2RegularizationMixin,
@@ -868,6 +879,12 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
     def use_sparse_statistics(self):
         self.config_ptr.get().useSparseStatistics()
 
+    def use_32_bit_statistics(self):
+        self.config_ptr.get().use32BitStatistics()
+
+    def use_64_bit_statistics(self):
+        self.config_ptr.get().use64BitStatistics()
+
     def use_no_l1_regularization(self):
         self.config_ptr.get().useNoL1Regularization()
 
@@ -905,7 +922,7 @@ cdef class BoomerRegressor(RegressionRuleLearner):
         """
         :param config: The configuration that should be used by the rule learner
         """
-        self.rule_learner_ptr = createBoomerRegressor(move(config.config_ptr), ddot, dspmv, dsysv)
+        self.rule_learner_ptr = createBoomerRegressor(move(config.config_ptr), sdot, ddot, sspmv, dspmv, ssysv, dsysv)
 
     cdef IRegressionRuleLearner* get_regression_rule_learner_ptr(self):
         return self.rule_learner_ptr.get()
