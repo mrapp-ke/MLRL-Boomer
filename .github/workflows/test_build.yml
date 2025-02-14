@@ -81,11 +81,11 @@ jobs:
               - *cpp_tests_common
               - 'build_system/targets/compilation/cython/*'
               - 'build_system/targets/testing/python/*'
-              - 'python/subprojects/common/pyproject.toml'
+              - 'python/subprojects/common/pyproject.template.toml'
               - 'python/subprojects/common/requirements.txt'
               - 'python/subprojects/common/setup.py'
               - 'python/subprojects/common/mlrl/**'
-              - 'python/subprojects/testbed/pyproject.toml'
+              - 'python/subprojects/testbed/pyproject.template.toml'
               - 'python/subprojects/testbed/requirements.txt'
               - 'python/subprojects/testbed/setup.py'
               - 'python/subprojects/testbed/mlrl/**'
@@ -95,7 +95,7 @@ jobs:
             python_tests_boosting: &python_tests_boosting
               - *python_tests_common
               - *cpp_tests_boosting
-              - 'python/subprojects/boosting/pyproject.toml'
+              - 'python/subprojects/boosting/pyproject.template.toml'
               - 'python/subprojects/boosting/requirements.txt'
               - 'python/subprojects/boosting/setup.py'
               - 'python/subprojects/boosting/mlrl/**'
@@ -104,7 +104,7 @@ jobs:
             python_tests_seco: &python_tests_seco
               - *python_tests_common
               - *cpp_tests_seco
-              - 'python/subprojects/seco/pyproject.toml'
+              - 'python/subprojects/seco/pyproject.template.toml'
               - 'python/subprojects/seco/requirements.txt'
               - 'python/subprojects/seco/setup.py'
               - 'python/subprojects/seco/mlrl/**'

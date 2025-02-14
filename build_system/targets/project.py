@@ -106,7 +106,7 @@ class Project:
             """
             return {
                 path.dirname(toml_file)
-                for toml_file in Project.Python.file_search().filter_by_name('pyproject.toml').list(
+                for toml_file in Project.Python.file_search().filter_by_name('pyproject.template.toml').list(
                     Project.Python.root_directory)
             }
 
