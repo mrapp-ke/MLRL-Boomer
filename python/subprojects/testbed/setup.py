@@ -32,8 +32,7 @@ def find_dependencies(requirements_file, dependency_names):
     return dependencies
 
 
-setup(version=VERSION,
-      python_requires=PYTHON_VERSION,
+setup(python_requires=PYTHON_VERSION,
       install_requires=[
           'mlrl-common==' + VERSION,
           *find_dependencies(requirements_file=Path(__file__).resolve().parent / 'requirements.txt',
