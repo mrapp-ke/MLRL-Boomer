@@ -3,6 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for building and installing wheel packages.
 """
+import shutil
+
 from typing import List
 
 from core.build_unit import BuildUnit
@@ -18,6 +20,29 @@ from targets.packaging.pip import PipInstallWheel
 from targets.project import Project
 
 MODULE_FILTER = PythonPackageModule.Filter()
+
+
+class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
+    """
+    Generates pyproject.toml files.
+    """
+
+    def __init__(self):
+        super().__init__(MODULE_FILTER)
+
+    def run(self, _: BuildUnit, module: Module):
+        Log.info('Generating pyproject.toml file for directory "%s"...', module.root_directory)
+        shutil.copy(module.pyproject_toml_template_file, module.pyproject_toml_file)
+
+    def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
+        return [module.pyproject_toml_template_file]
+
+    def get_output_files(self, _: BuildUnit, module: Module) -> List[str]:
+        return [module.pyproject_toml_file]
+
+    def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
+        Log.info('Removing pyproject.toml file from directory "%s"', module.root_directory)
+        return super().get_clean_files(build_unit, module)
 
 
 class BuildPythonWheels(BuildTarget.Runnable):
