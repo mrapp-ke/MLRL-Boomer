@@ -37,6 +37,13 @@ class PythonPackageModule(SubprojectModule):
         self.wheel_directory_name = wheel_directory_name
 
     @property
+    def pyproject_toml_template_file(self) -> str:
+        """
+        The path of the template file that is used to generate a pyproject.toml file.
+        """
+        return path.join(self.root_directory, 'pyproject.template.toml')
+
+    @property
     def pyproject_toml_file(self) -> str:
         """
         The path to the pyproject.toml file that specifies the meta-data of the package.
