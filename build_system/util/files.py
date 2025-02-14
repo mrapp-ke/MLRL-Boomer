@@ -492,7 +492,7 @@ class FileType:
 
         :return: The `FileType` that has been created
         """
-        return FileType(name='Markdown', suffixes={'md', 'md.template'})
+        return FileType(name='Markdown', suffixes={'md'})
 
     @staticmethod
     def yaml() -> 'FileType':
