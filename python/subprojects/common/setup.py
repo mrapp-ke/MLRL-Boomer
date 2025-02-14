@@ -11,8 +11,6 @@ from setuptools.command.build_ext import build_ext
 
 VERSION = (Path(__file__).resolve().parent.parent.parent.parent / '.version').read_text()
 
-PYTHON_VERSION = (Path(__file__).resolve().parent.parent.parent.parent / '.version-python').read_text()
-
 
 class PrecompiledExtension(Extension):
     """
@@ -88,8 +86,7 @@ def find_dependencies(requirements_file, dependency_names):
     return dependencies
 
 
-setup(python_requires=PYTHON_VERSION,
-      install_requires=[
+setup(install_requires=[
           find_dependencies(requirements_file=Path(__file__).resolve().parent / 'requirements.txt',
                             dependency_names=['numpy', 'scipy', 'scikit-learn']),
       ],

@@ -7,8 +7,6 @@ from setuptools import find_packages, setup
 
 VERSION = (Path(__file__).resolve().parent.parent.parent.parent / '.version').read_text()
 
-PYTHON_VERSION = (Path(__file__).resolve().parent.parent.parent.parent / '.version-python').read_text()
-
 
 def find_dependencies(requirements_file, dependency_names):
     """
@@ -32,8 +30,7 @@ def find_dependencies(requirements_file, dependency_names):
     return dependencies
 
 
-setup(python_requires=PYTHON_VERSION,
-      install_requires=[
+setup(install_requires=[
           'mlrl-common==' + VERSION,
           *find_dependencies(requirements_file=Path(__file__).resolve().parent / 'requirements.txt',
                              dependency_names=['liac-arff', 'tabulate']),

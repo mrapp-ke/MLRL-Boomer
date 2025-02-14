@@ -36,7 +36,6 @@ classifiers = [
 dynamic = [
     "dependencies",
     "optional-dependencies",
-    "requires-python",
 ]
 
 [project.urls]
