@@ -6,7 +6,7 @@ on:
       python_version:
         required: true
         type: string
-      dev_release:
+      release:
         required: false
         type: boolean
       pypi_repository:
@@ -28,7 +28,7 @@ jobs:
     uses: ./.github/workflows/template_publish_pure.yml
     with:
       subproject: ${{ matrix.subproject }}
-      dev_release: ${{ inputs.dev_release }}
+      release: ${{ inputs.release }}
       pypi_repository: ${{ inputs.pypi_repository }}
     secrets:
       pypi_username: ${{ secrets.pypi_username}}
@@ -46,7 +46,7 @@ jobs:
     with:
       subproject: ${{ matrix.subproject }}
       python_version: ${{ inputs.python_version }}
-      dev_release: ${{ inputs.dev_release }}
+      release: ${{ inputs.release }}
       pypi_repository: ${{ inputs.pypi_repository }}
     secrets:
       pypi_username: ${{ secrets.pypi_username}}

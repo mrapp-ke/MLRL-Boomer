@@ -5,13 +5,14 @@ requires = [
 ]
 
 [project]
-name = "mlrl-common"
-description = "Provides common modules to be used by different types of multi-label rule learning algorithms"
+name = "mlrl-testbed"
+description = "Provides utilities for the training and evaluation of machine learning algorithms"
 readme = "README.md"
 authors = [
     { name = "Michael Rapp", email = "michael.rapp.ml@gmail.com" },
 ]
 keywords = [
+    "evaluation",
     "machine learning",
     "multi-label classification",
     "multi-output regression",
@@ -21,22 +22,17 @@ keywords = [
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
-    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
     "License :: OSI Approved :: MIT License",
-    "Operating System :: MacOS",
-    "Operating System :: Microsoft :: Windows",
-    "Operating System :: POSIX :: Linux",
-    "Programming Language :: C++",
-    "Programming Language :: Cython",
+    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dynamic = [
-    "dependencies",
-    "optional-dependencies",
-    "requires-python",
-    "version",
+dependencies = [
+    "liac-arff",
+    "mlrl-common",
+    "tabulate",
 ]
 
 [project.urls]
@@ -46,3 +42,6 @@ download = "https://github.com/mrapp-ke/MLRL-Boomer/releases"
 changelog = "https://raw.githubusercontent.com/mrapp-ke/MLRL-Boomer/refs/heads/main/CHANGELOG.md"
 documentation = "https://mlrl-boomer.readthedocs.io/en/latest"
 issues = "https://github.com/mrapp-ke/MLRL-Boomer/issues"
+
+[project.scripts]
+testbed = "mlrl.testbed.main:main"
