@@ -5,7 +5,7 @@ Provides classes that allow to run the external program "taplo".
 """
 from abc import ABC
 from os import environ, path
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 from core.build_unit import BuildUnit
 from util.run import Program
@@ -55,12 +55,10 @@ class TaploLint(Taplo):
     Allows to run the external program "taplo lint".
     """
 
-    def __init__(self, build_unit: BuildUnit, files: List[str], schema: Optional[str] = None):
+    def __init__(self, build_unit: BuildUnit, files: List[str]):
         """
-        :param build_unit:      The build unit from which the program should be run
-        :param files:           A list that contains the files, the program should be applied to
-        :param schema:          An optional URL to the schema that should be used for validation
+        :param build_unit:  The build unit from which the program should be run
+        :param files:       A list that contains the files, the program should be applied to
         """
         super().__init__(build_unit, 'lint')
-        self.add_conditional_arguments(schema is not None, '--schema', schema)
         self.add_arguments(*files)
