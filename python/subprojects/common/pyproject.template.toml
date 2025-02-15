@@ -5,8 +5,8 @@ requires = [
 ]
 
 [project]
-name = "mlrl-seco"
-description = "A scikit-learn implementation of a Separate-and-Conquer (SeCo) multi-label rule learning algorithm"
+name = "mlrl-common"
+description = "Provides common modules to be used by different types of multi-label rule learning algorithms"
 readme = "README.md"
 authors = [
     { name = "Michael Rapp", email = "michael.rapp.ml@gmail.com" },
@@ -14,13 +14,14 @@ authors = [
 keywords = [
     "machine learning",
     "multi-label classification",
+    "multi-output regression",
+    "multi-target regression",
     "rule learning",
     "scikit-learn",
-    "separate-and-conquer",
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
-    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
@@ -31,11 +32,10 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dynamic = [
-    "dependencies",
-    "optional-dependencies",
-    "requires-python",
-    "version",
+dependencies = [
+    "numpy",
+    "scikit-learn",
+    "scipy",
 ]
 
 [project.urls]
