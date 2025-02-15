@@ -9,14 +9,25 @@ on:
       release:
         required: false
         type: boolean
+      linux:
+        required: false
+        type: boolean
+      macos:
+        required: false
+        type: boolean
+      windows:
+        required: false
+        type: boolean
 jobs:
   publish_linux_wheels:
+    if: ${{ inputs.linux == true }}
     name: Publish ${{ inputs.subproject }} (Linux)
     uses: ./.github/workflows/template_publish_platform_linux.yml
     with:
       subproject: ${{ inputs.subproject }}
       release: ${{ inputs.release }}
   publish_macos_wheels:
+    if: ${{ inputs.macos == true }}
     name: Publish ${{ inputs.subproject }} (macOS)
     uses: ./.github/workflows/template_publish_platform_macos.yml
     with:
@@ -24,6 +35,7 @@ jobs:
       release: ${{ inputs.release }}
     secrets: inherit
   publish_windows_wheels:
+    if: ${{ inputs.windows == true }}
     name: Publish ${{ inputs.subproject }} (Windows)
     uses: ./.github/workflows/template_publish_platform_windows.yml
     with:
