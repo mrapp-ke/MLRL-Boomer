@@ -67,7 +67,7 @@ class PythonDependencyModule(SubprojectModule):
             ])
 
         if dependency_type == DependencyType.BUILD_TIME:
-            pyproject_toml_file = path.join(self.root_directory, 'pyproject.toml')
+            pyproject_toml_file = path.join(self.root_directory, 'pyproject.template.toml')
 
             if path.isfile(pyproject_toml_file):
                 requirements_files.append(PyprojectTomlFile(build_unit, pyproject_toml_file))

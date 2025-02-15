@@ -35,7 +35,8 @@ class Project:
         """
         version = VersionFile().version
 
-        if release or (get_env_bool(environ, 'READTHEDOCS') and get_env(environ, 'READTHEDOCS_VERSION_TYPE') == 'tag'):
+        if release or get_env_bool(environ, 'RELEASE') or (get_env_bool(environ, 'READTHEDOCS')
+                                                           and get_env(environ, 'READTHEDOCS_VERSION_TYPE') == 'tag'):
             return version
 
         return replace(version, dev=DevelopmentVersionFile().development_version)
@@ -106,7 +107,7 @@ class Project:
             """
             return {
                 path.dirname(toml_file)
-                for toml_file in Project.Python.file_search().filter_by_name('pyproject.toml').list(
+                for toml_file in Project.Python.file_search().filter_by_name('pyproject.template.toml').list(
                     Project.Python.root_directory)
             }
 
