@@ -357,14 +357,14 @@ class Pip:
                                 given packages
         """
         packages = [Package(package_name) for package_name in package_names]
-        missing_package_names = set(package_names)
+        missing_package_names = {package.normalized_name for package in packages}
         result = {}
 
         for requirements_file in self.requirements_files:
             requirements = requirements_file.lookup_requirements(*packages, accept_missing=True)
 
             for requirement in requirements:
-                missing_package_names.discard(requirement.package.name)
+                missing_package_names.discard(requirement.package.normalized_name)
                 result.setdefault(requirements_file, set()).add(requirement)
 
         if missing_package_names and not accept_missing:
