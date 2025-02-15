@@ -1,6 +1,11 @@
-# Build files
-__pycache__/
+# Temporary build system files
 build_system/build/
+
+# C++ build files
+cpp/build/
+
+# Python build files
+__pycache__/
 python/**/build/
 python/**/dist/
 python/**/*egg-info/
@@ -10,7 +15,7 @@ python/**/cython/*.dll
 python/**/cython/*.lib
 python/**/cython/*.pyd
 python/**/tests/res/tmp/
-cpp/build/
+python/**/pyproject.toml
 
 # Documentation files
 doc/_build/
@@ -22,13 +27,13 @@ doc/developer_guide/api/cpp/**/
 # Virtual Environment
 venv/
 
-# IntelliJ
+# JetBrains IDEs
 .idea/
 
-# Virtual Studio Code
+# Visual Studio Code
 .vscode/
 
-# Experiments
+# Folders commonly used for experiments
 /data/
 /results/
 /models/

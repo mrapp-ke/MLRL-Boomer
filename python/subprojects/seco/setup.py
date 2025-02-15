@@ -9,10 +9,6 @@ from pathlib import Path
 from setuptools import Extension, find_packages, setup
 from setuptools.command.build_ext import build_ext
 
-VERSION = (Path(__file__).resolve().parent.parent.parent.parent / '.version').read_text()
-
-PYTHON_VERSION = (Path(__file__).resolve().parent.parent.parent.parent / '.version-python').read_text()
-
 
 class PrecompiledExtension(Extension):
     """
@@ -66,14 +62,6 @@ def find_extensions(directory):
     return extensions
 
 
-setup(version=VERSION,
-      python_requires=PYTHON_VERSION,
-      install_requires=[
-          'mlrl-common==' + VERSION,
-      ],
-      extras_require={
-          'MLRL_TESTBED': ['mlrl-testbed==' + VERSION],
-      },
-      packages=find_packages(),
+setup(packages=find_packages(),
       ext_modules=find_extensions('mlrl'),
       cmdclass={'build_ext': PrecompiledExtensionBuilder})
