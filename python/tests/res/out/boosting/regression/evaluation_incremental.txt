@@ -30,55 +30,55 @@ INFO Predicting for 98 test examples using a model of size 150...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 150:
 
-Mean Absolute Error               33.49
+Mean Absolute Error               33.51
 Mean Absolute Percentage Error     2.33
-Mean Squared Error              2264.91
-Median Absolute Error             23.35
+Mean Squared Error              2263.73
+Median Absolute Error             23.29
 
 INFO Predicting for 98 test examples using a model of size 200...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 200:
 
-Mean Absolute Error               32.35
+Mean Absolute Error               32.37
 Mean Absolute Percentage Error     2.28
-Mean Squared Error              2172.29
-Median Absolute Error             21.97
+Mean Squared Error              2170.93
+Median Absolute Error             22.15
 
 INFO Predicting for 98 test examples using a model of size 250...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 250:
 
-Mean Absolute Error               31.64
+Mean Absolute Error               31.65
 Mean Absolute Percentage Error     2.22
-Mean Squared Error              2131.39
-Median Absolute Error             21.28
+Mean Squared Error              2128.51
+Median Absolute Error             21.31
 
 INFO Predicting for 98 test examples using a model of size 300...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 300:
 
-Mean Absolute Error               31.26
+Mean Absolute Error               31.27
 Mean Absolute Percentage Error     2.19
-Mean Squared Error              2122.09
+Mean Squared Error              2120.7
 Median Absolute Error             20.43
 
 INFO Predicting for 98 test examples using a model of size 350...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 350:
 
-Mean Absolute Error               31.12
+Mean Absolute Error               31.13
 Mean Absolute Percentage Error     2.16
-Mean Squared Error              2111.56
-Median Absolute Error             20.36
+Mean Squared Error              2109.35
+Median Absolute Error             20.32
 
 INFO Predicting for 98 test examples using a model of size 400...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 400:
 
-Mean Absolute Error               30.89
+Mean Absolute Error               30.9
 Mean Absolute Percentage Error     2.13
-Mean Squared Error              2106.14
-Median Absolute Error             20.07
+Mean Squared Error              2103.15
+Median Absolute Error             20.13
 
 INFO Predicting for 98 test examples using a model of size 450...
 INFO Successfully predicted in <duration>
@@ -86,26 +86,26 @@ INFO Evaluation result for test data using a model of size 450:
 
 Mean Absolute Error               30.79
 Mean Absolute Percentage Error     2.13
-Mean Squared Error              2094.42
-Median Absolute Error             20.1
+Mean Squared Error              2091.48
+Median Absolute Error             20.23
 
 INFO Predicting for 98 test examples using a model of size 500...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 500:
 
-Mean Absolute Error               30.68
+Mean Absolute Error               30.69
 Mean Absolute Percentage Error     2.13
-Mean Squared Error              2094.5
-Median Absolute Error             20.11
+Mean Squared Error              2092.12
+Median Absolute Error             20.04
 
 INFO Predicting for 98 test examples using a model of size 550...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 550:
 
-Mean Absolute Error               30.62
+Mean Absolute Error               30.63
 Mean Absolute Percentage Error     2.11
-Mean Squared Error              2091.3
-Median Absolute Error             19.77
+Mean Squared Error              2088.42
+Median Absolute Error             19.71
 
 INFO Predicting for 98 test examples using a model of size 600...
 INFO Successfully predicted in <duration>
@@ -113,17 +113,17 @@ INFO Evaluation result for test data using a model of size 600:
 
 Mean Absolute Error               30.6
 Mean Absolute Percentage Error     2.11
-Mean Squared Error              2092.32
+Mean Squared Error              2089.41
 Median Absolute Error             19.62
 
 INFO Predicting for 98 test examples using a model of size 650...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 650:
 
-Mean Absolute Error               30.53
-Mean Absolute Percentage Error     2.1
-Mean Squared Error              2087.42
-Median Absolute Error             19.38
+Mean Absolute Error               30.54
+Mean Absolute Percentage Error     2.11
+Mean Squared Error              2084.6
+Median Absolute Error             19.52
 
 INFO Predicting for 98 test examples using a model of size 700...
 INFO Successfully predicted in <duration>
@@ -131,17 +131,17 @@ INFO Evaluation result for test data using a model of size 700:
 
 Mean Absolute Error               30.5
 Mean Absolute Percentage Error     2.1
-Mean Squared Error              2084.71
-Median Absolute Error             19.11
+Mean Squared Error              2081.98
+Median Absolute Error             19.34
 
 INFO Predicting for 98 test examples using a model of size 750...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 750:
 
-Mean Absolute Error               30.47
+Mean Absolute Error               30.48
 Mean Absolute Percentage Error     2.1
-Mean Squared Error              2083.39
-Median Absolute Error             19.1
+Mean Squared Error              2080.64
+Median Absolute Error             19.35
 
 INFO Predicting for 98 test examples using a model of size 800...
 INFO Successfully predicted in <duration>
@@ -149,8 +149,8 @@ INFO Evaluation result for test data using a model of size 800:
 
 Mean Absolute Error               30.43
 Mean Absolute Percentage Error     2.1
-Mean Squared Error              2080.99
-Median Absolute Error             19.08
+Mean Squared Error              2078.41
+Median Absolute Error             19.23
 
 INFO Predicting for 98 test examples using a model of size 850...
 INFO Successfully predicted in <duration>
@@ -158,8 +158,8 @@ INFO Evaluation result for test data using a model of size 850:
 
 Mean Absolute Error               30.42
 Mean Absolute Percentage Error     2.1
-Mean Squared Error              2080.75
-Median Absolute Error             19.1
+Mean Squared Error              2078.15
+Median Absolute Error             19.28
 
 INFO Predicting for 98 test examples using a model of size 900...
 INFO Successfully predicted in <duration>
@@ -167,8 +167,8 @@ INFO Evaluation result for test data using a model of size 900:
 
 Mean Absolute Error               30.41
 Mean Absolute Percentage Error     2.1
-Mean Squared Error              2080.51
-Median Absolute Error             19.03
+Mean Squared Error              2077.92
+Median Absolute Error             19.2
 
 INFO Predicting for 98 test examples using a model of size 950...
 INFO Successfully predicted in <duration>
@@ -176,8 +176,8 @@ INFO Evaluation result for test data using a model of size 950:
 
 Mean Absolute Error               30.39
 Mean Absolute Percentage Error     2.09
-Mean Squared Error              2080.31
-Median Absolute Error             18.96
+Mean Squared Error              2077.73
+Median Absolute Error             19.23
 
 INFO Predicting for 98 test examples using a model of size 1000...
 INFO Successfully predicted in <duration>
@@ -185,7 +185,7 @@ INFO Evaluation result for test data using a model of size 1000:
 
 Mean Absolute Error               30.38
 Mean Absolute Percentage Error     2.09
-Mean Squared Error              2080.93
-Median Absolute Error             18.94
+Mean Squared Error              2078.35
+Median Absolute Error             19.22
 
 INFO Successfully finished after <duration>

@@ -22,23 +22,35 @@ namespace boosting {
 
             const std::unique_ptr<IBoostedRuleLearnerConfig> configPtr_;
 
-            const Blas blas_;
+            const BlasFactory blasFactory_;
 
-            const Lapack lapack_;
+            const LapackFactory lapackFactory_;
 
         public:
 
             /**
-             * @param configPtr     An unique pointer to an object of type `IBoostedRuleLearnerConfig`
-             * @param ddotFunction  A function pointer to BLAS' DDOT routine
-             * @param dspmvFunction A function pointer to BLAS' DSPMV routine
-             * @param dsysvFunction A function pointer to LAPACK'S DSYSV routine
+             * @param configPtr             An unique pointer to an object of type `IBoostedRuleLearnerConfig`
+             * @param float32BlasRoutines   A reference to an object of type `Blas::Routines` that stores function
+             *                              pointers to all supported BLAS routines operating on 32-bit floating point
+             *                              values
+             * @param float64BlasRoutines   A reference to an object of type `Blas::Routines` that stores function
+             *                              pointers to all supported BLAS routines operating on 64-bit floating point
+             *                              values
+             * @param float32LapackRoutines A reference to an object of type `Lapack::Routines` that stores function
+             *                              pointers to all supported LAPACK routines operating on 32-bit floating point
+             *                              values
+             * @param float64LapackRoutines A reference to an object of type `Lapack::Routines` that stores function
+             *                              pointers to all supported LAPACK routines operating on 64-bit floating point
+             *                              values
              */
             BoostedRuleLearnerConfigurator(std::unique_ptr<IBoostedRuleLearnerConfig> configPtr,
-                                           Blas::DdotFunction ddotFunction, Blas::DspmvFunction dspmvFunction,
-                                           Lapack::DsysvFunction dsysvFunction)
+                                           const Blas<float32>::Routines& float32BlasRoutines,
+                                           const Blas<float64>::Routines& float64BlasRoutines,
+                                           const Lapack<float32>::Routines& float32LapackRoutines,
+                                           const Lapack<float64>::Routines& float64LapackRoutines)
                 : RuleLearnerConfigurator(*configPtr), configPtr_(std::move(configPtr)),
-                  blas_(ddotFunction, dspmvFunction), lapack_(dsysvFunction) {}
+                  blasFactory_(float32BlasRoutines, float64BlasRoutines),
+                  lapackFactory_(float32LapackRoutines, float64LapackRoutines) {}
 
             /**
              * @see `RuleLearnerConfigurator::createModelBuilderFactory`
@@ -54,7 +66,8 @@ namespace boosting {
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override {
                 return configPtr_->getClassificationStatisticsConfig()
                   .get()
-                  .createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, blas_, lapack_);
+                  .createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, blasFactory_,
+                                                                 lapackFactory_);
             }
 
             /**
@@ -63,7 +76,7 @@ namespace boosting {
             std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix) const override {
                 return configPtr_->getRegressionStatisticsConfig().get().createRegressionStatisticsProviderFactory(
-                  featureMatrix, regressionMatrix, blas_, lapack_);
+                  featureMatrix, regressionMatrix, blasFactory_, lapackFactory_);
             }
     };
 
@@ -78,6 +91,12 @@ namespace boosting {
              * An unique pointer that stores the configuration of the rule heads.
              */
             std::unique_ptr<IHeadConfig> headConfigPtr_;
+
+            /**
+             * An unique pointer that stores the configuration of the data type that should be used for representing
+             * gradients and Hessians.
+             */
+            std::unique_ptr<IStatisticTypeConfig> statisticTypeConfigPtr_;
 
             /**
              * A shared pointer that stores the configuration of the statistics that should be use in classification
@@ -127,6 +146,10 @@ namespace boosting {
 
             Property<IHeadConfig> getHeadConfig() override final {
                 return util::property(headConfigPtr_);
+            }
+
+            Property<IStatisticTypeConfig> getStatisticTypeConfig() override final {
+                return util::property(statisticTypeConfigPtr_);
             }
 
             ReadableProperty<IStatisticsConfig> getStatisticsConfig() const override final {

@@ -23,7 +23,7 @@ namespace seco {
 
             PartialIndexVector indexVector_;
 
-            DenseScoreVector<PartialIndexVector> scoreVector_;
+            DenseScoreVector<float32, PartialIndexVector> scoreVector_;
 
             const std::unique_ptr<IHeuristic> heuristicPtr_;
 
@@ -66,7 +66,7 @@ namespace seco {
                 auto labelIterator =
                   createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
                 std::advance(labelIterator, bestIndex);
-                scoreVector_.values_begin()[0] = (float64) !(*labelIterator);
+                scoreVector_.values_begin()[0] = (float32) !(*labelIterator);
                 indexVector_.begin()[0] = bestIndex;
                 scoreVector_.quality = bestQuality;
                 return scoreVector_;
