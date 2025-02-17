@@ -10,51 +10,22 @@ on:
         required: false
         type: boolean
 jobs:
-  publish_platform_wheels:
-    name: Publish ${{ inputs.subproject }} (platform)
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - ubuntu-24.04
-          - ubuntu-24.04-arm
-          - macos-15
-          - windows-2025
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Prepare MSVC
-        if: ${{ matrix.os == 'windows-2025' }}
-        uses: ilammy/msvc-dev-cmd@v1
-      - name: Determine minimum Python version
-        uses: juliangruber/read-file-action@v1
-        id: python_version
-        with:
-          path: .version-python
-      - name: Build package
-        uses: pypa/cibuildwheel@v2.22
-        env:
-          CIBW_BEFORE_ALL_MACOS: GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} ./build dependency_libomp
-          CIBW_BEFORE_BUILD_LINUX: ./build --clean && RELEASE=${{ inputs.release == true }} SUBPROJECTS=${{ inputs.subproject }}
-            TEST_SUPPORT=disabled GPU_SUPPORT=disabled ./build pyproject_toml
-          CIBW_BEFORE_BUILD_MACOS: rm -rf venv && ./build --clean && RELEASE=${{ inputs.release == true }} SUBPROJECTS=${{ inputs.subproject }}
-            TEST_SUPPORT=disabled GPU_SUPPORT=disabled CPLUS_INCLUDE_PATH=/Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/include/
-            LIBRARY_PATH=/Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/lib/ ./build pyproject_toml
-          CIBW_BEFORE_BUILD_WINDOWS: .\build.bat --clean && set RELEASE=${{ inputs.release == true }} && set SUBPROJECTS=${{ inputs.subproject }}
-            && set TEST_SUPPORT=disabled && set GPU_SUPPORT=disabled && .\build.bat pyproject_toml
-          CIBW_REPAIR_WHEEL_COMMAND_MACOS: >
-            DYLD_LIBRARY_PATH=/Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/lib/ delocate-wheel  --require-archs {delocate_archs}
-            -w {dest_dir} -v {wheel}
-          CIBW_BUILD_FRONTEND: build
-          CIBW_ARCHS: auto64
-          CIBW_SKIP: pp* *musllinux*
-          CIBW_PROJECT_REQUIRES_PYTHON: ${{ steps.python_version.outputs.content }}
-        with:
-          package-dir: python/subprojects/${{ inputs.subproject }}/
-      - name: Upload wheels as artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheels-${{ inputs.subproject }}-${{ runner.os }}-${{ runner.arch }}
-          path: wheelhouse/*.whl
-          if-no-files-found: error
+  publish_linux_wheels:
+    name: Publish ${{ inputs.subproject }} (Linux)
+    uses: ./.github/workflows/template_publish_platform_linux.yml
+    with:
+      subproject: ${{ inputs.subproject }}
+      release: ${{ inputs.release }}
+  publish_macos_wheels:
+    name: Publish ${{ inputs.subproject }} (macOS)
+    uses: ./.github/workflows/template_publish_platform_macos.yml
+    with:
+      subproject: ${{ inputs.subproject }}
+      release: ${{ inputs.release }}
+    secrets: inherit
+  publish_windows_wheels:
+    name: Publish ${{ inputs.subproject }} (Windows)
+    uses: ./.github/workflows/template_publish_platform_windows.yml
+    with:
+      subproject: ${{ inputs.subproject }}
+      release: ${{ inputs.release }}
