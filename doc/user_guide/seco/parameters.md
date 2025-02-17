@@ -251,7 +251,7 @@ The duration in seconds after which the induction of rules should be canceled. T
   No holdout set is created.
 
 `'auto'`
-  The most suitable strategy for creating a holdout set is chosen automatically, depending on whether a holdout set is needed according to the parameter {ref}`rule_pruning<boosting_parameters_rule_pruning>`.
+  The most suitable strategy for creating a holdout set is chosen automatically, depending on whether a holdout set is needed according to the parameter {ref}`rule_pruning<seco_parameters_rule_pruning>`.
 
 `'random'`
   The available examples are randomly split into a training set and a holdout set. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
@@ -275,7 +275,7 @@ The duration in seconds after which the induction of rules should be canceled. T
       The percentage of examples to be included in the holdout set. For example, a value of 0.3 corresponds to 30% of the available examples. The given value must be in the range (0, 1).
 ```
 
-(boosting_parameters_rule_pruning)=
+(seco_parameters_rule_pruning)=
 
 ### `rule_pruning`
 
