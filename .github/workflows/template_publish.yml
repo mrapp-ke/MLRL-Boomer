@@ -9,6 +9,15 @@ on:
       pypi_repository:
         required: false
         type: string
+      linux:
+        required: false
+        type: boolean
+      macos:
+        required: false
+        type: boolean
+      windows:
+        required: false
+        type: boolean
 jobs:
   publish_pure:
     name: Publish pure wheels
@@ -34,6 +43,9 @@ jobs:
     with:
       subproject: ${{ matrix.subproject }}
       release: ${{ inputs.release }}
+      linux: ${{ inputs.linux }}
+      macos: ${{ inputs.macos }}
+      windows: ${{ inputs.windows }}
     secrets: inherit
   upload_to_pypi:
     needs:

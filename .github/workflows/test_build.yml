@@ -11,6 +11,9 @@ jobs:
     name: Detect changes
     runs-on: ubuntu-24.04
     outputs:
+      linux: ${{ steps.filter.outputs.linux }}
+      macos: ${{ steps.filter.outputs.macos }}
+      windows: ${{ steps.filter.outputs.windows }}
       cpp_boosting: ${{ steps.filter.outputs.cpp_boosting }}
       cpp_seco: ${{ steps.filter.outputs.cpp_seco }}
       cpp_tests_boosting: ${{ steps.filter.outputs.cpp_tests_boosting }}
@@ -28,9 +31,6 @@ jobs:
             build_files: &build_files
               - '.github/workflows/test_build.yml'
               - '.github/workflows/template_build.yml'
-              - '.github/workflows/template_build_linux.yml'
-              - '.github/workflows/template_build_macos.yml'
-              - '.github/workflows/template_build_windows.yml'
               - 'build'
               - 'build.bat'
               - 'build_system/main.py'
@@ -40,8 +40,6 @@ jobs:
               - 'build_system/targets/compilation/*'
               - 'build_system/targets/packaging/*'
               - 'build_system/targets/testing/*'
-              - 'build_system/targets/dependencies/*'
-              - 'build_system/targets/dependencies/macos/*'
             cpp_common: &cpp_common
               - *build_files
               - 'build_system/targets/compilation/cpp/*'
@@ -110,6 +108,20 @@ jobs:
               - 'python/subprojects/seco/mlrl/**'
               - 'python/tests/mlrl/seco/**'
               - 'python/tests/res/out/seco/**'
+            python_tests: &python_tests
+              - *python_tests_boosting
+              - *python_tests_seco
+            linux:
+              - *python_tests
+              - '.github/workflows/template_build_linux.yml'
+            macos:
+              - *python_tests
+              - '.github/workflows/template_build_macos.yml'
+              - 'build_system/targets/dependencies/*'
+              - 'build_system/targets/dependencies/macos/*'
+            windows:
+              - *python_tests
+              - '.github/workflows/template_build_windows.yml'
   test_build:
     needs: changes
     name: Test build
@@ -122,6 +134,9 @@ jobs:
     uses: ./.github/workflows/template_build.yml
     with:
       subproject: ${{ matrix.subproject }}
+      linux: ${{ needs.changes.outputs.linux == 'true' }}
+      macos: ${{ needs.changes.outputs.macos == 'true' }}
+      windows: ${{ needs.changes.outputs.windows == 'true' }}
       compile: ${{ needs.changes.outputs[format('cpp_{0}', matrix.subproject)] == 'true' }}
       run_cpp_tests: ${{ needs.changes.outputs[format('cpp_tests_{0}', matrix.subproject)] == 'true' }}
       run_python_tests: ${{ needs.changes.outputs[format('python_tests_{0}', matrix.subproject)] == 'true' }}
