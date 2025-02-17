@@ -3,20 +3,12 @@ name: Publish wheel packages
 on:
   workflow_call:
     inputs:
-      python_version:
-        required: true
-        type: string
       release:
         required: false
         type: boolean
       pypi_repository:
         required: false
         type: string
-    secrets:
-      pypi_username:
-        required: false
-      pypi_password:
-        required: false
 jobs:
   publish_pure:
     name: Publish pure wheels
@@ -29,10 +21,6 @@ jobs:
     with:
       subproject: ${{ matrix.subproject }}
       release: ${{ inputs.release }}
-      pypi_repository: ${{ inputs.pypi_repository }}
-    secrets:
-      pypi_username: ${{ secrets.pypi_username}}
-      pypi_password: ${{ secrets.pypi_password }}
   publish_platform:
     name: Publish platform wheels
     strategy:
@@ -45,9 +33,26 @@ jobs:
     uses: ./.github/workflows/template_publish_platform.yml
     with:
       subproject: ${{ matrix.subproject }}
-      python_version: ${{ inputs.python_version }}
       release: ${{ inputs.release }}
-      pypi_repository: ${{ inputs.pypi_repository }}
-    secrets:
-      pypi_username: ${{ secrets.pypi_username}}
-      pypi_password: ${{ secrets.pypi_password }}
+    secrets: inherit
+  upload_to_pypi:
+    needs:
+      - publish_pure
+      - publish_platform
+    if: ${{ inputs.pypi_repository }}
+    name: Upload wheels to PyPI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download wheels
+        uses: actions/download-artifact@v4
+        with:
+          pattern: wheels-*
+          path: wheelhouse
+      - name: Upload wheels to PyPI
+        uses: pypa/gh-action-pypi-publish@v1.12.4
+        with:
+          packages-dir: wheelhouse
+          skip-existing: true
+          repository-url: ${{ inputs.pypi_repository }}
+          user: ${{ secrets.pypi_username }}
+          password: ${{ secrets.pypi_password }}

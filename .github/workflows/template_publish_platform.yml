@@ -6,20 +6,9 @@ on:
       subproject:
         required: true
         type: string
-      python_version:
-        required: true
-        type: string
       release:
         required: false
         type: boolean
-      pypi_repository:
-        required: false
-        type: string
-    secrets:
-      pypi_username:
-        required: false
-      pypi_password:
-        required: false
 jobs:
   publish_platform_wheels:
     name: Publish ${{ inputs.subproject }} (platform)
@@ -38,6 +27,11 @@ jobs:
       - name: Prepare MSVC
         if: ${{ matrix.os == 'windows-2025' }}
         uses: ilammy/msvc-dev-cmd@v1
+      - name: Determine minimum Python version
+        uses: juliangruber/read-file-action@v1
+        id: python_version
+        with:
+          path: .version-python
       - name: Build package
         uses: pypa/cibuildwheel@v2.22
         env:
@@ -55,25 +49,10 @@ jobs:
           CIBW_BUILD_FRONTEND: build
           CIBW_ARCHS: auto64
           CIBW_SKIP: pp* *musllinux*
-          CIBW_PROJECT_REQUIRES_PYTHON: ${{ inputs.python_version }}
+          CIBW_PROJECT_REQUIRES_PYTHON: ${{ steps.python_version.outputs.content }}
         with:
           package-dir: python/subprojects/${{ inputs.subproject }}/
-      - name: Setup Python
-        if: ${{ inputs.pypi_repository }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.x
-      - name: Upload wheels to PyPI
-        if: ${{ inputs.pypi_repository }}
-        env:
-          TWINE_USERNAME: ${{ secrets.pypi_username }}
-          TWINE_PASSWORD: ${{ secrets.pypi_password }}
-          TWINE_REPOSITORY: ${{ inputs.pypi_repository }}
-        run: |
-          python -m pip install twine
-          python -m twine upload --non-interactive --skip-existing wheelhouse/*
       - name: Upload wheels as artifacts
-        if: ${{ inputs.pypi_repository }}
         uses: actions/upload-artifact@v4
         with:
           name: wheels-${{ inputs.subproject }}-${{ runner.os }}-${{ runner.arch }}
