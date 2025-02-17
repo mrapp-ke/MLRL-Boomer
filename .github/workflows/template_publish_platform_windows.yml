@@ -1,0 +1,42 @@
+---
+name: Publish Windows wheels
+on:
+  workflow_call:
+    inputs:
+      subproject:
+        required: true
+        type: string
+      release:
+        required: false
+        type: boolean
+jobs:
+  publish_windows_wheels:
+    name: Publish ${{ inputs.subproject }} (Windows)
+    runs-on: windows-2025
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Prepare MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+      - name: Determine minimum Python version
+        uses: juliangruber/read-file-action@v1
+        id: python_version
+        with:
+          path: .version-python
+      - name: Build package
+        uses: pypa/cibuildwheel@v2.22
+        env:
+          CIBW_BEFORE_BUILD: .\build.bat --clean && set RELEASE=${{ inputs.release == true }} && set SUBPROJECTS=${{ inputs.subproject }}
+            && set TEST_SUPPORT=disabled && set GPU_SUPPORT=disabled && .\build.bat pyproject_toml
+          CIBW_BUILD_FRONTEND: build
+          CIBW_ARCHS: auto64
+          CIBW_SKIP: pp*
+          CIBW_PROJECT_REQUIRES_PYTHON: ${{ steps.python_version.outputs.content }}
+        with:
+          package-dir: python/subprojects/${{ inputs.subproject }}/
+      - name: Upload wheels as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ inputs.subproject }}-${{ runner.os }}-${{ runner.arch }}
+          path: wheelhouse/*.whl
+          if-no-files-found: error
