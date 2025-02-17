@@ -8,6 +8,7 @@ from functools import cached_property, reduce
 from typing import Dict, List, Set
 
 from core.build_unit import BuildUnit
+from util.files import FileType
 from util.log import Log
 
 from targets.dependencies.github.modules import GithubWorkflowModule
@@ -69,8 +70,8 @@ class Action:
     A GitHub Action.
 
     Attributes:
-        name:           The name of the Action
-        version:        The version of the Action
+        name:       The name of the Action
+        version:    The version of the Action
     """
     name: str
     version: ActionVersion
@@ -153,7 +154,7 @@ class Actions(Workflow):
             updated_lines.append(line)
             line_stripped = line.strip()
 
-            if line_stripped.startswith(uses_prefix):
+            if line_stripped.startswith(uses_prefix) and not line_stripped.endswith(tuple(FileType.yaml().suffixes)):
                 uses_clause = line_stripped[len(uses_prefix):].strip()
                 action = Action.from_uses_clause(uses_clause)
                 updated_action = updated_actions_by_name.get(action.name)
