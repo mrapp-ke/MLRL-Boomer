@@ -26,6 +26,4 @@ jobs:
       python_version: ${{ needs.read_python_version.outputs.python_version }}
       release: true
       pypi_repository: pypi
-    secrets:
-      pypi_username: ${{ secrets.PYPI_USERNAME }}
-      pypi_password: ${{ secrets.PYPI_PASSWORD }}
+    secrets: inherit
