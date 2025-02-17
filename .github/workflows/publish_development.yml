@@ -56,6 +56,4 @@ jobs:
     with:
       python_version: ${{ needs.read_python_version.outputs.python_version }}
       pypi_repository: testpypi
-    secrets:
-      pypi_username: ${{ secrets.TEST_PYPI_USERNAME }}
-      pypi_password: ${{ secrets.TEST_PYPI_PASSWORD }}
+    secrets: inherit

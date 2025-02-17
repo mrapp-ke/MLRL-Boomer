@@ -12,11 +12,6 @@ on:
       pypi_repository:
         required: false
         type: string
-    secrets:
-      pypi_username:
-        required: false
-      pypi_password:
-        required: false
 jobs:
   publish_pure_wheels:
     name: Publish ${{ inputs.subproject }} (pure)
