@@ -39,5 +39,5 @@ jobs:
     needs: update_development_version
     uses: ./.github/workflows/template_publish.yml
     with:
-      pypi_repository: testpypi
+      pypi_repository: https://test.pypi.org/legacy/
     secrets: inherit
