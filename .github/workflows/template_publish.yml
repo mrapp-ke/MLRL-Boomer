@@ -39,6 +39,7 @@ jobs:
     needs:
       - publish_pure
       - publish_platform
+    if: ${{ inputs.pypi_repository }}
     name: Upload wheels to PyPI
     runs-on: ubuntu-latest
     steps:
@@ -48,11 +49,10 @@ jobs:
           pattern: wheels-*
           path: wheelhouse
       - name: Upload wheels to PyPI
-        if: ${{ inputs.pypi_repository }}
-        env:
-          TWINE_USERNAME: ${{ secrets.pypi_username }}
-          TWINE_PASSWORD: ${{ secrets.pypi_password }}
-          TWINE_REPOSITORY: ${{ inputs.pypi_repository }}
-        run: |
-          python -m pip install twine
-          python -m twine upload --non-interactive --skip-existing wheelhouse/*
+        uses: pypa/gh-action-pypi-publish@v1.12.4
+        with:
+          packages-dir: wheelhouse
+          skip-existing: true
+          repository-url: ${{ inputs.pypi_repository }}
+          user: ${{ secrets.pypi_username }}
+          password: ${{ secrets.pypi_password }}

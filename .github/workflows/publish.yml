@@ -10,5 +10,5 @@ jobs:
     uses: ./.github/workflows/template_publish.yml
     with:
       release: true
-      pypi_repository: pypi
+      pypi_repository: https://pypi.org/legacy/
     secrets: inherit
