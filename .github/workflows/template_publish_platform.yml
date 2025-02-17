@@ -9,9 +9,6 @@ on:
       release:
         required: false
         type: boolean
-      pypi_repository:
-        required: false
-        type: string
 jobs:
   publish_platform_wheels:
     name: Publish ${{ inputs.subproject }} (platform)
@@ -55,22 +52,7 @@ jobs:
           CIBW_PROJECT_REQUIRES_PYTHON: ${{ steps.python_version.outputs.content }}
         with:
           package-dir: python/subprojects/${{ inputs.subproject }}/
-      - name: Setup Python
-        if: ${{ inputs.pypi_repository }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.x
-      - name: Upload wheels to PyPI
-        if: ${{ inputs.pypi_repository }}
-        env:
-          TWINE_USERNAME: ${{ secrets.pypi_username }}
-          TWINE_PASSWORD: ${{ secrets.pypi_password }}
-          TWINE_REPOSITORY: ${{ inputs.pypi_repository }}
-        run: |
-          python -m pip install twine
-          python -m twine upload --non-interactive --skip-existing wheelhouse/*
       - name: Upload wheels as artifacts
-        if: ${{ inputs.pypi_repository }}
         uses: actions/upload-artifact@v4
         with:
           name: wheels-${{ inputs.subproject }}-${{ runner.os }}-${{ runner.arch }}
