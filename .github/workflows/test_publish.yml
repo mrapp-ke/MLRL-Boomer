@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-24.04
     outputs:
       build_files: ${{ steps.filter.outputs.build_files }}
-      python_version: ${{ steps.python_version.outputs.content }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,18 +34,11 @@ jobs:
               - 'build_system/targets/packaging/*'
               - 'build_system/targets/dependencies/*'
               - 'build_system/targets/dependencies/macos/*'
-      - name: Read Python version
-        uses: juliangruber/read-file-action@v1
-        id: python_version
-        with:
-          path: .version-python
   test_release:
     needs: changes
     if: ${{ needs.changes.outputs.build_files == 'true' }}
     name: Test publishing wheel packages
     uses: ./.github/workflows/template_publish.yml
-    with:
-      python_version: ${{ needs.changes.outputs.python_version }}
   check_success:
     needs: test_release
     if: ${{ always() && needs.changes.outputs.build_files == 'true' }}
