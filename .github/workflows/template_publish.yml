@@ -21,8 +21,6 @@ jobs:
     with:
       subproject: ${{ matrix.subproject }}
       release: ${{ inputs.release }}
-      pypi_repository: ${{ inputs.pypi_repository }}
-    secrets: inherit
   publish_platform:
     name: Publish platform wheels
     strategy:
@@ -36,5 +34,25 @@ jobs:
     with:
       subproject: ${{ matrix.subproject }}
       release: ${{ inputs.release }}
-      pypi_repository: ${{ inputs.pypi_repository }}
     secrets: inherit
+  upload_to_pypi:
+    needs:
+      - publish_pure
+      - publish_platform
+    name: Upload wheels to PyPI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download wheels
+        uses: actions/download-artifact@v4
+        with:
+          pattern: wheels-*
+          path: wheelhouse
+      - name: Upload wheels to PyPI
+        if: ${{ inputs.pypi_repository }}
+        env:
+          TWINE_USERNAME: ${{ secrets.pypi_username }}
+          TWINE_PASSWORD: ${{ secrets.pypi_password }}
+          TWINE_REPOSITORY: ${{ inputs.pypi_repository }}
+        run: |
+          python -m pip install twine
+          python -m twine upload --non-interactive --skip-existing wheelhouse/*
