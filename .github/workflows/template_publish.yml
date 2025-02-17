@@ -3,9 +3,6 @@ name: Publish wheel packages
 on:
   workflow_call:
     inputs:
-      python_version:
-        required: true
-        type: string
       release:
         required: false
         type: boolean
@@ -38,7 +35,6 @@ jobs:
     uses: ./.github/workflows/template_publish_platform.yml
     with:
       subproject: ${{ matrix.subproject }}
-      python_version: ${{ inputs.python_version }}
       release: ${{ inputs.release }}
       pypi_repository: ${{ inputs.pypi_repository }}
     secrets: inherit

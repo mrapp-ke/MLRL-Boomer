@@ -6,9 +6,6 @@ on:
       subproject:
         required: true
         type: string
-      python_version:
-        required: true
-        type: string
       release:
         required: false
         type: boolean
@@ -33,6 +30,11 @@ jobs:
       - name: Prepare MSVC
         if: ${{ matrix.os == 'windows-2025' }}
         uses: ilammy/msvc-dev-cmd@v1
+      - name: Determine minimum Python version
+        uses: juliangruber/read-file-action@v1
+        id: python_version
+        with:
+          path: .version-python
       - name: Build package
         uses: pypa/cibuildwheel@v2.22
         env:
@@ -50,7 +52,7 @@ jobs:
           CIBW_BUILD_FRONTEND: build
           CIBW_ARCHS: auto64
           CIBW_SKIP: pp* *musllinux*
-          CIBW_PROJECT_REQUIRES_PYTHON: ${{ inputs.python_version }}
+          CIBW_PROJECT_REQUIRES_PYTHON: ${{ steps.python_version.outputs.content }}
         with:
           package-dir: python/subprojects/${{ inputs.subproject }}/
       - name: Setup Python
