@@ -42,6 +42,10 @@ extensions = [
     'sphinx_favicon',
 ]
 
+myst_enable_extensions = [
+    'deflist',
+]
+
 # Favicons
 favicons = [{'href': 'favicon.svg'}]
 
