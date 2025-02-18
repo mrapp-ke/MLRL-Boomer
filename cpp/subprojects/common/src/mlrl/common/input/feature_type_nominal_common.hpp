@@ -4,7 +4,6 @@
 #pragma once
 
 #include "feature_vector_decorator_binary.hpp"
-#include "mlrl/common/data/tuple.hpp"
 
 #include <memory>
 #include <unordered_map>
@@ -12,7 +11,7 @@
 
 template<typename ValueIterator>
 static inline uint32 createMapping(ValueIterator valueIterator, uint32 numElements,
-                                   std::unordered_map<int32, Tuple<uint32>>& mapping) {
+                                   std::unordered_map<int32, std::pair<uint32, uint32>>& mapping) {
     uint32 numExamples = 0;
     uint32 numValues = 0;
 
@@ -21,14 +20,14 @@ static inline uint32 createMapping(ValueIterator valueIterator, uint32 numElemen
 
         if (!std::isnan(value)) {
             int32 nominalValue = static_cast<int32>(value);
-            auto it = mapping.emplace(nominalValue, Tuple<uint32> {numValues, 1});
+            auto it = mapping.emplace(nominalValue, std::make_pair(numValues, 1));
 
             if (it.second) {
                 numValues++;
             } else {
                 auto& entry = *(it.first);
-                Tuple<uint32>& tuple = entry.second;
-                tuple.second++;
+                std::pair<uint32, uint32>& pair = entry.second;
+                pair.second++;
             }
 
             numExamples++;
@@ -38,7 +37,7 @@ static inline uint32 createMapping(ValueIterator valueIterator, uint32 numElemen
     return numExamples;
 }
 
-static inline int32 getMajorityValue(const std::unordered_map<int32, Tuple<uint32>>& mapping) {
+static inline int32 getMajorityValue(const std::unordered_map<int32, std::pair<uint32, uint32>>& mapping) {
     auto it = mapping.cbegin();
     auto& firstEntry = *it;
     int32 majorityValue = firstEntry.first;
@@ -57,32 +56,34 @@ static inline int32 getMajorityValue(const std::unordered_map<int32, Tuple<uint3
     return majorityValue;
 }
 
-static inline Tuple<int32> getMinorityAndMajorityValue(const std::unordered_map<int32, Tuple<uint32>>& mapping) {
+static inline std::pair<int32, int32> getMinorityAndMajorityValue(
+  const std::unordered_map<int32, std::pair<uint32, uint32>>& mapping) {
     auto it = mapping.cbegin();
     auto& firstEntry = *it;
     int firstFrequency = firstEntry.second.second;
     it++;
     auto& secondEntry = *it;
     int secondFrequency = secondEntry.second.second;
-    Tuple<int32> tuple;
+    int32 minorityValue;
+    int32 majorityValue;
 
     if (firstFrequency > secondFrequency) {
-        tuple.first = secondEntry.first;
-        tuple.second = firstEntry.first;
+        minorityValue = secondEntry.first;
+        majorityValue = firstEntry.first;
     } else {
-        tuple.first = firstEntry.first;
-        tuple.second = secondEntry.first;
+        minorityValue = firstEntry.first;
+        majorityValue = secondEntry.first;
     }
 
-    return tuple;
+    return std::make_pair(minorityValue, majorityValue);
 }
 
 template<typename IndexIterator, typename ValueIterator>
 static inline std::unique_ptr<BinaryFeatureVectorDecorator> createBinaryFeatureVectorInternally(
   IndexIterator indexIterator, ValueIterator valueIterator, uint32 numElements,
-  const std::unordered_map<int32, Tuple<uint32>>& mapping, int32 minorityValue, int32 majorityValue) {
-    const Tuple<uint32>& tuple = mapping.at(minorityValue);
-    uint32 numMinorityExamples = tuple.second;
+  const std::unordered_map<int32, std::pair<uint32, uint32>>& mapping, int32 minorityValue, int32 majorityValue) {
+    const std::pair<uint32, uint32>& pair = mapping.at(minorityValue);
+    uint32 numMinorityExamples = pair.second;
     AllocatedNominalFeatureVector binaryFeatureVector(1, numMinorityExamples, majorityValue);
     AllocatedMissingFeatureVector missingFeatureVector;
     AllocatedNominalFeatureVector::value_iterator vectorValueIterator = binaryFeatureVector.values;
@@ -113,7 +114,7 @@ static inline std::unique_ptr<BinaryFeatureVectorDecorator> createBinaryFeatureV
 template<typename IndexIterator, typename ValueIterator>
 static inline std::unique_ptr<BinaryFeatureVectorDecorator> createBinaryFeatureVector(
   IndexIterator indexIterator, ValueIterator valueIterator, uint32 numElements,
-  std::unordered_map<int32, Tuple<uint32>>& mapping, bool sparse, int32 sparseValue) {
+  std::unordered_map<int32, std::pair<uint32, uint32>>& mapping, bool sparse, int32 sparseValue) {
     int32 minorityValue;
     int32 majorityValue;
 
@@ -121,9 +122,9 @@ static inline std::unique_ptr<BinaryFeatureVectorDecorator> createBinaryFeatureV
         minorityValue = (*mapping.cbegin()).first;
         majorityValue = sparseValue;
     } else {
-        const Tuple<int32> tuple = getMinorityAndMajorityValue(mapping);
-        minorityValue = tuple.first;
-        majorityValue = tuple.second;
+        const std::pair<int32, int32> pair = getMinorityAndMajorityValue(mapping);
+        minorityValue = pair.first;
+        majorityValue = pair.second;
     }
 
     return createBinaryFeatureVectorInternally(indexIterator, valueIterator, numElements, mapping, minorityValue,
