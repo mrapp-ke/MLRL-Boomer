@@ -2,7 +2,7 @@
 
 # Building from Source
 
-As discussed in the previous section {ref}`project-structure`, the algorithms that are provided by this project are implemented in [C++](https://en.wikipedia.org/wiki/C%2B%2B) to ensure maximum efficiency (requires C++ 17 or newer). In addition, a [Python](<https://en.wikipedia.org/wiki/Python_(programming_language)>) wrapper that integrates with the [scikit-learn](https://scikit-learn.org) framework is provided (requires Python 3.10 or newer). To make the underlying C++ implementation accessible from within the Python code, [Cython](https://en.wikipedia.org/wiki/Cython) is used (requires Cython 3.0 or newer).
+As discussed in the previous section {ref}`project-structure`, the algorithms that are provided by this project are implemented in [C++](https://en.wikipedia.org/wiki/C%2B%2B) to ensure maximum efficiency (requires C++ 20 or newer). In addition, a [Python](<https://en.wikipedia.org/wiki/Python_(programming_language)>) wrapper that integrates with the [scikit-learn](https://scikit-learn.org) framework is provided (requires Python 3.10 or newer). To make the underlying C++ implementation accessible from within the Python code, [Cython](https://en.wikipedia.org/wiki/Cython) is used (requires Cython 3.0 or newer).
 
 Unlike pure Python programs, the C++ and Cython source files must be compiled for a particular target platform. To ease the process of compiling the source code, the project comes with a build system that automates the necessary steps. In the following, we discuss the individual steps that are necessary for building the project from scratch. This is necessary if you intend to modify the library's source code. If you want to use the algorithm without any custom modifications, the {ref}`installation <installation>` of pre-built packages is usually a better choice.
 
@@ -25,7 +25,7 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
    * - **OpenMP**
      - [OpenMP](https://en.wikipedia.org/wiki/OpenMP), which is optionally required for {ref}`multi-threading support <multi-threading-support>`, should be installable via your Linux distribution's package manager.         
    * - **OpenCL**
-     - If the project should be compiled with {ref}`GPU support <gpu-support>`, [OpenCL](https://www.khronos.org/opencl/) must be available. On Linux, it should be installable via your distribution's package manager.
+     - If the project should be compiled with {ref}`GPU support <gpu-support>`, [OpenCL](https://en.wikipedia.org/wiki/OpenCL) must be available. On Linux, it should be installable via your distribution's package manager.
    ```
 ````
 
@@ -40,7 +40,7 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
    * - **OpenMP**
      - If the project should be compiled with {ref}`multi-threading support <multi-threading-support>` enabled, the [OpenMP](https://en.wikipedia.org/wiki/OpenMP) library must be installed. We recommend to install it via [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) by running the command `brew install libomp`.
    * - **OpenCL**
-     - The [Xcode](https://developer.apple.com/support/xcode/) developer toolset should include [OpenCL](https://www.khronos.org/opencl/), which are needed for {ref}`GPU support <gpu-support>`. However, the [OpenCL C++ headers](https://github.com/KhronosGroup/OpenCL-Headers) must be installed manually. The easiest way to do so is via the [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) command `brew install opencl-clhpp-headers`.
+     - The [Xcode](https://developer.apple.com/support/xcode/) developer toolset should include [OpenCL](https://en.wikipedia.org/wiki/OpenCL), which are needed for {ref}`GPU support <gpu-support>`. However, the [OpenCL C++ headers](https://github.com/KhronosGroup/OpenCL-Headers) must be installed manually. The easiest way to do so is via the [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) command `brew install opencl-clhpp-headers`.
    ```
 ````
 
@@ -55,7 +55,7 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
    * - **OpenMP**
      - The [Build Tools for Visual Studio](https://visualstudio.microsoft.com/downloads/) also include the [OpenMP](https://en.wikipedia.org/wiki/OpenMP) library, which is utilized by the project for {ref}`multi-threading support <multi-threading-support>`.
    * - **OpenCL**
-     - If you intend to compile the project with {ref}`GPU support <gpu-support>` enabled, [OpenCL](https://www.khronos.org/opencl/) must be installed manually. In order to do so, we recommend to install the package `opencl` via the package manager [vcpkg](https://github.com/microsoft/vcpkg).
+     - If you intend to compile the project with {ref}`GPU support <gpu-support>` enabled, [OpenCL](https://en.wikipedia.org/wiki/OpenCL) must be installed manually. In order to do so, we recommend to install the package `opencl` via the package manager [vcpkg](https://github.com/microsoft/vcpkg).
    ```
 ````
 
@@ -398,7 +398,7 @@ If you need to access this information programmatically in your own Python or C+
 So far, GPU support is still at an early stage of development. No algorithm provided by this project makes use of it yet.
 ```
 
-GPU support via [OpenCL](https://www.khronos.org/opencl/) is enabled by default when building the project. However, it can be disabled at compile-time by setting the build option `gpu_support` to `disabled` instead of `enabled`. Alternatively, the desired value can be specified via the environment variable `GPU_SUPPORT`.
+GPU support via [OpenCL](https://en.wikipedia.org/wiki/OpenCL) is enabled by default when building the project. However, it can be disabled at compile-time by setting the build option `gpu_support` to `disabled` instead of `enabled`. Alternatively, the desired value can be specified via the environment variable `GPU_SUPPORT`.
 
 An easy way to check whether the program was built with GPU support enabled or not, is to run the `testbed mlrl.boosting --version` or `testbed mlrl.boosting -v` command that is provided by the {ref}`command line API <testbed>`. It prints the build options used for compiling the program, together with a list of supported GPUs available on your machine.
 

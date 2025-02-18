@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/tuple.hpp"
+#include "mlrl/boosting/data/statistic.hpp"
 #include "mlrl/common/data/vector_dense.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
@@ -17,7 +17,7 @@ namespace boosting {
      * is stored.
      */
     class DenseDecomposableStatisticVector final
-        : public ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<Tuple<float64>>>> {
+        : public ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<Statistic<float64>>>> {
         public:
 
             /**
@@ -47,7 +47,7 @@ namespace boosting {
              *              be added to this vector
              * @param row   The index of the row to be added to this vector
              */
-            void add(const CContiguousView<Tuple<float64>>& view, uint32 row);
+            void add(const CContiguousView<Statistic<float64>>& view, uint32 row);
 
             /**
              * Adds all gradients and Hessians in a single row of a `CContiguousView` to this vector. The gradients and
@@ -58,7 +58,7 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void add(const CContiguousView<Tuple<float64>>& view, uint32 row, float64 weight);
+            void add(const CContiguousView<Statistic<float64>>& view, uint32 row, float64 weight);
 
             /**
              * Removes all gradients and Hessians in a single row of a `CContiguousView` from this vector.
@@ -67,7 +67,7 @@ namespace boosting {
              *              be removed from this vector
              * @param row   The index of the row to be removed from this vector
              */
-            void remove(const CContiguousView<Tuple<float64>>& view, uint32 row);
+            void remove(const CContiguousView<Statistic<float64>>& view, uint32 row);
 
             /**
              * Removes all gradients and Hessians in a single row of a `CContiguousView` from this vector. The gradients
@@ -78,7 +78,7 @@ namespace boosting {
              * @param row       The index of the row to be removed from this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void remove(const CContiguousView<Tuple<float64>>& view, uint32 row, float64 weight);
+            void remove(const CContiguousView<Statistic<float64>>& view, uint32 row, float64 weight);
 
             /**
              * Adds certain gradients and Hessians in a single row of a `CContiguousView`, whose positions are given as
@@ -89,7 +89,7 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
              */
-            void addToSubset(const CContiguousView<Tuple<float64>>& view, uint32 row,
+            void addToSubset(const CContiguousView<Statistic<float64>>& view, uint32 row,
                              const CompleteIndexVector& indices);
 
             /**
@@ -101,7 +101,7 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
              */
-            void addToSubset(const CContiguousView<Tuple<float64>>& view, uint32 row,
+            void addToSubset(const CContiguousView<Statistic<float64>>& view, uint32 row,
                              const PartialIndexVector& indices);
 
             /**
@@ -115,7 +115,7 @@ namespace boosting {
              * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const CContiguousView<Tuple<float64>>& view, uint32 row,
+            void addToSubset(const CContiguousView<Statistic<float64>>& view, uint32 row,
                              const CompleteIndexVector& indices, float64 weight);
 
             /**
@@ -129,8 +129,8 @@ namespace boosting {
              * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const CContiguousView<Tuple<float64>>& view, uint32 row, const PartialIndexVector& indices,
-                             float64 weight);
+            void addToSubset(const CContiguousView<Statistic<float64>>& view, uint32 row,
+                             const PartialIndexVector& indices, float64 weight);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
