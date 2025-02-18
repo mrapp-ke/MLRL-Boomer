@@ -293,7 +293,7 @@ The duration in seconds after which the induction of rules should be canceled. T
   : The number of times each rule should be relearned. The given value must be at least 1.
 
   `refine_heads` *(Default value = `'false'`)*
-  : `'true'`, if the heads of rules may be refined when being relearned, `'false'`, if the relearned rules should be predict for the same outputs as the original rules.
+  : `'true'`, if the heads of rules may be refined when being relearned, `'false'`, if the relearned rules should predict for the same outputs as the original rules.
 
   `resample_features` *(Default value = `'true'`)*
   : `'true'`, if a new sample of the available features should be created whenever a new rule is refined, `'false'`, if the conditions of the new rule should use the same features as the original rule
