@@ -243,12 +243,13 @@ The following parameters provide fine-grain control over the techniques that sho
   `holdout_set_size` *(Default value = `0.33`)*
   : The percentage of examples to be included in the holdout set. For example, a value of 0.3 corresponds to 30% of the available examples. The given value must be in the range (0, 1).
 
-`'stratified-example-wise'` *(classification only)* The available examples are split into a training set and a holdout set according to a stratified sampling method, where distinct label vectors are treated as individual classes. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
+`'stratified-example-wise'` *(classification only)*
 
-```
+: The available examples are split into a training set and a holdout set according to a stratified sampling method, where distinct label vectors are treated as individual classes. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
+
 `holdout_set_size` *(Default value = `0.33`)*
+
 : The percentage of examples to be included in the holdout set. For example, a value of 0.3 corresponds to 30% of the available examples. The given value must be in the range (0, 1).
-```
 
 (boosting_parameters_rule_pruning)=
 
@@ -335,7 +336,7 @@ The following parameters provide fine-grain control over the techniques that sho
   : The number of times each rule should be relearned. The given value must be at least 1.
 
   `refine_heads` *(Default value = `'false'`)*
-  : `'true'`, if the heads of rules may be refined when being relearned, `'false'`, if the relearned rules should be predict for the same outputs as the original rules.
+  : `'true'`, if the heads of rules may be refined when being relearned, `'false'`, if the relearned rules should predict for the same outputs as the original rules.
 
   `resample_features` *(Default value = `'true'`)*
   : `'true'`, if a new sample of the available features should be created whenever a new rule is refined, `'false'`, if the conditions of the new rule should use the same features as the original rule
