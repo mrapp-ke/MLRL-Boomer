@@ -27,6 +27,18 @@ namespace boosting {
                     SparseSetView<Statistic<StatisticType>>(numRows, numCols)) {}
     };
 
+    static inline void visitScoreMatrixInternally(
+      const SparseSetView<float32>& view, IBoostingStatistics::SparseScoreMatrixVisitor<float32> sparse32BitVisitor,
+      IBoostingStatistics::SparseScoreMatrixVisitor<float64> sparse64BitVisitor) {
+        sparse32BitVisitor(view);
+    }
+
+    static inline void visitScoreMatrixInternally(
+      const SparseSetView<float64>& view, IBoostingStatistics::SparseScoreMatrixVisitor<float32> sparse32BitVisitor,
+      IBoostingStatistics::SparseScoreMatrixVisitor<float64> sparse64BitVisitor) {
+        sparse64BitVisitor(view);
+    }
+
     /**
      * Provides access to gradients and Hessians that have been calculated according to a decomposable loss function
      * and are stored using sparse data structures.
@@ -38,26 +50,27 @@ namespace boosting {
      */
     template<typename Loss, typename OutputMatrix, typename EvaluationMeasure>
     class SparseDecomposableStatistics final
-        : public AbstractDecomposableStatistics<OutputMatrix, SparseDecomposableStatisticMatrix<float64>,
-                                                NumericSparseSetMatrix<float64>, Loss, EvaluationMeasure,
-                                                ISparseDecomposableRuleEvaluationFactory> {
+        : public AbstractDecomposableStatistics<OutputMatrix,
+                                                SparseDecomposableStatisticMatrix<typename Loss::statistic_type>,
+                                                NumericSparseSetMatrix<typename Loss::statistic_type>, Loss,
+                                                EvaluationMeasure, ISparseDecomposableRuleEvaluationFactory> {
         private:
 
-            template<typename StatisticType>
-            using StatisticsState =
-              DecomposableStatisticsState<OutputMatrix, SparseDecomposableStatisticMatrix<StatisticType>,
-                                          NumericSparseSetMatrix<StatisticType>, Loss>;
+            typedef typename Loss::statistic_type statistic_type;
 
-            template<typename WeightVector, typename IndexVector, typename StatisticType, typename WeightType>
+            typedef DecomposableStatisticsState<OutputMatrix, SparseDecomposableStatisticMatrix<statistic_type>,
+                                                NumericSparseSetMatrix<statistic_type>, Loss>
+              StatisticsState;
+
+            template<typename WeightVector, typename IndexVector, typename WeightType>
             using StatisticsSubset =
-              StatisticsSubset<StatisticsState<StatisticType>,
-                               SparseDecomposableStatisticVector<StatisticType, WeightType>,
+              StatisticsSubset<StatisticsState, SparseDecomposableStatisticVector<statistic_type, WeightType>,
                                ISparseDecomposableRuleEvaluationFactory, WeightVector, IndexVector>;
 
-            template<typename WeightVector, typename StatisticType, typename WeightType>
-            using WeightedStatistics = WeightedStatistics<StatisticsState<StatisticType>,
-                                                          SparseDecomposableStatisticVector<StatisticType, WeightType>,
-                                                          ISparseDecomposableRuleEvaluationFactory, WeightVector>;
+            template<typename WeightVector, typename WeightType>
+            using WeightedStatistics =
+              WeightedStatistics<StatisticsState, SparseDecomposableStatisticVector<statistic_type, WeightType>,
+                                 ISparseDecomposableRuleEvaluationFactory, WeightVector>;
 
         public:
 
@@ -77,14 +90,13 @@ namespace boosting {
              * @param scoreMatrixPtr        An unique pointer to an object of type `NumericSparseSetMatrix` that stores
              *                              the currently predicted scores
              */
-            SparseDecomposableStatistics(std::unique_ptr<Loss> lossPtr,
-                                         std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
-                                         const ISparseDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
-                                         const OutputMatrix& outputMatrix,
-                                         std::unique_ptr<SparseDecomposableStatisticMatrix<float64>> statisticViewPtr,
-                                         std::unique_ptr<NumericSparseSetMatrix<float64>> scoreMatrixPtr)
-                : AbstractDecomposableStatistics<OutputMatrix, SparseDecomposableStatisticMatrix<float64>,
-                                                 NumericSparseSetMatrix<float64>, Loss, EvaluationMeasure,
+            SparseDecomposableStatistics(
+              std::unique_ptr<Loss> lossPtr, std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
+              const ISparseDecomposableRuleEvaluationFactory& ruleEvaluationFactory, const OutputMatrix& outputMatrix,
+              std::unique_ptr<SparseDecomposableStatisticMatrix<statistic_type>> statisticViewPtr,
+              std::unique_ptr<NumericSparseSetMatrix<statistic_type>> scoreMatrixPtr)
+                : AbstractDecomposableStatistics<OutputMatrix, SparseDecomposableStatisticMatrix<statistic_type>,
+                                                 NumericSparseSetMatrix<statistic_type>, Loss, EvaluationMeasure,
                                                  ISparseDecomposableRuleEvaluationFactory>(
                     std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
                     std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
@@ -94,7 +106,7 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                             const EqualWeightVector& weights) const override {
-                return std::make_unique<StatisticsSubset<EqualWeightVector, CompleteIndexVector, float64, uint32>>(
+                return std::make_unique<StatisticsSubset<EqualWeightVector, CompleteIndexVector, uint32>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -103,7 +115,7 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                             const EqualWeightVector& weights) const override {
-                return std::make_unique<StatisticsSubset<EqualWeightVector, PartialIndexVector, float64, uint32>>(
+                return std::make_unique<StatisticsSubset<EqualWeightVector, PartialIndexVector, uint32>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -112,7 +124,7 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                             const BitWeightVector& weights) const override {
-                return std::make_unique<StatisticsSubset<BitWeightVector, CompleteIndexVector, float64, uint32>>(
+                return std::make_unique<StatisticsSubset<BitWeightVector, CompleteIndexVector, uint32>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -121,7 +133,7 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                             const BitWeightVector& weights) const override {
-                return std::make_unique<StatisticsSubset<BitWeightVector, PartialIndexVector, float64, uint32>>(
+                return std::make_unique<StatisticsSubset<BitWeightVector, PartialIndexVector, uint32>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -130,8 +142,7 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                             const DenseWeightVector<uint32>& weights) const override {
-                return std::make_unique<
-                  StatisticsSubset<DenseWeightVector<uint32>, CompleteIndexVector, float64, uint32>>(
+                return std::make_unique<StatisticsSubset<DenseWeightVector<uint32>, CompleteIndexVector, uint32>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -140,8 +151,7 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                             const DenseWeightVector<uint32>& weights) const override {
-                return std::make_unique<
-                  StatisticsSubset<DenseWeightVector<uint32>, PartialIndexVector, float64, uint32>>(
+                return std::make_unique<StatisticsSubset<DenseWeightVector<uint32>, PartialIndexVector, uint32>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -151,8 +161,7 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& outputIndices,
               const DenseWeightVector<float32>& weights) const override final {
-                return std::make_unique<
-                  StatisticsSubset<DenseWeightVector<float32>, CompleteIndexVector, float64, float32>>(
+                return std::make_unique<StatisticsSubset<DenseWeightVector<float32>, CompleteIndexVector, float32>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -161,8 +170,7 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                             const DenseWeightVector<float32>& weights) const override {
-                return std::make_unique<
-                  StatisticsSubset<DenseWeightVector<float32>, PartialIndexVector, float64, float32>>(
+                return std::make_unique<StatisticsSubset<DenseWeightVector<float32>, PartialIndexVector, float32>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -173,7 +181,7 @@ namespace boosting {
               const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<EqualWeightVector>& weights) const override {
                 return std::make_unique<
-                  StatisticsSubset<OutOfSampleWeightVector<EqualWeightVector>, CompleteIndexVector, float64, uint32>>(
+                  StatisticsSubset<OutOfSampleWeightVector<EqualWeightVector>, CompleteIndexVector, uint32>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -184,7 +192,7 @@ namespace boosting {
               const PartialIndexVector& outputIndices,
               const OutOfSampleWeightVector<EqualWeightVector>& weights) const override {
                 return std::make_unique<
-                  StatisticsSubset<OutOfSampleWeightVector<EqualWeightVector>, PartialIndexVector, float64, uint32>>(
+                  StatisticsSubset<OutOfSampleWeightVector<EqualWeightVector>, PartialIndexVector, uint32>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -195,7 +203,7 @@ namespace boosting {
               const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<BitWeightVector>& weights) const override {
                 return std::make_unique<
-                  StatisticsSubset<OutOfSampleWeightVector<BitWeightVector>, CompleteIndexVector, float64, uint32>>(
+                  StatisticsSubset<OutOfSampleWeightVector<BitWeightVector>, CompleteIndexVector, uint32>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -206,7 +214,7 @@ namespace boosting {
               const PartialIndexVector& outputIndices,
               const OutOfSampleWeightVector<BitWeightVector>& weights) const override {
                 return std::make_unique<
-                  StatisticsSubset<OutOfSampleWeightVector<BitWeightVector>, PartialIndexVector, float64, uint32>>(
+                  StatisticsSubset<OutOfSampleWeightVector<BitWeightVector>, PartialIndexVector, uint32>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -216,8 +224,8 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override {
-                return std::make_unique<StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<uint32>>,
-                                                         CompleteIndexVector, float64, uint32>>(
+                return std::make_unique<
+                  StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<uint32>>, CompleteIndexVector, uint32>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -227,8 +235,8 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const PartialIndexVector& outputIndices,
               const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override {
-                return std::make_unique<StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<uint32>>,
-                                                         PartialIndexVector, float64, uint32>>(
+                return std::make_unique<
+                  StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<uint32>>, PartialIndexVector, uint32>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -238,8 +246,8 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override {
-                return std::make_unique<StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<float32>>,
-                                                         CompleteIndexVector, float64, uint32>>(
+                return std::make_unique<
+                  StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<float32>>, CompleteIndexVector, uint32>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -249,8 +257,8 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const PartialIndexVector& outputIndices,
               const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override {
-                return std::make_unique<StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<float32>>,
-                                                         PartialIndexVector, float64, uint32>>(
+                return std::make_unique<
+                  StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<float32>>, PartialIndexVector, uint32>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -259,7 +267,7 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const EqualWeightVector& weights) const override {
-                return std::make_unique<WeightedStatistics<EqualWeightVector, float64, uint32>>(
+                return std::make_unique<WeightedStatistics<EqualWeightVector, uint32>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights);
             }
 
@@ -268,7 +276,7 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const BitWeightVector& weights) const override {
-                return std::make_unique<WeightedStatistics<BitWeightVector, float64, uint32>>(
+                return std::make_unique<WeightedStatistics<BitWeightVector, uint32>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights);
             }
 
@@ -277,7 +285,7 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const DenseWeightVector<uint32>& weights) const override {
-                return std::make_unique<WeightedStatistics<DenseWeightVector<uint32>, float64, uint32>>(
+                return std::make_unique<WeightedStatistics<DenseWeightVector<uint32>, uint32>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights);
             }
 
@@ -286,7 +294,7 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const DenseWeightVector<float32>& weights) const override {
-                return std::make_unique<WeightedStatistics<DenseWeightVector<float32>, float64, float32>>(
+                return std::make_unique<WeightedStatistics<DenseWeightVector<float32>, float32>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights);
             }
 
@@ -298,30 +306,27 @@ namespace boosting {
               IBoostingStatistics::DenseScoreMatrixVisitor<float64> dense64BitVisitor,
               IBoostingStatistics::SparseScoreMatrixVisitor<float32> sparse32BitVisitor,
               IBoostingStatistics::SparseScoreMatrixVisitor<float64> sparse64BitVisitor) const override {
-                sparse64BitVisitor(this->statePtr_->scoreMatrixPtr->getView());
+                visitScoreMatrixInternally(this->statePtr_->scoreMatrixPtr->getView(), sparse32BitVisitor,
+                                           sparse64BitVisitor);
             }
     };
 
-    template<typename OutputMatrix>
+    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure>
     static inline std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> createStatistics(
-      const ISparseDecomposableClassificationLossFactory<float64>& lossFactory,
-      const ISparseEvaluationMeasureFactory<float64>& evaluationMeasureFactory,
+      std::unique_ptr<Loss> lossPtr, std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
       const ISparseDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
       MultiThreadingSettings multiThreadingSettings, const OutputMatrix& outputMatrix) {
+        typedef typename Loss::statistic_type statistic_type;
         uint32 numExamples = outputMatrix.numRows;
         uint32 numOutputs = outputMatrix.numCols;
-        std::unique_ptr<ISparseDecomposableClassificationLoss<float64>> lossPtr =
-          lossFactory.createSparseDecomposableClassificationLoss();
-        std::unique_ptr<ISparseEvaluationMeasure<float64>> evaluationMeasurePtr =
-          evaluationMeasureFactory.createSparseEvaluationMeasure();
-        std::unique_ptr<SparseDecomposableStatisticMatrix<float64>> statisticMatrixPtr =
-          std::make_unique<SparseDecomposableStatisticMatrix<float64>>(numExamples, numOutputs);
-        std::unique_ptr<NumericSparseSetMatrix<float64>> scoreMatrixPtr =
-          std::make_unique<NumericSparseSetMatrix<float64>>(numExamples, numOutputs);
-        const ISparseDecomposableClassificationLoss<float64>* lossRawPtr = lossPtr.get();
+        std::unique_ptr<SparseDecomposableStatisticMatrix<statistic_type>> statisticMatrixPtr =
+          std::make_unique<SparseDecomposableStatisticMatrix<statistic_type>>(numExamples, numOutputs);
+        std::unique_ptr<NumericSparseSetMatrix<statistic_type>> scoreMatrixPtr =
+          std::make_unique<NumericSparseSetMatrix<statistic_type>>(numExamples, numOutputs);
+        const Loss* lossRawPtr = lossPtr.get();
         const OutputMatrix* outputMatrixPtr = &outputMatrix;
-        const SparseSetView<float64>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
-        SparseSetView<Statistic<float64>>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
+        const SparseSetView<statistic_type>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
+        SparseSetView<Statistic<statistic_type>>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(outputMatrixPtr) \
@@ -333,8 +338,7 @@ namespace boosting {
                                                      IndexIterator(outputMatrixPtr->numCols), *statisticMatrixRawPtr);
         }
 
-        return std::make_unique<SparseDecomposableStatistics<ISparseDecomposableClassificationLoss<float64>,
-                                                             OutputMatrix, ISparseEvaluationMeasure<float64>>>(
+        return std::make_unique<SparseDecomposableStatistics<Loss, OutputMatrix, EvaluationMeasure>>(
           std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
           std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
     }
@@ -357,8 +361,12 @@ namespace boosting {
     std::unique_ptr<IStatisticsProvider>
       SparseDecomposableClassificationStatisticsProviderFactory<StatisticType>::create(
         const CContiguousView<const uint8>& labelMatrix) const {
+        std::unique_ptr<ISparseDecomposableClassificationLoss<StatisticType>> lossPtr =
+          lossFactoryPtr_->createSparseDecomposableClassificationLoss();
+        std::unique_ptr<ISparseEvaluationMeasure<StatisticType>> evaluationMeasurePtr =
+          evaluationMeasureFactoryPtr_->createSparseEvaluationMeasure();
         std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> statisticsPtr =
-          createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *regularRuleEvaluationFactoryPtr_,
+          createStatistics(std::move(lossPtr), std::move(evaluationMeasurePtr), *regularRuleEvaluationFactoryPtr_,
                            multiThreadingSettings_, labelMatrix);
         return std::make_unique<DecomposableStatisticsProvider<ISparseDecomposableRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
@@ -368,8 +376,12 @@ namespace boosting {
     std::unique_ptr<IStatisticsProvider>
       SparseDecomposableClassificationStatisticsProviderFactory<StatisticType>::create(
         const BinaryCsrView& labelMatrix) const {
+        std::unique_ptr<ISparseDecomposableClassificationLoss<StatisticType>> lossPtr =
+          lossFactoryPtr_->createSparseDecomposableClassificationLoss();
+        std::unique_ptr<ISparseEvaluationMeasure<StatisticType>> evaluationMeasurePtr =
+          evaluationMeasureFactoryPtr_->createSparseEvaluationMeasure();
         std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> statisticsPtr =
-          createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *regularRuleEvaluationFactoryPtr_,
+          createStatistics(std::move(lossPtr), std::move(evaluationMeasurePtr), *regularRuleEvaluationFactoryPtr_,
                            multiThreadingSettings_, labelMatrix);
         return std::make_unique<DecomposableStatisticsProvider<ISparseDecomposableRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
