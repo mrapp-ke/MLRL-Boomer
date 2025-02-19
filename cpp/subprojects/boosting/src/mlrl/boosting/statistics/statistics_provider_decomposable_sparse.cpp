@@ -31,21 +31,22 @@ namespace boosting {
      * Provides access to gradients and Hessians that have been calculated according to a decomposable loss function
      * and are stored using sparse data structures.
      *
-     * @tparam OutputMatrix The type of the matrix that provides access to the ground truth of the training examples
+     * @tparam Loss                 The type of the loss function
+     * @tparam OutputMatrix         The type of the matrix that provides access to the ground truth of the training
+     *                              examples
+     * @tparam EvaluationMeasure    The type of the evaluation that should be used to access the quality of predictions
      */
-    template<typename OutputMatrix>
+    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure>
     class SparseDecomposableStatistics final
-        : public AbstractDecomposableStatistics<
-            OutputMatrix, SparseDecomposableStatisticMatrix<float64>, NumericSparseSetMatrix<float64>,
-            ISparseDecomposableClassificationLoss<float64>, ISparseEvaluationMeasure<float64>,
-            ISparseDecomposableRuleEvaluationFactory> {
+        : public AbstractDecomposableStatistics<OutputMatrix, SparseDecomposableStatisticMatrix<float64>,
+                                                NumericSparseSetMatrix<float64>, Loss, EvaluationMeasure,
+                                                ISparseDecomposableRuleEvaluationFactory> {
         private:
 
             template<typename StatisticType>
             using StatisticsState =
               DecomposableStatisticsState<OutputMatrix, SparseDecomposableStatisticMatrix<StatisticType>,
-                                          NumericSparseSetMatrix<StatisticType>,
-                                          ISparseDecomposableClassificationLoss<StatisticType>>;
+                                          NumericSparseSetMatrix<StatisticType>, Loss>;
 
             template<typename WeightVector, typename IndexVector, typename StatisticType, typename WeightType>
             using StatisticsSubset =
@@ -61,10 +62,9 @@ namespace boosting {
         public:
 
             /**
-             * @param lossPtr               An unique pointer to an object of template type `LossFunction` that
-             *                              implements the loss function that should be used for calculating gradients
-             *                              and Hessians
-             * @param evaluationMeasurePtr  An unique pointer to an object of type `ISparseEvaluationMeasure` that
+             * @param lossPtr               An unique pointer to an object of template type `Loss` that implements the
+             *                              loss function that should be used for calculating gradients and Hessians
+             * @param evaluationMeasurePtr  An unique pointer to an object of template type `EvaluationMeasure` that
              *                              implements the evaluation measure that should be used to assess the quality
              *                              of predictions for a specific statistic
              * @param ruleEvaluationFactory A reference to an object of type `ISparseDecomposableRuleEvaluationFactory`,
@@ -77,18 +77,17 @@ namespace boosting {
              * @param scoreMatrixPtr        An unique pointer to an object of type `NumericSparseSetMatrix` that stores
              *                              the currently predicted scores
              */
-            SparseDecomposableStatistics(std::unique_ptr<ISparseDecomposableClassificationLoss<float64>> lossPtr,
-                                         std::unique_ptr<ISparseEvaluationMeasure<float64>> evaluationMeasurePtr,
+            SparseDecomposableStatistics(std::unique_ptr<Loss> lossPtr,
+                                         std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
                                          const ISparseDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
                                          const OutputMatrix& outputMatrix,
                                          std::unique_ptr<SparseDecomposableStatisticMatrix<float64>> statisticViewPtr,
                                          std::unique_ptr<NumericSparseSetMatrix<float64>> scoreMatrixPtr)
-                : AbstractDecomposableStatistics<
-                    OutputMatrix, SparseDecomposableStatisticMatrix<float64>, NumericSparseSetMatrix<float64>,
-                    ISparseDecomposableClassificationLoss<float64>, ISparseEvaluationMeasure<float64>,
-                    ISparseDecomposableRuleEvaluationFactory>(std::move(lossPtr), std::move(evaluationMeasurePtr),
-                                                              ruleEvaluationFactory, outputMatrix,
-                                                              std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
+                : AbstractDecomposableStatistics<OutputMatrix, SparseDecomposableStatisticMatrix<float64>,
+                                                 NumericSparseSetMatrix<float64>, Loss, EvaluationMeasure,
+                                                 ISparseDecomposableRuleEvaluationFactory>(
+                    std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
+                    std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
 
             /**
              * @see `IStatistics::createSubset`
@@ -334,7 +333,8 @@ namespace boosting {
                                                      IndexIterator(outputMatrixPtr->numCols), *statisticMatrixRawPtr);
         }
 
-        return std::make_unique<SparseDecomposableStatistics<OutputMatrix>>(
+        return std::make_unique<SparseDecomposableStatistics<ISparseDecomposableClassificationLoss<float64>,
+                                                             OutputMatrix, ISparseEvaluationMeasure<float64>>>(
           std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
           std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
     }
