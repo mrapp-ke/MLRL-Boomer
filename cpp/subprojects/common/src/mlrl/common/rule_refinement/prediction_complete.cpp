@@ -5,7 +5,8 @@
 #include "mlrl/common/rule_refinement/rule_refinement.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
 
-CompletePrediction::CompletePrediction(uint32 numElements, IStatisticsUpdateFactory& statisticsUpdateFactory)
+CompletePrediction::CompletePrediction(uint32 numElements,
+                                       IStatisticsUpdateFactory<float64>& statisticsUpdateFactory)
     : VectorDecorator<AllocatedVector<float64>>(AllocatedVector<float64>(numElements)), indexVector_(numElements),
       statisticsUpdatePtr_(statisticsUpdateFactory.create(indexVector_.cbegin(), indexVector_.cend(),
                                                           this->view.cbegin(), this->view.cend())) {}

@@ -74,7 +74,7 @@ class StatisticsUpdateCandidate : public Quality {
          * @tparam State The type of the state of the statistics
          */
         template<util::derived_from_template_class<IStatisticsState> State>
-        class StatisticsUpdateFactory final : public IStatisticsUpdateFactory {
+        class StatisticsUpdateFactory final : public IStatisticsUpdateFactory<typename State::score_type> {
             private:
 
                 State& state_;
@@ -86,18 +86,18 @@ class StatisticsUpdateCandidate : public Quality {
                  */
                 StatisticsUpdateFactory(State& state) : state_(state) {}
 
-                std::unique_ptr<IStatisticsUpdate> create(CompleteIndexVector::const_iterator indicesBegin,
-                                                          CompleteIndexVector::const_iterator indicesEnd,
-                                                          View<float64>::const_iterator scoresBegin,
-                                                          View<float64>::const_iterator scoresEnd) override {
+                std::unique_ptr<IStatisticsUpdate> create(
+                  CompleteIndexVector::const_iterator indicesBegin, CompleteIndexVector::const_iterator indicesEnd,
+                  typename View<typename State::score_type>::const_iterator scoresBegin,
+                  typename View<typename State::score_type>::const_iterator scoresEnd) override {
                     return std::make_unique<StatisticsUpdate<State, CompleteIndexVector>>(
                       state_, indicesBegin, indicesEnd, scoresBegin, scoresEnd);
                 }
 
-                std::unique_ptr<IStatisticsUpdate> create(PartialIndexVector::const_iterator indicesBegin,
-                                                          PartialIndexVector::const_iterator indicesEnd,
-                                                          View<float64>::const_iterator scoresBegin,
-                                                          View<float64>::const_iterator scoresEnd) override {
+                std::unique_ptr<IStatisticsUpdate> create(
+                  PartialIndexVector::const_iterator indicesBegin, PartialIndexVector::const_iterator indicesEnd,
+                  typename View<typename State::score_type>::const_iterator scoresBegin,
+                  typename View<typename State::score_type>::const_iterator scoresEnd) override {
                     return std::make_unique<StatisticsUpdate<State, PartialIndexVector>>(
                       state_, indicesBegin, indicesEnd, scoresBegin, scoresEnd);
                 }
@@ -118,7 +118,7 @@ class StatisticsUpdateCandidate : public Quality {
          */
         template<typename ScoreType, typename IndexVector>
         using DenseVisitor =
-          std::function<void(const DenseScoreVector<ScoreType, IndexVector>&, IStatisticsUpdateFactory&)>;
+          std::function<void(const DenseScoreVector<ScoreType, IndexVector>&, IStatisticsUpdateFactory<float64>&)>;
 
         /**
          * A visitor function for handling objects of type `DenseBinnedScoreVector`.
@@ -128,8 +128,8 @@ class StatisticsUpdateCandidate : public Quality {
          *                      scores correspond to
          */
         template<typename ScoreType, typename IndexVector>
-        using DenseBinnedVisitor =
-          std::function<void(const DenseBinnedScoreVector<ScoreType, IndexVector>&, IStatisticsUpdateFactory&)>;
+        using DenseBinnedVisitor = std::function<void(const DenseBinnedScoreVector<ScoreType, IndexVector>&,
+                                                      IStatisticsUpdateFactory<float64>&)>;
 
     protected:
 

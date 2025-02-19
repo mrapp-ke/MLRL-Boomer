@@ -6,7 +6,8 @@
 #include "mlrl/common/rule_refinement/rule_refinement.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
 
-PartialPrediction::PartialPrediction(uint32 numElements, bool sorted, IStatisticsUpdateFactory& statisticsUpdateFactory)
+PartialPrediction::PartialPrediction(uint32 numElements, bool sorted,
+                                     IStatisticsUpdateFactory<float64>& statisticsUpdateFactory)
     : VectorDecorator<ResizableVector<float64>>(ResizableVector<float64>(numElements)), indexVector_(numElements),
       sorted_(sorted), statisticsUpdatePtr_(statisticsUpdateFactory.create(indexVector_.cbegin(), indexVector_.cend(),
                                                                            this->view.cbegin(), this->view.cend())) {}
@@ -47,7 +48,7 @@ uint32 PartialPrediction::getNumElements() const {
     return VectorDecorator<ResizableVector<float64>>::getNumElements();
 }
 
-void PartialPrediction::setNumElements(IStatisticsUpdateFactory& statisticsUpdateFactory, uint32 numElements,
+void PartialPrediction::setNumElements(IStatisticsUpdateFactory<float64>& statisticsUpdateFactory, uint32 numElements,
                                        bool freeMemory) {
     this->view.resize(numElements, freeMemory);
     indexVector_.setNumElements(numElements, freeMemory);

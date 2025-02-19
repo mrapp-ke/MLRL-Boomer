@@ -28,7 +28,7 @@ class PartialPrediction final : public VectorDecorator<ResizableVector<float64>>
          *                                increasing order by the corresponding output indices, false otherwise
          * @param statisticsUpdateFactory A reference to an object of type `IStatisticsUpdateFactory`
          */
-        PartialPrediction(uint32 numElements, bool sorted, IStatisticsUpdateFactory& statisticsUpdateFactory);
+        PartialPrediction(uint32 numElements, bool sorted, IStatisticsUpdateFactory<float64>& statisticsUpdateFactory);
 
         /**
          * An iterator that provides access to the predicted scores and allows to modify them.
@@ -122,7 +122,8 @@ class PartialPrediction final : public VectorDecorator<ResizableVector<float64>>
          * @param numElements             The number of elements to be set
          * @param freeMemory              True, if unused memory should be freed, if possible, false otherwise
          */
-        void setNumElements(IStatisticsUpdateFactory& statisticsUpdateFactory, uint32 numElements, bool freeMemory);
+        void setNumElements(IStatisticsUpdateFactory<float64>& statisticsUpdateFactory, uint32 numElements,
+                            bool freeMemory);
 
         uint32 getNumElements() const override;
 

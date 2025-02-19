@@ -24,7 +24,7 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>
          * @param numElements             The number of outputs for which the rule predicts
          * @param statisticsUpdateFactory A reference to an object of type `IStatisticsUpdateFactory`
          */
-        CompletePrediction(uint32 numElements, IStatisticsUpdateFactory& statisticsUpdateFactory);
+        CompletePrediction(uint32 numElements, IStatisticsUpdateFactory<float64>& statisticsUpdateFactory);
 
         /**
          * An iterator that provides access to the predicted scores and allows to modify them.

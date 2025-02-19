@@ -36,7 +36,10 @@ class IStatisticsUpdate {
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `IStatisticsUpdate`.
+ *
+ * @tparam ScoreType The type of the scores that are used for updating statistics
  */
+template<typename ScoreType>
 class IStatisticsUpdateFactory {
     public:
 
@@ -57,8 +60,8 @@ class IStatisticsUpdateFactory {
          */
         virtual std::unique_ptr<IStatisticsUpdate> create(CompleteIndexVector::const_iterator indicesBegin,
                                                           CompleteIndexVector::const_iterator indicesEnd,
-                                                          View<float64>::const_iterator scoresBegin,
-                                                          View<float64>::const_iterator scoresEnd) = 0;
+                                                          typename View<ScoreType>::const_iterator scoresBegin,
+                                                          typename View<ScoreType>::const_iterator scoresEnd) = 0;
 
         /**
          * Creates and returns a new instance of type `IStatisticsUpdate` for updating statistics for a subset of the
@@ -75,6 +78,6 @@ class IStatisticsUpdateFactory {
          */
         virtual std::unique_ptr<IStatisticsUpdate> create(PartialIndexVector::const_iterator indicesBegin,
                                                           PartialIndexVector::const_iterator indicesEnd,
-                                                          View<float64>::const_iterator scoresBegin,
-                                                          View<float64>::const_iterator scoresEnd) = 0;
+                                                          typename View<ScoreType>::const_iterator scoresBegin,
+                                                          typename View<ScoreType>::const_iterator scoresEnd) = 0;
 };
