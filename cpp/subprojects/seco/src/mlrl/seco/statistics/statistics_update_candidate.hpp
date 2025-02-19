@@ -12,7 +12,7 @@ namespace seco {
      *
      * @tparam State The type of the state of the covering process
      */
-    template<std::derived_from<IStatisticsState> State>
+    template<util::derived_from_template_class<IStatisticsState> State>
     class CoverageStatisticsUpdateCandidate final : public StatisticsUpdateCandidate {
         private:
 

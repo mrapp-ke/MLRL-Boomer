@@ -12,7 +12,7 @@ namespace boosting {
      *
      * @tparam State The type of the state of the boosting process
      */
-    template<std::derived_from<IStatisticsState> State>
+    template<util::derived_from_template_class<IStatisticsState> State>
     class BoostingStatisticsUpdateCandidate final : public StatisticsUpdateCandidate {
         private:
 
