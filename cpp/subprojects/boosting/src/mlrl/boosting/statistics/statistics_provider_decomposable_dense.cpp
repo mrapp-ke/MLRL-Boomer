@@ -11,16 +11,17 @@ namespace boosting {
       std::unique_ptr<Loss> lossPtr, std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
       const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory, MultiThreadingSettings multiThreadingSettings,
       const OutputMatrix& outputMatrix) {
+        typedef typename Loss::statistic_type statistic_type;
         uint32 numExamples = outputMatrix.numRows;
         uint32 numOutputs = outputMatrix.numCols;
-        std::unique_ptr<DenseDecomposableStatisticMatrix<float64>> statisticMatrixPtr =
-          std::make_unique<DenseDecomposableStatisticMatrix<float64>>(numExamples, numOutputs);
-        std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr =
-          std::make_unique<NumericCContiguousMatrix<float64>>(numExamples, numOutputs, true);
+        std::unique_ptr<DenseDecomposableStatisticMatrix<statistic_type>> statisticMatrixPtr =
+          std::make_unique<DenseDecomposableStatisticMatrix<statistic_type>>(numExamples, numOutputs);
+        std::unique_ptr<NumericCContiguousMatrix<statistic_type>> scoreMatrixPtr =
+          std::make_unique<NumericCContiguousMatrix<statistic_type>>(numExamples, numOutputs, true);
         const Loss* lossRawPtr = lossPtr.get();
         const OutputMatrix* outputMatrixPtr = &outputMatrix;
-        const CContiguousView<float64>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
-        CContiguousView<Statistic<float64>>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
+        const CContiguousView<statistic_type>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
+        CContiguousView<Statistic<statistic_type>>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(outputMatrixPtr) \
