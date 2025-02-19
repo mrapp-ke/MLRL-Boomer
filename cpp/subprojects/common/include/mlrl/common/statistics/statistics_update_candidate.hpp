@@ -118,7 +118,7 @@ class StatisticsUpdateCandidate : public Quality {
          */
         template<typename ScoreType, typename IndexVector>
         using DenseVisitor =
-          std::function<void(const DenseScoreVector<ScoreType, IndexVector>&, IStatisticsUpdateFactory<float64>&)>;
+          std::function<void(const DenseScoreVector<ScoreType, IndexVector>&, IStatisticsUpdateFactory<ScoreType>&)>;
 
         /**
          * A visitor function for handling objects of type `DenseBinnedScoreVector`.
@@ -129,7 +129,7 @@ class StatisticsUpdateCandidate : public Quality {
          */
         template<typename ScoreType, typename IndexVector>
         using DenseBinnedVisitor = std::function<void(const DenseBinnedScoreVector<ScoreType, IndexVector>&,
-                                                      IStatisticsUpdateFactory<float64>&)>;
+                                                      IStatisticsUpdateFactory<ScoreType>&)>;
 
     protected:
 
