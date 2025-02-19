@@ -23,8 +23,13 @@ namespace boosting {
      * @tparam LossFunction     The type of the loss function that is used to calculate gradients and Hessians
      */
     template<typename OutputMatrix, typename StatisticMatrix, typename ScoreMatrix, typename LossFunction>
-    class AbstractStatisticsState : public IStatisticsState {
+    class AbstractStatisticsState : public IStatisticsState<typename ScoreMatrix::value_type> {
         public:
+
+            /**
+             * The type of the scores that are used for updating the state.
+             */
+            typedef typename ScoreMatrix::value_type score_type;
 
             /**
              * A reference to an object of template type `OutputMatrix` that provides access to the ground truth of the
@@ -93,30 +98,34 @@ namespace boosting {
 
             virtual ~AbstractStatisticsState() {}
 
-            void update(uint32 statisticIndex, View<float64>::const_iterator scoresBegin,
-                        View<float64>::const_iterator scoresEnd, CompleteIndexVector::const_iterator indicesBegin,
+            void update(uint32 statisticIndex, typename View<score_type>::const_iterator scoresBegin,
+                        typename View<score_type>::const_iterator scoresEnd,
+                        CompleteIndexVector::const_iterator indicesBegin,
                         CompleteIndexVector::const_iterator indicesEnd) override final {
                 scoreMatrixPtr->addToRowFromSubset(statisticIndex, scoresBegin, scoresEnd, indicesBegin, indicesEnd);
                 updateStatistics(statisticIndex, indicesBegin, indicesEnd);
             }
 
-            void update(uint32 statisticIndex, View<float64>::const_iterator scoresBegin,
-                        View<float64>::const_iterator scoresEnd, PartialIndexVector::const_iterator indicesBegin,
+            void update(uint32 statisticIndex, typename View<score_type>::const_iterator scoresBegin,
+                        typename View<score_type>::const_iterator scoresEnd,
+                        PartialIndexVector::const_iterator indicesBegin,
                         PartialIndexVector::const_iterator indicesEnd) override final {
                 scoreMatrixPtr->addToRowFromSubset(statisticIndex, scoresBegin, scoresEnd, indicesBegin, indicesEnd);
                 updateStatistics(statisticIndex, indicesBegin, indicesEnd);
             }
 
-            void revert(uint32 statisticIndex, View<float64>::const_iterator scoresBegin,
-                        View<float64>::const_iterator scoresEnd, CompleteIndexVector::const_iterator indicesBegin,
+            void revert(uint32 statisticIndex, typename View<score_type>::const_iterator scoresBegin,
+                        typename View<score_type>::const_iterator scoresEnd,
+                        CompleteIndexVector::const_iterator indicesBegin,
                         CompleteIndexVector::const_iterator indicesEnd) override final {
                 scoreMatrixPtr->removeFromRowFromSubset(statisticIndex, scoresBegin, scoresEnd, indicesBegin,
                                                         indicesEnd);
                 updateStatistics(statisticIndex, indicesBegin, indicesEnd);
             }
 
-            void revert(uint32 statisticIndex, View<float64>::const_iterator scoresBegin,
-                        View<float64>::const_iterator scoresEnd, PartialIndexVector::const_iterator indicesBegin,
+            void revert(uint32 statisticIndex, typename View<score_type>::const_iterator scoresBegin,
+                        typename View<score_type>::const_iterator scoresEnd,
+                        PartialIndexVector::const_iterator indicesBegin,
                         PartialIndexVector::const_iterator indicesEnd) override final {
                 scoreMatrixPtr->removeFromRowFromSubset(statisticIndex, scoresBegin, scoresEnd, indicesBegin,
                                                         indicesEnd);
