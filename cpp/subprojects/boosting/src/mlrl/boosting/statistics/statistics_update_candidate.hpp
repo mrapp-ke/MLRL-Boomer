@@ -22,14 +22,14 @@ namespace boosting {
 
             void invokeVisitor(DenseVisitor<float32, CompleteIndexVector> visitor,
                                const DenseScoreVector<float32, CompleteIndexVector>& scoreVector) const override {
-                StatisticsUpdateFactory<State> statisticsUpdateFactory(state_);
-                visitor(scoreVector, statisticsUpdateFactory);
+                // TODO StatisticsUpdateFactory<State> statisticsUpdateFactory(state_);
+                // TODO visitor(scoreVector, statisticsUpdateFactory);
             }
 
             void invokeVisitor(DenseVisitor<float32, PartialIndexVector> visitor,
                                const DenseScoreVector<float32, PartialIndexVector>& scoreVector) const override {
-                StatisticsUpdateFactory<State> statisticsUpdateFactory(state_);
-                visitor(scoreVector, statisticsUpdateFactory);
+                // TODO StatisticsUpdateFactory<State> statisticsUpdateFactory(state_);
+                // TODO visitor(scoreVector, statisticsUpdateFactory);
             }
 
             void invokeVisitor(DenseVisitor<float64, CompleteIndexVector> visitor,
@@ -46,14 +46,14 @@ namespace boosting {
 
             void invokeVisitor(DenseBinnedVisitor<float32, CompleteIndexVector> visitor,
                                const DenseBinnedScoreVector<float32, CompleteIndexVector>& scoreVector) const override {
-                StatisticsUpdateFactory<State> statisticsUpdateFactory(state_);
-                visitor(scoreVector, statisticsUpdateFactory);
+                // TODO StatisticsUpdateFactory<State> statisticsUpdateFactory(state_);
+                // TODO visitor(scoreVector, statisticsUpdateFactory);
             }
 
             void invokeVisitor(DenseBinnedVisitor<float32, PartialIndexVector> visitor,
                                const DenseBinnedScoreVector<float32, PartialIndexVector>& scoreVector) const override {
-                StatisticsUpdateFactory<State> statisticsUpdateFactory(state_);
-                visitor(scoreVector, statisticsUpdateFactory);
+                // TODO StatisticsUpdateFactory<State> statisticsUpdateFactory(state_);
+                // TODO visitor(scoreVector, statisticsUpdateFactory);
             }
 
             void invokeVisitor(DenseBinnedVisitor<float64, CompleteIndexVector> visitor,

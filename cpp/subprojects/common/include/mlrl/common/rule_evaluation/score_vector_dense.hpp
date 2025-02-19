@@ -33,6 +33,11 @@ class DenseScoreVector final : public ViewDecorator<AllocatedView<ScoreType>>,
         DenseScoreVector(const IndexVector& outputIndices, bool sorted);
 
         /**
+         * The type of the predicted scores that are stored by the vector.
+         */
+        typedef ScoreType value_type;
+
+        /**
          * An iterator that provides read-only access to the indices.
          */
         typedef typename IndexVector::const_iterator index_const_iterator;

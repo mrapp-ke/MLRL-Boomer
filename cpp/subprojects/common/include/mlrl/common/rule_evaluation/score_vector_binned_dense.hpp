@@ -40,6 +40,11 @@ class DenseBinnedScoreVector final
         DenseBinnedScoreVector(const IndexVector& outputIndices, uint32 numBins, bool sorted);
 
         /**
+         * The type of the predicted scores that are stored by the vector.
+         */
+        typedef ScoreType value_type;
+
+        /**
          * An iterator that provides read-only access to the indices of the output for which the rule predicts.
          */
         typedef typename IndexVector::const_iterator index_const_iterator;

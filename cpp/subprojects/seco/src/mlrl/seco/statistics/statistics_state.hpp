@@ -22,8 +22,7 @@ namespace seco {
      *                          have been covered
      */
     template<typename LabelMatrix, typename CoverageMatrix>
-    // TODO Use proper ScoreType
-    class StatisticsState final : public IStatisticsState<float64> {
+    class StatisticsState final : public IStatisticsState<float32> {
         public:
 
             /**
@@ -57,32 +56,32 @@ namespace seco {
                 : labelMatrix(labelMatrix), coverageMatrixPtr(std::move(coverageMatrixPtr)),
                   majorityLabelVectorPtr(std::move(majorityLabelVectorPtr)) {}
 
-            void update(uint32 statisticIndex, View<float64>::const_iterator scoresBegin,
-                        View<float64>::const_iterator scoresEnd, CompleteIndexVector::const_iterator indicesBegin,
+            void update(uint32 statisticIndex, View<float32>::const_iterator scoresBegin,
+                        View<float32>::const_iterator scoresEnd, CompleteIndexVector::const_iterator indicesBegin,
                         CompleteIndexVector::const_iterator indicesEnd) override {
                 coverageMatrixPtr->increaseCoverage(statisticIndex, majorityLabelVectorPtr->cbegin(),
                                                     majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd,
                                                     indicesBegin, indicesEnd);
             }
 
-            void update(uint32 statisticIndex, View<float64>::const_iterator scoresBegin,
-                        View<float64>::const_iterator scoresEnd, PartialIndexVector::const_iterator indicesBegin,
+            void update(uint32 statisticIndex, View<float32>::const_iterator scoresBegin,
+                        View<float32>::const_iterator scoresEnd, PartialIndexVector::const_iterator indicesBegin,
                         PartialIndexVector::const_iterator indicesEnd) override {
                 coverageMatrixPtr->increaseCoverage(statisticIndex, majorityLabelVectorPtr->cbegin(),
                                                     majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd,
                                                     indicesBegin, indicesEnd);
             }
 
-            void revert(uint32 statisticIndex, View<float64>::const_iterator scoresBegin,
-                        View<float64>::const_iterator scoresEnd, CompleteIndexVector::const_iterator indicesBegin,
+            void revert(uint32 statisticIndex, View<float32>::const_iterator scoresBegin,
+                        View<float32>::const_iterator scoresEnd, CompleteIndexVector::const_iterator indicesBegin,
                         CompleteIndexVector::const_iterator indicesEnd) override {
                 coverageMatrixPtr->decreaseCoverage(statisticIndex, majorityLabelVectorPtr->cbegin(),
                                                     majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd,
                                                     indicesBegin, indicesEnd);
             }
 
-            void revert(uint32 statisticIndex, View<float64>::const_iterator scoresBegin,
-                        View<float64>::const_iterator scoresEnd, PartialIndexVector::const_iterator indicesBegin,
+            void revert(uint32 statisticIndex, View<float32>::const_iterator scoresBegin,
+                        View<float32>::const_iterator scoresEnd, PartialIndexVector::const_iterator indicesBegin,
                         PartialIndexVector::const_iterator indicesEnd) override {
                 coverageMatrixPtr->decreaseCoverage(statisticIndex, majorityLabelVectorPtr->cbegin(),
                                                     majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd,
