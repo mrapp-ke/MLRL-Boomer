@@ -22,7 +22,8 @@ namespace seco {
      *                          have been covered
      */
     template<typename LabelMatrix, typename CoverageMatrix>
-    class StatisticsState final : public IStatisticsState {
+    // TODO Use proper ScoreType
+    class StatisticsState final : public IStatisticsState<float64> {
         public:
 
             /**

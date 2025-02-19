@@ -9,8 +9,7 @@
 #include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
 #include "mlrl/common/statistics/statistics_state.hpp"
 #include "mlrl/common/statistics/statistics_update.hpp"
-
-#include <concepts>
+#include "mlrl/common/util/concepts.hpp"
 
 /**
  * A base class for all classes that store scores that have been calculated based on statistics and allow to update
@@ -26,7 +25,7 @@ class StatisticsUpdateCandidate : public Quality {
          * @tparam IndexVector  The type of the vector that provides access to the indices of the outputs for which
          *                      confusion matrices should be updated
          */
-        template<std::derived_from<IStatisticsState> State, std::derived_from<IIndexVector> IndexVector>
+        template<util::derived_from_template_class<IStatisticsState> State, std::derived_from<IIndexVector> IndexVector>
         class StatisticsUpdate final : public IStatisticsUpdate {
             private:
 
@@ -36,9 +35,9 @@ class StatisticsUpdateCandidate : public Quality {
 
                 typename IndexVector::const_iterator indicesEnd_;
 
-                View<float64>::const_iterator scoresBegin_;
+                typename View<typename State::score_type>::const_iterator scoresBegin_;
 
-                View<float64>::const_iterator scoresEnd_;
+                typename View<typename State::score_type>::const_iterator scoresEnd_;
 
             public:
 
@@ -55,7 +54,8 @@ class StatisticsUpdateCandidate : public Quality {
                  */
                 StatisticsUpdate(State& state, typename IndexVector::const_iterator indicesBegin,
                                  typename IndexVector::const_iterator indicesEnd,
-                                 View<float64>::const_iterator scoresBegin, View<float64>::const_iterator scoresEnd)
+                                 typename View<typename State::score_type>::const_iterator scoresBegin,
+                                 typename View<typename State::score_type>::const_iterator scoresEnd)
                     : state_(state), indicesBegin_(indicesBegin), indicesEnd_(indicesEnd), scoresBegin_(scoresBegin),
                       scoresEnd_(scoresEnd) {}
 
@@ -73,7 +73,7 @@ class StatisticsUpdateCandidate : public Quality {
 
          * @tparam State The type of the state of the statistics
          */
-        template<std::derived_from<IStatisticsState> State>
+        template<util::derived_from_template_class<IStatisticsState> State>
         class StatisticsUpdateFactory final : public IStatisticsUpdateFactory {
             private:
 
