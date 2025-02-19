@@ -19,12 +19,30 @@
 namespace boosting {
 
     /**
+     * Defines an interface for all loss functions.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
+     */
+    template<typename StatisticType>
+    class ILoss {
+        public:
+
+            virtual ~ILoss() {}
+
+            /**
+             * The type of the gradients and Hessians that are calculated by the loss function.
+             */
+            typedef StatisticType statistic_type;
+    };
+
+    /**
      * Defines an interface for all loss functions that can be used in classification problems.
      *
      * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
     template<typename StatisticType>
-    class IClassificationLoss : public IDistanceMeasure<StatisticType> {
+    class IClassificationLoss : public ILoss<StatisticType>,
+                                public IDistanceMeasure<StatisticType> {
         public:
 
             virtual ~IClassificationLoss() override {}
@@ -32,8 +50,11 @@ namespace boosting {
 
     /**
      * Defines an interface for all loss functions that can be used in regression problems.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are are calculated by the loss function
      */
-    class IRegressionLoss {
+    template<typename StatisticType>
+    class IRegressionLoss : public ILoss<StatisticType> {
         public:
 
             virtual ~IRegressionLoss() {}

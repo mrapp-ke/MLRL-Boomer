@@ -108,7 +108,7 @@ namespace boosting {
      * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
     template<typename StatisticType>
-    class IDecomposableRegressionLoss : virtual public IRegressionLoss,
+    class IDecomposableRegressionLoss : virtual public IRegressionLoss<StatisticType>,
                                         virtual public IRegressionEvaluationMeasure<StatisticType> {
         public:
 
