@@ -228,7 +228,7 @@ class StatisticsUpdateCandidate : public Quality {
          */
         explicit StatisticsUpdateCandidate(const IScoreVector& scoreVector);
 
-        virtual ~StatisticsUpdateCandidate() {}
+        virtual ~StatisticsUpdateCandidate() override {}
 
         /**
          * Invokes one of the given visitor functions, depending on which one is able to handle the particular type of
