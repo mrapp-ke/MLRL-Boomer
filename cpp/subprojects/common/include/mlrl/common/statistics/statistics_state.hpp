@@ -3,8 +3,9 @@
  */
 #pragma once
 
-#include "mlrl/common/indices/index_vector_complete.hpp"
-#include "mlrl/common/indices/index_vector_partial.hpp"
+#include "mlrl/common/statistics/statistics_update_candidate.hpp"
+
+#include <memory>
 
 /**
  * Defines an interface for all classes that allow to update statistics during the training process.
@@ -81,4 +82,12 @@ class IStatisticsState {
                             typename View<ScoreType>::const_iterator scoresEnd,
                             PartialIndexVector::const_iterator indicesBegin,
                             PartialIndexVector::const_iterator indicesEnd) = 0;
+        /**
+         * Creates and returns a new object of type `IStatisticsUpdateCandidate` that can be used to update this state.
+         *
+         * @param scoreVector   A reference to an object of type `IScoreVector` that should be used for updating
+         * @return              An unique pointer to an object of type `IStatisticsUpdateCandidate` that has been
+         *                      created
+         */
+        virtual std::unique_ptr<IStatisticsUpdateCandidate> createUpdateCandidate(const IScoreVector& scoreVector) = 0;
 };

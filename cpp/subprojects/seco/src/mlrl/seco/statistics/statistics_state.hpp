@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/vector_sparse_array_binary.hpp"
-#include "mlrl/common/statistics/statistics_state.hpp"
+#include "mlrl/common/statistics/statistics_update_candidate_common.hpp"
 
 #include <memory>
 
@@ -23,6 +23,48 @@ namespace seco {
      */
     template<typename LabelMatrix, typename CoverageMatrix>
     class CoverageStatisticsState final : public IStatisticsState<float32> {
+        private:
+
+            /**
+             * Stores scores that have been calculated based on confusion matrices and allow to update these confusion
+             * matrices accordingly.
+             */
+            class UpdateCandidate final : public AbstractStatisticsUpdateCandidate {
+                private:
+
+                    CoverageStatisticsState<LabelMatrix, CoverageMatrix>& state_;
+
+                protected:
+
+                    void invokeVisitor(
+                      DenseVisitor<float32, CompleteIndexVector> visitor,
+                      const DenseScoreVector<float32, CompleteIndexVector>& scoreVector) const override {
+                        StatisticsUpdateFactory<CoverageStatisticsState<LabelMatrix, CoverageMatrix>>
+                          statisticsUpdateFactory(state_);
+                        visitor(scoreVector, statisticsUpdateFactory);
+                    }
+
+                    void invokeVisitor(
+                      DenseVisitor<float32, PartialIndexVector> visitor,
+                      const DenseScoreVector<float32, PartialIndexVector>& scoreVector) const override {
+                        StatisticsUpdateFactory<CoverageStatisticsState<LabelMatrix, CoverageMatrix>>
+                          statisticsUpdateFactory(state_);
+                        visitor(scoreVector, statisticsUpdateFactory);
+                    }
+
+                public:
+
+                    /**
+                     * @param state         A reference to an object of template type `CoverageStatisticsState` that
+                     *                      represents the state of the covering process
+                     * @param scoreVector   A reference to an object of type `IScoreVector` that stores the calculated
+                     *                      scores
+                     */
+                    UpdateCandidate(CoverageStatisticsState<LabelMatrix, CoverageMatrix>& state,
+                                    const IScoreVector& scoreVector)
+                        : AbstractStatisticsUpdateCandidate(scoreVector), state_(state) {}
+            };
+
         public:
 
             /**
@@ -86,6 +128,11 @@ namespace seco {
                 coverageMatrixPtr->decreaseCoverage(statisticIndex, majorityLabelVectorPtr->cbegin(),
                                                     majorityLabelVectorPtr->cend(), scoresBegin, scoresEnd,
                                                     indicesBegin, indicesEnd);
+            }
+
+            std::unique_ptr<IStatisticsUpdateCandidate> createUpdateCandidate(
+              const IScoreVector& scoreVector) override {
+                return std::make_unique<UpdateCandidate>(*this, scoreVector);
             }
     };
 }
