@@ -27,7 +27,7 @@ namespace seco {
      */
     template<typename LabelMatrix, typename CoverageMatrix, typename RuleEvaluationFactory>
     class AbstractDecomposableStatistics
-        : public AbstractStatistics<StatisticsState<LabelMatrix, CoverageMatrix>, RuleEvaluationFactory>,
+        : public AbstractStatistics<CoverageStatisticsState<LabelMatrix, CoverageMatrix>, RuleEvaluationFactory>,
           virtual public IDecomposableStatistics<RuleEvaluationFactory> {
         public:
 
@@ -47,8 +47,8 @@ namespace seco {
                                            std::unique_ptr<CoverageMatrix> coverageMatrixPtr,
                                            std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
                                            const RuleEvaluationFactory& ruleEvaluationFactory)
-                : AbstractStatistics<StatisticsState<LabelMatrix, CoverageMatrix>, RuleEvaluationFactory>(
-                    std::make_unique<StatisticsState<LabelMatrix, CoverageMatrix>>(
+                : AbstractStatistics<CoverageStatisticsState<LabelMatrix, CoverageMatrix>, RuleEvaluationFactory>(
+                    std::make_unique<CoverageStatisticsState<LabelMatrix, CoverageMatrix>>(
                       labelMatrix, std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr)),
                     ruleEvaluationFactory) {}
 
