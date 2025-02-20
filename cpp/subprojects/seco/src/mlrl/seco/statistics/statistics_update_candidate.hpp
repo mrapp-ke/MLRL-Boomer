@@ -8,7 +8,8 @@
 namespace seco {
 
     /**
-     * Stores scores that have been calculated based on confusion matrices and allow to update them accordingly.
+     * Stores scores that have been calculated based on confusion matrices and allow to update these confusion matrices
+     * accordingly.
      *
      * @tparam State The type of the state of the covering process
      */
