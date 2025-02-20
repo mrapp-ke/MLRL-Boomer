@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/statistics/statistics_update_candidate.hpp"
+#include "mlrl/common/statistics/statistics_update_candidate_common.hpp"
 
 namespace boosting {
 
@@ -14,7 +14,7 @@ namespace boosting {
      * @tparam State The type of the state of the boosting process
      */
     template<util::derived_from_template_class<IStatisticsState> State>
-    class Boosting32BitStatisticsUpdateCandidate final : public StatisticsUpdateCandidate {
+    class Boosting32BitStatisticsUpdateCandidate final : public AbstractStatisticsUpdateCandidate {
         private:
 
             State& state_;
@@ -53,7 +53,7 @@ namespace boosting {
              * @param scoreVector   A reference to an object of type `IScoreVector` that stores the calculated scores
              */
             Boosting32BitStatisticsUpdateCandidate(State& state, const IScoreVector& scoreVector)
-                : StatisticsUpdateCandidate(scoreVector), state_(state) {}
+                : AbstractStatisticsUpdateCandidate(scoreVector), state_(state) {}
     };
 
     /**
@@ -63,7 +63,7 @@ namespace boosting {
      * @tparam State The type of the state of the boosting process
      */
     template<util::derived_from_template_class<IStatisticsState> State>
-    class Boosting64BitStatisticsUpdateCandidate final : public StatisticsUpdateCandidate {
+    class Boosting64BitStatisticsUpdateCandidate final : public AbstractStatisticsUpdateCandidate {
         private:
 
             State& state_;
@@ -102,7 +102,7 @@ namespace boosting {
              * @param scoreVector   A reference to an object of type `IScoreVector` that stores the calculated scores
              */
             Boosting64BitStatisticsUpdateCandidate(State& state, const IScoreVector& scoreVector)
-                : StatisticsUpdateCandidate(scoreVector), state_(state) {}
+                : AbstractStatisticsUpdateCandidate(scoreVector), state_(state) {}
     };
 
 }

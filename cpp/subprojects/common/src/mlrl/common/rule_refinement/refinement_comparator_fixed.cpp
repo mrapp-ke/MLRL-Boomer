@@ -37,7 +37,7 @@ bool FixedRefinementComparator::isImprovement(const Quality& quality) const {
     return ruleCompareFunction_.compare(quality, minQuality_);
 }
 
-void FixedRefinementComparator::pushRefinement(const Refinement& refinement, const StatisticsUpdateCandidate& scores) {
+void FixedRefinementComparator::pushRefinement(const Refinement& refinement, const IStatisticsUpdateCandidate& scores) {
     auto numRefinements = order_.size();
 
     if (numRefinements < maxRefinements_) {

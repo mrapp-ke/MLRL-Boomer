@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/statistics/statistics_update_candidate.hpp"
+#include "mlrl/common/statistics/statistics_update_candidate_common.hpp"
 
 namespace seco {
 
@@ -14,7 +14,7 @@ namespace seco {
      * @tparam State The type of the state of the covering process
      */
     template<util::derived_from_template_class<IStatisticsState> State>
-    class CoverageStatisticsUpdateCandidate final : public StatisticsUpdateCandidate {
+    class CoverageStatisticsUpdateCandidate final : public AbstractStatisticsUpdateCandidate {
         private:
 
             State& state_;
@@ -41,7 +41,7 @@ namespace seco {
              * @param scoreVector   A reference to an object of type `IScoreVector` that stores the calculated scores
              */
             CoverageStatisticsUpdateCandidate(State& state, const IScoreVector& scoreVector)
-                : StatisticsUpdateCandidate(scoreVector), state_(state) {}
+                : AbstractStatisticsUpdateCandidate(scoreVector), state_(state) {}
     };
 
 }

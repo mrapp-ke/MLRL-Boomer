@@ -135,7 +135,7 @@ namespace seco {
             /**
              * @see `IStatisticsSubset::calculateScores`
              */
-            std::unique_ptr<StatisticsUpdateCandidate> calculateScores() override final {
+            std::unique_ptr<IStatisticsUpdateCandidate> calculateScores() override final {
                 const IScoreVector& scoreVector = ruleEvaluationPtr_->calculateScores(
                   state_.majorityLabelVectorPtr->cbegin(), state_.majorityLabelVectorPtr->cend(), totalSumVector_,
                   sumVector_);
@@ -349,7 +349,7 @@ namespace seco {
                     /**
                      * @see `IResettableStatisticsSubset::calculateScoresAccumulated`
                      */
-                    std::unique_ptr<StatisticsUpdateCandidate> calculateScoresAccumulated() override {
+                    std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresAccumulated() override {
                         const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
                           this->state_.majorityLabelVectorPtr->cbegin(), this->state_.majorityLabelVectorPtr->cend(),
                           this->totalSumVector_, *accumulatedSumVectorPtr_);
@@ -359,7 +359,7 @@ namespace seco {
                     /**
                      * @see `IResettableStatisticsSubset::calculateScoresUncovered`
                      */
-                    std::unique_ptr<StatisticsUpdateCandidate> calculateScoresUncovered() override {
+                    std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncovered() override {
                         tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(),
                                               this->outputIndices_, this->sumVector_.cbegin(), this->sumVector_.cend());
                         const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
@@ -371,7 +371,7 @@ namespace seco {
                     /**
                      * @see `IResettableStatisticsSubset::calculateScoresUncoveredAccumulated`
                      */
-                    std::unique_ptr<StatisticsUpdateCandidate> calculateScoresUncoveredAccumulated() override {
+                    std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncoveredAccumulated() override {
                         tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(),
                                               this->outputIndices_, accumulatedSumVectorPtr_->cbegin(),
                                               accumulatedSumVectorPtr_->cend());
