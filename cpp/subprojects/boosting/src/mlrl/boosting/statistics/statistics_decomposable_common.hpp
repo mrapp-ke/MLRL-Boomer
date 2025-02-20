@@ -27,8 +27,9 @@ namespace boosting {
     template<typename OutputMatrix, typename StatisticMatrix, typename ScoreMatrix, typename Loss,
              typename EvaluationMeasure, typename RuleEvaluationFactory>
     class AbstractDecomposableStatistics
-        : public AbstractStatistics<DecomposableStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss>,
-                                    EvaluationMeasure, RuleEvaluationFactory>,
+        : public AbstractStatistics<
+            DecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss>, EvaluationMeasure,
+            RuleEvaluationFactory>,
           virtual public IDecomposableStatistics<RuleEvaluationFactory> {
         public:
 
@@ -54,9 +55,11 @@ namespace boosting {
                                            const OutputMatrix& outputMatrix,
                                            std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                                            std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
-                : AbstractStatistics<DecomposableStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss>,
-                                     EvaluationMeasure, RuleEvaluationFactory>(
-                    std::make_unique<DecomposableStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss>>(
+                : AbstractStatistics<
+                    DecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss>,
+                    EvaluationMeasure, RuleEvaluationFactory>(
+                    std::make_unique<
+                      DecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss>>(
                       outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr), std::move(lossPtr)),
                     std::move(evaluationMeasurePtr), ruleEvaluationFactory) {}
 

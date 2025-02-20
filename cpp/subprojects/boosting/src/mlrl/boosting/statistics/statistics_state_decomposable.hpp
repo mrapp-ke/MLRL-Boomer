@@ -17,7 +17,7 @@ namespace boosting {
      * @tparam Loss             The type of the loss function that is used to calculate gradients and Hessians
      */
     template<typename OutputMatrix, typename StatisticMatrix, typename ScoreMatrix, typename Loss>
-    class DecomposableStatisticsState final
+    class DecomposableBoostingStatisticsState final
         : public AbstractBoostingStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss> {
         protected:
 
@@ -47,10 +47,10 @@ namespace boosting {
              * @param lossFunctionPtr       An unique pointer to an object of template type `Loss` that implements the
              *                              loss function that should be used for calculating gradients and Hessians
              */
-            DecomposableStatisticsState(const OutputMatrix& outputMatrix,
-                                        std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
-                                        std::unique_ptr<ScoreMatrix> scoreMatrixPtr,
-                                        std::unique_ptr<Loss> lossFunctionPtr)
+            DecomposableBoostingStatisticsState(const OutputMatrix& outputMatrix,
+                                                std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
+                                                std::unique_ptr<ScoreMatrix> scoreMatrixPtr,
+                                                std::unique_ptr<Loss> lossFunctionPtr)
                 : AbstractBoostingStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss>(
                     outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr),
                     std::move(lossFunctionPtr)) {}
