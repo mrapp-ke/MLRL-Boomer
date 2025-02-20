@@ -58,8 +58,8 @@ namespace boosting {
 
             typedef typename Loss::statistic_type statistic_type;
 
-            typedef DecomposableStatisticsState<OutputMatrix, SparseDecomposableStatisticMatrix<statistic_type>,
-                                                NumericSparseSetMatrix<statistic_type>, Loss>
+            typedef DecomposableBoostingStatisticsState<OutputMatrix, SparseDecomposableStatisticMatrix<statistic_type>,
+                                                        NumericSparseSetMatrix<statistic_type>, Loss>
               StatisticsState;
 
             template<typename WeightVector, typename IndexVector, typename WeightType>
