@@ -70,8 +70,9 @@ namespace boosting {
 
             typedef typename Loss::statistic_type statistic_type;
 
-            typedef NonDecomposableStatisticsState<OutputMatrix, DenseNonDecomposableStatisticMatrix<statistic_type>,
-                                                   NumericCContiguousMatrix<statistic_type>, Loss>
+            typedef NonDecomposableBoostingStatisticsState<OutputMatrix,
+                                                           DenseNonDecomposableStatisticMatrix<statistic_type>,
+                                                           NumericCContiguousMatrix<statistic_type>, Loss>
               StatisticsState;
 
             template<typename WeightVector, typename IndexVector>
