@@ -23,7 +23,7 @@ namespace boosting {
      * @tparam Loss             The type of the loss function that is used to calculate gradients and Hessians
      */
     template<typename OutputMatrix, typename StatisticMatrix, typename ScoreMatrix, typename Loss>
-    class AbstractStatisticsState : public IStatisticsState<typename ScoreMatrix::value_type> {
+    class AbstractBoostingStatisticsState : public IStatisticsState<typename ScoreMatrix::value_type> {
         public:
 
             /**
@@ -89,13 +89,14 @@ namespace boosting {
              * @param lossFunctionPtr       An unique pointer to the an object of template type `Loss` that should be
              *                              used for calculating gradients and Hessians
              */
-            AbstractStatisticsState(const OutputMatrix& outputMatrix,
-                                    std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
-                                    std::unique_ptr<ScoreMatrix> scoreMatrixPtr, std::unique_ptr<Loss> lossFunctionPtr)
+            AbstractBoostingStatisticsState(const OutputMatrix& outputMatrix,
+                                            std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
+                                            std::unique_ptr<ScoreMatrix> scoreMatrixPtr,
+                                            std::unique_ptr<Loss> lossFunctionPtr)
                 : outputMatrix(outputMatrix), statisticMatrixPtr(std::move(statisticMatrixPtr)),
                   scoreMatrixPtr(std::move(scoreMatrixPtr)), lossFunctionPtr(std::move(lossFunctionPtr)) {}
 
-            virtual ~AbstractStatisticsState() {}
+            virtual ~AbstractBoostingStatisticsState() {}
 
             void update(uint32 statisticIndex, typename View<score_type>::const_iterator scoresBegin,
                         typename View<score_type>::const_iterator scoresEnd,
