@@ -5,7 +5,6 @@
 
 #include "mlrl/common/data/vector_sparse_array_binary.hpp"
 #include "mlrl/seco/statistics/statistics.hpp"
-#include "statistics_update_candidate.hpp"
 
 #include <memory>
 #include <utility>
@@ -139,7 +138,7 @@ namespace seco {
                 const IScoreVector& scoreVector = ruleEvaluationPtr_->calculateScores(
                   state_.majorityLabelVectorPtr->cbegin(), state_.majorityLabelVectorPtr->cend(), totalSumVector_,
                   sumVector_);
-                return std::make_unique<CoverageStatisticsUpdateCandidate<State>>(state_, scoreVector);
+                return state_.createUpdateCandidate(scoreVector);
             }
     };
 
@@ -353,7 +352,7 @@ namespace seco {
                         const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
                           this->state_.majorityLabelVectorPtr->cbegin(), this->state_.majorityLabelVectorPtr->cend(),
                           this->totalSumVector_, *accumulatedSumVectorPtr_);
-                        return std::make_unique<CoverageStatisticsUpdateCandidate<State>>(this->state_, scoreVector);
+                        return this->state_.createUpdateCandidate(scoreVector);
                     }
 
                     /**
@@ -365,7 +364,7 @@ namespace seco {
                         const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
                           this->state_.majorityLabelVectorPtr->cbegin(), this->state_.majorityLabelVectorPtr->cend(),
                           this->totalSumVector_, tmpVector_);
-                        return std::make_unique<CoverageStatisticsUpdateCandidate<State>>(this->state_, scoreVector);
+                        return this->state_.createUpdateCandidate(scoreVector);
                     }
 
                     /**
@@ -378,7 +377,7 @@ namespace seco {
                         const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
                           this->state_.majorityLabelVectorPtr->cbegin(), this->state_.majorityLabelVectorPtr->cend(),
                           this->totalSumVector_, tmpVector_);
-                        return std::make_unique<CoverageStatisticsUpdateCandidate<State>>(this->state_, scoreVector);
+                        return this->state_.createUpdateCandidate(scoreVector);
                     }
             };
 
