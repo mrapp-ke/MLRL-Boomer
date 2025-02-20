@@ -22,7 +22,7 @@ namespace seco {
      *                          have been covered
      */
     template<typename LabelMatrix, typename CoverageMatrix>
-    class StatisticsState final : public IStatisticsState<float32> {
+    class CoverageStatisticsState final : public IStatisticsState<float32> {
         public:
 
             /**
@@ -51,8 +51,8 @@ namespace seco {
              * @param majorityLabelVectorPtr    An unique pointer to an object of type `BinarySparseArrayVector` that
              *                                  stores the predictions of the default rule
              */
-            StatisticsState(const LabelMatrix& labelMatrix, std::unique_ptr<CoverageMatrix> coverageMatrixPtr,
-                            std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr)
+            CoverageStatisticsState(const LabelMatrix& labelMatrix, std::unique_ptr<CoverageMatrix> coverageMatrixPtr,
+                                    std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr)
                 : labelMatrix(labelMatrix), coverageMatrixPtr(std::move(coverageMatrixPtr)),
                   majorityLabelVectorPtr(std::move(majorityLabelVectorPtr)) {}
 
