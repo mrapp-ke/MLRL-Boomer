@@ -51,7 +51,7 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
    * - **C++ compiler**
      - For the compilation of the project's source code, the MSVC compiler must be used. It is included in [Visual Studio](https://visualstudio.microsoft.com/downloads/).
    * - **GoogleTest**
-     - The [GoogleTest](https://github.com/google/googletest) framework must optionally be available on your system to compile the project with {ref}`testing support <testing-support>` enabled. It should already be included in recent versions of [Visual Studio](https://learn.microsoft.com/en-us/visualstudio/test/how-to-use-google-test-for-cpp?view=vs-2022).
+     - The [GoogleTest](https://github.com/google/googletest) framework must optionally be available on your system to compile the project with {ref}`testing support <testing-support>` enabled. It should already be included in recent versions of [Visual Studio](https://learn.microsoft.com/en-us/visualstudio/test/how-to-use-google-test-for-cpp).
    * - **OpenMP**
      - The [Build Tools for Visual Studio](https://visualstudio.microsoft.com/downloads/) also include the [OpenMP](https://en.wikipedia.org/wiki/OpenMP) library, which is utilized by the project for {ref}`multi-threading support <multi-threading-support>`.
    * - **OpenCL**
