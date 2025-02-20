@@ -20,9 +20,9 @@ namespace boosting {
      * @tparam OutputMatrix     The type of the matrix that provides access to the ground truth of the training examples
      * @tparam StatisticMatrix  The type of the matrix that provides access to the gradients and Hessians
      * @tparam ScoreMatrix      The type of the matrix that is used to store predicted scores
-     * @tparam LossFunction     The type of the loss function that is used to calculate gradients and Hessians
+     * @tparam Loss             The type of the loss function that is used to calculate gradients and Hessians
      */
-    template<typename OutputMatrix, typename StatisticMatrix, typename ScoreMatrix, typename LossFunction>
+    template<typename OutputMatrix, typename StatisticMatrix, typename ScoreMatrix, typename Loss>
     class AbstractStatisticsState : public IStatisticsState<typename ScoreMatrix::value_type> {
         public:
 
@@ -48,10 +48,10 @@ namespace boosting {
             std::unique_ptr<ScoreMatrix> scoreMatrixPtr;
 
             /**
-             * An unique pointer to an object of template type `LossFunction` that is used for calculating gradients and
+             * An unique pointer to an object of template type `Loss` that is used for calculating gradients and
              * Hessians.
              */
-            std::unique_ptr<LossFunction> lossFunctionPtr;
+            std::unique_ptr<Loss> lossFunctionPtr;
 
         protected:
 
@@ -86,13 +86,12 @@ namespace boosting {
              *                              stores the gradients and Hessians
              * @param scoreMatrixPtr        An unique pointer to an object of template type `ScoreMatrix` that stores
              *                              the currently predicted scores
-             * @param lossFunctionPtr       An unique pointer to the an object of template type `LossFunction` that
-             *                              should be used for calculating gradients and Hessians
+             * @param lossFunctionPtr       An unique pointer to the an object of template type `Loss` that should be
+             *                              used for calculating gradients and Hessians
              */
             AbstractStatisticsState(const OutputMatrix& outputMatrix,
                                     std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
-                                    std::unique_ptr<ScoreMatrix> scoreMatrixPtr,
-                                    std::unique_ptr<LossFunction> lossFunctionPtr)
+                                    std::unique_ptr<ScoreMatrix> scoreMatrixPtr, std::unique_ptr<Loss> lossFunctionPtr)
                 : outputMatrix(outputMatrix), statisticMatrixPtr(std::move(statisticMatrixPtr)),
                   scoreMatrixPtr(std::move(scoreMatrixPtr)), lossFunctionPtr(std::move(lossFunctionPtr)) {}
 
