@@ -502,40 +502,6 @@ namespace seco {
      */
     template<typename State, typename RuleEvaluationFactory>
     class AbstractStatistics : virtual public ICoverageStatistics {
-        private:
-
-            /**
-             * Allows updating statistics based on the predictions of a rule.
-             *
-             * @tparam Prediction The type of the predictions
-             */
-            template<typename Prediction>
-            class Update final : public IStatisticsUpdate {
-                private:
-
-                    State& state_;
-
-                    const Prediction& prediction_;
-
-                public:
-
-                    /**
-                     * @param statistics    A reference to an object of template type `State` that should be updated
-                     * @param prediction    The predictions of the rule
-                     */
-                    Update(State& state, const Prediction& prediction) : state_(state), prediction_(prediction) {}
-
-                    void applyPrediction(uint32 statisticIndex) override {
-                        state_.update(statisticIndex, prediction_.values_cbegin(), prediction_.values_cend(),
-                                      prediction_.indices_cbegin(), prediction_.indices_cend());
-                    }
-
-                    void revertPrediction(uint32 statisticIndex) override {
-                        state_.revert(statisticIndex, prediction_.values_cbegin(), prediction_.values_cend(),
-                                      prediction_.indices_cbegin(), prediction_.indices_cend());
-                    }
-            };
-
         protected:
 
             /**
