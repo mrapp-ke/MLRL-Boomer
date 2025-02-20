@@ -12,9 +12,10 @@ from typing import Any, Optional
 import numpy as np
 
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator
-from sklearn.utils import check_array
+from sklearn.utils.validation import check_array, validate_data
 
 from mlrl.common.arrays import SparseFormat, enforce_2d, enforce_dense, is_sparse, is_sparse_and_memory_efficient
+from mlrl.common.cython.example_weights import EqualExampleWeights, ExampleWeights, RealValuedExampleWeights
 from mlrl.common.cython.feature_info import EqualFeatureInfo, FeatureInfo, MixedFeatureInfo
 from mlrl.common.cython.feature_matrix import CContiguousFeatureMatrix, ColumnWiseFeatureMatrix, CscFeatureMatrix, \
     CsrFeatureMatrix, FortranContiguousFeatureMatrix, RowWiseFeatureMatrix
@@ -30,10 +31,6 @@ from mlrl.common.data_types import Float32, Uint8, Uint32
 from mlrl.common.format import format_enum_values
 from mlrl.common.mixins import ClassifierMixin, IncrementalClassifierMixin, IncrementalPredictor, \
     IncrementalRegressorMixin, NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, RegressorMixin
-
-KWARG_SPARSE_FEATURE_VALUE = 'sparse_feature_value'
-
-KWARG_MAX_RULES = 'max_rules'
 
 
 class SparsePolicy(Enum):
@@ -111,6 +108,12 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
     A scikit-learn implementation of a rule learning algorithm.
     """
 
+    KWARG_EXAMPLE_WEIGHTS = 'sample_weights'
+
+    KWARG_SPARSE_FEATURE_VALUE = 'sparse_feature_value'
+
+    KWARG_MAX_RULES = 'max_rules'
+
     class NativeIncrementalPredictor(IncrementalPredictor):
         """
         Allows to obtain predictions from a `RuleLearner` incrementally by using its native support of this
@@ -179,10 +182,8 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
             self.num_considered_rules = min(self.num_total_rules, self.num_considered_rules + step_size)
             return self.predictor.predict(self.num_considered_rules)
 
-    def __init__(self, random_state: Optional[int], feature_format: Optional[str], output_format: Optional[str],
-                 prediction_format: Optional[str]):
+    def __init__(self, feature_format: Optional[str], output_format: Optional[str], prediction_format: Optional[str]):
         """
-        :param random_state:        The seed to be used by RNGs. Must be at least 1
         :param feature_format:      The format to be used for the representation of the feature matrix. Must be
                                     `sparse`, `dense` or `auto`
         :param output_format:       The format to be used for the representation of the output matrix. Must be `sparse`,
@@ -191,7 +192,6 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
                                     `dense` or `auto`
         """
         super().__init__()
-        self.random_state = random_state
         self.feature_format = feature_format
         self.output_format = output_format
         self.prediction_format = prediction_format
@@ -199,15 +199,22 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
     # pylint: disable=attribute-defined-outside-init
     def _fit(self, x, y, **kwargs):
         """
-        :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
-                                       only have an effect if `x` is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray`
+        :keyword sparse_feature_value:      The value that should be used for sparse elements in the feature matrix.
+                                            Does only have an effect if `x` is a `scipy.sparse.spmatrix` or
+                                            `scipy.sparse.sparray`
+        :keyword nominal_feature_indices:   A `numpy.ndarray`, shape `(num_nominal_features)`, that stores the indices
+                                            of all nominal features
+        :keyword ordinal_feature_indices:   A `numpy.ndarray`, shape `(num_ordinal_features)`, that stores the indices
+                                            of all ordinal features
+        :keyword sample_weights:            A `numpy.ndarray`, shape `(num_examples)`, that stores the weights of
+                                            individual training examples
         """
         feature_matrix = self._create_column_wise_feature_matrix(x, **kwargs)
         output_matrix = self.__create_row_wise_output_matrix(y)
-        feature_info = self._create_feature_info(feature_matrix.get_num_features())
+        feature_info = self._create_feature_info(feature_matrix.get_num_features(), **kwargs)
+        example_weights = self._create_example_weights(feature_matrix.get_num_examples(), **kwargs)
         learner = self._create_learner()
-        random_state = int(self.random_state) if self.random_state else 1
-        training_result = learner.fit(feature_info, feature_matrix, output_matrix, random_state)
+        training_result = learner.fit(example_weights, feature_info, feature_matrix, output_matrix)
         self.num_outputs_ = training_result.num_outputs
         self.output_space_info_ = training_result.output_space_info
         self.marginal_probability_calibration_model_ = training_result.marginal_probability_calibration_model
@@ -240,7 +247,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
 
         if learner.can_predict_scores(feature_matrix, num_outputs):
             log.debug('A dense matrix is used to store the predicted scores')
-            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
+            max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
             return self._create_score_predictor(learner, self.model_, self.output_space_info_, num_outputs,
                                                 feature_matrix).predict(max_rules)
 
@@ -263,7 +270,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
             model = self.model_
             predictor = self._create_score_predictor(learner, model, self.output_space_info_, num_outputs,
                                                      feature_matrix)
-            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
+            max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():
                 return ClassificationRuleLearner.NativeIncrementalPredictor(
@@ -272,17 +279,41 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
 
         return super()._predict_scores_incrementally(x, **kwargs)
 
-    def _create_feature_info(self, num_features: int) -> FeatureInfo:
+    @staticmethod
+    def __create_feature_indices(input_name: str, **kwargs) -> np.ndarray:
+        """
+        Creates and returns an array that stores features indices.
+
+        :param input_name:  The name of the keyword argument, the indices should be obtained from
+        :return:            A `np.ndarray`, shape `(feature_indices)`, that stores the feature indices
+        """
+        feature_indices = kwargs.get(input_name)
+
+        if feature_indices:
+            feature_indices = enforce_dense(feature_indices, order='C', dtype=Uint32)
+            return check_array(feature_indices,
+                               ensure_2d=False,
+                               dtype=Uint32,
+                               ensure_non_negative=True,
+                               input_name=input_name)
+
+        return np.empty(shape=0, dtype=Uint32)
+
+    def _create_feature_info(self, num_features: int, **kwargs) -> FeatureInfo:
         """
         Creates and returns a `FeatureInfo` that provides information about the types of individual features.
 
-        :param num_features:    The total number of available features
-        :return:                The `FeatureInfo` that has been created
+        :param num_features:                The total number of available features
+        :keyword nominal_feature_indices:   A `numpy.ndarray`, shape `(num_nominal_features)`, that stores the indices
+                                            of all nominal features
+        :keyword ordinal_feature_indices:   A `numpy.ndarray`, shape `(num_ordinal_features)`, that stores the indices
+                                            of all ordinal features
+        :return:                            The `FeatureInfo` that has been created
         """
-        ordinal_feature_indices = self.ordinal_feature_indices
-        nominal_feature_indices = self.nominal_feature_indices
-        num_ordinal_features = 0 if ordinal_feature_indices is None else len(ordinal_feature_indices)
-        num_nominal_features = 0 if nominal_feature_indices is None else len(nominal_feature_indices)
+        ordinal_feature_indices = self.__create_feature_indices(self.KWARG_ORDINAL_FEATURE_INDICES, **kwargs)
+        nominal_feature_indices = self.__create_feature_indices(self.KWARG_NOMINAL_FEATURE_INDICES, **kwargs)
+        num_ordinal_features = ordinal_feature_indices.shape[0]
+        num_nominal_features = nominal_feature_indices.shape[0]
 
         if num_ordinal_features == 0 and num_nominal_features == 0:
             return EqualFeatureInfo.create_numerical()
@@ -292,6 +323,27 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
             return EqualFeatureInfo.create_nominal()
         return MixedFeatureInfo(num_features, ordinal_feature_indices, nominal_feature_indices)
 
+    def _create_example_weights(self, num_examples: int, **kwargs) -> ExampleWeights:
+        """
+        Creates and returns the `ExampleWeights` that provide access to the weights of individual training examples.
+
+        :param num_examples:    The total number of available training examples
+        :return:                A `np.ndarray`, shape `(num_examples)`, that provides access to the weights of
+                                individual training examples
+        """
+        example_weights = kwargs.get(self.KWARG_EXAMPLE_WEIGHTS)
+
+        if example_weights:
+            example_weights = enforce_dense(example_weights, order='C', dtype=Float32)
+            example_weights = check_array(example_weights,
+                                          ensure_2d=False,
+                                          dtype=Float32,
+                                          ensure_non_negative=True,
+                                          input_name=self.KWARG_EXAMPLE_WEIGHTS)
+            return RealValuedExampleWeights(example_weights)
+
+        return EqualExampleWeights(num_examples)
+
     def _create_column_wise_feature_matrix(self, x, **kwargs) -> ColumnWiseFeatureMatrix:
         """
         Creates and returns a matrix that provides column-wise access to the features of the training examples.
@@ -300,15 +352,13 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
                     `(num_examples, num_features)`, that stores the feature values of the training examples
         :return:    The matrix that has been created
         """
-        sparse_feature_value = float(kwargs.get(KWARG_SPARSE_FEATURE_VALUE, 0.0))
+        sparse_feature_value = float(kwargs.get(self.KWARG_SPARSE_FEATURE_VALUE, 0.0))
         x_sparse_format = SparseFormat.CSC
         x_sparse_policy = SparsePolicy.parse('feature_format', self.feature_format)
         x_enforce_sparse = x_sparse_policy.should_enforce_sparse(x, sparse_format=x_sparse_format, dtype=Float32)
-        x = self._validate_data(x if x_enforce_sparse else enforce_2d(
-            enforce_dense(x, order='F', dtype=Float32, sparse_value=sparse_feature_value)),
-                                accept_sparse=x_sparse_format.value,
-                                dtype=Float32,
-                                force_all_finite='allow-nan')
+        x = x if x_enforce_sparse else enforce_2d(
+            enforce_dense(x, order='F', dtype=Float32, sparse_value=sparse_feature_value))
+        x = validate_data(self, X=x, accept_sparse=x_sparse_format.value, dtype=Float32, ensure_all_finite='allow-nan')
 
         if is_sparse(x):
             log.debug(
@@ -333,16 +383,18 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
                                         only have an effect if `x` is a `scipy.sparse` matrix
         :return:                        A `RowWiseFeatureMatrix` that has been created
         """
-        sparse_feature_value = float(kwargs.get(KWARG_SPARSE_FEATURE_VALUE, 0.0))
+        sparse_feature_value = float(kwargs.get(self.KWARG_SPARSE_FEATURE_VALUE, 0.0))
         sparse_format = SparseFormat.CSR
         sparse_policy = SparsePolicy.parse('feature_format', self.feature_format)
         enforce_sparse = sparse_policy.should_enforce_sparse(x, sparse_format=sparse_format, dtype=Float32)
-        x = self._validate_data(x if enforce_sparse else enforce_2d(
-            enforce_dense(x, order='C', dtype=Float32, sparse_value=sparse_feature_value)),
-                                reset=False,
-                                accept_sparse=sparse_format.value,
-                                dtype=Float32,
-                                force_all_finite='allow-nan')
+        x = x if enforce_sparse else enforce_2d(
+            enforce_dense(x, order='C', dtype=Float32, sparse_value=sparse_feature_value))
+        x = validate_data(self,
+                          X=x,
+                          reset=False,
+                          accept_sparse=sparse_format.value,
+                          dtype=Float32,
+                          ensure_all_finite='allow-nan')
 
         if is_sparse(x):
             log.debug('A sparse matrix with sparse value %s is used to store the feature values of the query examples',
@@ -360,7 +412,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         Must be implemented by subclasses in order to create a matrix that provides row-wise access to the ground truth
         of training examples.
 
-        :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+        :param y:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                     `(num_examples, num_outputs)`, that stores the ground truth of the training examples
         :return:    The matrix that has been created
         """
@@ -439,7 +491,8 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
     def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool, **_) -> Any:
         y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=Uint8)),
                         accept_sparse=sparse_format.value,
-                        dtype=Uint8)
+                        dtype=Uint8,
+                        ensure_non_negative=True)
 
         if is_sparse(y):
             log.debug('A sparse matrix is used to store the labels of the training examples')
@@ -484,7 +537,7 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
 
         if learner.can_predict_probabilities(feature_matrix, num_outputs):
             log.debug('A dense matrix is used to store the predicted probability estimates')
-            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
+            max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
             return convert_into_sklearn_compatible_probabilities(
                 self._create_probability_predictor(learner, self.model_, self.output_space_info_,
                                                    self.marginal_probability_calibration_model_,
@@ -512,7 +565,7 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
                                                            self.marginal_probability_calibration_model_,
                                                            self.joint_probability_calibration_model_, num_outputs,
                                                            feature_matrix)
-            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
+            max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():
                 return ClassificationRuleLearner.NativeIncrementalProbabilityPredictor(
@@ -563,7 +616,7 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
         if learner.can_predict_binary(feature_matrix, num_outputs):
             sparse_predictions = self.sparse_predictions_
             log.debug('A %s matrix is used to store the predicted labels', 'sparse' if sparse_predictions else 'dense')
-            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
+            max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
             return self._create_binary_predictor(learner, self.model_, self.output_space_info_,
                                                  self.marginal_probability_calibration_model_,
                                                  self.joint_probability_calibration_model_, num_outputs, feature_matrix,
@@ -591,7 +644,7 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
                                                       self.marginal_probability_calibration_model_,
                                                       self.joint_probability_calibration_model_, num_outputs,
                                                       feature_matrix, sparse_predictions)
-            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
+            max_rules = int(kwargs.get(self.KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():
                 return ClassificationRuleLearner.NativeIncrementalPredictor(

@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/sampling/random.hpp"
+#include "mlrl/common/random/rng.hpp"
 
 static inline bool tiebreak(uint32 numDesiredSamples, uint32 numDesiredOutOfSamples, RNG& rng) {
     if (numDesiredSamples > numDesiredOutOfSamples) {
@@ -11,6 +11,6 @@ static inline bool tiebreak(uint32 numDesiredSamples, uint32 numDesiredOutOfSamp
     } else if (numDesiredSamples < numDesiredOutOfSamples) {
         return false;
     } else {
-        return rng.random(0, 2) != 0;
+        return rng.randomBool();
     }
 }

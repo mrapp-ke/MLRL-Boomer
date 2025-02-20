@@ -65,21 +65,20 @@ class SingleRefinementComparator final {
          * Returns whether the quality of a rule's predictions is considered as an improvement over the refinements that
          * have been provided to this comparator so far.
          *
-         * @param scoreVector   A reference to an object of type `IScoreVector` that stores the quality of the
-         *                      predictions
-         * @return              True, if the quality of the given predictions is considered as an improvement, false
-         *                      otherwise
+         * @param quality   A reference to an object of type `Quality` that stores the quality of the predictions
+         * @return          True, if the given quality is considered as an improvement, false otherwise
          */
-        bool isImprovement(const IScoreVector& scoreVector) const;
+        bool isImprovement(const Quality& quality) const;
 
         /**
          * Keeps track of a given refinement of a rule that is considered as an improvement over the refinements that
          * have been provided to this comparator so far.
          *
          * @param refinement    A reference to an object of type `Refinement` that represents the refinement of the rule
-         * @param scoreVector   A reference to an object of type `IScoreVector` that stores the predictions of the rule
+         * @param scores        A reference to an object of type `StatisticsUpdateCandidate` that stores the predictions
+         *                      of the rule
          */
-        void pushRefinement(const Refinement& refinement, const IScoreVector& scoreVector);
+        void pushRefinement(const Refinement& refinement, const StatisticsUpdateCandidate& scores);
 
         /**
          * Keeps track of the best refinement that is stored by a given `SingleRefinementComparator` if it is considered
