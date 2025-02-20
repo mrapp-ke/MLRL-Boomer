@@ -6,6 +6,9 @@ on:
       - opened
       - reopened
       - synchronize
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   test_changelog:
     name: Validate changelog
