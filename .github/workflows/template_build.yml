@@ -34,7 +34,7 @@ jobs:
       run_cpp_tests: ${{ inputs.run_cpp_tests == true }}
       run_python_tests: ${{ inputs.run_python_tests == true }}
   macos_build:
-    if: ${{ inputs.maxos == true && inputs.compile == true }}
+    if: ${{ inputs.macos == true && inputs.compile == true }}
     name: Test MacOS build (${{ inputs.subproject }})
     uses: ./.github/workflows/template_build_macos.yml
     with:
