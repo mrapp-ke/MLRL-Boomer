@@ -20,7 +20,7 @@ static inline void searchForBinaryRefinementInternally(const BinaryFeatureVector
     // examples...
     if (numCovered >= minCoverage) {
         // Determine the best prediction for the examples corresponding to the minority value...
-        std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScores();
+        std::unique_ptr<IStatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScores();
 
         // Check if the quality of the prediction is better than the quality of the current rule...
         if (comparator.isImprovement(*updateCandidatePtr)) {
@@ -40,7 +40,7 @@ static inline void searchForBinaryRefinementInternally(const BinaryFeatureVector
 
     if (numUncovered >= minCoverage) {
         // Determine the best prediction for the examples corresponding to the majority value...
-        std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScoresUncovered();
+        std::unique_ptr<IStatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScoresUncovered();
 
         // Check if the quality of the prediction is better than the quality of the current rule...
         if (comparator.isImprovement(*updateCandidatePtr)) {

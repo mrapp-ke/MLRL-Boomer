@@ -52,7 +52,7 @@ static inline void processPartialScores(
 
 ScoreProcessor::ScoreProcessor(std::unique_ptr<IEvaluatedPrediction>& headPtr) : headPtr_(headPtr) {}
 
-void ScoreProcessor::processScores(const StatisticsUpdateCandidate& scores) {
+void ScoreProcessor::processScores(const IStatisticsUpdateCandidate& scores) {
     auto completeDense32BitVisitor = [this](const DenseScoreVector<float32, CompleteIndexVector>& scoreVector,
                                             IStatisticsUpdateFactory<float32>& statisticsUpdateFactory) {
         processCompleteScores(headPtr_, scoreVector, statisticsUpdateFactory);

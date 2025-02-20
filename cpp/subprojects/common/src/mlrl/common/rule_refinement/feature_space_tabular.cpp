@@ -40,7 +40,7 @@ static inline void recalculatePredictionInternally(IndexIterator indexIterator, 
         }
     }
 
-    std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubsetPtr->calculateScores();
+    std::unique_ptr<IStatisticsUpdateCandidate> updateCandidatePtr = statisticsSubsetPtr->calculateScores();
     ScoreProcessor scoreProcessor(predictionPtr);
     scoreProcessor.processScores(*updateCandidatePtr);
 }
