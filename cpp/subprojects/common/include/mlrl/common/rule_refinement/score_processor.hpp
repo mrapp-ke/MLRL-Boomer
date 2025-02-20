@@ -26,11 +26,11 @@ class ScoreProcessor {
         explicit ScoreProcessor(std::unique_ptr<IEvaluatedPrediction>& headPtr);
 
         /**
-         * Processes the scores that are stored by `StatisticsUpdateCandidate` in order to convert them into the head of
-         * a rule.
+         * Processes the scores that are stored by `IStatisticsUpdateCandidate` in order to convert them into the head
+         * of a rule.
          *
-         * @param scores A reference to an object of type `StatisticsUpdateCandidate` that stores the scores to be
+         * @param scores A reference to an object of type `IStatisticsUpdateCandidate` that stores the scores to be
          *               processed
          */
-        void processScores(const StatisticsUpdateCandidate& scores);
+        void processScores(const IStatisticsUpdateCandidate& scores);
 };
