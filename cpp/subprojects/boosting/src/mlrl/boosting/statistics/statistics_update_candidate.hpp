@@ -8,7 +8,8 @@
 namespace boosting {
 
     /**
-     * Stores scores that have been calculated based on gradients and Hessians and allow to update them accordingly.
+     * Stores scores that have been calculated based on gradients and Hessians and allow to update these gradients and
+     * Hessians accordingly.
      *
      * @tparam State The type of the state of the boosting process
      */
