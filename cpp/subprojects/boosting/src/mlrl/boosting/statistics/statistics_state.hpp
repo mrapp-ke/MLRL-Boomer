@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/statistics/statistics_state.hpp"
+#include "mlrl/common/statistics/statistics_update_candidate_common.hpp"
 
 #include <memory>
 
@@ -24,6 +24,120 @@ namespace boosting {
      */
     template<typename OutputMatrix, typename StatisticMatrix, typename ScoreMatrix, typename Loss>
     class AbstractBoostingStatisticsState : public IStatisticsState<typename ScoreMatrix::value_type> {
+        private:
+
+            /**
+             * Stores scores that have been calculated based on gradients and Hessians, represented by 32-bit floating
+             * point values, and allows to update these gradients and Hessians accordingly.
+             */
+            class Float32UpdateCandidate final : public AbstractStatisticsUpdateCandidate {
+                private:
+
+                    IStatisticsState<float32>& state_;
+
+                protected:
+
+                    void invokeVisitor(
+                      DenseVisitor<float32, CompleteIndexVector> visitor,
+                      const DenseScoreVector<float32, CompleteIndexVector>& scoreVector) const override {
+                        StatisticsUpdateFactory<IStatisticsState<float32>> statisticsUpdateFactory(state_);
+                        visitor(scoreVector, statisticsUpdateFactory);
+                    }
+
+                    void invokeVisitor(
+                      DenseVisitor<float32, PartialIndexVector> visitor,
+                      const DenseScoreVector<float32, PartialIndexVector>& scoreVector) const override {
+                        StatisticsUpdateFactory<IStatisticsState<float32>> statisticsUpdateFactory(state_);
+                        visitor(scoreVector, statisticsUpdateFactory);
+                    }
+
+                    void invokeVisitor(
+                      DenseBinnedVisitor<float32, CompleteIndexVector> visitor,
+                      const DenseBinnedScoreVector<float32, CompleteIndexVector>& scoreVector) const override {
+                        StatisticsUpdateFactory<IStatisticsState<float32>> statisticsUpdateFactory(state_);
+                        visitor(scoreVector, statisticsUpdateFactory);
+                    }
+
+                    void invokeVisitor(
+                      DenseBinnedVisitor<float32, PartialIndexVector> visitor,
+                      const DenseBinnedScoreVector<float32, PartialIndexVector>& scoreVector) const override {
+                        StatisticsUpdateFactory<IStatisticsState<float32>> statisticsUpdateFactory(state_);
+                        visitor(scoreVector, statisticsUpdateFactory);
+                    }
+
+                public:
+
+                    /**
+                     * @param state         A reference to an object of template type `IStatisticsState<float32>` that
+                     *                      represents the state of the boosting process
+                     * @param scoreVector   A reference to an object of type `IScoreVector` that stores the calculated
+                     *                      scores
+                     */
+                    Float32UpdateCandidate(IStatisticsState<float32>& state, const IScoreVector& scoreVector)
+                        : AbstractStatisticsUpdateCandidate(scoreVector), state_(state) {}
+            };
+
+            /**
+             * Stores scores that have been calculated based on gradients and Hessians, represented by 64-bit floating
+             * point values, and allows to update these gradients and Hessians accordingly.
+             */
+            class Float64UpdateCandidate final : public AbstractStatisticsUpdateCandidate {
+                private:
+
+                    IStatisticsState<float64>& state_;
+
+                protected:
+
+                    void invokeVisitor(
+                      DenseVisitor<float64, CompleteIndexVector> visitor,
+                      const DenseScoreVector<float64, CompleteIndexVector>& scoreVector) const override {
+                        StatisticsUpdateFactory<IStatisticsState<float64>> statisticsUpdateFactory(state_);
+                        visitor(scoreVector, statisticsUpdateFactory);
+                    }
+
+                    void invokeVisitor(
+                      DenseVisitor<float64, PartialIndexVector> visitor,
+                      const DenseScoreVector<float64, PartialIndexVector>& scoreVector) const override {
+                        StatisticsUpdateFactory<IStatisticsState<float64>> statisticsUpdateFactory(state_);
+                        visitor(scoreVector, statisticsUpdateFactory);
+                    }
+
+                    void invokeVisitor(
+                      DenseBinnedVisitor<float64, CompleteIndexVector> visitor,
+                      const DenseBinnedScoreVector<float64, CompleteIndexVector>& scoreVector) const override {
+                        StatisticsUpdateFactory<IStatisticsState<float64>> statisticsUpdateFactory(state_);
+                        visitor(scoreVector, statisticsUpdateFactory);
+                    }
+
+                    void invokeVisitor(
+                      DenseBinnedVisitor<float64, PartialIndexVector> visitor,
+                      const DenseBinnedScoreVector<float64, PartialIndexVector>& scoreVector) const override {
+                        StatisticsUpdateFactory<IStatisticsState<float64>> statisticsUpdateFactory(state_);
+                        visitor(scoreVector, statisticsUpdateFactory);
+                    }
+
+                public:
+
+                    /**
+                     * @param state         A reference to an object of template type `IStatisticsState<float64>` that
+                     *                      represents the state of the boosting process
+                     * @param scoreVector   A reference to an object of type `IScoreVector` that stores the calculated
+                     *                      scores
+                     */
+                    Float64UpdateCandidate(IStatisticsState<float64>& state, const IScoreVector& scoreVector)
+                        : AbstractStatisticsUpdateCandidate(scoreVector), state_(state) {}
+            };
+
+            static inline std::unique_ptr<IStatisticsUpdateCandidate> createUpdateCandidateInternally(
+              IStatisticsState<float32>& state, const IScoreVector& scoreVector) {
+                return std::make_unique<Float32UpdateCandidate>(state, scoreVector);
+            }
+
+            static inline std::unique_ptr<IStatisticsUpdateCandidate> createUpdateCandidateInternally(
+              IStatisticsState<float64>& state, const IScoreVector& scoreVector) {
+                return std::make_unique<Float64UpdateCandidate>(state, scoreVector);
+            }
+
         public:
 
             /**
@@ -130,6 +244,11 @@ namespace boosting {
                 scoreMatrixPtr->removeFromRowFromSubset(statisticIndex, scoresBegin, scoresEnd, indicesBegin,
                                                         indicesEnd);
                 updateStatistics(statisticIndex, indicesBegin, indicesEnd);
+            }
+
+            std::unique_ptr<IStatisticsUpdateCandidate> createUpdateCandidate(
+              const IScoreVector& scoreVector) override {
+                return createUpdateCandidateInternally(*this, scoreVector);
             }
     };
 
