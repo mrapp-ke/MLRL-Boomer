@@ -13,7 +13,7 @@
 
 /**
  * A base class for all classes that store scores that have been calculated based on statistics and allow to update
- * them accordingly.
+ * these statistics accordingly.
  */
 class StatisticsUpdateCandidate : public Quality {
     protected:
