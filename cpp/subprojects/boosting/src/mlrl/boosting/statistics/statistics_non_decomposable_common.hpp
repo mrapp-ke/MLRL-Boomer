@@ -34,8 +34,9 @@ namespace boosting {
              typename EvaluationMeasure, typename NonDecomposableRuleEvaluationFactory,
              typename DecomposableRuleEvaluationFactory>
     class AbstractNonDecomposableStatistics
-        : public AbstractStatistics<NonDecomposableStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss>,
-                                    EvaluationMeasure, NonDecomposableRuleEvaluationFactory>,
+        : public AbstractStatistics<
+            NonDecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss>, EvaluationMeasure,
+            NonDecomposableRuleEvaluationFactory>,
           virtual public INonDecomposableStatistics<NonDecomposableRuleEvaluationFactory,
                                                     DecomposableRuleEvaluationFactory> {
         public:
@@ -63,9 +64,11 @@ namespace boosting {
                                               const OutputMatrix& outputMatrix,
                                               std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                                               std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
-                : AbstractStatistics<NonDecomposableStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss>,
-                                     EvaluationMeasure, NonDecomposableRuleEvaluationFactory>(
-                    std::make_unique<NonDecomposableStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss>>(
+                : AbstractStatistics<
+                    NonDecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss>,
+                    EvaluationMeasure, NonDecomposableRuleEvaluationFactory>(
+                    std::make_unique<
+                      NonDecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss>>(
                       outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr), std::move(lossPtr)),
                     std::move(evaluationMeasurePtr), ruleEvaluationFactory) {}
 
