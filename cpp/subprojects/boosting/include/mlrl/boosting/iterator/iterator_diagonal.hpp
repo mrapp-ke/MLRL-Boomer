@@ -11,27 +11,25 @@
 namespace boosting {
 
     /**
-     * An iterator that provides read-only access to the elements that correspond to the diagonal of a C-contiguous
-     * matrix.
+     * An iterator that provides access to the elements that correspond to the diagonal of a C-contiguous square matrix.
      *
      * @tparam T The type of the elements that are stored in the matrix
      */
     template<typename T>
-    class DiagonalConstIterator final {
+    class DiagonalIterator final {
         private:
 
-            typename View<T>::const_iterator iterator_;
+            View<T> view_;
 
             uint32 index_;
 
         public:
 
             /**
-             * @param iterator  An iterator to the beginning of the matrix
-             * @param index     The index on the diagonal to start at
+             * @param view  A `View` that provides access to the elements in the matrix
+             * @param index The index on the diagonal to start at
              */
-            DiagonalConstIterator(typename View<T>::const_iterator iterator, uint32 index)
-                : iterator_(iterator), index_(index) {}
+            DiagonalIterator(View<T> view, uint32 index) : view_(view), index_(index) {}
 
             /**
              * The type that is used to represent the difference between two iterators.
@@ -41,17 +39,17 @@ namespace boosting {
             /**
              * The type of the elements, the iterator provides access to.
              */
-            typedef T value_type;
+            typedef typename View<T>::value_type value_type;
 
             /**
              * The type of a pointer to an element, the iterator provides access to.
              */
-            typedef const T* pointer;
+            typedef typename View<T>::value_type* pointer;
 
             /**
              * The type of a reference to an element, the iterator provides access to.
              */
-            typedef const T& reference;
+            typedef typename View<T>::value_type& reference;
 
             /**
              * The tag that specifies the capabilities of the iterator.
@@ -65,7 +63,17 @@ namespace boosting {
              * @return      The element at the given index
              */
             reference operator[](uint32 index) const {
-                return iterator_[util::triangularNumber(index + 1) - 1];
+                return view_.array[util::triangularNumber(index + 1) - 1];
+            }
+
+            /**
+             * Returns the element at a specific index.
+             *
+             * @param index The index of the element to be returned
+             * @return      The element at the given index
+             */
+            reference operator[](uint32 index) {
+                return view_.array[util::triangularNumber(index + 1) - 1];
             }
 
             /**
@@ -74,7 +82,16 @@ namespace boosting {
              * @return The element, the iterator currently refers to
              */
             reference operator*() const {
-                return iterator_[util::triangularNumber(index_ + 1) - 1];
+                return view_.array[util::triangularNumber(index_ + 1) - 1];
+            }
+
+            /**
+             * Returns the element, the iterator currently refers to.
+             *
+             * @return The element, the iterator currently refers to
+             */
+            reference operator*() {
+                return view_.array[util::triangularNumber(index_ + 1) - 1];
             }
 
             /**
@@ -82,7 +99,7 @@ namespace boosting {
              *
              * @return A reference to an iterator to the next element
              */
-            DiagonalConstIterator<T>& operator++() {
+            DiagonalIterator<T>& operator++() {
                 ++index_;
                 return *this;
             }
@@ -92,7 +109,7 @@ namespace boosting {
              *
              * @return A reference to an iterator to the next element
              */
-            DiagonalConstIterator<T>& operator++(int n) {
+            DiagonalIterator<T>& operator++(int n) {
                 index_++;
                 return *this;
             }
@@ -102,7 +119,7 @@ namespace boosting {
              *
              * @return A reference to an iterator to the previous element
              */
-            DiagonalConstIterator<T>& operator--() {
+            DiagonalIterator<T>& operator--() {
                 --index_;
                 return *this;
             }
@@ -112,7 +129,7 @@ namespace boosting {
              *
              * @return A reference to an iterator to the previous element
              */
-            DiagonalConstIterator<T>& operator--(int n) {
+            DiagonalIterator<T>& operator--(int n) {
                 index_--;
                 return *this;
             }
@@ -123,7 +140,7 @@ namespace boosting {
              * @param rhs   A reference to another iterator
              * @return      True, if the iterators do not refer to the same element, false otherwise
              */
-            bool operator!=(const DiagonalConstIterator<T>& rhs) const {
+            bool operator!=(const DiagonalIterator<T>& rhs) const {
                 return index_ != rhs.index_;
             }
 
@@ -133,7 +150,7 @@ namespace boosting {
              * @param rhs   A reference to another iterator
              * @return      True, if the iterators refer to the same element, false otherwise
              */
-            bool operator==(const DiagonalConstIterator<T>& rhs) const {
+            bool operator==(const DiagonalIterator<T>& rhs) const {
                 return index_ == rhs.index_;
             }
 
@@ -143,7 +160,7 @@ namespace boosting {
              * @param rhs   A reference to another iterator
              * @return      The difference between the iterators
              */
-            difference_type operator-(const DiagonalConstIterator<T>& rhs) const {
+            difference_type operator-(const DiagonalIterator<T>& rhs) const {
                 return (difference_type) index_ - (difference_type) rhs.index_;
             }
     };

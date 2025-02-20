@@ -6,7 +6,7 @@ Provides utilities that ease the configuration of rule learning algorithms.
 import logging as log
 
 from abc import ABC, abstractmethod
-from argparse import ArgumentParser
+from argparse import ArgumentError, ArgumentParser
 from typing import Optional, Set
 
 from mlrl.common.cython.info import get_num_cpu_cores, is_multi_threading_support_enabled
@@ -17,7 +17,7 @@ from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, Equa
     NoParallelPredictionMixin, NoParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
     NoPartitionSamplingMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, NoSizeStoppingCriterionMixin, \
     NoTimeStoppingCriterionMixin, ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, \
-    PostPruningMixin, PrePruningMixin, RandomBiPartitionSamplingMixin, RoundRobinOutputSamplingMixin, \
+    PostPruningMixin, PrePruningMixin, RandomBiPartitionSamplingMixin, RNGMixin, RoundRobinOutputSamplingMixin, \
     SequentialPostOptimizationMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
 from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPartitionSamplingMixin, \
     ExampleWiseStratifiedInstanceSamplingMixin, OutputWiseStratifiedBiPartitionSamplingMixin, \
@@ -42,7 +42,9 @@ SAMPLING_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
 OPTION_SAMPLE_SIZE = 'sample_size'
 
-OPTION_NUM_SAMPLES = 'num_samples'
+OPTION_MIN_SAMPLES = 'min_samples'
+
+OPTION_MAX_SAMPLES = 'max_samples'
 
 BINNING_EQUAL_FREQUENCY = 'equal-frequency'
 
@@ -277,6 +279,20 @@ class FloatParameter(NumericalParameter, ABC):
         return float(value)
 
 
+class RandomStateParameter(IntParameter):
+    """
+    A parameter that allows to configure the seed to be used by random number generators.
+    """
+
+    def __init__(self):
+        super().__init__(name='random_state',
+                         description='The seed to be used by random number generators',
+                         mixin=RNGMixin)
+
+    def _configure(self, config, value):
+        config.use_rng().set_random_state(value)
+
+
 class RuleInductionParameter(NominalParameter):
     """
     A parameter that allows to configure the algorithm to be used for the induction of individual rules.
@@ -380,7 +396,7 @@ class OutputSamplingParameter(NominalParameter):
         self.add_value(name=NONE, mixin=NoFeatureSamplingMixin)
         self.add_value(name=SAMPLING_WITHOUT_REPLACEMENT,
                        mixin=FeatureSamplingWithoutReplacementMixin,
-                       options={OPTION_NUM_SAMPLES})
+                       options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES})
         self.add_value(name=self.OUTPUT_SAMPLING_ROUND_ROBIN, mixin=RoundRobinOutputSamplingMixin)
 
     def _configure(self, config, value: str, options: Optional[Options]):
@@ -388,7 +404,9 @@ class OutputSamplingParameter(NominalParameter):
             config.use_no_output_sampling()
         elif value == SAMPLING_WITHOUT_REPLACEMENT:
             conf = config.use_output_sampling_without_replacement()
-            conf.set_num_samples(options.get_int(OPTION_NUM_SAMPLES, conf.get_num_samples()))
+            conf.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, conf.get_sample_size()))
+            conf.set_min_samples(options.get_int(OPTION_MIN_SAMPLES, conf.get_min_samples()))
+            conf.set_max_samples(options.get_int(OPTION_MAX_SAMPLES, conf.get_max_samples()))
         elif value == self.OUTPUT_SAMPLING_ROUND_ROBIN:
             config.use_round_robin_output_sampling()
 
@@ -404,16 +422,16 @@ class InstanceSamplingParameter(NominalParameter):
         self.add_value(name=NONE, mixin=NoInstanceSamplingMixin)
         self.add_value(name=SAMPLING_WITH_REPLACEMENT,
                        mixin=InstanceSamplingWithReplacementMixin,
-                       options={OPTION_SAMPLE_SIZE})
+                       options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES})
         self.add_value(name=SAMPLING_WITHOUT_REPLACEMENT,
                        mixin=InstanceSamplingWithoutReplacementMixin,
-                       options={OPTION_SAMPLE_SIZE})
+                       options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES})
         self.add_value(name=SAMPLING_STRATIFIED_OUTPUT_WISE,
                        mixin=OutputWiseStratifiedInstanceSamplingMixin,
-                       options={OPTION_SAMPLE_SIZE})
+                       options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES})
         self.add_value(name=SAMPLING_STRATIFIED_EXAMPLE_WISE,
                        mixin=ExampleWiseStratifiedInstanceSamplingMixin,
-                       options={OPTION_SAMPLE_SIZE})
+                       options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES})
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == NONE:
@@ -421,15 +439,23 @@ class InstanceSamplingParameter(NominalParameter):
         elif value == SAMPLING_WITH_REPLACEMENT:
             conf = config.use_instance_sampling_with_replacement()
             conf.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, conf.get_sample_size()))
+            conf.set_min_samples(options.get_int(OPTION_MIN_SAMPLES, conf.get_min_samples()))
+            conf.set_max_samples(options.get_int(OPTION_MAX_SAMPLES, conf.get_max_samples()))
         elif value == SAMPLING_WITHOUT_REPLACEMENT:
             conf = config.use_instance_sampling_without_replacement()
             conf.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, conf.get_sample_size()))
+            conf.set_min_samples(options.get_int(OPTION_MIN_SAMPLES, conf.get_min_samples()))
+            conf.set_max_samples(options.get_int(OPTION_MAX_SAMPLES, conf.get_max_samples()))
         elif value == SAMPLING_STRATIFIED_OUTPUT_WISE:
             conf = config.use_output_wise_stratified_instance_sampling()
             conf.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, conf.get_sample_size()))
+            conf.set_min_samples(options.get_int(OPTION_MIN_SAMPLES, conf.get_min_samples()))
+            conf.set_max_samples(options.get_int(OPTION_MAX_SAMPLES, conf.get_max_samples()))
         elif value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
             conf = config.use_example_wise_stratified_instance_sampling()
             conf.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, conf.get_sample_size()))
+            conf.set_min_samples(options.get_int(OPTION_MIN_SAMPLES, conf.get_min_samples()))
+            conf.set_max_samples(options.get_int(OPTION_MAX_SAMPLES, conf.get_max_samples()))
 
 
 class FeatureSamplingParameter(NominalParameter):
@@ -445,7 +471,7 @@ class FeatureSamplingParameter(NominalParameter):
         self.add_value(name=NONE, mixin=NoFeatureSamplingMixin)
         self.add_value(name=SAMPLING_WITHOUT_REPLACEMENT,
                        mixin=FeatureSamplingWithoutReplacementMixin,
-                       options={OPTION_SAMPLE_SIZE, self.OPTION_NUM_RETAINED})
+                       options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES, self.OPTION_NUM_RETAINED})
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == NONE:
@@ -453,6 +479,8 @@ class FeatureSamplingParameter(NominalParameter):
         elif value == SAMPLING_WITHOUT_REPLACEMENT:
             conf = config.use_feature_sampling_without_replacement()
             conf.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, conf.get_sample_size()))
+            conf.set_min_samples(options.get_int(OPTION_MIN_SAMPLES, conf.get_min_samples()))
+            conf.set_max_samples(options.get_int(OPTION_MAX_SAMPLES, conf.get_max_samples()))
             conf.set_num_retained(options.get_int(self.OPTION_NUM_RETAINED, conf.get_num_retained()))
 
 
@@ -758,6 +786,7 @@ class SequentialPostOptimizationParameter(NominalParameter):
 
 
 RULE_LEARNER_PARAMETERS = {
+    RandomStateParameter(),
     RuleInductionParameter(),
     FeatureBinningParameter(),
     OutputSamplingParameter(),
@@ -802,7 +831,11 @@ def configure_argument_parser(parser: ArgumentParser, config_type: type, paramet
     :param parameters:  A set that contains the parameters to be taken into account
     """
     for parameter in parameters:
-        parameter.add_to_argument_parser(parser, config_type)
+        try:
+            parameter.add_to_argument_parser(parser, config_type)
+        except ArgumentError:
+            # Argument has already been added, that's okay
+            pass
 
 
 def create_kwargs_from_parameters(args, parameters: Set[Parameter]):
