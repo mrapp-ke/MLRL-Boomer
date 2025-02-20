@@ -19,7 +19,7 @@ namespace boosting {
      */
     template<typename OutputMatrix, typename StatisticMatrix, typename ScoreMatrix, typename Loss>
     class NonDecomposableStatisticsState final
-        : public AbstractStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss> {
+        : public AbstractBoostingStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss> {
         protected:
 
             void updateStatistics(uint32 statisticIndex, CompleteIndexVector::const_iterator indicesBegin,
@@ -52,7 +52,7 @@ namespace boosting {
                                            std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                                            std::unique_ptr<ScoreMatrix> scoreMatrixPtr,
                                            std::unique_ptr<Loss> lossFunctionPtr)
-                : AbstractStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss>(
+                : AbstractBoostingStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss>(
                     outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr),
                     std::move(lossFunctionPtr)) {}
     };
