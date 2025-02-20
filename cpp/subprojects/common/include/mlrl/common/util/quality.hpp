@@ -23,6 +23,8 @@ struct Quality {
          */
         Quality(const Quality& other) : quality(other.quality) {}
 
+        virtual ~Quality() {}
+
         /**
          * Assigns the numerical score of an existing object to this object.
          *

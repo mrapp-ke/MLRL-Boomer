@@ -23,7 +23,7 @@ class DenseBinnedScoreVector;
 class IScoreVector : public Quality {
     public:
 
-        virtual ~IScoreVector() {}
+        virtual ~IScoreVector() override {}
 
         /**
          * A visitor function for handling objects of type `DenseScoreVector`.
