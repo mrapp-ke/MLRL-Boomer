@@ -22,7 +22,7 @@ bool BitWeightVector::hasZeroWeights() const {
 }
 
 BitWeightVector::weight_type BitWeightVector::operator[](uint32 pos) const {
-    return static_cast<weight_type>(vector_[pos]);
+    return vector_[pos];
 }
 
 void BitWeightVector::set(uint32 pos, bool weight) {
