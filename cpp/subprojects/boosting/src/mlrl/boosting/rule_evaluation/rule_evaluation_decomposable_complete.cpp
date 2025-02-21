@@ -4,23 +4,41 @@
 
 namespace boosting {
 
-    DecomposableCompleteRuleEvaluationFactory::DecomposableCompleteRuleEvaluationFactory(float64 l1RegularizationWeight,
-                                                                                         float64 l2RegularizationWeight)
+    DecomposableCompleteRuleEvaluationFactory::DecomposableCompleteRuleEvaluationFactory(float32 l1RegularizationWeight,
+                                                                                         float32 l2RegularizationWeight)
         : l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>>
-      DecomposableCompleteRuleEvaluationFactory::create(const DenseDecomposableStatisticVector& statisticVector,
-                                                        const CompleteIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float32>>>
+      DecomposableCompleteRuleEvaluationFactory::create(
+        const DenseDecomposableStatisticVector<float32>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
         return std::make_unique<
-          DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVector, CompleteIndexVector>>(
+          DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVector<float32>, CompleteIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>>
-      DecomposableCompleteRuleEvaluationFactory::create(const DenseDecomposableStatisticVector& statisticVector,
-                                                        const PartialIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float32>>>
+      DecomposableCompleteRuleEvaluationFactory::create(
+        const DenseDecomposableStatisticVector<float32>& statisticVector, const PartialIndexVector& indexVector) const {
         return std::make_unique<
-          DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVector, PartialIndexVector>>(
+          DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVector<float32>, PartialIndexVector>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
+    }
+
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>>
+      DecomposableCompleteRuleEvaluationFactory::create(
+        const DenseDecomposableStatisticVector<float64>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
+        return std::make_unique<
+          DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVector<float64>, CompleteIndexVector>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
+    }
+
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>>
+      DecomposableCompleteRuleEvaluationFactory::create(
+        const DenseDecomposableStatisticVector<float64>& statisticVector, const PartialIndexVector& indexVector) const {
+        return std::make_unique<
+          DecomposableCompleteRuleEvaluation<DenseDecomposableStatisticVector<float64>, PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 

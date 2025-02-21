@@ -33,5 +33,5 @@ std::unique_ptr<IFeatureSubspace> DenseWeightVector<T>::createFeatureSubspace(IF
     return featureSpace.createSubspace(*this);
 }
 
-template class DenseWeightVector<uint32>;
+template class DenseWeightVector<uint16>;
 template class DenseWeightVector<float32>;

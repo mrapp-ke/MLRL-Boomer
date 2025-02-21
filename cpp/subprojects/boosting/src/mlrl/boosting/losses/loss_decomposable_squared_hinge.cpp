@@ -4,8 +4,9 @@
 
 namespace boosting {
 
-    static inline void updateGradientAndHessian(bool trueLabel, float64 predictedScore, float64& gradient,
-                                                float64& hessian) {
+    template<typename StatisticType>
+    static inline void updateGradientAndHessian(bool trueLabel, StatisticType predictedScore, StatisticType& gradient,
+                                                StatisticType& hessian) {
         if (trueLabel) {
             if (predictedScore < 1) {
                 gradient = (predictedScore - 1);
@@ -23,7 +24,8 @@ namespace boosting {
         hessian = 1;
     }
 
-    static inline float64 evaluatePrediction(bool trueLabel, float64 predictedScore) {
+    template<typename ScoreType>
+    static inline ScoreType evaluatePrediction(bool trueLabel, ScoreType predictedScore) {
         if (trueLabel) {
             if (predictedScore < 1) {
                 return (1 - predictedScore) * (1 - predictedScore);
@@ -42,23 +44,28 @@ namespace boosting {
     /**
      * Allows to create instances of the type `IDecomposableClassificationLoss` that implement a multivariate variant of
      * the squared hinge loss that is decomposable.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
-    class DecomposableSquaredHingeLossFactory final : public ISparseDecomposableClassificationLossFactory {
+    template<typename StatisticType>
+    class DecomposableSquaredHingeLossFactory final
+        : public ISparseDecomposableClassificationLossFactory<StatisticType> {
         public:
 
-            std::unique_ptr<ISparseDecomposableClassificationLoss> createSparseDecomposableClassificationLoss()
-              const override {
-                return std::make_unique<SparseDecomposableClassificationLoss>(&updateGradientAndHessian,
-                                                                              &evaluatePrediction);
+            std::unique_ptr<ISparseDecomposableClassificationLoss<StatisticType>>
+              createSparseDecomposableClassificationLoss() const override {
+                return std::make_unique<SparseDecomposableClassificationLoss<StatisticType>>(
+                  &updateGradientAndHessian<StatisticType>, &evaluatePrediction<StatisticType>);
             }
 
-            std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
+            std::unique_ptr<IDistanceMeasure<StatisticType>> createDistanceMeasure(
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const override {
                 return this->createSparseDecomposableClassificationLoss();
             }
 
-            std::unique_ptr<IClassificationEvaluationMeasure> createClassificationEvaluationMeasure() const override {
+            std::unique_ptr<IClassificationEvaluationMeasure<StatisticType>> createClassificationEvaluationMeasure()
+              const override {
                 return this->createSparseDecomposableClassificationLoss();
             }
     };
@@ -68,8 +75,8 @@ namespace boosting {
 
     std::unique_ptr<IClassificationStatisticsProviderFactory>
       DecomposableSquaredHingeLossConfig::createClassificationStatisticsProviderFactory(
-        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-        const Lapack& lapack, bool preferSparseStatistics) const {
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const BlasFactory& blasFactory,
+        const LapackFactory& lapackFactory, bool preferSparseStatistics) const {
         if (preferSparseStatistics) {
             return headConfig_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
         } else {
@@ -92,9 +99,9 @@ namespace boosting {
         return 0.5;
     }
 
-    std::unique_ptr<ISparseDecomposableClassificationLossFactory>
+    std::unique_ptr<ISparseDecomposableClassificationLossFactory<float64>>
       DecomposableSquaredHingeLossConfig::createSparseDecomposableClassificationLossFactory() const {
-        return std::make_unique<DecomposableSquaredHingeLossFactory>();
+        return std::make_unique<DecomposableSquaredHingeLossFactory<float64>>();
     }
 
 }

@@ -9,8 +9,11 @@
 
 /**
  * Stores the scores that are predicted by a rule that predicts for all available outputs.
+ *
+ * @tparam ScoreType The type of the predicted scores
  */
-class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>>,
+template<typename ScoreType>
+class CompletePrediction final : public VectorDecorator<AllocatedVector<ScoreType>>,
                                  public IEvaluatedPrediction {
     private:
 
@@ -24,17 +27,17 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>
          * @param numElements             The number of outputs for which the rule predicts
          * @param statisticsUpdateFactory A reference to an object of type `IStatisticsUpdateFactory`
          */
-        CompletePrediction(uint32 numElements, IStatisticsUpdateFactory& statisticsUpdateFactory);
+        CompletePrediction(uint32 numElements, IStatisticsUpdateFactory<ScoreType>& statisticsUpdateFactory);
 
         /**
          * An iterator that provides access to the predicted scores and allows to modify them.
          */
-        typedef View<float64>::iterator value_iterator;
+        typedef typename View<ScoreType>::iterator value_iterator;
 
         /**
          * An iterator that provides read-only access to the predicted scores.
          */
-        typedef View<float64>::const_iterator value_const_iterator;
+        typedef typename View<ScoreType>::const_iterator value_const_iterator;
 
         /**
          * An iterator that provides read-only access to the indices of the outputs for which the rule predicts.
@@ -103,7 +106,7 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>
                                                                   const BitWeightVector& weights) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
-          const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const override;
+          const IStatistics& statistics, const DenseWeightVector<uint16>& weights) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
           const IStatistics& statistics, const DenseWeightVector<float32>& weights) const override;
@@ -116,7 +119,7 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
           const IStatistics& statistics,
-          const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override;
+          const OutOfSampleWeightVector<DenseWeightVector<uint16>>& weights) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
           const IStatistics& statistics,

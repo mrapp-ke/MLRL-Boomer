@@ -7,7 +7,7 @@
 namespace boosting {
 
     static inline std::unique_ptr<IBinaryTransformation> createBinaryTransformation(
-      const LabelVectorSet* labelVectorSet, const IDistanceMeasureFactory& distanceMeasureFactory,
+      const LabelVectorSet* labelVectorSet, const IDistanceMeasureFactory<float64>& distanceMeasureFactory,
       const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
       const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) {
         if (!labelVectorSet) {
@@ -32,7 +32,7 @@ namespace boosting {
     static inline std::unique_ptr<IBinaryPredictor> createPredictor(
       const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
       MultiThreadingSettings multiThreadingSettings, const LabelVectorSet* labelVectorSet,
-      const IDistanceMeasureFactory& distanceMeasureFactory,
+      const IDistanceMeasureFactory<float64>& distanceMeasureFactory,
       const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
       const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) {
         std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
@@ -50,7 +50,7 @@ namespace boosting {
     class ExampleWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
         private:
 
-            const std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr_;
+            const std::unique_ptr<IDistanceMeasureFactory<float64>> distanceMeasureFactoryPtr_;
 
             const IMarginalProbabilityCalibrationModel* marginalProbabilityCalibrationModel_;
 
@@ -79,7 +79,7 @@ namespace boosting {
              *                                              query examples in parallel
              */
             ExampleWiseBinaryPredictorFactory(
-              std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr,
+              std::unique_ptr<IDistanceMeasureFactory<float64>> distanceMeasureFactoryPtr,
               const IMarginalProbabilityCalibrationModel* marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel* jointProbabilityCalibrationModel,
               MultiThreadingSettings multiThreadingSettings)
@@ -126,7 +126,7 @@ namespace boosting {
     static inline std::unique_ptr<ISparseBinaryPredictor> createSparsePredictor(
       const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
       MultiThreadingSettings multiThreadingSettings, const LabelVectorSet* labelVectorSet,
-      const IDistanceMeasureFactory& distanceMeasureFactory,
+      const IDistanceMeasureFactory<float64>& distanceMeasureFactory,
       const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
       const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) {
         std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
@@ -144,7 +144,7 @@ namespace boosting {
     class ExampleWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
         private:
 
-            const std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr_;
+            const std::unique_ptr<IDistanceMeasureFactory<float64>> distanceMeasureFactoryPtr_;
 
             const IMarginalProbabilityCalibrationModel* marginalProbabilityCalibrationModel_;
 
@@ -173,7 +173,7 @@ namespace boosting {
              *                                              query examples in parallel
              */
             ExampleWiseSparseBinaryPredictorFactory(
-              std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr,
+              std::unique_ptr<IDistanceMeasureFactory<float64>> distanceMeasureFactoryPtr,
               const IMarginalProbabilityCalibrationModel* marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel* jointProbabilityCalibrationModel,
               MultiThreadingSettings multiThreadingSettings)
@@ -216,7 +216,7 @@ namespace boosting {
             }
     };
 
-    static inline std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory(
+    static inline std::unique_ptr<IDistanceMeasureFactory<float64>> createDistanceMeasureFactory(
       bool basedOnProbabilities, const IClassificationLossConfig& lossConfig) {
         if (basedOnProbabilities) {
             return lossConfig.createJointProbabilityFunctionFactory();
@@ -255,7 +255,7 @@ namespace boosting {
 
     std::unique_ptr<IBinaryPredictorFactory> ExampleWiseBinaryPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {
-        std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr =
+        std::unique_ptr<IDistanceMeasureFactory<float64>> distanceMeasureFactoryPtr =
           createDistanceMeasureFactory(basedOnProbabilities_, lossConfig_.get());
 
         if (distanceMeasureFactoryPtr) {
@@ -271,7 +271,7 @@ namespace boosting {
 
     std::unique_ptr<ISparseBinaryPredictorFactory> ExampleWiseBinaryPredictorConfig::createSparsePredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr =
+        std::unique_ptr<IDistanceMeasureFactory<float64>> distanceMeasureFactoryPtr =
           createDistanceMeasureFactory(basedOnProbabilities_, lossConfig_.get());
 
         if (distanceMeasureFactoryPtr) {

@@ -59,7 +59,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                     // Check if a condition using the <= operator covers at least `minCoverage` examples...
                     if (numCovered >= minCoverage) {
                         // Determine the best prediction for examples covered by a condition using the <= operator...
-                        std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+                        std::unique_ptr<IStatisticsUpdateCandidate> updateCandidatePtr =
                           statisticsSubset.calculateScores();
 
                         // Check if the quality of the prediction is better than the quality of the current rule...
@@ -79,7 +79,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
 
                     if (numUncovered >= minCoverage) {
                         // Determine the best prediction for examples covered by a condition using the > operator...
-                        std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+                        std::unique_ptr<IStatisticsUpdateCandidate> updateCandidatePtr =
                           statisticsSubset.calculateScoresUncovered();
 
                         // Check if the quality of the prediction is better than the quality of the current rule...
@@ -143,7 +143,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                     // Check if a condition using the > operator covers at least `minCoverage` examples...
                     if (numCovered >= minCoverage) {
                         // Determine the best prediction for the covered examples...
-                        std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+                        std::unique_ptr<IStatisticsUpdateCandidate> updateCandidatePtr =
                           statisticsSubset.calculateScores();
 
                         // Check if the quality of the prediction is better than the quality of the current rule...
@@ -163,7 +163,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
 
                     if (numUncovered >= minCoverage) {
                         // Determine the best prediction for the covered examples...
-                        std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+                        std::unique_ptr<IStatisticsUpdateCandidate> updateCandidatePtr =
                           statisticsSubset.calculateScoresUncovered();
 
                         // Check if the quality of the prediction is better than the quality of the current rule...
@@ -199,7 +199,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
         // examples...
         if (numCovered >= minCoverage) {
             // Determine the best prediction for examples covered by the condition...
-            std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScores();
+            std::unique_ptr<IStatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScores();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
             if (comparator.isImprovement(*updateCandidatePtr)) {
@@ -219,7 +219,8 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
 
         if (numUncovered >= minCoverage) {
             // Determine the best prediction for examples covered by the condition...
-            std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScoresUncovered();
+            std::unique_ptr<IStatisticsUpdateCandidate> updateCandidatePtr =
+              statisticsSubset.calculateScoresUncovered();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
             if (comparator.isImprovement(*updateCandidatePtr)) {
@@ -241,7 +242,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
         // `f <= arithmeticMean(lastValueLessThanSparseValue, previousValue)` covers at least `minCoverage` examples...
         if (numCoveredLessThanSparseValue >= minCoverage) {
             // Determine the best prediction for the examples covered by the condition...
-            std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+            std::unique_ptr<IStatisticsUpdateCandidate> updateCandidatePtr =
               statisticsSubset.calculateScoresAccumulated();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
@@ -272,7 +273,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
 
         if (numUncovered >= minCoverage) {
             // Determine the best prediction for the examples covered by the condition...
-            std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+            std::unique_ptr<IStatisticsUpdateCandidate> updateCandidatePtr =
               statisticsSubset.calculateScoresUncoveredAccumulated();
 
             // Check if the quality of the prediction is better than the quality of the current rule...

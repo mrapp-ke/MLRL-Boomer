@@ -24,7 +24,8 @@ bool SingleRefinementComparator::isImprovement(const Quality& quality) const {
     return ruleCompareFunction_.compare(quality, bestQuality_);
 }
 
-void SingleRefinementComparator::pushRefinement(const Refinement& refinement, const StatisticsUpdateCandidate& scores) {
+void SingleRefinementComparator::pushRefinement(const Refinement& refinement,
+                                                const IStatisticsUpdateCandidate& scores) {
     bestRefinement_ = refinement;
     scoreProcessor_.processScores(scores);
     bestQuality_ = *bestRefinement_.headPtr;
