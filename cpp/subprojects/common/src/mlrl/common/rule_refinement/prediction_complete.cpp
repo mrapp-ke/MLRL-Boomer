@@ -85,7 +85,7 @@ std::unique_ptr<IStatisticsSubset> CompletePrediction<ScoreType>::createStatisti
 
 template<typename ScoreType>
 std::unique_ptr<IStatisticsSubset> CompletePrediction<ScoreType>::createStatisticsSubset(
-  const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const {
+  const IStatistics& statistics, const DenseWeightVector<uint16>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
 
@@ -109,7 +109,7 @@ std::unique_ptr<IStatisticsSubset> CompletePrediction<ScoreType>::createStatisti
 
 template<typename ScoreType>
 std::unique_ptr<IStatisticsSubset> CompletePrediction<ScoreType>::createStatisticsSubset(
-  const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const {
+  const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<uint16>>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
 
