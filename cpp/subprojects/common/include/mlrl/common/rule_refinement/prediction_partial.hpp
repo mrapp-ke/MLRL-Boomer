@@ -149,7 +149,7 @@ class PartialPrediction final : public VectorDecorator<ResizableVector<ScoreType
                                                                   const BitWeightVector& weights) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
-          const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const override;
+          const IStatistics& statistics, const DenseWeightVector<uint16>& weights) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
           const IStatistics& statistics, const DenseWeightVector<float32>& weights) const override;
@@ -162,7 +162,7 @@ class PartialPrediction final : public VectorDecorator<ResizableVector<ScoreType
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
           const IStatistics& statistics,
-          const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override;
+          const OutOfSampleWeightVector<DenseWeightVector<uint16>>& weights) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
           const IStatistics& statistics,

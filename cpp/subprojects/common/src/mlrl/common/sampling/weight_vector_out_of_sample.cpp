@@ -20,5 +20,5 @@ typename OutOfSampleWeightVector<WeightVector>::weight_type OutOfSampleWeightVec
 
 template class OutOfSampleWeightVector<EqualWeightVector>;
 template class OutOfSampleWeightVector<BitWeightVector>;
-template class OutOfSampleWeightVector<DenseWeightVector<uint32>>;
+template class OutOfSampleWeightVector<DenseWeightVector<uint16>>;
 template class OutOfSampleWeightVector<DenseWeightVector<float32>>;
