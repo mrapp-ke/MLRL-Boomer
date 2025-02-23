@@ -330,15 +330,16 @@ namespace boosting {
             }
     };
 
-    NonDecomposableLogisticLossConfig::NonDecomposableLogisticLossConfig(ReadableProperty<IHeadConfig> headConfig)
-        : headConfig_(headConfig) {}
+    NonDecomposableLogisticLossConfig::NonDecomposableLogisticLossConfig(
+      ReadableProperty<IStatisticTypeConfig> statisticTypeConfig)
+        : statisticTypeConfig_(statisticTypeConfig) {}
 
     std::unique_ptr<IClassificationStatisticsProviderFactory>
       NonDecomposableLogisticLossConfig::createClassificationStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const BlasFactory& blasFactory,
         const LapackFactory& lapackFactory, bool preferSparseStatistics) const {
-        return headConfig_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, *this,
-                                                                               blasFactory, lapackFactory);
+        return statisticTypeConfig_.get().createClassificationStatisticsProviderFactory(
+          featureMatrix, labelMatrix, *this, blasFactory, lapackFactory);
     }
 
     std::unique_ptr<IMarginalProbabilityFunctionFactory>
