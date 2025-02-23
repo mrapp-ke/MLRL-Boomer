@@ -392,23 +392,23 @@ namespace boosting {
     };
 
     NonDecomposableSquaredErrorLossConfig::NonDecomposableSquaredErrorLossConfig(
-      ReadableProperty<IHeadConfig> headConfig)
-        : headConfig_(headConfig) {}
+      ReadableProperty<IStatisticTypeConfig> statisticTypeConfig)
+        : statisticTypeConfig_(statisticTypeConfig) {}
 
     std::unique_ptr<IClassificationStatisticsProviderFactory>
       NonDecomposableSquaredErrorLossConfig::createClassificationStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const BlasFactory& blasFactory,
         const LapackFactory& lapackFactory, bool preferSparseStatistics) const {
-        return headConfig_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, *this,
-                                                                               blasFactory, lapackFactory);
+        return statisticTypeConfig_.get().createClassificationStatisticsProviderFactory(
+          featureMatrix, labelMatrix, *this, blasFactory, lapackFactory);
     }
 
     std::unique_ptr<IRegressionStatisticsProviderFactory>
       NonDecomposableSquaredErrorLossConfig::createRegressionStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
         const BlasFactory& blasFactory, const LapackFactory& lapackFactory, bool preferSparseStatistics) const {
-        return headConfig_.get().createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, *this,
-                                                                           blasFactory, lapackFactory);
+        return statisticTypeConfig_.get().createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix,
+                                                                                    *this, blasFactory, lapackFactory);
     }
 
     std::unique_ptr<IMarginalProbabilityFunctionFactory>

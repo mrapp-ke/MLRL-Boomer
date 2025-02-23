@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/boosting/losses/loss_non_decomposable.hpp"
-#include "mlrl/boosting/rule_evaluation/head_type.hpp"
+#include "mlrl/boosting/statistics/statistic_type.hpp"
 #include "mlrl/common/util/properties.hpp"
 
 #include <memory>
@@ -18,15 +18,17 @@ namespace boosting {
     class NonDecomposableLogisticLossConfig final : public INonDecomposableClassificationLossConfig {
         private:
 
-            const ReadableProperty<IHeadConfig> headConfig_;
+            const ReadableProperty<IStatisticTypeConfig> statisticTypeConfig_;
 
         public:
 
             /**
-             * @param headConfig A `ReadableProperty` that allows to access the `IHeadConfig` that stores the
-             *                   configuration of rule heads
+             *  @param statisticTypeConfig  A `ReadableProperty` that allows to access the `IStatisticTypeConfig` that
+             *                              stores the configuration of the data type that should be used for
+             *                              representing statistics about the quality of predictions for training
+             *                              examples
              */
-            NonDecomposableLogisticLossConfig(ReadableProperty<IHeadConfig> headConfig);
+            NonDecomposableLogisticLossConfig(ReadableProperty<IStatisticTypeConfig> statisticTypeConfig);
 
             std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
