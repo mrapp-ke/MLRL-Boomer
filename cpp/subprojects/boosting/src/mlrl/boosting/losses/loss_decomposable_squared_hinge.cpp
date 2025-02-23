@@ -63,11 +63,6 @@ namespace boosting {
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const override {
                 return this->createSparseDecomposableClassificationLoss();
             }
-
-            std::unique_ptr<IClassificationEvaluationMeasure<StatisticType>> createClassificationEvaluationMeasure()
-              const override {
-                return this->createSparseDecomposableClassificationLoss();
-            }
     };
 
     DecomposableSquaredHingeLossConfig::DecomposableSquaredHingeLossConfig(ReadableProperty<IHeadConfig> headConfig)
