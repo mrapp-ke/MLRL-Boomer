@@ -79,28 +79,6 @@ namespace boosting {
               std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>>& evaluationMeasureFactoryPtr,
               const BlasFactory& blasFactory, const LapackFactory& lapackFactory) const override;
 
-            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-              const IDecomposableClassificationLossConfig& lossConfig) const override;
-
-            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-              const ISparseDecomposableClassificationLossConfig& lossConfig) const override;
-
-            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-              const INonDecomposableClassificationLossConfig& lossConfig, const BlasFactory& blasFactory,
-              const LapackFactory& lapackFactory) const override;
-
-            std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
-              const IDecomposableRegressionLossConfig& lossConfig) const override;
-
-            std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
-              const INonDecomposableRegressionLossConfig& lossConfig, const BlasFactory& blasFactory,
-              const LapackFactory& lapackFactory) const override;
-
             bool isPartial() const override;
 
             bool isSingleOutput() const override;
