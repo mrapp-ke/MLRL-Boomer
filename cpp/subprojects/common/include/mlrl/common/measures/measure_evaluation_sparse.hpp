@@ -3,9 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_matrix_c_contiguous.hpp"
-#include "mlrl/common/data/view_matrix_csr_binary.hpp"
 #include "mlrl/common/data/view_matrix_sparse_set.hpp"
+#include "mlrl/common/measures/measure_evaluation.hpp"
 
 #include <memory>
 
@@ -16,10 +15,13 @@
  * @tparam ScoreType The type of the predicted scores
  */
 template<typename ScoreType>
-class ISparseEvaluationMeasure {
+class ISparseEvaluationMeasure : virtual public IClassificationEvaluationMeasure<ScoreType> {
     public:
 
-        virtual ~ISparseEvaluationMeasure() {}
+        virtual ~ISparseEvaluationMeasure() override {}
+
+        // Keep functions from the parent class rather than hiding them
+        using IClassificationEvaluationMeasure<ScoreType>::evaluate;
 
         /**
          * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
@@ -58,10 +60,10 @@ class ISparseEvaluationMeasure {
  * @tparam ScoreType The type of the predicted scores
  */
 template<typename ScoreType>
-class ISparseEvaluationMeasureFactory {
+class ISparseEvaluationMeasureFactory : virtual public IClassificationEvaluationMeasureFactory<ScoreType> {
     public:
 
-        virtual ~ISparseEvaluationMeasureFactory() {}
+        virtual ~ISparseEvaluationMeasureFactory() override {}
 
         /**
          * Creates and returns a new object of type `ISparseEvaluationMeasure`.
@@ -69,4 +71,9 @@ class ISparseEvaluationMeasureFactory {
          * @return An unique pointer to an object of type `ISparseEvaluationMeasure` that has been created
          */
         virtual std::unique_ptr<ISparseEvaluationMeasure<ScoreType>> createSparseEvaluationMeasure() const = 0;
+
+        std::unique_ptr<IClassificationEvaluationMeasure<ScoreType>> createClassificationEvaluationMeasure()
+          const override final {
+            return this->createSparseEvaluationMeasure();
+        }
 };

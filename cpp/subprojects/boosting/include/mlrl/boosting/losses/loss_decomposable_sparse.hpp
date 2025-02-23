@@ -115,8 +115,9 @@ namespace boosting {
      * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
     template<typename StatisticType>
-    class ISparseDecomposableClassificationLossFactory : public IDecomposableClassificationLossFactory<StatisticType>,
-                                                         public ISparseEvaluationMeasureFactory<StatisticType> {
+    class ISparseDecomposableClassificationLossFactory
+        : virtual public IDecomposableClassificationLossFactory<StatisticType>,
+          virtual public ISparseEvaluationMeasureFactory<StatisticType> {
         public:
 
             virtual ~ISparseDecomposableClassificationLossFactory() override {}
