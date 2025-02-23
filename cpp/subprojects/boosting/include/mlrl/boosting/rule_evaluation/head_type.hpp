@@ -9,6 +9,8 @@
 #include "mlrl/boosting/util/lapack.hpp"
 #include "mlrl/common/input/feature_matrix.hpp"
 #include "mlrl/common/input/label_matrix_row_wise.hpp"
+#include "mlrl/common/input/regression_matrix_row_wise.hpp"
+#include "mlrl/common/statistics/statistics_provider.hpp"
 
 #include <memory>
 
@@ -27,6 +29,140 @@ namespace boosting {
              * Creates and returns a new object of type `IClassificationStatisticsProviderFactory` according to the
              * specified configuration.
              *
+             * @param featureMatrix               A reference to an object of type `IFeatureMatrix` that provides access
+             *                                    to the feature values of the training examples
+             * @param labelMatrix                 A reference to an object of type `IRowWiseLabelMatrix` that provides
+             *                                    access to the labels of the training examples
+             * @param lossFactoryPtr              A reference to an unique pointer that stores an object of type
+             *                                    `IDecomposableClassificationLossFactory` that allows to create the
+             *                                    loss function that should be used
+             * @param evaluationMeasureFactoryPtr A reference to an unique pointer that stores an object of type
+             *                                    `IClassificationEvaluationMeasureFactory` that allows to create the
+             *                                    measure that should be used to assess the quality of scores that are
+             *                                    predicted for certain examples by comparing them to the corresponding
+             *                                    ground truth
+             * @return                            An unique pointer to an object of type
+             *                                    `IClassificationStatisticsProviderFactory` that has been created
+             */
+            virtual std::unique_ptr<IClassificationStatisticsProviderFactory>
+              createClassificationStatisticsProviderFactory(
+                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+                std::unique_ptr<IDecomposableClassificationLossFactory<float64>>& lossFactoryPtr,
+                std::unique_ptr<IClassificationEvaluationMeasureFactory<float64>>& evaluationMeasureFactoryPtr)
+                const = 0;
+
+            /**
+             * Creates and returns a new object of type `IClassificationStatisticsProviderFactory` according to the
+             * specified configuration.
+             *
+             * @param featureMatrix               A reference to an object of type `IFeatureMatrix` that provides access
+             *                                    to the feature values of the training examples
+             * @param labelMatrix                 A reference to an object of type `IRowWiseLabelMatrix` that provides
+             *                                    access to the labels of the training examples
+             * @param lossFactoryPtr              A reference to an unique pointer that stores an object of type
+             *                                    `ISparseDecomposableClassificationLossFactory` that allows to create
+             *                                    the loss function that should be used
+             * @param evaluationMeasureFactoryPtr A reference to an unique pointer that stores an object of type
+             *                                    `IClassificationEvaluationMeasureFactory` that allows to create the
+             *                                    measure that should be used to assess the quality of scores that are
+             *                                    predicted for certain examples by comparing them to the corresponding
+             *                                    ground truth
+             * @return                            An unique pointer to an object of type
+             *                                    `IClassificationStatisticsProviderFactory` that has been created
+             */
+            virtual std::unique_ptr<IClassificationStatisticsProviderFactory>
+              createClassificationStatisticsProviderFactory(
+                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+                std::unique_ptr<ISparseDecomposableClassificationLossFactory<float64>>& lossFactoryPtr,
+                std::unique_ptr<ISparseEvaluationMeasureFactory<float64>>& evaluationMeasureFactoryPtr) const = 0;
+
+            /**
+             * Creates and returns a new object of type `IClassificationStatisticsProviderFactory` according to the
+             * specified configuration.
+             *
+             * @param featureMatrix               A reference to an object of type `IFeatureMatrix` that provides access
+             *                                    to the feature values of the training examples
+             * @param labelMatrix                 A reference to an object of type `IRowWiseLabelMatrix` that provides
+             *                                    access to the labels of the training examples
+             * @param lossFactoryPtr              A reference to an unique pointer that stores an object of type
+             *                                    `INonDecomposableClassificationLossFactory` that allows to create the
+             *                                    loss function that should be used
+             * @param evaluationMeasureFactoryPtr A reference to an unique pointer that stores an object of type
+             *                                    `IClassificationEvaluationMeasureFactory` that allows to create the
+             *                                    measure that should be used to assess the quality of scores that are
+             *                                    predicted for certain examples by comparing them to the corresponding
+             *                                    ground truth
+             * @param blasFactory                 A reference to an object of type `BlasFactory` that allows to create
+             *                                    objects for executing BLAS routines
+             * @param lapackFactory               A reference to an object of type `LapackFactory` that allows to create
+             *                                    objects for executing LAPACK routines
+             * @return                            An unique pointer to an object of type
+             *                                    `IClassificationStatisticsProviderFactory` that has been created
+             */
+            virtual std::unique_ptr<IClassificationStatisticsProviderFactory>
+              createClassificationStatisticsProviderFactory(
+                const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+                std::unique_ptr<INonDecomposableClassificationLossFactory<float64>>& lossFactoryPtr,
+                std::unique_ptr<IClassificationEvaluationMeasureFactory<float64>>& evaluationMeasureFactoryPtr,
+                const BlasFactory& blasFactory, const LapackFactory& lapackFactory) const = 0;
+
+            /**
+             * Creates and returns a new object of type `IRegressionStatisticsProviderFactory` according to the
+             * specified configuration.
+             *
+             * @param featureMatrix               A reference to an object of type `IFeatureMatrix` that provides access
+             *                                    to the feature values of the training examples
+             * @param regressionMatrix            A reference to an object of type `IRowWiseLabelMatrix` that provides
+             *                                    access to the labels of the training examples
+             * @param lossFactoryPtr              A reference to an unique pointer that stores an object of type
+             *                                    `IDecomposableRegressionLossFactory` that allows to create the loss
+             *                                    function that should be used
+             * @param evaluationMeasureFactoryPtr A reference to an unique pointer that stores an object of type
+             *                                    `IRegressionEvaluationMeasureFactory` that allows to create the
+             *                                    measure that should be used to assess the quality of scores that are
+             *                                    predicted for certain examples by comparing them to the corresponding
+             *                                    ground truth
+             * @return                            An unique pointer to an object of type
+             *                                    `IRegressionStatisticsProviderFactory` that has been created
+             */
+            virtual std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+              std::unique_ptr<IDecomposableRegressionLossFactory<float64>>& lossFactoryPtr,
+              std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>>& evaluationMeasureFactoryPtr) const = 0;
+
+            /**
+             * Creates and returns a new object of type `IRegressionStatisticsProviderFactory` according to the
+             * specified configuration.
+             *
+             * @param featureMatrix               A reference to an object of type `IFeatureMatrix` that provides access
+             *                                    to the feature values of the training examples
+             * @param regressionMatrix            A reference to an object of type `IRowWiseLabelMatrix` that provides
+             *                                    access to the labels of the training examples
+             * @param lossFactoryPtr              A reference to an unique pointer that stores an object of type
+             *                                    `INonDecomposableRegressionLossFactory` that allows to create the loss
+             *                                    function that should be used
+             * @param evaluationMeasureFactoryPtr A reference to an unique pointer that stores an object of type
+             *                                    `IRegressionEvaluationMeasureFactory` that allows to create the
+             *                                    measure that should be used to assess the quality of scores that are
+             *                                    predicted for certain examples by comparing them to the corresponding
+             *                                    ground truth
+             * @param blasFactory                 A reference to an object of type `BlasFactory` that allows to create
+             *                                    objects for executing BLAS routines
+             * @param lapackFactory               A reference to an object of type `LapackFactory` that allows to create
+             *                                    objects for executing LAPACK routines
+             * @return                            An unique pointer to an object of type
+             *                                    `IRegressionStatisticsProviderFactory` that has been created
+             */
+            virtual std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+              std::unique_ptr<INonDecomposableRegressionLossFactory<float64>>& lossFactoryPtr,
+              std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>>& evaluationMeasureFactoryPtr,
+              const BlasFactory& blasFactory, const LapackFactory& lapackFactory) const = 0;
+
+            /**
+             * Creates and returns a new object of type `IClassificationStatisticsProviderFactory` according to the
+             * specified configuration.
+             *
              * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the
              *                      feature values of the training examples
              * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides access to the
@@ -36,6 +172,7 @@ namespace boosting {
              * @return              An unique pointer to an object of type `IClassificationStatisticsProviderFactory`
              *                      that has been created
              */
+            // TODO Remove
             virtual std::unique_ptr<IClassificationStatisticsProviderFactory>
               createClassificationStatisticsProviderFactory(
                 const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
@@ -54,6 +191,7 @@ namespace boosting {
              * @return              An unique pointer to an object of type `IClassificationStatisticsProviderFactory`
              *                      that has been created
              */
+            // TODO Remove
             virtual std::unique_ptr<IClassificationStatisticsProviderFactory>
               createClassificationStatisticsProviderFactory(
                 const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
@@ -76,6 +214,7 @@ namespace boosting {
              * @return              An unique pointer to an object of type `IClassificationStatisticsProviderFactory`
              *                      that has been created
              */
+            // TODO Remove
             virtual std::unique_ptr<IClassificationStatisticsProviderFactory>
               createClassificationStatisticsProviderFactory(const IFeatureMatrix& featureMatrix,
                                                             const IRowWiseLabelMatrix& labelMatrix,
@@ -96,6 +235,7 @@ namespace boosting {
              * @return                  An unique pointer to an object of type `IRegressionStatisticsProviderFactory`
              *                          that has been created
              */
+            // TODO Remove
             virtual std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
               const IDecomposableRegressionLossConfig& lossConfig) const = 0;
@@ -117,6 +257,7 @@ namespace boosting {
              * @return                  An unique pointer to an object of type `IRegressionStatisticsProviderFactory`
              *                          that has been created
              */
+            // TODO Remove
             virtual std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
               const INonDecomposableRegressionLossConfig& lossConfig, const BlasFactory& blasFactory,
