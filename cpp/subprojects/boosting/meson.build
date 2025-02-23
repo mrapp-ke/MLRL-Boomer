@@ -65,6 +65,8 @@ source_files = [
     'src/mlrl/boosting/statistics/statistic_format_auto.cpp',
     'src/mlrl/boosting/statistics/statistic_format_dense.cpp',
     'src/mlrl/boosting/statistics/statistic_format_sparse.cpp',
+    'src/mlrl/boosting/statistics/statistic_type_float32.cpp',
+    'src/mlrl/boosting/statistics/statistic_type_float64.cpp',
     'src/mlrl/boosting/statistics/statistics_provider_decomposable_dense.cpp',
     'src/mlrl/boosting/statistics/statistics_provider_decomposable_sparse.cpp',
     'src/mlrl/boosting/statistics/statistics_provider_non_decomposable_dense.cpp',
