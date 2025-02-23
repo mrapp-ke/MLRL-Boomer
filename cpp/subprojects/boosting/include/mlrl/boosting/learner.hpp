@@ -572,7 +572,7 @@ namespace boosting {
              * error loss that is non-decomposable.
              */
             virtual void useNonDecomposableSquaredErrorLoss() {
-                auto ptr = std::make_shared<NonDecomposableSquaredErrorLossConfig>(this->getHeadConfig());
+                auto ptr = std::make_shared<NonDecomposableSquaredErrorLossConfig>(this->getStatisticTypeConfig());
                 this->getClassificationLossConfig().set(ptr);
                 this->getRegressionLossConfig().set(ptr);
             }
@@ -592,7 +592,7 @@ namespace boosting {
              * error loss that is decomposable.
              */
             virtual void useDecomposableSquaredErrorLoss() {
-                auto ptr = std::make_shared<DecomposableSquaredErrorLossConfig>(this->getHeadConfig());
+                auto ptr = std::make_shared<DecomposableSquaredErrorLossConfig>(this->getStatisticTypeConfig());
                 this->getClassificationLossConfig().set(ptr);
                 this->getRegressionLossConfig().set(ptr);
             }
