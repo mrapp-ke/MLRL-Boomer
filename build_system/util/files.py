@@ -410,7 +410,7 @@ class FileSearch:
         subdirectories = self.directory_search.list(*directories) if self.directory_search.recursive else []
 
         def filter_file(file: str) -> bool:
-            if path.isfile(file) and (self.symlinks or not path.islink(file)):
+            if path.isfile(file) or (path.islink(file) and self.symlinks):
                 parent = path.dirname(file)
                 file_name = path.basename(file)
 
