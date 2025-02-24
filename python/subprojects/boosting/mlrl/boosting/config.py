@@ -12,11 +12,11 @@ from mlrl.common.cython.learner import DefaultRuleMixin, NoJointProbabilityCalib
     NoMarginalProbabilityCalibrationMixin, NoPostProcessorMixin
 from mlrl.common.options import BooleanOption, Options
 
-from mlrl.boosting.cython.learner import AutomaticFeatureBinningMixin, AutomaticParallelRuleRefinementMixin, \
-    AutomaticParallelStatisticUpdateMixin, CompleteHeadMixin, ConstantShrinkageMixin, \
-    DecomposableSquaredErrorLossMixin, DynamicPartialHeadMixin, FixedPartialHeadMixin, L1RegularizationMixin, \
-    L2RegularizationMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, NonDecomposableSquaredErrorLossMixin, \
-    SingleOutputHeadMixin
+from mlrl.boosting.cython.learner import AutomaticFeatureBinningMixin, AutomaticHeadMixin, \
+    AutomaticParallelRuleRefinementMixin, AutomaticParallelStatisticUpdateMixin, CompleteHeadMixin, \
+    ConstantShrinkageMixin, DecomposableSquaredErrorLossMixin, DynamicPartialHeadMixin, FixedPartialHeadMixin, \
+    L1RegularizationMixin, L2RegularizationMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, \
+    NonDecomposableSquaredErrorLossMixin, SingleOutputHeadMixin
 from mlrl.boosting.cython.learner_classification import AutomaticBinaryPredictorMixin, AutomaticDefaultRuleMixin, \
     AutomaticLabelBinningMixin, AutomaticPartitionSamplingMixin, AutomaticProbabilityPredictorMixin, \
     AutomaticStatisticsMixin, DecomposableLogisticLossMixin, DecomposableSquaredHingeLossMixin, DenseStatisticsMixin, \
@@ -328,6 +328,10 @@ class HeadTypeParameter(NominalParameter):
                        mixin=DynamicPartialHeadMixin,
                        options={self.OPTION_THRESHOLD, self.OPTION_EXPONENT})
         self.add_value(name=self.HEAD_TYPE_COMPLETE, mixin=CompleteHeadMixin)
+        self.add_value(name=AUTOMATIC,
+                       mixin=AutomaticHeadMixin,
+                       description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
+                       + 'based on the parameter ' + RegressionLossParameter().argument_name)
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == self.HEAD_TYPE_SINGLE:
