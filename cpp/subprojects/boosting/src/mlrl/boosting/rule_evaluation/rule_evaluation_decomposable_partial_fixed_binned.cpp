@@ -19,27 +19,30 @@ namespace boosting {
         : public AbstractDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector> {
         private:
 
+            typedef typename StatisticVector::statistic_type statistic_type;
+
             const IndexVector& labelIndices_;
 
             const std::unique_ptr<PartialIndexVector> indexVectorPtr_;
 
-            SparseArrayVector<float64> tmpVector_;
+            SparseArrayVector<statistic_type> tmpVector_;
 
         protected:
 
-            uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector, float64* criteria,
-                                               uint32 numCriteria, float64 l1RegularizationWeight,
-                                               float64 l2RegularizationWeight) override {
+            uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector,
+                                               typename View<statistic_type>::iterator criteria, uint32 numCriteria,
+                                               float32 l1RegularizationWeight,
+                                               float32 l2RegularizationWeight) override {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                SparseArrayVector<float64>::iterator tmpIterator = tmpVector_.begin();
+                typename SparseArrayVector<statistic_type>::iterator tmpIterator = tmpVector_.begin();
                 sortOutputWiseScores(tmpIterator, statisticIterator, numElements, numCriteria, l1RegularizationWeight,
                                      l2RegularizationWeight);
                 PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
                 typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
-                    const IndexedValue<float64>& entry = tmpIterator[i];
+                    const IndexedValue<statistic_type>& entry = tmpIterator[i];
                     indexIterator[i] = labelIndexIterator[entry.index];
                     criteria[i] = entry.value;
                 }
@@ -63,8 +66,8 @@ namespace boosting {
              */
             DecomposableFixedPartialBinnedRuleEvaluation(const IndexVector& labelIndices,
                                                          std::unique_ptr<PartialIndexVector> indexVectorPtr,
-                                                         float64 l1RegularizationWeight, float64 l2RegularizationWeight,
-                                                         std::unique_ptr<ILabelBinning> binningPtr)
+                                                         float32 l1RegularizationWeight, float32 l2RegularizationWeight,
+                                                         std::unique_ptr<ILabelBinning<statistic_type>> binningPtr)
                 : AbstractDecomposableBinnedRuleEvaluation<StatisticVector, PartialIndexVector>(
                     *indexVectorPtr, false, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr)),
                   labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)),
@@ -72,75 +75,145 @@ namespace boosting {
     };
 
     DecomposableFixedPartialBinnedRuleEvaluationFactory::DecomposableFixedPartialBinnedRuleEvaluationFactory(
-      float32 labelRatio, uint32 minLabels, uint32 maxLabels, float64 l1RegularizationWeight,
-      float64 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr)
+      float32 labelRatio, uint32 minLabels, uint32 maxLabels, float32 l1RegularizationWeight,
+      float32 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr)
         : labelRatio_(labelRatio), minLabels_(minLabels), maxLabels_(maxLabels),
           l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
           labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>>
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float32>>>
       DecomposableFixedPartialBinnedRuleEvaluationFactory::create(
-        const DenseDecomposableStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
-        std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(
-          util::calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_));
-        std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
-        return std::make_unique<
-          DecomposableFixedPartialBinnedRuleEvaluation<DenseDecomposableStatisticVector, CompleteIndexVector>>(
-          indexVector, std::move(indexVectorPtr), l1RegularizationWeight_, l2RegularizationWeight_,
-          std::move(labelBinningPtr));
-    }
-
-    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>>
-      DecomposableFixedPartialBinnedRuleEvaluationFactory::create(
-        const DenseDecomposableStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
-        std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
-        return std::make_unique<
-          DecomposableCompleteBinnedRuleEvaluation<DenseDecomposableStatisticVector, PartialIndexVector>>(
-          indexVector, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr));
-    }
-
-    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<uint32>>>
-      DecomposableFixedPartialBinnedRuleEvaluationFactory::create(
-        const SparseDecomposableStatisticVector<uint32>& statisticVector,
+        const DenseDecomposableStatisticVector<float32>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(
           util::calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_));
-        std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
+        std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
         return std::make_unique<
-          DecomposableFixedPartialBinnedRuleEvaluation<SparseDecomposableStatisticVector<uint32>, CompleteIndexVector>>(
+          DecomposableFixedPartialBinnedRuleEvaluation<DenseDecomposableStatisticVector<float32>, CompleteIndexVector>>(
           indexVector, std::move(indexVectorPtr), l1RegularizationWeight_, l2RegularizationWeight_,
           std::move(labelBinningPtr));
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<uint32>>>
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float32>>>
       DecomposableFixedPartialBinnedRuleEvaluationFactory::create(
-        const SparseDecomposableStatisticVector<uint32>& statisticVector, const PartialIndexVector& indexVector) const {
-        std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
+        const DenseDecomposableStatisticVector<float32>& statisticVector, const PartialIndexVector& indexVector) const {
+        std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
         return std::make_unique<
-          DecomposableCompleteBinnedRuleEvaluation<SparseDecomposableStatisticVector<uint32>, PartialIndexVector>>(
+          DecomposableCompleteBinnedRuleEvaluation<DenseDecomposableStatisticVector<float32>, PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr));
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32>>>
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>>
       DecomposableFixedPartialBinnedRuleEvaluationFactory::create(
-        const SparseDecomposableStatisticVector<float32>& statisticVector,
+        const DenseDecomposableStatisticVector<float64>& statisticVector,
         const CompleteIndexVector& indexVector) const {
         std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(
           util::calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_));
-        std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
-        return std::make_unique<DecomposableFixedPartialBinnedRuleEvaluation<SparseDecomposableStatisticVector<float32>,
-                                                                             CompleteIndexVector>>(
+        std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
+        return std::make_unique<
+          DecomposableFixedPartialBinnedRuleEvaluation<DenseDecomposableStatisticVector<float64>, CompleteIndexVector>>(
           indexVector, std::move(indexVectorPtr), l1RegularizationWeight_, l2RegularizationWeight_,
           std::move(labelBinningPtr));
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32>>>
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>>
       DecomposableFixedPartialBinnedRuleEvaluationFactory::create(
-        const SparseDecomposableStatisticVector<float32>& statisticVector,
+        const DenseDecomposableStatisticVector<float64>& statisticVector, const PartialIndexVector& indexVector) const {
+        std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
+        return std::make_unique<
+          DecomposableCompleteBinnedRuleEvaluation<DenseDecomposableStatisticVector<float64>, PartialIndexVector>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr));
+    }
+
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, uint32>>>
+      DecomposableFixedPartialBinnedRuleEvaluationFactory::create(
+        const SparseDecomposableStatisticVector<float32, uint32>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
+        std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(
+          util::calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_));
+        std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
+        return std::make_unique<DecomposableFixedPartialBinnedRuleEvaluation<
+          SparseDecomposableStatisticVector<float32, uint32>, CompleteIndexVector>>(
+          indexVector, std::move(indexVectorPtr), l1RegularizationWeight_, l2RegularizationWeight_,
+          std::move(labelBinningPtr));
+    }
+
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, uint32>>>
+      DecomposableFixedPartialBinnedRuleEvaluationFactory::create(
+        const SparseDecomposableStatisticVector<float32, uint32>& statisticVector,
         const PartialIndexVector& indexVector) const {
-        std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
-        return std::make_unique<
-          DecomposableCompleteBinnedRuleEvaluation<SparseDecomposableStatisticVector<float32>, PartialIndexVector>>(
+        std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
+        return std::make_unique<DecomposableCompleteBinnedRuleEvaluation<
+          SparseDecomposableStatisticVector<float32, uint32>, PartialIndexVector>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr));
+    }
+
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, float32>>>
+      DecomposableFixedPartialBinnedRuleEvaluationFactory::create(
+        const SparseDecomposableStatisticVector<float32, float32>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
+        std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(
+          util::calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_));
+        std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
+        return std::make_unique<DecomposableFixedPartialBinnedRuleEvaluation<
+          SparseDecomposableStatisticVector<float32, float32>, CompleteIndexVector>>(
+          indexVector, std::move(indexVectorPtr), l1RegularizationWeight_, l2RegularizationWeight_,
+          std::move(labelBinningPtr));
+    }
+
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, float32>>>
+      DecomposableFixedPartialBinnedRuleEvaluationFactory::create(
+        const SparseDecomposableStatisticVector<float32, float32>& statisticVector,
+        const PartialIndexVector& indexVector) const {
+        std::unique_ptr<ILabelBinning<float32>> labelBinningPtr = labelBinningFactoryPtr_->create32Bit();
+        return std::make_unique<DecomposableCompleteBinnedRuleEvaluation<
+          SparseDecomposableStatisticVector<float32, float32>, PartialIndexVector>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr));
+    }
+
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float64, uint32>>>
+      DecomposableFixedPartialBinnedRuleEvaluationFactory::create(
+        const SparseDecomposableStatisticVector<float64, uint32>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
+        std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(
+          util::calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_));
+        std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
+        return std::make_unique<DecomposableFixedPartialBinnedRuleEvaluation<
+          SparseDecomposableStatisticVector<float64, uint32>, CompleteIndexVector>>(
+          indexVector, std::move(indexVectorPtr), l1RegularizationWeight_, l2RegularizationWeight_,
+          std::move(labelBinningPtr));
+    }
+
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float64, uint32>>>
+      DecomposableFixedPartialBinnedRuleEvaluationFactory::create(
+        const SparseDecomposableStatisticVector<float64, uint32>& statisticVector,
+        const PartialIndexVector& indexVector) const {
+        std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
+        return std::make_unique<DecomposableCompleteBinnedRuleEvaluation<
+          SparseDecomposableStatisticVector<float64, uint32>, PartialIndexVector>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr));
+    }
+
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float64, float32>>>
+      DecomposableFixedPartialBinnedRuleEvaluationFactory::create(
+        const SparseDecomposableStatisticVector<float64, float32>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
+        std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(
+          util::calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_));
+        std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
+        return std::make_unique<DecomposableFixedPartialBinnedRuleEvaluation<
+          SparseDecomposableStatisticVector<float64, float32>, CompleteIndexVector>>(
+          indexVector, std::move(indexVectorPtr), l1RegularizationWeight_, l2RegularizationWeight_,
+          std::move(labelBinningPtr));
+    }
+
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float64, float32>>>
+      DecomposableFixedPartialBinnedRuleEvaluationFactory::create(
+        const SparseDecomposableStatisticVector<float64, float32>& statisticVector,
+        const PartialIndexVector& indexVector) const {
+        std::unique_ptr<ILabelBinning<float64>> labelBinningPtr = labelBinningFactoryPtr_->create64Bit();
+        return std::make_unique<DecomposableCompleteBinnedRuleEvaluation<
+          SparseDecomposableStatisticVector<float64, float32>, PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr));
     }
 

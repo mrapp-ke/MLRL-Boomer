@@ -45,9 +45,9 @@ class IStatisticsSubset {
          * to the subset via the function `addToSubset`, as well as a numerical score that assesses the overall quality
          * of the predicted scores.
          *
-         * @return An unique pointer to an object of type `StatisticsUpdateCandidate` that stores the scores to be
+         * @return An unique pointer to an object of type `IStatisticsUpdateCandidate` that stores the scores to be
          *         predicted by the rule for each considered output, as well as a numerical score that assesses their
          *         overall quality
          */
-        virtual std::unique_ptr<StatisticsUpdateCandidate> calculateScores() = 0;
+        virtual std::unique_ptr<IStatisticsUpdateCandidate> calculateScores() = 0;
 };

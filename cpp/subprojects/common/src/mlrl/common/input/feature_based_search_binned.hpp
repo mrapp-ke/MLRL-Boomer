@@ -30,7 +30,7 @@ static inline void searchForBinnedRefinementInternally(const BinnedFeatureVector
             // Check if a condition using the <= operator covers at least `minCoverage` examples...
             if (numCovered >= minCoverage) {
                 // Determine the best prediction for the examples covered by a condition using the <= operator...
-                std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScores();
+                std::unique_ptr<IStatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScores();
 
                 // Check if the quality of the prediction is better than the quality of the current rule...
                 if (comparator.isImprovement(*updateCandidatePtr)) {
@@ -49,7 +49,7 @@ static inline void searchForBinnedRefinementInternally(const BinnedFeatureVector
 
             if (numUncovered >= minCoverage) {
                 // Determine the best prediction for examples covered by a condition using the > operator...
-                std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+                std::unique_ptr<IStatisticsUpdateCandidate> updateCandidatePtr =
                   statisticsSubset.calculateScoresUncovered();
 
                 // Check if the quality of the prediction is better than the quality of the current rule...
@@ -87,7 +87,7 @@ static inline void searchForBinnedRefinementInternally(const BinnedFeatureVector
             // Check if a condition using the > operator covers at least `minCoverage` examples...
             if (numCovered >= minCoverage) {
                 // Determine the best prediction for the covered examples...
-                std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScores();
+                std::unique_ptr<IStatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScores();
 
                 // Check if the quality of the prediction is better than the quality of the current rule...
                 if (comparator.isImprovement(*updateCandidatePtr)) {
@@ -106,7 +106,7 @@ static inline void searchForBinnedRefinementInternally(const BinnedFeatureVector
 
             if (numUncovered >= minCoverage) {
                 // Determine the best prediction for the covered examples...
-                std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+                std::unique_ptr<IStatisticsUpdateCandidate> updateCandidatePtr =
                   statisticsSubset.calculateScoresUncovered();
 
                 // Check if the quality of the prediction is better than the quality of the current rule...
@@ -130,7 +130,7 @@ static inline void searchForBinnedRefinementInternally(const BinnedFeatureVector
     // examples...
     if (numCovered >= minCoverage) {
         // Determine the best prediction for examples covered by the condition...
-        std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScores();
+        std::unique_ptr<IStatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScores();
 
         // Check if the quality of the prediction is better than the quality of the current rule...
         if (comparator.isImprovement(*updateCandidatePtr)) {
@@ -150,7 +150,7 @@ static inline void searchForBinnedRefinementInternally(const BinnedFeatureVector
 
     if (numUncovered >= minCoverage) {
         // Determine the best prediction for examples covered by the condition...
-        std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScores();
+        std::unique_ptr<IStatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScores();
 
         // Check if the quality of the prediction is better than the quality of the current rule...
         if (comparator.isImprovement(*updateCandidatePtr)) {
@@ -171,7 +171,7 @@ static inline void searchForBinnedRefinementInternally(const BinnedFeatureVector
         // examples...
         if (numCoveredLessThanSparseBinIndex >= minCoverage) {
             // Determine the best prediction for the examples covered by the condition...
-            std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+            std::unique_ptr<IStatisticsUpdateCandidate> updateCandidatePtr =
               statisticsSubset.calculateScoresAccumulated();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
@@ -192,7 +192,7 @@ static inline void searchForBinnedRefinementInternally(const BinnedFeatureVector
 
         if (numUncovered >= minCoverage) {
             // Determine the best prediction for the examples covered by the condition...
-            std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+            std::unique_ptr<IStatisticsUpdateCandidate> updateCandidatePtr =
               statisticsSubset.calculateScoresUncoveredAccumulated();
 
             // Check if the quality of the prediction is better than the quality of the current rule...

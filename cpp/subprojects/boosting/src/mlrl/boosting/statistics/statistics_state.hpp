@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/statistics/statistics_state.hpp"
+#include "mlrl/common/statistics/statistics_update_candidate_common.hpp"
 
 #include <memory>
 
@@ -20,11 +20,130 @@ namespace boosting {
      * @tparam OutputMatrix     The type of the matrix that provides access to the ground truth of the training examples
      * @tparam StatisticMatrix  The type of the matrix that provides access to the gradients and Hessians
      * @tparam ScoreMatrix      The type of the matrix that is used to store predicted scores
-     * @tparam LossFunction     The type of the loss function that is used to calculate gradients and Hessians
+     * @tparam Loss             The type of the loss function that is used to calculate gradients and Hessians
      */
-    template<typename OutputMatrix, typename StatisticMatrix, typename ScoreMatrix, typename LossFunction>
-    class AbstractStatisticsState : public IStatisticsState {
+    template<typename OutputMatrix, typename StatisticMatrix, typename ScoreMatrix, typename Loss>
+    class AbstractBoostingStatisticsState : public IStatisticsState<typename ScoreMatrix::value_type> {
+        private:
+
+            /**
+             * Stores scores that have been calculated based on gradients and Hessians, represented by 32-bit floating
+             * point values, and allows to update these gradients and Hessians accordingly.
+             */
+            class Float32UpdateCandidate final : public AbstractStatisticsUpdateCandidate {
+                private:
+
+                    IStatisticsState<float32>& state_;
+
+                protected:
+
+                    void invokeVisitor(
+                      DenseVisitor<float32, CompleteIndexVector> visitor,
+                      const DenseScoreVector<float32, CompleteIndexVector>& scoreVector) const override {
+                        StatisticsUpdateFactory<IStatisticsState<float32>> statisticsUpdateFactory(state_);
+                        visitor(scoreVector, statisticsUpdateFactory);
+                    }
+
+                    void invokeVisitor(
+                      DenseVisitor<float32, PartialIndexVector> visitor,
+                      const DenseScoreVector<float32, PartialIndexVector>& scoreVector) const override {
+                        StatisticsUpdateFactory<IStatisticsState<float32>> statisticsUpdateFactory(state_);
+                        visitor(scoreVector, statisticsUpdateFactory);
+                    }
+
+                    void invokeVisitor(
+                      DenseBinnedVisitor<float32, CompleteIndexVector> visitor,
+                      const DenseBinnedScoreVector<float32, CompleteIndexVector>& scoreVector) const override {
+                        StatisticsUpdateFactory<IStatisticsState<float32>> statisticsUpdateFactory(state_);
+                        visitor(scoreVector, statisticsUpdateFactory);
+                    }
+
+                    void invokeVisitor(
+                      DenseBinnedVisitor<float32, PartialIndexVector> visitor,
+                      const DenseBinnedScoreVector<float32, PartialIndexVector>& scoreVector) const override {
+                        StatisticsUpdateFactory<IStatisticsState<float32>> statisticsUpdateFactory(state_);
+                        visitor(scoreVector, statisticsUpdateFactory);
+                    }
+
+                public:
+
+                    /**
+                     * @param state         A reference to an object of template type `IStatisticsState<float32>` that
+                     *                      represents the state of the boosting process
+                     * @param scoreVector   A reference to an object of type `IScoreVector` that stores the calculated
+                     *                      scores
+                     */
+                    Float32UpdateCandidate(IStatisticsState<float32>& state, const IScoreVector& scoreVector)
+                        : AbstractStatisticsUpdateCandidate(scoreVector), state_(state) {}
+            };
+
+            /**
+             * Stores scores that have been calculated based on gradients and Hessians, represented by 64-bit floating
+             * point values, and allows to update these gradients and Hessians accordingly.
+             */
+            class Float64UpdateCandidate final : public AbstractStatisticsUpdateCandidate {
+                private:
+
+                    IStatisticsState<float64>& state_;
+
+                protected:
+
+                    void invokeVisitor(
+                      DenseVisitor<float64, CompleteIndexVector> visitor,
+                      const DenseScoreVector<float64, CompleteIndexVector>& scoreVector) const override {
+                        StatisticsUpdateFactory<IStatisticsState<float64>> statisticsUpdateFactory(state_);
+                        visitor(scoreVector, statisticsUpdateFactory);
+                    }
+
+                    void invokeVisitor(
+                      DenseVisitor<float64, PartialIndexVector> visitor,
+                      const DenseScoreVector<float64, PartialIndexVector>& scoreVector) const override {
+                        StatisticsUpdateFactory<IStatisticsState<float64>> statisticsUpdateFactory(state_);
+                        visitor(scoreVector, statisticsUpdateFactory);
+                    }
+
+                    void invokeVisitor(
+                      DenseBinnedVisitor<float64, CompleteIndexVector> visitor,
+                      const DenseBinnedScoreVector<float64, CompleteIndexVector>& scoreVector) const override {
+                        StatisticsUpdateFactory<IStatisticsState<float64>> statisticsUpdateFactory(state_);
+                        visitor(scoreVector, statisticsUpdateFactory);
+                    }
+
+                    void invokeVisitor(
+                      DenseBinnedVisitor<float64, PartialIndexVector> visitor,
+                      const DenseBinnedScoreVector<float64, PartialIndexVector>& scoreVector) const override {
+                        StatisticsUpdateFactory<IStatisticsState<float64>> statisticsUpdateFactory(state_);
+                        visitor(scoreVector, statisticsUpdateFactory);
+                    }
+
+                public:
+
+                    /**
+                     * @param state         A reference to an object of template type `IStatisticsState<float64>` that
+                     *                      represents the state of the boosting process
+                     * @param scoreVector   A reference to an object of type `IScoreVector` that stores the calculated
+                     *                      scores
+                     */
+                    Float64UpdateCandidate(IStatisticsState<float64>& state, const IScoreVector& scoreVector)
+                        : AbstractStatisticsUpdateCandidate(scoreVector), state_(state) {}
+            };
+
+            static inline std::unique_ptr<IStatisticsUpdateCandidate> createUpdateCandidateInternally(
+              IStatisticsState<float32>& state, const IScoreVector& scoreVector) {
+                return std::make_unique<Float32UpdateCandidate>(state, scoreVector);
+            }
+
+            static inline std::unique_ptr<IStatisticsUpdateCandidate> createUpdateCandidateInternally(
+              IStatisticsState<float64>& state, const IScoreVector& scoreVector) {
+                return std::make_unique<Float64UpdateCandidate>(state, scoreVector);
+            }
+
         public:
+
+            /**
+             * The type of the scores that are used for updating the state.
+             */
+            typedef typename ScoreMatrix::value_type score_type;
 
             /**
              * A reference to an object of template type `OutputMatrix` that provides access to the ground truth of the
@@ -43,10 +162,10 @@ namespace boosting {
             std::unique_ptr<ScoreMatrix> scoreMatrixPtr;
 
             /**
-             * An unique pointer to an object of template type `LossFunction` that is used for calculating gradients and
+             * An unique pointer to an object of template type `Loss` that is used for calculating gradients and
              * Hessians.
              */
-            std::unique_ptr<LossFunction> lossFunctionPtr;
+            std::unique_ptr<Loss> lossFunctionPtr;
 
         protected:
 
@@ -81,46 +200,55 @@ namespace boosting {
              *                              stores the gradients and Hessians
              * @param scoreMatrixPtr        An unique pointer to an object of template type `ScoreMatrix` that stores
              *                              the currently predicted scores
-             * @param lossFunctionPtr       An unique pointer to the an object of template type `LossFunction` that
-             *                              should be used for calculating gradients and Hessians
+             * @param lossFunctionPtr       An unique pointer to the an object of template type `Loss` that should be
+             *                              used for calculating gradients and Hessians
              */
-            AbstractStatisticsState(const OutputMatrix& outputMatrix,
-                                    std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
-                                    std::unique_ptr<ScoreMatrix> scoreMatrixPtr,
-                                    std::unique_ptr<LossFunction> lossFunctionPtr)
+            AbstractBoostingStatisticsState(const OutputMatrix& outputMatrix,
+                                            std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
+                                            std::unique_ptr<ScoreMatrix> scoreMatrixPtr,
+                                            std::unique_ptr<Loss> lossFunctionPtr)
                 : outputMatrix(outputMatrix), statisticMatrixPtr(std::move(statisticMatrixPtr)),
                   scoreMatrixPtr(std::move(scoreMatrixPtr)), lossFunctionPtr(std::move(lossFunctionPtr)) {}
 
-            virtual ~AbstractStatisticsState() {}
+            virtual ~AbstractBoostingStatisticsState() {}
 
-            void update(uint32 statisticIndex, View<float64>::const_iterator scoresBegin,
-                        View<float64>::const_iterator scoresEnd, CompleteIndexVector::const_iterator indicesBegin,
+            void update(uint32 statisticIndex, typename View<score_type>::const_iterator scoresBegin,
+                        typename View<score_type>::const_iterator scoresEnd,
+                        CompleteIndexVector::const_iterator indicesBegin,
                         CompleteIndexVector::const_iterator indicesEnd) override final {
                 scoreMatrixPtr->addToRowFromSubset(statisticIndex, scoresBegin, scoresEnd, indicesBegin, indicesEnd);
                 updateStatistics(statisticIndex, indicesBegin, indicesEnd);
             }
 
-            void update(uint32 statisticIndex, View<float64>::const_iterator scoresBegin,
-                        View<float64>::const_iterator scoresEnd, PartialIndexVector::const_iterator indicesBegin,
+            void update(uint32 statisticIndex, typename View<score_type>::const_iterator scoresBegin,
+                        typename View<score_type>::const_iterator scoresEnd,
+                        PartialIndexVector::const_iterator indicesBegin,
                         PartialIndexVector::const_iterator indicesEnd) override final {
                 scoreMatrixPtr->addToRowFromSubset(statisticIndex, scoresBegin, scoresEnd, indicesBegin, indicesEnd);
                 updateStatistics(statisticIndex, indicesBegin, indicesEnd);
             }
 
-            void revert(uint32 statisticIndex, View<float64>::const_iterator scoresBegin,
-                        View<float64>::const_iterator scoresEnd, CompleteIndexVector::const_iterator indicesBegin,
+            void revert(uint32 statisticIndex, typename View<score_type>::const_iterator scoresBegin,
+                        typename View<score_type>::const_iterator scoresEnd,
+                        CompleteIndexVector::const_iterator indicesBegin,
                         CompleteIndexVector::const_iterator indicesEnd) override final {
                 scoreMatrixPtr->removeFromRowFromSubset(statisticIndex, scoresBegin, scoresEnd, indicesBegin,
                                                         indicesEnd);
                 updateStatistics(statisticIndex, indicesBegin, indicesEnd);
             }
 
-            void revert(uint32 statisticIndex, View<float64>::const_iterator scoresBegin,
-                        View<float64>::const_iterator scoresEnd, PartialIndexVector::const_iterator indicesBegin,
+            void revert(uint32 statisticIndex, typename View<score_type>::const_iterator scoresBegin,
+                        typename View<score_type>::const_iterator scoresEnd,
+                        PartialIndexVector::const_iterator indicesBegin,
                         PartialIndexVector::const_iterator indicesEnd) override final {
                 scoreMatrixPtr->removeFromRowFromSubset(statisticIndex, scoresBegin, scoresEnd, indicesBegin,
                                                         indicesEnd);
                 updateStatistics(statisticIndex, indicesBegin, indicesEnd);
+            }
+
+            std::unique_ptr<IStatisticsUpdateCandidate> createUpdateCandidate(
+              const IScoreVector& scoreVector) override {
+                return createUpdateCandidateInternally(*this, scoreVector);
             }
     };
 

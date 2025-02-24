@@ -75,10 +75,10 @@ class SingleRefinementComparator final {
          * have been provided to this comparator so far.
          *
          * @param refinement    A reference to an object of type `Refinement` that represents the refinement of the rule
-         * @param scores        A reference to an object of type `StatisticsUpdateCandidate` that stores the predictions
-         *                      of the rule
+         * @param scores        A reference to an object of type `IStatisticsUpdateCandidate` that stores the
+         *                      predictions of the rule
          */
-        void pushRefinement(const Refinement& refinement, const StatisticsUpdateCandidate& scores);
+        void pushRefinement(const Refinement& refinement, const IStatisticsUpdateCandidate& scores);
 
         /**
          * Keeps track of the best refinement that is stored by a given `SingleRefinementComparator` if it is considered

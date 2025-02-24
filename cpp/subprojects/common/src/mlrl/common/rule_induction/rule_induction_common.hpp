@@ -85,7 +85,7 @@ class AbstractRuleInduction : public IRuleInduction {
                 statisticsSubsetPtr->addToSubset(i);
             }
 
-            std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubsetPtr->calculateScores();
+            std::unique_ptr<IStatisticsUpdateCandidate> updateCandidatePtr = statisticsSubsetPtr->calculateScores();
             std::unique_ptr<IEvaluatedPrediction> defaultPredictionPtr;
             ScoreProcessor scoreProcessor(defaultPredictionPtr);
             scoreProcessor.processScores(*updateCandidatePtr);

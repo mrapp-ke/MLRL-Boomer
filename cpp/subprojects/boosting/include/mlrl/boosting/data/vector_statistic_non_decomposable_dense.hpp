@@ -16,10 +16,13 @@ namespace boosting {
      * loss function in C-contiguous arrays. For each element in the vector a single gradient, but multiple Hessians are
      * stored. In a vector that stores `n` gradients `(n * (n + 1)) / 2` Hessians are stored. The Hessians can be viewed
      * as a symmetric Hessian matrix with `n` rows and columns.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians
      */
+    template<typename StatisticType>
     class DenseNonDecomposableStatisticVector final
         : public ClearableViewDecorator<
-            ViewDecorator<CompositeVector<AllocatedVector<float64>, AllocatedVector<float64>>>> {
+            ViewDecorator<CompositeVector<AllocatedVector<StatisticType>, AllocatedVector<StatisticType>>>> {
         public:
 
             /**
@@ -32,33 +35,38 @@ namespace boosting {
             /**
              * @param other A reference to an object of type `DenseNonDecomposableStatisticVector` to be copied
              */
-            DenseNonDecomposableStatisticVector(const DenseNonDecomposableStatisticVector& other);
+            DenseNonDecomposableStatisticVector(const DenseNonDecomposableStatisticVector<StatisticType>& other);
+
+            /**
+             * The type of the gradients and Hessians in the vector.
+             */
+            typedef StatisticType statistic_type;
 
             /**
              * An iterator that provides access to the gradients in the vector and allows to modify them.
              */
-            typedef View<float64>::iterator gradient_iterator;
+            typedef typename View<StatisticType>::iterator gradient_iterator;
 
             /**
              * An iterator that provides read-only access to the gradients in the vector.
              */
-            typedef View<float64>::const_iterator gradient_const_iterator;
+            typedef typename View<StatisticType>::const_iterator gradient_const_iterator;
 
             /**
              * An iterator that provides access to the Hessians in the vector and allows to modify them.
              */
-            typedef View<float64>::iterator hessian_iterator;
+            typedef typename View<StatisticType>::iterator hessian_iterator;
 
             /**
              * An iterator that provides read-only access to the Hessians in the vector.
              */
-            typedef View<float64>::const_iterator hessian_const_iterator;
+            typedef typename View<StatisticType>::const_iterator hessian_const_iterator;
 
             /**
              * An iterator that provides read-only access to the Hessians that correspond to the diagonal of the Hessian
              * matrix.
              */
-            typedef DiagonalIterator<const float64> hessian_diagonal_const_iterator;
+            typedef DiagonalIterator<const StatisticType> hessian_diagonal_const_iterator;
 
             /**
              * Returns a `gradient_iterator` to the beginning of the gradients.
@@ -152,7 +160,7 @@ namespace boosting {
              * @param view A reference to an object of type `DenseNonDecomposableStatisticVector` that stores the
              *             gradients and Hessians to be added to this vector
              */
-            void add(const DenseNonDecomposableStatisticVector& view);
+            void add(const DenseNonDecomposableStatisticVector<StatisticType>& view);
 
             /**
              * Adds all gradients and Hessians in a single row of a `DenseNonDecomposableStatisticView` to this vector.
@@ -161,7 +169,7 @@ namespace boosting {
              *              gradients and Hessians to be added to this vector
              * @param row   The index of the row to be added to this vector
              */
-            void add(const DenseNonDecomposableStatisticView& view, uint32 row);
+            void add(const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row);
 
             /**
              * Adds all gradients and Hessians in a single row of a `DenseNonDecomposableStatisticView` to this vector.
@@ -172,7 +180,7 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void add(const DenseNonDecomposableStatisticView& view, uint32 row, float64 weight);
+            void add(const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, StatisticType weight);
 
             /**
              * Removes all gradients and Hessians in a single row of a `DenseNonDecomposableStatisticView` from this
@@ -182,7 +190,7 @@ namespace boosting {
              *              gradients and Hessians to be removed from this vector
              * @param row   The index of the row to be removed from this vector
              */
-            void remove(const DenseNonDecomposableStatisticView& view, uint32 row);
+            void remove(const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row);
 
             /**
              * Removes all gradients and Hessians in a single row of a `DenseNonDecomposableStatisticView` from this
@@ -193,7 +201,7 @@ namespace boosting {
              * @param row       The index of the row to be removed from this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void remove(const DenseNonDecomposableStatisticView& view, uint32 row, float64 weight);
+            void remove(const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row, StatisticType weight);
 
             /**
              * Adds certain gradients and Hessians in another vector, whose positions are given as a
@@ -204,7 +212,7 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `CompleteIndexVector` that provides access to the indices
              */
-            void addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
+            void addToSubset(const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row,
                              const CompleteIndexVector& indices);
 
             /**
@@ -216,7 +224,7 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `PartialIndexVector` that provides access to the indices
              */
-            void addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
+            void addToSubset(const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row,
                              const PartialIndexVector& indices);
 
             /**
@@ -230,8 +238,8 @@ namespace boosting {
              * @param indices   A reference to a `CompleteIndexVector` that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
-                             const CompleteIndexVector& indices, float64 weight);
+            void addToSubset(const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row,
+                             const CompleteIndexVector& indices, StatisticType weight);
 
             /**
              * Adds certain gradients and Hessians in another vector, whose positions are given as a
@@ -244,8 +252,8 @@ namespace boosting {
              * @param indices   A reference to a `PartialIndexVector` that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
-                             const PartialIndexVector& indices, float64 weight);
+            void addToSubset(const DenseNonDecomposableStatisticView<StatisticType>& view, uint32 row,
+                             const PartialIndexVector& indices, StatisticType weight);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
@@ -259,8 +267,9 @@ namespace boosting {
              * @param second        A reference to an object of type `DenseNonDecomposableStatisticVector` that stores
              *                      the gradients and Hessians in the second vector
              */
-            void difference(const DenseNonDecomposableStatisticVector& first, const CompleteIndexVector& firstIndices,
-                            const DenseNonDecomposableStatisticVector& second);
+            void difference(const DenseNonDecomposableStatisticVector<StatisticType>& first,
+                            const CompleteIndexVector& firstIndices,
+                            const DenseNonDecomposableStatisticVector<StatisticType>& second);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
@@ -274,8 +283,9 @@ namespace boosting {
              * @param second        A reference to an object of type `DenseNonDecomposableStatisticVector` that stores
              *                      the gradients and Hessians in the second vector
              */
-            void difference(const DenseNonDecomposableStatisticVector& first, const PartialIndexVector& firstIndices,
-                            const DenseNonDecomposableStatisticVector& second);
+            void difference(const DenseNonDecomposableStatisticVector<StatisticType>& first,
+                            const PartialIndexVector& firstIndices,
+                            const DenseNonDecomposableStatisticVector<StatisticType>& second);
     };
 
 }

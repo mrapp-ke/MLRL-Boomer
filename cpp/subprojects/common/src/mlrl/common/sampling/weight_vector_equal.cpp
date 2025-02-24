@@ -18,7 +18,7 @@ uint32 EqualWeightVector::getNumElements() const {
 }
 
 EqualWeightVector::weight_type EqualWeightVector::operator[](uint32 pos) const {
-    return 1;
+    return true;
 }
 
 uint32 EqualWeightVector::getNumNonZeroWeights() const {
