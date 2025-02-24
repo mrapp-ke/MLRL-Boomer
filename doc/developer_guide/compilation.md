@@ -356,6 +356,12 @@ If you want to delete all compilation files that have previously been created, i
 
 Certain functionalities of the project can be enabled or disabled at compile-time via so-called build options. They can be specified in the configuration file {repo-file}`meson.options <cpp/subprojects/common/meson.options>` or set via environment variables.
 
+(build-type)=
+
+### Build Type
+
+By default, the project is compiled with compile-time optimizations enabled and debug symbols disabled. This behavior can be overruled by specifying the environment variable `BUILDTYPE`. Its value is directly passed to the [Meson](https://mesonbuild.com/) build system. Therefore, we refer to the [documentation](https://mesonbuild.com/Builtin-options.html#core-options) of this build system for a list of possible values. This build option can only be specified via the aforementioned environment variable, not via the configuration file {repo-file}`meson.options <cpp/subprojects/common/meson.options>`.
+
 (testing-support)=
 
 ### Testing Support
