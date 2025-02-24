@@ -542,7 +542,8 @@ class FileType:
                 .filter_by_substrings(starts_with='lib', contains='.so') \
                 .filter_by_substrings(ends_with='.dylib') \
                 .filter_by_substrings(starts_with='mlrl', ends_with='.lib') \
-                .filter_by_substrings(ends_with='.dll'),
+                .filter_by_substrings(ends_with='.dll') \
+                .set_symlinks(True),
         )
 
     def __str__(self) -> str:
