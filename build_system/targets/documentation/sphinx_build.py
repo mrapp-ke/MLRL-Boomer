@@ -39,7 +39,7 @@ class SphinxBuild(Program):
         :param module:      The module, the program should be applied to
         :param builder:     The Sphinx builder to be used
         """
-        super().__init__('sphinx-build', '--builder', builder, module.root_directory,
+        super().__init__('sphinx-build', '--fail-on-warning', '--builder', builder, module.root_directory,
                          path.join(module.output_directory, 'html'))
         self.module = module
         self.builder = builder
