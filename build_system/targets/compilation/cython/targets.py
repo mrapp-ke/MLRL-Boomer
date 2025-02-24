@@ -19,7 +19,8 @@ from targets.modules import SubprojectModule
 MODULE_FILTER = CompilationModule.Filter(FileType.cython())
 
 BUILD_OPTIONS = BuildOptions() \
-        .add(EnvBuildOption(name=SubprojectModule.ENV_SUBPROJECTS.lower()))
+        .add(EnvBuildOption(name=SubprojectModule.ENV_SUBPROJECTS.lower())) \
+        .add(EnvBuildOption(name='buildtype'))
 
 
 class SetupCython(BuildTarget.Runnable):
