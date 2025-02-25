@@ -5,11 +5,10 @@ on:
     branches:
       - main
     paths:
-      - cpp/**/include/**
-      - cpp/**/src/**
-      - '**/*.pxd'
-      - '**/*.pyx'
-      - python/**/mlrl/**
+      - cpp/subprojects/**/include/**
+      - cpp/subprojects/**/src/**
+      - python/subprojects/**/mlrl/**
+  workflow_dispatch:
 jobs:
   update_development_version:
     name: Update development version
