@@ -10,8 +10,24 @@ jobs:
     uses: ./.github/workflows/template_publish.yml
     with:
       release: true
-      pypi_repository: https://pypi.org/legacy/
       linux: true
       macos: true
       windows: true
     secrets: inherit
+  upload_to_pypi:
+    needs: publish_packages
+    name: Upload wheels to PyPI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download wheels
+        uses: actions/download-artifact@v4
+        with:
+          pattern: wheels-*
+          path: wheelhouse
+          merge-multiple: true
+      - name: Upload wheels to PyPI
+        uses: pypa/gh-action-pypi-publish@v1.12.4
+        with:
+          packages-dir: wheelhouse
+          skip-existing: true
+          repository-url: https://pypi.org/legacy/

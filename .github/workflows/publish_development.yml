@@ -39,8 +39,24 @@ jobs:
     needs: update_development_version
     uses: ./.github/workflows/template_publish.yml
     with:
-      pypi_repository: https://test.pypi.org/legacy/
       linux: true
       macos: true
       windows: true
     secrets: inherit
+  upload_to_pypi:
+    needs: publish_packages
+    name: Upload wheels to Test-PyPI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download wheels
+        uses: actions/download-artifact@v4
+        with:
+          pattern: wheels-*
+          path: wheelhouse
+          merge-multiple: true
+      - name: Upload wheels to Test-PyPI
+        uses: pypa/gh-action-pypi-publish@v1.12.4
+        with:
+          packages-dir: wheelhouse
+          skip-existing: true
+          repository-url: https://test.pypi.org/legacy/
