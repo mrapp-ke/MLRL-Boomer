@@ -43,7 +43,7 @@ def delete_files(*files: str, accept_missing: bool = True):
             Log.verbose('Deleting directory "%s"...', file)
             rmtree(file)
         else:
-            if not accept_missing or path.isfile(file):
+            if not accept_missing or path.isfile(file) or path.islink(file):
                 Log.verbose('Deleting file "%s"...', file)
                 remove(file)
 
