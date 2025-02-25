@@ -6,9 +6,6 @@ on:
       release:
         required: false
         type: boolean
-      pypi_repository:
-        required: false
-        type: string
       linux:
         required: false
         type: boolean
@@ -47,25 +44,3 @@ jobs:
       macos: ${{ inputs.macos }}
       windows: ${{ inputs.windows }}
     secrets: inherit
-  upload_to_pypi:
-    needs:
-      - publish_pure
-      - publish_platform
-    if: ${{ inputs.pypi_repository }}
-    name: Upload wheels to PyPI
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download wheels
-        uses: actions/download-artifact@v4
-        with:
-          pattern: wheels-*
-          path: wheelhouse
-          merge-multiple: true
-      - name: Upload wheels to PyPI
-        uses: pypa/gh-action-pypi-publish@v1.12.4
-        with:
-          packages-dir: wheelhouse
-          skip-existing: true
-          repository-url: ${{ inputs.pypi_repository }}
-          user: ${{ secrets.pypi_username }}
-          password: ${{ secrets.pypi_password }}
