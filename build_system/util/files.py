@@ -410,7 +410,7 @@ class FileSearch:
         subdirectories = self.directory_search.list(*directories) if self.directory_search.recursive else []
 
         def filter_file(file: str) -> bool:
-            if path.isfile(file) and (self.symlinks or not path.islink(file)):
+            if path.isfile(file) or (path.islink(file) and self.symlinks):
                 parent = path.dirname(file)
                 file_name = path.basename(file)
 
@@ -542,7 +542,8 @@ class FileType:
                 .filter_by_substrings(starts_with='lib', contains='.so') \
                 .filter_by_substrings(ends_with='.dylib') \
                 .filter_by_substrings(starts_with='mlrl', ends_with='.lib') \
-                .filter_by_substrings(ends_with='.dll'),
+                .filter_by_substrings(ends_with='.dll') \
+                .set_symlinks(True),
         )
 
     def __str__(self) -> str:
