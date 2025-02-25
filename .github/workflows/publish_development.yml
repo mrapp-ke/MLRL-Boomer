@@ -46,6 +46,8 @@ jobs:
     needs: publish_packages
     name: Upload wheels to Test-PyPI
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - name: Download wheels
         uses: actions/download-artifact@v4
