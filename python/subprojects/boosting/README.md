@@ -34,7 +34,7 @@ The algorithm that is provided by this project currently supports the following 
 ### Deliberate Loss Optimization
 
 - **Decomposable or non-decomposable loss functions** can be optimized in expectation.
-- **$L_1$ and $L_2$ regularization** can be used.
+- **L1 and L2 regularization** can be used.
 - **Shrinkage (a.k.a. the learning rate) can be adjusted** for controlling the impact of individual rules on the overall ensemble.
 
 ### Different Prediction Strategies
