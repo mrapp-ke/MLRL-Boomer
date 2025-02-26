@@ -51,7 +51,7 @@ jobs:
               - '.github/workflows/template_publish_platform_windows.yml'
   test_release:
     needs: changes
-    if: ${{ needs.changes.outputs.build_files == 'true' }}
+    if: ${{ needs.changes.outputs.linux == 'true' || needs.changes.outputs.macos == 'true' || needs.changes.outputs.windows == 'true' }}
     name: Test publishing wheel packages
     uses: ./.github/workflows/template_publish.yml
     with:
