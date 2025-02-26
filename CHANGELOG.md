@@ -6,6 +6,14 @@ tocdepth: 2
 
 # Release Notes
 
+## Version 0.11.4 (Feb. 26th, 2025)
+
+A bugfix release that comes with the following changes.
+
+### Fixes
+
+- The parameter `--head-type auto` can now be set via the command line API without an error being raised.
+
 ## Version 0.11.3 (Jan. 30th, 2025)
 
 A bugfix release that comes with the following changes.
