@@ -6,6 +6,8 @@ on:
       subproject:
         required: true
         type: string
+env:
+  SUBPROJECTS: ${{ inputs.subproject }}
 jobs:
   windows_build:
     name: Test Windows build
@@ -31,7 +33,6 @@ jobs:
         uses: mozilla-actions/sccache-action@v0.0.7
       - name: Compile via MSVC
         run: |-
-          $env:SUBPROJECTS = "${{ inputs.subproject }}"
           $env:INCLUDE += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\include"
           $env:LIB += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\lib"
           ./build.bat compile

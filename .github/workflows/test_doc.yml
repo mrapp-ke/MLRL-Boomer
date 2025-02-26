@@ -9,6 +9,8 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+env:
+  GPU_SUPPORT: disabled
 jobs:
   changes:
     name: Detect changes
@@ -70,16 +72,16 @@ jobs:
         uses: ssciwr/doxygen-install@v1
       - name: Generate C++ Apidoc
         if: ${{ needs.changes.outputs.cpp == 'true' && needs.changes.outputs.doc != 'true' }}
-        run: GPU_SUPPORT=disabled ./build apidoc_cpp
+        run: ./build apidoc_cpp
       - name: Generate Python Apidoc
         if: ${{ needs.changes.outputs.python == 'true' && needs.changes.outputs.doc != 'true' }}
-        run: GPU_SUPPORT=disabled ./build apidoc_python
+        run: ./build apidoc_python
       - name: Install Roboto font
         if: ${{ needs.changes.outputs.doc == 'true' }}
         run: sudo apt install -y fonts-roboto
       - name: Generate documentation
         if: ${{ needs.changes.outputs.doc == 'true' }}
-        run: GPU_SUPPORT=disabled ./build doc
+        run: ./build doc
   check_links:
     needs: changes
     if: ${{ needs.changes.outputs.any == 'true' }}
@@ -101,7 +103,7 @@ jobs:
       - name: Install Roboto font
         run: sudo apt install -y fonts-roboto
       - name: Check links in documentation
-        run: GPU_SUPPORT=disabled SPHINX_BUILDER=linkcheck ./build doc
+        run: SPHINX_BUILDER=linkcheck ./build doc
   check_spelling:
     needs: changes
     if: ${{ needs.changes.outputs.any == 'true' }}
@@ -123,4 +125,4 @@ jobs:
       - name: Install Roboto font
         run: sudo apt install -y fonts-roboto
       - name: Check for spelling mistakes in documentation
-        run: GPU_SUPPORT=disabled SPHINX_BUILDER=spelling ./build doc
+        run: SPHINX_BUILDER=spelling ./build doc
