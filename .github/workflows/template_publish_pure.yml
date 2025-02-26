@@ -9,6 +9,9 @@ on:
       release:
         required: false
         type: boolean
+env:
+  SUBPROJECTS: ${{ inputs.subproject }}
+  RELEASE: ${{ inputs.release == true }}
 jobs:
   publish_pure_wheels:
     name: Publish ${{ inputs.subproject }} (pure)
@@ -18,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Build package
         run: |
-          RELEASE=${{ inputs.release == true }} SUBPROJECTS=${{ inputs.subproject }} ./build build_wheels
+          ./build build_wheels
           mkdir wheelhouse
           cp python/subprojects/**/dist/*.whl wheelhouse/
       - name: Upload wheels as artifacts
