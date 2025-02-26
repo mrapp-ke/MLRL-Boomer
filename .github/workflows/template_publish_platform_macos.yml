@@ -9,6 +9,11 @@ on:
       release:
         required: false
         type: boolean
+env:
+  SUBPROJECTS: ${{ inputs.subproject }}
+  RELEASE: ${{ inputs.release == true }}
+  TEST_SUPPORT: disabled
+  GPU_SUPPORT: disabled
 jobs:
   publish_macos_wheels:
     name: Publish ${{ inputs.subproject }} (macOS)
@@ -25,8 +30,7 @@ jobs:
         uses: pypa/cibuildwheel@v2.22
         env:
           CIBW_BEFORE_ALL: GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} ./build dependency_libomp
-          CIBW_BEFORE_BUILD: rm -rf venv && ./build --clean && RELEASE=${{ inputs.release == true }} SUBPROJECTS=${{ inputs.subproject }}
-            TEST_SUPPORT=disabled GPU_SUPPORT=disabled CPLUS_INCLUDE_PATH=/Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/include/
+          CIBW_BEFORE_BUILD: rm -rf venv && ./build --clean && CPLUS_INCLUDE_PATH=/Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/include/
             LIBRARY_PATH=/Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/lib/ ./build pyproject_toml
           CIBW_REPAIR_WHEEL_COMMAND: DYLD_LIBRARY_PATH=/Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/lib/ delocate-wheel  --require-archs
             {delocate_archs} -w {dest_dir} -v {wheel}

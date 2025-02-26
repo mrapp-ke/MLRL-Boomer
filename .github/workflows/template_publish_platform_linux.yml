@@ -9,6 +9,11 @@ on:
       release:
         required: false
         type: boolean
+env:
+  SUBPROJECTS: ${{ inputs.subproject }}
+  RELEASE: ${{ inputs.release == true }}
+  TEST_SUPPORT: disabled
+  GPU_SUPPORT: disabled
 jobs:
   publish_linux_wheels:
     name: Publish ${{ inputs.subproject }} (Linux)
@@ -30,8 +35,8 @@ jobs:
       - name: Build package
         uses: pypa/cibuildwheel@v2.22
         env:
-          CIBW_BEFORE_BUILD: ./build --clean && RELEASE=${{ inputs.release == true }} SUBPROJECTS=${{ inputs.subproject }}
-            TEST_SUPPORT=disabled GPU_SUPPORT=disabled ./build pyproject_toml
+          CIBW_ENVIRONMENT_PASS_LINUX: SUBPROJECTS RELEASE TEST_SUPPORT GPU_SUPPORT
+          CIBW_BEFORE_BUILD: ./build --clean && ./build pyproject_toml
           CIBW_BUILD_FRONTEND: build
           CIBW_ARCHS: auto64
           CIBW_SKIP: pp* *musllinux*
