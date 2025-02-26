@@ -12,6 +12,8 @@ on:
       run_python_tests:
         required: false
         type: boolean
+env:
+  SUBPROJECTS: ${{ inputs.subproject }}
 jobs:
   linux_build:
     name: Test Linux build
@@ -39,10 +41,10 @@ jobs:
         with:
           key: ${{ runner.os }}-${{ runner.arch }}-test-build-ccache-${{ inputs.subproject }}
       - name: Compile via GCC
-        run: SUBPROJECTS=${{ inputs.subproject }} ./build compile
+        run: ./build compile
       - name: Test C++ code
         if: ${{ matrix.os == 'ubuntu-24.04' && inputs.run_cpp_tests == true }}
-        run: SUBPROJECTS=${{ inputs.subproject }} ./build tests_cpp
+        run: ./build tests_cpp
       - name: Upload C++ test results as artifacts
         if: ${{ !cancelled() && matrix.os == 'ubuntu-24.04' && inputs.run_cpp_tests == true }}
         uses: actions/upload-artifact@v4
@@ -52,7 +54,7 @@ jobs:
           if-no-files-found: ignore
       - name: Test Python code
         if: ${{ matrix.os == 'ubuntu-24.04' && inputs.run_python_tests == true }}
-        run: SUBPROJECTS=${{ inputs.subproject }} ./build tests_python
+        run: ./build tests_python
       - name: Upload Python test results as artifacts
         if: ${{ !cancelled() && matrix.os == 'ubuntu-24.04' && inputs.run_python_tests == true }}
         uses: actions/upload-artifact@v4

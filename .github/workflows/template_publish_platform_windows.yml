@@ -9,6 +9,11 @@ on:
       release:
         required: false
         type: boolean
+env:
+  SUBPROJECTS: ${{ inputs.subproject }}
+  RELEASE: ${{ inputs.release == true }}
+  TEST_SUPPORT: disabled
+  GPU_SUPPORT: disabled
 jobs:
   publish_windows_wheels:
     name: Publish ${{ inputs.subproject }} (Windows)
@@ -26,8 +31,7 @@ jobs:
       - name: Build package
         uses: pypa/cibuildwheel@v2.22
         env:
-          CIBW_BEFORE_BUILD: .\build.bat --clean && set RELEASE=${{ inputs.release == true }} && set SUBPROJECTS=${{ inputs.subproject }}
-            && set TEST_SUPPORT=disabled && set GPU_SUPPORT=disabled && .\build.bat pyproject_toml
+          CIBW_BEFORE_BUILD: .\build.bat --clean && .\build.bat pyproject_toml
           CIBW_BUILD_FRONTEND: build
           CIBW_ARCHS: auto64
           CIBW_SKIP: pp*
