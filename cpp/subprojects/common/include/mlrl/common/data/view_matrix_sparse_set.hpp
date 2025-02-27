@@ -20,7 +20,7 @@
  *
  * The data structure that is used for the representation of a single row is often referred to as an "unordered sparse
  * set". It was originally proposed in "An efficient representation for sparse sets", Briggs, Torczon, 1993 (see
- * https://www.dcs.gla.ac.uk/~pat/ads2/papers/p59-briggs%5B1%5D.pdf).
+ * https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=c83ae968c51219db68a03fc5b01de751dd2fe9ae).
  *
  * @tparam T The type of the values, the view provides access to
  */
