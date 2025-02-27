@@ -356,6 +356,17 @@ namespace boosting {
             }
     };
 
+    template<typename StatisticType>
+    class NonDecomposableSquaredHingeLossPreset final
+        : public INonDecomposableClassificationLossConfig::IPreset<StatisticType> {
+        public:
+
+            std::unique_ptr<INonDecomposableClassificationLossFactory<StatisticType>>
+              createNonDecomposableClassificationLossFactory() const override {
+                return std::make_unique<NonDecomposableSquaredHingeLossFactory<StatisticType>>();
+            }
+    };
+
     NonDecomposableSquaredHingeLossConfig::NonDecomposableSquaredHingeLossConfig(
       ReadableProperty<IStatisticTypeConfig> statisticTypeConfig)
         : statisticTypeConfig_(statisticTypeConfig) {}
@@ -382,9 +393,14 @@ namespace boosting {
         return 0.5;
     }
 
-    std::unique_ptr<INonDecomposableClassificationLossFactory<float64>>
-      NonDecomposableSquaredHingeLossConfig::createNonDecomposableClassificationLossFactory() const {
-        return std::make_unique<NonDecomposableSquaredHingeLossFactory<float64>>();
+    std::unique_ptr<INonDecomposableClassificationLossConfig::IPreset<float32>>
+      NonDecomposableSquaredHingeLossConfig::createNonDecomposable32BitClassificationPreset() const {
+        return std::make_unique<NonDecomposableSquaredHingeLossPreset<float32>>();
+    }
+
+    std::unique_ptr<INonDecomposableClassificationLossConfig::IPreset<float64>>
+      NonDecomposableSquaredHingeLossConfig::createNonDecomposable64BitClassificationPreset() const {
+        return std::make_unique<NonDecomposableSquaredHingeLossPreset<float64>>();
     }
 
 }

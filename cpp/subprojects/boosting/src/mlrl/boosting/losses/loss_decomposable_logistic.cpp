@@ -98,6 +98,16 @@ namespace boosting {
             }
     };
 
+    template<typename StatisticType>
+    class DecomposableLogisticLossPreset final : public IDecomposableClassificationLossConfig::IPreset<StatisticType> {
+        public:
+
+            std::unique_ptr<IDecomposableClassificationLossFactory<StatisticType>>
+              createDecomposableClassificationLossFactory() const override {
+                return std::make_unique<DecomposableLogisticLossFactory<StatisticType>>();
+            }
+    };
+
     DecomposableLogisticLossConfig::DecomposableLogisticLossConfig(
       ReadableProperty<IStatisticTypeConfig> statisticTypeConfig)
         : statisticTypeConfig_(statisticTypeConfig) {}
@@ -124,9 +134,14 @@ namespace boosting {
         return 0;
     }
 
-    std::unique_ptr<IDecomposableClassificationLossFactory<float64>>
-      DecomposableLogisticLossConfig::createDecomposableClassificationLossFactory() const {
-        return std::make_unique<DecomposableLogisticLossFactory<float64>>();
+    std::unique_ptr<IDecomposableClassificationLossConfig::IPreset<float32>>
+      DecomposableLogisticLossConfig::createDecomposable32BitClassificationPreset() const {
+        return std::make_unique<DecomposableLogisticLossPreset<float32>>();
+    }
+
+    std::unique_ptr<IDecomposableClassificationLossConfig::IPreset<float64>>
+      DecomposableLogisticLossConfig::createDecomposable64BitClassificationPreset() const {
+        return std::make_unique<DecomposableLogisticLossPreset<float64>>();
     }
 
 }

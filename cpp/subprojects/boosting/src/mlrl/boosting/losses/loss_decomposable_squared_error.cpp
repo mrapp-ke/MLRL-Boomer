@@ -69,6 +69,23 @@ namespace boosting {
             }
     };
 
+    template<typename StatisticType>
+    class DecomposableSquaredErrorLossPreset final
+        : public IDecomposableClassificationLossConfig::IPreset<StatisticType>,
+          public IDecomposableRegressionLossConfig::IPreset<StatisticType> {
+        public:
+
+            std::unique_ptr<IDecomposableClassificationLossFactory<StatisticType>>
+              createDecomposableClassificationLossFactory() const override {
+                return std::make_unique<DecomposableSquaredErrorLossFactory<StatisticType>>();
+            }
+
+            std::unique_ptr<IDecomposableRegressionLossFactory<StatisticType>> createDecomposableRegressionLossFactory()
+              const override {
+                return std::make_unique<DecomposableSquaredErrorLossFactory<StatisticType>>();
+            }
+    };
+
     DecomposableSquaredErrorLossConfig::DecomposableSquaredErrorLossConfig(
       ReadableProperty<IStatisticTypeConfig> statisticTypeConfig)
         : statisticTypeConfig_(statisticTypeConfig) {}
@@ -103,14 +120,24 @@ namespace boosting {
         return 0;
     }
 
-    std::unique_ptr<IDecomposableClassificationLossFactory<float64>>
-      DecomposableSquaredErrorLossConfig::createDecomposableClassificationLossFactory() const {
-        return std::make_unique<DecomposableSquaredErrorLossFactory<float64>>();
+    std::unique_ptr<IDecomposableClassificationLossConfig::IPreset<float32>>
+      DecomposableSquaredErrorLossConfig::createDecomposable32BitClassificationPreset() const {
+        return std::make_unique<DecomposableSquaredErrorLossPreset<float32>>();
     }
 
-    std::unique_ptr<IDecomposableRegressionLossFactory<float64>>
-      DecomposableSquaredErrorLossConfig::createDecomposableRegressionLossFactory() const {
-        return std::make_unique<DecomposableSquaredErrorLossFactory<float64>>();
+    std::unique_ptr<IDecomposableClassificationLossConfig::IPreset<float64>>
+      DecomposableSquaredErrorLossConfig::createDecomposable64BitClassificationPreset() const {
+        return std::make_unique<DecomposableSquaredErrorLossPreset<float64>>();
+    }
+
+    std::unique_ptr<IDecomposableRegressionLossConfig::IPreset<float32>>
+      DecomposableSquaredErrorLossConfig::createDecomposable32BitRegressionPreset() const {
+        return std::make_unique<DecomposableSquaredErrorLossPreset<float32>>();
+    }
+
+    std::unique_ptr<IDecomposableRegressionLossConfig::IPreset<float64>>
+      DecomposableSquaredErrorLossConfig::createDecomposable64BitRegressionPreset() const {
+        return std::make_unique<DecomposableSquaredErrorLossPreset<float64>>();
     }
 
 }

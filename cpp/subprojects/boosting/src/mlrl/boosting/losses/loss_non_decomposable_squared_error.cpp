@@ -135,7 +135,7 @@ namespace boosting {
         for (uint32 i = 0; i < numOutputs; i++) {
             score_type predictedScore = scoreIterator[i];
             bool trueLabel = *groundTruthIterator;
-            score_type expectedScore = trueLabel ? 1 : -1;
+            score_type expectedScore = trueLabel ? 1.0f : -1.0f;
             score_type difference = (expectedScore - predictedScore);
             sumOfSquares += (difference * difference);
             groundTruthIterator++;
@@ -391,6 +391,23 @@ namespace boosting {
             }
     };
 
+    template<typename StatisticType>
+    class NonDecomposableSquaredErrorLossPreset final
+        : public INonDecomposableClassificationLossConfig::IPreset<StatisticType>,
+          public INonDecomposableRegressionLossConfig::IPreset<StatisticType> {
+        public:
+
+            std::unique_ptr<INonDecomposableClassificationLossFactory<StatisticType>>
+              createNonDecomposableClassificationLossFactory() const override {
+                return std::make_unique<NonDecomposableSquaredErrorLossFactory<StatisticType>>();
+            }
+
+            std::unique_ptr<INonDecomposableRegressionLossFactory<StatisticType>>
+              createNonDecomposableRegressionLossFactory() const override {
+                return std::make_unique<NonDecomposableSquaredErrorLossFactory<StatisticType>>();
+            }
+    };
+
     NonDecomposableSquaredErrorLossConfig::NonDecomposableSquaredErrorLossConfig(
       ReadableProperty<IStatisticTypeConfig> statisticTypeConfig)
         : statisticTypeConfig_(statisticTypeConfig) {}
@@ -425,14 +442,24 @@ namespace boosting {
         return 0.0;
     }
 
-    std::unique_ptr<INonDecomposableClassificationLossFactory<float64>>
-      NonDecomposableSquaredErrorLossConfig::createNonDecomposableClassificationLossFactory() const {
-        return std::make_unique<NonDecomposableSquaredErrorLossFactory<float64>>();
+    std::unique_ptr<INonDecomposableClassificationLossConfig::IPreset<float32>>
+      NonDecomposableSquaredErrorLossConfig::createNonDecomposable32BitClassificationPreset() const {
+        return std::make_unique<NonDecomposableSquaredErrorLossPreset<float32>>();
     }
 
-    std::unique_ptr<INonDecomposableRegressionLossFactory<float64>>
-      NonDecomposableSquaredErrorLossConfig::createNonDecomposableRegressionLossFactory() const {
-        return std::make_unique<NonDecomposableSquaredErrorLossFactory<float64>>();
+    std::unique_ptr<INonDecomposableClassificationLossConfig::IPreset<float64>>
+      NonDecomposableSquaredErrorLossConfig::createNonDecomposable64BitClassificationPreset() const {
+        return std::make_unique<NonDecomposableSquaredErrorLossPreset<float64>>();
+    }
+
+    std::unique_ptr<INonDecomposableRegressionLossConfig::IPreset<float32>>
+      NonDecomposableSquaredErrorLossConfig::createNonDecomposable32BitRegressionPreset() const {
+        return std::make_unique<NonDecomposableSquaredErrorLossPreset<float32>>();
+    }
+
+    std::unique_ptr<INonDecomposableRegressionLossConfig::IPreset<float64>>
+      NonDecomposableSquaredErrorLossConfig::createNonDecomposable64BitRegressionPreset() const {
+        return std::make_unique<NonDecomposableSquaredErrorLossPreset<float64>>();
     }
 
 }

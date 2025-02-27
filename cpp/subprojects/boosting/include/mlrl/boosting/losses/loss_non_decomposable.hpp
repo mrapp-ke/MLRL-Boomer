@@ -174,25 +174,63 @@ namespace boosting {
                                                      virtual public INonDecomposableLossConfig {
         public:
 
+            /**
+             * Provides access to the interface of an `INonDecomposableClassificationLossConfig`, abstracting away
+             * certain configuration options that have already been pre-determined.
+             *
+             * @tparam StatisticType The type that should be used for representing statistics
+             */
+            template<typename StatisticType>
+            class IPreset : public IClassificationLossConfig::IPreset<StatisticType> {
+                public:
+
+                    virtual ~IPreset() override {}
+
+                    /**
+                     * Creates and returns a new object of type `INonDecomposableClassificationLossFactory` according to
+                     * the specified configuration.
+                     *
+                     * @return An unique pointer to an object of type `INonDecomposableClassificationLossFactory` that
+                     *         has been created
+                     */
+                    virtual std::unique_ptr<INonDecomposableClassificationLossFactory<StatisticType>>
+                      createNonDecomposableClassificationLossFactory() const = 0;
+
+                    std::unique_ptr<IClassificationEvaluationMeasureFactory<StatisticType>>
+                      createClassificationEvaluationMeasureFactory() const override final {
+                        return this->createNonDecomposableClassificationLossFactory();
+                    }
+
+                    std::unique_ptr<IDistanceMeasureFactory<StatisticType>> createDistanceMeasureFactory()
+                      const override final {
+                        return this->createNonDecomposableClassificationLossFactory();
+                    }
+            };
+
             virtual ~INonDecomposableClassificationLossConfig() override {}
 
             /**
-             * Creates and returns a new object of type `INonDecomposableClassificationLossFactory` according to the
-             * specified configuration.
+             * Creates and returns a new object of type `IPreset<float32>`.
              *
-             * @return An unique pointer to an object of type `INonDecomposableClassificationLossFactory` that has been
-             *         created
+             * @return An unique pointer to an object of type `IPreset<float32>` that has been created
              */
-            virtual std::unique_ptr<INonDecomposableClassificationLossFactory<float64>>
-              createNonDecomposableClassificationLossFactory() const = 0;
+            virtual std::unique_ptr<IPreset<float32>> createNonDecomposable32BitClassificationPreset() const = 0;
 
-            std::unique_ptr<IClassificationEvaluationMeasureFactory<float64>>
-              createClassificationEvaluationMeasureFactory() const override final {
-                return this->createNonDecomposableClassificationLossFactory();
+            /**
+             * Creates and returns a new object of type `IPreset<float64>`.
+             *
+             * @return An unique pointer to an object of type `IPreset<float64>` that has been created
+             */
+            virtual std::unique_ptr<IPreset<float64>> createNonDecomposable64BitClassificationPreset() const = 0;
+
+            std::unique_ptr<IClassificationLossConfig::IPreset<float32>> create32BitClassificationPreset()
+              const override final {
+                return this->createNonDecomposable32BitClassificationPreset();
             }
 
-            std::unique_ptr<IDistanceMeasureFactory<float64>> createDistanceMeasureFactory() const override final {
-                return this->createNonDecomposableClassificationLossFactory();
+            std::unique_ptr<IClassificationLossConfig::IPreset<float64>> create64BitClassificationPreset()
+              const override final {
+                return this->createNonDecomposable64BitClassificationPreset();
             }
     };
 
@@ -204,21 +242,58 @@ namespace boosting {
                                                  virtual public INonDecomposableLossConfig {
         public:
 
+            /**
+             * Provides access to the interface of an `INonDecomposableRegressionLossConfig`, abstracting away certain
+             * configuration options that have already been pre-determined.
+             *
+             * @tparam StatisticType The type that should be used for representing statistics
+             */
+            template<typename StatisticType>
+            class IPreset : public IRegressionLossConfig::IPreset<StatisticType> {
+                public:
+
+                    virtual ~IPreset() override {}
+
+                    /**
+                     * Creates and returns a new object of type `INonDecomposableRegressionLossFactory` according to the
+                     * specified configuration.
+                     *
+                     * @return An unique pointer to an object of type `INonDecomposableRegressionLossFactory` that has
+                     *         been created
+                     */
+                    virtual std::unique_ptr<INonDecomposableRegressionLossFactory<StatisticType>>
+                      createNonDecomposableRegressionLossFactory() const = 0;
+
+                    std::unique_ptr<IRegressionEvaluationMeasureFactory<StatisticType>>
+                      createRegressionEvaluationMeasureFactory() const override final {
+                        return this->createNonDecomposableRegressionLossFactory();
+                    }
+            };
+
             virtual ~INonDecomposableRegressionLossConfig() override {}
 
             /**
-             * Creates and returns a new object of type `INonDecomposableRegressionLossFactory` according to the
-             * specified configuration.
+             * Creates and returns a new object of type `IPreset<float32>`.
              *
-             * @return An unique pointer to an object of type `INonDecomposableRegressionLossFactory` that has been
-             *         created
+             * @return An unique pointer to an object of type `IPreset<float32>` that has been created
              */
-            virtual std::unique_ptr<INonDecomposableRegressionLossFactory<float64>>
-              createNonDecomposableRegressionLossFactory() const = 0;
+            virtual std::unique_ptr<IPreset<float32>> createNonDecomposable32BitRegressionPreset() const = 0;
 
-            std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> createRegressionEvaluationMeasureFactory()
+            /**
+             * Creates and returns a new object of type `IPreset<float64>`.
+             *
+             * @return An unique pointer to an object of type `IPreset<float64>` that has been created
+             */
+            virtual std::unique_ptr<IPreset<float64>> createNonDecomposable64BitRegressionPreset() const = 0;
+
+            std::unique_ptr<IRegressionLossConfig::IPreset<float32>> create32BitRegressionPreset()
               const override final {
-                return this->createNonDecomposableRegressionLossFactory();
+                return this->createNonDecomposable32BitRegressionPreset();
+            }
+
+            std::unique_ptr<IRegressionLossConfig::IPreset<float64>> create64BitRegressionPreset()
+              const override final {
+                return this->createNonDecomposable64BitRegressionPreset();
             }
     };
 

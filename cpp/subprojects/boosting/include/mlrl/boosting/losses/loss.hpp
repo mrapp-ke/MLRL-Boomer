@@ -98,6 +98,38 @@ namespace boosting {
     class IClassificationLossConfig : virtual public ILossConfig {
         public:
 
+            /**
+             * Provides access to the interface of an `IClassificationLossConfig`, abstracting away certain
+             * configuration options that have already been pre-determined.
+             *
+             * @tparam StatisticType The type that should be used for representing statistics
+             */
+            template<typename StatisticType>
+            class IPreset {
+                public:
+
+                    virtual ~IPreset() {}
+
+                    /**
+                     * Creates and returns a new object of type `IClassificationEvaluationMeasureFactory` according to
+                     * the specified configuration.
+                     *
+                     * @return An unique pointer to an object of type `IClassificationEvaluationMeasureFactory` that has
+                     *         been created
+                     */
+                    virtual std::unique_ptr<IClassificationEvaluationMeasureFactory<StatisticType>>
+                      createClassificationEvaluationMeasureFactory() const = 0;
+
+                    /**
+                     * Creates and returns a new object of type `IDistanceMeasureFactory` according to the specified
+                     * configuration.
+                     *
+                     * @return An unique pointer to an object of type `IDistanceMeasureFactory` that has been created
+                     */
+                    virtual std::unique_ptr<IDistanceMeasureFactory<StatisticType>> createDistanceMeasureFactory()
+                      const = 0;
+            };
+
             virtual ~IClassificationLossConfig() override {}
 
             /**
@@ -125,24 +157,6 @@ namespace boosting {
                                                             bool preferSparseStatistics) const = 0;
 
             /**
-             * Creates and returns a new object of type `IClassificationEvaluationMeasureFactory` according to the
-             * specified configuration.
-             *
-             * @return An unique pointer to an object of type `IClassificationEvaluationMeasureFactory` that has been
-             *         created
-             */
-            virtual std::unique_ptr<IClassificationEvaluationMeasureFactory<float64>>
-              createClassificationEvaluationMeasureFactory() const = 0;
-
-            /**
-             * Creates and returns a new object of type `IDistanceMeasureFactory` according to the specified
-             * configuration.
-             *
-             * @return An unique pointer to an object of type `IDistanceMeasureFactory` that has been created
-             */
-            virtual std::unique_ptr<IDistanceMeasureFactory<float64>> createDistanceMeasureFactory() const = 0;
-
-            /**
              * Creates and returns a new object of type `IMarginalProbabilityFunctionFactory` according to the specified
              * configuration.
              *
@@ -161,6 +175,20 @@ namespace boosting {
              *         to a null pointer, if the loss function does not support the prediction of joint probabilities
              */
             virtual std::unique_ptr<IJointProbabilityFunctionFactory> createJointProbabilityFunctionFactory() const = 0;
+
+            /**
+             * Creates and returns a new object of type `IPreset<float32>`.
+             *
+             * @return An unique pointer to an object of type `IPreset<float32>` that has been created
+             */
+            virtual std::unique_ptr<IPreset<float32>> create32BitClassificationPreset() const = 0;
+
+            /**
+             * Creates and returns a new object of type `IPreset<float64>`.
+             *
+             * @return An unique pointer to an object of type `IPreset<float64>` that has been created
+             */
+            virtual std::unique_ptr<IPreset<float64>> create64BitClassificationPreset() const = 0;
     };
 
     /**
@@ -169,6 +197,29 @@ namespace boosting {
      */
     class IRegressionLossConfig : virtual public ILossConfig {
         public:
+
+            /**
+             * Provides access to the interface of an `IRegressionLossConfig`, abstracting away certain configuration
+             * options that have already been pre-determined.
+             *
+             * @tparam StatisticType The type that should be used for representing statistics
+             */
+            template<typename StatisticType>
+            class IPreset {
+                public:
+
+                    virtual ~IPreset() {}
+
+                    /**
+                     * Creates and returns a new object of type `IRegressionEvaluationMeasureFactory` according to the
+                     * specified configuration.
+                     *
+                     * @return An unique pointer to an object of type `IRegressionEvaluationMeasureFactory` that has
+                     *         been created
+                     */
+                    virtual std::unique_ptr<IRegressionEvaluationMeasureFactory<StatisticType>>
+                      createRegressionEvaluationMeasureFactory() const = 0;
+            };
 
             virtual ~IRegressionLossConfig() override {}
 
@@ -195,14 +246,18 @@ namespace boosting {
               bool preferSparseStatistics) const = 0;
 
             /**
-             * Creates and returns a new object of type `IRegressionEvaluationMeasureFactory` according to the specified
-             * configuration.
+             * Creates and returns a new object of type `IPreset<float32>`.
              *
-             * @return An unique pointer to an object of type `IRegressionEvaluationMeasureFactory` that has been
-             *         created
+             * @return An unique pointer to an object of type `IPreset<float32>` that has been created
              */
-            virtual std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>>
-              createRegressionEvaluationMeasureFactory() const = 0;
+            virtual std::unique_ptr<IPreset<float32>> create32BitRegressionPreset() const = 0;
+
+            /**
+             * Creates and returns a new object of type `IPreset<float64>`.
+             *
+             * @return An unique pointer to an object of type `IPreset<float64>` that has been created
+             */
+            virtual std::unique_ptr<IPreset<float64>> create64BitRegressionPreset() const = 0;
     };
 
 };
