@@ -93,6 +93,15 @@ class MLRLCOMMON_API BinaryDokVector {
         }
 
         /**
+         * Returns the number of indices in the view.
+         *
+         * @return The number of indices
+         */
+        uint32 getNumIndices() const {
+            return static_cast<uint32>(indices_->size());
+        }
+
+        /**
          * Sets all values stored in the view to zero.
          */
         void clear() {

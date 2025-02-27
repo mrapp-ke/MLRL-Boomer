@@ -3,11 +3,13 @@
 #include "feature_type_numerical_common.hpp"
 #include "feature_vector_decorator_binned.hpp"
 #include "mlrl/common/data/array.hpp"
-#include "mlrl/common/data/tuple.hpp"
 #include "mlrl/common/util/math.hpp"
 #include "mlrl/common/util/validation.hpp"
 
-static inline Tuple<float32> getMinAndMaxFeatureValue(const NumericalFeatureVector& numericalFeatureVector) {
+#include <utility>
+
+static inline std::pair<float32, float32> getMinAndMaxFeatureValue(
+  const NumericalFeatureVector& numericalFeatureVector) {
     uint32 numElements = numericalFeatureVector.numElements;
     float32 min;
     uint32 i;
@@ -32,7 +34,7 @@ static inline Tuple<float32> getMinAndMaxFeatureValue(const NumericalFeatureVect
         }
     }
 
-    return Tuple<float32>(min, max);
+    return std::make_pair(min, max);
 }
 
 static inline uint32 getBinIndex(float32 value, float32 min, float32 width, uint32 numBins) {
@@ -46,9 +48,9 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
     uint32 numWidths = util::calculateBoundedFraction(numExamples, binRatio, minBins, maxBins);
 
     if (numWidths > 0) {
-        const Tuple<float32> tuple = getMinAndMaxFeatureValue(numericalFeatureVector);
-        float32 min = tuple.first;
-        float32 max = tuple.second;
+        const std::pair<float32, float32> pair = getMinAndMaxFeatureValue(numericalFeatureVector);
+        float32 min = pair.first;
+        float32 max = pair.second;
         float32 width = (max - min) / numWidths;
         uint32 numElements = numericalFeatureVector.numElements;
         float32 sparseValue = numericalFeatureVector.sparseValue;
