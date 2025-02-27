@@ -32,4 +32,3 @@ jobs:
         with:
           packages-dir: wheelhouse
           skip-existing: true
-          repository-url: https://pypi.org/legacy/
