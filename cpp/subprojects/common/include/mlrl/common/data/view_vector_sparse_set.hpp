@@ -17,7 +17,8 @@
  * each position the index of the corresponding element in the dynamic array, if available.
  *
  * This data structure is often referred to as an "unordered sparse set". It was originally proposed in "An efficient
- * representation for sparse sets", Briggs, Torczon, 1993 (see https://dl.acm.org/doi/pdf/10.1145/176454.176484).
+ * representation for sparse sets", Briggs, Torczon, 1993 (see
+ * https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=c83ae968c51219db68a03fc5b01de751dd2fe9ae).
  *
  * @tparam T            The type of the values, the view provides access to
  * @tparam ValueArray   The type of the dynamic array that stores the sparse elements
