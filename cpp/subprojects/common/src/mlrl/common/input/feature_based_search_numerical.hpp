@@ -5,12 +5,12 @@
 
 #include "mlrl/common/input/feature_vector_numerical.hpp"
 #include "mlrl/common/rule_refinement/refinement.hpp"
-#include "mlrl/common/statistics/statistics_subset_weighted.hpp"
+#include "mlrl/common/statistics/statistics_subset_resettable.hpp"
 #include "mlrl/common/util/math.hpp"
 
 template<typename Comparator>
 static inline void searchForNumericalRefinementInternally(const NumericalFeatureVector& featureVector,
-                                                          IWeightedStatisticsSubset& statisticsSubset,
+                                                          IResettableStatisticsSubset& statisticsSubset,
                                                           Comparator& comparator, uint32 numExamplesWithNonZeroWeights,
                                                           uint32 minCoverage, Refinement& refinement) {
     float32 sparseValue = featureVector.sparseValue;
@@ -59,17 +59,18 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                     // Check if a condition using the <= operator covers at least `minCoverage` examples...
                     if (numCovered >= minCoverage) {
                         // Determine the best prediction for examples covered by a condition using the <= operator...
-                        const IScoreVector& scoreVector = statisticsSubset.calculateScores();
+                        std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+                          statisticsSubset.calculateScores();
 
                         // Check if the quality of the prediction is better than the quality of the current rule...
-                        if (comparator.isImprovement(scoreVector)) {
+                        if (comparator.isImprovement(*updateCandidatePtr)) {
                             refinement.start = 0;
                             refinement.end = i;
                             refinement.inverse = false;
                             refinement.numCovered = numCovered;
                             refinement.comparator = NUMERICAL_LEQ;
                             refinement.threshold = util::arithmeticMean(previousValue, currentValue);
-                            comparator.pushRefinement(refinement, scoreVector);
+                            comparator.pushRefinement(refinement, *updateCandidatePtr);
                         }
                     }
 
@@ -78,17 +79,18 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
 
                     if (numUncovered >= minCoverage) {
                         // Determine the best prediction for examples covered by a condition using the > operator...
-                        const IScoreVector& scoreVector = statisticsSubset.calculateScoresUncovered();
+                        std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+                          statisticsSubset.calculateScoresUncovered();
 
                         // Check if the quality of the prediction is better than the quality of the current rule...
-                        if (comparator.isImprovement(scoreVector)) {
+                        if (comparator.isImprovement(*updateCandidatePtr)) {
                             refinement.start = 0;
                             refinement.end = i;
                             refinement.inverse = true;
                             refinement.numCovered = numUncovered;
                             refinement.comparator = NUMERICAL_GR;
                             refinement.threshold = util::arithmeticMean(previousValue, currentValue);
-                            comparator.pushRefinement(refinement, scoreVector);
+                            comparator.pushRefinement(refinement, *updateCandidatePtr);
                         }
                     }
                 }
@@ -141,17 +143,18 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                     // Check if a condition using the > operator covers at least `minCoverage` examples...
                     if (numCovered >= minCoverage) {
                         // Determine the best prediction for the covered examples...
-                        const IScoreVector& scoreVector = statisticsSubset.calculateScores();
+                        std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+                          statisticsSubset.calculateScores();
 
                         // Check if the quality of the prediction is better than the quality of the current rule...
-                        if (comparator.isImprovement(scoreVector)) {
+                        if (comparator.isImprovement(*updateCandidatePtr)) {
                             refinement.start = i + 1;
                             refinement.end = numFeatureValues;
                             refinement.inverse = false;
                             refinement.numCovered = numCovered;
                             refinement.comparator = NUMERICAL_GR;
                             refinement.threshold = util::arithmeticMean(currentValue, previousValue);
-                            comparator.pushRefinement(refinement, scoreVector);
+                            comparator.pushRefinement(refinement, *updateCandidatePtr);
                         }
                     }
 
@@ -160,17 +163,18 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
 
                     if (numUncovered >= minCoverage) {
                         // Determine the best prediction for the covered examples...
-                        const IScoreVector& scoreVector = statisticsSubset.calculateScoresUncovered();
+                        std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+                          statisticsSubset.calculateScoresUncovered();
 
                         // Check if the quality of the prediction is better than the quality of the current rule...
-                        if (comparator.isImprovement(scoreVector)) {
+                        if (comparator.isImprovement(*updateCandidatePtr)) {
                             refinement.start = i + 1;
                             refinement.end = numFeatureValues;
                             refinement.inverse = true;
                             refinement.numCovered = numUncovered;
                             refinement.comparator = NUMERICAL_LEQ;
                             refinement.threshold = util::arithmeticMean(currentValue, previousValue);
-                            comparator.pushRefinement(refinement, scoreVector);
+                            comparator.pushRefinement(refinement, *updateCandidatePtr);
                         }
                     }
                 }
@@ -195,17 +199,17 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
         // examples...
         if (numCovered >= minCoverage) {
             // Determine the best prediction for examples covered by the condition...
-            const IScoreVector& scoreVector = statisticsSubset.calculateScores();
+            std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScores();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
-            if (comparator.isImprovement(scoreVector)) {
+            if (comparator.isImprovement(*updateCandidatePtr)) {
                 refinement.start = firstExampleWithSparseValueOrGreater;
                 refinement.end = numFeatureValues;
                 refinement.numCovered = numCovered;
                 refinement.inverse = false;
                 refinement.comparator = NUMERICAL_GR;
                 refinement.threshold = util::arithmeticMean(sparseValue, previousValue);
-                comparator.pushRefinement(refinement, scoreVector);
+                comparator.pushRefinement(refinement, *updateCandidatePtr);
             }
         }
 
@@ -215,17 +219,17 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
 
         if (numUncovered >= minCoverage) {
             // Determine the best prediction for examples covered by the condition...
-            const IScoreVector& scoreVector = statisticsSubset.calculateScoresUncovered();
+            std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScoresUncovered();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
-            if (comparator.isImprovement(scoreVector)) {
+            if (comparator.isImprovement(*updateCandidatePtr)) {
                 refinement.start = firstExampleWithSparseValueOrGreater;
                 refinement.end = numFeatureValues;
                 refinement.numCovered = numUncovered;
                 refinement.inverse = true;
                 refinement.comparator = NUMERICAL_LEQ;
                 refinement.threshold = util::arithmeticMean(sparseValue, previousValue);
-                comparator.pushRefinement(refinement, scoreVector);
+                comparator.pushRefinement(refinement, *updateCandidatePtr);
             }
         }
     }
@@ -237,10 +241,11 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
         // `f <= arithmeticMean(lastValueLessThanSparseValue, previousValue)` covers at least `minCoverage` examples...
         if (numCoveredLessThanSparseValue >= minCoverage) {
             // Determine the best prediction for the examples covered by the condition...
-            const IScoreVector& scoreVector = statisticsSubset.calculateScoresAccumulated();
+            std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+              statisticsSubset.calculateScoresAccumulated();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
-            if (comparator.isImprovement(scoreVector)) {
+            if (comparator.isImprovement(*updateCandidatePtr)) {
                 refinement.start = 0;
                 refinement.end = firstExampleWithSparseValueOrGreater;
                 refinement.numCovered = numCoveredLessThanSparseValue;
@@ -257,7 +262,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                     refinement.threshold = util::arithmeticMean(lastValueLessThanSparseValue, previousValue);
                 }
 
-                comparator.pushRefinement(refinement, scoreVector);
+                comparator.pushRefinement(refinement, *updateCandidatePtr);
             }
         }
 
@@ -267,10 +272,11 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
 
         if (numUncovered >= minCoverage) {
             // Determine the best prediction for the examples covered by the condition...
-            const IScoreVector& scoreVector = statisticsSubset.calculateScoresUncoveredAccumulated();
+            std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+              statisticsSubset.calculateScoresUncoveredAccumulated();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
-            if (comparator.isImprovement(scoreVector)) {
+            if (comparator.isImprovement(*updateCandidatePtr)) {
                 refinement.start = 0;
                 refinement.end = firstExampleWithSparseValueOrGreater;
                 refinement.numCovered = numUncovered;
@@ -287,7 +293,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                     refinement.threshold = util::arithmeticMean(lastValueLessThanSparseValue, previousValue);
                 }
 
-                comparator.pushRefinement(refinement, scoreVector);
+                comparator.pushRefinement(refinement, *updateCandidatePtr);
             }
         }
     }

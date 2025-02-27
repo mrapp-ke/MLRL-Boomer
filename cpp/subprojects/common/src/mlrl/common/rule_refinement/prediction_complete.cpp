@@ -5,8 +5,10 @@
 #include "mlrl/common/rule_refinement/rule_refinement.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
 
-CompletePrediction::CompletePrediction(uint32 numElements)
-    : VectorDecorator<AllocatedVector<float64>>(AllocatedVector<float64>(numElements)), indexVector_(numElements) {}
+CompletePrediction::CompletePrediction(uint32 numElements, IStatisticsUpdateFactory& statisticsUpdateFactory)
+    : VectorDecorator<AllocatedVector<float64>>(AllocatedVector<float64>(numElements)), indexVector_(numElements),
+      statisticsUpdatePtr_(statisticsUpdateFactory.create(indexVector_.cbegin(), indexVector_.cend(),
+                                                          this->view.cbegin(), this->view.cend())) {}
 
 CompletePrediction::value_iterator CompletePrediction::values_begin() {
     return this->view.begin();
@@ -42,20 +44,17 @@ void CompletePrediction::postProcess(const IPostProcessor& postProcessor) {
     postProcessor.postProcess(this->values_begin(), this->values_end());
 }
 
-void CompletePrediction::set(View<float64>::const_iterator begin, View<float64>::const_iterator end) {
-    util::copyView(begin, this->view.begin(), this->getNumElements());
-}
-
-void CompletePrediction::set(BinnedConstIterator<float64> begin, BinnedConstIterator<float64> end) {
-    util::copyView(begin, this->view.begin(), this->getNumElements());
-}
-
 bool CompletePrediction::isPartial() const {
     return false;
 }
 
 uint32 CompletePrediction::getIndex(uint32 pos) const {
     return indexVector_.getIndex(pos);
+}
+
+void CompletePrediction::visit(PartialIndexVectorVisitor partialIndexVectorVisitor,
+                               CompleteIndexVectorVisitor completeIndexVectorVisitor) const {
+    completeIndexVectorVisitor(indexVector_);
 }
 
 std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(const IStatistics& statistics,
@@ -74,6 +73,11 @@ std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
 }
 
 std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
+  const IStatistics& statistics, const DenseWeightVector<float32>& weights) const {
+    return statistics.createSubset(indexVector_, weights);
+}
+
+std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
   const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
@@ -88,17 +92,17 @@ std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
     return statistics.createSubset(indexVector_, weights);
 }
 
-std::unique_ptr<IRuleRefinement> CompletePrediction::createRuleRefinement(IFeatureSubspace& featureSubspace,
-                                                                          uint32 featureIndex) const {
-    return indexVector_.createRuleRefinement(featureSubspace, featureIndex);
+std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
+  const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const {
+    return statistics.createSubset(indexVector_, weights);
 }
 
-void CompletePrediction::apply(IStatistics& statistics, uint32 statisticIndex) const {
-    statistics.applyPrediction(statisticIndex, *this);
+void CompletePrediction::applyPrediction(uint32 statisticIndex) {
+    statisticsUpdatePtr_->applyPrediction(statisticIndex);
 }
 
-void CompletePrediction::revert(IStatistics& statistics, uint32 statisticIndex) const {
-    statistics.revertPrediction(statisticIndex, *this);
+void CompletePrediction::revertPrediction(uint32 statisticIndex) {
+    statisticsUpdatePtr_->revertPrediction(statisticIndex);
 }
 
 std::unique_ptr<IHead> CompletePrediction::createHead() const {

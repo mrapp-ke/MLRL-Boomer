@@ -6,11 +6,11 @@
 #include "feature_based_search_binned_common.hpp"
 #include "mlrl/common/input/feature_vector_binned.hpp"
 #include "mlrl/common/rule_refinement/refinement.hpp"
-#include "mlrl/common/statistics/statistics_subset_weighted.hpp"
+#include "mlrl/common/statistics/statistics_subset_resettable.hpp"
 
 template<typename Comparator>
 static inline void searchForBinnedRefinementInternally(const BinnedFeatureVector& featureVector,
-                                                       IWeightedStatisticsSubset& statisticsSubset,
+                                                       IResettableStatisticsSubset& statisticsSubset,
                                                        Comparator& comparator, uint32 numExamplesWithNonZeroWeights,
                                                        uint32 minCoverage, Refinement& refinement) {
     // Mark all examples corresponding to the first bin with index `i < sparseBinIndex` as covered...
@@ -30,17 +30,17 @@ static inline void searchForBinnedRefinementInternally(const BinnedFeatureVector
             // Check if a condition using the <= operator covers at least `minCoverage` examples...
             if (numCovered >= minCoverage) {
                 // Determine the best prediction for the examples covered by a condition using the <= operator...
-                const IScoreVector& scoreVector = statisticsSubset.calculateScores();
+                std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScores();
 
                 // Check if the quality of the prediction is better than the quality of the current rule...
-                if (comparator.isImprovement(scoreVector)) {
+                if (comparator.isImprovement(*updateCandidatePtr)) {
                     refinement.start = 0;
                     refinement.end = i;
                     refinement.inverse = false;
                     refinement.numCovered = numCovered;
                     refinement.comparator = NUMERICAL_LEQ;
                     refinement.threshold = thresholdIterator[i - 1];
-                    comparator.pushRefinement(refinement, scoreVector);
+                    comparator.pushRefinement(refinement, *updateCandidatePtr);
                 }
             }
 
@@ -49,17 +49,18 @@ static inline void searchForBinnedRefinementInternally(const BinnedFeatureVector
 
             if (numUncovered >= minCoverage) {
                 // Determine the best prediction for examples covered by a condition using the > operator...
-                const IScoreVector& scoreVector = statisticsSubset.calculateScoresUncovered();
+                std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+                  statisticsSubset.calculateScoresUncovered();
 
                 // Check if the quality of the prediction is better than the quality of the current rule...
-                if (comparator.isImprovement(scoreVector)) {
+                if (comparator.isImprovement(*updateCandidatePtr)) {
                     refinement.start = 0;
                     refinement.end = i;
                     refinement.inverse = true;
                     refinement.numCovered = numUncovered;
                     refinement.comparator = NUMERICAL_GR;
                     refinement.threshold = thresholdIterator[i - 1];
-                    comparator.pushRefinement(refinement, scoreVector);
+                    comparator.pushRefinement(refinement, *updateCandidatePtr);
                 }
             }
 
@@ -86,17 +87,17 @@ static inline void searchForBinnedRefinementInternally(const BinnedFeatureVector
             // Check if a condition using the > operator covers at least `minCoverage` examples...
             if (numCovered >= minCoverage) {
                 // Determine the best prediction for the covered examples...
-                const IScoreVector& scoreVector = statisticsSubset.calculateScores();
+                std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScores();
 
                 // Check if the quality of the prediction is better than the quality of the current rule...
-                if (comparator.isImprovement(scoreVector)) {
+                if (comparator.isImprovement(*updateCandidatePtr)) {
                     refinement.start = i + 1;
                     refinement.end = numBins;
                     refinement.inverse = false;
                     refinement.numCovered = numCovered;
                     refinement.comparator = NUMERICAL_GR;
                     refinement.threshold = thresholdIterator[i];
-                    comparator.pushRefinement(refinement, scoreVector);
+                    comparator.pushRefinement(refinement, *updateCandidatePtr);
                 }
             }
 
@@ -105,17 +106,18 @@ static inline void searchForBinnedRefinementInternally(const BinnedFeatureVector
 
             if (numUncovered >= minCoverage) {
                 // Determine the best prediction for the covered examples...
-                const IScoreVector& scoreVector = statisticsSubset.calculateScoresUncovered();
+                std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+                  statisticsSubset.calculateScoresUncovered();
 
                 // Check if the quality of the prediction is better than the quality of the current rule...
-                if (comparator.isImprovement(scoreVector)) {
+                if (comparator.isImprovement(*updateCandidatePtr)) {
                     refinement.start = i + 1;
                     refinement.end = numBins;
                     refinement.inverse = true;
                     refinement.numCovered = numUncovered;
                     refinement.comparator = NUMERICAL_LEQ;
                     refinement.threshold = thresholdIterator[i];
-                    comparator.pushRefinement(refinement, scoreVector);
+                    comparator.pushRefinement(refinement, *updateCandidatePtr);
                 }
             }
 
@@ -128,17 +130,17 @@ static inline void searchForBinnedRefinementInternally(const BinnedFeatureVector
     // examples...
     if (numCovered >= minCoverage) {
         // Determine the best prediction for examples covered by the condition...
-        const IScoreVector& scoreVector = statisticsSubset.calculateScores();
+        std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScores();
 
         // Check if the quality of the prediction is better than the quality of the current rule...
-        if (comparator.isImprovement(scoreVector)) {
+        if (comparator.isImprovement(*updateCandidatePtr)) {
             refinement.start = sparseBinIndex + 1;
             refinement.end = numBins;
             refinement.numCovered = numCovered;
             refinement.inverse = false;
             refinement.comparator = NUMERICAL_GR;
             refinement.threshold = thresholdIterator[sparseBinIndex];
-            comparator.pushRefinement(refinement, scoreVector);
+            comparator.pushRefinement(refinement, *updateCandidatePtr);
         }
     }
 
@@ -148,17 +150,17 @@ static inline void searchForBinnedRefinementInternally(const BinnedFeatureVector
 
     if (numUncovered >= minCoverage) {
         // Determine the best prediction for examples covered by the condition...
-        const IScoreVector& scoreVector = statisticsSubset.calculateScores();
+        std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubset.calculateScores();
 
         // Check if the quality of the prediction is better than the quality of the current rule...
-        if (comparator.isImprovement(scoreVector)) {
+        if (comparator.isImprovement(*updateCandidatePtr)) {
             refinement.start = sparseBinIndex + 1;
             refinement.end = numBins;
             refinement.numCovered = numUncovered;
             refinement.inverse = true;
             refinement.comparator = NUMERICAL_LEQ;
             refinement.threshold = thresholdIterator[sparseBinIndex];
-            comparator.pushRefinement(refinement, scoreVector);
+            comparator.pushRefinement(refinement, *updateCandidatePtr);
         }
     }
 
@@ -169,17 +171,18 @@ static inline void searchForBinnedRefinementInternally(const BinnedFeatureVector
         // examples...
         if (numCoveredLessThanSparseBinIndex >= minCoverage) {
             // Determine the best prediction for the examples covered by the condition...
-            const IScoreVector& scoreVector = statisticsSubset.calculateScoresAccumulated();
+            std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+              statisticsSubset.calculateScoresAccumulated();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
-            if (comparator.isImprovement(scoreVector)) {
+            if (comparator.isImprovement(*updateCandidatePtr)) {
                 refinement.start = 0;
                 refinement.end = sparseBinIndex;
                 refinement.numCovered = numCoveredLessThanSparseBinIndex;
                 refinement.inverse = false;
                 refinement.comparator = NUMERICAL_LEQ;
                 refinement.threshold = thresholdIterator[sparseBinIndex - 1];
-                comparator.pushRefinement(refinement, scoreVector);
+                comparator.pushRefinement(refinement, *updateCandidatePtr);
             }
         }
 
@@ -189,17 +192,18 @@ static inline void searchForBinnedRefinementInternally(const BinnedFeatureVector
 
         if (numUncovered >= minCoverage) {
             // Determine the best prediction for the examples covered by the condition...
-            const IScoreVector& scoreVector = statisticsSubset.calculateScoresUncoveredAccumulated();
+            std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr =
+              statisticsSubset.calculateScoresUncoveredAccumulated();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
-            if (comparator.isImprovement(scoreVector)) {
+            if (comparator.isImprovement(*updateCandidatePtr)) {
                 refinement.start = 0;
                 refinement.end = sparseBinIndex;
                 refinement.numCovered = numUncovered;
                 refinement.inverse = true;
                 refinement.comparator = NUMERICAL_GR;
                 refinement.threshold = thresholdIterator[sparseBinIndex - 1];
-                comparator.pushRefinement(refinement, scoreVector);
+                comparator.pushRefinement(refinement, *updateCandidatePtr);
             }
         }
     }

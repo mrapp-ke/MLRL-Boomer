@@ -1,9 +1,16 @@
 #include "mlrl/common/rule_evaluation/score_vector_binned_dense.hpp"
 
-#include "mlrl/common/indices/index_vector_complete.hpp"
-#include "mlrl/common/indices/index_vector_partial.hpp"
-#include "mlrl/common/rule_refinement/prediction.hpp"
-#include "mlrl/common/rule_refinement/score_processor.hpp"
+static inline void visitInternally(const DenseBinnedScoreVector<CompleteIndexVector>& scoreVector,
+                                   IScoreVector::DenseBinnedVisitor<CompleteIndexVector> completeVisitor,
+                                   IScoreVector::DenseBinnedVisitor<PartialIndexVector> partialVisitor) {
+    completeVisitor(scoreVector);
+}
+
+static inline void visitInternally(const DenseBinnedScoreVector<PartialIndexVector>& scoreVector,
+                                   IScoreVector::DenseBinnedVisitor<CompleteIndexVector> completeVisitor,
+                                   IScoreVector::DenseBinnedVisitor<PartialIndexVector> partialVisitor) {
+    partialVisitor(scoreVector);
+}
 
 template<typename IndexVector>
 DenseBinnedScoreVector<IndexVector>::DenseBinnedScoreVector(const IndexVector& outputIndices, uint32 numBins,
@@ -28,13 +35,15 @@ typename DenseBinnedScoreVector<IndexVector>::index_const_iterator DenseBinnedSc
 template<typename IndexVector>
 typename DenseBinnedScoreVector<IndexVector>::value_const_iterator DenseBinnedScoreVector<IndexVector>::values_cbegin()
   const {
-    return BinnedConstIterator<float64>(this->bin_indices_cbegin(), this->bin_values_cbegin());
+    return value_const_iterator(View<const uint32>(this->bin_indices_cbegin()),
+                                View<const float64>(this->bin_values_cbegin()), 0);
 }
 
 template<typename IndexVector>
 typename DenseBinnedScoreVector<IndexVector>::value_const_iterator DenseBinnedScoreVector<IndexVector>::values_cend()
   const {
-    return BinnedConstIterator<float64>(this->bin_indices_cend(), this->bin_values_cbegin());
+    return value_const_iterator(View<const uint32>(this->bin_indices_cbegin()),
+                                View<const float64>(this->bin_values_cbegin()), this->getNumElements());
 }
 
 template<typename IndexVector>
@@ -105,13 +114,11 @@ bool DenseBinnedScoreVector<IndexVector>::isSorted() const {
 }
 
 template<typename IndexVector>
-void DenseBinnedScoreVector<IndexVector>::updatePrediction(IPrediction& prediction) const {
-    prediction.set(this->values_cbegin(), this->values_cend());
-}
-
-template<typename IndexVector>
-void DenseBinnedScoreVector<IndexVector>::processScores(ScoreProcessor& scoreProcessor) const {
-    scoreProcessor.processScores(*this);
+void DenseBinnedScoreVector<IndexVector>::visit(
+  DenseVisitor<CompleteIndexVector> completeDenseVisitor, DenseVisitor<PartialIndexVector> partialDenseVisitor,
+  DenseBinnedVisitor<CompleteIndexVector> completeDenseBinnedVisitor,
+  DenseBinnedVisitor<PartialIndexVector> partialDenseBinnedVisitor) const {
+    visitInternally(*this, completeDenseBinnedVisitor, partialDenseBinnedVisitor);
 }
 
 template class DenseBinnedScoreVector<PartialIndexVector>;

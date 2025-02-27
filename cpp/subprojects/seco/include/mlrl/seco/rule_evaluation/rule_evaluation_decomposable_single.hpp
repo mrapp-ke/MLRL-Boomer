@@ -28,9 +28,21 @@ namespace seco {
              */
             DecomposableSingleOutputRuleEvaluationFactory(std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr);
 
-            std::unique_ptr<IRuleEvaluation> create(const CompleteIndexVector& indexVector) const override;
+            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<uint32>>> create(
+              const DenseConfusionMatrixVector<uint32>& statisticVector,
+              const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation> create(const PartialIndexVector& indexVector) const override;
+            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<uint32>>> create(
+              const DenseConfusionMatrixVector<uint32>& statisticVector,
+              const PartialIndexVector& indexVector) const override;
+
+            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<float32>>> create(
+              const DenseConfusionMatrixVector<float32>& statisticVector,
+              const CompleteIndexVector& indexVector) const override;
+
+            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<float32>>> create(
+              const DenseConfusionMatrixVector<float32>& statisticVector,
+              const PartialIndexVector& indexVector) const override;
     };
 
 }

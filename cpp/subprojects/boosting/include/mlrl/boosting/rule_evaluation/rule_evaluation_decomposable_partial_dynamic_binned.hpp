@@ -62,12 +62,20 @@ namespace boosting {
               const DenseDecomposableStatisticVector& statisticVector,
               const PartialIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector>> create(
-              const SparseDecomposableStatisticVector& statisticVector,
+            std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<uint32>>> create(
+              const SparseDecomposableStatisticVector<uint32>& statisticVector,
               const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector>> create(
-              const SparseDecomposableStatisticVector& statisticVector,
+            std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<uint32>>> create(
+              const SparseDecomposableStatisticVector<uint32>& statisticVector,
+              const PartialIndexVector& indexVector) const override;
+
+            virtual std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32>>> create(
+              const SparseDecomposableStatisticVector<float32>& statisticVector,
+              const CompleteIndexVector& indexVector) const override;
+
+            virtual std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32>>> create(
+              const SparseDecomposableStatisticVector<float32>& statisticVector,
               const PartialIndexVector& indexVector) const override;
     };
 
