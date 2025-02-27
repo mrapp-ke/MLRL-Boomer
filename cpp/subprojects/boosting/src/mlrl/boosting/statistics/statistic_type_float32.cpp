@@ -9,10 +9,12 @@ namespace boosting {
       Float32StatisticsConfig::createClassificationStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
         const IDecomposableClassificationLossConfig& lossConfig) const {
+        std::unique_ptr<IDecomposableClassificationLossConfig::IPreset<float64>> lossPresetPtr =
+          lossConfig.createDecomposable64BitClassificationPreset();
         std::unique_ptr<IDecomposableClassificationLossFactory<float64>> lossFactoryPtr =
-          lossConfig.createDecomposableClassificationLossFactory();
+          lossPresetPtr->createDecomposableClassificationLossFactory();
         std::unique_ptr<IClassificationEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr =
-          lossConfig.createClassificationEvaluationMeasureFactory();
+          lossPresetPtr->createClassificationEvaluationMeasureFactory();
         return headConfig_.get().create64BitPreset()->createClassificationStatisticsProviderFactory(
           featureMatrix, labelMatrix, lossFactoryPtr, evaluationMeasureFactoryPtr);
     }
@@ -21,10 +23,12 @@ namespace boosting {
       Float32StatisticsConfig::createClassificationStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
         const ISparseDecomposableClassificationLossConfig& lossConfig) const {
+        std::unique_ptr<ISparseDecomposableClassificationLossConfig::IPreset<float64>> lossPresetPtr =
+          lossConfig.createSparseDecomposable64BitClassificationPreset();
         std::unique_ptr<ISparseDecomposableClassificationLossFactory<float64>> lossFactoryPtr =
-          lossConfig.createSparseDecomposableClassificationLossFactory();
+          lossPresetPtr->createSparseDecomposableClassificationLossFactory();
         std::unique_ptr<ISparseEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr =
-          lossConfig.createSparseEvaluationMeasureFactory();
+          lossPresetPtr->createSparseEvaluationMeasureFactory();
         return headConfig_.get().create64BitPreset()->createClassificationStatisticsProviderFactory(
           featureMatrix, labelMatrix, lossFactoryPtr, evaluationMeasureFactoryPtr);
     }
@@ -34,10 +38,12 @@ namespace boosting {
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
         const INonDecomposableClassificationLossConfig& lossConfig, const BlasFactory& blasFactory,
         const LapackFactory& lapackFactory) const {
+        std::unique_ptr<INonDecomposableClassificationLossConfig::IPreset<float64>> lossPresetPtr =
+          lossConfig.createNonDecomposable64BitClassificationPreset();
         std::unique_ptr<INonDecomposableClassificationLossFactory<float64>> lossFactoryPtr =
-          lossConfig.createNonDecomposableClassificationLossFactory();
+          lossPresetPtr->createNonDecomposableClassificationLossFactory();
         std::unique_ptr<IClassificationEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr =
-          lossConfig.createClassificationEvaluationMeasureFactory();
+          lossPresetPtr->createClassificationEvaluationMeasureFactory();
         return headConfig_.get().create64BitPreset()->createClassificationStatisticsProviderFactory(
           featureMatrix, labelMatrix, lossFactoryPtr, evaluationMeasureFactoryPtr, blasFactory, lapackFactory);
     }
@@ -46,10 +52,12 @@ namespace boosting {
       Float32StatisticsConfig::createRegressionStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
         const IDecomposableRegressionLossConfig& lossConfig) const {
+        std::unique_ptr<IDecomposableRegressionLossConfig::IPreset<float64>> lossPresetPtr =
+          lossConfig.createDecomposable64BitRegressionPreset();
         std::unique_ptr<IDecomposableRegressionLossFactory<float64>> lossFactoryPtr =
-          lossConfig.createDecomposableRegressionLossFactory();
+          lossPresetPtr->createDecomposableRegressionLossFactory();
         std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr =
-          lossConfig.createRegressionEvaluationMeasureFactory();
+          lossPresetPtr->createRegressionEvaluationMeasureFactory();
         return headConfig_.get().create64BitPreset()->createRegressionStatisticsProviderFactory(
           featureMatrix, regressionMatrix, lossFactoryPtr, evaluationMeasureFactoryPtr);
     }
@@ -59,10 +67,12 @@ namespace boosting {
         const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
         const INonDecomposableRegressionLossConfig& lossConfig, const BlasFactory& blasFactory,
         const LapackFactory& lapackFactory) const {
+        std::unique_ptr<INonDecomposableRegressionLossConfig::IPreset<float64>> lossPresetPtr =
+          lossConfig.createNonDecomposable64BitRegressionPreset();
         std::unique_ptr<INonDecomposableRegressionLossFactory<float64>> lossFactoryPtr =
-          lossConfig.createNonDecomposableRegressionLossFactory();
+          lossPresetPtr->createNonDecomposableRegressionLossFactory();
         std::unique_ptr<IRegressionEvaluationMeasureFactory<float64>> evaluationMeasureFactoryPtr =
-          lossConfig.createRegressionEvaluationMeasureFactory();
+          lossPresetPtr->createRegressionEvaluationMeasureFactory();
         return headConfig_.get().create64BitPreset()->createRegressionStatisticsProviderFactory(
           featureMatrix, regressionMatrix, lossFactoryPtr, evaluationMeasureFactoryPtr, blasFactory, lapackFactory);
     }

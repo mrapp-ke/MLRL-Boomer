@@ -155,31 +155,70 @@ namespace boosting {
     class ISparseDecomposableClassificationLossConfig : public IDecomposableClassificationLossConfig {
         public:
 
+            /**
+             * Provides access to the interface of an `ISparseDecomposableClassificationLossConfig`, abstracting away
+             * certain configuration options that have already been pre-determined.
+             *
+             * @tparam StatisticType The type that should be used for representing statistics
+             */
+            template<typename StatisticType>
+            class IPreset : public IDecomposableClassificationLossConfig::IPreset<StatisticType> {
+                public:
+
+                    virtual ~IPreset() override {}
+
+                    /**
+                     * Creates and returns a new object of type `ISparseDecomposableClassificationLossFactory` according
+                     * to the specified configuration.
+                     *
+                     * @return An unique pointer to an object of type `ISparseDecomposableClassificationLossFactory`
+                     *         that has been created
+                     */
+                    virtual std::unique_ptr<ISparseDecomposableClassificationLossFactory<StatisticType>>
+                      createSparseDecomposableClassificationLossFactory() const = 0;
+
+                    /**
+                     * Creates and returns a new object of type `ISparseEvaluationMeasureFactory` according to the
+                     * specified configuration.
+                     *
+                     * @return An unique pointer to an object of type `ISparseEvaluationMeasureFactory` that has been
+                     *         created
+                     */
+                    std::unique_ptr<ISparseEvaluationMeasureFactory<StatisticType>>
+                      createSparseEvaluationMeasureFactory() const {
+                        return this->createSparseDecomposableClassificationLossFactory();
+                    }
+
+                    std::unique_ptr<IDecomposableClassificationLossFactory<StatisticType>>
+                      createDecomposableClassificationLossFactory() const override final {
+                        return this->createSparseDecomposableClassificationLossFactory();
+                    }
+            };
+
             virtual ~ISparseDecomposableClassificationLossConfig() override {}
 
             /**
-             * Creates and returns a new object of type `ISparseDecomposableClassificationLossFactory` according to the
-             * specified configuration.
+             * Creates and returns a new object of type `IPreset<float32>`.
              *
-             * @return An unique pointer to an object of type `ISparseDecomposableClassificationLossFactory` that has
-             *         been created
+             * @return An unique pointer to an object of type `IPreset<float32>` that has been created
              */
-            virtual std::unique_ptr<ISparseDecomposableClassificationLossFactory<float64>>
-              createSparseDecomposableClassificationLossFactory() const = 0;
+            virtual std::unique_ptr<IPreset<float32>> createSparseDecomposable32BitClassificationPreset() const = 0;
 
             /**
-             * Creates and returns a new object of type `ISparseEvaluationMeasureFactory` according to the specified
-             * configuration.
+             * Creates and returns a new object of type `IPreset<float64>`.
              *
-             * @return An unique pointer to an object of type `ISparseEvaluationMeasureFactory` that has been created
+             * @return An unique pointer to an object of type `IPreset<float64>` that has been created
              */
-            std::unique_ptr<ISparseEvaluationMeasureFactory<float64>> createSparseEvaluationMeasureFactory() const {
-                return this->createSparseDecomposableClassificationLossFactory();
+            virtual std::unique_ptr<IPreset<float64>> createSparseDecomposable64BitClassificationPreset() const = 0;
+
+            std::unique_ptr<IDecomposableClassificationLossConfig::IPreset<float32>>
+              createDecomposable32BitClassificationPreset() const override final {
+                return this->createSparseDecomposable32BitClassificationPreset();
             }
 
-            std::unique_ptr<IDecomposableClassificationLossFactory<float64>>
-              createDecomposableClassificationLossFactory() const override final {
-                return this->createSparseDecomposableClassificationLossFactory();
+            std::unique_ptr<IDecomposableClassificationLossConfig::IPreset<float64>>
+              createDecomposable64BitClassificationPreset() const override final {
+                return this->createSparseDecomposable64BitClassificationPreset();
             }
 
             bool isSparse() const override final {

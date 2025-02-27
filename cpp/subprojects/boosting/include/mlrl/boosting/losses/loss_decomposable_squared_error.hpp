@@ -48,11 +48,17 @@ namespace boosting {
 
             float64 getDefaultPrediction() const override;
 
-            std::unique_ptr<IDecomposableClassificationLossFactory<float64>>
-              createDecomposableClassificationLossFactory() const override;
+            std::unique_ptr<IDecomposableClassificationLossConfig::IPreset<float32>>
+              createDecomposable32BitClassificationPreset() const override;
 
-            std::unique_ptr<IDecomposableRegressionLossFactory<float64>> createDecomposableRegressionLossFactory()
-              const override;
+            std::unique_ptr<IDecomposableClassificationLossConfig::IPreset<float64>>
+              createDecomposable64BitClassificationPreset() const override;
+
+            std::unique_ptr<IDecomposableRegressionLossConfig::IPreset<float32>>
+              createDecomposable32BitRegressionPreset() const override;
+
+            std::unique_ptr<IDecomposableRegressionLossConfig::IPreset<float64>>
+              createDecomposable64BitRegressionPreset() const override;
     };
 
 }

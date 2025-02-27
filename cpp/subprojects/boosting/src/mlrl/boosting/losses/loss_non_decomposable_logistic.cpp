@@ -65,7 +65,7 @@ namespace boosting {
         for (uint32 c = 0; c < numLabels; c++) {
             statistic_type predictedScore = scoreIterator[c];
             bool trueLabel = *labelIterator2;
-            statistic_type invertedExpectedScore = trueLabel ? -1 : 1;
+            statistic_type invertedExpectedScore = trueLabel ? -1.0f : 1.0f;
             statistic_type x = predictedScore * invertedExpectedScore;
             Statistic<statistic_type>& statistic = statisticIterator[c];
             updateGradientAndHessian(invertedExpectedScore, x, max, sumExp, statistic.gradient, statistic.hessian);
@@ -133,7 +133,7 @@ namespace boosting {
         for (uint32 c = 0; c < numLabels; c++) {
             statistic_type predictedScore = scoreIterator[c];
             bool trueLabel = *labelIterator2;
-            statistic_type invertedExpectedScore = trueLabel ? -1 : 1;
+            statistic_type invertedExpectedScore = trueLabel ? -1.0f : 1.0f;
             statistic_type x = predictedScore * invertedExpectedScore;
 
             // Calculate the Hessians that belong to the part of the Hessian matrix' upper triangle that corresponds to
@@ -145,7 +145,7 @@ namespace boosting {
             for (uint32 r = 0; r < c; r++) {
                 statistic_type predictedScore2 = scoreIterator[r];
                 bool trueLabel2 = *labelIterator4;
-                statistic_type expectedScore2 = trueLabel2 ? 1 : -1;
+                statistic_type expectedScore2 = trueLabel2 ? 1.0f : -1.0f;
                 statistic_type x2 = predictedScore2 * -expectedScore2;
                 *hessianIterator = invertedExpectedScore * expectedScore2
                                    * util::divideOrZero(std::exp(x + x2 - max2), sumExp2) * zeroExp;
@@ -330,6 +330,17 @@ namespace boosting {
             }
     };
 
+    template<typename StatisticType>
+    class NonDecomposableLogisticLossPreset final
+        : public INonDecomposableClassificationLossConfig::IPreset<StatisticType> {
+        public:
+
+            std::unique_ptr<INonDecomposableClassificationLossFactory<StatisticType>>
+              createNonDecomposableClassificationLossFactory() const override {
+                return std::make_unique<NonDecomposableLogisticLossFactory<StatisticType>>();
+            }
+    };
+
     NonDecomposableLogisticLossConfig::NonDecomposableLogisticLossConfig(
       ReadableProperty<IStatisticTypeConfig> statisticTypeConfig)
         : statisticTypeConfig_(statisticTypeConfig) {}
@@ -356,9 +367,14 @@ namespace boosting {
         return 0;
     }
 
-    std::unique_ptr<INonDecomposableClassificationLossFactory<float64>>
-      NonDecomposableLogisticLossConfig::createNonDecomposableClassificationLossFactory() const {
-        return std::make_unique<NonDecomposableLogisticLossFactory<float64>>();
+    std::unique_ptr<INonDecomposableClassificationLossConfig::IPreset<float32>>
+      NonDecomposableLogisticLossConfig::createNonDecomposable32BitClassificationPreset() const {
+        return std::make_unique<NonDecomposableLogisticLossPreset<float32>>();
+    }
+
+    std::unique_ptr<INonDecomposableClassificationLossConfig::IPreset<float64>>
+      NonDecomposableLogisticLossConfig::createNonDecomposable64BitClassificationPreset() const {
+        return std::make_unique<NonDecomposableLogisticLossPreset<float64>>();
     }
 
 }

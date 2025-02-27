@@ -221,7 +221,7 @@ namespace boosting {
         if (basedOnProbabilities) {
             return lossConfig.createJointProbabilityFunctionFactory();
         } else {
-            return lossConfig.createDistanceMeasureFactory();
+            return lossConfig.create64BitClassificationPreset()->createDistanceMeasureFactory();
         }
     }
 
