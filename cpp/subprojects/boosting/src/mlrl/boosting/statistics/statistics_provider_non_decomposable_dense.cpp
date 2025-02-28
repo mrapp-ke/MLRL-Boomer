@@ -13,9 +13,12 @@ namespace boosting {
     /**
      * A matrix that stores gradients and Hessians that have been calculated using a non-decomposable loss function
      * using C-contiguous arrays.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians
      */
+    template<typename StatisticType>
     class DenseNonDecomposableStatisticMatrix final
-        : public ClearableViewDecorator<MatrixDecorator<DenseNonDecomposableStatisticView>> {
+        : public ClearableViewDecorator<MatrixDecorator<DenseNonDecomposableStatisticView<StatisticType>>> {
         public:
 
             /**
@@ -23,8 +26,8 @@ namespace boosting {
              * @param numCols The number of columns in the matrix
              */
             DenseNonDecomposableStatisticMatrix(uint32 numRows, uint32 numCols)
-                : ClearableViewDecorator<MatrixDecorator<DenseNonDecomposableStatisticView>>(
-                    DenseNonDecomposableStatisticView(numRows, numCols)) {}
+                : ClearableViewDecorator<MatrixDecorator<DenseNonDecomposableStatisticView<StatisticType>>>(
+                    DenseNonDecomposableStatisticView<StatisticType>(numRows, numCols)) {}
 
             /**
              * Adds all gradients and Hessians in a vector to a specific row of this matrix. The gradients and Hessians
@@ -60,20 +63,27 @@ namespace boosting {
     template<typename Loss, typename OutputMatrix, typename EvaluationMeasure>
     class DenseNonDecomposableStatistics final
         : public AbstractNonDecomposableStatistics<
-            OutputMatrix, DenseNonDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>, Loss,
-            EvaluationMeasure, INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory> {
+            OutputMatrix, DenseNonDecomposableStatisticMatrix<typename Loss::statistic_type>,
+            NumericCContiguousMatrix<typename Loss::statistic_type>, Loss, EvaluationMeasure,
+            INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory> {
         private:
 
-            using StatisticsState = NonDecomposableStatisticsState<OutputMatrix, DenseNonDecomposableStatisticMatrix,
-                                                                   NumericCContiguousMatrix<float64>, Loss>;
+            typedef typename Loss::statistic_type statistic_type;
+
+            typedef NonDecomposableBoostingStatisticsState<OutputMatrix,
+                                                           DenseNonDecomposableStatisticMatrix<statistic_type>,
+                                                           NumericCContiguousMatrix<statistic_type>, Loss>
+              StatisticsState;
 
             template<typename WeightVector, typename IndexVector>
-            using StatisticsSubset = StatisticsSubset<StatisticsState, DenseNonDecomposableStatisticVector,
-                                                      INonDecomposableRuleEvaluationFactory, WeightVector, IndexVector>;
+            using StatisticsSubset =
+              StatisticsSubset<StatisticsState, DenseNonDecomposableStatisticVector<statistic_type>,
+                               INonDecomposableRuleEvaluationFactory, WeightVector, IndexVector>;
 
             template<typename WeightVector>
-            using WeightedStatistics = WeightedStatistics<StatisticsState, DenseNonDecomposableStatisticVector,
-                                                          INonDecomposableRuleEvaluationFactory, WeightVector>;
+            using WeightedStatistics =
+              WeightedStatistics<StatisticsState, DenseNonDecomposableStatisticVector<statistic_type>,
+                                 INonDecomposableRuleEvaluationFactory, WeightVector>;
 
         public:
 
@@ -93,15 +103,15 @@ namespace boosting {
              * @param scoreMatrixPtr        An unique pointer to an object of type `NumericCContiguousMatrix` that
              *                              stores the currently predicted scores
              */
-            DenseNonDecomposableStatistics(std::unique_ptr<Loss> lossPtr,
-                                           std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
-                                           const INonDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
-                                           const OutputMatrix& outputMatrix,
-                                           std::unique_ptr<DenseNonDecomposableStatisticMatrix> statisticMatrixPtr,
-                                           std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
-                : AbstractNonDecomposableStatistics<
-                    OutputMatrix, DenseNonDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>, Loss,
-                    EvaluationMeasure, INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory>(
+            DenseNonDecomposableStatistics(
+              std::unique_ptr<Loss> lossPtr, std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
+              const INonDecomposableRuleEvaluationFactory& ruleEvaluationFactory, const OutputMatrix& outputMatrix,
+              std::unique_ptr<DenseNonDecomposableStatisticMatrix<statistic_type>> statisticMatrixPtr,
+              std::unique_ptr<NumericCContiguousMatrix<statistic_type>> scoreMatrixPtr)
+                : AbstractNonDecomposableStatistics<OutputMatrix, DenseNonDecomposableStatisticMatrix<statistic_type>,
+                                                    NumericCContiguousMatrix<statistic_type>, Loss, EvaluationMeasure,
+                                                    INonDecomposableRuleEvaluationFactory,
+                                                    IDecomposableRuleEvaluationFactory>(
                     std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
                     std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
 
@@ -145,8 +155,8 @@ namespace boosting {
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
-                                                            const DenseWeightVector<uint32>& weights) const override {
-                return std::make_unique<StatisticsSubset<DenseWeightVector<uint32>, CompleteIndexVector>>(
+                                                            const DenseWeightVector<uint16>& weights) const override {
+                return std::make_unique<StatisticsSubset<DenseWeightVector<uint16>, CompleteIndexVector>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -154,8 +164,8 @@ namespace boosting {
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
-                                                            const DenseWeightVector<uint32>& weights) const override {
-                return std::make_unique<StatisticsSubset<DenseWeightVector<uint32>, PartialIndexVector>>(
+                                                            const DenseWeightVector<uint16>& weights) const override {
+                return std::make_unique<StatisticsSubset<DenseWeightVector<uint16>, PartialIndexVector>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -226,9 +236,9 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& outputIndices,
-              const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override {
+              const OutOfSampleWeightVector<DenseWeightVector<uint16>>& weights) const override {
                 return std::make_unique<
-                  StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<uint32>>, CompleteIndexVector>>(
+                  StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<uint16>>, CompleteIndexVector>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -237,9 +247,9 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
               const PartialIndexVector& outputIndices,
-              const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override {
+              const OutOfSampleWeightVector<DenseWeightVector<uint16>>& weights) const override {
                 return std::make_unique<
-                  StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<uint32>>, PartialIndexVector>>(
+                  StatisticsSubset<OutOfSampleWeightVector<DenseWeightVector<uint16>>, PartialIndexVector>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights, outputIndices);
             }
 
@@ -287,8 +297,8 @@ namespace boosting {
              * @see `IStatistics::createWeightedStatistics`
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
-              const DenseWeightVector<uint32>& weights) const override {
-                return std::make_unique<WeightedStatistics<DenseWeightVector<uint32>>>(
+              const DenseWeightVector<uint16>& weights) const override {
+                return std::make_unique<WeightedStatistics<DenseWeightVector<uint16>>>(
                   *this->statePtr_, *this->ruleEvaluationFactory_, weights);
             }
 
@@ -304,9 +314,13 @@ namespace boosting {
             /**
              * @see `IBoostingStatistics::visitScoreMatrix`
              */
-            void visitScoreMatrix(IBoostingStatistics::DenseScoreMatrixVisitor denseVisitor,
-                                  IBoostingStatistics::SparseScoreMatrixVisitor sparseVisitor) const override {
-                denseVisitor(this->statePtr_->scoreMatrixPtr->getView());
+            void visitScoreMatrix(
+              IBoostingStatistics::DenseScoreMatrixVisitor<float32> dense32BitVisitor,
+              IBoostingStatistics::DenseScoreMatrixVisitor<float64> dense64BitVisitor,
+              IBoostingStatistics::SparseScoreMatrixVisitor<float32> sparse32BitVisitor,
+              IBoostingStatistics::SparseScoreMatrixVisitor<float64> sparse64BitVisitor) const override {
+                visitScoreMatrixInternally(this->statePtr_->scoreMatrixPtr->getView(), dense32BitVisitor,
+                                           dense64BitVisitor);
             }
 
             /**
@@ -317,11 +331,11 @@ namespace boosting {
               MultiThreadingSettings multiThreadingSettings) override final {
                 uint32 numRows = this->statePtr_->statisticMatrixPtr->getNumRows();
                 uint32 numCols = this->statePtr_->statisticMatrixPtr->getNumCols();
-                std::unique_ptr<DenseDecomposableStatisticMatrix> decomposableStatisticMatrixPtr =
-                  std::make_unique<DenseDecomposableStatisticMatrix>(numRows, numCols);
-                CContiguousView<Statistic<float64>>* decomposableStatisticMatrixRawPtr =
+                std::unique_ptr<DenseDecomposableStatisticMatrix<statistic_type>> decomposableStatisticMatrixPtr =
+                  std::make_unique<DenseDecomposableStatisticMatrix<statistic_type>>(numRows, numCols);
+                CContiguousView<Statistic<statistic_type>>* decomposableStatisticMatrixRawPtr =
                   &decomposableStatisticMatrixPtr->getView();
-                DenseNonDecomposableStatisticView* NonDecomposableStatisticViewRawPtr =
+                DenseNonDecomposableStatisticView<statistic_type>* NonDecomposableStatisticViewRawPtr =
                   &this->statePtr_->statisticMatrixPtr->getView();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
@@ -330,15 +344,15 @@ namespace boosting {
       schedule(dynamic) num_threads(numThreads)
 #endif
                 for (int64 i = 0; i < numRows; i++) {
-                    CContiguousView<Statistic<float64>>::value_iterator iterator =
+                    typename CContiguousView<Statistic<statistic_type>>::value_iterator iterator =
                       decomposableStatisticMatrixRawPtr->values_begin(i);
-                    DenseNonDecomposableStatisticView::gradient_const_iterator gradientIterator =
-                      NonDecomposableStatisticViewRawPtr->gradients_cbegin(i);
-                    DenseNonDecomposableStatisticView::hessian_diagonal_const_iterator hessianIterator =
-                      NonDecomposableStatisticViewRawPtr->hessians_diagonal_cbegin(i);
+                    typename DenseNonDecomposableStatisticView<statistic_type>::gradient_const_iterator
+                      gradientIterator = NonDecomposableStatisticViewRawPtr->gradients_cbegin(i);
+                    typename DenseNonDecomposableStatisticView<statistic_type>::hessian_diagonal_const_iterator
+                      hessianIterator = NonDecomposableStatisticViewRawPtr->hessians_diagonal_cbegin(i);
 
                     for (uint32 j = 0; j < numCols; j++) {
-                        Statistic<float64>& statistic = iterator[j];
+                        Statistic<statistic_type>& statistic = iterator[j];
                         statistic.gradient = gradientIterator[j];
                         statistic.hessian = hessianIterator[j];
                     }
@@ -357,16 +371,17 @@ namespace boosting {
       createStatistics(std::unique_ptr<Loss> lossPtr, std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
                        const INonDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
                        MultiThreadingSettings multiThreadingSettings, const OutputMatrix& outputMatrix) {
+        typedef typename Loss::statistic_type statistic_type;
         uint32 numExamples = outputMatrix.numRows;
         uint32 numOutputs = outputMatrix.numCols;
-        std::unique_ptr<DenseNonDecomposableStatisticMatrix> statisticMatrixPtr =
-          std::make_unique<DenseNonDecomposableStatisticMatrix>(numExamples, numOutputs);
-        std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr =
-          std::make_unique<NumericCContiguousMatrix<float64>>(numExamples, numOutputs, true);
+        std::unique_ptr<DenseNonDecomposableStatisticMatrix<statistic_type>> statisticMatrixPtr =
+          std::make_unique<DenseNonDecomposableStatisticMatrix<statistic_type>>(numExamples, numOutputs);
+        std::unique_ptr<NumericCContiguousMatrix<statistic_type>> scoreMatrixPtr =
+          std::make_unique<NumericCContiguousMatrix<statistic_type>>(numExamples, numOutputs, true);
         const Loss* lossRawPtr = lossPtr.get();
         const OutputMatrix* outputMatrixPtr = &outputMatrix;
-        const CContiguousView<float64>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
-        DenseNonDecomposableStatisticView* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
+        const CContiguousView<statistic_type>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
+        DenseNonDecomposableStatisticView<statistic_type>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(outputMatrixPtr) \
@@ -382,10 +397,11 @@ namespace boosting {
           std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
     }
 
-    DenseNonDecomposableClassificationStatisticsProviderFactory::
+    template<typename StatisticType>
+    DenseNonDecomposableClassificationStatisticsProviderFactory<StatisticType>::
       DenseNonDecomposableClassificationStatisticsProviderFactory(
-        std::unique_ptr<INonDecomposableClassificationLossFactory> lossFactoryPtr,
-        std::unique_ptr<IClassificationEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
+        std::unique_ptr<INonDecomposableClassificationLossFactory<StatisticType>> lossFactoryPtr,
+        std::unique_ptr<IClassificationEvaluationMeasureFactory<StatisticType>> evaluationMeasureFactoryPtr,
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
@@ -397,11 +413,13 @@ namespace boosting {
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)),
           multiThreadingSettings_(multiThreadingSettings) {}
 
-    std::unique_ptr<IStatisticsProvider> DenseNonDecomposableClassificationStatisticsProviderFactory::create(
-      const CContiguousView<const uint8>& labelMatrix) const {
-        std::unique_ptr<INonDecomposableClassificationLoss> lossPtr =
+    template<typename StatisticType>
+    std::unique_ptr<IStatisticsProvider>
+      DenseNonDecomposableClassificationStatisticsProviderFactory<StatisticType>::create(
+        const CContiguousView<const uint8>& labelMatrix) const {
+        std::unique_ptr<INonDecomposableClassificationLoss<StatisticType>> lossPtr =
           lossFactoryPtr_->createNonDecomposableClassificationLoss();
-        std::unique_ptr<IClassificationEvaluationMeasure> evaluationMeasurePtr =
+        std::unique_ptr<IClassificationEvaluationMeasure<StatisticType>> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createClassificationEvaluationMeasure();
         std::unique_ptr<
           INonDecomposableStatistics<INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory>>
@@ -412,11 +430,13 @@ namespace boosting {
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
-    std::unique_ptr<IStatisticsProvider> DenseNonDecomposableClassificationStatisticsProviderFactory::create(
-      const BinaryCsrView& labelMatrix) const {
-        std::unique_ptr<INonDecomposableClassificationLoss> lossPtr =
+    template<typename StatisticType>
+    std::unique_ptr<IStatisticsProvider>
+      DenseNonDecomposableClassificationStatisticsProviderFactory<StatisticType>::create(
+        const BinaryCsrView& labelMatrix) const {
+        std::unique_ptr<INonDecomposableClassificationLoss<StatisticType>> lossPtr =
           lossFactoryPtr_->createNonDecomposableClassificationLoss();
-        std::unique_ptr<IClassificationEvaluationMeasure> evaluationMeasurePtr =
+        std::unique_ptr<IClassificationEvaluationMeasure<StatisticType>> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createClassificationEvaluationMeasure();
         std::unique_ptr<
           INonDecomposableStatistics<INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory>>
@@ -427,13 +447,18 @@ namespace boosting {
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
-    DenseNonDecomposableRegressionStatisticsProviderFactory::DenseNonDecomposableRegressionStatisticsProviderFactory(
-      std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr,
-      std::unique_ptr<IRegressionEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
-      std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
-      std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
-      std::unique_ptr<INonDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
-      MultiThreadingSettings multiThreadingSettings)
+    template class DenseNonDecomposableClassificationStatisticsProviderFactory<float32>;
+    template class DenseNonDecomposableClassificationStatisticsProviderFactory<float64>;
+
+    template<typename StatisticType>
+    DenseNonDecomposableRegressionStatisticsProviderFactory<StatisticType>::
+      DenseNonDecomposableRegressionStatisticsProviderFactory(
+        std::unique_ptr<INonDecomposableRegressionLossFactory<StatisticType>> lossFactoryPtr,
+        std::unique_ptr<IRegressionEvaluationMeasureFactory<StatisticType>> evaluationMeasureFactoryPtr,
+        std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
+        std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
+        std::unique_ptr<INonDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
+        MultiThreadingSettings multiThreadingSettings)
         : lossFactoryPtr_(std::move(lossFactoryPtr)),
           evaluationMeasureFactoryPtr_(std::move(evaluationMeasureFactoryPtr)),
           defaultRuleEvaluationFactoryPtr_(std::move(defaultRuleEvaluationFactoryPtr)),
@@ -441,11 +466,12 @@ namespace boosting {
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)),
           multiThreadingSettings_(multiThreadingSettings) {}
 
-    std::unique_ptr<IStatisticsProvider> DenseNonDecomposableRegressionStatisticsProviderFactory::create(
+    template<typename StatisticType>
+    std::unique_ptr<IStatisticsProvider> DenseNonDecomposableRegressionStatisticsProviderFactory<StatisticType>::create(
       const CContiguousView<const float32>& regressionMatrix) const {
-        std::unique_ptr<INonDecomposableRegressionLoss> lossPtr =
+        std::unique_ptr<INonDecomposableRegressionLoss<StatisticType>> lossPtr =
           lossFactoryPtr_->createNonDecomposableRegressionLoss();
-        std::unique_ptr<IRegressionEvaluationMeasure> evaluationMeasurePtr =
+        std::unique_ptr<IRegressionEvaluationMeasure<StatisticType>> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createRegressionEvaluationMeasure();
         std::unique_ptr<
           INonDecomposableStatistics<INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory>>
@@ -457,11 +483,12 @@ namespace boosting {
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
-    std::unique_ptr<IStatisticsProvider> DenseNonDecomposableRegressionStatisticsProviderFactory::create(
+    template<typename StatisticType>
+    std::unique_ptr<IStatisticsProvider> DenseNonDecomposableRegressionStatisticsProviderFactory<StatisticType>::create(
       const CsrView<const float32>& regressionMatrix) const {
-        std::unique_ptr<INonDecomposableRegressionLoss> lossPtr =
+        std::unique_ptr<INonDecomposableRegressionLoss<StatisticType>> lossPtr =
           lossFactoryPtr_->createNonDecomposableRegressionLoss();
-        std::unique_ptr<IRegressionEvaluationMeasure> evaluationMeasurePtr =
+        std::unique_ptr<IRegressionEvaluationMeasure<StatisticType>> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createRegressionEvaluationMeasure();
         std::unique_ptr<
           INonDecomposableStatistics<INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory>>
@@ -473,10 +500,14 @@ namespace boosting {
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
-    DenseConvertibleNonDecomposableClassificationStatisticsProviderFactory::
+    template class DenseNonDecomposableRegressionStatisticsProviderFactory<float32>;
+    template class DenseNonDecomposableRegressionStatisticsProviderFactory<float64>;
+
+    template<typename StatisticType>
+    DenseConvertibleNonDecomposableClassificationStatisticsProviderFactory<StatisticType>::
       DenseConvertibleNonDecomposableClassificationStatisticsProviderFactory(
-        std::unique_ptr<INonDecomposableClassificationLossFactory> lossFactoryPtr,
-        std::unique_ptr<IClassificationEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
+        std::unique_ptr<INonDecomposableClassificationLossFactory<StatisticType>> lossFactoryPtr,
+        std::unique_ptr<IClassificationEvaluationMeasureFactory<StatisticType>> evaluationMeasureFactoryPtr,
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
         std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
         std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
@@ -488,11 +519,13 @@ namespace boosting {
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)),
           multiThreadingSettings_(multiThreadingSettings) {}
 
-    std::unique_ptr<IStatisticsProvider> DenseConvertibleNonDecomposableClassificationStatisticsProviderFactory::create(
-      const CContiguousView<const uint8>& labelMatrix) const {
-        std::unique_ptr<INonDecomposableClassificationLoss> lossPtr =
+    template<typename StatisticType>
+    std::unique_ptr<IStatisticsProvider>
+      DenseConvertibleNonDecomposableClassificationStatisticsProviderFactory<StatisticType>::create(
+        const CContiguousView<const uint8>& labelMatrix) const {
+        std::unique_ptr<INonDecomposableClassificationLoss<StatisticType>> lossPtr =
           lossFactoryPtr_->createNonDecomposableClassificationLoss();
-        std::unique_ptr<IClassificationEvaluationMeasure> evaluationMeasurePtr =
+        std::unique_ptr<IClassificationEvaluationMeasure<StatisticType>> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createClassificationEvaluationMeasure();
         std::unique_ptr<
           INonDecomposableStatistics<INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory>>
@@ -504,11 +537,13 @@ namespace boosting {
           multiThreadingSettings_);
     }
 
-    std::unique_ptr<IStatisticsProvider> DenseConvertibleNonDecomposableClassificationStatisticsProviderFactory::create(
-      const BinaryCsrView& labelMatrix) const {
-        std::unique_ptr<INonDecomposableClassificationLoss> lossPtr =
+    template<typename StatisticType>
+    std::unique_ptr<IStatisticsProvider>
+      DenseConvertibleNonDecomposableClassificationStatisticsProviderFactory<StatisticType>::create(
+        const BinaryCsrView& labelMatrix) const {
+        std::unique_ptr<INonDecomposableClassificationLoss<StatisticType>> lossPtr =
           lossFactoryPtr_->createNonDecomposableClassificationLoss();
-        std::unique_ptr<IClassificationEvaluationMeasure> evaluationMeasurePtr =
+        std::unique_ptr<IClassificationEvaluationMeasure<StatisticType>> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createClassificationEvaluationMeasure();
         std::unique_ptr<
           INonDecomposableStatistics<INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory>>
@@ -520,10 +555,14 @@ namespace boosting {
           multiThreadingSettings_);
     }
 
-    DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory::
+    template class DenseConvertibleNonDecomposableClassificationStatisticsProviderFactory<float32>;
+    template class DenseConvertibleNonDecomposableClassificationStatisticsProviderFactory<float64>;
+
+    template<typename StatisticType>
+    DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory<StatisticType>::
       DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory(
-        std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr,
-        std::unique_ptr<IRegressionEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
+        std::unique_ptr<INonDecomposableRegressionLossFactory<StatisticType>> lossFactoryPtr,
+        std::unique_ptr<IRegressionEvaluationMeasureFactory<StatisticType>> evaluationMeasureFactoryPtr,
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
         std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
         std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
@@ -535,11 +574,13 @@ namespace boosting {
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)),
           multiThreadingSettings_(multiThreadingSettings) {}
 
-    std::unique_ptr<IStatisticsProvider> DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory::create(
-      const CContiguousView<const float32>& regressionMatrix) const {
-        std::unique_ptr<INonDecomposableRegressionLoss> lossPtr =
+    template<typename StatisticType>
+    std::unique_ptr<IStatisticsProvider>
+      DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory<StatisticType>::create(
+        const CContiguousView<const float32>& regressionMatrix) const {
+        std::unique_ptr<INonDecomposableRegressionLoss<StatisticType>> lossPtr =
           lossFactoryPtr_->createNonDecomposableRegressionLoss();
-        std::unique_ptr<IRegressionEvaluationMeasure> evaluationMeasurePtr =
+        std::unique_ptr<IRegressionEvaluationMeasure<StatisticType>> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createRegressionEvaluationMeasure();
         std::unique_ptr<
           INonDecomposableStatistics<INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory>>
@@ -552,11 +593,13 @@ namespace boosting {
           multiThreadingSettings_);
     }
 
-    std::unique_ptr<IStatisticsProvider> DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory::create(
-      const CsrView<const float32>& regressionMatrix) const {
-        std::unique_ptr<INonDecomposableRegressionLoss> lossPtr =
+    template<typename StatisticType>
+    std::unique_ptr<IStatisticsProvider>
+      DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory<StatisticType>::create(
+        const CsrView<const float32>& regressionMatrix) const {
+        std::unique_ptr<INonDecomposableRegressionLoss<StatisticType>> lossPtr =
           lossFactoryPtr_->createNonDecomposableRegressionLoss();
-        std::unique_ptr<IRegressionEvaluationMeasure> evaluationMeasurePtr =
+        std::unique_ptr<IRegressionEvaluationMeasure<StatisticType>> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createRegressionEvaluationMeasure();
         std::unique_ptr<
           INonDecomposableStatistics<INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory>>
@@ -568,5 +611,8 @@ namespace boosting {
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr),
           multiThreadingSettings_);
     }
+
+    template class DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory<float32>;
+    template class DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory<float64>;
 
 }

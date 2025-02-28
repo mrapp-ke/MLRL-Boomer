@@ -4,7 +4,6 @@
 #pragma once
 
 #include "mlrl/boosting/statistics/statistics.hpp"
-#include "statistics_update_candidate.hpp"
 
 #include <memory>
 #include <utility>
@@ -119,9 +118,9 @@ namespace boosting {
             /**
              * @see `IStatisticsSubset::calculateScores`
              */
-            std::unique_ptr<StatisticsUpdateCandidate> calculateScores() override final {
+            std::unique_ptr<IStatisticsUpdateCandidate> calculateScores() override final {
                 const IScoreVector& scoreVector = ruleEvaluationPtr_->calculateScores(sumVector_);
-                return std::make_unique<BoostingStatisticsUpdateCandidate<State>>(state_, scoreVector);
+                return state_.createUpdateCandidate(scoreVector);
             }
     };
 
@@ -203,28 +202,28 @@ namespace boosting {
                     /**
                      * @see `IResettableStatisticsSubset::calculateScoresAccumulated`
                      */
-                    std::unique_ptr<StatisticsUpdateCandidate> calculateScoresAccumulated() override final {
+                    std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresAccumulated() override final {
                         const IScoreVector& scoreVector =
                           this->ruleEvaluationPtr_->calculateScores(*accumulatedSumVectorPtr_);
-                        return std::make_unique<BoostingStatisticsUpdateCandidate<State>>(this->state_, scoreVector);
+                        return this->state_.createUpdateCandidate(scoreVector);
                     }
 
                     /**
                      * @see `IResettableStatisticsSubset::calculateScoresUncovered`
                      */
-                    std::unique_ptr<StatisticsUpdateCandidate> calculateScoresUncovered() override final {
+                    std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncovered() override final {
                         tmpVector_.difference(*totalSumVector_, this->outputIndices_, this->sumVector_);
                         const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(tmpVector_);
-                        return std::make_unique<BoostingStatisticsUpdateCandidate<State>>(this->state_, scoreVector);
+                        return this->state_.createUpdateCandidate(scoreVector);
                     }
 
                     /**
                      * @see `IResettableStatisticsSubset::calculateScoresUncoveredAccumulated`
                      */
-                    std::unique_ptr<StatisticsUpdateCandidate> calculateScoresUncoveredAccumulated() override final {
+                    std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncoveredAccumulated() override final {
                         tmpVector_.difference(*totalSumVector_, this->outputIndices_, *accumulatedSumVectorPtr_);
                         const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(tmpVector_);
-                        return std::make_unique<BoostingStatisticsUpdateCandidate<State>>(this->state_, scoreVector);
+                        return this->state_.createUpdateCandidate(scoreVector);
                     }
             };
 

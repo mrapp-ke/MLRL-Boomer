@@ -40,7 +40,7 @@ static inline void recalculatePredictionInternally(IndexIterator indexIterator, 
         }
     }
 
-    std::unique_ptr<StatisticsUpdateCandidate> updateCandidatePtr = statisticsSubsetPtr->calculateScores();
+    std::unique_ptr<IStatisticsUpdateCandidate> updateCandidatePtr = statisticsSubsetPtr->calculateScores();
     ScoreProcessor scoreProcessor(predictionPtr);
     scoreProcessor.processScores(*updateCandidatePtr);
 }
@@ -358,10 +358,10 @@ class TabularFeatureSpace final : public IFeatureSpace {
               *this, std::move(weightedStatisticsPtr), weights);
         }
 
-        std::unique_ptr<IFeatureSubspace> createSubspace(const DenseWeightVector<uint32>& weights) override {
+        std::unique_ptr<IFeatureSubspace> createSubspace(const DenseWeightVector<uint16>& weights) override {
             IStatistics& statistics = statisticsProvider_.get();
             std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics(weights);
-            return std::make_unique<TabularFeatureSpace::FeatureSubspace<DenseWeightVector<uint32>>>(
+            return std::make_unique<TabularFeatureSpace::FeatureSubspace<DenseWeightVector<uint16>>>(
               *this, std::move(weightedStatisticsPtr), weights);
         }
 
