@@ -37,12 +37,12 @@ namespace boosting {
                                    ReadableProperty<IRegressionLossConfig> regressionLossConfig);
 
             std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-              const Lapack& lapack) const override;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+              const BlasFactory& blasFactory, const LapackFactory& lapackFactory) const override;
 
             std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
-              const Lapack& lapack) const override;
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+              const BlasFactory& blasFactory, const LapackFactory& lapackFactory) const override;
 
             bool isDense() const override;
 

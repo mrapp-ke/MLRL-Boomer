@@ -50,11 +50,12 @@ namespace boosting {
         }
     }
 
-    static inline void updateGradientAndHessian(bool trueLabel, float64 predictedScore, float64& gradient,
-                                                float64& hessian) {
+    template<typename StatisticType>
+    static inline void updateGradientAndHessian(bool trueLabel, StatisticType predictedScore, StatisticType& gradient,
+                                                StatisticType& hessian) {
         // The gradient computes as `-expectedScore / (1 + exp(expectedScore * predictedScore))`, or as
         // `1 / (1 + exp(-predictedScore)) - 1` if `trueLabel == true`, `1 / (1 + exp(-predictedScore))`, otherwise...
-        float64 logistic = util::logisticFunction(predictedScore);
+        StatisticType logistic = util::logisticFunction(predictedScore);
         gradient = trueLabel ? logistic - 1.0 : logistic;
 
         // The Hessian computes as `exp(expectedScore * predictedScore) / (1 + exp(expectedScore * predictedScore))^2`,
@@ -62,42 +63,61 @@ namespace boosting {
         hessian = logistic - squaredLogisticFunction(predictedScore);
     }
 
-    static inline float64 evaluatePrediction(bool trueLabel, float64 predictedScore) {
+    template<typename ScoreType>
+    static inline ScoreType evaluatePrediction(bool trueLabel, ScoreType predictedScore) {
         // The logistic loss calculates as `log(1 + exp(-expectedScore * predictedScore))`...
-        float64 x = trueLabel ? -predictedScore : predictedScore;
+        ScoreType x = trueLabel ? -predictedScore : predictedScore;
         return logSumExp(x);
     }
 
     /**
      * Allows to create instances of the type `IDecomposableClassificationLoss` that implement a multivariate variant of
      * the logistic loss that is decomposable.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
-    class DecomposableLogisticLossFactory final : public IDecomposableClassificationLossFactory {
+    template<typename StatisticType>
+    class DecomposableLogisticLossFactory final : public IDecomposableClassificationLossFactory<StatisticType> {
         public:
 
-            std::unique_ptr<IDecomposableClassificationLoss> createDecomposableClassificationLoss() const override {
-                return std::make_unique<DecomposableClassificationLoss>(&updateGradientAndHessian, &evaluatePrediction);
+            std::unique_ptr<IDecomposableClassificationLoss<StatisticType>> createDecomposableClassificationLoss()
+              const override {
+                return std::make_unique<DecomposableClassificationLoss<StatisticType>>(
+                  &updateGradientAndHessian<StatisticType>, &evaluatePrediction<StatisticType>);
             }
 
-            std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
+            std::unique_ptr<IDistanceMeasure<StatisticType>> createDistanceMeasure(
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const override {
                 return this->createDecomposableClassificationLoss();
             }
 
-            std::unique_ptr<IClassificationEvaluationMeasure> createClassificationEvaluationMeasure() const override {
+            std::unique_ptr<IClassificationEvaluationMeasure<StatisticType>> createClassificationEvaluationMeasure()
+              const override {
                 return this->createDecomposableClassificationLoss();
             }
     };
 
-    DecomposableLogisticLossConfig::DecomposableLogisticLossConfig(ReadableProperty<IHeadConfig> headConfig)
-        : headConfig_(headConfig) {}
+    template<typename StatisticType>
+    class DecomposableLogisticLossPreset final : public IDecomposableClassificationLossConfig::IPreset<StatisticType> {
+        public:
+
+            std::unique_ptr<IDecomposableClassificationLossFactory<StatisticType>>
+              createDecomposableClassificationLossFactory() const override {
+                return std::make_unique<DecomposableLogisticLossFactory<StatisticType>>();
+            }
+    };
+
+    DecomposableLogisticLossConfig::DecomposableLogisticLossConfig(
+      ReadableProperty<IStatisticTypeConfig> statisticTypeConfig)
+        : statisticTypeConfig_(statisticTypeConfig) {}
 
     std::unique_ptr<IClassificationStatisticsProviderFactory>
       DecomposableLogisticLossConfig::createClassificationStatisticsProviderFactory(
-        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-        const Lapack& lapack, bool preferSparseStatistics) const {
-        return headConfig_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const BlasFactory& blasFactory,
+        const LapackFactory& lapackFactory, bool preferSparseStatistics) const {
+        return statisticTypeConfig_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix,
+                                                                                        *this);
     }
 
     std::unique_ptr<IMarginalProbabilityFunctionFactory>
@@ -114,9 +134,14 @@ namespace boosting {
         return 0;
     }
 
-    std::unique_ptr<IDecomposableClassificationLossFactory>
-      DecomposableLogisticLossConfig::createDecomposableClassificationLossFactory() const {
-        return std::make_unique<DecomposableLogisticLossFactory>();
+    std::unique_ptr<IDecomposableClassificationLossConfig::IPreset<float32>>
+      DecomposableLogisticLossConfig::createDecomposable32BitClassificationPreset() const {
+        return std::make_unique<DecomposableLogisticLossPreset<float32>>();
+    }
+
+    std::unique_ptr<IDecomposableClassificationLossConfig::IPreset<float64>>
+      DecomposableLogisticLossConfig::createDecomposable64BitClassificationPreset() const {
+        return std::make_unique<DecomposableLogisticLossPreset<float64>>();
     }
 
 }
