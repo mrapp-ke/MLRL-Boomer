@@ -26,7 +26,7 @@ class EqualWeightVector final : public IWeightVector {
         /**
          * The type of the weights, the vector provides access to.
          */
-        typedef uint32 weight_type;
+        typedef bool weight_type;
 
         /**
          * An iterator that provides read-only access to the elements in the vector.

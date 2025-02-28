@@ -69,12 +69,12 @@ class IPrediction : public IIndexVector,
          * stored in this vector.
          *
          * @param statistics    A reference to an object of type `IStatistics` that should be used to create the subset
-         * @param weights       A reference to an object of type `DenseWeightVector<uint32>` that provides access to the
+         * @param weights       A reference to an object of type `DenseWeightVector<uint16>` that provides access to the
          *                      weights of individual training examples
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
-          const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const = 0;
+          const IStatistics& statistics, const DenseWeightVector<uint16>& weights) const = 0;
 
         /**
          * Creates and returns a new subset of the given statistics that only contains the outputs whose indices are
@@ -117,12 +117,12 @@ class IPrediction : public IIndexVector,
          * stored in this vector.
          *
          * @param statistics    A reference to an object of type `IStatistics` that should be used to create the subset
-         * @param weights       A reference to an object of type `OutOfSampleWeightVector<DenseWeightVector<uint32>>`
+         * @param weights       A reference to an object of type `OutOfSampleWeightVector<DenseWeightVector<uint16>>`
          *                      that provides access to the weights of individual training examples
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
-          const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const = 0;
+          const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<uint16>>& weights) const = 0;
 
         /**
          * Creates and returns a new subset of the given statistics that only contains the outputs whose indices are

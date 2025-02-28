@@ -7,197 +7,64 @@
 #include "mlrl/common/indices/index_vector_partial.hpp"
 #include "mlrl/common/rule_evaluation/score_vector_binned_dense.hpp"
 #include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
-#include "mlrl/common/statistics/statistics_state.hpp"
 #include "mlrl/common/statistics/statistics_update.hpp"
 
-#include <concepts>
-
 /**
- * A base class for all classes that store scores that have been calculated based on statistics and allow to update
- * them accordingly.
+ * Defines an interface for all classes that store scores that have been calculated based on statistics and allow to
+ * update these statistics accordingly.
  */
-class StatisticsUpdateCandidate : public Quality {
-    protected:
-
-        /**
-         * Allows updating the statistics.
-         *
-         * @tparam State        The type of the state of the statistics
-         * @tparam IndexVector  The type of the vector that provides access to the indices of the outputs for which
-         *                      confusion matrices should be updated
-         */
-        template<std::derived_from<IStatisticsState> State, std::derived_from<IIndexVector> IndexVector>
-        class StatisticsUpdate final : public IStatisticsUpdate {
-            private:
-
-                State& state_;
-
-                typename IndexVector::const_iterator indicesBegin_;
-
-                typename IndexVector::const_iterator indicesEnd_;
-
-                View<float64>::const_iterator scoresBegin_;
-
-                View<float64>::const_iterator scoresEnd_;
-
-            public:
-
-                /**
-                 * @param state         A reference to an object of template type `State` that should be updated
-                 * @param indicesBegin  An iterator to the beginning of the output indices for which statistics
-                 *                      should be updated
-                 * @param indicesEnd    An iterator to the end of the output indices for which statistics should be
-                 *                      updated
-                 * @param scoresBegin   An iterator to the beginning of the predicted scores, corresponding to the
-                 *                      given output indices, that should be used for updating the statistics
-                 * @param scoresEnd     An iterator to the end of the predicted scores, corresponding to the given
-                 *                      output indices, that should be used for updating the statistics
-                 */
-                StatisticsUpdate(State& state, typename IndexVector::const_iterator indicesBegin,
-                                 typename IndexVector::const_iterator indicesEnd,
-                                 View<float64>::const_iterator scoresBegin, View<float64>::const_iterator scoresEnd)
-                    : state_(state), indicesBegin_(indicesBegin), indicesEnd_(indicesEnd), scoresBegin_(scoresBegin),
-                      scoresEnd_(scoresEnd) {}
-
-                void applyPrediction(uint32 statisticIndex) override {
-                    state_.update(statisticIndex, scoresBegin_, scoresEnd_, indicesBegin_, indicesEnd_);
-                }
-
-                void revertPrediction(uint32 statisticIndex) override {
-                    state_.revert(statisticIndex, scoresBegin_, scoresEnd_, indicesBegin_, indicesEnd_);
-                }
-        };
-
-        /**
-         * Allows to create instances of the type `IStatisticsUpdate` that allow updating the statistics.
-
-         * @tparam State The type of the state of the statistics
-         */
-        template<std::derived_from<IStatisticsState> State>
-        class StatisticsUpdateFactory final : public IStatisticsUpdateFactory {
-            private:
-
-                State& state_;
-
-            public:
-
-                /**
-                 * @param state A reference to an object of template type `State` that should be updated
-                 */
-                StatisticsUpdateFactory(State& state) : state_(state) {}
-
-                std::unique_ptr<IStatisticsUpdate> create(CompleteIndexVector::const_iterator indicesBegin,
-                                                          CompleteIndexVector::const_iterator indicesEnd,
-                                                          View<float64>::const_iterator scoresBegin,
-                                                          View<float64>::const_iterator scoresEnd) override {
-                    return std::make_unique<StatisticsUpdate<State, CompleteIndexVector>>(
-                      state_, indicesBegin, indicesEnd, scoresBegin, scoresEnd);
-                }
-
-                std::unique_ptr<IStatisticsUpdate> create(PartialIndexVector::const_iterator indicesBegin,
-                                                          PartialIndexVector::const_iterator indicesEnd,
-                                                          View<float64>::const_iterator scoresBegin,
-                                                          View<float64>::const_iterator scoresEnd) override {
-                    return std::make_unique<StatisticsUpdate<State, PartialIndexVector>>(
-                      state_, indicesBegin, indicesEnd, scoresBegin, scoresEnd);
-                }
-        };
-
-    private:
-
-        const IScoreVector& scoreVector_;
-
+class IStatisticsUpdateCandidate : public Quality {
     public:
 
         /**
          * A visitor function for handling objects of type `DenseScoreVector`.
          *
-         * @tparam IndexVector The type of the vector that provides access to the indices of the outputs, the predicted
-         *                     scores correspond to
+         * @tparam ScoreType    The type of the scores that stored by the vector
+         * @tparam IndexVector  The type of the vector that provides access to the indices of the outputs, the predicted
+         *                      scores correspond to
          */
-        template<typename IndexVector>
-        using DenseVisitor = std::function<void(const DenseScoreVector<IndexVector>&, IStatisticsUpdateFactory&)>;
+        template<typename ScoreType, typename IndexVector>
+        using DenseVisitor =
+          std::function<void(const DenseScoreVector<ScoreType, IndexVector>&, IStatisticsUpdateFactory<ScoreType>&)>;
 
         /**
          * A visitor function for handling objects of type `DenseBinnedScoreVector`.
          *
-         * @tparam IndexVector The type of the vector that provides access to the indices of the outputs, the predicted
-         *                     scores correspond to
+         * @tparam ScoreType    The type of the scores that stored by the vector
+         * @tparam IndexVector  The type of the vector that provides access to the indices of the outputs, the predicted
+         *                      scores correspond to
          */
-        template<typename IndexVector>
-        using DenseBinnedVisitor =
-          std::function<void(const DenseBinnedScoreVector<IndexVector>&, IStatisticsUpdateFactory&)>;
-
-    protected:
-
-        /**
-         * May be overridden by subclasses in order to invoke a given `DenseVisitor` for handling objects of type
-         * `DenseScoreVector<CompleteIndexVector>`.
-         *
-         * @param visitor       The visitor to be invoked
-         * @param scoreVector   A reference to an object of type `DenseScoreVector<CompleteIndexVector>` to be handled
-         *                      by the visitor
-         */
-        virtual void invokeVisitor(DenseVisitor<CompleteIndexVector> visitor,
-                                   const DenseScoreVector<CompleteIndexVector>& scoreVector) const;
-
-        /**
-         * May be overridden by subclasses in order to invoke a given `DenseVisitor` for handling objects of type
-         * `DenseScoreVector<PartialIndexVector>`.
-         *
-         * @param visitor       The visitor to be invoked
-         * @param scoreVector   A reference to an object of type `DenseScoreVector<PartialIndexVector>` to be handled by
-         *                      the visitor
-         */
-        virtual void invokeVisitor(DenseVisitor<PartialIndexVector> visitor,
-                                   const DenseScoreVector<PartialIndexVector>& scoreVector) const;
-
-        /**
-         * May be overridden by subclasses in order to invoke a given `DenseBinnedVisitor` for handling objects of type
-         * `DenseBinnedScoreVector<CompleteIndexVector>`.
-         *
-         * @param visitor       The visitor to be invoked
-         * @param scoreVector   A reference to an object of type `DenseBinnedScoreVector<CompleteIndexVector>` to be
-         *                      handled by the visitor
-         */
-        virtual void invokeVisitor(DenseBinnedVisitor<CompleteIndexVector> visitor,
-                                   const DenseBinnedScoreVector<CompleteIndexVector>& scoreVector) const;
-
-        /**
-         * May be overridden by subclasses in order to invoke a given `DenseBinnedVisitor` for handling objects of type
-         * `DenseBinnedScoreVector<PartialIndexVector>`.
-         *
-         * @param visitor       The visitor to be invoked
-         * @param scoreVector   A reference to an object of type `DenseBinnedScoreVector<PartialIndexVector>` to be
-         *                      handled by the visitor
-         */
-        virtual void invokeVisitor(DenseBinnedVisitor<PartialIndexVector> visitor,
-                                   const DenseBinnedScoreVector<PartialIndexVector>& scoreVector) const;
-
-    public:
-
-        /**
-         * @param scoreVector A reference to an object of type `IScoreVector` that stores the calculated scores
-         */
-        explicit StatisticsUpdateCandidate(const IScoreVector& scoreVector);
-
-        virtual ~StatisticsUpdateCandidate() {}
+        template<typename ScoreType, typename IndexVector>
+        using DenseBinnedVisitor = std::function<void(const DenseBinnedScoreVector<ScoreType, IndexVector>&,
+                                                      IStatisticsUpdateFactory<ScoreType>&)>;
 
         /**
          * Invokes one of the given visitor functions, depending on which one is able to handle the particular type of
          * vector that stores the calculated scores.
          *
-         * @param completeDenseVisitor          The visitor function for handling objects of type
-         *                                      `DenseScoreVector<CompleteIndexVector>`
-         * @param partialDenseVisitor           The visitor function for handling objects of type
-         *                                      `DenseScoreVector<PartialIndexVector>`
-         * @param completeDenseBinnedVisitor    The visitor function for handling objects of type
-         *                                      `DenseBinnedScoreVector<CompleteIndexVector>`
-         * @param partialDenseBinnedVisitor     The visitor function for handling objects of type
-         *                                      `DenseBinnedScoreVector<PartialIndexVector>`
+         * @param completeDense32BitVisitor         The visitor function for handling objects of type
+         *                                          `DenseScoreVector<float32, CompleteIndexVector>`
+         * @param partialDense32BitVisitor          The visitor function for handling objects of type
+         *                                          `DenseScoreVector<float32, PartialIndexVector>`
+         * @param completeDense64BitVisitor         The visitor function for handling objects of type
+         *                                          `DenseScoreVector<float64, CompleteIndexVector>`
+         * @param partialDense64BitVisitor          The visitor function for handling objects of type
+         *                                          `DenseScoreVector<float64, PartialIndexVector>`
+         * @param completeDenseBinned32BitVisitor   The visitor function for handling objects of type
+         *                                          `DenseBinnedScoreVector<float32, CompleteIndexVector>`
+         * @param partialDenseBinned32BitVisitor    The visitor function for handling objects of type
+         *                                          `DenseBinnedScoreVector<float32, PartialIndexVector>`
+         * @param completeDenseBinned64BitVisitor   The visitor function for handling objects of type
+         *                                          `DenseBinnedScoreVector<float32, CompleteIndexVector>`
+         * @param partialDenseBinned64BitVisitor    The visitor function for handling objects of type
+         *                                          `DenseBinnedScoreVector<float64, PartialIndexVector>`
          */
-        void visit(DenseVisitor<CompleteIndexVector> completeDenseVisitor,
-                   DenseVisitor<PartialIndexVector> partialDenseVisitor,
-                   DenseBinnedVisitor<CompleteIndexVector> completeDenseBinnedVisitor,
-                   DenseBinnedVisitor<PartialIndexVector> partialDenseBinnedVisitor) const;
+        virtual void visit(DenseVisitor<float32, CompleteIndexVector> completeDense32BitVisitor,
+                           DenseVisitor<float32, PartialIndexVector> partialDense32BitVisitor,
+                           DenseVisitor<float64, CompleteIndexVector> completeDense64BitVisitor,
+                           DenseVisitor<float64, PartialIndexVector> partialDense64BitVisitor,
+                           DenseBinnedVisitor<float32, CompleteIndexVector> completeDenseBinned32BitVisitor,
+                           DenseBinnedVisitor<float32, PartialIndexVector> partialDenseBinned32BitVisitor,
+                           DenseBinnedVisitor<float64, CompleteIndexVector> completeDenseBinned64BitVisitor,
+                           DenseBinnedVisitor<float64, PartialIndexVector> partialDenseBinned64BitVisitor) const = 0;
 };

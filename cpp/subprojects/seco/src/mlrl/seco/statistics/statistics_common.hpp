@@ -5,7 +5,6 @@
 
 #include "mlrl/common/data/vector_sparse_array_binary.hpp"
 #include "mlrl/seco/statistics/statistics.hpp"
-#include "statistics_update_candidate.hpp"
 
 #include <memory>
 #include <utility>
@@ -135,11 +134,11 @@ namespace seco {
             /**
              * @see `IStatisticsSubset::calculateScores`
              */
-            std::unique_ptr<StatisticsUpdateCandidate> calculateScores() override final {
+            std::unique_ptr<IStatisticsUpdateCandidate> calculateScores() override final {
                 const IScoreVector& scoreVector = ruleEvaluationPtr_->calculateScores(
                   state_.majorityLabelVectorPtr->cbegin(), state_.majorityLabelVectorPtr->cend(), totalSumVector_,
                   sumVector_);
-                return std::make_unique<CoverageStatisticsUpdateCandidate<State>>(state_, scoreVector);
+                return state_.createUpdateCandidate(scoreVector);
             }
     };
 
@@ -349,36 +348,36 @@ namespace seco {
                     /**
                      * @see `IResettableStatisticsSubset::calculateScoresAccumulated`
                      */
-                    std::unique_ptr<StatisticsUpdateCandidate> calculateScoresAccumulated() override {
+                    std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresAccumulated() override {
                         const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
                           this->state_.majorityLabelVectorPtr->cbegin(), this->state_.majorityLabelVectorPtr->cend(),
                           this->totalSumVector_, *accumulatedSumVectorPtr_);
-                        return std::make_unique<CoverageStatisticsUpdateCandidate<State>>(this->state_, scoreVector);
+                        return this->state_.createUpdateCandidate(scoreVector);
                     }
 
                     /**
                      * @see `IResettableStatisticsSubset::calculateScoresUncovered`
                      */
-                    std::unique_ptr<StatisticsUpdateCandidate> calculateScoresUncovered() override {
+                    std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncovered() override {
                         tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(),
                                               this->outputIndices_, this->sumVector_.cbegin(), this->sumVector_.cend());
                         const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
                           this->state_.majorityLabelVectorPtr->cbegin(), this->state_.majorityLabelVectorPtr->cend(),
                           this->totalSumVector_, tmpVector_);
-                        return std::make_unique<CoverageStatisticsUpdateCandidate<State>>(this->state_, scoreVector);
+                        return this->state_.createUpdateCandidate(scoreVector);
                     }
 
                     /**
                      * @see `IResettableStatisticsSubset::calculateScoresUncoveredAccumulated`
                      */
-                    std::unique_ptr<StatisticsUpdateCandidate> calculateScoresUncoveredAccumulated() override {
+                    std::unique_ptr<IStatisticsUpdateCandidate> calculateScoresUncoveredAccumulated() override {
                         tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(),
                                               this->outputIndices_, accumulatedSumVectorPtr_->cbegin(),
                                               accumulatedSumVectorPtr_->cend());
                         const IScoreVector& scoreVector = this->ruleEvaluationPtr_->calculateScores(
                           this->state_.majorityLabelVectorPtr->cbegin(), this->state_.majorityLabelVectorPtr->cend(),
                           this->totalSumVector_, tmpVector_);
-                        return std::make_unique<CoverageStatisticsUpdateCandidate<State>>(this->state_, scoreVector);
+                        return this->state_.createUpdateCandidate(scoreVector);
                     }
             };
 
