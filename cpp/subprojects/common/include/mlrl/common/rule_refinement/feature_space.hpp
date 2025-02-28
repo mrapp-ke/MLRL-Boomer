@@ -42,11 +42,11 @@ class IFeatureSpace {
         /**
          * Creates and returns a new subspace of this feature space.
          *
-         * @param weights   A reference to an object of type `DenseWeightVector<uint32>` that provides access to the
+         * @param weights   A reference to an object of type `DenseWeightVector<uint16>` that provides access to the
          *                  weights of individual training examples
          * @return          An unique pointer to an object of type `IFeatureSubspace` that has been created
          */
-        virtual std::unique_ptr<IFeatureSubspace> createSubspace(const DenseWeightVector<uint32>& weights) = 0;
+        virtual std::unique_ptr<IFeatureSubspace> createSubspace(const DenseWeightVector<uint16>& weights) = 0;
 
         /**
          * Creates and returns a new subspace of this feature space.

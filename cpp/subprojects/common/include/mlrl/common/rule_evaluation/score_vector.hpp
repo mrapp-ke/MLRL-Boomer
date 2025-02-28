@@ -10,10 +10,10 @@
 #include <functional>
 
 // Forward declarations
-template<typename IndexVector>
+template<typename ScoreType, typename IndexVector>
 class DenseScoreVector;
 
-template<typename IndexVector>
+template<typename ScoreType, typename IndexVector>
 class DenseBinnedScoreVector;
 
 /**
@@ -23,41 +23,55 @@ class DenseBinnedScoreVector;
 class IScoreVector : public Quality {
     public:
 
-        virtual ~IScoreVector() {}
+        virtual ~IScoreVector() override {}
 
         /**
          * A visitor function for handling objects of type `DenseScoreVector`.
          *
-         * @tparam IndexVector The type of the vector that provides access to the indices of the outputs, the predicted
-         *                     scores correspond to
+         * @tparam ScoreType    The type of the predicted scores
+         * @tparam IndexVector  The type of the vector that provides access to the indices of the outputs, the predicted
+         *                      scores correspond to
          */
-        template<typename IndexVector>
-        using DenseVisitor = std::function<void(const DenseScoreVector<IndexVector>&)>;
+        template<typename ScoreType, typename IndexVector>
+        using DenseVisitor = std::function<void(const DenseScoreVector<ScoreType, IndexVector>&)>;
 
         /**
          * A visitor function for handling objects of type `DenseBinnedScoreVector`.
          *
-         * @tparam IndexVector The type of the vector that provides access to the indices of the outputs, the predicted
-         *                     scores correspond to
+         * @tparam ScoreType    The type of the predicted scores
+         * @tparam IndexVector  The type of the vector that provides access to the indices of the outputs, the predicted
+         *                      scores correspond to
          */
-        template<typename IndexVector>
-        using DenseBinnedVisitor = std::function<void(const DenseBinnedScoreVector<IndexVector>&)>;
+        template<typename ScoreType, typename IndexVector>
+        using DenseBinnedVisitor = std::function<void(const DenseBinnedScoreVector<ScoreType, IndexVector>&)>;
 
         /**
          * Invokes one of the given visitor functions, depending on which one is able to handle this particular type of
          * vector.
          *
-         * @param completeDenseVisitor          The visitor function for handling objects of type
-         *                                      `DenseScoreVector<CompleteIndexVector>`
-         * @param partialDenseVisitor           The visitor function for handling objects of type
-         *                                      `DenseScoreVector<PartialIndexVector>`
-         * @param completeDenseBinnedVisitor    The visitor function for handling objects of type
-         *                                      `DenseBinnedScoreVector<CompleteIndexVector>`
-         * @param partialDenseBinnedVisitor     The visitor function for handling objects of type
-         *                                      `DenseBinnedScoreVector<PartialIndexVector>`
+         * @param completeDense32BitVisitor         The visitor function for handling objects of type
+         *                                          `DenseScoreVector<float32, CompleteIndexVector>`
+         * @param partialDense32BitVisitor          The visitor function for handling objects of type
+         *                                          `DenseScoreVector<float32, PartialIndexVector>`
+         * @param completeDense64BitVisitor         The visitor function for handling objects of type
+         *                                          `DenseScoreVector<float64, CompleteIndexVector>`
+         * @param partialDense64BitVisitor          The visitor function for handling objects of type
+         *                                          `DenseScoreVector<float64, PartialIndexVector>`
+         * @param completeDenseBinned32BitVisitor   The visitor function for handling objects of type
+         *                                          `DenseBinnedScoreVector<float32, CompleteIndexVector>`
+         * @param partialDenseBinned32BitVisitor    The visitor function for handling objects of type
+         *                                          `DenseBinnedScoreVector<float32, PartialIndexVector>`
+         * @param completeDenseBinned64BitVisitor   The visitor function for handling objects of type
+         *                                          `DenseBinnedScoreVector<float64, CompleteIndexVector>`
+         * @param partialDenseBinned64BitVisitor    The visitor function for handling objects of type
+         *                                          `DenseBinnedScoreVector<float64, PartialIndexVector>`
          */
-        virtual void visit(DenseVisitor<CompleteIndexVector> completeDenseVisitor,
-                           DenseVisitor<PartialIndexVector> partialDenseVisitor,
-                           DenseBinnedVisitor<CompleteIndexVector> completeDenseBinnedVisitor,
-                           DenseBinnedVisitor<PartialIndexVector> partialDenseBinnedVisitor) const = 0;
+        virtual void visit(DenseVisitor<float32, CompleteIndexVector> completeDense32BitVisitor,
+                           DenseVisitor<float32, PartialIndexVector> partialDense32BitVisitor,
+                           DenseVisitor<float64, CompleteIndexVector> completeDense64BitVisitor,
+                           DenseVisitor<float64, PartialIndexVector> partialDense64BitVisitor,
+                           DenseBinnedVisitor<float32, CompleteIndexVector> completeDenseBinned32BitVisitor,
+                           DenseBinnedVisitor<float32, PartialIndexVector> partialDenseBinned32BitVisitor,
+                           DenseBinnedVisitor<float64, CompleteIndexVector> completeDenseBinned64BitVisitor,
+                           DenseBinnedVisitor<float64, PartialIndexVector> partialDenseBinned64BitVisitor) const = 0;
 };

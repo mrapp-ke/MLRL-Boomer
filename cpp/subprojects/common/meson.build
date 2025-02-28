@@ -91,7 +91,6 @@ source_files = [
     'src/mlrl/common/sampling/weight_vector_dense.cpp',
     'src/mlrl/common/sampling/weight_vector_equal.cpp',
     'src/mlrl/common/sampling/weight_vector_out_of_sample.cpp',
-    'src/mlrl/common/statistics/statistics_update_candidate.cpp',
     'src/mlrl/common/stopping/global_pruning_no.cpp',
     'src/mlrl/common/stopping/global_pruning_post.cpp',
     'src/mlrl/common/stopping/global_pruning_pre.cpp',

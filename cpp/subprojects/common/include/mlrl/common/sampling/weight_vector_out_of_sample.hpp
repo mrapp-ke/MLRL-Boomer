@@ -28,7 +28,7 @@ class OutOfSampleWeightVector final {
         /**
          * The type of the weights, the vector provides access to.
          */
-        typedef uint32 weight_type;
+        typedef bool weight_type;
 
         /**
          * Returns the number of elements in the vector.

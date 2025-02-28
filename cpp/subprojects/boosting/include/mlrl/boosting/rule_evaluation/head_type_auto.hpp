@@ -50,27 +50,9 @@ namespace boosting {
                                 ReadableProperty<IRegularizationConfig> l1RegularizationConfig,
                                 ReadableProperty<IRegularizationConfig> l2RegularizationConfig);
 
-            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-              const IDecomposableClassificationLossConfig& lossConfig) const override;
+            std::unique_ptr<IPreset<float32>> create32BitPreset() const override;
 
-            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-              const ISparseDecomposableClassificationLossConfig& lossConfig) const override;
-
-            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-              const INonDecomposableClassificationLossConfig& lossConfig, const Blas& blas,
-              const Lapack& lapack) const override;
-
-            std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
-              const IDecomposableRegressionLossConfig& lossConfig) const override;
-
-            std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
-              const INonDecomposableRegressionLossConfig& lossConfig, const Blas& blas,
-              const Lapack& lapack) const override;
+            std::unique_ptr<IPreset<float64>> create64BitPreset() const override;
 
             bool isPartial() const override;
 

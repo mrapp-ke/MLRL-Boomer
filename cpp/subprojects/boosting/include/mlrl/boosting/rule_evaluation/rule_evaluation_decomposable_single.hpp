@@ -16,9 +16,9 @@ namespace boosting {
     class DecomposableSingleOutputRuleEvaluationFactory final : public ISparseDecomposableRuleEvaluationFactory {
         private:
 
-            const float64 l1RegularizationWeight_;
+            const float32 l1RegularizationWeight_;
 
-            const float64 l2RegularizationWeight_;
+            const float32 l2RegularizationWeight_;
 
         public:
 
@@ -28,31 +28,55 @@ namespace boosting {
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              */
-            DecomposableSingleOutputRuleEvaluationFactory(float64 l1RegularizationWeight,
-                                                          float64 l2RegularizationWeight);
+            DecomposableSingleOutputRuleEvaluationFactory(float32 l1RegularizationWeight,
+                                                          float32 l2RegularizationWeight);
 
-            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>> create(
-              const DenseDecomposableStatisticVector& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float32>>> create(
+              const DenseDecomposableStatisticVector<float32>& statisticVector,
               const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>> create(
-              const DenseDecomposableStatisticVector& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float32>>> create(
+              const DenseDecomposableStatisticVector<float32>& statisticVector,
               const PartialIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<uint32>>> create(
-              const SparseDecomposableStatisticVector<uint32>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>> create(
+              const DenseDecomposableStatisticVector<float64>& statisticVector,
               const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<uint32>>> create(
-              const SparseDecomposableStatisticVector<uint32>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector<float64>>> create(
+              const DenseDecomposableStatisticVector<float64>& statisticVector,
               const PartialIndexVector& indexVector) const override;
 
-            virtual std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32>>> create(
-              const SparseDecomposableStatisticVector<float32>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, uint32>>> create(
+              const SparseDecomposableStatisticVector<float32, uint32>& statisticVector,
               const CompleteIndexVector& indexVector) const override;
 
-            virtual std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32>>> create(
-              const SparseDecomposableStatisticVector<float32>& statisticVector,
+            std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, uint32>>> create(
+              const SparseDecomposableStatisticVector<float32, uint32>& statisticVector,
+              const PartialIndexVector& indexVector) const override;
+
+            std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, float32>>> create(
+              const SparseDecomposableStatisticVector<float32, float32>& statisticVector,
+              const CompleteIndexVector& indexVector) const override;
+
+            std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float32, float32>>> create(
+              const SparseDecomposableStatisticVector<float32, float32>& statisticVector,
+              const PartialIndexVector& indexVector) const override;
+
+            std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float64, uint32>>> create(
+              const SparseDecomposableStatisticVector<float64, uint32>& statisticVector,
+              const CompleteIndexVector& indexVector) const override;
+
+            std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float64, uint32>>> create(
+              const SparseDecomposableStatisticVector<float64, uint32>& statisticVector,
+              const PartialIndexVector& indexVector) const override;
+
+            std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float64, float32>>> create(
+              const SparseDecomposableStatisticVector<float64, float32>& statisticVector,
+              const CompleteIndexVector& indexVector) const override;
+
+            std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector<float64, float32>>> create(
+              const SparseDecomposableStatisticVector<float64, float32>& statisticVector,
               const PartialIndexVector& indexVector) const override;
     };
 
