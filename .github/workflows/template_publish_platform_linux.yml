@@ -33,7 +33,7 @@ jobs:
         with:
           path: .version-python
       - name: Build package
-        uses: pypa/cibuildwheel@v2.22
+        uses: pypa/cibuildwheel@v2.23
         env:
           CIBW_ENVIRONMENT_PASS_LINUX: SUBPROJECTS RELEASE TEST_SUPPORT GPU_SUPPORT
           CIBW_BEFORE_BUILD: ./build --clean && ./build pyproject_toml
