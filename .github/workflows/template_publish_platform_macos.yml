@@ -27,7 +27,7 @@ jobs:
         with:
           path: .version-python
       - name: Build package
-        uses: pypa/cibuildwheel@v2.22
+        uses: pypa/cibuildwheel@v2.23
         env:
           CIBW_BEFORE_ALL: GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} ./build dependency_libomp
           CIBW_BEFORE_BUILD: rm -rf venv && ./build --clean && CPLUS_INCLUDE_PATH=/Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/include/
