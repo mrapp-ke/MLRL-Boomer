@@ -76,7 +76,7 @@ class Command:
             :return:                The output of the program
             """
             if self.print_command:
-                Log.info('Running external command "%s"...', command.print_options.format(command))
+                Log.info('Running command "%s"...', command.print_options.format(command))
 
             output = subprocess.run([self.__get_executable(command)] + command.arguments,
                                     check=False,
@@ -86,8 +86,7 @@ class Command:
             exit_code = output.returncode
 
             if exit_code != 0:
-                message = ('External command "' + str(command) + '" terminated with non-zero exit code '
-                           + str(exit_code))
+                message = ('Command "' + str(command) + '" terminated with non-zero exit code ' + str(exit_code))
 
                 if self.exit_on_error:
                     if capture_output:

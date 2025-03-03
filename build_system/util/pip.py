@@ -12,7 +12,6 @@ from core.build_unit import BuildUnit
 from util.cmd import Command as Cmd
 from util.format import format_iterable
 from util.io import TextFile
-from util.log import Log
 
 
 @dataclass
@@ -320,29 +319,22 @@ class Pip:
         return Pip(*[RequirementsTextFile(file) for file in build_unit.find_requirements_files()])
 
     @staticmethod
-    def install_requirements(*requirements: Requirement, dry_run: bool = False):
+    def install_requirements(*requirements: Requirement):
         """
         Installs one or several requirements.
 
-        :param requirements:    The requirements to be installed
-        :param dry_run:         True, if pip's "--dry-run" option should be set, False otherwise
+        :param requirements: The requirements to be installed
         """
         if requirements:
-            try:
-                stdout = Pip.InstallCommand(*requirements, dry_run=dry_run) \
-                    .print_command(False) \
-                    .exit_on_error(not dry_run) \
-                    .capture_output()
+            stdout = Pip.InstallCommand(*requirements, dry_run=True) \
+                .print_command(False) \
+                .exit_on_error(False) \
+                .capture_output()
 
-                if Pip.__would_install_requirements(stdout, *requirements):
-                    if dry_run:
-                        Pip.InstallCommand(*requirements) \
-                            .print_arguments(True) \
-                            .run()
-                    else:
-                        Log.info(stdout)
-            except RuntimeError:
-                Pip.install_requirements(*requirements)
+            if Pip.__would_install_requirements(stdout, *requirements):
+                Pip.InstallCommand(*requirements) \
+                    .print_arguments(True) \
+                    .run()
 
     def lookup_requirements(self,
                             *package_names: str,
@@ -402,4 +394,4 @@ class Pip:
         looked_up_requirements = self.lookup_requirements(*package_names, accept_missing=accept_missing)
         requirements_to_be_installed = reduce(lambda aggr, requirements: aggr | requirements,
                                               looked_up_requirements.values(), set())
-        self.install_requirements(*requirements_to_be_installed, dry_run=True)
+        self.install_requirements(*requirements_to_be_installed)
