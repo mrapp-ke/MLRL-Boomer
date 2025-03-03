@@ -56,7 +56,7 @@ class PipList(Pip):
         """
         requirements = reduce(lambda aggr, requirements_file: aggr | requirements_file.requirements,
                               self.requirements_files, set())
-        Pip.install_requirements(*requirements, dry_run=True)
+        Pip.install_requirements(*requirements)
 
     def list_outdated_dependencies(self) -> Set[Dependency]:
         """
