@@ -90,6 +90,7 @@ bool DenseScoreVector<ScoreType, IndexVector>::isSorted() const {
 
 template<typename ScoreType, typename IndexVector>
 void DenseScoreVector<ScoreType, IndexVector>::visit(
+  BitVisitor<CompleteIndexVector> completeBitVisitor, BitVisitor<PartialIndexVector> partialBitVisitor,
   DenseVisitor<float32, CompleteIndexVector> completeDense32BitVisitor,
   DenseVisitor<float32, PartialIndexVector> partialDense32BitVisitor,
   DenseVisitor<float64, CompleteIndexVector> completeDense64BitVisitor,
