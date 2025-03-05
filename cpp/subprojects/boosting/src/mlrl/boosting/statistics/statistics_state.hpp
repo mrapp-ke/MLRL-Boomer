@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/common/statistics/statistics_state.hpp"
 #include "mlrl/common/statistics/statistics_update_candidate_common.hpp"
 
 #include <memory>
