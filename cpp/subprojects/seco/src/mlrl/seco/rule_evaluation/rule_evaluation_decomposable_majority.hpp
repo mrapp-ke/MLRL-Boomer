@@ -13,33 +13,37 @@
 namespace seco {
 
     /**
-     * Allows to calculate the predictions of rules, such that they predict each label as relevant or irrelevant,
-     * depending on whether it is associated with the majority of the training examples or not.
+     * Allows to calculate the predictions of rules, based on confusion matrices, such that they predict each label as
+     * relevant or irrelevant, depending on whether it is associated with the majority of the training examples or not.
      *
-     * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
+     * @tparam StatisticVector  The type of the vector that provides access to the confusion matrices
+     * @tparam IndexVector      The type of the vector that provides access to the labels for which predictions should
+     *                          be calculated
      */
-    template<typename T>
-    class DecomposableMajorityRuleEvaluation final : public IRuleEvaluation {
+    template<typename StatisticVector, typename IndexVector>
+    class DecomposableMajorityRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
         private:
 
-            DenseScoreVector<T> scoreVector_;
+            DenseScoreVector<float32, IndexVector> scoreVector_;
 
         public:
 
             /**
-             * @param labelIndices A reference to an object of template type `T` that provides access to the indices of
-             *                     the labels for which the rules may predict
+             * @param labelIndices A reference to an object of template type `IndexVector` that provides access to the
+             *                     indices of the labels for which the rules may predict
              */
-            DecomposableMajorityRuleEvaluation(const T& labelIndices) : scoreVector_(labelIndices, true) {
+            DecomposableMajorityRuleEvaluation(const IndexVector& labelIndices) : scoreVector_(labelIndices, true) {
                 scoreVector_.quality = 0;
             }
 
             const IScoreVector& calculateScores(View<uint32>::const_iterator majorityLabelIndicesBegin,
                                                 View<uint32>::const_iterator majorityLabelIndicesEnd,
-                                                const DenseConfusionMatrixVector& confusionMatricesTotal,
-                                                const DenseConfusionMatrixVector& confusionMatricesCovered) override {
-                typename DenseScoreVector<T>::value_iterator valueIterator = scoreVector_.values_begin();
-                typename DenseScoreVector<T>::index_const_iterator indexIterator = scoreVector_.indices_cbegin();
+                                                const StatisticVector& confusionMatricesTotal,
+                                                const StatisticVector& confusionMatricesCovered) override {
+                typename DenseScoreVector<float32, IndexVector>::value_iterator valueIterator =
+                  scoreVector_.values_begin();
+                typename DenseScoreVector<float32, IndexVector>::index_const_iterator indexIterator =
+                  scoreVector_.indices_cbegin();
                 auto labelIterator =
                   createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
                 uint32 numElements = scoreVector_.getNumElements();
@@ -48,7 +52,7 @@ namespace seco {
                 for (uint32 i = 0; i < numElements; i++) {
                     uint32 index = indexIterator[i];
                     std::advance(labelIterator, index - previousIndex);
-                    valueIterator[i] = (float64) *labelIterator;
+                    valueIterator[i] = (float32) *labelIterator;
                     previousIndex = index;
                 }
 
@@ -62,12 +66,36 @@ namespace seco {
     class DecomposableMajorityRuleEvaluationFactory final : public IDecomposableRuleEvaluationFactory {
         public:
 
-            std::unique_ptr<IRuleEvaluation> create(const CompleteIndexVector& indexVector) const override {
-                return std::make_unique<DecomposableMajorityRuleEvaluation<CompleteIndexVector>>(indexVector);
+            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<uint32>>> create(
+              const DenseConfusionMatrixVector<uint32>& statisticVector,
+              const CompleteIndexVector& indexVector) const override {
+                return std::make_unique<
+                  DecomposableMajorityRuleEvaluation<DenseConfusionMatrixVector<uint32>, CompleteIndexVector>>(
+                  indexVector);
             }
 
-            std::unique_ptr<IRuleEvaluation> create(const PartialIndexVector& indexVector) const override {
-                return std::make_unique<DecomposableMajorityRuleEvaluation<PartialIndexVector>>(indexVector);
+            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<uint32>>> create(
+              const DenseConfusionMatrixVector<uint32>& statisticVector,
+              const PartialIndexVector& indexVector) const override {
+                return std::make_unique<
+                  DecomposableMajorityRuleEvaluation<DenseConfusionMatrixVector<uint32>, PartialIndexVector>>(
+                  indexVector);
+            }
+
+            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<float32>>> create(
+              const DenseConfusionMatrixVector<float32>& statisticVector,
+              const CompleteIndexVector& indexVector) const override {
+                return std::make_unique<
+                  DecomposableMajorityRuleEvaluation<DenseConfusionMatrixVector<float32>, CompleteIndexVector>>(
+                  indexVector);
+            }
+
+            std::unique_ptr<IRuleEvaluation<DenseConfusionMatrixVector<float32>>> create(
+              const DenseConfusionMatrixVector<float32>& statisticVector,
+              const PartialIndexVector& indexVector) const override {
+                return std::make_unique<
+                  DecomposableMajorityRuleEvaluation<DenseConfusionMatrixVector<float32>, PartialIndexVector>>(
+                  indexVector);
             }
     };
 

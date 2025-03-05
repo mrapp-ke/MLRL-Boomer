@@ -7,6 +7,8 @@
 class NoPostProcessor final : public IPostProcessor {
     public:
 
+        void postProcess(View<float32>::iterator begin, View<float32>::iterator end) const override {}
+
         void postProcess(View<float64>::iterator begin, View<float64>::iterator end) const override {}
 };
 

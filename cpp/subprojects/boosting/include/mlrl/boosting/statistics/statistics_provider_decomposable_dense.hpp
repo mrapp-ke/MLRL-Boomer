@@ -6,6 +6,7 @@
 
 #include "mlrl/boosting/losses/loss_decomposable.hpp"
 #include "mlrl/boosting/statistics/statistics_decomposable.hpp"
+#include "mlrl/common/multi_threading/multi_threading.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
 
 #include <memory>
@@ -16,14 +17,17 @@ namespace boosting {
      * Allows to create instances of the class `IStatisticsProvider` that can be used in classification problems and
      * provide access to an object of type `IDecomposableStatistics` using dense data structures for storing the
      * statistics.
+     *
+     * @tparam StatisticType The type of the statistics
      */
+    template<typename StatisticType>
     class DenseDecomposableClassificationStatisticsProviderFactory final
         : public IClassificationStatisticsProviderFactory {
         private:
 
-            const std::unique_ptr<IDecomposableClassificationLossFactory> lossFactoryPtr_;
+            const std::unique_ptr<IDecomposableClassificationLossFactory<StatisticType>> lossFactoryPtr_;
 
-            const std::unique_ptr<IClassificationEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
+            const std::unique_ptr<IClassificationEvaluationMeasureFactory<StatisticType>> evaluationMeasureFactoryPtr_;
 
             const std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
 
@@ -31,7 +35,7 @@ namespace boosting {
 
             const std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
 
-            const uint32 numThreads_;
+            const MultiThreadingSettings multiThreadingSettings_;
 
         public:
 
@@ -56,15 +60,17 @@ namespace boosting {
              *                                          `IDecomposableRuleEvaluationFactory` that should be used for
              *                                          calculating the predictions, as well as corresponding quality
              *                                          scores, when pruning rules
-             * @param numThreads                        The number of CPU threads to be used to calculate the initial
-             *                                          statistics in parallel. Must be at least 1
+             * @param multiThreadingSettings            An object of type `MultiThreadingSettings`that stores the
+             *                                          settings to be used for calculating the initial statistics in
+             *                                          parallel
              */
             DenseDecomposableClassificationStatisticsProviderFactory(
-              std::unique_ptr<IDecomposableClassificationLossFactory> lossFactoryPtr,
-              std::unique_ptr<IClassificationEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
+              std::unique_ptr<IDecomposableClassificationLossFactory<StatisticType>> lossFactoryPtr,
+              std::unique_ptr<IClassificationEvaluationMeasureFactory<StatisticType>> evaluationMeasureFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
-              std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads);
+              std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
+              MultiThreadingSettings multiThreadingSettings);
 
             /**
              * @see `IClassificationStatisticsProviderFactory::create`
@@ -80,13 +86,16 @@ namespace boosting {
     /**
      * Allows to create instances of the class `IStatisticsProvider` that can be used in regression problems and provide
      * access to an object of type `IDecomposableStatistics` using dense data structures for storing the statistics.
+     *
+     * @tparam StatisticType The type of the statistics
      */
+    template<typename StatisticType>
     class DenseDecomposableRegressionStatisticsProviderFactory final : public IRegressionStatisticsProviderFactory {
         private:
 
-            const std::unique_ptr<IDecomposableRegressionLossFactory> lossFactoryPtr_;
+            const std::unique_ptr<IDecomposableRegressionLossFactory<StatisticType>> lossFactoryPtr_;
 
-            const std::unique_ptr<IRegressionEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
+            const std::unique_ptr<IRegressionEvaluationMeasureFactory<StatisticType>> evaluationMeasureFactoryPtr_;
 
             const std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
 
@@ -94,7 +103,7 @@ namespace boosting {
 
             const std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
 
-            const uint32 numThreads_;
+            const MultiThreadingSettings multiThreadingSettings_;
 
         public:
 
@@ -119,15 +128,17 @@ namespace boosting {
              *                                          `IDecomposableRuleEvaluationFactory` that should be used for
              *                                          calculating the predictions, as well as corresponding quality
              *                                          scores, when pruning rules
-             * @param numThreads                        The number of CPU threads to be used to calculate the initial
-             *                                          statistics in parallel. Must be at least 1
+             * @param multiThreadingSettings            An object of type `MultiThreadingSetting` that stores the
+             *                                          settings to be used for calculating the initial statistics in
+             *                                          parallel
              */
             DenseDecomposableRegressionStatisticsProviderFactory(
-              std::unique_ptr<IDecomposableRegressionLossFactory> lossFactoryPtr,
-              std::unique_ptr<IRegressionEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
+              std::unique_ptr<IDecomposableRegressionLossFactory<StatisticType>> lossFactoryPtr,
+              std::unique_ptr<IRegressionEvaluationMeasureFactory<StatisticType>> evaluationMeasureFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
-              std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads);
+              std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
+              MultiThreadingSettings multiThreadingSettings);
 
             /**
              * @see `IRegressionStatisticsProviderFactory::create`
