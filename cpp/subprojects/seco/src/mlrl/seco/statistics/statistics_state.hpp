@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/vector_sparse_array_binary.hpp"
+#include "mlrl/common/statistics/statistics_state.hpp"
 #include "mlrl/common/statistics/statistics_update_candidate_common.hpp"
 
 #include <memory>

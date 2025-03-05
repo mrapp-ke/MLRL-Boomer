@@ -3,9 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/statistics/statistics_state.hpp"
 #include "mlrl/common/statistics/statistics_update_candidate.hpp"
-#include "mlrl/common/util/concepts.hpp"
 
 /**
  * A base class for all classes that store scores that have been calculated based on statistics and allow to update
@@ -25,7 +23,7 @@ class AbstractStatisticsUpdateCandidate : public IStatisticsUpdateCandidate {
          * @tparam IndexVector  The type of the vector that provides access to the indices of the outputs for which
          *                      confusion matrices should be updated
          */
-        template<util::derived_from_template_class<IStatisticsState> State, std::derived_from<IIndexVector> IndexVector>
+        template<typename State, typename IndexVector>
         class StatisticsUpdate final : public IStatisticsUpdate {
             private:
 
@@ -73,7 +71,7 @@ class AbstractStatisticsUpdateCandidate : public IStatisticsUpdateCandidate {
 
          * @tparam State The type of the state of the statistics
          */
-        template<util::derived_from_template_class<IStatisticsState> State>
+        template<typename State>
         class StatisticsUpdateFactory final : public IStatisticsUpdateFactory<typename State::score_type> {
             private:
 
