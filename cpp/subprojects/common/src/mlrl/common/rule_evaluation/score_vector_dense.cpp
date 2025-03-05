@@ -1,69 +1,108 @@
 #include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
 
-#include "mlrl/common/indices/index_vector_complete.hpp"
-#include "mlrl/common/indices/index_vector_partial.hpp"
-#include "mlrl/common/rule_refinement/prediction.hpp"
-#include "mlrl/common/rule_refinement/score_processor.hpp"
+static inline void visitInternally(const DenseScoreVector<float32, CompleteIndexVector>& scoreVector,
+                                   IScoreVector::DenseVisitor<float32, CompleteIndexVector> complete32BitVisitor,
+                                   IScoreVector::DenseVisitor<float32, PartialIndexVector> partial32BitVisitor,
+                                   IScoreVector::DenseVisitor<float64, CompleteIndexVector> complete64BitVisitor,
+                                   IScoreVector::DenseVisitor<float64, PartialIndexVector> partial64BitVisitor) {
+    complete32BitVisitor(scoreVector);
+}
 
-template<typename IndexVector>
-DenseScoreVector<IndexVector>::DenseScoreVector(const IndexVector& outputIndices, bool sorted)
-    : ViewDecorator<AllocatedView<float64>>(AllocatedView<float64>(outputIndices.getNumElements())),
+static inline void visitInternally(const DenseScoreVector<float64, CompleteIndexVector>& scoreVector,
+                                   IScoreVector::DenseVisitor<float32, CompleteIndexVector> complete32BitVisitor,
+                                   IScoreVector::DenseVisitor<float32, PartialIndexVector> partial32BitVisitor,
+                                   IScoreVector::DenseVisitor<float64, CompleteIndexVector> complete64BitVisitor,
+                                   IScoreVector::DenseVisitor<float64, PartialIndexVector> partial64BitVisitor) {
+    complete64BitVisitor(scoreVector);
+}
+
+static inline void visitInternally(const DenseScoreVector<float32, PartialIndexVector>& scoreVector,
+                                   IScoreVector::DenseVisitor<float32, CompleteIndexVector> complete32BitVisitor,
+                                   IScoreVector::DenseVisitor<float32, PartialIndexVector> partial32BitVisitor,
+                                   IScoreVector::DenseVisitor<float64, CompleteIndexVector> complete64BitVisitor,
+                                   IScoreVector::DenseVisitor<float64, PartialIndexVector> partial64BitVisitor) {
+    partial32BitVisitor(scoreVector);
+}
+
+static inline void visitInternally(const DenseScoreVector<float64, PartialIndexVector>& scoreVector,
+                                   IScoreVector::DenseVisitor<float32, CompleteIndexVector> complete32BitVisitor,
+                                   IScoreVector::DenseVisitor<float32, PartialIndexVector> partial32BitVisitor,
+                                   IScoreVector::DenseVisitor<float64, CompleteIndexVector> complete64BitVisitor,
+                                   IScoreVector::DenseVisitor<float64, PartialIndexVector> partial64BitVisitor) {
+    partial64BitVisitor(scoreVector);
+}
+
+template<typename ScoreType, typename IndexVector>
+DenseScoreVector<ScoreType, IndexVector>::DenseScoreVector(const IndexVector& outputIndices, bool sorted)
+    : ViewDecorator<AllocatedView<ScoreType>>(AllocatedView<ScoreType>(outputIndices.getNumElements())),
       outputIndices_(outputIndices), sorted_(sorted) {}
 
-template<typename IndexVector>
-typename DenseScoreVector<IndexVector>::index_const_iterator DenseScoreVector<IndexVector>::indices_cbegin() const {
+template<typename ScoreType, typename IndexVector>
+typename DenseScoreVector<ScoreType, IndexVector>::index_const_iterator
+  DenseScoreVector<ScoreType, IndexVector>::indices_cbegin() const {
     return outputIndices_.cbegin();
 }
 
-template<typename IndexVector>
-typename DenseScoreVector<IndexVector>::index_const_iterator DenseScoreVector<IndexVector>::indices_cend() const {
+template<typename ScoreType, typename IndexVector>
+typename DenseScoreVector<ScoreType, IndexVector>::index_const_iterator
+  DenseScoreVector<ScoreType, IndexVector>::indices_cend() const {
     return outputIndices_.cend();
 }
 
-template<typename IndexVector>
-typename DenseScoreVector<IndexVector>::value_iterator DenseScoreVector<IndexVector>::values_begin() {
+template<typename ScoreType, typename IndexVector>
+typename DenseScoreVector<ScoreType, IndexVector>::value_iterator
+  DenseScoreVector<ScoreType, IndexVector>::values_begin() {
     return this->view.begin();
 }
 
-template<typename IndexVector>
-typename DenseScoreVector<IndexVector>::value_iterator DenseScoreVector<IndexVector>::values_end() {
+template<typename ScoreType, typename IndexVector>
+typename DenseScoreVector<ScoreType, IndexVector>::value_iterator
+  DenseScoreVector<ScoreType, IndexVector>::values_end() {
     return &this->view.array[this->getNumElements()];
 }
 
-template<typename IndexVector>
-typename DenseScoreVector<IndexVector>::value_const_iterator DenseScoreVector<IndexVector>::values_cbegin() const {
+template<typename ScoreType, typename IndexVector>
+typename DenseScoreVector<ScoreType, IndexVector>::value_const_iterator
+  DenseScoreVector<ScoreType, IndexVector>::values_cbegin() const {
     return this->view.cbegin();
 }
 
-template<typename IndexVector>
-typename DenseScoreVector<IndexVector>::value_const_iterator DenseScoreVector<IndexVector>::values_cend() const {
+template<typename ScoreType, typename IndexVector>
+typename DenseScoreVector<ScoreType, IndexVector>::value_const_iterator
+  DenseScoreVector<ScoreType, IndexVector>::values_cend() const {
     return &this->view.array[this->getNumElements()];
 }
 
-template<typename IndexVector>
-uint32 DenseScoreVector<IndexVector>::getNumElements() const {
+template<typename ScoreType, typename IndexVector>
+uint32 DenseScoreVector<ScoreType, IndexVector>::getNumElements() const {
     return outputIndices_.getNumElements();
 }
 
-template<typename IndexVector>
-bool DenseScoreVector<IndexVector>::isPartial() const {
+template<typename ScoreType, typename IndexVector>
+bool DenseScoreVector<ScoreType, IndexVector>::isPartial() const {
     return outputIndices_.isPartial();
 }
 
-template<typename IndexVector>
-bool DenseScoreVector<IndexVector>::isSorted() const {
+template<typename ScoreType, typename IndexVector>
+bool DenseScoreVector<ScoreType, IndexVector>::isSorted() const {
     return sorted_;
 }
 
-template<typename IndexVector>
-void DenseScoreVector<IndexVector>::updatePrediction(IPrediction& prediction) const {
-    prediction.set(this->values_cbegin(), this->values_cend());
+template<typename ScoreType, typename IndexVector>
+void DenseScoreVector<ScoreType, IndexVector>::visit(
+  DenseVisitor<float32, CompleteIndexVector> completeDense32BitVisitor,
+  DenseVisitor<float32, PartialIndexVector> partialDense32BitVisitor,
+  DenseVisitor<float64, CompleteIndexVector> completeDense64BitVisitor,
+  DenseVisitor<float64, PartialIndexVector> partialDense64BitVisitor,
+  DenseBinnedVisitor<float32, CompleteIndexVector> completeDense32BitBinnedVisitor,
+  DenseBinnedVisitor<float32, PartialIndexVector> partialDense32BitBinnedVisitor,
+  DenseBinnedVisitor<float64, CompleteIndexVector> completeDense64BitBinnedVisitor,
+  DenseBinnedVisitor<float64, PartialIndexVector> partialDense64BitBinnedVisitor) const {
+    visitInternally(*this, completeDense32BitVisitor, partialDense32BitVisitor, completeDense64BitVisitor,
+                    partialDense64BitVisitor);
 }
 
-template<typename IndexVector>
-void DenseScoreVector<IndexVector>::processScores(ScoreProcessor& scoreProcessor) const {
-    scoreProcessor.processScores(*this);
-}
-
-template class DenseScoreVector<PartialIndexVector>;
-template class DenseScoreVector<CompleteIndexVector>;
+template class DenseScoreVector<float32, PartialIndexVector>;
+template class DenseScoreVector<float64, PartialIndexVector>;
+template class DenseScoreVector<float32, CompleteIndexVector>;
+template class DenseScoreVector<float64, CompleteIndexVector>;

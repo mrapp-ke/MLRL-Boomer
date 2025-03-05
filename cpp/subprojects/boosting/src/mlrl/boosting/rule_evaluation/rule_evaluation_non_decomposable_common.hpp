@@ -20,32 +20,36 @@ namespace boosting {
      */
     template<typename StatisticVector, typename IndexVector>
     class AbstractNonDecomposableRuleEvaluation : public IRuleEvaluation<StatisticVector> {
+        private:
+
+            typedef typename StatisticVector::statistic_type statistic_type;
+
         protected:
 
             /**
-             * A pointer to a temporary array that is used for executing the LAPACK routine DSPMV.
+             * A pointer to a temporary array that is used for executing the LAPACK routine SPMV.
              */
-            Array<float64> dspmvTmpArray_;
+            Array<statistic_type> spmvTmpArray_;
 
             /**
-             * A pointer to a temporary array that is used for executing the LAPACK routine DSYSV.
+             * A pointer to a temporary array that is used for executing the LAPACK routine SYSV.
              */
-            Array<float64> dsysvTmpArray1_;
+            Array<statistic_type> sysvTmpArray1_;
 
             /**
-             * A pointer to a second temporary array that is used for executing the LAPACK routine DSYSV.
+             * A pointer to a second temporary array that is used for executing the LAPACK routine SYSV.
              */
-            Array<int> dsysvTmpArray2_;
+            Array<int> sysvTmpArray2_;
 
             /**
-             * The `lwork` parameter that is used for executing the LAPACK routine DSYSV.
+             * The `lwork` parameter that is used for executing the LAPACK routine SYSV.
              */
-            const int dsysvLwork_;
+            const int sysvLwork_;
 
             /**
-             * A pointer to a third temporary array that is used for executing the LAPACK routine DSYSV.
+             * A pointer to a third temporary array that is used for executing the LAPACK routine SYSV.
              */
-            Array<double> dsysvTmpArray3_;
+            Array<statistic_type> sysvTmpArray3_;
 
         public:
 
@@ -54,11 +58,11 @@ namespace boosting {
              * @param lapack            A reference to an object of type `Lapack` that allows to execute different
              *                          LAPACK routines
              */
-            AbstractNonDecomposableRuleEvaluation(uint32 numPredictions, const Lapack& lapack)
-                : dspmvTmpArray_(numPredictions), dsysvTmpArray1_(numPredictions * numPredictions),
-                  dsysvTmpArray2_(numPredictions), dsysvLwork_(lapack.queryDsysvLworkParameter(
-                                                     dsysvTmpArray1_.begin(), dspmvTmpArray_.begin(), numPredictions)),
-                  dsysvTmpArray3_(dsysvLwork_) {}
+            AbstractNonDecomposableRuleEvaluation(uint32 numPredictions, const Lapack<statistic_type>& lapack)
+                : spmvTmpArray_(numPredictions), sysvTmpArray1_(numPredictions * numPredictions),
+                  sysvTmpArray2_(numPredictions), sysvLwork_(lapack.querySysvLworkParameter(
+                                                    sysvTmpArray1_.begin(), spmvTmpArray_.begin(), numPredictions)),
+                  sysvTmpArray3_(sysvLwork_) {}
     };
 
 }

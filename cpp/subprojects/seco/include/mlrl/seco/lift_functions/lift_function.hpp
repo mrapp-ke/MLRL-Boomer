@@ -25,7 +25,7 @@ namespace seco {
              * @param numLabels The number of labels for which the lift should be calculated
              * @return          The lift that has been calculated
              */
-            virtual float64 calculateLift(uint32 numLabels) const = 0;
+            virtual float32 calculateLift(uint32 numLabels) const = 0;
 
             /**
              * Returns the maximum lift that is possible by adding additional labels to a head of a given size.
@@ -34,7 +34,7 @@ namespace seco {
              * @return          The maximum lift that is possible by adding additional labels to a head of the given
              *                  size
              */
-            virtual float64 getMaxLift(uint32 numLabels) const = 0;
+            virtual float32 getMaxLift(uint32 numLabels) const = 0;
     };
 
     /**

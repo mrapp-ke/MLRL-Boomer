@@ -15,8 +15,8 @@ namespace seco {
 
     void DenseCoverageMatrix::increaseCoverage(uint32 row, View<uint32>::const_iterator majorityLabelIndicesBegin,
                                                View<uint32>::const_iterator majorityLabelIndicesEnd,
-                                               View<float64>::const_iterator predictionBegin,
-                                               View<float64>::const_iterator predictionEnd,
+                                               View<float32>::const_iterator predictionBegin,
+                                               View<float32>::const_iterator predictionEnd,
                                                CompleteIndexVector::const_iterator indicesBegin,
                                                CompleteIndexVector::const_iterator indicesEnd) {
         uint32 numCols = this->getNumCols();
@@ -43,8 +43,8 @@ namespace seco {
 
     void DenseCoverageMatrix::increaseCoverage(uint32 row, View<uint32>::const_iterator majorityLabelIndicesBegin,
                                                View<uint32>::const_iterator majorityLabelIndicesEnd,
-                                               View<float64>::const_iterator predictionBegin,
-                                               View<float64>::const_iterator predictionEnd,
+                                               View<float32>::const_iterator predictionBegin,
+                                               View<float32>::const_iterator predictionEnd,
                                                PartialIndexVector::const_iterator indicesBegin,
                                                PartialIndexVector::const_iterator indicesEnd) {
         uint32 numPredictions = indicesEnd - indicesBegin;
@@ -74,8 +74,8 @@ namespace seco {
 
     void DenseCoverageMatrix::decreaseCoverage(uint32 row, View<uint32>::const_iterator majorityLabelIndicesBegin,
                                                View<uint32>::const_iterator majorityLabelIndicesEnd,
-                                               View<float64>::const_iterator predictionBegin,
-                                               View<float64>::const_iterator predictionEnd,
+                                               View<float32>::const_iterator predictionBegin,
+                                               View<float32>::const_iterator predictionEnd,
                                                CompleteIndexVector::const_iterator indicesBegin,
                                                CompleteIndexVector::const_iterator indicesEnd) {
         uint32 numCols = this->getNumCols();
@@ -102,8 +102,8 @@ namespace seco {
 
     void DenseCoverageMatrix::decreaseCoverage(uint32 row, View<uint32>::const_iterator majorityLabelIndicesBegin,
                                                View<uint32>::const_iterator majorityLabelIndicesEnd,
-                                               View<float64>::const_iterator predictionBegin,
-                                               View<float64>::const_iterator predictionEnd,
+                                               View<float32>::const_iterator predictionBegin,
+                                               View<float32>::const_iterator predictionEnd,
                                                PartialIndexVector::const_iterator indicesBegin,
                                                PartialIndexVector::const_iterator indicesEnd) {
         uint32 numPredictions = indicesEnd - indicesBegin;
