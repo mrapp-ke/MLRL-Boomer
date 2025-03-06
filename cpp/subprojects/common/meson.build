@@ -51,6 +51,7 @@ source_files = [
     'src/mlrl/common/prediction/probability_calibration_isotonic.cpp',
     'src/mlrl/common/prediction/probability_calibration_no.cpp',
     'src/mlrl/common/random/rng.cpp',
+    'src/mlrl/common/rule_evaluation/score_vector_bit.cpp',
     'src/mlrl/common/rule_evaluation/score_vector_binned_dense.cpp',
     'src/mlrl/common/rule_evaluation/score_vector_dense.cpp',
     'src/mlrl/common/rule_induction/rule_induction_top_down_beam_search.cpp',

@@ -137,5 +137,6 @@ std::unique_ptr<IHead> CompletePrediction<ScoreType>::createHead() const {
     return headPtr;
 }
 
+template class CompletePrediction<uint8>;
 template class CompletePrediction<float32>;
 template class CompletePrediction<float64>;
