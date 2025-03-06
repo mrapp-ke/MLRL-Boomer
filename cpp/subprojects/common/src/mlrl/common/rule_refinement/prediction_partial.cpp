@@ -190,5 +190,6 @@ std::unique_ptr<IHead> PartialPrediction<ScoreType>::createHead() const {
     return headPtr;
 }
 
+template class PartialPrediction<uint8>;
 template class PartialPrediction<float32>;
 template class PartialPrediction<float64>;
