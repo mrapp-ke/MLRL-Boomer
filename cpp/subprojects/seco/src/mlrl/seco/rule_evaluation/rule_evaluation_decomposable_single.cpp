@@ -2,7 +2,7 @@
 
 #include "mlrl/common/indices/index_vector_partial.hpp"
 #include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
-#include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
+#include "mlrl/common/rule_evaluation/score_vector_bit.hpp"
 #include "rule_evaluation_decomposable_common.hpp"
 
 namespace seco {
@@ -23,7 +23,7 @@ namespace seco {
 
             PartialIndexVector indexVector_;
 
-            DenseScoreVector<float32, PartialIndexVector> scoreVector_;
+            BitScoreVector<PartialIndexVector> scoreVector_;
 
             const std::unique_ptr<IHeuristic> heuristicPtr_;
 
@@ -66,7 +66,7 @@ namespace seco {
                 auto labelIterator =
                   createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
                 std::advance(labelIterator, bestIndex);
-                scoreVector_.values_begin()[0] = (float32) !(*labelIterator);
+                scoreVector_.set(0, !(*labelIterator));
                 indexVector_.begin()[0] = bestIndex;
                 scoreVector_.quality = bestQuality;
                 return scoreVector_;

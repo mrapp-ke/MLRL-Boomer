@@ -6,6 +6,7 @@
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 #include "mlrl/common/rule_evaluation/score_vector_binned_dense.hpp"
+#include "mlrl/common/rule_evaluation/score_vector_bit.hpp"
 #include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
 #include "mlrl/common/statistics/statistics_update.hpp"
 
@@ -15,6 +16,15 @@
  */
 class IStatisticsUpdateCandidate : public Quality {
     public:
+
+        /**
+         * A visitor function for handling objects of type `BitScoreVector`.
+         *
+         * @tparam IndexVector  The type of the vector that provides access to the indices of the outputs, the predicted
+         *                      scores correspond to
+         */
+        template<typename IndexVector>
+        using BitVisitor = std::function<void(const BitScoreVector<IndexVector>&, IStatisticsUpdateFactory<uint8>&)>;
 
         /**
          * A visitor function for handling objects of type `DenseScoreVector`.
@@ -42,6 +52,10 @@ class IStatisticsUpdateCandidate : public Quality {
          * Invokes one of the given visitor functions, depending on which one is able to handle the particular type of
          * vector that stores the calculated scores.
          *
+         * @param completeBitVisitor                The visitor function for handling objects of type
+         *                                          `BitScoreVector<CompleteIndexVector>`
+         * @param partialBitVisitor                 The visitor function for handling objects of type
+         *                                          `BitScoreVector<PartialIndexVector>`
          * @param completeDense32BitVisitor         The visitor function for handling objects of type
          *                                          `DenseScoreVector<float32, CompleteIndexVector>`
          * @param partialDense32BitVisitor          The visitor function for handling objects of type
@@ -59,7 +73,9 @@ class IStatisticsUpdateCandidate : public Quality {
          * @param partialDenseBinned64BitVisitor    The visitor function for handling objects of type
          *                                          `DenseBinnedScoreVector<float64, PartialIndexVector>`
          */
-        virtual void visit(DenseVisitor<float32, CompleteIndexVector> completeDense32BitVisitor,
+        virtual void visit(BitVisitor<CompleteIndexVector> completeBitVisitor,
+                           BitVisitor<PartialIndexVector> partialBitVisitor,
+                           DenseVisitor<float32, CompleteIndexVector> completeDense32BitVisitor,
                            DenseVisitor<float32, PartialIndexVector> partialDense32BitVisitor,
                            DenseVisitor<float64, CompleteIndexVector> completeDense64BitVisitor,
                            DenseVisitor<float64, PartialIndexVector> partialDense64BitVisitor,

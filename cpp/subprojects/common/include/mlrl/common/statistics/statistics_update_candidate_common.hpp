@@ -102,6 +102,32 @@ class AbstractStatisticsUpdateCandidate : public IStatisticsUpdateCandidate {
         };
 
         /**
+         * May be overridden by subclasses in order to invoke a given `BitVisitor` for handling objects of type
+         * `BitScoreVector<CompleteIndexVector>`.
+         *
+         * @param visitor       The visitor to be invoked
+         * @param scoreVector   A reference to an object of type `BitScoreVector<CompleteIndexVector>` to be handled by
+         *                      the visitor
+         */
+        virtual void invokeVisitor(BitVisitor<CompleteIndexVector> visitor,
+                                   const BitScoreVector<CompleteIndexVector>& scoreVector) const {
+            throw std::runtime_error("not implemented");
+        }
+
+        /**
+         * May be overridden by subclasses in order to invoke a given `BitVisitor` for handling objects of type
+         * `BitScoreVector<PartialIndexVector>`.
+         *
+         * @param visitor       The visitor to be invoked
+         * @param scoreVector   A reference to an object of type `BitScoreVector<PartialIndexVector>` to be handled by
+         *                      the visitor
+         */
+        virtual void invokeVisitor(BitVisitor<PartialIndexVector> visitor,
+                                   const BitScoreVector<PartialIndexVector>& scoreVector) const {
+            throw std::runtime_error("not implemented");
+        }
+
+        /**
          * May be overridden by subclasses in order to invoke a given `DenseVisitor` for handling objects of type
          * `DenseScoreVector<float32, CompleteIndexVector>`.
          *
@@ -217,6 +243,7 @@ class AbstractStatisticsUpdateCandidate : public IStatisticsUpdateCandidate {
         virtual ~AbstractStatisticsUpdateCandidate() override {}
 
         void visit(
+          BitVisitor<CompleteIndexVector> completeBitVisitor, BitVisitor<PartialIndexVector> partialBitVisitor,
           DenseVisitor<float32, CompleteIndexVector> completeDense32BitVisitor,
           DenseVisitor<float32, PartialIndexVector> partialDense32BitVisitor,
           DenseVisitor<float64, CompleteIndexVector> completeDense64BitVisitor,
@@ -225,6 +252,14 @@ class AbstractStatisticsUpdateCandidate : public IStatisticsUpdateCandidate {
           DenseBinnedVisitor<float32, PartialIndexVector> partialDenseBinned32BitVisitor,
           DenseBinnedVisitor<float64, CompleteIndexVector> completeDenseBinned64BitVisitor,
           DenseBinnedVisitor<float64, PartialIndexVector> partialDenseBinned64BitVisitor) const override final {
+            auto tmpCompleteBitVisitor = [this,
+                                          completeBitVisitor](const BitScoreVector<CompleteIndexVector>& scoreVector) {
+                invokeVisitor(completeBitVisitor, scoreVector);
+            };
+            auto tmpPartialBitVisitor = [this,
+                                         partialBitVisitor](const BitScoreVector<PartialIndexVector>& scoreVector) {
+                invokeVisitor(partialBitVisitor, scoreVector);
+            };
             auto tmpCompleteDense32BitVisitor =
               [this, completeDense32BitVisitor](const DenseScoreVector<float32, CompleteIndexVector>& scoreVector) {
                 invokeVisitor(completeDense32BitVisitor, scoreVector);
@@ -261,9 +296,9 @@ class AbstractStatisticsUpdateCandidate : public IStatisticsUpdateCandidate {
                partialDenseBinned64BitVisitor](const DenseBinnedScoreVector<float64, PartialIndexVector>& scoreVector) {
                 invokeVisitor(partialDenseBinned64BitVisitor, scoreVector);
             };
-            scoreVector_.visit(tmpCompleteDense32BitVisitor, tmpPartialDense32BitVisitor, tmpCompleteDense64BitVisitor,
-                               tmpPartialDense64BitVisitor, tmpCompleteDenseBinned32BitVisitor,
-                               tmpPartialDenseBinned32BitVisitor, tmpCompleteDenseBinned64BitVisitor,
-                               tmpPartialDenseBinned64BitVisitor);
+            scoreVector_.visit(tmpCompleteBitVisitor, tmpPartialBitVisitor, tmpCompleteDense32BitVisitor,
+                               tmpPartialDense32BitVisitor, tmpCompleteDense64BitVisitor, tmpPartialDense64BitVisitor,
+                               tmpCompleteDenseBinned32BitVisitor, tmpPartialDenseBinned32BitVisitor,
+                               tmpCompleteDenseBinned64BitVisitor, tmpPartialDenseBinned64BitVisitor);
         }
 };
