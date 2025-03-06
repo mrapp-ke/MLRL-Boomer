@@ -13,7 +13,7 @@ from util.log import Log
 
 
 @dataclass
-class Version:
+class SemanticVersion:
     """
     Represents a semantic version.
 
@@ -47,7 +47,7 @@ class Version:
             raise ValueError('Version numbers must be non-negative integers, but got: ' + version_number) from error
 
     @staticmethod
-    def parse(version: str) -> 'Version':
+    def parse(version: str) -> 'SemanticVersion':
         """
         Parses and returns a version from a given string.
 
@@ -59,10 +59,10 @@ class Version:
         if len(parts) != 3:
             raise ValueError('Version must be given in format MAJOR.MINOR.PATCH, but got: ' + version)
 
-        major = Version.parse_version_number(parts[0])
-        minor = Version.parse_version_number(parts[1])
-        patch = Version.parse_version_number(parts[2])
-        return Version(major=major, minor=minor, patch=patch)
+        major = SemanticVersion.parse_version_number(parts[0])
+        minor = SemanticVersion.parse_version_number(parts[1])
+        patch = SemanticVersion.parse_version_number(parts[2])
+        return SemanticVersion(major=major, minor=minor, patch=patch)
 
     def __str__(self) -> str:
         version = str(self.major) + '.' + str(self.minor) + '.' + str(self.patch)
@@ -82,7 +82,7 @@ class VersionFile(TextFile):
         super().__init__('.version')
 
     @cached_property
-    def version(self) -> Version:
+    def version(self) -> SemanticVersion:
         """
         The version that is stored in the file.
         """
@@ -91,9 +91,9 @@ class VersionFile(TextFile):
         if len(lines) != 1:
             raise ValueError('File "' + self.file + '" must contain exactly one line')
 
-        return Version.parse(lines[0])
+        return SemanticVersion.parse(lines[0])
 
-    def update(self, version: Version):
+    def update(self, version: SemanticVersion):
         """
         Updates the version that is stored in the file.
 
@@ -129,7 +129,7 @@ class DevelopmentVersionFile(TextFile):
         if len(lines) != 1:
             raise ValueError('File "' + self.file + '" must contain exactly one line')
 
-        return Version.parse_version_number(lines[0])
+        return SemanticVersion.parse_version_number(lines[0])
 
     def update(self, development_version: int):
         """
