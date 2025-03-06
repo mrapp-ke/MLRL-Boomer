@@ -3,19 +3,19 @@
  */
 #pragma once
 
+#include "mlrl/common/data/view_vector_bit.hpp"
 #include "mlrl/common/rule_evaluation/score_vector.hpp"
 
 /**
- * An one-dimensional vector that stores the scores that may be predicted by a rule, as well as an overall quality
- * score that assesses the overall quality of the rule, in a C-contiguous array.
+ * An one-dimensional vector that stores binary scores that may be predicted by a rule, as well as an overall quality
+ * score that assesses the overall quality of the rule, in a space efficient way.
  *
- * @tparam ScoreType   The type of the predicted scores
  * @tparam IndexVector The type of the vector that provides access to the indices of the outputs for which the rule may
  *                     predict
  */
-template<typename ScoreType, typename IndexVector>
-class DenseScoreVector final : public ViewDecorator<AllocatedView<ScoreType>>,
-                               virtual public IScoreVector {
+template<typename IndexVector>
+class BitScoreVector final : public IndexableBitVectorDecorator<ViewDecorator<AllocatedBitVector>>,
+                             virtual public IScoreVector {
     private:
 
         const IndexVector& outputIndices_;
@@ -30,12 +30,12 @@ class DenseScoreVector final : public ViewDecorator<AllocatedView<ScoreType>>,
          * @param sorted        True, if the indices of the outputs for which the rule may predict are sorted in
          *                      increasing order, false otherwise
          */
-        DenseScoreVector(const IndexVector& outputIndices, bool sorted);
+        BitScoreVector(const IndexVector& outputIndices, bool sorted);
 
         /**
          * The type of the predicted scores that are stored by the vector.
          */
-        typedef ScoreType value_type;
+        typedef uint8 value_type;
 
         /**
          * An iterator that provides read-only access to the indices.
@@ -43,14 +43,9 @@ class DenseScoreVector final : public ViewDecorator<AllocatedView<ScoreType>>,
         typedef typename IndexVector::const_iterator index_const_iterator;
 
         /**
-         * An iterator that provides access to the predicted scores and allows to modify them.
-         */
-        typedef typename View<ScoreType>::iterator value_iterator;
-
-        /**
          * An iterator that provides read-only access to the predicted scores.
          */
-        typedef typename View<ScoreType>::const_iterator value_const_iterator;
+        typedef typename BitView::bit_const_iterator value_const_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices.
@@ -65,20 +60,6 @@ class DenseScoreVector final : public ViewDecorator<AllocatedView<ScoreType>>,
          * @return An `index_const_iterator` to the end
          */
         index_const_iterator indices_cend() const;
-
-        /**
-         * Returns a `value_iterator` to the beginning of the predicted scores.
-         *
-         * @return A `value_iterator` to the beginning
-         */
-        value_iterator values_begin();
-
-        /**
-         * Returns a `value_iterator` to the end of the predicted scores.
-         *
-         * @return A `value_iterator` to the end
-         */
-        value_iterator values_end();
 
         /**
          * Returns a `value_const_iterator` to the beginning of the predicted scores.
@@ -97,7 +78,7 @@ class DenseScoreVector final : public ViewDecorator<AllocatedView<ScoreType>>,
         /**
          * Returns the number of outputs for which the rule may predict.
          *
-         * @return The number of outputs
+         * @return The number of outputs for which the rule may predict
          */
         uint32 getNumElements() const;
 
