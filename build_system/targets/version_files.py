@@ -10,6 +10,7 @@ from typing import Optional
 
 from util.io import TextFile
 from util.log import Log
+from util.version import Version
 
 
 @dataclass
@@ -29,24 +30,6 @@ class SemanticVersion:
     dev: Optional[int] = None
 
     @staticmethod
-    def parse_version_number(version_number: str) -> int:
-        """
-        Parses and returns a single version number from a given string.
-
-        :param version_number:  The string to be parsed
-        :return:                The version number that has been parsed
-        """
-        try:
-            number = int(version_number)
-
-            if number < 0:
-                raise ValueError()
-
-            return number
-        except ValueError as error:
-            raise ValueError('Version numbers must be non-negative integers, but got: ' + version_number) from error
-
-    @staticmethod
     def parse(version: str) -> 'SemanticVersion':
         """
         Parses and returns a version from a given string.
@@ -54,15 +37,12 @@ class SemanticVersion:
         :param version: The string to be parsed
         :return:        The version that has been parsed
         """
-        parts = version.split('.')
+        version = Version.parse(version)
 
-        if len(parts) != 3:
+        if len(version.numbers) != 3:
             raise ValueError('Version must be given in format MAJOR.MINOR.PATCH, but got: ' + version)
 
-        major = SemanticVersion.parse_version_number(parts[0])
-        minor = SemanticVersion.parse_version_number(parts[1])
-        patch = SemanticVersion.parse_version_number(parts[2])
-        return SemanticVersion(major=major, minor=minor, patch=patch)
+        return SemanticVersion(major=version.numbers[0], minor=version.numbers[1], patch=version.numbers[2])
 
     def __str__(self) -> str:
         version = str(self.major) + '.' + str(self.minor) + '.' + str(self.patch)
@@ -129,7 +109,7 @@ class DevelopmentVersionFile(TextFile):
         if len(lines) != 1:
             raise ValueError('File "' + self.file + '" must contain exactly one line')
 
-        return SemanticVersion.parse_version_number(lines[0])
+        return Version.parse_version_number(lines[0])
 
     def update(self, development_version: int):
         """
