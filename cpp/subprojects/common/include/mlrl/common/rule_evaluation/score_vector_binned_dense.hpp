@@ -192,7 +192,8 @@ class DenseBinnedScoreVector final
          */
         bool isSorted() const;
 
-        void visit(DenseVisitor<float32, CompleteIndexVector> completeDense32BitVisitor,
+        void visit(BitVisitor<CompleteIndexVector> completeBitVisitor, BitVisitor<PartialIndexVector> partialBitVisitor,
+                   DenseVisitor<float32, CompleteIndexVector> completeDense32BitVisitor,
                    DenseVisitor<float32, PartialIndexVector> partialDense32BitVisitor,
                    DenseVisitor<float64, CompleteIndexVector> completeDense64BitVisitor,
                    DenseVisitor<float64, PartialIndexVector> partialDense64BitVisitor,

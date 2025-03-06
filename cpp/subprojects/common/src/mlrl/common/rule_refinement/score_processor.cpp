@@ -53,6 +53,14 @@ static inline void processPartialScores(
 ScoreProcessor::ScoreProcessor(std::unique_ptr<IEvaluatedPrediction>& headPtr) : headPtr_(headPtr) {}
 
 void ScoreProcessor::processScores(const IStatisticsUpdateCandidate& scores) {
+    auto completeBitVisitor = [this](const BitScoreVector<CompleteIndexVector>& scoreVector,
+                                     IStatisticsUpdateFactory<uint8>& statisticsUpdateFactory) {
+        processCompleteScores(headPtr_, scoreVector, statisticsUpdateFactory);
+    };
+    auto partialBitVisitor = [this](const BitScoreVector<PartialIndexVector>& scoreVector,
+                                    IStatisticsUpdateFactory<uint8>& statisticsUpdateFactory) {
+        processPartialScores(headPtr_, scoreVector, statisticsUpdateFactory);
+    };
     auto completeDense32BitVisitor = [this](const DenseScoreVector<float32, CompleteIndexVector>& scoreVector,
                                             IStatisticsUpdateFactory<float32>& statisticsUpdateFactory) {
         processCompleteScores(headPtr_, scoreVector, statisticsUpdateFactory);
@@ -87,7 +95,7 @@ void ScoreProcessor::processScores(const IStatisticsUpdateCandidate& scores) {
                                                  IStatisticsUpdateFactory<float64>& statisticsUpdateFactory) {
         processPartialScores(headPtr_, scoreVector, statisticsUpdateFactory);
     };
-    scores.visit(completeDense32BitVisitor, partialDense32BitVisitor, completeDense64BitVisitor,
-                 partialDense64BitVisitor, completeDenseBinned32BitVisitor, partialDenseBinned32BitVisitor,
-                 completeDenseBinned64BitVisitor, partialDenseBinned64BitVisitor);
+    scores.visit(completeBitVisitor, partialBitVisitor, completeDense32BitVisitor, partialDense32BitVisitor,
+                 completeDense64BitVisitor, partialDense64BitVisitor, completeDenseBinned32BitVisitor,
+                 partialDenseBinned32BitVisitor, completeDenseBinned64BitVisitor, partialDenseBinned64BitVisitor);
 }

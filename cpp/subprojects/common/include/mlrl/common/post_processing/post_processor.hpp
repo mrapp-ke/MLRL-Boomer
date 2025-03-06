@@ -16,6 +16,14 @@ class IPostProcessor {
         virtual ~IPostProcessor() {}
 
         /**
+         * Post-processes the prediction, represented by 8-bit unsigned integer values, of a rule.
+         *
+         * @param begin An iterator to the beginning of the predictions
+         * @param end   An iterator to the end of the predictions
+         */
+        virtual void postProcess(View<uint8>::iterator begin, View<uint8>::iterator end) const = 0;
+
+        /**
          * Post-processes the prediction, represented by 32-bit floating point values, of a rule.
          *
          * @param begin An iterator to the beginning of the predictions
