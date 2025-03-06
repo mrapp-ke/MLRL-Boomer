@@ -31,6 +31,13 @@ namespace boosting {
             /**
              * @see `IPostProcessor::postProcess`
              */
+            void postProcess(View<uint8>::iterator begin, View<uint8>::iterator end) const override {
+                throw std::runtime_error("Class ConstantShrinkage cannot be applied to scores of type uint8");
+            }
+
+            /**
+             * @see `IPostProcessor::postProcess`
+             */
             void postProcess(View<float32>::iterator begin, View<float32>::iterator end) const override {
                 postProcessInternally(begin, end, shrinkage_);
             }
