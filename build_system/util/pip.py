@@ -395,3 +395,11 @@ class Pip:
         requirements_to_be_installed = reduce(lambda aggr, requirements: aggr | requirements,
                                               looked_up_requirements.values(), set())
         self.install_requirements(*requirements_to_be_installed)
+
+    def install_all_packages(self):
+        """
+        Installs all dependencies in the requirements file.
+        """
+        requirements = reduce(lambda aggr, requirements_file: aggr | requirements_file.requirements,
+                              self.requirements_files, set())
+        Pip.install_requirements(*requirements)
