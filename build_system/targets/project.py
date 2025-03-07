@@ -11,7 +11,7 @@ from core.build_unit import BuildUnit
 from util.env import get_env, get_env_bool
 from util.files import FileSearch
 
-from targets.version_files import DevelopmentVersionFile, Version, VersionFile
+from targets.version_files import DevelopmentVersionFile, SemanticVersion, VersionFile
 
 
 class Project:
@@ -25,7 +25,7 @@ class Project:
     root_directory = '.'
 
     @staticmethod
-    def version(release: bool = False) -> Version:
+    def version(release: bool = False) -> SemanticVersion:
         """
         Returns the current version of the project.
 
