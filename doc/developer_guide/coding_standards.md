@@ -76,6 +76,29 @@ It is also possible to only run the tests for certain subprojects (see {ref}`pro
 ````
 `````
 
+`````{note}
+When using the build target `tests_python`, the environment variable `OVERWRITE_OUTPUT_FILES` may be utilized to overwrite the files in the directory {repo-dir}`python/tests/res/out/` with the actual output of the corresponding test cases:
+
+ ````{tab} Linux
+   ```text
+   OVERWRITE_OUTPUT_FILES=true ./build tests_python
+   ```
+````
+
+````{tab} macOS
+   ```text
+   OVERWRITE_OUTPUT_FILES=true ./build tests_python
+   ```
+````
+
+````{tab} Windows
+   ```text
+   $env:OVERWRITE_OUTPUT_FILES = "true"
+   build.bat tests_python
+   ```
+````
+`````
+
 ```{warning}
 Tests for the C++ code are only executed if the project has been compiled with testing support enabled. As described in the section {ref}`build-options`, testing support is enabled by default if the [GoogleTest](https://github.com/google/googletest) framework is available on the system.
 ```
