@@ -7,7 +7,10 @@ from dataclasses import dataclass, replace
 from functools import reduce
 from typing import Set
 
+from core.build_unit import BuildUnit
+from util.log import Log
 from util.pip import Package, Pip, RequirementsFile, RequirementVersion
+from util.version import Version
 
 
 @dataclass
@@ -38,17 +41,17 @@ class PipList(Pip):
     Allows to list installed Python packages via pip.
     """
 
-    class ListCommand(Pip.Command):
-        """
-        Allows to list information about installed packages via the command `pip list`.
-        """
-
-        def __init__(self, outdated: bool = False):
-            """
-            :param outdated: True, if only outdated packages should be listed, False otherwise
-            """
-            super().__init__('list')
-            self.add_conditional_arguments(outdated, '--outdated')
+    @staticmethod
+    def __query_latest_package_version(build_unit: BuildUnit, package: Package) -> Version:
+        Pip.for_build_unit(build_unit).install_packages('requests')
+        # pylint: disable=import-outside-toplevel
+        import requests
+        url = 'https://pypi.org/pypi/' + package.name + '/json'
+        Log.info('Querying latest version of package "' + str(package) + '" from ' + url)
+        response = requests.get(url, timeout=5)
+        latest_version = Version.parse(response.json()['info']['version'], skip_on_error=True)
+        Log.info('Latest version of package "' + str(package) + '" is ' + str(latest_version))
+        return latest_version
 
     def install_all_packages(self):
         """
@@ -58,76 +61,64 @@ class PipList(Pip):
                               self.requirements_files, set())
         Pip.install_requirements(*requirements)
 
-    def list_outdated_dependencies(self) -> Set[Dependency]:
+    def list_outdated_dependencies(self, build_unit: BuildUnit) -> Set[Dependency]:
         """
         Returns all outdated Python dependencies that are currently installed.
 
-        :return: A set that contains all outdated dependencies
+        :param build_unit:  The `BuildUnit` from which this function is invoked
+        :return:            A set that contains all outdated dependencies
         """
-        stdout = PipList.ListCommand(outdated=True).print_command(False).capture_output()
-        stdout_lines = stdout.strip().split('\n')
-        i = 0
-
-        for line in stdout_lines:
-            i += 1
-
-            if line.startswith('----'):
-                break
-
         outdated_dependencies = set()
+        version_cache = {}
 
-        for line in stdout_lines[i:]:
-            parts = line.split()
+        for requirements_file in self.requirements_files:
+            for requirement in requirements_file.requirements:
+                package = requirement.package
+                current_version = requirement.version
+                latest_version = version_cache.get(package)
 
-            if len(parts) < 3:
-                raise ValueError(
-                    'Output of command "pip list" is expected to be a table with at least three columns, but got:'
-                    + line)
+                if not latest_version:
+                    latest_version = self.__query_latest_package_version(build_unit, package)
+                    version_cache[package] = latest_version
 
-            package_name = parts[0]
-            looked_up_requirements = self.lookup_requirement(package_name, accept_missing=True)
-
-            for requirements_file, requirement in looked_up_requirements.items():
-                outdated_version = requirement.version
-
-                if outdated_version:
-                    latest_version = parts[2]
+                if Version.parse(current_version.min_version, skip_on_error=True) < latest_version:
                     outdated_dependencies.add(
                         Dependency(requirements_file=requirements_file,
-                                   package=Package(package_name),
-                                   outdated=outdated_version,
-                                   latest=RequirementVersion.parse(latest_version)))
+                                   package=package,
+                                   outdated=current_version,
+                                   latest=RequirementVersion(min_version=latest_version, max_version=latest_version)))
 
         return outdated_dependencies
 
-    def update_outdated_dependencies(self) -> Set[Dependency]:
+    def update_outdated_dependencies(self, build_unit: BuildUnit) -> Set[Dependency]:
         """
         Updates all outdated Python dependencies that are currently installed.
 
-        :return: A set that contains all dependencies that have been updated
+        :param build_unit:  The `BuildUnit` from which this function is invoked
+        :return:            A set that contains all dependencies that have been updated
         """
         updated_dependencies = set()
-        separator = '.'
 
-        for outdated_dependency in self.list_outdated_dependencies():
+        for outdated_dependency in self.list_outdated_dependencies(build_unit):
             latest_version = outdated_dependency.latest
-            latest_version_parts = [int(part) for part in latest_version.min_version.split(separator)]
+            latest_version_numbers = latest_version.min_version.numbers
             outdated_version = outdated_dependency.outdated
             updated_version = latest_version
 
             if outdated_version.is_range():
-                min_version_parts = [int(part) for part in outdated_version.min_version.split(separator)]
-                max_version_parts = [int(part) for part in outdated_version.max_version.split(separator)]
-                num_version_numbers = min(len(min_version_parts), len(max_version_parts), len(latest_version_parts))
+                min_version_numbers = list(Version.parse(outdated_version.min_version, skip_on_error=True).numbers)
+                max_version_numbers = list(Version.parse(outdated_version.max_version, skip_on_error=True).numbers)
+                num_version_numbers = min(len(min_version_numbers), len(max_version_numbers),
+                                          len(latest_version_numbers))
 
                 for i in range(num_version_numbers):
-                    min_version_parts[i] = latest_version_parts[i]
-                    max_version_parts[i] = latest_version_parts[i]
+                    min_version_numbers[i] = latest_version_numbers[i]
+                    max_version_numbers[i] = latest_version_numbers[i]
 
-                max_version_parts[num_version_numbers - 1] += 1
+                max_version_numbers[num_version_numbers - 1] += 1
                 updated_version = RequirementVersion(
-                    min_version=separator.join([str(part) for part in min_version_parts[:num_version_numbers]]),
-                    max_version=separator.join([str(part) for part in max_version_parts[:num_version_numbers]]))
+                    min_version=str(Version(tuple(min_version_numbers[:num_version_numbers]))),
+                    max_version=str(Version(tuple(max_version_numbers[:num_version_numbers]))))
 
             looked_up_requirements = self.lookup_requirement(outdated_dependency.package.name)
 
