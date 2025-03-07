@@ -14,7 +14,7 @@ from util.io import TextFile
 from util.log import Log
 
 from targets.project import Project
-from targets.version_files import Version
+from targets.version_files import SemanticVersion
 
 CHANGESET_FILE_MAIN = '.changelog-main.md'
 
@@ -217,7 +217,7 @@ class Release:
         release_type:   The type of the release
         changesets:     A list that stores the changesets
     """
-    version: Version
+    version: SemanticVersion
     release_date: date
     release_type: ReleaseType
     changesets: List[Changeset] = field(default_factory=list)
