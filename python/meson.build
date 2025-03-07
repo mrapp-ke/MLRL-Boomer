@@ -1,4 +1,4 @@
-project('mlrl-python', meson_version : '>=1.1', default_options : ['buildtype=release'])
+project('mlrl-python', meson_version : '>=1.1')
 
 subprojects = get_option('subprojects')
 
