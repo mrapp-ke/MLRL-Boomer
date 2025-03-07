@@ -21,7 +21,7 @@ class RoundRobinOutputSampling final : public IOutputSampling {
          */
         RoundRobinOutputSampling(uint32 numOutputs) : numOutputs_(numOutputs), indexVector_(1), nextIndex_(0) {}
 
-        const IIndexVector& sample(RNG& rng) override {
+        const IIndexVector& sample() override {
             indexVector_.begin()[0] = nextIndex_;
             nextIndex_++;
 

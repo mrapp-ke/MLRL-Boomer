@@ -26,6 +26,7 @@ class BoomerClassifier(ClassificationRuleLearner, ClassifierMixin):
                  output_format: Optional[str] = None,
                  prediction_format: Optional[str] = None,
                  statistic_format: Optional[str] = None,
+                 statistic_type: Optional[str] = None,
                  default_rule: Optional[str] = None,
                  rule_induction: Optional[str] = None,
                  max_rules: Optional[int] = None,
@@ -52,9 +53,12 @@ class BoomerClassifier(ClassificationRuleLearner, ClassifierMixin):
                  parallel_statistic_update: Optional[str] = None,
                  parallel_prediction: Optional[str] = None):
         """
-        :param statistic_format:                    The format to be used for representation of gradients and Hessians.
-                                                    Must be 'dense', 'sparse' or 'auto', if the most suitable format
-                                                    should be chosen automatically
+        :param random_state:                        The seed to be used by RNGs. Must be at least 1
+        :param statistic_format:                    The format to be used for representing gradients and Hessians. Must
+                                                    be 'dense', 'sparse' or 'auto', if the most suitable format should
+                                                    be chosen automatically
+        :param statistic_type:                      The data type to be used for representing gradients and Hessians.
+                                                    Must be '32-bit' or '64-bit'
         :param default_rule:                        Whether a default rule should be induced or not. Must be 'true',
                                                     'false' or 'auto', if it should be decided automatically whether a
                                                     default rule should be induced or not
@@ -144,8 +148,10 @@ class BoomerClassifier(ClassificationRuleLearner, ClassifierMixin):
                                                     parallel or not. Must be 'true' or 'false'. For additional options
                                                     refer to the documentation
         """
-        super().__init__(random_state, feature_format, output_format, prediction_format)
+        super().__init__(feature_format, output_format, prediction_format)
+        self.random_state = random_state
         self.statistic_format = statistic_format
+        self.statistic_type = statistic_type
         self.default_rule = default_rule
         self.rule_induction = rule_induction
         self.max_rules = max_rules
@@ -190,6 +196,7 @@ class BoomerRegressor(RegressionRuleLearner, RegressorMixin):
                  output_format: Optional[str] = None,
                  prediction_format: Optional[str] = None,
                  statistic_format: Optional[str] = None,
+                 statistic_type: Optional[str] = None,
                  default_rule: Optional[str] = None,
                  rule_induction: Optional[str] = None,
                  max_rules: Optional[int] = None,
@@ -211,9 +218,12 @@ class BoomerRegressor(RegressionRuleLearner, RegressorMixin):
                  parallel_statistic_update: Optional[str] = None,
                  parallel_prediction: Optional[str] = None):
         """
-        :param statistic_format:                The format to be used for representation of gradients and Hessians. Must
-                                                be 'dense', 'sparse' or 'auto', if the most suitable format should be
+        :param random_state:                    The seed to be used by RNGs. Must be at least 1
+        :param statistic_format:                The format to be used for representing gradients and Hessians. Must be
+                                                'dense', 'sparse' or 'auto', if the most suitable format should be
                                                 chosen automatically
+        :param statistic_type:                  The data type to be used for representing gradients and Hessians. Must
+                                                be '32-bit' or '64-bit'
         :param default_rule:                    Whether a default rule should be induced or not. Must be 'true', 'false'
                                                 or 'auto', if it should be decided automatically whether a default rule
                                                 should be induced or not
@@ -277,8 +287,10 @@ class BoomerRegressor(RegressionRuleLearner, RegressorMixin):
                                                 parallel or not. Must be 'true' or 'false'. For additional options refer
                                                 to the documentation
         """
-        super().__init__(random_state, feature_format, output_format, prediction_format)
+        super().__init__(feature_format, output_format, prediction_format)
+        self.random_state = random_state
         self.statistic_format = statistic_format
+        self.statistic_type = statistic_type
         self.default_rule = default_rule
         self.rule_induction = rule_induction
         self.max_rules = max_rules

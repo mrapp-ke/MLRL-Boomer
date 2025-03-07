@@ -5,7 +5,13 @@
 
 template<typename T>
 DenseWeightVector<T>::DenseWeightVector(uint32 numElements, bool init)
-    : DenseVectorDecorator<AllocatedVector<T>>(AllocatedVector<T>(numElements, init)), numNonZeroWeights_(0) {}
+    : ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<T>>>(AllocatedVector<T>(numElements, init)),
+      numNonZeroWeights_(0) {}
+
+template<typename T>
+void DenseWeightVector<T>::set(uint32 pos, DenseWeightVector<T>::weight_type weight) {
+    (*this)[pos] = weight;
+}
 
 template<typename T>
 uint32 DenseWeightVector<T>::getNumNonZeroWeights() const {
@@ -27,4 +33,5 @@ std::unique_ptr<IFeatureSubspace> DenseWeightVector<T>::createFeatureSubspace(IF
     return featureSpace.createSubspace(*this);
 }
 
-template class DenseWeightVector<uint32>;
+template class DenseWeightVector<uint16>;
+template class DenseWeightVector<float32>;
