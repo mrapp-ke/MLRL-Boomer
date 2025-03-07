@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 from typing import Any
 
 from ..common.cmd_builder import DATASET_ATP7D
-from ..common.decorators import skip_test_on_ci
 from ..common.integration_tests_regression import RegressionIntegrationTests
 from .cmd_builder import HEAD_TYPE_COMPLETE, HEAD_TYPE_PARTIAL_DYNAMIC, HEAD_TYPE_PARTIAL_FIXED, HEAD_TYPE_SINGLE, \
     LOSS_SQUARED_ERROR_DECOMPOSABLE, LOSS_SQUARED_ERROR_NON_DECOMPOSABLE
@@ -79,7 +78,6 @@ class BoomerRegressorIntegrationTests(RegressionIntegrationTests, BoomerIntegrat
             .print_model_characteristics()
         builder.run_cmd('non-decomposable-single-output-heads')
 
-    @skip_test_on_ci
     def test_non_decomposable_complete_heads(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules with complete
@@ -91,7 +89,6 @@ class BoomerRegressorIntegrationTests(RegressionIntegrationTests, BoomerIntegrat
             .print_model_characteristics()
         builder.run_cmd('non-decomposable-complete-heads')
 
-    @skip_test_on_ci
     def test_non_decomposable_partial_fixed_heads(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules that predict
@@ -103,7 +100,6 @@ class BoomerRegressorIntegrationTests(RegressionIntegrationTests, BoomerIntegrat
             .print_model_characteristics()
         builder.run_cmd('non-decomposable-partial-fixed-heads')
 
-    @skip_test_on_ci
     def test_non_decomposable_partial_dynamic_heads(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules that predict
