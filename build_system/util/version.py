@@ -37,15 +37,25 @@ class Version:
             raise ValueError('Version numbers must be non-negative integers, but got: ' + version_number) from error
 
     @staticmethod
-    def parse(version: str) -> 'Version':
+    def parse(version: str, skip_on_error: bool = False) -> 'Version':
         """
         Parses and returns a version from a given string.
 
-        :param version: The string to be parsed
-        :return:        The version that has been parsed
+        :param version:         The string to be parsed
+        :param skip_on_error:   True, if all remaining version numbers should be skipped if one of them could not be
+                                parsed, False if an error should be raised
+        :return:                The version that has been parsed
         """
-        numbers = tuple(Version.parse_version_number(part) for part in version.split('.'))
-        return Version(numbers)
+        numbers = []
+
+        for part in version.split('.'):
+            try:
+                numbers.append(Version.parse_version_number(part))
+            except ValueError as error:
+                if not skip_on_error:
+                    raise error
+
+        return Version(tuple(numbers))
 
     def __str__(self) -> str:
         return reduce(lambda aggr, number: aggr + ('.' if len(aggr) > 0 else '') + str(number), self.numbers, '')

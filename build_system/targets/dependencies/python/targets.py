@@ -48,14 +48,26 @@ class InstallPythonDependencies(PhonyTarget.Runnable):
         self._after_installation(build_unit, pip)
 
 
-class CheckPythonDependencies(InstallPythonDependencies):
+class CheckPythonDependencies(PhonyTarget.Runnable):
     """
     Installs all Python dependencies of a specific type and checks for outdated ones.
     """
 
-    def _after_installation(self, build_unit: BuildUnit, pip: PipList):
+    def __init__(self, dependency_type: Optional[DependencyType] = None):
+        """
+        :param dependency_type: The type of the Python dependencies to be installed or None, if all dependencies should
+                                be installed
+        """
+        super().__init__(PythonDependencyModule.Filter())
+        self.dependency_type = dependency_type
+
+    def run_all(self, build_unit: BuildUnit, modules: List[Module]):
         Log.info('Checking for outdated dependencies...')
-        outdated_dependencies = pip.list_outdated_dependencies()
+        requirements_files = reduce(
+            lambda aggr, module: aggr + module.find_requirements_files(build_unit, self.dependency_type), modules, [])
+        print(str(requirements_files))
+        pip = PipList(*requirements_files)
+        outdated_dependencies = pip.list_outdated_dependencies(build_unit)
 
         if outdated_dependencies:
             table = Table(build_unit, 'Dependency', 'Declaring file', 'Current version', 'Latest version')
@@ -70,14 +82,25 @@ class CheckPythonDependencies(InstallPythonDependencies):
             Log.info('All dependencies are up-to-date!')
 
 
-class UpdatePythonDependencies(InstallPythonDependencies):
+class UpdatePythonDependencies(PhonyTarget.Runnable):
     """
     Installs all Python dependencies of a specific type and updates outdated ones.
     """
 
-    def _after_installation(self, build_unit: BuildUnit, pip: PipList):
+    def __init__(self, dependency_type: Optional[DependencyType] = None):
+        """
+        :param dependency_type: The type of the Python dependencies to be installed or None, if all dependencies should
+                                be installed
+        """
+        super().__init__(PythonDependencyModule.Filter())
+        self.dependency_type = dependency_type
+
+    def run_all(self, build_unit: BuildUnit, modules: List[Module]):
         Log.info('Updating outdated dependencies...')
-        updated_dependencies = pip.update_outdated_dependencies()
+        requirements_files = reduce(
+            lambda aggr, module: aggr + module.find_requirements_files(build_unit, self.dependency_type), modules, [])
+        pip = PipList(*requirements_files)
+        updated_dependencies = pip.update_outdated_dependencies(build_unit)
 
         if updated_dependencies:
             table = Table(build_unit, 'Dependency', 'Declaring file', 'Previous version', 'Updated version')
