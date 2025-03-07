@@ -6,7 +6,6 @@ from typing import Any
 from ..common.cmd_builder import DATASET_EMOTIONS
 from ..common.cmd_builder_classification import HOLDOUT_STRATIFIED_EXAMPLE_WISE, HOLDOUT_STRATIFIED_OUTPUT_WISE, \
     PREDICTION_TYPE_PROBABILITIES, PREDICTION_TYPE_SCORES
-from ..common.decorators import skip_test_on_ci
 from ..common.integration_tests_classification import ClassificationIntegrationTests
 from .cmd_builder import GLOBAL_PRUNING_POST, GLOBAL_PRUNING_PRE, HEAD_TYPE_COMPLETE, HEAD_TYPE_PARTIAL_DYNAMIC, \
     HEAD_TYPE_PARTIAL_FIXED, HEAD_TYPE_SINGLE
@@ -57,7 +56,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .loss(LOSS_LOGISTIC_DECOMPOSABLE)
         builder.run_cmd('loss-logistic-decomposable')
 
-    @skip_test_on_ci
     def test_loss_logistic_non_decomposable(self):
         """
         Tests the BOOMER algorithm when using the non-decomposable logistic loss function.
@@ -74,7 +72,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .loss(LOSS_SQUARED_HINGE_DECOMPOSABLE)
         builder.run_cmd('loss-squared-hinge-decomposable')
 
-    @skip_test_on_ci
     def test_loss_squared_hinge_non_decomposable(self):
         """
         Tests the BOOMER algorithm when using the non-decomposable squared hinge loss function.
@@ -550,7 +547,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .print_model_characteristics()
         builder.run_cmd('non-decomposable-single-output-heads')
 
-    @skip_test_on_ci
     def test_non_decomposable_complete_heads(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules with complete
@@ -563,7 +559,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .print_model_characteristics()
         builder.run_cmd('non-decomposable-complete-heads')
 
-    @skip_test_on_ci
     def test_non_decomposable_complete_heads_equal_width_label_binning(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function and equal-width label binning for the
@@ -576,7 +571,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .print_model_characteristics()
         builder.run_cmd('non-decomposable-complete-heads_equal-width-label-binning')
 
-    @skip_test_on_ci
     def test_non_decomposable_partial_fixed_heads(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules that predict
@@ -589,7 +583,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .print_model_characteristics()
         builder.run_cmd('non-decomposable-partial-fixed-heads')
 
-    @skip_test_on_ci
     def test_non_decomposable_partial_fixed_heads_equal_width_label_binning(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function and equal-width label binning for the
@@ -602,7 +595,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .print_model_characteristics()
         builder.run_cmd('non-decomposable-partial-fixed-heads_equal-width-label-binning')
 
-    @skip_test_on_ci
     def test_non_decomposable_partial_dynamic_heads(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules that predict
@@ -615,7 +607,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .print_model_characteristics()
         builder.run_cmd('non-decomposable-partial-dynamic-heads')
 
-    @skip_test_on_ci
     def test_non_decomposable_partial_dynamic_heads_equal_width_label_binning(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function and equal-width label binning for the
