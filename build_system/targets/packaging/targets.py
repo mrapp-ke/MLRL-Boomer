@@ -12,12 +12,11 @@ from core.modules import Module
 from core.targets import BuildTarget
 from util.files import DirectorySearch, FileType
 from util.log import Log
-from util.pip import Package, Requirement, RequirementsTextFile, RequirementVersion
+from util.pip import Package, Pip, Requirement, RequirementsTextFile, RequirementVersion
 from util.toml_file import TomlFile
 
 from targets.packaging.build import Build
 from targets.packaging.modules import PythonPackageModule
-from targets.packaging.pip import PipInstallWheel
 from targets.packaging.version_files import PythonVersionFile
 from targets.project import Project
 
@@ -138,12 +137,36 @@ class InstallPythonWheels(BuildTarget.Runnable):
     Installs Python wheel packages.
     """
 
+    class InstallWheelCommand(Pip.Command):
+        """
+        Allows to install wheel packages via the command `pip install`.
+        """
+
+        def __init__(self, *wheels: str):
+            """
+            :param wheels: The paths to the wheel packages to be installed
+            """
+            super().__init__('install', '--force-reinstall', '--no-deps', *wheels)
+            self.print_arguments(True)
+
+    class UninstallCommand(Pip.Command):
+        """
+        Allows to uninstall packages via the command `pip uninstall`.
+        """
+
+        def __init__(self, *package_names: str):
+            """
+            :param package_names: The names of the packages to be uninstalled
+            """
+            super().__init__('uninstall', '--yes', *package_names)
+            self.print_arguments(True)
+
     def __init__(self):
         super().__init__(MODULE_FILTER)
 
     def run(self, _: BuildUnit, module: Module):
         Log.info('Installing Python wheels for directory "%s"...', module.root_directory)
-        PipInstallWheel().install_wheels(module.find_wheel())
+        InstallPythonWheels.InstallWheelCommand(module.find_wheel()).run()
 
     def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
         wheel = module.find_wheel()
@@ -153,5 +176,5 @@ class InstallPythonWheels(BuildTarget.Runnable):
         Log.info('Uninstalling Python packages for directory "%s"...', module.root_directory)
         pyproject_toml_file = TomlFile(build_unit, module.pyproject_toml_template_file)
         package_name = pyproject_toml_file.toml_dict['project']['name']
-        PipInstallWheel().uninstall_packages(package_name)
+        InstallPythonWheels.UninstallCommand(package_name).run()
         return super().get_clean_files(build_unit, module)
