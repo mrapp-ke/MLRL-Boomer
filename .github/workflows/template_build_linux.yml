@@ -12,6 +12,8 @@ on:
       run_python_tests:
         required: false
         type: boolean
+permissions:
+  contents: write
 env:
   SUBPROJECTS: ${{ inputs.subproject }}
 jobs:
@@ -25,8 +27,19 @@ jobs:
           - ubuntu-24.04
           - ubuntu-24.04-arm
     steps:
+      - name: Generate token
+        if: ${{ matrix.os == 'ubuntu-24.04' && inputs.run_python_tests == true }}
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.TOKEN_APP_ID }}
+          private-key: ${{ secrets.TOKEN_APP_SECRET }}
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+      - name: Setup git
+        uses: fregante/setup-git-user@v2
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -54,7 +67,23 @@ jobs:
           if-no-files-found: ignore
       - name: Test Python code
         if: ${{ matrix.os == 'ubuntu-24.04' && inputs.run_python_tests == true }}
-        run: ./build tests_python
+        run: OVERWRITE_OUTPUT_FILES=true ./build tests_python
+      - name: Git status
+        if: ${{ matrix.os == 'ubuntu-24.04' && inputs.run_python_tests == true }}
+        run: git status
+      - name: Submit pull request
+        if: ${{ matrix.os == 'ubuntu-24.04' && inputs.run_python_tests == true }}
+        id: pull-request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          commit-message: Adjust expected output of integration tests.
+          branch: adjust-expected-test-output
+          title: Adjust expected output of integration tests
+          labels: bot
+          base: run-all-tests-on-ci
+          add-paths: |
+            python/tests/res/out/**/*
       - name: Upload Python test results as artifacts
         if: ${{ !cancelled() && matrix.os == 'ubuntu-24.04' && inputs.run_python_tests == true }}
         uses: actions/upload-artifact@v4

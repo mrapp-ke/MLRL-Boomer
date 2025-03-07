@@ -143,6 +143,7 @@ jobs:
       compile: ${{ needs.changes.outputs[format('cpp_{0}', matrix.subproject)] == 'true' }}
       run_cpp_tests: ${{ needs.changes.outputs[format('cpp_tests_{0}', matrix.subproject)] == 'true' }}
       run_python_tests: ${{ needs.changes.outputs[format('python_tests_{0}', matrix.subproject)] == 'true' }}
+    secrets: inherit
   publish_test_results:
     needs: test_build
     if: always()
