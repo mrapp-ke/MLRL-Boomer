@@ -7,12 +7,12 @@ import subprocess
 
 from abc import ABC, abstractmethod
 from functools import reduce
-from os import makedirs, path
+from os import environ, makedirs, path
 from typing import List, Optional
 
 from mlrl.testbed.io import ENCODING_UTF8
 
-OVERWRITE_EXPECTED_OUTPUT_FILES = False
+ENV_OVERWRITE_OUTPUT_FILES = 'OVERWRITE_OUTPUT_FILES'
 
 DIR_RES = path.join('python', 'tests', 'res')
 
@@ -357,6 +357,17 @@ class CmdBuilder:
         self.__assert_model_characteristic_files_exist()
         self.__assert_rule_files_exist()
 
+    @staticmethod
+    def __should_overwrite_output_files() -> bool:
+        value = environ.get(ENV_OVERWRITE_OUTPUT_FILES, 'false').strip().lower()
+
+        if value == 'true':
+            return True
+        if value == 'false':
+            return False
+        raise ValueError('Value of environment variable "' + ENV_OVERWRITE_OUTPUT_FILES + '" must be "true" or '
+                         + '"false", but is "' + value + '"')
+
     def run_cmd(self, expected_output_file_name: str = None):
         """
         Runs a command that has been configured via the builder.
@@ -371,21 +382,23 @@ class CmdBuilder:
         if self.model_dir is not None:
             out = self.__run_cmd()
 
+        overwrite_output_files = self.__should_overwrite_output_files()
+
         if expected_output_file_name is not None:
             stdout = str(out.stdout).splitlines()
             expected_output_dir = self.expected_output_dir
 
-            if OVERWRITE_EXPECTED_OUTPUT_FILES:
+            if overwrite_output_files:
                 makedirs(expected_output_dir, exist_ok=True)
 
             expected_output_file = path.join(expected_output_dir, expected_output_file_name + '.txt')
 
-            if OVERWRITE_EXPECTED_OUTPUT_FILES:
+            if overwrite_output_files:
                 self.__overwrite_output_file(stdout, expected_output_file)
             else:
                 self.__assert_output_files_are_equal(stdout, expected_output_file)
 
-        if not OVERWRITE_EXPECTED_OUTPUT_FILES:
+        if not overwrite_output_files:
             self._validate_output_files()
 
         self.__remove_tmp_dirs()
