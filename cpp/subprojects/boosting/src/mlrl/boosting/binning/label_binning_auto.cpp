@@ -32,24 +32,26 @@ namespace boosting {
     }
 
     std::unique_ptr<INonDecomposableRuleEvaluationFactory>
-      AutomaticLabelBinningConfig::createNonDecomposableCompleteRuleEvaluationFactory(const Blas& blas,
-                                                                                      const Lapack& lapack) const {
+      AutomaticLabelBinningConfig::createNonDecomposableCompleteRuleEvaluationFactory(
+        const BlasFactory& blasFactory, const LapackFactory& lapackFactory) const {
         return EqualWidthLabelBinningConfig(l1RegularizationConfig_, l2RegularizationConfig_)
-          .createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
+          .createNonDecomposableCompleteRuleEvaluationFactory(blasFactory, lapackFactory);
     }
 
     std::unique_ptr<INonDecomposableRuleEvaluationFactory>
       AutomaticLabelBinningConfig::createNonDecomposableFixedPartialRuleEvaluationFactory(
-        float32 outputRatio, uint32 minOutputs, uint32 maxOutputs, const Blas& blas, const Lapack& lapack) const {
+        float32 outputRatio, uint32 minOutputs, uint32 maxOutputs, const BlasFactory& blasFactory,
+        const LapackFactory& lapackFactory) const {
         return EqualWidthLabelBinningConfig(l1RegularizationConfig_, l2RegularizationConfig_)
-          .createNonDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs, maxOutputs, blas, lapack);
+          .createNonDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs, maxOutputs, blasFactory,
+                                                                  lapackFactory);
     }
 
     std::unique_ptr<INonDecomposableRuleEvaluationFactory>
       AutomaticLabelBinningConfig::createNonDecomposableDynamicPartialRuleEvaluationFactory(
-        float32 threshold, float32 exponent, const Blas& blas, const Lapack& lapack) const {
+        float32 threshold, float32 exponent, const BlasFactory& blasFactory, const LapackFactory& lapackFactory) const {
         return EqualWidthLabelBinningConfig(l1RegularizationConfig_, l2RegularizationConfig_)
-          .createNonDecomposableDynamicPartialRuleEvaluationFactory(threshold, exponent, blas, lapack);
+          .createNonDecomposableDynamicPartialRuleEvaluationFactory(threshold, exponent, blasFactory, lapackFactory);
     }
 
 }

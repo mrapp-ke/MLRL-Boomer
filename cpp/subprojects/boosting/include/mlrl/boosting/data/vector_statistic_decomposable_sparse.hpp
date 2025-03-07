@@ -3,8 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/triple.hpp"
-#include "mlrl/common/data/tuple.hpp"
+#include "mlrl/boosting/data/statistic.hpp"
 #include "mlrl/common/data/view_matrix_sparse_set.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
@@ -12,12 +11,110 @@
 namespace boosting {
 
     /**
-     * An one-dimensional vector that stores aggregated gradients and Hessians that have been calculated using a
-     * decomposable loss function in a C-contiguous array. For each element in the vector a single gradient and Hessian,
-     * as well as the sums of the weights of the aggregated gradients and Hessians, is stored.
+     * An individual label space statistic that consists of a gradient, a Hessian and a weight.
+     *
+     * @tparam StatisticType    The type of the gradient and Hessian
+     * @tparam WeightType       The type of the weight
      */
+    template<typename StatisticType, typename WeightType>
+    struct SparseStatistic final {
+        public:
+
+            SparseStatistic() {}
+
+            /**
+             * @param gradient  The gradient
+             * @param hessian   The Hessian
+             * @param weight    The weight
+             */
+            SparseStatistic(StatisticType gradient, StatisticType hessian, WeightType weight)
+                : gradient(gradient), hessian(hessian), weight(weight) {}
+
+            /**
+             * The gradient.
+             */
+            StatisticType gradient;
+
+            /**
+             * The Hessian.
+             */
+            StatisticType hessian;
+
+            /**
+             * The weight.
+             */
+            WeightType weight;
+
+            /**
+             * Adds the gradient, Hessian and weight of a given statistic to the gradient, Hessian and weight of this
+             * statistic,
+             *
+             * @param rhs   A reference to the statistic, whose gradient, Hessian and weight should be added
+             * @return      A reference to the modified statistic
+             */
+            SparseStatistic<StatisticType, WeightType>& operator+=(
+              const SparseStatistic<StatisticType, WeightType>& rhs) {
+                gradient += rhs.gradient;
+                hessian += rhs.hessian;
+                weight += rhs.weight;
+                return *this;
+            }
+
+            /**
+             * Creates and returns a new statistic that results from adding the gradient, Hessian and weight of a
+             * specific statistic to the gradient, Hessian and weight of an existing statistic.
+             *
+             * @param lhs   The original statistic
+             * @param rhs   A reference to the statistic, whose gradient, Hessian and weight should be added
+             * @return      The statistic that has been created
+             */
+            friend SparseStatistic<StatisticType, WeightType> operator+(
+              SparseStatistic<StatisticType, WeightType> lhs, const SparseStatistic<StatisticType, WeightType>& rhs) {
+                lhs += rhs;
+                return lhs;
+            }
+
+            /**
+             * Subtracts the gradient, Hessian and weight of a given statistic from the gradient, Hessian and weight of
+             * this statistic.
+             *
+             * @param rhs   A reference to the statistic, whose gradient, Hessian and weight should be subtracted
+             * @return      A reference to the modified statistic
+             */
+            SparseStatistic<StatisticType, WeightType>& operator-=(
+              const SparseStatistic<StatisticType, WeightType>& rhs) {
+                gradient -= rhs.gradient;
+                hessian -= rhs.hessian;
+                weight -= rhs.weight;
+                return *this;
+            }
+
+            /**
+             * Creates and returns a new statistic that results from subtracting the gradient, Hessian and weight of a
+             * specific statistic from the gradient, Hessian and weight of an existing statistic.
+             *
+             * @param lhs   The original statistic
+             * @param rhs   A reference to the value to be subtracted
+             * @return      The statistic that has been created
+             */
+            friend SparseStatistic<StatisticType, WeightType> operator-(
+              SparseStatistic<StatisticType, WeightType> lhs, const SparseStatistic<StatisticType, WeightType>& rhs) {
+                lhs -= rhs;
+                return lhs;
+            }
+    };
+
+    /**
+     * An one-dimensional vector that stores aggregated gradients and Hessians that have been calculated using a
+     * decomposable loss function in a C-contiguous array. For each element in the vector, a single gradient and
+     * Hessian, as well as the sums of the weights of the aggregated gradients and Hessians, is stored.
+     *
+     * @param StatisticType The type of the gradients and Hessians
+     * @tparam WeightType   The type of the weights
+     */
+    template<typename StatisticType, typename WeightType>
     class SparseDecomposableStatisticVector final
-        : public ClearableViewDecorator<VectorDecorator<AllocatedVector<Triple<float64>>>> {
+        : public VectorDecorator<AllocatedVector<SparseStatistic<StatisticType, WeightType>>> {
         private:
 
             /**
@@ -27,9 +124,9 @@ namespace boosting {
             class ConstIterator final {
                 private:
 
-                    View<Triple<float64>>::const_iterator iterator_;
+                    typename View<SparseStatistic<StatisticType, WeightType>>::const_iterator iterator_;
 
-                    const float64 sumOfWeights_;
+                    const WeightType sumOfWeights_;
 
                 public:
 
@@ -38,7 +135,8 @@ namespace boosting {
                      *                      `SparseDecomposableStatisticVector`
                      * @param sumOfWeights  The sum of the weights of all statistics that have been added to the vector
                      */
-                    ConstIterator(View<Triple<float64>>::const_iterator iterator, float64 sumOfWeights);
+                    ConstIterator(typename View<SparseStatistic<StatisticType, WeightType>>::const_iterator iterator,
+                                  WeightType sumOfWeights);
 
                     /**
                      * The type that is used to represent the difference between two iterators.
@@ -48,17 +146,17 @@ namespace boosting {
                     /**
                      * The type of the elements, the iterator provides access to.
                      */
-                    typedef const Tuple<float64> value_type;
+                    typedef const Statistic<StatisticType> value_type;
 
                     /**
                      * The type of a pointer to an element, the iterator provides access to.
                      */
-                    typedef const Tuple<float64>* pointer;
+                    typedef const Statistic<StatisticType>* pointer;
 
                     /**
                      * The type of a reference to an element, the iterator provides access to.
                      */
-                    typedef const Tuple<float64>& reference;
+                    typedef const Statistic<float64>& reference;
 
                     /**
                      * The tag that specifies the capabilities of the iterator.
@@ -133,7 +231,7 @@ namespace boosting {
                     difference_type operator-(const ConstIterator& rhs) const;
             };
 
-            float64 sumOfWeights_;
+            WeightType sumOfWeights_;
 
         public:
 
@@ -147,7 +245,13 @@ namespace boosting {
             /**
              * @param other A reference to an object of type `SparseDecomposableStatisticVector` to be copied
              */
-            SparseDecomposableStatisticVector(const SparseDecomposableStatisticVector& other);
+            SparseDecomposableStatisticVector(
+              const SparseDecomposableStatisticVector<StatisticType, WeightType>& other);
+
+            /**
+             * The type of the gradients and Hessians.
+             */
+            typedef StatisticType statistic_type;
 
             /**
              * An iterator that provides read-only access to the elements in the vector.
@@ -174,7 +278,7 @@ namespace boosting {
              * @param vector A reference to an object of type `SparseDecomposableStatisticVector` that stores the
              *               gradients and Hessians to be added to this vector
              */
-            void add(const SparseDecomposableStatisticVector& vector);
+            void add(const SparseDecomposableStatisticVector<StatisticType, WeightType>& vector);
 
             /**
              * Adds all gradients and Hessians in a single row of a `SparseSetView` to this vector.
@@ -183,7 +287,7 @@ namespace boosting {
              *              be added to this vector
              * @param row   The index of the row to be added to this vector
              */
-            void add(const SparseSetView<Tuple<float64>>& view, uint32 row);
+            void add(const SparseSetView<Statistic<StatisticType>>& view, uint32 row);
 
             /**
              * Adds all gradients and Hessians in a single row of a `SparseSetView` to this vector. The gradients and
@@ -194,7 +298,7 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void add(const SparseSetView<Tuple<float64>>& view, uint32 row, float64 weight);
+            void add(const SparseSetView<Statistic<StatisticType>>& view, uint32 row, WeightType weight);
 
             /**
              * Removes all gradients and Hessians in a single row of a `SparseSetView` from this vector.
@@ -203,7 +307,7 @@ namespace boosting {
              *              be removed from this vector
              * @param row   The index of the row to be removed from this vector
              */
-            void remove(const SparseSetView<Tuple<float64>>& view, uint32 row);
+            void remove(const SparseSetView<Statistic<StatisticType>>& view, uint32 row);
 
             /**
              * Removes all gradients and Hessians in a single row of a `SparseSetView` from this vector. The gradients
@@ -214,7 +318,7 @@ namespace boosting {
              * @param row       The index of the row to be removed from this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void remove(const SparseSetView<Tuple<float64>>& view, uint32 row, float64 weight);
+            void remove(const SparseSetView<Statistic<StatisticType>>& view, uint32 row, WeightType weight);
 
             /**
              * Adds certain gradients and Hessians in a single row of a `SparseSetView`, whose positions are given as a
@@ -225,7 +329,8 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
              */
-            void addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row, const CompleteIndexVector& indices);
+            void addToSubset(const SparseSetView<Statistic<StatisticType>>& view, uint32 row,
+                             const CompleteIndexVector& indices);
 
             /**
              * Adds certain gradients and Hessians in a single row of a `SparseSetView`, whose positions are given as a
@@ -236,7 +341,8 @@ namespace boosting {
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
              */
-            void addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row, const PartialIndexVector& indices);
+            void addToSubset(const SparseSetView<Statistic<StatisticType>>& view, uint32 row,
+                             const PartialIndexVector& indices);
 
             /**
              * Adds certain gradients and Hessians in a single row of a `SparseSetView`, whose positions are given as a
@@ -249,8 +355,8 @@ namespace boosting {
              * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row, const CompleteIndexVector& indices,
-                             float64 weight);
+            void addToSubset(const SparseSetView<Statistic<StatisticType>>& view, uint32 row,
+                             const CompleteIndexVector& indices, WeightType weight);
 
             /**
              * Adds certain gradients and Hessians in a single row of a `SparsesetView`, whose positions are given as a
@@ -263,8 +369,8 @@ namespace boosting {
              * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row, const PartialIndexVector& indices,
-                             float64 weight);
+            void addToSubset(const SparseSetView<Statistic<StatisticType>>& view, uint32 row,
+                             const PartialIndexVector& indices, WeightType weight);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
@@ -278,8 +384,9 @@ namespace boosting {
              * @param second        A reference to an object of type `SparseDecomposableStatisticVector` that stores the
              *                      gradients and Hessians in the second vector
              */
-            void difference(const SparseDecomposableStatisticVector& first, const CompleteIndexVector& firstIndices,
-                            const SparseDecomposableStatisticVector& second);
+            void difference(const SparseDecomposableStatisticVector<StatisticType, WeightType>& first,
+                            const CompleteIndexVector& firstIndices,
+                            const SparseDecomposableStatisticVector<StatisticType, WeightType>& second);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
@@ -293,106 +400,14 @@ namespace boosting {
              * @param second        A reference to an object of type `SparseDecomposableStatisticVector` that stores the
              *                      gradients and Hessians in the second vector
              */
-            void difference(const SparseDecomposableStatisticVector& first, const PartialIndexVector& firstIndices,
-                            const SparseDecomposableStatisticVector& second);
+            void difference(const SparseDecomposableStatisticVector<StatisticType, WeightType>& first,
+                            const PartialIndexVector& firstIndices,
+                            const SparseDecomposableStatisticVector<StatisticType, WeightType>& second);
 
             /**
-             * @see `ClearableViewDecorator::clear`
+             * Sets all gradients and Hessians stored in this vector to zero.
              */
-            void clear() override;
+            void clear();
     };
-
-    /**
-     * Adds the statistics that are stored in a single row of a `SparseSetView` to a sparse vector.
-     *
-     * @param statistics    An iterator, the statistics should be added to
-     * @param begin         An iterator to the beginning of the statistics to be added
-     * @param end           An iterator to the end of the statistics to be added
-     */
-    static inline void addToSparseDecomposableStatisticVector(View<Triple<float64>>::iterator statistics,
-                                                              SparseSetView<Tuple<float64>>::value_const_iterator begin,
-                                                              SparseSetView<Tuple<float64>>::value_const_iterator end) {
-        uint32 numElements = end - begin;
-
-        for (uint32 i = 0; i < numElements; i++) {
-            const IndexedValue<Tuple<float64>>& entry = begin[i];
-            const Tuple<float64>& tuple = entry.value;
-            Triple<float64>& triple = statistics[entry.index];
-            triple.first += tuple.first;
-            triple.second += tuple.second;
-            triple.third += 1;
-        }
-    }
-
-    /**
-     * Adds the statistics that are stored in a single row of a `SparseSetView` to a sparse vector. The statistics are
-     * multiplied by a specific weight.
-     *
-     * @param statistics    An iterator, the statistics should be added to
-     * @param begin         An iterator to the beginning of the statistics to be added
-     * @param end           An iterator to the end of the statistics to be added
-     * @param weight        The weight, the statistics should be multiplied by
-     */
-    static inline void addToSparseDecomposableStatisticVector(View<Triple<float64>>::iterator statistics,
-                                                              SparseSetView<Tuple<float64>>::value_const_iterator begin,
-                                                              SparseSetView<Tuple<float64>>::value_const_iterator end,
-                                                              float64 weight) {
-        uint32 numElements = end - begin;
-
-        for (uint32 i = 0; i < numElements; i++) {
-            const IndexedValue<Tuple<float64>>& entry = begin[i];
-            const Tuple<float64>& tuple = entry.value;
-            Triple<float64>& triple = statistics[entry.index];
-            triple.first += (tuple.first * weight);
-            triple.second += (tuple.second * weight);
-            triple.third += weight;
-        }
-    }
-
-    /**
-     * Removes the statistics that are stored in a single row of a `SparseSetView` from a sparse vector.
-     *
-     * @param statistics    An iterator, the statistics should be removed from
-     * @param begin         An iterator to the beginning of the statistics to be removed
-     * @param end           An iterator to the end of the statistics to be removed
-     */
-    static inline void removeFromSparseDecomposableStatisticVector(
-      View<Triple<float64>>::iterator statistics, SparseSetView<Tuple<float64>>::value_const_iterator begin,
-      SparseSetView<Tuple<float64>>::value_const_iterator end) {
-        uint32 numElements = end - begin;
-
-        for (uint32 i = 0; i < numElements; i++) {
-            const IndexedValue<Tuple<float64>>& entry = begin[i];
-            const Tuple<float64>& tuple = entry.value;
-            Triple<float64>& triple = statistics[entry.index];
-            triple.first -= tuple.first;
-            triple.second -= tuple.second;
-            triple.third -= 1;
-        }
-    }
-
-    /**
-     * Removes the statistics that are stored in a single row of a `SparseSetView` from a sparse vector. The statistics
-     * are multiplied by a specific weight.
-     *
-     * @param statistics    An iterator, the statistics should be removed from
-     * @param begin         An iterator to the beginning of the statistics to be removed
-     * @param end           An iterator to the end of the statistics to be removed
-     * @param weight        The weight, the statistics should be multiplied by
-     */
-    static inline void removeFromSparseDecomposableStatisticVector(
-      View<Triple<float64>>::iterator statistics, SparseSetView<Tuple<float64>>::value_const_iterator begin,
-      SparseSetView<Tuple<float64>>::value_const_iterator end, float64 weight) {
-        uint32 numElements = end - begin;
-
-        for (uint32 i = 0; i < numElements; i++) {
-            const IndexedValue<Tuple<float64>>& entry = begin[i];
-            const Tuple<float64>& tuple = entry.value;
-            Triple<float64>& triple = statistics[entry.index];
-            triple.first -= (tuple.first * weight);
-            triple.second -= (tuple.second * weight);
-            triple.third -= weight;
-        }
-    }
 
 }
