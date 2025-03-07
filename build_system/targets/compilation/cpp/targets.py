@@ -20,7 +20,7 @@ MODULE_FILTER = CompilationModule.Filter(FileType.cpp())
 
 BUILD_OPTIONS = BuildOptions() \
         .add(EnvBuildOption(name=SubprojectModule.ENV_SUBPROJECTS.lower())) \
-        .add(EnvBuildOption(name='buildtype')) \
+        .add(EnvBuildOption(name='buildtype', default_value='release')) \
         .add(EnvBuildOption(name='test_support', subpackage='common')) \
         .add(EnvBuildOption(name='multi_threading_support', subpackage='common')) \
         .add(EnvBuildOption(name='gpu_support', subpackage='common'))

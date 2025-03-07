@@ -20,7 +20,7 @@ MODULE_FILTER = CompilationModule.Filter(FileType.cython())
 
 BUILD_OPTIONS = BuildOptions() \
         .add(EnvBuildOption(name=SubprojectModule.ENV_SUBPROJECTS.lower())) \
-        .add(EnvBuildOption(name='buildtype'))
+        .add(EnvBuildOption(name='buildtype', default_value='release'))
 
 
 class SetupCython(BuildTarget.Runnable):
