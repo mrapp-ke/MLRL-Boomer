@@ -10,6 +10,7 @@ from core.build_unit import BuildUnit
 from core.modules import Module
 from core.targets import PhonyTarget
 from util.log import Log
+from util.pip import Pip
 
 from targets.dependencies.python.modules import DependencyType, PythonDependencyModule
 from targets.dependencies.python.pip import PipList
@@ -29,23 +30,14 @@ class InstallPythonDependencies(PhonyTarget.Runnable):
         super().__init__(PythonDependencyModule.Filter())
         self.dependency_type = dependency_type
 
-    def _after_installation(self, build_unit: BuildUnit, pip: PipList):
-        """
-        May be overridden by subclasses in order to perform some operations after the packages have been installed.
-
-        :param build_unit:  The build unit, the packages have been installed from
-        :param pip:         An object of type `PipList` that has been used for installing the packages
-        """
-
     def run_all(self, build_unit: BuildUnit, modules: List[Module]):
         requirements_files = reduce(
             lambda aggr, module: aggr + module.find_requirements_files(build_unit, self.dependency_type), modules, [])
-        pip = PipList(*requirements_files)
+        pip = Pip(*requirements_files)
         Log.info('Installing %s dependencies...',
                  ('all build-time' if self.dependency_type == DependencyType.BUILD_TIME else 'all runtime')
                  if self.dependency_type else 'all')
         pip.install_all_packages()
-        self._after_installation(build_unit, pip)
 
 
 class CheckPythonDependencies(PhonyTarget.Runnable):
