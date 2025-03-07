@@ -15,10 +15,10 @@ class BuildOption(ABC):
     An abstract base class for all build options.
     """
 
-    def __init__(self, name: str, subpackage: Optional[str]):
+    def __init__(self, name: str, subpackage: Optional[str] = None):
         """
-        name:       The name of the build option
-        subpackage: The subpackage, the build option corresponds to, or None, if it is a global option
+        :param name:        The name of the build option
+        :param subpackage:  The subpackage, the build option corresponds to, or None, if it is a global option
         """
         self.name = name
         self.subpackage = subpackage
@@ -54,12 +54,18 @@ class EnvBuildOption(BuildOption):
     A build option, whose value is obtained from an environment variable.
     """
 
-    def __init__(self, name: str, subpackage: Optional[str] = None):
+    def __init__(self, name: str, default_value: Optional[str] = None, subpackage: Optional[str] = None):
+        """
+        :param name:            The name of the build option
+        :param default_value:   An optional default value
+        :param subpackage:      The subpackage, the build option corresponds to, or None, if it is a global option
+        """
         super().__init__(name, subpackage)
+        self.default_value = default_value
 
     @property
     def value(self) -> Optional[str]:
-        value = get_env(environ, self.name.upper(), None)
+        value = get_env(environ, self.name.upper(), self.default_value)
 
         if value:
             value = value.strip()
