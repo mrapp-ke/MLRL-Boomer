@@ -6,7 +6,7 @@ from typing import Any
 from ..common.cmd_builder import DATASET_EMOTIONS
 from ..common.cmd_builder_classification import HOLDOUT_STRATIFIED_EXAMPLE_WISE, HOLDOUT_STRATIFIED_OUTPUT_WISE, \
     PREDICTION_TYPE_PROBABILITIES, PREDICTION_TYPE_SCORES
-from ..common.decorators import skip_test_on_ci
+from ..common.decorators import only_on_ci
 from ..common.integration_tests_classification import ClassificationIntegrationTests
 from .cmd_builder import GLOBAL_PRUNING_POST, GLOBAL_PRUNING_PRE, HEAD_TYPE_COMPLETE, HEAD_TYPE_PARTIAL_DYNAMIC, \
     HEAD_TYPE_PARTIAL_FIXED, HEAD_TYPE_SINGLE, STATISTIC_TYPE_FLOAT32, STATISTIC_TYPE_FLOAT64
@@ -67,7 +67,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .statistic_type(STATISTIC_TYPE_FLOAT64)
         builder.run_cmd('loss-logistic-decomposable_64-bit-statistics')
 
-    @skip_test_on_ci
+    @only_on_ci
     def test_loss_logistic_non_decomposable_32bit_statistics(self):
         """
         Tests the BOOMER algorithm when using the non-decomposable logistic loss function and 32-bit statistics.
@@ -77,7 +77,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .statistic_type(STATISTIC_TYPE_FLOAT32)
         builder.run_cmd('loss-logistic-non-decomposable_32-bit-statistics')
 
-    @skip_test_on_ci
+    @only_on_ci
     def test_loss_logistic_non_decomposable_64bit_statistics(self):
         """
         Tests the BOOMER algorithm when using the non-decomposable logistic loss function and 64-bit statistics.
@@ -105,7 +105,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .statistic_type(STATISTIC_TYPE_FLOAT64)
         builder.run_cmd('loss-squared-hinge-decomposable_64-bit-statistics')
 
-    @skip_test_on_ci
+    @only_on_ci
     def test_loss_squared_hinge_non_decomposable_32bit_statistics(self):
         """
         Tests the BOOMER algorithm when using the non-decomposable squared hinge loss function and 32-bit statistics.
@@ -115,7 +115,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .statistic_type(STATISTIC_TYPE_FLOAT32)
         builder.run_cmd('loss-squared-hinge-non-decomposable_32-bit-statistics')
 
-    @skip_test_on_ci
+    @only_on_ci
     def test_loss_squared_hinge_non_decomposable_64bit_statistics(self):
         """
         Tests the BOOMER algorithm when using the non-decomposable squared hinge loss function and 64-bit statistics.
@@ -699,7 +699,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .print_model_characteristics()
         builder.run_cmd('non-decomposable-single-output-heads_64-bit-statistics')
 
-    @skip_test_on_ci
+    @only_on_ci
     def test_non_decomposable_complete_heads_32bit_statistics(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function and 32-bit statistics for the induction
@@ -713,7 +713,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .print_model_characteristics()
         builder.run_cmd('non-decomposable-complete-heads_32-bit-statistics')
 
-    @skip_test_on_ci
+    @only_on_ci
     def test_non_decomposable_complete_heads_64bit_statistics(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function and 64-bit statistics for the induction
@@ -727,7 +727,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .print_model_characteristics()
         builder.run_cmd('non-decomposable-complete-heads_64-bit-statistics')
 
-    @skip_test_on_ci
+    @only_on_ci
     def test_non_decomposable_complete_heads_equal_width_label_binning_32bit_statistics(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function, 32-bit statistics and equal-width label
@@ -741,7 +741,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .print_model_characteristics()
         builder.run_cmd('non-decomposable-complete-heads_equal-width-label-binning_32-bit-statistics')
 
-    @skip_test_on_ci
+    @only_on_ci
     def test_non_decomposable_complete_heads_equal_width_label_binning_64bit_statistics(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function, 64-bit statistics and equal-width label
@@ -755,7 +755,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .print_model_characteristics()
         builder.run_cmd('non-decomposable-complete-heads_equal-width-label-binning_64-bit-statistics')
 
-    @skip_test_on_ci
+    @only_on_ci
     def test_non_decomposable_partial_fixed_heads_32bit_statistics(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function and 32-bit statistics for the induction
@@ -769,7 +769,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .print_model_characteristics()
         builder.run_cmd('non-decomposable-partial-fixed-heads_32-bit-statistics')
 
-    @skip_test_on_ci
+    @only_on_ci
     def test_non_decomposable_partial_fixed_heads_64bit_statistics(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function and 64-bit statistics for the induction
@@ -783,7 +783,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .print_model_characteristics()
         builder.run_cmd('non-decomposable-partial-fixed-heads_64-bit-statistics')
 
-    @skip_test_on_ci
+    @only_on_ci
     def test_non_decomposable_partial_fixed_heads_equal_width_label_binning_32bit_statistics(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function, 32-bit statistics and equal-width label
@@ -797,7 +797,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .print_model_characteristics()
         builder.run_cmd('non-decomposable-partial-fixed-heads_equal-width-label-binning_32-bit-statistics')
 
-    @skip_test_on_ci
+    @only_on_ci
     def test_non_decomposable_partial_fixed_heads_equal_width_label_binning_64bit_statistics(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function, 64-bit statistics and equal-width label
@@ -811,7 +811,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .print_model_characteristics()
         builder.run_cmd('non-decomposable-partial-fixed-heads_equal-width-label-binning_64-bit-statistics')
 
-    @skip_test_on_ci
+    @only_on_ci
     def test_non_decomposable_partial_dynamic_heads_32bit_statistics(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function and 32-bit statistics for the induction
@@ -825,7 +825,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .print_model_characteristics()
         builder.run_cmd('non-decomposable-partial-dynamic-heads_32-bit-statistics')
 
-    @skip_test_on_ci
+    @only_on_ci
     def test_non_decomposable_partial_dynamic_heads_64bit_statistics(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function and 64-bit statistics for the induction
@@ -839,7 +839,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .print_model_characteristics()
         builder.run_cmd('non-decomposable-partial-dynamic-heads_64-bit-statistics')
 
-    @skip_test_on_ci
+    @only_on_ci
     def test_non_decomposable_partial_dynamic_heads_equal_width_label_binning_32bit_statistics(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function, 32-bit statistics and equal-width label
@@ -853,7 +853,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .print_model_characteristics()
         builder.run_cmd('non-decomposable-partial-dynamic-heads_equal-width-label-binning_32-bit-statistics')
 
-    @skip_test_on_ci
+    @only_on_ci
     def test_non_decomposable_partial_dynamic_heads_equal_width_label_binning_64bit_statistics(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function, 64-bit statistics and equal-width label

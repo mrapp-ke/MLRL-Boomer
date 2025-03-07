@@ -5,14 +5,14 @@ from os import getenv
 from unittest import SkipTest
 
 
-def skip_test_on_ci(decorated_function):
+def only_on_ci(decorated_function):
     """
-    A decorator that disables all annotated test case if run on a continuous integration system.
+    A decorator that disables all annotated test case unless run on a continuous integration system.
     """
 
     def wrapper(*args, **kwargs):
-        if getenv('GITHUB_ACTIONS') == 'true':
-            raise SkipTest('Temporarily disabled when run on CI')
+        if getenv('GITHUB_ACTIONS') != 'true':
+            raise SkipTest('Test is disabled unless run on a CI system')
 
         decorated_function(*args, **kwargs)
 

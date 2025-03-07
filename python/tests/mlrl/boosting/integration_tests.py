@@ -2,7 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from ..common.cmd_builder import HOLDOUT_NO, HOLDOUT_RANDOM
-from ..common.decorators import skip_test_on_ci
+from ..common.decorators import only_on_ci
 from .cmd_builder import GLOBAL_PRUNING_POST, GLOBAL_PRUNING_PRE, LOSS_SQUARED_ERROR_DECOMPOSABLE, \
     LOSS_SQUARED_ERROR_NON_DECOMPOSABLE, STATISTIC_TYPE_FLOAT32, STATISTIC_TYPE_FLOAT64
 
@@ -30,7 +30,7 @@ class BoomerIntegrationTestsMixin:
             .statistic_type(STATISTIC_TYPE_FLOAT64)
         builder.run_cmd('loss-squared-error-decomposable_64-bit-statistics')
 
-    @skip_test_on_ci
+    @only_on_ci
     def test_loss_squared_error_non_decomposable_32bit_statistics(self):
         """
         Tests the BOOMER algorithm when using the non-decomposable squared error loss function and 32-bit statistics.
@@ -40,7 +40,7 @@ class BoomerIntegrationTestsMixin:
             .statistic_type(STATISTIC_TYPE_FLOAT32)
         builder.run_cmd('loss-squared-error-non-decomposable_32-bit-statistics')
 
-    @skip_test_on_ci
+    @only_on_ci
     def test_loss_squared_error_non_decomposable_64bit_statistics(self):
         """
         Tests the BOOMER algorithm when using the non-decomposable squared error loss function and 64-bit statistics.
