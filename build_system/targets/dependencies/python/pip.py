@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for listing installed Python dependencies via pip.
 """
 from dataclasses import dataclass, replace
-from functools import reduce
 from typing import Set
 
 from core.build_unit import BuildUnit
@@ -52,14 +51,6 @@ class PipList(Pip):
         latest_version = Version.parse(response.json()['info']['version'], skip_on_error=True)
         Log.info('Latest version of package "' + str(package) + '" is ' + str(latest_version))
         return latest_version
-
-    def install_all_packages(self):
-        """
-        Installs all dependencies in the requirements file.
-        """
-        requirements = reduce(lambda aggr, requirements_file: aggr | requirements_file.requirements,
-                              self.requirements_files, set())
-        Pip.install_requirements(*requirements)
 
     def list_outdated_dependencies(self, build_unit: BuildUnit) -> Set[Dependency]:
         """
