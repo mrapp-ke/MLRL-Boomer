@@ -2,7 +2,6 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from ..common.cmd_builder import HOLDOUT_NO, HOLDOUT_RANDOM
-from ..common.decorators import skip_test_on_ci
 from .cmd_builder import GLOBAL_PRUNING_POST, GLOBAL_PRUNING_PRE, LOSS_SQUARED_ERROR_DECOMPOSABLE, \
     LOSS_SQUARED_ERROR_NON_DECOMPOSABLE
 
@@ -20,7 +19,6 @@ class BoomerIntegrationTestsMixin:
             .loss(LOSS_SQUARED_ERROR_DECOMPOSABLE)
         builder.run_cmd('loss-squared-error-decomposable')
 
-    @skip_test_on_ci
     def test_loss_squared_error_non_decomposable(self):
         """
         Tests the BOOMER algorithm when using the non-decomposable squared error loss function.
