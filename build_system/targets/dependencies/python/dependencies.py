@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for listing installed Python dependencies via pip.
+Provides utilities for checking and updating the versions of Python dependencies.
 """
 from dataclasses import dataclass, replace
 from typing import Set
@@ -35,10 +35,17 @@ class Dependency:
         return hash((self.requirements_file, self.package))
 
 
-class PipList(Pip):
+class DependencyUpdater:
     """
-    Allows to list installed Python packages via pip.
+    Allows checking the versions of Python dependencies that are specified in requirements files and updating outdated
+    ones.
     """
+
+    def __init__(self, *requirements_files: RequirementsFile):
+        """
+        :param requirements_files: The requirements files that specify the Python dependencies to be checked
+        """
+        self.requirements_files = list(requirements_files)
 
     @staticmethod
     def __query_latest_package_version(build_unit: BuildUnit, package: Package) -> Version:
@@ -54,7 +61,7 @@ class PipList(Pip):
 
     def list_outdated_dependencies(self, build_unit: BuildUnit) -> Set[Dependency]:
         """
-        Returns all outdated Python dependencies that are currently installed.
+        Returns all outdated Python dependencies that are specified in the requirements files.
 
         :param build_unit:  The `BuildUnit` from which this function is invoked
         :return:            A set that contains all outdated dependencies
@@ -83,7 +90,7 @@ class PipList(Pip):
 
     def update_outdated_dependencies(self, build_unit: BuildUnit) -> Set[Dependency]:
         """
-        Updates all outdated Python dependencies that are currently installed.
+        Updates all outdated Python dependencies that are specified in the requirements files.
 
         :param build_unit:  The `BuildUnit` from which this function is invoked
         :return:            A set that contains all dependencies that have been updated
@@ -111,7 +118,7 @@ class PipList(Pip):
                     min_version=str(Version(tuple(min_version_numbers[:num_version_numbers]))),
                     max_version=str(Version(tuple(max_version_numbers[:num_version_numbers]))))
 
-            looked_up_requirements = self.lookup_requirement(outdated_dependency.package.name)
+            looked_up_requirements = Pip(*self.requirements_files).lookup_requirement(outdated_dependency.package.name)
 
             for requirements_file, outdated_requirement in looked_up_requirements.items():
                 requirements_file.update(outdated_requirement, replace(outdated_requirement, version=updated_version))

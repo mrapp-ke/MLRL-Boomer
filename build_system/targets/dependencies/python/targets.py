@@ -12,8 +12,8 @@ from core.targets import PhonyTarget
 from util.log import Log
 from util.pip import Pip
 
+from targets.dependencies.python.dependencies import DependencyUpdater
 from targets.dependencies.python.modules import DependencyType, PythonDependencyModule
-from targets.dependencies.python.pip import PipList
 from targets.dependencies.table import Table
 
 
@@ -57,9 +57,7 @@ class CheckPythonDependencies(PhonyTarget.Runnable):
         Log.info('Checking for outdated dependencies...')
         requirements_files = reduce(
             lambda aggr, module: aggr + module.find_requirements_files(build_unit, self.dependency_type), modules, [])
-        print(str(requirements_files))
-        pip = PipList(*requirements_files)
-        outdated_dependencies = pip.list_outdated_dependencies(build_unit)
+        outdated_dependencies = DependencyUpdater(*requirements_files).list_outdated_dependencies(build_unit)
 
         if outdated_dependencies:
             table = Table(build_unit, 'Dependency', 'Declaring file', 'Current version', 'Latest version')
@@ -91,8 +89,7 @@ class UpdatePythonDependencies(PhonyTarget.Runnable):
         Log.info('Updating outdated dependencies...')
         requirements_files = reduce(
             lambda aggr, module: aggr + module.find_requirements_files(build_unit, self.dependency_type), modules, [])
-        pip = PipList(*requirements_files)
-        updated_dependencies = pip.update_outdated_dependencies(build_unit)
+        updated_dependencies = DependencyUpdater(*requirements_files).update_outdated_dependencies(build_unit)
 
         if updated_dependencies:
             table = Table(build_unit, 'Dependency', 'Declaring file', 'Previous version', 'Updated version')
