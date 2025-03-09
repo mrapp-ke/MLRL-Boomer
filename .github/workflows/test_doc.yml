@@ -9,8 +9,6 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-env:
-  GPU_SUPPORT: disabled
 jobs:
   changes:
     name: Detect changes
@@ -19,7 +17,6 @@ jobs:
       cpp: ${{ steps.filter.outputs.cpp }}
       python: ${{ steps.filter.outputs.python }}
       doc: ${{ steps.filter.outputs.doc }}
-      any: ${{ steps.filter.outputs.any }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,6 +27,7 @@ jobs:
           filters: |
             build_files: &build_files
               - '.github/workflows/test_doc.yml'
+              - '.github/workflows/template_doc.yml'
               - 'build'
               - 'build.bat'
               - 'build_system/main.py'
@@ -48,81 +46,46 @@ jobs:
               - *build_files
               - 'build_system/targets/documentation/*'
               - 'doc/**'
-            any:
-              - *cpp
-              - *python
-              - *doc
   build_doc:
     needs: changes
-    if: ${{ needs.changes.outputs.any == 'true' }}
     name: Test building documentation
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version-file: .version-python
-      - name: Prepare ccache
-        uses: hendrikmuhs/ccache-action@v1
-        with:
-          key: build-doc-ccache
-      - name: Install Doxygen
-        uses: ssciwr/doxygen-install@v1
-      - name: Generate C++ Apidoc
-        if: ${{ needs.changes.outputs.cpp == 'true' && needs.changes.outputs.doc != 'true' }}
-        run: ./build apidoc_cpp
-      - name: Generate Python Apidoc
-        if: ${{ needs.changes.outputs.python == 'true' && needs.changes.outputs.doc != 'true' }}
-        run: ./build apidoc_python
-      - name: Install Roboto font
-        if: ${{ needs.changes.outputs.doc == 'true' }}
-        run: sudo apt install -y fonts-roboto
-      - name: Generate documentation
-        if: ${{ needs.changes.outputs.doc == 'true' }}
-        run: ./build doc
+    uses: ./.github/workflows/template_doc.yml
+    with:
+      apidoc_cpp: ${{ needs.changes.outputs.cpp == 'true' }}
+      apidoc_python: ${{ needs.changes.outputs.python == 'true' }}
+      doc: ${{ needs.changes.outputs.doc == 'true' }}
+      ccache_key: build-doc-ccache
   check_links:
     needs: changes
-    if: ${{ needs.changes.outputs.any == 'true' }}
     name: Check links in documentation
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version-file: .version-python
-      - name: Prepare ccache
-        uses: hendrikmuhs/ccache-action@v1
-        with:
-          key: check-links-ccache
-      - name: Install Doxygen
-        uses: ssciwr/doxygen-install@v1
-      - name: Install Roboto font
-        run: sudo apt install -y fonts-roboto
-      - name: Check links in documentation
-        run: SPHINX_BUILDER=linkcheck ./build doc
+    uses: ./.github/workflows/template_doc.yml
+    with:
+      sphinx_builder: linkcheck
+      ccache_key: check-links-ccache
   check_spelling:
     needs: changes
-    if: ${{ needs.changes.outputs.any == 'true' }}
     name: Check for spelling mistakes in documentation
+    uses: ./.github/workflows/template_doc.yml
+    with:
+      sphinx_builder: spelling
+      ccache_key: check-spelling-ccache
+  check_success:
+    needs:
+      - build_doc
+      - check_links
+      - check_spelling
+    if: always()
+    name: Test building documentation succeeded
     runs-on: ubuntu-24.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version-file: .version-python
-      - name: Prepare ccache
-        uses: hendrikmuhs/ccache-action@v1
-        with:
-          key: check-spelling-ccache
-      - name: Install Doxygen
-        uses: ssciwr/doxygen-install@v1
-      - name: Install Roboto font
-        run: sudo apt install -y fonts-roboto
-      - name: Check for spelling mistakes in documentation
-        run: SPHINX_BUILDER=spelling ./build doc
+      - name: Check for success
+        run: |-
+          if [[ "${{ needs.build_doc.result }}" != "success" ]]; then
+            exit 1
+          fi
+          if [[ "${{ needs.check_links.result }}" != "success" ]]; then
+            exit 1
+          fi
+          if [[ "${{ needs.check_spelling.result }}" != "success" ]]; then
+            exit 1
+          fi

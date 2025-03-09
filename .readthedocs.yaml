@@ -4,9 +4,6 @@ build:
   os: ubuntu-lts-latest
   tools:
     python: latest
-  apt_packages:
-    - doxygen
   commands:
-    - GPU_SUPPORT=disabled ./build doc
-    - mkdir $READTHEDOCS_OUTPUT
-    - cp -r doc/_build/html $READTHEDOCS_OUTPUT
+    - mkdir --parents $READTHEDOCS_OUTPUT
+    - cp --recursive doc/.readthedocs/html $READTHEDOCS_OUTPUT
