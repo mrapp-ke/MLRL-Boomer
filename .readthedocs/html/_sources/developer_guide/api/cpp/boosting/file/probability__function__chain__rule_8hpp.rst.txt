@@ -1,0 +1,5 @@
+File probability_function_chain_rule.hpp
+========================================
+
+.. doxygenfile:: probability_function_chain_rule.hpp
+   :project: boosting

@@ -1,0 +1,5 @@
+File view_matrix_lil.hpp
+========================
+
+.. doxygenfile:: view_matrix_lil.hpp
+   :project: common

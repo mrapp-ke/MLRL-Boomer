@@ -1,0 +1,5 @@
+File matrix_dense.hpp
+=====================
+
+.. doxygenfile:: matrix_dense.hpp
+   :project: common

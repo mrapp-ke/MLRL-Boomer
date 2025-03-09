@@ -1,0 +1,5 @@
+File info.hpp
+=============
+
+.. doxygenfile:: info.hpp
+   :project: seco
