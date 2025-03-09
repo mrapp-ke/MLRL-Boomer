@@ -61,6 +61,10 @@ jobs:
     if: ${{ always() && !contains(github.event.head_commit.message, '[Bot]') && needs.changes.outputs.doc == 'true' }}
     uses: ./.github/workflows/template_publish_doc.yml
     secrets: inherit
+  readthedocs_build:
+    name: Trigger readthedocs build
+    uses: ./.github/workflows/template_publish_doc_rdt.yml
+    secrets: inherit
   publish_packages:
     name: Publish wheel packages
     needs: update_development_version

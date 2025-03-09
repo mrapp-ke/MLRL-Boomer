@@ -5,6 +5,12 @@ on:
     types:
       - published
 jobs:
+  readthedocs_build:
+    name: Trigger readthedocs build
+    uses: ./.github/workflows/template_publish_doc_rdt.yml
+    with:
+      release: true
+    secrets: inherit
   publish_packages:
     name: Publish wheel packages
     uses: ./.github/workflows/template_publish.yml
