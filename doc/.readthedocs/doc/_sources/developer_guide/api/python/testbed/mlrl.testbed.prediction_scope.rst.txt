@@ -1,7 +1,0 @@
-mlrl.testbed.prediction\_scope module
-=====================================
-
-.. automodule:: mlrl.testbed.prediction_scope
-   :members:
-   :show-inheritance:
-   :undoc-members:

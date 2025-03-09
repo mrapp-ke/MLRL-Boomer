@@ -1,5 +1,0 @@
-File feature_subspace.hpp
-=========================
-
-.. doxygenfile:: feature_subspace.hpp
-   :project: common

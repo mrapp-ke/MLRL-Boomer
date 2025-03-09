@@ -1,5 +1,0 @@
-File learner_boomer_classifier.hpp
-==================================
-
-.. doxygenfile:: learner_boomer_classifier.hpp
-   :project: boosting

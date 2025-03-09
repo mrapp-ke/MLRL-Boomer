@@ -1,5 +1,0 @@
-File transformation_binary_output_wise.hpp
-==========================================
-
-.. doxygenfile:: transformation_binary_output_wise.hpp
-   :project: boosting

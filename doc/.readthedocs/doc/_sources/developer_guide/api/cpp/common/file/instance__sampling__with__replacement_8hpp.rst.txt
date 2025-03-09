@@ -1,5 +1,0 @@
-File instance_sampling_with_replacement.hpp
-===========================================
-
-.. doxygenfile:: instance_sampling_with_replacement.hpp
-   :project: common

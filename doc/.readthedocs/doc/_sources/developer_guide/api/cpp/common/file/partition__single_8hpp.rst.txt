@@ -1,5 +1,0 @@
-File partition_single.hpp
-=========================
-
-.. doxygenfile:: partition_single.hpp
-   :project: common

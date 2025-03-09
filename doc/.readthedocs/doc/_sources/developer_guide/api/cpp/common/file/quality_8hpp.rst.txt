@@ -1,5 +1,0 @@
-File quality.hpp
-================
-
-.. doxygenfile:: quality.hpp
-   :project: common

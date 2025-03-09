@@ -1,5 +1,0 @@
-File transformation_binary.hpp
-==============================
-
-.. doxygenfile:: transformation_binary.hpp
-   :project: boosting

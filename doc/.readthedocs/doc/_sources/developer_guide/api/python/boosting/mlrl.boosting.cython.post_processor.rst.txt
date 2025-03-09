@@ -1,7 +1,0 @@
-mlrl.boosting.cython.post\_processor module
-===========================================
-
-.. automodule:: mlrl.boosting.cython.post_processor
-   :members:
-   :show-inheritance:
-   :undoc-members:

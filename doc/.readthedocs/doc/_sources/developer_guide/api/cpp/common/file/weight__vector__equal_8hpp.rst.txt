@@ -1,5 +1,0 @@
-File weight_vector_equal.hpp
-============================
-
-.. doxygenfile:: weight_vector_equal.hpp
-   :project: common

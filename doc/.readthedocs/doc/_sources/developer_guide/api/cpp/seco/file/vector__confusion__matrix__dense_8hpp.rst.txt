@@ -1,5 +1,0 @@
-File vector_confusion_matrix_dense.hpp
-======================================
-
-.. doxygenfile:: vector_confusion_matrix_dense.hpp
-   :project: seco

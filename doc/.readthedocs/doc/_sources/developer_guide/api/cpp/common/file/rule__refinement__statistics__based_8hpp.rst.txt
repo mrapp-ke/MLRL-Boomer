@@ -1,5 +1,0 @@
-File rule_refinement_statistics_based.hpp
-=========================================
-
-.. doxygenfile:: rule_refinement_statistics_based.hpp
-   :project: common

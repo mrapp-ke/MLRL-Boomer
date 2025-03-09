@@ -1,5 +1,0 @@
-File predictor_binary_output_wise.hpp
-=====================================
-
-.. doxygenfile:: predictor_binary_output_wise.hpp
-   :project: boosting

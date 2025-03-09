@@ -1,5 +1,0 @@
-File partition_bi.hpp
-=====================
-
-.. doxygenfile:: partition_bi.hpp
-   :project: common

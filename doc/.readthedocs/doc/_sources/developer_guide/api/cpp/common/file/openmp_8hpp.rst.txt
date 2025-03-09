@@ -1,5 +1,0 @@
-File openmp.hpp
-===============
-
-.. doxygenfile:: openmp.hpp
-   :project: common

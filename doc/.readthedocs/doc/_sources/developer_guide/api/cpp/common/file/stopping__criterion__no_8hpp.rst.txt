@@ -1,5 +1,0 @@
-File stopping_criterion_no.hpp
-==============================
-
-.. doxygenfile:: stopping_criterion_no.hpp
-   :project: common

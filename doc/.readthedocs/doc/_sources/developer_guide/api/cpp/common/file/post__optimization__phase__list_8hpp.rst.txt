@@ -1,5 +1,0 @@
-File post_optimization_phase_list.hpp
-=====================================
-
-.. doxygenfile:: post_optimization_phase_list.hpp
-   :project: common

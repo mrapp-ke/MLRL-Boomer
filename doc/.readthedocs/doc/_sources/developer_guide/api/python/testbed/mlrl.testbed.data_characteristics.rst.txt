@@ -1,7 +1,0 @@
-mlrl.testbed.data\_characteristics module
-=========================================
-
-.. automodule:: mlrl.testbed.data_characteristics
-   :members:
-   :show-inheritance:
-   :undoc-members:

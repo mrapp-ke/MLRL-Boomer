@@ -1,5 +1,0 @@
-File rule_induction_top_down_greedy.hpp
-=======================================
-
-.. doxygenfile:: rule_induction_top_down_greedy.hpp
-   :project: common

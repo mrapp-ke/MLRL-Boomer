@@ -1,5 +1,0 @@
-File head_partial.hpp
-=====================
-
-.. doxygenfile:: head_partial.hpp
-   :project: common

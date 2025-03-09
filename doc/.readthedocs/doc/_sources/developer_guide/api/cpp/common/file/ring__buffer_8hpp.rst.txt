@@ -1,5 +1,0 @@
-File ring_buffer.hpp
-====================
-
-.. doxygenfile:: ring_buffer.hpp
-   :project: common

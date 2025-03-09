@@ -1,7 +1,0 @@
-mlrl.boosting.cython.probability\_calibration module
-====================================================
-
-.. automodule:: mlrl.boosting.cython.probability_calibration
-   :members:
-   :show-inheritance:
-   :undoc-members:

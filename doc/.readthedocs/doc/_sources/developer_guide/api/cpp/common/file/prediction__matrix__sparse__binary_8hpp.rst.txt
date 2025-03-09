@@ -1,5 +1,0 @@
-File prediction_matrix_sparse_binary.hpp
-========================================
-
-.. doxygenfile:: prediction_matrix_sparse_binary.hpp
-   :project: common

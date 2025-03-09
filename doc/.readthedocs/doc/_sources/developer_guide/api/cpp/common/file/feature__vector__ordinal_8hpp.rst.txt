@@ -1,5 +1,0 @@
-File feature_vector_ordinal.hpp
-===============================
-
-.. doxygenfile:: feature_vector_ordinal.hpp
-   :project: common

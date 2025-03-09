@@ -1,5 +1,0 @@
-File score_vector_binned_dense.hpp
-==================================
-
-.. doxygenfile:: score_vector_binned_dense.hpp
-   :project: common

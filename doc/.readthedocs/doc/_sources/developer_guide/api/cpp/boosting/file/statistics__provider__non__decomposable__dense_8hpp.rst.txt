@@ -1,5 +1,0 @@
-File statistics_provider_non_decomposable_dense.hpp
-===================================================
-
-.. doxygenfile:: statistics_provider_non_decomposable_dense.hpp
-   :project: boosting

@@ -1,5 +1,0 @@
-File lapack.hpp
-===============
-
-.. doxygenfile:: lapack.hpp
-   :project: boosting

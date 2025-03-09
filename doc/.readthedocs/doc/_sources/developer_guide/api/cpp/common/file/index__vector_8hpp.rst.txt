@@ -1,5 +1,0 @@
-File index_vector.hpp
-=====================
-
-.. doxygenfile:: index_vector.hpp
-   :project: common

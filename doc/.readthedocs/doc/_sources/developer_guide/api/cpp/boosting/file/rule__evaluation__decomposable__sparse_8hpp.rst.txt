@@ -1,5 +1,0 @@
-File rule_evaluation_decomposable_sparse.hpp
-============================================
-
-.. doxygenfile:: rule_evaluation_decomposable_sparse.hpp
-   :project: boosting

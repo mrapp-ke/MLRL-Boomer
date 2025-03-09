@@ -1,5 +1,0 @@
-File rule_model_assemblage.hpp
-==============================
-
-.. doxygenfile:: rule_model_assemblage.hpp
-   :project: common

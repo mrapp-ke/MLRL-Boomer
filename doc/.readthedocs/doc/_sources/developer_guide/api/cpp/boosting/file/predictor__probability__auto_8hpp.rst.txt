@@ -1,5 +1,0 @@
-File predictor_probability_auto.hpp
-===================================
-
-.. doxygenfile:: predictor_probability_auto.hpp
-   :project: boosting

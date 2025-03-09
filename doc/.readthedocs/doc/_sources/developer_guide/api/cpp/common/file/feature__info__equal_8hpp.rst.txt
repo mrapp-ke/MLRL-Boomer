@@ -1,5 +1,0 @@
-File feature_info_equal.hpp
-===========================
-
-.. doxygenfile:: feature_info_equal.hpp
-   :project: common

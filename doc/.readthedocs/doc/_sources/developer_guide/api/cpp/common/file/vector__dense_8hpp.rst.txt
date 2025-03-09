@@ -1,5 +1,0 @@
-File vector_dense.hpp
-=====================
-
-.. doxygenfile:: vector_dense.hpp
-   :project: common

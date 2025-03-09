@@ -1,5 +1,0 @@
-File heuristic_m_estimate.hpp
-=============================
-
-.. doxygenfile:: heuristic_m_estimate.hpp
-   :project: seco

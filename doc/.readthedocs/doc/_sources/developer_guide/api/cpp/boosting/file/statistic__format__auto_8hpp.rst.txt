@@ -1,5 +1,0 @@
-File statistic_format_auto.hpp
-==============================
-
-.. doxygenfile:: statistic_format_auto.hpp
-   :project: boosting

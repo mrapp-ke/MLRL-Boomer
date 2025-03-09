@@ -1,5 +1,0 @@
-File properties.hpp
-===================
-
-.. doxygenfile:: properties.hpp
-   :project: common

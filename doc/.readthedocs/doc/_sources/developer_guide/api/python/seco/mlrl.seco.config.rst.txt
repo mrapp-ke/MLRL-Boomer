@@ -1,7 +1,0 @@
-mlrl.seco.config module
-=======================
-
-.. automodule:: mlrl.seco.config
-   :members:
-   :show-inheritance:
-   :undoc-members:

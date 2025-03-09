@@ -1,5 +1,0 @@
-File feature_vector_binned.hpp
-==============================
-
-.. doxygenfile:: feature_vector_binned.hpp
-   :project: common

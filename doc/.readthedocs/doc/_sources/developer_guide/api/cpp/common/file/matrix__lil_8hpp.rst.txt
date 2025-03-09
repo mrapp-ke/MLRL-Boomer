@@ -1,5 +1,0 @@
-File matrix_lil.hpp
-===================
-
-.. doxygenfile:: matrix_lil.hpp
-   :project: common

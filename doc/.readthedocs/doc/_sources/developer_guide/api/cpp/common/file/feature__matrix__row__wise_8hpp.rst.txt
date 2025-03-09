@@ -1,5 +1,0 @@
-File feature_matrix_row_wise.hpp
-================================
-
-.. doxygenfile:: feature_matrix_row_wise.hpp
-   :project: common

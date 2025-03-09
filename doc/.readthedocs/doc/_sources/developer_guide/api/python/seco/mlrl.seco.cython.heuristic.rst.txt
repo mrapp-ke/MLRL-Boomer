@@ -1,7 +1,0 @@
-mlrl.seco.cython.heuristic module
-=================================
-
-.. automodule:: mlrl.seco.cython.heuristic
-   :members:
-   :show-inheritance:
-   :undoc-members:

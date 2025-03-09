@@ -1,5 +1,0 @@
-File matrix_sparse_set_numeric.hpp
-==================================
-
-.. doxygenfile:: matrix_sparse_set_numeric.hpp
-   :project: boosting

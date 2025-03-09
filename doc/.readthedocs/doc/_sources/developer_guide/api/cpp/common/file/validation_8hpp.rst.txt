@@ -1,5 +1,0 @@
-File validation.hpp
-===================
-
-.. doxygenfile:: validation.hpp
-   :project: common
