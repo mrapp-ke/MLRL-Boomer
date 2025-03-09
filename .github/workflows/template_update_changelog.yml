@@ -6,11 +6,6 @@ on:
       release_branch:
         required: true
         type: string
-    secrets:
-      token_app_id:
-        required: true
-      token_app_secret:
-        required: true
     outputs:
       release_version:
         value: ${{ jobs.update_changelog.outputs.release_version }}
