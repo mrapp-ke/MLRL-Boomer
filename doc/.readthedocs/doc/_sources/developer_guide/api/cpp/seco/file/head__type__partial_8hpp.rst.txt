@@ -1,0 +1,5 @@
+File head_type_partial.hpp
+==========================
+
+.. doxygenfile:: head_type_partial.hpp
+   :project: seco

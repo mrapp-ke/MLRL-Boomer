@@ -1,0 +1,5 @@
+File instance_sampling_stratified_example_wise.hpp
+==================================================
+
+.. doxygenfile:: instance_sampling_stratified_example_wise.hpp
+   :project: common

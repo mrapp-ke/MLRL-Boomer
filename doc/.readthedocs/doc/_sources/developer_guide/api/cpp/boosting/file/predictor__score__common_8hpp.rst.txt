@@ -1,0 +1,5 @@
+File predictor_score_common.hpp
+===============================
+
+.. doxygenfile:: predictor_score_common.hpp
+   :project: boosting

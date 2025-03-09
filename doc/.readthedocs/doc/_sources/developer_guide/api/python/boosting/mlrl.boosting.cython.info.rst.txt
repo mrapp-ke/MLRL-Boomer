@@ -1,0 +1,7 @@
+mlrl.boosting.cython.info module
+================================
+
+.. automodule:: mlrl.boosting.cython.info
+   :members:
+   :show-inheritance:
+   :undoc-members:

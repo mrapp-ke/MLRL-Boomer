@@ -1,0 +1,5 @@
+File score_processor.hpp
+========================
+
+.. doxygenfile:: score_processor.hpp
+   :project: common

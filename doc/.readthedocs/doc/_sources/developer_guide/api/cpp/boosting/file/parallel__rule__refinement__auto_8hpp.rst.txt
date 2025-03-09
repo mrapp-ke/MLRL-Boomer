@@ -1,0 +1,5 @@
+File parallel_rule_refinement_auto.hpp
+======================================
+
+.. doxygenfile:: parallel_rule_refinement_auto.hpp
+   :project: boosting
