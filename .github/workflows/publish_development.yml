@@ -8,11 +8,33 @@ on:
       - cpp/subprojects/**/include/**
       - cpp/subprojects/**/src/**
       - python/subprojects/**/mlrl/**
-  workflow_dispatch:
+      - doc/**
 jobs:
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-24.04
+    outputs:
+      code: ${{ steps.filter.outputs.code }}
+      doc: ${{ steps.filter.outputs.doc }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Detect changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            code: &code
+              - cpp/subprojects/**/include/**
+              - cpp/subprojects/**/src/**
+              - python/subprojects/**/mlrl/**
+            doc:
+              - *code
+              - doc/**
   update_development_version:
+    needs: changes
     name: Update development version
-    if: "!contains(github.event.head_commit.message, '[Bot]')"
+    if: ${{ !contains(github.event.head_commit.message, '[Bot]') && needs.changes.outputs.code == 'true' }}
     runs-on: ubuntu-24.04
     steps:
       - name: Generate token
@@ -33,6 +55,11 @@ jobs:
           git add .version-dev
           git commit -m "[Bot] Update development version to $(cat .version-dev)."
           git push
+  publish_doc:
+    name: Publish documentation
+    needs: update_development_version
+    if: ${{ always() && !contains(github.event.head_commit.message, '[Bot]') && needs.changes.outputs.doc == 'true' }}
+    uses: ./.github/workflows/template_doc.yml
   publish_packages:
     name: Publish wheel packages
     needs: update_development_version
