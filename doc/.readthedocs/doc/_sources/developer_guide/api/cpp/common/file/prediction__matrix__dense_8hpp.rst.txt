@@ -1,5 +1,0 @@
-File prediction_matrix_dense.hpp
-================================
-
-.. doxygenfile:: prediction_matrix_dense.hpp
-   :project: common

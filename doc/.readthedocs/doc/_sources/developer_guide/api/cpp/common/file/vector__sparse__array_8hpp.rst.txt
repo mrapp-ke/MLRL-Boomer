@@ -1,5 +1,0 @@
-File vector_sparse_array.hpp
-============================
-
-.. doxygenfile:: vector_sparse_array.hpp
-   :project: common

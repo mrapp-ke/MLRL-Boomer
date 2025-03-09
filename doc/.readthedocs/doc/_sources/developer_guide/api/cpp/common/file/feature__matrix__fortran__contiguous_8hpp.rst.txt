@@ -1,5 +1,0 @@
-File feature_matrix_fortran_contiguous.hpp
-==========================================
-
-.. doxygenfile:: feature_matrix_fortran_contiguous.hpp
-   :project: common

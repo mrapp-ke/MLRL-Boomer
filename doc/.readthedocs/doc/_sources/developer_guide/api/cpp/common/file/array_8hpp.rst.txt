@@ -1,5 +1,0 @@
-File array.hpp
-==============
-
-.. doxygenfile:: array.hpp
-   :project: common

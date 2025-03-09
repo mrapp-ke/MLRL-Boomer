@@ -1,7 +1,0 @@
-mlrl.testbed.parameters module
-==============================
-
-.. automodule:: mlrl.testbed.parameters
-   :members:
-   :show-inheritance:
-   :undoc-members:

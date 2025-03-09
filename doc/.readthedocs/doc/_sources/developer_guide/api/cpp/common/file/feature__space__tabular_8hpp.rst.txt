@@ -1,5 +1,0 @@
-File feature_space_tabular.hpp
-==============================
-
-.. doxygenfile:: feature_space_tabular.hpp
-   :project: common

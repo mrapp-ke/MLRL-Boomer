@@ -1,5 +1,0 @@
-File label_matrix_csr.hpp
-=========================
-
-.. doxygenfile:: label_matrix_csr.hpp
-   :project: common

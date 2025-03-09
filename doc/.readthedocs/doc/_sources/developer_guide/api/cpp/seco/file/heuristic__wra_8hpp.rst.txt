@@ -1,5 +1,0 @@
-File heuristic_wra.hpp
-======================
-
-.. doxygenfile:: heuristic_wra.hpp
-   :project: seco

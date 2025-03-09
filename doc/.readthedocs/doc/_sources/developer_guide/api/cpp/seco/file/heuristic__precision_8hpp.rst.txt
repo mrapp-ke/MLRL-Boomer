@@ -1,5 +1,0 @@
-File heuristic_precision.hpp
-============================
-
-.. doxygenfile:: heuristic_precision.hpp
-   :project: seco

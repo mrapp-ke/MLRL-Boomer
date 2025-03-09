@@ -1,5 +1,0 @@
-File predictor_binary_auto.hpp
-==============================
-
-.. doxygenfile:: predictor_binary_auto.hpp
-   :project: boosting

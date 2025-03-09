@@ -1,5 +1,0 @@
-File label_vector.hpp
-=====================
-
-.. doxygenfile:: label_vector.hpp
-   :project: common

@@ -1,5 +1,0 @@
-File learner_classification_common.hpp
-======================================
-
-.. doxygenfile:: learner_classification_common.hpp
-   :project: common

@@ -1,7 +1,0 @@
-mlrl.common.cython.stopping\_criterion module
-=============================================
-
-.. automodule:: mlrl.common.cython.stopping_criterion
-   :members:
-   :show-inheritance:
-   :undoc-members:

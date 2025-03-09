@@ -1,5 +1,0 @@
-File statistic.hpp
-==================
-
-.. doxygenfile:: statistic.hpp
-   :project: boosting

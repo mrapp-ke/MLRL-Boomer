@@ -1,7 +1,0 @@
-mlrl.common.cython.rule\_induction module
-=========================================
-
-.. automodule:: mlrl.common.cython.rule_induction
-   :members:
-   :show-inheritance:
-   :undoc-members:

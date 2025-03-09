@@ -1,5 +1,0 @@
-File view_matrix_sparse_binary.hpp
-==================================
-
-.. doxygenfile:: view_matrix_sparse_binary.hpp
-   :project: common

@@ -1,5 +1,0 @@
-File default_rule_auto.hpp
-==========================
-
-.. doxygenfile:: default_rule_auto.hpp
-   :project: boosting

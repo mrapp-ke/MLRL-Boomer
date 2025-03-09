@@ -1,5 +1,0 @@
-File view_vector.hpp
-====================
-
-.. doxygenfile:: view_vector.hpp
-   :project: common

@@ -1,5 +1,0 @@
-File statistics_non_decomposable.hpp
-====================================
-
-.. doxygenfile:: statistics_non_decomposable.hpp
-   :project: boosting

@@ -1,5 +1,0 @@
-File condition_list.hpp
-=======================
-
-.. doxygenfile:: condition_list.hpp
-   :project: common

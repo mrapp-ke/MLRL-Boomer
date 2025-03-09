@@ -1,7 +1,0 @@
-mlrl.common.cython.feature\_matrix module
-=========================================
-
-.. automodule:: mlrl.common.cython.feature_matrix
-   :members:
-   :show-inheritance:
-   :undoc-members:

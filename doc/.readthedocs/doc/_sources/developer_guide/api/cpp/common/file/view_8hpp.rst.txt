@@ -1,5 +1,0 @@
-File view.hpp
-=============
-
-.. doxygenfile:: view.hpp
-   :project: common

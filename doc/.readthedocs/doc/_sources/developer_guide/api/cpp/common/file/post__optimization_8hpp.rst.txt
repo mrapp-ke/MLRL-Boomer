@@ -1,5 +1,0 @@
-File post_optimization.hpp
-==========================
-
-.. doxygenfile:: post_optimization.hpp
-   :project: common

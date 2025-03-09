@@ -1,5 +1,0 @@
-File predictor_score_no.hpp
-===========================
-
-.. doxygenfile:: predictor_score_no.hpp
-   :project: common

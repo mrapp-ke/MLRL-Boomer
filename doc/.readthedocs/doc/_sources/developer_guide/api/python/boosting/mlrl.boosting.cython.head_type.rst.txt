@@ -1,7 +1,0 @@
-mlrl.boosting.cython.head\_type module
-======================================
-
-.. automodule:: mlrl.boosting.cython.head_type
-   :members:
-   :show-inheritance:
-   :undoc-members:

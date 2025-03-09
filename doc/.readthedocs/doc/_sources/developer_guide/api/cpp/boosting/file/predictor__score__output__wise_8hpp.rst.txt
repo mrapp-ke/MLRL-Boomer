@@ -1,5 +1,0 @@
-File predictor_score_output_wise.hpp
-====================================
-
-.. doxygenfile:: predictor_score_output_wise.hpp
-   :project: boosting

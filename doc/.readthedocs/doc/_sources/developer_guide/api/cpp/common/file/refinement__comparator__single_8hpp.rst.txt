@@ -1,5 +1,0 @@
-File refinement_comparator_single.hpp
-=====================================
-
-.. doxygenfile:: refinement_comparator_single.hpp
-   :project: common

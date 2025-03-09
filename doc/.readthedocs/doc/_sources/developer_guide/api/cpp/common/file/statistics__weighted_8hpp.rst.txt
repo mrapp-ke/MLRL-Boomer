@@ -1,5 +1,0 @@
-File statistics_weighted.hpp
-============================
-
-.. doxygenfile:: statistics_weighted.hpp
-   :project: common

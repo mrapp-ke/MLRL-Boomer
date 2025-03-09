@@ -1,7 +1,0 @@
-mlrl.seco.cython.learner\_seco module
-=====================================
-
-.. automodule:: mlrl.seco.cython.learner_seco
-   :members:
-   :show-inheritance:
-   :undoc-members:

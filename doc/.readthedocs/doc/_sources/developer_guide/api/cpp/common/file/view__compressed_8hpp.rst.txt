@@ -1,5 +1,0 @@
-File view_compressed.hpp
-========================
-
-.. doxygenfile:: view_compressed.hpp
-   :project: common

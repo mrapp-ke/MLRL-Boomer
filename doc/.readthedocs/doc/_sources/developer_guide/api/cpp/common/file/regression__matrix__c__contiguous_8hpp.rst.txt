@@ -1,5 +1,0 @@
-File regression_matrix_c_contiguous.hpp
-=======================================
-
-.. doxygenfile:: regression_matrix_c_contiguous.hpp
-   :project: common

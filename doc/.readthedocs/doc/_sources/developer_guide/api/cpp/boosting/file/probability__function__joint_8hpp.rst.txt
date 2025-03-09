@@ -1,5 +1,0 @@
-File probability_function_joint.hpp
-===================================
-
-.. doxygenfile:: probability_function_joint.hpp
-   :project: boosting

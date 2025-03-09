@@ -1,5 +1,0 @@
-File partition_sampling_auto.hpp
-================================
-
-.. doxygenfile:: partition_sampling_auto.hpp
-   :project: boosting

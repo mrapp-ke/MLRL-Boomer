@@ -1,5 +1,0 @@
-File output_sampling_without_replacement.hpp
-============================================
-
-.. doxygenfile:: output_sampling_without_replacement.hpp
-   :project: common

@@ -1,7 +1,0 @@
-mlrl.common.cython.probability\_calibration module
-==================================================
-
-.. automodule:: mlrl.common.cython.probability_calibration
-   :members:
-   :show-inheritance:
-   :undoc-members:

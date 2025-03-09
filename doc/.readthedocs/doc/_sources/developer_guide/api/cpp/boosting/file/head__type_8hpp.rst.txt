@@ -1,5 +1,0 @@
-File head_type.hpp
-==================
-
-.. doxygenfile:: head_type.hpp
-   :project: boosting

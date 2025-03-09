@@ -1,5 +1,0 @@
-File heuristic_laplace.hpp
-==========================
-
-.. doxygenfile:: heuristic_laplace.hpp
-   :project: seco

@@ -1,5 +1,0 @@
-File label_matrix_c_contiguous.hpp
-==================================
-
-.. doxygenfile:: label_matrix_c_contiguous.hpp
-   :project: common

@@ -1,5 +1,0 @@
-File multi_threading_manual.hpp
-===============================
-
-.. doxygenfile:: multi_threading_manual.hpp
-   :project: common

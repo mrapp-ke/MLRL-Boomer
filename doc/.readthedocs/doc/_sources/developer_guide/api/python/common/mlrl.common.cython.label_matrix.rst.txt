@@ -1,7 +1,0 @@
-mlrl.common.cython.label\_matrix module
-=======================================
-
-.. automodule:: mlrl.common.cython.label_matrix
-   :members:
-   :show-inheritance:
-   :undoc-members:
