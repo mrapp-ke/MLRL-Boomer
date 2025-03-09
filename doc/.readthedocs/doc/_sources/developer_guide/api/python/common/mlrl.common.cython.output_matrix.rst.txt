@@ -1,7 +1,0 @@
-mlrl.common.cython.output\_matrix module
-========================================
-
-.. automodule:: mlrl.common.cython.output_matrix
-   :members:
-   :show-inheritance:
-   :undoc-members:

@@ -1,5 +1,0 @@
-File heuristic_f_measure.hpp
-============================
-
-.. doxygenfile:: heuristic_f_measure.hpp
-   :project: seco

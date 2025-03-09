@@ -1,5 +1,0 @@
-File lift_function_kln.hpp
-==========================
-
-.. doxygenfile:: lift_function_kln.hpp
-   :project: seco

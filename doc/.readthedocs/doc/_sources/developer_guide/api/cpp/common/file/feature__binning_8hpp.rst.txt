@@ -1,5 +1,0 @@
-File feature_binning.hpp
-========================
-
-.. doxygenfile:: feature_binning.hpp
-   :project: common

@@ -1,7 +1,0 @@
-mlrl.boosting.config module
-===========================
-
-.. automodule:: mlrl.boosting.config
-   :members:
-   :show-inheritance:
-   :undoc-members:

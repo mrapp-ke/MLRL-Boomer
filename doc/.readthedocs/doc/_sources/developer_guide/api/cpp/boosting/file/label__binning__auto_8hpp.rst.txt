@@ -1,5 +1,0 @@
-File label_binning_auto.hpp
-===========================
-
-.. doxygenfile:: label_binning_auto.hpp
-   :project: boosting

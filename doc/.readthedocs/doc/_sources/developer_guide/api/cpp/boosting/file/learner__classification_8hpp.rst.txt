@@ -1,5 +1,0 @@
-File learner_classification.hpp
-===============================
-
-.. doxygenfile:: learner_classification.hpp
-   :project: boosting

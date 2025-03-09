@@ -1,5 +1,0 @@
-File predictor_binary_example_wise.hpp
-======================================
-
-.. doxygenfile:: predictor_binary_example_wise.hpp
-   :project: boosting

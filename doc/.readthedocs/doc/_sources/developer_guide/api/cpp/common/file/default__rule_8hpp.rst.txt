@@ -1,5 +1,0 @@
-File default_rule.hpp
-=====================
-
-.. doxygenfile:: default_rule.hpp
-   :project: common

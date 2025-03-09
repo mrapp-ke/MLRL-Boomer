@@ -1,5 +1,0 @@
-File aggregation_function.hpp
-=============================
-
-.. doxygenfile:: aggregation_function.hpp
-   :project: common

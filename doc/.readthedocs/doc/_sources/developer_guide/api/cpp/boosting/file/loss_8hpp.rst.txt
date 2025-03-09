@@ -1,5 +1,0 @@
-File loss.hpp
-=============
-
-.. doxygenfile:: loss.hpp
-   :project: boosting

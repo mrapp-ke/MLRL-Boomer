@@ -1,5 +1,0 @@
-File rule_list.hpp
-==================
-
-.. doxygenfile:: rule_list.hpp
-   :project: common

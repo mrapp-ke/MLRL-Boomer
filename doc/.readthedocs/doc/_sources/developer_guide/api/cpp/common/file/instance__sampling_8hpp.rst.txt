@@ -1,5 +1,0 @@
-File instance_sampling.hpp
-==========================
-
-.. doxygenfile:: instance_sampling.hpp
-   :project: common

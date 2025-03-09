@@ -1,5 +1,0 @@
-File loss_decomposable.hpp
-==========================
-
-.. doxygenfile:: loss_decomposable.hpp
-   :project: boosting

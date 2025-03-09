@@ -1,7 +1,0 @@
-mlrl.boosting.cython.learner\_boomer module
-===========================================
-
-.. automodule:: mlrl.boosting.cython.learner_boomer
-   :members:
-   :show-inheritance:
-   :undoc-members:

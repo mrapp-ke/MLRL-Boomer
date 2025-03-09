@@ -1,5 +1,0 @@
-File body_empty.hpp
-===================
-
-.. doxygenfile:: body_empty.hpp
-   :project: common

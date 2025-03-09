@@ -1,5 +1,0 @@
-File feature_sampling_no.hpp
-============================
-
-.. doxygenfile:: feature_sampling_no.hpp
-   :project: common

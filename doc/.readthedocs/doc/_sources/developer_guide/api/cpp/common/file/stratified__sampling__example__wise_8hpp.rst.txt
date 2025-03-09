@@ -1,5 +1,0 @@
-File stratified_sampling_example_wise.hpp
-=========================================
-
-.. doxygenfile:: stratified_sampling_example_wise.hpp
-   :project: common

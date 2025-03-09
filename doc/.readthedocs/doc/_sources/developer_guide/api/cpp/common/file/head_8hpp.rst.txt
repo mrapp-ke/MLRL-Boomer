@@ -1,5 +1,0 @@
-File head.hpp
-=============
-
-.. doxygenfile:: head.hpp
-   :project: common

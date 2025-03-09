@@ -1,5 +1,0 @@
-File post_optimization_unused_rule_removal.hpp
-==============================================
-
-.. doxygenfile:: post_optimization_unused_rule_removal.hpp
-   :project: common

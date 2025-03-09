@@ -1,5 +1,0 @@
-File feature_matrix_csr.hpp
-===========================
-
-.. doxygenfile:: feature_matrix_csr.hpp
-   :project: common

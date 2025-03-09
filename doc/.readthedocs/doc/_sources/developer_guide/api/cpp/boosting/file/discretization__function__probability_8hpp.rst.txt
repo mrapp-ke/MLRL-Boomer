@@ -1,5 +1,0 @@
-File discretization_function_probability.hpp
-============================================
-
-.. doxygenfile:: discretization_function_probability.hpp
-   :project: boosting

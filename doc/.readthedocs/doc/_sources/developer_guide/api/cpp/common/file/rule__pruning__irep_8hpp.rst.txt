@@ -1,5 +1,0 @@
-File rule_pruning_irep.hpp
-==========================
-
-.. doxygenfile:: rule_pruning_irep.hpp
-   :project: common

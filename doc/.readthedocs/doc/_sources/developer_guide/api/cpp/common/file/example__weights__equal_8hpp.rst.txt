@@ -1,5 +1,0 @@
-File example_weights_equal.hpp
-==============================
-
-.. doxygenfile:: example_weights_equal.hpp
-   :project: common

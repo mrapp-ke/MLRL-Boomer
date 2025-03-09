@@ -1,7 +1,0 @@
-mlrl.common.cython.learner\_regression module
-=============================================
-
-.. automodule:: mlrl.common.cython.learner_regression
-   :members:
-   :show-inheritance:
-   :undoc-members:

@@ -1,5 +1,0 @@
-File strings.hpp
-================
-
-.. doxygenfile:: strings.hpp
-   :project: common

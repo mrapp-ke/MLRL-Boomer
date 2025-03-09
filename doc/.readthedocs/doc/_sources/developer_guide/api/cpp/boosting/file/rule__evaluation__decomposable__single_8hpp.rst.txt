@@ -1,5 +1,0 @@
-File rule_evaluation_decomposable_single.hpp
-============================================
-
-.. doxygenfile:: rule_evaluation_decomposable_single.hpp
-   :project: boosting

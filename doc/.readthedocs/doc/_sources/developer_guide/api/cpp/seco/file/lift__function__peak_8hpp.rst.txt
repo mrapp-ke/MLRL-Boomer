@@ -1,5 +1,0 @@
-File lift_function_peak.hpp
-===========================
-
-.. doxygenfile:: lift_function_peak.hpp
-   :project: seco

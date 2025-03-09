@@ -1,5 +1,0 @@
-File statistics_provider_decomposable_sparse.hpp
-================================================
-
-.. doxygenfile:: statistics_provider_decomposable_sparse.hpp
-   :project: boosting

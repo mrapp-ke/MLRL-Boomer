@@ -1,5 +1,0 @@
-File feature_vector_equal.hpp
-=============================
-
-.. doxygenfile:: feature_vector_equal.hpp
-   :project: common

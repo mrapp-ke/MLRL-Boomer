@@ -1,5 +1,0 @@
-File view_matrix_dense.hpp
-==========================
-
-.. doxygenfile:: view_matrix_dense.hpp
-   :project: common

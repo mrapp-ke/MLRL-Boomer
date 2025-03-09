@@ -1,5 +1,0 @@
-File rule_evaluation_non_decomposable_partial_fixed.hpp
-=======================================================
-
-.. doxygenfile:: rule_evaluation_non_decomposable_partial_fixed.hpp
-   :project: boosting

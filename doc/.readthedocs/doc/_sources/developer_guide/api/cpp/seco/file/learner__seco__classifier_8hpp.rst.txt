@@ -1,5 +1,0 @@
-File learner_seco_classifier.hpp
-================================
-
-.. doxygenfile:: learner_seco_classifier.hpp
-   :project: seco

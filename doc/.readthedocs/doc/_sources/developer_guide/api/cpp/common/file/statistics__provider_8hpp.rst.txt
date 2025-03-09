@@ -1,5 +1,0 @@
-File statistics_provider.hpp
-============================
-
-.. doxygenfile:: statistics_provider.hpp
-   :project: common

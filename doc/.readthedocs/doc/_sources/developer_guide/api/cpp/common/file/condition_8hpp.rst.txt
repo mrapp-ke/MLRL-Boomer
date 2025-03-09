@@ -1,5 +1,0 @@
-File condition.hpp
-==================
-
-.. doxygenfile:: condition.hpp
-   :project: common

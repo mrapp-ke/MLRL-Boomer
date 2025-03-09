@@ -1,5 +1,0 @@
-File view_matrix_fortran_contiguous.hpp
-=======================================
-
-.. doxygenfile:: view_matrix_fortran_contiguous.hpp
-   :project: common

@@ -1,5 +1,0 @@
-File interval.hpp
-=================
-
-.. doxygenfile:: interval.hpp
-   :project: common
