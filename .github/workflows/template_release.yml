@@ -12,11 +12,6 @@ on:
       changelog:
         required: true
         type: string
-    secrets:
-      token_app_id:
-        required: true
-      token_app_secret:
-        required: true
 jobs:
   release:
     name: Publish release on GitHub

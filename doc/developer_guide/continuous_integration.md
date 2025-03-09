@@ -30,7 +30,7 @@ The release process described {ref}`here <release-process>` is fully automated v
 
 - {repo-file}`merge_feature.yml <.github/workflows/merge_feature.yml>` and {repo-file}`merge_bugfix.yml <.github/workflows/merge_bugfix.yml>` are used to merge changes that have been pushed to the feature or bugfix branch into downstream branches via pull requests (see {ref}`downstream-merges`).
 - {repo-file}`merge_release.yml <.github/workflows/merge_release.yml>` is used to merge all changes included in a new release published on [GitHub](https://github.com/mrapp-ke/MLRL-Boomer/releases) into upstream branches and update the version numbers of these branches (see {ref}`upstream-merges`).
-- {repo-file}`release.yml <.github/workflows/release.yml>` defines a job for releasing a new version of the software developed by this project (see {ref}`triggering-releases`). The job can be triggered manually for one of the branches mentioned in the section {ref}`release-process`. It automatically updates the project's changelog and publishes a new release on GitHub.
+- {repo-file}`release.yml <.github/workflows/release.yml>` defines a job for releasing a new version of the software developed by this project (see {ref}`triggering-releases`). The job can be triggered manually for one of the branches mentioned in the section {ref}`release-process`. It automatically updates the project's changelog, builds the latest documentation, and publishes a new release on GitHub.
 
 (ci-publishing)=
 
@@ -38,8 +38,8 @@ The release process described {ref}`here <release-process>` is fully automated v
 
 The following CI jobs are used for building our software for different target platforms and architectures and publishing the resulting packages.
 
-- {repo-file}`publish.yml <.github/workflows/publish.yml>` is used for publishing pre-built packages on [PyPI](https://pypi.org/) (see {ref}`installation`). For this purpose, the project is built from source for each of the target platforms and architectures. The job is run automatically when a new release was published on [GitHub](https://github.com/mrapp-ke/MLRL-Boomer/releases). It does also increment the project's major version number and merge the release branch into its upstream branches (see {ref}`release-process`).
-- {repo-file}`publish_development.yml <.github/workflows/publish_development.yml>` publishes development versions of packages on [Test-PyPI](https://test.pypi.org/) whenever changes to the project's source code have been pushed to the main branch. The packages built by each of these runs are also saved as [artifacts](https://docs.github.com/actions/using-workflows/storing-workflow-data-as-artifacts) and can be downloaded as zip archives.
+- {repo-file}`publish.yml <.github/workflows/publish.yml>` is used for publishing the documentation on [readthedocs](https://readthedocs.org) and uploading pre-built packages to [PyPI](https://pypi.org/) (see {ref}`installation`). For the latter, the project is built from source for each of the target platforms and architectures. The job is run automatically when a new release was published on [GitHub](https://github.com/mrapp-ke/MLRL-Boomer/releases). It does also increment the project's major version number and merge the release branch into its upstream branches (see {ref}`release-process`).
+- {repo-file}`publish_development.yml <.github/workflows/publish_development.yml>` publishes development versions of the documentation on [readthedocs](https://readthedocs.org) and uploads development packages to [Test-PyPI](https://test.pypi.org/) whenever changes to the project's source code have been pushed to the main branch. The packages built by each of these runs are also saved as [artifacts](https://docs.github.com/actions/using-workflows/storing-workflow-data-as-artifacts) and can be downloaded as zip archives.
 
 ## Maintenance
 

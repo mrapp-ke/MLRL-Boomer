@@ -8,7 +8,7 @@ from os import environ, path
 from typing import Set
 
 from core.build_unit import BuildUnit
-from util.env import get_env, get_env_bool
+from util.env import get_env_bool
 from util.files import FileSearch
 
 from targets.version_files import DevelopmentVersionFile, SemanticVersion, VersionFile
@@ -35,8 +35,7 @@ class Project:
         """
         version = VersionFile().version
 
-        if release or get_env_bool(environ, 'RELEASE') or (get_env_bool(environ, 'READTHEDOCS')
-                                                           and get_env(environ, 'READTHEDOCS_VERSION_TYPE') == 'tag'):
+        if release or get_env_bool(environ, 'RELEASE'):
             return version
 
         return replace(version, dev=DevelopmentVersionFile().development_version)
