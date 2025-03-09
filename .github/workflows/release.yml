@@ -7,9 +7,7 @@ jobs:
     uses: ./.github/workflows/template_update_changelog.yml
     with:
       release_branch: ${{ github.ref_name }}
-    secrets:
-      token_app_id: ${{ secrets.TOKEN_APP_ID }}
-      token_app_secret: ${{ secrets.TOKEN_APP_SECRET }}
+    secrets: inherit
   release:
     needs: update_changelog
     name: Publish release on GitHub
@@ -18,6 +16,4 @@ jobs:
       release_branch: ${{ github.ref_name }}
       release_version: ${{ needs.update_changelog.outputs.release_version }}
       changelog: ${{ needs.update_changelog.outputs.latest_changelog }}
-    secrets:
-      token_app_id: ${{ secrets.TOKEN_APP_ID }}
-      token_app_secret: ${{ secrets.TOKEN_APP_SECRET }}
+    secrets: inherit
