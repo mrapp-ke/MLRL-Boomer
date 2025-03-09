@@ -8,8 +8,12 @@ jobs:
     with:
       release_branch: ${{ github.ref_name }}
     secrets: inherit
-  release:
+  build_doc:
     needs: update_changelog
+    name: Build documentation
+    uses: ./.github/workflows/template_doc.yml
+  release:
+    needs: build_doc
     name: Publish release on GitHub
     uses: ./.github/workflows/template_release.yml
     with:
