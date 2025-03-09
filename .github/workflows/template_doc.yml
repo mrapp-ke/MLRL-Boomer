@@ -53,3 +53,10 @@ jobs:
       - name: Generate documentation
         if: ${{ inputs.doc == true }}
         run: SPHINX_BUILDER=${{ inputs.sphinx_builder }} ./build doc
+      - name: Upload documentation as artifact
+        if: ${{ inputs.doc == true && inputs.sphinx_builder == 'html' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: doc
+          path: doc/_build/html/
+          if-no-files-found: error
