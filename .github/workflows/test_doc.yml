@@ -60,6 +60,7 @@ jobs:
     name: Check links in documentation
     uses: ./.github/workflows/template_doc.yml
     with:
+      doc: ${{ needs.changes.outputs.doc == 'true' }}
       sphinx_builder: linkcheck
       ccache_key: check-links-ccache
   check_spelling:
@@ -67,6 +68,7 @@ jobs:
     name: Check for spelling mistakes in documentation
     uses: ./.github/workflows/template_doc.yml
     with:
+      doc: ${{ needs.changes.outputs.doc == 'true' }}
       sphinx_builder: spelling
       ccache_key: check-spelling-ccache
   check_success:
