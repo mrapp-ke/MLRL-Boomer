@@ -56,12 +56,13 @@ jobs:
           git commit -m "[Bot] Update development version to $(cat .version-dev)."
           git push
   publish_doc:
-    name: Publish documentation
     needs: update_development_version
+    name: Publish documentation
     if: ${{ always() && !contains(github.event.head_commit.message, '[Bot]') && needs.changes.outputs.doc == 'true' }}
     uses: ./.github/workflows/template_publish_doc.yml
     secrets: inherit
   readthedocs_build:
+    needs: publish_doc
     name: Trigger readthedocs build
     uses: ./.github/workflows/template_publish_doc_rdt.yml
     secrets: inherit
