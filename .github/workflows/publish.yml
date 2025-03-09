@@ -5,6 +5,12 @@ on:
     types:
       - published
 jobs:
+  readthedocs_build:
+    name: Trigger readthedocs build
+    uses: ./.github/workflows/template_publish_doc_rdt.yml
+    with:
+      release: true
+    secrets: inherit
   publish_packages:
     name: Publish wheel packages
     uses: ./.github/workflows/template_publish.yml
@@ -17,7 +23,7 @@ jobs:
   upload_to_pypi:
     needs: publish_packages
     name: Upload wheels to PyPI
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       id-token: write
     steps:

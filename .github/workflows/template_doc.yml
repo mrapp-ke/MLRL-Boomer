@@ -1,0 +1,66 @@
+---
+name: Build documentation
+on:
+  workflow_call:
+    inputs:
+      apidoc_cpp:
+        required: false
+        type: boolean
+      apidoc_python:
+        required: false
+        type: boolean
+      doc:
+        required: false
+        type: boolean
+        default: true
+      sphinx_builder:
+        required: false
+        type: string
+        default: html
+      ccache_key:
+        required: false
+        type: string
+      release:
+        required: false
+        type: boolean
+env:
+  RELEASE: ${{ inputs.release == true }}
+  GPU_SUPPORT: disabled
+jobs:
+  build_doc:
+    if: ${{ inputs.apidoc_cpp == true || inputs.apidoc_python == true || inputs.doc == true }}
+    name: Build documentation
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: .version-python
+      - name: Prepare ccache
+        if: ${{ inputs.ccache_key }}
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: ${{ inputs.ccache_key }}
+      - name: Install Doxygen
+        uses: ssciwr/doxygen-install@v1
+      - name: Generate C++ Apidoc
+        if: ${{ inputs.apidoc_cpp == true && inputs.doc != true }}
+        run: ./build apidoc_cpp
+      - name: Generate Python Apidoc
+        if: ${{ inputs.apidoc_python == true && inputs.doc != true }}
+        run: ./build apidoc_python
+      - name: Install Roboto font
+        if: ${{ inputs.doc == true }}
+        run: sudo apt install -y fonts-roboto
+      - name: Generate documentation
+        if: ${{ inputs.doc == true }}
+        run: SPHINX_BUILDER=${{ inputs.sphinx_builder }} ./build doc
+      - name: Upload documentation as artifact
+        if: ${{ inputs.doc == true && inputs.sphinx_builder == 'html' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: doc
+          path: doc/_build/html/
+          if-no-files-found: error

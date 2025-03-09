@@ -1,0 +1,17 @@
+---
+name: Trigger readthedocs build
+on:
+  workflow_call:
+    inputs:
+      release:
+        required: false
+        type: boolean
+env:
+  RELEASE: ${{ inputs.release }}
+jobs:
+  readthedocs_build:
+    name: Trigger readthedocs build
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Trigger readthedocs build
+        run: RDT_TOKEN=${{ secrets.RTD_TOKEN }} ./build trigger_readthedocs_build
