@@ -59,7 +59,8 @@ jobs:
     name: Publish documentation
     needs: update_development_version
     if: ${{ always() && !contains(github.event.head_commit.message, '[Bot]') && needs.changes.outputs.doc == 'true' }}
-    uses: ./.github/workflows/template_doc.yml
+    uses: ./.github/workflows/template_publish_doc.yml
+    secrets: inherit
   publish_packages:
     name: Publish wheel packages
     needs: update_development_version
