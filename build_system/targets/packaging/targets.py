@@ -166,7 +166,10 @@ class InstallPythonWheels(BuildTarget.Runnable):
 
     def run(self, _: BuildUnit, module: Module):
         Log.info('Installing Python wheels for directory "%s"...', module.root_directory)
-        InstallPythonWheels.InstallWheelCommand(module.find_wheel()).run()
+        wheel = module.find_wheel()
+
+        if wheel:
+            InstallPythonWheels.InstallWheelCommand(wheel).run()
 
     def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
         wheel = module.find_wheel()
