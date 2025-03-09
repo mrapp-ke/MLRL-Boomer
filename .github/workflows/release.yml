@@ -11,7 +11,10 @@ jobs:
   build_doc:
     needs: update_changelog
     name: Build documentation
-    uses: ./.github/workflows/template_doc.yml
+    uses: ./.github/workflows/template_publish_doc.yml
+    with:
+      release: true
+    secrets: inherit
   release:
     needs: build_doc
     name: Publish release on GitHub

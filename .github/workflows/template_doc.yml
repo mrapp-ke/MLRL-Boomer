@@ -20,7 +20,11 @@ on:
       ccache_key:
         required: false
         type: string
+      release:
+        required: false
+        type: boolean
 env:
+  RELEASE: ${{ inputs.release == true }}
   GPU_SUPPORT: disabled
 jobs:
   build_doc:
