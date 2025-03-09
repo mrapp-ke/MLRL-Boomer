@@ -1,0 +1,5 @@
+File head_complete.hpp
+======================
+
+.. doxygenfile:: head_complete.hpp
+   :project: common

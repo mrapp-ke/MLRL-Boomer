@@ -1,0 +1,5 @@
+File vector_statistic_decomposable_dense.hpp
+============================================
+
+.. doxygenfile:: vector_statistic_decomposable_dense.hpp
+   :project: boosting

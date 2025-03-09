@@ -1,0 +1,5 @@
+File feature_sampling_without_replacement.hpp
+=============================================
+
+.. doxygenfile:: feature_sampling_without_replacement.hpp
+   :project: common

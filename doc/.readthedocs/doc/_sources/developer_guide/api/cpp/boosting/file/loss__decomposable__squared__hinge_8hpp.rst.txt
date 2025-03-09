@@ -1,0 +1,5 @@
+File loss_decomposable_squared_hinge.hpp
+========================================
+
+.. doxygenfile:: loss_decomposable_squared_hinge.hpp
+   :project: boosting

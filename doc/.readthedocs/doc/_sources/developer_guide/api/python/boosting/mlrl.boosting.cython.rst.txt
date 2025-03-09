@@ -1,0 +1,24 @@
+mlrl.boosting.cython package
+============================
+
+.. automodule:: mlrl.boosting.cython
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.boosting.cython.head_type
+   mlrl.boosting.cython.info
+   mlrl.boosting.cython.label_binning
+   mlrl.boosting.cython.learner
+   mlrl.boosting.cython.learner_boomer
+   mlrl.boosting.cython.learner_classification
+   mlrl.boosting.cython.post_processor
+   mlrl.boosting.cython.prediction
+   mlrl.boosting.cython.probability_calibration
+   mlrl.boosting.cython.regularization

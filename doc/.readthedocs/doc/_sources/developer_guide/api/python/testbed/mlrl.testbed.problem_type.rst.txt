@@ -1,0 +1,7 @@
+mlrl.testbed.problem\_type module
+=================================
+
+.. automodule:: mlrl.testbed.problem_type
+   :members:
+   :show-inheritance:
+   :undoc-members:

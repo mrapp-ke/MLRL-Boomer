@@ -1,0 +1,36 @@
+mlrl.testbed package
+====================
+
+.. automodule:: mlrl.testbed
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed.characteristics
+   mlrl.testbed.data
+   mlrl.testbed.data_characteristics
+   mlrl.testbed.data_splitting
+   mlrl.testbed.evaluation
+   mlrl.testbed.experiments
+   mlrl.testbed.format
+   mlrl.testbed.info
+   mlrl.testbed.io
+   mlrl.testbed.label_vectors
+   mlrl.testbed.main
+   mlrl.testbed.model_characteristics
+   mlrl.testbed.models
+   mlrl.testbed.output_writer
+   mlrl.testbed.parameters
+   mlrl.testbed.persistence
+   mlrl.testbed.prediction_characteristics
+   mlrl.testbed.prediction_scope
+   mlrl.testbed.predictions
+   mlrl.testbed.probability_calibration
+   mlrl.testbed.problem_type
+   mlrl.testbed.runnables

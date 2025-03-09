@@ -1,0 +1,5 @@
+File head_type_partial_fixed.hpp
+================================
+
+.. doxygenfile:: head_type_partial_fixed.hpp
+   :project: boosting

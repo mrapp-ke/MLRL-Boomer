@@ -1,0 +1,5 @@
+File feature_type_ordinal.hpp
+=============================
+
+.. doxygenfile:: feature_type_ordinal.hpp
+   :project: common

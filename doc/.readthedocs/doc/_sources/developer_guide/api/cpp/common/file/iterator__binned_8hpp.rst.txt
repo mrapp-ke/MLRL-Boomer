@@ -1,0 +1,5 @@
+File iterator_binned.hpp
+========================
+
+.. doxygenfile:: iterator_binned.hpp
+   :project: common

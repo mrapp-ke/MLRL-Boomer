@@ -1,0 +1,5 @@
+File feature_binning_no.hpp
+===========================
+
+.. doxygenfile:: feature_binning_no.hpp
+   :project: common

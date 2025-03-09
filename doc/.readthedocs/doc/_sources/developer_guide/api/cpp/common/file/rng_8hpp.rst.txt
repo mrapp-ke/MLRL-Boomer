@@ -1,0 +1,5 @@
+File rng.hpp
+============
+
+.. doxygenfile:: rng.hpp
+   :project: common

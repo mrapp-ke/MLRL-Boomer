@@ -1,0 +1,5 @@
+File output_sampling_round_robin.hpp
+====================================
+
+.. doxygenfile:: output_sampling_round_robin.hpp
+   :project: common
