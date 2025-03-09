@@ -1,0 +1,7 @@
+mlrl.seco.seco\_learners module
+===============================
+
+.. automodule:: mlrl.seco.seco_learners
+   :members:
+   :show-inheritance:
+   :undoc-members:

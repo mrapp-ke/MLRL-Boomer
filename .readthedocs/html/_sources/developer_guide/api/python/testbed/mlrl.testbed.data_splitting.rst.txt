@@ -1,0 +1,7 @@
+mlrl.testbed.data\_splitting module
+===================================
+
+.. automodule:: mlrl.testbed.data_splitting
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+mlrl.boosting.cython.prediction module
+======================================
+
+.. automodule:: mlrl.boosting.cython.prediction
+   :members:
+   :show-inheritance:
+   :undoc-members:
