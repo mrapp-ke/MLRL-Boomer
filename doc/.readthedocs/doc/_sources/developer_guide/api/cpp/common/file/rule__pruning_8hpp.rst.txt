@@ -1,5 +1,0 @@
-File rule_pruning.hpp
-=====================
-
-.. doxygenfile:: rule_pruning.hpp
-   :project: common

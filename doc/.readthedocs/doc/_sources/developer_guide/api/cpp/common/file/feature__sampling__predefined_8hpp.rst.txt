@@ -1,5 +1,0 @@
-File feature_sampling_predefined.hpp
-====================================
-
-.. doxygenfile:: feature_sampling_predefined.hpp
-   :project: common

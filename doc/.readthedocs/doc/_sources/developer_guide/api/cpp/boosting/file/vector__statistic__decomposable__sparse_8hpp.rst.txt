@@ -1,5 +1,0 @@
-File vector_statistic_decomposable_sparse.hpp
-=============================================
-
-.. doxygenfile:: vector_statistic_decomposable_sparse.hpp
-   :project: boosting

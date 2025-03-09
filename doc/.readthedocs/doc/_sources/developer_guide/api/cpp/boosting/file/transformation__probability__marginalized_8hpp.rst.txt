@@ -1,5 +1,0 @@
-File transformation_probability_marginalized.hpp
-================================================
-
-.. doxygenfile:: transformation_probability_marginalized.hpp
-   :project: boosting

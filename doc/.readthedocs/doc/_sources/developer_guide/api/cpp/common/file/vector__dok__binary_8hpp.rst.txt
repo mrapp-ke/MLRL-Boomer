@@ -1,5 +1,0 @@
-File vector_dok_binary.hpp
-==========================
-
-.. doxygenfile:: vector_dok_binary.hpp
-   :project: common

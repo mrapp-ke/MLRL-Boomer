@@ -1,7 +1,0 @@
-mlrl.boosting.boosting\_learners module
-=======================================
-
-.. automodule:: mlrl.boosting.boosting_learners
-   :members:
-   :show-inheritance:
-   :undoc-members:

@@ -1,7 +1,0 @@
-mlrl.common.cython.partition\_sampling module
-=============================================
-
-.. automodule:: mlrl.common.cython.partition_sampling
-   :members:
-   :show-inheritance:
-   :undoc-members:

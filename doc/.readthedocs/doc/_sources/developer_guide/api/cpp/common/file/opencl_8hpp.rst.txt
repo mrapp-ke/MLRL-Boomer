@@ -1,5 +1,0 @@
-File opencl.hpp
-===============
-
-.. doxygenfile:: opencl.hpp
-   :project: common

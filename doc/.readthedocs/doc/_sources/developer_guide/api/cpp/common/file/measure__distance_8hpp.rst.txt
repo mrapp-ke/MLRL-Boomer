@@ -1,5 +1,0 @@
-File measure_distance.hpp
-=========================
-
-.. doxygenfile:: measure_distance.hpp
-   :project: common

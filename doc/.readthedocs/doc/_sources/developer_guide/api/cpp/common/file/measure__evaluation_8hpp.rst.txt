@@ -1,5 +1,0 @@
-File measure_evaluation.hpp
-===========================
-
-.. doxygenfile:: measure_evaluation.hpp
-   :project: common

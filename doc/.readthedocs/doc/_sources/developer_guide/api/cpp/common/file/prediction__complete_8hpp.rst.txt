@@ -1,5 +1,0 @@
-File prediction_complete.hpp
-============================
-
-.. doxygenfile:: prediction_complete.hpp
-   :project: common

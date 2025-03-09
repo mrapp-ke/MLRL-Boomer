@@ -1,5 +1,0 @@
-File transformation_probability.hpp
-===================================
-
-.. doxygenfile:: transformation_probability.hpp
-   :project: boosting

@@ -1,5 +1,0 @@
-File view_vector_binned.hpp
-===========================
-
-.. doxygenfile:: view_vector_binned.hpp
-   :project: common

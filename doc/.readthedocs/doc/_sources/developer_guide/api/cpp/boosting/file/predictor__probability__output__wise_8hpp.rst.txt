@@ -1,5 +1,0 @@
-File predictor_probability_output_wise.hpp
-==========================================
-
-.. doxygenfile:: predictor_probability_output_wise.hpp
-   :project: boosting

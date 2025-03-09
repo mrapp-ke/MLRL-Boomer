@@ -1,5 +1,0 @@
-File feature_binning_equal_frequency.hpp
-========================================
-
-.. doxygenfile:: feature_binning_equal_frequency.hpp
-   :project: common

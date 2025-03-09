@@ -1,5 +1,0 @@
-File view_matrix.hpp
-====================
-
-.. doxygenfile:: view_matrix.hpp
-   :project: common

@@ -1,5 +1,0 @@
-File label_binning_equal_width.hpp
-==================================
-
-.. doxygenfile:: label_binning_equal_width.hpp
-   :project: boosting

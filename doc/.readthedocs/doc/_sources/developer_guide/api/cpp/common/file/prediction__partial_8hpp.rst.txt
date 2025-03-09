@@ -1,5 +1,0 @@
-File prediction_partial.hpp
-===========================
-
-.. doxygenfile:: prediction_partial.hpp
-   :project: common

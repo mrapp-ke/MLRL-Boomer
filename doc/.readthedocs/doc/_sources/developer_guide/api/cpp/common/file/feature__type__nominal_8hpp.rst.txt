@@ -1,5 +1,0 @@
-File feature_type_nominal.hpp
-=============================
-
-.. doxygenfile:: feature_type_nominal.hpp
-   :project: common

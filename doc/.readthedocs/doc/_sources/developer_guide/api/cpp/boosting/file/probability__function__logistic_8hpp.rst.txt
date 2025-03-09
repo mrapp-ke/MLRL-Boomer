@@ -1,5 +1,0 @@
-File probability_function_logistic.hpp
-======================================
-
-.. doxygenfile:: probability_function_logistic.hpp
-   :project: boosting

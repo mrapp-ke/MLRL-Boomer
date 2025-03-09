@@ -1,5 +1,0 @@
-File iterator_forward_sparse_binary.hpp
-=======================================
-
-.. doxygenfile:: iterator_forward_sparse_binary.hpp
-   :project: common

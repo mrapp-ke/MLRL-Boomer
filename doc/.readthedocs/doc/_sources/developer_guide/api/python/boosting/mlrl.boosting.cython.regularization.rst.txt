@@ -1,7 +1,0 @@
-mlrl.boosting.cython.regularization module
-==========================================
-
-.. automodule:: mlrl.boosting.cython.regularization
-   :members:
-   :show-inheritance:
-   :undoc-members:

@@ -1,5 +1,0 @@
-File iterators.hpp
-==================
-
-.. doxygenfile:: iterators.hpp
-   :project: common

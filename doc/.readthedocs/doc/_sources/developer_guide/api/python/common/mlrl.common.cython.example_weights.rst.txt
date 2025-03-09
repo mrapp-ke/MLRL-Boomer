@@ -1,7 +1,0 @@
-mlrl.common.cython.example\_weights module
-==========================================
-
-.. automodule:: mlrl.common.cython.example_weights
-   :members:
-   :show-inheritance:
-   :undoc-members:

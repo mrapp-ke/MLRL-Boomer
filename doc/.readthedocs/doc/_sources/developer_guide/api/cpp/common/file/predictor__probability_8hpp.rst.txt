@@ -1,5 +1,0 @@
-File predictor_probability.hpp
-==============================
-
-.. doxygenfile:: predictor_probability.hpp
-   :project: common

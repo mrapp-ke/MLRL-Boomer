@@ -1,5 +1,0 @@
-File feature_vector.hpp
-=======================
-
-.. doxygenfile:: feature_vector.hpp
-   :project: common

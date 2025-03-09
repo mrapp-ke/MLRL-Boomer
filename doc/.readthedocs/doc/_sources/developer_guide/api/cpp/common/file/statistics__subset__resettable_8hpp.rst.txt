@@ -1,5 +1,0 @@
-File statistics_subset_resettable.hpp
-=====================================
-
-.. doxygenfile:: statistics_subset_resettable.hpp
-   :project: common

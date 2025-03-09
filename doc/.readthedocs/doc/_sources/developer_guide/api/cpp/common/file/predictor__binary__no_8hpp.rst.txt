@@ -1,5 +1,0 @@
-File predictor_binary_no.hpp
-============================
-
-.. doxygenfile:: predictor_binary_no.hpp
-   :project: common

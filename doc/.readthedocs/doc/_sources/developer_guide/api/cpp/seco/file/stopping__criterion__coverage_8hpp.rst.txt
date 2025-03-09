@@ -1,5 +1,0 @@
-File stopping_criterion_coverage.hpp
-====================================
-
-.. doxygenfile:: stopping_criterion_coverage.hpp
-   :project: seco

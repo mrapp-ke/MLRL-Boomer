@@ -1,5 +1,0 @@
-File probability_function_marginal.hpp
-======================================
-
-.. doxygenfile:: probability_function_marginal.hpp
-   :project: boosting

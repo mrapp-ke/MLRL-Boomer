@@ -1,7 +1,0 @@
-mlrl.boosting.cython.learner module
-===================================
-
-.. automodule:: mlrl.boosting.cython.learner
-   :members:
-   :show-inheritance:
-   :undoc-members:

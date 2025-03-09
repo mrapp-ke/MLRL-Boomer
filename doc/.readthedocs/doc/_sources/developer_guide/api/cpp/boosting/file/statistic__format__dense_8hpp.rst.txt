@@ -1,5 +1,0 @@
-File statistic_format_dense.hpp
-===============================
-
-.. doxygenfile:: statistic_format_dense.hpp
-   :project: boosting

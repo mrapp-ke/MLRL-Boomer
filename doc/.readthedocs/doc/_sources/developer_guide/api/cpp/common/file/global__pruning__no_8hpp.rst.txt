@@ -1,5 +1,0 @@
-File global_pruning_no.hpp
-==========================
-
-.. doxygenfile:: global_pruning_no.hpp
-   :project: common

@@ -1,5 +1,0 @@
-File score_vector.hpp
-=====================
-
-.. doxygenfile:: score_vector.hpp
-   :project: common

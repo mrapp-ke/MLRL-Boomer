@@ -1,7 +1,0 @@
-mlrl.testbed.output\_writer module
-==================================
-
-.. automodule:: mlrl.testbed.output_writer
-   :members:
-   :show-inheritance:
-   :undoc-members:

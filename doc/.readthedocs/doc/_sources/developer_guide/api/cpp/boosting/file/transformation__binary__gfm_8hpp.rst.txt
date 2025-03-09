@@ -1,5 +1,0 @@
-File transformation_binary_gfm.hpp
-==================================
-
-.. doxygenfile:: transformation_binary_gfm.hpp
-   :project: boosting
