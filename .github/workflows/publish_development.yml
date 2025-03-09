@@ -4,11 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - cpp/subprojects/**/include/**
-      - cpp/subprojects/**/src/**
-      - python/subprojects/**/mlrl/**
-      - doc/**
 jobs:
   changes:
     name: Detect changes
@@ -24,12 +19,25 @@ jobs:
         id: filter
         with:
           filters: |
+            build_files: &build_files
+              - ./.github/workflows/publish_development.yml
             code: &code
+              - *build_files
+              - ./.github/workflows/template_publish.yml
+              - ./.github/workflows/template_publish_pure.yml
+              - ./.github/workflows/template_publish_platform.yml
+              - ./.github/workflows/template_publish_platform_linux.yml
+              - ./.github/workflows/template_publish_platform_macos.yml
+              - ./.github/workflows/template_publish_platform_windows.yml
               - cpp/subprojects/**/include/**
               - cpp/subprojects/**/src/**
               - python/subprojects/**/mlrl/**
             doc:
               - *code
+              - ./.github/workflows/template_publish_doc.yml
+              - ./.github/workflows/template_publish_doc_rtd.yml
+              - build_system/targets/documentation/rtd/*
+              - .readthedocs.yaml
               - doc/**
   update_development_version:
     needs: changes
@@ -56,12 +64,13 @@ jobs:
           git commit -m "[Bot] Update development version to $(cat .version-dev)."
           git push
   publish_doc:
-    name: Publish documentation
     needs: update_development_version
+    name: Publish documentation
     if: ${{ always() && !contains(github.event.head_commit.message, '[Bot]') && needs.changes.outputs.doc == 'true' }}
     uses: ./.github/workflows/template_publish_doc.yml
     secrets: inherit
   readthedocs_build:
+    needs: publish_doc
     name: Trigger readthedocs build
     uses: ./.github/workflows/template_publish_doc_rdt.yml
     secrets: inherit
