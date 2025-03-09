@@ -77,7 +77,7 @@ jobs:
   upload_to_pypi:
     needs: publish_packages
     name: Upload wheels to Test-PyPI
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       id-token: write
     steps:
