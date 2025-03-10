@@ -76,18 +76,18 @@ jobs:
       - build_doc
       - check_links
       - check_spelling
-    if: always()
+    if: ${{ always() && !cancelled() }}
     name: Test building documentation succeeded
     runs-on: ubuntu-24.04
     steps:
       - name: Check for success
         run: |-
-          if [[ "${{ needs.build_doc.result }}" != "success" ]]; then
+          if [[ "${{ needs.build_doc.result }}" == "failure" ]]; then
             exit 1
           fi
-          if [[ "${{ needs.check_links.result }}" != "success" ]]; then
+          if [[ "${{ needs.check_links.result }}" == "failure" ]]; then
             exit 1
           fi
-          if [[ "${{ needs.check_spelling.result }}" != "success" ]]; then
+          if [[ "${{ needs.check_spelling.result }}" == "failure" ]]; then
             exit 1
           fi
