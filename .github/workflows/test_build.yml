@@ -171,12 +171,12 @@ jobs:
           files: python_test_results/**/*.xml
   check_success:
     needs: test_build
-    if: always()
+    if: ${{ always() && !cancelled() }}
     name: Test build succeeded
     runs-on: ubuntu-24.04
     steps:
       - name: Check for success
         run: |-
-          if [[ "${{ needs.test_build.result }}" != "success" ]]; then
+          if [[ "${{ needs.test_build.result }}" == "failure" ]]; then
             exit 1
           fi

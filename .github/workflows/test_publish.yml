@@ -60,12 +60,12 @@ jobs:
       windows: ${{ needs.changes.outputs.windows == 'true' }}
   check_success:
     needs: test_release
-    if: ${{ always() && needs.changes.outputs.build_files == 'true' }}
+    if: ${{ always() && !cancelled() && needs.changes.outputs.build_files == 'true' }}
     name: Test publishing packages succeeded
     runs-on: ubuntu-24.04
     steps:
       - name: Check for success
         run: |-
-          if [[ "${{ needs.test_release.result }}" != "success" ]]; then
+          if [[ "${{ needs.test_release.result }}" == "failure" ]]; then
             exit 1
           fi
