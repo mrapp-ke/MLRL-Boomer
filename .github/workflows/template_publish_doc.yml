@@ -39,6 +39,7 @@ jobs:
           merge-multiple: true
       - name: Push documentation
         run: |-
+          git pull
           git add .readthedocs/
           git commit -m "Generate documentation."
           git push
