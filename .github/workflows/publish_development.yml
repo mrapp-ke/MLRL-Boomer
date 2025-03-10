@@ -72,11 +72,12 @@ jobs:
   readthedocs_build:
     needs: publish_doc
     name: Trigger readthedocs build
+    if: ${{ always() && !contains(github.event.head_commit.message, '[Bot]') && needs.changes.outputs.doc == 'true' }}
     uses: ./.github/workflows/template_publish_doc_rdt.yml
     secrets: inherit
   publish_packages:
-    name: Publish wheel packages
     needs: update_development_version
+    name: Publish wheel packages
     uses: ./.github/workflows/template_publish.yml
     with:
       linux: true
