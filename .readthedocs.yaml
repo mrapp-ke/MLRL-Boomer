@@ -6,4 +6,4 @@ build:
     python: latest
   commands:
     - mkdir --parents $READTHEDOCS_OUTPUT
-    - cp --recursive doc/.readthedocs/html $READTHEDOCS_OUTPUT
+    - cp --recursive .readthedocs/html/ $READTHEDOCS_OUTPUT
