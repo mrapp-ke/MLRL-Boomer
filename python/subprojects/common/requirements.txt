@@ -1,4 +1,4 @@
 numpy >= 2.2, < 2.3
 scikit-learn >= 1.6, < 1.7
 scipy >= 1.15, < 1.16
-setuptools >= 75.8, < 75.9
+setuptools >= 76.0, < 76.1
