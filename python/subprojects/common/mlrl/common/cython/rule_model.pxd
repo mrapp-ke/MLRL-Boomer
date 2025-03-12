@@ -114,6 +114,21 @@ cdef extern from "mlrl/common/model/head.hpp" nogil:
 
 cdef extern from "mlrl/common/model/head_complete.hpp" nogil:
 
+    cdef cppclass Complete32BitHeadImpl"CompleteHead<float32>"(IHead):
+
+        ctypedef float32* value_iterator
+
+        ctypedef const float32* value_const_iterator
+
+        # Functions:
+
+        uint32 getNumElements() const
+
+        value_iterator values_begin()
+
+        value_const_iterator values_cbegin() const
+
+
     cdef cppclass Complete64BitHeadImpl"CompleteHead<float64>"(IHead):
 
         ctypedef float64* value_iterator
@@ -130,6 +145,29 @@ cdef extern from "mlrl/common/model/head_complete.hpp" nogil:
 
 
 cdef extern from "mlrl/common/model/head_partial.hpp" nogil:
+
+    cdef cppclass Partial32BitHeadImpl"PartialHead<float32>"(IHead):
+
+        ctypedef float32* value_iterator
+
+        ctypedef const float32* value_const_iterator
+
+        ctypedef uint32* index_iterator
+
+        ctypedef const uint32* index_const_iterator
+
+        # Functions:
+
+        uint32 getNumElements() const
+
+        value_iterator values_begin()
+
+        value_const_iterator values_cbegin() const
+
+        index_iterator indices_begin()
+
+        index_const_iterator indices_cbegin() const
+
 
     cdef cppclass Partial64BitHeadImpl"PartialHead<float64>"(IHead):
 
@@ -158,7 +196,11 @@ ctypedef void (*EmptyBodyVisitor)(const EmptyBodyImpl&)
 
 ctypedef void (*ConjunctiveBodyVisitor)(const ConjunctiveBodyImpl&)
 
+ctypedef void (*Complete32BitHeadVisitor)(const Complete32BitHeadImpl&)
+
 ctypedef void (*Complete64BitHeadVisitor)(const Complete64BitHeadImpl&)
+
+ctypedef void (*Partial32BitHeadVisitor)(const Partial32BitHeadImpl&)
 
 ctypedef void (*Partial64BitHeadVisitor)(const Partial64BitHeadImpl&)
 
@@ -191,11 +233,14 @@ cdef extern from "mlrl/common/model/rule_list.hpp" nogil:
         bool isDefaultRuleTakingPrecedence() const
 
         void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                   Complete64BitHeadVisitor complete64BitHeadVisitor,
+                   Complete32BitHeadVisitor complete32BitHeadVisitor, Complete64BitHeadVisitor complete64BitHeadVisitor,
+                   Partial32BitHeadVisitor partial32BITHeadVisitor,
                    Partial64BitHeadVisitor partial64BITHeadVisitor) const
 
         void visitUsed(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                       Complete32BitHeadVisitor complete32BitHeadVisitor,
                        Complete64BitHeadVisitor complete64BitHeadVisitor,
+                       Partial32BitHeadVisitor partial32BitHeadVisitor,
                        Partial64BitHeadVisitor partial64BitHeadVisitor) const
 
 
@@ -215,9 +260,13 @@ cdef extern from *:
 
     typedef void (*ConjunctiveBodyCythonVisitor)(void*, const ConjunctiveBody&);
 
-    typedef void (*CompleteHeadCythonVisitor)(void*, const CompleteHead<float64>&);
+    typedef void (*Complete32BitHeadCythonVisitor)(void*, const CompleteHead<float32>&);
 
-    typedef void (*PartialHeadCythonVisitor)(void*, const PartialHead<float64>&);
+    typedef void (*Complete64BitHeadCythonVisitor)(void*, const CompleteHead<float64>&);
+
+    typedef void (*Partial32BitHeadCythonVisitor)(void*, const PartialHead<float32>&);
+
+    typedef void (*Partial64BitHeadCythonVisitor)(void*, const PartialHead<float64>&);
 
     static inline IBody::EmptyBodyVisitor wrapEmptyBodyVisitor(void* self, EmptyBodyCythonVisitor visitor) {
         return [=](const EmptyBody& body) {
@@ -232,15 +281,29 @@ cdef extern from *:
         };
     }
 
-    static inline IHead::CompleteHeadVisitor<float64> wrapComplete64BitHeadVisitor(void* self,
-                                                                                   CompleteHeadCythonVisitor visitor) {
+    static inline IHead::CompleteHeadVisitor<float32> wrapComplete32BitHeadVisitor(
+      void* self, Complete32BitHeadCythonVisitor visitor) {
+        return [=](const CompleteHead<float32>& head) {
+            visitor(self, head);
+        };
+    }
+
+    static inline IHead::CompleteHeadVisitor<float64> wrapComplete64BitHeadVisitor(
+      void* self, Complete64BitHeadCythonVisitor visitor) {
         return [=](const CompleteHead<float64>& head) {
             visitor(self, head);
         };
     }
 
-    static inline IHead::PartialHeadVisitor<float64> wrapPartial64BitHeadVisitor(void* self,
-                                                                                 PartialHeadCythonVisitor visitor) {
+    static inline IHead::PartialHeadVisitor<float32> wrapPartial32BitHeadVisitor(
+      void* self, Partial32BitHeadCythonVisitor visitor) {
+        return [=](const PartialHead<float32>& head) {
+            visitor(self, head);
+        };
+    }
+
+    static inline IHead::PartialHeadVisitor<float64> wrapPartial64BitHeadVisitor(
+      void* self, Partial64BitHeadCythonVisitor visitor) {
         return [=](const PartialHead<float64>& head) {
             visitor(self, head);
         };
@@ -251,17 +314,25 @@ cdef extern from *:
 
     ctypedef void (*ConjunctiveBodyCythonVisitor)(void*, const ConjunctiveBodyImpl&)
 
-    ctypedef void (*CompleteHeadCythonVisitor)(void*, const Complete64BitHeadImpl&)
+    ctypedef void (*Complete32BitHeadCythonVisitor)(void*, const Complete32BitHeadImpl&)
 
-    ctypedef void (*PartialHeadCythonVisitor)(void*, const Partial64BitHeadImpl&)
+    ctypedef void (*Complete64BitHeadCythonVisitor)(void*, const Complete64BitHeadImpl&)
+
+    ctypedef void (*Partial32BitHeadCythonVisitor)(void*, const Partial32BitHeadImpl&)
+
+    ctypedef void (*Partial64BitHeadCythonVisitor)(void*, const Partial64BitHeadImpl&)
 
     EmptyBodyVisitor wrapEmptyBodyVisitor(void* self, EmptyBodyCythonVisitor visitor)
 
     ConjunctiveBodyVisitor wrapConjunctiveBodyVisitor(void* self, ConjunctiveBodyCythonVisitor visitor)
 
-    Complete64BitHeadVisitor wrapComplete64BitHeadVisitor(void* self, CompleteHeadCythonVisitor visitor)
+    Complete32BitHeadVisitor wrapComplete32BitHeadVisitor(void* self, Complete32BitHeadCythonVisitor visitor)
 
-    Partial64BitHeadVisitor wrapPartial64BitHeadVisitor(void* self, PartialHeadCythonVisitor visitor)
+    Complete64BitHeadVisitor wrapComplete64BitHeadVisitor(void* self, Complete64BitHeadCythonVisitor visitor)
+
+    Partial32BitHeadVisitor wrapPartial32BitHeadVisitor(void* self, Partial32BitHeadCythonVisitor visitor)
+
+    Partial64BitHeadVisitor wrapPartial64BitHeadVisitor(void* self, Partial64BitHeadCythonVisitor visitor)
 
 
 cdef class EmptyBody:
@@ -336,17 +407,25 @@ cdef class RuleList(RuleModel):
 
     cdef __visit_conjunctive_body(self, const ConjunctiveBodyImpl& body)
 
-    cdef __visit_complete_head(self, const Complete64BitHeadImpl& head)
+    cdef __visit_complete_32bit_head(self, const Complete32BitHeadImpl& head)
 
-    cdef __visit_partial_head(self, const Partial64BitHeadImpl& head)
+    cdef __visit_complete_64bit_head(self, const Complete64BitHeadImpl& head)
+
+    cdef __visit_partial_32bit_head(self, const Partial32BitHeadImpl& head)
+
+    cdef __visit_partial_64bit_head(self, const Partial64BitHeadImpl& head)
 
     cdef __serialize_empty_body(self, const EmptyBodyImpl& body)
 
     cdef __serialize_conjunctive_body(self, const ConjunctiveBodyImpl& body)
 
-    cdef __serialize_complete_head(self, const Complete64BitHeadImpl& head)
+    cdef __serialize_complete_32bit_head(self, const Complete32BitHeadImpl& head)
 
-    cdef __serialize_partial_head(self, const Partial64BitHeadImpl& head)
+    cdef __serialize_complete_64bit_head(self, const Complete64BitHeadImpl& head)
+
+    cdef __serialize_partial_32bit_head(self, const Partial32BitHeadImpl& head)
+
+    cdef __serialize_partial_64bit_head(self, const Partial64BitHeadImpl& head)
 
     cdef unique_ptr[IBody] __deserialize_body(self, object body_state)
 
@@ -354,9 +433,13 @@ cdef class RuleList(RuleModel):
 
     cdef unique_ptr[IHead] __deserialize_head(self, object head_state)
 
-    cdef unique_ptr[IHead] __deserialize_complete_head(self, object head_state)
+    cdef unique_ptr[IHead] __deserialize_complete_32bit_head(self, object head_state)
 
-    cdef unique_ptr[IHead] __deserialize_partial_head(self, object head_state)
+    cdef unique_ptr[IHead] __deserialize_complete_64bit_head(self, object head_state)
+
+    cdef unique_ptr[IHead] __deserialize_partial_32bit_head(self, object head_state)
+
+    cdef unique_ptr[IHead] __deserialize_partial_64bit_head(self, object head_state)
 
 
 cdef inline RuleModel create_rule_model(unique_ptr[IRuleModel] rule_model_ptr):

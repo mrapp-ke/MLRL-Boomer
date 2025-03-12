@@ -40,9 +40,13 @@ class MLRLCOMMON_API IHead {
          * Invokes one of the given visitor functions, depending on which one is able to handle this particular type of
          * head.
          *
+         * @param complete32BitHeadVisitor  A visitor function for handling objects of the type `CompleteHead<float32>`
          * @param complete64BitHeadVisitor  A visitor function for handling objects of the type `CompleteHead<float64>`
+         * @param partial32BitHeadVisitor   A visitor function for handling objects of the type `PartialHead<float32>`
          * @param partial64BitHeadVisitor   A visitor function for handling objects of the type `PartialHead<float64>`
          */
-        virtual void visit(CompleteHeadVisitor<float64> complete64BitHeadVisitor,
+        virtual void visit(CompleteHeadVisitor<float32> complete32BitHeadVisitor,
+                           CompleteHeadVisitor<float64> complete64BitHeadVisitor,
+                           PartialHeadVisitor<float32> partial32BitHeadVisitor,
                            PartialHeadVisitor<float64> partial64BitHeadVisitor) const = 0;
 };
