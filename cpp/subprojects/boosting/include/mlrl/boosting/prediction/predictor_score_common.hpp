@@ -14,8 +14,8 @@
 
 namespace boosting {
 
-    static inline void applyHead(const CompleteHead& head, View<float64>::iterator iterator) {
-        CompleteHead::value_const_iterator valueIterator = head.values_cbegin();
+    static inline void applyHead(const CompleteHead<float64>& head, View<float64>::iterator iterator) {
+        CompleteHead<float64>::value_const_iterator valueIterator = head.values_cbegin();
         uint32 numElements = head.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -35,7 +35,7 @@ namespace boosting {
     }
 
     static inline void applyHead(const IHead& head, View<float64>::iterator scoreIterator) {
-        auto completeHeadVisitor = [=](const CompleteHead& head) {
+        auto completeHeadVisitor = [=](const CompleteHead<float64>& head) {
             applyHead(head, scoreIterator);
         };
         auto partialHeadVisitor = [=](const PartialHead& head) {
