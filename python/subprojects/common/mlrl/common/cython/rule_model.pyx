@@ -83,9 +83,10 @@ cdef class ConjunctiveBody:
         self.nominal_neq_thresholds = np.asarray(nominal_neq_thresholds) if nominal_neq_thresholds is not None else None
 
 
-cdef class CompleteHead:
+cdef class Complete64BitHead:
     """
-    A head of a rule that predicts for all available outputs.
+    A head of a rule that predicts numerical scores, represented by 64-bit floating point values, for all available
+    outputs.
     """
 
     def __cinit__(self, const float64[::1] scores not None):
@@ -95,9 +96,10 @@ cdef class CompleteHead:
         self.scores = np.asarray(scores)
 
 
-cdef class PartialHead:
+cdef class Partial64BitHead:
     """
-    A head of a rule that predicts for a subset of the available outputs.
+    A head of a rule that predicts numerical scores, represented by 64-bit floating point values, for a subset of the
+    available outputs.
     """
 
     def __cinit__(self, const uint32[::1] indices not None, const float64[::1] scores not None):
@@ -135,21 +137,22 @@ class RuleModelVisitor:
         pass
 
     @abstractmethod
-    def visit_complete_head(self, head: CompleteHead):
+    def visit_complete_64bit_head(self, head: Complete64BitHead):
         """
-        Must be implemented by subclasses in order to visit the heads of rules that predict for all available outputs.
+        Must be implemented by subclasses in order to visit the heads of rules that predict numerical scores,
+        represented by 64-bit floating point values, for all available outputs.
 
-        :param head: A `CompleteHead` to be visited
+        :param head: A `Complete64BitHead` to be visited
         """
         pass
 
     @abstractmethod
-    def visit_partial_head(self, head: PartialHead):
+    def visit_partial_64bit_head(self, head: Partial64BitHead):
         """
-        Must be implemented by subclasses in order to visit the heads of rules that predict for a subset of the
-        available outputs.
+        Must be implemented by subclasses in order to visit the heads of rules that predict numerical scores,
+        represented by 64-bit floating point values, for a subset of the available outputs.
 
-        :param head: A `PartialHead` to be visited
+        :param head: A `Partial64BitHead` to be visited
         """
         pass
 
@@ -267,13 +270,13 @@ cdef class RuleList(RuleModel):
     cdef __visit_complete_head(self, const Complete64BitHeadImpl& head):
         cdef uint32 num_elements = head.getNumElements()
         cdef const float64[::1] values = <float64[:num_elements]>head.values_cbegin()
-        self.visitor.visit_complete_head(CompleteHead.__new__(CompleteHead, values))
+        self.visitor.visit_complete_64bit_head(Complete64BitHead.__new__(Complete64BitHead, values))
 
     cdef __visit_partial_head(self, const Partial64BitHeadImpl& head):
         cdef uint32 num_elements = head.getNumElements()
         cdef const uint32[::1] indices = <uint32[:num_elements]>head.indices_cbegin()
         cdef const float64[::1] values = <float64[:num_elements]>head.values_cbegin()
-        self.visitor.visit_partial_head(PartialHead.__new__(PartialHead, indices, values))
+        self.visitor.visit_partial_64bit_head(Partial64BitHead.__new__(Partial64BitHead, indices, values))
 
     cdef __serialize_empty_body(self, const EmptyBodyImpl& body):
         cdef object body_state = None

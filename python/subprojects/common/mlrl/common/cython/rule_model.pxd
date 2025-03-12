@@ -297,14 +297,14 @@ cdef class ConjunctiveBody:
     cdef readonly npc.ndarray nominal_neq_thresholds
 
 
-cdef class CompleteHead:
+cdef class Complete64BitHead:
 
     # Attributes:
 
     cdef readonly npc.ndarray scores
 
 
-cdef class PartialHead:
+cdef class Partial64BitHead:
 
     # Attributes:
 

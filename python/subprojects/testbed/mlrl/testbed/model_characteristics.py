@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional
 
 import numpy as np
 
-from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBody, PartialHead, RuleModel, \
+from mlrl.common.cython.rule_model import Complete64BitHead, ConjunctiveBody, EmptyBody, Partial64BitHead, RuleModel, \
     RuleModelVisitor
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 from mlrl.common.options import Options
@@ -316,9 +316,9 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
             self.num_nominal_neq.append(
                 body.nominal_neq_indices.shape[0] if body.nominal_neq_indices is not None else 0)
 
-        def visit_complete_head(self, head: CompleteHead):
+        def visit_complete_64bit_head(self, head: Complete64BitHead):
             """
-            See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_complete_head`
+            See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_complete_64bit_head`
             """
             num_pos_predictions = np.count_nonzero(head.scores > 0)
             num_neg_predictions = head.scores.shape[0] - num_pos_predictions
@@ -330,9 +330,9 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                 self.num_pos_predictions.append(num_pos_predictions)
                 self.num_neg_predictions.append(num_neg_predictions)
 
-        def visit_partial_head(self, head: PartialHead):
+        def visit_partial_64bit_head(self, head: Partial64BitHead):
             """
-            See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_partial_head`
+            See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_partial_64bit_head`
             """
             num_pos_predictions = np.count_nonzero(head.scores > 0)
             num_neg_predictions = head.scores.shape[0] - num_pos_predictions
