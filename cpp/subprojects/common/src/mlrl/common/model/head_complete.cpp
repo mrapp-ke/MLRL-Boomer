@@ -25,9 +25,9 @@ typename CompleteHead<ScoreType>::value_const_iterator CompleteHead<ScoreType>::
 }
 
 template<typename ScoreType>
-void CompleteHead<ScoreType>::visit(CompleteHeadVisitor completeHeadVisitor,
-                                    PartialHeadVisitor partialHeadVisitor) const {
-    completeHeadVisitor(*this);
+void CompleteHead<ScoreType>::visit(CompleteHeadVisitor<float64> complete64BitHeadVisitor,
+                                    PartialHeadVisitor<float64> partial64BitHeadVisitor) const {
+    complete64BitHeadVisitor(*this);
 }
 
 template class CompleteHead<float64>;
