@@ -55,7 +55,7 @@ class MLRLCOMMON_API IRuleList : public IRuleModel {
          * @param emptyBodyVisitor        The visitor function for handling objects of the type `EmptyBody`
          * @param conjunctiveBodyVisitor  The visitor function for handling objects of the type `ConjunctiveBody`
          * @param completeHeadVisitor     The visitor function for handling objects of the type `CompleteHead<float64>`
-         * @param partialHeadVisitor      The visitor function for handling objects of the type `PartialHead`
+         * @param partialHeadVisitor      The visitor function for handling objects of the type `PartialHead<float64>`
          */
         virtual void visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
                            IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
@@ -69,7 +69,7 @@ class MLRLCOMMON_API IRuleList : public IRuleModel {
          * @param emptyBodyVisitor        The visitor function for handling objects of the type `EmptyBody`
          * @param conjunctiveBodyVisitor  The visitor function for handling objects of the type `ConjunctiveBody`
          * @param completeHeadVisitor     The visitor function for handling objects of the type `CompleteHead<float64>`
-         * @param partialHeadVisitor      The visitor function for handling objects of the type `PartialHead`
+         * @param partialHeadVisitor      The visitor function for handling objects of the type `PartialHead<float64>`
          */
         virtual void visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor,
                                IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
@@ -124,7 +124,8 @@ class RuleList final : public IRuleList {
                  * @param conjunctiveBodyVisitor  The visitor function for handling objects of type `ConjunctiveBody`
                  * @param completeHeadVisitor     The visitor function for handling objects of type
                  *                                `CompleteHead<float64>`
-                 * @param partialHeadVisitor      The visitor function for handling objects of type `PartialHead`
+                 * @param partialHeadVisitor      The visitor function for handling objects of type
+                 *                                `PartialHead<float64>`
                  */
                 void visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
                            IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,

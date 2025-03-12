@@ -269,7 +269,7 @@ cdef class RuleList(RuleModel):
         cdef const float64[::1] values = <float64[:num_elements]>head.values_cbegin()
         self.visitor.visit_complete_head(CompleteHead.__new__(CompleteHead, values))
 
-    cdef __visit_partial_head(self, const PartialHeadImpl& head):
+    cdef __visit_partial_head(self, const Partial64BitHeadImpl& head):
         cdef uint32 num_elements = head.getNumElements()
         cdef const uint32[::1] indices = <uint32[:num_elements]>head.indices_cbegin()
         cdef const float64[::1] values = <float64[:num_elements]>head.values_cbegin()
@@ -322,7 +322,7 @@ cdef class RuleList(RuleModel):
         cdef object rule_state = self.state[len(self.state) - 1]
         rule_state[1] = head_state
 
-    cdef __serialize_partial_head(self, const PartialHeadImpl& head):
+    cdef __serialize_partial_head(self, const Partial64BitHeadImpl& head):
         cdef uint32 num_elements = head.getNumElements()
         cdef object head_state = (np.asarray(<float64[:num_elements]>head.values_cbegin()),
                                   np.asarray(<uint32[:num_elements]>head.indices_cbegin()))
@@ -428,9 +428,9 @@ cdef class RuleList(RuleModel):
         cdef const float64[::1] scores = head_state[0]
         cdef const uint32[::1] indices = head_state[1]
         cdef uint32 num_elements = scores.shape[0]
-        cdef unique_ptr[PartialHeadImpl] head_ptr = make_unique[PartialHeadImpl](num_elements)
-        cdef PartialHeadImpl.value_iterator value_iterator = head_ptr.get().values_begin()
-        cdef PartialHeadImpl.index_iterator index_iterator = head_ptr.get().indices_begin()
+        cdef unique_ptr[Partial64BitHeadImpl] head_ptr = make_unique[Partial64BitHeadImpl](num_elements)
+        cdef Partial64BitHeadImpl.value_iterator value_iterator = head_ptr.get().values_begin()
+        cdef Partial64BitHeadImpl.index_iterator index_iterator = head_ptr.get().indices_begin()
         cdef uint32 i
 
         for i in range(num_elements):

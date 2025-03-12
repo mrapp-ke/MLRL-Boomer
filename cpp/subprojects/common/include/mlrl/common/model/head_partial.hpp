@@ -8,10 +8,13 @@
 
 /**
  * A head that contains a numerical score for a subset of the available outputs.
+ *
+ * @tparam ScoreType The type of the numerical scores
  */
-class MLRLCOMMON_API PartialHead final
-    : public IterableIndexedVectorDecorator<IndexedVectorDecorator<AllocatedVector<uint32>, AllocatedVector<float64>>>,
-      public IHead {
+template<typename ScoreType>
+class MLRLCOMMON_API PartialHead final : public IterableIndexedVectorDecorator<
+                                           IndexedVectorDecorator<AllocatedVector<uint32>, AllocatedVector<ScoreType>>>,
+                                         public IHead {
     public:
 
         /**
