@@ -35,13 +35,13 @@ namespace boosting {
     }
 
     static inline void applyHead(const IHead& head, View<float64>::iterator scoreIterator) {
-        auto completeHeadVisitor = [=](const CompleteHead<float64>& head) {
+        auto complete64BitHeadVisitor = [=](const CompleteHead<float64>& head) {
             applyHead(head, scoreIterator);
         };
-        auto partialHeadVisitor = [=](const PartialHead<float64>& head) {
+        auto partial64BitHeadVisitor = [=](const PartialHead<float64>& head) {
             applyHead(head, scoreIterator);
         };
-        head.visit(completeHeadVisitor, partialHeadVisitor);
+        head.visit(complete64BitHeadVisitor, partial64BitHeadVisitor);
     }
 
     static inline void applyRule(const RuleList::Rule& rule, View<const float32>::const_iterator featureValuesBegin,

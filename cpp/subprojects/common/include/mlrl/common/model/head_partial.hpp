@@ -22,5 +22,6 @@ class MLRLCOMMON_API PartialHead final : public IterableIndexedVectorDecorator<
          */
         PartialHead(uint32 numElements);
 
-        void visit(CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor) const override;
+        void visit(CompleteHeadVisitor<float64> complete64BitHeadVisitor,
+                   PartialHeadVisitor<float64> partial64BitHeadVisitor) const override;
 };

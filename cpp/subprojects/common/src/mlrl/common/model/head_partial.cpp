@@ -7,9 +7,9 @@ PartialHead<ScoreType>::PartialHead(uint32 numElements)
           AllocatedVector<uint32>(numElements), AllocatedVector<ScoreType>(numElements))) {}
 
 template<typename ScoreType>
-void PartialHead<ScoreType>::visit(CompleteHeadVisitor completeHeadVisitor,
-                                   PartialHeadVisitor partialHeadVisitor) const {
-    partialHeadVisitor(*this);
+void PartialHead<ScoreType>::visit(CompleteHeadVisitor<float64> complete64BitHeadVisitor,
+                                   PartialHeadVisitor<float64> partial64BitHeadVisitor) const {
+    partial64BitHeadVisitor(*this);
 }
 
 template class PartialHead<float64>;
