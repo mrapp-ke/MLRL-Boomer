@@ -8,8 +8,11 @@
 
 /**
  * A head that contains a numerical score for each available output.
+ *
+ * @tparam ScoreType The type of the numerical scores
  */
-class MLRLCOMMON_API CompleteHead final : public VectorDecorator<AllocatedVector<float64>>,
+template<typename ScoreType>
+class MLRLCOMMON_API CompleteHead final : public VectorDecorator<AllocatedVector<ScoreType>>,
                                           public IHead {
     public:
 
@@ -21,12 +24,12 @@ class MLRLCOMMON_API CompleteHead final : public VectorDecorator<AllocatedVector
         /**
          * An iterator that provides access to the scores the are contained by the head and allows to modify them.
          */
-        typedef View<float64>::iterator value_iterator;
+        typedef typename View<ScoreType>::iterator value_iterator;
 
         /**
          * An iterator that provides read-only access to the scores that are contained by the head.
          */
-        typedef View<float64>::const_iterator value_const_iterator;
+        typedef typename View<ScoreType>::const_iterator value_const_iterator;
 
         /**
          * Returns a `value_iterator` to the beginning of the scores that are contained by the head.

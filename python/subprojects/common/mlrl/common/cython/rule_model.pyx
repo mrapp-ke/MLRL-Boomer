@@ -264,7 +264,7 @@ cdef class RuleList(RuleModel):
                                     nominal_eq_indices, nominal_eq_thresholds, nominal_neq_indices,
                                     nominal_neq_thresholds))
 
-    cdef __visit_complete_head(self, const CompleteHeadImpl& head):
+    cdef __visit_complete_head(self, const Complete64BitHeadImpl& head):
         cdef uint32 num_elements = head.getNumElements()
         cdef const float64[::1] values = <float64[:num_elements]>head.values_cbegin()
         self.visitor.visit_complete_head(CompleteHead.__new__(CompleteHead, values))
@@ -316,7 +316,7 @@ cdef class RuleList(RuleModel):
         cdef object rule_state = [body_state, None]
         self.state.append(rule_state)
 
-    cdef __serialize_complete_head(self, const CompleteHeadImpl& head):
+    cdef __serialize_complete_head(self, const Complete64BitHeadImpl& head):
         cdef uint32 num_elements = head.getNumElements()
         cdef object head_state = (np.asarray(<float64[:num_elements]>head.values_cbegin()),)
         cdef object rule_state = self.state[len(self.state) - 1]
@@ -415,8 +415,8 @@ cdef class RuleList(RuleModel):
     cdef unique_ptr[IHead] __deserialize_complete_head(self, object head_state):
         cdef const float64[::1] scores = head_state[0]
         cdef uint32 num_elements = scores.shape[0]
-        cdef unique_ptr[CompleteHeadImpl] head_ptr = make_unique[CompleteHeadImpl](num_elements)
-        cdef CompleteHeadImpl.value_iterator value_iterator = head_ptr.get().values_begin()
+        cdef unique_ptr[Complete64BitHeadImpl] head_ptr = make_unique[Complete64BitHeadImpl](num_elements)
+        cdef Complete64BitHeadImpl.value_iterator value_iterator = head_ptr.get().values_begin()
         cdef uint32 i
 
         for i in range(num_elements):

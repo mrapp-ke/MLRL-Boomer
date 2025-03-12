@@ -1,24 +1,33 @@
 #include "mlrl/common/model/head_complete.hpp"
 
-CompleteHead::CompleteHead(uint32 numElements)
-    : VectorDecorator<AllocatedVector<float64>>(AllocatedVector<float64>(numElements)) {}
+template<typename ScoreType>
+CompleteHead<ScoreType>::CompleteHead(uint32 numElements)
+    : VectorDecorator<AllocatedVector<ScoreType>>(AllocatedVector<ScoreType>(numElements)) {}
 
-CompleteHead::value_iterator CompleteHead::values_begin() {
+template<typename ScoreType>
+typename CompleteHead<ScoreType>::value_iterator CompleteHead<ScoreType>::values_begin() {
     return this->view.begin();
 }
 
-CompleteHead::value_iterator CompleteHead::values_end() {
+template<typename ScoreType>
+typename CompleteHead<ScoreType>::value_iterator CompleteHead<ScoreType>::values_end() {
     return this->view.end();
 }
 
-CompleteHead::value_const_iterator CompleteHead::values_cbegin() const {
+template<typename ScoreType>
+typename CompleteHead<ScoreType>::value_const_iterator CompleteHead<ScoreType>::values_cbegin() const {
     return this->view.cbegin();
 }
 
-CompleteHead::value_const_iterator CompleteHead::values_cend() const {
+template<typename ScoreType>
+typename CompleteHead<ScoreType>::value_const_iterator CompleteHead<ScoreType>::values_cend() const {
     return this->view.cend();
 }
 
-void CompleteHead::visit(CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor) const {
+template<typename ScoreType>
+void CompleteHead<ScoreType>::visit(CompleteHeadVisitor completeHeadVisitor,
+                                    PartialHeadVisitor partialHeadVisitor) const {
     completeHeadVisitor(*this);
 }
+
+template class CompleteHead<float64>;
