@@ -23,9 +23,9 @@ namespace seco {
         }
     }
 
-    static inline void applyHead(const PartialHead& head, View<uint8>::iterator iterator, BitVector& mask) {
-        PartialHead::value_const_iterator valueIterator = head.values_cbegin();
-        PartialHead::index_const_iterator indexIterator = head.indices_cbegin();
+    static inline void applyHead(const PartialHead<float64>& head, View<uint8>::iterator iterator, BitVector& mask) {
+        PartialHead<float64>::value_const_iterator valueIterator = head.values_cbegin();
+        PartialHead<float64>::index_const_iterator indexIterator = head.indices_cbegin();
         uint32 numElements = head.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -43,7 +43,7 @@ namespace seco {
         auto completeHeadVisitor = [&](const CompleteHead<float64>& head) {
             applyHead(head, scoreIterator, mask);
         };
-        auto partialHeadVisitor = [&](const PartialHead& head) {
+        auto partialHeadVisitor = [&](const PartialHead<float64>& head) {
             applyHead(head, scoreIterator, mask);
         };
         head.visit(completeHeadVisitor, partialHeadVisitor);
@@ -281,7 +281,7 @@ namespace seco {
                       createNonZeroIndexForwardIterator(head.values_cend(), head.values_cend()), IndexIterator(0),
                       predictionRow, numLabels);
         };
-        auto partialHeadVisitor = [&](const PartialHead& head) {
+        auto partialHeadVisitor = [&](const PartialHead<float64>& head) {
             applyHead(createNonZeroIndexForwardIterator(head.values_cbegin(), head.values_cend()),
                       createNonZeroIndexForwardIterator(head.values_cend(), head.values_cend()), head.indices_cbegin(),
                       predictionRow, numLabels);

@@ -131,7 +131,7 @@ cdef extern from "mlrl/common/model/head_complete.hpp" nogil:
 
 cdef extern from "mlrl/common/model/head_partial.hpp" nogil:
 
-    cdef cppclass PartialHeadImpl"PartialHead"(IHead):
+    cdef cppclass Partial64BitHeadImpl"PartialHead<float64>"(IHead):
 
         ctypedef float64* value_iterator
 
@@ -160,7 +160,7 @@ ctypedef void (*ConjunctiveBodyVisitor)(const ConjunctiveBodyImpl&)
 
 ctypedef void (*CompleteHeadVisitor)(const Complete64BitHeadImpl&)
 
-ctypedef void (*PartialHeadVisitor)(const PartialHeadImpl&)
+ctypedef void (*PartialHeadVisitor)(const Partial64BitHeadImpl&)
 
 
 cdef extern from "mlrl/common/model/rule_model.hpp" nogil:
@@ -215,7 +215,7 @@ cdef extern from *:
 
     typedef void (*CompleteHeadCythonVisitor)(void*, const CompleteHead<float64>&);
 
-    typedef void (*PartialHeadCythonVisitor)(void*, const PartialHead&);
+    typedef void (*PartialHeadCythonVisitor)(void*, const PartialHead<float64>&);
 
     static inline IBody::EmptyBodyVisitor wrapEmptyBodyVisitor(void* self, EmptyBodyCythonVisitor visitor) {
         return [=](const EmptyBody& body) {
@@ -237,7 +237,7 @@ cdef extern from *:
     }
 
     static inline IHead::PartialHeadVisitor wrapPartialHeadVisitor(void* self, PartialHeadCythonVisitor visitor) {
-        return [=](const PartialHead& head) {
+        return [=](const PartialHead<float64>& head) {
             visitor(self, head);
         };
     }
@@ -249,7 +249,7 @@ cdef extern from *:
 
     ctypedef void (*CompleteHeadCythonVisitor)(void*, const Complete64BitHeadImpl&)
 
-    ctypedef void (*PartialHeadCythonVisitor)(void*, const PartialHeadImpl&)
+    ctypedef void (*PartialHeadCythonVisitor)(void*, const Partial64BitHeadImpl&)
 
     EmptyBodyVisitor wrapEmptyBodyVisitor(void* self, EmptyBodyCythonVisitor visitor)
 
@@ -334,7 +334,7 @@ cdef class RuleList(RuleModel):
 
     cdef __visit_complete_head(self, const Complete64BitHeadImpl& head)
 
-    cdef __visit_partial_head(self, const PartialHeadImpl& head)
+    cdef __visit_partial_head(self, const Partial64BitHeadImpl& head)
 
     cdef __serialize_empty_body(self, const EmptyBodyImpl& body)
 
@@ -342,7 +342,7 @@ cdef class RuleList(RuleModel):
 
     cdef __serialize_complete_head(self, const Complete64BitHeadImpl& head)
 
-    cdef __serialize_partial_head(self, const PartialHeadImpl& head)
+    cdef __serialize_partial_head(self, const Partial64BitHeadImpl& head)
 
     cdef unique_ptr[IBody] __deserialize_body(self, object body_state)
 

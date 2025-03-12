@@ -184,7 +184,7 @@ void PartialPrediction<ScoreType>::revertPrediction(uint32 statisticIndex) {
 template<typename ScoreType>
 std::unique_ptr<IHead> PartialPrediction<ScoreType>::createHead() const {
     uint32 numElements = this->getNumElements();
-    std::unique_ptr<PartialHead> headPtr = std::make_unique<PartialHead>(numElements);
+    std::unique_ptr<PartialHead<float64>> headPtr = std::make_unique<PartialHead<float64>>(numElements);
     util::copyView(this->values_cbegin(), headPtr->values_begin(), numElements);
     util::copyView(this->indices_cbegin(), headPtr->indices_begin(), numElements);
     return headPtr;
