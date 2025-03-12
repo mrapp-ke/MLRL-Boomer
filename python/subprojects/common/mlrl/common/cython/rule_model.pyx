@@ -460,8 +460,8 @@ cdef class RuleList(RuleModel):
         self.rule_list_ptr.get().visit(
             wrapEmptyBodyVisitor(<void*>self, <EmptyBodyCythonVisitor>self.__visit_empty_body),
             wrapConjunctiveBodyVisitor(<void*>self, <ConjunctiveBodyCythonVisitor>self.__visit_conjunctive_body),
-            wrapCompleteHeadVisitor(<void*>self, <CompleteHeadCythonVisitor>self.__visit_complete_head),
-            wrapPartialHeadVisitor(<void*>self, <PartialHeadCythonVisitor>self.__visit_partial_head))
+            wrapComplete64BitHeadVisitor(<void*>self, <CompleteHeadCythonVisitor>self.__visit_complete_head),
+            wrapPartial64BitHeadVisitor(<void*>self, <PartialHeadCythonVisitor>self.__visit_partial_head))
         self.visitor = None
 
     def visit_used(self, visitor: RuleModelVisitor):
@@ -469,8 +469,8 @@ cdef class RuleList(RuleModel):
         self.rule_list_ptr.get().visitUsed(
             wrapEmptyBodyVisitor(<void*>self, <EmptyBodyCythonVisitor>self.__visit_empty_body),
             wrapConjunctiveBodyVisitor(<void*>self, <ConjunctiveBodyCythonVisitor>self.__visit_conjunctive_body),
-            wrapCompleteHeadVisitor(<void*>self, <CompleteHeadCythonVisitor>self.__visit_complete_head),
-            wrapPartialHeadVisitor(<void*>self, <PartialHeadCythonVisitor>self.__visit_partial_head))
+            wrapComplete64BitHeadVisitor(<void*>self, <CompleteHeadCythonVisitor>self.__visit_complete_head),
+            wrapPartial64BitHeadVisitor(<void*>self, <PartialHeadCythonVisitor>self.__visit_partial_head))
         self.visitor = None
 
     def __reduce__(self):
@@ -478,8 +478,8 @@ cdef class RuleList(RuleModel):
         self.rule_list_ptr.get().visit(
             wrapEmptyBodyVisitor(<void*>self, <EmptyBodyCythonVisitor>self.__serialize_empty_body),
             wrapConjunctiveBodyVisitor(<void*>self, <ConjunctiveBodyCythonVisitor>self.__serialize_conjunctive_body),
-            wrapCompleteHeadVisitor(<void*>self, <CompleteHeadCythonVisitor>self.__serialize_complete_head),
-            wrapPartialHeadVisitor(<void*>self, <PartialHeadCythonVisitor>self.__serialize_partial_head))
+            wrapComplete64BitHeadVisitor(<void*>self, <CompleteHeadCythonVisitor>self.__serialize_complete_head),
+            wrapPartial64BitHeadVisitor(<void*>self, <PartialHeadCythonVisitor>self.__serialize_partial_head))
         cdef bint default_rule_takes_precedence = self.rule_list_ptr.get().isDefaultRuleTakingPrecedence()
         cdef uint32 num_used_rules = self.rule_list_ptr.get().getNumUsedRules()
         cdef object state = (SERIALIZATION_VERSION, (self.state, default_rule_takes_precedence, num_used_rules))

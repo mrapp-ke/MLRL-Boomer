@@ -40,13 +40,13 @@ namespace seco {
     }
 
     static inline void applyHead(const IHead& head, View<uint8>::iterator scoreIterator, BitVector& mask) {
-        auto completeHeadVisitor = [&](const CompleteHead<float64>& head) {
+        auto complete64BitHeadVisitor = [&](const CompleteHead<float64>& head) {
             applyHead(head, scoreIterator, mask);
         };
-        auto partialHeadVisitor = [&](const PartialHead<float64>& head) {
+        auto partial64BitHeadVisitor = [&](const PartialHead<float64>& head) {
             applyHead(head, scoreIterator, mask);
         };
-        head.visit(completeHeadVisitor, partialHeadVisitor);
+        head.visit(complete64BitHeadVisitor, partial64BitHeadVisitor);
     }
 
     static inline void predictForExampleInternally(const CContiguousView<const float32>& featureMatrix,
@@ -276,17 +276,17 @@ namespace seco {
     }
 
     static inline void applyHead(const IHead& head, BinaryLilMatrix::row predictionRow, uint32 numLabels) {
-        auto completeHeadVisitor = [&](const CompleteHead<float64>& head) {
+        auto complete64BitHeadVisitor = [&](const CompleteHead<float64>& head) {
             applyHead(createNonZeroIndexForwardIterator(head.values_cbegin(), head.values_cend()),
                       createNonZeroIndexForwardIterator(head.values_cend(), head.values_cend()), IndexIterator(0),
                       predictionRow, numLabels);
         };
-        auto partialHeadVisitor = [&](const PartialHead<float64>& head) {
+        auto partial64BitHeadVisitor = [&](const PartialHead<float64>& head) {
             applyHead(createNonZeroIndexForwardIterator(head.values_cbegin(), head.values_cend()),
                       createNonZeroIndexForwardIterator(head.values_cend(), head.values_cend()), head.indices_cbegin(),
                       predictionRow, numLabels);
         };
-        head.visit(completeHeadVisitor, partialHeadVisitor);
+        head.visit(complete64BitHeadVisitor, partial64BitHeadVisitor);
     }
 
     static inline void predictForExampleInternally(const CContiguousView<const float32>& featureMatrix,

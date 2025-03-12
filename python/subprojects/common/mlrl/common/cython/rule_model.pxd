@@ -158,9 +158,9 @@ ctypedef void (*EmptyBodyVisitor)(const EmptyBodyImpl&)
 
 ctypedef void (*ConjunctiveBodyVisitor)(const ConjunctiveBodyImpl&)
 
-ctypedef void (*CompleteHeadVisitor)(const Complete64BitHeadImpl&)
+ctypedef void (*Complete64BitHeadVisitor)(const Complete64BitHeadImpl&)
 
-ctypedef void (*PartialHeadVisitor)(const Partial64BitHeadImpl&)
+ctypedef void (*Partial64BitHeadVisitor)(const Partial64BitHeadImpl&)
 
 
 cdef extern from "mlrl/common/model/rule_model.hpp" nogil:
@@ -191,10 +191,12 @@ cdef extern from "mlrl/common/model/rule_list.hpp" nogil:
         bool isDefaultRuleTakingPrecedence() const
 
         void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                   CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor) const
+                   Complete64BitHeadVisitor complete64BitHeadVisitor,
+                   Partial64BitHeadVisitor partial64BITHeadVisitor) const
 
         void visitUsed(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                       CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor) const
+                       Complete64BitHeadVisitor complete64BitHeadVisitor,
+                       Partial64BitHeadVisitor partial64BitHeadVisitor) const
 
 
     unique_ptr[IRuleList] createRuleList(bool defaultRuleTakesPrecedence)
@@ -230,13 +232,15 @@ cdef extern from *:
         };
     }
 
-    static inline IHead::CompleteHeadVisitor wrapCompleteHeadVisitor(void* self, CompleteHeadCythonVisitor visitor) {
+    static inline IHead::CompleteHeadVisitor<float64> wrapComplete64BitHeadVisitor(void* self,
+                                                                                   CompleteHeadCythonVisitor visitor) {
         return [=](const CompleteHead<float64>& head) {
             visitor(self, head);
         };
     }
 
-    static inline IHead::PartialHeadVisitor wrapPartialHeadVisitor(void* self, PartialHeadCythonVisitor visitor) {
+    static inline IHead::PartialHeadVisitor<float64> wrapPartial64BitHeadVisitor(void* self,
+                                                                                 PartialHeadCythonVisitor visitor) {
         return [=](const PartialHead<float64>& head) {
             visitor(self, head);
         };
@@ -255,9 +259,9 @@ cdef extern from *:
 
     ConjunctiveBodyVisitor wrapConjunctiveBodyVisitor(void* self, ConjunctiveBodyCythonVisitor visitor)
 
-    CompleteHeadVisitor wrapCompleteHeadVisitor(void* self, CompleteHeadCythonVisitor visitor)
+    Complete64BitHeadVisitor wrapComplete64BitHeadVisitor(void* self, CompleteHeadCythonVisitor visitor)
 
-    PartialHeadVisitor wrapPartialHeadVisitor(void* self, PartialHeadCythonVisitor visitor)
+    Partial64BitHeadVisitor wrapPartial64BitHeadVisitor(void* self, PartialHeadCythonVisitor visitor)
 
 
 cdef class EmptyBody:
