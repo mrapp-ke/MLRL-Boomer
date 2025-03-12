@@ -52,10 +52,10 @@ class MLRLCOMMON_API IRuleList : public IRuleModel {
          * Invokes some of the given visitor functions, depending on which ones are able to handle the bodies and heads
          * of all rules that are contained in this model, including the default rule, if available.
          *
-         * @param emptyBodyVisitor          The visitor function for handling objects of the type `EmptyBody`
-         * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
-         * @param completeHeadVisitor       The visitor function for handling objects of the type `CompleteHead`
-         * @param partialHeadVisitor        The visitor function for handling objects of the type `PartialHead`
+         * @param emptyBodyVisitor        The visitor function for handling objects of the type `EmptyBody`
+         * @param conjunctiveBodyVisitor  The visitor function for handling objects of the type `ConjunctiveBody`
+         * @param completeHeadVisitor     The visitor function for handling objects of the type `CompleteHead<float64>`
+         * @param partialHeadVisitor      The visitor function for handling objects of the type `PartialHead`
          */
         virtual void visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
                            IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
@@ -66,10 +66,10 @@ class MLRLCOMMON_API IRuleList : public IRuleModel {
          * Invokes some of the given visitor functions, depending on which ones are able to handle the bodies and heads
          * of all used rules that are contained in this model, including the default rule, if available.
          *
-         * @param emptyBodyVisitor          The visitor function for handling objects of the type `EmptyBody`
-         * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
-         * @param completeHeadVisitor       The visitor function for handling objects of the type `CompleteHead`
-         * @param partialHeadVisitor        The visitor function for handling objects of the type `PartialHead`
+         * @param emptyBodyVisitor        The visitor function for handling objects of the type `EmptyBody`
+         * @param conjunctiveBodyVisitor  The visitor function for handling objects of the type `ConjunctiveBody`
+         * @param completeHeadVisitor     The visitor function for handling objects of the type `CompleteHead<float64>`
+         * @param partialHeadVisitor      The visitor function for handling objects of the type `PartialHead`
          */
         virtual void visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor,
                                IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
@@ -120,10 +120,11 @@ class RuleList final : public IRuleList {
                  * Invokes some of the given visitor functions, depending on which ones are able to handle the rule's
                  * particular type of body and head.
                  *
-                 * @param emptyBodyVisitor          The visitor function for handling objects of type `EmptyBody`
-                 * @param conjunctiveBodyVisitor    The visitor function for handling objects of type `ConjunctiveBody`
-                 * @param completeHeadVisitor       The visitor function for handling objects of type `CompleteHead`
-                 * @param partialHeadVisitor        The visitor function for handling objects of type `PartialHead`
+                 * @param emptyBodyVisitor        The visitor function for handling objects of type `EmptyBody`
+                 * @param conjunctiveBodyVisitor  The visitor function for handling objects of type `ConjunctiveBody`
+                 * @param completeHeadVisitor     The visitor function for handling objects of type
+                 *                                `CompleteHead<float64>`
+                 * @param partialHeadVisitor      The visitor function for handling objects of type `PartialHead`
                  */
                 void visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
                            IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,

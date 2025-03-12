@@ -132,7 +132,7 @@ void CompletePrediction<ScoreType>::revertPrediction(uint32 statisticIndex) {
 template<typename ScoreType>
 std::unique_ptr<IHead> CompletePrediction<ScoreType>::createHead() const {
     uint32 numElements = this->getNumElements();
-    std::unique_ptr<CompleteHead> headPtr = std::make_unique<CompleteHead>(numElements);
+    std::unique_ptr<CompleteHead<float64>> headPtr = std::make_unique<CompleteHead<float64>>(numElements);
     util::copyView(this->values_cbegin(), headPtr->values_begin(), numElements);
     return headPtr;
 }

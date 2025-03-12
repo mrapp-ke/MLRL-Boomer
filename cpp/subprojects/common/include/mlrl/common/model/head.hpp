@@ -6,7 +6,9 @@
 #include <functional>
 
 // Forward declarations
+template<typename ScoreType>
 class CompleteHead;
+
 class PartialHead;
 
 /**
@@ -18,9 +20,9 @@ class MLRLCOMMON_API IHead {
         virtual ~IHead() {}
 
         /**
-         * A visitor function for handling objects of the type `CompleteHead`.
+         * A visitor function for handling objects of the type `CompleteHead<float64>`.
          */
-        typedef std::function<void(const CompleteHead&)> CompleteHeadVisitor;
+        typedef std::function<void(const CompleteHead<float64>&)> CompleteHeadVisitor;
 
         /**
          * A visitor function for handling objects of the type `PartialHead`.
@@ -31,7 +33,7 @@ class MLRLCOMMON_API IHead {
          * Invokes one of the given visitor functions, depending on which one is able to handle this particular type of
          * head.
          *
-         * @param completeHeadVisitor   The visitor function for handling objects of the type `CompleteHead`
+         * @param completeHeadVisitor   The visitor function for handling objects of the type `CompleteHead<float64>`
          * @param partialHeadVisitor    The visitor function for handling objects of the type `PartialHead`
          */
         virtual void visit(CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor) const = 0;

@@ -114,7 +114,7 @@ cdef extern from "mlrl/common/model/head.hpp" nogil:
 
 cdef extern from "mlrl/common/model/head_complete.hpp" nogil:
 
-    cdef cppclass CompleteHeadImpl"CompleteHead"(IHead):
+    cdef cppclass Complete64BitHeadImpl"CompleteHead<float64>"(IHead):
 
         ctypedef float64* value_iterator
 
@@ -158,7 +158,7 @@ ctypedef void (*EmptyBodyVisitor)(const EmptyBodyImpl&)
 
 ctypedef void (*ConjunctiveBodyVisitor)(const ConjunctiveBodyImpl&)
 
-ctypedef void (*CompleteHeadVisitor)(const CompleteHeadImpl&)
+ctypedef void (*CompleteHeadVisitor)(const Complete64BitHeadImpl&)
 
 ctypedef void (*PartialHeadVisitor)(const PartialHeadImpl&)
 
@@ -213,7 +213,7 @@ cdef extern from *:
 
     typedef void (*ConjunctiveBodyCythonVisitor)(void*, const ConjunctiveBody&);
 
-    typedef void (*CompleteHeadCythonVisitor)(void*, const CompleteHead&);
+    typedef void (*CompleteHeadCythonVisitor)(void*, const CompleteHead<float64>&);
 
     typedef void (*PartialHeadCythonVisitor)(void*, const PartialHead&);
 
@@ -231,7 +231,7 @@ cdef extern from *:
     }
 
     static inline IHead::CompleteHeadVisitor wrapCompleteHeadVisitor(void* self, CompleteHeadCythonVisitor visitor) {
-        return [=](const CompleteHead& head) {
+        return [=](const CompleteHead<float64>& head) {
             visitor(self, head);
         };
     }
@@ -247,7 +247,7 @@ cdef extern from *:
 
     ctypedef void (*ConjunctiveBodyCythonVisitor)(void*, const ConjunctiveBodyImpl&)
 
-    ctypedef void (*CompleteHeadCythonVisitor)(void*, const CompleteHeadImpl&)
+    ctypedef void (*CompleteHeadCythonVisitor)(void*, const Complete64BitHeadImpl&)
 
     ctypedef void (*PartialHeadCythonVisitor)(void*, const PartialHeadImpl&)
 
@@ -332,7 +332,7 @@ cdef class RuleList(RuleModel):
 
     cdef __visit_conjunctive_body(self, const ConjunctiveBodyImpl& body)
 
-    cdef __visit_complete_head(self, const CompleteHeadImpl& head)
+    cdef __visit_complete_head(self, const Complete64BitHeadImpl& head)
 
     cdef __visit_partial_head(self, const PartialHeadImpl& head)
 
@@ -340,7 +340,7 @@ cdef class RuleList(RuleModel):
 
     cdef __serialize_conjunctive_body(self, const ConjunctiveBodyImpl& body)
 
-    cdef __serialize_complete_head(self, const CompleteHeadImpl& head)
+    cdef __serialize_complete_head(self, const Complete64BitHeadImpl& head)
 
     cdef __serialize_partial_head(self, const PartialHeadImpl& head)
 

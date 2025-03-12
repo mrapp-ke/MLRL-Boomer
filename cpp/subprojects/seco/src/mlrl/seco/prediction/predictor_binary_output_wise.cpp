@@ -10,8 +10,8 @@
 
 namespace seco {
 
-    static inline void applyHead(const CompleteHead& head, View<uint8>::iterator iterator, BitVector& mask) {
-        CompleteHead::value_const_iterator valueIterator = head.values_cbegin();
+    static inline void applyHead(const CompleteHead<float64>& head, View<uint8>::iterator iterator, BitVector& mask) {
+        CompleteHead<float64>::value_const_iterator valueIterator = head.values_cbegin();
         uint32 numElements = head.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -40,7 +40,7 @@ namespace seco {
     }
 
     static inline void applyHead(const IHead& head, View<uint8>::iterator scoreIterator, BitVector& mask) {
-        auto completeHeadVisitor = [&](const CompleteHead& head) {
+        auto completeHeadVisitor = [&](const CompleteHead<float64>& head) {
             applyHead(head, scoreIterator, mask);
         };
         auto partialHeadVisitor = [&](const PartialHead& head) {
@@ -276,7 +276,7 @@ namespace seco {
     }
 
     static inline void applyHead(const IHead& head, BinaryLilMatrix::row predictionRow, uint32 numLabels) {
-        auto completeHeadVisitor = [&](const CompleteHead& head) {
+        auto completeHeadVisitor = [&](const CompleteHead<float64>& head) {
             applyHead(createNonZeroIndexForwardIterator(head.values_cbegin(), head.values_cend()),
                       createNonZeroIndexForwardIterator(head.values_cend(), head.values_cend()), IndexIterator(0),
                       predictionRow, numLabels);
