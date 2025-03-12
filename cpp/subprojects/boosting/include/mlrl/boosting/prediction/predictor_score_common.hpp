@@ -23,9 +23,9 @@ namespace boosting {
         }
     }
 
-    static inline void applyHead(const PartialHead& head, View<float64>::iterator iterator) {
-        PartialHead::value_const_iterator valueIterator = head.values_cbegin();
-        PartialHead::index_const_iterator indexIterator = head.indices_cbegin();
+    static inline void applyHead(const PartialHead<float64>& head, View<float64>::iterator iterator) {
+        PartialHead<float64>::value_const_iterator valueIterator = head.values_cbegin();
+        PartialHead<float64>::index_const_iterator indexIterator = head.indices_cbegin();
         uint32 numElements = head.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -38,7 +38,7 @@ namespace boosting {
         auto completeHeadVisitor = [=](const CompleteHead<float64>& head) {
             applyHead(head, scoreIterator);
         };
-        auto partialHeadVisitor = [=](const PartialHead& head) {
+        auto partialHeadVisitor = [=](const PartialHead<float64>& head) {
             applyHead(head, scoreIterator);
         };
         head.visit(completeHeadVisitor, partialHeadVisitor);
