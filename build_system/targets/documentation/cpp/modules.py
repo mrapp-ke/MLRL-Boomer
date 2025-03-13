@@ -6,7 +6,7 @@ Implements modules that provide access to C++ code for which an API documentatio
 from os import environ, path
 from typing import List
 
-from core.modules import Module
+from core.modules import Module, ModuleRegistry
 from util.files import FileSearch, FileType
 
 from targets.documentation.modules import ApidocModule
@@ -23,8 +23,9 @@ class CppApidocModule(ApidocModule):
         A filter that matches modules of type `CppApidocModule`.
         """
 
-        def matches(self, module: Module) -> bool:
-            return isinstance(module, CppApidocModule) and SubprojectModule.Filter.from_env(environ).matches(module)
+        def matches(self, module: Module, module_registry: ModuleRegistry) -> bool:
+            return isinstance(module, CppApidocModule) and SubprojectModule.Filter.from_env(environ).matches(
+                module, module_registry)
 
     def __init__(self,
                  root_directory: str,

@@ -6,7 +6,7 @@ Implements modules that provide access to source code that must be compiled.
 from os import path
 from typing import List, Optional
 
-from core.modules import Module
+from core.modules import Module, ModuleRegistry
 from util.files import FileSearch, FileType
 
 
@@ -27,7 +27,7 @@ class CompilationModule(Module):
             """
             self.file_types = set(file_types)
 
-        def matches(self, module: Module) -> bool:
+        def matches(self, module: Module, _: ModuleRegistry) -> bool:
             return isinstance(module, CompilationModule) and (not self.file_types
                                                               or module.file_type in self.file_types)
 
