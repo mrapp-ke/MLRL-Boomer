@@ -7,7 +7,7 @@ to be dealt with by the targets of the build system.
 from abc import ABC, abstractmethod
 from typing import Dict, Optional, Set
 
-from core.modules import Module
+from core.modules import Module, ModuleRegistry
 from util.env import get_env_array
 
 
@@ -52,12 +52,14 @@ class SubprojectModule(Module, ABC):
 
             return SubprojectModule.Filter(subproject_names)
 
-        def matches(self, module: 'Module') -> bool:
+        # pylint: disable=unused-argument
+        def matches(self, module: Module, module_registry: ModuleRegistry) -> bool:
             """
             Returns whether the filter matches a given module or not.
 
-            :param module:  The module to be matched
-            :return:        True, if the filter matches the given module, False otherwise
+            :param module:          The module to be matched
+            :param module_registry: A `ModuleRegistry` that allows to look up any registered modules
+            :return:                True, if the filter matches the given module, False otherwise
             """
             return isinstance(module, SubprojectModule) and (not self.subproject_names
                                                              or module.subproject_name in self.subproject_names)

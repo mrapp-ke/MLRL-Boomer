@@ -6,7 +6,7 @@ Implements modules that provide access to Python code that can be built as wheel
 from os import environ, path
 from typing import Optional
 
-from core.modules import Module
+from core.modules import Module, ModuleRegistry
 from util.files import FileSearch
 
 from targets.modules import SubprojectModule
@@ -23,10 +23,10 @@ class PythonPackageModule(SubprojectModule):
         A filter that matches modules of type `PythonPackageModule`.
         """
 
-        def matches(self, module: Module) -> bool:
+        def matches(self, module: Module, module_registry: ModuleRegistry) -> bool:
             return isinstance(module, PythonPackageModule) and SubprojectModule.Filter.from_env(
                 environ, always_match={SubprojectModule.SUBPROJECT_COMMON, SubprojectModule.SUBPROJECT_TESTBED
-                                       }).matches(module)
+                                       }).matches(module, module_registry)
 
     def __init__(self, root_directory: str, wheel_directory_name: str):
         """
