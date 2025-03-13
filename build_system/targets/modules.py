@@ -7,7 +7,7 @@ to be dealt with by the targets of the build system.
 from abc import ABC, abstractmethod
 from typing import Dict, Optional, Set
 
-from core.modules import Module
+from core.modules import Module, ModuleRegistry
 from util.env import get_env_array
 
 
@@ -17,10 +17,6 @@ class SubprojectModule(Module, ABC):
     """
 
     ENV_SUBPROJECTS = 'SUBPROJECTS'
-
-    SUBPROJECT_COMMON = 'common'
-
-    SUBPROJECT_TESTBED = 'testbed'
 
     class Filter(Module.Filter):
         """
@@ -35,29 +31,25 @@ class SubprojectModule(Module, ABC):
             self.subproject_names = subproject_names
 
         @staticmethod
-        def from_env(env: Dict, always_match: Optional[Set[str]] = None) -> 'SubprojectModule.Filter':
+        def from_env(env: Dict) -> 'SubprojectModule.Filter':
             """
             Creates and returns a `SubprojectModule.Filter` that filters modules by the subprojects given via the
             environment variable `SubprojectModule.ENV_SUBPROJECTS`.
 
-            :param env:             The environment to be accessed
-            :param always_match:    A set that contains the names of the subprojects that should always be matched by
-                                    the filter
-            :return:                The `SubprojectModule.Filter` that has been created
+            :param env: The environment to be accessed
+            :return:    The `SubprojectModule.Filter` that has been created
             """
             subproject_names = set(get_env_array(env, SubprojectModule.ENV_SUBPROJECTS))
-
-            if subproject_names and always_match:
-                subproject_names.update(always_match)
-
             return SubprojectModule.Filter(subproject_names)
 
-        def matches(self, module: 'Module') -> bool:
+        # pylint: disable=unused-argument
+        def matches(self, module: Module, module_registry: ModuleRegistry) -> bool:
             """
             Returns whether the filter matches a given module or not.
 
-            :param module:  The module to be matched
-            :return:        True, if the filter matches the given module, False otherwise
+            :param module:          The module to be matched
+            :param module_registry: A `ModuleRegistry` that allows to look up any registered modules
+            :return:                True, if the filter matches the given module, False otherwise
             """
             return isinstance(module, SubprojectModule) and (not self.subproject_names
                                                              or module.subproject_name in self.subproject_names)

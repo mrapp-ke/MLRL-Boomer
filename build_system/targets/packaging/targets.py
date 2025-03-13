@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for building and installing wheel packages.
 """
-from functools import reduce
 from os import path
 from typing import Dict, List
 
@@ -13,10 +12,10 @@ from core.targets import BuildTarget
 from util.files import DirectorySearch, FileType
 from util.log import Log
 from util.pip import Package, Pip, Requirement, RequirementsTextFile, RequirementVersion
-from util.toml_file import TomlFile
 
 from targets.packaging.build import Build
 from targets.packaging.modules import PythonPackageModule
+from targets.packaging.pyproject_toml import PyprojectTomlFile
 from targets.packaging.version_files import PythonVersionFile
 from targets.project import Project
 
@@ -29,13 +28,9 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
     """
 
     @staticmethod
-    def __get_requirements(template_file: TomlFile) -> Dict[str, Requirement]:
+    def __get_requirements(template_file: PyprojectTomlFile) -> Dict[str, Requirement]:
         requirements = {}
-        project_dict = template_file.toml_dict['project']
-        mandatory_dependencies = project_dict.get('dependencies', [])
-        optional_dependencies = reduce(lambda aggr, dependency_list: aggr + dependency_list,
-                                       project_dict.get('optional-dependencies', {}).values(), [])
-        all_dependencies = mandatory_dependencies + optional_dependencies
+        all_dependencies = template_file.dependencies
 
         if all_dependencies:
             requirements_file = RequirementsTextFile(path.join(path.dirname(template_file.file), 'requirements.txt'))
@@ -53,7 +48,7 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
         return requirements
 
     @staticmethod
-    def __generate_pyproject_toml(template_file: TomlFile) -> List[str]:
+    def __generate_pyproject_toml(template_file: PyprojectTomlFile) -> List[str]:
         requirements = GeneratePyprojectTomlFiles.__get_requirements(template_file)
         new_lines = []
 
@@ -77,8 +72,8 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
 
     def run(self, build_unit: BuildUnit, module: Module):
         Log.info('Generating pyproject.toml file in directory "%s"...', module.root_directory)
-        template_file = TomlFile(build_unit, module.pyproject_toml_template_file)
-        pyproject_toml_file = TomlFile(build_unit, module.pyproject_toml_file)
+        template_file = PyprojectTomlFile(build_unit, module.pyproject_toml_template_file)
+        pyproject_toml_file = PyprojectTomlFile(build_unit, module.pyproject_toml_file)
         pyproject_toml_file.write_lines(*self.__generate_pyproject_toml(template_file))
 
     def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
@@ -177,7 +172,6 @@ class InstallPythonWheels(BuildTarget.Runnable):
 
     def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
         Log.info('Uninstalling Python packages for directory "%s"...', module.root_directory)
-        pyproject_toml_file = TomlFile(build_unit, module.pyproject_toml_template_file)
-        package_name = pyproject_toml_file.toml_dict['project']['name']
-        InstallPythonWheels.UninstallCommand(package_name).run()
+        pyproject_toml_file = PyprojectTomlFile(build_unit, module.pyproject_toml_template_file)
+        InstallPythonWheels.UninstallCommand(pyproject_toml_file.package_name).run()
         return super().get_clean_files(build_unit, module)
