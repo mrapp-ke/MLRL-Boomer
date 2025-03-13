@@ -5,7 +5,7 @@ Implements modules that provide access to automated tests for C++ code.
 """
 from os import path
 
-from core.modules import Module
+from core.modules import Module, ModuleRegistry
 
 from targets.testing.modules import TestModule
 
@@ -20,7 +20,7 @@ class CppTestModule(TestModule):
         A filter that matches modules of type `CppTestModule`.
         """
 
-        def matches(self, module: Module) -> bool:
+        def matches(self, module: Module, _: ModuleRegistry) -> bool:
             return isinstance(module, CppTestModule)
 
     def __init__(self, root_directory: str, build_directory_name: str):
