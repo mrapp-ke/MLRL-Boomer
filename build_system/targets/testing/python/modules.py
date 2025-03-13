@@ -5,7 +5,7 @@ Implements modules that provide access to automated tests for Python code.
 """
 from os import environ, path
 
-from core.modules import Module
+from core.modules import Module, ModuleRegistry
 
 from targets.modules import SubprojectModule
 from targets.testing.modules import TestModule
@@ -21,8 +21,9 @@ class PythonTestModule(TestModule, SubprojectModule):
         A filter that matches modules of type `PythonTestModule`.
         """
 
-        def matches(self, module: Module) -> bool:
-            return isinstance(module, PythonTestModule) and SubprojectModule.Filter.from_env(environ).matches(module)
+        def matches(self, module: Module, module_registry: ModuleRegistry) -> bool:
+            return isinstance(module, PythonTestModule) and SubprojectModule.Filter.from_env(environ).matches(
+                module, module_registry)
 
     def __init__(self, root_directory: str, result_directory: str):
         """

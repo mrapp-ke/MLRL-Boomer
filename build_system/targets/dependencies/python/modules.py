@@ -8,7 +8,7 @@ from os import path
 from typing import List, Optional
 
 from core.build_unit import BuildUnit
-from core.modules import Module
+from core.modules import Module, ModuleRegistry
 from util.files import FileSearch
 from util.pip import RequirementsFile, RequirementsTextFile
 
@@ -34,7 +34,7 @@ class PythonDependencyModule(SubprojectModule):
         A filter that matches modules of type `PythonDependencyModule`.
         """
 
-        def matches(self, module: Module) -> bool:
+        def matches(self, module: Module, _: ModuleRegistry) -> bool:
             return isinstance(module, PythonDependencyModule)
 
     def __init__(self,
