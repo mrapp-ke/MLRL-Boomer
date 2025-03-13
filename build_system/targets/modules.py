@@ -18,10 +18,6 @@ class SubprojectModule(Module, ABC):
 
     ENV_SUBPROJECTS = 'SUBPROJECTS'
 
-    SUBPROJECT_COMMON = 'common'
-
-    SUBPROJECT_TESTBED = 'testbed'
-
     class Filter(Module.Filter):
         """
         An abstract base class for all classes that allow to filter modules by subprojects.
@@ -35,21 +31,15 @@ class SubprojectModule(Module, ABC):
             self.subproject_names = subproject_names
 
         @staticmethod
-        def from_env(env: Dict, always_match: Optional[Set[str]] = None) -> 'SubprojectModule.Filter':
+        def from_env(env: Dict) -> 'SubprojectModule.Filter':
             """
             Creates and returns a `SubprojectModule.Filter` that filters modules by the subprojects given via the
             environment variable `SubprojectModule.ENV_SUBPROJECTS`.
 
-            :param env:             The environment to be accessed
-            :param always_match:    A set that contains the names of the subprojects that should always be matched by
-                                    the filter
-            :return:                The `SubprojectModule.Filter` that has been created
+            :param env: The environment to be accessed
+            :return:    The `SubprojectModule.Filter` that has been created
             """
             subproject_names = set(get_env_array(env, SubprojectModule.ENV_SUBPROJECTS))
-
-            if subproject_names and always_match:
-                subproject_names.update(always_match)
-
             return SubprojectModule.Filter(subproject_names)
 
         # pylint: disable=unused-argument
