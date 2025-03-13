@@ -5,7 +5,6 @@ Provides classes that provide information about files and directories that belon
 to be dealt with by the targets of the build system.
 """
 from abc import ABC
-from functools import reduce
 from typing import List
 
 
@@ -55,11 +54,19 @@ class ModuleRegistry:
         """
         self.modules.append(module)
 
-    def lookup(self, module_filter: Module.Filter) -> List[Module]:
+    def lookup(self, module_filter: Module.Filter, *additional_filters: Module.Filter) -> List[Module]:
         """
-        Looks up and returns all modules that match a given filter.
+        Looks up and returns all modules that match one or several filters.
 
-        :param module_filter:   The filter
-        :return:                A list that contains all modules matching the given filter
+        :param module_filter:       The filter
+        :param additional_filters:  Additional filters that must also be matched
+        :return:                    A list that contains all modules matching the given filters
         """
-        return list(reduce(lambda aggr, module: aggr + module.match(module_filter, self), self.modules, []))
+        matched_modules = []
+
+        for module in self.modules:
+            if module.match(module_filter, self) and all(
+                    module.match(additional_filter, self) for additional_filter in additional_filters):
+                matched_modules.append(module)
+
+        return matched_modules
