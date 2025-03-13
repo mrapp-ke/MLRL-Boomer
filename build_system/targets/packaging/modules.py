@@ -6,10 +6,12 @@ Implements modules that provide access to Python code that can be built as wheel
 from os import environ, path
 from typing import Optional
 
-from core.modules import Module
+from core.build_unit import BuildUnit
+from core.modules import Module, ModuleRegistry
 from util.files import FileSearch
 
 from targets.modules import SubprojectModule
+from targets.packaging.pyproject_toml import PyprojectTomlFile
 from targets.project import Project
 
 
@@ -23,10 +25,32 @@ class PythonPackageModule(SubprojectModule):
         A filter that matches modules of type `PythonPackageModule`.
         """
 
-        def matches(self, module: Module) -> bool:
-            return isinstance(module, PythonPackageModule) and SubprojectModule.Filter.from_env(
-                environ, always_match={SubprojectModule.SUBPROJECT_COMMON, SubprojectModule.SUBPROJECT_TESTBED
-                                       }).matches(module)
+        def matches(self, module: Module, module_registry: ModuleRegistry) -> bool:
+
+            class TypeFilter(Module.Filter):
+                """
+                An internal filter that only checks the type of modules.
+                """
+
+                def matches(self, module: 'Module', _: ModuleRegistry) -> bool:
+                    return isinstance(module, PythonPackageModule)
+
+            if TypeFilter().matches(module, module_registry):
+                build_unit = BuildUnit.for_file(__file__)
+                subproject_filter = SubprojectModule.Filter.from_env(environ)
+
+                if subproject_filter.matches(module, module_registry):
+                    return True
+
+                other_modules = module_registry.lookup(TypeFilter(), SubprojectModule.Filter.from_env(environ))
+                package_name = PyprojectTomlFile(build_unit, module.pyproject_toml_template_file).package_name
+
+                for other_module in other_modules:
+                    dependencies = PyprojectTomlFile(build_unit, other_module.pyproject_toml_template_file).dependencies
+                    if any(dependency.startswith(package_name) for dependency in dependencies):
+                        return True
+
+            return False
 
     def __init__(self, root_directory: str, wheel_directory_name: str):
         """
