@@ -5,7 +5,7 @@ Implements modules that provide access to GitHub workflows.
 """
 from typing import List
 
-from core.modules import Module
+from core.modules import Module, ModuleRegistry
 from util.files import FileSearch, FileType
 
 
@@ -19,7 +19,7 @@ class GithubWorkflowModule(Module):
         A filter that matches modules of type `GithubWorkflowModule`.
         """
 
-        def matches(self, module: Module) -> bool:
+        def matches(self, module: Module, _: ModuleRegistry) -> bool:
             return isinstance(module, GithubWorkflowModule)
 
     def __init__(self, root_directory: str, workflow_file_search: FileSearch = FileSearch().set_recursive(True)):

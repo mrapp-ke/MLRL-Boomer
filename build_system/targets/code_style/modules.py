@@ -5,7 +5,7 @@ Implements modules that provide access to source code.
 """
 from typing import List
 
-from core.modules import Module
+from core.modules import Module, ModuleRegistry
 from util.files import FileSearch, FileType
 
 
@@ -26,7 +26,7 @@ class CodeModule(Module):
             """
             self.file_types = set(file_types)
 
-        def matches(self, module: Module) -> bool:
+        def matches(self, module: Module, _: ModuleRegistry) -> bool:
             return isinstance(module, CodeModule) and (not self.file_types or module.file_type in self.file_types)
 
     def __init__(self,

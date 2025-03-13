@@ -6,7 +6,7 @@ Provides classes that provide access to a Sphinx documentation.
 from abc import ABC, abstractmethod
 from typing import List
 
-from core.modules import Module
+from core.modules import Module, ModuleRegistry
 from util.files import FileSearch
 
 from targets.modules import SubprojectModule
@@ -43,7 +43,7 @@ class SphinxModule(Module):
         A filter that matches modules of type `SphinxModule`.
         """
 
-        def matches(self, module: Module) -> bool:
+        def matches(self, module: Module, _: ModuleRegistry) -> bool:
             return isinstance(module, SphinxModule)
 
     def __init__(self,

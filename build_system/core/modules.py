@@ -19,22 +19,24 @@ class Module(ABC):
         An abstract base class for all classes that allow to filter modules.
         """
 
-        def matches(self, module: 'Module') -> bool:
+        def matches(self, module: 'Module', module_registry: 'ModuleRegistry') -> bool:
             """
             Returns whether the filter matches a given module or not.
 
-            :param module:  The module to be matched
-            :return:        True, if the filter matches the given module, False otherwise
+            :param module:          The module to be matched
+            :param module_registry: A `ModuleRegistry` that allows to look up any registered modules
+            :return:                True, if the filter matches the given module, False otherwise
             """
 
-    def match(self, module_filter: Filter) -> List['Module']:
+    def match(self, module_filter: Filter, module_registry: 'ModuleRegistry') -> List['Module']:
         """
         Returns a list that contains all submodules in this module that match a given filter.
 
         :param module_filter:   The filter
+        :param module_registry: A `ModuleRegistry` that allows to look up any registered modules
         :return:                A list that contains all matching submodules
         """
-        return [self] if module_filter.matches(self) else []
+        return [self] if module_filter.matches(self, module_registry) else []
 
 
 class ModuleRegistry:
@@ -60,4 +62,4 @@ class ModuleRegistry:
         :param module_filter:   The filter
         :return:                A list that contains all modules matching the given filter
         """
-        return list(reduce(lambda aggr, module: aggr + module.match(module_filter), self.modules, []))
+        return list(reduce(lambda aggr, module: aggr + module.match(module_filter, self), self.modules, []))
