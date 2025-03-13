@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for listing files and directories.
 """
-from functools import partial, reduce
+from functools import partial
 from glob import glob
 from os import path
 from typing import Callable, List, Optional, Set
@@ -154,7 +154,7 @@ class DirectorySearch:
                 parent = path.dirname(file)
                 file_name = path.basename(file)
 
-                if not reduce(lambda aggr, exclude: aggr or exclude(parent, file_name), self.excludes, False):
+                if not any(exclude(parent, file_name) for exclude in self.excludes):
                     return True
 
             return False
@@ -163,7 +163,7 @@ class DirectorySearch:
             parent = path.dirname(subdirectory)
             directory_name = path.basename(subdirectory)
 
-            if reduce(lambda aggr, dir_filter: aggr or dir_filter(parent, directory_name), filters, False):
+            if any(dir_filter(parent, directory_name) for dir_filter in filters):
                 return True
 
             return False
@@ -360,7 +360,7 @@ class FileSearch:
         """
 
         def filter_file(filtered_suffixes: List[str], _: str, file_name: str):
-            return reduce(lambda aggr, suffix: aggr or file_name.endswith(suffix), filtered_suffixes, False)
+            return any(file_name.endswith(suffix) for suffix in filtered_suffixes)
 
         return self.add_filters(partial(filter_file, list(suffixes)))
 
@@ -417,10 +417,9 @@ class FileSearch:
                 if not self.filters:
                     match = True
                 else:
-                    match = reduce(lambda aggr, file_filter: aggr or file_filter(parent, file_name), self.filters,
-                                   False)
+                    match = any(file_filter(parent, file_name) for file_filter in self.filters)
 
-                exclude = reduce(lambda aggr, file_filter: aggr or file_filter(parent, file_name), self.excludes, False)
+                exclude = any(file_filter(parent, file_name) for file_filter in self.excludes)
                 return match and not exclude
 
             return False
