@@ -53,14 +53,19 @@ class MesonSetup(Meson):
     Allows to run the external program "meson setup".
     """
 
-    def __init__(self, build_unit: BuildUnit, module: CompilationModule, build_options: BuildOptions = BuildOptions()):
+    def __init__(self,
+                 build_unit: BuildUnit,
+                 module: CompilationModule,
+                 *meson_options: str,
+                 build_options: BuildOptions = BuildOptions()):
         """
         :param build_unit:      The build unit from which the program should be run
         :param module:          The module, the program should be applied to
         :param build_options:   The build options to be used
+        :param meson_options:   Options to be passed to meson
         """
-        super().__init__(build_unit, 'setup', *get_meson_arguments(build_options), module.build_directory,
-                         module.root_directory)
+        super().__init__(build_unit, 'setup', *get_meson_arguments(build_options), *meson_options,
+                         module.build_directory, module.root_directory)
         self.add_dependencies('ninja')
 
 
@@ -69,13 +74,19 @@ class MesonConfigure(Meson):
     Allows to run the external program "meson configure".
     """
 
-    def __init__(self, build_unit: BuildUnit, module: CompilationModule, build_options: BuildOptions = BuildOptions()):
+    def __init__(self,
+                 build_unit: BuildUnit,
+                 module: CompilationModule,
+                 *meson_options: str,
+                 build_options: BuildOptions = BuildOptions()):
         """
         :param build_unit:      The build unit from which the program should be run
         :param module:          The module, the program should be applied to
         :param build_options:   The build options to be used
+        :param meson_options:   Options to be passed to meson
         """
-        super().__init__(build_unit, 'configure', *get_meson_arguments(build_options), module.build_directory)
+        super().__init__(build_unit, 'configure', *get_meson_arguments(build_options), *meson_options,
+                         module.build_directory)
         self.build_options = build_options
 
     def _should_be_skipped(self) -> bool:
