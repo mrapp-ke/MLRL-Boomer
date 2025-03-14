@@ -46,7 +46,7 @@ jobs:
             cpp_common: &cpp_common
               - *build_files
               - 'build_system/targets/compilation/cpp/*'
-              - '.version-cpp'
+              - 'cpp/.version-cpp'
               - 'cpp/meson.*'
               - 'cpp/subprojects/common/meson.*'
               - 'cpp/subprojects/common/include/**'
