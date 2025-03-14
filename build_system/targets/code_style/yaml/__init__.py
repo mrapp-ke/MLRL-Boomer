@@ -23,7 +23,7 @@ TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
 MODULES = [
     CodeModule(
         file_type=FileType.yaml(),
-        root_directory=Project.root_directory,
+        root_directory=Project.Readthedocs.root_directory,
         source_file_search=FileSearch().set_recursive(False).set_hidden(True),
     ),
     CodeModule(
