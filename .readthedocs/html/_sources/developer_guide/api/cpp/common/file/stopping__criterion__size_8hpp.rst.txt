@@ -1,0 +1,5 @@
+File stopping_criterion_size.hpp
+================================
+
+.. doxygenfile:: stopping_criterion_size.hpp
+   :project: common

@@ -1,0 +1,20 @@
+mlrl.seco.cython package
+========================
+
+.. automodule:: mlrl.seco.cython
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.seco.cython.heuristic
+   mlrl.seco.cython.info
+   mlrl.seco.cython.learner
+   mlrl.seco.cython.learner_seco
+   mlrl.seco.cython.lift_function
+   mlrl.seco.cython.stopping_criterion

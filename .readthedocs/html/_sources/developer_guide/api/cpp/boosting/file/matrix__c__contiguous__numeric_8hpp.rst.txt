@@ -1,0 +1,5 @@
+File matrix_c_contiguous_numeric.hpp
+====================================
+
+.. doxygenfile:: matrix_c_contiguous_numeric.hpp
+   :project: boosting

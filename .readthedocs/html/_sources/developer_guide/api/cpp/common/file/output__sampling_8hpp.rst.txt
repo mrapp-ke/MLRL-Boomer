@@ -1,0 +1,5 @@
+File output_sampling.hpp
+========================
+
+.. doxygenfile:: output_sampling.hpp
+   :project: common

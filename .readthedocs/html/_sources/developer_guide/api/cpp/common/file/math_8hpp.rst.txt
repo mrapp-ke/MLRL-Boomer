@@ -1,0 +1,5 @@
+File math.hpp
+=============
+
+.. doxygenfile:: math.hpp
+   :project: common

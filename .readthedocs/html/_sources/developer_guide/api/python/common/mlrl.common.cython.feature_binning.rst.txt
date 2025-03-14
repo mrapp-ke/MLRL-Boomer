@@ -1,0 +1,7 @@
+mlrl.common.cython.feature\_binning module
+==========================================
+
+.. automodule:: mlrl.common.cython.feature_binning
+   :members:
+   :show-inheritance:
+   :undoc-members:

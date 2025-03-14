@@ -1,0 +1,5 @@
+File learner_boomer_regressor.hpp
+=================================
+
+.. doxygenfile:: learner_boomer_regressor.hpp
+   :project: boosting
