@@ -9,8 +9,6 @@ from pathlib import Path
 from setuptools import Extension, find_packages, setup
 from setuptools.command.build_ext import build_ext
 
-VERSION = (Path(__file__).resolve().parent.parent.parent.parent / '.version').read_text()
-
 
 class PrecompiledExtension(Extension):
     """

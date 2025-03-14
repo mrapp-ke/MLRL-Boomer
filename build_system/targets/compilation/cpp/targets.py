@@ -15,6 +15,7 @@ from targets.compilation.build_options import BuildOptions, EnvBuildOption
 from targets.compilation.meson import MesonCompile, MesonConfigure, MesonInstall, MesonSetup
 from targets.compilation.modules import CompilationModule
 from targets.modules import SubprojectModule
+from targets.project import Project
 
 MODULE_FILTER = CompilationModule.Filter(FileType.cpp())
 
@@ -24,6 +25,8 @@ BUILD_OPTIONS = BuildOptions() \
         .add(EnvBuildOption(name='test_support', subpackage='common')) \
         .add(EnvBuildOption(name='multi_threading_support', subpackage='common')) \
         .add(EnvBuildOption(name='gpu_support', subpackage='common'))
+
+MESON_OPTIONS = ['-D', 'library_version=' + str(Project.version(release=True))]
 
 
 class SetupCpp(BuildTarget.Runnable):
@@ -35,7 +38,7 @@ class SetupCpp(BuildTarget.Runnable):
         super().__init__(MODULE_FILTER)
 
     def run(self, build_unit: BuildUnit, module: Module):
-        MesonSetup(build_unit, module, build_options=BUILD_OPTIONS).run()
+        MesonSetup(build_unit, module, *MESON_OPTIONS, build_options=BUILD_OPTIONS).run()
 
     def get_output_files(self, _: BuildUnit, module: Module) -> List[str]:
         return [module.build_directory]
@@ -55,7 +58,7 @@ class CompileCpp(PhonyTarget.Runnable):
 
     def run(self, build_unit: BuildUnit, module: Module):
         Log.info('Compiling C++ code in directory "%s"...', module.root_directory)
-        MesonConfigure(build_unit, module, BUILD_OPTIONS).run()
+        MesonConfigure(build_unit, module, *MESON_OPTIONS, build_options=BUILD_OPTIONS).run()
         MesonCompile(build_unit, module).run()
 
 
