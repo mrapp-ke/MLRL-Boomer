@@ -19,17 +19,28 @@ class Project:
     Provides information about the project in general.
 
     Attributes:
-        root_directory:             The path to the project's root directory
-        version_file:               The file that stores the project's version
-        development_version_file:   The file that stores the project's development version
+        root_directory: The path to the project's root directory
     """
 
     root_directory = '.'
 
-    version_file = VersionFile(path.join('build_system', 'targets', 'versioning', '.version'))
+    @staticmethod
+    def version_file() -> VersionFile:
+        """
+        Returns the file that stores the current version of the project.
 
-    development_version_file = DevelopmentVersionFile(path.join('build_system', 'targets', 'versioning',
-                                                                '.version-dev'))
+        :return: The file that stores the current version of the project
+        """
+        return VersionFile(path.join(Project.BuildSystem.resource_directory, 'versioning', 'version'))
+
+    @staticmethod
+    def development_version_file() -> DevelopmentVersionFile:
+        """
+        Returns the file that stores the current development version of the project.
+
+        :return: The file that stores the current development version of the project
+        """
+        return DevelopmentVersionFile(path.join(Project.BuildSystem.resource_directory, 'versioning', 'version-dev'))
 
     @staticmethod
     def version(release: bool = False) -> SemanticVersion:
@@ -40,7 +51,7 @@ class Project:
                         returned
         :return:        The current version of the project
         """
-        version = Project.version_file.version
+        version = Project.version_file().version
 
         if release or get_env_bool(environ, 'RELEASE'):
             return version
@@ -54,7 +65,7 @@ class Project:
 
         :return: The current development version of the project
         """
-        return Project.development_version_file.development_version
+        return Project.development_version_file().development_version
 
     class BuildSystem:
         """
@@ -66,6 +77,8 @@ class Project:
         """
 
         root_directory = BuildUnit.BUILD_SYSTEM_DIRECTORY
+
+        resource_directory = path.join(root_directory, 'res')
 
         build_directory_name = BuildUnit.BUILD_DIRECTORY_NAME
 

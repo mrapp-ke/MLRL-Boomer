@@ -16,10 +16,10 @@ jobs:
           ref: feature
       - name: Reset bugfix branch
         run: |
-          export FEATURE_VERSION="$(cat build_system/targets/versioning/.version)"
+          export FEATURE_VERSION="$(cat build_system/res/versioning/version)"
           git fetch origin bugfix:bugfix
           git reset --hard bugfix
-          echo -n "${FEATURE_VERSION}" > build_system/targets/versioning/.version
+          echo -n "${FEATURE_VERSION}" > build_system/res/versioning/version
       - name: Generate token
         uses: actions/create-github-app-token@v1
         id: app-token

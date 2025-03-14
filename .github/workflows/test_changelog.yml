@@ -36,13 +36,13 @@ jobs:
               - 'build_system/targets/changelog/*'
             bugfix:
               - *build_files
-              - '.changelog-bugfix.md'
+              - 'build_system/res/changelog/changelog-bugfix.md'
             feature:
               - *build_files
-              - '.changelog-feature.md'
+              - 'build_system/res/changelog/changelog-feature.md'
             main:
               - *build_files
-              - '.changelog-main.md'
+              - 'build_system/res/changelog/changelog-main.md'
       - name: Validate bugfix changelog
         if: steps.filter.outputs.bugfix == 'true'
         run: ./build validate_changelog_bugfix
