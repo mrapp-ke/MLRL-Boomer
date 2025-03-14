@@ -60,8 +60,8 @@ jobs:
       - name: Update development version
         run: |
           ./build increment_development_version
-          git add build_system/targets/versioning/.version-dev
-          git commit -m "[Bot] Update development version to $(cat build_system/targets/versioning/.version-dev)."
+          git add build_system/res/versioning/version-dev
+          git commit -m "[Bot] Update development version to $(cat build_system/res/versioning/version-dev)."
           git push
   publish_doc:
     needs: update_development_version
