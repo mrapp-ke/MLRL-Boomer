@@ -37,7 +37,7 @@ jobs:
               - ./.github/workflows/template_publish_doc.yml
               - ./.github/workflows/template_publish_doc_rtd.yml
               - build_system/targets/documentation/rtd/*
-              - .readthedocs.yaml
+              - .readthedocs/.readthedocs.yaml
               - doc/**
   update_development_version:
     needs: changes
