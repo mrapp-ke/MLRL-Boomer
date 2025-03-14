@@ -1,0 +1,5 @@
+File weight_vector.hpp
+======================
+
+.. doxygenfile:: weight_vector.hpp
+   :project: common

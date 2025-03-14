@@ -1,0 +1,5 @@
+File rule_refinement.hpp
+========================
+
+.. doxygenfile:: rule_refinement.hpp
+   :project: common

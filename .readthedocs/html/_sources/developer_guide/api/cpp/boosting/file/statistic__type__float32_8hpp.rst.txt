@@ -1,0 +1,5 @@
+File statistic_type_float32.hpp
+===============================
+
+.. doxygenfile:: statistic_type_float32.hpp
+   :project: boosting

@@ -1,0 +1,5 @@
+File index_vector_partial.hpp
+=============================
+
+.. doxygenfile:: index_vector_partial.hpp
+   :project: common

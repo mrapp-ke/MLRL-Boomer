@@ -1,0 +1,5 @@
+File feature_type.hpp
+=====================
+
+.. doxygenfile:: feature_type.hpp
+   :project: common

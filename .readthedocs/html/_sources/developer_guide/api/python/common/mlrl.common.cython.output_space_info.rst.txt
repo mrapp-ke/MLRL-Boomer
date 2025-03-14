@@ -1,0 +1,7 @@
+mlrl.common.cython.output\_space\_info module
+=============================================
+
+.. automodule:: mlrl.common.cython.output_space_info
+   :members:
+   :show-inheritance:
+   :undoc-members:

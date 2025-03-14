@@ -1,0 +1,7 @@
+mlrl.testbed.prediction\_characteristics module
+===============================================
+
+.. automodule:: mlrl.testbed.prediction_characteristics
+   :members:
+   :show-inheritance:
+   :undoc-members:

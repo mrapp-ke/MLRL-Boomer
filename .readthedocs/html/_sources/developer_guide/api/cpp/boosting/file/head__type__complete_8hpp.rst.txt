@@ -1,0 +1,5 @@
+File head_type_complete.hpp
+===========================
+
+.. doxygenfile:: head_type_complete.hpp
+   :project: boosting

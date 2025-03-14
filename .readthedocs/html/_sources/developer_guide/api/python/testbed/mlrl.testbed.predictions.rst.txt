@@ -1,0 +1,7 @@
+mlrl.testbed.predictions module
+===============================
+
+.. automodule:: mlrl.testbed.predictions
+   :members:
+   :show-inheritance:
+   :undoc-members:

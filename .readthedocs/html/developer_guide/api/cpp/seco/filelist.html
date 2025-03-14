@@ -1,0 +1,1464 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="File list" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="developer_guide/api/cpp/seco/filelist.html" />
+<meta property="og:site_name" content="BOOMER" />
+<meta property="og:description" content="File confusion_matrix.hpp- ConfusionMatrix- ConfusionMatrix(), operator=(), operator+=(), operator+=(), operator-=(), operator-=(), operator*=(), getElement(), in, ip, rn, rp, operator+, operator+,..." />
+<meta name="description" content="File confusion_matrix.hpp- ConfusionMatrix- ConfusionMatrix(), operator=(), operator+=(), operator+=(), operator-=(), operator-=(), operator*=(), getElement(), in, ip, rn, rp, operator+, operator+,..." />
+    <link href="../../../../_static/favicon.svg" rel="icon" type="image/svg+xml"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" /><link rel="next" title="File confusion_matrix.hpp" href="file/confusion__matrix_8hpp.html" /><link rel="prev" title="C++ API Reference" href="../index.html" />
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
+        <title>File list - BOOMER 1.0.0.dev75</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=4c969af8" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../../index.html"><div class="brand">BOOMER 1.0.0.dev75</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
+  
+  
+  <span class="sidebar-brand-text">BOOMER 1.0.0.dev75</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Quickstart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/usage.html">Using the Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/testbed.html">Using the Command Line API</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../user_guide/boosting/index.html">The BOOMER Algorithm</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of The BOOMER Algorithm</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/boosting/parameters.html">Overview of Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../user_guide/seco/index.html">The SeCo Algorithm</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of The SeCo Algorithm</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/seco/parameters.html">Overview of Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../user_guide/testbed/index.html">Command Line API</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Command Line API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/testbed/evaluation.html">Performance Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/testbed/pre_processing.html">Data Pre-Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/testbed/model_persistence.html">Saving and Loading Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/testbed/parameter_persistence.html">Saving and Loading Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/testbed/experimental_results.html">Output of Experimental Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/testbed/runnables.html">Using Your Own Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../user_guide/testbed/arguments.html">Overview of Arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guide/references.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../project_structure.html">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compilation.html">Building from Source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation.html">Generating the Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../continuous_integration.html">Continuous Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../coding_standards.html">Coding Standards</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../python/index.html">Python API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Python API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../python/common/mlrl.common.html">Package mlrl-common</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Package mlrl-common</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../python/common/mlrl.common.cython.html">mlrl.common.cython package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of mlrl.common.cython package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.example_weights.html">mlrl.common.cython.example_weights module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.feature_binning.html">mlrl.common.cython.feature_binning module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.feature_info.html">mlrl.common.cython.feature_info module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.feature_matrix.html">mlrl.common.cython.feature_matrix module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.feature_sampling.html">mlrl.common.cython.feature_sampling module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.info.html">mlrl.common.cython.info module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.instance_sampling.html">mlrl.common.cython.instance_sampling module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.label_matrix.html">mlrl.common.cython.label_matrix module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.learner.html">mlrl.common.cython.learner module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.learner_classification.html">mlrl.common.cython.learner_classification module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.learner_regression.html">mlrl.common.cython.learner_regression module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.multi_threading.html">mlrl.common.cython.multi_threading module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.output_matrix.html">mlrl.common.cython.output_matrix module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.output_sampling.html">mlrl.common.cython.output_sampling module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.output_space_info.html">mlrl.common.cython.output_space_info module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.partition_sampling.html">mlrl.common.cython.partition_sampling module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.post_optimization.html">mlrl.common.cython.post_optimization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.prediction.html">mlrl.common.cython.prediction module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.probability_calibration.html">mlrl.common.cython.probability_calibration module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.regression_matrix.html">mlrl.common.cython.regression_matrix module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.rng.html">mlrl.common.cython.rng module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.rule_induction.html">mlrl.common.cython.rule_induction module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.rule_model.html">mlrl.common.cython.rule_model module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.stopping_criterion.html">mlrl.common.cython.stopping_criterion module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/common/mlrl.common.cython.validation.html">mlrl.common.cython.validation module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/common/mlrl.common.arrays.html">mlrl.common.arrays module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/common/mlrl.common.config.html">mlrl.common.config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/common/mlrl.common.data_types.html">mlrl.common.data_types module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/common/mlrl.common.format.html">mlrl.common.format module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/common/mlrl.common.info.html">mlrl.common.info module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/common/mlrl.common.mixins.html">mlrl.common.mixins module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/common/mlrl.common.options.html">mlrl.common.options module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/common/mlrl.common.rule_learners.html">mlrl.common.rule_learners module</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../python/testbed/mlrl.testbed.html">Package mlrl-testbed</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Package mlrl-testbed</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../python/testbed/mlrl.testbed.characteristics.html">mlrl.testbed.characteristics module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/testbed/mlrl.testbed.data.html">mlrl.testbed.data module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/testbed/mlrl.testbed.data_characteristics.html">mlrl.testbed.data_characteristics module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/testbed/mlrl.testbed.data_splitting.html">mlrl.testbed.data_splitting module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/testbed/mlrl.testbed.evaluation.html">mlrl.testbed.evaluation module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/testbed/mlrl.testbed.experiments.html">mlrl.testbed.experiments module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/testbed/mlrl.testbed.format.html">mlrl.testbed.format module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/testbed/mlrl.testbed.info.html">mlrl.testbed.info module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/testbed/mlrl.testbed.io.html">mlrl.testbed.io module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/testbed/mlrl.testbed.label_vectors.html">mlrl.testbed.label_vectors module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/testbed/mlrl.testbed.main.html">mlrl.testbed.main module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/testbed/mlrl.testbed.model_characteristics.html">mlrl.testbed.model_characteristics module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/testbed/mlrl.testbed.models.html">mlrl.testbed.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/testbed/mlrl.testbed.output_writer.html">mlrl.testbed.output_writer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/testbed/mlrl.testbed.parameters.html">mlrl.testbed.parameters module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/testbed/mlrl.testbed.persistence.html">mlrl.testbed.persistence module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/testbed/mlrl.testbed.prediction_characteristics.html">mlrl.testbed.prediction_characteristics module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/testbed/mlrl.testbed.prediction_scope.html">mlrl.testbed.prediction_scope module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/testbed/mlrl.testbed.predictions.html">mlrl.testbed.predictions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/testbed/mlrl.testbed.probability_calibration.html">mlrl.testbed.probability_calibration module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/testbed/mlrl.testbed.problem_type.html">mlrl.testbed.problem_type module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/testbed/mlrl.testbed.runnables.html">mlrl.testbed.runnables module</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../python/seco/mlrl.seco.html">Package mlrl-seco</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Package mlrl-seco</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../python/seco/mlrl.seco.cython.html">mlrl.seco.cython package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of mlrl.seco.cython package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../python/seco/mlrl.seco.cython.heuristic.html">mlrl.seco.cython.heuristic module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/seco/mlrl.seco.cython.info.html">mlrl.seco.cython.info module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/seco/mlrl.seco.cython.learner.html">mlrl.seco.cython.learner module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/seco/mlrl.seco.cython.learner_seco.html">mlrl.seco.cython.learner_seco module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/seco/mlrl.seco.cython.lift_function.html">mlrl.seco.cython.lift_function module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/seco/mlrl.seco.cython.stopping_criterion.html">mlrl.seco.cython.stopping_criterion module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/seco/mlrl.seco.config.html">mlrl.seco.config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/seco/mlrl.seco.info.html">mlrl.seco.info module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/seco/mlrl.seco.runnables.html">mlrl.seco.runnables module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/seco/mlrl.seco.seco_learners.html">mlrl.seco.seco_learners module</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../python/boosting/mlrl.boosting.html">Package mlrl-boosting</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Package mlrl-boosting</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../python/boosting/mlrl.boosting.cython.html">mlrl.boosting.cython package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of mlrl.boosting.cython package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../python/boosting/mlrl.boosting.cython.head_type.html">mlrl.boosting.cython.head_type module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/boosting/mlrl.boosting.cython.info.html">mlrl.boosting.cython.info module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/boosting/mlrl.boosting.cython.label_binning.html">mlrl.boosting.cython.label_binning module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/boosting/mlrl.boosting.cython.learner.html">mlrl.boosting.cython.learner module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/boosting/mlrl.boosting.cython.learner_boomer.html">mlrl.boosting.cython.learner_boomer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/boosting/mlrl.boosting.cython.learner_classification.html">mlrl.boosting.cython.learner_classification module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/boosting/mlrl.boosting.cython.post_processor.html">mlrl.boosting.cython.post_processor module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/boosting/mlrl.boosting.cython.prediction.html">mlrl.boosting.cython.prediction module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/boosting/mlrl.boosting.cython.probability_calibration.html">mlrl.boosting.cython.probability_calibration module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../python/boosting/mlrl.boosting.cython.regularization.html">mlrl.boosting.cython.regularization module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/boosting/mlrl.boosting.boosting_learners.html">mlrl.boosting.boosting_learners module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/boosting/mlrl.boosting.config.html">mlrl.boosting.config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/boosting/mlrl.boosting.info.html">mlrl.boosting.info module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../python/boosting/mlrl.boosting.runnables.html">mlrl.boosting.runnables module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../index.html">C++ API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle navigation of C++ API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current has-children current-page"><a class="current reference internal" href="#">Library libmlrlseco</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of Library libmlrlseco</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/confusion__matrix_8hpp.html">File confusion_matrix.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/decision__list__builder_8hpp.html">File decision_list_builder.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/dll__exports_8hpp.html">File dll_exports.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/head__type_8hpp.html">File head_type.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/head__type__partial_8hpp.html">File head_type_partial.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/head__type__single_8hpp.html">File head_type_single.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/heuristic_8hpp.html">File heuristic.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/heuristic__accuracy_8hpp.html">File heuristic_accuracy.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/heuristic__f__measure_8hpp.html">File heuristic_f_measure.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/heuristic__laplace_8hpp.html">File heuristic_laplace.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/heuristic__m__estimate_8hpp.html">File heuristic_m_estimate.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/heuristic__precision_8hpp.html">File heuristic_precision.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/heuristic__recall_8hpp.html">File heuristic_recall.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/heuristic__wra_8hpp.html">File heuristic_wra.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/info_8hpp.html">File info.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html">File learner.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner__common_8hpp.html">File learner_common.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner__seco__classifier_8hpp.html">File learner_seco_classifier.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/lift__function_8hpp.html">File lift_function.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/lift__function__kln_8hpp.html">File lift_function_kln.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/lift__function__no_8hpp.html">File lift_function_no.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/lift__function__peak_8hpp.html">File lift_function_peak.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/matrix__coverage__dense_8hpp.html">File matrix_coverage_dense.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/predictor__binary__output__wise_8hpp.html">File predictor_binary_output_wise.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/rule__compare__function_8hpp.html">File rule_compare_function.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/rule__evaluation_8hpp.html">File rule_evaluation.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/rule__evaluation__decomposable_8hpp.html">File rule_evaluation_decomposable.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/rule__evaluation__decomposable__partial_8hpp.html">File rule_evaluation_decomposable_partial.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/rule__evaluation__decomposable__single_8hpp.html">File rule_evaluation_decomposable_single.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/statistics_8hpp.html">File statistics.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/statistics__decomposable_8hpp.html">File statistics_decomposable.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/statistics__provider__decomposable__dense_8hpp.html">File statistics_provider_decomposable_dense.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/stopping__criterion__coverage_8hpp.html">File stopping_criterion_coverage.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/vector__confusion__matrix__dense_8hpp.html">File vector_confusion_matrix_dense.hpp</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../common/filelist.html">Library libmlrlcommon</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle navigation of Library libmlrlcommon</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/aggregation__function_8hpp.html">File aggregation_function.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/array_8hpp.html">File array.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/body_8hpp.html">File body.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/body__conjunctive_8hpp.html">File body_conjunctive.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/body__empty_8hpp.html">File body_empty.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/condition_8hpp.html">File condition.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/condition__list_8hpp.html">File condition_list.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/coverage__mask_8hpp.html">File coverage_mask.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/default__rule_8hpp.html">File default_rule.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/dll__exports_8hpp.html">File dll_exports.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/example__weights_8hpp.html">File example_weights.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/example__weights__equal_8hpp.html">File example_weights_equal.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/example__weights__real__valued_8hpp.html">File example_weights_real_valued.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__binning_8hpp.html">File feature_binning.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__binning__equal__frequency_8hpp.html">File feature_binning_equal_frequency.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__binning__equal__width_8hpp.html">File feature_binning_equal_width.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__binning__no_8hpp.html">File feature_binning_no.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__info_8hpp.html">File feature_info.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__info__equal_8hpp.html">File feature_info_equal.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__info__mixed_8hpp.html">File feature_info_mixed.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__matrix_8hpp.html">File feature_matrix.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__matrix__c__contiguous_8hpp.html">File feature_matrix_c_contiguous.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__matrix__column__wise_8hpp.html">File feature_matrix_column_wise.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__matrix__csc_8hpp.html">File feature_matrix_csc.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__matrix__csr_8hpp.html">File feature_matrix_csr.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__matrix__fortran__contiguous_8hpp.html">File feature_matrix_fortran_contiguous.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__matrix__row__wise_8hpp.html">File feature_matrix_row_wise.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__sampling_8hpp.html">File feature_sampling.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__sampling__no_8hpp.html">File feature_sampling_no.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__sampling__predefined_8hpp.html">File feature_sampling_predefined.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__sampling__without__replacement_8hpp.html">File feature_sampling_without_replacement.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__space_8hpp.html">File feature_space.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__space__tabular_8hpp.html">File feature_space_tabular.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__subspace_8hpp.html">File feature_subspace.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__type_8hpp.html">File feature_type.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__type__nominal_8hpp.html">File feature_type_nominal.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__type__numerical_8hpp.html">File feature_type_numerical.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__type__ordinal_8hpp.html">File feature_type_ordinal.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__vector_8hpp.html">File feature_vector.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__vector__binary_8hpp.html">File feature_vector_binary.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__vector__binned_8hpp.html">File feature_vector_binned.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__vector__equal_8hpp.html">File feature_vector_equal.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__vector__missing_8hpp.html">File feature_vector_missing.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__vector__nominal_8hpp.html">File feature_vector_nominal.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__vector__numerical_8hpp.html">File feature_vector_numerical.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/feature__vector__ordinal_8hpp.html">File feature_vector_ordinal.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/global__pruning_8hpp.html">File global_pruning.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/global__pruning__no_8hpp.html">File global_pruning_no.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/global__pruning__post_8hpp.html">File global_pruning_post.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/global__pruning__pre_8hpp.html">File global_pruning_pre.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/head_8hpp.html">File head.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/head__complete_8hpp.html">File head_complete.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/head__partial_8hpp.html">File head_partial.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/index__vector_8hpp.html">File index_vector.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/index__vector__complete_8hpp.html">File index_vector_complete.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/index__vector__partial_8hpp.html">File index_vector_partial.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/indexed__value_8hpp.html">File indexed_value.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/info_8hpp.html">File info.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/instance__sampling_8hpp.html">File instance_sampling.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/instance__sampling__no_8hpp.html">File instance_sampling_no.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/instance__sampling__stratified__example__wise_8hpp.html">File instance_sampling_stratified_example_wise.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/instance__sampling__stratified__output__wise_8hpp.html">File instance_sampling_stratified_output_wise.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/instance__sampling__with__replacement_8hpp.html">File instance_sampling_with_replacement.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/instance__sampling__without__replacement_8hpp.html">File instance_sampling_without_replacement.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/interval_8hpp.html">File interval.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/iterator__binned_8hpp.html">File iterator_binned.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/iterator__equal_8hpp.html">File iterator_equal.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/iterator__forward__non__zero__index_8hpp.html">File iterator_forward_non_zero_index.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/iterator__forward__sparse_8hpp.html">File iterator_forward_sparse.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/iterator__forward__sparse__binary_8hpp.html">File iterator_forward_sparse_binary.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/iterator__index_8hpp.html">File iterator_index.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/iterators_8hpp.html">File iterators.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/label__matrix__c__contiguous_8hpp.html">File label_matrix_c_contiguous.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/label__matrix__csr_8hpp.html">File label_matrix_csr.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/label__matrix__row__wise_8hpp.html">File label_matrix_row_wise.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/label__vector_8hpp.html">File label_vector.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/label__vector__set_8hpp.html">File label_vector_set.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/learner_8hpp.html">File learner.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/learner__classification_8hpp.html">File learner_classification.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/learner__classification__common_8hpp.html">File learner_classification_common.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/learner__common_8hpp.html">File learner_common.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/learner__regression_8hpp.html">File learner_regression.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/learner__regression__common_8hpp.html">File learner_regression_common.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/math_8hpp.html">File math.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/matrix__c__contiguous_8hpp.html">File matrix_c_contiguous.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/matrix__dense_8hpp.html">File matrix_dense.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/matrix__lil_8hpp.html">File matrix_lil.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/matrix__lil__binary_8hpp.html">File matrix_lil_binary.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/matrix__sparse__binary_8hpp.html">File matrix_sparse_binary.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/matrix__sparse__set_8hpp.html">File matrix_sparse_set.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/measure__distance_8hpp.html">File measure_distance.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/measure__evaluation_8hpp.html">File measure_evaluation.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/measure__evaluation__sparse_8hpp.html">File measure_evaluation_sparse.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/memory_8hpp.html">File memory.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/model__builder_8hpp.html">File model_builder.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/model__builder__intermediate_8hpp.html">File model_builder_intermediate.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/multi__threading_8hpp.html">File multi_threading.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/multi__threading__manual_8hpp.html">File multi_threading_manual.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/multi__threading__no_8hpp.html">File multi_threading_no.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/opencl_8hpp.html">File opencl.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/openmp_8hpp.html">File openmp.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/output__matrix_8hpp.html">File output_matrix.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/output__sampling_8hpp.html">File output_sampling.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/output__sampling__no_8hpp.html">File output_sampling_no.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/output__sampling__round__robin_8hpp.html">File output_sampling_round_robin.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/output__sampling__without__replacement_8hpp.html">File output_sampling_without_replacement.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/output__space__info_8hpp.html">File output_space_info.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/output__space__info__no_8hpp.html">File output_space_info_no.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/partition_8hpp.html">File partition.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/partition__bi_8hpp.html">File partition_bi.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/partition__sampling_8hpp.html">File partition_sampling.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/partition__sampling__bi__random_8hpp.html">File partition_sampling_bi_random.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/partition__sampling__bi__stratified__example__wise_8hpp.html">File partition_sampling_bi_stratified_example_wise.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/partition__sampling__bi__stratified__output__wise_8hpp.html">File partition_sampling_bi_stratified_output_wise.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/partition__sampling__no_8hpp.html">File partition_sampling_no.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/partition__single_8hpp.html">File partition_single.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/post__optimization_8hpp.html">File post_optimization.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/post__optimization__no_8hpp.html">File post_optimization_no.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/post__optimization__phase__list_8hpp.html">File post_optimization_phase_list.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/post__optimization__sequential_8hpp.html">File post_optimization_sequential.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/post__optimization__unused__rule__removal_8hpp.html">File post_optimization_unused_rule_removal.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/post__processor_8hpp.html">File post_processor.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/post__processor__no_8hpp.html">File post_processor_no.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/prediction_8hpp.html">File prediction.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/prediction__complete_8hpp.html">File prediction_complete.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/prediction__evaluated_8hpp.html">File prediction_evaluated.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/prediction__matrix__dense_8hpp.html">File prediction_matrix_dense.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/prediction__matrix__sparse__binary_8hpp.html">File prediction_matrix_sparse_binary.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/prediction__partial_8hpp.html">File prediction_partial.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/predictor_8hpp.html">File predictor.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/predictor__binary_8hpp.html">File predictor_binary.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/predictor__binary__no_8hpp.html">File predictor_binary_no.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/predictor__common_8hpp.html">File predictor_common.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/predictor__probability_8hpp.html">File predictor_probability.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/predictor__probability__no_8hpp.html">File predictor_probability_no.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/predictor__score_8hpp.html">File predictor_score.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/predictor__score__no_8hpp.html">File predictor_score_no.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/probability__calibration_8hpp.html">File probability_calibration.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/probability__calibration__isotonic_8hpp.html">File probability_calibration_isotonic.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/probability__calibration__joint_8hpp.html">File probability_calibration_joint.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/probability__calibration__marginal_8hpp.html">File probability_calibration_marginal.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/probability__calibration__no_8hpp.html">File probability_calibration_no.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/properties_8hpp.html">File properties.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/quality_8hpp.html">File quality.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/refinement_8hpp.html">File refinement.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/refinement__comparator__fixed_8hpp.html">File refinement_comparator_fixed.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/refinement__comparator__single_8hpp.html">File refinement_comparator_single.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/regression__matrix__c__contiguous_8hpp.html">File regression_matrix_c_contiguous.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/regression__matrix__csr_8hpp.html">File regression_matrix_csr.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/regression__matrix__row__wise_8hpp.html">File regression_matrix_row_wise.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/ring__buffer_8hpp.html">File ring_buffer.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/rng_8hpp.html">File rng.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/rule__compare__function_8hpp.html">File rule_compare_function.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/rule__induction_8hpp.html">File rule_induction.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/rule__induction__top__down__beam__search_8hpp.html">File rule_induction_top_down_beam_search.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/rule__induction__top__down__greedy_8hpp.html">File rule_induction_top_down_greedy.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/rule__list_8hpp.html">File rule_list.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/rule__model_8hpp.html">File rule_model.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/rule__model__assemblage_8hpp.html">File rule_model_assemblage.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/rule__model__assemblage__sequential_8hpp.html">File rule_model_assemblage_sequential.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/rule__pruning_8hpp.html">File rule_pruning.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/rule__pruning__irep_8hpp.html">File rule_pruning_irep.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/rule__pruning__no_8hpp.html">File rule_pruning_no.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/rule__refinement_8hpp.html">File rule_refinement.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/rule__refinement__statistics__based_8hpp.html">File rule_refinement_statistics_based.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/score__processor_8hpp.html">File score_processor.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/score__vector_8hpp.html">File score_vector.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/score__vector__binned__dense_8hpp.html">File score_vector_binned_dense.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/score__vector__bit_8hpp.html">File score_vector_bit.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/score__vector__dense_8hpp.html">File score_vector_dense.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/statistics_8hpp.html">File statistics.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/statistics__provider_8hpp.html">File statistics_provider.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/statistics__space_8hpp.html">File statistics_space.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/statistics__state_8hpp.html">File statistics_state.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/statistics__subset_8hpp.html">File statistics_subset.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/statistics__subset__resettable_8hpp.html">File statistics_subset_resettable.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/statistics__update_8hpp.html">File statistics_update.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/statistics__update__candidate_8hpp.html">File statistics_update_candidate.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/statistics__update__candidate__common_8hpp.html">File statistics_update_candidate_common.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/statistics__weighted_8hpp.html">File statistics_weighted.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/stopping__criterion_8hpp.html">File stopping_criterion.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/stopping__criterion__list_8hpp.html">File stopping_criterion_list.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/stopping__criterion__no_8hpp.html">File stopping_criterion_no.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/stopping__criterion__size_8hpp.html">File stopping_criterion_size.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/stopping__criterion__time_8hpp.html">File stopping_criterion_time.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/stratified__sampling__example__wise_8hpp.html">File stratified_sampling_example_wise.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/stratified__sampling__output__wise_8hpp.html">File stratified_sampling_output_wise.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/strings_8hpp.html">File strings.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/threads_8hpp.html">File threads.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/types_8hpp.html">File types.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/validation_8hpp.html">File validation.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/vector__bit_8hpp.html">File vector_bit.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/vector__dense_8hpp.html">File vector_dense.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/vector__dok__binary_8hpp.html">File vector_dok_binary.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/vector__sparse__array_8hpp.html">File vector_sparse_array.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/vector__sparse__array__binary_8hpp.html">File vector_sparse_array_binary.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view_8hpp.html">File view.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__composite_8hpp.html">File view_composite.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__compressed_8hpp.html">File view_compressed.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__functions_8hpp.html">File view_functions.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__matrix_8hpp.html">File view_matrix.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__matrix__c__contiguous_8hpp.html">File view_matrix_c_contiguous.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__matrix__composite_8hpp.html">File view_matrix_composite.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__matrix__csc_8hpp.html">File view_matrix_csc.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__matrix__csc__binary_8hpp.html">File view_matrix_csc_binary.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__matrix__csr_8hpp.html">File view_matrix_csr.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__matrix__csr__binary_8hpp.html">File view_matrix_csr_binary.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__matrix__dense_8hpp.html">File view_matrix_dense.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__matrix__fortran__contiguous_8hpp.html">File view_matrix_fortran_contiguous.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__matrix__lil_8hpp.html">File view_matrix_lil.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__matrix__sparse_8hpp.html">File view_matrix_sparse.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__matrix__sparse__binary_8hpp.html">File view_matrix_sparse_binary.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__matrix__sparse__set_8hpp.html">File view_matrix_sparse_set.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__vector_8hpp.html">File view_vector.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__vector__binned_8hpp.html">File view_vector_binned.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__vector__bit_8hpp.html">File view_vector_bit.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__vector__composite_8hpp.html">File view_vector_composite.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__vector__compressed_8hpp.html">File view_vector_compressed.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__vector__indexed_8hpp.html">File view_vector_indexed.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/view__vector__sparse__set_8hpp.html">File view_vector_sparse_set.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/weight__sampling_8hpp.html">File weight_sampling.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/weight__vector_8hpp.html">File weight_vector.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/weight__vector__bit_8hpp.html">File weight_vector_bit.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/weight__vector__dense_8hpp.html">File weight_vector_dense.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/weight__vector__equal_8hpp.html">File weight_vector_equal.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../common/file/weight__vector__out__of__sample_8hpp.html">File weight_vector_out_of_sample.hpp</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../boosting/filelist.html">Library libmlrlboosting</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle navigation of Library libmlrlboosting</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/blas_8hpp.html">File blas.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/default__rule__auto_8hpp.html">File default_rule_auto.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/discretization__function_8hpp.html">File discretization_function.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/discretization__function__probability_8hpp.html">File discretization_function_probability.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/discretization__function__score_8hpp.html">File discretization_function_score.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/dll__exports_8hpp.html">File dll_exports.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/feature__binning__auto_8hpp.html">File feature_binning_auto.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/head__type_8hpp.html">File head_type.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/head__type__auto_8hpp.html">File head_type_auto.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/head__type__complete_8hpp.html">File head_type_complete.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/head__type__partial__dynamic_8hpp.html">File head_type_partial_dynamic.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/head__type__partial__fixed_8hpp.html">File head_type_partial_fixed.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/head__type__single_8hpp.html">File head_type_single.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/info_8hpp.html">File info.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/iterator__diagonal_8hpp.html">File iterator_diagonal.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/label__binning_8hpp.html">File label_binning.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/label__binning__auto_8hpp.html">File label_binning_auto.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/label__binning__equal__width_8hpp.html">File label_binning_equal_width.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/label__binning__no_8hpp.html">File label_binning_no.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/lapack_8hpp.html">File lapack.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/learner_8hpp.html">File learner.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/learner__boomer__classifier_8hpp.html">File learner_boomer_classifier.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/learner__boomer__regressor_8hpp.html">File learner_boomer_regressor.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/learner__classification_8hpp.html">File learner_classification.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/learner__common_8hpp.html">File learner_common.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/loss_8hpp.html">File loss.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/loss__decomposable_8hpp.html">File loss_decomposable.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/loss__decomposable__logistic_8hpp.html">File loss_decomposable_logistic.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/loss__decomposable__sparse_8hpp.html">File loss_decomposable_sparse.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/loss__decomposable__squared__error_8hpp.html">File loss_decomposable_squared_error.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/loss__decomposable__squared__hinge_8hpp.html">File loss_decomposable_squared_hinge.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/loss__non__decomposable_8hpp.html">File loss_non_decomposable.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/loss__non__decomposable__logistic_8hpp.html">File loss_non_decomposable_logistic.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/loss__non__decomposable__squared__error_8hpp.html">File loss_non_decomposable_squared_error.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/loss__non__decomposable__squared__hinge_8hpp.html">File loss_non_decomposable_squared_hinge.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/math_8hpp.html">File math.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/matrix__c__contiguous__numeric_8hpp.html">File matrix_c_contiguous_numeric.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/matrix__sparse__set__numeric_8hpp.html">File matrix_sparse_set_numeric.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/parallel__rule__refinement__auto_8hpp.html">File parallel_rule_refinement_auto.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/parallel__statistic__update__auto_8hpp.html">File parallel_statistic_update_auto.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/partition__sampling__auto_8hpp.html">File partition_sampling_auto.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/predictor__binary__auto_8hpp.html">File predictor_binary_auto.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/predictor__binary__common_8hpp.html">File predictor_binary_common.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/predictor__binary__example__wise_8hpp.html">File predictor_binary_example_wise.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/predictor__binary__gfm_8hpp.html">File predictor_binary_gfm.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/predictor__binary__output__wise_8hpp.html">File predictor_binary_output_wise.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/predictor__probability__auto_8hpp.html">File predictor_probability_auto.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/predictor__probability__common_8hpp.html">File predictor_probability_common.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/predictor__probability__marginalized_8hpp.html">File predictor_probability_marginalized.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/predictor__probability__output__wise_8hpp.html">File predictor_probability_output_wise.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/predictor__score__common_8hpp.html">File predictor_score_common.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/predictor__score__output__wise_8hpp.html">File predictor_score_output_wise.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/probability__calibration__isotonic_8hpp.html">File probability_calibration_isotonic.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/probability__function__chain__rule_8hpp.html">File probability_function_chain_rule.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/probability__function__joint_8hpp.html">File probability_function_joint.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/probability__function__logistic_8hpp.html">File probability_function_logistic.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/probability__function__marginal_8hpp.html">File probability_function_marginal.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/regularization_8hpp.html">File regularization.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/regularization__manual_8hpp.html">File regularization_manual.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/regularization__no_8hpp.html">File regularization_no.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/rule__compare__function_8hpp.html">File rule_compare_function.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/rule__evaluation_8hpp.html">File rule_evaluation.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/rule__evaluation__decomposable_8hpp.html">File rule_evaluation_decomposable.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/rule__evaluation__decomposable__complete_8hpp.html">File rule_evaluation_decomposable_complete.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/rule__evaluation__decomposable__complete__binned_8hpp.html">File rule_evaluation_decomposable_complete_binned.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/rule__evaluation__decomposable__partial__dynamic_8hpp.html">File rule_evaluation_decomposable_partial_dynamic.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/rule__evaluation__decomposable__partial__dynamic__binned_8hpp.html">File rule_evaluation_decomposable_partial_dynamic_binned.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/rule__evaluation__decomposable__partial__fixed_8hpp.html">File rule_evaluation_decomposable_partial_fixed.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/rule__evaluation__decomposable__partial__fixed__binned_8hpp.html">File rule_evaluation_decomposable_partial_fixed_binned.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/rule__evaluation__decomposable__single_8hpp.html">File rule_evaluation_decomposable_single.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/rule__evaluation__decomposable__sparse_8hpp.html">File rule_evaluation_decomposable_sparse.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/rule__evaluation__non__decomposable_8hpp.html">File rule_evaluation_non_decomposable.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/rule__evaluation__non__decomposable__complete_8hpp.html">File rule_evaluation_non_decomposable_complete.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/rule__evaluation__non__decomposable__complete__binned_8hpp.html">File rule_evaluation_non_decomposable_complete_binned.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/rule__evaluation__non__decomposable__partial__dynamic_8hpp.html">File rule_evaluation_non_decomposable_partial_dynamic.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/rule__evaluation__non__decomposable__partial__dynamic__binned_8hpp.html">File rule_evaluation_non_decomposable_partial_dynamic_binned.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/rule__evaluation__non__decomposable__partial__fixed_8hpp.html">File rule_evaluation_non_decomposable_partial_fixed.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/rule__evaluation__non__decomposable__partial__fixed__binned_8hpp.html">File rule_evaluation_non_decomposable_partial_fixed_binned.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/rule__list__builder_8hpp.html">File rule_list_builder.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/shrinkage__constant_8hpp.html">File shrinkage_constant.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/statistic_8hpp.html">File statistic.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/statistic__format_8hpp.html">File statistic_format.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/statistic__format__auto_8hpp.html">File statistic_format_auto.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/statistic__format__dense_8hpp.html">File statistic_format_dense.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/statistic__format__sparse_8hpp.html">File statistic_format_sparse.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/statistic__type_8hpp.html">File statistic_type.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/statistic__type__float32_8hpp.html">File statistic_type_float32.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/statistic__type__float64_8hpp.html">File statistic_type_float64.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/statistics_8hpp.html">File statistics.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/statistics__decomposable_8hpp.html">File statistics_decomposable.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/statistics__non__decomposable_8hpp.html">File statistics_non_decomposable.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/statistics__provider__decomposable__dense_8hpp.html">File statistics_provider_decomposable_dense.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/statistics__provider__decomposable__sparse_8hpp.html">File statistics_provider_decomposable_sparse.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/statistics__provider__non__decomposable__dense_8hpp.html">File statistics_provider_non_decomposable_dense.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/transformation__binary_8hpp.html">File transformation_binary.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/transformation__binary__example__wise_8hpp.html">File transformation_binary_example_wise.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/transformation__binary__gfm_8hpp.html">File transformation_binary_gfm.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/transformation__binary__output__wise_8hpp.html">File transformation_binary_output_wise.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/transformation__probability_8hpp.html">File transformation_probability.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/transformation__probability__marginalized_8hpp.html">File transformation_probability_marginalized.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/transformation__probability__output__wise_8hpp.html">File transformation_probability_output_wise.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/vector__statistic__decomposable__dense_8hpp.html">File vector_statistic_decomposable_dense.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/vector__statistic__decomposable__sparse_8hpp.html">File vector_statistic_decomposable_sparse.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/vector__statistic__non__decomposable__dense_8hpp.html">File vector_statistic_non_decomposable_dense.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../boosting/file/view__statistic__non__decomposable__dense_8hpp.html">File view_statistic_non_decomposable_dense.hpp</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Further Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../misc/CHANGELOG.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../misc/CONTRIBUTORS.html">Contributors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../misc/CODE_OF_CONDUCT.html">Code of Conduct</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../misc/LICENSE.html">MIT License</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/mrapp-ke/MLRL-Boomer">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/mrapp-ke/MLRL-Boomer/issues">Issue Tracker</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../../../../_sources/developer_guide/api/cpp/seco/filelist.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="file-list">
+<h1>File list<a class="headerlink" href="#file-list" title="Link to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file/confusion__matrix_8hpp.html">File confusion_matrix.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/confusion__matrix_8hpp.html#_CPPv4I0E15ConfusionMatrix"><code class="docutils literal notranslate"><span class="pre">ConfusionMatrix</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/confusion__matrix_8hpp.html#_CPPv4N15ConfusionMatrix15ConfusionMatrixEv"><code class="docutils literal notranslate"><span class="pre">ConfusionMatrix()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/confusion__matrix_8hpp.html#_CPPv4N15ConfusionMatrixaSERK13StatisticType"><code class="docutils literal notranslate"><span class="pre">operator=()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/confusion__matrix_8hpp.html#_CPPv4N15ConfusionMatrixpLERK13StatisticType"><code class="docutils literal notranslate"><span class="pre">operator+=()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/confusion__matrix_8hpp.html#_CPPv4N15ConfusionMatrixpLERK15ConfusionMatrixI13StatisticTypeE"><code class="docutils literal notranslate"><span class="pre">operator+=()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/confusion__matrix_8hpp.html#_CPPv4N15ConfusionMatrixmIERK13StatisticType"><code class="docutils literal notranslate"><span class="pre">operator-=()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/confusion__matrix_8hpp.html#_CPPv4N15ConfusionMatrixmIERK15ConfusionMatrixI13StatisticTypeE"><code class="docutils literal notranslate"><span class="pre">operator-=()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/confusion__matrix_8hpp.html#_CPPv4N15ConfusionMatrixmLERK13StatisticType"><code class="docutils literal notranslate"><span class="pre">operator*=()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/confusion__matrix_8hpp.html#_CPPv4N15ConfusionMatrix10getElementEbb"><code class="docutils literal notranslate"><span class="pre">getElement()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/confusion__matrix_8hpp.html#_CPPv4N15ConfusionMatrix2inE"><code class="docutils literal notranslate"><span class="pre">in</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/confusion__matrix_8hpp.html#_CPPv4N15ConfusionMatrix2ipE"><code class="docutils literal notranslate"><span class="pre">ip</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/confusion__matrix_8hpp.html#_CPPv4N15ConfusionMatrix2rnE"><code class="docutils literal notranslate"><span class="pre">rn</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/confusion__matrix_8hpp.html#_CPPv4N15ConfusionMatrix2rpE"><code class="docutils literal notranslate"><span class="pre">rp</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/confusion__matrix_8hpp.html#_CPPv4N15ConfusionMatrixplE15ConfusionMatrixI13StatisticTypeERK13StatisticType"><code class="docutils literal notranslate"><span class="pre">operator+</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/confusion__matrix_8hpp.html#_CPPv4N15ConfusionMatrixplE15ConfusionMatrixI13StatisticTypeERK15ConfusionMatrixI13StatisticTypeE"><code class="docutils literal notranslate"><span class="pre">operator+</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/confusion__matrix_8hpp.html#_CPPv4N15ConfusionMatrixmiE15ConfusionMatrixI13StatisticTypeERK13StatisticType"><code class="docutils literal notranslate"><span class="pre">operator-</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/confusion__matrix_8hpp.html#_CPPv4N15ConfusionMatrixmiE15ConfusionMatrixI13StatisticTypeERK15ConfusionMatrixI13StatisticTypeE"><code class="docutils literal notranslate"><span class="pre">operator-</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/confusion__matrix_8hpp.html#_CPPv4N15ConfusionMatrixmlE15ConfusionMatrixI13StatisticTypeERK13StatisticType"><code class="docutils literal notranslate"><span class="pre">operator*</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/decision__list__builder_8hpp.html">File decision_list_builder.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/decision__list__builder_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/decision__list__builder_8hpp.html#_CPPv4N4seco26DecisionListBuilderFactoryE"><code class="docutils literal notranslate"><span class="pre">seco::DecisionListBuilderFactory</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/decision__list__builder_8hpp.html#_CPPv4NK4seco26DecisionListBuilderFactory6createEv"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/dll__exports_8hpp.html">File dll_exports.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/dll__exports_8hpp.html#c.MLRLSECO_API"><code class="docutils literal notranslate"><span class="pre">MLRLSECO_API</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/head__type_8hpp.html">File head_type.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/head__type_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/head__type_8hpp.html#_CPPv4N4seco11IHeadConfigE"><code class="docutils literal notranslate"><span class="pre">seco::IHeadConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/head__type_8hpp.html#_CPPv4N4seco11IHeadConfigD0Ev"><code class="docutils literal notranslate"><span class="pre">~IHeadConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/head__type_8hpp.html#_CPPv4NK4seco11IHeadConfig31createStatisticsProviderFactoryERK19IRowWiseLabelMatrix"><code class="docutils literal notranslate"><span class="pre">createStatisticsProviderFactory()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/head__type__partial_8hpp.html">File head_type_partial.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/head__type__partial_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/head__type__partial_8hpp.html#_CPPv4N4seco17PartialHeadConfigE"><code class="docutils literal notranslate"><span class="pre">seco::PartialHeadConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/head__type__partial_8hpp.html#_CPPv4N4seco17PartialHeadConfig17PartialHeadConfigE16ReadablePropertyI16IHeuristicConfigE16ReadablePropertyI16IHeuristicConfigE16ReadablePropertyI19ILiftFunctionConfigE"><code class="docutils literal notranslate"><span class="pre">PartialHeadConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/head__type__partial_8hpp.html#_CPPv4NK4seco17PartialHeadConfig31createStatisticsProviderFactoryERK19IRowWiseLabelMatrix"><code class="docutils literal notranslate"><span class="pre">createStatisticsProviderFactory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/head__type__partial_8hpp.html#_CPPv4N4seco17PartialHeadConfig16heuristicConfig_E"><code class="docutils literal notranslate"><span class="pre">heuristicConfig_</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/head__type__partial_8hpp.html#_CPPv4N4seco17PartialHeadConfig23pruningHeuristicConfig_E"><code class="docutils literal notranslate"><span class="pre">pruningHeuristicConfig_</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/head__type__partial_8hpp.html#_CPPv4N4seco17PartialHeadConfig19liftFunctionConfig_E"><code class="docutils literal notranslate"><span class="pre">liftFunctionConfig_</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/head__type__single_8hpp.html">File head_type_single.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/head__type__single_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/head__type__single_8hpp.html#_CPPv4N4seco22SingleOutputHeadConfigE"><code class="docutils literal notranslate"><span class="pre">seco::SingleOutputHeadConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/head__type__single_8hpp.html#_CPPv4N4seco22SingleOutputHeadConfig22SingleOutputHeadConfigE16ReadablePropertyI16IHeuristicConfigE16ReadablePropertyI16IHeuristicConfigE"><code class="docutils literal notranslate"><span class="pre">SingleOutputHeadConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/head__type__single_8hpp.html#_CPPv4NK4seco22SingleOutputHeadConfig31createStatisticsProviderFactoryERK19IRowWiseLabelMatrix"><code class="docutils literal notranslate"><span class="pre">createStatisticsProviderFactory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/head__type__single_8hpp.html#_CPPv4N4seco22SingleOutputHeadConfig16heuristicConfig_E"><code class="docutils literal notranslate"><span class="pre">heuristicConfig_</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/head__type__single_8hpp.html#_CPPv4N4seco22SingleOutputHeadConfig23pruningHeuristicConfig_E"><code class="docutils literal notranslate"><span class="pre">pruningHeuristicConfig_</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/heuristic_8hpp.html">File heuristic.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/heuristic_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/heuristic_8hpp.html#_CPPv4N4seco10IHeuristicE"><code class="docutils literal notranslate"><span class="pre">seco::IHeuristic</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic_8hpp.html#_CPPv4N4seco10IHeuristicD0Ev"><code class="docutils literal notranslate"><span class="pre">~IHeuristic()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic_8hpp.html#_CPPv4NK4seco10IHeuristic23evaluateConfusionMatrixE7float327float327float327float327float327float327float327float32"><code class="docutils literal notranslate"><span class="pre">evaluateConfusionMatrix()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/heuristic_8hpp.html#_CPPv4N4seco16IHeuristicConfigE"><code class="docutils literal notranslate"><span class="pre">seco::IHeuristicConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic_8hpp.html#_CPPv4N4seco16IHeuristicConfigD0Ev"><code class="docutils literal notranslate"><span class="pre">~IHeuristicConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic_8hpp.html#_CPPv4NK4seco16IHeuristicConfig22createHeuristicFactoryEv"><code class="docutils literal notranslate"><span class="pre">createHeuristicFactory()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/heuristic_8hpp.html#_CPPv4N4seco17IHeuristicFactoryE"><code class="docutils literal notranslate"><span class="pre">seco::IHeuristicFactory</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic_8hpp.html#_CPPv4N4seco17IHeuristicFactoryD0Ev"><code class="docutils literal notranslate"><span class="pre">~IHeuristicFactory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic_8hpp.html#_CPPv4NK4seco17IHeuristicFactory6createEv"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/heuristic__accuracy_8hpp.html">File heuristic_accuracy.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/heuristic__accuracy_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/heuristic__accuracy_8hpp.html#_CPPv4N4seco14AccuracyConfigE"><code class="docutils literal notranslate"><span class="pre">seco::AccuracyConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic__accuracy_8hpp.html#_CPPv4NK4seco14AccuracyConfig22createHeuristicFactoryEv"><code class="docutils literal notranslate"><span class="pre">createHeuristicFactory()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/heuristic__f__measure_8hpp.html">File heuristic_f_measure.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/heuristic__f__measure_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/heuristic__f__measure_8hpp.html#_CPPv4N4seco14FMeasureConfigE"><code class="docutils literal notranslate"><span class="pre">seco::FMeasureConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic__f__measure_8hpp.html#_CPPv4N4seco14FMeasureConfig14FMeasureConfigEv"><code class="docutils literal notranslate"><span class="pre">FMeasureConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic__f__measure_8hpp.html#_CPPv4NK4seco14FMeasureConfig7getBetaEv"><code class="docutils literal notranslate"><span class="pre">getBeta()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic__f__measure_8hpp.html#_CPPv4N4seco14FMeasureConfig7setBetaE7float32"><code class="docutils literal notranslate"><span class="pre">setBeta()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic__f__measure_8hpp.html#_CPPv4NK4seco14FMeasureConfig22createHeuristicFactoryEv"><code class="docutils literal notranslate"><span class="pre">createHeuristicFactory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic__f__measure_8hpp.html#_CPPv4N4seco14FMeasureConfig5beta_E"><code class="docutils literal notranslate"><span class="pre">beta_</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/heuristic__f__measure_8hpp.html#_CPPv4N4seco15IFMeasureConfigE"><code class="docutils literal notranslate"><span class="pre">seco::IFMeasureConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic__f__measure_8hpp.html#_CPPv4N4seco15IFMeasureConfigD0Ev"><code class="docutils literal notranslate"><span class="pre">~IFMeasureConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic__f__measure_8hpp.html#_CPPv4NK4seco15IFMeasureConfig7getBetaEv"><code class="docutils literal notranslate"><span class="pre">getBeta()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic__f__measure_8hpp.html#_CPPv4N4seco15IFMeasureConfig7setBetaE7float32"><code class="docutils literal notranslate"><span class="pre">setBeta()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/heuristic__laplace_8hpp.html">File heuristic_laplace.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/heuristic__laplace_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/heuristic__laplace_8hpp.html#_CPPv4N4seco13LaplaceConfigE"><code class="docutils literal notranslate"><span class="pre">seco::LaplaceConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic__laplace_8hpp.html#_CPPv4NK4seco13LaplaceConfig22createHeuristicFactoryEv"><code class="docutils literal notranslate"><span class="pre">createHeuristicFactory()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/heuristic__m__estimate_8hpp.html">File heuristic_m_estimate.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/heuristic__m__estimate_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/heuristic__m__estimate_8hpp.html#_CPPv4N4seco16IMEstimateConfigE"><code class="docutils literal notranslate"><span class="pre">seco::IMEstimateConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic__m__estimate_8hpp.html#_CPPv4N4seco16IMEstimateConfigD0Ev"><code class="docutils literal notranslate"><span class="pre">~IMEstimateConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic__m__estimate_8hpp.html#_CPPv4NK4seco16IMEstimateConfig4getMEv"><code class="docutils literal notranslate"><span class="pre">getM()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic__m__estimate_8hpp.html#_CPPv4N4seco16IMEstimateConfig4setME7float32"><code class="docutils literal notranslate"><span class="pre">setM()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/heuristic__m__estimate_8hpp.html#_CPPv4N4seco15MEstimateConfigE"><code class="docutils literal notranslate"><span class="pre">seco::MEstimateConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic__m__estimate_8hpp.html#_CPPv4N4seco15MEstimateConfig15MEstimateConfigEv"><code class="docutils literal notranslate"><span class="pre">MEstimateConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic__m__estimate_8hpp.html#_CPPv4NK4seco15MEstimateConfig4getMEv"><code class="docutils literal notranslate"><span class="pre">getM()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic__m__estimate_8hpp.html#_CPPv4N4seco15MEstimateConfig4setME7float32"><code class="docutils literal notranslate"><span class="pre">setM()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic__m__estimate_8hpp.html#_CPPv4NK4seco15MEstimateConfig22createHeuristicFactoryEv"><code class="docutils literal notranslate"><span class="pre">createHeuristicFactory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic__m__estimate_8hpp.html#_CPPv4N4seco15MEstimateConfig2m_E"><code class="docutils literal notranslate"><span class="pre">m_</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/heuristic__precision_8hpp.html">File heuristic_precision.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/heuristic__precision_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/heuristic__precision_8hpp.html#_CPPv4N4seco15PrecisionConfigE"><code class="docutils literal notranslate"><span class="pre">seco::PrecisionConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic__precision_8hpp.html#_CPPv4NK4seco15PrecisionConfig22createHeuristicFactoryEv"><code class="docutils literal notranslate"><span class="pre">createHeuristicFactory()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/heuristic__recall_8hpp.html">File heuristic_recall.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/heuristic__recall_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/heuristic__recall_8hpp.html#_CPPv4N4seco12RecallConfigE"><code class="docutils literal notranslate"><span class="pre">seco::RecallConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic__recall_8hpp.html#_CPPv4NK4seco12RecallConfig22createHeuristicFactoryEv"><code class="docutils literal notranslate"><span class="pre">createHeuristicFactory()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/heuristic__wra_8hpp.html">File heuristic_wra.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/heuristic__wra_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/heuristic__wra_8hpp.html#_CPPv4N4seco9WraConfigE"><code class="docutils literal notranslate"><span class="pre">seco::WraConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/heuristic__wra_8hpp.html#_CPPv4NK4seco9WraConfig22createHeuristicFactoryEv"><code class="docutils literal notranslate"><span class="pre">createHeuristicFactory()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/info_8hpp.html">File info.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/info_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/info_8hpp.html#_CPPv4N4seco14getLibraryInfoEv"><code class="docutils literal notranslate"><span class="pre">getLibraryInfo()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/learner_8hpp.html">File learner.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/learner_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco23IAccuracyHeuristicMixinE"><code class="docutils literal notranslate"><span class="pre">seco::IAccuracyHeuristicMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco23IAccuracyHeuristicMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~IAccuracyHeuristicMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco23IAccuracyHeuristicMixin20useAccuracyHeuristicEv"><code class="docutils literal notranslate"><span class="pre">useAccuracyHeuristic()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco30IAccuracyPruningHeuristicMixinE"><code class="docutils literal notranslate"><span class="pre">seco::IAccuracyPruningHeuristicMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco30IAccuracyPruningHeuristicMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~IAccuracyPruningHeuristicMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco30IAccuracyPruningHeuristicMixin27useAccuracyPruningHeuristicEv"><code class="docutils literal notranslate"><span class="pre">useAccuracyPruningHeuristic()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco31ICoverageStoppingCriterionMixinE"><code class="docutils literal notranslate"><span class="pre">seco::ICoverageStoppingCriterionMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco31ICoverageStoppingCriterionMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~ICoverageStoppingCriterionMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco31ICoverageStoppingCriterionMixin28useCoverageStoppingCriterionEv"><code class="docutils literal notranslate"><span class="pre">useCoverageStoppingCriterion()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco23IFMeasureHeuristicMixinE"><code class="docutils literal notranslate"><span class="pre">seco::IFMeasureHeuristicMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco23IFMeasureHeuristicMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~IFMeasureHeuristicMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco23IFMeasureHeuristicMixin20useFMeasureHeuristicEv"><code class="docutils literal notranslate"><span class="pre">useFMeasureHeuristic()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco30IFMeasurePruningHeuristicMixinE"><code class="docutils literal notranslate"><span class="pre">seco::IFMeasurePruningHeuristicMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco30IFMeasurePruningHeuristicMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~IFMeasurePruningHeuristicMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco30IFMeasurePruningHeuristicMixin27useFMeasurePruningHeuristicEv"><code class="docutils literal notranslate"><span class="pre">useFMeasurePruningHeuristic()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco21IKlnLiftFunctionMixinE"><code class="docutils literal notranslate"><span class="pre">seco::IKlnLiftFunctionMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco21IKlnLiftFunctionMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~IKlnLiftFunctionMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco21IKlnLiftFunctionMixin18useKlnLiftFunctionEv"><code class="docutils literal notranslate"><span class="pre">useKlnLiftFunction()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco22ILaplaceHeuristicMixinE"><code class="docutils literal notranslate"><span class="pre">seco::ILaplaceHeuristicMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco22ILaplaceHeuristicMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~ILaplaceHeuristicMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco22ILaplaceHeuristicMixin19useLaplaceHeuristicEv"><code class="docutils literal notranslate"><span class="pre">useLaplaceHeuristic()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco29ILaplacePruningHeuristicMixinE"><code class="docutils literal notranslate"><span class="pre">seco::ILaplacePruningHeuristicMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco29ILaplacePruningHeuristicMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~ILaplacePruningHeuristicMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco29ILaplacePruningHeuristicMixin26useLaplacePruningHeuristicEv"><code class="docutils literal notranslate"><span class="pre">useLaplacePruningHeuristic()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco24IMEstimateHeuristicMixinE"><code class="docutils literal notranslate"><span class="pre">seco::IMEstimateHeuristicMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco24IMEstimateHeuristicMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~IMEstimateHeuristicMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco24IMEstimateHeuristicMixin21useMEstimateHeuristicEv"><code class="docutils literal notranslate"><span class="pre">useMEstimateHeuristic()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco31IMEstimatePruningHeuristicMixinE"><code class="docutils literal notranslate"><span class="pre">seco::IMEstimatePruningHeuristicMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco31IMEstimatePruningHeuristicMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~IMEstimatePruningHeuristicMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco31IMEstimatePruningHeuristicMixin28useMEstimatePruningHeuristicEv"><code class="docutils literal notranslate"><span class="pre">useMEstimatePruningHeuristic()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco33INoCoverageStoppingCriterionMixinE"><code class="docutils literal notranslate"><span class="pre">seco::INoCoverageStoppingCriterionMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco33INoCoverageStoppingCriterionMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~INoCoverageStoppingCriterionMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco33INoCoverageStoppingCriterionMixin30useNoCoverageStoppingCriterionEv"><code class="docutils literal notranslate"><span class="pre">useNoCoverageStoppingCriterion()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco20INoLiftFunctionMixinE"><code class="docutils literal notranslate"><span class="pre">seco::INoLiftFunctionMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco20INoLiftFunctionMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~INoLiftFunctionMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco20INoLiftFunctionMixin17useNoLiftFunctionEv"><code class="docutils literal notranslate"><span class="pre">useNoLiftFunction()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco32IOutputWiseBinaryPredictionMixinE"><code class="docutils literal notranslate"><span class="pre">seco::IOutputWiseBinaryPredictionMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco32IOutputWiseBinaryPredictionMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~IOutputWiseBinaryPredictionMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco32IOutputWiseBinaryPredictionMixin28useOutputWiseBinaryPredictorEv"><code class="docutils literal notranslate"><span class="pre">useOutputWiseBinaryPredictor()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco17IPartialHeadMixinE"><code class="docutils literal notranslate"><span class="pre">seco::IPartialHeadMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco17IPartialHeadMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~IPartialHeadMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco17IPartialHeadMixin15usePartialHeadsEv"><code class="docutils literal notranslate"><span class="pre">usePartialHeads()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco22IPeakLiftFunctionMixinE"><code class="docutils literal notranslate"><span class="pre">seco::IPeakLiftFunctionMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco22IPeakLiftFunctionMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~IPeakLiftFunctionMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco22IPeakLiftFunctionMixin19usePeakLiftFunctionEv"><code class="docutils literal notranslate"><span class="pre">usePeakLiftFunction()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco24IPrecisionHeuristicMixinE"><code class="docutils literal notranslate"><span class="pre">seco::IPrecisionHeuristicMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco24IPrecisionHeuristicMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~IPrecisionHeuristicMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco24IPrecisionHeuristicMixin21usePrecisionHeuristicEv"><code class="docutils literal notranslate"><span class="pre">usePrecisionHeuristic()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco31IPrecisionPruningHeuristicMixinE"><code class="docutils literal notranslate"><span class="pre">seco::IPrecisionPruningHeuristicMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco31IPrecisionPruningHeuristicMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~IPrecisionPruningHeuristicMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco31IPrecisionPruningHeuristicMixin28usePrecisionPruningHeuristicEv"><code class="docutils literal notranslate"><span class="pre">usePrecisionPruningHeuristic()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco21IRecallHeuristicMixinE"><code class="docutils literal notranslate"><span class="pre">seco::IRecallHeuristicMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco21IRecallHeuristicMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~IRecallHeuristicMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco21IRecallHeuristicMixin18useRecallHeuristicEv"><code class="docutils literal notranslate"><span class="pre">useRecallHeuristic()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco28IRecallPruningHeuristicMixinE"><code class="docutils literal notranslate"><span class="pre">seco::IRecallPruningHeuristicMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco28IRecallPruningHeuristicMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~IRecallPruningHeuristicMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco28IRecallPruningHeuristicMixin25useRecallPruningHeuristicEv"><code class="docutils literal notranslate"><span class="pre">useRecallPruningHeuristic()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco22ISeCoRuleLearnerConfigE"><code class="docutils literal notranslate"><span class="pre">seco::ISeCoRuleLearnerConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco22ISeCoRuleLearnerConfigD0Ev"><code class="docutils literal notranslate"><span class="pre">~ISeCoRuleLearnerConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco22ISeCoRuleLearnerConfig34getCoverageStoppingCriterionConfigEv"><code class="docutils literal notranslate"><span class="pre">getCoverageStoppingCriterionConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco22ISeCoRuleLearnerConfig13getHeadConfigEv"><code class="docutils literal notranslate"><span class="pre">getHeadConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco22ISeCoRuleLearnerConfig18getHeuristicConfigEv"><code class="docutils literal notranslate"><span class="pre">getHeuristicConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco22ISeCoRuleLearnerConfig25getPruningHeuristicConfigEv"><code class="docutils literal notranslate"><span class="pre">getPruningHeuristicConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco22ISeCoRuleLearnerConfig21getLiftFunctionConfigEv"><code class="docutils literal notranslate"><span class="pre">getLiftFunctionConfig()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco21ISeCoRuleLearnerMixinE"><code class="docutils literal notranslate"><span class="pre">seco::ISeCoRuleLearnerMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco21ISeCoRuleLearnerMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~ISeCoRuleLearnerMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco21ISeCoRuleLearnerMixin11useDefaultsEv"><code class="docutils literal notranslate"><span class="pre">useDefaults()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco22ISingleOutputHeadMixinE"><code class="docutils literal notranslate"><span class="pre">seco::ISingleOutputHeadMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco22ISingleOutputHeadMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~ISingleOutputHeadMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco22ISingleOutputHeadMixin20useSingleOutputHeadsEv"><code class="docutils literal notranslate"><span class="pre">useSingleOutputHeads()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco18IWraHeuristicMixinE"><code class="docutils literal notranslate"><span class="pre">seco::IWraHeuristicMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco18IWraHeuristicMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~IWraHeuristicMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco18IWraHeuristicMixin15useWraHeuristicEv"><code class="docutils literal notranslate"><span class="pre">useWraHeuristic()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco25IWraPruningHeuristicMixinE"><code class="docutils literal notranslate"><span class="pre">seco::IWraPruningHeuristicMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco25IWraPruningHeuristicMixinD0Ev"><code class="docutils literal notranslate"><span class="pre">~IWraPruningHeuristicMixin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner_8hpp.html#_CPPv4N4seco25IWraPruningHeuristicMixin22useWraPruningHeuristicEv"><code class="docutils literal notranslate"><span class="pre">useWraPruningHeuristic()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/learner__common_8hpp.html">File learner_common.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv4N4seco21SeCoRuleLearnerConfigE"><code class="docutils literal notranslate"><span class="pre">seco::SeCoRuleLearnerConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv4N4seco21SeCoRuleLearnerConfig21SeCoRuleLearnerConfigEv"><code class="docutils literal notranslate"><span class="pre">SeCoRuleLearnerConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv4N4seco21SeCoRuleLearnerConfigD0Ev"><code class="docutils literal notranslate"><span class="pre">~SeCoRuleLearnerConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv4N4seco21SeCoRuleLearnerConfig34getCoverageStoppingCriterionConfigEv"><code class="docutils literal notranslate"><span class="pre">getCoverageStoppingCriterionConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv4N4seco21SeCoRuleLearnerConfig13getHeadConfigEv"><code class="docutils literal notranslate"><span class="pre">getHeadConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv4N4seco21SeCoRuleLearnerConfig18getHeuristicConfigEv"><code class="docutils literal notranslate"><span class="pre">getHeuristicConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv4N4seco21SeCoRuleLearnerConfig25getPruningHeuristicConfigEv"><code class="docutils literal notranslate"><span class="pre">getPruningHeuristicConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv4N4seco21SeCoRuleLearnerConfig21getLiftFunctionConfigEv"><code class="docutils literal notranslate"><span class="pre">getLiftFunctionConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv4N4seco21SeCoRuleLearnerConfig35coverageStoppingCriterionConfigPtr_E"><code class="docutils literal notranslate"><span class="pre">coverageStoppingCriterionConfigPtr_</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv4N4seco21SeCoRuleLearnerConfig14headConfigPtr_E"><code class="docutils literal notranslate"><span class="pre">headConfigPtr_</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv4N4seco21SeCoRuleLearnerConfig19heuristicConfigPtr_E"><code class="docutils literal notranslate"><span class="pre">heuristicConfigPtr_</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv4N4seco21SeCoRuleLearnerConfig26pruningHeuristicConfigPtr_E"><code class="docutils literal notranslate"><span class="pre">pruningHeuristicConfigPtr_</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv4N4seco21SeCoRuleLearnerConfig22liftFunctionConfigPtr_E"><code class="docutils literal notranslate"><span class="pre">liftFunctionConfigPtr_</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv4N4seco27SeCoRuleLearnerConfiguratorE"><code class="docutils literal notranslate"><span class="pre">seco::SeCoRuleLearnerConfigurator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv4N4seco27SeCoRuleLearnerConfigurator27SeCoRuleLearnerConfiguratorENSt10unique_ptrI22ISeCoRuleLearnerConfigEE"><code class="docutils literal notranslate"><span class="pre">SeCoRuleLearnerConfigurator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv4NK4seco27SeCoRuleLearnerConfigurator32createStoppingCriterionFactoriesER28StoppingCriterionListFactory"><code class="docutils literal notranslate"><span class="pre">createStoppingCriterionFactories()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv4NK4seco27SeCoRuleLearnerConfigurator45createClassificationStatisticsProviderFactoryERK14IFeatureMatrixRK19IRowWiseLabelMatrix"><code class="docutils literal notranslate"><span class="pre">createClassificationStatisticsProviderFactory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv4NK4seco27SeCoRuleLearnerConfigurator41createRegressionStatisticsProviderFactoryERK14IFeatureMatrixRK24IRowWiseRegressionMatrix"><code class="docutils literal notranslate"><span class="pre">createRegressionStatisticsProviderFactory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv4NK4seco27SeCoRuleLearnerConfigurator25createModelBuilderFactoryEv"><code class="docutils literal notranslate"><span class="pre">createModelBuilderFactory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv4NK4seco27SeCoRuleLearnerConfigurator34createSparseBinaryPredictorFactoryERK21IRowWiseFeatureMatrix6uint32"><code class="docutils literal notranslate"><span class="pre">createSparseBinaryPredictorFactory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv4NK4seco27SeCoRuleLearnerConfigurator38createCoverageStoppingCriterionFactoryEv"><code class="docutils literal notranslate"><span class="pre">createCoverageStoppingCriterionFactory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner__common_8hpp.html#_CPPv4N4seco27SeCoRuleLearnerConfigurator10configPtr_E"><code class="docutils literal notranslate"><span class="pre">configPtr_</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/learner__seco__classifier_8hpp.html">File learner_seco_classifier.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/learner__seco__classifier_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/learner__seco__classifier_8hpp.html#_CPPv4N4seco26createSeCoClassifierConfigEv"><code class="docutils literal notranslate"><span class="pre">createSeCoClassifierConfig()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner__seco__classifier_8hpp.html#_CPPv4N4seco20createSeCoClassifierENSt10unique_ptrIN15ISeCoClassifier7IConfigEEE"><code class="docutils literal notranslate"><span class="pre">createSeCoClassifier()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/learner__seco__classifier_8hpp.html#_CPPv4N4seco15ISeCoClassifierE"><code class="docutils literal notranslate"><span class="pre">seco::ISeCoClassifier</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/learner__seco__classifier_8hpp.html#_CPPv4N4seco15ISeCoClassifierD0Ev"><code class="docutils literal notranslate"><span class="pre">~ISeCoClassifier()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/learner__seco__classifier_8hpp.html#_CPPv4N4seco15ISeCoClassifier7IConfigE"><code class="docutils literal notranslate"><span class="pre">seco::ISeCoClassifier::IConfig</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="file/learner__seco__classifier_8hpp.html#_CPPv4N4seco15ISeCoClassifier7IConfigD0Ev"><code class="docutils literal notranslate"><span class="pre">~IConfig()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/lift__function_8hpp.html">File lift_function.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/lift__function_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/lift__function_8hpp.html#_CPPv4N4seco13ILiftFunctionE"><code class="docutils literal notranslate"><span class="pre">seco::ILiftFunction</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function_8hpp.html#_CPPv4N4seco13ILiftFunctionD0Ev"><code class="docutils literal notranslate"><span class="pre">~ILiftFunction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function_8hpp.html#_CPPv4NK4seco13ILiftFunction13calculateLiftE6uint32"><code class="docutils literal notranslate"><span class="pre">calculateLift()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function_8hpp.html#_CPPv4NK4seco13ILiftFunction10getMaxLiftE6uint32"><code class="docutils literal notranslate"><span class="pre">getMaxLift()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/lift__function_8hpp.html#_CPPv4N4seco19ILiftFunctionConfigE"><code class="docutils literal notranslate"><span class="pre">seco::ILiftFunctionConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function_8hpp.html#_CPPv4N4seco19ILiftFunctionConfigD0Ev"><code class="docutils literal notranslate"><span class="pre">~ILiftFunctionConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function_8hpp.html#_CPPv4NK4seco19ILiftFunctionConfig25createLiftFunctionFactoryERK19IRowWiseLabelMatrix"><code class="docutils literal notranslate"><span class="pre">createLiftFunctionFactory()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/lift__function_8hpp.html#_CPPv4N4seco20ILiftFunctionFactoryE"><code class="docutils literal notranslate"><span class="pre">seco::ILiftFunctionFactory</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function_8hpp.html#_CPPv4N4seco20ILiftFunctionFactoryD0Ev"><code class="docutils literal notranslate"><span class="pre">~ILiftFunctionFactory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function_8hpp.html#_CPPv4NK4seco20ILiftFunctionFactory6createEv"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/lift__function__kln_8hpp.html">File lift_function_kln.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/lift__function__kln_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/lift__function__kln_8hpp.html#_CPPv4N4seco22IKlnLiftFunctionConfigE"><code class="docutils literal notranslate"><span class="pre">seco::IKlnLiftFunctionConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__kln_8hpp.html#_CPPv4N4seco22IKlnLiftFunctionConfigD0Ev"><code class="docutils literal notranslate"><span class="pre">~IKlnLiftFunctionConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__kln_8hpp.html#_CPPv4NK4seco22IKlnLiftFunctionConfig4getKEv"><code class="docutils literal notranslate"><span class="pre">getK()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__kln_8hpp.html#_CPPv4N4seco22IKlnLiftFunctionConfig4setKE7float32"><code class="docutils literal notranslate"><span class="pre">setK()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/lift__function__kln_8hpp.html#_CPPv4N4seco21KlnLiftFunctionConfigE"><code class="docutils literal notranslate"><span class="pre">seco::KlnLiftFunctionConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__kln_8hpp.html#_CPPv4N4seco21KlnLiftFunctionConfig21KlnLiftFunctionConfigEv"><code class="docutils literal notranslate"><span class="pre">KlnLiftFunctionConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__kln_8hpp.html#_CPPv4NK4seco21KlnLiftFunctionConfig4getKEv"><code class="docutils literal notranslate"><span class="pre">getK()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__kln_8hpp.html#_CPPv4N4seco21KlnLiftFunctionConfig4setKE7float32"><code class="docutils literal notranslate"><span class="pre">setK()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__kln_8hpp.html#_CPPv4NK4seco21KlnLiftFunctionConfig25createLiftFunctionFactoryERK19IRowWiseLabelMatrix"><code class="docutils literal notranslate"><span class="pre">createLiftFunctionFactory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__kln_8hpp.html#_CPPv4N4seco21KlnLiftFunctionConfig2k_E"><code class="docutils literal notranslate"><span class="pre">k_</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/lift__function__no_8hpp.html">File lift_function_no.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/lift__function__no_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/lift__function__no_8hpp.html#_CPPv4N4seco20NoLiftFunctionConfigE"><code class="docutils literal notranslate"><span class="pre">seco::NoLiftFunctionConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__no_8hpp.html#_CPPv4NK4seco20NoLiftFunctionConfig25createLiftFunctionFactoryERK19IRowWiseLabelMatrix"><code class="docutils literal notranslate"><span class="pre">createLiftFunctionFactory()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/lift__function__peak_8hpp.html">File lift_function_peak.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/lift__function__peak_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/lift__function__peak_8hpp.html#_CPPv4N4seco23IPeakLiftFunctionConfigE"><code class="docutils literal notranslate"><span class="pre">seco::IPeakLiftFunctionConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__peak_8hpp.html#_CPPv4N4seco23IPeakLiftFunctionConfigD0Ev"><code class="docutils literal notranslate"><span class="pre">~IPeakLiftFunctionConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__peak_8hpp.html#_CPPv4NK4seco23IPeakLiftFunctionConfig12getPeakLabelEv"><code class="docutils literal notranslate"><span class="pre">getPeakLabel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__peak_8hpp.html#_CPPv4N4seco23IPeakLiftFunctionConfig12setPeakLabelE6uint32"><code class="docutils literal notranslate"><span class="pre">setPeakLabel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__peak_8hpp.html#_CPPv4NK4seco23IPeakLiftFunctionConfig10getMaxLiftEv"><code class="docutils literal notranslate"><span class="pre">getMaxLift()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__peak_8hpp.html#_CPPv4N4seco23IPeakLiftFunctionConfig10setMaxLiftE7float32"><code class="docutils literal notranslate"><span class="pre">setMaxLift()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__peak_8hpp.html#_CPPv4NK4seco23IPeakLiftFunctionConfig12getCurvatureEv"><code class="docutils literal notranslate"><span class="pre">getCurvature()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__peak_8hpp.html#_CPPv4N4seco23IPeakLiftFunctionConfig12setCurvatureE7float32"><code class="docutils literal notranslate"><span class="pre">setCurvature()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/lift__function__peak_8hpp.html#_CPPv4N4seco22PeakLiftFunctionConfigE"><code class="docutils literal notranslate"><span class="pre">seco::PeakLiftFunctionConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__peak_8hpp.html#_CPPv4N4seco22PeakLiftFunctionConfig22PeakLiftFunctionConfigEv"><code class="docutils literal notranslate"><span class="pre">PeakLiftFunctionConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__peak_8hpp.html#_CPPv4NK4seco22PeakLiftFunctionConfig12getPeakLabelEv"><code class="docutils literal notranslate"><span class="pre">getPeakLabel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__peak_8hpp.html#_CPPv4N4seco22PeakLiftFunctionConfig12setPeakLabelE6uint32"><code class="docutils literal notranslate"><span class="pre">setPeakLabel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__peak_8hpp.html#_CPPv4NK4seco22PeakLiftFunctionConfig10getMaxLiftEv"><code class="docutils literal notranslate"><span class="pre">getMaxLift()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__peak_8hpp.html#_CPPv4N4seco22PeakLiftFunctionConfig10setMaxLiftE7float32"><code class="docutils literal notranslate"><span class="pre">setMaxLift()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__peak_8hpp.html#_CPPv4NK4seco22PeakLiftFunctionConfig12getCurvatureEv"><code class="docutils literal notranslate"><span class="pre">getCurvature()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__peak_8hpp.html#_CPPv4N4seco22PeakLiftFunctionConfig12setCurvatureE7float32"><code class="docutils literal notranslate"><span class="pre">setCurvature()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__peak_8hpp.html#_CPPv4NK4seco22PeakLiftFunctionConfig25createLiftFunctionFactoryERK19IRowWiseLabelMatrix"><code class="docutils literal notranslate"><span class="pre">createLiftFunctionFactory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__peak_8hpp.html#_CPPv4N4seco22PeakLiftFunctionConfig10peakLabel_E"><code class="docutils literal notranslate"><span class="pre">peakLabel_</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__peak_8hpp.html#_CPPv4N4seco22PeakLiftFunctionConfig8maxLift_E"><code class="docutils literal notranslate"><span class="pre">maxLift_</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/lift__function__peak_8hpp.html#_CPPv4N4seco22PeakLiftFunctionConfig10curvature_E"><code class="docutils literal notranslate"><span class="pre">curvature_</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/matrix__coverage__dense_8hpp.html">File matrix_coverage_dense.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/matrix__coverage__dense_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/matrix__coverage__dense_8hpp.html#_CPPv4N4seco19DenseCoverageMatrixE"><code class="docutils literal notranslate"><span class="pre">seco::DenseCoverageMatrix</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/matrix__coverage__dense_8hpp.html#_CPPv4N4seco19DenseCoverageMatrix19DenseCoverageMatrixE6uint326uint327float64"><code class="docutils literal notranslate"><span class="pre">DenseCoverageMatrix()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/matrix__coverage__dense_8hpp.html#_CPPv4NK4seco19DenseCoverageMatrix24getSumOfUncoveredWeightsEv"><code class="docutils literal notranslate"><span class="pre">getSumOfUncoveredWeights()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/matrix__coverage__dense_8hpp.html#_CPPv4N4seco19DenseCoverageMatrix16increaseCoverageE6uint32N4ViewI6uint32E14const_iteratorEN4ViewI6uint32E14const_iteratorEN4ViewI5uint8E14const_iteratorEN4ViewI5uint8E14const_iteratorEN19CompleteIndexVector14const_iteratorEN19CompleteIndexVector14const_iteratorE"><code class="docutils literal notranslate"><span class="pre">increaseCoverage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/matrix__coverage__dense_8hpp.html#_CPPv4N4seco19DenseCoverageMatrix16increaseCoverageE6uint32N4ViewI6uint32E14const_iteratorEN4ViewI6uint32E14const_iteratorEN4ViewI5uint8E14const_iteratorEN4ViewI5uint8E14const_iteratorEN18PartialIndexVector14const_iteratorEN18PartialIndexVector14const_iteratorE"><code class="docutils literal notranslate"><span class="pre">increaseCoverage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/matrix__coverage__dense_8hpp.html#_CPPv4N4seco19DenseCoverageMatrix16decreaseCoverageE6uint32N4ViewI6uint32E14const_iteratorEN4ViewI6uint32E14const_iteratorEN4ViewI5uint8E14const_iteratorEN4ViewI5uint8E14const_iteratorEN19CompleteIndexVector14const_iteratorEN19CompleteIndexVector14const_iteratorE"><code class="docutils literal notranslate"><span class="pre">decreaseCoverage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/matrix__coverage__dense_8hpp.html#_CPPv4N4seco19DenseCoverageMatrix16decreaseCoverageE6uint32N4ViewI6uint32E14const_iteratorEN4ViewI6uint32E14const_iteratorEN4ViewI5uint8E14const_iteratorEN4ViewI5uint8E14const_iteratorEN18PartialIndexVector14const_iteratorEN18PartialIndexVector14const_iteratorE"><code class="docutils literal notranslate"><span class="pre">decreaseCoverage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/matrix__coverage__dense_8hpp.html#_CPPv4N4seco19DenseCoverageMatrix22sumOfUncoveredWeights_E"><code class="docutils literal notranslate"><span class="pre">sumOfUncoveredWeights_</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/predictor__binary__output__wise_8hpp.html">File predictor_binary_output_wise.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/predictor__binary__output__wise_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/predictor__binary__output__wise_8hpp.html#_CPPv4N4seco31OutputWiseBinaryPredictorConfigE"><code class="docutils literal notranslate"><span class="pre">seco::OutputWiseBinaryPredictorConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/predictor__binary__output__wise_8hpp.html#_CPPv4N4seco31OutputWiseBinaryPredictorConfig31OutputWiseBinaryPredictorConfigE16ReadablePropertyI21IMultiThreadingConfigE"><code class="docutils literal notranslate"><span class="pre">OutputWiseBinaryPredictorConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/predictor__binary__output__wise_8hpp.html#_CPPv4NK4seco31OutputWiseBinaryPredictorConfig22createPredictorFactoryERK21IRowWiseFeatureMatrix6uint32"><code class="docutils literal notranslate"><span class="pre">createPredictorFactory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/predictor__binary__output__wise_8hpp.html#_CPPv4NK4seco31OutputWiseBinaryPredictorConfig28createSparsePredictorFactoryERK21IRowWiseFeatureMatrix6uint32"><code class="docutils literal notranslate"><span class="pre">createSparsePredictorFactory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/predictor__binary__output__wise_8hpp.html#_CPPv4NK4seco31OutputWiseBinaryPredictorConfig22isLabelVectorSetNeededEv"><code class="docutils literal notranslate"><span class="pre">isLabelVectorSetNeeded()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/predictor__binary__output__wise_8hpp.html#_CPPv4N4seco31OutputWiseBinaryPredictorConfig21multiThreadingConfig_E"><code class="docutils literal notranslate"><span class="pre">multiThreadingConfig_</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/rule__compare__function_8hpp.html">File rule_compare_function.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/rule__compare__function_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/rule__compare__function_8hpp.html#_CPPv4N4seco22compareSeCoRuleQualityERK7QualityRK7Quality"><code class="docutils literal notranslate"><span class="pre">compareSeCoRuleQuality()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="file/rule__compare__function_8hpp.html#_CPPv4N4seco26SECO_RULE_COMPARE_FUNCTIONE"><code class="docutils literal notranslate"><span class="pre">SECO_RULE_COMPARE_FUNCTION</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/rule__evaluation_8hpp.html">File rule_evaluation.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/rule__evaluation_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/rule__evaluation_8hpp.html#_CPPv4I0EN4seco15IRuleEvaluationE"><code class="docutils literal notranslate"><span class="pre">seco::IRuleEvaluation</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/rule__evaluation_8hpp.html#_CPPv4N4seco15IRuleEvaluationD0Ev"><code class="docutils literal notranslate"><span class="pre">~IRuleEvaluation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/rule__evaluation_8hpp.html#_CPPv4N4seco15IRuleEvaluation15calculateScoresEN4ViewI6uint32E14const_iteratorEN4ViewI6uint32E14const_iteratorERK15StatisticVectorRK15StatisticVector"><code class="docutils literal notranslate"><span class="pre">calculateScores()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/rule__evaluation__decomposable_8hpp.html">File rule_evaluation_decomposable.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/rule__evaluation__decomposable_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/rule__evaluation__decomposable_8hpp.html#_CPPv4N4seco34IDecomposableRuleEvaluationFactoryE"><code class="docutils literal notranslate"><span class="pre">seco::IDecomposableRuleEvaluationFactory</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/rule__evaluation__decomposable_8hpp.html#_CPPv4N4seco34IDecomposableRuleEvaluationFactoryD0Ev"><code class="docutils literal notranslate"><span class="pre">~IDecomposableRuleEvaluationFactory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/rule__evaluation__decomposable_8hpp.html#_CPPv4NK4seco34IDecomposableRuleEvaluationFactory6createERK26DenseConfusionMatrixVectorI6uint32ERK19CompleteIndexVector"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/rule__evaluation__decomposable_8hpp.html#_CPPv4NK4seco34IDecomposableRuleEvaluationFactory6createERK26DenseConfusionMatrixVectorI6uint32ERK18PartialIndexVector"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/rule__evaluation__decomposable_8hpp.html#_CPPv4NK4seco34IDecomposableRuleEvaluationFactory6createERK26DenseConfusionMatrixVectorI7float32ERK19CompleteIndexVector"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/rule__evaluation__decomposable_8hpp.html#_CPPv4NK4seco34IDecomposableRuleEvaluationFactory6createERK26DenseConfusionMatrixVectorI7float32ERK18PartialIndexVector"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/rule__evaluation__decomposable__partial_8hpp.html">File rule_evaluation_decomposable_partial.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/rule__evaluation__decomposable__partial_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/rule__evaluation__decomposable__partial_8hpp.html#_CPPv4N4seco40DecomposablePartialRuleEvaluationFactoryE"><code class="docutils literal notranslate"><span class="pre">seco::DecomposablePartialRuleEvaluationFactory</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/rule__evaluation__decomposable__partial_8hpp.html#_CPPv4N4seco40DecomposablePartialRuleEvaluationFactory40DecomposablePartialRuleEvaluationFactoryENSt10unique_ptrI17IHeuristicFactoryEENSt10unique_ptrI20ILiftFunctionFactoryEE"><code class="docutils literal notranslate"><span class="pre">DecomposablePartialRuleEvaluationFactory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/rule__evaluation__decomposable__partial_8hpp.html#_CPPv4NK4seco40DecomposablePartialRuleEvaluationFactory6createERK26DenseConfusionMatrixVectorI6uint32ERK19CompleteIndexVector"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/rule__evaluation__decomposable__partial_8hpp.html#_CPPv4NK4seco40DecomposablePartialRuleEvaluationFactory6createERK26DenseConfusionMatrixVectorI6uint32ERK18PartialIndexVector"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/rule__evaluation__decomposable__partial_8hpp.html#_CPPv4NK4seco40DecomposablePartialRuleEvaluationFactory6createERK26DenseConfusionMatrixVectorI7float32ERK19CompleteIndexVector"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/rule__evaluation__decomposable__partial_8hpp.html#_CPPv4NK4seco40DecomposablePartialRuleEvaluationFactory6createERK26DenseConfusionMatrixVectorI7float32ERK18PartialIndexVector"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/rule__evaluation__decomposable__partial_8hpp.html#_CPPv4N4seco40DecomposablePartialRuleEvaluationFactory20heuristicFactoryPtr_E"><code class="docutils literal notranslate"><span class="pre">heuristicFactoryPtr_</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/rule__evaluation__decomposable__partial_8hpp.html#_CPPv4N4seco40DecomposablePartialRuleEvaluationFactory23liftFunctionFactoryPtr_E"><code class="docutils literal notranslate"><span class="pre">liftFunctionFactoryPtr_</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/rule__evaluation__decomposable__single_8hpp.html">File rule_evaluation_decomposable_single.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/rule__evaluation__decomposable__single_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/rule__evaluation__decomposable__single_8hpp.html#_CPPv4N4seco45DecomposableSingleOutputRuleEvaluationFactoryE"><code class="docutils literal notranslate"><span class="pre">seco::DecomposableSingleOutputRuleEvaluationFactory</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/rule__evaluation__decomposable__single_8hpp.html#_CPPv4N4seco45DecomposableSingleOutputRuleEvaluationFactory45DecomposableSingleOutputRuleEvaluationFactoryENSt10unique_ptrI17IHeuristicFactoryEE"><code class="docutils literal notranslate"><span class="pre">DecomposableSingleOutputRuleEvaluationFactory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/rule__evaluation__decomposable__single_8hpp.html#_CPPv4NK4seco45DecomposableSingleOutputRuleEvaluationFactory6createERK26DenseConfusionMatrixVectorI6uint32ERK19CompleteIndexVector"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/rule__evaluation__decomposable__single_8hpp.html#_CPPv4NK4seco45DecomposableSingleOutputRuleEvaluationFactory6createERK26DenseConfusionMatrixVectorI6uint32ERK18PartialIndexVector"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/rule__evaluation__decomposable__single_8hpp.html#_CPPv4NK4seco45DecomposableSingleOutputRuleEvaluationFactory6createERK26DenseConfusionMatrixVectorI7float32ERK19CompleteIndexVector"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/rule__evaluation__decomposable__single_8hpp.html#_CPPv4NK4seco45DecomposableSingleOutputRuleEvaluationFactory6createERK26DenseConfusionMatrixVectorI7float32ERK18PartialIndexVector"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/rule__evaluation__decomposable__single_8hpp.html#_CPPv4N4seco45DecomposableSingleOutputRuleEvaluationFactory20heuristicFactoryPtr_E"><code class="docutils literal notranslate"><span class="pre">heuristicFactoryPtr_</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/statistics_8hpp.html">File statistics.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/statistics_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/statistics_8hpp.html#_CPPv4N4seco19ICoverageStatisticsE"><code class="docutils literal notranslate"><span class="pre">seco::ICoverageStatistics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/statistics_8hpp.html#_CPPv4N4seco19ICoverageStatisticsD0Ev"><code class="docutils literal notranslate"><span class="pre">~ICoverageStatistics()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/statistics_8hpp.html#_CPPv4NK4seco19ICoverageStatistics24getSumOfUncoveredWeightsEv"><code class="docutils literal notranslate"><span class="pre">getSumOfUncoveredWeights()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/statistics__decomposable_8hpp.html">File statistics_decomposable.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/statistics__decomposable_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/statistics__decomposable_8hpp.html#_CPPv4I0EN4seco23IDecomposableStatisticsE"><code class="docutils literal notranslate"><span class="pre">seco::IDecomposableStatistics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/statistics__decomposable_8hpp.html#_CPPv4N4seco23IDecomposableStatisticsD0Ev"><code class="docutils literal notranslate"><span class="pre">~IDecomposableStatistics()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/statistics__decomposable_8hpp.html#_CPPv4N4seco23IDecomposableStatistics24setRuleEvaluationFactoryERK21RuleEvaluationFactory"><code class="docutils literal notranslate"><span class="pre">setRuleEvaluationFactory()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/statistics__provider__decomposable__dense_8hpp.html">File statistics_provider_decomposable_dense.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/statistics__provider__decomposable__dense_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/statistics__provider__decomposable__dense_8hpp.html#_CPPv4N4seco42DenseDecomposableStatisticsProviderFactoryE"><code class="docutils literal notranslate"><span class="pre">seco::DenseDecomposableStatisticsProviderFactory</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/statistics__provider__decomposable__dense_8hpp.html#_CPPv4N4seco42DenseDecomposableStatisticsProviderFactory42DenseDecomposableStatisticsProviderFactoryENSt10unique_ptrI34IDecomposableRuleEvaluationFactoryEENSt10unique_ptrI34IDecomposableRuleEvaluationFactoryEENSt10unique_ptrI34IDecomposableRuleEvaluationFactoryEE"><code class="docutils literal notranslate"><span class="pre">DenseDecomposableStatisticsProviderFactory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/statistics__provider__decomposable__dense_8hpp.html#_CPPv4NK4seco42DenseDecomposableStatisticsProviderFactory6createERK15CContiguousViewIK5uint8E"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/statistics__provider__decomposable__dense_8hpp.html#_CPPv4NK4seco42DenseDecomposableStatisticsProviderFactory6createERK13BinaryCsrView"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/statistics__provider__decomposable__dense_8hpp.html#_CPPv4N4seco42DenseDecomposableStatisticsProviderFactory32defaultRuleEvaluationFactoryPtr_E"><code class="docutils literal notranslate"><span class="pre">defaultRuleEvaluationFactoryPtr_</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/statistics__provider__decomposable__dense_8hpp.html#_CPPv4N4seco42DenseDecomposableStatisticsProviderFactory32regularRuleEvaluationFactoryPtr_E"><code class="docutils literal notranslate"><span class="pre">regularRuleEvaluationFactoryPtr_</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/statistics__provider__decomposable__dense_8hpp.html#_CPPv4N4seco42DenseDecomposableStatisticsProviderFactory32pruningRuleEvaluationFactoryPtr_E"><code class="docutils literal notranslate"><span class="pre">pruningRuleEvaluationFactoryPtr_</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/stopping__criterion__coverage_8hpp.html">File stopping_criterion_coverage.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/stopping__criterion__coverage_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/stopping__criterion__coverage_8hpp.html#_CPPv4N4seco31CoverageStoppingCriterionConfigE"><code class="docutils literal notranslate"><span class="pre">seco::CoverageStoppingCriterionConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/stopping__criterion__coverage_8hpp.html#_CPPv4N4seco31CoverageStoppingCriterionConfig31CoverageStoppingCriterionConfigEv"><code class="docutils literal notranslate"><span class="pre">CoverageStoppingCriterionConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/stopping__criterion__coverage_8hpp.html#_CPPv4NK4seco31CoverageStoppingCriterionConfig12getThresholdEv"><code class="docutils literal notranslate"><span class="pre">getThreshold()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/stopping__criterion__coverage_8hpp.html#_CPPv4N4seco31CoverageStoppingCriterionConfig12setThresholdE7float64"><code class="docutils literal notranslate"><span class="pre">setThreshold()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/stopping__criterion__coverage_8hpp.html#_CPPv4NK4seco31CoverageStoppingCriterionConfig30createStoppingCriterionFactoryEv"><code class="docutils literal notranslate"><span class="pre">createStoppingCriterionFactory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/stopping__criterion__coverage_8hpp.html#_CPPv4N4seco31CoverageStoppingCriterionConfig10threshold_E"><code class="docutils literal notranslate"><span class="pre">threshold_</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="file/stopping__criterion__coverage_8hpp.html#_CPPv4N4seco32ICoverageStoppingCriterionConfigE"><code class="docutils literal notranslate"><span class="pre">seco::ICoverageStoppingCriterionConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/stopping__criterion__coverage_8hpp.html#_CPPv4N4seco32ICoverageStoppingCriterionConfigD0Ev"><code class="docutils literal notranslate"><span class="pre">~ICoverageStoppingCriterionConfig()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/stopping__criterion__coverage_8hpp.html#_CPPv4NK4seco32ICoverageStoppingCriterionConfig12getThresholdEv"><code class="docutils literal notranslate"><span class="pre">getThreshold()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/stopping__criterion__coverage_8hpp.html#_CPPv4N4seco32ICoverageStoppingCriterionConfig12setThresholdE7float64"><code class="docutils literal notranslate"><span class="pre">setThreshold()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="file/vector__confusion__matrix__dense_8hpp.html">File vector_confusion_matrix_dense.hpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file/vector__confusion__matrix__dense_8hpp.html#_CPPv44seco"><code class="docutils literal notranslate"><span class="pre">seco</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="file/vector__confusion__matrix__dense_8hpp.html#_CPPv4I0EN4seco26DenseConfusionMatrixVectorE"><code class="docutils literal notranslate"><span class="pre">seco::DenseConfusionMatrixVector</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="file/vector__confusion__matrix__dense_8hpp.html#_CPPv4N4seco26DenseConfusionMatrixVector26DenseConfusionMatrixVectorE6uint32b"><code class="docutils literal notranslate"><span class="pre">DenseConfusionMatrixVector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/vector__confusion__matrix__dense_8hpp.html#_CPPv4N4seco26DenseConfusionMatrixVector26DenseConfusionMatrixVectorERK26DenseConfusionMatrixVector"><code class="docutils literal notranslate"><span class="pre">DenseConfusionMatrixVector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/vector__confusion__matrix__dense_8hpp.html#_CPPv4N4seco26DenseConfusionMatrixVector3addEN4ViewI15ConfusionMatrixI13StatisticTypeEE14const_iteratorEN4ViewI15ConfusionMatrixI13StatisticTypeEE14const_iteratorE"><code class="docutils literal notranslate"><span class="pre">add()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/vector__confusion__matrix__dense_8hpp.html#_CPPv4N4seco26DenseConfusionMatrixVector3addE6uint32RK15CContiguousViewIK5uint8EN4ViewI6uint32E14const_iteratorEN4ViewI6uint32E14const_iteratorERK19DenseCoverageMatrix13StatisticType"><code class="docutils literal notranslate"><span class="pre">add()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/vector__confusion__matrix__dense_8hpp.html#_CPPv4N4seco26DenseConfusionMatrixVector3addE6uint32RK13BinaryCsrViewN4ViewI6uint32E14const_iteratorEN4ViewI6uint32E14const_iteratorERK19DenseCoverageMatrix13StatisticType"><code class="docutils literal notranslate"><span class="pre">add()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/vector__confusion__matrix__dense_8hpp.html#_CPPv4N4seco26DenseConfusionMatrixVector6removeE6uint32RK15CContiguousViewIK5uint8EN4ViewI6uint32E14const_iteratorEN4ViewI6uint32E14const_iteratorERK19DenseCoverageMatrix13StatisticType"><code class="docutils literal notranslate"><span class="pre">remove()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/vector__confusion__matrix__dense_8hpp.html#_CPPv4N4seco26DenseConfusionMatrixVector6removeE6uint32RK13BinaryCsrViewN4ViewI6uint32E14const_iteratorEN4ViewI6uint32E14const_iteratorERK19DenseCoverageMatrix13StatisticType"><code class="docutils literal notranslate"><span class="pre">remove()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/vector__confusion__matrix__dense_8hpp.html#_CPPv4N4seco26DenseConfusionMatrixVector11addToSubsetE6uint32RK15CContiguousViewIK5uint8EN4ViewI6uint32E14const_iteratorEN4ViewI6uint32E14const_iteratorERK19DenseCoverageMatrixRK19CompleteIndexVector13StatisticType"><code class="docutils literal notranslate"><span class="pre">addToSubset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/vector__confusion__matrix__dense_8hpp.html#_CPPv4N4seco26DenseConfusionMatrixVector11addToSubsetE6uint32RK13BinaryCsrViewN4ViewI6uint32E14const_iteratorEN4ViewI6uint32E14const_iteratorERK19DenseCoverageMatrixRK19CompleteIndexVector13StatisticType"><code class="docutils literal notranslate"><span class="pre">addToSubset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/vector__confusion__matrix__dense_8hpp.html#_CPPv4N4seco26DenseConfusionMatrixVector11addToSubsetE6uint32RK15CContiguousViewIK5uint8EN4ViewI6uint32E14const_iteratorEN4ViewI6uint32E14const_iteratorERK19DenseCoverageMatrixRK18PartialIndexVector13StatisticType"><code class="docutils literal notranslate"><span class="pre">addToSubset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/vector__confusion__matrix__dense_8hpp.html#_CPPv4N4seco26DenseConfusionMatrixVector11addToSubsetE6uint32RK13BinaryCsrViewN4ViewI6uint32E14const_iteratorEN4ViewI6uint32E14const_iteratorERK19DenseCoverageMatrixRK18PartialIndexVector13StatisticType"><code class="docutils literal notranslate"><span class="pre">addToSubset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/vector__confusion__matrix__dense_8hpp.html#_CPPv4N4seco26DenseConfusionMatrixVector10differenceEN4ViewI15ConfusionMatrixI13StatisticTypeEE14const_iteratorEN4ViewI15ConfusionMatrixI13StatisticTypeEE14const_iteratorERK19CompleteIndexVectorN4ViewI15ConfusionMatrixI13StatisticTypeEE14const_iteratorEN4ViewI15ConfusionMatrixI13StatisticTypeEE14const_iteratorE"><code class="docutils literal notranslate"><span class="pre">difference()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="file/vector__confusion__matrix__dense_8hpp.html#_CPPv4N4seco26DenseConfusionMatrixVector10differenceEN4ViewI15ConfusionMatrixI13StatisticTypeEE14const_iteratorEN4ViewI15ConfusionMatrixI13StatisticTypeEE14const_iteratorERK18PartialIndexVectorN4ViewI15ConfusionMatrixI13StatisticTypeEE14const_iteratorEN4ViewI15ConfusionMatrixI13StatisticTypeEE14const_iteratorE"><code class="docutils literal notranslate"><span class="pre">difference()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="file/confusion__matrix_8hpp.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">File confusion_matrix.hpp</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">C++ API Reference</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2020-2025, Michael Rapp et al.
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../../_static/documentation_options.js?v=b14e5a5c"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="../../../../_static/tabs.js?v=3ee01567"></script>
+    <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    </body>
+</html>

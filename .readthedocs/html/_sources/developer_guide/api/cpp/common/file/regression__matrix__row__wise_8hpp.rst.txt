@@ -1,0 +1,5 @@
+File regression_matrix_row_wise.hpp
+===================================
+
+.. doxygenfile:: regression_matrix_row_wise.hpp
+   :project: common
