@@ -53,25 +53,35 @@ class SemanticVersion:
         return version
 
 
-class VersionFile(TextFile):
+class VersionTextFile(TextFile):
     """
-    The file that stores the project's version.
+    A text file that stores a version.
     """
 
-    def __init__(self):
-        super().__init__('.version')
-
-    @cached_property
-    def version(self) -> SemanticVersion:
+    @property
+    def version_string(self) -> str:
         """
-        The version that is stored in the file.
+        The version that is stored in the file as a string.
         """
         lines = self.lines
 
         if len(lines) != 1:
             raise ValueError('File "' + self.file + '" must contain exactly one line')
 
-        return SemanticVersion.parse(lines[0])
+        return lines[0]
+
+
+class VersionFile(VersionTextFile):
+    """
+    The file that stores the project's version.
+    """
+
+    @cached_property
+    def version(self) -> SemanticVersion:
+        """
+        The version that is stored in the file.
+        """
+        return SemanticVersion.parse(self.version_string)
 
     def update(self, version: SemanticVersion):
         """
@@ -91,25 +101,17 @@ class VersionFile(TextFile):
             pass
 
 
-class DevelopmentVersionFile(TextFile):
+class DevelopmentVersionFile(VersionTextFile):
     """
     The file that stores the project's development version.
     """
-
-    def __init__(self):
-        super().__init__('.version-dev')
 
     @cached_property
     def development_version(self) -> int:
         """
         The development version that is stored in the file.
         """
-        lines = self.lines
-
-        if len(lines) != 1:
-            raise ValueError('File "' + self.file + '" must contain exactly one line')
-
-        return Version.parse_version_number(lines[0])
+        return Version.parse_version_number(self.version_string)
 
     def update(self, development_version: int):
         """

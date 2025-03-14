@@ -11,7 +11,7 @@ from core.build_unit import BuildUnit
 from util.env import get_env_bool
 from util.files import FileSearch
 
-from targets.version_files import DevelopmentVersionFile, SemanticVersion, VersionFile
+from targets.version_files import DevelopmentVersionFile, SemanticVersion, VersionFile, VersionTextFile
 
 
 class Project:
@@ -19,10 +19,16 @@ class Project:
     Provides information about the project in general.
 
     Attributes:
-        root_directory: The path to the project's root directory
+        root_directory:             The path to the project's root directory
+        version_file:               The file that stores the project's version
+        development_version_file:   The file that stores the project's development version
     """
 
     root_directory = '.'
+
+    version_file = VersionFile('.version')
+
+    development_version_file = DevelopmentVersionFile('.version-dev')
 
     @staticmethod
     def version(release: bool = False) -> SemanticVersion:
@@ -33,12 +39,21 @@ class Project:
                         returned
         :return:        The current version of the project
         """
-        version = VersionFile().version
+        version = Project.version_file.version
 
         if release or get_env_bool(environ, 'RELEASE'):
             return version
 
-        return replace(version, dev=DevelopmentVersionFile().development_version)
+        return replace(version, dev=Project.development_version())
+
+    @staticmethod
+    def development_version() -> int:
+        """
+        Returns the current development version of the project.
+
+        :return: The current development version of the project
+        """
+        return Project.development_version_file.development_version
 
     class BuildSystem:
         """
@@ -84,6 +99,15 @@ class Project:
         wheel_metadata_directory_suffix = '.egg-info'
 
         @staticmethod
+        def python_version() -> str:
+            """
+            Returns the minimum Python version required by the project.
+
+            :return: The minimum Python version required by the project
+            """
+            return VersionTextFile(path.join(Project.Python.root_directory, '.version-python')).version_string
+
+        @staticmethod
         def file_search() -> FileSearch:
             """
             Creates and returns a `FileSearch` that allows searching for files within the Python code.
@@ -122,6 +146,15 @@ class Project:
         root_directory = 'cpp'
 
         build_directory_name = 'build'
+
+        @staticmethod
+        def cpp_version() -> str:
+            """
+            Returns the C++ version that should be used for compilation.
+
+            :return: The C++ version that should be used for compilation
+            """
+            return VersionTextFile(path.join(Project.Cpp.root_directory, '.version-cpp')).version_string
 
         @staticmethod
         def file_search() -> FileSearch:
