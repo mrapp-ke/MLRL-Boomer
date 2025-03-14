@@ -18,11 +18,11 @@ class NoFeatureSampling final : public IFeatureSampling {
          */
         NoFeatureSampling(uint32 numFeatures) : indexVector_(numFeatures) {}
 
-        const IIndexVector& sample(RNG& rng) override {
+        const IIndexVector& sample() override {
             return indexVector_;
         }
 
-        std::unique_ptr<IFeatureSampling> createBeamSearchFeatureSampling(RNG& rng, bool resample) override {
+        std::unique_ptr<IFeatureSampling> createBeamSearchFeatureSampling(bool resample) override {
             return std::make_unique<PredefinedFeatureSampling>(indexVector_);
         }
 };

@@ -26,6 +26,11 @@ namespace boosting {
             NumericSparseSetMatrix(uint32 numRows, uint32 numCols);
 
             /**
+             * The type of the values that are stored by the matrix.
+             */
+            typedef T value_type;
+
+            /**
              * Adds all values in another vector to certain elements, whose positions are given as a
              * `CompleteIndexVector`, at a specific row of this matrix.
              *
