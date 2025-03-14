@@ -26,7 +26,7 @@ class Project:
 
     root_directory = '.'
 
-    version_file = VersionFile('.version')
+    version_file = VersionFile(path.join('build_system', 'targets', 'versioning', '.version'))
 
     development_version_file = DevelopmentVersionFile(path.join('build_system', 'targets', 'versioning',
                                                                 '.version-dev'))
