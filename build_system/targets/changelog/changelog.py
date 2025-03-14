@@ -8,6 +8,7 @@ from datetime import date
 from enum import Enum, auto
 from functools import cached_property
 from typing import List, Optional
+from os import path
 
 from core.build_unit import BuildUnit
 from util.io import TextFile
@@ -119,6 +120,8 @@ class ChangesetFile(TextFile):
     A text file that stores several changesets.
     """
 
+    CHANGELOG_DIRECTORY = path.join(Project.BuildSystem.resource_directory, 'changelog')
+
     def __init__(self, file: str):
         """
         :param file: The path to the text file
@@ -130,21 +133,21 @@ class ChangesetFile(TextFile):
         """
         Creates and returns a `ChangesetFile` that stores the changesets for the next major release.
         """
-        return ChangesetFile('.changelog-main.md')
+        return ChangesetFile(path.join(ChangesetFile.CHANGELOG_DIRECTORY, 'changelog-main.md'))
 
     @staticmethod
     def feature() -> 'ChangesetFile':
         """
         Creates and returns a `ChangesetFile` that stores the changesets for the next minor release.
         """
-        return ChangesetFile('.changelog-feature.md')
+        return ChangesetFile(path.join(ChangesetFile.CHANGELOG_DIRECTORY, 'changelog-feature.md'))
 
     @staticmethod
     def bugfix() -> 'ChangesetFile':
         """
         Creates and returns a `ChangesetFile` that stores the changesets for the next bugfix release.
         """
-        return ChangesetFile('.changelog-bugfix.md')
+        return ChangesetFile(path.join(ChangesetFile.CHANGELOG_DIRECTORY, 'changelog-bugfix.md'))
 
     def __validate_line(self, current_line: Optional[Line], previous_line: Optional[Line]):
         current_line_is_enumeration = current_line and current_line.line_type == LineType.ENUMERATION

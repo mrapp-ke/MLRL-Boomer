@@ -67,6 +67,8 @@ class Project:
 
         root_directory = BuildUnit.BUILD_SYSTEM_DIRECTORY
 
+        resource_directory = path.join(root_directory, 'res')
+
         build_directory_name = BuildUnit.BUILD_DIRECTORY_NAME
 
         @staticmethod
