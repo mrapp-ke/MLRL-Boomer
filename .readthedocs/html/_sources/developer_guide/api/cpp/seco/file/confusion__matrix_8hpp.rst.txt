@@ -1,0 +1,5 @@
+File confusion_matrix.hpp
+=========================
+
+.. doxygenfile:: confusion_matrix.hpp
+   :project: seco

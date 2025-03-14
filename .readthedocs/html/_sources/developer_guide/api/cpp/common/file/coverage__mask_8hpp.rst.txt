@@ -1,0 +1,5 @@
+File coverage_mask.hpp
+======================
+
+.. doxygenfile:: coverage_mask.hpp
+   :project: common

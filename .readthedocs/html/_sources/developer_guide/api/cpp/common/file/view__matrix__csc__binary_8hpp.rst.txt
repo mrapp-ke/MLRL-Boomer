@@ -1,0 +1,5 @@
+File view_matrix_csc_binary.hpp
+===============================
+
+.. doxygenfile:: view_matrix_csc_binary.hpp
+   :project: common

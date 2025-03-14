@@ -1,0 +1,5 @@
+File probability_calibration.hpp
+================================
+
+.. doxygenfile:: probability_calibration.hpp
+   :project: common

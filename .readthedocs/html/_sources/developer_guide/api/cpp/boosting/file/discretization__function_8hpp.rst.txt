@@ -1,0 +1,5 @@
+File discretization_function.hpp
+================================
+
+.. doxygenfile:: discretization_function.hpp
+   :project: boosting

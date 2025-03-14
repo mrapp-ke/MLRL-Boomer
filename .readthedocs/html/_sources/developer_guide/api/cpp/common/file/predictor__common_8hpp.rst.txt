@@ -1,0 +1,5 @@
+File predictor_common.hpp
+=========================
+
+.. doxygenfile:: predictor_common.hpp
+   :project: common

@@ -1,0 +1,5 @@
+File feature_matrix_c_contiguous.hpp
+====================================
+
+.. doxygenfile:: feature_matrix_c_contiguous.hpp
+   :project: common
