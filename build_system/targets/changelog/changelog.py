@@ -7,8 +7,8 @@ from dataclasses import dataclass, field
 from datetime import date
 from enum import Enum, auto
 from functools import cached_property
-from typing import List, Optional
 from os import path
+from typing import List, Optional
 
 from core.build_unit import BuildUnit
 from util.io import TextFile

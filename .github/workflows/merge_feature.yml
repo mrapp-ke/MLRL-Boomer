@@ -16,10 +16,10 @@ jobs:
           ref: main
       - name: Reset feature branch
         run: |
-          export MAIN_VERSION="$(cat build_system/targets/versioning/.version)"
+          export MAIN_VERSION="$(cat build_system/res/versioning/version)"
           git fetch origin feature:feature
           git reset --hard feature
-          echo -n "${MAIN_VERSION}" > build_system/targets/versioning/.version
+          echo -n "${MAIN_VERSION}" > build_system/res/versioning/version
       - name: Generate token
         uses: actions/create-github-app-token@v1
         id: app-token
