@@ -5,105 +5,138 @@
 #include "mlrl/common/rule_refinement/rule_refinement.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
 
-CompletePrediction::CompletePrediction(uint32 numElements)
-    : VectorDecorator<AllocatedVector<float64>>(AllocatedVector<float64>(numElements)), indexVector_(numElements) {}
+template<typename ScoreType>
+CompletePrediction<ScoreType>::CompletePrediction(uint32 numElements,
+                                                  IStatisticsUpdateFactory<ScoreType>& statisticsUpdateFactory)
+    : VectorDecorator<AllocatedVector<ScoreType>>(AllocatedVector<ScoreType>(numElements)), indexVector_(numElements),
+      statisticsUpdatePtr_(statisticsUpdateFactory.create(indexVector_.cbegin(), indexVector_.cend(),
+                                                          this->view.cbegin(), this->view.cend())) {}
 
-CompletePrediction::value_iterator CompletePrediction::values_begin() {
+template<typename ScoreType>
+typename CompletePrediction<ScoreType>::value_iterator CompletePrediction<ScoreType>::values_begin() {
     return this->view.begin();
 }
 
-CompletePrediction::value_iterator CompletePrediction::values_end() {
+template<typename ScoreType>
+typename CompletePrediction<ScoreType>::value_iterator CompletePrediction<ScoreType>::values_end() {
     return this->view.end();
 }
 
-CompletePrediction::value_const_iterator CompletePrediction::values_cbegin() const {
+template<typename ScoreType>
+typename CompletePrediction<ScoreType>::value_const_iterator CompletePrediction<ScoreType>::values_cbegin() const {
     return this->view.cbegin();
 }
 
-CompletePrediction::value_const_iterator CompletePrediction::values_cend() const {
+template<typename ScoreType>
+typename CompletePrediction<ScoreType>::value_const_iterator CompletePrediction<ScoreType>::values_cend() const {
     return this->view.cend();
 }
 
-CompletePrediction::index_const_iterator CompletePrediction::indices_cbegin() const {
+template<typename ScoreType>
+typename CompletePrediction<ScoreType>::index_const_iterator CompletePrediction<ScoreType>::indices_cbegin() const {
     return indexVector_.cbegin();
 }
 
-CompletePrediction::index_const_iterator CompletePrediction::indices_cend() const {
+template<typename ScoreType>
+typename CompletePrediction<ScoreType>::index_const_iterator CompletePrediction<ScoreType>::indices_cend() const {
     return indexVector_.cend();
 }
 
-uint32 CompletePrediction::getNumElements() const {
-    return VectorDecorator<AllocatedVector<float64>>::getNumElements();
+template<typename ScoreType>
+uint32 CompletePrediction<ScoreType>::getNumElements() const {
+    return VectorDecorator<AllocatedVector<ScoreType>>::getNumElements();
 }
 
-void CompletePrediction::sort() {}
+template<typename ScoreType>
+void CompletePrediction<ScoreType>::sort() {}
 
-void CompletePrediction::postProcess(const IPostProcessor& postProcessor) {
+template<typename ScoreType>
+void CompletePrediction<ScoreType>::postProcess(const IPostProcessor& postProcessor) {
     postProcessor.postProcess(this->values_begin(), this->values_end());
 }
 
-void CompletePrediction::set(View<float64>::const_iterator begin, View<float64>::const_iterator end) {
-    util::copyView(begin, this->view.begin(), this->getNumElements());
-}
-
-void CompletePrediction::set(BinnedConstIterator<float64> begin, BinnedConstIterator<float64> end) {
-    util::copyView(begin, this->view.begin(), this->getNumElements());
-}
-
-bool CompletePrediction::isPartial() const {
+template<typename ScoreType>
+bool CompletePrediction<ScoreType>::isPartial() const {
     return false;
 }
 
-uint32 CompletePrediction::getIndex(uint32 pos) const {
+template<typename ScoreType>
+uint32 CompletePrediction<ScoreType>::getIndex(uint32 pos) const {
     return indexVector_.getIndex(pos);
 }
 
-std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(const IStatistics& statistics,
-                                                                              const EqualWeightVector& weights) const {
+template<typename ScoreType>
+void CompletePrediction<ScoreType>::visit(PartialIndexVectorVisitor partialIndexVectorVisitor,
+                                          CompleteIndexVectorVisitor completeIndexVectorVisitor) const {
+    completeIndexVectorVisitor(indexVector_);
+}
+
+template<typename ScoreType>
+std::unique_ptr<IStatisticsSubset> CompletePrediction<ScoreType>::createStatisticsSubset(
+  const IStatistics& statistics, const EqualWeightVector& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
 
-std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(const IStatistics& statistics,
-                                                                              const BitWeightVector& weights) const {
+template<typename ScoreType>
+std::unique_ptr<IStatisticsSubset> CompletePrediction<ScoreType>::createStatisticsSubset(
+  const IStatistics& statistics, const BitWeightVector& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
 
-std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
-  const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const {
+template<typename ScoreType>
+std::unique_ptr<IStatisticsSubset> CompletePrediction<ScoreType>::createStatisticsSubset(
+  const IStatistics& statistics, const DenseWeightVector<uint16>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
 
-std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
+template<typename ScoreType>
+std::unique_ptr<IStatisticsSubset> CompletePrediction<ScoreType>::createStatisticsSubset(
+  const IStatistics& statistics, const DenseWeightVector<float32>& weights) const {
+    return statistics.createSubset(indexVector_, weights);
+}
+
+template<typename ScoreType>
+std::unique_ptr<IStatisticsSubset> CompletePrediction<ScoreType>::createStatisticsSubset(
   const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
 
-std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
+template<typename ScoreType>
+std::unique_ptr<IStatisticsSubset> CompletePrediction<ScoreType>::createStatisticsSubset(
   const IStatistics& statistics, const OutOfSampleWeightVector<BitWeightVector>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
 
-std::unique_ptr<IStatisticsSubset> CompletePrediction::createStatisticsSubset(
-  const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const {
+template<typename ScoreType>
+std::unique_ptr<IStatisticsSubset> CompletePrediction<ScoreType>::createStatisticsSubset(
+  const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<uint16>>& weights) const {
     return statistics.createSubset(indexVector_, weights);
 }
 
-std::unique_ptr<IRuleRefinement> CompletePrediction::createRuleRefinement(IFeatureSubspace& featureSubspace,
-                                                                          uint32 featureIndex) const {
-    return indexVector_.createRuleRefinement(featureSubspace, featureIndex);
+template<typename ScoreType>
+std::unique_ptr<IStatisticsSubset> CompletePrediction<ScoreType>::createStatisticsSubset(
+  const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const {
+    return statistics.createSubset(indexVector_, weights);
 }
 
-void CompletePrediction::apply(IStatistics& statistics, uint32 statisticIndex) const {
-    statistics.applyPrediction(statisticIndex, *this);
+template<typename ScoreType>
+void CompletePrediction<ScoreType>::applyPrediction(uint32 statisticIndex) {
+    statisticsUpdatePtr_->applyPrediction(statisticIndex);
 }
 
-void CompletePrediction::revert(IStatistics& statistics, uint32 statisticIndex) const {
-    statistics.revertPrediction(statisticIndex, *this);
+template<typename ScoreType>
+void CompletePrediction<ScoreType>::revertPrediction(uint32 statisticIndex) {
+    statisticsUpdatePtr_->revertPrediction(statisticIndex);
 }
 
-std::unique_ptr<IHead> CompletePrediction::createHead() const {
+template<typename ScoreType>
+std::unique_ptr<IHead> CompletePrediction<ScoreType>::createHead() const {
     uint32 numElements = this->getNumElements();
     std::unique_ptr<CompleteHead> headPtr = std::make_unique<CompleteHead>(numElements);
     util::copyView(this->values_cbegin(), headPtr->values_begin(), numElements);
     return headPtr;
 }
+
+template class CompletePrediction<uint8>;
+template class CompletePrediction<float32>;
+template class CompletePrediction<float64>;

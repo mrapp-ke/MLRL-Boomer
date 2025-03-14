@@ -3,20 +3,25 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_matrix_c_contiguous.hpp"
-#include "mlrl/common/data/view_matrix_csr_binary.hpp"
 #include "mlrl/common/data/view_matrix_sparse_set.hpp"
+#include "mlrl/common/measures/measure_evaluation.hpp"
 
 #include <memory>
 
 /**
- * Defines an interface for all measures that may be used to assess the quality of predictions for certain examples,
- * which are stored using sparse data structures, by comparing them to the corresponding ground truth labels.
+ * Defines an interface for all measures that may be used to assess the quality of scores that are predicted for certain
+ * examples, which are stored using sparse data structures, by comparing them to the corresponding ground truth labels.
+ *
+ * @tparam ScoreType The type of the predicted scores
  */
-class ISparseEvaluationMeasure {
+template<typename ScoreType>
+class ISparseEvaluationMeasure : virtual public IClassificationEvaluationMeasure<ScoreType> {
     public:
 
-        virtual ~ISparseEvaluationMeasure() {}
+        virtual ~ISparseEvaluationMeasure() override {}
+
+        // Keep functions from the parent class rather than hiding them
+        using IClassificationEvaluationMeasure<ScoreType>::evaluate;
 
         /**
          * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
@@ -30,8 +35,8 @@ class ISparseEvaluationMeasure {
          *                      scores
          * @return              The numerical score that has been calculated
          */
-        virtual float64 evaluate(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-                                 const SparseSetView<float64>& scoreMatrix) const = 0;
+        virtual ScoreType evaluate(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+                                   const SparseSetView<ScoreType>& scoreMatrix) const = 0;
 
         /**
          * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
@@ -45,22 +50,30 @@ class ISparseEvaluationMeasure {
          *                      scores
          * @return              The numerical score that has been calculated
          */
-        virtual float64 evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                 const SparseSetView<float64>& scoreMatrix) const = 0;
+        virtual ScoreType evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
+                                   const SparseSetView<ScoreType>& scoreMatrix) const = 0;
 };
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `ISparseEvaluationMeasure`.
+ *
+ * @tparam ScoreType The type of the predicted scores
  */
-class ISparseEvaluationMeasureFactory {
+template<typename ScoreType>
+class ISparseEvaluationMeasureFactory : virtual public IClassificationEvaluationMeasureFactory<ScoreType> {
     public:
 
-        virtual ~ISparseEvaluationMeasureFactory() {}
+        virtual ~ISparseEvaluationMeasureFactory() override {}
 
         /**
          * Creates and returns a new object of type `ISparseEvaluationMeasure`.
          *
          * @return An unique pointer to an object of type `ISparseEvaluationMeasure` that has been created
          */
-        virtual std::unique_ptr<ISparseEvaluationMeasure> createSparseEvaluationMeasure() const = 0;
+        virtual std::unique_ptr<ISparseEvaluationMeasure<ScoreType>> createSparseEvaluationMeasure() const = 0;
+
+        std::unique_ptr<IClassificationEvaluationMeasure<ScoreType>> createClassificationEvaluationMeasure()
+          const override final {
+            return this->createSparseEvaluationMeasure();
+        }
 };

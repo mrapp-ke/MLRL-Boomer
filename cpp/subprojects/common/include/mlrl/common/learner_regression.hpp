@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/common/input/example_weights.hpp"
 #include "mlrl/common/input/feature_info.hpp"
 #include "mlrl/common/input/feature_matrix_column_wise.hpp"
 #include "mlrl/common/input/feature_matrix_row_wise.hpp"
@@ -23,20 +24,21 @@ class MLRLCOMMON_API IRegressionRuleLearner {
         /**
          * Applies the rule learner to given training examples and corresponding ground truth regression scores.
          *
+         * @param exampleWeights    A reference to an object of type `IExampleWeights` that provides access to the
+         *                          weights of the training examples
          * @param featureInfo       A reference to an object of type `IFeatureInfo` that provides information about the
          *                          types of individual features
          * @param featureMatrix     A reference to an object of type `IColumnWiseFeatureMatrix` that provides
          *                          column-wise access to the feature values of the training examples
          * @param regressionMatrix  A reference to an object of type `IRowWiseRegressionMatrix` that provides row-wise
          *                          access to the ground truth regression scores of the training examples
-         * @param randomState       The seed to be used by random number generators
          * @return                  An unique pointer to an object of type `ITrainingResult` that provides access to the
          *                          results of fitting the rule learner to the training data
          */
-        virtual std::unique_ptr<ITrainingResult> fit(const IFeatureInfo& featureInfo,
+        virtual std::unique_ptr<ITrainingResult> fit(const IExampleWeights& exampleWeights,
+                                                     const IFeatureInfo& featureInfo,
                                                      const IColumnWiseFeatureMatrix& featureMatrix,
-                                                     const IRowWiseRegressionMatrix& regressionMatrix,
-                                                     uint32 randomState) const = 0;
+                                                     const IRowWiseRegressionMatrix& regressionMatrix) const = 0;
 
         /**
          * Returns whether the rule learner is able to predict scores or not.
