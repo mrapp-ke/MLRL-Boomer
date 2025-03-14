@@ -28,7 +28,8 @@ class Project:
 
     version_file = VersionFile('.version')
 
-    development_version_file = DevelopmentVersionFile('.version-dev')
+    development_version_file = DevelopmentVersionFile(path.join('build_system', 'targets', 'versioning',
+                                                                '.version-dev'))
 
     @staticmethod
     def version(release: bool = False) -> SemanticVersion:
