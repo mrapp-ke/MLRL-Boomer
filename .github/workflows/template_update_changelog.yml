@@ -36,7 +36,7 @@ jobs:
       - name: Update changelog
         run: |
           ./build update_changelog_${{ inputs.release_branch }}
-          git add .changelog-*.md
+          git add build_system/res/changelog/changelog-*.md
           git add CHANGELOG.md
           git commit -m "Update changelog."
           git push
