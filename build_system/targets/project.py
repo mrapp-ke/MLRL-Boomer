@@ -181,3 +181,13 @@ class Project:
         """
 
         root_directory = '.github'
+
+    class Readthedocs:
+        """
+        Provides information about the project's readthedocs-related files.
+
+        Attributes:
+            root_directory: The path to the root directory that contains all readthedocs-related files
+        """
+
+        root_directory = '.readthedocs'
