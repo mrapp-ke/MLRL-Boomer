@@ -23,9 +23,16 @@ namespace boosting {
             LogisticFunction(const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel)
                 : marginalProbabilityCalibrationModel_(marginalProbabilityCalibrationModel) {}
 
-            float64 transformScoreIntoMarginalProbability(uint32 labelIndex, float64 score) const override {
+            float64 transformScoreIntoMarginalProbability(uint32 labelIndex, float32 score) const override {
+                float64 marginalProbability = util::logisticFunction(score);
                 return marginalProbabilityCalibrationModel_.calibrateMarginalProbability(labelIndex,
-                                                                                         util::logisticFunction(score));
+                                                                                         marginalProbability);
+            }
+
+            float64 transformScoreIntoMarginalProbability(uint32 labelIndex, float64 score) const override {
+                float64 marginalProbability = util::logisticFunction(score);
+                return marginalProbabilityCalibrationModel_.calibrateMarginalProbability(labelIndex,
+                                                                                         marginalProbability);
             }
     };
 
