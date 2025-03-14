@@ -31,7 +31,7 @@ jobs:
         uses: juliangruber/read-file-action@v1
         id: python_version
         with:
-          path: .version-python
+          path: python/.version-python
       - name: Build package
         uses: pypa/cibuildwheel@v2.23
         env:
