@@ -25,7 +25,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: .version-python
+          python-version-file: python/.version-python
       - name: Detect changes
         uses: dorny/paths-filter@v3
         id: filter
@@ -73,7 +73,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: .version-python
+          python-version-file: python/.version-python
       - name: Check C++ source files
         run: ./build test_format_cpp
   test_format_python:
@@ -87,7 +87,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: .version-python
+          python-version-file: python/.version-python
       - name: Check Python source files
         run: ./build test_format_python
   test_format_md:
@@ -101,7 +101,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: .version-python
+          python-version-file: python/.version-python
       - name: Check Markdown files
         run: ./build test_format_md
   test_format_yaml:
@@ -115,7 +115,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: .version-python
+          python-version-file: python/.version-python
       - name: Check YAML files
         run: ./build test_format_yaml
   test_format_toml:
@@ -129,6 +129,6 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: .version-python
+          python-version-file: python/.version-python
       - name: Check TOML files
         run: ./build test_format_toml

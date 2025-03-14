@@ -18,7 +18,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: .version-python
+          python-version-file: python/.version-python
       - name: Install OpenMP
         run: GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} ./build dependency_libomp
       - name: Install OpenCL

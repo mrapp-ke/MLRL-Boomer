@@ -3,7 +3,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utilities for reading and writing version files.
 """
+from os import path
+
 from util.io import TextFile
+
+from targets.project import Project
 
 
 class PythonVersionFile(TextFile):
@@ -12,7 +16,7 @@ class PythonVersionFile(TextFile):
     """
 
     def __init__(self):
-        super().__init__('.version-python')
+        super().__init__(path.join(Project.Python.root_directory, '.version-python'))
 
     @property
     def version(self) -> str:
