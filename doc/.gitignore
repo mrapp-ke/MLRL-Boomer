@@ -1,0 +1,8 @@
+# Build files
+_build/
+
+# Generated API documentations
+developer_guide/api/python/index.md
+developer_guide/api/python/**/
+developer_guide/api/cpp/index.md
+developer_guide/api/cpp/**/
