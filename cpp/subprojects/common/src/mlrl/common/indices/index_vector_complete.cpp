@@ -30,7 +30,7 @@ CompleteIndexVector::const_iterator CompleteIndexVector::cend() const {
     return IndexIterator(numElements_);
 }
 
-std::unique_ptr<IRuleRefinement> CompleteIndexVector::createRuleRefinement(IFeatureSubspace& featureSubspace,
-                                                                           uint32 featureIndex) const {
-    return featureSubspace.createRuleRefinement(*this, featureIndex);
+void CompleteIndexVector::visit(PartialIndexVectorVisitor partialIndexVectorVisitor,
+                                CompleteIndexVectorVisitor completeIndexVectorVisitor) const {
+    completeIndexVectorVisitor(*this);
 }
