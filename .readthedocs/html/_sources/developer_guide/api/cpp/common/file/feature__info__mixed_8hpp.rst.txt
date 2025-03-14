@@ -1,0 +1,5 @@
+File feature_info_mixed.hpp
+===========================
+
+.. doxygenfile:: feature_info_mixed.hpp
+   :project: common

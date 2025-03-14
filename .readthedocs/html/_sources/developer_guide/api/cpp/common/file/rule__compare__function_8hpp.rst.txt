@@ -1,0 +1,5 @@
+File rule_compare_function.hpp
+==============================
+
+.. doxygenfile:: rule_compare_function.hpp
+   :project: common

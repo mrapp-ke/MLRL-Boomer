@@ -1,0 +1,5 @@
+File parallel_statistic_update_auto.hpp
+=======================================
+
+.. doxygenfile:: parallel_statistic_update_auto.hpp
+   :project: boosting

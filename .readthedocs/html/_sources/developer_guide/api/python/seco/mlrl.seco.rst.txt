@@ -1,0 +1,26 @@
+mlrl.seco package
+=================
+
+.. automodule:: mlrl.seco
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.seco.cython
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.seco.config
+   mlrl.seco.info
+   mlrl.seco.runnables
+   mlrl.seco.seco_learners

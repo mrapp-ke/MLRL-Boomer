@@ -1,0 +1,14 @@
+(cpp-apidoc)=
+
+# C++ API Reference
+
+For those who are interested in modifying the project's source code or want to use it in their own C++ code, the API documentation of the following C++ libraries provides valuable insights into the classes, functions, etc., that are available (see {ref}`project-structure`):
+
+```{toctree}
+---
+maxdepth: 1
+---
+Library libmlrlseco <seco/filelist.rst>
+Library libmlrlcommon <common/filelist.rst>
+Library libmlrlboosting <boosting/filelist.rst>
+```
