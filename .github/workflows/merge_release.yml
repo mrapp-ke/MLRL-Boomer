@@ -29,7 +29,9 @@ jobs:
         if: ${{ github.event.release.target_commitish == 'main' }}
         run: |
           ./build reset_development_version
-          git add .version-dev && git commit -m "[Bot] Update development version to $(cat .version-dev)." && git push origin main
+          git add build_system/targets/versioning/.version-dev
+          git commit -m "[Bot] Update development version to $(cat build_system/targets/versioning/.version-dev)."
+          git push origin main
       - name: Merge into feature branch
         if: ${{ github.event.release.target_commitish == 'main' }}
         run: |
