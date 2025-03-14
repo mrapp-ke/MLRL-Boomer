@@ -51,7 +51,7 @@ jobs:
               - 'cpp/subprojects/common/meson.*'
               - 'cpp/subprojects/common/include/**'
               - 'cpp/subprojects/common/src/**'
-              - '.version-python'
+              - 'python/.version-python'
               - 'python/meson.*'
               - 'python/subprojects/common/meson.*'
             cpp_boosting: &cpp_boosting
