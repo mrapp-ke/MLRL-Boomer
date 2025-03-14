@@ -49,37 +49,37 @@ jobs:
         run: |
           git checkout main
           ./build increment_major_version
-          git add .version
-          git commit -m "[Bot] Update version to $(cat .version)."
+          git add build_system/targets/versioning/.version
+          git commit -m "[Bot] Update version to $(cat build_system/targets/versioning/.version)."
           git push origin main
           git checkout feature
           ./build increment_minor_version
-          git add .version
-          git commit -m "[Bot] Update version to $(cat .version)."
+          git add build_system/targets/versioning/.version
+          git commit -m "[Bot] Update version to $(cat build_system/targets/versioning/.version)."
           git push origin feature
           git checkout bugfix
           ./build increment_patch_version
-          git add .version
-          git commit -m "[Bot] Update version to $(cat .version)."
+          git add build_system/targets/versioning/.version
+          git commit -m "[Bot] Update version to $(cat build_system/targets/versioning/.version)."
           git push origin bugfix
       - name: Update minor version
         if: ${{ github.event.release.target_commitish == 'feature' }}
         run: |
           git checkout feature
           ./build increment_minor_version
-          git add .version
-          git commit -m "[Bot] Update version to $(cat .version)."
+          git add build_system/targets/versioning/.version
+          git commit -m "[Bot] Update version to $(cat build_system/targets/versioning/.version)."
           git push origin feature
           git checkout bugfix
           ./build increment_patch_version
-          git add .version
-          git commit -m "[Bot] Update version to $(cat .version)."
+          git add build_system/targets/versioning/.version
+          git commit -m "[Bot] Update version to $(cat build_system/targets/versioning/.version)."
           git push origin bugfix
       - name: Update patch version
         if: ${{ github.event.release.target_commitish == 'bugfix' }}
         run: |-
           git checkout bugfix
           ./build increment_patch_version
-          git add .version
-          git commit -m "[Bot] Update version to $(cat .version)."
+          git add build_system/targets/versioning/.version
+          git commit -m "[Bot] Update version to $(cat build_system/targets/versioning/.version)."
           git push origin bugfix
