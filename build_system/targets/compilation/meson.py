@@ -12,7 +12,7 @@ from util.run import Program
 
 from targets.compilation.build_options import BuildOptions
 from targets.compilation.modules import CompilationModule
-from targets.compilation.version_files import CppVersionFile
+from targets.project import Project
 
 
 def get_meson_arguments(build_options: BuildOptions) -> List[str]:
@@ -22,7 +22,7 @@ def get_meson_arguments(build_options: BuildOptions) -> List[str]:
     :param build_options:   The build options
     :return:                A list of arguments
     """
-    arguments = ['-D', 'cpp_std=' + CppVersionFile().version]
+    arguments = ['-D', 'cpp_std=' + Project.Cpp.cpp_version()]
 
     for build_option in build_options:
         if build_option:
