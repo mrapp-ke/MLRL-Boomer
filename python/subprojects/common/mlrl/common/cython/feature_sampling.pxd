@@ -11,6 +11,14 @@ cdef extern from "mlrl/common/sampling/feature_sampling_without_replacement.hpp"
 
         IFeatureSamplingWithoutReplacementConfig& setSampleSize(float32 sampleSize) except +
 
+        uint32 getMinSamples() const
+
+        IFeatureSamplingWithoutReplacementConfig& setMinSamples(uint32 minSamples) except +
+
+        uint32 getMaxSamples() const
+
+        IFeatureSamplingWithoutReplacementConfig& setMaxSamples(uint32 maxSamples) except +
+
         uint32 getNumRetained() const
 
         IFeatureSamplingWithoutReplacementConfig& setNumRetained(uint32 numRetained) except +

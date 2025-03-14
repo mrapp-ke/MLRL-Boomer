@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "feature_based_search.hpp"
 #include "feature_vector_decorator_binned_common.hpp"
 #include "feature_vector_decorator_nominal_common.hpp"
 
@@ -31,20 +32,18 @@ class BinaryFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDec
         BinaryFeatureVectorDecorator(const BinaryFeatureVectorDecorator& other)
             : AbstractBinnedFeatureVectorDecorator<AllocatedNominalFeatureVector>(other) {}
 
-        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, IWeightedStatisticsSubset& statisticsSubset,
-                                 SingleRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+        void searchForRefinement(SingleRefinementComparator& comparator, const IWeightedStatistics& statistics,
+                                 const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                  uint32 minCoverage, Refinement& refinement) const override {
-            featureBasedSearch.searchForBinaryRefinement(this->view.firstView, this->view.secondView, statisticsSubset,
-                                                         comparator, numExamplesWithNonZeroWeights, minCoverage,
-                                                         refinement);
+            searchForBinaryRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
+                                      outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
 
-        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, IWeightedStatisticsSubset& statisticsSubset,
-                                 FixedRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+        void searchForRefinement(FixedRefinementComparator& comparator, const IWeightedStatistics& statistics,
+                                 const IIndexVector& outputIndices, uint32 numExamplesWithNonZeroWeights,
                                  uint32 minCoverage, Refinement& refinement) const override {
-            featureBasedSearch.searchForBinaryRefinement(this->view.firstView, this->view.secondView, statisticsSubset,
-                                                         comparator, numExamplesWithNonZeroWeights, minCoverage,
-                                                         refinement);
+            searchForBinaryRefinement(this->view.firstView, this->view.secondView, comparator, statistics,
+                                      outputIndices, numExamplesWithNonZeroWeights, minCoverage, refinement);
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
