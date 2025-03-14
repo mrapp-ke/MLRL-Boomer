@@ -16,12 +16,6 @@ from util.log import Log
 from targets.project import Project
 from targets.version_files import SemanticVersion
 
-CHANGESET_FILE_MAIN = '.changelog-main.md'
-
-CHANGESET_FILE_FEATURE = '.changelog-feature.md'
-
-CHANGESET_FILE_BUGFIX = '.changelog-bugfix.md'
-
 
 class LineType(Enum):
     """
@@ -122,8 +116,35 @@ class Changeset:
 
 class ChangesetFile(TextFile):
     """
-    A file that stores several changesets.
+    A text file that stores several changesets.
     """
+
+    def __init__(self, file: str):
+        """
+        :param file: The path to the text file
+        """
+        super().__init__(file, accept_missing=True)
+
+    @staticmethod
+    def main() -> 'ChangesetFile':
+        """
+        Creates and returns a `ChangesetFile` that stores the changesets for the next major release.
+        """
+        return ChangesetFile('.changelog-main.md')
+
+    @staticmethod
+    def feature() -> 'ChangesetFile':
+        """
+        Creates and returns a `ChangesetFile` that stores the changesets for the next minor release.
+        """
+        return ChangesetFile('.changelog-feature.md')
+
+    @staticmethod
+    def bugfix() -> 'ChangesetFile':
+        """
+        Creates and returns a `ChangesetFile` that stores the changesets for the next bugfix release.
+        """
+        return ChangesetFile('.changelog-bugfix.md')
 
     def __validate_line(self, current_line: Optional[Line], previous_line: Optional[Line]):
         current_line_is_enumeration = current_line and current_line.line_type == LineType.ENUMERATION
@@ -320,19 +341,19 @@ class ChangelogFile(TextFile):
         return release.rstrip('\n')
 
 
-def __validate_changeset(changeset_file: str):
+def __validate_changeset(changeset_file: ChangesetFile):
     try:
         Log.info('Validating changeset file "%s"...', changeset_file)
-        ChangesetFile(changeset_file, accept_missing=True).validate()
+        changeset_file.validate()
     except ValueError as error:
         Log.error('Changeset file "%s" is malformed!\n\n%s', changeset_file, str(error))
 
 
-def __merge_changesets(*changeset_files) -> List[Changeset]:
+def __merge_changesets(*changeset_files: ChangesetFile) -> List[Changeset]:
     changesets_by_header = {}
 
     for changeset_file in changeset_files:
-        for changeset in ChangesetFile(changeset_file).changesets:
+        for changeset in changeset_file.changesets:
             merged_changeset = changesets_by_header.setdefault(changeset.header.lower(), changeset)
 
             if merged_changeset != changeset:
@@ -341,7 +362,7 @@ def __merge_changesets(*changeset_files) -> List[Changeset]:
     return list(changesets_by_header.values())
 
 
-def __update_changelog(release_type: ReleaseType, *changeset_files):
+def __update_changelog(release_type: ReleaseType, *changeset_files: ChangesetFile):
     merged_changesets = __merge_changesets(*changeset_files)
     new_release = Release(version=Project.version(release=True),
                           release_date=date.today(),
@@ -350,49 +371,49 @@ def __update_changelog(release_type: ReleaseType, *changeset_files):
     ChangelogFile().add_release(new_release)
 
     for changeset_file in changeset_files:
-        ChangesetFile(changeset_file).clear()
+        changeset_file.clear()
 
 
 def validate_changelog_bugfix(_: BuildUnit):
     """
     Validates the changelog file that lists bugfixes.
     """
-    __validate_changeset(CHANGESET_FILE_BUGFIX)
+    __validate_changeset(ChangesetFile.bugfix())
 
 
 def validate_changelog_feature(_: BuildUnit):
     """
     Validates the changelog file that lists new features.
     """
-    __validate_changeset(CHANGESET_FILE_FEATURE)
+    __validate_changeset(ChangesetFile.feature())
 
 
 def validate_changelog_main(_: BuildUnit):
     """
     Validates the changelog file that lists major updates.
     """
-    __validate_changeset(CHANGESET_FILE_MAIN)
+    __validate_changeset(ChangesetFile.main())
 
 
 def update_changelog_main(_: BuildUnit):
     """
     Updates the projects changelog when releasing bugfixes.
     """
-    __update_changelog(ReleaseType.MAJOR, CHANGESET_FILE_MAIN, CHANGESET_FILE_FEATURE, CHANGESET_FILE_BUGFIX)
+    __update_changelog(ReleaseType.MAJOR, ChangesetFile.main(), ChangesetFile.feature(), ChangesetFile.bugfix())
 
 
 def update_changelog_feature(_: BuildUnit):
     """
     Updates the project's changelog when releasing new features.
     """
-    __update_changelog(ReleaseType.MINOR, CHANGESET_FILE_FEATURE, CHANGESET_FILE_BUGFIX)
+    __update_changelog(ReleaseType.MINOR, ChangesetFile.feature(), ChangesetFile.bugfix())
 
 
 def update_changelog_bugfix(_: BuildUnit):
     """
     Updates the project's changelog when releasing major updates.
     """
-    __update_changelog(ReleaseType.PATCH, CHANGESET_FILE_BUGFIX)
+    __update_changelog(ReleaseType.PATCH, ChangesetFile.bugfix())
 
 
 def print_current_version(_: BuildUnit):
