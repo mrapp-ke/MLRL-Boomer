@@ -17,6 +17,7 @@ jobs:
       cpp: ${{ steps.filter.outputs.cpp }}
       python: ${{ steps.filter.outputs.python }}
       doc: ${{ steps.filter.outputs.doc }}
+      doc_spelling: ${{ steps.filter.outputs.doc_spelling }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -45,7 +46,12 @@ jobs:
             doc: &doc
               - *build_files
               - 'build_system/targets/documentation/*'
-              - 'doc/**'
+              - 'doc/conf.py'
+              - 'doc/index.md'
+              - 'doc/**/'
+            doc_spelling:
+              - *doc
+              - 'doc/spelling_wordlist.txt'
   build_doc:
     needs: changes
     name: Test building documentation
@@ -68,7 +74,7 @@ jobs:
     name: Check for spelling mistakes in documentation
     uses: ./.github/workflows/template_doc.yml
     with:
-      doc: ${{ needs.changes.outputs.doc == 'true' }}
+      doc: ${{ needs.changes.outputs.doc_spelling == 'true' }}
       sphinx_builder: spelling
       ccache_key: check-spelling-ccache
   check_success:

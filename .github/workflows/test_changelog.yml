@@ -19,7 +19,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: .version-python
+          python-version-file: python/.version-python
       - name: Detect changes
         uses: dorny/paths-filter@v3
         id: filter

@@ -30,7 +30,7 @@ jobs:
       - name: Setup git
         uses: fregante/setup-git-user@v2
       - name: Delete old documentation
-        run: rm -rf .readthedocs/
+        run: rm -rf .readthedocs/html/
       - name: Download documentation
         uses: actions/download-artifact@v4
         with:
@@ -40,6 +40,6 @@ jobs:
       - name: Push documentation
         run: |-
           git pull
-          git add .readthedocs/
+          git add .readthedocs/html/
           git commit -m "Generate documentation."
           git push

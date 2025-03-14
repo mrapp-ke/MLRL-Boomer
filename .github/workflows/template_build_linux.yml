@@ -30,7 +30,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: .version-python
+          python-version-file: python/.version-python
       - name: Install OpenCL
         run: sudo apt update && sudo apt install -y opencl-headers ocl-icd-opencl-dev
       - name: Install GoogleTest

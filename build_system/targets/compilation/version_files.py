@@ -3,7 +3,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utilities for reading and writing version files.
 """
+from os import path
+
 from util.io import TextFile
+
+from targets.project import Project
 
 
 class CppVersionFile(TextFile):
@@ -12,7 +16,7 @@ class CppVersionFile(TextFile):
     """
 
     def __init__(self):
-        super().__init__('.version-cpp')
+        super().__init__(path.join(Project.Cpp.root_directory, '.version-cpp'))
 
     @property
     def version(self) -> str:

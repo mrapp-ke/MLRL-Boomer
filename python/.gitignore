@@ -1,0 +1,19 @@
+# Build files
+**/build/
+
+# Packages
+**/dist/
+**/*egg-info/
+
+# Extension modules and shared libraries
+**/cython/*.so*
+**/cython/*.dylib
+**/cython/*.dll
+**/cython/*.lib
+**/cython/*.pyd
+
+# Temporary files created by tests
+**/tests/res/tmp/
+
+# Generated files
+**/pyproject.toml
