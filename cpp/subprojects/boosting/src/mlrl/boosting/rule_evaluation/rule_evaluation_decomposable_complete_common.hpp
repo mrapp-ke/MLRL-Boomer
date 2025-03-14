@@ -20,11 +20,13 @@ namespace boosting {
     class DecomposableCompleteRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
         private:
 
-            DenseScoreVector<IndexVector> scoreVector_;
+            typedef typename StatisticVector::statistic_type statistic_type;
 
-            const float64 l1RegularizationWeight_;
+            DenseScoreVector<statistic_type, IndexVector> scoreVector_;
 
-            const float64 l2RegularizationWeight_;
+            const float32 l1RegularizationWeight_;
+
+            const float32 l2RegularizationWeight_;
 
         public:
 
@@ -36,23 +38,24 @@ namespace boosting {
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              */
-            DecomposableCompleteRuleEvaluation(const IndexVector& outputIndices, float64 l1RegularizationWeight,
-                                               float64 l2RegularizationWeight)
+            DecomposableCompleteRuleEvaluation(const IndexVector& outputIndices, float32 l1RegularizationWeight,
+                                               float32 l2RegularizationWeight)
                 : scoreVector_(outputIndices, true), l1RegularizationWeight_(l1RegularizationWeight),
                   l2RegularizationWeight_(l2RegularizationWeight) {}
 
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                typename DenseScoreVector<IndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
-                float64 quality = 0;
+                typename DenseScoreVector<statistic_type, IndexVector>::value_iterator valueIterator =
+                  scoreVector_.values_begin();
+                statistic_type quality = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
-                    const Tuple<float64>& tuple = statisticIterator[i];
-                    float64 predictedScore = calculateOutputWiseScore(tuple.first, tuple.second,
-                                                                      l1RegularizationWeight_, l2RegularizationWeight_);
+                    const Statistic<statistic_type>& statistic = statisticIterator[i];
+                    statistic_type predictedScore = calculateOutputWiseScore(
+                      statistic.gradient, statistic.hessian, l1RegularizationWeight_, l2RegularizationWeight_);
                     valueIterator[i] = predictedScore;
-                    quality += calculateOutputWiseQuality(predictedScore, tuple.first, tuple.second,
+                    quality += calculateOutputWiseQuality(predictedScore, statistic.gradient, statistic.hessian,
                                                           l1RegularizationWeight_, l2RegularizationWeight_);
                 }
 

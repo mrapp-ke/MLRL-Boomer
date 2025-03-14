@@ -11,7 +11,8 @@
 template<typename IndexIterator, typename ValueIterator>
 static inline std::unique_ptr<OrdinalFeatureVectorDecorator> createOrdinalFeatureVector(
   IndexIterator indexIterator, ValueIterator valueIterator, uint32 numElements,
-  std::unordered_map<int32, Tuple<uint32>>& mapping, uint32 numValues, uint32 numIndices, int32 majorityValue) {
+  std::unordered_map<int32, std::pair<uint32, uint32>>& mapping, uint32 numValues, uint32 numIndices,
+  int32 majorityValue) {
     DenseVector<int32> sortedValues(numValues);
     uint32 n = 0;
 
@@ -37,9 +38,9 @@ static inline std::unique_ptr<OrdinalFeatureVectorDecorator> createOrdinalFeatur
         int32 value = sortedValues[i];
         vectorValueIterator[i] = value;
         vectorIndptrIterator[i] = offset;
-        Tuple<uint32>& tuple = mapping.at(value);
-        tuple.first = i;
-        offset += tuple.second;
+        std::pair<uint32, uint32>& pair = mapping.at(value);
+        pair.first = i;
+        offset += pair.second;
     }
 
     for (uint32 i = 0; i < numElements; i++) {
@@ -52,11 +53,11 @@ static inline std::unique_ptr<OrdinalFeatureVectorDecorator> createOrdinalFeatur
             int32 nominalValue = static_cast<int32>(value);
 
             if (nominalValue != majorityValue) {
-                Tuple<uint32>& tuple = mapping.at(nominalValue);
-                uint32 numRemaining = tuple.second - 1;
-                tuple.second = numRemaining;
+                std::pair<uint32, uint32>& pair = mapping.at(nominalValue);
+                uint32 numRemaining = pair.second - 1;
+                pair.second = numRemaining;
                 AllocatedNominalFeatureVector::index_iterator vectorIndexIterator =
-                  ordinalFeatureVector.indices_begin(tuple.first);
+                  ordinalFeatureVector.indices_begin(pair.first);
                 vectorIndexIterator[numRemaining] = index;
             }
         }
@@ -69,7 +70,7 @@ static inline std::unique_ptr<OrdinalFeatureVectorDecorator> createOrdinalFeatur
 template<typename IndexIterator, typename ValueIterator>
 static inline std::unique_ptr<OrdinalFeatureVectorDecorator> createOrdinalFeatureVector(
   IndexIterator indexIterator, ValueIterator valueIterator, uint32 numElements,
-  std::unordered_map<int32, Tuple<uint32>>& mapping, uint32 numValues, uint32 numExamples, bool sparse,
+  std::unordered_map<int32, std::pair<uint32, uint32>>& mapping, uint32 numValues, uint32 numExamples, bool sparse,
   int32 sparseValue) {
     int32 majorityValue;
     uint32 numMajorityExamples;
@@ -89,7 +90,7 @@ static inline std::unique_ptr<OrdinalFeatureVectorDecorator> createOrdinalFeatur
 template<typename IndexIterator, typename ValueIterator>
 static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
   IndexIterator indexIterator, ValueIterator valueIterator, uint32 numElements,
-  std::unordered_map<int32, Tuple<uint32>>& mapping, uint32 numValues, uint32 numExamples, bool sparse,
+  std::unordered_map<int32, std::pair<uint32, uint32>>& mapping, uint32 numValues, uint32 numExamples, bool sparse,
   int32 sparseValue) {
     if (numValues > 2) {
         return createOrdinalFeatureVector(indexIterator, valueIterator, numElements, mapping, numValues, numExamples,
@@ -106,7 +107,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
     FortranContiguousView<const float32>::value_const_iterator valueIterator =
       featureMatrix.values_cbegin(featureIndex);
     uint32 numElements = featureMatrix.numRows;
-    std::unordered_map<int32, Tuple<uint32>> mapping;
+    std::unordered_map<int32, std::pair<uint32, uint32>> mapping;
     uint32 numExamples = createMapping(valueIterator, numElements, mapping);
     uint32 numValues = static_cast<uint32>(mapping.size());
     return createFeatureVectorInternally(IndexIterator(), valueIterator, numElements, mapping, numValues, numExamples,
@@ -119,7 +120,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
     CscView<const float32>::value_const_iterator valuesBegin = featureMatrix.values_cbegin(featureIndex);
     CscView<const float32>::value_const_iterator valuesEnd = featureMatrix.values_cend(featureIndex);
     uint32 numElements = valuesEnd - valuesBegin;
-    std::unordered_map<int32, Tuple<uint32>> mapping;
+    std::unordered_map<int32, std::pair<uint32, uint32>> mapping;
     uint32 numExamples = createMapping(valuesBegin, numElements, mapping);
     uint32 numValues = static_cast<uint32>(mapping.size());
     bool sparse = numElements < featureMatrix.numRows;
