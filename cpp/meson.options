@@ -1,1 +1,2 @@
+option('library_version', type : 'string')
 option('subprojects', type : 'array', value : [])
