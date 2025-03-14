@@ -16,7 +16,6 @@ from util.pip import Package, Pip, Requirement, RequirementsTextFile, Requiremen
 from targets.packaging.build import Build
 from targets.packaging.modules import PythonPackageModule
 from targets.packaging.pyproject_toml import PyprojectTomlFile
-from targets.packaging.version_files import PythonVersionFile
 from targets.project import Project
 
 MODULE_FILTER = PythonPackageModule.Filter()
@@ -56,7 +55,7 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
             if line.strip('\n').strip() == '[project]':
                 new_lines.append(line)
                 new_lines.append('version = "' + str(Project.version()) + '"\n')
-                new_lines.append('requires-python = "' + PythonVersionFile().version + '"\n')
+                new_lines.append('requires-python = "' + Project.Python.python_version() + '"\n')
             else:
                 for dependency, requirement in requirements.items():
                     if dependency in line:
