@@ -20,7 +20,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: .version-python
+          python-version-file: python/.version-python
       - name: Prepare MSVC
         uses: ilammy/msvc-dev-cmd@v1
       - name: Install OpenCL

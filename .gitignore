@@ -1,28 +1,5 @@
-# Temporary build system files
-build_system/build/
-
-# C++ build files
-cpp/build/
-
-# Python build files
-__pycache__/
-python/**/build/
-python/**/dist/
-python/**/*egg-info/
-python/**/cython/*.so*
-python/**/cython/*.dylib
-python/**/cython/*.dll
-python/**/cython/*.lib
-python/**/cython/*.pyd
-python/**/tests/res/tmp/
-python/**/pyproject.toml
-
-# Documentation files
-doc/_build/
-doc/developer_guide/api/python/index.md
-doc/developer_guide/api/python/**/
-doc/developer_guide/api/cpp/index.md
-doc/developer_guide/api/cpp/**/
+# Cache files
+**/__pycache__/
 
 # Virtual Environment
 venv/
