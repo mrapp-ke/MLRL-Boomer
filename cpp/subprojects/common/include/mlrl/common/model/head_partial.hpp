@@ -6,6 +6,8 @@
 #include "mlrl/common/data/view_vector_indexed.hpp"
 #include "mlrl/common/model/head.hpp"
 
+#include <type_traits>
+
 /**
  * A head that contains a numerical score for a subset of the available outputs.
  *
@@ -20,10 +22,22 @@ class MLRLCOMMON_API PartialHead final : public IterableIndexedVectorDecorator<
         /**
          * @param numElements The number of scores that are contained by the head
          */
-        PartialHead(uint32 numElements);
+        PartialHead(uint32 numElements)
+            : IterableIndexedVectorDecorator<
+                IndexedVectorDecorator<AllocatedVector<uint32>, AllocatedVector<ScoreType>>>(
+                CompositeVector<AllocatedVector<uint32>, AllocatedVector<ScoreType>>(
+                  AllocatedVector<uint32>(numElements), AllocatedVector<ScoreType>(numElements))) {}
 
         void visit(CompleteHeadVisitor<float32> complete32BitHeadVisitor,
                    CompleteHeadVisitor<float64> complete64BitHeadVisitor,
                    PartialHeadVisitor<float32> partial32BitHeadVisitor,
-                   PartialHeadVisitor<float64> partial64BitHeadVisitor) const override;
+                   PartialHeadVisitor<float64> partial64BitHeadVisitor) const override {
+            if constexpr (std::is_same_v<ScoreType, float32>) {
+                partial32BitHeadVisitor(*this);
+            } else if constexpr (std::is_same_v<ScoreType, float64>) {
+                partial64BitHeadVisitor(*this);
+            } else {
+                throw std::runtime_error("No visitor available for handling object of template class PartialHead");
+            }
+        }
 };

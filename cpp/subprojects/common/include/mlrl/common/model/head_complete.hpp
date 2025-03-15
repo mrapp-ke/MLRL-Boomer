@@ -6,6 +6,8 @@
 #include "mlrl/common/data/view_vector.hpp"
 #include "mlrl/common/model/head.hpp"
 
+#include <type_traits>
+
 /**
  * A head that contains a numerical score for each available output.
  *
@@ -19,7 +21,8 @@ class MLRLCOMMON_API CompleteHead final : public VectorDecorator<AllocatedVector
         /**
          * @param numElements The number of scores that are contained by the head.
          */
-        CompleteHead(uint32 numElements);
+        CompleteHead(uint32 numElements)
+            : VectorDecorator<AllocatedVector<ScoreType>>(AllocatedVector<ScoreType>(numElements)) {}
 
         /**
          * An iterator that provides access to the scores the are contained by the head and allows to modify them.
@@ -36,31 +39,47 @@ class MLRLCOMMON_API CompleteHead final : public VectorDecorator<AllocatedVector
          *
          * @return A `value_iterator` to the beginning
          */
-        value_iterator values_begin();
+        value_iterator values_begin() {
+            return this->view.begin();
+        }
 
         /**
          * Returns a `value_iterator` to the end of the scores that are contained by the head.
          *
          * @return A `value_iterator` to the end
          */
-        value_iterator values_end();
+        value_iterator values_end() {
+            return this->view.end();
+        }
 
         /**
          * Returns a `value_const_iterator` to the beginning of the scores that are contained by the head.
          *
          * @return A `value_const_iterator` to the beginning
          */
-        value_const_iterator values_cbegin() const;
+        value_const_iterator values_cbegin() const {
+            return this->view.cbegin();
+        }
 
         /**
          * Returns a `value_const_iterator` to the end of the scores that are contained by the head.
          *
          * @return A `value_const_iterator` to the end
          */
-        value_const_iterator values_cend() const;
+        value_const_iterator values_cend() const {
+            return this->view.cend();
+        }
 
         void visit(CompleteHeadVisitor<float32> complete32BitHeadVisitor,
                    CompleteHeadVisitor<float64> complete64BitHeadVisitor,
                    PartialHeadVisitor<float32> partial32BitHeadVisitor,
-                   PartialHeadVisitor<float64> partial64BitHeadVisitor) const override;
+                   PartialHeadVisitor<float64> partial64BitHeadVisitor) const override {
+            if constexpr (std::is_same_v<ScoreType, float32>) {
+                complete32BitHeadVisitor(*this);
+            } else if constexpr (std::is_same_v<ScoreType, float64>) {
+                complete64BitHeadVisitor(*this);
+            } else {
+                throw std::runtime_error("No visitor available for handling object of template class CompleteHead");
+            }
+        }
 };
