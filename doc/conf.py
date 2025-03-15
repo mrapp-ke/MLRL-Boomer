@@ -58,9 +58,10 @@ intersphinx_mapping = {
 }
 
 # Aliases for external links
+git_branch = environ.get('GIT_BRANCH', 'main')
 extlinks = {
-    'repo-file': ('https://github.com/mrapp-ke/MLRL-Boomer/blob/main/%s', '%s'),
-    'repo-dir': ('https://github.com/mrapp-ke/MLRL-Boomer/tree/main/%s', '%s'),
+    'repo-file': ('https://github.com/mrapp-ke/MLRL-Boomer/blob/' + git_branch + '/%s', '%s'),
+    'repo-dir': ('https://github.com/mrapp-ke/MLRL-Boomer/tree/' + git_branch + '/%s', '%s'),
 }
 
 # Breathe configuration
