@@ -6,7 +6,10 @@
 #include <functional>
 
 // Forward declarations
+template<typename ScoreType>
 class CompleteHead;
+
+template<typename ScoreType>
 class PartialHead;
 
 /**
@@ -19,20 +22,31 @@ class MLRLCOMMON_API IHead {
 
         /**
          * A visitor function for handling objects of the type `CompleteHead`.
+         *
+         * @tparam ScoreType The type of the numerical scores that are stored by the head
          */
-        typedef std::function<void(const CompleteHead&)> CompleteHeadVisitor;
+        template<typename ScoreType>
+        using CompleteHeadVisitor = std::function<void(const CompleteHead<ScoreType>&)>;
 
         /**
          * A visitor function for handling objects of the type `PartialHead`.
+         *
+         * @tparam ScoreType The type of the numerical scores that are stored by the head
          */
-        typedef std::function<void(const PartialHead&)> PartialHeadVisitor;
+        template<typename ScoreType>
+        using PartialHeadVisitor = std::function<void(const PartialHead<ScoreType>&)>;
 
         /**
          * Invokes one of the given visitor functions, depending on which one is able to handle this particular type of
          * head.
          *
-         * @param completeHeadVisitor   The visitor function for handling objects of the type `CompleteHead`
-         * @param partialHeadVisitor    The visitor function for handling objects of the type `PartialHead`
+         * @param complete32BitHeadVisitor  A visitor function for handling objects of the type `CompleteHead<float32>`
+         * @param complete64BitHeadVisitor  A visitor function for handling objects of the type `CompleteHead<float64>`
+         * @param partial32BitHeadVisitor   A visitor function for handling objects of the type `PartialHead<float32>`
+         * @param partial64BitHeadVisitor   A visitor function for handling objects of the type `PartialHead<float64>`
          */
-        virtual void visit(CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor) const = 0;
+        virtual void visit(CompleteHeadVisitor<float32> complete32BitHeadVisitor,
+                           CompleteHeadVisitor<float64> complete64BitHeadVisitor,
+                           PartialHeadVisitor<float32> partial32BitHeadVisitor,
+                           PartialHeadVisitor<float64> partial64BitHeadVisitor) const = 0;
 };

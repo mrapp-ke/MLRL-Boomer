@@ -6,6 +6,23 @@
 #include "mlrl/common/rule_refinement/rule_refinement.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
 
+static inline std::unique_ptr<IHead> createHeadInternally(const PartialPrediction<uint8>& prediction) {
+    uint32 numElements = prediction.getNumElements();
+    std::unique_ptr<PartialHead<float32>> headPtr = std::make_unique<PartialHead<float32>>(numElements);
+    util::copyView(prediction.values_cbegin(), headPtr->values_begin(), numElements);
+    util::copyView(prediction.indices_cbegin(), headPtr->indices_begin(), numElements);
+    return headPtr;
+}
+
+template<typename ScoreType>
+static inline std::unique_ptr<IHead> createHeadInternally(const PartialPrediction<ScoreType>& prediction) {
+    uint32 numElements = prediction.getNumElements();
+    std::unique_ptr<PartialHead<ScoreType>> headPtr = std::make_unique<PartialHead<ScoreType>>(numElements);
+    util::copyView(prediction.values_cbegin(), headPtr->values_begin(), numElements);
+    util::copyView(prediction.indices_cbegin(), headPtr->indices_begin(), numElements);
+    return headPtr;
+}
+
 template<typename ScoreType>
 PartialPrediction<ScoreType>::PartialPrediction(uint32 numElements, bool sorted,
                                                 IStatisticsUpdateFactory<ScoreType>& statisticsUpdateFactory)
@@ -183,11 +200,7 @@ void PartialPrediction<ScoreType>::revertPrediction(uint32 statisticIndex) {
 
 template<typename ScoreType>
 std::unique_ptr<IHead> PartialPrediction<ScoreType>::createHead() const {
-    uint32 numElements = this->getNumElements();
-    std::unique_ptr<PartialHead> headPtr = std::make_unique<PartialHead>(numElements);
-    util::copyView(this->values_cbegin(), headPtr->values_begin(), numElements);
-    util::copyView(this->indices_cbegin(), headPtr->indices_begin(), numElements);
-    return headPtr;
+    return createHeadInternally(*this);
 }
 
 template class PartialPrediction<uint8>;
