@@ -8,10 +8,13 @@
 
 /**
  * A head that contains a numerical score for a subset of the available outputs.
+ *
+ * @tparam ScoreType The type of the numerical scores
  */
-class MLRLCOMMON_API PartialHead final
-    : public IterableIndexedVectorDecorator<IndexedVectorDecorator<AllocatedVector<uint32>, AllocatedVector<float64>>>,
-      public IHead {
+template<typename ScoreType>
+class MLRLCOMMON_API PartialHead final : public IterableIndexedVectorDecorator<
+                                           IndexedVectorDecorator<AllocatedVector<uint32>, AllocatedVector<ScoreType>>>,
+                                         public IHead {
     public:
 
         /**
@@ -19,5 +22,8 @@ class MLRLCOMMON_API PartialHead final
          */
         PartialHead(uint32 numElements);
 
-        void visit(CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor) const override;
+        void visit(CompleteHeadVisitor<float32> complete32BitHeadVisitor,
+                   CompleteHeadVisitor<float64> complete64BitHeadVisitor,
+                   PartialHeadVisitor<float32> partial32BitHeadVisitor,
+                   PartialHeadVisitor<float64> partial64BitHeadVisitor) const override;
 };

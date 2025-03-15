@@ -5,6 +5,21 @@
 #include "mlrl/common/rule_refinement/rule_refinement.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
 
+static inline std::unique_ptr<IHead> createHeadInternally(const CompletePrediction<uint8>& prediction) {
+    uint32 numElements = prediction.getNumElements();
+    std::unique_ptr<CompleteHead<float32>> headPtr = std::make_unique<CompleteHead<float32>>(numElements);
+    util::copyView(prediction.values_cbegin(), headPtr->values_begin(), numElements);
+    return headPtr;
+}
+
+template<typename ScoreType>
+static inline std::unique_ptr<IHead> createHeadInternally(const CompletePrediction<ScoreType>& prediction) {
+    uint32 numElements = prediction.getNumElements();
+    std::unique_ptr<CompleteHead<ScoreType>> headPtr = std::make_unique<CompleteHead<ScoreType>>(numElements);
+    util::copyView(prediction.values_cbegin(), headPtr->values_begin(), numElements);
+    return headPtr;
+}
+
 template<typename ScoreType>
 CompletePrediction<ScoreType>::CompletePrediction(uint32 numElements,
                                                   IStatisticsUpdateFactory<ScoreType>& statisticsUpdateFactory)
@@ -131,10 +146,7 @@ void CompletePrediction<ScoreType>::revertPrediction(uint32 statisticIndex) {
 
 template<typename ScoreType>
 std::unique_ptr<IHead> CompletePrediction<ScoreType>::createHead() const {
-    uint32 numElements = this->getNumElements();
-    std::unique_ptr<CompleteHead> headPtr = std::make_unique<CompleteHead>(numElements);
-    util::copyView(this->values_cbegin(), headPtr->values_begin(), numElements);
-    return headPtr;
+    return createHeadInternally(*this);
 }
 
 template class CompletePrediction<uint8>;

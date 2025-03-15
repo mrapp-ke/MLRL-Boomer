@@ -13,7 +13,7 @@ import numpy as np
 
 from _io import StringIO
 
-from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBody, PartialHead, RuleModel, \
+from mlrl.common.cython.rule_model import Complete64BitHead, ConjunctiveBody, EmptyBody, Partial64BitHead, RuleModel, \
     RuleModelVisitor
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 from mlrl.common.options import Options
@@ -162,9 +162,9 @@ class RuleModelWriter(ModelWriter):
                 self.__format_conditions(num_conditions, body.nominal_neq_indices, body.nominal_neq_thresholds, '!=')
                 text.write('}')
 
-        def visit_complete_head(self, head: CompleteHead):
+        def visit_complete_64bit_head(self, head: Complete64BitHead):
             """
-            See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_complete_head`
+            See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_complete_64bit_head`
             """
             text = self.text
 
@@ -195,9 +195,9 @@ class RuleModelWriter(ModelWriter):
             elif self.print_bodies:
                 text.write('\n')
 
-        def visit_partial_head(self, head: PartialHead):
+        def visit_partial_64bit_head(self, head: Partial64BitHead):
             """
-            See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_partial_head`
+            See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_partial_64bit_head`
             """
             text = self.text
 

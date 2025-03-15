@@ -52,29 +52,37 @@ class MLRLCOMMON_API IRuleList : public IRuleModel {
          * Invokes some of the given visitor functions, depending on which ones are able to handle the bodies and heads
          * of all rules that are contained in this model, including the default rule, if available.
          *
-         * @param emptyBodyVisitor          The visitor function for handling objects of the type `EmptyBody`
-         * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
-         * @param completeHeadVisitor       The visitor function for handling objects of the type `CompleteHead`
-         * @param partialHeadVisitor        The visitor function for handling objects of the type `PartialHead`
+         * @param emptyBodyVisitor          A visitor function for handling objects of the type `EmptyBody`
+         * @param conjunctiveBodyVisitor    A visitor function for handling objects of the type `ConjunctiveBody`
+         * @param complete32BitHeadVisitor  A visitor function for handling objects of the type `CompleteHead<float32>`
+         * @param complete64BitHeadVisitor  A visitor function for handling objects of the type `CompleteHead<float64>`
+         * @param partial32BitHeadVisitor   A visitor function for handling objects of the type `PartialHead<float32>`
+         * @param partial64BitHeadVisitor   A visitor function for handling objects of the type `PartialHead<float64>`
          */
         virtual void visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
                            IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                           IHead::CompleteHeadVisitor completeHeadVisitor,
-                           IHead::PartialHeadVisitor partialHeadVisitor) const = 0;
+                           IHead::CompleteHeadVisitor<float32> complete32BitHeadVisitor,
+                           IHead::CompleteHeadVisitor<float64> complete64BitHeadVisitor,
+                           IHead::PartialHeadVisitor<float32> partial32BitHeadVisitor,
+                           IHead::PartialHeadVisitor<float64> partial64BitHeadVisitor) const = 0;
 
         /**
          * Invokes some of the given visitor functions, depending on which ones are able to handle the bodies and heads
          * of all used rules that are contained in this model, including the default rule, if available.
          *
-         * @param emptyBodyVisitor          The visitor function for handling objects of the type `EmptyBody`
-         * @param conjunctiveBodyVisitor    The visitor function for handling objects of the type `ConjunctiveBody`
-         * @param completeHeadVisitor       The visitor function for handling objects of the type `CompleteHead`
-         * @param partialHeadVisitor        The visitor function for handling objects of the type `PartialHead`
+         * @param emptyBodyVisitor          A visitor function for handling objects of the type `EmptyBody`
+         * @param conjunctiveBodyVisitor    A visitor function for handling objects of the type `ConjunctiveBody`
+         * @param complete32BitHeadVisitor  A visitor function for handling objects of the type `CompleteHead<float32>`
+         * @param complete64BitHeadVisitor  A visitor function for handling objects of the type `CompleteHead<float64>`
+         * @param partial32BitHeadVisitor   A visitor function for handling objects of the type `PartialHead<float32>`
+         * @param partial64BitHeadVisitor   A visitor function for handling objects of the type `PartialHead<float64>`
          */
         virtual void visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor,
                                IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                               IHead::CompleteHeadVisitor completeHeadVisitor,
-                               IHead::PartialHeadVisitor partialHeadVisitor) const = 0;
+                               IHead::CompleteHeadVisitor<float32> complete32BitHeadVisitor,
+                               IHead::CompleteHeadVisitor<float64> complete64BitHeadVisitor,
+                               IHead::PartialHeadVisitor<float32> partial32BitHeadVisitor,
+                               IHead::PartialHeadVisitor<float64> partial64BitHeadVisitor) const = 0;
 };
 
 /**
@@ -120,15 +128,23 @@ class RuleList final : public IRuleList {
                  * Invokes some of the given visitor functions, depending on which ones are able to handle the rule's
                  * particular type of body and head.
                  *
-                 * @param emptyBodyVisitor          The visitor function for handling objects of type `EmptyBody`
-                 * @param conjunctiveBodyVisitor    The visitor function for handling objects of type `ConjunctiveBody`
-                 * @param completeHeadVisitor       The visitor function for handling objects of type `CompleteHead`
-                 * @param partialHeadVisitor        The visitor function for handling objects of type `PartialHead`
+                 * @param emptyBodyVisitor          A visitor function for handling objects of type `EmptyBody`
+                 * @param conjunctiveBodyVisitor    A visitor function for handling objects of type `ConjunctiveBody`
+                 * @param complete32BitHeadVisitor  A visitor function for handling objects of type
+                 *                                  `CompleteHead<float32>`
+                 * @param complete64BitHeadVisitor  A visitor function for handling objects of type
+                 *                                  `CompleteHead<float64>`
+                 * @param partial32BitHeadVisitor   A visitor function for handling objects of type
+                 *                                  `PartialHead<float32>`
+                 * @param partial64BitHeadVisitor   A visitor function for handling objects of type
+                 *                                  `PartialHead<float64>`
                  */
                 void visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
                            IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                           IHead::CompleteHeadVisitor completeHeadVisitor,
-                           IHead::PartialHeadVisitor partialHeadVisitor) const;
+                           IHead::CompleteHeadVisitor<float32> complete32BitHeadVisitor,
+                           IHead::CompleteHeadVisitor<float64> complete64BitHeadVisitor,
+                           IHead::PartialHeadVisitor<float32> partial32BitHeadVisitor,
+                           IHead::PartialHeadVisitor<float64> partial64BitHeadVisitor) const;
         };
 
     private:
@@ -318,12 +334,16 @@ class RuleList final : public IRuleList {
         bool isDefaultRuleTakingPrecedence() const override;
 
         void visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                   IHead::CompleteHeadVisitor completeHeadVisitor,
-                   IHead::PartialHeadVisitor partialHeadVisitor) const override;
+                   IHead::CompleteHeadVisitor<float32> complete32BitHeadVisitor,
+                   IHead::CompleteHeadVisitor<float64> complete64BitHeadVisitor,
+                   IHead::PartialHeadVisitor<float32> partial32BitHeadVisitor,
+                   IHead::PartialHeadVisitor<float64> partial64BitHeadVisitor) const override;
 
         void visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
-                       IHead::CompleteHeadVisitor completeHeadVisitor,
-                       IHead::PartialHeadVisitor partialHeadVisitor) const override;
+                       IHead::CompleteHeadVisitor<float32> complete32BitHeadVisitor,
+                       IHead::CompleteHeadVisitor<float64> complete64BitHeadVisitor,
+                       IHead::PartialHeadVisitor<float32> partial32BitHeadVisitor,
+                       IHead::PartialHeadVisitor<float64> partial64BitHeadVisitor) const override;
 
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
           const IBinaryPredictorFactory& factory, const CContiguousView<const float32>& featureMatrix,
