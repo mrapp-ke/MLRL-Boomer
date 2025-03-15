@@ -43,7 +43,7 @@ cdef class ConjunctiveBody:
                                             that stores the thresholds of the numerical conditions that use the >
                                             operator or None, if no such conditions are available
         :param ordinal_leq_indices:         A contiguous array of type `uint32`, shape `(num_ordinal_leq_conditions)`,
-                                            that stores the feature indices of the oridnal conditions that use the <=
+                                            that stores the feature indices of the ordinal conditions that use the <=
                                             operator or None, if no such conditions are available
         :param ordinal_leq_thresholds:      A contiguous array of type `int32`, shape `(num_ordinal_leq_conditions)`
                                             that stores the thresholds of the ordinal conditions that use the <=
