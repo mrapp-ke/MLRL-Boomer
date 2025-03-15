@@ -30,8 +30,6 @@ source_files = [
     'src/mlrl/common/model/body_conjunctive.cpp',
     'src/mlrl/common/model/body_empty.cpp',
     'src/mlrl/common/model/condition_list.cpp',
-    'src/mlrl/common/model/head_complete.cpp',
-    'src/mlrl/common/model/head_partial.cpp',
     'src/mlrl/common/model/rule_list.cpp',
     'src/mlrl/common/multi_threading/multi_threading_manual.cpp',
     'src/mlrl/common/multi_threading/multi_threading_no.cpp',

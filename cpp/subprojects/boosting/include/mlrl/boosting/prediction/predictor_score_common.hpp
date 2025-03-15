@@ -14,18 +14,17 @@
 
 namespace boosting {
 
-    static inline void applyHead(const CompleteHead& head, View<float64>::iterator iterator) {
-        CompleteHead::value_const_iterator valueIterator = head.values_cbegin();
+    template<typename ScoreType>
+    static inline void applyHead(const CompleteHead<ScoreType>& head, View<float64>::iterator iterator) {
+        typename CompleteHead<ScoreType>::value_const_iterator valueIterator = head.values_cbegin();
         uint32 numElements = head.getNumElements();
-
-        for (uint32 i = 0; i < numElements; i++) {
-            iterator[i] += valueIterator[i];
-        }
+        util::addToView(iterator, valueIterator, numElements);
     }
 
-    static inline void applyHead(const PartialHead& head, View<float64>::iterator iterator) {
-        PartialHead::value_const_iterator valueIterator = head.values_cbegin();
-        PartialHead::index_const_iterator indexIterator = head.indices_cbegin();
+    template<typename ScoreType>
+    static inline void applyHead(const PartialHead<ScoreType>& head, View<float64>::iterator iterator) {
+        typename PartialHead<ScoreType>::value_const_iterator valueIterator = head.values_cbegin();
+        typename PartialHead<ScoreType>::index_const_iterator indexIterator = head.indices_cbegin();
         uint32 numElements = head.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -35,13 +34,20 @@ namespace boosting {
     }
 
     static inline void applyHead(const IHead& head, View<float64>::iterator scoreIterator) {
-        auto completeHeadVisitor = [=](const CompleteHead& head) {
+        auto complete32BitHeadVisitor = [=](const CompleteHead<float32>& head) {
             applyHead(head, scoreIterator);
         };
-        auto partialHeadVisitor = [=](const PartialHead& head) {
+        auto complete64BitHeadVisitor = [=](const CompleteHead<float64>& head) {
             applyHead(head, scoreIterator);
         };
-        head.visit(completeHeadVisitor, partialHeadVisitor);
+        auto partial32BitHeadVisitor = [=](const PartialHead<float32>& head) {
+            applyHead(head, scoreIterator);
+        };
+        auto partial64BitHeadVisitor = [=](const PartialHead<float64>& head) {
+            applyHead(head, scoreIterator);
+        };
+        head.visit(complete32BitHeadVisitor, complete64BitHeadVisitor, partial32BitHeadVisitor,
+                   partial64BitHeadVisitor);
     }
 
     static inline void applyRule(const RuleList::Rule& rule, View<const float32>::const_iterator featureValuesBegin,
