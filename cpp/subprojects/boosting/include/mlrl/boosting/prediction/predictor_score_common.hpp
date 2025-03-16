@@ -34,10 +34,16 @@ namespace boosting {
     }
 
     static inline void applyHead(const IHead& head, View<float64>::iterator scoreIterator) {
+        auto completeBinaryHeadVisitor = [=](const CompleteHead<uint8>& head) {
+            applyHead(head, scoreIterator);
+        };
         auto complete32BitHeadVisitor = [=](const CompleteHead<float32>& head) {
             applyHead(head, scoreIterator);
         };
         auto complete64BitHeadVisitor = [=](const CompleteHead<float64>& head) {
+            applyHead(head, scoreIterator);
+        };
+        auto partialBinaryHeadVisitor = [=](const PartialHead<uint8>& head) {
             applyHead(head, scoreIterator);
         };
         auto partial32BitHeadVisitor = [=](const PartialHead<float32>& head) {
@@ -46,8 +52,8 @@ namespace boosting {
         auto partial64BitHeadVisitor = [=](const PartialHead<float64>& head) {
             applyHead(head, scoreIterator);
         };
-        head.visit(complete32BitHeadVisitor, complete64BitHeadVisitor, partial32BitHeadVisitor,
-                   partial64BitHeadVisitor);
+        head.visit(completeBinaryHeadVisitor, complete32BitHeadVisitor, complete64BitHeadVisitor,
+                   partialBinaryHeadVisitor, partial32BitHeadVisitor, partial64BitHeadVisitor);
     }
 
     static inline void applyRule(const RuleList::Rule& rule, View<const float32>::const_iterator featureValuesBegin,
