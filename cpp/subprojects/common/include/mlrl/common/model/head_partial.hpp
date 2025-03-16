@@ -28,11 +28,15 @@ class MLRLCOMMON_API PartialHead final : public IterableIndexedVectorDecorator<
                 CompositeVector<AllocatedVector<uint32>, AllocatedVector<ScoreType>>(
                   AllocatedVector<uint32>(numElements), AllocatedVector<ScoreType>(numElements))) {}
 
-        void visit(CompleteHeadVisitor<float32> complete32BitHeadVisitor,
+        void visit(CompleteHeadVisitor<uint8> completeBinaryHeadVisitor,
+                   CompleteHeadVisitor<float32> complete32BitHeadVisitor,
                    CompleteHeadVisitor<float64> complete64BitHeadVisitor,
+                   PartialHeadVisitor<uint8> partialBinaryHeadVisitor,
                    PartialHeadVisitor<float32> partial32BitHeadVisitor,
                    PartialHeadVisitor<float64> partial64BitHeadVisitor) const override {
-            if constexpr (std::is_same_v<ScoreType, float32>) {
+            if constexpr (std::is_same_v<ScoreType, uint8>) {
+                partialBinaryHeadVisitor(*this);
+            } else if constexpr (std::is_same_v<ScoreType, float32>) {
                 partial32BitHeadVisitor(*this);
             } else if constexpr (std::is_same_v<ScoreType, float64>) {
                 partial64BitHeadVisitor(*this);
