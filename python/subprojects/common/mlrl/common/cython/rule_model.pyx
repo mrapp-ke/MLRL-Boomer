@@ -111,21 +111,6 @@ cdef class PartialHead:
         self.scores = scores
 
 
-cdef class Partial64BitHead:
-    """
-    A head of a rule that predicts numerical scores, represented by 64-bit floating point values, for a subset of the
-    available outputs.
-    """
-
-    def __cinit__(self, const uint32[::1] indices not None, const float64[::1] scores not None):
-        """
-        :param indices: A contiguous array of type `uint32`, shape `(num_predictions)` that stores the output indices
-        :param scores:  A contiguous array of type `float64`, shape `(num_predictions)` that stores the predicted scores
-        """
-        self.indices = np.asarray(indices)
-        self.scores = np.asarray(scores)
-
-
 class RuleModelVisitor:
     """
     Defines the methods that must be implemented by a visitor that accesses the bodies and heads of the rules in a
