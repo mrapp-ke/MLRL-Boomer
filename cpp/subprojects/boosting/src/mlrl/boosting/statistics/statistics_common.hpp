@@ -39,7 +39,7 @@ namespace boosting {
      * view.
      *
      * @tparam State                    The type of the state of the boosting process
-     * @tparam StatisticVector          The type of the vector that is used to store the sums of gradients and Hessians
+     * @tparam StatisticVector          The type of the vector that is used to store the sums of statistics
      * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
      *                                  used for calculating the predictions of rules, as well as corresponding quality
      *                                  scores
@@ -54,7 +54,7 @@ namespace boosting {
         protected:
 
             /**
-             * An object of template type `StatisticVector` that stores the sums of gradients and Hessians.
+             * An object of template type `StatisticVector` that stores the sums of statistics.
              */
             StatisticVector sumVector_;
 
@@ -76,7 +76,7 @@ namespace boosting {
             const IndexVector& outputIndices_;
 
             /**
-             * An unique pointer to an object of type `IRuleEvaluation` that is used to calculate the predictions of
+             * An unique pointer to an object of type `IRuleEvaluation` that is used for calculating the predictions of
              * rules, as well as their overall quality.
              */
             const std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr_;
@@ -87,8 +87,8 @@ namespace boosting {
              * @param state                 A reference to an object of template type `State` that represents the state
              *                              of the boosting process
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
-             *                              allows to create instances of the class that is used for calculating the
-             *                              predictions of rules, as well as their overall quality
+             *                              allows to create instances of the class that should be used for calculating
+             *                              the predictions of rules, as well as their overall quality
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
              * @param outputIndices         A reference to an object of template type `IndexVector` that provides access
