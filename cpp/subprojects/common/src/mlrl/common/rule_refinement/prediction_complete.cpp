@@ -7,7 +7,7 @@
 
 static inline std::unique_ptr<IHead> createHeadInternally(const CompletePrediction<uint8>& prediction) {
     uint32 numElements = prediction.getNumElements();
-    std::unique_ptr<CompleteHead<float32>> headPtr = std::make_unique<CompleteHead<float32>>(numElements);
+    std::unique_ptr<CompleteHead<uint8>> headPtr = std::make_unique<CompleteHead<uint8>>(numElements);
     util::copyView(prediction.values_cbegin(), headPtr->values_begin(), numElements);
     return headPtr;
 }
