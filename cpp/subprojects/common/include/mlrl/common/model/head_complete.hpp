@@ -70,11 +70,15 @@ class MLRLCOMMON_API CompleteHead final : public VectorDecorator<AllocatedVector
             return this->view.cend();
         }
 
-        void visit(CompleteHeadVisitor<float32> complete32BitHeadVisitor,
+        void visit(CompleteHeadVisitor<uint8> completeBinaryHeadVisitor,
+                   CompleteHeadVisitor<float32> complete32BitHeadVisitor,
                    CompleteHeadVisitor<float64> complete64BitHeadVisitor,
+                   PartialHeadVisitor<uint8> partialBinaryHeadVisitor,
                    PartialHeadVisitor<float32> partial32BitHeadVisitor,
                    PartialHeadVisitor<float64> partial64BitHeadVisitor) const override {
-            if constexpr (std::is_same_v<ScoreType, float32>) {
+            if constexpr (std::is_same_v<ScoreType, uint8>) {
+                completeBinaryHeadVisitor(*this);
+            } else if constexpr (std::is_same_v<ScoreType, float32>) {
                 complete32BitHeadVisitor(*this);
             } else if constexpr (std::is_same_v<ScoreType, float64>) {
                 complete64BitHeadVisitor(*this);

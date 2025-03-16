@@ -19,13 +19,15 @@ const IHead& RuleList::Rule::getHead() const {
 
 void RuleList::Rule::visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
                            IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                           IHead::CompleteHeadVisitor<uint8> completeBinaryHeadVisitor,
                            IHead::CompleteHeadVisitor<float32> complete32BitHeadVisitor,
                            IHead::CompleteHeadVisitor<float64> complete64BitHeadVisitor,
+                           IHead::PartialHeadVisitor<uint8> partialBinaryHeadVisitor,
                            IHead::PartialHeadVisitor<float32> partial32BitHeadVisitor,
                            IHead::PartialHeadVisitor<float64> partial64BitHeadVisitor) const {
     bodyPtr_->visit(emptyBodyVisitor, conjunctiveBodyVisitor);
-    headPtr_->visit(complete32BitHeadVisitor, complete64BitHeadVisitor, partial32BitHeadVisitor,
-                    partial64BitHeadVisitor);
+    headPtr_->visit(completeBinaryHeadVisitor, complete32BitHeadVisitor, complete64BitHeadVisitor,
+                    partialBinaryHeadVisitor, partial32BitHeadVisitor, partial64BitHeadVisitor);
 }
 
 RuleList::ConstIterator::ConstIterator(bool defaultRuleTakesPrecedence, const Rule* defaultRule,
@@ -135,26 +137,32 @@ bool RuleList::isDefaultRuleTakingPrecedence() const {
 }
 
 void RuleList::visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                     IHead::CompleteHeadVisitor<uint8> completeBinaryHeadVisitor,
                      IHead::CompleteHeadVisitor<float32> complete32BitHeadVisitor,
                      IHead::CompleteHeadVisitor<float64> complete64BitHeadVisitor,
+                     IHead::PartialHeadVisitor<uint8> partialBinaryHeadVisitor,
                      IHead::PartialHeadVisitor<float32> partial32BitHeadVisitor,
                      IHead::PartialHeadVisitor<float64> partial64BitHeadVisitor) const {
     for (auto it = this->cbegin(); it != this->cend(); it++) {
         const Rule& rule = *it;
-        rule.visit(emptyBodyVisitor, conjunctiveBodyVisitor, complete32BitHeadVisitor, complete64BitHeadVisitor,
-                   partial32BitHeadVisitor, partial64BitHeadVisitor);
+        rule.visit(emptyBodyVisitor, conjunctiveBodyVisitor, completeBinaryHeadVisitor, complete32BitHeadVisitor,
+                   complete64BitHeadVisitor, partialBinaryHeadVisitor, partial32BitHeadVisitor,
+                   partial64BitHeadVisitor);
     }
 }
 
 void RuleList::visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                         IHead::CompleteHeadVisitor<uint8> completeBinaryHeadVisitor,
                          IHead::CompleteHeadVisitor<float32> complete32BitHeadVisitor,
                          IHead::CompleteHeadVisitor<float64> complete64BitHeadVisitor,
+                         IHead::PartialHeadVisitor<uint8> partialBinaryHeadVisitor,
                          IHead::PartialHeadVisitor<float32> partial32BitHeadVisitor,
                          IHead::PartialHeadVisitor<float64> partial64BitHeadVisitor) const {
     for (auto it = this->used_cbegin(); it != this->used_cend(); it++) {
         const Rule& rule = *it;
-        rule.visit(emptyBodyVisitor, conjunctiveBodyVisitor, complete32BitHeadVisitor, complete64BitHeadVisitor,
-                   partial32BitHeadVisitor, partial64BitHeadVisitor);
+        rule.visit(emptyBodyVisitor, conjunctiveBodyVisitor, completeBinaryHeadVisitor, complete32BitHeadVisitor,
+                   complete64BitHeadVisitor, partialBinaryHeadVisitor, partial32BitHeadVisitor,
+                   partial64BitHeadVisitor);
     }
 }
 

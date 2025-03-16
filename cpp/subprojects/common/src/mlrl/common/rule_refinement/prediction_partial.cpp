@@ -8,7 +8,7 @@
 
 static inline std::unique_ptr<IHead> createHeadInternally(const PartialPrediction<uint8>& prediction) {
     uint32 numElements = prediction.getNumElements();
-    std::unique_ptr<PartialHead<float32>> headPtr = std::make_unique<PartialHead<float32>>(numElements);
+    std::unique_ptr<PartialHead<uint8>> headPtr = std::make_unique<PartialHead<uint8>>(numElements);
     util::copyView(prediction.values_cbegin(), headPtr->values_begin(), numElements);
     util::copyView(prediction.indices_cbegin(), headPtr->indices_begin(), numElements);
     return headPtr;

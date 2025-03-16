@@ -10,50 +10,54 @@
 
 namespace seco {
 
-    static inline void applyHead(const CompleteHead<float32>& head, View<uint8>::iterator iterator, BitVector& mask) {
-        CompleteHead<float32>::value_const_iterator valueIterator = head.values_cbegin();
+    static inline void applyHead(const CompleteHead<uint8>& head, View<uint8>::iterator iterator, BitVector& mask) {
+        CompleteHead<uint8>::value_const_iterator valueIterator = head.values_cbegin();
         uint32 numElements = head.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
             if (!mask[i]) {
-                uint8 prediction = valueIterator[i] > 0;
-                iterator[i] = prediction;
+                iterator[i] = valueIterator[i];
                 mask.set(i, true);
             }
         }
     }
 
-    static inline void applyHead(const PartialHead<float32>& head, View<uint8>::iterator iterator, BitVector& mask) {
-        PartialHead<float32>::value_const_iterator valueIterator = head.values_cbegin();
-        PartialHead<float32>::index_const_iterator indexIterator = head.indices_cbegin();
+    static inline void applyHead(const PartialHead<uint8>& head, View<uint8>::iterator iterator, BitVector& mask) {
+        PartialHead<uint8>::value_const_iterator valueIterator = head.values_cbegin();
+        PartialHead<uint8>::index_const_iterator indexIterator = head.indices_cbegin();
         uint32 numElements = head.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
             uint32 index = indexIterator[i];
 
             if (!mask[index]) {
-                uint8 prediction = valueIterator[i] > 0;
-                iterator[index] = prediction;
+                iterator[index] = valueIterator[i];
                 mask.set(index, true);
             }
         }
     }
 
     static inline void applyHead(const IHead& head, View<uint8>::iterator scoreIterator, BitVector& mask) {
-        auto complete32BitHeadVisitor = [&](const CompleteHead<float32>& head) {
+        auto completeBinaryHeadVisitor = [&](const CompleteHead<uint8>& head) {
             applyHead(head, scoreIterator, mask);
+        };
+        auto complete32BitHeadVisitor = [&](const CompleteHead<float32>& head) {
+            throw std::runtime_error("Visitor IHead::CompleteHead<float32> should neved be invoked");
         };
         auto complete64BitHeadVisitor = [&](const CompleteHead<float64>& head) {
             throw std::runtime_error("Visitor IHead::CompleteHead<float64> should neved be invoked");
         };
-        auto partial32BitHeadVisitor = [&](const PartialHead<float32>& head) {
+        auto partialBinaryHeadVisitor = [&](const PartialHead<uint8>& head) {
             applyHead(head, scoreIterator, mask);
+        };
+        auto partial32BitHeadVisitor = [&](const PartialHead<float32>& head) {
+            throw std::runtime_error("Visitor IHead::PartialHead<float32> should neved be invoked");
         };
         auto partial64BitHeadVisitor = [&](const PartialHead<float64>& head) {
             throw std::runtime_error("Visitor IHead::PartialHead<float64> should neved be invoked");
         };
-        head.visit(complete32BitHeadVisitor, complete64BitHeadVisitor, partial32BitHeadVisitor,
-                   partial64BitHeadVisitor);
+        head.visit(completeBinaryHeadVisitor, complete32BitHeadVisitor, complete64BitHeadVisitor,
+                   partialBinaryHeadVisitor, partial32BitHeadVisitor, partial64BitHeadVisitor);
     }
 
     static inline void predictForExampleInternally(const CContiguousView<const float32>& featureMatrix,
@@ -283,24 +287,30 @@ namespace seco {
     }
 
     static inline void applyHead(const IHead& head, BinaryLilMatrix::row predictionRow, uint32 numLabels) {
-        auto complete32BitHeadVisitor = [&](const CompleteHead<float32>& head) {
+        auto completeBinaryHeadVisitor = [&](const CompleteHead<uint8>& head) {
             applyHead(createNonZeroIndexForwardIterator(head.values_cbegin(), head.values_cend()),
                       createNonZeroIndexForwardIterator(head.values_cend(), head.values_cend()), IndexIterator(0),
                       predictionRow, numLabels);
         };
+        auto complete32BitHeadVisitor = [&](const CompleteHead<float32>& head) {
+            throw std::runtime_error("Visitor IHead::CompleteHeadVisitor<float32> should never be invoked");
+        };
         auto complete64BitHeadVisitor = [&](const CompleteHead<float64>& head) {
             throw std::runtime_error("Visitor IHead::CompleteHeadVisitor<float64> should never be invoked");
         };
-        auto partial32BitHeadVisitor = [&](const PartialHead<float32>& head) {
+        auto partialBinaryHeadVisitor = [&](const PartialHead<uint8>& head) {
             applyHead(createNonZeroIndexForwardIterator(head.values_cbegin(), head.values_cend()),
                       createNonZeroIndexForwardIterator(head.values_cend(), head.values_cend()), head.indices_cbegin(),
                       predictionRow, numLabels);
         };
+        auto partial32BitHeadVisitor = [&](const PartialHead<float32>& head) {
+            throw std::runtime_error("Visitor IHead::PartialHeadVisitor<float32> should never be invoked");
+        };
         auto partial64BitHeadVisitor = [&](const PartialHead<float64>& head) {
             throw std::runtime_error("Visitor IHead::PartialHeadVisitor<float64> should never be invoked");
         };
-        head.visit(complete32BitHeadVisitor, complete64BitHeadVisitor, partial32BitHeadVisitor,
-                   partial64BitHeadVisitor);
+        head.visit(completeBinaryHeadVisitor, complete32BitHeadVisitor, complete64BitHeadVisitor,
+                   partialBinaryHeadVisitor, partial32BitHeadVisitor, partial64BitHeadVisitor);
     }
 
     static inline void predictForExampleInternally(const CContiguousView<const float32>& featureMatrix,

@@ -54,15 +54,19 @@ class MLRLCOMMON_API IRuleList : public IRuleModel {
          *
          * @param emptyBodyVisitor          A visitor function for handling objects of the type `EmptyBody`
          * @param conjunctiveBodyVisitor    A visitor function for handling objects of the type `ConjunctiveBody`
+         * @param completeBinaryHeadVisitor A visitor function for handling objects of the type `CompleteHead<uint8>`
          * @param complete32BitHeadVisitor  A visitor function for handling objects of the type `CompleteHead<float32>`
          * @param complete64BitHeadVisitor  A visitor function for handling objects of the type `CompleteHead<float64>`
+         * @param partialBinaryHeadVisitor  A visitor function for handling objects of the type `PartialHead<uint8>`
          * @param partial32BitHeadVisitor   A visitor function for handling objects of the type `PartialHead<float32>`
          * @param partial64BitHeadVisitor   A visitor function for handling objects of the type `PartialHead<float64>`
          */
         virtual void visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
                            IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                           IHead::CompleteHeadVisitor<uint8> completeBinaryHeadVisitor,
                            IHead::CompleteHeadVisitor<float32> complete32BitHeadVisitor,
                            IHead::CompleteHeadVisitor<float64> complete64BitHeadVisitor,
+                           IHead::PartialHeadVisitor<uint8> partialBinaryHeadVisitor,
                            IHead::PartialHeadVisitor<float32> partial32BitHeadVisitor,
                            IHead::PartialHeadVisitor<float64> partial64BitHeadVisitor) const = 0;
 
@@ -72,15 +76,19 @@ class MLRLCOMMON_API IRuleList : public IRuleModel {
          *
          * @param emptyBodyVisitor          A visitor function for handling objects of the type `EmptyBody`
          * @param conjunctiveBodyVisitor    A visitor function for handling objects of the type `ConjunctiveBody`
+         * @param completeBinaryHeadVisitor A visitor function for handling objects of the type `CompleteHead<uint8>`
          * @param complete32BitHeadVisitor  A visitor function for handling objects of the type `CompleteHead<float32>`
          * @param complete64BitHeadVisitor  A visitor function for handling objects of the type `CompleteHead<float64>`
+         * @param partialBinaryHeadVisitor  A visitor function for handling objects of the type `PartialHead<uint8>`
          * @param partial32BitHeadVisitor   A visitor function for handling objects of the type `PartialHead<float32>`
          * @param partial64BitHeadVisitor   A visitor function for handling objects of the type `PartialHead<float64>`
          */
         virtual void visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor,
                                IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                               IHead::CompleteHeadVisitor<uint8> completeBinaryHeadVisitor,
                                IHead::CompleteHeadVisitor<float32> complete32BitHeadVisitor,
                                IHead::CompleteHeadVisitor<float64> complete64BitHeadVisitor,
+                               IHead::PartialHeadVisitor<uint8> partialBinaryHeadVisitor,
                                IHead::PartialHeadVisitor<float32> partial32BitHeadVisitor,
                                IHead::PartialHeadVisitor<float64> partial64BitHeadVisitor) const = 0;
 };
@@ -130,10 +138,14 @@ class RuleList final : public IRuleList {
                  *
                  * @param emptyBodyVisitor          A visitor function for handling objects of type `EmptyBody`
                  * @param conjunctiveBodyVisitor    A visitor function for handling objects of type `ConjunctiveBody`
+                 * @param completeBinaryHeadVisitor A visitor function for handling objects of the type
+                 *                                  `CompleteHead<uint8>`
                  * @param complete32BitHeadVisitor  A visitor function for handling objects of type
                  *                                  `CompleteHead<float32>`
                  * @param complete64BitHeadVisitor  A visitor function for handling objects of type
                  *                                  `CompleteHead<float64>`
+                 * @param partialBinaryHeadVisitor  A visitor function for handling objects of the type
+                 *                                  `PartialHead<uint8>`
                  * @param partial32BitHeadVisitor   A visitor function for handling objects of type
                  *                                  `PartialHead<float32>`
                  * @param partial64BitHeadVisitor   A visitor function for handling objects of type
@@ -141,8 +153,10 @@ class RuleList final : public IRuleList {
                  */
                 void visit(IBody::EmptyBodyVisitor emptyBodyVisitor,
                            IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                           IHead::CompleteHeadVisitor<uint8> completeBinaryHeadVisitor,
                            IHead::CompleteHeadVisitor<float32> complete32BitHeadVisitor,
                            IHead::CompleteHeadVisitor<float64> complete64BitHeadVisitor,
+                           IHead::PartialHeadVisitor<uint8> partialBinaryHeadVisitor,
                            IHead::PartialHeadVisitor<float32> partial32BitHeadVisitor,
                            IHead::PartialHeadVisitor<float64> partial64BitHeadVisitor) const;
         };
@@ -334,14 +348,18 @@ class RuleList final : public IRuleList {
         bool isDefaultRuleTakingPrecedence() const override;
 
         void visit(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                   IHead::CompleteHeadVisitor<uint8> completeBinaryHeadVisitor,
                    IHead::CompleteHeadVisitor<float32> complete32BitHeadVisitor,
                    IHead::CompleteHeadVisitor<float64> complete64BitHeadVisitor,
+                   IHead::PartialHeadVisitor<uint8> partialBinaryHeadVisitor,
                    IHead::PartialHeadVisitor<float32> partial32BitHeadVisitor,
                    IHead::PartialHeadVisitor<float64> partial64BitHeadVisitor) const override;
 
         void visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::ConjunctiveBodyVisitor conjunctiveBodyVisitor,
+                       IHead::CompleteHeadVisitor<uint8> completeBinaryHeadVisitor,
                        IHead::CompleteHeadVisitor<float32> complete32BitHeadVisitor,
                        IHead::CompleteHeadVisitor<float64> complete64BitHeadVisitor,
+                       IHead::PartialHeadVisitor<uint8> partialBinaryHeadVisitor,
                        IHead::PartialHeadVisitor<float32> partial32BitHeadVisitor,
                        IHead::PartialHeadVisitor<float64> partial64BitHeadVisitor) const override;
 
