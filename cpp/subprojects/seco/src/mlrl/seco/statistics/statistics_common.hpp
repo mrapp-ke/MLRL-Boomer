@@ -46,7 +46,7 @@ namespace seco {
      * An abstract base class for all subsets of confusion matrices.
      *
      * @tparam State                    The type of the state of the covering process
-     * @tparam ConfusionMatrixVector    The type of the vector that is used to store confusion matrices
+     * @tparam StatisticVector          The type of the vector that is used to store confusion matrices
      * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
      *                                  used for calculating the predictions of rules, as well as corresponding quality
      *                                  scores
@@ -55,15 +55,15 @@ namespace seco {
      * @tparam IndexVector              The type of the vector that provides access to the indices of the outputs that
      *                                  are included in the subset
      */
-    template<typename State, typename ConfusionMatrixVector, typename RuleEvaluationFactory, typename WeightVector,
+    template<typename State, typename StatisticVector, typename RuleEvaluationFactory, typename WeightVector,
              typename IndexVector>
     class AbstractStatisticsSubset : virtual public IStatisticsSubset {
         protected:
 
             /**
-             * An object of type `ConfusionMatrixVector` that stores the sums of confusion matrix elements.
+             * An object of template type `StatisticVector` that stores the sums of statistics.
              */
-            ConfusionMatrixVector sumVector_;
+            StatisticVector sumVector_;
 
             /**
              * A reference to an object of template type `State` that represents the state of the covering process.
@@ -71,10 +71,9 @@ namespace seco {
             State& state_;
 
             /**
-             * A reference to an object of template type `ConfusionMatrixVector` that stores the total sums of confusion
-             * matrix elements.
+             * A reference to an object of template type `StatisticVector` that stores the total sums of statistics.
              */
-            const ConfusionMatrixVector& totalSumVector_;
+            const StatisticVector& totalSumVector_;
 
             /**
              * A reference to an object of template type `WeightVector` that provides access to the weights of
@@ -92,15 +91,15 @@ namespace seco {
              * An unique pointer to an object of type `IRuleEvaluation` that is used for calculating the predictions of
              * rules, as well as their overall quality.
              */
-            const std::unique_ptr<IRuleEvaluation<ConfusionMatrixVector>> ruleEvaluationPtr_;
+            const std::unique_ptr<IRuleEvaluation<StatisticVector>> ruleEvaluationPtr_;
 
         public:
 
             /**
              * @param state                 A reference to an object of template type `State` that represents the state
              *                              of the covering process
-             * @param totalSumVector        A reference to an object of template type `ConfusionMatrixVector` that
-             *                              stores the total sums of confusion matrix elements
+             * @param totalSumVector        A reference to an object of template type `StatisticVector` that stores the
+             *                              total sums of statistics
              * @param ruleEvaluationFactory A reference to an object of template type `RuleEvaluationFactory` that
              *                              allows to create instances of the class that should be used for calculating
              *                              the predictions of rules, as well as their overall quality
@@ -109,7 +108,7 @@ namespace seco {
              * @param outputIndices         A reference to an object of template type `IndexVector` that provides access
              *                              to the indices of the outputs that are included in the subset
              */
-            AbstractStatisticsSubset(State& state, const ConfusionMatrixVector& totalSumVector,
+            AbstractStatisticsSubset(State& state, const StatisticVector& totalSumVector,
                                      const RuleEvaluationFactory& ruleEvaluationFactory, const WeightVector& weights,
                                      const IndexVector& outputIndices)
                 : sumVector_(outputIndices.getNumElements(), true), state_(state), totalSumVector_(totalSumVector),
