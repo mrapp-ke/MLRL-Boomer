@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VENV_DIR="venv"
+VENV_DIR=".venv"
 BUILD_SYSTEM_DIR="build_system"
 CLEAN=false
 
