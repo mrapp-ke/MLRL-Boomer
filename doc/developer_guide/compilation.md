@@ -130,7 +130,7 @@ The build process is based on a virtual Python environment that allows to instal
    ```
 ````
 
-All run-time dependencies (`numpy`, `scipy`, etc.) that are required for running the algorithms that are provided by the project should automatically be installed into the virtual environment when executing the above command. As a result, a subdirectory `venv/` should have been created in the project's root directory.
+All run-time dependencies (`numpy`, `scipy`, etc.) that are required for running the algorithms that are provided by the project should automatically be installed into the virtual environment when executing the above command. As a result, a subdirectory `.venv/` should have been created in the project's root directory.
 
 ## Compiling the C++ Code
 
@@ -306,7 +306,7 @@ The wheel packages that have previously been created can finally be installed in
    ```
 ````
 
-After this final step has completed, the Python packages can be used from within the virtual environment once it has been [activated](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#activate-a-virtual-environment). To ensure that the installation of the wheel packages was successful, check if a `mlrl/` directory has been created in the `lib/` directory of the virtual environment (depending on the Python version and operating system, it should be located at `venv/lib/python3.10/site-packages/mlrl/` or similar). If this is the case, the algorithm can be used from within your own Python code. Alternatively, the command line API can be used to start an experiment (see {ref}`testbed`).
+After this final step has completed, the Python packages can be used from within the virtual environment once it has been [activated](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#activate-a-virtual-environment). To ensure that the installation of the wheel packages was successful, check if a `mlrl/` directory has been created in the `lib/` directory of the virtual environment (depending on the Python version and operating system, it should be located at `.venv/lib/python3.10/site-packages/mlrl/` or similar). If this is the case, the algorithm can be used from within your own Python code. Alternatively, the command line API can be used to start an experiment (see {ref}`testbed`).
 
 ## Cleaning up Build Files
 
