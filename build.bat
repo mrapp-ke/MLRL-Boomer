@@ -1,6 +1,6 @@
 @echo off
 
-set "VENV_DIR=venv"
+set "VENV_DIR=.venv"
 set "BUILD_SYSTEM_DIR=build_system"
 set "CLEAN=false"
 
