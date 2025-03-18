@@ -45,9 +45,12 @@ class Runnable(BaseRunnable):
 
     # ...
 
-    def configure_problem_specific_arguments(self, parser: ArgumentParser, problem_type: ProblemType):
+    def configure_problem_specific_arguments(self,
+                                             parser: ArgumentParser,
+                                             problem_type: ProblemType):
         super().configure_problem_specific_arguments(parser, problem_type)
-        parser.add_argument('--n-estimators', type=int, default=100, help='The number of trees in the forest')
+        parser.add_argument('--n-estimators', type=int, default=100,
+                            help='The number of trees in the forest')
 
     def create_classifier(self, args):
         return RandomForestClassifier(n_estimators=args.n_estimators)
