@@ -48,7 +48,7 @@ jobs:
               - 'build_system/targets/documentation/*'
               - 'doc/conf.py'
               - 'doc/index.md'
-              - 'doc/**/'
+              - 'doc/**/*'
             doc_spelling:
               - *doc
               - 'doc/spelling_wordlist.txt'

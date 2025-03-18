@@ -38,7 +38,9 @@ jobs:
               - ./.github/workflows/template_publish_doc_rtd.yml
               - build_system/targets/documentation/rtd/*
               - .readthedocs/.readthedocs.yaml
-              - doc/**
+              - 'doc/conf.py'
+              - 'doc/index.md'
+              - 'doc/**/*'
   update_development_version:
     needs: changes
     name: Update development version
