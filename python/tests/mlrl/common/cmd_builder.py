@@ -117,8 +117,9 @@ class CmdBuilder:
         :param callback:                The callback that should be notified about test failures
         :param expected_output_dir:     The path of the directory that contains the file with the expected output
         :param model_file_name:         The name of files storing models that have been saved to disk (without suffix)
-        :param runnable_module_name:    The fully qualified name of the runnable to be invoked by the 'testbed' program
-        :param runnable_class_name:     The class name of the runnable to be invoked by the 'testbed' program
+        :param runnable_module_name:    The fully qualified name of the runnable to be invoked by the program
+                                        'mlrl-testbed'
+        :param runnable_class_name:     The class name of the runnable to be invoked by the program 'mlrl-testbed'
         :param data_dir:                The path of the directory that stores the dataset files
         :param dataset:                 The name of the dataset
         """
@@ -147,7 +148,7 @@ class CmdBuilder:
 
     @staticmethod
     def __create_args(runnable_module_name: str, runnable_class_name: Optional[str], data_dir: str, dataset: str):
-        args = ['testbed', runnable_module_name]
+        args = ['mlrl-testbed', runnable_module_name]
 
         if runnable_class_name:
             args.extend(['-r', runnable_class_name])

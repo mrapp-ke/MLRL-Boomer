@@ -16,7 +16,7 @@ Even though nominal and binary features are natively supported in an efficient w
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --one-hot-encoding true
@@ -25,7 +25,7 @@ Even though nominal and binary features are natively supported in an efficient w
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --one-hot-encoding true
