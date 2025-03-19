@@ -145,7 +145,7 @@ As an alternative to storing the models learned by an algorithm, the algorithmic
 
 - `--parameter-save-dir` (Default value = `None`)
 
-  - An absolute or relative path to the directory to which the parameters used by an algorithm should be saved.
+  - An absolute or relative path to the directory to which [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files that store algorithmic parameters set by the user should be saved.
 
 - `--print-parameters` (Default value = `false`)
 
