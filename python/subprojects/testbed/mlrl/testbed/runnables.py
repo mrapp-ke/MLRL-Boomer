@@ -478,8 +478,6 @@ class LearnerRunnable(Runnable, ABC):
 
     STORE_LABEL_VECTORS_VALUES = PRINT_LABEL_VECTORS_VALUES
 
-    PARAM_PARAMETER_SAVE_DIR = '--parameter-save-dir'
-
     PARAM_OUTPUT_DIR = '--output-dir'
 
     PARAM_PREDICTION_TYPE = '--prediction-type'
@@ -655,7 +653,7 @@ class LearnerRunnable(Runnable, ABC):
                             type=str,
                             help='The path of the directory from which parameter to be used by the algorith should be '
                             + 'loaded.')
-        parser.add_argument(self.PARAM_PARAMETER_SAVE_DIR,
+        parser.add_argument('--parameter-save-dir',
                             type=str,
                             help='The path of the directory where configuration files, which specify the parameters to '
                             + 'be used by the algorithm, are located.')
@@ -667,12 +665,6 @@ class LearnerRunnable(Runnable, ABC):
                             default=False,
                             help='Whether the parameter setting should be printed on the console or not. Must be one '
                             + 'of ' + format_enum_values(BooleanOption) + '.')
-        parser.add_argument('--store-parameters',
-                            type=BooleanOption.parse,
-                            default=False,
-                            help='Whether the parameter setting should be written into output files or not. Must be '
-                            + 'one of ' + format_enum_values(BooleanOption) + '. Does only have an effect, if the '
-                            + 'parameter ' + self.PARAM_PARAMETER_SAVE_DIR + ' is specified.')
         parser.add_argument(self.PARAM_PRINT_PREDICTIONS,
                             type=str,
                             default=BooleanOption.FALSE.value,
@@ -948,8 +940,8 @@ class LearnerRunnable(Runnable, ABC):
         if args.print_parameters:
             sinks.append(ParameterWriter.LogSink())
 
-        if args.store_parameters and args.parameter_dir is not None:
-            sinks.append(ParameterWriter.CsvSink(output_dir=args.parameter_dir))
+        if args.parameter_save_dir is not None:
+            sinks.append(ParameterWriter.CsvSink(output_dir=args.parameter_save_dir))
 
         return ParameterWriter(sinks) if len(sinks) > 0 else None
 

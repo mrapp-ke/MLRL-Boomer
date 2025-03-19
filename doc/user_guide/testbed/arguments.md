@@ -152,11 +152,6 @@ As an alternative to storing the models learned by an algorithm, the algorithmic
   - `true` Algorithmic parameters are printed on the console.
   - `false` Algorithmic parameters are not printed on the console.
 
-- `--store-parameters` (Default value = `false`)
-
-  - `true` Algorithmic parameters that have been set by the user are written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files. Does only have an effect if the parameter `--parameter-save-dir` is specified.
-  - `false` Algorithmic parameters that have been set by the user are not written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files.
-
 ## Output of Experimental Results
 
 > A more detailed description of the following arguments can be found {ref}`here<experimental-results>`.
