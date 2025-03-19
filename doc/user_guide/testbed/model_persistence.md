@@ -6,7 +6,7 @@ Because the training of machine learning models can be time-consuming, they are 
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --model-save-dir /path/to/models \
@@ -16,7 +16,7 @@ Because the training of machine learning models can be time-consuming, they are 
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --model-save-dir /path/to/models \

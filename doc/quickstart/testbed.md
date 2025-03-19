@@ -22,7 +22,7 @@ The following example illustrates use the command line API for applying the BOOM
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name
    ```
@@ -30,7 +30,7 @@ The following example illustrates use the command line API for applying the BOOM
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name
    ```
@@ -55,7 +55,7 @@ If an XML file is not provided, the program tries to parse the number of outputs
 In addition to classification problems, the BOOMER algorithm can also be used for solving regression problems. As shown below, the argument `--problem-type` instructs the command line API to consider the given dataset as a regression dataset:
 
 ```text
-testbed mlrl.boosting \
+mlrl-testbed mlrl.boosting \
     --data-dir /path/to/datasets/ \
     --dataset dataset-name \
     --problem-type regression
@@ -69,7 +69,7 @@ In addition to the mandatory arguments that must be provided to the command line
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/output/
@@ -78,7 +78,7 @@ In addition to the mandatory arguments that must be provided to the command line
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/output/
@@ -89,7 +89,7 @@ Moreover, algorithmic parameters that control the behavior of the machine learni
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --feature-binning equal-width
@@ -98,7 +98,7 @@ Moreover, algorithmic parameters that control the behavior of the machine learni
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --feature-binning equal-width
@@ -109,7 +109,7 @@ Some algorithmic parameters, including the parameter `feature_binning`, come wit
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
@@ -118,7 +118,7 @@ Some algorithmic parameters, including the parameter `feature_binning`, come wit
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
