@@ -150,7 +150,7 @@ As an alternative to storing the models learned by an algorithm, the algorithmic
 
 - `--store-parameters` (Default value = `false`)
 
-  - `true` Algorithmic parameters that have been set by the user are written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files. Does only have an effect if the parameter `--output-dir` is specified.
+  - `true` Algorithmic parameters that have been set by the user are written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files. Does only have an effect if the parameter `--parameter-dir` is specified.
   - `false` Algorithmic parameters that have been set by the user are not written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files.
 
 ## Output of Experimental Results
