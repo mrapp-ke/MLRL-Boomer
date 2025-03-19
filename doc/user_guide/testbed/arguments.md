@@ -143,9 +143,9 @@ As an alternative to storing the models learned by an algorithm, the algorithmic
 
   - An absolute or relative path to the directory from which parameters to be used by the algorithm should be loaded. If such files are found in the specified directory, the specified parameter settings are used instead of the parameters that are provided via command line arguments.
 
-- `--parameter-dir` (Default value = `None`)
+- `--parameter-save-dir` (Default value = `None`)
 
-  - An absolute or relative path to the directory where configuration files, which specify the parameters to be used by the algorithm, are located. If such files are found in the specified directory, the specified parameter settings are used instead of the parameters that are provided via command line arguments.
+  - An absolute or relative path to the directory to which the parameters used by an algorithm should be saved.
 
 - `--print-parameters` (Default value = `false`)
 
@@ -154,7 +154,7 @@ As an alternative to storing the models learned by an algorithm, the algorithmic
 
 - `--store-parameters` (Default value = `false`)
 
-  - `true` Algorithmic parameters that have been set by the user are written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files. Does only have an effect if the parameter `--parameter-dir` is specified.
+  - `true` Algorithmic parameters that have been set by the user are written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files. Does only have an effect if the parameter `--parameter-save-dir` is specified.
   - `false` Algorithmic parameters that have been set by the user are not written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files.
 
 ## Output of Experimental Results
