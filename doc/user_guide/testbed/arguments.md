@@ -25,7 +25,7 @@ The argument `--log-level` controls the level of detail used for log messages (D
 The most basic command for running the program, only including mandatory arguments, is as follows:
 
 ```text
-testbed <module_or_source_file> --data-dir /path/to/dataset/ --dataset dataset-name
+mlrl-testbed <module_or_source_file> --data-dir /path/to/dataset/ --dataset dataset-name
 ```
 
 ### Module
@@ -465,7 +465,7 @@ For example, the value of the parameter `feature_binning` may be set as follows:
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --feature-binning equal-width
@@ -474,7 +474,7 @@ For example, the value of the parameter `feature_binning` may be set as follows:
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --feature-binning equal-width
@@ -485,7 +485,7 @@ Some algorithmic parameters, including the parameter `feature_binning`, allow to
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting\
+   mlrl-testbed mlrl.boosting\
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
@@ -494,7 +494,7 @@ Some algorithmic parameters, including the parameter `feature_binning`, allow to
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
