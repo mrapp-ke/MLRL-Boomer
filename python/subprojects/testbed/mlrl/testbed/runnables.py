@@ -46,7 +46,7 @@ from mlrl.testbed.models import OPTION_DECIMALS_BODY, OPTION_DECIMALS_HEAD, OPTI
     OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_HEADS, OPTION_PRINT_NOMINAL_VALUES, OPTION_PRINT_OUTPUT_NAMES, \
     ModelWriter, RuleModelWriter
 from mlrl.testbed.output_writer import OutputWriter
-from mlrl.testbed.parameters import ParameterCsvInput, ParameterInput, ParameterWriter
+from mlrl.testbed.parameters import CsvParameterLoader, ParameterLoader, ParameterWriter
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsWriter
 from mlrl.testbed.prediction_scope import PredictionType
@@ -696,7 +696,7 @@ class LearnerRunnable(Runnable, ABC):
         pre_execution_hook = self.__create_pre_execution_hook(args, data_splitter)
         pre_training_output_writers = self._create_pre_training_output_writers(args)
         post_training_output_writers = self._create_post_training_output_writers(args)
-        parameter_input = self._create_parameter_input(args)
+        parameter_loader = self._create_parameter_loader(args)
         model_loader = self._create_model_loader(args)
         model_saver = self._create_model_saver(args)
         experiment = self._create_experiment(args,
@@ -709,7 +709,7 @@ class LearnerRunnable(Runnable, ABC):
                                              pre_training_output_writers=pre_training_output_writers,
                                              post_training_output_writers=post_training_output_writers,
                                              pre_execution_hook=pre_execution_hook,
-                                             parameter_input=parameter_input,
+                                             parameter_loader=parameter_loader,
                                              model_loader=model_loader,
                                              model_saver=model_saver)
         experiment.run()
@@ -720,7 +720,7 @@ class LearnerRunnable(Runnable, ABC):
                            post_training_output_writers: List[OutputWriter],
                            pre_execution_hook: Optional[Experiment.ExecutionHook],
                            train_evaluation: Optional[Evaluation], test_evaluation: Optional[Evaluation],
-                           parameter_input: Optional[ParameterInput], model_loader: Optional[ModelLoader],
+                           parameter_loader: Optional[ParameterLoader], model_loader: Optional[ModelLoader],
                            model_saver: Optional[ModelSaver]) -> Experiment:
         """
         May be overridden by subclasses in order to create the `Experiment` that should be run.
@@ -738,7 +738,7 @@ class LearnerRunnable(Runnable, ABC):
                                                 data or None, if the predictions should not be evaluated
         :param test_evaluation:                 The method to be used for evaluating the predictions for the test data
                                                 or None, if the predictions should not be evaluated
-        :param parameter_input:                 The input that should be used to read the parameter settings
+        :param parameter_loader:                The `ParameterLoader` that should be used to read the parameter settings
         :param model_loader:                    The `ModelLoader` that should be used for loading models
         :param model_saver:                     The `ModelSaver` that should be used for saving models
         :return:                                The `Experiment` that has been created
@@ -752,7 +752,7 @@ class LearnerRunnable(Runnable, ABC):
                           pre_execution_hook=pre_execution_hook,
                           train_evaluation=train_evaluation,
                           test_evaluation=test_evaluation,
-                          parameter_input=parameter_input,
+                          parameter_loader=parameter_loader,
                           model_loader=model_loader,
                           model_saver=model_saver)
 
@@ -919,15 +919,15 @@ class LearnerRunnable(Runnable, ABC):
             return RankingEvaluationWriter(sinks)
         return BinaryEvaluationWriter(sinks)
 
-    def _create_parameter_input(self, args) -> Optional[ParameterInput]:
+    def _create_parameter_loader(self, args) -> Optional[ParameterLoader]:
         """
-        May be overridden by subclasses in order to create the `ParameterInput` that should be used to load parameter
-        settings.
+        May be overridden by subclasses in order to create the `ParameterLoader` that should be used for loading
+        parameter settings.
 
         :param args:    The command line arguments
-        :return:        The `ParameterInput` that has been created
+        :return:        The `ParameterLoader` that has been created
         """
-        return None if args.parameter_dir is None else ParameterCsvInput(input_dir=args.parameter_dir)
+        return None if args.parameter_dir is None else CsvParameterLoader(input_dir=args.parameter_dir)
 
     def _create_parameter_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -1247,7 +1247,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                            post_training_output_writers: List[OutputWriter],
                            pre_execution_hook: Optional[Experiment.ExecutionHook],
                            train_evaluation: Optional[Evaluation], test_evaluation: Optional[Evaluation],
-                           parameter_input: Optional[ParameterInput], model_loader: Optional[ModelLoader],
+                           parameter_loader: Optional[ParameterLoader], model_loader: Optional[ModelLoader],
                            model_saver: Optional[ModelSaver]) -> Experiment:
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
         return Experiment(problem_type=problem_type,
@@ -1259,7 +1259,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                           pre_execution_hook=pre_execution_hook,
                           train_evaluation=train_evaluation,
                           test_evaluation=test_evaluation,
-                          parameter_input=parameter_input,
+                          parameter_loader=parameter_loader,
                           model_loader=model_loader,
                           model_saver=model_saver,
                           fit_kwargs=kwargs,

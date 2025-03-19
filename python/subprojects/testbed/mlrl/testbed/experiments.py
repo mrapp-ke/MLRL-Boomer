@@ -20,7 +20,7 @@ from mlrl.testbed.data import FeatureType, MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataSplitter, DataType
 from mlrl.testbed.format import format_duration
 from mlrl.testbed.output_writer import OutputWriter
-from mlrl.testbed.parameters import ParameterInput
+from mlrl.testbed.parameters import ParameterLoader
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
 from mlrl.testbed.prediction_scope import GlobalPrediction, IncrementalPrediction, PredictionScope, PredictionType
 from mlrl.testbed.problem_type import ProblemType
@@ -253,7 +253,7 @@ class Experiment(DataSplitter.Callback):
                  pre_execution_hook: Optional[ExecutionHook] = None,
                  train_evaluation: Optional[Evaluation] = None,
                  test_evaluation: Optional[Evaluation] = None,
-                 parameter_input: Optional[ParameterInput] = None,
+                 parameter_loader: Optional[ParameterLoader] = None,
                  model_loader: Optional[ModelLoader] = None,
                  model_saver: Optional[ModelSaver] = None,
                  fit_kwargs: Optional[Dict[str, Any]] = None,
@@ -271,7 +271,7 @@ class Experiment(DataSplitter.Callback):
                                                 data or None, if the predictions should not be evaluated
         :param test_evaluation:                 The method to be used for evaluating the predictions for the test data
                                                 or None, if the predictions should not be evaluated
-        :param parameter_input:                 The input that should be used to read the parameter settings
+        :param parameter_loader:                The `ParameterLoader` that should be used to read the parameter settings
         :param model_loader:                    The `ModelLoader` that should be used for loading models
         :param model_saver:                     The `ModelSaver` that should be used for saving models
         :param fit_kwargs:                      Optional keyword arguments to be passed to the learner when fitting a
@@ -288,7 +288,7 @@ class Experiment(DataSplitter.Callback):
         self.pre_execution_hook = pre_execution_hook
         self.train_evaluation = train_evaluation
         self.test_evaluation = test_evaluation
-        self.parameter_input = parameter_input
+        self.parameter_loader = parameter_loader
         self.model_loader = model_loader
         self.model_saver = model_saver
         self.fit_kwargs = fit_kwargs
@@ -324,10 +324,10 @@ class Experiment(DataSplitter.Callback):
         fit_kwargs = self.fit_kwargs if self.fit_kwargs else {}
 
         # Apply parameter setting, if necessary...
-        parameter_input = self.parameter_input
+        parameter_loader = self.parameter_loader
 
-        if parameter_input is not None:
-            params = parameter_input.read_parameters(data_split)
+        if parameter_loader is not None:
+            params = parameter_loader.load_parameters(data_split)
 
             if params:
                 current_learner.set_params(**params)
