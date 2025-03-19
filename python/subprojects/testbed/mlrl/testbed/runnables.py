@@ -47,7 +47,7 @@ from mlrl.testbed.models import OPTION_DECIMALS_BODY, OPTION_DECIMALS_HEAD, OPTI
     ModelWriter, RuleModelWriter
 from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.parameters import ParameterCsvInput, ParameterInput, ParameterWriter
-from mlrl.testbed.persistence import ModelPersistence
+from mlrl.testbed.persistence import ModelLoader, ModelSaver
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsWriter
 from mlrl.testbed.prediction_scope import PredictionType
 from mlrl.testbed.predictions import PredictionWriter
@@ -692,7 +692,8 @@ class LearnerRunnable(Runnable, ABC):
         pre_training_output_writers = self._create_pre_training_output_writers(args)
         post_training_output_writers = self._create_post_training_output_writers(args)
         parameter_input = self._create_parameter_input(args)
-        persistence = self._create_persistence(args)
+        model_loader = self._create_model_loader(args)
+        model_saver = self._create_model_saver(args)
         experiment = self._create_experiment(args,
                                              problem_type=problem_type,
                                              base_learner=base_learner,
@@ -704,7 +705,8 @@ class LearnerRunnable(Runnable, ABC):
                                              post_training_output_writers=post_training_output_writers,
                                              pre_execution_hook=pre_execution_hook,
                                              parameter_input=parameter_input,
-                                             persistence=persistence)
+                                             model_loader=model_loader,
+                                             model_saver=model_saver)
         experiment.run()
 
     # pylint: disable=unused-argument
@@ -713,8 +715,8 @@ class LearnerRunnable(Runnable, ABC):
                            post_training_output_writers: List[OutputWriter],
                            pre_execution_hook: Optional[Experiment.ExecutionHook],
                            train_evaluation: Optional[Evaluation], test_evaluation: Optional[Evaluation],
-                           parameter_input: Optional[ParameterInput],
-                           persistence: Optional[ModelPersistence]) -> Experiment:
+                           parameter_input: Optional[ParameterInput], model_loader: Optional[ModelLoader],
+                           model_saver: Optional[ModelSaver]) -> Experiment:
         """
         May be overridden by subclasses in order to create the `Experiment` that should be run.
 
@@ -732,7 +734,8 @@ class LearnerRunnable(Runnable, ABC):
         :param test_evaluation:                 The method to be used for evaluating the predictions for the test data
                                                 or None, if the predictions should not be evaluated
         :param parameter_input:                 The input that should be used to read the parameter settings
-        :param persistence:                     The `ModelPersistence` that should be used for loading and saving models
+        :param model_loader:                    The `ModelLoader` that should be used for loading models
+        :param model_saver:                     The `ModelSaver` that should be used for saving models
         :return:                                The `Experiment` that has been created
         """
         return Experiment(problem_type=problem_type,
@@ -745,7 +748,8 @@ class LearnerRunnable(Runnable, ABC):
                           train_evaluation=train_evaluation,
                           test_evaluation=test_evaluation,
                           parameter_input=parameter_input,
-                          persistence=persistence)
+                          model_loader=model_loader,
+                          model_saver=model_saver)
 
     def _create_pre_training_output_writers(self, args) -> List[OutputWriter]:
         """
@@ -813,15 +817,23 @@ class LearnerRunnable(Runnable, ABC):
 
         return output_writers
 
-    def _create_persistence(self, args) -> Optional[ModelPersistence]:
+    def _create_model_loader(self, args) -> Optional[ModelLoader]:
         """
-        May be overridden by subclasses in order to create the `ModelPersistence` that should be used to save and load
-        models.
+        May be overridden by subclasses in order to create the `ModelLoader` that should be used for loading models.
 
         :param args:    The command line arguments
-        :return:        The `ModelPersistence` that has been created
+        :return:        The `ModelLoader` that has been created
         """
-        return None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
+        return None if args.model_dir is None else ModelLoader(args.model_dir)
+
+    def _create_model_saver(self, args) -> Optional[ModelSaver]:
+        """
+        May be overridden by subclasses in order to create the `ModelSaver` that should be used for saving models.
+
+        :param args:    The command line arguments
+        :return:        The `ModelSaver` that has been created
+        """
+        return None if args.model_dir is None else ModelSaver(args.model_dir)
 
     def _create_train_evaluation(self, args, problem_type: ProblemType,
                                  prediction_type: PredictionType) -> Optional[Evaluation]:
@@ -1230,8 +1242,8 @@ class RuleLearnerRunnable(LearnerRunnable):
                            post_training_output_writers: List[OutputWriter],
                            pre_execution_hook: Optional[Experiment.ExecutionHook],
                            train_evaluation: Optional[Evaluation], test_evaluation: Optional[Evaluation],
-                           parameter_input: Optional[ParameterInput],
-                           persistence: Optional[ModelPersistence]) -> Experiment:
+                           parameter_input: Optional[ParameterInput], model_loader: Optional[ModelLoader],
+                           model_saver: Optional[ModelSaver]) -> Experiment:
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
         return Experiment(problem_type=problem_type,
                           base_learner=base_learner,
@@ -1243,7 +1255,8 @@ class RuleLearnerRunnable(LearnerRunnable):
                           train_evaluation=train_evaluation,
                           test_evaluation=test_evaluation,
                           parameter_input=parameter_input,
-                          persistence=persistence,
+                          model_loader=model_loader,
+                          model_saver=model_saver,
                           fit_kwargs=kwargs,
                           predict_kwargs=kwargs)
 
