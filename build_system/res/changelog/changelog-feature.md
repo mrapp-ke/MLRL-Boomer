@@ -1,5 +1,6 @@
 # API Changes
 
+- The executable `testbed` has been renamed to `mlrl-testbed`.
 - The command line argument `--model-dir` has been replaced with the arguments `--model-load-dir` and `--model-save-dir`, which enables to save models to a different directory than the one they are loaded from. 
 - The command line argument `--parameter-dir` has been replaced with the arguments `--parameter-load-dir` and `--parameter-save-dir`. The former specifies the directory, parameter settings should be loaded from, whereas the latter replaces the argument `--store-parameters`.
 - The options `min_samples` and `max_samples` have been added to the values of the command line arguments `--feature-sampling` and `--instance-sampling`.
