@@ -651,6 +651,10 @@ class LearnerRunnable(Runnable, ABC):
         parser.add_argument('--model-save-dir',
                             type=str,
                             help='The path of the directory to which models should be saved.')
+        parser.add_argument('--parameter-load-dir',
+                            type=str,
+                            help='The path of the directory from which parameter to be used by the algorith should be '
+                            + 'loaded.')
         parser.add_argument(self.PARAM_PARAMETER_DIR,
                             type=str,
                             help='The path of the directory where configuration files, which specify the parameters to '
@@ -929,7 +933,7 @@ class LearnerRunnable(Runnable, ABC):
         :param args:    The command line arguments
         :return:        The `ParameterLoader` that has been created
         """
-        return None if args.parameter_dir is None else CsvParameterLoader(input_dir=args.parameter_dir)
+        return None if args.parameter_load_dir is None else CsvParameterLoader(input_dir=args.parameter_load_dir)
 
     def _create_parameter_writer(self, args) -> Optional[OutputWriter]:
         """

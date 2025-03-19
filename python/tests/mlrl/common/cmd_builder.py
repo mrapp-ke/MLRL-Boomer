@@ -445,7 +445,7 @@ class CmdBuilder:
         self.parameter_dir = parameter_dir
 
         if parameter_dir is not None:
-            self.args.append('--parameter-dir')
+            self.args.append('--parameter-load-dir')
             self.args.append(parameter_dir)
         return self
 
