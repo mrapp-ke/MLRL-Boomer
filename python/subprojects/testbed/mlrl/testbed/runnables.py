@@ -643,7 +643,12 @@ class LearnerRunnable(Runnable, ABC):
                             default=False,
                             help='Whether one-hot-encoding should be used to encode nominal features or not. Must be '
                             + 'one of ' + format_enum_values(BooleanOption) + '.')
-        parser.add_argument('--model-dir', type=str, help='The path of the directory where models should be stored.')
+        parser.add_argument('--model-load-dir',
+                            type=str,
+                            help='The path of the directory from which models should be loaded.')
+        parser.add_argument('--model-save-dir',
+                            type=str,
+                            help='The path of the directory to which models should be saved.')
         parser.add_argument('--parameter-dir',
                             type=str,
                             help='The path of the directory where configuration files, which specify the parameters to '
@@ -824,7 +829,7 @@ class LearnerRunnable(Runnable, ABC):
         :param args:    The command line arguments
         :return:        The `ModelLoader` that has been created
         """
-        return None if args.model_dir is None else ModelLoader(args.model_dir)
+        return None if args.model_load_dir is None else ModelLoader(args.model_load_dir)
 
     def _create_model_saver(self, args) -> Optional[ModelSaver]:
         """
@@ -833,7 +838,7 @@ class LearnerRunnable(Runnable, ABC):
         :param args:    The command line arguments
         :return:        The `ModelSaver` that has been created
         """
-        return None if args.model_dir is None else ModelSaver(args.model_dir)
+        return None if args.model_save_dir is None else ModelSaver(args.model_save_dir)
 
     def _create_train_evaluation(self, args, problem_type: ProblemType,
                                  prediction_type: PredictionType) -> Optional[Evaluation]:

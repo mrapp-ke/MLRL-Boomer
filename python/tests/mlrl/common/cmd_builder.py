@@ -428,7 +428,9 @@ class CmdBuilder:
         self.model_dir = model_dir
 
         if model_dir is not None:
-            self.args.append('--model-dir')
+            self.args.append('--model-load-dir')
+            self.args.append(model_dir)
+            self.args.append('--model-save-dir')
             self.args.append(model_dir)
             self.tmp_dirs.append(model_dir)
         return self

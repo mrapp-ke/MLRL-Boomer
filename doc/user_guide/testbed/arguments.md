@@ -123,11 +123,15 @@ Depending on the characteristics of a dataset, it might be desirable to apply on
 
 > A more detailed description of the following arguments can be found {ref}`here<model-persistence>`.
 
-Because the training of models can be time-consuming, it might be desirable to store them on disk for later use. This requires to specify the path of a directory where models should be saved.
+Because the training of models can be time-consuming, it might be desirable to store them on disk for later use. This requires to specify the paths of directories to which models should be saved or loaded from.
 
-- `--model-dir` (Default value = `None`)
+- `--model-load-dir` (Default value = `None`)
 
-  - An absolute or relative path to the directory where models should be stored. If such models are found in the specified directory, they are used instead of learning a new model from scratch. If no models are available, the trained models are saved in the specified directory once training has completed.
+  - An absolute or relative path to the directory from which models should be loaded. If such models are found in the specified directory, they are used instead of learning a new model from scratch.
+
+- `--model-save-dir` (Default value = `None`)
+
+  - An absolute or relative path to the directory to which models should be saved once training has completed. Models are only saved if they could not be loaded from the directory specified via the argument `--model-load-dir`.
 
 ## Saving and Loading Parameters
 
