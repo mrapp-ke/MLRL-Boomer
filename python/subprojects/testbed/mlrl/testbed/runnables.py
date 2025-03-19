@@ -478,7 +478,7 @@ class LearnerRunnable(Runnable, ABC):
 
     STORE_LABEL_VECTORS_VALUES = PRINT_LABEL_VECTORS_VALUES
 
-    PARAM_PARAMETER_DIR = '--parameter-dir'
+    PARAM_PARAMETER_SAVE_DIR = '--parameter-save-dir'
 
     PARAM_OUTPUT_DIR = '--output-dir'
 
@@ -655,7 +655,7 @@ class LearnerRunnable(Runnable, ABC):
                             type=str,
                             help='The path of the directory from which parameter to be used by the algorith should be '
                             + 'loaded.')
-        parser.add_argument(self.PARAM_PARAMETER_DIR,
+        parser.add_argument(self.PARAM_PARAMETER_SAVE_DIR,
                             type=str,
                             help='The path of the directory where configuration files, which specify the parameters to '
                             + 'be used by the algorithm, are located.')
@@ -672,7 +672,7 @@ class LearnerRunnable(Runnable, ABC):
                             default=False,
                             help='Whether the parameter setting should be written into output files or not. Must be '
                             + 'one of ' + format_enum_values(BooleanOption) + '. Does only have an effect, if the '
-                            + 'parameter ' + self.PARAM_PARAMETER_DIR + ' is specified.')
+                            + 'parameter ' + self.PARAM_PARAMETER_SAVE_DIR + ' is specified.')
         parser.add_argument(self.PARAM_PRINT_PREDICTIONS,
                             type=str,
                             default=BooleanOption.FALSE.value,
