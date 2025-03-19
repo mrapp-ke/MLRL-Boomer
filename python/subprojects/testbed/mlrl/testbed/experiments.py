@@ -21,7 +21,7 @@ from mlrl.testbed.data_splitting import DataSplit, DataSplitter, DataType
 from mlrl.testbed.format import format_duration
 from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.parameters import ParameterInput
-from mlrl.testbed.persistence import ModelPersistence
+from mlrl.testbed.persistence import ModelLoader, ModelSaver
 from mlrl.testbed.prediction_scope import GlobalPrediction, IncrementalPrediction, PredictionScope, PredictionType
 from mlrl.testbed.problem_type import ProblemType
 
@@ -254,7 +254,8 @@ class Experiment(DataSplitter.Callback):
                  train_evaluation: Optional[Evaluation] = None,
                  test_evaluation: Optional[Evaluation] = None,
                  parameter_input: Optional[ParameterInput] = None,
-                 persistence: Optional[ModelPersistence] = None,
+                 model_loader: Optional[ModelLoader] = None,
+                 model_saver: Optional[ModelSaver] = None,
                  fit_kwargs: Optional[Dict[str, Any]] = None,
                  predict_kwargs: Optional[Dict[str, Any]] = None):
         """
@@ -271,7 +272,8 @@ class Experiment(DataSplitter.Callback):
         :param test_evaluation:                 The method to be used for evaluating the predictions for the test data
                                                 or None, if the predictions should not be evaluated
         :param parameter_input:                 The input that should be used to read the parameter settings
-        :param persistence:                     The `ModelPersistence` that should be used for loading and saving models
+        :param model_loader:                    The `ModelLoader` that should be used for loading models
+        :param model_saver:                     The `ModelSaver` that should be used for saving models
         :param fit_kwargs:                      Optional keyword arguments to be passed to the learner when fitting a
                                                 model
         :param predict_kwargs:                  Optional keyword arguments to be passed to the learner when obtaining
@@ -287,7 +289,8 @@ class Experiment(DataSplitter.Callback):
         self.train_evaluation = train_evaluation
         self.test_evaluation = test_evaluation
         self.parameter_input = parameter_input
-        self.persistence = persistence
+        self.model_loader = model_loader
+        self.model_saver = model_saver
         self.fit_kwargs = fit_kwargs
         self.predict_kwargs = predict_kwargs
 
@@ -451,10 +454,10 @@ class Experiment(DataSplitter.Callback):
         :param data_split:  Information about the split of the available data, the model corresponds to
         :return:            The loaded model
         """
-        persistence = self.persistence
+        model_loader = self.model_loader
 
-        if persistence is not None:
-            return persistence.load_model(self.learner_name, data_split)
+        if model_loader is not None:
+            return model_loader.load_model(self.learner_name, data_split)
 
         return None
 
@@ -465,10 +468,10 @@ class Experiment(DataSplitter.Callback):
         :param model:       The model to be saved
         :param data_split:  Information about the split of the available data, the model corresponds to
         """
-        persistence = self.persistence
+        model_saver = self.model_saver
 
-        if persistence is not None:
-            persistence.save_model(model, self.learner_name, data_split)
+        if model_saver is not None:
+            model_saver.save_model(model, self.learner_name, data_split)
 
     @staticmethod
     def __check_for_parameter_changes(expected_params, actual_params):
