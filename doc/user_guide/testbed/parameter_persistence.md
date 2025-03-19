@@ -26,10 +26,6 @@ This requires to specify a directory via the command line argument `--parameter-
    ```
 ````
 
-```{note}
-The path of the directory, where parameter settings should be saved, can be either absolute or relative to the working directory.
-```
-
 If {ref}`train-test splits<train-test-split>` are used for splitting the available data into training and test sets, a single model is trained and its configuration is saved to a file:
 
 - `parameters_overall.csv`
@@ -45,8 +41,6 @@ If a {ref}`cross validation<cross-validation>` is performed instead, one model i
 ```{note}
 Only parameters with custom values are included in the output files. Parameters for which the default value is used are not included.
 ```
-
-When executing the previously mentioned command again, the program restores the parameter settings from the files that are found in the specified directory. This allows to omit the respective parameters from the command line. If a parameter is included in both, the loaded file and the command line arguments, the latter takes precedence.
 
 If you want to print all custom parameters that are used by a learning algorithm on the console, you can specify the argument `--print-parameters true`:
 
@@ -69,3 +63,27 @@ If you want to print all custom parameters that are used by a learning algorithm
        --heuristic precision
    ```
 ````
+
+Once parameters have been saved to a directory, they can be loaded in subsequent experiments by specifying the command line argument `--parameter-load-dir`. This allows to omit the respective parameters from the command line. If a parameter is included in both, the loaded file and the command line arguments, the latter takes precedence.
+
+````{tab} BOOMER
+   ```text
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --parameter-load-dir /path/to/parameters \
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --parameter-load-dir /path/to/parameters \
+   ```
+````
+
+```{note}
+The paths of the directories that are specified via the arguments `--parameter-save-dir` and `--parameter-load-dir` can be either absolute or relative to the working directory.
+```
