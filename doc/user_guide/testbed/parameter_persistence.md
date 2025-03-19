@@ -8,7 +8,7 @@ This requires to specify a directory via the command line argument `--parameter-
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --parameter-save-dir /path/to/parameters \
@@ -18,7 +18,7 @@ This requires to specify a directory via the command line argument `--parameter-
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --parameter-save-dir /path/to/parameters \
@@ -46,7 +46,7 @@ If you want to print all custom parameters that are used by a learning algorithm
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-parameters true \
@@ -56,7 +56,7 @@ If you want to print all custom parameters that are used by a learning algorithm
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-parameters true \
@@ -68,7 +68,7 @@ Once parameters have been saved to a directory, they can be loaded in subsequent
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --parameter-load-dir /path/to/parameters \
@@ -77,7 +77,7 @@ Once parameters have been saved to a directory, they can be loaded in subsequent
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --parameter-load-dir /path/to/parameters \
