@@ -6,7 +6,7 @@ Provides utilities that ease the configuration of rule learning algorithms.
 import logging as log
 
 from abc import ABC, abstractmethod
-from argparse import ArgumentError, ArgumentParser
+from argparse import ArgumentParser
 from typing import Optional, Set
 
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, EqualFrequencyFeatureBinningMixin, \
@@ -817,19 +817,3 @@ def configure_rule_learner(learner, config, parameters: Set[Parameter]):
 
             if value is not None:
                 parameter.configure(config=config, value=value)
-
-
-def configure_argument_parser(parser: ArgumentParser, config_type: type, parameters: Set[Parameter]):
-    """
-    Configure an `ArgumentParser` by taking into account a given set of parameters.
-
-    :param parser:      The `ArgumentParser` to be configured
-    :param config_type: The type of the configuration that should support the parameters
-    :param parameters:  A set that contains the parameters to be taken into account
-    """
-    for parameter in parameters:
-        try:
-            parameter.add_to_argument_parser(parser, config_type)
-        except ArgumentError:
-            # Argument has already been added, that's okay
-            pass
