@@ -8,7 +8,7 @@ from typing import Any, Optional
 from mlrl.common.learners import ClassificationRuleLearner, RegressionRuleLearner, configure_rule_learner
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
-from mlrl.boosting.config import BOOMER_CLASSIFIER_PARAMETERS, BOOMER_REGRESSOR_PARAMETERS
+from mlrl.boosting.config.parameters import BOOMER_CLASSIFIER_PARAMETERS, BOOMER_REGRESSOR_PARAMETERS
 from mlrl.boosting.cython.learner_boomer import BoomerClassifier as BoomerClassifierWrapper, BoomerClassifierConfig, \
     BoomerRegressor as BoomerRegressorWrapper, BoomerRegressorConfig
 
