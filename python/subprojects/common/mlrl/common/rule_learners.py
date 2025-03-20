@@ -14,7 +14,6 @@ import numpy as np
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator
 from sklearn.utils.validation import check_array, validate_data
 
-from mlrl.common.arrays import SparseFormat, enforce_2d, enforce_dense, is_sparse, is_sparse_and_memory_efficient
 from mlrl.common.cython.example_weights import EqualExampleWeights, ExampleWeights, RealValuedExampleWeights
 from mlrl.common.cython.feature_info import EqualFeatureInfo, FeatureInfo, MixedFeatureInfo
 from mlrl.common.cython.feature_matrix import CContiguousFeatureMatrix, ColumnWiseFeatureMatrix, CscFeatureMatrix, \
@@ -27,7 +26,8 @@ from mlrl.common.cython.probability_calibration import JointProbabilityCalibrati
 from mlrl.common.cython.regression_matrix import CContiguousRegressionMatrix, CsrRegressionMatrix
 from mlrl.common.cython.rule_model import RuleModel
 from mlrl.common.cython.validation import assert_greater_or_equal
-from mlrl.common.data_types import Float32, Uint8, Uint32
+from mlrl.common.data.arrays import SparseFormat, enforce_2d, enforce_dense, is_sparse, is_sparse_and_memory_efficient
+from mlrl.common.data.types import Float32, Uint8, Uint32
 from mlrl.common.mixins import ClassifierMixin, IncrementalClassifierMixin, IncrementalPredictor, \
     IncrementalRegressorMixin, NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, RegressorMixin
 from mlrl.common.util.format import format_enum_values

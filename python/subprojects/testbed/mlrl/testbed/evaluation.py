@@ -12,8 +12,8 @@ import numpy as np
 from sklearn import metrics
 from sklearn.utils.multiclass import is_multilabel
 
-from mlrl.common.arrays import enforce_dense
-from mlrl.common.data_types import Float32, Uint8
+from mlrl.common.data.arrays import enforce_dense
+from mlrl.common.data.types import Float32, Uint8
 from mlrl.common.options import Options
 
 from mlrl.testbed.data import MetaData
