@@ -7,7 +7,7 @@ import logging as log
 import sys
 
 from abc import ABC, abstractmethod
-from argparse import ArgumentParser
+from argparse import ArgumentError, ArgumentParser
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, Iterable, List, Optional, Set
@@ -15,7 +15,7 @@ from typing import Dict, Iterable, List, Optional, Set
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
     RegressorMixin as SkLearnRegressorMixin
 
-from mlrl.common.config import NONE, Parameter, configure_argument_parser
+from mlrl.common.config import NONE, Parameter
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 from mlrl.common.learners import RuleLearner, SparsePolicy
 from mlrl.common.options import BooleanOption, parse_param_and_options
@@ -1158,6 +1158,22 @@ class RuleLearnerRunnable(LearnerRunnable):
         raise RuntimeError('The machine learning algorithm "' + self.learner_name + '" does not support '
                            + problem_type.value + ' problems')
 
+    @staticmethod
+    def __configure_argument_parser(parser: ArgumentParser, config_type: type, parameters: Set[Parameter]):
+        """
+        Configure an `ArgumentParser` by taking into account a given set of parameters.
+
+        :param parser:      The `ArgumentParser` to be configured
+        :param config_type: The type of the configuration that should support the parameters
+        :param parameters:  A set that contains the parameters to be taken into account
+        """
+        for parameter in parameters:
+            try:
+                parameter.add_to_argument_parser(parser, config_type)
+            except ArgumentError:
+                # Argument has already been added, that's okay
+                pass
+
     def configure_problem_specific_arguments(self, parser: ArgumentParser, problem_type: ProblemType):
         super().configure_problem_specific_arguments(parser, problem_type)
         parser.add_argument(self.PARAM_INCREMENTAL_EVALUATION,
@@ -1238,7 +1254,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                             help='The format to be used for the representation of predictions. Must be one of '
                             + format_enum_values(SparsePolicy) + '.')
         config_type, parameters = self.__create_config_type_and_parameters(problem_type)
-        configure_argument_parser(parser, config_type, parameters)
+        self.__configure_argument_parser(parser, config_type, parameters)
 
     def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
                            data_splitter: DataSplitter, pre_training_output_writers: List[OutputWriter],
