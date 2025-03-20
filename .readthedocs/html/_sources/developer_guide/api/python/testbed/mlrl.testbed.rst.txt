@@ -19,13 +19,13 @@ Submodules
    mlrl.testbed.evaluation
    mlrl.testbed.experiments
    mlrl.testbed.format
-   mlrl.testbed.info
    mlrl.testbed.io
    mlrl.testbed.label_vectors
    mlrl.testbed.main
    mlrl.testbed.model_characteristics
    mlrl.testbed.models
    mlrl.testbed.output_writer
+   mlrl.testbed.package_info
    mlrl.testbed.parameters
    mlrl.testbed.persistence
    mlrl.testbed.prediction_characteristics

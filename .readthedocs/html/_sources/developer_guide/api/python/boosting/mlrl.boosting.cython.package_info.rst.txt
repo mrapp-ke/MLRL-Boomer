@@ -1,0 +1,7 @@
+mlrl.boosting.cython.package\_info module
+=========================================
+
+.. automodule:: mlrl.boosting.cython.package_info
+   :members:
+   :show-inheritance:
+   :undoc-members:

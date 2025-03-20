@@ -21,6 +21,6 @@ Submodules
    :maxdepth: 4
 
    mlrl.seco.config
-   mlrl.seco.info
+   mlrl.seco.package_info
    mlrl.seco.runnables
    mlrl.seco.seco_learners

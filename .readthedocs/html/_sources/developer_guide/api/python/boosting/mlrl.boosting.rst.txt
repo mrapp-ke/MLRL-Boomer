@@ -22,5 +22,5 @@ Submodules
 
    mlrl.boosting.boosting_learners
    mlrl.boosting.config
-   mlrl.boosting.info
+   mlrl.boosting.package_info
    mlrl.boosting.runnables
