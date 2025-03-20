@@ -6,7 +6,7 @@ Provides a data structure that allows to store and parse options that are provid
 from enum import Enum
 from typing import Dict, Set, Tuple
 
-from mlrl.common.format import format_dict_keys, format_enum_values, format_set
+from mlrl.common.util.format import format_dict_keys, format_enum_values, format_set
 
 
 class BooleanOption(Enum):

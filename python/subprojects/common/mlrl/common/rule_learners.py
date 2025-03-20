@@ -28,9 +28,9 @@ from mlrl.common.cython.regression_matrix import CContiguousRegressionMatrix, Cs
 from mlrl.common.cython.rule_model import RuleModel
 from mlrl.common.cython.validation import assert_greater_or_equal
 from mlrl.common.data_types import Float32, Uint8, Uint32
-from mlrl.common.format import format_enum_values
 from mlrl.common.mixins import ClassifierMixin, IncrementalClassifierMixin, IncrementalPredictor, \
     IncrementalRegressorMixin, NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, RegressorMixin
+from mlrl.common.util.format import format_enum_values
 
 
 class SparsePolicy(Enum):

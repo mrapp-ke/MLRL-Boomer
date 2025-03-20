@@ -12,7 +12,7 @@ from scipy.sparse import issparse, isspmatrix_coo, isspmatrix_csc, isspmatrix_cs
     sparray
 
 from mlrl.common.data_types import Uint32
-from mlrl.common.format import format_iterable
+from mlrl.common.util.format import format_iterable
 
 
 class SparseFormat(Enum):
