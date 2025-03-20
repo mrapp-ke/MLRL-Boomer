@@ -6,8 +6,7 @@ classification rules.
 """
 from typing import Any, Optional
 
-from mlrl.common.config import configure_rule_learner
-from mlrl.common.learners import ClassificationRuleLearner
+from mlrl.common.learners import ClassificationRuleLearner, configure_rule_learner
 from mlrl.common.mixins import ClassifierMixin
 
 from mlrl.seco.config import SECO_CLASSIFIER_PARAMETERS

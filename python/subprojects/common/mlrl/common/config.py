@@ -799,21 +799,3 @@ RULE_LEARNER_PARAMETERS = {
     TimeStoppingCriterionParameter(),
     SequentialPostOptimizationParameter()
 }
-
-
-def configure_rule_learner(learner, config, parameters: Set[Parameter]):
-    """
-    Configures a rule learner by taking into account a given set of parameters.
-
-    :param learner:     The rule learner to be configured
-    :param config:      The configuration to be modified
-    :param parameters:  A set that contains the parameters to be taken into account
-    """
-    for parameter in parameters:
-        parameter_name = parameter.name
-
-        if hasattr(learner, parameter_name):
-            value = getattr(learner, parameter_name)
-
-            if value is not None:
-                parameter.configure(config=config, value=value)

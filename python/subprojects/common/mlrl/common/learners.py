@@ -7,18 +7,20 @@ import logging as log
 
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Any, Optional
+from typing import Any, Optional, Set
 
 import numpy as np
 
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator
 from sklearn.utils.validation import check_array, validate_data
 
+from mlrl.common.config import Parameter
 from mlrl.common.cython.example_weights import EqualExampleWeights, ExampleWeights, RealValuedExampleWeights
 from mlrl.common.cython.feature_info import EqualFeatureInfo, FeatureInfo, MixedFeatureInfo
 from mlrl.common.cython.feature_matrix import CContiguousFeatureMatrix, ColumnWiseFeatureMatrix, CscFeatureMatrix, \
     CsrFeatureMatrix, FortranContiguousFeatureMatrix, RowWiseFeatureMatrix
 from mlrl.common.cython.label_matrix import CContiguousLabelMatrix, CsrLabelMatrix
+from mlrl.common.cython.learner import RuleLearnerConfig
 from mlrl.common.cython.learner_classification import ClassificationRuleLearner as RuleLearnerWrapper
 from mlrl.common.cython.output_space_info import OutputSpaceInfo
 from mlrl.common.cython.probability_calibration import JointProbabilityCalibrationModel, \
@@ -673,3 +675,21 @@ class RegressionRuleLearner(RuleLearner, RegressorMixin, IncrementalRegressorMix
 
         log.debug('A dense matrix is used to store the regression scores of the training examples')
         return CContiguousRegressionMatrix(y)
+
+
+def configure_rule_learner(learner: RuleLearner, config: RuleLearnerConfig, parameters: Set[Parameter]):
+    """
+    Configures a rule learner by taking into account a given set of parameters.
+
+    :param learner:     The rule learner to be configured
+    :param config:      The configuration to be modified
+    :param parameters:  A set that contains the parameters to be taken into account
+    """
+    for parameter in parameters:
+        parameter_name = parameter.name
+
+        if hasattr(learner, parameter_name):
+            value = getattr(learner, parameter_name)
+
+            if value is not None:
+                parameter.configure(config=config, value=value)
