@@ -8,8 +8,8 @@ from typing import Dict, List, Optional
 
 import numpy as np
 
-from mlrl.common.arrays import is_sparse
-from mlrl.common.options import Options
+from mlrl.common.config.options import Options
+from mlrl.common.data.arrays import is_sparse
 
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
 from mlrl.testbed.output_writer import Formattable, Tabularizable
