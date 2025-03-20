@@ -1,7 +1,0 @@
-mlrl.boosting.info module
-=========================
-
-.. automodule:: mlrl.boosting.info
-   :members:
-   :show-inheritance:
-   :undoc-members:

@@ -1,0 +1,7 @@
+mlrl.testbed.package\_info module
+=================================
+
+.. automodule:: mlrl.testbed.package_info
+   :members:
+   :show-inheritance:
+   :undoc-members:

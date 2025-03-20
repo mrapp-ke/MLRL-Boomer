@@ -8,8 +8,8 @@ For those who want to use the algorithms provided by this project in their own P
 ---
 maxdepth: 1
 ---
-Package mlrl-common <common/mlrl.common.rst>
-Package mlrl-testbed <testbed/mlrl.testbed.rst>
-Package mlrl-seco <seco/mlrl.seco.rst>
 Package mlrl-boosting <boosting/mlrl.boosting.rst>
+Package mlrl-seco <seco/mlrl.seco.rst>
+Package mlrl-testbed <testbed/mlrl.testbed.rst>
+Package mlrl-common <common/mlrl.common.rst>
 ```

@@ -1,0 +1,5 @@
+File library_info.hpp
+=====================
+
+.. doxygenfile:: library_info.hpp
+   :project: seco

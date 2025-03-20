@@ -1,7 +1,7 @@
-mlrl.common.cython.info module
+mlrl.seco.package\_info module
 ==============================
 
-.. automodule:: mlrl.common.cython.info
+.. automodule:: mlrl.seco.package_info
    :members:
    :show-inheritance:
    :undoc-members:

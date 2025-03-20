@@ -1,7 +1,7 @@
-mlrl.boosting.cython.info module
+mlrl.common.package\_info module
 ================================
 
-.. automodule:: mlrl.boosting.cython.info
+.. automodule:: mlrl.common.package_info
    :members:
    :show-inheritance:
    :undoc-members:
