@@ -14,7 +14,7 @@ import numpy as np
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator
 from sklearn.utils.validation import check_array, validate_data
 
-from mlrl.common.config import Parameter
+from mlrl.common.config.parameters import Parameter
 from mlrl.common.cython.example_weights import EqualExampleWeights, ExampleWeights, RealValuedExampleWeights
 from mlrl.common.cython.feature_info import EqualFeatureInfo, FeatureInfo, MixedFeatureInfo
 from mlrl.common.cython.feature_matrix import CContiguousFeatureMatrix, ColumnWiseFeatureMatrix, CscFeatureMatrix, \

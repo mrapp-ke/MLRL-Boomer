@@ -12,7 +12,7 @@ import numpy as np
 
 from tabulate import tabulate
 
-from mlrl.common.options import Options
+from mlrl.common.config.options import Options
 
 OPTION_DECIMALS = 'decimals'
 

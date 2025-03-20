@@ -7,7 +7,7 @@ outputs, e.g., to the console or to a file.
 from functools import cached_property
 from typing import Any, Dict, List, Optional
 
-from mlrl.common.options import Options
+from mlrl.common.config.options import Options
 
 from mlrl.testbed.characteristics import LABEL_CHARACTERISTICS, OUTPUT_CHARACTERISTICS, Characteristic, \
     OutputCharacteristics, density
