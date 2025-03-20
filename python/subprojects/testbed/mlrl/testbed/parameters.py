@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from os import path
 from typing import Any, Dict, List, Optional
 
-from mlrl.common.options import Options
+from mlrl.common.config.options import Options
 
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
