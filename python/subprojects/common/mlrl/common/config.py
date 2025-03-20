@@ -833,24 +833,3 @@ def configure_argument_parser(parser: ArgumentParser, config_type: type, paramet
         except ArgumentError:
             # Argument has already been added, that's okay
             pass
-
-
-def create_kwargs_from_parameters(args, parameters: Set[Parameter]):
-    """
-    Creates and returns a dictionary that contains all parameter names and corresponding values that have been specified
-    via an `ArgumentParser`.
-
-    :param args:        The arguments that have been specified via an `ArgumentParser`
-    :param parameters:  A set that contains the parameters to be taken into account
-    :return:            A dictionary that contains the parameter names and corresponding values
-    """
-    kwargs = {}
-    args_dict = vars(args)
-
-    for parameter in parameters:
-        parameter_name = parameter.name
-
-        if parameter_name in args_dict:
-            kwargs[parameter_name] = args_dict[parameter_name]
-
-    return kwargs
