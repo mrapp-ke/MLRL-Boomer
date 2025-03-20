@@ -9,7 +9,7 @@ from typing import Any, Optional
 from mlrl.common.learners import ClassificationRuleLearner, configure_rule_learner
 from mlrl.common.mixins import ClassifierMixin
 
-from mlrl.seco.config import SECO_CLASSIFIER_PARAMETERS
+from mlrl.seco.config.parameters import SECO_CLASSIFIER_PARAMETERS
 from mlrl.seco.cython.learner_seco import SeCoClassifier as SeCoWrapper, SeCoClassifierConfig
 
 
