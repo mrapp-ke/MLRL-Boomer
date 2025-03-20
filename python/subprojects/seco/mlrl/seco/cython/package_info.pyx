@@ -3,7 +3,7 @@
 """
 from libcpp.utility cimport move
 
-from mlrl.common.cython.info cimport CppLibraryInfo
+from mlrl.common.cython.package_info cimport CppLibraryInfo
 
 
 def get_cpp_library_info() -> CppLibraryInfo:
