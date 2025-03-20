@@ -6,8 +6,8 @@ Provides scikit-learn implementations of boosting algorithms.
 from typing import Any, Optional
 
 from mlrl.common.config import configure_rule_learner
+from mlrl.common.learners import ClassificationRuleLearner, RegressionRuleLearner
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
-from mlrl.common.rule_learners import ClassificationRuleLearner, RegressionRuleLearner
 
 from mlrl.boosting.config import BOOMER_CLASSIFIER_PARAMETERS, BOOMER_REGRESSOR_PARAMETERS
 from mlrl.boosting.cython.learner_boomer import BoomerClassifier as BoomerClassifierWrapper, BoomerClassifierConfig, \

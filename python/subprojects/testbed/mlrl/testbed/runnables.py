@@ -17,9 +17,9 @@ from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin 
 
 from mlrl.common.config import NONE, Parameter, configure_argument_parser, create_kwargs_from_parameters
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
+from mlrl.common.learners import RuleLearner, SparsePolicy
 from mlrl.common.options import BooleanOption, parse_param_and_options
 from mlrl.common.package_info import PythonPackageInfo
-from mlrl.common.rule_learners import RuleLearner, SparsePolicy
 from mlrl.common.util.format import format_dict_keys, format_enum_values, format_iterable
 
 from mlrl.testbed.characteristics import OPTION_DISTINCT_LABEL_VECTORS, OPTION_LABEL_CARDINALITY, \
