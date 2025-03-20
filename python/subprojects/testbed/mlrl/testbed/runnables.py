@@ -18,8 +18,8 @@ from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin 
 from mlrl.common.config import NONE, Parameter, configure_argument_parser, create_kwargs_from_parameters
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 from mlrl.common.format import format_dict_keys, format_enum_values, format_iterable
-from mlrl.common.info import PythonPackageInfo
 from mlrl.common.options import BooleanOption, parse_param_and_options
+from mlrl.common.package_info import PythonPackageInfo
 from mlrl.common.rule_learners import RuleLearner, SparsePolicy
 
 from mlrl.testbed.characteristics import OPTION_DISTINCT_LABEL_VECTORS, OPTION_LABEL_CARDINALITY, \
@@ -38,7 +38,6 @@ from mlrl.testbed.evaluation import OPTION_ACCURACY, OPTION_COVERAGE_ERROR, OPTI
     BinaryEvaluationWriter, EvaluationWriter, RankingEvaluationWriter, RegressionEvaluationWriter
 from mlrl.testbed.experiments import Evaluation, Experiment, GlobalEvaluation, IncrementalEvaluation
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
-from mlrl.testbed.info import get_package_info as get_testbed_package_info
 from mlrl.testbed.io import clear_directory
 from mlrl.testbed.label_vectors import OPTION_SPARSE, LabelVectorSetWriter, LabelVectorWriter
 from mlrl.testbed.model_characteristics import ModelCharacteristicsWriter, RuleModelCharacteristicsWriter
@@ -46,6 +45,7 @@ from mlrl.testbed.models import OPTION_DECIMALS_BODY, OPTION_DECIMALS_HEAD, OPTI
     OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_HEADS, OPTION_PRINT_NOMINAL_VALUES, OPTION_PRINT_OUTPUT_NAMES, \
     ModelWriter, RuleModelWriter
 from mlrl.testbed.output_writer import OutputWriter
+from mlrl.testbed.package_info import get_package_info as get_testbed_package_info
 from mlrl.testbed.parameters import CsvParameterLoader, ParameterLoader, ParameterWriter
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsWriter
