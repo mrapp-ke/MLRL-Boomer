@@ -5,8 +5,7 @@ Provides scikit-learn implementations of boosting algorithms.
 """
 from typing import Any, Optional
 
-from mlrl.common.config import configure_rule_learner
-from mlrl.common.learners import ClassificationRuleLearner, RegressionRuleLearner
+from mlrl.common.learners import ClassificationRuleLearner, RegressionRuleLearner, configure_rule_learner
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
 from mlrl.boosting.config import BOOMER_CLASSIFIER_PARAMETERS, BOOMER_REGRESSOR_PARAMETERS
