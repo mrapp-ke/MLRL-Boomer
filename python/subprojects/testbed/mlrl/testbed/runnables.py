@@ -15,7 +15,7 @@ from typing import Dict, Iterable, List, Optional, Set
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
     RegressorMixin as SkLearnRegressorMixin
 
-from mlrl.common.config import NONE, Parameter, configure_argument_parser, create_kwargs_from_parameters
+from mlrl.common.config import NONE, Parameter, configure_argument_parser
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 from mlrl.common.learners import RuleLearner, SparsePolicy
 from mlrl.common.options import BooleanOption, parse_param_and_options
@@ -1281,7 +1281,15 @@ class RuleLearnerRunnable(LearnerRunnable):
 
     @staticmethod
     def __create_kwargs_from_parameters(parameters: Set[Parameter], args):
-        kwargs = create_kwargs_from_parameters(args, parameters)
+        kwargs = {}
+        args_dict = vars(args)
+
+        for parameter in parameters:
+            parameter_name = parameter.name
+
+            if parameter_name in args_dict:
+                kwargs[parameter_name] = args_dict[parameter_name]
+
         kwargs['feature_format'] = args.feature_format
         kwargs['output_format'] = args.output_format
         kwargs['prediction_format'] = args.prediction_format
