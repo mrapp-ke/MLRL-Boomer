@@ -1,7 +1,7 @@
-mlrl.common.rule\_learners module
+mlrl.common.config.options module
 =================================
 
-.. automodule:: mlrl.common.rule_learners
+.. automodule:: mlrl.common.config.options
    :members:
    :show-inheritance:
    :undoc-members:

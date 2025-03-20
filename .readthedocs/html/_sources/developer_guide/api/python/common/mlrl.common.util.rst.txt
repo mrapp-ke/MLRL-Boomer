@@ -1,0 +1,15 @@
+mlrl.common.util package
+========================
+
+.. automodule:: mlrl.common.util
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.common.util.format

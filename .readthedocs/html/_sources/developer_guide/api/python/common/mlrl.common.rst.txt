@@ -12,7 +12,10 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   mlrl.common.config
    mlrl.common.cython
+   mlrl.common.data
+   mlrl.common.util
 
 Submodules
 ----------
@@ -20,11 +23,6 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   mlrl.common.arrays
-   mlrl.common.config
-   mlrl.common.data_types
-   mlrl.common.format
+   mlrl.common.learners
    mlrl.common.mixins
-   mlrl.common.options
    mlrl.common.package_info
-   mlrl.common.rule_learners

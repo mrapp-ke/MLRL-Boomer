@@ -1,0 +1,15 @@
+mlrl.boosting.testbed package
+=============================
+
+.. automodule:: mlrl.boosting.testbed
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.boosting.testbed.runnables

@@ -1,7 +1,7 @@
-mlrl.common.data\_types module
+mlrl.common.util.format module
 ==============================
 
-.. automodule:: mlrl.common.data_types
+.. automodule:: mlrl.common.util.format
    :members:
    :show-inheritance:
    :undoc-members:

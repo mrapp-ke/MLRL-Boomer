@@ -1,0 +1,7 @@
+mlrl.common.data.types module
+=============================
+
+.. automodule:: mlrl.common.data.types
+   :members:
+   :show-inheritance:
+   :undoc-members:
