@@ -5,7 +5,7 @@ Provides utility classes for dealing with different types of machine learning pr
 """
 from enum import Enum
 
-from mlrl.common.format import format_enum_values
+from mlrl.common.util.format import format_enum_values
 
 
 class ProblemType(Enum):
