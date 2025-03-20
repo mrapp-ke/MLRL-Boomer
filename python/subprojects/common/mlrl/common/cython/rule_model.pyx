@@ -8,7 +8,7 @@ from abc import abstractmethod
 
 import numpy as np
 
-from mlrl.common.data_types import Float32, Float64, Uint8
+from mlrl.common.data.types import Float32, Float64, Uint8
 
 SERIALIZATION_VERSION = 4
 

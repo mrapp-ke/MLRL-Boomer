@@ -6,9 +6,10 @@ Provides utilities that ease the configuration of rule learning algorithms.
 import logging as log
 
 from abc import ABC, abstractmethod
-from argparse import ArgumentError, ArgumentParser
+from argparse import ArgumentParser
 from typing import Optional, Set
 
+from mlrl.common.config.options import BooleanOption, Options, parse_param, parse_param_and_options
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, EqualFrequencyFeatureBinningMixin, \
     EqualWidthFeatureBinningMixin, FeatureSamplingWithoutReplacementMixin, GreedyTopDownRuleInductionMixin, \
     InstanceSamplingWithoutReplacementMixin, InstanceSamplingWithReplacementMixin, IrepRulePruningMixin, \
@@ -23,8 +24,7 @@ from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPar
     OutputWiseStratifiedInstanceSamplingMixin
 from mlrl.common.cython.package_info import get_num_cpu_cores, is_multi_threading_support_enabled
 from mlrl.common.cython.stopping_criterion import AggregationFunction
-from mlrl.common.format import format_dict_keys, format_set
-from mlrl.common.options import BooleanOption, Options, parse_param, parse_param_and_options
+from mlrl.common.util.format import format_dict_keys, format_set
 
 AUTOMATIC = 'auto'
 
@@ -274,9 +274,6 @@ class FloatParameter(NumericalParameter, ABC):
 
     def __init__(self, name: str, description: str, mixin: type):
         super().__init__(name=name, description=description, mixin=mixin, numeric_type=float)
-
-    def _cast_value(self, value):
-        return float(value)
 
 
 class RandomStateParameter(IntParameter):
@@ -802,57 +799,3 @@ RULE_LEARNER_PARAMETERS = {
     TimeStoppingCriterionParameter(),
     SequentialPostOptimizationParameter()
 }
-
-
-def configure_rule_learner(learner, config, parameters: Set[Parameter]):
-    """
-    Configures a rule learner by taking into account a given set of parameters.
-
-    :param learner:     The rule learner to be configured
-    :param config:      The configuration to be modified
-    :param parameters:  A set that contains the parameters to be taken into account
-    """
-    for parameter in parameters:
-        parameter_name = parameter.name
-
-        if hasattr(learner, parameter_name):
-            value = getattr(learner, parameter_name)
-
-            if value is not None:
-                parameter.configure(config=config, value=value)
-
-
-def configure_argument_parser(parser: ArgumentParser, config_type: type, parameters: Set[Parameter]):
-    """
-    Configure an `ArgumentParser` by taking into account a given set of parameters.
-
-    :param parser:      The `ArgumentParser` to be configured
-    :param config_type: The type of the configuration that should support the parameters
-    :param parameters:  A set that contains the parameters to be taken into account
-    """
-    for parameter in parameters:
-        try:
-            parameter.add_to_argument_parser(parser, config_type)
-        except ArgumentError:
-            # Argument has already been added, that's okay
-            pass
-
-
-def create_kwargs_from_parameters(args, parameters: Set[Parameter]):
-    """
-    Creates and returns a dictionary that contains all parameter names and corresponding values that have been specified
-    via an `ArgumentParser`.
-
-    :param args:    The arguments that have been specified via an `ArgumentParser`
-    :return:        A dictionary that contains the parameter names and corresponding values
-    """
-    kwargs = {}
-    args_dict = vars(args)
-
-    for parameter in parameters:
-        parameter_name = parameter.name
-
-        if parameter_name in args_dict:
-            kwargs[parameter_name] = args_dict[parameter_name]
-
-    return kwargs
