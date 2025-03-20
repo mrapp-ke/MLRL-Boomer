@@ -6,9 +6,9 @@ dependency.
 """
 from typing import Optional
 
-from mlrl.boosting.boosting_learners import BoomerClassifier, BoomerRegressor
 from mlrl.boosting.config import BOOMER_CLASSIFIER_PARAMETERS, BOOMER_REGRESSOR_PARAMETERS
 from mlrl.boosting.cython.learner_boomer import BoomerClassifierConfig, BoomerRegressorConfig
+from mlrl.boosting.learners import BoomerClassifier, BoomerRegressor
 from mlrl.boosting.package_info import get_package_info
 
 try:

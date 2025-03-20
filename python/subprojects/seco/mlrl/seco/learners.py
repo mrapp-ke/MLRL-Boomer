@@ -7,8 +7,8 @@ classification rules.
 from typing import Any, Optional
 
 from mlrl.common.config import configure_rule_learner
+from mlrl.common.learners import ClassificationRuleLearner
 from mlrl.common.mixins import ClassifierMixin
-from mlrl.common.rule_learners import ClassificationRuleLearner
 
 from mlrl.seco.config import SECO_CLASSIFIER_PARAMETERS
 from mlrl.seco.cython.learner_seco import SeCoClassifier as SeCoWrapper, SeCoClassifierConfig

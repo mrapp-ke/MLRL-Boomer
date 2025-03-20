@@ -2,7 +2,7 @@
 This module provides rule learners that make using of the gradient boosting framework.
 """
 # pylint: disable=import-self
-from mlrl.boosting.boosting_learners import BoomerClassifier
+from mlrl.boosting.learners import BoomerClassifier
 
 try:
     from mlrl.boosting.runnables import BoomerRunnable as Runnable

@@ -12,8 +12,8 @@ from scipy.sparse import lil_array
 
 from mlrl.common.cython.output_space_info import LabelVectorSet, LabelVectorSetVisitor
 from mlrl.common.data.types import Uint8
+from mlrl.common.learners import ClassificationRuleLearner
 from mlrl.common.options import Options
-from mlrl.common.rule_learners import ClassificationRuleLearner
 
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
