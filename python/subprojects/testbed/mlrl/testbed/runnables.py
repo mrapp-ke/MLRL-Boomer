@@ -7,7 +7,7 @@ import logging as log
 import sys
 
 from abc import ABC, abstractmethod
-from argparse import ArgumentParser
+from argparse import ArgumentError, ArgumentParser
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, Iterable, List, Optional, Set
@@ -15,12 +15,12 @@ from typing import Dict, Iterable, List, Optional, Set
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
     RegressorMixin as SkLearnRegressorMixin
 
-from mlrl.common.config import NONE, Parameter, configure_argument_parser, create_kwargs_from_parameters
+from mlrl.common.config.options import BooleanOption, parse_param_and_options
+from mlrl.common.config.parameters import NONE, Parameter
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
-from mlrl.common.format import format_dict_keys, format_enum_values, format_iterable
-from mlrl.common.options import BooleanOption, parse_param_and_options
+from mlrl.common.learners import RuleLearner, SparsePolicy
 from mlrl.common.package_info import PythonPackageInfo
-from mlrl.common.rule_learners import RuleLearner, SparsePolicy
+from mlrl.common.util.format import format_dict_keys, format_enum_values, format_iterable
 
 from mlrl.testbed.characteristics import OPTION_DISTINCT_LABEL_VECTORS, OPTION_LABEL_CARDINALITY, \
     OPTION_LABEL_IMBALANCE_RATIO, OPTION_OUTPUT_DENSITY, OPTION_OUTPUT_SPARSITY, OPTION_OUTPUTS
@@ -1158,6 +1158,22 @@ class RuleLearnerRunnable(LearnerRunnable):
         raise RuntimeError('The machine learning algorithm "' + self.learner_name + '" does not support '
                            + problem_type.value + ' problems')
 
+    @staticmethod
+    def __configure_argument_parser(parser: ArgumentParser, config_type: type, parameters: Set[Parameter]):
+        """
+        Configure an `ArgumentParser` by taking into account a given set of parameters.
+
+        :param parser:      The `ArgumentParser` to be configured
+        :param config_type: The type of the configuration that should support the parameters
+        :param parameters:  A set that contains the parameters to be taken into account
+        """
+        for parameter in parameters:
+            try:
+                parameter.add_to_argument_parser(parser, config_type)
+            except ArgumentError:
+                # Argument has already been added, that's okay
+                pass
+
     def configure_problem_specific_arguments(self, parser: ArgumentParser, problem_type: ProblemType):
         super().configure_problem_specific_arguments(parser, problem_type)
         parser.add_argument(self.PARAM_INCREMENTAL_EVALUATION,
@@ -1238,7 +1254,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                             help='The format to be used for the representation of predictions. Must be one of '
                             + format_enum_values(SparsePolicy) + '.')
         config_type, parameters = self.__create_config_type_and_parameters(problem_type)
-        configure_argument_parser(parser, config_type, parameters)
+        self.__configure_argument_parser(parser, config_type, parameters)
 
     def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
                            data_splitter: DataSplitter, pre_training_output_writers: List[OutputWriter],
@@ -1281,7 +1297,15 @@ class RuleLearnerRunnable(LearnerRunnable):
 
     @staticmethod
     def __create_kwargs_from_parameters(parameters: Set[Parameter], args):
-        kwargs = create_kwargs_from_parameters(args, parameters)
+        kwargs = {}
+        args_dict = vars(args)
+
+        for parameter in parameters:
+            parameter_name = parameter.name
+
+            if parameter_name in args_dict:
+                kwargs[parameter_name] = args_dict[parameter_name]
+
         kwargs['feature_format'] = args.feature_format
         kwargs['output_format'] = args.output_format
         kwargs['prediction_format'] = args.prediction_format

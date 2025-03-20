@@ -6,10 +6,10 @@ installed as an optional dependency.
 """
 from typing import Optional
 
-from mlrl.seco.config import SECO_CLASSIFIER_PARAMETERS
+from mlrl.seco.config.parameters import SECO_CLASSIFIER_PARAMETERS
 from mlrl.seco.cython.learner_seco import SeCoClassifierConfig
+from mlrl.seco.learners import SeCoClassifier
 from mlrl.seco.package_info import get_package_info
-from mlrl.seco.seco_learners import SeCoClassifier
 
 try:
     from mlrl.testbed.runnables import RuleLearnerRunnable, Runnable
