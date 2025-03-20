@@ -275,9 +275,6 @@ class FloatParameter(NumericalParameter, ABC):
     def __init__(self, name: str, description: str, mixin: type):
         super().__init__(name=name, description=description, mixin=mixin, numeric_type=float)
 
-    def _cast_value(self, value):
-        return float(value)
-
 
 class RandomStateParameter(IntParameter):
     """
