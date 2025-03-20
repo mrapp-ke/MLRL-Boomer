@@ -8,7 +8,7 @@ from typing import Set
 
 import pkg_resources
 
-from mlrl.common.cython.info import CppLibraryInfo, get_cpp_library_info
+from mlrl.common.cython.package_info import CppLibraryInfo, get_cpp_library_info
 
 
 @dataclass
@@ -18,7 +18,6 @@ class PythonPackageInfo:
 
     Attributes:
         package_name:       A string that specifies the package name
-        package_version:    A string that specifies the package version
         python_packages:    A set that contains a `PythonPackageInfo` for each Python package used by this package
         cpp_libraries:      A set that contains a `CppLibraryInfo` for each C++ library used by this package
     """
@@ -62,4 +61,4 @@ def get_package_info() -> PythonPackageInfo:
 
     :return: A `PythonPackageInfo` that provides information about the Python package
     """
-    return PythonPackageInfo(package_name='mlrl-common', cpp_libraries=[get_cpp_library_info()])
+    return PythonPackageInfo(package_name='mlrl-common', cpp_libraries={get_cpp_library_info()})

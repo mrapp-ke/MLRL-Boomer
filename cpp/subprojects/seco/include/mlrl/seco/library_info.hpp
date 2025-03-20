@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/info.hpp"
+#include "mlrl/common/library_info.hpp"
 #include "mlrl/seco/util/dll_exports.hpp"
 
 #include <memory>

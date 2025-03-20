@@ -8,7 +8,7 @@ from typing import Optional
 
 from mlrl.seco.config import SECO_CLASSIFIER_PARAMETERS
 from mlrl.seco.cython.learner_seco import SeCoClassifierConfig
-from mlrl.seco.info import get_package_info
+from mlrl.seco.package_info import get_package_info
 from mlrl.seco.seco_learners import SeCoClassifier
 
 try:
