@@ -5,7 +5,7 @@ Provides utility functions for creating textual representations.
 """
 from enum import EnumType as Enum
 from functools import reduce
-from typing import Any, Dict, Iterable, Set
+from typing import Any, Dict, Iterable
 
 
 def format_iterable(objects: Iterable[Any], separator: str = ', ', delimiter: str = '') -> str:
@@ -30,11 +30,11 @@ def format_enum_values(enum: Enum) -> str:
     return format_set({x.value for x in enum})
 
 
-def format_set(objects: Set[Any]) -> str:
+def format_set(objects: Iterable[Any]) -> str:
     """
     Creates and returns a textual representation of the objects in a set.
 
-    :param objects: The set of objects to be formatted
+    :param objects: The iterable of objects to be formatted
     :return:        The textual representation that has been created
     """
     return '{' + format_iterable(objects, delimiter='"') + '}'
