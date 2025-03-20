@@ -177,7 +177,7 @@ def parse_param(parameter_name: str, value: str, allowed_values: Set[str]) -> st
 
     :param parameter_name:  The name of the parameter
     :param value:           The value to be parsed
-    :allowed_values:        A set that contains all valid values
+    :param allowed_values:  A set that contains all valid values
     :return:                The value that has been parsed
     """
     if value in allowed_values:
