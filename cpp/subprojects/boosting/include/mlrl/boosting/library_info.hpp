@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/boosting/util/dll_exports.hpp"
-#include "mlrl/common/info.hpp"
+#include "mlrl/common/library_info.hpp"
 
 #include <memory>
 

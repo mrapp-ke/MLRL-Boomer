@@ -72,14 +72,14 @@ source_files = [
     'src/mlrl/boosting/statistics/statistics_provider_non_decomposable_dense.cpp',
     'src/mlrl/boosting/util/blas.cpp',
     'src/mlrl/boosting/util/lapack.cpp',
-    'src/mlrl/boosting/info.cpp',
     'src/mlrl/boosting/learner_boomer_classifier.cpp',
-    'src/mlrl/boosting/learner_boomer_regressor.cpp'
+    'src/mlrl/boosting/learner_boomer_regressor.cpp',
+    'src/mlrl/boosting/library_info.cpp'
 ]
 
 # Test files
 test_files = [
-    'test/mlrl/boosting/info.cpp'
+    'test/mlrl/boosting/library_info.cpp'
 ]
 
 # Dependencies
