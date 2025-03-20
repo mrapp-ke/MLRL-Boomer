@@ -1,4 +1,4 @@
-#include "mlrl/boosting/info.hpp"
+#include "mlrl/boosting/library_info.hpp"
 
 #include "config.hpp"
 

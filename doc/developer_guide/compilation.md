@@ -389,7 +389,7 @@ If you need to access this information programmatically in your own Python or C+
 
 ````{tab} C++
    ```cpp
-   #include "mlrl/common/info.hpp"
+   #include "mlrl/common/library_info.hpp"
 
    bool multiThreadingSupportEnabled = isMultiThreadingSupportEnabled();
    uint32 numCpuCores = getNumCpuCores();
@@ -423,7 +423,7 @@ Alternatively, this information can be retrieved programmatically via the Python
 
 ````{tab} C++
    ```cpp
-   #include "mlrl/common/info.hpp"
+   #include "mlrl/common/library_info.hpp"
 
    bool gpuSupportEnabled = isGpuSupportEnabled();
    bool gpuAvailable = isGpuAvailable();
