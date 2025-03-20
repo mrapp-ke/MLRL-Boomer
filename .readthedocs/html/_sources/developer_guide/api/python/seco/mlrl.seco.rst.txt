@@ -12,7 +12,9 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   mlrl.seco.config
    mlrl.seco.cython
+   mlrl.seco.testbed
 
 Submodules
 ----------
@@ -20,7 +22,5 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   mlrl.seco.config
+   mlrl.seco.learners
    mlrl.seco.package_info
-   mlrl.seco.runnables
-   mlrl.seco.seco_learners

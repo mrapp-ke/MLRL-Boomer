@@ -12,7 +12,9 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   mlrl.boosting.config
    mlrl.boosting.cython
+   mlrl.boosting.testbed
 
 Submodules
 ----------
@@ -20,7 +22,5 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   mlrl.boosting.boosting_learners
-   mlrl.boosting.config
+   mlrl.boosting.learners
    mlrl.boosting.package_info
-   mlrl.boosting.runnables

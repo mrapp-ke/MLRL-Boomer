@@ -1,0 +1,16 @@
+mlrl.common.data package
+========================
+
+.. automodule:: mlrl.common.data
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.common.data.arrays
+   mlrl.common.data.types

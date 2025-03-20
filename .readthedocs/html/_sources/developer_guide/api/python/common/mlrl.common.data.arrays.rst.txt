@@ -1,7 +1,7 @@
-mlrl.boosting.runnables module
+mlrl.common.data.arrays module
 ==============================
 
-.. automodule:: mlrl.boosting.runnables
+.. automodule:: mlrl.common.data.arrays
    :members:
    :show-inheritance:
    :undoc-members:

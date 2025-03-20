@@ -1,7 +1,7 @@
-mlrl.common.format module
+mlrl.seco.learners module
 =========================
 
-.. automodule:: mlrl.common.format
+.. automodule:: mlrl.seco.learners
    :members:
    :show-inheritance:
    :undoc-members:

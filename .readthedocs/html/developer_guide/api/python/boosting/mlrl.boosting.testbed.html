@@ -3,16 +3,16 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta property="og:title" content="mlrl.seco.seco_learners module" />
+<meta property="og:title" content="mlrl.boosting.testbed package" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="developer_guide/api/python/seco/mlrl.seco.seco_learners.html" />
+<meta property="og:url" content="developer_guide/api/python/boosting/mlrl.boosting.testbed.html" />
 <meta property="og:site_name" content="BOOMER" />
-<meta property="og:description" content="Author: Michael Rapp ( michael.rapp.ml@gmail.com) Provides a scikit-learn implementation of a Separate-and-Conquer (SeCo) algorithm for learning multi-label classification rules." />
-<meta name="description" content="Author: Michael Rapp ( michael.rapp.ml@gmail.com) Provides a scikit-learn implementation of a Separate-and-Conquer (SeCo) algorithm for learning multi-label classification rules." />
-    <link href="../../../../_static/favicon.svg" rel="icon" type="image/svg+xml"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" /><link rel="next" title="mlrl.testbed package" href="../testbed/mlrl.testbed.html" /><link rel="prev" title="mlrl.seco.runnables module" href="mlrl.seco.runnables.html" />
+<meta property="og:description" content="Submodules: mlrl.boosting.testbed.runnables module- BoomerRunnable- BoomerRunnable.get_program_info()..." />
+<meta name="description" content="Submodules: mlrl.boosting.testbed.runnables module- BoomerRunnable- BoomerRunnable.get_program_info()..." />
+    <link href="../../../../_static/favicon.svg" rel="icon" type="image/svg+xml"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" /><link rel="next" title="mlrl.boosting.testbed.runnables module" href="mlrl.boosting.testbed.runnables.html" /><link rel="prev" title="mlrl.boosting.cython.regularization module" href="mlrl.boosting.cython.regularization.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>mlrl.seco.seco_learners module - BOOMER 1.0.0.dev82</title>
+        <title>mlrl.boosting.testbed package - BOOMER 1.0.0.dev83</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=4c969af8" />
@@ -174,7 +174,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">BOOMER 1.0.0.dev82</div></a>
+      <a href="../../../../index.html"><div class="brand">BOOMER 1.0.0.dev83</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -198,7 +198,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
   
-  <span class="sidebar-brand-text">BOOMER 1.0.0.dev82</span>
+  <span class="sidebar-brand-text">BOOMER 1.0.0.dev83</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -242,69 +242,61 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../continuous_integration.html">Continuous Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../coding_standards.html">Coding Standards</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../index.html">Python API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Python API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 has-children"><a class="reference internal" href="../boosting/mlrl.boosting.html">Package mlrl-boosting</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Package mlrl-boosting</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../boosting/mlrl.boosting.cython.html">mlrl.boosting.cython package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of mlrl.boosting.cython package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../boosting/mlrl.boosting.cython.head_type.html">mlrl.boosting.cython.head_type module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../boosting/mlrl.boosting.cython.label_binning.html">mlrl.boosting.cython.label_binning module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../boosting/mlrl.boosting.cython.learner.html">mlrl.boosting.cython.learner module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../boosting/mlrl.boosting.cython.learner_boomer.html">mlrl.boosting.cython.learner_boomer module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../boosting/mlrl.boosting.cython.learner_classification.html">mlrl.boosting.cython.learner_classification module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../boosting/mlrl.boosting.cython.package_info.html">mlrl.boosting.cython.package_info module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../boosting/mlrl.boosting.cython.post_processor.html">mlrl.boosting.cython.post_processor module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../boosting/mlrl.boosting.cython.prediction.html">mlrl.boosting.cython.prediction module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../boosting/mlrl.boosting.cython.probability_calibration.html">mlrl.boosting.cython.probability_calibration module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../boosting/mlrl.boosting.cython.regularization.html">mlrl.boosting.cython.regularization module</a></li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="mlrl.boosting.html">Package mlrl-boosting</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Package mlrl-boosting</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="mlrl.boosting.config.html">mlrl.boosting.config package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of mlrl.boosting.config package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="mlrl.boosting.config.parameters.html">mlrl.boosting.config.parameters module</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../boosting/mlrl.boosting.boosting_learners.html">mlrl.boosting.boosting_learners module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../boosting/mlrl.boosting.config.html">mlrl.boosting.config module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../boosting/mlrl.boosting.package_info.html">mlrl.boosting.package_info module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../boosting/mlrl.boosting.runnables.html">mlrl.boosting.runnables module</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mlrl.boosting.cython.html">mlrl.boosting.cython package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of mlrl.boosting.cython package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="mlrl.boosting.cython.head_type.html">mlrl.boosting.cython.head_type module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mlrl.boosting.cython.label_binning.html">mlrl.boosting.cython.label_binning module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mlrl.boosting.cython.learner.html">mlrl.boosting.cython.learner module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mlrl.boosting.cython.learner_boomer.html">mlrl.boosting.cython.learner_boomer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mlrl.boosting.cython.learner_classification.html">mlrl.boosting.cython.learner_classification module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mlrl.boosting.cython.package_info.html">mlrl.boosting.cython.package_info module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mlrl.boosting.cython.post_processor.html">mlrl.boosting.cython.post_processor module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mlrl.boosting.cython.prediction.html">mlrl.boosting.cython.prediction module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mlrl.boosting.cython.probability_calibration.html">mlrl.boosting.cython.probability_calibration module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mlrl.boosting.cython.regularization.html">mlrl.boosting.cython.regularization module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 current has-children"><a class="reference internal" href="mlrl.seco.html">Package mlrl-seco</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Package mlrl-seco</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l3 has-children"><a class="reference internal" href="mlrl.seco.cython.html">mlrl.seco.cython package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of mlrl.seco.cython package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="mlrl.seco.cython.heuristic.html">mlrl.seco.cython.heuristic module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mlrl.seco.cython.learner.html">mlrl.seco.cython.learner module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mlrl.seco.cython.learner_seco.html">mlrl.seco.cython.learner_seco module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mlrl.seco.cython.lift_function.html">mlrl.seco.cython.lift_function module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mlrl.seco.cython.package_info.html">mlrl.seco.cython.package_info module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mlrl.seco.cython.stopping_criterion.html">mlrl.seco.cython.stopping_criterion module</a></li>
+<li class="toctree-l3 current has-children current-page"><a class="current reference internal" href="#">mlrl.boosting.testbed package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of mlrl.boosting.testbed package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="mlrl.boosting.testbed.runnables.html">mlrl.boosting.testbed.runnables module</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="mlrl.seco.config.html">mlrl.seco.config module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mlrl.seco.package_info.html">mlrl.seco.package_info module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mlrl.seco.runnables.html">mlrl.seco.runnables module</a></li>
-<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">mlrl.seco.seco_learners module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.boosting.learners.html">mlrl.boosting.learners module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.boosting.package_info.html">mlrl.boosting.package_info module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../testbed/mlrl.testbed.html">Package mlrl-testbed</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Package mlrl-testbed</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.characteristics.html">mlrl.testbed.characteristics module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.data.html">mlrl.testbed.data module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.data_characteristics.html">mlrl.testbed.data_characteristics module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.data_splitting.html">mlrl.testbed.data_splitting module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.evaluation.html">mlrl.testbed.evaluation module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.experiments.html">mlrl.testbed.experiments module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.format.html">mlrl.testbed.format module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.io.html">mlrl.testbed.io module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.label_vectors.html">mlrl.testbed.label_vectors module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.main.html">mlrl.testbed.main module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.model_characteristics.html">mlrl.testbed.model_characteristics module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.models.html">mlrl.testbed.models module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.output_writer.html">mlrl.testbed.output_writer module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.package_info.html">mlrl.testbed.package_info module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.parameters.html">mlrl.testbed.parameters module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.persistence.html">mlrl.testbed.persistence module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.prediction_characteristics.html">mlrl.testbed.prediction_characteristics module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.prediction_scope.html">mlrl.testbed.prediction_scope module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.predictions.html">mlrl.testbed.predictions module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.probability_calibration.html">mlrl.testbed.probability_calibration module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.problem_type.html">mlrl.testbed.problem_type module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.runnables.html">mlrl.testbed.runnables module</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../seco/mlrl.seco.html">Package mlrl-seco</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Package mlrl-seco</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../seco/mlrl.seco.config.html">mlrl.seco.config package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of mlrl.seco.config package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.config.parameters.html">mlrl.seco.config.parameters module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../common/mlrl.common.html">Package mlrl-common</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Package mlrl-common</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../common/mlrl.common.cython.html">mlrl.common.cython package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of mlrl.common.cython package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../seco/mlrl.seco.cython.html">mlrl.seco.cython package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of mlrl.seco.cython package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.heuristic.html">mlrl.seco.cython.heuristic module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.learner.html">mlrl.seco.cython.learner module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.learner_seco.html">mlrl.seco.cython.learner_seco module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.lift_function.html">mlrl.seco.cython.lift_function module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.package_info.html">mlrl.seco.cython.package_info module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.stopping_criterion.html">mlrl.seco.cython.stopping_criterion module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../seco/mlrl.seco.testbed.html">mlrl.seco.testbed package</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle navigation of mlrl.seco.testbed package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.testbed.runnables.html">mlrl.seco.testbed.runnables module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../seco/mlrl.seco.learners.html">mlrl.seco.learners module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../seco/mlrl.seco.package_info.html">mlrl.seco.package_info module</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../common/mlrl.common.html">Package mlrl-common</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of Package mlrl-common</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../common/mlrl.common.config.html">mlrl.common.config package</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle navigation of mlrl.common.config package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.config.options.html">mlrl.common.config.options module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.config.parameters.html">mlrl.common.config.parameters module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../common/mlrl.common.cython.html">mlrl.common.cython package</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle navigation of mlrl.common.cython package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.cython.example_weights.html">mlrl.common.cython.example_weights module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.cython.feature_binning.html">mlrl.common.cython.feature_binning module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.cython.feature_info.html">mlrl.common.cython.feature_info module</a></li>
@@ -332,20 +324,86 @@
 <li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.cython.validation.html">mlrl.common.cython.validation module</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../common/mlrl.common.arrays.html">mlrl.common.arrays module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../common/mlrl.common.config.html">mlrl.common.config module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../common/mlrl.common.data_types.html">mlrl.common.data_types module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../common/mlrl.common.format.html">mlrl.common.format module</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../common/mlrl.common.data.html">mlrl.common.data package</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle navigation of mlrl.common.data package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.data.arrays.html">mlrl.common.data.arrays module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.data.types.html">mlrl.common.data.types module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../common/mlrl.common.util.html">mlrl.common.util package</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><div class="visually-hidden">Toggle navigation of mlrl.common.util package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.util.format.html">mlrl.common.util.format module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../common/mlrl.common.learners.html">mlrl.common.learners module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../common/mlrl.common.mixins.html">mlrl.common.mixins module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../common/mlrl.common.options.html">mlrl.common.options module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../common/mlrl.common.package_info.html">mlrl.common.package_info module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../common/mlrl.common.rule_learners.html">mlrl.common.rule_learners module</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../testbed/mlrl.testbed.html">Package mlrl-testbed</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" role="switch" type="checkbox"/><label for="toctree-checkbox-18"><div class="visually-hidden">Toggle navigation of Package mlrl-testbed</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.characteristics.html">mlrl.testbed.characteristics module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.data.html">mlrl.testbed.data module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.data_characteristics.html">mlrl.testbed.data_characteristics module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.data_splitting.html">mlrl.testbed.data_splitting module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.evaluation.html">mlrl.testbed.evaluation module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.experiments.html">mlrl.testbed.experiments module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.format.html">mlrl.testbed.format module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.io.html">mlrl.testbed.io module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.label_vectors.html">mlrl.testbed.label_vectors module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.main.html">mlrl.testbed.main module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.model_characteristics.html">mlrl.testbed.model_characteristics module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.models.html">mlrl.testbed.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.output_writer.html">mlrl.testbed.output_writer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.package_info.html">mlrl.testbed.package_info module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.parameters.html">mlrl.testbed.parameters module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.persistence.html">mlrl.testbed.persistence module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.prediction_characteristics.html">mlrl.testbed.prediction_characteristics module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.prediction_scope.html">mlrl.testbed.prediction_scope module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.predictions.html">mlrl.testbed.predictions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.probability_calibration.html">mlrl.testbed.probability_calibration module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.problem_type.html">mlrl.testbed.problem_type module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testbed/mlrl.testbed.runnables.html">mlrl.testbed.runnables module</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../cpp/index.html">C++ API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle navigation of C++ API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../cpp/common/filelist.html">Library libmlrlcommon</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of Library libmlrlcommon</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../cpp/index.html">C++ API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" role="switch" type="checkbox"/><label for="toctree-checkbox-19"><div class="visually-hidden">Toggle navigation of C++ API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../cpp/seco/filelist.html">Library libmlrlseco</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" role="switch" type="checkbox"/><label for="toctree-checkbox-20"><div class="visually-hidden">Toggle navigation of Library libmlrlseco</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/confusion__matrix_8hpp.html">File confusion_matrix.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/decision__list__builder_8hpp.html">File decision_list_builder.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/dll__exports_8hpp.html">File dll_exports.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/head__type_8hpp.html">File head_type.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/head__type__partial_8hpp.html">File head_type_partial.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/head__type__single_8hpp.html">File head_type_single.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic_8hpp.html">File heuristic.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__accuracy_8hpp.html">File heuristic_accuracy.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__f__measure_8hpp.html">File heuristic_f_measure.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__laplace_8hpp.html">File heuristic_laplace.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__m__estimate_8hpp.html">File heuristic_m_estimate.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__precision_8hpp.html">File heuristic_precision.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__recall_8hpp.html">File heuristic_recall.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__wra_8hpp.html">File heuristic_wra.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/learner_8hpp.html">File learner.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/learner__common_8hpp.html">File learner_common.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/learner__seco__classifier_8hpp.html">File learner_seco_classifier.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/library__info_8hpp.html">File library_info.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function_8hpp.html">File lift_function.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function__kln_8hpp.html">File lift_function_kln.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function__no_8hpp.html">File lift_function_no.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function__peak_8hpp.html">File lift_function_peak.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/matrix__coverage__dense_8hpp.html">File matrix_coverage_dense.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/predictor__binary__output__wise_8hpp.html">File predictor_binary_output_wise.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__compare__function_8hpp.html">File rule_compare_function.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation_8hpp.html">File rule_evaluation.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation__decomposable_8hpp.html">File rule_evaluation_decomposable.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation__decomposable__partial_8hpp.html">File rule_evaluation_decomposable_partial.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation__decomposable__single_8hpp.html">File rule_evaluation_decomposable_single.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/statistics_8hpp.html">File statistics.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/statistics__decomposable_8hpp.html">File statistics_decomposable.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/statistics__provider__decomposable__dense_8hpp.html">File statistics_provider_decomposable_dense.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/stopping__criterion__coverage_8hpp.html">File stopping_criterion_coverage.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/vector__confusion__matrix__dense_8hpp.html">File vector_confusion_matrix_dense.hpp</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../cpp/common/filelist.html">Library libmlrlcommon</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" role="switch" type="checkbox"/><label for="toctree-checkbox-21"><div class="visually-hidden">Toggle navigation of Library libmlrlcommon</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../cpp/common/file/aggregation__function_8hpp.html">File aggregation_function.hpp</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cpp/common/file/array_8hpp.html">File array.hpp</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cpp/common/file/body_8hpp.html">File body.hpp</a></li>
@@ -574,7 +632,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../cpp/common/file/weight__vector__out__of__sample_8hpp.html">File weight_vector_out_of_sample.hpp</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../cpp/boosting/filelist.html">Library libmlrlboosting</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle navigation of Library libmlrlboosting</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../cpp/boosting/filelist.html">Library libmlrlboosting</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" role="switch" type="checkbox"/><label for="toctree-checkbox-22"><div class="visually-hidden">Toggle navigation of Library libmlrlboosting</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../cpp/boosting/file/blas_8hpp.html">File blas.hpp</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cpp/boosting/file/default__rule__auto_8hpp.html">File default_rule_auto.hpp</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cpp/boosting/file/discretization__function_8hpp.html">File discretization_function.hpp</a></li>
@@ -682,43 +740,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../cpp/boosting/file/view__statistic__non__decomposable__dense_8hpp.html">File view_statistic_non_decomposable_dense.hpp</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../cpp/seco/filelist.html">Library libmlrlseco</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle navigation of Library libmlrlseco</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/confusion__matrix_8hpp.html">File confusion_matrix.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/decision__list__builder_8hpp.html">File decision_list_builder.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/dll__exports_8hpp.html">File dll_exports.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/head__type_8hpp.html">File head_type.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/head__type__partial_8hpp.html">File head_type_partial.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/head__type__single_8hpp.html">File head_type_single.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic_8hpp.html">File heuristic.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__accuracy_8hpp.html">File heuristic_accuracy.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__f__measure_8hpp.html">File heuristic_f_measure.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__laplace_8hpp.html">File heuristic_laplace.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__m__estimate_8hpp.html">File heuristic_m_estimate.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__precision_8hpp.html">File heuristic_precision.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__recall_8hpp.html">File heuristic_recall.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__wra_8hpp.html">File heuristic_wra.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/learner_8hpp.html">File learner.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/learner__common_8hpp.html">File learner_common.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/learner__seco__classifier_8hpp.html">File learner_seco_classifier.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/library__info_8hpp.html">File library_info.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function_8hpp.html">File lift_function.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function__kln_8hpp.html">File lift_function_kln.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function__no_8hpp.html">File lift_function_no.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function__peak_8hpp.html">File lift_function_peak.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/matrix__coverage__dense_8hpp.html">File matrix_coverage_dense.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/predictor__binary__output__wise_8hpp.html">File predictor_binary_output_wise.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__compare__function_8hpp.html">File rule_compare_function.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation_8hpp.html">File rule_evaluation.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation__decomposable_8hpp.html">File rule_evaluation_decomposable.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation__decomposable__partial_8hpp.html">File rule_evaluation_decomposable_partial.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation__decomposable__single_8hpp.html">File rule_evaluation_decomposable_single.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/statistics_8hpp.html">File statistics.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/statistics__decomposable_8hpp.html">File statistics_decomposable.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/statistics__provider__decomposable__dense_8hpp.html">File statistics_provider_decomposable_dense.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/stopping__criterion__coverage_8hpp.html">File stopping_criterion_coverage.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/vector__confusion__matrix__dense_8hpp.html">File vector_confusion_matrix_dense.hpp</a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
@@ -750,7 +771,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="../../../../_sources/developer_guide/api/python/seco/mlrl.seco.seco_learners.rst.txt" title="View this page">
+  <a class="muted-link" href="../../../../_sources/developer_guide/api/python/boosting/mlrl.boosting.testbed.rst.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -770,191 +791,22 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="module-mlrl.seco.seco_learners">
-<span id="mlrl-seco-seco-learners-module"></span><h1>mlrl.seco.seco_learners module<a class="headerlink" href="#module-mlrl.seco.seco_learners" title="Link to this heading">¶</a></h1>
-<p>Author: Michael Rapp (<a class="reference external" href="mailto:michael&#46;rapp&#46;ml&#37;&#52;&#48;gmail&#46;com">michael<span>&#46;</span>rapp<span>&#46;</span>ml<span>&#64;</span>gmail<span>&#46;</span>com</a>)</p>
-<p>Provides a scikit-learn implementation of a Separate-and-Conquer (SeCo) algorithm for learning multi-label
-classification rules.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="mlrl.seco.seco_learners.SeCoClassifier">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mlrl.seco.seco_learners.</span></span><span class="sig-name descname"><span class="pre">SeCoClassifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rule_induction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_rules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequential_post_optimization</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">head_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lift_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heuristic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pruning_heuristic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_sampling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_sampling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_sampling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">holdout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_binning</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rule_pruning</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel_rule_refinement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel_statistic_update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel_prediction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mlrl.seco.seco_learners.SeCoClassifier" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../common/mlrl.common.rule_learners.html#mlrl.common.rule_learners.ClassificationRuleLearner" title="mlrl.common.rule_learners.ClassificationRuleLearner"><code class="xref py py-class docutils literal notranslate"><span class="pre">ClassificationRuleLearner</span></code></a>, <a class="reference internal" href="../common/mlrl.common.mixins.html#mlrl.common.mixins.ClassifierMixin" title="mlrl.common.mixins.ClassifierMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ClassifierMixin</span></code></a></p>
-<p>A scikit-learn implementation of a Separate-and-Conquer (SeCo) algorithm for learning multi-label classification
-rules.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="mlrl.seco.seco_learners.SeCoClassifier.set_fit_request">
-<span class="sig-name descname"><span class="pre">set_fit_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mlrl.seco.seco_learners.SeCoClassifier" title="mlrl.seco.seco_learners.SeCoClassifier"><span class="pre">SeCoClassifier</span></a></span></span><a class="headerlink" href="#mlrl.seco.seco_learners.SeCoClassifier.set_fit_request" title="Link to this definition">¶</a></dt>
-<dd><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method.</p>
-<p>Note that this method is only relevant if
-<code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.set_config.html#sklearn.set_config" title="(in scikit-learn v1.6)"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code></a>).
-Please see <a class="reference external" href="https://scikit-learn.org/stable/metadata_routing.html#metadata-routing" title="(in scikit-learn v1.6)"><span class="xref std std-ref">User Guide</span></a> on how the routing
-mechanism works.</p>
-<p>The options for each parameter are:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">fit</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+          <section id="module-mlrl.boosting.testbed">
+<span id="mlrl-boosting-testbed-package"></span><h1>mlrl.boosting.testbed package<a class="headerlink" href="#module-mlrl.boosting.testbed" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="mlrl.boosting.testbed.runnables.html">mlrl.boosting.testbed.runnables module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mlrl.boosting.testbed.runnables.html#mlrl.boosting.testbed.runnables.BoomerRunnable"><code class="docutils literal notranslate"><span class="pre">BoomerRunnable</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.boosting.testbed.runnables.html#mlrl.boosting.testbed.runnables.BoomerRunnable.get_program_info"><code class="docutils literal notranslate"><span class="pre">BoomerRunnable.get_program_info()</span></code></a></li>
 </ul>
-<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
-existing request. This allows you to change the request for some
-parameters and not others.</p>
-<div class="versionadded">
-<p><span class="versionmodified added">Added in version 1.3.</span></p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This method is only relevant if this estimator is used as a
-sub-estimator of a meta-estimator, e.g. used inside a
-<a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="(in scikit-learn v1.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code></a>. Otherwise it has no effect.</p>
-</div>
-<section id="parameters">
-<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt>x<span class="classifier">str, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">x</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
-</dd>
-</dl>
-</section>
-<section id="returns">
-<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt>self<span class="classifier">object</span></dt><dd><p>The updated object.</p>
-</dd>
-</dl>
-</section>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mlrl.seco.seco_learners.SeCoClassifier.set_predict_proba_request">
-<span class="sig-name descname"><span class="pre">set_predict_proba_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mlrl.seco.seco_learners.SeCoClassifier" title="mlrl.seco.seco_learners.SeCoClassifier"><span class="pre">SeCoClassifier</span></a></span></span><a class="headerlink" href="#mlrl.seco.seco_learners.SeCoClassifier.set_predict_proba_request" title="Link to this definition">¶</a></dt>
-<dd><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">predict_proba</span></code> method.</p>
-<p>Note that this method is only relevant if
-<code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.set_config.html#sklearn.set_config" title="(in scikit-learn v1.6)"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code></a>).
-Please see <a class="reference external" href="https://scikit-learn.org/stable/metadata_routing.html#metadata-routing" title="(in scikit-learn v1.6)"><span class="xref std std-ref">User Guide</span></a> on how the routing
-mechanism works.</p>
-<p>The options for each parameter are:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">predict_proba</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">predict_proba</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+</li>
 </ul>
-<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
-existing request. This allows you to change the request for some
-parameters and not others.</p>
-<div class="versionadded">
-<p><span class="versionmodified added">Added in version 1.3.</span></p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This method is only relevant if this estimator is used as a
-sub-estimator of a meta-estimator, e.g. used inside a
-<a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="(in scikit-learn v1.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code></a>. Otherwise it has no effect.</p>
-</div>
-<section id="id1">
-<h2>Parameters<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt>x<span class="classifier">str, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">x</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">predict_proba</span></code>.</p>
-</dd>
-</dl>
-</section>
-<section id="id2">
-<h2>Returns<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt>self<span class="classifier">object</span></dt><dd><p>The updated object.</p>
-</dd>
-</dl>
-</section>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mlrl.seco.seco_learners.SeCoClassifier.set_predict_request">
-<span class="sig-name descname"><span class="pre">set_predict_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mlrl.seco.seco_learners.SeCoClassifier" title="mlrl.seco.seco_learners.SeCoClassifier"><span class="pre">SeCoClassifier</span></a></span></span><a class="headerlink" href="#mlrl.seco.seco_learners.SeCoClassifier.set_predict_request" title="Link to this definition">¶</a></dt>
-<dd><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">predict</span></code> method.</p>
-<p>Note that this method is only relevant if
-<code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.set_config.html#sklearn.set_config" title="(in scikit-learn v1.6)"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code></a>).
-Please see <a class="reference external" href="https://scikit-learn.org/stable/metadata_routing.html#metadata-routing" title="(in scikit-learn v1.6)"><span class="xref std std-ref">User Guide</span></a> on how the routing
-mechanism works.</p>
-<p>The options for each parameter are:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">predict</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">predict</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+</li>
 </ul>
-<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
-existing request. This allows you to change the request for some
-parameters and not others.</p>
-<div class="versionadded">
-<p><span class="versionmodified added">Added in version 1.3.</span></p>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This method is only relevant if this estimator is used as a
-sub-estimator of a meta-estimator, e.g. used inside a
-<a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="(in scikit-learn v1.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code></a>. Otherwise it has no effect.</p>
-</div>
-<section id="id3">
-<h2>Parameters<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt>x<span class="classifier">str, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">x</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">predict</span></code>.</p>
-</dd>
-</dl>
 </section>
-<section id="id4">
-<h2>Returns<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt>self<span class="classifier">object</span></dt><dd><p>The updated object.</p>
-</dd>
-</dl>
-</section>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="mlrl.seco.seco_learners.SeCoClassifier.set_score_request">
-<span class="sig-name descname"><span class="pre">set_score_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mlrl.seco.seco_learners.SeCoClassifier" title="mlrl.seco.seco_learners.SeCoClassifier"><span class="pre">SeCoClassifier</span></a></span></span><a class="headerlink" href="#mlrl.seco.seco_learners.SeCoClassifier.set_score_request" title="Link to this definition">¶</a></dt>
-<dd><p>Request metadata passed to the <code class="docutils literal notranslate"><span class="pre">score</span></code> method.</p>
-<p>Note that this method is only relevant if
-<code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.set_config.html#sklearn.set_config" title="(in scikit-learn v1.6)"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code></a>).
-Please see <a class="reference external" href="https://scikit-learn.org/stable/metadata_routing.html#metadata-routing" title="(in scikit-learn v1.6)"><span class="xref std std-ref">User Guide</span></a> on how the routing
-mechanism works.</p>
-<p>The options for each parameter are:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">score</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
-</ul>
-<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
-existing request. This allows you to change the request for some
-parameters and not others.</p>
-<div class="versionadded">
-<p><span class="versionmodified added">Added in version 1.3.</span></p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This method is only relevant if this estimator is used as a
-sub-estimator of a meta-estimator, e.g. used inside a
-<a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="(in scikit-learn v1.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code></a>. Otherwise it has no effect.</p>
-</div>
-<section id="id5">
-<h2>Parameters<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt>sample_weight<span class="classifier">str, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p>
-</dd>
-</dl>
-</section>
-<section id="id6">
-<h2>Returns<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
-<dl class="simple">
-<dt>self<span class="classifier">object</span></dt><dd><p>The updated object.</p>
-</dd>
-</dl>
-</section>
-</dd></dl>
-
-</dd></dl>
-
 </section>
 
         </article>
@@ -962,23 +814,23 @@ sub-estimator of a meta-estimator, e.g. used inside a
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../testbed/mlrl.testbed.html">
+          <a class="next-page" href="mlrl.boosting.testbed.runnables.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">mlrl.testbed package</div>
+                <div class="title">mlrl.boosting.testbed.runnables module</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="mlrl.seco.runnables.html">
+          <a class="prev-page" href="mlrl.boosting.cython.regularization.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">mlrl.seco.runnables module</div>
+                <div class="title">mlrl.boosting.cython.regularization module</div>
                 
               </div>
             </a>
@@ -1012,14 +864,8 @@ sub-estimator of a meta-estimator, e.g. used inside a
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">mlrl.seco.seco_learners module</a><ul>
-<li><a class="reference internal" href="#mlrl.seco.seco_learners.SeCoClassifier"><code class="docutils literal notranslate"><span class="pre">SeCoClassifier</span></code></a><ul>
-<li><a class="reference internal" href="#mlrl.seco.seco_learners.SeCoClassifier.set_fit_request"><code class="docutils literal notranslate"><span class="pre">SeCoClassifier.set_fit_request()</span></code></a></li>
-<li><a class="reference internal" href="#mlrl.seco.seco_learners.SeCoClassifier.set_predict_proba_request"><code class="docutils literal notranslate"><span class="pre">SeCoClassifier.set_predict_proba_request()</span></code></a></li>
-<li><a class="reference internal" href="#mlrl.seco.seco_learners.SeCoClassifier.set_predict_request"><code class="docutils literal notranslate"><span class="pre">SeCoClassifier.set_predict_request()</span></code></a></li>
-<li><a class="reference internal" href="#mlrl.seco.seco_learners.SeCoClassifier.set_score_request"><code class="docutils literal notranslate"><span class="pre">SeCoClassifier.set_score_request()</span></code></a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#">mlrl.boosting.testbed package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
 </ul>
 </li>
 </ul>
@@ -1031,7 +877,7 @@ sub-estimator of a meta-estimator, e.g. used inside a
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=0f4573ae"></script>
+</div><script src="../../../../_static/documentation_options.js?v=ab3df7b7"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/furo.js?v=5fa4622c"></script>

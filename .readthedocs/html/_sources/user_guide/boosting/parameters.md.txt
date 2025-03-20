@@ -2,7 +2,7 @@
 
 # Overview of Parameters
 
-The behavior of the BOOMER algorithm can be controlled in a fine-grained manner via a large number of parameters. Values for these parameters may be provided as constructor arguments to the class {py:class}`mlrl.boosting.BoomerClassifier <mlrl.boosting.boosting_learners.BoomerClassifier>` or {py:class}`mlrl.boosting.BoomerRegressor <mlrl.boosting.boosting_learners.BoomerRegressor>` as shown in the section {ref}`usage`. They can also be used to configure the algorithm when using the {ref}`command line API<testbed>`.
+The behavior of the BOOMER algorithm can be controlled in a fine-grained manner via a large number of parameters. Values for these parameters may be provided as constructor arguments to the class {py:class}`mlrl.boosting.BoomerClassifier <mlrl.boosting.learners.BoomerClassifier>` or {py:class}`mlrl.boosting.BoomerRegressor <mlrl.boosting.learners.BoomerRegressor>` as shown in the section {ref}`usage`. They can also be used to configure the algorithm when using the {ref}`command line API<testbed>`.
 
 All parameters mentioned below are optional. If not specified manually, default settings that work well in most of the cases are used. In the following, an overview of all available parameters, as well as their default values, is provided. Unless stated otherwise, all parameters can be used for both, classification and regression problems.
 
