@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Optional
 
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator, RegressorMixin as SkLearnRegressorMixin, clone
 
-from mlrl.common.arrays import is_sparse
+from mlrl.common.data.arrays import is_sparse
 from mlrl.common.mixins import ClassifierMixin, IncrementalClassifierMixin, IncrementalRegressorMixin, \
     NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
 
