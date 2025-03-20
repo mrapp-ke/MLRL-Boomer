@@ -1,4 +1,4 @@
-#include "mlrl/seco/info.hpp"
+#include "mlrl/seco/library_info.hpp"
 
 #include <gtest/gtest.h>
 

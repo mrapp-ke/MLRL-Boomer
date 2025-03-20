@@ -1,4 +1,4 @@
-#include "mlrl/common/info.hpp"
+#include "mlrl/common/library_info.hpp"
 
 #include <gtest/gtest.h>
 

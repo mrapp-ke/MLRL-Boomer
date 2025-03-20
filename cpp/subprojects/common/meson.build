@@ -96,7 +96,7 @@ source_files = [
     'src/mlrl/common/stopping/stopping_criterion_no.cpp',
     'src/mlrl/common/stopping/stopping_criterion_size.cpp',
     'src/mlrl/common/stopping/stopping_criterion_time.cpp',
-    'src/mlrl/common/info.cpp'
+    'src/mlrl/common/library_info.cpp'
 ]
 
 # Test files
@@ -115,7 +115,7 @@ test_files = [
     'test/mlrl/common/input/feature_vector_decorator_numerical.cpp',
     'test/mlrl/common/input/feature_vector_decorator_ordinal.cpp',
     'test/mlrl/common/input/feature_vector_equal.cpp',
-    'test/mlrl/common/info.cpp'
+    'test/mlrl/common/library_info.cpp'
 ]
 
 # Directory containing public headers

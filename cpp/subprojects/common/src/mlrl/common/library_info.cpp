@@ -1,4 +1,4 @@
-#include "mlrl/common/info.hpp"
+#include "mlrl/common/library_info.hpp"
 
 #include "config.hpp"
 #include "mlrl/common/util/opencl.hpp"
