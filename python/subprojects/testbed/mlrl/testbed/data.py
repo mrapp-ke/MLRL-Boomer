@@ -236,16 +236,12 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
     y_prefix = 0
 
     features = meta_data.features
-    x_features = [(features[i].name if len(features) > i else 'X' + str(i),
-                   'NUMERIC' if len(features) <= i or not features[i].nominal_values
-                   or features[i].feature_type == FeatureType.NUMERICAL else features[i].nominal_values)
-                  for i in range(x.shape[1])]
+    x_features = [(features[i].name, 'NUMERIC' if features[i].feature_type == FeatureType.NUMERICAL
+                   or features[i].nominal_values is None else features[i].nominal_values) for i in range(x.shape[1])]
 
     outputs = meta_data.outputs
-    y_features = [(outputs[i].name if len(outputs) > i else 'y' + str(i),
-                   'NUMERIC' if len(outputs) <= i or not outputs[i].nominal_values
-                   or outputs[i].feature_type == FeatureType.NUMERICAL else outputs[i].nominal_values)
-                  for i in range(y.shape[1])]
+    y_features = [(outputs[i].name, 'NUMERIC' if outputs[i].feature_type == FeatureType.NUMERICAL
+                   or outputs[i].nominal_values is None else outputs[i].nominal_values) for i in range(y.shape[1])]
 
     if meta_data.outputs_at_start:
         x_prefix = y.shape[1]
