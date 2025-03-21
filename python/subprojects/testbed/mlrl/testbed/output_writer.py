@@ -139,8 +139,8 @@ class OutputWriter(ABC):
             file_name = self.file_name if data_type is None else data_type.get_file_name(self.file_name)
 
             with open_writable_txt_file(directory=self.output_dir, file_name=file_name,
-                                        fold=data_split.get_fold()) as txt_file:
-                txt_file.write(output_data.format(self.options, **kwargs))
+                                        fold=data_split.get_fold()) as text_file:
+                text_file.write(output_data.format(self.options, **kwargs))
 
     class CsvSink(Sink):
         """
