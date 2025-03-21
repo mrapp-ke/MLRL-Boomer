@@ -180,7 +180,7 @@ class NominalParameter(Parameter, ABC):
     def configure(self, config, value):
         supported_values = self.__get_supported_values(type(config))
 
-        if len(supported_values) > 0:
+        if supported_values:
             value = str(value)
 
             if isinstance(supported_values, dict):
@@ -194,7 +194,7 @@ class NominalParameter(Parameter, ABC):
     def add_to_argument_parser(self, parser: ArgumentParser, config_type: type):
         supported_values = self.__get_supported_values(config_type)
 
-        if len(supported_values) > 0:
+        if supported_values:
             description = self.description
             description += '. Must be one of '
 
