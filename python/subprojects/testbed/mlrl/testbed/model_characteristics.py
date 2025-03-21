@@ -37,7 +37,7 @@ class ModelCharacteristicsWriter(OutputWriter, ABC):
         def __init__(self):
             super().__init__(title='Model characteristics')
 
-    class CsvSink(OutputWriter.CsvSink):
+    class CsvFileSink(OutputWriter.CsvFileSink):
         """
         Allows to write the characteristics of a model to CSV files.
         """

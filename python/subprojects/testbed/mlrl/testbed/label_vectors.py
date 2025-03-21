@@ -116,7 +116,7 @@ class LabelVectorWriter(OutputWriter):
         def __init__(self, options: Options = Options()):
             super().__init__(title='Label vectors', options=options)
 
-    class CsvSink(OutputWriter.CsvSink):
+    class CsvFileSink(OutputWriter.CsvFileSink):
         """
         Allows to write unique label vectors that are contained in a data set to a CSV file.
         """
