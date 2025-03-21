@@ -268,7 +268,7 @@ class EvaluationWriter(OutputWriter, ABC):
             :param measure: The measure
             :return:        A tuple consisting of textual representations of the averaged score and standard deviation
             """
-            values = [results[measure] for results in self.results if len(results) > 0]
+            values = [results[measure] for results in self.results if results]
             values = np.array(values)
             return measure.format(np.average(values), **kwargs), measure.format(np.std(values), **kwargs)
 

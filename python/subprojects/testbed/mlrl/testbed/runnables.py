@@ -211,7 +211,7 @@ class Runnable(ABC):
 
         @staticmethod
         def __format_parent_packages(parent_packages: Set[str]) -> str:
-            return 'used by ' + format_iterable(parent_packages) if len(parent_packages) > 0 else ''
+            return 'used by ' + format_iterable(parent_packages) if parent_packages else ''
 
         def __format_package_info(self) -> str:
             rows = []
@@ -220,7 +220,7 @@ class Runnable(ABC):
             for i, python_package in enumerate(sorted(self.__collect_python_packages(python_packages))):
                 rows.append(['' if i > 0 else 'Python packages:', python_package, ''])
 
-            if len(python_packages) > 0:
+            if python_packages:
                 rows.append(['', '', ''])
 
             dependencies = self.__collect_dependencies(python_packages)
@@ -229,7 +229,7 @@ class Runnable(ABC):
                 parent_packages = self.__format_parent_packages(dependencies[dependency])
                 rows.append(['' if i > 0 else 'Dependencies:', dependency, parent_packages])
 
-            if len(dependencies) > 0:
+            if dependencies:
                 rows.append(['', '', ''])
 
             cpp_libraries = self.__collect_cpp_libraries(python_packages)
@@ -238,7 +238,7 @@ class Runnable(ABC):
                 parent_packages = self.__format_parent_packages(cpp_libraries[cpp_library])
                 rows.append(['' if i > 0 else 'Shared libraries:', cpp_library, parent_packages])
 
-            if len(cpp_libraries) > 0:
+            if cpp_libraries:
                 rows.append(['', '', ''])
 
             build_options = self.__collect_build_options(python_packages)
@@ -247,7 +247,7 @@ class Runnable(ABC):
                 parent_libraries = self.__format_parent_packages(build_options[build_option])
                 rows.append(['' if i > 0 else 'Build options:', build_option, parent_libraries])
 
-            if len(build_options) > 0:
+            if build_options:
                 rows.append(['', '', ''])
 
             hardware_resources = self.__collect_hardware_resources(python_packages)
@@ -256,7 +256,7 @@ class Runnable(ABC):
                 for j, info in enumerate(sorted(hardware_resources[hardware_resource])):
                     rows.append(['' if i > 0 else 'Hardware resources:', '' if j > 0 else hardware_resource, info])
 
-            return format_table(rows) if len(rows) > 0 else ''
+            return format_table(rows) if rows else ''
 
         def __str__(self) -> str:
             result = self.name + ' ' + self.version
@@ -883,7 +883,7 @@ class LearnerRunnable(Runnable, ABC):
                                 obtained
         :return:                The `Evaluation` that has been created
         """
-        return GlobalEvaluation(prediction_type, output_writers) if len(output_writers) > 0 else None
+        return GlobalEvaluation(prediction_type, output_writers) if output_writers else None
 
     def _create_evaluation_writer(self, args, problem_type: ProblemType,
                                   prediction_type: PredictionType) -> Optional[OutputWriter]:
@@ -943,7 +943,7 @@ class LearnerRunnable(Runnable, ABC):
         if args.parameter_save_dir is not None:
             sinks.append(ParameterWriter.CsvFileSink(output_dir=args.parameter_save_dir))
 
-        return ParameterWriter(sinks) if len(sinks) > 0 else None
+        return ParameterWriter(sinks) if sinks else None
 
     def _create_prediction_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -965,7 +965,7 @@ class LearnerRunnable(Runnable, ABC):
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
             sinks.append(PredictionWriter.ArffFileSink(output_dir=args.output_dir, options=options))
 
-        return PredictionWriter(sinks) if len(sinks) > 0 else None
+        return PredictionWriter(sinks) if sinks else None
 
     def _create_prediction_characteristics_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -990,7 +990,7 @@ class LearnerRunnable(Runnable, ABC):
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
             sinks.append(PredictionCharacteristicsWriter.CsvFileSink(output_dir=args.output_dir, options=options))
 
-        return PredictionCharacteristicsWriter(sinks) if len(sinks) > 0 else None
+        return PredictionCharacteristicsWriter(sinks) if sinks else None
 
     def _create_data_characteristics_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -1013,7 +1013,7 @@ class LearnerRunnable(Runnable, ABC):
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
             sinks.append(DataCharacteristicsWriter.CsvFileSink(output_dir=args.output_dir, options=options))
 
-        return DataCharacteristicsWriter(sinks) if len(sinks) > 0 else None
+        return DataCharacteristicsWriter(sinks) if sinks else None
 
     def _create_label_vector_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -1036,7 +1036,7 @@ class LearnerRunnable(Runnable, ABC):
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
             sinks.append(LabelVectorWriter.CsvFileSink(output_dir=args.output_dir, options=options))
 
-        return LabelVectorWriter(sinks) if len(sinks) > 0 else None
+        return LabelVectorWriter(sinks) if sinks else None
 
     @abstractmethod
     def create_classifier(self, args) -> Optional[SkLearnClassifierMixin]:
@@ -1330,7 +1330,7 @@ class RuleLearnerRunnable(LearnerRunnable):
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
             sinks.append(ModelWriter.TextFileSink(output_dir=args.output_dir, options=options))
 
-        return RuleModelWriter(sinks) if len(sinks) > 0 else None
+        return RuleModelWriter(sinks) if sinks else None
 
     def _create_model_characteristics_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -1348,7 +1348,7 @@ class RuleLearnerRunnable(LearnerRunnable):
         if args.store_model_characteristics and args.output_dir is not None:
             sinks.append(ModelCharacteristicsWriter.CsvFileSink(output_dir=args.output_dir))
 
-        return RuleModelCharacteristicsWriter(sinks) if len(sinks) > 0 else None
+        return RuleModelCharacteristicsWriter(sinks) if sinks else None
 
     def _create_marginal_probability_calibration_model_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -1374,7 +1374,7 @@ class RuleLearnerRunnable(LearnerRunnable):
             sinks.append(
                 MarginalProbabilityCalibrationModelWriter.CsvFileSink(output_dir=args.output_dir, options=options))
 
-        return MarginalProbabilityCalibrationModelWriter(sinks) if len(sinks) > 0 else None
+        return MarginalProbabilityCalibrationModelWriter(sinks) if sinks else None
 
     def _create_joint_probability_calibration_model_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -1400,7 +1400,7 @@ class RuleLearnerRunnable(LearnerRunnable):
             sinks.append(JointProbabilityCalibrationModelWriter.CsvFileSink(output_dir=args.output_dir,
                                                                             options=options))
 
-        return JointProbabilityCalibrationModelWriter(sinks) if len(sinks) > 0 else None
+        return JointProbabilityCalibrationModelWriter(sinks) if sinks else None
 
     def _create_evaluation(self, args, prediction_type: PredictionType,
                            output_writers: List[OutputWriter]) -> Optional[Evaluation]:
@@ -1417,7 +1417,7 @@ class RuleLearnerRunnable(LearnerRunnable):
             assert_greater_or_equal(self.OPTION_STEP_SIZE, step_size, 1)
             return IncrementalEvaluation(
                 prediction_type, output_writers, min_size=min_size, max_size=max_size,
-                step_size=step_size) if len(output_writers) > 0 else None
+                step_size=step_size) if output_writers else None
 
         return super()._create_evaluation(args, prediction_type, output_writers)
 
@@ -1435,7 +1435,7 @@ class RuleLearnerRunnable(LearnerRunnable):
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
             sinks.append(LabelVectorSetWriter.CsvFileSink(output_dir=args.output_dir, options=options))
 
-        return LabelVectorSetWriter(sinks) if len(sinks) > 0 else None
+        return LabelVectorSetWriter(sinks) if sinks else None
 
     def _create_post_training_output_writers(self, args) -> List[OutputWriter]:
         output_writers = super()._create_post_training_output_writers(args)

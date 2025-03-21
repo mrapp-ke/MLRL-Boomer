@@ -484,7 +484,7 @@ class Experiment(DataSplitter.Callback):
             if actual_value != expected_value:
                 changes.append((key, expected_value, actual_value))
 
-        if len(changes) > 0:
+        if changes:
             log.warning(
                 'The loaded model\'s values for the following parameters differ from the expected configuration: %s',
                 reduce(

@@ -86,7 +86,7 @@ def is_sparse(array, supported_formats: Optional[Set[SparseFormat]] = None) -> b
     :return:                    True, if the given array is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray` using
                                 one of the supported formats, False otherwise
     """
-    if supported_formats and len(supported_formats) > 0:
+    if supported_formats:
         lil = SparseFormat.LIL in supported_formats and is_lil(array)
         coo = SparseFormat.COO in supported_formats and is_coo(array)
         dok = SparseFormat.DOK in supported_formats and is_dok(array)
