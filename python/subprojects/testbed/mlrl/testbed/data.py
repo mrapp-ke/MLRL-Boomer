@@ -6,6 +6,7 @@ Provides functions for loading and saving data sets.
 import logging as log
 import xml.etree.ElementTree as XmlTree
 
+from dataclasses import dataclass
 from enum import Enum, auto
 from functools import reduce
 from os import path
@@ -34,23 +35,22 @@ class AttributeType(Enum):
     NOMINAL = auto()
 
 
-class Feature:
+@dataclass
+class Attribute:
     """
-    Represents a numerical or nominal feature that is contained by a data set.
+    An attribute, e.g., a feature, a ground truth label, or a regression score, that is contained by a data set.
+
+    Attributes:
+        name:           The name of the attribute
+        attribute_type: The type of the attribute
+        nominal_values: A list that contains the possible values in case of a nominal feature
     """
-
-    def __init__(self, name: str, feature_type: AttributeType, nominal_values: Optional[List[str]] = None):
-        """
-        :param name:            The name of the feature
-        :param feature_type:    The type of the feature
-        :param nominal_values:  A list that contains the possible values in case of a nominal feature, None otherwise
-        """
-        self.name = name
-        self.feature_type = feature_type
-        self.nominal_values = nominal_values
+    name: str
+    attribute_type: AttributeType
+    nominal_values: Optional[List[str]] = None
 
 
-class Output(Feature):
+class Output(Attribute):
     """
     Represents an output that is contained by a data set.
     """
@@ -64,7 +64,7 @@ class MetaData:
     Stores the meta-data of a data set.
     """
 
-    def __init__(self, features: List[Feature], outputs: List[Output], outputs_at_start: bool):
+    def __init__(self, features: List[Attribute], outputs: List[Output], outputs_at_start: bool):
         """
         :param features:            A list that contains all features in the data set
         :param outputs:             A list that contains all outputs in the data set
@@ -85,7 +85,7 @@ class MetaData:
         feature_types = set(feature_types)
 
         if feature_types:
-            return reduce(lambda aggr, feature: aggr + (1 if feature.feature_type in feature_types else 0),
+            return reduce(lambda aggr, feature: aggr + (1 if feature.attribute_type in feature_types else 0),
                           self.features, 0)
 
         return len(self.features)
@@ -98,8 +98,9 @@ class MetaData:
         :param feature_types:   The types of the features whose indices should be returned
         :return:                A list that contains the indices of all features of the given types
         """
+        feature_types = set(feature_types)
         return [
-            i for i, feature in enumerate(self.features) if not feature_types or feature.feature_type in feature_types
+            i for i, feature in enumerate(self.features) if not feature_types or feature.attribute_type in feature_types
         ]
 
 
@@ -205,7 +206,7 @@ def save_data_set(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nda
     """
 
     num_features = x.shape[1]
-    features = [Feature('X' + str(i), AttributeType.NUMERICAL) for i in range(num_features)]
+    features = [Attribute('X' + str(i), AttributeType.NUMERICAL) for i in range(num_features)]
     num_outputs = y.shape[1]
     outputs = [Output('y' + str(i)) for i in range(num_outputs)]
     meta_data = MetaData(features, outputs, outputs_at_start=False)
@@ -236,11 +237,11 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
     y_prefix = 0
 
     features = meta_data.features
-    x_features = [(features[i].name, 'NUMERIC' if features[i].feature_type == AttributeType.NUMERICAL
+    x_features = [(features[i].name, 'NUMERIC' if features[i].attribute_type == AttributeType.NUMERICAL
                    or features[i].nominal_values is None else features[i].nominal_values) for i in range(x.shape[1])]
 
     outputs = meta_data.outputs
-    y_features = [(outputs[i].name, 'NUMERIC' if outputs[i].feature_type == AttributeType.NUMERICAL
+    y_features = [(outputs[i].name, 'NUMERIC' if outputs[i].attribute_type == AttributeType.NUMERICAL
                    or outputs[i].nominal_values is None else outputs[i].nominal_values) for i in range(y.shape[1])]
 
     if meta_data.outputs_at_start:
@@ -436,7 +437,7 @@ def __parse_outputs_from_relation(relation: str, features: list) -> List[Output]
     return [Output(__parse_feature_or_output_name(features[i][0])) for i in range(num_outputs)]
 
 
-def __create_meta_data(features: List[Feature], outputs: List[Output]) -> MetaData:
+def __create_meta_data(features: List[Attribute], outputs: List[Output]) -> MetaData:
     """
     Creates and returns the `MetaData` of a data set by parsing the features in an ARFF file to retrieve information
     about the features and outputs contained in a data set.
@@ -469,7 +470,7 @@ def __create_meta_data(features: List[Feature], outputs: List[Output]) -> MetaDa
                 else:
                     raise ValueError('Encountered unsupported feature type: ' + type_definition)
 
-            feature_list.append(Feature(feature_name, feature_type, nominal_values))
+            feature_list.append(Attribute(feature_name, feature_type, nominal_values))
         elif len(feature_list) == 0:
             outputs_at_start = True
 
