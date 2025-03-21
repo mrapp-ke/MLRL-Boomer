@@ -86,7 +86,8 @@ class MetaData:
             return len(self.features)
         if len(feature_types) == 0:
             return 0
-        return reduce(lambda num, feature: num + (1 if feature.feature_type in feature_types else 0), self.features, 0)
+        return reduce(lambda aggr, feature: aggr + (1
+                                                    if feature.feature_type in feature_types else 0), self.features, 0)
 
     def get_feature_indices(self, feature_types: Optional[Set[FeatureType]] = None) -> List[int]:
         """

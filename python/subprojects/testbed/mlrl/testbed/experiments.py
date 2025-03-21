@@ -483,6 +483,5 @@ class Experiment(DataSplitter.Callback):
             log.warning(
                 'The loaded model\'s values for the following parameters differ from the expected configuration: %s',
                 reduce(
-                    lambda a, b: a +
-                    (', ' if len(a) > 0 else '') + '"' + b[0] + '" is "' + b[2] + '" instead of "' + b[1] + '"',
-                    changes, ''))
+                    lambda aggr, change: aggr + (', ' if len(aggr) > 0 else '') + '"' + change[0] + '" is "' + change[2]
+                    + '" instead of "' + change[1] + '"', changes, ''))
