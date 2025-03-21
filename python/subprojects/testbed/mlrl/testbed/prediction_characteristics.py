@@ -29,7 +29,7 @@ class PredictionCharacteristicsWriter(OutputWriter):
         def __init__(self, options: Options = Options()):
             super().__init__(title='Prediction characteristics', options=options)
 
-    class CsvSink(OutputWriter.CsvSink):
+    class CsvFileSink(OutputWriter.CsvFileSink):
         """
         Allows to write the characteristics of binary predictions to CSV files.
         """

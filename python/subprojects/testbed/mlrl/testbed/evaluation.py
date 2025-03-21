@@ -356,7 +356,7 @@ class EvaluationWriter(OutputWriter, ABC):
                 super().write_output(problem_type, meta_data, CrossValidationOverall(data_split.get_num_folds()),
                                      data_type, prediction_scope, output_data, **kwargs)
 
-    class CsvSink(OutputWriter.CsvSink):
+    class CsvFileSink(OutputWriter.CsvFileSink):
         """
         Allows to write evaluation results to CSV files.
         """
