@@ -25,9 +25,9 @@ from mlrl.common.data.types import Float32, Uint8
 from mlrl.testbed.io import ENCODING_UTF8, write_xml_file
 
 
-class FeatureType(Enum):
+class AttributeType(Enum):
     """
-    All supported types of features.
+    All supported types of attributes.
     """
     NUMERICAL = auto()
     ORDINAL = auto()
@@ -39,7 +39,7 @@ class Feature:
     Represents a numerical or nominal feature that is contained by a data set.
     """
 
-    def __init__(self, name: str, feature_type: FeatureType, nominal_values: Optional[List[str]] = None):
+    def __init__(self, name: str, feature_type: AttributeType, nominal_values: Optional[List[str]] = None):
         """
         :param name:            The name of the feature
         :param feature_type:    The type of the feature
@@ -56,7 +56,7 @@ class Output(Feature):
     """
 
     def __init__(self, name: str):
-        super().__init__(name, FeatureType.NOMINAL, [str(0), str(1)])
+        super().__init__(name, AttributeType.NOMINAL, [str(0), str(1)])
 
 
 class MetaData:
@@ -74,7 +74,7 @@ class MetaData:
         self.outputs = outputs
         self.outputs_at_start = outputs_at_start
 
-    def get_num_features(self, *feature_types: FeatureType) -> int:
+    def get_num_features(self, *feature_types: AttributeType) -> int:
         """
         Returns the number of features with one out of a given set of types.  If no types are given, all features are
         counted.
@@ -90,7 +90,7 @@ class MetaData:
 
         return len(self.features)
 
-    def get_feature_indices(self, *feature_types: FeatureType) -> List[int]:
+    def get_feature_indices(self, *feature_types: AttributeType) -> List[int]:
         """
         Returns a list that contains the indices of all features with one out of a given set of types (in ascending
         order). If no types are given, all indices are returned.
@@ -205,7 +205,7 @@ def save_data_set(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nda
     """
 
     num_features = x.shape[1]
-    features = [Feature('X' + str(i), FeatureType.NUMERICAL) for i in range(num_features)]
+    features = [Feature('X' + str(i), AttributeType.NUMERICAL) for i in range(num_features)]
     num_outputs = y.shape[1]
     outputs = [Output('y' + str(i)) for i in range(num_outputs)]
     meta_data = MetaData(features, outputs, outputs_at_start=False)
@@ -236,11 +236,11 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
     y_prefix = 0
 
     features = meta_data.features
-    x_features = [(features[i].name, 'NUMERIC' if features[i].feature_type == FeatureType.NUMERICAL
+    x_features = [(features[i].name, 'NUMERIC' if features[i].feature_type == AttributeType.NUMERICAL
                    or features[i].nominal_values is None else features[i].nominal_values) for i in range(x.shape[1])]
 
     outputs = meta_data.outputs
-    y_features = [(outputs[i].name, 'NUMERIC' if outputs[i].feature_type == FeatureType.NUMERICAL
+    y_features = [(outputs[i].name, 'NUMERIC' if outputs[i].feature_type == AttributeType.NUMERICAL
                    or outputs[i].nominal_values is None else outputs[i].nominal_values) for i in range(y.shape[1])]
 
     if meta_data.outputs_at_start:
@@ -305,7 +305,7 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
     :return:            A `np.ndarray`, shape `(num_examples, num_encoded_features)`, representing the encoded features
                         of the given examples, the encoder that has been used, as well as the updated meta-data
     """
-    nominal_indices = meta_data.get_feature_indices(FeatureType.NOMINAL)
+    nominal_indices = meta_data.get_feature_indices(AttributeType.NOMINAL)
     num_nominal_features = len(nominal_indices)
     log.info('Data set contains %s nominal and %s numerical features.', num_nominal_features,
              (len(meta_data.features) - num_nominal_features))
@@ -456,16 +456,16 @@ def __create_meta_data(features: List[Feature], outputs: List[Output]) -> MetaDa
             type_definition = feature[1]
 
             if isinstance(type_definition, list):
-                feature_type = FeatureType.NOMINAL
+                feature_type = AttributeType.NOMINAL
                 nominal_values = type_definition
             else:
                 type_definition = str(type_definition).lower()
                 nominal_values = None
 
                 if type_definition == 'integer':
-                    feature_type = FeatureType.ORDINAL
+                    feature_type = AttributeType.ORDINAL
                 elif type_definition in ('real', 'numeric'):
-                    feature_type = FeatureType.NUMERICAL
+                    feature_type = AttributeType.NUMERICAL
                 else:
                     raise ValueError('Encountered unsupported feature type: ' + type_definition)
 
