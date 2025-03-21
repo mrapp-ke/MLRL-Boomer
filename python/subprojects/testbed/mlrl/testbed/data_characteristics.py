@@ -11,7 +11,7 @@ from mlrl.common.config.options import Options
 
 from mlrl.testbed.characteristics import LABEL_CHARACTERISTICS, OUTPUT_CHARACTERISTICS, Characteristic, \
     OutputCharacteristics, density
-from mlrl.testbed.data import FeatureType, MetaData
+from mlrl.testbed.data import AttributeType, MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, filter_formatters, format_table
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
@@ -60,21 +60,21 @@ class FeatureCharacteristics:
         """
         The total number of nominal features.
         """
-        return self._meta_data.get_num_features(FeatureType.NOMINAL)
+        return self._meta_data.get_num_features(AttributeType.NOMINAL)
 
     @cached_property
     def num_ordinal_features(self):
         """
         The total number of ordinal features.
         """
-        return self._meta_data.get_num_features(FeatureType.ORDINAL)
+        return self._meta_data.get_num_features(AttributeType.ORDINAL)
 
     @cached_property
     def num_numerical_features(self):
         """
         The total number of numerical features.
         """
-        return self._meta_data.get_num_features(FeatureType.NUMERICAL)
+        return self._meta_data.get_num_features(AttributeType.NUMERICAL)
 
     @cached_property
     def feature_density(self):
