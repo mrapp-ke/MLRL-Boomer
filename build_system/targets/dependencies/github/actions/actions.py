@@ -146,7 +146,7 @@ class Actions(Workflow):
 
         :param updated_actions: The actions to be updated
         """
-        updated_actions_by_name = reduce(lambda aggr, x: dict(aggr, **{x.name: x}), updated_actions, {})
+        updated_actions_by_name = reduce(lambda aggr, action: dict(aggr, **{action.name: action}), updated_actions, {})
         uses_prefix = self.TAG_USES + ':'
         updated_lines = []
 
@@ -156,11 +156,11 @@ class Actions(Workflow):
 
             if line_stripped.startswith(uses_prefix) and not line_stripped.endswith(tuple(FileType.yaml().suffixes)):
                 uses_clause = line_stripped[len(uses_prefix):].strip()
-                action = Action.from_uses_clause(uses_clause)
-                updated_action = updated_actions_by_name.get(action.name)
+                uses_action = Action.from_uses_clause(uses_clause)
+                updated_action = updated_actions_by_name.get(uses_action.name)
 
                 if updated_action:
-                    updated_lines[-1] = line.replace(str(action.version), str(updated_action.version))
+                    updated_lines[-1] = line.replace(str(uses_action.version), str(updated_action.version))
 
         self.write_lines(*updated_lines)
 
