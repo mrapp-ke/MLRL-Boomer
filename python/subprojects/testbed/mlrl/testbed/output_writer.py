@@ -168,7 +168,7 @@ class OutputWriter(ABC):
                     for row in tabular_data:
                         row['Model size'] = prediction_scope.get_model_size()
 
-                if len(tabular_data) > 0:
+                if tabular_data:
                     header = sorted(tabular_data[0].keys())
                     file_name = self.file_name if data_type is None else data_type.get_file_name(self.file_name)
                     file_name = get_file_name_per_fold(file_name, SUFFIX_CSV, data_split.get_fold())
@@ -252,7 +252,7 @@ class OutputWriter(ABC):
         """
         sinks = self.sinks
 
-        if len(sinks) > 0:
+        if sinks:
             output_data = self._generate_output_data(problem_type, meta_data, x, y, data_split, learner, data_type,
                                                      prediction_type, prediction_scope, predictions, train_time,
                                                      predict_time)
