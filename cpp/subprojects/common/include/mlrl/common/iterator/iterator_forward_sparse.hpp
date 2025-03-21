@@ -4,8 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/types.hpp"
-
-#include <iterator>
+#include "mlrl/common/util/iterators.hpp"
 
 /**
  * An iterator adaptor that adapts iterators of a sparse vector, which provide access to a fixed number of indices in
@@ -33,7 +32,7 @@ class SparseForwardIterator final {
 
         uint32 iteratorIndex_;
 
-        typename std::iterator_traits<ValueIterator>::value_type sparseValue_;
+        typename util::iterator_value<ValueIterator> sparseValue_;
 
     public:
 
@@ -51,7 +50,7 @@ class SparseForwardIterator final {
          */
         SparseForwardIterator(IndexIterator indicesBegin, IndexIterator indicesEnd, ValueIterator valuesBegin,
                               ValueIterator valuesEnd, uint32 startIndex,
-                              typename std::iterator_traits<ValueIterator>::value_type sparseValue)
+                              typename util::iterator_value<ValueIterator> sparseValue)
             : indexIterator_(indicesBegin), indicesEnd_(indicesEnd), valueIterator_(valuesBegin), valuesEnd_(valuesEnd),
               index_(startIndex), iteratorIndex_(indexIterator_ != indicesEnd_ ? *indexIterator_ : 0),
               sparseValue_(sparseValue) {}
@@ -64,7 +63,7 @@ class SparseForwardIterator final {
         /**
          * The type of the elements, the iterator provides access to.
          */
-        typedef typename std::iterator_traits<ValueIterator>::value_type value_type;
+        typedef typename util::iterator_value<ValueIterator> value_type;
 
         /**
          * The type of a pointer to an element, the iterator provides access to.
@@ -175,7 +174,7 @@ class SparseForwardIterator final {
 template<typename IndexIterator, typename ValueIterator>
 static inline SparseForwardIterator<IndexIterator, ValueIterator> createSparseForwardIterator(
   IndexIterator indicesBegin, IndexIterator indicesEnd, ValueIterator valuesBegin, ValueIterator valuesEnd,
-  uint32 startIndex = 0, typename std::iterator_traits<ValueIterator>::value_type sparseValue = 0) {
+  uint32 startIndex = 0, typename util::iterator_value<ValueIterator> sparseValue = 0) {
     return SparseForwardIterator<IndexIterator, ValueIterator>(indicesBegin, indicesEnd, valuesBegin, valuesEnd,
                                                                startIndex, sparseValue);
 }

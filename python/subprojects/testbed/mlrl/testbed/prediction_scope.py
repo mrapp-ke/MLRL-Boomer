@@ -6,7 +6,7 @@ Provides classes that provide information about predictions.
 from abc import ABC, abstractmethod
 from enum import Enum
 
-from mlrl.common.format import format_enum_values
+from mlrl.common.util.format import format_enum_values
 
 
 class PredictionType(Enum):

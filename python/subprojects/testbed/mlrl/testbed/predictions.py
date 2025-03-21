@@ -8,7 +8,7 @@ from typing import Any, Optional
 
 import numpy as np
 
-from mlrl.common.options import Options
+from mlrl.common.config.options import Options
 
 from mlrl.testbed.data import MetaData, Output, save_arff_file
 from mlrl.testbed.data_splitting import DataSplit, DataType

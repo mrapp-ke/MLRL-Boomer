@@ -40,7 +40,7 @@ TEST(OrdinalFeatureTypeTest, createOrdinalFeatureVectorFromFortranContiguousView
         // Check dimensionality of feature vector...
         const OrdinalFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
-        EXPECT_EQ(featureVector.numValues, (uint32) 2);
+        EXPECT_EQ(featureVector.numBins, (uint32) 2);
 
         // Check for regular feature values...
         OrdinalFeatureVector::value_const_iterator valueIterator = featureVector.values_cbegin();
@@ -99,7 +99,7 @@ TEST(OrdinalFeatureTypeTest, createBinaryFeatureVectorFromFortranContiguousView)
         // Check dimensionality of feature vector...
         const BinaryFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
-        EXPECT_EQ(featureVector.numValues, (uint32) 1);
+        EXPECT_EQ(featureVector.numBins, (uint32) 1);
 
         // Check for regular feature values...
         int32 minorityValue = featureVector.values_cbegin()[0];
@@ -178,7 +178,7 @@ TEST(OrdinalFeatureTypeTest, createOrdinalFeatureVectorFromDenseCscView) {
         // Check dimensionality of feature vector...
         const OrdinalFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
-        EXPECT_EQ(featureVector.numValues, (uint32) 2);
+        EXPECT_EQ(featureVector.numBins, (uint32) 2);
 
         // Check for regular feature values...
         OrdinalFeatureVector::value_const_iterator valueIterator = featureVector.values_cbegin();
@@ -251,7 +251,7 @@ TEST(OrdinalFeatureTypeTest, createBinaryFeatureVectorFromDenseCscView) {
         // Check dimensionality of feature vector...
         const BinaryFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
-        EXPECT_EQ(featureVector.numValues, (uint32) 1);
+        EXPECT_EQ(featureVector.numBins, (uint32) 1);
 
         // Check for regular feature values...
         int32 minorityValue = featureVector.values_cbegin()[0];
@@ -337,7 +337,7 @@ TEST(OrdinalFeatureTypeTest, createOrdinalFeatureVectorFromCscView) {
         // Check dimensionality of feature vector...
         const OrdinalFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
-        EXPECT_EQ(featureVector.numValues, (uint32) 2);
+        EXPECT_EQ(featureVector.numBins, (uint32) 2);
 
         // Check for regular feature values...
         OrdinalFeatureVector::value_const_iterator valueIterator = featureVector.values_cbegin();
@@ -404,7 +404,7 @@ TEST(OrdinalFeatureTypeTest, createBinaryFeatureVectorFromCscView) {
         // Check dimensionality of feature vector...
         const BinaryFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
         EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
-        EXPECT_EQ(featureVector.numValues, (uint32) 1);
+        EXPECT_EQ(featureVector.numBins, (uint32) 1);
 
         // Check for regular feature values...
         int32 minorityValue = featureVector.values_cbegin()[0];

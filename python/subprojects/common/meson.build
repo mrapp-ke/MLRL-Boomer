@@ -3,11 +3,11 @@ project('common', 'cython', 'cpp')
 # Source files
 cython_dir = 'cython'
 cython_module_names = [
+    'example_weights',
     'feature_binning',
     'feature_info',
     'feature_matrix',
     'feature_sampling',
-    'info',
     'instance_sampling',
     'label_matrix',
     'learner',
@@ -17,11 +17,13 @@ cython_module_names = [
     'output_matrix',
     'output_sampling',
     'output_space_info',
+    'package_info',
     'partition_sampling',
     'post_optimization',
     'prediction',
     'probability_calibration',
     'regression_matrix',
+    'rng',
     'rule_induction',
     'rule_model',
     'stopping_criterion'
