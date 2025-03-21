@@ -5,7 +5,7 @@
 namespace boosting {
 
     ExampleWiseBinaryTransformation::ExampleWiseBinaryTransformation(
-      const LabelVectorSet& labelVectorSet, std::unique_ptr<IDistanceMeasure> distanceMeasurePtr)
+      const LabelVectorSet& labelVectorSet, std::unique_ptr<IDistanceMeasure<float64>> distanceMeasurePtr)
         : labelVectorSet_(labelVectorSet), distanceMeasurePtr_(std::move(distanceMeasurePtr)) {}
 
     void ExampleWiseBinaryTransformation::apply(View<float64>::const_iterator scoresBegin,

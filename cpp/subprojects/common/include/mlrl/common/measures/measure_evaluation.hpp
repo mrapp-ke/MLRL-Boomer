@@ -10,9 +10,12 @@
 #include <memory>
 
 /**
- * Defines an interface for all measures that can be used in classification problems to assess the quality of
- * predictions for certain examples by comparing them to the corresponding ground truth labels.
+ * Defines an interface for all measures that can be used in classification problems to assess the quality of scores
+ * that are predicted for certain examples by comparing them to the corresponding ground truth labels.
+ *
+ * @tparam ScoreType The type of the predicted scores
  */
+template<typename ScoreType>
 class IClassificationEvaluationMeasure {
     public:
 
@@ -30,8 +33,8 @@ class IClassificationEvaluationMeasure {
          *                      scores
          * @return              The numerical score that has been calculated
          */
-        virtual float64 evaluate(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-                                 const CContiguousView<float64>& scoreMatrix) const = 0;
+        virtual ScoreType evaluate(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+                                   const CContiguousView<ScoreType>& scoreMatrix) const = 0;
 
         /**
          * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
@@ -45,14 +48,17 @@ class IClassificationEvaluationMeasure {
          *                      scores
          * @return              The numerical score that has been calculated
          */
-        virtual float64 evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                 const CContiguousView<float64>& scoreMatrix) const = 0;
+        virtual ScoreType evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
+                                   const CContiguousView<ScoreType>& scoreMatrix) const = 0;
 };
 
 /**
  * Defines an interface for all measures that can be used in regression problems to assess the quality of predictions
  * for certain examples by comparing them to the corresponding ground truth regression scores.
+ *
+ * @tparam ScoreType The type of the predicted scores
  */
+template<typename ScoreType>
 class IRegressionEvaluationMeasure {
     public:
 
@@ -70,8 +76,8 @@ class IRegressionEvaluationMeasure {
          *                          predicted scores
          * @return                  The numerical score that has been calculated
          */
-        virtual float64 evaluate(uint32 exampleIndex, const CContiguousView<const float32>& regressionMatrix,
-                                 const CContiguousView<float64>& scoreMatrix) const = 0;
+        virtual ScoreType evaluate(uint32 exampleIndex, const CContiguousView<const float32>& regressionMatrix,
+                                   const CContiguousView<ScoreType>& scoreMatrix) const = 0;
 
         /**
          * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
@@ -85,13 +91,16 @@ class IRegressionEvaluationMeasure {
          *                          predicted scores
          * @return                  The numerical score that has been calculated
          */
-        virtual float64 evaluate(uint32 exampleIndex, const CsrView<const float32>& regressionMatrix,
-                                 const CContiguousView<float64>& scoreMatrix) const = 0;
+        virtual ScoreType evaluate(uint32 exampleIndex, const CsrView<const float32>& regressionMatrix,
+                                   const CContiguousView<ScoreType>& scoreMatrix) const = 0;
 };
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `IClassificationEvaluationMeasure`.
+ *
+ * @tparam ScoreType The type of the predicted scores
  */
+template<typename ScoreType>
 class IClassificationEvaluationMeasureFactory {
     public:
 
@@ -102,12 +111,16 @@ class IClassificationEvaluationMeasureFactory {
          *
          * @return An unique pointer to an object of type `IClassificationEvaluationMeasure` that has been created
          */
-        virtual std::unique_ptr<IClassificationEvaluationMeasure> createClassificationEvaluationMeasure() const = 0;
+        virtual std::unique_ptr<IClassificationEvaluationMeasure<ScoreType>> createClassificationEvaluationMeasure()
+          const = 0;
 };
 
 /**
  * Defines an interface for all factories that allow to create instances of the type `IRegressionEvaluationMeasure`.
+ *
+ * @tparam ScoreType The type of the predicted scores
  */
+template<typename ScoreType>
 class IRegressionEvaluationMeasureFactory {
     public:
 
@@ -118,5 +131,5 @@ class IRegressionEvaluationMeasureFactory {
          *
          * @return An unique pointer to an object of type `IRegressionEvaluationMeasure` that has been created
          */
-        virtual std::unique_ptr<IRegressionEvaluationMeasure> createRegressionEvaluationMeasure() const = 0;
+        virtual std::unique_ptr<IRegressionEvaluationMeasure<ScoreType>> createRegressionEvaluationMeasure() const = 0;
 };

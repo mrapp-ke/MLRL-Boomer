@@ -3,7 +3,7 @@
 #include "mlrl/common/input/regression_matrix_row_wise.hpp"
 #include "mlrl/common/prediction/probability_calibration_joint.hpp"
 #include "mlrl/common/rule_refinement/feature_subspace.hpp"
-#include "mlrl/common/rule_refinement/prediction.hpp"
+#include "mlrl/common/rule_refinement/prediction_evaluated.hpp"
 #include "mlrl/common/sampling/instance_sampling.hpp"
 #include "mlrl/common/stopping/stopping_criterion.hpp"
 
@@ -73,14 +73,26 @@ std::unique_ptr<IStoppingCriterion> BiPartition::createStoppingCriterion(const I
 
 std::unique_ptr<IInstanceSampling> BiPartition::createInstanceSampling(
   const IClassificationInstanceSamplingFactory& factory, const IRowWiseLabelMatrix& labelMatrix,
-  IStatistics& statistics) {
-    return labelMatrix.createInstanceSampling(factory, *this, statistics);
+  IStatistics& statistics, const EqualWeightVector& exampleWeights) {
+    return labelMatrix.createInstanceSampling(factory, *this, statistics, exampleWeights);
 }
 
 std::unique_ptr<IInstanceSampling> BiPartition::createInstanceSampling(
   const IRegressionInstanceSamplingFactory& factory, const IRowWiseRegressionMatrix& regressionMatrix,
-  IStatistics& statistics) {
-    return regressionMatrix.createInstanceSampling(factory, *this, statistics);
+  IStatistics& statistics, const EqualWeightVector& exampleWeights) {
+    return regressionMatrix.createInstanceSampling(factory, *this, statistics, exampleWeights);
+}
+
+std::unique_ptr<IInstanceSampling> BiPartition::createInstanceSampling(
+  const IClassificationInstanceSamplingFactory& factory, const IRowWiseLabelMatrix& labelMatrix,
+  IStatistics& statistics, const DenseWeightVector<float32>& exampleWeights) {
+    return labelMatrix.createInstanceSampling(factory, *this, statistics, exampleWeights);
+}
+
+std::unique_ptr<IInstanceSampling> BiPartition::createInstanceSampling(
+  const IRegressionInstanceSamplingFactory& factory, const IRowWiseRegressionMatrix& regressionMatrix,
+  IStatistics& statistics, const DenseWeightVector<float32>& exampleWeights) {
+    return regressionMatrix.createInstanceSampling(factory, *this, statistics, exampleWeights);
 }
 
 Quality BiPartition::evaluateOutOfSample(const IFeatureSubspace& featureSubspace, const CoverageMask& coverageMask,
@@ -89,8 +101,8 @@ Quality BiPartition::evaluateOutOfSample(const IFeatureSubspace& featureSubspace
 }
 
 void BiPartition::recalculatePrediction(const IFeatureSubspace& featureSubspace, const CoverageMask& coverageMask,
-                                        IPrediction& head) {
-    featureSubspace.recalculatePrediction(*this, coverageMask, head);
+                                        std::unique_ptr<IEvaluatedPrediction>& headPtr) {
+    featureSubspace.recalculatePrediction(*this, coverageMask, headPtr);
 }
 
 std::unique_ptr<IMarginalProbabilityCalibrationModel> BiPartition::fitMarginalProbabilityCalibrationModel(

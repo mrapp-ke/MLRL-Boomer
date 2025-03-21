@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from os import path
 from typing import Any, Dict, List, Optional
 
-from mlrl.common.options import Options
+from mlrl.common.config.options import Options
 
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
@@ -21,24 +21,24 @@ from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 from mlrl.testbed.problem_type import ProblemType
 
 
-class ParameterInput(ABC):
+class ParameterLoader(ABC):
     """
-    An abstract base class for all classes that read parameters from an input.
+    An abstract base class for all classes that load parameters from an input.
     """
 
     @abstractmethod
-    def read_parameters(self, data_split: DataSplit) -> Dict:
+    def load_parameters(self, data_split: DataSplit) -> Dict:
         """
-        Reads a parameter setting from the input.
+        Loads a parameter setting from the input.
 
         :param data_split:  Information about the split of the available data, the parameter setting corresponds to
         :return:            A dictionary that stores the parameters
         """
 
 
-class ParameterCsvInput(ParameterInput):
+class CsvParameterLoader(ParameterLoader):
     """
-    Reads parameter settings from CSV files.
+    Loads parameter settings from CSV files.
     """
 
     def __init__(self, input_dir: str):
@@ -47,7 +47,7 @@ class ParameterCsvInput(ParameterInput):
         """
         self.input_dir = input_dir
 
-    def read_parameters(self, data_split: DataSplit) -> Dict:
+    def load_parameters(self, data_split: DataSplit) -> Dict:
         file_name = get_file_name_per_fold('parameters', SUFFIX_CSV, data_split.get_fold())
         file_path = path.join(self.input_dir, file_name)
         log.debug('Loading parameters from file \"%s\"...', file_path)
