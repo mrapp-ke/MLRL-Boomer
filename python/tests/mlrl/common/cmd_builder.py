@@ -301,9 +301,9 @@ class CmdBuilder:
         :param fold:    The fold, the file corresponds to or None, if it does not correspond to a specific fold
         :return:        The name of the output file
         """
-        if fold is not None:
-            return name + '_fold-' + str(fold) + '.' + suffix
-        return name + '_overall.' + suffix
+        if fold is None:
+            return name + '_overall.' + suffix
+        return name + '_fold-' + str(fold) + '.' + suffix
 
     def __assert_file_exists(self, directory: str, file_name: str):
         """
@@ -327,7 +327,7 @@ class CmdBuilder:
         :param file_name:   The name of the files
         :param suffix:      The suffix of the files
         """
-        if directory is not None:
+        if directory:
             if self.num_folds > 0:
                 current_fold = self.current_fold
 
@@ -380,12 +380,12 @@ class CmdBuilder:
 
         out = self.__run_cmd()
 
-        if self.model_dir is not None:
+        if self.model_dir:
             out = self.__run_cmd()
 
         overwrite_output_files = self.__should_overwrite_output_files()
 
-        if expected_output_file_name is not None:
+        if expected_output_file_name:
             stdout = str(out.stdout).splitlines()
             expected_output_dir = self.expected_output_dir
 
@@ -413,7 +413,7 @@ class CmdBuilder:
         """
         self.output_dir = output_dir
 
-        if output_dir is not None:
+        if output_dir:
             self.args.append('--output-dir')
             self.args.append(output_dir)
             self.tmp_dirs.append(output_dir)
@@ -428,7 +428,7 @@ class CmdBuilder:
         """
         self.model_dir = model_dir
 
-        if model_dir is not None:
+        if model_dir:
             self.args.append('--model-load-dir')
             self.args.append(model_dir)
             self.args.append('--model-save-dir')
@@ -445,7 +445,7 @@ class CmdBuilder:
         """
         self.parameter_load_dir = parameter_dir
 
-        if parameter_dir is not None:
+        if parameter_dir:
             self.args.append('--parameter-load-dir')
             self.args.append(parameter_dir)
         return self

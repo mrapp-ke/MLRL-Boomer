@@ -188,7 +188,7 @@ class IncrementalEvaluation(Evaluation):
         incremental_predictor = self._invoke_prediction_function(learner, learner.predict_incrementally,
                                                                  predict_proba_function, x, **kwargs)
 
-        if incremental_predictor is not None:
+        if incremental_predictor:
             step_size = self.step_size
             total_size = incremental_predictor.get_num_next()
             max_size = self.max_size
@@ -301,8 +301,10 @@ class Experiment(DataSplitter.Callback):
         log.info('Starting experiment using the %s algorithm "%s"...', self.problem_type.value, self.learner_name)
 
         # Run pre-execution hook, if necessary...
-        if self.pre_execution_hook is not None:
-            self.pre_execution_hook.execute()
+        pre_execution_hook = self.pre_execution_hook
+
+        if pre_execution_hook:
+            pre_execution_hook.execute()
 
         self.data_splitter.run(self)
 
@@ -326,7 +328,7 @@ class Experiment(DataSplitter.Callback):
         # Apply parameter setting, if necessary...
         parameter_loader = self.parameter_loader
 
-        if parameter_loader is not None:
+        if parameter_loader:
             params = parameter_loader.load_parameters(data_split)
 
             if params:
@@ -368,7 +370,7 @@ class Experiment(DataSplitter.Callback):
         # Obtain and evaluate predictions for training data, if necessary...
         evaluation = self.train_evaluation
 
-        if evaluation is not None and data_split.is_train_test_separated():
+        if evaluation and data_split.is_train_test_separated():
             data_type = DataType.TRAINING
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
             self.__predict_and_evaluate(problem_type, evaluation, meta_data, data_split, data_type, train_time,
@@ -377,7 +379,7 @@ class Experiment(DataSplitter.Callback):
         # Obtain and evaluate predictions for test data, if necessary...
         evaluation = self.test_evaluation
 
-        if evaluation is not None:
+        if evaluation:
             data_type = DataType.TEST if data_split.is_train_test_separated() else DataType.TRAINING
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
             self.__predict_and_evaluate(problem_type, evaluation, meta_data, data_split, data_type, train_time,
@@ -456,7 +458,7 @@ class Experiment(DataSplitter.Callback):
         """
         model_loader = self.model_loader
 
-        if model_loader is not None:
+        if model_loader:
             return model_loader.load_model(self.learner_name, data_split)
 
         return None
@@ -470,7 +472,7 @@ class Experiment(DataSplitter.Callback):
         """
         model_saver = self.model_saver
 
-        if model_saver is not None:
+        if model_saver:
             model_saver.save_model(model, self.learner_name, data_split)
 
     @staticmethod

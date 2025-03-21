@@ -119,7 +119,7 @@ class RuleModelWriter(ModelWriter):
                     threshold = thresholds[i]
                     feature = features[feature_index] if len(features) > feature_index else None
 
-                    if print_feature_names and feature is not None:
+                    if print_feature_names and feature:
                         text.write(feature.name)
                     else:
                         text.write(str(feature_index))
@@ -128,7 +128,7 @@ class RuleModelWriter(ModelWriter):
                     text.write(operator)
                     text.write(' ')
 
-                    if feature is not None and feature.nominal_values is not None:
+                    if feature and feature.nominal_values:
                         nominal_value = int(threshold)
 
                         if print_nominal_values and len(feature.nominal_values) > nominal_value:

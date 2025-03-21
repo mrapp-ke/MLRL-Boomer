@@ -220,13 +220,17 @@ class EvaluationWriter(OutputWriter, ABC):
             :param num_folds:   The total number of cross validation folds
             :param fold:        The fold, the score corresponds to, or None, if no cross validation is used
             """
-            if self.results is None:
-                self.results = [{} for _ in range(num_folds)]
-            elif len(self.results) != num_folds:
+            results = self.results
+
+            if not results:
+                results = [{} for _ in range(num_folds)]
+                self.results = results
+
+            if len(results) != num_folds:
                 raise AssertionError('Inconsistent number of total folds given')
 
             self.measures.add(measure)
-            values = self.results[fold if fold is not None else 0]
+            values = results[0 if fold is None else fold]
             values[measure] = score
 
         def get(self, measure: Formatter, fold: Optional[int], **kwargs) -> str:
@@ -237,10 +241,12 @@ class EvaluationWriter(OutputWriter, ABC):
             :param fold:    The fold, the score corresponds to, or None, if no cross validation is used
             :return:        A textual representation of the score
             """
-            if self.results is None:
+            results = self.results
+
+            if not results:
                 raise AssertionError('No evaluation results available')
 
-            score = self.results[fold if fold is not None else 0][measure]
+            score = results[0 if fold is None else fold][measure]
             return measure.format(score, **kwargs)
 
         def dict(self, fold: Optional[int], **kwargs) -> Dict[Formatter, str]:
@@ -251,15 +257,17 @@ class EvaluationWriter(OutputWriter, ABC):
             :return:        A dictionary that stores textual representations of the scores for the given fold according
                             to each measure
             """
-            if self.results is None:
+            results = self.results
+
+            if not results:
                 raise AssertionError('No evaluation results available')
 
-            results: Dict[Formatter, str] = {}
+            result_dict = {}
 
-            for measure, score in self.results[fold if fold is not None else 0].items():
-                results[measure] = measure.format(score, **kwargs)
+            for measure, score in results[0 if fold is None else fold].items():
+                result_dict[measure] = measure.format(score, **kwargs)
 
-            return results
+            return result_dict
 
         def avg(self, measure: Formatter, **kwargs) -> Tuple[str, str]:
             """
