@@ -116,7 +116,7 @@ class ParameterWriter(OutputWriter):
         def __init__(self):
             super().__init__(title='Custom parameters')
 
-    class CsvSink(OutputWriter.CsvSink):
+    class CsvFileSink(OutputWriter.CsvFileSink):
         """
         Allows to write parameter settings to CSV files.
         """

@@ -54,7 +54,7 @@ class ModelWriter(OutputWriter, ABC):
         def __init__(self, options: Options = Options()):
             super().__init__(title='Model', options=options)
 
-    class TxtSink(OutputWriter.TxtSink):
+    class TextFileSink(OutputWriter.TextFileSink):
         """
         Allows to write textual representations of models to text files.
         """
