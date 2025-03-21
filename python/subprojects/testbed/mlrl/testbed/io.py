@@ -76,7 +76,7 @@ def open_readable_csv_file(file_path: str):
     """
     Opens a CSV file to be read from.
 
-    :param file_path:   The path of the file to be opened
+    :param file_path:   The path to the file to be opened
     :return:            The file that has been opened
     """
     return open(file_path, mode='r', newline='', encoding=ENCODING_UTF8)
@@ -86,7 +86,7 @@ def open_writable_csv_file(file_path: str, append: bool = False):
     """
     Opens a CSV file to be written to.
 
-    :param file_path:   The path of the file to be opened
+    :param file_path:   The path to the file to be opened
     :param append:      True, if new data should be appended to the file, if it already exists, False otherwise
     :return:            The file that has been opened
     """
