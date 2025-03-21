@@ -66,6 +66,7 @@ namespace boosting {
                                                                                  numElements);
     }
 
+    template class NumericSparseSetMatrix<float32>;
     template class NumericSparseSetMatrix<float64>;
 
 }

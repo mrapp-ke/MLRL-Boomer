@@ -14,9 +14,9 @@ INFO Evaluation result for test data:
 
 0/1 Loss   38.95
 Accuracy   61.05
-F1         39.34
-Jaccard    24.49
-Precision  42.86
-Recall     36.36
+F1         37.29
+Jaccard    22.92
+Precision  42.31
+Recall     33.33
 
 INFO Successfully finished after <duration>

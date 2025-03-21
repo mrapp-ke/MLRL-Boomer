@@ -1,11 +1,10 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.common.cython.validation import assert_greater_or_equal
-
 from cython.operator cimport dereference
 from libcpp.utility cimport move
 
+from mlrl.common.cython.example_weights cimport ExampleWeights
 from mlrl.common.cython.feature_info cimport FeatureInfo
 from mlrl.common.cython.feature_matrix cimport ColumnWiseFeatureMatrix, RowWiseFeatureMatrix
 from mlrl.common.cython.learner cimport TrainingResult
@@ -26,26 +25,27 @@ cdef class RegressionRuleLearner:
     cdef IRegressionRuleLearner* get_regression_rule_learner_ptr(self):
         pass
 
-    def fit(self, FeatureInfo feature_info not None, ColumnWiseFeatureMatrix feature_matrix not None,
-            RowWiseRegressionMatrix regression_matrix not None, uint32 random_state) -> TrainingResult:
+    def fit(self, ExampleWeights example_weights not None, FeatureInfo feature_info not None,
+            ColumnWiseFeatureMatrix feature_matrix not None,
+            RowWiseRegressionMatrix regression_matrix not None) -> TrainingResult:
         """
         Applies the rule learner to given training examples and corresponding ground truth regression scores.
         
+        :param example_weights:     `ExampleWeights` that provide access to the weights of individual training examples
         :param feature_info:        A reference to an object of type `IFeatureInfo` that provides information about the
                                     types of individual features
         :param feature_matrix:      A reference to an object of type `IColumnWiseFeatureMatrix` that provides
                                     column-wise access to the feature values of the training examples
         :param regression_matrix:   A reference to an object of type `IRowWiseRegressionMatrix` that provides row-wise
                                     access to the ground truth regression scores of the training examples
-        :param random_state:        The seed to be used by random number generators
         :return:                    An unique pointer to an object of type `ITrainingResult` that provides access to the
                                     results of fitting the rule learner to the training data
         """
-        assert_greater_or_equal("random_state", random_state, 1)
         cdef unique_ptr[ITrainingResult] training_result_ptr = self.get_regression_rule_learner_ptr().fit(
+            dereference(example_weights.get_example_weights_ptr()),
             dereference(feature_info.get_feature_info_ptr()),
             dereference(feature_matrix.get_column_wise_feature_matrix_ptr()),
-            dereference(regression_matrix.get_row_wise_regression_matrix_ptr()), random_state)
+            dereference(regression_matrix.get_row_wise_regression_matrix_ptr()))
         cdef uint32 num_outputs = training_result_ptr.get().getNumOutputs()
         cdef unique_ptr[IRuleModel] rule_model_ptr = move(training_result_ptr.get().getRuleModel())
         cdef unique_ptr[IOutputSpaceInfo] output_space_info_ptr = move(training_result_ptr.get().getOutputSpaceInfo())

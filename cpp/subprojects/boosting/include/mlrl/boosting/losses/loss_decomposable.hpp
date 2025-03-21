@@ -3,8 +3,8 @@
  */
 #pragma once
 
+#include "mlrl/boosting/data/statistic.hpp"
 #include "mlrl/boosting/losses/loss.hpp"
-#include "mlrl/common/data/tuple.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/data/view_matrix_csr.hpp"
 #include "mlrl/common/data/view_matrix_csr_binary.hpp"
@@ -17,9 +17,12 @@ namespace boosting {
 
     /**
      * Defines an interface for all decomposable loss functions that can be used in classification problems.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
-    class IDecomposableClassificationLoss : virtual public IClassificationLoss,
-                                            virtual public IClassificationEvaluationMeasure {
+    template<typename StatisticType>
+    class IDecomposableClassificationLoss : virtual public IClassificationLoss<StatisticType>,
+                                            virtual public IClassificationEvaluationMeasure<StatisticType> {
         public:
 
             virtual ~IDecomposableClassificationLoss() override {}
@@ -37,12 +40,11 @@ namespace boosting {
              * @param indicesEnd    A `CompleteIndexVector::const_iterator` to the end of the label indices
              * @param statisticView A reference to an object of type `CContiguousView` to be updated
              */
-            virtual void updateDecomposableStatistics(uint32 exampleIndex,
-                                                      const CContiguousView<const uint8>& labelMatrix,
-                                                      const CContiguousView<float64>& scoreMatrix,
-                                                      CompleteIndexVector::const_iterator indicesBegin,
-                                                      CompleteIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const = 0;
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+              const CContiguousView<StatisticType>& scoreMatrix, CompleteIndexVector::const_iterator indicesBegin,
+              CompleteIndexVector::const_iterator indicesEnd,
+              CContiguousView<Statistic<StatisticType>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -57,12 +59,11 @@ namespace boosting {
              * @param indicesEnd    A `PartialIndexVector::const_iterator` to the end of the label indices
              * @param statisticView A reference to an object of type `CContiguousView` to be updated
              */
-            virtual void updateDecomposableStatistics(uint32 exampleIndex,
-                                                      const CContiguousView<const uint8>& labelMatrix,
-                                                      const CContiguousView<float64>& scoreMatrix,
-                                                      PartialIndexVector::const_iterator indicesBegin,
-                                                      PartialIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const = 0;
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+              const CContiguousView<StatisticType>& scoreMatrix, PartialIndexVector::const_iterator indicesBegin,
+              PartialIndexVector::const_iterator indicesEnd,
+              CContiguousView<Statistic<StatisticType>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -77,11 +78,10 @@ namespace boosting {
              * @param indicesEnd    A `CompleteIndexVector::const_iterator` to the end of the label indices
              * @param statisticView A reference to an object of type `CContiguousView` to be updated
              */
-            virtual void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                      const CContiguousView<float64>& scoreMatrix,
-                                                      CompleteIndexVector::const_iterator indicesBegin,
-                                                      CompleteIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const = 0;
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<StatisticType>& scoreMatrix,
+              CompleteIndexVector::const_iterator indicesBegin, CompleteIndexVector::const_iterator indicesEnd,
+              CContiguousView<Statistic<StatisticType>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -96,18 +96,20 @@ namespace boosting {
              * @param indicesEnd    A `PartialIndexVector::const_iterator` to the end of the label indices
              * @param statisticView A reference to an object of type `CContiguousView` to be updated
              */
-            virtual void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                      const CContiguousView<float64>& scoreMatrix,
-                                                      PartialIndexVector::const_iterator indicesBegin,
-                                                      PartialIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const = 0;
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const BinaryCsrView& labelMatrix, const CContiguousView<StatisticType>& scoreMatrix,
+              PartialIndexVector::const_iterator indicesBegin, PartialIndexVector::const_iterator indicesEnd,
+              CContiguousView<Statistic<StatisticType>>& statisticView) const = 0;
     };
 
     /**
      * Defines an interface for all decomposable loss functions that can be used in regression problems.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
-    class IDecomposableRegressionLoss : virtual public IRegressionLoss,
-                                        virtual public IRegressionEvaluationMeasure {
+    template<typename StatisticType>
+    class IDecomposableRegressionLoss : virtual public IRegressionLoss<StatisticType>,
+                                        virtual public IRegressionEvaluationMeasure<StatisticType> {
         public:
 
             virtual ~IDecomposableRegressionLoss() override {}
@@ -125,12 +127,11 @@ namespace boosting {
              * @param indicesEnd        A `CompleteIndexVector::const_iterator` to the end of the output indices
              * @param statisticView     A reference to an object of type `CContiguousView` to be updated
              */
-            virtual void updateDecomposableStatistics(uint32 exampleIndex,
-                                                      const CContiguousView<const float32>& regressionMatrix,
-                                                      const CContiguousView<float64>& scoreMatrix,
-                                                      CompleteIndexVector::const_iterator indicesBegin,
-                                                      CompleteIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const = 0;
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const CContiguousView<const float32>& regressionMatrix,
+              const CContiguousView<StatisticType>& scoreMatrix, CompleteIndexVector::const_iterator indicesBegin,
+              CompleteIndexVector::const_iterator indicesEnd,
+              CContiguousView<Statistic<StatisticType>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the outputs, whose indices
@@ -145,12 +146,11 @@ namespace boosting {
              * @param indicesEnd        A `PartialIndexVector::const_iterator` to the end of the output indices
              * @param statisticView     A reference to an object of type `CContiguousView` to be updated
              */
-            virtual void updateDecomposableStatistics(uint32 exampleIndex,
-                                                      const CContiguousView<const float32>& regressionMatrix,
-                                                      const CContiguousView<float64>& scoreMatrix,
-                                                      PartialIndexVector::const_iterator indicesBegin,
-                                                      PartialIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const = 0;
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const CContiguousView<const float32>& regressionMatrix,
+              const CContiguousView<StatisticType>& scoreMatrix, PartialIndexVector::const_iterator indicesBegin,
+              PartialIndexVector::const_iterator indicesEnd,
+              CContiguousView<Statistic<StatisticType>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the outputs, whose indices
@@ -165,12 +165,11 @@ namespace boosting {
              * @param indicesEnd        A `CompleteIndexVector::const_iterator` to the end of the output indices
              * @param statisticView     A reference to an object of type `CContiguousView` to be updated
              */
-            virtual void updateDecomposableStatistics(uint32 exampleIndex,
-                                                      const CsrView<const float32>& regressionMatrix,
-                                                      const CContiguousView<float64>& scoreMatrix,
-                                                      CompleteIndexVector::const_iterator indicesBegin,
-                                                      CompleteIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const = 0;
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const CsrView<const float32>& regressionMatrix,
+              const CContiguousView<StatisticType>& scoreMatrix, CompleteIndexVector::const_iterator indicesBegin,
+              CompleteIndexVector::const_iterator indicesEnd,
+              CContiguousView<Statistic<StatisticType>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the outputs, whose indices
@@ -185,20 +184,23 @@ namespace boosting {
              * @param indicesEnd        A `PartialIndexVector::const_iterator` to the end of the output indices
              * @param statisticView     A reference to an object of type `CContiguousView` to be updated
              */
-            virtual void updateDecomposableStatistics(uint32 exampleIndex,
-                                                      const CsrView<const float32>& regressionMatrix,
-                                                      const CContiguousView<float64>& scoreMatrix,
-                                                      PartialIndexVector::const_iterator indicesBegin,
-                                                      PartialIndexVector::const_iterator indicesEnd,
-                                                      CContiguousView<Tuple<float64>>& statisticView) const = 0;
+            virtual void updateDecomposableStatistics(
+              uint32 exampleIndex, const CsrView<const float32>& regressionMatrix,
+              const CContiguousView<StatisticType>& scoreMatrix, PartialIndexVector::const_iterator indicesBegin,
+              PartialIndexVector::const_iterator indicesEnd,
+              CContiguousView<Statistic<StatisticType>>& statisticView) const = 0;
     };
 
     /**
      * Defines an interface for all factories that allow to create instances of the type
      * `IDecomposableClassificationLoss`.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
-    class IDecomposableClassificationLossFactory : public IClassificationEvaluationMeasureFactory,
-                                                   public IDistanceMeasureFactory {
+    template<typename StatisticType>
+    class IDecomposableClassificationLossFactory
+        : virtual public IClassificationEvaluationMeasureFactory<StatisticType>,
+          virtual public IDistanceMeasureFactory<StatisticType> {
         public:
 
             virtual ~IDecomposableClassificationLossFactory() override {}
@@ -208,14 +210,18 @@ namespace boosting {
              *
              * @return An unique pointer to an object of type `IDecomposableClassificationLoss` that has been created
              */
-            virtual std::unique_ptr<IDecomposableClassificationLoss> createDecomposableClassificationLoss() const = 0;
+            virtual std::unique_ptr<IDecomposableClassificationLoss<StatisticType>>
+              createDecomposableClassificationLoss() const = 0;
     };
 
     /**
      * Defines an interface for all factories that allow to create instances of the type
      * `IDecomposableClassificationLoss`.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
-    class IDecomposableRegressionLossFactory : public IRegressionEvaluationMeasureFactory {
+    template<typename StatisticType>
+    class IDecomposableRegressionLossFactory : public IRegressionEvaluationMeasureFactory<StatisticType> {
         public:
 
             virtual ~IDecomposableRegressionLossFactory() override {}
@@ -225,7 +231,8 @@ namespace boosting {
              *
              * @return An unique pointer to an object of type `IDecomposableRegressionLoss` that has been created
              */
-            virtual std::unique_ptr<IDecomposableRegressionLoss> createDecomposableRegressionLoss() const = 0;
+            virtual std::unique_ptr<IDecomposableRegressionLoss<StatisticType>> createDecomposableRegressionLoss()
+              const = 0;
     };
 
     /**
@@ -253,25 +260,63 @@ namespace boosting {
                                                   virtual public IClassificationLossConfig {
         public:
 
+            /**
+             * Provides access to the interface of an `IDecomposableClassificationLossConfig`, abstracting away certain
+             * configuration options that have already been pre-determined.
+             *
+             * @tparam StatisticType The type that should be used for representing statistics
+             */
+            template<typename StatisticType>
+            class IPreset : public IClassificationLossConfig::IPreset<StatisticType> {
+                public:
+
+                    virtual ~IPreset() override {}
+
+                    /**
+                     * Creates and returns a new object of type `IDecomposableClassificationLossFactory` according to
+                     * the specified configuration.
+                     *
+                     * @return An unique pointer to an object of type `IDecomposableClassificationLossFactory` that has
+                     * been created
+                     */
+                    virtual std::unique_ptr<IDecomposableClassificationLossFactory<StatisticType>>
+                      createDecomposableClassificationLossFactory() const = 0;
+
+                    std::unique_ptr<IClassificationEvaluationMeasureFactory<StatisticType>>
+                      createClassificationEvaluationMeasureFactory() const override final {
+                        return this->createDecomposableClassificationLossFactory();
+                    }
+
+                    std::unique_ptr<IDistanceMeasureFactory<StatisticType>> createDistanceMeasureFactory()
+                      const override final {
+                        return this->createDecomposableClassificationLossFactory();
+                    }
+            };
+
             virtual ~IDecomposableClassificationLossConfig() override {}
 
             /**
-             * Creates and returns a new object of type `IDecomposableClassificationLossFactory` according to the
-             * specified configuration.
+             * Creates and returns a new object of type `IPreset<float32>`.
              *
-             * @return An unique pointer to an object of type `IDecomposableClassificationLossFactory` that has been
-             *         created
+             * @return An unique pointer to an object of type `IPreset<float32>` that has been created
              */
-            virtual std::unique_ptr<IDecomposableClassificationLossFactory>
-              createDecomposableClassificationLossFactory() const = 0;
+            virtual std::unique_ptr<IPreset<float32>> createDecomposable32BitClassificationPreset() const = 0;
 
-            std::unique_ptr<IClassificationEvaluationMeasureFactory> createClassificationEvaluationMeasureFactory()
+            /**
+             * Creates and returns a new object of type `IPreset<float64>`.
+             *
+             * @return An unique pointer to an object of type `IPreset<float64>` that has been created
+             */
+            virtual std::unique_ptr<IPreset<float64>> createDecomposable64BitClassificationPreset() const = 0;
+
+            std::unique_ptr<IClassificationLossConfig::IPreset<float32>> create32BitClassificationPreset()
               const override final {
-                return this->createDecomposableClassificationLossFactory();
+                return this->createDecomposable32BitClassificationPreset();
             }
 
-            std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory() const override final {
-                return this->createDecomposableClassificationLossFactory();
+            std::unique_ptr<IClassificationLossConfig::IPreset<float64>> create64BitClassificationPreset()
+              const override final {
+                return this->createDecomposable64BitClassificationPreset();
             }
     };
 
@@ -283,20 +328,58 @@ namespace boosting {
                                               virtual public IRegressionLossConfig {
         public:
 
+            /**
+             * Provides access to the interface of an `IDecomposableRegressionLossConfig`, abstracting away certain
+             * configuration options that have already been pre-determined.
+             *
+             * @tparam StatisticType The type that should be used for representing statistics
+             */
+            template<typename StatisticType>
+            class IPreset : public IRegressionLossConfig::IPreset<StatisticType> {
+                public:
+
+                    virtual ~IPreset() override {}
+
+                    /**
+                     * Creates and returns a new object of type `IDecomposableRegressionLossFactory` according to the
+                     * specified configuration.
+                     *
+                     * @return An unique pointer to an object of type `IDecomposableRegressionLossFactory` that has been
+                     *         created
+                     */
+                    virtual std::unique_ptr<IDecomposableRegressionLossFactory<StatisticType>>
+                      createDecomposableRegressionLossFactory() const = 0;
+
+                    std::unique_ptr<IRegressionEvaluationMeasureFactory<StatisticType>>
+                      createRegressionEvaluationMeasureFactory() const override final {
+                        return this->createDecomposableRegressionLossFactory();
+                    }
+            };
+
             virtual ~IDecomposableRegressionLossConfig() override {}
 
             /**
-             * Creates and returns a new object of type `IDecomposableRegressionLossFactory` according to the specified
-             * configuration.
+             * Creates and returns a new object of type `IPreset<float32>`.
              *
-             * @return An unique pointer to an object of type `IDecomposableRegressionLossFactory` that has been created
+             * @return An unique pointer to an object of type `IPreset<float32>` that has been created
              */
-            virtual std::unique_ptr<IDecomposableRegressionLossFactory> createDecomposableRegressionLossFactory()
-              const = 0;
+            virtual std::unique_ptr<IPreset<float32>> createDecomposable32BitRegressionPreset() const = 0;
 
-            std::unique_ptr<IRegressionEvaluationMeasureFactory> createRegressionEvaluationMeasureFactory()
+            /**
+             * Creates and returns a new object of type `IPreset<float64>`.
+             *
+             * @return An unique pointer to an object of type `IPreset<float64>` that has been created
+             */
+            virtual std::unique_ptr<IPreset<float64>> createDecomposable64BitRegressionPreset() const = 0;
+
+            std::unique_ptr<IRegressionLossConfig::IPreset<float32>> create32BitRegressionPreset()
               const override final {
-                return this->createDecomposableRegressionLossFactory();
+                return this->createDecomposable32BitRegressionPreset();
+            }
+
+            std::unique_ptr<IRegressionLossConfig::IPreset<float64>> create64BitRegressionPreset()
+              const override final {
+                return this->createDecomposable64BitRegressionPreset();
             }
     };
 

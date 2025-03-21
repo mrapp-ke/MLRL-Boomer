@@ -9,10 +9,10 @@ import logging as log
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Tuple
 
+from mlrl.common.config.options import Options
 from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibrationModel, \
     IsotonicProbabilityCalibrationModelVisitor, NoProbabilityCalibrationModel
-from mlrl.common.options import Options
-from mlrl.common.rule_learners import ClassificationRuleLearner
+from mlrl.common.learners import ClassificationRuleLearner
 
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType

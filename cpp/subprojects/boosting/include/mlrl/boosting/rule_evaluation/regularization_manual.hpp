@@ -22,7 +22,7 @@ namespace boosting {
              *
              * @return The weight of the regularization term
              */
-            virtual float64 getRegularizationWeight() const = 0;
+            virtual float32 getRegularizationWeight() const = 0;
 
             /**
              * Sets the weight of the regularization term.
@@ -31,7 +31,7 @@ namespace boosting {
              * @return                      A reference to an object of type `IManualRegularizationConfig` that allows
              *                              further configuration of the regularization term
              */
-            virtual IManualRegularizationConfig& setRegularizationWeight(float64 regularizationWeight) = 0;
+            virtual IManualRegularizationConfig& setRegularizationWeight(float32 regularizationWeight) = 0;
     };
 
     /**
@@ -42,17 +42,17 @@ namespace boosting {
                                              public IManualRegularizationConfig {
         private:
 
-            float64 regularizationWeight_;
+            float32 regularizationWeight_;
 
         public:
 
             ManualRegularizationConfig();
 
-            float64 getRegularizationWeight() const override;
+            float32 getRegularizationWeight() const override;
 
-            IManualRegularizationConfig& setRegularizationWeight(float64 regularizationWeight) override;
+            IManualRegularizationConfig& setRegularizationWeight(float32 regularizationWeight) override;
 
-            float64 getWeight() const override;
+            float32 getWeight() const override;
     };
 
 }

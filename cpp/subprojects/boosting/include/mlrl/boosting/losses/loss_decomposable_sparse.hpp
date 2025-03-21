@@ -3,8 +3,8 @@
  */
 #pragma once
 
+#include "mlrl/boosting/data/statistic.hpp"
 #include "mlrl/boosting/losses/loss_decomposable.hpp"
-#include "mlrl/common/data/tuple.hpp"
 #include "mlrl/common/data/view_matrix_sparse_set.hpp"
 #include "mlrl/common/measures/measure_evaluation_sparse.hpp"
 
@@ -16,15 +16,18 @@ namespace boosting {
      * Defines an interface for all decomposable loss functions that are suited for the use of sparse data structures.
      * To meet this requirement, the gradients and Hessians that are computed by the loss function should be zero, if
      * the prediction for a label is correct.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
-    class ISparseDecomposableClassificationLoss : virtual public IDecomposableClassificationLoss,
-                                                  public ISparseEvaluationMeasure {
+    template<typename StatisticType>
+    class ISparseDecomposableClassificationLoss : virtual public IDecomposableClassificationLoss<StatisticType>,
+                                                  public ISparseEvaluationMeasure<StatisticType> {
         public:
 
             virtual ~ISparseDecomposableClassificationLoss() override {}
 
             // Keep functions from the parent class rather than hiding them
-            using IDecomposableClassificationLoss::updateDecomposableStatistics;
+            using IDecomposableClassificationLoss<StatisticType>::updateDecomposableStatistics;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -41,10 +44,10 @@ namespace boosting {
              */
             virtual void updateDecomposableStatistics(uint32 exampleIndex,
                                                       const CContiguousView<const uint8>& labelMatrix,
-                                                      const SparseSetView<float64>& scoreMatrix,
+                                                      const SparseSetView<StatisticType>& scoreMatrix,
                                                       CompleteIndexVector::const_iterator indicesBegin,
                                                       CompleteIndexVector::const_iterator indicesEnd,
-                                                      SparseSetView<Tuple<float64>>& statisticView) const = 0;
+                                                      SparseSetView<Statistic<StatisticType>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -61,10 +64,10 @@ namespace boosting {
              */
             virtual void updateDecomposableStatistics(uint32 exampleIndex,
                                                       const CContiguousView<const uint8>& labelMatrix,
-                                                      const SparseSetView<float64>& scoreMatrix,
+                                                      const SparseSetView<StatisticType>& scoreMatrix,
                                                       PartialIndexVector::const_iterator indicesBegin,
                                                       PartialIndexVector::const_iterator indicesEnd,
-                                                      SparseSetView<Tuple<float64>>& statisticView) const = 0;
+                                                      SparseSetView<Statistic<StatisticType>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -80,10 +83,10 @@ namespace boosting {
              * @param statisticView A reference to an object of type `SparseSetView` to be updated
              */
             virtual void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                      const SparseSetView<float64>& scoreMatrix,
+                                                      const SparseSetView<StatisticType>& scoreMatrix,
                                                       CompleteIndexVector::const_iterator indicesBegin,
                                                       CompleteIndexVector::const_iterator indicesEnd,
-                                                      SparseSetView<Tuple<float64>>& statisticView) const = 0;
+                                                      SparseSetView<Statistic<StatisticType>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -99,18 +102,22 @@ namespace boosting {
              * @param statisticView A reference to an object of type `SparseSetView` to be updated
              */
             virtual void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                      const SparseSetView<float64>& scoreMatrix,
+                                                      const SparseSetView<StatisticType>& scoreMatrix,
                                                       PartialIndexVector::const_iterator indicesBegin,
                                                       PartialIndexVector::const_iterator indicesEnd,
-                                                      SparseSetView<Tuple<float64>>& statisticView) const = 0;
+                                                      SparseSetView<Statistic<StatisticType>>& statisticView) const = 0;
     };
 
     /**
      * Defines an interface for all factories that allow to create instances of the type
      * `ISparseDecomposableClassificationLoss`.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians that are calculated by the loss function
      */
-    class ISparseDecomposableClassificationLossFactory : public IDecomposableClassificationLossFactory,
-                                                         public ISparseEvaluationMeasureFactory {
+    template<typename StatisticType>
+    class ISparseDecomposableClassificationLossFactory
+        : virtual public IDecomposableClassificationLossFactory<StatisticType>,
+          virtual public ISparseEvaluationMeasureFactory<StatisticType> {
         public:
 
             virtual ~ISparseDecomposableClassificationLossFactory() override {}
@@ -121,13 +128,13 @@ namespace boosting {
              * @return An unique pointer to an object of type `ISparseDecomposableClassificationLoss` that has been
              *         created
              */
-            virtual std::unique_ptr<ISparseDecomposableClassificationLoss> createSparseDecomposableClassificationLoss()
-              const = 0;
+            virtual std::unique_ptr<ISparseDecomposableClassificationLoss<StatisticType>>
+              createSparseDecomposableClassificationLoss() const = 0;
 
             /**
              * @see `IDecomposableClassificationLossFactory::createDecomposableClassificationLoss`
              */
-            std::unique_ptr<IDecomposableClassificationLoss> createDecomposableClassificationLoss()
+            std::unique_ptr<IDecomposableClassificationLoss<StatisticType>> createDecomposableClassificationLoss()
               const override final {
                 return this->createSparseDecomposableClassificationLoss();
             }
@@ -135,7 +142,8 @@ namespace boosting {
             /**
              * @see `ISparseEvaluationMeasureFactory::createSparseEvaluationMeasure`
              */
-            std::unique_ptr<ISparseEvaluationMeasure> createSparseEvaluationMeasure() const override final {
+            std::unique_ptr<ISparseEvaluationMeasure<StatisticType>> createSparseEvaluationMeasure()
+              const override final {
                 return this->createSparseDecomposableClassificationLoss();
             }
     };
@@ -147,31 +155,70 @@ namespace boosting {
     class ISparseDecomposableClassificationLossConfig : public IDecomposableClassificationLossConfig {
         public:
 
+            /**
+             * Provides access to the interface of an `ISparseDecomposableClassificationLossConfig`, abstracting away
+             * certain configuration options that have already been pre-determined.
+             *
+             * @tparam StatisticType The type that should be used for representing statistics
+             */
+            template<typename StatisticType>
+            class IPreset : public IDecomposableClassificationLossConfig::IPreset<StatisticType> {
+                public:
+
+                    virtual ~IPreset() override {}
+
+                    /**
+                     * Creates and returns a new object of type `ISparseDecomposableClassificationLossFactory` according
+                     * to the specified configuration.
+                     *
+                     * @return An unique pointer to an object of type `ISparseDecomposableClassificationLossFactory`
+                     *         that has been created
+                     */
+                    virtual std::unique_ptr<ISparseDecomposableClassificationLossFactory<StatisticType>>
+                      createSparseDecomposableClassificationLossFactory() const = 0;
+
+                    /**
+                     * Creates and returns a new object of type `ISparseEvaluationMeasureFactory` according to the
+                     * specified configuration.
+                     *
+                     * @return An unique pointer to an object of type `ISparseEvaluationMeasureFactory` that has been
+                     *         created
+                     */
+                    std::unique_ptr<ISparseEvaluationMeasureFactory<StatisticType>>
+                      createSparseEvaluationMeasureFactory() const {
+                        return this->createSparseDecomposableClassificationLossFactory();
+                    }
+
+                    std::unique_ptr<IDecomposableClassificationLossFactory<StatisticType>>
+                      createDecomposableClassificationLossFactory() const override final {
+                        return this->createSparseDecomposableClassificationLossFactory();
+                    }
+            };
+
             virtual ~ISparseDecomposableClassificationLossConfig() override {}
 
             /**
-             * Creates and returns a new object of type `ISparseDecomposableClassificationLossFactory` according to the
-             * specified configuration.
+             * Creates and returns a new object of type `IPreset<float32>`.
              *
-             * @return An unique pointer to an object of type `ISparseDecomposableClassificationLossFactory` that has
-             *         been created
+             * @return An unique pointer to an object of type `IPreset<float32>` that has been created
              */
-            virtual std::unique_ptr<ISparseDecomposableClassificationLossFactory>
-              createSparseDecomposableClassificationLossFactory() const = 0;
+            virtual std::unique_ptr<IPreset<float32>> createSparseDecomposable32BitClassificationPreset() const = 0;
 
             /**
-             * Creates and returns a new object of type `ISparseEvaluationMeasureFactory` according to the specified
-             * configuration.
+             * Creates and returns a new object of type `IPreset<float64>`.
              *
-             * @return An unique pointer to an object of type `ISparseEvaluationMeasureFactory` that has been created
+             * @return An unique pointer to an object of type `IPreset<float64>` that has been created
              */
-            std::unique_ptr<ISparseEvaluationMeasureFactory> createSparseEvaluationMeasureFactory() const {
-                return this->createSparseDecomposableClassificationLossFactory();
+            virtual std::unique_ptr<IPreset<float64>> createSparseDecomposable64BitClassificationPreset() const = 0;
+
+            std::unique_ptr<IDecomposableClassificationLossConfig::IPreset<float32>>
+              createDecomposable32BitClassificationPreset() const override final {
+                return this->createSparseDecomposable32BitClassificationPreset();
             }
 
-            std::unique_ptr<IDecomposableClassificationLossFactory> createDecomposableClassificationLossFactory()
-              const override final {
-                return this->createSparseDecomposableClassificationLossFactory();
+            std::unique_ptr<IDecomposableClassificationLossConfig::IPreset<float64>>
+              createDecomposable64BitClassificationPreset() const override final {
+                return this->createSparseDecomposable64BitClassificationPreset();
             }
 
             bool isSparse() const override final {

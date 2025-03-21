@@ -117,23 +117,24 @@ class CmdBuilder:
         :param callback:                The callback that should be notified about test failures
         :param expected_output_dir:     The path to the directory that contains the file with the expected output
         :param model_file_name:         The name of files storing models that have been saved to disk (without suffix)
-        :param runnable_module_name:    The fully qualified name of the runnable to be invoked by the 'testbed' program
-        :param runnable_class_name:     The class name of the runnable to be invoked by the 'testbed' program
-        :param data_dir:                The path to the directory that stores the dataset files
+        :param runnable_module_name:    The fully qualified name of the runnable to be invoked by the program
+                                        'mlrl-testbed'
+        :param runnable_class_name:     The class name of the runnable to be invoked by the program 'mlrl-testbed'
+        :param data_dir:                The path of the directory that stores the dataset files
         :param dataset:                 The name of the dataset
         """
         self.callback = callback
         self.expected_output_dir = expected_output_dir
         self.model_file_name = model_file_name
         self.output_dir = None
-        self.parameter_dir = None
+        self.parameter_load_dir = None
+        self.parameter_save_dir = None
         self.model_dir = None
         self.num_folds = 0
         self.current_fold = 0
         self.training_data_evaluated = False
         self.separate_train_test_sets = True
         self.evaluation_stored = True
-        self.parameters_stored = False
         self.predictions_stored = False
         self.prediction_characteristics_stored = False
         self.data_characteristics_stored = False
@@ -147,7 +148,7 @@ class CmdBuilder:
 
     @staticmethod
     def __create_args(runnable_module_name: str, runnable_class_name: Optional[str], data_dir: str, dataset: str):
-        args = ['testbed', runnable_module_name]
+        args = ['mlrl-testbed', runnable_module_name]
 
         if runnable_class_name:
             args.extend(['-r', runnable_class_name])
@@ -229,8 +230,8 @@ class CmdBuilder:
         """
         Asserts that the parameter files, which should be created by a command, exist.
         """
-        if self.parameters_stored:
-            self._assert_files_exist(self.parameter_dir, 'parameters', 'csv')
+        if self.parameter_save_dir:
+            self._assert_files_exist(self.parameter_save_dir, 'parameters', 'csv')
 
     def __assert_prediction_files_exist(self):
         """
@@ -428,23 +429,37 @@ class CmdBuilder:
         self.model_dir = model_dir
 
         if model_dir is not None:
-            self.args.append('--model-dir')
+            self.args.append('--model-load-dir')
+            self.args.append(model_dir)
+            self.args.append('--model-save-dir')
             self.args.append(model_dir)
             self.tmp_dirs.append(model_dir)
         return self
 
-    def set_parameter_dir(self, parameter_dir: Optional[str] = DIR_IN):
+    def set_parameter_load_dir(self, parameter_dir: Optional[str] = DIR_IN):
         """
         Configures the rule learner to load parameter settings from a given directory, if available.
 
-        :param parameter_dir:   The path to the directory, where parameter settings are stored
+        :param parameter_dir:   The path of the directory from which parameter settings should be loaded
         :return:                The builder itself
         """
-        self.parameter_dir = parameter_dir
+        self.parameter_load_dir = parameter_dir
 
         if parameter_dir is not None:
-            self.args.append('--parameter-dir')
+            self.args.append('--parameter-load-dir')
             self.args.append(parameter_dir)
+        return self
+
+    def set_parameter_save_dir(self, parameter_dir: Optional[str] = DIR_RESULTS):
+        """
+        Configures the rule learner to save parameter settings to a given directory.
+
+        :param parameter_dir:   The path of the directory to which parameter settings should be saved
+        :return:                The builder itself
+        """
+        self.parameter_save_dir = parameter_dir
+        self.args.append('--parameter-save-dir')
+        self.args.append(parameter_dir)
         return self
 
     def no_data_split(self):
@@ -549,18 +564,6 @@ class CmdBuilder:
         """
         self.args.append('--print-parameters')
         self.args.append(str(print_parameters).lower())
-        return self
-
-    def store_parameters(self, store_parameters: bool = True):
-        """
-        Configures whether the parameters should be written into output files or not.
-
-        :param store_parameters:    True, if the parameters should be written into output files, False otherwise
-        :return:                    The builder itself
-        """
-        self.parameters_stored = store_parameters
-        self.args.append('--store-parameters')
-        self.args.append(str(store_parameters).lower())
         return self
 
     def print_predictions(self, print_predictions: bool = True):
