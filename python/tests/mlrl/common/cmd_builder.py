@@ -120,7 +120,7 @@ class CmdBuilder:
         :param runnable_module_name:    The fully qualified name of the runnable to be invoked by the program
                                         'mlrl-testbed'
         :param runnable_class_name:     The class name of the runnable to be invoked by the program 'mlrl-testbed'
-        :param data_dir:                The path of the directory that stores the dataset files
+        :param data_dir:                The path to the directory that stores the dataset files
         :param dataset:                 The name of the dataset
         """
         self.callback = callback
@@ -440,7 +440,7 @@ class CmdBuilder:
         """
         Configures the rule learner to load parameter settings from a given directory, if available.
 
-        :param parameter_dir:   The path of the directory from which parameter settings should be loaded
+        :param parameter_dir:   The path to the directory from which parameter settings should be loaded
         :return:                The builder itself
         """
         self.parameter_load_dir = parameter_dir
@@ -454,7 +454,7 @@ class CmdBuilder:
         """
         Configures the rule learner to save parameter settings to a given directory.
 
-        :param parameter_dir:   The path of the directory to which parameter settings should be saved
+        :param parameter_dir:   The path to the directory to which parameter settings should be saved
         :return:                The builder itself
         """
         self.parameter_save_dir = parameter_dir

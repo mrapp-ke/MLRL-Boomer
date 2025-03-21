@@ -645,13 +645,13 @@ class LearnerRunnable(Runnable, ABC):
                             + 'one of ' + format_enum_values(BooleanOption) + '.')
         parser.add_argument('--model-load-dir',
                             type=str,
-                            help='The path of the directory from which models should be loaded.')
+                            help='The path to the directory from which models should be loaded.')
         parser.add_argument('--model-save-dir',
                             type=str,
-                            help='The path of the directory to which models should be saved.')
+                            help='The path to the directory to which models should be saved.')
         parser.add_argument('--parameter-load-dir',
                             type=str,
-                            help='The path of the directory from which parameter to be used by the algorith should be '
+                            help='The path to the directory from which parameter to be used by the algorith should be '
                             + 'loaded.')
         parser.add_argument('--parameter-save-dir',
                             type=str,
