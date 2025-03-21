@@ -46,9 +46,10 @@ class SemanticVersion:
 
     def __str__(self) -> str:
         version = str(self.major) + '.' + str(self.minor) + '.' + str(self.patch)
+        dev = self.dev
 
-        if self.dev is not None:
-            version += '.dev' + str(self.dev)
+        if dev is not None:
+            version += '.dev' + str(dev)
 
         return version
 

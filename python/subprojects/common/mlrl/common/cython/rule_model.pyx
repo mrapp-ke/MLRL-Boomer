@@ -383,7 +383,7 @@ cdef class RuleList(RuleModel):
     cdef unique_ptr[IBody] __deserialize_body(self, object body_state):
         cdef unique_ptr[IBody] body_ptr
 
-        if body_state is not None:
+        if body_state:
             body_ptr = move(self.__deserialize_conjunctive_body(body_state))
 
         return move(body_ptr)
