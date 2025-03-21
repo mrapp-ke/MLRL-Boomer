@@ -25,7 +25,7 @@ INFO Evaluation result for test data:
 
 Mean Absolute Error               30.38
 Mean Absolute Percentage Error     2.09
-Mean Squared Error              2080.93
-Median Absolute Error             18.94
+Mean Squared Error              2078.35
+Median Absolute Error             19.22
 
 INFO Successfully finished after <duration>

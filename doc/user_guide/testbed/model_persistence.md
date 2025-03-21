@@ -2,28 +2,30 @@
 
 # Saving and Loading Models
 
-Because the training of machine learning models can be time-consuming, they are usually trained once and then reused later for making predictions. For this purpose, the command line API provides means to store models on disk and load them from the created files later on. This requires to specify the path to a directory, where models should be saved, via the command line argument `--model-dir`:
+Because the training of machine learning models can be time-consuming, they are usually trained once and then reused later for making predictions. For this purpose, the command line API provides means to store models on disk and load them from the created files later on. This requires to specify the path of a directory to which models should be saved, as well as a directory from which models should be loaded, via the command line arguments `--model-save-dir` and `--model-load-dir`, respectively:
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --model-dir /path/to/models
+       --model-save-dir /path/to/models \
+       --model-load-dir /path/to/models
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --model-dir /path/to/models
+       --model-save-dir /path/to/models \
+       --model-load-dir /path/to/models
    ```
 ````
 
 ```{note}
-The path to the directory, where models should be saved, can be either absolute or relative to the working directory.
+The paths of the directories specified via the arguments `--model-save-dir` and `--model-load-dir` can be either absolute or relative to the working directory. They must not refer to the same directory, which allows saving models to a different directory than the one they are loaded from. 
 ```
 
 If {ref}`train-test splits<train-test-split>` are used for evaluating the predictive performance of models, a single model is fit to the training data and stored in a file:
