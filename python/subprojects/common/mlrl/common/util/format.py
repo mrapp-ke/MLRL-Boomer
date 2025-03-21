@@ -17,7 +17,8 @@ def format_iterable(objects: Iterable[Any], separator: str = ', ', delimiter: st
     :param delimiter:   The string that should be added at the beginning and end of each object
     :return:            The textual representation that has been created
     """
-    return reduce(lambda a, b: a + (separator if len(a) > 0 else '') + delimiter + str(b) + delimiter, objects, '')
+    return reduce(lambda aggr, obj: aggr + (separator
+                                            if len(aggr) > 0 else '') + delimiter + str(obj) + delimiter, objects, '')
 
 
 def format_enum_values(enum: Enum) -> str:
