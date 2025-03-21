@@ -3,20 +3,21 @@
 #include "mlrl/common/data/array.hpp"
 #include "mlrl/common/util/math.hpp"
 
-static inline void sortByThresholdsAndEliminateDuplicates(ListOfLists<Tuple<float64>>::row bins) {
+static inline void sortByThresholdsAndEliminateDuplicates(ListOfLists<std::pair<float64, float64>>::row bins) {
     // Sort bins in increasing order by their threshold...
-    std::sort(bins.begin(), bins.end(), [=](const Tuple<float64>& lhs, const Tuple<float64>& rhs) {
+    std::sort(bins.begin(), bins.end(),
+              [=](const std::pair<float64, float64>& lhs, const std::pair<float64, float64>& rhs) {
         return lhs.first < rhs.first;
     });
 
     // Aggregate adjacent bins with identical thresholds by averaging their probabilities...
     uint32 numBins = static_cast<uint32>(bins.size());
     uint32 previousIndex = 0;
-    Tuple<float64> previousBin = bins[previousIndex];
+    std::pair<float64, float64> previousBin = bins[previousIndex];
     uint32 n = 0;
 
     for (uint32 j = 1; j < numBins; j++) {
-        const Tuple<float64>& currentBin = bins[j];
+        const std::pair<float64, float64>& currentBin = bins[j];
 
         if (isEqual(currentBin.first, previousBin.first)) {
             uint32 numAggregated = j - previousIndex + 1;
@@ -34,7 +35,7 @@ static inline void sortByThresholdsAndEliminateDuplicates(ListOfLists<Tuple<floa
     bins.resize(n);
 }
 
-static inline void aggregateNonIncreasingBins(ListOfLists<Tuple<float64>>::row bins) {
+static inline void aggregateNonIncreasingBins(ListOfLists<std::pair<float64, float64>>::row bins) {
     // We apply the "pool adjacent violators algorithm" (PAVA) to merge adjacent bins with non-increasing
     // probabilities. A temporary array `pools` is used to mark the beginning and end of subsequences with
     // non-increasing probabilities. If such a subsequence was found in range [i, j] then `pools[i] = j` and
@@ -46,8 +47,8 @@ static inline void aggregateNonIncreasingBins(ListOfLists<Tuple<float64>>::row b
     uint32 j = 0;
 
     while (i < numBins && j < numBins && (j = pools[i] + 1) < numBins) {
-        Tuple<float64>& previousBin = bins[i];
-        Tuple<float64>& currentBin = bins[j];
+        std::pair<float64, float64>& previousBin = bins[i];
+        std::pair<float64, float64>& currentBin = bins[j];
 
         // Check if the probabilities of the adjacent bins are monotonically increasing...
         if (currentBin.second > previousBin.second) {
@@ -63,7 +64,7 @@ static inline void aggregateNonIncreasingBins(ListOfLists<Tuple<float64>>::row b
 
             // Search for the end of the non-increasing subsequence...
             while ((j = pools[j] + 1) < numBins) {
-                Tuple<float64>& nextBin = bins[j];
+                std::pair<float64, float64>& nextBin = bins[j];
 
                 if (nextBin.second > currentBin.second) {
                     // We reached the end of the non-increasing subsequence...
@@ -101,26 +102,29 @@ static inline void aggregateNonIncreasingBins(ListOfLists<Tuple<float64>>::row b
     bins.shrink_to_fit();
 }
 
-static inline float64 calibrateProbability(ListOfLists<Tuple<float64>>::const_row bins, float64 probability) {
+static inline float64 calibrateProbability(ListOfLists<std::pair<float64, float64>>::const_row bins,
+                                           float64 probability) {
     // Find the bins that impose a lower and upper bound on the probability...
-    ListOfLists<Tuple<float64>>::value_const_iterator begin = bins.cbegin();
-    ListOfLists<Tuple<float64>>::value_const_iterator end = bins.cend();
-    ListOfLists<Tuple<float64>>::value_const_iterator it =
-      std::lower_bound(begin, end, probability, [=](const Tuple<float64>& lhs, const float64& rhs) {
+    ListOfLists<std::pair<float64, float64>>::value_const_iterator begin = bins.cbegin();
+    ListOfLists<std::pair<float64, float64>>::value_const_iterator end = bins.cend();
+    ListOfLists<std::pair<float64, float64>>::value_const_iterator it =
+      std::lower_bound(begin, end, probability, [=](const std::pair<float64, float64>& lhs, const float64& rhs) {
         return lhs.first < rhs;
     });
     uint32 offset = it - begin;
-    Tuple<float64> lowerBound;
-    Tuple<float64> upperBound;
+    std::pair<float64, float64> lowerBound;
+    std::pair<float64, float64> upperBound;
 
     if (it == end) {
         lowerBound = begin[offset - 1];
-        upperBound = 1;
+        upperBound.first = 1;
+        upperBound.second = 1;
     } else {
         if (offset > 0) {
             lowerBound = begin[offset - 1];
         } else {
-            lowerBound = 0;
+            lowerBound.first = 0;
+            lowerBound.second = 0;
         }
 
         upperBound = *it;
@@ -132,8 +136,8 @@ static inline float64 calibrateProbability(ListOfLists<Tuple<float64>>::const_ro
 }
 
 IsotonicProbabilityCalibrationModel::IsotonicProbabilityCalibrationModel(uint32 numLists)
-    : IterableListOfListsDecorator<ViewDecorator<AllocatedListOfLists<Tuple<float64>>>>(
-        AllocatedListOfLists<Tuple<float64>>(numLists, 0)) {}
+    : IterableListOfListsDecorator<ViewDecorator<AllocatedListOfLists<std::pair<float64, float64>>>>(
+        AllocatedListOfLists<std::pair<float64, float64>>(numLists, 0)) {}
 
 void IsotonicProbabilityCalibrationModel::fit() {
     uint32 numLists = this->getNumBinLists();
@@ -171,7 +175,7 @@ void IsotonicProbabilityCalibrationModel::visit(BinVisitor visitor) const {
         const_row bins = (*this)[i];
 
         for (auto it = bins.cbegin(); it != bins.cend(); it++) {
-            const Tuple<float64>& bin = *it;
+            const std::pair<float64, float64>& bin = *it;
             visitor(i, bin.first, bin.second);
         }
     }

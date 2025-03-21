@@ -7,7 +7,7 @@ import logging as log
 import sys
 
 from abc import ABC, abstractmethod
-from argparse import ArgumentParser
+from argparse import ArgumentError, ArgumentParser
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, Iterable, List, Optional, Set
@@ -15,12 +15,12 @@ from typing import Dict, Iterable, List, Optional, Set
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
     RegressorMixin as SkLearnRegressorMixin
 
-from mlrl.common.config import NONE, Parameter, configure_argument_parser, create_kwargs_from_parameters
+from mlrl.common.config.options import BooleanOption, parse_param_and_options
+from mlrl.common.config.parameters import NONE, Parameter
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
-from mlrl.common.format import format_dict_keys, format_enum_values, format_iterable
-from mlrl.common.info import PythonPackageInfo
-from mlrl.common.options import BooleanOption, parse_param_and_options
-from mlrl.common.rule_learners import KWARG_SPARSE_FEATURE_VALUE, SparsePolicy
+from mlrl.common.learners import RuleLearner, SparsePolicy
+from mlrl.common.package_info import PythonPackageInfo
+from mlrl.common.util.format import format_dict_keys, format_enum_values, format_iterable
 
 from mlrl.testbed.characteristics import OPTION_DISTINCT_LABEL_VECTORS, OPTION_LABEL_CARDINALITY, \
     OPTION_LABEL_IMBALANCE_RATIO, OPTION_OUTPUT_DENSITY, OPTION_OUTPUT_SPARSITY, OPTION_OUTPUTS
@@ -38,7 +38,6 @@ from mlrl.testbed.evaluation import OPTION_ACCURACY, OPTION_COVERAGE_ERROR, OPTI
     BinaryEvaluationWriter, EvaluationWriter, RankingEvaluationWriter, RegressionEvaluationWriter
 from mlrl.testbed.experiments import Evaluation, Experiment, GlobalEvaluation, IncrementalEvaluation
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
-from mlrl.testbed.info import get_package_info as get_testbed_package_info
 from mlrl.testbed.io import clear_directory
 from mlrl.testbed.label_vectors import OPTION_SPARSE, LabelVectorSetWriter, LabelVectorWriter
 from mlrl.testbed.model_characteristics import ModelCharacteristicsWriter, RuleModelCharacteristicsWriter
@@ -46,8 +45,9 @@ from mlrl.testbed.models import OPTION_DECIMALS_BODY, OPTION_DECIMALS_HEAD, OPTI
     OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_HEADS, OPTION_PRINT_NOMINAL_VALUES, OPTION_PRINT_OUTPUT_NAMES, \
     ModelWriter, RuleModelWriter
 from mlrl.testbed.output_writer import OutputWriter
-from mlrl.testbed.parameters import ParameterCsvInput, ParameterInput, ParameterWriter
-from mlrl.testbed.persistence import ModelPersistence
+from mlrl.testbed.package_info import get_package_info as get_testbed_package_info
+from mlrl.testbed.parameters import CsvParameterLoader, ParameterLoader, ParameterWriter
+from mlrl.testbed.persistence import ModelLoader, ModelSaver
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsWriter
 from mlrl.testbed.prediction_scope import PredictionType
 from mlrl.testbed.predictions import PredictionWriter
@@ -643,8 +643,17 @@ class LearnerRunnable(Runnable, ABC):
                             default=False,
                             help='Whether one-hot-encoding should be used to encode nominal features or not. Must be '
                             + 'one of ' + format_enum_values(BooleanOption) + '.')
-        parser.add_argument('--model-dir', type=str, help='The path to the directory where models should be stored.')
-        parser.add_argument('--parameter-dir',
+        parser.add_argument('--model-load-dir',
+                            type=str,
+                            help='The path to the directory from which models should be loaded.')
+        parser.add_argument('--model-save-dir',
+                            type=str,
+                            help='The path to the directory to which models should be saved.')
+        parser.add_argument('--parameter-load-dir',
+                            type=str,
+                            help='The path to the directory from which parameter to be used by the algorith should be '
+                            + 'loaded.')
+        parser.add_argument('--parameter-save-dir',
                             type=str,
                             help='The path to the directory where configuration files, which specify the parameters to '
                             + 'be used by the algorithm, are located.')
@@ -656,12 +665,6 @@ class LearnerRunnable(Runnable, ABC):
                             default=False,
                             help='Whether the parameter setting should be printed on the console or not. Must be one '
                             + 'of ' + format_enum_values(BooleanOption) + '.')
-        parser.add_argument('--store-parameters',
-                            type=BooleanOption.parse,
-                            default=False,
-                            help='Whether the parameter setting should be written into output files or not. Must be '
-                            + 'one of ' + format_enum_values(BooleanOption) + '. Does only have an effect, if the '
-                            + 'parameter ' + self.PARAM_OUTPUT_DIR + ' is specified.')
         parser.add_argument(self.PARAM_PRINT_PREDICTIONS,
                             type=str,
                             default=BooleanOption.FALSE.value,
@@ -691,8 +694,9 @@ class LearnerRunnable(Runnable, ABC):
         pre_execution_hook = self.__create_pre_execution_hook(args, data_splitter)
         pre_training_output_writers = self._create_pre_training_output_writers(args)
         post_training_output_writers = self._create_post_training_output_writers(args)
-        parameter_input = self._create_parameter_input(args)
-        persistence = self._create_persistence(args)
+        parameter_loader = self._create_parameter_loader(args)
+        model_loader = self._create_model_loader(args)
+        model_saver = self._create_model_saver(args)
         experiment = self._create_experiment(args,
                                              problem_type=problem_type,
                                              base_learner=base_learner,
@@ -703,8 +707,9 @@ class LearnerRunnable(Runnable, ABC):
                                              pre_training_output_writers=pre_training_output_writers,
                                              post_training_output_writers=post_training_output_writers,
                                              pre_execution_hook=pre_execution_hook,
-                                             parameter_input=parameter_input,
-                                             persistence=persistence)
+                                             parameter_loader=parameter_loader,
+                                             model_loader=model_loader,
+                                             model_saver=model_saver)
         experiment.run()
 
     # pylint: disable=unused-argument
@@ -713,8 +718,8 @@ class LearnerRunnable(Runnable, ABC):
                            post_training_output_writers: List[OutputWriter],
                            pre_execution_hook: Optional[Experiment.ExecutionHook],
                            train_evaluation: Optional[Evaluation], test_evaluation: Optional[Evaluation],
-                           parameter_input: Optional[ParameterInput],
-                           persistence: Optional[ModelPersistence]) -> Experiment:
+                           parameter_loader: Optional[ParameterLoader], model_loader: Optional[ModelLoader],
+                           model_saver: Optional[ModelSaver]) -> Experiment:
         """
         May be overridden by subclasses in order to create the `Experiment` that should be run.
 
@@ -731,8 +736,9 @@ class LearnerRunnable(Runnable, ABC):
                                                 data or None, if the predictions should not be evaluated
         :param test_evaluation:                 The method to be used for evaluating the predictions for the test data
                                                 or None, if the predictions should not be evaluated
-        :param parameter_input:                 The input that should be used to read the parameter settings
-        :param persistence:                     The `ModelPersistence` that should be used for loading and saving models
+        :param parameter_loader:                The `ParameterLoader` that should be used to read the parameter settings
+        :param model_loader:                    The `ModelLoader` that should be used for loading models
+        :param model_saver:                     The `ModelSaver` that should be used for saving models
         :return:                                The `Experiment` that has been created
         """
         return Experiment(problem_type=problem_type,
@@ -744,8 +750,9 @@ class LearnerRunnable(Runnable, ABC):
                           pre_execution_hook=pre_execution_hook,
                           train_evaluation=train_evaluation,
                           test_evaluation=test_evaluation,
-                          parameter_input=parameter_input,
-                          persistence=persistence)
+                          parameter_loader=parameter_loader,
+                          model_loader=model_loader,
+                          model_saver=model_saver)
 
     def _create_pre_training_output_writers(self, args) -> List[OutputWriter]:
         """
@@ -813,15 +820,23 @@ class LearnerRunnable(Runnable, ABC):
 
         return output_writers
 
-    def _create_persistence(self, args) -> Optional[ModelPersistence]:
+    def _create_model_loader(self, args) -> Optional[ModelLoader]:
         """
-        May be overridden by subclasses in order to create the `ModelPersistence` that should be used to save and load
-        models.
+        May be overridden by subclasses in order to create the `ModelLoader` that should be used for loading models.
 
         :param args:    The command line arguments
-        :return:        The `ModelPersistence` that has been created
+        :return:        The `ModelLoader` that has been created
         """
-        return None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
+        return None if args.model_load_dir is None else ModelLoader(args.model_load_dir)
+
+    def _create_model_saver(self, args) -> Optional[ModelSaver]:
+        """
+        May be overridden by subclasses in order to create the `ModelSaver` that should be used for saving models.
+
+        :param args:    The command line arguments
+        :return:        The `ModelSaver` that has been created
+        """
+        return None if args.model_save_dir is None else ModelSaver(args.model_save_dir)
 
     def _create_train_evaluation(self, args, problem_type: ProblemType,
                                  prediction_type: PredictionType) -> Optional[Evaluation]:
@@ -902,15 +917,15 @@ class LearnerRunnable(Runnable, ABC):
             return RankingEvaluationWriter(sinks)
         return BinaryEvaluationWriter(sinks)
 
-    def _create_parameter_input(self, args) -> Optional[ParameterInput]:
+    def _create_parameter_loader(self, args) -> Optional[ParameterLoader]:
         """
-        May be overridden by subclasses in order to create the `ParameterInput` that should be used to load parameter
-        settings.
+        May be overridden by subclasses in order to create the `ParameterLoader` that should be used for loading
+        parameter settings.
 
         :param args:    The command line arguments
-        :return:        The `ParameterInput` that has been created
+        :return:        The `ParameterLoader` that has been created
         """
-        return None if args.parameter_dir is None else ParameterCsvInput(input_dir=args.parameter_dir)
+        return None if args.parameter_load_dir is None else CsvParameterLoader(input_dir=args.parameter_load_dir)
 
     def _create_parameter_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -925,8 +940,8 @@ class LearnerRunnable(Runnable, ABC):
         if args.print_parameters:
             sinks.append(ParameterWriter.LogSink())
 
-        if args.store_parameters and args.parameter_dir is not None:
-            sinks.append(ParameterWriter.CsvSink(output_dir=args.parameter_dir))
+        if args.parameter_save_dir is not None:
+            sinks.append(ParameterWriter.CsvSink(output_dir=args.parameter_save_dir))
 
         return ParameterWriter(sinks) if len(sinks) > 0 else None
 
@@ -1143,6 +1158,22 @@ class RuleLearnerRunnable(LearnerRunnable):
         raise RuntimeError('The machine learning algorithm "' + self.learner_name + '" does not support '
                            + problem_type.value + ' problems')
 
+    @staticmethod
+    def __configure_argument_parser(parser: ArgumentParser, config_type: type, parameters: Set[Parameter]):
+        """
+        Configure an `ArgumentParser` by taking into account a given set of parameters.
+
+        :param parser:      The `ArgumentParser` to be configured
+        :param config_type: The type of the configuration that should support the parameters
+        :param parameters:  A set that contains the parameters to be taken into account
+        """
+        for parameter in parameters:
+            try:
+                parameter.add_to_argument_parser(parser, config_type)
+            except ArgumentError:
+                # Argument has already been added, that's okay
+                pass
+
     def configure_problem_specific_arguments(self, parser: ArgumentParser, problem_type: ProblemType):
         super().configure_problem_specific_arguments(parser, problem_type)
         parser.add_argument(self.PARAM_INCREMENTAL_EVALUATION,
@@ -1223,16 +1254,16 @@ class RuleLearnerRunnable(LearnerRunnable):
                             help='The format to be used for the representation of predictions. Must be one of '
                             + format_enum_values(SparsePolicy) + '.')
         config_type, parameters = self.__create_config_type_and_parameters(problem_type)
-        configure_argument_parser(parser, config_type, parameters)
+        self.__configure_argument_parser(parser, config_type, parameters)
 
     def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
                            data_splitter: DataSplitter, pre_training_output_writers: List[OutputWriter],
                            post_training_output_writers: List[OutputWriter],
                            pre_execution_hook: Optional[Experiment.ExecutionHook],
                            train_evaluation: Optional[Evaluation], test_evaluation: Optional[Evaluation],
-                           parameter_input: Optional[ParameterInput],
-                           persistence: Optional[ModelPersistence]) -> Experiment:
-        kwargs = {KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
+                           parameter_loader: Optional[ParameterLoader], model_loader: Optional[ModelLoader],
+                           model_saver: Optional[ModelSaver]) -> Experiment:
+        kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
         return Experiment(problem_type=problem_type,
                           base_learner=base_learner,
                           learner_name=learner_name,
@@ -1242,8 +1273,9 @@ class RuleLearnerRunnable(LearnerRunnable):
                           pre_execution_hook=pre_execution_hook,
                           train_evaluation=train_evaluation,
                           test_evaluation=test_evaluation,
-                          parameter_input=parameter_input,
-                          persistence=persistence,
+                          parameter_loader=parameter_loader,
+                          model_loader=model_loader,
+                          model_saver=model_saver,
                           fit_kwargs=kwargs,
                           predict_kwargs=kwargs)
 
@@ -1265,8 +1297,15 @@ class RuleLearnerRunnable(LearnerRunnable):
 
     @staticmethod
     def __create_kwargs_from_parameters(parameters: Set[Parameter], args):
-        kwargs = create_kwargs_from_parameters(args, parameters)
-        kwargs['random_state'] = args.random_state
+        kwargs = {}
+        args_dict = vars(args)
+
+        for parameter in parameters:
+            parameter_name = parameter.name
+
+            if parameter_name in args_dict:
+                kwargs[parameter_name] = args_dict[parameter_name]
+
         kwargs['feature_format'] = args.feature_format
         kwargs['output_format'] = args.output_format
         kwargs['prediction_format'] = args.prediction_format

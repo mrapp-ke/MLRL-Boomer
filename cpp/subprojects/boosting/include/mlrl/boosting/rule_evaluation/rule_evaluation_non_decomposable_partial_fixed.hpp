@@ -24,13 +24,13 @@ namespace boosting {
 
             const uint32 maxOutputs_;
 
-            const float64 l1RegularizationWeight_;
+            const float32 l1RegularizationWeight_;
 
-            const float64 l2RegularizationWeight_;
+            const float32 l2RegularizationWeight_;
 
-            const Blas& blas_;
+            const BlasFactory& blasFactory_;
 
-            const Lapack& lapack_;
+            const LapackFactory& lapackFactory_;
 
         public:
 
@@ -48,22 +48,31 @@ namespace boosting {
              *                                  scores to be predicted by rules
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
-             * @param blas                      A reference to an object of type `Blas` that allows to execute BLAS
-             *                                  routines
-             * @param lapack                    An reference to an object of type `Lapack` that allows to execute BLAS
-             *                                  routines
+             * @param blasFactory               A reference to an object of type `BlasFactory` that allows to create
+             *                                  objects for executing BLAS routines
+             * @param lapackFactory             An reference to an object of type `LapackFactory` that allows to create
+             *                                  objects for executing BLAS routines
              */
             NonDecomposableFixedPartialRuleEvaluationFactory(float32 outputRatio, uint32 minOutputs, uint32 maxOutputs,
-                                                             float64 l1RegularizationWeight,
-                                                             float64 l2RegularizationWeight, const Blas& blas,
-                                                             const Lapack& lapack);
+                                                             float32 l1RegularizationWeight,
+                                                             float32 l2RegularizationWeight,
+                                                             const BlasFactory& blasFactory,
+                                                             const LapackFactory& lapackFactory);
 
-            std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector>> create(
-              const DenseNonDecomposableStatisticVector& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float32>>> create(
+              const DenseNonDecomposableStatisticVector<float32>& statisticVector,
               const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector>> create(
-              const DenseNonDecomposableStatisticVector& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float32>>> create(
+              const DenseNonDecomposableStatisticVector<float32>& statisticVector,
+              const PartialIndexVector& indexVector) const override;
+
+            std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>> create(
+              const DenseNonDecomposableStatisticVector<float64>& statisticVector,
+              const CompleteIndexVector& indexVector) const override;
+
+            std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>> create(
+              const DenseNonDecomposableStatisticVector<float64>& statisticVector,
               const PartialIndexVector& indexVector) const override;
     };
 
