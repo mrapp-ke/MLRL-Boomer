@@ -76,7 +76,7 @@ class OutputWriter(ABC):
             Must be implemented by subclasses in order to write output data to the sink.
 
             :param problem_type:        The type of the machine learning problem
-            :param meta_data:           The meta data of the data set
+            :param meta_data:           The meta-data of the data set
             :param data_split:          Information about the split of the available data, the output data corresponds
                                         to
             :param data_type:           Specifies whether the predictions and ground truth correspond to the training or
