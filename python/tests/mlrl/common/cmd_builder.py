@@ -157,7 +157,7 @@ class CmdBuilder:
 
     @staticmethod
     def __format_cmd(args: List[str]):
-        return reduce(lambda txt, arg: txt + (' ' + arg if len(txt) > 0 else arg), args, '')
+        return reduce(lambda aggr, arg: aggr + (' ' + arg if len(aggr) > 0 else arg), args, '')
 
     def __run_cmd(self):
         """
