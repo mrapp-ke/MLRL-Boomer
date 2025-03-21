@@ -111,7 +111,7 @@ def load_data_set_and_meta_data(data_dir: str,
     """
     Loads a data set from an ARFF file and the corresponding Mulan XML file.
 
-    :param data_dir:        The path of the directory that contains the files
+    :param data_dir:        The path to the directory that contains the files
     :param arff_file_name:  The name of the ARFF file (including the suffix)
     :param xml_file_name:   The name of the XML file (including the suffix)
     :param feature_dtype:   The requested type of the feature matrix
@@ -152,7 +152,7 @@ def load_data_set(data_dir: str,
     """
     Loads a data set from an ARFF file given its meta-data.
 
-    :param data_dir:        The path of the directory that contains the ARFF file
+    :param data_dir:        The path to the directory that contains the ARFF file
     :param arff_file_name:  The name of the ARFF file (including the suffix)
     :param meta_data:       The meta-data
     :param feature_dtype:   The requested data type of the feature matrix
@@ -175,7 +175,7 @@ def save_data_set_and_meta_data(output_dir: str, arff_file_name: str, xml_file_n
     Saves a data set to an ARFF file and its meta-data to an XML file. All features in the data set are considered to
     be numerical.
 
-    :param output_dir:      The path of the directory where the ARFF file and the XML file should be saved
+    :param output_dir:      The path to the directory where the ARFF file and the XML file should be saved
     :param arff_file_name:  The name of the ARFF file (including the suffix)
     :param xml_file_name:   The name of the XML file (including the suffix)
     :param x:               An array of type `float`, shape `(num_examples, num_features)`, representing the features of
@@ -193,7 +193,7 @@ def save_data_set(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nda
     """
     Saves a data set to an ARFF file. All features in the data set are considered to be numerical.
 
-    :param output_dir:      The path of the directory where the ARFF file should be saved
+    :param output_dir:      The path to the directory where the ARFF file should be saved
     :param arff_file_name:  The name of the ARFF file (including the suffix)
     :param x:               A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                             `(num_examples, num_features)`, that stores the features of the examples that are contained
@@ -217,7 +217,7 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
     """
     Saves a data set to an ARFF file.
 
-    :param output_dir:      The path of the directory where the ARFF file should be saved
+    :param output_dir:      The path to the directory where the ARFF file should be saved
     :param arff_file_name:  The name of the ARFF file (including the suffix)
     :param x:               A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                             `(num_examples, num_features)`, that stores the features of the examples that are contained
@@ -282,7 +282,7 @@ def save_meta_data(output_dir: str, xml_file_name: str, meta_data: MetaData):
     """
     Saves the meta-data of a data set to an XML file.
 
-    :param output_dir:      The path of the directory where the XML file should be saved
+    :param output_dir:      The path to the directory where the XML file should be saved
     :param xml_file_name:   The name of the XML file (including the suffix)
     :param meta_data:       The meta-data of the data set
     """
@@ -369,7 +369,7 @@ def __load_arff(arff_file: str, feature_dtype) -> Tuple[csc_array, list, str]:
     """
     Loads the content of an ARFF file.
 
-    :param arff_file:       The path of the ARFF file (including the suffix)
+    :param arff_file:       The path to the ARFF file (including the suffix)
     :param feature_dtype:   The type, the data should be converted to
     :return:                A `np.sparse.csc_array` of type `feature_dtype`, containing the values in the ARFF file, a
                             list that contains a description of each feature in the ARFF file, as well as its @relation
@@ -398,7 +398,7 @@ def __load_arff_as_dict(arff_file: str, sparse: bool) -> dict:
     """
     Loads the content of an ARFF file.
 
-    :param arff_file:   The path of the ARFF file (including the suffix)
+    :param arff_file:   The path to the ARFF file (including the suffix)
     :param sparse:      True, if the ARFF file is given in sparse format, False otherwise. If the given format is
                         incorrect, a `arff.BadLayout` will be raised
     :return:            A dictionary that stores the content of the ARFF file
@@ -412,7 +412,7 @@ def __parse_outputs_from_xml_file(xml_file) -> List[Output]:
     """
     Parses a Mulan XML file to retrieve information about the outputs contained in a data set.
 
-    :param xml_file:    The path of the XML file (including the suffix)
+    :param xml_file:    The path to the XML file (including the suffix)
     :return:            A list containing the outputs
     """
 
