@@ -125,7 +125,7 @@ def load_data_set_and_meta_data(data_dir: str,
     outputs = None
 
     if path.isfile(xml_file):
-        log.debug('Parsing meta data from file \"%s\"...', xml_file)
+        log.debug('Parsing meta-data from file \"%s\"...', xml_file)
         outputs = __parse_outputs_from_xml_file(xml_file)
     else:
         log.debug(
@@ -287,9 +287,9 @@ def save_meta_data(output_dir: str, xml_file_name: str, meta_data: MetaData):
     :param meta_data:       The meta-data of the data set
     """
     xml_file = path.join(output_dir, xml_file_name)
-    log.debug('Saving meta data to file \'%s\'...', str(xml_file))
+    log.debug('Saving meta-data to file \'%s\'...', str(xml_file))
     __write_meta_data(xml_file, meta_data)
-    log.info('Successfully saved meta data to file \'%s\'.', str(xml_file))
+    log.info('Successfully saved meta-data to file \'%s\'.', str(xml_file))
 
 
 def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
