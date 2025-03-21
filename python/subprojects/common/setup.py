@@ -18,7 +18,7 @@ class PrecompiledExtension(Extension):
     def __init__(self, name: str, path: Path):
         """
         :param name:    The name of the extension module
-        :param path:    The path of the extension module
+        :param path:    The path to the extension module
         """
         super().__init__(name, [])
         self.name = name

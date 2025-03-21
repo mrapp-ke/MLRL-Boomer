@@ -22,7 +22,7 @@ class ModelPersistence:
 
     def __init__(self, model_dir: str):
         """
-        :param model_dir: The path of the directory where models should be saved
+        :param model_dir: The path to the directory where models should be saved
         """
         self.model_dir = model_dir
 

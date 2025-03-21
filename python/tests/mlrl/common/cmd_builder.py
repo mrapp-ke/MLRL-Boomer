@@ -115,11 +115,11 @@ class CmdBuilder:
                  dataset: str = DATASET_EMOTIONS):
         """
         :param callback:                The callback that should be notified about test failures
-        :param expected_output_dir:     The path of the directory that contains the file with the expected output
+        :param expected_output_dir:     The path to the directory that contains the file with the expected output
         :param model_file_name:         The name of files storing models that have been saved to disk (without suffix)
         :param runnable_module_name:    The fully qualified name of the runnable to be invoked by the 'testbed' program
         :param runnable_class_name:     The class name of the runnable to be invoked by the 'testbed' program
-        :param data_dir:                The path of the directory that stores the dataset files
+        :param data_dir:                The path to the directory that stores the dataset files
         :param dataset:                 The name of the dataset
         """
         self.callback = callback
@@ -308,7 +308,7 @@ class CmdBuilder:
         """
         Asserts that a specific file exists.
 
-        :param directory:   The path of the directory where the file should be located
+        :param directory:   The path to the directory where the file should be located
         :param file_name:   The name of the file
         """
         file = path.join(directory, file_name)
@@ -407,7 +407,7 @@ class CmdBuilder:
         """
         Configures the rule learner to store output files in a given directory.
 
-        :param output_dir:  The path of the directory where output files should be stored
+        :param output_dir:  The path to the directory where output files should be stored
         :return:            The builder itself
         """
         self.output_dir = output_dir
@@ -422,7 +422,7 @@ class CmdBuilder:
         """
         Configures the rule learner to store models in a given directory or load them, if available.
 
-        :param model_dir:   The path of the directory where models should be stored
+        :param model_dir:   The path to the directory where models should be stored
         :return:            The builder itself
         """
         self.model_dir = model_dir
@@ -437,7 +437,7 @@ class CmdBuilder:
         """
         Configures the rule learner to load parameter settings from a given directory, if available.
 
-        :param parameter_dir:   The path of the directory, where parameter settings are stored
+        :param parameter_dir:   The path to the directory, where parameter settings are stored
         :return:                The builder itself
         """
         self.parameter_dir = parameter_dir
