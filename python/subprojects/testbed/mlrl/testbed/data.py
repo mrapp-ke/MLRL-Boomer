@@ -19,8 +19,8 @@ from scipy.sparse import coo_array, csc_array, dok_array, lil_array
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 
-from mlrl.common.arrays import is_sparse
-from mlrl.common.data_types import Float32, Uint8
+from mlrl.common.data.arrays import is_sparse
+from mlrl.common.data.types import Float32, Uint8
 
 from mlrl.testbed.io import ENCODING_UTF8, write_xml_file
 

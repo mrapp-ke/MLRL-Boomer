@@ -11,29 +11,32 @@ namespace boosting {
      * their overall quality, based on the gradients and Hessians that are stored by a
      * `DenseNonDecomposableStatisticVector` using L1 and L2 regularization.
      *
-     * @tparam IndexVector The type of the vector that provides access to the indices of the outputs for which
-     *                     predictions should be calculated
+     * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
+     * @tparam IndexVector      The type of the vector that provides access to the indices of the outputs for which
+     *                          predictions should be calculated
      */
-    template<typename IndexVector>
+    template<typename StatisticVector, typename IndexVector>
     class DenseNonDecomposableFixedPartialRuleEvaluation final
-        : public AbstractNonDecomposableRuleEvaluation<DenseNonDecomposableStatisticVector, IndexVector> {
+        : public AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector> {
         private:
+
+            typedef typename StatisticVector::statistic_type statistic_type;
 
             const IndexVector& outputIndices_;
 
             PartialIndexVector indexVector_;
 
-            DenseScoreVector<PartialIndexVector> scoreVector_;
+            DenseScoreVector<statistic_type, PartialIndexVector> scoreVector_;
 
-            const float64 l1RegularizationWeight_;
+            const float32 l1RegularizationWeight_;
 
-            const float64 l2RegularizationWeight_;
+            const float32 l2RegularizationWeight_;
 
-            const Blas& blas_;
+            const std::unique_ptr<Blas<statistic_type>> blasPtr_;
 
-            const Lapack& lapack_;
+            const std::unique_ptr<Lapack<statistic_type>> lapackPtr_;
 
-            SparseArrayVector<float64> tmpVector_;
+            SparseArrayVector<statistic_type> tmpVector_;
 
         public:
 
@@ -45,42 +48,43 @@ namespace boosting {
              *                                  scores to be predicted by rules
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
-             * @param blas                      A reference to an object of type `Blas` that allows to execute BLAS
-             *                                  routines
-             * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
-             *                                  routines
+             * @param blasPtr                   An unique pointer to an object of type `Blas` that allows to execute
+             *                                  BLAS routines
+             * @param lapackPtr                 An unique pointer to an object of type `Lapack` that allows to execute
+             *                                  LAPACK routines
              */
             DenseNonDecomposableFixedPartialRuleEvaluation(const IndexVector& outputIndices, uint32 numPredictions,
-                                                           float64 l1RegularizationWeight,
-                                                           float64 l2RegularizationWeight, const Blas& blas,
-                                                           const Lapack& lapack)
-                : AbstractNonDecomposableRuleEvaluation<DenseNonDecomposableStatisticVector, IndexVector>(
-                    numPredictions, lapack),
+                                                           float32 l1RegularizationWeight,
+                                                           float32 l2RegularizationWeight,
+                                                           std::unique_ptr<Blas<statistic_type>> blasPtr,
+                                                           std::unique_ptr<Lapack<statistic_type>> lapackPtr)
+                : AbstractNonDecomposableRuleEvaluation<StatisticVector, IndexVector>(numPredictions, *lapackPtr),
                   outputIndices_(outputIndices), indexVector_(numPredictions), scoreVector_(indexVector_, false),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
-                  blas_(blas), lapack_(lapack), tmpVector_(outputIndices.getNumElements()) {}
+                  blasPtr_(std::move(blasPtr)), lapackPtr_(std::move(lapackPtr)),
+                  tmpVector_(outputIndices.getNumElements()) {}
 
             /**
              * @see `IRuleEvaluation::evaluate`
              */
-            const IScoreVector& calculateScores(DenseNonDecomposableStatisticVector& statisticVector) override {
+            const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numOutputs = statisticVector.getNumGradients();
                 uint32 numPredictions = indexVector_.getNumElements();
-                DenseNonDecomposableStatisticVector::gradient_const_iterator gradientIterator =
-                  statisticVector.gradients_cbegin();
-                DenseNonDecomposableStatisticVector::hessian_diagonal_const_iterator hessianIterator =
+                typename StatisticVector::gradient_const_iterator gradientIterator = statisticVector.gradients_cbegin();
+                typename StatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
-                SparseArrayVector<float64>::iterator tmpIterator = tmpVector_.begin();
+                typename SparseArrayVector<statistic_type>::iterator tmpIterator = tmpVector_.begin();
                 sortOutputWiseCriteria(tmpIterator, gradientIterator, hessianIterator, numOutputs, numPredictions,
                                        l1RegularizationWeight_, l2RegularizationWeight_);
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
-                typename DenseScoreVector<IndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
+                typename DenseScoreVector<statistic_type, IndexVector>::value_iterator valueIterator =
+                  scoreVector_.values_begin();
                 typename IndexVector::const_iterator outputIndexIterator = outputIndices_.cbegin();
 
                 for (uint32 i = 0; i < numPredictions; i++) {
-                    const IndexedValue<float64>& entry = tmpIterator[i];
+                    const IndexedValue<statistic_type>& entry = tmpIterator[i];
                     uint32 index = entry.index;
                     indexIterator[i] = outputIndexIterator[index];
                     valueIterator[i] = -gradientIterator[index];
@@ -89,19 +93,19 @@ namespace boosting {
                 addL1RegularizationWeight(valueIterator, numPredictions, l1RegularizationWeight_);
 
                 // Copy Hessians to the matrix of coefficients and add the L2 regularization weight to its diagonal...
-                copyCoefficients(statisticVector.hessians_cbegin(), indexIterator, this->dsysvTmpArray1_.begin(),
+                copyCoefficients(statisticVector.hessians_cbegin(), indexIterator, this->sysvTmpArray1_.begin(),
                                  numPredictions);
-                addL2RegularizationWeight(this->dsysvTmpArray1_.begin(), numPredictions, l2RegularizationWeight_);
+                addL2RegularizationWeight(this->sysvTmpArray1_.begin(), numPredictions, l2RegularizationWeight_);
 
                 // Calculate the scores to be predicted for individual outputs by solving a system of linear
                 // equations...
-                lapack_.dsysv(this->dsysvTmpArray1_.begin(), this->dsysvTmpArray2_.begin(),
-                              this->dsysvTmpArray3_.begin(), valueIterator, numPredictions, this->dsysvLwork_);
+                lapackPtr_->sysv(this->sysvTmpArray1_.begin(), this->sysvTmpArray2_.begin(),
+                                 this->sysvTmpArray3_.begin(), valueIterator, numPredictions, this->sysvLwork_);
 
                 // Calculate the overall quality...
-                float64 quality = calculateOverallQuality(valueIterator, statisticVector.gradients_begin(),
-                                                          statisticVector.hessians_begin(),
-                                                          this->dspmvTmpArray_.begin(), numPredictions, blas_);
+                statistic_type quality = calculateOverallQuality(
+                  valueIterator, statisticVector.gradients_begin(), statisticVector.hessians_begin(),
+                  this->spmvTmpArray_.begin(), numPredictions, *blasPtr_);
 
                 // Evaluate regularization term...
                 quality += calculateRegularizationTerm(valueIterator, numPredictions, l1RegularizationWeight_,
@@ -113,26 +117,54 @@ namespace boosting {
     };
 
     NonDecomposableFixedPartialRuleEvaluationFactory::NonDecomposableFixedPartialRuleEvaluationFactory(
-      float32 outputRatio, uint32 minOutputs, uint32 maxOutputs, float64 l1RegularizationWeight,
-      float64 l2RegularizationWeight, const Blas& blas, const Lapack& lapack)
+      float32 outputRatio, uint32 minOutputs, uint32 maxOutputs, float32 l1RegularizationWeight,
+      float32 l2RegularizationWeight, const BlasFactory& blasFactory, const LapackFactory& lapackFactory)
         : outputRatio_(outputRatio), minOutputs_(minOutputs), maxOutputs_(maxOutputs),
-          l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight), blas_(blas),
-          lapack_(lapack) {}
+          l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
+          blasFactory_(blasFactory), lapackFactory_(lapackFactory) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector>>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float32>>>
       NonDecomposableFixedPartialRuleEvaluationFactory::create(
-        const DenseNonDecomposableStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
+        const DenseNonDecomposableStatisticVector<float32>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
           util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
-        return std::make_unique<DenseNonDecomposableFixedPartialRuleEvaluation<CompleteIndexVector>>(
-          indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
+        return std::make_unique<DenseNonDecomposableFixedPartialRuleEvaluation<
+          DenseNonDecomposableStatisticVector<float32>, CompleteIndexVector>>(
+          indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create32Bit(),
+          lapackFactory_.create32Bit());
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector>>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float32>>>
       NonDecomposableFixedPartialRuleEvaluationFactory::create(
-        const DenseNonDecomposableStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
-        return std::make_unique<DenseNonDecomposableCompleteRuleEvaluation<PartialIndexVector>>(
-          indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
+        const DenseNonDecomposableStatisticVector<float32>& statisticVector,
+        const PartialIndexVector& indexVector) const {
+        return std::make_unique<
+          DenseNonDecomposableCompleteRuleEvaluation<DenseNonDecomposableStatisticVector<float32>, PartialIndexVector>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create32Bit(),
+          lapackFactory_.create32Bit());
+    }
+
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
+      NonDecomposableFixedPartialRuleEvaluationFactory::create(
+        const DenseNonDecomposableStatisticVector<float64>& statisticVector,
+        const CompleteIndexVector& indexVector) const {
+        uint32 numPredictions =
+          util::calculateBoundedFraction(indexVector.getNumElements(), outputRatio_, minOutputs_, maxOutputs_);
+        return std::make_unique<DenseNonDecomposableFixedPartialRuleEvaluation<
+          DenseNonDecomposableStatisticVector<float64>, CompleteIndexVector>>(
+          indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create64Bit(),
+          lapackFactory_.create64Bit());
+    }
+
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector<float64>>>
+      NonDecomposableFixedPartialRuleEvaluationFactory::create(
+        const DenseNonDecomposableStatisticVector<float64>& statisticVector,
+        const PartialIndexVector& indexVector) const {
+        return std::make_unique<
+          DenseNonDecomposableCompleteRuleEvaluation<DenseNonDecomposableStatisticVector<float64>, PartialIndexVector>>(
+          indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blasFactory_.create64Bit(),
+          lapackFactory_.create64Bit());
     }
 
 }
