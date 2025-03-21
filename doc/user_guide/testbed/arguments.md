@@ -402,7 +402,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--store-rules` (Default value = `false`)
 
-  - `true` The induced rules are written into a TXT file. Does only have an effect if the parameter `--output-dir` is specified. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
+  - `true` The induced rules are written into a text file. Does only have an effect if the parameter `--output-dir` is specified. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
     - `print_feature_names` (Default value = `true`) `true`, if the names of features should be printed instead of their indices, `false` otherwise.
     - `print_output_names` (Default value = `true`) `true`, if the names of outputs should be printed instead of their indices, `false` otherwise.
@@ -412,7 +412,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
     - `decimals_body` (Default value = `2`) The number of decimals to be used for numerical thresholds of conditions in a rule's body or 0, if the number of decimals should not be restricted.
     - `decimals_head` (Default value = `2`) The number of decimals to be used for predictions in a rule's head or 0, if the number of decimals should not be restricted.
 
-  - `false` The induced rules are not written into a TXT file.
+  - `false` The induced rules are not written into a text file.
 
 (arguments-probability-calibration-models)=
 

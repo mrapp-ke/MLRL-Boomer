@@ -174,7 +174,7 @@ class DataCharacteristicsWriter(OutputWriter):
         def __init__(self, options: Options = Options()):
             super().__init__(title='Data characteristics', options=options)
 
-    class CsvSink(OutputWriter.CsvSink):
+    class CsvFileSink(OutputWriter.CsvFileSink):
         """
         Allows to write the characteristics of a data set to a CSV file.
         """

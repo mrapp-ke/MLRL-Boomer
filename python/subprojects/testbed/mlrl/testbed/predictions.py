@@ -56,7 +56,7 @@ class PredictionWriter(OutputWriter):
         def __init__(self, options: Options = Options()):
             super().__init__(title='Predictions', options=options)
 
-    class ArffSink(OutputWriter.Sink):
+    class ArffFileSink(OutputWriter.Sink):
         """
         Allows to write predictions and the corresponding ground truth to ARFF files.
         """

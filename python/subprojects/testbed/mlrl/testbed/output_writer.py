@@ -14,7 +14,7 @@ from mlrl.common.config.options import Options
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_writer, get_file_name_per_fold, open_writable_csv_file, \
-    open_writable_txt_file
+    open_writable_text_file
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 from mlrl.testbed.problem_type import ProblemType
 
@@ -119,7 +119,7 @@ class OutputWriter(ABC):
             message += ':\n\n' + output_data.format(self.options, **kwargs) + '\n'
             log.info(message)
 
-    class TxtSink(Sink):
+    class TextFileSink(Sink):
         """
         Allows to write output data to a text file.
         """
@@ -138,11 +138,11 @@ class OutputWriter(ABC):
                          **kwargs):
             file_name = self.file_name if data_type is None else data_type.get_file_name(self.file_name)
 
-            with open_writable_txt_file(directory=self.output_dir, file_name=file_name,
-                                        fold=data_split.get_fold()) as txt_file:
-                txt_file.write(output_data.format(self.options, **kwargs))
+            with open_writable_text_file(directory=self.output_dir, file_name=file_name,
+                                         fold=data_split.get_fold()) as text_file:
+                text_file.write(output_data.format(self.options, **kwargs))
 
-    class CsvSink(Sink):
+    class CsvFileSink(Sink):
         """
         Allows to write output data to a CSV file. 
         """

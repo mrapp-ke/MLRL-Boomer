@@ -907,7 +907,7 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_EVALUATION_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(EvaluationWriter.CsvSink(output_dir=args.output_dir, options=options))
+            sinks.append(EvaluationWriter.CsvFileSink(output_dir=args.output_dir, options=options))
 
         if len(sinks) == 0:
             return None
@@ -941,7 +941,7 @@ class LearnerRunnable(Runnable, ABC):
             sinks.append(ParameterWriter.LogSink())
 
         if args.parameter_save_dir is not None:
-            sinks.append(ParameterWriter.CsvSink(output_dir=args.parameter_save_dir))
+            sinks.append(ParameterWriter.CsvFileSink(output_dir=args.parameter_save_dir))
 
         return ParameterWriter(sinks) if len(sinks) > 0 else None
 
@@ -963,7 +963,7 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_PREDICTIONS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(PredictionWriter.ArffSink(output_dir=args.output_dir, options=options))
+            sinks.append(PredictionWriter.ArffFileSink(output_dir=args.output_dir, options=options))
 
         return PredictionWriter(sinks) if len(sinks) > 0 else None
 
@@ -988,7 +988,7 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_PREDICTION_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(PredictionCharacteristicsWriter.CsvSink(output_dir=args.output_dir, options=options))
+            sinks.append(PredictionCharacteristicsWriter.CsvFileSink(output_dir=args.output_dir, options=options))
 
         return PredictionCharacteristicsWriter(sinks) if len(sinks) > 0 else None
 
@@ -1011,7 +1011,7 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_DATA_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(DataCharacteristicsWriter.CsvSink(output_dir=args.output_dir, options=options))
+            sinks.append(DataCharacteristicsWriter.CsvFileSink(output_dir=args.output_dir, options=options))
 
         return DataCharacteristicsWriter(sinks) if len(sinks) > 0 else None
 
@@ -1034,7 +1034,7 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_LABEL_VECTORS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(LabelVectorWriter.CsvSink(output_dir=args.output_dir, options=options))
+            sinks.append(LabelVectorWriter.CsvFileSink(output_dir=args.output_dir, options=options))
 
         return LabelVectorWriter(sinks) if len(sinks) > 0 else None
 
@@ -1328,7 +1328,7 @@ class RuleLearnerRunnable(LearnerRunnable):
         value, options = parse_param_and_options(self.PARAM_STORE_RULES, args.store_rules, self.STORE_RULES_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(ModelWriter.TxtSink(output_dir=args.output_dir, options=options))
+            sinks.append(ModelWriter.TextFileSink(output_dir=args.output_dir, options=options))
 
         return RuleModelWriter(sinks) if len(sinks) > 0 else None
 
@@ -1346,7 +1346,7 @@ class RuleLearnerRunnable(LearnerRunnable):
             sinks.append(ModelCharacteristicsWriter.LogSink())
 
         if args.store_model_characteristics and args.output_dir is not None:
-            sinks.append(ModelCharacteristicsWriter.CsvSink(output_dir=args.output_dir))
+            sinks.append(ModelCharacteristicsWriter.CsvFileSink(output_dir=args.output_dir))
 
         return RuleModelCharacteristicsWriter(sinks) if len(sinks) > 0 else None
 
@@ -1371,7 +1371,8 @@ class RuleLearnerRunnable(LearnerRunnable):
                                                  self.STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(MarginalProbabilityCalibrationModelWriter.CsvSink(output_dir=args.output_dir, options=options))
+            sinks.append(
+                MarginalProbabilityCalibrationModelWriter.CsvFileSink(output_dir=args.output_dir, options=options))
 
         return MarginalProbabilityCalibrationModelWriter(sinks) if len(sinks) > 0 else None
 
@@ -1396,7 +1397,8 @@ class RuleLearnerRunnable(LearnerRunnable):
                                                  self.STORE_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(JointProbabilityCalibrationModelWriter.CsvSink(output_dir=args.output_dir, options=options))
+            sinks.append(JointProbabilityCalibrationModelWriter.CsvFileSink(output_dir=args.output_dir,
+                                                                            options=options))
 
         return JointProbabilityCalibrationModelWriter(sinks) if len(sinks) > 0 else None
 
@@ -1431,7 +1433,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                                                  self.STORE_LABEL_VECTORS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(LabelVectorSetWriter.CsvSink(output_dir=args.output_dir, options=options))
+            sinks.append(LabelVectorSetWriter.CsvFileSink(output_dir=args.output_dir, options=options))
 
         return LabelVectorSetWriter(sinks) if len(sinks) > 0 else None
 

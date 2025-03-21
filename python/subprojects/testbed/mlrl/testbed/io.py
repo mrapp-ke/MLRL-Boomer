@@ -56,7 +56,7 @@ def get_file_name_per_fold(name: str, suffix: str, fold: Optional[int]) -> str:
     return get_file_name(name + '_' + ('overall' if fold is None else 'fold-' + str(fold + 1)), suffix)
 
 
-def open_writable_txt_file(directory: str, file_name: str, fold: Optional[int] = None, append: bool = False):
+def open_writable_text_file(directory: str, file_name: str, fold: Optional[int] = None, append: bool = False):
     """
     Opens a text file to be written to.
 
