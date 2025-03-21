@@ -126,7 +126,7 @@ class OutputWriter(ABC):
 
         def __init__(self, output_dir: str, file_name: str, options: Options = Options()):
             """
-            :param output_dir:  The path of the directory, where the text file should be located
+            :param output_dir:  The path to the directory, where the text file should be located
             :param file_name:   The name of the text file (without suffix)
             """
             super().__init__(options=options)
@@ -149,7 +149,7 @@ class OutputWriter(ABC):
 
         def __init__(self, output_dir: str, file_name: str, options: Options = Options()):
             """
-            :param output_dir:  The path of the directory, where the CSV file should be located
+            :param output_dir:  The path to the directory, where the CSV file should be located
             :param file_name:   The name of the CSV file (without suffix)
             """
             super().__init__(options=options)

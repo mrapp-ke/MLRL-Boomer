@@ -123,7 +123,7 @@ Depending on the characteristics of a dataset, it might be desirable to apply on
 
 > A more detailed description of the following arguments can be found {ref}`here<model-persistence>`.
 
-Because the training of models can be time-consuming, it might be desirable to store them on disk for later use. This requires to specify the path of a directory where models should be saved.
+Because the training of models can be time-consuming, it might be desirable to store them on disk for later use. This requires to specify the path to a directory where models should be saved.
 
 - `--model-dir` (Default value = `None`)
 
