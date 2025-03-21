@@ -2,7 +2,7 @@
 
 # Saving and Loading Models
 
-Because the training of machine learning models can be time-consuming, they are usually trained once and then reused later for making predictions. For this purpose, the command line API provides means to store models on disk and load them from the created files later on. This requires to specify the path of a directory to which models should be saved, as well as a directory from which models should be loaded, via the command line arguments `--model-save-dir` and `--model-load-dir`, respectively:
+Because the training of machine learning models can be time-consuming, they are usually trained once and then reused later for making predictions. For this purpose, the command line API provides means to store models on disk and load them from the created files later on. This requires to specify the path to a directory where models should be saved, as well as a directory from which models should be loaded, via the command line arguments `--model-save-dir` and `--model-load-dir`, respectively:
 
 ````{tab} BOOMER
    ```text
