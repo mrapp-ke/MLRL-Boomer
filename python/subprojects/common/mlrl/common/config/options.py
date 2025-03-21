@@ -58,7 +58,7 @@ class Options:
         """
         options = cls()
 
-        if string is not None and len(string) > 0:
+        if string:
             if not string.startswith('{'):
                 raise ValueError(Options.ERROR_MESSAGE_INVALID_SYNTAX + '. Must start with "{", but is "' + string
                                  + '"')
@@ -67,9 +67,9 @@ class Options:
 
             string = string[1:-1]
 
-            if len(string) > 0:
+            if string:
                 for option_index, option in enumerate(string.split(',')):
-                    if len(option) > 0:
+                    if option:
                         parts = option.split('=')
 
                         if len(parts) != 2:
@@ -203,7 +203,7 @@ def parse_param_and_options(parameter_name: str, value: str,
         if value.startswith(allowed_value):
             suffix = value[len(allowed_value):].strip()
 
-            if len(suffix) > 0:
+            if suffix:
                 try:
                     return allowed_value, Options.create(suffix, allowed_options)
                 except ValueError as error:

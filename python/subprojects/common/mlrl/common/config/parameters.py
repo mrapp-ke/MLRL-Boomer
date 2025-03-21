@@ -211,7 +211,7 @@ class NominalParameter(Parameter, ABC):
             for supported_value in supported_values:
                 value_description = self.values[supported_value].description
 
-                if value_description is not None and len(value_description) > 0:
+                if value_description:
                     description += ' ' + value_description + '.'
 
             description += suffix

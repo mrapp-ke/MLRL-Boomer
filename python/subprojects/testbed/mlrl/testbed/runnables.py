@@ -137,10 +137,10 @@ class Runnable(ABC):
 
             authors = self.authors
 
-            if len(authors) > 0:
+            if authors:
                 result += ' ' + format_iterable(authors)
 
-            return ('Copyright (c)' if len(result) > 0 else '') + result
+            return ('Copyright (c)' if result else '') + result
 
         def __collect_python_packages(self, python_packages: Iterable[PythonPackageInfo]) -> Set[str]:
             unique_packages = set()
@@ -262,12 +262,12 @@ class Runnable(ABC):
             result = self.name + ' ' + self.version
             formatted_copyright = self.__format_copyright()
 
-            if len(formatted_copyright) > 0:
+            if formatted_copyright:
                 result += '\n\n' + formatted_copyright
 
             formatted_package_info = self.__format_package_info()
 
-            if len(formatted_package_info) > 0:
+            if formatted_package_info:
                 result += '\n\n' + formatted_package_info
 
             return result
