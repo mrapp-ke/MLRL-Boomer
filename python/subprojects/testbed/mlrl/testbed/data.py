@@ -74,20 +74,21 @@ class MetaData:
         self.outputs = outputs
         self.outputs_at_start = outputs_at_start
 
-    def get_num_features(self, feature_types: Optional[Set[FeatureType]] = None) -> int:
+    def get_num_features(self, *feature_types: FeatureType) -> int:
         """
-        Returns the number of features with one out of a given set of types.
+        Returns the number of features with one out of a given set of types.  If no types are given, all features are
+        counted.
 
-        :param feature_types:   A set that contains the types of the features to be counted or None, if all features
-                                should be counted
+        :param feature_types:   The types of the features to be counted
         :return:                The number of features of the given types
         """
-        if feature_types is None:
-            return len(self.features)
-        if len(feature_types) == 0:
-            return 0
-        return reduce(lambda aggr, feature: aggr + (1
-                                                    if feature.feature_type in feature_types else 0), self.features, 0)
+        feature_types = set(feature_types)
+
+        if feature_types:
+            return reduce(lambda aggr, feature: aggr + (1 if feature.feature_type in feature_types else 0),
+                          self.features, 0)
+
+        return len(self.features)
 
     def get_feature_indices(self, feature_types: Optional[Set[FeatureType]] = None) -> List[int]:
         """
