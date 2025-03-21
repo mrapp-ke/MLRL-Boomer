@@ -28,7 +28,7 @@ class DataSet:
 
     def __init__(self, data_dir: str, data_set_name: str, use_one_hot_encoding: bool):
         """
-        :param data_dir:                The path of the directory where the data set is located
+        :param data_dir:                The path to the directory where the data set is located
         :param data_set_name:           The name of the data set
         :param use_one_hot_encoding:    True, if one-hot-encoding should be used to encode nominal features, False
                                         otherwise
