@@ -50,21 +50,25 @@ cdef class MixedFeatureInfo(FeatureInfo):
     ordinal, nominal and numerical ones, are available.
     """
 
-    def __cinit__(self, uint32 num_features, list ordinal_feature_indices not None,
-                  list nominal_feature_indices not None):
+    def __cinit__(self, uint32 num_features, const uint32[::1] ordinal_feature_indices not None,
+                  const uint32[::1] nominal_feature_indices not None):
         """
         :param num_features:            The total number of available features
-        :param ordinal_feature_indices: A list which contains the indices of all ordinal features
-        :param nominal_feature_indices: A list which contains the indices of all nominal features
+        :param ordinal_feature_indices: A C-contiguous array of type `uint32`, shape `(num_ordinal_features)`, that
+                                        stores the indices of all ordinal features
+        :param nominal_feature_indices: A C-contiguous array of type `uint32`, shape `(num_ordinal_features)`, that
+                                        stores the indices of all nominal features
         """
         cdef unique_ptr[IMixedFeatureInfo] feature_info_ptr = createMixedFeatureInfo(num_features)
-        cdef uint32 feature_index
+        cdef uint32 num_ordinal_features = ordinal_feature_indices.shape[0]
+        cdef uint32 num_nominal_features = nominal_feature_indices.shape[0]
+        cdef uint32 i
 
-        for feature_index in nominal_feature_indices:
-            feature_info_ptr.get().setNominal(feature_index)
+        for i in range(num_nominal_features):
+            feature_info_ptr.get().setNominal(nominal_feature_indices[i])
 
-        for feature_index in ordinal_feature_indices:
-            feature_info_ptr.get().setOrdinal(feature_index)
+        for i in range(num_ordinal_features):
+            feature_info_ptr.get().setOrdinal(ordinal_feature_indices[i])
 
         self.feature_info_ptr = move(feature_info_ptr)
 

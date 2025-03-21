@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Optional
 
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator, RegressorMixin as SkLearnRegressorMixin, clone
 
-from mlrl.common.arrays import is_sparse
+from mlrl.common.data.arrays import is_sparse
 from mlrl.common.mixins import ClassifierMixin, IncrementalClassifierMixin, IncrementalRegressorMixin, \
     NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
 
@@ -20,8 +20,8 @@ from mlrl.testbed.data import FeatureType, MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataSplitter, DataType
 from mlrl.testbed.format import format_duration
 from mlrl.testbed.output_writer import OutputWriter
-from mlrl.testbed.parameters import ParameterInput
-from mlrl.testbed.persistence import ModelPersistence
+from mlrl.testbed.parameters import ParameterLoader
+from mlrl.testbed.persistence import ModelLoader, ModelSaver
 from mlrl.testbed.prediction_scope import GlobalPrediction, IncrementalPrediction, PredictionScope, PredictionType
 from mlrl.testbed.problem_type import ProblemType
 
@@ -253,8 +253,9 @@ class Experiment(DataSplitter.Callback):
                  pre_execution_hook: Optional[ExecutionHook] = None,
                  train_evaluation: Optional[Evaluation] = None,
                  test_evaluation: Optional[Evaluation] = None,
-                 parameter_input: Optional[ParameterInput] = None,
-                 persistence: Optional[ModelPersistence] = None,
+                 parameter_loader: Optional[ParameterLoader] = None,
+                 model_loader: Optional[ModelLoader] = None,
+                 model_saver: Optional[ModelSaver] = None,
                  fit_kwargs: Optional[Dict[str, Any]] = None,
                  predict_kwargs: Optional[Dict[str, Any]] = None):
         """
@@ -270,8 +271,9 @@ class Experiment(DataSplitter.Callback):
                                                 data or None, if the predictions should not be evaluated
         :param test_evaluation:                 The method to be used for evaluating the predictions for the test data
                                                 or None, if the predictions should not be evaluated
-        :param parameter_input:                 The input that should be used to read the parameter settings
-        :param persistence:                     The `ModelPersistence` that should be used for loading and saving models
+        :param parameter_loader:                The `ParameterLoader` that should be used to read the parameter settings
+        :param model_loader:                    The `ModelLoader` that should be used for loading models
+        :param model_saver:                     The `ModelSaver` that should be used for saving models
         :param fit_kwargs:                      Optional keyword arguments to be passed to the learner when fitting a
                                                 model
         :param predict_kwargs:                  Optional keyword arguments to be passed to the learner when obtaining
@@ -286,8 +288,9 @@ class Experiment(DataSplitter.Callback):
         self.pre_execution_hook = pre_execution_hook
         self.train_evaluation = train_evaluation
         self.test_evaluation = test_evaluation
-        self.parameter_input = parameter_input
-        self.persistence = persistence
+        self.parameter_loader = parameter_loader
+        self.model_loader = model_loader
+        self.model_saver = model_saver
         self.fit_kwargs = fit_kwargs
         self.predict_kwargs = predict_kwargs
 
@@ -318,12 +321,13 @@ class Experiment(DataSplitter.Callback):
         problem_type = self.problem_type
         base_learner = self.base_learner
         current_learner = clone(base_learner)
+        fit_kwargs = self.fit_kwargs if self.fit_kwargs else {}
 
         # Apply parameter setting, if necessary...
-        parameter_input = self.parameter_input
+        parameter_loader = self.parameter_loader
 
-        if parameter_input is not None:
-            params = parameter_input.read_parameters(data_split)
+        if parameter_loader is not None:
+            params = parameter_loader.load_parameters(data_split)
 
             if params:
                 current_learner.set_params(**params)
@@ -335,11 +339,13 @@ class Experiment(DataSplitter.Callback):
 
         # Set the indices of ordinal features, if supported...
         if isinstance(current_learner, OrdinalFeatureSupportMixin):
-            current_learner.ordinal_feature_indices = meta_data.get_feature_indices({FeatureType.ORDINAL})
+            fit_kwargs[OrdinalFeatureSupportMixin.KWARG_ORDINAL_FEATURE_INDICES] = meta_data.get_feature_indices(
+                {FeatureType.ORDINAL})
 
         # Set the indices of nominal features, if supported...
         if isinstance(current_learner, NominalFeatureSupportMixin):
-            current_learner.nominal_feature_indices = meta_data.get_feature_indices({FeatureType.NOMINAL})
+            fit_kwargs[NominalFeatureSupportMixin.KWARG_NOMINAL_FEATURE_INDICES] = meta_data.get_feature_indices(
+                {FeatureType.NOMINAL})
 
         # Load model from disk, if possible, otherwise train a new model...
         loaded_learner = self.__load_model(data_split)
@@ -353,7 +359,6 @@ class Experiment(DataSplitter.Callback):
             train_time = 0
         else:
             log.info('Fitting model to %s training examples...', train_x.shape[0])
-            fit_kwargs = self.fit_kwargs if self.fit_kwargs else {}
             train_time = self.__train(current_learner, train_x, train_y, **fit_kwargs)
             log.info('Successfully fit model in %s', format_duration(train_time))
 
@@ -449,10 +454,10 @@ class Experiment(DataSplitter.Callback):
         :param data_split:  Information about the split of the available data, the model corresponds to
         :return:            The loaded model
         """
-        persistence = self.persistence
+        model_loader = self.model_loader
 
-        if persistence is not None:
-            return persistence.load_model(self.learner_name, data_split)
+        if model_loader is not None:
+            return model_loader.load_model(self.learner_name, data_split)
 
         return None
 
@@ -463,10 +468,10 @@ class Experiment(DataSplitter.Callback):
         :param model:       The model to be saved
         :param data_split:  Information about the split of the available data, the model corresponds to
         """
-        persistence = self.persistence
+        model_saver = self.model_saver
 
-        if persistence is not None:
-            persistence.save_model(model, self.learner_name, data_split)
+        if model_saver is not None:
+            model_saver.save_model(model, self.learner_name, data_split)
 
     @staticmethod
     def __check_for_parameter_changes(expected_params, actual_params):
