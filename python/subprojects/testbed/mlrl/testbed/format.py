@@ -53,7 +53,7 @@ def format_duration(duration: float) -> str:
         substrings.append(str(millis) + ' millisecond' + ('' if millis == 1 else 's'))
 
     return reduce(
-        lambda txt, x: txt + ((' and ' if x[0] == len(substrings) - 1 else ', ') if len(txt) > 0 else '') + x[1],
+        lambda aggr, x: aggr + ((' and ' if x[0] == len(substrings) - 1 else ', ') if len(aggr) > 0 else '') + x[1],
         enumerate(substrings), '')
 
 
