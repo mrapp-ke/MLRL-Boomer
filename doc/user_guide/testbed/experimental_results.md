@@ -7,7 +7,7 @@ One of the most important features provided by the command line API is the abili
 Each of these information can either be printed to the console or saved to output files. The latter requires to provide a directory, where the output files should be saved. As shown in the examples below, the path to this directory must be specified via the argument `--output-dir`.
 
 ```{note}
-The path of the directory, where experimental results should be saved, can be either absolute or relative to the working directory.
+The path to the directory, where experimental results should be saved, can be either absolute or relative to the working directory.
 ```
 
 (output-evaluation-results)=

@@ -43,7 +43,7 @@ class ParameterCsvInput(ParameterInput):
 
     def __init__(self, input_dir: str):
         """
-        :param input_dir: The path of the directory, the CSV files should be read from
+        :param input_dir: The path to the directory, the CSV files should be read from
         """
         self.input_dir = input_dir
 

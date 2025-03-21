@@ -359,7 +359,7 @@ class LearnerRunnable(Runnable, ABC):
 
         def __init__(self, output_dir: str):
             """
-            :param output_dir: The path of the output directory from which the files should be deleted
+            :param output_dir: The path to the output directory from which the files should be deleted
             """
             self.output_dir = output_dir
 
@@ -569,7 +569,7 @@ class LearnerRunnable(Runnable, ABC):
         parser.add_argument('--data-dir',
                             type=str,
                             required=True,
-                            help='The path of the directory where the data set files are located.')
+                            help='The path to the directory where the data set files are located.')
         parser.add_argument('--dataset', type=str, required=True, help='The name of the data set files without suffix.')
         parser.add_argument(self.PARAM_DATA_SPLIT,
                             type=str,
@@ -643,14 +643,14 @@ class LearnerRunnable(Runnable, ABC):
                             default=False,
                             help='Whether one-hot-encoding should be used to encode nominal features or not. Must be '
                             + 'one of ' + format_enum_values(BooleanOption) + '.')
-        parser.add_argument('--model-dir', type=str, help='The path of the directory where models should be stored.')
+        parser.add_argument('--model-dir', type=str, help='The path to the directory where models should be stored.')
         parser.add_argument('--parameter-dir',
                             type=str,
-                            help='The path of the directory where configuration files, which specify the parameters to '
+                            help='The path to the directory where configuration files, which specify the parameters to '
                             + 'be used by the algorithm, are located.')
         parser.add_argument(self.PARAM_OUTPUT_DIR,
                             type=str,
-                            help='The path of the directory where experimental results should be saved.')
+                            help='The path to the directory where experimental results should be saved.')
         parser.add_argument('--print-parameters',
                             type=BooleanOption.parse,
                             default=False,
