@@ -75,7 +75,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
                         [format_float(threshold, decimals=decimals),
                          format_float(probability, decimals=decimals)])
 
-                if len(result) > 0:
+                if result:
                     result += '\n'
 
                 result += format_table(rows, header=header)
