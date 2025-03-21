@@ -63,7 +63,7 @@ class PythonPackageModule(SubprojectModule):
     @property
     def pyproject_toml_template_file(self) -> str:
         """
-        The path of the template file that is used to generate a pyproject.toml file.
+        The path to the template file that is used for generating a pyproject.toml file.
         """
         return path.join(self.root_directory, 'pyproject.template.toml')
 
@@ -77,7 +77,7 @@ class PythonPackageModule(SubprojectModule):
     @property
     def wheel_directory(self) -> str:
         """
-        Returns the path of the directory that contains the wheel packages that have been built for the module.
+        The path to the directory that contains the wheel packages that have been built for the module.
         """
         return path.join(self.root_directory, self.wheel_directory_name)
 
