@@ -39,31 +39,31 @@ class IncrementalPredictor(ABC):
 
     def has_next(self) -> bool:
         """
-            Returns whether there are any remaining ensemble members that have not been used yet or not.
+        Returns whether there are any remaining ensemble members that have not been used yet or not.
 
-            :return: True, if there are any remaining ensemble members, False otherwise
-            """
+        :return: True, if there are any remaining ensemble members, False otherwise
+        """
         return self.get_num_next() > 0
 
     @abstractmethod
     def get_num_next(self) -> int:
         """
-            Returns the number of remaining ensemble members that have not been used yet.
+        Returns the number of remaining ensemble members that have not been used yet.
 
-            :return: The number of remaining ensemble members
-            """
+        :return: The number of remaining ensemble members
+        """
 
     @abstractmethod
     def apply_next(self, step_size: int):
         """
-            Updates the current predictions by considering several of the remaining ensemble members. If not enough
-            ensemble members are remaining, only the available ones will be used for updating the current predictions.
+        Updates the current predictions by considering several of the remaining ensemble members. If not enough ensemble
+        members are remaining, only the available ones will be used for updating the current predictions.
 
-            :param step_size:   The number of additional ensemble members to be considered for prediction
-            :return:            A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` of shape
-                                `(num_examples, num_outputs)`, that stores the updated prediction for individual
-                                examples and outputs
-            """
+        :param step_size:   The number of additional ensemble members to be considered for prediction
+        :return:            A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` of shape
+                            `(num_examples, num_outputs)`, that stores the updated prediction for individual examples
+                            and outputs
+        """
 
 
 class ClassifierMixin(SkLearnBaseEstimator, SkLearnClassifierMixin, SkLearnMultiOutputMixin, ABC):
