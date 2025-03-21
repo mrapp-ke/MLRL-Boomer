@@ -63,7 +63,7 @@ class PredictionWriter(OutputWriter):
 
         def __init__(self, output_dir: str, options: Options = Options()):
             """
-            :param output_dir: The path of the directory, where the ARFF file should be located
+            :param output_dir: The path to the directory, where the ARFF file should be located
             """
             super().__init__(options=options)
             self.output_dir = output_dir

@@ -29,7 +29,7 @@ On the one hand, this requires to specify a directory where parameter settings s
 ````
 
 ```{note}
-The path of the directory, where parameter settings should be saved, can be either absolute or relative to the working directory.
+The path to the directory, where parameter settings should be saved, can be either absolute or relative to the working directory.
 ```
 
 If {ref}`train-test splits<train-test-split>` are used for splitting the available data into training and test sets, a single model is trained and its configuration is saved to a file:
