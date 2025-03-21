@@ -16,7 +16,7 @@ The simplest and computationally the least demanding strategy for obtaining trai
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --data-split train-test
@@ -25,7 +25,7 @@ The simplest and computationally the least demanding strategy for obtaining trai
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --data-split train-test
@@ -38,7 +38,7 @@ When it is the responsibility of the command line API to split a given dataset i
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --data-split 'train-test{test_size=0.25}'
@@ -47,7 +47,7 @@ When it is the responsibility of the command line API to split a given dataset i
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --data-split 'train-test{test_size=0.25}'
@@ -64,7 +64,7 @@ A more elaborate strategy for splitting data into training and test sets, which 
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --data-split cv
@@ -73,7 +73,7 @@ A more elaborate strategy for splitting data into training and test sets, which 
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --data-split cv
@@ -84,7 +84,7 @@ By default, a 10-fold cross validation, where ten models are trained and evaluat
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --data-split 'cv{num_folds=5}'
@@ -93,7 +93,7 @@ By default, a 10-fold cross validation, where ten models are trained and evaluat
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --data-split 'cv{num_folds=5}'
@@ -105,7 +105,7 @@ When providing the option `current_fold`, only a single fold, instead of the ent
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --data-split 'cv{num_folds=5,current_fold=2}'
@@ -114,7 +114,7 @@ When providing the option `current_fold`, only a single fold, instead of the ent
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --data-split 'cv{num_folds=5,current_fold=2}'
@@ -134,7 +134,7 @@ Sometimes, evaluating the performance of a model on the data it has been trained
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --data-split none
@@ -143,7 +143,7 @@ Sometimes, evaluating the performance of a model on the data it has been trained
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --data-split none
@@ -155,7 +155,7 @@ If you are interested in obtaining evaluation results for the training data in a
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --data-split cv \
@@ -165,7 +165,7 @@ If you are interested in obtaining evaluation results for the training data in a
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --data-split cv \
@@ -188,7 +188,7 @@ We refer to real-valued predictions, which may be positive or negative, as *scor
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --prediction-type scores
@@ -197,7 +197,7 @@ We refer to real-valued predictions, which may be positive or negative, as *scor
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --prediction-type scores
@@ -214,7 +214,7 @@ Probability estimates are given as real values between zero and one. In the cont
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --prediction-type probabilities
@@ -223,7 +223,7 @@ Probability estimates are given as real values between zero and one. In the cont
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --prediction-type probabilities
@@ -238,7 +238,7 @@ The most common type of prediction used for multi-label classification are binar
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --prediction-type binary
@@ -247,7 +247,7 @@ The most common type of prediction used for multi-label classification are binar
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --prediction-type binary
@@ -262,7 +262,7 @@ When evaluating the predictive performance of an [ensemble method](https://en.wi
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --incremental-evaluation true
@@ -271,7 +271,7 @@ When evaluating the predictive performance of an [ensemble method](https://en.wi
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --incremental-evaluation true
@@ -288,7 +288,7 @@ For example, the following command may be used for the incremental evaluation of
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --incremental-evaluation 'true{min_size=200,max_size=1000,step_size=200}'
@@ -297,7 +297,7 @@ For example, the following command may be used for the incremental evaluation of
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --incremental-evaluation 'true{min_size=200,max_size=1000,step_size=200}'

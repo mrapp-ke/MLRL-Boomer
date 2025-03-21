@@ -11,10 +11,10 @@ from typing import Any, Dict, List, Optional
 
 import numpy as np
 
+from mlrl.common.config.options import Options
 from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBody, PartialHead, RuleModel, \
     RuleModelVisitor
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
-from mlrl.common.options import Options
 
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType

@@ -20,13 +20,14 @@ uint32 SingleRefinementComparator::getNumElements() const {
     return bestRefinement_.headPtr ? 1 : 0;
 }
 
-bool SingleRefinementComparator::isImprovement(const IScoreVector& scoreVector) const {
-    return ruleCompareFunction_.compare(scoreVector, bestQuality_);
+bool SingleRefinementComparator::isImprovement(const Quality& quality) const {
+    return ruleCompareFunction_.compare(quality, bestQuality_);
 }
 
-void SingleRefinementComparator::pushRefinement(const Refinement& refinement, const IScoreVector& scoreVector) {
+void SingleRefinementComparator::pushRefinement(const Refinement& refinement,
+                                                const IStatisticsUpdateCandidate& scores) {
     bestRefinement_ = refinement;
-    scoreProcessor_.processScores(scoreVector);
+    scoreProcessor_.processScores(scores);
     bestQuality_ = *bestRefinement_.headPtr;
 }
 

@@ -6,7 +6,7 @@ or several outputs, e.g., to the console or to a file.
 """
 from typing import Any, Optional
 
-from mlrl.common.options import Options
+from mlrl.common.config.options import Options
 
 from mlrl.testbed.characteristics import OutputCharacteristics
 from mlrl.testbed.data import MetaData

@@ -6,6 +6,7 @@
 #include "mlrl/common/data/vector_sparse_array_binary.hpp"
 #include "mlrl/seco/statistics/statistics_decomposable.hpp"
 #include "statistics_common.hpp"
+#include "statistics_state.hpp"
 
 #include <memory>
 #include <utility>
@@ -20,15 +21,13 @@ namespace seco {
      *                                  examples
      * @tparam CoverageMatrix           The type of the matrix that is used to store how often individual examples and
      *                                  labels have been covered
-     * @tparam ConfusionMatrixVector    The type of the vector that is used to store confusion matrices
      * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
      *                                  used for calculating the predictions of rules, as well as corresponding quality
      *                                  scores
      */
-    template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector,
-             typename RuleEvaluationFactory>
+    template<typename LabelMatrix, typename CoverageMatrix, typename RuleEvaluationFactory>
     class AbstractDecomposableStatistics
-        : public AbstractStatistics<LabelMatrix, CoverageMatrix, ConfusionMatrixVector, RuleEvaluationFactory>,
+        : public AbstractStatistics<CoverageStatisticsState<LabelMatrix, CoverageMatrix>, RuleEvaluationFactory>,
           virtual public IDecomposableStatistics<RuleEvaluationFactory> {
         public:
 
@@ -48,8 +47,9 @@ namespace seco {
                                            std::unique_ptr<CoverageMatrix> coverageMatrixPtr,
                                            std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
                                            const RuleEvaluationFactory& ruleEvaluationFactory)
-                : AbstractStatistics<LabelMatrix, CoverageMatrix, ConfusionMatrixVector, RuleEvaluationFactory>(
-                    labelMatrix, std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr),
+                : AbstractStatistics<CoverageStatisticsState<LabelMatrix, CoverageMatrix>, RuleEvaluationFactory>(
+                    std::make_unique<CoverageStatisticsState<LabelMatrix, CoverageMatrix>>(
+                      labelMatrix, std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr)),
                     ruleEvaluationFactory) {}
 
             /**
