@@ -342,12 +342,12 @@ class Experiment(DataSplitter.Callback):
         # Set the indices of ordinal features, if supported...
         if isinstance(current_learner, OrdinalFeatureSupportMixin):
             fit_kwargs[OrdinalFeatureSupportMixin.KWARG_ORDINAL_FEATURE_INDICES] = meta_data.get_feature_indices(
-                {FeatureType.ORDINAL})
+                FeatureType.ORDINAL)
 
         # Set the indices of nominal features, if supported...
         if isinstance(current_learner, NominalFeatureSupportMixin):
             fit_kwargs[NominalFeatureSupportMixin.KWARG_NOMINAL_FEATURE_INDICES] = meta_data.get_feature_indices(
-                {FeatureType.NOMINAL})
+                FeatureType.NOMINAL)
 
         # Load model from disk, if possible, otherwise train a new model...
         loaded_learner = self.__load_model(data_split)

@@ -9,7 +9,7 @@ import xml.etree.ElementTree as XmlTree
 from enum import Enum, auto
 from functools import reduce
 from os import path
-from typing import List, Optional, Set, Tuple
+from typing import List, Tuple
 from xml.dom import minidom
 
 import arff
@@ -90,13 +90,12 @@ class MetaData:
 
         return len(self.features)
 
-    def get_feature_indices(self, feature_types: Optional[Set[FeatureType]] = None) -> List[int]:
+    def get_feature_indices(self, *feature_types: FeatureType) -> List[int]:
         """
         Returns a list that contains the indices of all features with one out of a given set of types (in ascending
-        order).
+        order). If no types are given, all indices are returned.
 
-        :param feature_types:   A set that contains the types of the features whose indices should be returned or
-                                None, if all indices should be returned
+        :param feature_types:   The types of the features whose indices should be returned
         :return:                A list that contains the indices of all features of the given types
         """
         return [
@@ -306,7 +305,7 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
     :return:            A `np.ndarray`, shape `(num_examples, num_encoded_features)`, representing the encoded features
                         of the given examples, the encoder that has been used, as well as the updated meta-data
     """
-    nominal_indices = meta_data.get_feature_indices({FeatureType.NOMINAL})
+    nominal_indices = meta_data.get_feature_indices(FeatureType.NOMINAL)
     num_nominal_features = len(nominal_indices)
     log.info('Data set contains %s nominal and %s numerical features.', num_nominal_features,
              (len(meta_data.features) - num_nominal_features))
