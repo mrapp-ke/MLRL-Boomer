@@ -432,11 +432,11 @@ def __parse_attribute_name(name: str) -> str:
     :return:        The parsed name
     """
     name = name.strip()
-    if name.startswith('\'') or name.startswith('\"'):
+    if name.startswith('\'') or name.startswith('"'):
         name = name[1:]
-    if name.endswith('\'') or name.endswith('\"'):
+    if name.endswith('\'') or name.endswith('"'):
         name = name[:(len(name) - 1)]
-    return name.replace('\\\'', '\'').replace('\\\"', '\"')
+    return name.replace('\\\'', '\'').replace('\\"', '"')
 
 
 def __write_meta_data(xml_file: str, meta_data: MetaData):
