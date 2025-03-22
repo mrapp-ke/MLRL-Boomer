@@ -99,8 +99,7 @@ class MetaData:
         :return:                A list that contains the indices of all features of the given types
         """
         return [
-            i for i, feature in enumerate(self.features)
-            if feature_types is None or feature.feature_type in feature_types
+            i for i, feature in enumerate(self.features) if not feature_types or feature.feature_type in feature_types
         ]
 
 
@@ -137,7 +136,7 @@ def load_data_set_and_meta_data(data_dir: str,
     log.debug('Loading data set from file \"%s\"...', arff_file)
     matrix, features, relation = __load_arff(arff_file, feature_dtype=feature_dtype)
 
-    if outputs is None:
+    if not outputs:
         outputs = __parse_outputs_from_relation(relation, features)
 
     meta_data = __create_meta_data(features, outputs)
@@ -238,13 +237,13 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
 
     features = meta_data.features
     x_features = [(features[i].name if len(features) > i else 'X' + str(i),
-                   'NUMERIC' if len(features) <= i or features[i].nominal_values is None
+                   'NUMERIC' if len(features) <= i or not features[i].nominal_values
                    or features[i].feature_type == FeatureType.NUMERICAL else features[i].nominal_values)
                   for i in range(x.shape[1])]
 
     outputs = meta_data.outputs
     y_features = [(outputs[i].name if len(outputs) > i else 'y' + str(i),
-                   'NUMERIC' if len(outputs) <= i or outputs[i].nominal_values is None
+                   'NUMERIC' if len(outputs) <= i or not outputs[i].nominal_values
                    or outputs[i].feature_type == FeatureType.NUMERICAL else outputs[i].nominal_values)
                   for i in range(y.shape[1])]
 
@@ -321,7 +320,7 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
 
         old_shape = x.shape
 
-        if encoder is None:
+        if not encoder:
             log.info('Applying one-hot encoding...')
             encoder = ColumnTransformer(
                 [('one_hot_encoder', OneHotEncoder(handle_unknown='ignore', sparse_output=False), nominal_indices)],

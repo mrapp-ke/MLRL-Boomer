@@ -132,7 +132,7 @@ class Runnable(ABC):
             result = ''
             year = self.year
 
-            if year is not None:
+            if year:
                 result += ' ' + year
 
             authors = self.authors
@@ -279,7 +279,7 @@ class Runnable(ABC):
 
         :return: A string that provides information about the program's version
         """
-        if program_info is not None:
+        if program_info:
             return str(program_info)
 
         raise RuntimeError('No information about the program version is available')
@@ -311,7 +311,7 @@ class Runnable(ABC):
         # pylint: disable=assignment-from-none
         program_info = self.get_program_info()
 
-        if program_info is not None:
+        if program_info:
             parser.add_argument('-v',
                                 '--version',
                                 action='version',
@@ -500,7 +500,7 @@ class LearnerRunnable(Runnable, ABC):
         else:
             base_learner = None
 
-        if base_learner is not None:
+        if base_learner:
             return base_learner
         raise RuntimeError('The machine learning algorithm "' + self.learner_name + '" does not support '
                            + problem_type.value + ' problems')
@@ -539,9 +539,9 @@ class LearnerRunnable(Runnable, ABC):
 
     @staticmethod
     def __create_pre_execution_hook(args, data_splitter: DataSplitter) -> Optional[Experiment.ExecutionHook]:
+        output_dir = args.output_dir
         current_fold = data_splitter.current_fold if isinstance(data_splitter, CrossValidationSplitter) else -1
-        return None if args.output_dir is None or current_fold >= 0 else LearnerRunnable.ClearOutputDirHook(
-            output_dir=args.output_dir)
+        return LearnerRunnable.ClearOutputDirHook(output_dir) if output_dir and current_fold < 0 else None
 
     def configure_arguments(self, parser: ArgumentParser):
         super().configure_arguments(parser)
@@ -765,12 +765,12 @@ class LearnerRunnable(Runnable, ABC):
         output_writers = []
         output_writer = self._create_data_characteristics_writer(args)
 
-        if output_writer is not None:
+        if output_writer:
             output_writers.append(output_writer)
 
         output_writer = self._create_parameter_writer(args)
 
-        if output_writer is not None:
+        if output_writer:
             output_writers.append(output_writer)
 
         return output_writers
@@ -786,7 +786,7 @@ class LearnerRunnable(Runnable, ABC):
         output_writers = []
         output_writer = self._create_label_vector_writer(args)
 
-        if output_writer is not None:
+        if output_writer:
             output_writers.append(output_writer)
 
         return output_writers
@@ -805,17 +805,17 @@ class LearnerRunnable(Runnable, ABC):
         output_writers = []
         output_writer = self._create_evaluation_writer(args, problem_type, prediction_type)
 
-        if output_writer is not None:
+        if output_writer:
             output_writers.append(output_writer)
 
         output_writer = self._create_prediction_writer(args)
 
-        if output_writer is not None:
+        if output_writer:
             output_writers.append(output_writer)
 
         output_writer = self._create_prediction_characteristics_writer(args)
 
-        if output_writer is not None:
+        if output_writer:
             output_writers.append(output_writer)
 
         return output_writers
@@ -827,7 +827,8 @@ class LearnerRunnable(Runnable, ABC):
         :param args:    The command line arguments
         :return:        The `ModelLoader` that has been created
         """
-        return None if args.model_load_dir is None else ModelLoader(args.model_load_dir)
+        model_load_dir = args.model_load_dir
+        return ModelLoader(model_load_dir) if model_load_dir else None
 
     def _create_model_saver(self, args) -> Optional[ModelSaver]:
         """
@@ -836,7 +837,8 @@ class LearnerRunnable(Runnable, ABC):
         :param args:    The command line arguments
         :return:        The `ModelSaver` that has been created
         """
-        return None if args.model_save_dir is None else ModelSaver(args.model_save_dir)
+        model_save_dir = args.model_save_dir
+        return ModelSaver(model_save_dir) if model_save_dir else None
 
     def _create_train_evaluation(self, args, problem_type: ProblemType,
                                  prediction_type: PredictionType) -> Optional[Evaluation]:
@@ -906,7 +908,7 @@ class LearnerRunnable(Runnable, ABC):
         value, options = parse_param_and_options(self.PARAM_STORE_EVALUATION, args.store_evaluation,
                                                  self.STORE_EVALUATION_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+        if value == BooleanOption.TRUE.value and args.output_dir:
             sinks.append(EvaluationWriter.CsvFileSink(output_dir=args.output_dir, options=options))
 
         if len(sinks) == 0:
@@ -925,7 +927,8 @@ class LearnerRunnable(Runnable, ABC):
         :param args:    The command line arguments
         :return:        The `ParameterLoader` that has been created
         """
-        return None if args.parameter_load_dir is None else CsvParameterLoader(input_dir=args.parameter_load_dir)
+        parameter_load_dir = args.parameter_load_dir
+        return CsvParameterLoader(parameter_load_dir) if parameter_load_dir else None
 
     def _create_parameter_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -940,7 +943,7 @@ class LearnerRunnable(Runnable, ABC):
         if args.print_parameters:
             sinks.append(ParameterWriter.LogSink())
 
-        if args.parameter_save_dir is not None:
+        if args.parameter_save_dir:
             sinks.append(ParameterWriter.CsvFileSink(output_dir=args.parameter_save_dir))
 
         return ParameterWriter(sinks) if sinks else None
@@ -962,7 +965,7 @@ class LearnerRunnable(Runnable, ABC):
         value, options = parse_param_and_options(self.PARAM_STORE_PREDICTIONS, args.store_predictions,
                                                  self.STORE_PREDICTIONS_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+        if value == BooleanOption.TRUE.value and args.output_dir:
             sinks.append(PredictionWriter.ArffFileSink(output_dir=args.output_dir, options=options))
 
         return PredictionWriter(sinks) if sinks else None
@@ -987,7 +990,7 @@ class LearnerRunnable(Runnable, ABC):
                                                  args.store_prediction_characteristics,
                                                  self.STORE_PREDICTION_CHARACTERISTICS_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+        if value == BooleanOption.TRUE.value and args.output_dir:
             sinks.append(PredictionCharacteristicsWriter.CsvFileSink(output_dir=args.output_dir, options=options))
 
         return PredictionCharacteristicsWriter(sinks) if sinks else None
@@ -1010,7 +1013,7 @@ class LearnerRunnable(Runnable, ABC):
         value, options = parse_param_and_options(self.PARAM_STORE_DATA_CHARACTERISTICS, args.store_data_characteristics,
                                                  self.STORE_DATA_CHARACTERISTICS_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+        if value == BooleanOption.TRUE.value and args.output_dir:
             sinks.append(DataCharacteristicsWriter.CsvFileSink(output_dir=args.output_dir, options=options))
 
         return DataCharacteristicsWriter(sinks) if sinks else None
@@ -1033,7 +1036,7 @@ class LearnerRunnable(Runnable, ABC):
         value, options = parse_param_and_options(self.PARAM_STORE_LABEL_VECTORS, args.store_label_vectors,
                                                  self.STORE_LABEL_VECTORS_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+        if value == BooleanOption.TRUE.value and args.output_dir:
             sinks.append(LabelVectorWriter.CsvFileSink(output_dir=args.output_dir, options=options))
 
         return LabelVectorWriter(sinks) if sinks else None
@@ -1153,7 +1156,7 @@ class RuleLearnerRunnable(LearnerRunnable):
             config_type = None
             parameters = None
 
-        if config_type is not None and parameters is not None:
+        if config_type and parameters:
             return config_type, parameters
         raise RuntimeError('The machine learning algorithm "' + self.learner_name + '" does not support '
                            + problem_type.value + ' problems')
@@ -1327,7 +1330,7 @@ class RuleLearnerRunnable(LearnerRunnable):
 
         value, options = parse_param_and_options(self.PARAM_STORE_RULES, args.store_rules, self.STORE_RULES_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+        if value == BooleanOption.TRUE.value and args.output_dir:
             sinks.append(ModelWriter.TextFileSink(output_dir=args.output_dir, options=options))
 
         return RuleModelWriter(sinks) if sinks else None
@@ -1345,7 +1348,7 @@ class RuleLearnerRunnable(LearnerRunnable):
         if args.print_model_characteristics:
             sinks.append(ModelCharacteristicsWriter.LogSink())
 
-        if args.store_model_characteristics and args.output_dir is not None:
+        if args.store_model_characteristics and args.output_dir:
             sinks.append(ModelCharacteristicsWriter.CsvFileSink(output_dir=args.output_dir))
 
         return RuleModelCharacteristicsWriter(sinks) if sinks else None
@@ -1370,7 +1373,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                                                  args.store_marginal_probability_calibration_model,
                                                  self.STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+        if value == BooleanOption.TRUE.value and args.output_dir:
             sinks.append(
                 MarginalProbabilityCalibrationModelWriter.CsvFileSink(output_dir=args.output_dir, options=options))
 
@@ -1396,7 +1399,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                                                  args.store_joint_probability_calibration_model,
                                                  self.STORE_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+        if value == BooleanOption.TRUE.value and args.output_dir:
             sinks.append(JointProbabilityCalibrationModelWriter.CsvFileSink(output_dir=args.output_dir,
                                                                             options=options))
 
@@ -1432,7 +1435,7 @@ class RuleLearnerRunnable(LearnerRunnable):
         value, options = parse_param_and_options(self.PARAM_STORE_LABEL_VECTORS, args.store_label_vectors,
                                                  self.STORE_LABEL_VECTORS_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+        if value == BooleanOption.TRUE.value and args.output_dir:
             sinks.append(LabelVectorSetWriter.CsvFileSink(output_dir=args.output_dir, options=options))
 
         return LabelVectorSetWriter(sinks) if sinks else None
@@ -1441,22 +1444,22 @@ class RuleLearnerRunnable(LearnerRunnable):
         output_writers = super()._create_post_training_output_writers(args)
         output_writer = self._create_model_writer(args)
 
-        if output_writer is not None:
+        if output_writer:
             output_writers.append(output_writer)
 
         output_writer = self._create_model_characteristics_writer(args)
 
-        if output_writer is not None:
+        if output_writer:
             output_writers.append(output_writer)
 
         output_writer = self._create_marginal_probability_calibration_model_writer(args)
 
-        if output_writer is not None:
+        if output_writer:
             output_writers.append(output_writer)
 
         output_writer = self._create_joint_probability_calibration_model_writer(args)
 
-        if output_writer is not None:
+        if output_writer:
             output_writers.append(output_writer)
 
         return output_writers

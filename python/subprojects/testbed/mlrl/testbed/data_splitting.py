@@ -291,8 +291,7 @@ class NoSplitter(DataSplitter):
 
         # Train and evaluate model...
         data_split = NoSplit()
-        callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data, data_split, x, y,
-                                    x, y)
+        callback.train_and_evaluate(encoded_meta_data if encoded_meta_data else meta_data, data_split, x, y, x, y)
 
 
 class TrainTestSplitter(DataSplitter):
@@ -341,7 +340,7 @@ class TrainTestSplitter(DataSplitter):
             test_x, test_y = load_data_set(data_dir, test_arff_file_name, meta_data)
 
             # Apply one-hot-encoding, if necessary...
-            if encoder is not None:
+            if encoder:
                 test_x, _, _ = one_hot_encode(test_x, test_y, meta_data, encoder=encoder)
         else:
             # Split data set into training and test data...
@@ -353,8 +352,8 @@ class TrainTestSplitter(DataSplitter):
 
         # Train and evaluate model...
         data_split = TrainingTestSplit()
-        callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data, data_split,
-                                    train_x, train_y, test_x, test_y)
+        callback.train_and_evaluate(encoded_meta_data if encoded_meta_data else meta_data, data_split, train_x, train_y,
+                                    test_x, test_y)
 
 
 class CrossValidationSplitter(DataSplitter):
@@ -429,7 +428,7 @@ class CrossValidationSplitter(DataSplitter):
             x, y = load_data_set(data_dir, arff_file_names[fold], meta_data)
 
             # Apply one-hot-encoding, if necessary...
-            if encoder is not None:
+            if encoder:
                 x, _, _ = one_hot_encode(x, y, meta_data, encoder=encoder)
 
             data.append((x, y))
@@ -458,8 +457,8 @@ class CrossValidationSplitter(DataSplitter):
 
             # Train and evaluate model...
             data_split = CrossValidationFold(num_folds=num_folds, fold=fold, current_fold=current_fold)
-            callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data, data_split,
-                                        train_x, train_y, test_x, test_y)
+            callback.train_and_evaluate(encoded_meta_data if encoded_meta_data else meta_data, data_split, train_x,
+                                        train_y, test_x, test_y)
 
     def __cross_validation(self, callback: DataSplitter.Callback, data_dir: str, arff_file_name: str,
                            xml_file_name: str, use_one_hot_encoding: bool, num_folds: int, current_fold: int):
@@ -489,5 +488,5 @@ class CrossValidationSplitter(DataSplitter):
 
                 # Train and evaluate model...
                 data_split = CrossValidationFold(num_folds=num_folds, fold=fold, current_fold=current_fold)
-                callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data,
-                                            data_split, train_x, train_y, test_x, test_y)
+                callback.train_and_evaluate(encoded_meta_data if encoded_meta_data else meta_data, data_split, train_x,
+                                            train_y, test_x, test_y)
