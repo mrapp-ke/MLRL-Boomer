@@ -50,20 +50,19 @@ class Attribute:
     nominal_values: Optional[List[str]] = None
 
 
+@dataclass
 class MetaData:
     """
     Stores the meta-data of a data set.
-    """
 
-    def __init__(self, features: List[Attribute], outputs: List[Attribute], outputs_at_start: bool):
-        """
-        :param features:            A list that contains all features in the data set
-        :param outputs:             A list that contains all outputs in the data set
-        :param outputs_at_start:    True, if the outputs are located at the start, False, if they are located at the end
-        """
-        self.features = features
-        self.outputs = outputs
-        self.outputs_at_start = outputs_at_start
+    Attributes:
+        features:           A list that contains all features in the data set
+        outputs:            A list that contains all outputs in the data set
+        outputs_at_start:   True, if the outputs are located at the start, False, if they are located at the end
+    """
+    features: List[Attribute]
+    outputs: List[Attribute]
+    outputs_at_start: bool
 
     def get_num_features(self, *feature_types: AttributeType) -> int:
         """
