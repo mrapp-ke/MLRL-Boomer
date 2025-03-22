@@ -169,8 +169,8 @@ class NominalParameter(Parameter, ABC):
         for parameter_value in self.values.values():
             if issubclass(config_type, parameter_value.mixin):
                 options = parameter_value.options
-                num_options += 0 if options is None else len(options)
-                supported_values[parameter_value.name] = set() if options is None else options
+                num_options += len(options) if options else 0
+                supported_values[parameter_value.name] = options if options else set()
 
         if num_options == 0:
             supported_values = set(supported_values.keys())
@@ -597,7 +597,7 @@ class GlobalPruningParameter(NominalParameter):
             conf.set_min_rules(options.get_int(self.OPTION_MIN_RULES, conf.get_min_rules()))
             aggregation_function = options.get_string(self.OPTION_AGGREGATION_FUNCTION, None)
             conf.set_aggregation_function(
-                self.__create_aggregation_function(aggregation_function) if aggregation_function is not None else conf
+                self.__create_aggregation_function(aggregation_function) if aggregation_function else conf
                 .get_aggregation_function())
             conf.set_update_interval(options.get_int(self.OPTION_UPDATE_INTERVAL, conf.get_update_interval()))
             conf.set_stop_interval(options.get_int(self.OPTION_STOP_INTERVAL, conf.get_stop_interval()))

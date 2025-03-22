@@ -103,10 +103,10 @@ class OutputWriter(ABC):
                          **kwargs):
             message = self.title
 
-            if data_type is not None:
+            if data_type:
                 message += ' for ' + data_type.value + ' data'
 
-            if prediction_scope is not None and not prediction_scope.is_global():
+            if prediction_scope and not prediction_scope.is_global():
                 message += ' using a model of size ' + str(prediction_scope.get_model_size())
 
             if data_split.is_cross_validation_used():
@@ -136,7 +136,7 @@ class OutputWriter(ABC):
         def write_output(self, problem_type: ProblemType, meta_data: MetaData, data_split: DataSplit,
                          data_type: Optional[DataType], prediction_scope: Optional[PredictionScope], output_data,
                          **kwargs):
-            file_name = self.file_name if data_type is None else data_type.get_file_name(self.file_name)
+            file_name = data_type.get_file_name(self.file_name) if data_type else self.file_name
 
             with open_writable_text_file(directory=self.output_dir, file_name=file_name,
                                          fold=data_split.get_fold()) as text_file:
@@ -161,8 +161,8 @@ class OutputWriter(ABC):
                          **kwargs):
             tabular_data = output_data.tabularize(self.options, **kwargs)
 
-            if tabular_data is not None:
-                incremental_prediction = prediction_scope is not None and not prediction_scope.is_global()
+            if tabular_data:
+                incremental_prediction = prediction_scope and not prediction_scope.is_global()
 
                 if incremental_prediction:
                     for row in tabular_data:
@@ -170,7 +170,7 @@ class OutputWriter(ABC):
 
                 if tabular_data:
                     header = sorted(tabular_data[0].keys())
-                    file_name = self.file_name if data_type is None else data_type.get_file_name(self.file_name)
+                    file_name = data_type.get_file_name(self.file_name) if data_type else self.file_name
                     file_name = get_file_name_per_fold(file_name, SUFFIX_CSV, data_split.get_fold())
                     file_path = path.join(self.output_dir, file_name)
 
@@ -257,6 +257,6 @@ class OutputWriter(ABC):
                                                      prediction_type, prediction_scope, predictions, train_time,
                                                      predict_time)
 
-            if output_data is not None:
+            if output_data:
                 for sink in sinks:
                     sink.write_output(problem_type, meta_data, data_split, data_type, prediction_scope, output_data)
