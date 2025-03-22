@@ -62,7 +62,7 @@ class MetaData:
     """
     features: List[Attribute]
     outputs: List[Attribute]
-    outputs_at_start: bool
+    outputs_at_start: bool = False
 
     def get_num_features(self, *feature_types: AttributeType) -> int:
         """
