@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from functools import reduce
 from os import path
-from typing import List, Optional, Set, Tuple
+from typing import Any, List, Optional, Set, Tuple
 from xml.dom import minidom
 
 import arff
@@ -328,7 +328,7 @@ def __load_arff_as_dict(arff_file: str, sparse: bool) -> dict:
         return arff.load(file, encode_nominal=True, return_type=sparse_format)
 
 
-def __parse_arff_attributes(arff_attributes: List) -> List[Attribute]:
+def __parse_arff_attributes(arff_attributes: List[Any]) -> List[Attribute]:
     """
     Parses the attributes contained in an ARFF file.
 
@@ -439,7 +439,7 @@ def __parse_attribute_name(name: str) -> str:
     return name.replace('\\\'', '\'').replace('\\\"', '\"')
 
 
-def __write_meta_data(xml_file, meta_data: MetaData):
+def __write_meta_data(xml_file: str, meta_data: MetaData):
     """
     Writes meta-data to a Mulan XML file.
 
