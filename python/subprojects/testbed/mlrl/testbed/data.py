@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from enum import Enum, auto
 from functools import reduce
 from os import path
-from typing import Any, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 from xml.dom import minidom
 
 import arff
@@ -314,7 +314,7 @@ def __load_arff(arff_file: str, feature_dtype) -> Tuple[csc_array, list, str]:
     return matrix, features, relation
 
 
-def __load_arff_as_dict(arff_file: str, sparse: bool) -> dict:
+def __load_arff_as_dict(arff_file: str, sparse: bool) -> Dict[str, Any]:
     """
     Loads the content of an ARFF file.
 
