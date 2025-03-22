@@ -10,7 +10,7 @@ import numpy as np
 
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.data import MetaData, Output, save_arff_file
+from mlrl.testbed.data import Attribute, AttributeType, MetaData, save_arff_file
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.format import OPTION_DECIMALS, format_array
 from mlrl.testbed.io import SUFFIX_ARFF, get_file_name_per_fold
@@ -77,14 +77,29 @@ class PredictionWriter(OutputWriter):
             decimals = self.options.get_int(OPTION_DECIMALS, 0)
             ground_truth = output_data.ground_truth
             predictions = output_data.predictions
+            nominal_values = None
 
-            if decimals > 0 and not issubclass(predictions.dtype.type, np.integer):
-                predictions = np.around(predictions, decimals=decimals)
+            if issubclass(predictions.dtype.type, np.integer):
+                if problem_type == ProblemType.CLASSIFICATION:
+                    attribute_type = AttributeType.NOMINAL
+                    nominal_values = [str(value) for value in np.unique(predictions)]
+                else:
+                    attribute_type = AttributeType.ORDINAL
+            else:
+                attribute_type = AttributeType.NUMERICAL
+
+                if decimals > 0:
+                    predictions = np.around(predictions, decimals=decimals)
 
             file_name = get_file_name_per_fold(prediction_scope.get_file_name(data_type.get_file_name('predictions')),
                                                SUFFIX_ARFF, data_split.get_fold())
-            features = [Output('Ground Truth ' + output.name) for output in meta_data.outputs]
-            outputs = [Output('Prediction ' + output.name) for output in meta_data.outputs]
+            features = []
+            outputs = []
+
+            for output in meta_data.outputs:
+                features.append(Attribute('Ground Truth ' + output.name, attribute_type, nominal_values))
+                outputs.append(Attribute('Prediction ' + output.name, attribute_type, nominal_values))
+
             prediction_meta_data = MetaData(features, outputs, outputs_at_start=False)
             save_arff_file(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
 

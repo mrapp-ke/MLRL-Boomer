@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from functools import reduce
 from os import path
-from typing import List, Tuple
+from typing import List, Optional, Set, Tuple
 from xml.dom import minidom
 
 import arff
@@ -50,21 +50,12 @@ class Attribute:
     nominal_values: Optional[List[str]] = None
 
 
-class Output(Attribute):
-    """
-    Represents an output that is contained by a data set.
-    """
-
-    def __init__(self, name: str):
-        super().__init__(name, AttributeType.NOMINAL, [str(0), str(1)])
-
-
 class MetaData:
     """
     Stores the meta-data of a data set.
     """
 
-    def __init__(self, features: List[Attribute], outputs: List[Output], outputs_at_start: bool):
+    def __init__(self, features: List[Attribute], outputs: List[Attribute], outputs_at_start: bool):
         """
         :param features:            A list that contains all features in the data set
         :param outputs:             A list that contains all outputs in the data set
@@ -122,25 +113,16 @@ def load_data_set_and_meta_data(data_dir: str,
                             `output_dtype`, shape `(num_examples, num_outputs)`, representing the corresponding ground
                             truth, as well as the data set's meta-data
     """
-    xml_file = path.join(data_dir, xml_file_name)
-    outputs = None
-
-    if path.isfile(xml_file):
-        log.debug('Parsing meta-data from file \"%s\"...', xml_file)
-        outputs = __parse_outputs_from_xml_file(xml_file)
-    else:
-        log.debug(
-            'Mulan XML file \"%s\" does not exist. If possible, information about the data set\'s outputs is parsed '
-            + 'from the ARFF file\'s @relation declaration as intended by the MEKA data set format...', xml_file)
-
     arff_file = path.join(data_dir, arff_file_name)
     log.debug('Loading data set from file \"%s\"...', arff_file)
-    matrix, features, relation = __load_arff(arff_file, feature_dtype=feature_dtype)
+    matrix, arff_attributes, relation = __load_arff(arff_file, feature_dtype=feature_dtype)
+    attributes = __parse_arff_attributes(arff_attributes)
+    output_names = __parse_output_names_from_xml_file(path.join(data_dir, xml_file_name))
 
-    if not outputs:
-        outputs = __parse_outputs_from_relation(relation, features)
+    if not output_names:
+        output_names = __parse_output_names_from_relation(relation, attributes)
 
-    meta_data = __create_meta_data(features, outputs)
+    meta_data = __create_meta_data(attributes, output_names)
     x, y = __create_feature_and_output_matrix(matrix, meta_data, output_dtype)
     return x, y, meta_data
 
@@ -347,26 +329,65 @@ def __load_arff_as_dict(arff_file: str, sparse: bool) -> dict:
         return arff.load(file, encode_nominal=True, return_type=sparse_format)
 
 
-def __parse_outputs_from_xml_file(xml_file: str) -> List[Output]:
+def __parse_arff_attributes(arff_attributes: List) -> List[Attribute]:
     """
-    Parses a Mulan XML file to retrieve the outputs contained in a data set.
+    Parses the attributes contained in an ARFF file.
+
+    :return:    A list that contains the attributes in the ARFF file
+    """
+    attributes = []
+
+    for attribute in arff_attributes:
+        attribute_name = __parse_attribute_name(attribute[0])
+        type_definition = attribute[1]
+
+        if isinstance(type_definition, list):
+            feature_type = AttributeType.NOMINAL
+            nominal_values = type_definition
+        else:
+            type_definition = str(type_definition).lower()
+            nominal_values = None
+
+            if type_definition == 'integer':
+                feature_type = AttributeType.ORDINAL
+            elif type_definition in ('real', 'numeric'):
+                feature_type = AttributeType.NUMERICAL
+            else:
+                raise ValueError('Encountered unsupported feature type: ' + type_definition)
+
+        attributes.append(Attribute(attribute_name, feature_type, nominal_values))
+
+    return attributes
+
+
+def __parse_output_names_from_xml_file(xml_file: str) -> Optional[Set[str]]:
+    """
+    Parses a Mulan XML file to retrieve the names of the outputs contained in a data set.
 
     :param xml_file:    The path to the XML file (including the suffix)
-    :return:            A list containing the outputs
+    :return:            A set that contains the names of the outputs or None, if the XML file does not exist
     """
+    if path.isfile(xml_file):
+        log.debug('Parsing meta-data from file \"%s\"...', xml_file)
+        xml_doc = minidom.parse(xml_file)
+        tags = xml_doc.getElementsByTagName('label')
+        return {__parse_attribute_name(tag.getAttribute('name')) for tag in tags}
 
-    xml_doc = minidom.parse(xml_file)
-    tags = xml_doc.getElementsByTagName('label')
-    return [Output(__parse_attribute_name(tag.getAttribute('name'))) for tag in tags]
+    log.debug(
+        'Mulan XML file \"%s\" does not exist. If possible, information about the data set\'s outputs is parsed from '
+        + 'the ARFF file\'s @relation declaration as intended by the MEKA data set format...', xml_file)
+    return None
 
 
-def __parse_outputs_from_relation(relation: str, arff_attributes: List) -> List[Output]:
+def __parse_output_names_from_relation(relation: str, attributes: List[Attribute]) -> Set[str]:
     """
-    Parses the @relation declaration of an ARFF file to retrieve the outputs contained in a data set.
+    Parses the @relation declaration of an ARFF file to retrieve the names of the outputs contained in a data set.
 
-    :param relation:        The @relation declaration to be parsed
-    :param arff_attributes: A list that contains all attributes defined in an ARFF file
-    :return:                A list containing the outputs
+
+    :param relation:    The @relation declaration to be parsed
+    :param attributes:  A list that contains all attributes that are contained in the ARFF file, including features and
+                        outputs
+    :return:            A list that contains the names of the outputs
     """
     parameter_name = '-C '
     index = relation.index(parameter_name)
@@ -377,48 +398,31 @@ def __parse_outputs_from_relation(relation: str, arff_attributes: List) -> List[
         parameter_value = parameter_value[:index]
 
     num_outputs = int(parameter_value)
-    return [Output(__parse_attribute_name(arff_attributes[i][0])) for i in range(num_outputs)]
+    return {__parse_attribute_name(attributes[i].name) for i in range(num_outputs)}
 
 
-def __create_meta_data(features: List[Attribute], outputs: List[Output]) -> MetaData:
+def __create_meta_data(attributes: List[Attribute], output_names: Set[str]) -> MetaData:
     """
-    Creates and returns the `MetaData` of a data set by parsing the features in an ARFF file to retrieve information
-    about the features and outputs contained in a data set.
+    Creates and returns the `MetaData` of a data set.
 
-    :param features:    A list that contains a description of each feature in an ARFF file (including the outputs)
-    :param outputs:     A list that contains the all outputs
-    :return:            The `MetaData` that has been created
+    :param attributes:      A list that contains all attributes in the dataset, including features and outputs
+    :param output_names:    A set that contains the names of all outputs
+    :return:                The `MetaData` that has been created
     """
-    output_names = {output.name for output in outputs}
     outputs_at_start = False
-    feature_list = []
+    features = []
+    outputs = []
 
-    for feature in features:
-        feature_name = __parse_attribute_name(feature[0])
+    for attribute in attributes:
+        if attribute.name in output_names:
+            outputs.append(attribute)
 
-        if feature_name not in output_names:
-            type_definition = feature[1]
+            if not features:
+                outputs_at_start = True
+        else:
+            features.append(attribute)
 
-            if isinstance(type_definition, list):
-                feature_type = AttributeType.NOMINAL
-                nominal_values = type_definition
-            else:
-                type_definition = str(type_definition).lower()
-                nominal_values = None
-
-                if type_definition == 'integer':
-                    feature_type = AttributeType.ORDINAL
-                elif type_definition in ('real', 'numeric'):
-                    feature_type = AttributeType.NUMERICAL
-                else:
-                    raise ValueError('Encountered unsupported feature type: ' + type_definition)
-
-            feature_list.append(Attribute(feature_name, feature_type, nominal_values))
-        elif len(feature_list) == 0:
-            outputs_at_start = True
-
-    meta_data = MetaData(feature_list, outputs, outputs_at_start)
-    return meta_data
+    return MetaData(features, outputs, outputs_at_start)
 
 
 def __parse_attribute_name(name: str) -> str:
