@@ -7,6 +7,7 @@ requires = [
 [project]
 name = "mlrl-testbed"
 description = "Provides utilities for the training and evaluation of machine learning algorithms"
+license = "MIT"
 readme = "README.md"
 authors = [
     { name = "Michael Rapp", email = "michael.rapp.ml@gmail.com" },
@@ -23,7 +24,6 @@ keywords = [
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
