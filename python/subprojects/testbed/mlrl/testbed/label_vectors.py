@@ -49,7 +49,9 @@ class LabelVectorWriter(OutputWriter):
             """
             self.num_labels = num_labels
 
-            if y is not None:
+            if y is None:
+                self.unique_label_vectors = []
+            else:
                 unique_label_vector_strings: Dict[str, int] = {}
                 y = lil_array(y)
                 separator = ','
@@ -67,8 +69,6 @@ class LabelVectorWriter(OutputWriter):
                     unique_label_vectors.append((label_vector, frequency))
 
                 self.unique_label_vectors = unique_label_vectors
-            else:
-                self.unique_label_vectors = []
 
         def __format_label_vector(self, sparse_label_vector: np.ndarray, sparse: bool) -> str:
             if sparse:

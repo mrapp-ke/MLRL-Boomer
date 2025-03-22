@@ -103,7 +103,7 @@ def format_table(rows, header=None, alignment=None) -> str:
                         'center', or 'right'
     :return:            The textual representation that has been created
     """
-    if header is None:
+    if not header:
         return tabulate(rows, colalign=alignment, tablefmt='plain')
     return tabulate(rows, headers=header, colalign=alignment, tablefmt='simple_outline')
 
