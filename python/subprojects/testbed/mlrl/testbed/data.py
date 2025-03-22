@@ -347,7 +347,7 @@ def __load_arff_as_dict(arff_file: str, sparse: bool) -> dict:
         return arff.load(file, encode_nominal=True, return_type=sparse_format)
 
 
-def __parse_outputs_from_xml_file(xml_file) -> List[Output]:
+def __parse_outputs_from_xml_file(xml_file: str) -> List[Output]:
     """
     Parses a Mulan XML file to retrieve information about the outputs contained in a data set.
 
@@ -360,7 +360,7 @@ def __parse_outputs_from_xml_file(xml_file) -> List[Output]:
     return [Output(__parse_attribute_name(tag.getAttribute('name'))) for tag in tags]
 
 
-def __parse_outputs_from_relation(relation: str, features: list) -> List[Output]:
+def __parse_outputs_from_relation(relation: str, arff_attributes: List) -> List[Output]:
     """
     Parses the @relation declaration of an ARFF file to retrieve information about the outputs contained in a data set.
 
@@ -376,7 +376,7 @@ def __parse_outputs_from_relation(relation: str, features: list) -> List[Output]
         parameter_value = parameter_value[:index]
 
     num_outputs = int(parameter_value)
-    return [Output(__parse_attribute_name(features[i][0])) for i in range(num_outputs)]
+    return [Output(__parse_attribute_name(arff_attributes[i][0])) for i in range(num_outputs)]
 
 
 def __create_meta_data(features: List[Attribute], outputs: List[Output]) -> MetaData:
