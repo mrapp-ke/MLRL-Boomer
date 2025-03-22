@@ -349,7 +349,7 @@ def __load_arff_as_dict(arff_file: str, sparse: bool) -> dict:
 
 def __parse_outputs_from_xml_file(xml_file: str) -> List[Output]:
     """
-    Parses a Mulan XML file to retrieve information about the outputs contained in a data set.
+    Parses a Mulan XML file to retrieve the outputs contained in a data set.
 
     :param xml_file:    The path to the XML file (including the suffix)
     :return:            A list containing the outputs
@@ -362,10 +362,11 @@ def __parse_outputs_from_xml_file(xml_file: str) -> List[Output]:
 
 def __parse_outputs_from_relation(relation: str, arff_attributes: List) -> List[Output]:
     """
-    Parses the @relation declaration of an ARFF file to retrieve information about the outputs contained in a data set.
+    Parses the @relation declaration of an ARFF file to retrieve the outputs contained in a data set.
 
-    :param relation:    The @relation declaration to be parsed
-    :return:            A list containing the outputs
+    :param relation:        The @relation declaration to be parsed
+    :param arff_attributes: A list that contains all attributes defined in an ARFF file
+    :return:                A list containing the outputs
     """
     parameter_name = '-C '
     index = relation.index(parameter_name)
