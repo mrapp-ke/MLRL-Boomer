@@ -7,6 +7,7 @@ requires = [
 [project]
 name = "mlrl-seco"
 description = "A scikit-learn implementation of a Separate-and-Conquer (SeCo) multi-label rule learning algorithm"
+license = "MIT"
 readme = "README.md"
 authors = [
     { name = "Michael Rapp", email = "michael.rapp.ml@gmail.com" },
@@ -21,7 +22,6 @@ keywords = [
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX :: Linux",
