@@ -357,7 +357,7 @@ def __parse_outputs_from_xml_file(xml_file) -> List[Output]:
 
     xml_doc = minidom.parse(xml_file)
     tags = xml_doc.getElementsByTagName('label')
-    return [Output(__parse_feature_or_output_name(tag.getAttribute('name'))) for tag in tags]
+    return [Output(__parse_attribute_name(tag.getAttribute('name'))) for tag in tags]
 
 
 def __parse_outputs_from_relation(relation: str, features: list) -> List[Output]:
@@ -376,7 +376,7 @@ def __parse_outputs_from_relation(relation: str, features: list) -> List[Output]
         parameter_value = parameter_value[:index]
 
     num_outputs = int(parameter_value)
-    return [Output(__parse_feature_or_output_name(features[i][0])) for i in range(num_outputs)]
+    return [Output(__parse_attribute_name(features[i][0])) for i in range(num_outputs)]
 
 
 def __create_meta_data(features: List[Attribute], outputs: List[Output]) -> MetaData:
@@ -393,7 +393,7 @@ def __create_meta_data(features: List[Attribute], outputs: List[Output]) -> Meta
     feature_list = []
 
     for feature in features:
-        feature_name = __parse_feature_or_output_name(feature[0])
+        feature_name = __parse_attribute_name(feature[0])
 
         if feature_name not in output_names:
             type_definition = feature[1]
@@ -420,11 +420,11 @@ def __create_meta_data(features: List[Attribute], outputs: List[Output]) -> Meta
     return meta_data
 
 
-def __parse_feature_or_output_name(name: str) -> str:
+def __parse_attribute_name(name: str) -> str:
     """
-    Parses the name of an feature or output and removes forbidden characters.
+    Parses the name of an attribute and removes forbidden characters.
 
-    :param name:    The name of the feature or output
+    :param name:    The name of the attribute
     :return:        The parsed name
     """
     name = name.strip()
