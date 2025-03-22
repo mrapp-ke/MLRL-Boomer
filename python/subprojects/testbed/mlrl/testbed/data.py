@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from functools import reduce
 from os import path
-from typing import Any, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 from xml.dom import minidom
 
 import arff
@@ -96,7 +96,7 @@ class MetaData:
 
 def load_data_set_and_meta_data(data_dir: str,
                                 arff_file_name: str,
-                                xml_file_name: str,
+                                xml_file_name: Optional[str],
                                 feature_dtype=Float32,
                                 output_dtype=Uint8) -> Tuple[lil_array, lil_array, MetaData]:
     """
@@ -104,7 +104,7 @@ def load_data_set_and_meta_data(data_dir: str,
 
     :param data_dir:        The path to the directory that contains the files
     :param arff_file_name:  The name of the ARFF file (including the suffix)
-    :param xml_file_name:   The name of the XML file (including the suffix)
+    :param xml_file_name:   The name of the XML file (including the suffix), if available
     :param feature_dtype:   The requested type of the feature matrix
     :param output_dtype:    The requested type of the output matrix
     :return:                A `scipy.sparse.lil_array` of type `feature_dtype`, shape `(num_examples, num_features)`,
@@ -314,7 +314,7 @@ def __load_arff(arff_file: str, feature_dtype) -> Tuple[csc_array, list, str]:
     return matrix, features, relation
 
 
-def __load_arff_as_dict(arff_file: str, sparse: bool) -> dict:
+def __load_arff_as_dict(arff_file: str, sparse: bool) -> Dict[str, Any]:
     """
     Loads the content of an ARFF file.
 
