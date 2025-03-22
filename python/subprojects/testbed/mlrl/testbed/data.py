@@ -94,7 +94,7 @@ class MetaData:
         ]
 
 
-def load_data_set_and_meta_data(data_dir: str,
+def load_data_set_and_meta_data(directory: str,
                                 arff_file_name: str,
                                 xml_file_name: Optional[str],
                                 feature_dtype=Float32,
@@ -102,7 +102,7 @@ def load_data_set_and_meta_data(data_dir: str,
     """
     Loads a data set from an ARFF file and the corresponding Mulan XML file.
 
-    :param data_dir:        The path to the directory that contains the files
+    :param directory:       The path to the directory that contains the files
     :param arff_file_name:  The name of the ARFF file (including the suffix)
     :param xml_file_name:   The name of the XML file (including the suffix), if available
     :param feature_dtype:   The requested type of the feature matrix
@@ -112,11 +112,11 @@ def load_data_set_and_meta_data(data_dir: str,
                             `output_dtype`, shape `(num_examples, num_outputs)`, representing the corresponding ground
                             truth, as well as the data set's meta-data
     """
-    arff_file = path.join(data_dir, arff_file_name)
+    arff_file = path.join(directory, arff_file_name)
     log.debug('Loading data set from file \"%s\"...', arff_file)
     matrix, arff_attributes, relation = __load_arff(arff_file, feature_dtype=feature_dtype)
     attributes = __parse_arff_attributes(arff_attributes)
-    output_names = __parse_output_names_from_xml_file(path.join(data_dir, xml_file_name))
+    output_names = __parse_output_names_from_xml_file(path.join(directory, xml_file_name))
 
     if not output_names:
         output_names = __parse_output_names_from_relation(relation, attributes)
@@ -126,7 +126,7 @@ def load_data_set_and_meta_data(data_dir: str,
     return x, y, meta_data
 
 
-def load_data_set(data_dir: str,
+def load_data_set(directory: str,
                   arff_file_name: str,
                   meta_data: MetaData,
                   feature_dtype=Float32,
@@ -134,7 +134,7 @@ def load_data_set(data_dir: str,
     """
     Loads a data set from an ARFF file given its meta-data.
 
-    :param data_dir:        The path to the directory that contains the ARFF file
+    :param directory:       The path to the directory that contains the ARFF file
     :param arff_file_name:  The name of the ARFF file (including the suffix)
     :param meta_data:       The meta-data
     :param feature_dtype:   The requested data type of the feature matrix
@@ -144,7 +144,7 @@ def load_data_set(data_dir: str,
                             type `output_dtype`, shape `(num_examples, num_outputs)`, representing the corresponding
                             ground truth
     """
-    arff_file = path.join(data_dir, arff_file_name)
+    arff_file = path.join(directory, arff_file_name)
     log.debug('Loading data set from file \"%s\"...', arff_file)
     matrix, _, _ = __load_arff(arff_file, feature_dtype=feature_dtype)
     x, y = __create_feature_and_output_matrix(matrix, meta_data, output_dtype)
