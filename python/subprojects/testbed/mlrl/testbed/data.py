@@ -170,50 +170,6 @@ def load_data_set(data_dir: str,
     return x, y
 
 
-def save_data_set_and_meta_data(output_dir: str, arff_file_name: str, xml_file_name: str, x: np.ndarray,
-                                y: np.ndarray) -> MetaData:
-    """
-    Saves a data set to an ARFF file and its meta-data to an XML file. All features in the data set are considered to
-    be numerical.
-
-    :param output_dir:      The path to the directory where the ARFF file and the XML file should be saved
-    :param arff_file_name:  The name of the ARFF file (including the suffix)
-    :param xml_file_name:   The name of the XML file (including the suffix)
-    :param x:               An array of type `float`, shape `(num_examples, num_features)`, representing the features of
-                            the examples that are contained in the data set
-    :param y:               An array of type `float`, shape `(num_examples, num_outputs)`, representing the ground truth
-                            of the examples that are contained in the data set
-    :return:                The meta-data of the data set that has been saved
-    """
-    meta_data = save_data_set(output_dir, arff_file_name, x, y)
-    save_meta_data(output_dir, xml_file_name, meta_data)
-    return meta_data
-
-
-def save_data_set(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.ndarray) -> MetaData:
-    """
-    Saves a data set to an ARFF file. All features in the data set are considered to be numerical.
-
-    :param output_dir:      The path to the directory where the ARFF file should be saved
-    :param arff_file_name:  The name of the ARFF file (including the suffix)
-    :param x:               A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                            `(num_examples, num_features)`, that stores the features of the examples that are contained
-                            in the data set
-    :param y:               A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                            `(num_examples, num_outputs)`, that stores the outputs of the examples that are contained in
-                            the data set
-    :return:                The meta-data of the data set that has been saved
-    """
-
-    num_features = x.shape[1]
-    features = [Attribute('X' + str(i), AttributeType.NUMERICAL) for i in range(num_features)]
-    num_outputs = y.shape[1]
-    outputs = [Output('y' + str(i)) for i in range(num_outputs)]
-    meta_data = MetaData(features, outputs, outputs_at_start=False)
-    save_arff_file(output_dir, arff_file_name, x, y, meta_data)
-    return meta_data
-
-
 def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.ndarray, meta_data: MetaData):
     """
     Saves a data set to an ARFF file.
@@ -273,20 +229,6 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
                 'data': data
             }))
     log.info('Successfully saved data set to file \'%s\'.', str(arff_file))
-
-
-def save_meta_data(output_dir: str, xml_file_name: str, meta_data: MetaData):
-    """
-    Saves the meta-data of a data set to an XML file.
-
-    :param output_dir:      The path to the directory where the XML file should be saved
-    :param xml_file_name:   The name of the XML file (including the suffix)
-    :param meta_data:       The meta-data of the data set
-    """
-    xml_file = path.join(output_dir, xml_file_name)
-    log.debug('Saving meta-data to file \'%s\'...', str(xml_file))
-    __write_meta_data(xml_file, meta_data)
-    log.info('Successfully saved meta-data to file \'%s\'.', str(xml_file))
 
 
 def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
