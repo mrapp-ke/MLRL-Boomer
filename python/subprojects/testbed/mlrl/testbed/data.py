@@ -184,11 +184,11 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
     if meta_data.outputs_at_start:
         x_prefix = y.shape[1]
         relation_sign = 1
-        features = y_features + x_features
+        attributes = y_features + x_features
     else:
         y_prefix = x.shape[1]
         relation_sign = -1
-        features = x_features + y_features
+        attributes = x_features + y_features
 
     if sparse:
         data = [{} for _ in range(x.shape[0])]
@@ -206,7 +206,7 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
             arff.dumps({
                 'description': 'traindata',
                 'relation': 'traindata: -C ' + str(y.shape[1] * relation_sign),
-                'attributes': features,
+                'attributes': attributes,
                 'data': data
             }))
     log.info('Successfully saved data set to file \'%s\'.', str(arff_file))
