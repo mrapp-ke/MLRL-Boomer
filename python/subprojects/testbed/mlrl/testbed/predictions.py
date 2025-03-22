@@ -100,7 +100,7 @@ class PredictionWriter(OutputWriter):
                 features.append(Attribute('Ground Truth ' + output.name, attribute_type, nominal_values))
                 outputs.append(Attribute('Prediction ' + output.name, attribute_type, nominal_values))
 
-            prediction_meta_data = MetaData(features, outputs, outputs_at_start=False)
+            prediction_meta_data = MetaData(features, outputs)
             save_arff_file(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
 
     # pylint: disable=unused-argument
