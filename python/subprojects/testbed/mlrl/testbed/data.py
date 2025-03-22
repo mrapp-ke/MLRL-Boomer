@@ -6,10 +6,11 @@ Provides functions for loading and saving data sets.
 import logging as log
 import xml.etree.ElementTree as XmlTree
 
+from dataclasses import dataclass, field
 from enum import Enum, auto
 from functools import reduce
 from os import path
-from typing import List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 from xml.dom import minidom
 
 import arff
@@ -25,81 +26,71 @@ from mlrl.common.data.types import Float32, Uint8
 from mlrl.testbed.io import ENCODING_UTF8, write_xml_file
 
 
-class FeatureType(Enum):
+class AttributeType(Enum):
     """
-    All supported types of features.
+    All supported types of attributes.
     """
     NUMERICAL = auto()
     ORDINAL = auto()
     NOMINAL = auto()
 
 
-class Feature:
+@dataclass
+class Attribute:
     """
-    Represents a numerical or nominal feature that is contained by a data set.
+    An attribute, e.g., a feature, a ground truth label, or a regression score, that is contained by a data set.
+
+    Attributes:
+        name:           The name of the attribute
+        attribute_type: The type of the attribute
+        nominal_values: A list that contains the possible values in case of a nominal feature
     """
-
-    def __init__(self, name: str, feature_type: FeatureType, nominal_values: Optional[List[str]] = None):
-        """
-        :param name:            The name of the feature
-        :param feature_type:    The type of the feature
-        :param nominal_values:  A list that contains the possible values in case of a nominal feature, None otherwise
-        """
-        self.name = name
-        self.feature_type = feature_type
-        self.nominal_values = nominal_values
+    name: str
+    attribute_type: AttributeType
+    nominal_values: List[str] = field(default_factory=list)
 
 
-class Output(Feature):
-    """
-    Represents an output that is contained by a data set.
-    """
-
-    def __init__(self, name: str):
-        super().__init__(name, FeatureType.NOMINAL, [str(0), str(1)])
-
-
+@dataclass
 class MetaData:
     """
     Stores the meta-data of a data set.
+
+    Attributes:
+        features:           A list that contains all features in the data set
+        outputs:            A list that contains all outputs in the data set
+        outputs_at_start:   True, if the outputs are located at the start, False, if they are located at the end
     """
+    features: List[Attribute]
+    outputs: List[Attribute]
+    outputs_at_start: bool = False
 
-    def __init__(self, features: List[Feature], outputs: List[Output], outputs_at_start: bool):
+    def get_num_features(self, *feature_types: AttributeType) -> int:
         """
-        :param features:            A list that contains all features in the data set
-        :param outputs:             A list that contains all outputs in the data set
-        :param outputs_at_start:    True, if the outputs are located at the start, False, if they are located at the end
-        """
-        self.features = features
-        self.outputs = outputs
-        self.outputs_at_start = outputs_at_start
+        Returns the number of features with one out of a given set of types.  If no types are given, all features are
+        counted.
 
-    def get_num_features(self, feature_types: Optional[Set[FeatureType]] = None) -> int:
-        """
-        Returns the number of features with one out of a given set of types.
-
-        :param feature_types:   A set that contains the types of the features to be counted or None, if all features
-                                should be counted
+        :param feature_types:   The types of the features to be counted
         :return:                The number of features of the given types
         """
-        if feature_types is None:
-            return len(self.features)
-        if len(feature_types) == 0:
-            return 0
-        return reduce(lambda aggr, feature: aggr + (1
-                                                    if feature.feature_type in feature_types else 0), self.features, 0)
+        feature_types = set(feature_types)
 
-    def get_feature_indices(self, feature_types: Optional[Set[FeatureType]] = None) -> List[int]:
+        if feature_types:
+            return reduce(lambda aggr, feature: aggr + (1 if feature.attribute_type in feature_types else 0),
+                          self.features, 0)
+
+        return len(self.features)
+
+    def get_feature_indices(self, *feature_types: AttributeType) -> List[int]:
         """
         Returns a list that contains the indices of all features with one out of a given set of types (in ascending
-        order).
+        order). If no types are given, all indices are returned.
 
-        :param feature_types:   A set that contains the types of the features whose indices should be returned or
-                                None, if all indices should be returned
+        :param feature_types:   The types of the features whose indices should be returned
         :return:                A list that contains the indices of all features of the given types
         """
+        feature_types = set(feature_types)
         return [
-            i for i, feature in enumerate(self.features) if not feature_types or feature.feature_type in feature_types
+            i for i, feature in enumerate(self.features) if not feature_types or feature.attribute_type in feature_types
         ]
 
 
@@ -121,25 +112,16 @@ def load_data_set_and_meta_data(data_dir: str,
                             `output_dtype`, shape `(num_examples, num_outputs)`, representing the corresponding ground
                             truth, as well as the data set's meta-data
     """
-    xml_file = path.join(data_dir, xml_file_name)
-    outputs = None
-
-    if path.isfile(xml_file):
-        log.debug('Parsing meta-data from file \"%s\"...', xml_file)
-        outputs = __parse_outputs_from_xml_file(xml_file)
-    else:
-        log.debug(
-            'Mulan XML file \"%s\" does not exist. If possible, information about the data set\'s outputs is parsed '
-            + 'from the ARFF file\'s @relation declaration as intended by the MEKA data set format...', xml_file)
-
     arff_file = path.join(data_dir, arff_file_name)
     log.debug('Loading data set from file \"%s\"...', arff_file)
-    matrix, features, relation = __load_arff(arff_file, feature_dtype=feature_dtype)
+    matrix, arff_attributes, relation = __load_arff(arff_file, feature_dtype=feature_dtype)
+    attributes = __parse_arff_attributes(arff_attributes)
+    output_names = __parse_output_names_from_xml_file(path.join(data_dir, xml_file_name))
 
-    if not outputs:
-        outputs = __parse_outputs_from_relation(relation, features)
+    if not output_names:
+        output_names = __parse_output_names_from_relation(relation, attributes)
 
-    meta_data = __create_meta_data(features, outputs)
+    meta_data = __create_meta_data(attributes, output_names)
     x, y = __create_feature_and_output_matrix(matrix, meta_data, output_dtype)
     return x, y, meta_data
 
@@ -169,50 +151,6 @@ def load_data_set(data_dir: str,
     return x, y
 
 
-def save_data_set_and_meta_data(output_dir: str, arff_file_name: str, xml_file_name: str, x: np.ndarray,
-                                y: np.ndarray) -> MetaData:
-    """
-    Saves a data set to an ARFF file and its meta-data to an XML file. All features in the data set are considered to
-    be numerical.
-
-    :param output_dir:      The path to the directory where the ARFF file and the XML file should be saved
-    :param arff_file_name:  The name of the ARFF file (including the suffix)
-    :param xml_file_name:   The name of the XML file (including the suffix)
-    :param x:               An array of type `float`, shape `(num_examples, num_features)`, representing the features of
-                            the examples that are contained in the data set
-    :param y:               An array of type `float`, shape `(num_examples, num_outputs)`, representing the ground truth
-                            of the examples that are contained in the data set
-    :return:                The meta-data of the data set that has been saved
-    """
-    meta_data = save_data_set(output_dir, arff_file_name, x, y)
-    save_meta_data(output_dir, xml_file_name, meta_data)
-    return meta_data
-
-
-def save_data_set(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.ndarray) -> MetaData:
-    """
-    Saves a data set to an ARFF file. All features in the data set are considered to be numerical.
-
-    :param output_dir:      The path to the directory where the ARFF file should be saved
-    :param arff_file_name:  The name of the ARFF file (including the suffix)
-    :param x:               A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                            `(num_examples, num_features)`, that stores the features of the examples that are contained
-                            in the data set
-    :param y:               A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                            `(num_examples, num_outputs)`, that stores the outputs of the examples that are contained in
-                            the data set
-    :return:                The meta-data of the data set that has been saved
-    """
-
-    num_features = x.shape[1]
-    features = [Feature('X' + str(i), FeatureType.NUMERICAL) for i in range(num_features)]
-    num_outputs = y.shape[1]
-    outputs = [Output('y' + str(i)) for i in range(num_outputs)]
-    meta_data = MetaData(features, outputs, outputs_at_start=False)
-    save_arff_file(output_dir, arff_file_name, x, y, meta_data)
-    return meta_data
-
-
 def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.ndarray, meta_data: MetaData):
     """
     Saves a data set to an ARFF file.
@@ -236,25 +174,21 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
     y_prefix = 0
 
     features = meta_data.features
-    x_features = [(features[i].name if len(features) > i else 'X' + str(i),
-                   'NUMERIC' if len(features) <= i or not features[i].nominal_values
-                   or features[i].feature_type == FeatureType.NUMERICAL else features[i].nominal_values)
-                  for i in range(x.shape[1])]
+    x_features = [(features[i].name, 'NUMERIC' if features[i].attribute_type == AttributeType.NUMERICAL
+                   or not features[i].nominal_values else features[i].nominal_values) for i in range(x.shape[1])]
 
     outputs = meta_data.outputs
-    y_features = [(outputs[i].name if len(outputs) > i else 'y' + str(i),
-                   'NUMERIC' if len(outputs) <= i or not outputs[i].nominal_values
-                   or outputs[i].feature_type == FeatureType.NUMERICAL else outputs[i].nominal_values)
-                  for i in range(y.shape[1])]
+    y_features = [(outputs[i].name, 'NUMERIC' if outputs[i].attribute_type == AttributeType.NUMERICAL
+                   or not outputs[i].nominal_values else outputs[i].nominal_values) for i in range(y.shape[1])]
 
     if meta_data.outputs_at_start:
         x_prefix = y.shape[1]
         relation_sign = 1
-        features = y_features + x_features
+        attributes = y_features + x_features
     else:
         y_prefix = x.shape[1]
         relation_sign = -1
-        features = x_features + y_features
+        attributes = x_features + y_features
 
     if sparse:
         data = [{} for _ in range(x.shape[0])]
@@ -272,24 +206,10 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
             arff.dumps({
                 'description': 'traindata',
                 'relation': 'traindata: -C ' + str(y.shape[1] * relation_sign),
-                'attributes': features,
+                'attributes': attributes,
                 'data': data
             }))
     log.info('Successfully saved data set to file \'%s\'.', str(arff_file))
-
-
-def save_meta_data(output_dir: str, xml_file_name: str, meta_data: MetaData):
-    """
-    Saves the meta-data of a data set to an XML file.
-
-    :param output_dir:      The path to the directory where the XML file should be saved
-    :param xml_file_name:   The name of the XML file (including the suffix)
-    :param meta_data:       The meta-data of the data set
-    """
-    xml_file = path.join(output_dir, xml_file_name)
-    log.debug('Saving meta-data to file \'%s\'...', str(xml_file))
-    __write_meta_data(xml_file, meta_data)
-    log.info('Successfully saved meta-data to file \'%s\'.', str(xml_file))
 
 
 def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
@@ -309,7 +229,7 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
     :return:            A `np.ndarray`, shape `(num_examples, num_encoded_features)`, representing the encoded features
                         of the given examples, the encoder that has been used, as well as the updated meta-data
     """
-    nominal_indices = meta_data.get_feature_indices({FeatureType.NOMINAL})
+    nominal_indices = meta_data.get_feature_indices(AttributeType.NOMINAL)
     num_nominal_features = len(nominal_indices)
     log.info('Data set contains %s nominal and %s numerical features.', num_nominal_features,
              (len(meta_data.features) - num_nominal_features))
@@ -394,7 +314,7 @@ def __load_arff(arff_file: str, feature_dtype) -> Tuple[csc_array, list, str]:
     return matrix, features, relation
 
 
-def __load_arff_as_dict(arff_file: str, sparse: bool) -> dict:
+def __load_arff_as_dict(arff_file: str, sparse: bool) -> Dict[str, Any]:
     """
     Loads the content of an ARFF file.
 
@@ -408,25 +328,65 @@ def __load_arff_as_dict(arff_file: str, sparse: bool) -> dict:
         return arff.load(file, encode_nominal=True, return_type=sparse_format)
 
 
-def __parse_outputs_from_xml_file(xml_file) -> List[Output]:
+def __parse_arff_attributes(arff_attributes: List[Any]) -> List[Attribute]:
     """
-    Parses a Mulan XML file to retrieve information about the outputs contained in a data set.
+    Parses the attributes contained in an ARFF file.
+
+    :return:    A list that contains the attributes in the ARFF file
+    """
+    attributes = []
+
+    for attribute in arff_attributes:
+        attribute_name = __parse_attribute_name(attribute[0])
+        type_definition = attribute[1]
+
+        if isinstance(type_definition, list):
+            feature_type = AttributeType.NOMINAL
+            nominal_values = type_definition
+        else:
+            type_definition = str(type_definition).lower()
+            nominal_values = None
+
+            if type_definition == 'integer':
+                feature_type = AttributeType.ORDINAL
+            elif type_definition in ('real', 'numeric'):
+                feature_type = AttributeType.NUMERICAL
+            else:
+                raise ValueError('Encountered unsupported feature type: ' + type_definition)
+
+        attributes.append(Attribute(attribute_name, feature_type, nominal_values))
+
+    return attributes
+
+
+def __parse_output_names_from_xml_file(xml_file: str) -> Optional[Set[str]]:
+    """
+    Parses a Mulan XML file to retrieve the names of the outputs contained in a data set.
 
     :param xml_file:    The path to the XML file (including the suffix)
-    :return:            A list containing the outputs
+    :return:            A set that contains the names of the outputs or None, if the XML file does not exist
     """
+    if path.isfile(xml_file):
+        log.debug('Parsing meta-data from file \"%s\"...', xml_file)
+        xml_doc = minidom.parse(xml_file)
+        tags = xml_doc.getElementsByTagName('label')
+        return {__parse_attribute_name(tag.getAttribute('name')) for tag in tags}
 
-    xml_doc = minidom.parse(xml_file)
-    tags = xml_doc.getElementsByTagName('label')
-    return [Output(__parse_feature_or_output_name(tag.getAttribute('name'))) for tag in tags]
+    log.debug(
+        'Mulan XML file \"%s\" does not exist. If possible, information about the data set\'s outputs is parsed from '
+        + 'the ARFF file\'s @relation declaration as intended by the MEKA data set format...', xml_file)
+    return None
 
 
-def __parse_outputs_from_relation(relation: str, features: list) -> List[Output]:
+def __parse_output_names_from_relation(relation: str, attributes: List[Attribute]) -> Set[str]:
     """
-    Parses the @relation declaration of an ARFF file to retrieve information about the outputs contained in a data set.
+    Parses the @relation declaration of an ARFF file to retrieve the names of the outputs contained in a data set.
+
 
     :param relation:    The @relation declaration to be parsed
-    :return:            A list containing the outputs
+    :param attributes:  A list that contains all attributes that are contained in the ARFF file, including features and
+                        outputs
+    :return:            A list that contains the names of the outputs
     """
     parameter_name = '-C '
     index = relation.index(parameter_name)
@@ -437,66 +397,49 @@ def __parse_outputs_from_relation(relation: str, features: list) -> List[Output]
         parameter_value = parameter_value[:index]
 
     num_outputs = int(parameter_value)
-    return [Output(__parse_feature_or_output_name(features[i][0])) for i in range(num_outputs)]
+    return {__parse_attribute_name(attributes[i].name) for i in range(num_outputs)}
 
 
-def __create_meta_data(features: List[Feature], outputs: List[Output]) -> MetaData:
+def __create_meta_data(attributes: List[Attribute], output_names: Set[str]) -> MetaData:
     """
-    Creates and returns the `MetaData` of a data set by parsing the features in an ARFF file to retrieve information
-    about the features and outputs contained in a data set.
+    Creates and returns the `MetaData` of a data set.
 
-    :param features:    A list that contains a description of each feature in an ARFF file (including the outputs)
-    :param outputs:     A list that contains the all outputs
-    :return:            The `MetaData` that has been created
+    :param attributes:      A list that contains all attributes in the dataset, including features and outputs
+    :param output_names:    A set that contains the names of all outputs
+    :return:                The `MetaData` that has been created
     """
-    output_names = {output.name for output in outputs}
     outputs_at_start = False
-    feature_list = []
+    features = []
+    outputs = []
 
-    for feature in features:
-        feature_name = __parse_feature_or_output_name(feature[0])
+    for attribute in attributes:
+        if attribute.name in output_names:
+            outputs.append(attribute)
 
-        if feature_name not in output_names:
-            type_definition = feature[1]
+            if not features:
+                outputs_at_start = True
+        else:
+            features.append(attribute)
 
-            if isinstance(type_definition, list):
-                feature_type = FeatureType.NOMINAL
-                nominal_values = type_definition
-            else:
-                type_definition = str(type_definition).lower()
-                nominal_values = None
-
-                if type_definition == 'integer':
-                    feature_type = FeatureType.ORDINAL
-                elif type_definition in ('real', 'numeric'):
-                    feature_type = FeatureType.NUMERICAL
-                else:
-                    raise ValueError('Encountered unsupported feature type: ' + type_definition)
-
-            feature_list.append(Feature(feature_name, feature_type, nominal_values))
-        elif len(feature_list) == 0:
-            outputs_at_start = True
-
-    meta_data = MetaData(feature_list, outputs, outputs_at_start)
-    return meta_data
+    return MetaData(features, outputs, outputs_at_start)
 
 
-def __parse_feature_or_output_name(name: str) -> str:
+def __parse_attribute_name(name: str) -> str:
     """
-    Parses the name of an feature or output and removes forbidden characters.
+    Parses the name of an attribute and removes forbidden characters.
 
-    :param name:    The name of the feature or output
+    :param name:    The name of the attribute
     :return:        The parsed name
     """
     name = name.strip()
-    if name.startswith('\'') or name.startswith('\"'):
+    if name.startswith('\'') or name.startswith('"'):
         name = name[1:]
-    if name.endswith('\'') or name.endswith('\"'):
+    if name.endswith('\'') or name.endswith('"'):
         name = name[:(len(name) - 1)]
-    return name.replace('\\\'', '\'').replace('\\\"', '\"')
+    return name.replace('\\\'', '\'').replace('\\"', '"')
 
 
-def __write_meta_data(xml_file, meta_data: MetaData):
+def __write_meta_data(xml_file: str, meta_data: MetaData):
     """
     Writes meta-data to a Mulan XML file.
 
