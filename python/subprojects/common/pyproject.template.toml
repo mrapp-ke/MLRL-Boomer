@@ -7,6 +7,7 @@ requires = [
 [project]
 name = "mlrl-common"
 description = "Provides common modules to be used by different types of multi-label rule learning algorithms"
+license = "MIT"
 readme = "README.md"
 authors = [
     { name = "Michael Rapp", email = "michael.rapp.ml@gmail.com" },
@@ -22,7 +23,6 @@ keywords = [
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX :: Linux",
