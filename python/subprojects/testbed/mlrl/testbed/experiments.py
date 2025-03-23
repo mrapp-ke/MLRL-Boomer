@@ -17,7 +17,9 @@ from mlrl.common.mixins import ClassifierMixin, IncrementalClassifierMixin, Incr
     NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
 
 from mlrl.testbed.data import AttributeType, MetaData
-from mlrl.testbed.data_splitting import DataSplit, DataSplitter, DataType
+from mlrl.testbed.data_splitting import DataSplitter
+from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_duration
 from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.parameters import ParameterLoader
@@ -79,16 +81,16 @@ class Evaluation(ABC):
 
         return result
 
-    def _evaluate_predictions(self, problem_type: ProblemType, meta_data: MetaData, data_split: DataSplit,
-                              data_type: DataType, prediction_scope: PredictionScope, train_time: float,
-                              predict_time: float, x, y, predictions, learner):
+    def _evaluate_predictions(self, problem_type: ProblemType, meta_data: MetaData, fold: Fold, data_type: Dataset.Type,
+                              prediction_scope: PredictionScope, train_time: float, predict_time: float, x, y,
+                              predictions, learner):
         """
         May be used by subclasses in order to evaluate predictions that have been obtained from a previously trained
         model.
 
-        :param problem_type:        The type of the macine learning problem
+        :param problem_type:        The type of the machine learning problem
         :param meta_data:           The meta-data of the data set
-        :param data_split:          The split of the available data, the predictions and ground truth correspond to
+        :param fold:                The fold of the available data, the predictions and ground truth correspond to
         :param data_type:           Specifies whether the predictions and ground truth correspond to the training or
                                     test data
         :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
@@ -104,19 +106,19 @@ class Evaluation(ABC):
         :param learner:             The learner, the predictions have been obtained from
         """
         for output_writer in self.output_writers:
-            output_writer.write_output(problem_type, meta_data, x, y, data_split, learner, data_type,
-                                       self.prediction_type, prediction_scope, predictions, train_time, predict_time)
+            output_writer.write_output(problem_type, meta_data, x, y, fold, learner, data_type, self.prediction_type,
+                                       prediction_scope, predictions, train_time, predict_time)
 
     @abstractmethod
-    def predict_and_evaluate(self, problem_type: ProblemType, meta_data: MetaData, data_split: DataSplit,
-                             data_type: DataType, train_time: float, learner, x, y, **kwargs):
+    def predict_and_evaluate(self, problem_type: ProblemType, meta_data: MetaData, fold: Fold, data_type: Dataset.Type,
+                             train_time: float, learner, x, y, **kwargs):
         """
         Must be implemented by subclasses in order to obtain and evaluate predictions for given query examples from a
         previously trained model.
 
         :param problem_type:    The type of the machine learning problem
         :param meta_data:       The meta-data of the data set
-        :param data_split:      The split of the available data, the predictions and ground truth correspond to
+        :param fold:            The fold of the available data, the predictions and ground truth correspond to
         :param data_type:       Specifies whether the predictions and ground truth correspond to the training or test
                                 data
         :param train_time:      The time needed to train the model
@@ -134,8 +136,8 @@ class GlobalEvaluation(Evaluation):
     Obtains and evaluates predictions from a previously trained global model.
     """
 
-    def predict_and_evaluate(self, problem_type: ProblemType, meta_data: MetaData, data_split: DataSplit,
-                             data_type: DataType, train_time: float, learner, x, y, **kwargs):
+    def predict_and_evaluate(self, problem_type: ProblemType, meta_data: MetaData, fold: Fold, data_type: Dataset.Type,
+                             train_time: float, learner, x, y, **kwargs):
         log.info('Predicting for %s %s examples...', x.shape[0], data_type.value)
         start_time = timer()
         predict_proba_function = learner.predict_proba if callable(getattr(learner, 'predict_proba', None)) else None
@@ -147,7 +149,7 @@ class GlobalEvaluation(Evaluation):
             log.info('Successfully predicted in %s', format_duration(predict_time))
             self._evaluate_predictions(problem_type=problem_type,
                                        meta_data=meta_data,
-                                       data_split=data_split,
+                                       fold=fold,
                                        data_type=data_type,
                                        prediction_scope=GlobalPrediction(),
                                        train_time=train_time,
@@ -178,8 +180,8 @@ class IncrementalEvaluation(Evaluation):
         self.max_size = max_size
         self.step_size = step_size
 
-    def predict_and_evaluate(self, problem_type: ProblemType, meta_data: MetaData, data_split: DataSplit,
-                             data_type: DataType, train_time: float, learner, x, y, **kwargs):
+    def predict_and_evaluate(self, problem_type: ProblemType, meta_data: MetaData, fold: Fold, data_type: Dataset.Type,
+                             train_time: float, learner, x, y, **kwargs):
         if not isinstance(learner, IncrementalClassifierMixin) and not isinstance(learner, IncrementalRegressorMixin):
             raise ValueError('Cannot obtain incremental predictions from a model of type ' + type(learner.__name__))
 
@@ -212,7 +214,7 @@ class IncrementalEvaluation(Evaluation):
                     log.info('Successfully predicted in %s', format_duration(predict_time))
                     self._evaluate_predictions(problem_type=problem_type,
                                                meta_data=meta_data,
-                                               data_split=data_split,
+                                               fold=fold,
                                                data_type=data_type,
                                                prediction_scope=IncrementalPrediction(current_size),
                                                train_time=train_time,
@@ -308,13 +310,12 @@ class Experiment(DataSplitter.Callback):
 
         self.data_splitter.run(self)
 
-    def train_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, train_x, train_y, test_x, test_y):
+    def train_and_evaluate(self, meta_data: MetaData, fold: Fold, train_x, train_y, test_x, test_y):
         """
         Trains a model on a training set and evaluates it on a test set.
 
         :param meta_data:   The meta-data of the training data set
-        :param data_split:  Information about the split of the available data that should be used for training and
-                            evaluating the model
+        :param fold:        The fold of the available data that should be used for training and evaluating the model
         :param train_x:     The feature matrix of the training examples
         :param train_y:     The output matrix of the training examples
         :param test_x:      The feature matrix of the test examples
@@ -329,7 +330,7 @@ class Experiment(DataSplitter.Callback):
         parameter_loader = self.parameter_loader
 
         if parameter_loader:
-            params = parameter_loader.load_parameters(data_split)
+            params = parameter_loader.load_parameters(fold)
 
             if params:
                 current_learner.set_params(**params)
@@ -337,7 +338,7 @@ class Experiment(DataSplitter.Callback):
 
         # Write output data before model is trained...
         for output_writer in self.pre_training_output_writers:
-            output_writer.write_output(problem_type, meta_data, train_x, train_y, data_split, current_learner)
+            output_writer.write_output(problem_type, meta_data, train_x, train_y, fold, current_learner)
 
         # Set the indices of ordinal features, if supported...
         if isinstance(current_learner, OrdinalFeatureSupportMixin):
@@ -350,7 +351,7 @@ class Experiment(DataSplitter.Callback):
                 AttributeType.NOMINAL)
 
         # Load model from disk, if possible, otherwise train a new model...
-        loaded_learner = self.__load_model(data_split)
+        loaded_learner = self.__load_model(fold)
 
         if isinstance(loaded_learner, type(current_learner)):
             current_params = current_learner.get_params()
@@ -365,24 +366,24 @@ class Experiment(DataSplitter.Callback):
             log.info('Successfully fit model in %s', format_duration(train_time))
 
             # Save model to disk...
-            self.__save_model(current_learner, data_split)
+            self.__save_model(current_learner, fold)
 
         # Obtain and evaluate predictions for training data, if necessary...
         evaluation = self.train_evaluation
 
-        if evaluation and data_split.is_train_test_separated():
-            data_type = DataType.TRAINING
+        if evaluation and fold.is_train_test_separated:
+            data_type = Dataset.Type.TRAINING
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-            self.__predict_and_evaluate(problem_type, evaluation, meta_data, data_split, data_type, train_time,
+            self.__predict_and_evaluate(problem_type, evaluation, meta_data, fold, data_type, train_time,
                                         current_learner, train_x, train_y, **predict_kwargs)
 
         # Obtain and evaluate predictions for test data, if necessary...
         evaluation = self.test_evaluation
 
         if evaluation:
-            data_type = DataType.TEST if data_split.is_train_test_separated() else DataType.TRAINING
+            data_type = Dataset.Type.TEST if fold.is_train_test_separated else Dataset.Type.TRAINING
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-            self.__predict_and_evaluate(problem_type, evaluation, meta_data, data_split, data_type, train_time,
+            self.__predict_and_evaluate(problem_type, evaluation, meta_data, fold, data_type, train_time,
                                         current_learner, test_x, test_y, **predict_kwargs)
 
         # Write output data after model was trained...
@@ -391,20 +392,20 @@ class Experiment(DataSplitter.Callback):
                                        meta_data,
                                        train_x,
                                        train_y,
-                                       data_split,
+                                       fold,
                                        current_learner,
                                        train_time=train_time)
 
     @staticmethod
-    def __predict_and_evaluate(problem_type: ProblemType, evaluation: Evaluation, meta_data: MetaData,
-                               data_split: DataSplit, data_type: DataType, train_time: float, learner, x, y, **kwargs):
+    def __predict_and_evaluate(problem_type: ProblemType, evaluation: Evaluation, meta_data: MetaData, fold: Fold,
+                               data_type: Dataset.Type, train_time: float, learner, x, y, **kwargs):
         """
         Obtains and evaluates predictions for given query examples from a previously trained model.
 
         :param problem_type:    The type of the machine learning problem
         :param evaluation:      The `Evaluation` to be used
         :param meta_data:       The meta-data of the data set
-        :param data_split:      The split of the available data, the predictions and ground truth correspond to
+        :param fold:            The fold of the available data, the predictions and ground truth correspond to
         :param data_type:       Specifies whether the predictions and ground truth correspond to the training or test
                                 data
         :param train_time:      The time needed to train the model
@@ -416,11 +417,11 @@ class Experiment(DataSplitter.Callback):
         :param kwargs:          Optional keyword arguments to be passed to the model when obtaining predictions
         """
         try:
-            return evaluation.predict_and_evaluate(problem_type, meta_data, data_split, data_type, train_time, learner,
-                                                   x, y, **kwargs)
+            return evaluation.predict_and_evaluate(problem_type, meta_data, fold, data_type, train_time, learner, x, y,
+                                                   **kwargs)
         except ValueError as error:
             if is_sparse(x):
-                return Experiment.__predict_and_evaluate(problem_type, evaluation, meta_data, data_split, data_type,
+                return Experiment.__predict_and_evaluate(problem_type, evaluation, meta_data, fold, data_type,
                                                          train_time, learner, x.toarray(), y, **kwargs)
             raise error
 
@@ -449,31 +450,31 @@ class Experiment(DataSplitter.Callback):
                 return Experiment.__train(learner, x.toarray(), y, **kwargs)
             raise error
 
-    def __load_model(self, data_split: DataSplit):
+    def __load_model(self, fold: Fold):
         """
         Loads the model from disk, if available.
 
-        :param data_split:  Information about the split of the available data, the model corresponds to
-        :return:            The loaded model
+        :param fold:    The fold of the available data, the model corresponds to
+        :return:        The loaded model
         """
         model_loader = self.model_loader
 
         if model_loader:
-            return model_loader.load_model(self.learner_name, data_split)
+            return model_loader.load_model(self.learner_name, fold)
 
         return None
 
-    def __save_model(self, model, data_split: DataSplit):
+    def __save_model(self, model, fold: Fold):
         """
         Saves a model to disk.
 
-        :param model:       The model to be saved
-        :param data_split:  Information about the split of the available data, the model corresponds to
+        :param model:   The model to be saved
+        :param fold:    The fold of the available data, the model corresponds to
         """
         model_saver = self.model_saver
 
         if model_saver:
-            model_saver.save_model(model, self.learner_name, data_split)
+            model_saver.save_model(model, self.learner_name, fold)
 
     @staticmethod
     def __check_for_parameter_changes(expected_params, actual_params):

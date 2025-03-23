@@ -12,7 +12,8 @@ from typing import Any, Dict, List, Optional
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.data import MetaData
-from mlrl.testbed.data_splitting import DataSplit, DataType
+from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.fold import Fold
 from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_writer, get_file_name_per_fold, open_writable_csv_file, \
     open_writable_text_file
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
@@ -69,16 +70,15 @@ class OutputWriter(ABC):
             self.options = options
 
         @abstractmethod
-        def write_output(self, problem_type: ProblemType, meta_data: MetaData, data_split: DataSplit,
-                         data_type: Optional[DataType], prediction_scope: Optional[PredictionScope], output_data,
+        def write_output(self, problem_type: ProblemType, meta_data: MetaData, fold: Fold,
+                         data_type: Optional[Dataset.Type], prediction_scope: Optional[PredictionScope], output_data,
                          **kwargs):
             """
             Must be implemented by subclasses in order to write output data to the sink.
 
             :param problem_type:        The type of the machine learning problem
             :param meta_data:           The meta-data of the data set
-            :param data_split:          Information about the split of the available data, the output data corresponds
-                                        to
+            :param fold:                The fold of the available data, the output data corresponds to
             :param data_type:           Specifies whether the predictions and ground truth correspond to the training or
                                         test data or None, if no predictions have been obtained
             :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
@@ -98,8 +98,8 @@ class OutputWriter(ABC):
             super().__init__(options=options)
             self.title = title
 
-        def write_output(self, problem_type: ProblemType, meta_data: MetaData, data_split: DataSplit,
-                         data_type: Optional[DataType], prediction_scope: Optional[PredictionScope], output_data,
+        def write_output(self, problem_type: ProblemType, meta_data: MetaData, fold: Fold,
+                         data_type: Optional[Dataset.Type], prediction_scope: Optional[PredictionScope], output_data,
                          **kwargs):
             message = self.title
 
@@ -109,11 +109,10 @@ class OutputWriter(ABC):
             if prediction_scope and not prediction_scope.is_global():
                 message += ' using a model of size ' + str(prediction_scope.get_model_size())
 
-            if data_split.is_cross_validation_used():
-                fold = data_split.get_fold()
+            if fold.is_cross_validation_used:
                 message += ' ('
                 message += 'Average across ' + str(
-                    data_split.get_num_folds()) + ' folds' if fold is None else 'Fold ' + str(fold + 1)
+                    fold.num_folds) + ' folds' if fold.index is None else 'Fold ' + str(fold.index + 1)
                 message += ')'
 
             message += ':\n\n' + output_data.format(self.options, **kwargs) + '\n'
@@ -133,13 +132,12 @@ class OutputWriter(ABC):
             self.output_dir = output_dir
             self.file_name = file_name
 
-        def write_output(self, problem_type: ProblemType, meta_data: MetaData, data_split: DataSplit,
-                         data_type: Optional[DataType], prediction_scope: Optional[PredictionScope], output_data,
+        def write_output(self, problem_type: ProblemType, meta_data: MetaData, fold: Fold,
+                         data_type: Optional[Dataset.Type], prediction_scope: Optional[PredictionScope], output_data,
                          **kwargs):
             file_name = data_type.get_file_name(self.file_name) if data_type else self.file_name
 
-            with open_writable_text_file(directory=self.output_dir, file_name=file_name,
-                                         fold=data_split.get_fold()) as text_file:
+            with open_writable_text_file(directory=self.output_dir, file_name=file_name, fold=fold.index) as text_file:
                 text_file.write(output_data.format(self.options, **kwargs))
 
     class CsvFileSink(Sink):
@@ -156,8 +154,8 @@ class OutputWriter(ABC):
             self.output_dir = output_dir
             self.file_name = file_name
 
-        def write_output(self, problem_type: ProblemType, meta_data: MetaData, data_split: DataSplit,
-                         data_type: Optional[DataType], prediction_scope: Optional[PredictionScope], output_data,
+        def write_output(self, problem_type: ProblemType, meta_data: MetaData, fold: Fold,
+                         data_type: Optional[Dataset.Type], prediction_scope: Optional[PredictionScope], output_data,
                          **kwargs):
             tabular_data = output_data.tabularize(self.options, **kwargs)
 
@@ -171,7 +169,7 @@ class OutputWriter(ABC):
                 if tabular_data:
                     header = sorted(tabular_data[0].keys())
                     file_name = data_type.get_file_name(self.file_name) if data_type else self.file_name
-                    file_name = get_file_name_per_fold(file_name, SUFFIX_CSV, data_split.get_fold())
+                    file_name = get_file_name_per_fold(file_name, SUFFIX_CSV, fold.index)
                     file_path = path.join(self.output_dir, file_name)
 
                     with open_writable_csv_file(file_path, append=incremental_prediction) as csv_file:
@@ -187,8 +185,8 @@ class OutputWriter(ABC):
         self.sinks = sinks
 
     @abstractmethod
-    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
-                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, fold: Fold, learner,
+                              data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         """
@@ -200,7 +198,7 @@ class OutputWriter(ABC):
                                     `(num_examples, num_features)`, that stores the feature values
         :param y:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                                     `(num_examples, num_outputs)`, that stores the ground truth
-        :param data_split:          Information about the split of the available data, the output data corresponds to
+        :param fold:                The fold of the available data, the output data corresponds to
         :param learner:             The learner that has been trained
         :param data_type:           Specifies whether the predictions and ground truth correspond to the training or
                                     test data or None, if no predictions have been obtained
@@ -220,9 +218,9 @@ class OutputWriter(ABC):
                      meta_data: MetaData,
                      x,
                      y,
-                     data_split: DataSplit,
+                     fold: Fold,
                      learner,
-                     data_type: Optional[DataType] = None,
+                     data_type: Optional[Dataset.Type] = None,
                      prediction_type: Optional[PredictionType] = None,
                      prediction_scope: Optional[PredictionScope] = None,
                      predictions: Optional[Any] = None,
@@ -237,7 +235,7 @@ class OutputWriter(ABC):
                                     `(num_examples, num_features)`, that stores the feature values
         :param y:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                                     `(num_examples, num_outputs)`, that stores the ground truth
-        :param data_split:          Information about the split of the available data, the output data corresponds to
+        :param fold:                The fold of the available data, the output data corresponds to
         :param learner:             The learner that has been trained
         :param data_type:           Specifies whether the predictions and ground truth correspond to the training or
                                     test data or None, if no predictions have been obtained
@@ -253,10 +251,10 @@ class OutputWriter(ABC):
         sinks = self.sinks
 
         if sinks:
-            output_data = self._generate_output_data(problem_type, meta_data, x, y, data_split, learner, data_type,
+            output_data = self._generate_output_data(problem_type, meta_data, x, y, fold, learner, data_type,
                                                      prediction_type, prediction_scope, predictions, train_time,
                                                      predict_time)
 
             if output_data:
                 for sink in sinks:
-                    sink.write_output(problem_type, meta_data, data_split, data_type, prediction_scope, output_data)
+                    sink.write_output(problem_type, meta_data, fold, data_type, prediction_scope, output_data)

@@ -7,7 +7,6 @@ and test sets.
 import logging as log
 
 from abc import ABC, abstractmethod
-from enum import Enum
 from functools import reduce
 from os import path
 from timeit import default_timer as timer
@@ -16,9 +15,9 @@ from typing import List, Optional
 from scipy.sparse import vstack
 from sklearn.model_selection import KFold, train_test_split
 
-from mlrl.testbed.data import MetaData, load_data_set, load_data_set_and_meta_data, one_hot_encode
-from mlrl.testbed.data_split import CrossValidationFold, DataSplit, NoSplit, TrainingTestSplit
+from mlrl.testbed.data import MetaData, load_data_set, load_data_set_and_meta_data
 from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_duration
 from mlrl.testbed.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name, get_file_name_per_fold
 from mlrl.testbed.preprocessors import Preprocessor
@@ -41,157 +40,6 @@ class DataSet:
         self.use_one_hot_encoding = use_one_hot_encoding
 
 
-class DataSplit(ABC):
-    """
-    Provides information about a split of the available data that is used for training and testing.
-    """
-
-    @abstractmethod
-    def is_train_test_separated(self) -> bool:
-        """
-        Returns whether the training data is separated from the test data or not.
-
-        :return: True, if the training data is separated from the test data, False otherwise
-        """
-
-    @abstractmethod
-    def get_num_folds(self) -> int:
-        """
-        Returns the total number of cross validation folds.
-
-        :return: The total number of cross validation folds or 1, if no cross validation is used
-        """
-
-    @abstractmethod
-    def get_fold(self) -> Optional[int]:
-        """
-        Returns the cross validation fold, this split corresponds to.
-
-        :return: The cross validation fold, starting at 0, or None, if no cross validation is used
-        """
-
-    @abstractmethod
-    def is_last_fold(self) -> bool:
-        """
-        Returns whether this split corresponds to the last fold of a cross validation or not.
-
-        :return: True, if this split corresponds to the last fold, False otherwise
-        """
-
-    def is_cross_validation_used(self) -> bool:
-        """
-        Returns whether cross validation is used or not.
-
-        :return: True, if cross validation is used, False otherwise
-        """
-        return self.get_num_folds() > 1
-
-
-class NoSplit(DataSplit):
-    """
-    Provides information about data that has not been split into separate training and test data.
-    """
-
-    def is_train_test_separated(self) -> bool:
-        return False
-
-    def get_num_folds(self) -> int:
-        return 1
-
-    def get_fold(self) -> Optional[int]:
-        return None
-
-    def is_last_fold(self) -> bool:
-        return True
-
-
-class TrainingTestSplit(DataSplit):
-    """
-    Provides information about a split of the available data into training and test data.
-    """
-
-    def is_train_test_separated(self) -> bool:
-        return True
-
-    def get_num_folds(self) -> int:
-        return 1
-
-    def get_fold(self) -> Optional[int]:
-        return None
-
-    def is_last_fold(self) -> bool:
-        return True
-
-
-class CrossValidationFold(DataSplit):
-    """
-    Provides information about a split of the available data that is used by a single fold of a cross validation.
-    """
-
-    def __init__(self, num_folds: int, fold: int, current_fold: int):
-        """
-        :param num_folds:       The total number of folds
-        :param fold:            The fold, starting at 0
-        :param current_fold:    The cross validation fold to be performed or -1, if all folds are performed
-        """
-        self.num_folds = num_folds
-        self.fold = fold
-        self.current_fold = current_fold
-
-    def is_train_test_separated(self) -> bool:
-        return True
-
-    def get_num_folds(self) -> int:
-        return self.num_folds
-
-    def get_fold(self) -> Optional[int]:
-        return self.fold
-
-    def is_last_fold(self) -> bool:
-        return self.current_fold < 0 and self.fold == self.num_folds - 1
-
-
-class CrossValidationOverall(DataSplit):
-    """
-    Provides information about the overall splits of a cross validation.
-    """
-
-    def __init__(self, num_folds: int):
-        """
-        :param num_folds: The total number of folds
-        """
-        self.num_folds = num_folds
-
-    def is_train_test_separated(self) -> bool:
-        return True
-
-    def get_num_folds(self) -> int:
-        return self.num_folds
-
-    def get_fold(self) -> Optional[int]:
-        return None
-
-    def is_last_fold(self) -> bool:
-        return True
-
-
-class DataType(Enum):
-    """
-    Characterizes data as either training or test data.
-    """
-    TRAINING = 'training'
-    TEST = 'test'
-
-    def get_file_name(self, name: str) -> str:
-        """
-        Returns a file name that corresponds to a specific type of data.
-
-        :param name:    The name of the file (without suffix)
-        :return:        The file name
-        """
-        return name + '_' + str(self.value)
-
-
 class DataSplitter(ABC):
     """
     An abstract base class for all classes that split a data set into training and test data.
@@ -204,13 +52,12 @@ class DataSplitter(ABC):
         """
 
         @abstractmethod
-        def train_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, train_x, train_y, test_x, test_y):
+        def train_and_evaluate(self, meta_data: MetaData, fold: Fold, train_x, train_y, test_x, test_y):
             """
             The function that is invoked to train a model on a training set and evaluate it on a test set.
 
             :param meta_data:   The meta-data of the training data set
-            :param data_split:  Information about the split of the available data that should be used for training and
-                                evaluating the model
+            :param fold:        The fold of the available data that should be used for training and evaluating the model
             :param train_x:     The feature matrix of the training examples
             :param train_y:     The output matrix of the training examples
             :param test_x:      The feature matrix of the test examples
@@ -297,8 +144,8 @@ class NoSplitter(DataSplitter):
             meta_data = MetaData(encoded_dataset.features, encoded_dataset.outputs, meta_data.outputs_at_start)
 
         # Train and evaluate model...
-        data_split = NoSplit()
-        callback.train_and_evaluate(meta_data, data_split, x, y, x, y)
+        fold = Fold(index=None, num_folds=1, is_last_fold=True, is_train_test_separated=False)
+        callback.train_and_evaluate(meta_data, fold, x, y, x, y)
 
 
 class TrainTestSplitter(DataSplitter):
@@ -324,8 +171,8 @@ class TrainTestSplitter(DataSplitter):
         # Check if ARFF files with predefined training and test data are available...
         data_set = self.data_set
         data_set_name = data_set.data_set_name
-        train_arff_file_name = get_file_name(DataType.TRAINING.get_file_name(data_set_name), SUFFIX_ARFF)
-        test_arff_file_name = get_file_name(DataType.TEST.get_file_name(data_set_name), SUFFIX_ARFF)
+        train_arff_file_name = get_file_name(Dataset.Type.TRAINING.get_file_name(data_set_name), SUFFIX_ARFF)
+        test_arff_file_name = get_file_name(Dataset.Type.TEST.get_file_name(data_set_name), SUFFIX_ARFF)
         data_dir = data_set.data_dir
         predefined_split = check_if_files_exist(data_dir, [train_arff_file_name, test_arff_file_name])
 
@@ -365,8 +212,8 @@ class TrainTestSplitter(DataSplitter):
                                                                 shuffle=True)
 
         # Train and evaluate model...
-        data_split = TrainingTestSplit()
-        callback.train_and_evaluate(encoded_meta_data if encoded_meta_data else meta_data, data_split, train_x, train_y,
+        fold = Fold(index=None, num_folds=1, is_last_fold=True, is_train_test_separated=True)
+        callback.train_and_evaluate(encoded_meta_data if encoded_meta_data else meta_data, fold, train_x, train_y,
                                     test_x, test_y)
 
 
@@ -452,15 +299,15 @@ class CrossValidationSplitter(DataSplitter):
             data.append((x, y))
 
         # Perform cross-validation...
-        for fold in range(0 if current_fold < 0 else current_fold, num_folds if current_fold < 0 else current_fold + 1):
-            log.info('Fold %s / %s:', (fold + 1), num_folds)
+        for i in range(0 if current_fold < 0 else current_fold, num_folds if current_fold < 0 else current_fold + 1):
+            log.info('Fold %s / %s:', (i + 1), num_folds)
 
             # Create training set for current fold...
             train_x = None
             train_y = None
 
             for other_fold in range(num_folds):
-                if other_fold != fold:
+                if other_fold != i:
                     x, y = data[other_fold]
 
                     if train_x is None:
@@ -471,12 +318,15 @@ class CrossValidationSplitter(DataSplitter):
                         train_y = vstack((train_y, y))
 
             # Obtain test set for current fold...
-            test_x, test_y = data[fold]
+            test_x, test_y = data[i]
 
             # Train and evaluate model...
-            data_split = CrossValidationFold(num_folds=num_folds, fold=fold, current_fold=current_fold)
-            callback.train_and_evaluate(encoded_meta_data if encoded_meta_data else meta_data, data_split, train_x,
-                                        train_y, test_x, test_y)
+            fold = Fold(index=i,
+                        num_folds=num_folds,
+                        is_last_fold=current_fold < 0 and i == num_folds - 1,
+                        is_train_test_separated=True)
+            callback.train_and_evaluate(encoded_meta_data if encoded_meta_data else meta_data, fold, train_x, train_y,
+                                        test_x, test_y)
 
     def __cross_validation(self, callback: DataSplitter.Callback, data_dir: str, arff_file_name: str,
                            xml_file_name: str, num_folds: int, current_fold: int):
@@ -497,9 +347,9 @@ class CrossValidationSplitter(DataSplitter):
         # Perform cross-validation...
         k_fold = KFold(n_splits=num_folds, random_state=self.random_state, shuffle=True)
 
-        for fold, (train_indices, test_indices) in enumerate(k_fold.split(x, y)):
-            if current_fold < 0 or fold == current_fold:
-                log.info('Fold %s / %s:', (fold + 1), num_folds)
+        for i, (train_indices, test_indices) in enumerate(k_fold.split(x, y)):
+            if current_fold < 0 or i == current_fold:
+                log.info('Fold %s / %s:', (i + 1), num_folds)
 
                 # Create training set for current fold...
                 train_x = x[train_indices]
@@ -510,6 +360,9 @@ class CrossValidationSplitter(DataSplitter):
                 test_y = y[test_indices]
 
                 # Train and evaluate model...
-                data_split = CrossValidationFold(num_folds=num_folds, fold=fold, current_fold=current_fold)
-                callback.train_and_evaluate(encoded_meta_data if encoded_meta_data else meta_data, data_split, train_x,
+                fold = Fold(index=i,
+                            num_folds=num_folds,
+                            is_last_fold=current_fold < 0 and i == num_folds - 1,
+                            is_train_test_separated=True)
+                callback.train_and_evaluate(encoded_meta_data if encoded_meta_data else meta_data, fold, train_x,
                                             train_y, test_x, test_y)

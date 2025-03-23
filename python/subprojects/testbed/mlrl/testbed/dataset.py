@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing datasets.
 """
 from dataclasses import dataclass
+from enum import Enum
 from functools import reduce
 from typing import List
 
@@ -57,3 +58,19 @@ class Dataset:
         return [
             i for i, feature in enumerate(self.features) if not feature_types or feature.attribute_type in feature_types
         ]
+
+    class Type(Enum):
+        """
+        Characterizes a dataset as either training or test data.
+        """
+        TRAINING = 'training'
+        TEST = 'test'
+
+        def get_file_name(self, dataset_name: str) -> str:
+            """
+            Returns the name of a file name that corresponds to a specific type of data.
+
+            :param dataset_name:    The name of the dataset (without suffix)
+            :return:                The file name
+            """
+            return dataset_name + '_' + str(self.value)

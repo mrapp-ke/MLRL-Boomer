@@ -11,7 +11,8 @@ import numpy as np
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.data import Attribute, AttributeType, MetaData, save_arff_file
-from mlrl.testbed.data_splitting import DataSplit, DataType
+from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import OPTION_DECIMALS, format_array
 from mlrl.testbed.io import SUFFIX_ARFF, get_file_name_per_fold
 from mlrl.testbed.output_writer import Formattable, OutputWriter
@@ -69,8 +70,9 @@ class PredictionWriter(OutputWriter):
             self.output_dir = output_dir
 
         # pylint: disable=unused-argument
-        def write_output(self, problem_type: ProblemType, meta_data: MetaData, data_split: DataSplit,
-                         data_type: Optional[DataType], prediction_scope: Optional[PredictionScope], output_data, **_):
+        def write_output(self, problem_type: ProblemType, meta_data: MetaData, fold: Fold,
+                         data_type: Optional[Dataset.Type], prediction_scope: Optional[PredictionScope], output_data,
+                         **_):
             """
             See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
             """
@@ -92,7 +94,7 @@ class PredictionWriter(OutputWriter):
                     predictions = np.around(predictions, decimals=decimals)
 
             file_name = get_file_name_per_fold(prediction_scope.get_file_name(data_type.get_file_name('predictions')),
-                                               SUFFIX_ARFF, data_split.get_fold())
+                                               SUFFIX_ARFF, fold.index)
             features = []
             outputs = []
 
@@ -104,8 +106,8 @@ class PredictionWriter(OutputWriter):
             save_arff_file(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
-                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, fold: Fold, learner,
+                              data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         return PredictionWriter.Predictions(predictions=predictions, ground_truth=y)

@@ -13,7 +13,8 @@ from typing import Any, Dict, List, Optional
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.data import MetaData
-from mlrl.testbed.data_splitting import DataSplit, DataType
+from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_table
 from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_reader, get_file_name_per_fold, open_readable_csv_file
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
@@ -27,12 +28,12 @@ class ParameterLoader(ABC):
     """
 
     @abstractmethod
-    def load_parameters(self, data_split: DataSplit) -> Dict:
+    def load_parameters(self, fold: Fold) -> Dict:
         """
         Loads a parameter setting from the input.
 
-        :param data_split:  Information about the split of the available data, the parameter setting corresponds to
-        :return:            A dictionary that stores the parameters
+        :param fold:    The fold of the available data, the parameter setting corresponds to
+        :return:        A dictionary that stores the parameters
         """
 
 
@@ -47,8 +48,8 @@ class CsvParameterLoader(ParameterLoader):
         """
         self.input_dir = input_dir
 
-    def load_parameters(self, data_split: DataSplit) -> Dict:
-        file_name = get_file_name_per_fold('parameters', SUFFIX_CSV, data_split.get_fold())
+    def load_parameters(self, fold: Fold) -> Dict:
+        file_name = get_file_name_per_fold('parameters', SUFFIX_CSV, fold.index)
         file_path = path.join(self.input_dir, file_name)
         log.debug('Loading parameters from file \"%s\"...', file_path)
 
@@ -125,8 +126,8 @@ class ParameterWriter(OutputWriter):
             super().__init__(output_dir=output_dir, file_name='parameters')
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
-                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, fold: Fold, learner,
+                              data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         return ParameterWriter.Parameters(learner)
