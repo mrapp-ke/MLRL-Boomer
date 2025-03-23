@@ -51,6 +51,7 @@ from mlrl.testbed.persistence import ModelLoader, ModelSaver
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsWriter
 from mlrl.testbed.prediction_scope import PredictionType
 from mlrl.testbed.predictions import PredictionWriter
+from mlrl.testbed.preprocessors import OneHotEncoder, Preprocessor
 from mlrl.testbed.probability_calibration import JointProbabilityCalibrationModelWriter, \
     MarginalProbabilityCalibrationModelWriter
 from mlrl.testbed.problem_type import ProblemType
@@ -508,10 +509,15 @@ class LearnerRunnable(Runnable, ABC):
     def __create_prediction_type(self, args) -> PredictionType:
         return PredictionType.parse(self.PARAM_PREDICTION_TYPE, args.prediction_type)
 
+    @staticmethod
+    def __create_preprocessor(args) -> Optional[Preprocessor]:
+        return OneHotEncoder() if args.one_hot_encoding else None
+
     def __create_data_splitter(self, args) -> DataSplitter:
         data_set = DataSet(data_dir=args.data_dir,
                            data_set_name=args.dataset,
                            use_one_hot_encoding=args.one_hot_encoding)
+        preprocessor = self.__create_preprocessor(args)
         value, options = parse_param_and_options(self.PARAM_DATA_SPLIT, args.data_split, self.DATA_SPLIT_VALUES)
 
         if value == self.DATA_SPLIT_CROSS_VALIDATION:
@@ -524,6 +530,7 @@ class LearnerRunnable(Runnable, ABC):
             random_state = int(args.random_state) if args.random_state else 1
             assert_greater_or_equal(self.PARAM_RANDOM_STATE, random_state, 1)
             return CrossValidationSplitter(data_set,
+                                           preprocessor,
                                            num_folds=num_folds,
                                            current_fold=current_fold - 1,
                                            random_state=random_state)
@@ -533,9 +540,9 @@ class LearnerRunnable(Runnable, ABC):
             assert_less(self.OPTION_TEST_SIZE, test_size, 1)
             random_state = int(args.random_state) if args.random_state else 1
             assert_greater_or_equal(self.PARAM_RANDOM_STATE, random_state, 1)
-            return TrainTestSplitter(data_set, test_size=test_size, random_state=random_state)
+            return TrainTestSplitter(data_set, preprocessor, test_size=test_size, random_state=random_state)
 
-        return NoSplitter(data_set)
+        return NoSplitter(data_set, preprocessor)
 
     @staticmethod
     def __create_pre_execution_hook(args, data_splitter: DataSplitter) -> Optional[Experiment.ExecutionHook]:
