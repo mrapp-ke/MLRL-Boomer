@@ -17,8 +17,6 @@ import arff
 import numpy as np
 
 from scipy.sparse import coo_array, csc_array, dok_array, lil_array
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder
 
 from mlrl.common.data.arrays import is_sparse
 from mlrl.common.data.types import Float32, Uint8
@@ -210,52 +208,6 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
                 'data': data
             }))
     log.info('Successfully saved data set to file \'%s\'.', str(arff_file))
-
-
-def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
-    """
-    One-hot encodes the nominal features contained in a data set, if any.
-
-    If the given feature matrix is sparse, it will be converted into a dense matrix. Also, an updated variant of the
-    given meta-data, where the features have been removed, will be returned, as the original features become invalid by
-    applying one-hot-encoding.
-
-    :param x:           A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                        `(num_examples, num_features)`, representing the features of the examples in the data set
-    :param y:           A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                        `(num_examples, num_outputs)`, representing the outputs of the examples in the data set
-    :param meta_data:   The meta-data of the data set
-    :param encoder:     The 'ColumnTransformer' to be used or None, if a new encoder should be created
-    :return:            A `np.ndarray`, shape `(num_examples, num_encoded_features)`, representing the encoded features
-                        of the given examples, the encoder that has been used, as well as the updated meta-data
-    """
-    nominal_indices = meta_data.get_feature_indices(AttributeType.NOMINAL)
-    num_nominal_features = len(nominal_indices)
-    log.info('Data set contains %s nominal and %s numerical features.', num_nominal_features,
-             (len(meta_data.features) - num_nominal_features))
-
-    if num_nominal_features > 0:
-        if is_sparse(x):
-            x = x.toarray()
-
-        old_shape = x.shape
-
-        if not encoder:
-            log.info('Applying one-hot encoding...')
-            encoder = ColumnTransformer(
-                [('one_hot_encoder', OneHotEncoder(handle_unknown='ignore', sparse_output=False), nominal_indices)],
-                remainder='passthrough')
-            encoder.fit(x, y)
-
-        x = encoder.transform(x)
-        new_shape = x.shape
-        updated_meta_data = MetaData([], meta_data.outputs, meta_data.outputs_at_start)
-        log.info('Original data set contained %s features, one-hot encoded data set contains %s features', old_shape[1],
-                 new_shape[1])
-        return x, encoder, updated_meta_data
-
-    log.debug('No need to apply one-hot encoding, as the data set does not contain any nominal features.')
-    return x, None, meta_data
 
 
 def __create_feature_and_output_matrix(matrix: csc_array, meta_data: MetaData,
