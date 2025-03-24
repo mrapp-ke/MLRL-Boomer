@@ -58,7 +58,7 @@ class OneHotEncoder(Preprocessor):
             self.encoder = None
 
         def encode(self, dataset: Dataset) -> Dataset:
-            nominal_indices = dataset.meta_data.get_feature_indices(AttributeType.NOMINAL)
+            nominal_indices = dataset.get_feature_indices(AttributeType.NOMINAL)
             num_nominal_features = len(nominal_indices)
             log.info('Data set contains %s nominal and %s numerical features.', num_nominal_features,
                      (len(dataset.features) - num_nominal_features))

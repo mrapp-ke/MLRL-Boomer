@@ -98,7 +98,7 @@ class PredictionWriter(OutputWriter):
             features = []
             outputs = []
 
-            for output in dataset.meta_data.outputs:
+            for output in dataset.outputs:
                 features.append(Attribute('Ground Truth ' + output.name, attribute_type, nominal_values))
                 outputs.append(Attribute('Prediction ' + output.name, attribute_type, nominal_values))
 

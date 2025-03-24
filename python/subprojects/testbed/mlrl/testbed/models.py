@@ -81,8 +81,8 @@ class RuleModelWriter(ModelWriter):
             :param dataset: The training dataset
             :param model:   The `RuleModel`
             """
-            self.features = dataset.meta_data.features
-            self.outputs = dataset.meta_data.outputs
+            self.features = dataset.features
+            self.outputs = dataset.outputs
             self.model = model
             self.text = None
             self.print_feature_names = True

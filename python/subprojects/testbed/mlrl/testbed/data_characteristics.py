@@ -43,46 +43,52 @@ class FeatureCharacteristics:
         :param dataset: The dataset
         """
         self._x = dataset.x
-        self._meta_data = dataset.meta_data
-        self.num_examples = dataset.num_examples
+        self.dataset = dataset
 
     @property
-    def num_features(self):
+    def num_examples(self) -> int:
+        """
+        The total number of examples.
+        """
+        return self.dataset.num_examples
+
+    @property
+    def num_features(self) -> int:
         """
         The total number of features.
         """
-        return self._meta_data.get_num_features()
+        return self.dataset.num_features
 
     @cached_property
-    def num_nominal_features(self):
+    def num_nominal_features(self) -> int:
         """
         The total number of nominal features.
         """
-        return self._meta_data.get_num_features(AttributeType.NOMINAL)
+        return self.dataset.get_num_features(AttributeType.NOMINAL)
 
     @cached_property
-    def num_ordinal_features(self):
+    def num_ordinal_features(self) -> int:
         """
         The total number of ordinal features.
         """
-        return self._meta_data.get_num_features(AttributeType.ORDINAL)
+        return self.dataset.get_num_features(AttributeType.ORDINAL)
 
     @cached_property
-    def num_numerical_features(self):
+    def num_numerical_features(self) -> int:
         """
         The total number of numerical features.
         """
-        return self._meta_data.get_num_features(AttributeType.NUMERICAL)
+        return self.dataset.get_num_features(AttributeType.NUMERICAL)
 
     @cached_property
-    def feature_density(self):
+    def feature_density(self) -> float:
         """
         The feature density.
         """
         return density(self._x)
 
     @property
-    def feature_sparsity(self):
+    def feature_sparsity(self) -> float:
         """
         The feature sparsity.
         """
