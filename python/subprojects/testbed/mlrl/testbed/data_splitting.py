@@ -142,8 +142,9 @@ class NoSplitter(DataSplitter):
 
         # Train and evaluate model...
         fold = Fold(index=None, num_folds=1, is_last_fold=True, is_train_test_separated=False)
-        dataset = Dataset(x=x, y=y, features=meta_data.features, outputs=meta_data.outputs)
-        callback.train_and_evaluate(fold, train_dataset=dataset, test_dataset=dataset)
+        train_dataset = Dataset(x, y, meta_data.features, meta_data.outputs, Dataset.Type.TRAINING)
+        test_dataset = Dataset(x, y, meta_data.features, meta_data.outputs, Dataset.Type.TEST)
+        callback.train_and_evaluate(fold, train_dataset=train_dataset, test_dataset=test_dataset)
 
 
 class TrainTestSplitter(DataSplitter):
@@ -210,8 +211,8 @@ class TrainTestSplitter(DataSplitter):
 
         # Train and evaluate model...
         fold = Fold(index=None, num_folds=1, is_last_fold=True, is_train_test_separated=True)
-        train_dataset = Dataset(x=train_x, y=train_y, features=meta_data.features, outputs=meta_data.outputs)
-        test_dataset = Dataset(x=test_x, y=test_y, features=meta_data.features, outputs=meta_data.outputs)
+        train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, Dataset.Type.TRAINING)
+        test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, Dataset.Type.TEST)
         callback.train_and_evaluate(fold, train_dataset=train_dataset, test_dataset=test_dataset)
 
 
@@ -322,8 +323,8 @@ class CrossValidationSplitter(DataSplitter):
                         num_folds=num_folds,
                         is_last_fold=current_fold < 0 and i == num_folds - 1,
                         is_train_test_separated=True)
-            train_dataset = Dataset(x=train_x, y=train_y, features=meta_data.features, outputs=meta_data.outputs)
-            test_dataset = Dataset(x=test_x, y=test_y, features=meta_data.features, outputs=meta_data.outputs)
+            train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, Dataset.Type.TRAINING)
+            test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, Dataset.Type.TEST)
             callback.train_and_evaluate(fold, train_dataset=train_dataset, test_dataset=test_dataset)
 
     def __cross_validation(self, callback: DataSplitter.Callback, data_dir: str, arff_file_name: str,
@@ -360,6 +361,6 @@ class CrossValidationSplitter(DataSplitter):
                             num_folds=num_folds,
                             is_last_fold=current_fold < 0 and i == num_folds - 1,
                             is_train_test_separated=True)
-                train_dataset = Dataset(x=train_x, y=train_y, features=meta_data.features, outputs=meta_data.outputs)
-                test_dataset = Dataset(x=test_x, y=test_y, features=meta_data.features, outputs=meta_data.outputs)
+                train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, Dataset.Type.TRAINING)
+                test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, Dataset.Type.TEST)
                 callback.train_and_evaluate(fold, train_dataset=train_dataset, test_dataset=test_dataset)
