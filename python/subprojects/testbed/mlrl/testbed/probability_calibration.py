@@ -17,7 +17,6 @@ from mlrl.common.learners import ClassificationRuleLearner
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import OPTION_DECIMALS, format_float, format_table
-from mlrl.testbed.meta_data import MetaData
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 from mlrl.testbed.problem_type import ProblemType
@@ -155,8 +154,8 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
         """
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, dataset: Dataset, fold: Fold,
-                              learner, data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, dataset: Dataset, fold: Fold, learner,
+                              data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         if isinstance(learner, ClassificationRuleLearner):

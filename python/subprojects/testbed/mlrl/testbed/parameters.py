@@ -16,7 +16,6 @@ from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_table
 from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_reader, get_file_name_per_fold, open_readable_csv_file
-from mlrl.testbed.meta_data import MetaData
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 from mlrl.testbed.problem_type import ProblemType
@@ -126,8 +125,8 @@ class ParameterWriter(OutputWriter):
             super().__init__(output_dir=output_dir, file_name='parameters')
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, dataset: Dataset, fold: Fold,
-                              learner, data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, dataset: Dataset, fold: Fold, learner,
+                              data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         return ParameterWriter.Parameters(learner)

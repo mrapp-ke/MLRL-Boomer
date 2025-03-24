@@ -21,7 +21,6 @@ from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_float
-from mlrl.testbed.meta_data import MetaData
 from mlrl.testbed.output_writer import Formattable, OutputWriter
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 from mlrl.testbed.problem_type import ProblemType
@@ -77,13 +76,13 @@ class RuleModelWriter(ModelWriter):
         Allows to create textual representations of the rules in a `RuleModel`.
         """
 
-        def __init__(self, meta_data: MetaData, model: RuleModel):
+        def __init__(self, dataset: Dataset, model: RuleModel):
             """
-            :param meta_data:   The meta-data of the training data set
-            :param model:       The `RuleModel`
+            :param dataset: The training dataset
+            :param model:   The `RuleModel`
             """
-            self.features = meta_data.features
-            self.outputs = meta_data.outputs
+            self.features = dataset.meta_data.features
+            self.outputs = dataset.meta_data.outputs
             self.model = model
             self.text = None
             self.print_feature_names = True
@@ -250,15 +249,15 @@ class RuleModelWriter(ModelWriter):
             return text
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, dataset: Dataset, fold: Fold,
-                              learner, data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, dataset: Dataset, fold: Fold, learner,
+                              data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         if isinstance(learner, (ClassifierMixin, RegressorMixin)):
             model = learner.model_
 
             if isinstance(model, RuleModel):
-                return RuleModelWriter.RuleModelFormattable(meta_data, model)
+                return RuleModelWriter.RuleModelFormattable(dataset, model)
 
         log.error('The learner does not support to create a textual representation of the model')
         return None

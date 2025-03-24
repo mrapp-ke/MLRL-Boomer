@@ -22,7 +22,6 @@ from mlrl.testbed.data_splitting import DataSplitter
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_duration
-from mlrl.testbed.meta_data import MetaData
 from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.parameters import ParameterLoader
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
@@ -104,8 +103,8 @@ class Evaluation(ABC):
         :param learner:             The learner, the predictions have been obtained from
         """
         for output_writer in self.output_writers:
-            output_writer.write_output(problem_type, dataset.meta_data, dataset, fold, learner, data_type,
-                                       self.prediction_type, prediction_scope, predictions, train_time, predict_time)
+            output_writer.write_output(problem_type, dataset, fold, learner, data_type, self.prediction_type,
+                                       prediction_scope, predictions, train_time, predict_time)
 
     @abstractmethod
     def predict_and_evaluate(self, problem_type: ProblemType, fold: Fold, data_type: Dataset.Type, train_time: float,
@@ -322,7 +321,7 @@ class Experiment(DataSplitter.Callback):
 
         # Write output data before model is trained...
         for output_writer in self.pre_training_output_writers:
-            output_writer.write_output(problem_type, train_dataset.meta_data, train_dataset, fold, current_learner)
+            output_writer.write_output(problem_type, train_dataset, fold, current_learner)
 
         # Set the indices of ordinal features, if supported...
         if isinstance(current_learner, OrdinalFeatureSupportMixin):
@@ -374,12 +373,7 @@ class Experiment(DataSplitter.Callback):
 
         # Write output data after model was trained...
         for output_writer in self.post_training_output_writers:
-            output_writer.write_output(problem_type,
-                                       train_dataset.meta_data,
-                                       train_dataset,
-                                       fold,
-                                       current_learner,
-                                       train_time=train_time)
+            output_writer.write_output(problem_type, train_dataset, fold, current_learner, train_time=train_time)
 
     @staticmethod
     def __predict_and_evaluate(problem_type: ProblemType, evaluation: Evaluation, fold: Fold, data_type: Dataset.Type,

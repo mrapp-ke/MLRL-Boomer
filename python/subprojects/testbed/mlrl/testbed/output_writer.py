@@ -185,15 +185,15 @@ class OutputWriter(ABC):
         self.sinks = sinks
 
     @abstractmethod
-    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, dataset: Dataset, fold: Fold,
-                              learner, data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, dataset: Dataset, fold: Fold, learner,
+                              data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         """
         Must be implemented by subclasses in order to generate the output data that should be written to the available
         sinks.
 
-        :param meta_data:           The meta-data of the data set
+        :param problem_type:        The type of the machine learning problem
         :param dataset:             The dataset, the output data corresponds to
         :param fold:                The fold of the available data, the output data corresponds to
         :param learner:             The learner that has been trained
@@ -212,7 +212,6 @@ class OutputWriter(ABC):
 
     def write_output(self,
                      problem_type: ProblemType,
-                     meta_data: MetaData,
                      dataset: Dataset,
                      fold: Fold,
                      learner,
@@ -226,7 +225,6 @@ class OutputWriter(ABC):
         Generates the output data and writes it to all available sinks.
 
         :param problem_type:        The type of the machine learning problem
-        :param meta_data:           The meta-data of the data set
         :param dataset:             The dataset, the output data corresponds to
         :param fold:                The fold of the available data, the output data corresponds to
         :param learner:             The learner that has been trained
@@ -244,10 +242,9 @@ class OutputWriter(ABC):
         sinks = self.sinks
 
         if sinks:
-            output_data = self._generate_output_data(problem_type, meta_data, dataset, fold, learner, data_type,
-                                                     prediction_type, prediction_scope, predictions, train_time,
-                                                     predict_time)
+            output_data = self._generate_output_data(problem_type, dataset, fold, learner, data_type, prediction_type,
+                                                     prediction_scope, predictions, train_time, predict_time)
 
             if output_data:
                 for sink in sinks:
-                    sink.write_output(problem_type, meta_data, fold, data_type, prediction_scope, output_data)
+                    sink.write_output(problem_type, dataset.meta_data, fold, data_type, prediction_scope, output_data)
