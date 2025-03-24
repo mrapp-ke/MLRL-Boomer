@@ -5,12 +5,12 @@ Provides classes for representing datasets.
 """
 from dataclasses import dataclass
 from enum import Enum
-from functools import reduce
 from typing import List
 
 from scipy.sparse import lil_array
 
 from mlrl.testbed.data import Attribute, AttributeType
+from mlrl.testbed.meta_data import MetaData
 
 
 @dataclass
@@ -22,13 +22,11 @@ class Dataset:
     Attributes:
         x:          A `lil_array`, shape `(num_examples, num_features)`, that stores the features of examples
         y:          A `lil_array`, shape `(num_examples, num_features)`, that stores the ground truth of examples
-        features:   A list that contains the features contained in the dataset
-        outputs:    A list that contains the outputs contained in the dataset
+        meta_data:  The meta-data of the dataset
     """
     x: lil_array
     y: lil_array
-    features: List[Attribute]
-    outputs: List[Attribute]
+    meta_data: MetaData
 
     def get_num_features(self, *feature_types: AttributeType) -> int:
         """
@@ -38,13 +36,7 @@ class Dataset:
         :param feature_types:   The types of the features to be counted
         :return:                The number of features of the given types
         """
-        feature_types = set(feature_types)
-
-        if feature_types:
-            return reduce(lambda aggr, feature: aggr + (1 if feature.attribute_type in feature_types else 0),
-                          self.features, 0)
-
-        return len(self.features)
+        return self.meta_data.get_num_features(*feature_types)
 
     def get_feature_indices(self, *feature_types: AttributeType) -> List[int]:
         """
@@ -54,10 +46,7 @@ class Dataset:
         :param feature_types:   The types of the features whose indices should be returned
         :return:                A list that contains the indices of all features of the given types
         """
-        feature_types = set(feature_types)
-        return [
-            i for i, feature in enumerate(self.features) if not feature_types or feature.attribute_type in feature_types
-        ]
+        return self.meta_data.get_feature_indices(*feature_types)
 
     class Type(Enum):
         """
