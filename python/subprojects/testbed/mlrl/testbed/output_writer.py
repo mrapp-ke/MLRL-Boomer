@@ -15,7 +15,6 @@ from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_writer, get_file_name_per_fold, open_writable_csv_file, \
     open_writable_text_file
-from mlrl.testbed.meta_data import MetaData
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 from mlrl.testbed.problem_type import ProblemType
 
@@ -70,14 +69,14 @@ class OutputWriter(ABC):
             self.options = options
 
         @abstractmethod
-        def write_output(self, problem_type: ProblemType, meta_data: MetaData, fold: Fold,
+        def write_output(self, problem_type: ProblemType, dataset: Dataset, fold: Fold,
                          data_type: Optional[Dataset.Type], prediction_scope: Optional[PredictionScope], output_data,
                          **kwargs):
             """
             Must be implemented by subclasses in order to write output data to the sink.
 
             :param problem_type:        The type of the machine learning problem
-            :param meta_data:           The meta-data of the data set
+            :param dataset:             The dataset, the output data corresponds to
             :param fold:                The fold of the available data, the output data corresponds to
             :param data_type:           Specifies whether the predictions and ground truth correspond to the training or
                                         test data or None, if no predictions have been obtained
@@ -98,7 +97,7 @@ class OutputWriter(ABC):
             super().__init__(options=options)
             self.title = title
 
-        def write_output(self, problem_type: ProblemType, meta_data: MetaData, fold: Fold,
+        def write_output(self, problem_type: ProblemType, dataset: Dataset, fold: Fold,
                          data_type: Optional[Dataset.Type], prediction_scope: Optional[PredictionScope], output_data,
                          **kwargs):
             message = self.title
@@ -132,7 +131,7 @@ class OutputWriter(ABC):
             self.output_dir = output_dir
             self.file_name = file_name
 
-        def write_output(self, problem_type: ProblemType, meta_data: MetaData, fold: Fold,
+        def write_output(self, problem_type: ProblemType, dataset: Dataset, fold: Fold,
                          data_type: Optional[Dataset.Type], prediction_scope: Optional[PredictionScope], output_data,
                          **kwargs):
             file_name = data_type.get_file_name(self.file_name) if data_type else self.file_name
@@ -154,7 +153,7 @@ class OutputWriter(ABC):
             self.output_dir = output_dir
             self.file_name = file_name
 
-        def write_output(self, problem_type: ProblemType, meta_data: MetaData, fold: Fold,
+        def write_output(self, problem_type: ProblemType, dataset: Dataset, fold: Fold,
                          data_type: Optional[Dataset.Type], prediction_scope: Optional[PredictionScope], output_data,
                          **kwargs):
             tabular_data = output_data.tabularize(self.options, **kwargs)
@@ -247,4 +246,4 @@ class OutputWriter(ABC):
 
             if output_data:
                 for sink in sinks:
-                    sink.write_output(problem_type, dataset.meta_data, fold, data_type, prediction_scope, output_data)
+                    sink.write_output(problem_type, dataset, fold, data_type, prediction_scope, output_data)
