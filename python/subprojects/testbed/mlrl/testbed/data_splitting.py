@@ -138,13 +138,13 @@ class NoSplitter(DataSplitter):
 
         if preprocessor:
             encoder = preprocessor.create_encoder()
-            encoded_dataset = encoder.encode(Dataset(x, y, meta_data.features, meta_data.outputs))
+            encoded_dataset = encoder.encode(Dataset(x, y, MetaData(meta_data.features, meta_data.outputs)))
             x = encoded_dataset.x
             meta_data = MetaData(encoded_dataset.features, encoded_dataset.outputs)
 
         # Train and evaluate model...
         fold = Fold(index=None, num_folds=1, is_last_fold=True, is_train_test_separated=False)
-        dataset = Dataset(x=x, y=y, features=meta_data.features, outputs=meta_data.outputs)
+        dataset = Dataset(x=x, y=y, meta_data=MetaData(features=meta_data.features, outputs=meta_data.outputs))
         callback.train_and_evaluate(meta_data, fold, dataset, dataset)
 
 
@@ -188,7 +188,7 @@ class TrainTestSplitter(DataSplitter):
 
         if preprocessor:
             encoder = preprocessor.create_encoder()
-            encoded_dataset = encoder.encode(Dataset(train_x, train_y, meta_data.features, meta_data.outputs))
+            encoded_dataset = encoder.encode(Dataset(train_x, train_y, MetaData(meta_data.features, meta_data.outputs)))
             train_x = encoded_dataset.x
             encoded_meta_data = MetaData(encoded_dataset.features, encoded_dataset.outputs)
         else:
@@ -201,7 +201,8 @@ class TrainTestSplitter(DataSplitter):
 
             # Apply preprocessor, if necessary...
             if encoder:
-                encoded_dataset = encoder.encode(Dataset(test_x, test_y, meta_data.features, meta_data.outputs))
+                encoded_dataset = encoder.encode(
+                    Dataset(test_x, test_y, MetaData(meta_data.features, meta_data.outputs)))
                 test_x = encoded_dataset.x
         else:
             # Split data set into training and test data...
@@ -215,12 +216,14 @@ class TrainTestSplitter(DataSplitter):
         fold = Fold(index=None, num_folds=1, is_last_fold=True, is_train_test_separated=True)
         train_dataset = Dataset(x=train_x,
                                 y=train_y,
-                                features=encoded_meta_data.features if encoded_meta_data else meta_data.features,
-                                outputs=encoded_meta_data.outputs if encoded_meta_data else meta_data.outputs)
+                                meta_data=MetaData(
+                                    features=encoded_meta_data.features if encoded_meta_data else meta_data.features,
+                                    outputs=encoded_meta_data.outputs if encoded_meta_data else meta_data.outputs))
         test_dataset = Dataset(x=test_x,
                                y=test_y,
-                               features=encoded_meta_data.features if encoded_meta_data else meta_data.features,
-                               outputs=encoded_meta_data.outputs if encoded_meta_data else meta_data.outputs)
+                               meta_data=MetaData(
+                                   features=encoded_meta_data.features if encoded_meta_data else meta_data.features,
+                                   outputs=encoded_meta_data.outputs if encoded_meta_data else meta_data.outputs))
         callback.train_and_evaluate(encoded_meta_data if encoded_meta_data else meta_data,
                                     fold,
                                     train_dataset=train_dataset,
@@ -288,7 +291,7 @@ class CrossValidationSplitter(DataSplitter):
 
         if preprocessor:
             encoder = preprocessor.create_encoder()
-            encoded_dataset = encoder.encode(Dataset(x, y, meta_data.features, meta_data.outputs))
+            encoded_dataset = encoder.encode(Dataset(x, y, MetaData(meta_data.features, meta_data.outputs)))
             x = encoded_dataset.x
             encoded_meta_data = MetaData(encoded_dataset.features, encoded_dataset.outputs)
         else:
@@ -303,7 +306,7 @@ class CrossValidationSplitter(DataSplitter):
 
             # Apply preprocessor, if necessary...
             if encoder:
-                encoded_dataset = encoder.encode(Dataset(x, y, meta_data.features, meta_data.outputs))
+                encoded_dataset = encoder.encode(Dataset(x, y, MetaData(meta_data.features, meta_data.outputs)))
                 x = encoded_dataset.x
 
             data.append((x, y))
@@ -335,14 +338,16 @@ class CrossValidationSplitter(DataSplitter):
                         num_folds=num_folds,
                         is_last_fold=current_fold < 0 and i == num_folds - 1,
                         is_train_test_separated=True)
-            train_dataset = Dataset(x=train_x,
-                                    y=train_y,
-                                    features=encoded_meta_data.features if encoded_meta_data else meta_data.features,
-                                    outputs=encoded_meta_data.outputs if encoded_meta_data else meta_data.outputs)
+            train_dataset = Dataset(
+                x=train_x,
+                y=train_y,
+                meta_data=MetaData(features=encoded_meta_data.features if encoded_meta_data else meta_data.features,
+                                   outputs=encoded_meta_data.outputs if encoded_meta_data else meta_data.outputs))
             test_dataset = Dataset(x=test_x,
                                    y=test_y,
-                                   features=encoded_meta_data.features if encoded_meta_data else meta_data.features,
-                                   outputs=encoded_meta_data.outputs if encoded_meta_data else meta_data.outputs)
+                                   meta_data=MetaData(
+                                       features=encoded_meta_data.features if encoded_meta_data else meta_data.features,
+                                       outputs=encoded_meta_data.outputs if encoded_meta_data else meta_data.outputs))
             callback.train_and_evaluate(encoded_meta_data if encoded_meta_data else meta_data,
                                         fold,
                                         train_dataset=train_dataset,
@@ -358,7 +363,7 @@ class CrossValidationSplitter(DataSplitter):
 
         if preprocessor:
             encoder = preprocessor.create_encoder()
-            encoded_dataset = encoder.encode(Dataset(x, y, meta_data.features, meta_data.outputs))
+            encoded_dataset = encoder.encode(Dataset(x, y, MetaData(meta_data.features, meta_data.outputs)))
             x = encoded_dataset.x
             encoded_meta_data = MetaData(encoded_dataset.features, encoded_dataset.outputs)
         else:
@@ -387,12 +392,13 @@ class CrossValidationSplitter(DataSplitter):
                 train_dataset = Dataset(
                     x=train_x,
                     y=train_y,
-                    features=encoded_meta_data.features if encoded_meta_data else meta_data.features,
-                    outputs=encoded_meta_data.outputs if encoded_meta_data else meta_data.outputs)
-                test_dataset = Dataset(x=test_x,
-                                       y=test_y,
-                                       features=encoded_meta_data.features if encoded_meta_data else meta_data.features,
-                                       outputs=encoded_meta_data.outputs if encoded_meta_data else meta_data.outputs)
+                    meta_data=MetaData(features=encoded_meta_data.features if encoded_meta_data else meta_data.features,
+                                       outputs=encoded_meta_data.outputs if encoded_meta_data else meta_data.outputs))
+                test_dataset = Dataset(
+                    x=test_x,
+                    y=test_y,
+                    meta_data=MetaData(features=encoded_meta_data.features if encoded_meta_data else meta_data.features,
+                                       outputs=encoded_meta_data.outputs if encoded_meta_data else meta_data.outputs))
                 callback.train_and_evaluate(encoded_meta_data if encoded_meta_data else meta_data,
                                             fold,
                                             train_dataset=train_dataset,
