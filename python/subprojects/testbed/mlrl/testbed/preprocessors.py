@@ -13,8 +13,7 @@ from sklearn.preprocessing import OneHotEncoder as SkLearnOneHotEncoder
 
 from mlrl.common.data.arrays import is_sparse
 
-from mlrl.testbed.data import AttributeType
-from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.dataset import AttributeType, Dataset
 
 
 class Preprocessor(ABC):

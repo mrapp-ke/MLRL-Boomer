@@ -10,8 +10,8 @@ import numpy as np
 
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.data import ArffMetaData, Attribute, AttributeType, save_arff_file
-from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.data import ArffMetaData, save_arff_file
+from mlrl.testbed.dataset import Attribute, AttributeType, Dataset
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import OPTION_DECIMALS, format_array
 from mlrl.testbed.io import SUFFIX_ARFF, get_file_name_per_fold

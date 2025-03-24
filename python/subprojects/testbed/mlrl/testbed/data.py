@@ -7,7 +7,6 @@ import logging as log
 import xml.etree.ElementTree as XmlTree
 
 from dataclasses import dataclass
-from enum import Enum, auto
 from functools import reduce
 from os import path
 from typing import Any, Dict, List, Optional, Set, Tuple
@@ -21,31 +20,8 @@ from scipy.sparse import coo_array, csc_array, dok_array, lil_array
 from mlrl.common.data.arrays import is_sparse
 from mlrl.common.data.types import Float32, Uint8
 
+from mlrl.testbed.dataset import Attribute, AttributeType
 from mlrl.testbed.io import ENCODING_UTF8, write_xml_file
-
-
-class AttributeType(Enum):
-    """
-    All supported types of attributes.
-    """
-    NUMERICAL = auto()
-    ORDINAL = auto()
-    NOMINAL = auto()
-
-
-@dataclass
-class Attribute:
-    """
-    An attribute, e.g., a feature, a ground truth label, or a regression score, that is contained by a data set.
-
-    Attributes:
-        name:           The name of the attribute
-        attribute_type: The type of the attribute
-        nominal_values: A list that contains the possible values in case of a nominal feature
-    """
-    name: str
-    attribute_type: AttributeType
-    nominal_values: Optional[List[str]] = None
 
 
 @dataclass
