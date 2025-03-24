@@ -184,12 +184,12 @@ class DataCharacteristicsWriter(OutputWriter):
             super().__init__(output_dir=output_dir, file_name='data_characteristics', options=options)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, fold: Fold, learner,
-                              data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, dataset: Dataset, fold: Fold,
+                              learner, data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
-        feature_characteristics = FeatureCharacteristics(meta_data, x)
-        output_characteristics = OutputCharacteristics(y, problem_type)
+        feature_characteristics = FeatureCharacteristics(meta_data, dataset.x)
+        output_characteristics = OutputCharacteristics(dataset.y, problem_type)
         return DataCharacteristicsWriter.DataCharacteristics(feature_characteristics=feature_characteristics,
                                                              output_characteristics=output_characteristics,
                                                              problem_type=problem_type)

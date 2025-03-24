@@ -409,15 +409,15 @@ class EvaluationWriter(OutputWriter, ABC):
         """
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, fold: Fold, learner,
-                              data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, dataset: Dataset, fold: Fold,
+                              learner, data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         result = self.results[data_type] if data_type in self.results else EvaluationWriter.EvaluationResult()
         self.results[data_type] = result
         result.put(EVALUATION_MEASURE_TRAINING_TIME, train_time, num_folds=fold.num_folds, fold=fold.index)
         result.put(EVALUATION_MEASURE_PREDICTION_TIME, predict_time, num_folds=fold.num_folds, fold=fold.index)
-        self._populate_result(fold, result, predictions, y)
+        self._populate_result(fold, result, predictions, dataset.y)
         return result
 
 
