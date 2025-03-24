@@ -6,6 +6,7 @@ Provides classes for performing experiments.
 import logging as log
 
 from abc import ABC, abstractmethod
+from dataclasses import replace
 from functools import reduce
 from timeit import default_timer as timer
 from typing import Any, Dict, List, Optional
@@ -43,7 +44,8 @@ class Evaluation(ABC):
         self.prediction_type = prediction_type
         self.output_writers = output_writers
 
-    def _invoke_prediction_function(self, learner, predict_function, predict_proba_function, x, **kwargs):
+    def _invoke_prediction_function(self, learner, predict_function, predict_proba_function, dataset: Dataset,
+                                    **kwargs):
         """
         May be used by subclasses in order to invoke the correct prediction function, depending on the type of
         result that should be obtained.
@@ -51,13 +53,12 @@ class Evaluation(ABC):
         :param learner:                 The learner, the result should be obtained from
         :param predict_function:        The function to be invoked if binary results or scores should be obtained
         :param predict_proba_function:  The function to be invoked if probability estimates should be obtained
-        :param x:                       A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                                        `(num_examples, num_features)`, that stores the feature values of the query
-                                        examples
+        :param dataset:                 The dataset that stores the query examples
         :param kwargs:                  Optional keyword arguments to be passed to the `predict_function`
         :return:                        The return value of the invoked function
         """
         prediction_type = self.prediction_type
+        x = dataset.x
 
         if prediction_type == PredictionType.SCORES:
             try:
@@ -82,8 +83,8 @@ class Evaluation(ABC):
         return result
 
     def _evaluate_predictions(self, problem_type: ProblemType, meta_data: MetaData, fold: Fold, data_type: Dataset.Type,
-                              prediction_scope: PredictionScope, train_time: float, predict_time: float, x, y,
-                              predictions, learner):
+                              prediction_scope: PredictionScope, train_time: float, predict_time: float,
+                              dataset: Dataset, predictions, learner):
         """
         May be used by subclasses in order to evaluate predictions that have been obtained from a previously trained
         model.
@@ -97,21 +98,18 @@ class Evaluation(ABC):
                                     incrementally
         :param train_time:          The time needed to train the model
         :param predict_time:        The time needed to obtain the predictions
-        :param x:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                                    `(num_examples, num_features)`, that stores the feature values of the query examples
-        :param y:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                                    `(num_examples, num_outputs)`, that stores the ground truth of the query examples
+        :param dataset:             The dataset for which the predictions have been obtained
         :param predictions:         A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` matrix, shape
                                     `(num_examples, num_outputs)`, that stores the predictions for the query examples
         :param learner:             The learner, the predictions have been obtained from
         """
         for output_writer in self.output_writers:
-            output_writer.write_output(problem_type, meta_data, x, y, fold, learner, data_type, self.prediction_type,
+            output_writer.write_output(problem_type, meta_data, dataset, fold, learner, data_type, self.prediction_type,
                                        prediction_scope, predictions, train_time, predict_time)
 
     @abstractmethod
     def predict_and_evaluate(self, problem_type: ProblemType, meta_data: MetaData, fold: Fold, data_type: Dataset.Type,
-                             train_time: float, learner, x, y, **kwargs):
+                             train_time: float, learner, dataset: Dataset, **kwargs):
         """
         Must be implemented by subclasses in order to obtain and evaluate predictions for given query examples from a
         previously trained model.
@@ -123,10 +121,7 @@ class Evaluation(ABC):
                                 data
         :param train_time:      The time needed to train the model
         :param learner:         The learner, the predictions should be obtained from
-        :param x:               A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                                `(num_examples, num_features)`, that stores the feature values of the query examples
-        :param y:               A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                                `(num_examples, num_outputs)`, that stores the ground truth of the query examples
+        :param dataset:         The dataset that stores the query examples
         :param kwargs:          Optional keyword arguments to be passed to the model when obtaining predictions
         """
 
@@ -137,11 +132,12 @@ class GlobalEvaluation(Evaluation):
     """
 
     def predict_and_evaluate(self, problem_type: ProblemType, meta_data: MetaData, fold: Fold, data_type: Dataset.Type,
-                             train_time: float, learner, x, y, **kwargs):
-        log.info('Predicting for %s %s examples...', x.shape[0], data_type.value)
+                             train_time: float, learner, dataset: Dataset, **kwargs):
+        log.info('Predicting for %s %s examples...', dataset.x.shape[0], data_type.value)
         start_time = timer()
         predict_proba_function = learner.predict_proba if callable(getattr(learner, 'predict_proba', None)) else None
-        predictions = self._invoke_prediction_function(learner, learner.predict, predict_proba_function, x, **kwargs)
+        predictions = self._invoke_prediction_function(learner, learner.predict, predict_proba_function, dataset,
+                                                       **kwargs)
         end_time = timer()
         predict_time = end_time - start_time
 
@@ -154,8 +150,7 @@ class GlobalEvaluation(Evaluation):
                                        prediction_scope=GlobalPrediction(),
                                        train_time=train_time,
                                        predict_time=predict_time,
-                                       x=x,
-                                       y=y,
+                                       dataset=dataset,
                                        predictions=predictions,
                                        learner=learner)
 
@@ -181,14 +176,14 @@ class IncrementalEvaluation(Evaluation):
         self.step_size = step_size
 
     def predict_and_evaluate(self, problem_type: ProblemType, meta_data: MetaData, fold: Fold, data_type: Dataset.Type,
-                             train_time: float, learner, x, y, **kwargs):
+                             train_time: float, learner, dataset: Dataset, **kwargs):
         if not isinstance(learner, IncrementalClassifierMixin) and not isinstance(learner, IncrementalRegressorMixin):
             raise ValueError('Cannot obtain incremental predictions from a model of type ' + type(learner.__name__))
 
         predict_proba_function = learner.predict_proba_incrementally if callable(
             getattr(learner, 'predict_proba_incrementally', None)) else None
         incremental_predictor = self._invoke_prediction_function(learner, learner.predict_incrementally,
-                                                                 predict_proba_function, x, **kwargs)
+                                                                 predict_proba_function, dataset, **kwargs)
 
         if incremental_predictor:
             step_size = self.step_size
@@ -203,8 +198,8 @@ class IncrementalEvaluation(Evaluation):
             current_size = min(next_step_size, total_size)
 
             while incremental_predictor.has_next():
-                log.info('Predicting for %s %s examples using a model of size %s...', x.shape[0], data_type.value,
-                         current_size)
+                log.info('Predicting for %s %s examples using a model of size %s...', dataset.x.shape[0],
+                         data_type.value, current_size)
                 start_time = timer()
                 predictions = incremental_predictor.apply_next(next_step_size)
                 end_time = timer()
@@ -219,8 +214,7 @@ class IncrementalEvaluation(Evaluation):
                                                prediction_scope=IncrementalPrediction(current_size),
                                                train_time=train_time,
                                                predict_time=predict_time,
-                                               x=x,
-                                               y=y,
+                                               dataset=dataset,
                                                predictions=predictions,
                                                learner=learner)
 
@@ -310,16 +304,9 @@ class Experiment(DataSplitter.Callback):
 
         self.data_splitter.run(self)
 
-    def train_and_evaluate(self, meta_data: MetaData, fold: Fold, train_x, train_y, test_x, test_y):
+    def train_and_evaluate(self, meta_data: MetaData, fold: Fold, train_dataset: Dataset, test_dataset: Dataset):
         """
-        Trains a model on a training set and evaluates it on a test set.
-
-        :param meta_data:   The meta-data of the training data set
-        :param fold:        The fold of the available data that should be used for training and evaluating the model
-        :param train_x:     The feature matrix of the training examples
-        :param train_y:     The output matrix of the training examples
-        :param test_x:      The feature matrix of the test examples
-        :param test_y:      The output matrix of the test examples
+        See `DataSplitter.Callback.train_and_evaluate`
         """
         problem_type = self.problem_type
         base_learner = self.base_learner
@@ -338,7 +325,7 @@ class Experiment(DataSplitter.Callback):
 
         # Write output data before model is trained...
         for output_writer in self.pre_training_output_writers:
-            output_writer.write_output(problem_type, meta_data, train_x, train_y, fold, current_learner)
+            output_writer.write_output(problem_type, meta_data, train_dataset, fold, current_learner)
 
         # Set the indices of ordinal features, if supported...
         if isinstance(current_learner, OrdinalFeatureSupportMixin):
@@ -361,8 +348,8 @@ class Experiment(DataSplitter.Callback):
             current_learner = loaded_learner
             train_time = 0
         else:
-            log.info('Fitting model to %s training examples...', train_x.shape[0])
-            train_time = self.__train(current_learner, train_x, train_y, **fit_kwargs)
+            log.info('Fitting model to %s training examples...', train_dataset.x.shape[0])
+            train_time = self.__train(current_learner, train_dataset, **fit_kwargs)
             log.info('Successfully fit model in %s', format_duration(train_time))
 
             # Save model to disk...
@@ -375,7 +362,7 @@ class Experiment(DataSplitter.Callback):
             data_type = Dataset.Type.TRAINING
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
             self.__predict_and_evaluate(problem_type, evaluation, meta_data, fold, data_type, train_time,
-                                        current_learner, train_x, train_y, **predict_kwargs)
+                                        current_learner, train_dataset, **predict_kwargs)
 
         # Obtain and evaluate predictions for test data, if necessary...
         evaluation = self.test_evaluation
@@ -384,21 +371,20 @@ class Experiment(DataSplitter.Callback):
             data_type = Dataset.Type.TEST if fold.is_train_test_separated else Dataset.Type.TRAINING
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
             self.__predict_and_evaluate(problem_type, evaluation, meta_data, fold, data_type, train_time,
-                                        current_learner, test_x, test_y, **predict_kwargs)
+                                        current_learner, test_dataset, **predict_kwargs)
 
         # Write output data after model was trained...
         for output_writer in self.post_training_output_writers:
             output_writer.write_output(problem_type,
                                        meta_data,
-                                       train_x,
-                                       train_y,
+                                       train_dataset,
                                        fold,
                                        current_learner,
                                        train_time=train_time)
 
     @staticmethod
     def __predict_and_evaluate(problem_type: ProblemType, evaluation: Evaluation, meta_data: MetaData, fold: Fold,
-                               data_type: Dataset.Type, train_time: float, learner, x, y, **kwargs):
+                               data_type: Dataset.Type, train_time: float, learner, dataset: Dataset, **kwargs):
         """
         Obtains and evaluates predictions for given query examples from a previously trained model.
 
@@ -410,23 +396,21 @@ class Experiment(DataSplitter.Callback):
                                 data
         :param train_time:      The time needed to train the model
         :param learner:         The learner, the predictions should be obtained from
-        :param x:               A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                                `(num_examples, num_features)`, that stores the feature values of the query examples
-        :param y:               A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                                `(num_examples, num_outputs)`, that stores the ground truth of the query examples
+        :param dataset:         The dataset that stores the query examples
         :param kwargs:          Optional keyword arguments to be passed to the model when obtaining predictions
         """
         try:
-            return evaluation.predict_and_evaluate(problem_type, meta_data, fold, data_type, train_time, learner, x, y,
-                                                   **kwargs)
+            return evaluation.predict_and_evaluate(problem_type, meta_data, fold, data_type, train_time, learner,
+                                                   dataset, **kwargs)
         except ValueError as error:
-            if is_sparse(x):
-                return Experiment.__predict_and_evaluate(problem_type, evaluation, meta_data, fold, data_type,
-                                                         train_time, learner, x.toarray(), y, **kwargs)
+            if is_sparse(dataset.x):
+                return Experiment.__predict_and_evaluate(problem_type, evaluation, meta_data, fold,
+                                                         data_type, train_time, learner,
+                                                         replace(dataset, x=dataset.x.toarray()), **kwargs)
             raise error
 
     @staticmethod
-    def __train(learner, x, y, **kwargs):
+    def __train(learner, dataset: Dataset, **kwargs):
         """
         Fits a learner to training data.
 
@@ -438,6 +422,9 @@ class Experiment(DataSplitter.Callback):
         :param kwargs:  Optional keyword arguments to be passed to the learner when fitting model
         :return:        The time needed for training
         """
+        x = dataset.x
+        y = dataset.y
+
         try:
             start_time = timer()
             learner.fit(x, y, **kwargs)
@@ -445,9 +432,9 @@ class Experiment(DataSplitter.Callback):
             return end_time - start_time
         except ValueError as error:
             if is_sparse(y):
-                return Experiment.__train(learner, x, y.toarray(), **kwargs)
+                return Experiment.__train(learner, replace(dataset, y=y.toarray()), **kwargs)
             if is_sparse(x):
-                return Experiment.__train(learner, x.toarray(), y, **kwargs)
+                return Experiment.__train(learner, replace(dataset, x=x.toarray()), **kwargs)
             raise error
 
     def __load_model(self, fold: Fold):

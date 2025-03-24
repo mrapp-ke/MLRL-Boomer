@@ -185,8 +185,8 @@ class OutputWriter(ABC):
         self.sinks = sinks
 
     @abstractmethod
-    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, fold: Fold, learner,
-                              data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, dataset: Dataset, fold: Fold,
+                              learner, data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         """
@@ -194,10 +194,7 @@ class OutputWriter(ABC):
         sinks.
 
         :param meta_data:           The meta-data of the data set
-        :param x:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                                    `(num_examples, num_features)`, that stores the feature values
-        :param y:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                                    `(num_examples, num_outputs)`, that stores the ground truth
+        :param dataset:             The dataset, the output data corresponds to
         :param fold:                The fold of the available data, the output data corresponds to
         :param learner:             The learner that has been trained
         :param data_type:           Specifies whether the predictions and ground truth correspond to the training or
@@ -216,8 +213,7 @@ class OutputWriter(ABC):
     def write_output(self,
                      problem_type: ProblemType,
                      meta_data: MetaData,
-                     x,
-                     y,
+                     dataset: Dataset,
                      fold: Fold,
                      learner,
                      data_type: Optional[Dataset.Type] = None,
@@ -231,10 +227,7 @@ class OutputWriter(ABC):
 
         :param problem_type:        The type of the machine learning problem
         :param meta_data:           The meta-data of the data set
-        :param x:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                                    `(num_examples, num_features)`, that stores the feature values
-        :param y:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                                    `(num_examples, num_outputs)`, that stores the ground truth
+        :param dataset:             The dataset, the output data corresponds to
         :param fold:                The fold of the available data, the output data corresponds to
         :param learner:             The learner that has been trained
         :param data_type:           Specifies whether the predictions and ground truth correspond to the training or
@@ -251,7 +244,7 @@ class OutputWriter(ABC):
         sinks = self.sinks
 
         if sinks:
-            output_data = self._generate_output_data(problem_type, meta_data, x, y, fold, learner, data_type,
+            output_data = self._generate_output_data(problem_type, meta_data, dataset, fold, learner, data_type,
                                                      prediction_type, prediction_scope, predictions, train_time,
                                                      predict_time)
 

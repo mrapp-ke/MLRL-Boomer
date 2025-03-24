@@ -126,11 +126,11 @@ class LabelVectorWriter(OutputWriter):
             super().__init__(output_dir=output_dir, file_name='label_vectors', options=options)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, fold: Fold, learner,
-                              data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, dataset: Dataset, fold: Fold,
+                              learner, data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
-        return LabelVectorWriter.LabelVectors(num_labels=y.shape[1], y=y)
+        return LabelVectorWriter.LabelVectors(num_labels=dataset.y.shape[1], y=dataset.y)
 
 
 class LabelVectorSetWriter(LabelVectorWriter):
@@ -156,17 +156,17 @@ class LabelVectorSetWriter(LabelVectorWriter):
             """
             self.label_vectors.unique_label_vectors.append((label_vector, frequency))
 
-    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, fold: Fold, learner,
-                              data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, dataset: Dataset, fold: Fold,
+                              learner, data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         if isinstance(learner, ClassificationRuleLearner):
             output_space_info = learner.output_space_info_
 
             if isinstance(output_space_info, LabelVectorSet):
-                visitor = LabelVectorSetWriter.Visitor(num_labels=y.shape[1])
+                visitor = LabelVectorSetWriter.Visitor(num_labels=dataset.y.shape[1])
                 output_space_info.visit(visitor)
                 return visitor.label_vectors
 
-        return super()._generate_output_data(problem_type, meta_data, x, y, fold, learner, data_type, prediction_type,
-                                             prediction_scope, predictions, train_time, predict_time)
+        return super()._generate_output_data(problem_type, meta_data, dataset, fold, learner, data_type,
+                                             prediction_type, prediction_scope, predictions, train_time, predict_time)
