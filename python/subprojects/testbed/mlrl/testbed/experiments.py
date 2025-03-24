@@ -305,7 +305,7 @@ class Experiment(DataSplitter.Callback):
 
         self.data_splitter.run(self)
 
-    def train_and_evaluate(self, meta_data: MetaData, fold: Fold, train_dataset: Dataset, test_dataset: Dataset):
+    def train_and_evaluate(self, fold: Fold, train_dataset: Dataset, test_dataset: Dataset):
         """
         See `DataSplitter.Callback.train_and_evaluate`
         """
@@ -326,15 +326,17 @@ class Experiment(DataSplitter.Callback):
 
         # Write output data before model is trained...
         for output_writer in self.pre_training_output_writers:
-            output_writer.write_output(problem_type, meta_data, train_dataset, fold, current_learner)
+            output_writer.write_output(problem_type, train_dataset.meta_data, train_dataset, fold, current_learner)
 
         # Set the indices of ordinal features, if supported...
         if isinstance(current_learner, OrdinalFeatureSupportMixin):
+            meta_data = train_dataset.meta_data
             fit_kwargs[OrdinalFeatureSupportMixin.KWARG_ORDINAL_FEATURE_INDICES] = meta_data.get_feature_indices(
                 AttributeType.ORDINAL)
 
         # Set the indices of nominal features, if supported...
         if isinstance(current_learner, NominalFeatureSupportMixin):
+            meta_data = train_dataset.meta_data
             fit_kwargs[NominalFeatureSupportMixin.KWARG_NOMINAL_FEATURE_INDICES] = meta_data.get_feature_indices(
                 AttributeType.NOMINAL)
 
@@ -362,8 +364,8 @@ class Experiment(DataSplitter.Callback):
         if evaluation and fold.is_train_test_separated:
             data_type = Dataset.Type.TRAINING
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-            self.__predict_and_evaluate(problem_type, evaluation, meta_data, fold, data_type, train_time,
-                                        current_learner, train_dataset, **predict_kwargs)
+            self.__predict_and_evaluate(problem_type, evaluation, fold, data_type, train_time, current_learner,
+                                        train_dataset, **predict_kwargs)
 
         # Obtain and evaluate predictions for test data, if necessary...
         evaluation = self.test_evaluation
@@ -371,21 +373,21 @@ class Experiment(DataSplitter.Callback):
         if evaluation:
             data_type = Dataset.Type.TEST if fold.is_train_test_separated else Dataset.Type.TRAINING
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-            self.__predict_and_evaluate(problem_type, evaluation, meta_data, fold, data_type, train_time,
-                                        current_learner, test_dataset, **predict_kwargs)
+            self.__predict_and_evaluate(problem_type, evaluation, fold, data_type, train_time, current_learner,
+                                        test_dataset, **predict_kwargs)
 
         # Write output data after model was trained...
         for output_writer in self.post_training_output_writers:
             output_writer.write_output(problem_type,
-                                       meta_data,
+                                       train_dataset.meta_data,
                                        train_dataset,
                                        fold,
                                        current_learner,
                                        train_time=train_time)
 
     @staticmethod
-    def __predict_and_evaluate(problem_type: ProblemType, evaluation: Evaluation, meta_data: MetaData, fold: Fold,
-                               data_type: Dataset.Type, train_time: float, learner, dataset: Dataset, **kwargs):
+    def __predict_and_evaluate(problem_type: ProblemType, evaluation: Evaluation, fold: Fold, data_type: Dataset.Type,
+                               train_time: float, learner, dataset: Dataset, **kwargs):
         """
         Obtains and evaluates predictions for given query examples from a previously trained model.
 
@@ -401,12 +403,11 @@ class Experiment(DataSplitter.Callback):
         :param kwargs:          Optional keyword arguments to be passed to the model when obtaining predictions
         """
         try:
-            return evaluation.predict_and_evaluate(problem_type, meta_data, fold, data_type, train_time, learner,
-                                                   dataset, **kwargs)
+            return evaluation.predict_and_evaluate(problem_type, dataset.meta_data, fold, data_type, train_time,
+                                                   learner, dataset, **kwargs)
         except ValueError as error:
             if is_sparse(dataset.x):
-                return Experiment.__predict_and_evaluate(problem_type, evaluation, meta_data, fold,
-                                                         data_type, train_time, learner,
+                return Experiment.__predict_and_evaluate(problem_type, evaluation, fold, data_type, train_time, learner,
                                                          replace(dataset, x=dataset.x.toarray()), **kwargs)
             raise error
 
