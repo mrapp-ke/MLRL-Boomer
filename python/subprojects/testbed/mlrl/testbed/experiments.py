@@ -387,7 +387,7 @@ class Experiment(DataSplitter.Callback):
 
     @staticmethod
     def __predict_and_evaluate(problem_type: ProblemType, evaluation: Evaluation, fold: Fold, data_type: Dataset.Type,
-                               train_time: float, learner, dataset: Dataset, **kwargs):
+                               train_time: float, learner, test_dataset: Dataset, **kwargs):
         """
         Obtains and evaluates predictions for given query examples from a previously trained model.
 
@@ -399,33 +399,30 @@ class Experiment(DataSplitter.Callback):
                                 data
         :param train_time:      The time needed to train the model
         :param learner:         The learner, the predictions should be obtained from
-        :param dataset:         The dataset that stores the query examples
+        :param test_dataset:    The dataset that stores the query examples
         :param kwargs:          Optional keyword arguments to be passed to the model when obtaining predictions
         """
         try:
-            return evaluation.predict_and_evaluate(problem_type, dataset.meta_data, fold, data_type, train_time,
-                                                   learner, dataset, **kwargs)
+            return evaluation.predict_and_evaluate(problem_type, test_dataset.meta_data, fold, data_type, train_time,
+                                                   learner, test_dataset, **kwargs)
         except ValueError as error:
-            if is_sparse(dataset.x):
+            if is_sparse(test_dataset.x):
                 return Experiment.__predict_and_evaluate(problem_type, evaluation, fold, data_type, train_time, learner,
-                                                         replace(dataset, x=dataset.x.toarray()), **kwargs)
+                                                         replace(test_dataset, x=test_dataset.x.toarray()), **kwargs)
             raise error
 
     @staticmethod
-    def __train(learner, dataset: Dataset, **kwargs):
+    def __train(learner, train_dataset: Dataset, **kwargs):
         """
         Fits a learner to training data.
 
         :param learner: The learner
-        :param x:       A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                        `(num_examples, num_features)`, that stores the feature values of the training examples
-        :param y:       A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                        `(num_examples, num_outputs)`, that stores the ground truth of the training examples
+        :param train_dataset: The training dataset
         :param kwargs:  Optional keyword arguments to be passed to the learner when fitting model
         :return:        The time needed for training
         """
-        x = dataset.x
-        y = dataset.y
+        x = train_dataset.x
+        y = train_dataset.y
 
         try:
             start_time = timer()
@@ -434,9 +431,9 @@ class Experiment(DataSplitter.Callback):
             return end_time - start_time
         except ValueError as error:
             if is_sparse(y):
-                return Experiment.__train(learner, replace(dataset, y=y.toarray()), **kwargs)
+                return Experiment.__train(learner, replace(train_dataset, y=y.toarray()), **kwargs)
             if is_sparse(x):
-                return Experiment.__train(learner, replace(dataset, x=x.toarray()), **kwargs)
+                return Experiment.__train(learner, replace(train_dataset, x=x.toarray()), **kwargs)
             raise error
 
     def __load_model(self, fold: Fold):
