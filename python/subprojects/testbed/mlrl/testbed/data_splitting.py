@@ -16,11 +16,10 @@ from scipy.sparse import vstack
 from sklearn.model_selection import KFold, train_test_split
 
 from mlrl.testbed.data import load_data_set, load_data_set_and_meta_data
-from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.dataset import Dataset, MetaData
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_duration
 from mlrl.testbed.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name, get_file_name_per_fold
-from mlrl.testbed.meta_data import MetaData
 from mlrl.testbed.preprocessors import Preprocessor
 
 
