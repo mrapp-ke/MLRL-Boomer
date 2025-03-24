@@ -15,8 +15,8 @@ from typing import List, Optional
 from scipy.sparse import vstack
 from sklearn.model_selection import KFold, train_test_split
 
-from mlrl.testbed.data import load_data_set, load_data_set_and_meta_data
-from mlrl.testbed.dataset import Dataset, MetaData
+from mlrl.testbed.data import ArffMetaData, load_data_set, load_data_set_and_meta_data
+from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_duration
 from mlrl.testbed.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name, get_file_name_per_fold
@@ -136,13 +136,13 @@ class NoSplitter(DataSplitter):
 
         if preprocessor:
             encoder = preprocessor.create_encoder()
-            encoded_dataset = encoder.encode(Dataset(x, y, MetaData(meta_data.features, meta_data.outputs)))
+            encoded_dataset = encoder.encode(Dataset(x, y, meta_data.features, meta_data.outputs))
             x = encoded_dataset.x
-            meta_data = MetaData(encoded_dataset.features, encoded_dataset.outputs)
+            meta_data = ArffMetaData(encoded_dataset.features, encoded_dataset.outputs, meta_data.outputs_at_start)
 
         # Train and evaluate model...
         fold = Fold(index=None, num_folds=1, is_last_fold=True, is_train_test_separated=False)
-        dataset = Dataset(x=x, y=y, meta_data=MetaData(features=meta_data.features, outputs=meta_data.outputs))
+        dataset = Dataset(x=x, y=y, features=meta_data.features, outputs=meta_data.outputs)
         callback.train_and_evaluate(fold, train_dataset=dataset, test_dataset=dataset)
 
 
@@ -186,12 +186,11 @@ class TrainTestSplitter(DataSplitter):
 
         if preprocessor:
             encoder = preprocessor.create_encoder()
-            encoded_dataset = encoder.encode(Dataset(train_x, train_y, MetaData(meta_data.features, meta_data.outputs)))
+            encoded_dataset = encoder.encode(Dataset(train_x, train_y, meta_data.features, meta_data.outputs))
             train_x = encoded_dataset.x
-            encoded_meta_data = MetaData(encoded_dataset.features, encoded_dataset.outputs)
+            meta_data = ArffMetaData(encoded_dataset.features, encoded_dataset.outputs, meta_data.outputs_at_start)
         else:
             encoder = None
-            encoded_meta_data = None
 
         if predefined_split:
             # Load test data set...
@@ -199,8 +198,7 @@ class TrainTestSplitter(DataSplitter):
 
             # Apply preprocessor, if necessary...
             if encoder:
-                encoded_dataset = encoder.encode(
-                    Dataset(test_x, test_y, MetaData(meta_data.features, meta_data.outputs)))
+                encoded_dataset = encoder.encode(Dataset(test_x, test_y, meta_data.features, meta_data.outputs))
                 test_x = encoded_dataset.x
         else:
             # Split data set into training and test data...
@@ -212,16 +210,8 @@ class TrainTestSplitter(DataSplitter):
 
         # Train and evaluate model...
         fold = Fold(index=None, num_folds=1, is_last_fold=True, is_train_test_separated=True)
-        train_dataset = Dataset(x=train_x,
-                                y=train_y,
-                                meta_data=MetaData(
-                                    features=encoded_meta_data.features if encoded_meta_data else meta_data.features,
-                                    outputs=encoded_meta_data.outputs if encoded_meta_data else meta_data.outputs))
-        test_dataset = Dataset(x=test_x,
-                               y=test_y,
-                               meta_data=MetaData(
-                                   features=encoded_meta_data.features if encoded_meta_data else meta_data.features,
-                                   outputs=encoded_meta_data.outputs if encoded_meta_data else meta_data.outputs))
+        train_dataset = Dataset(x=train_x, y=train_y, features=meta_data.features, outputs=meta_data.outputs)
+        test_dataset = Dataset(x=test_x, y=test_y, features=meta_data.features, outputs=meta_data.outputs)
         callback.train_and_evaluate(fold, train_dataset=train_dataset, test_dataset=test_dataset)
 
 
@@ -286,12 +276,11 @@ class CrossValidationSplitter(DataSplitter):
 
         if preprocessor:
             encoder = preprocessor.create_encoder()
-            encoded_dataset = encoder.encode(Dataset(x, y, MetaData(meta_data.features, meta_data.outputs)))
+            encoded_dataset = encoder.encode(Dataset(x, y, meta_data.features, meta_data.outputs))
             x = encoded_dataset.x
-            encoded_meta_data = MetaData(encoded_dataset.features, encoded_dataset.outputs)
+            meta_data = ArffMetaData(encoded_dataset.features, encoded_dataset.outputs, meta_data.outputs_at_start)
         else:
             encoder = None
-            encoded_meta_data = None
 
         data = [(x, y)]
 
@@ -301,7 +290,7 @@ class CrossValidationSplitter(DataSplitter):
 
             # Apply preprocessor, if necessary...
             if encoder:
-                encoded_dataset = encoder.encode(Dataset(x, y, MetaData(meta_data.features, meta_data.outputs)))
+                encoded_dataset = encoder.encode(Dataset(x, y, meta_data.features, meta_data.outputs))
                 x = encoded_dataset.x
 
             data.append((x, y))
@@ -333,16 +322,8 @@ class CrossValidationSplitter(DataSplitter):
                         num_folds=num_folds,
                         is_last_fold=current_fold < 0 and i == num_folds - 1,
                         is_train_test_separated=True)
-            train_dataset = Dataset(
-                x=train_x,
-                y=train_y,
-                meta_data=MetaData(features=encoded_meta_data.features if encoded_meta_data else meta_data.features,
-                                   outputs=encoded_meta_data.outputs if encoded_meta_data else meta_data.outputs))
-            test_dataset = Dataset(x=test_x,
-                                   y=test_y,
-                                   meta_data=MetaData(
-                                       features=encoded_meta_data.features if encoded_meta_data else meta_data.features,
-                                       outputs=encoded_meta_data.outputs if encoded_meta_data else meta_data.outputs))
+            train_dataset = Dataset(x=train_x, y=train_y, features=meta_data.features, outputs=meta_data.outputs)
+            test_dataset = Dataset(x=test_x, y=test_y, features=meta_data.features, outputs=meta_data.outputs)
             callback.train_and_evaluate(fold, train_dataset=train_dataset, test_dataset=test_dataset)
 
     def __cross_validation(self, callback: DataSplitter.Callback, data_dir: str, arff_file_name: str,
@@ -355,11 +336,9 @@ class CrossValidationSplitter(DataSplitter):
 
         if preprocessor:
             encoder = preprocessor.create_encoder()
-            encoded_dataset = encoder.encode(Dataset(x, y, MetaData(meta_data.features, meta_data.outputs)))
+            encoded_dataset = encoder.encode(Dataset(x, y, meta_data.features, meta_data.outputs))
             x = encoded_dataset.x
-            encoded_meta_data = MetaData(encoded_dataset.features, encoded_dataset.outputs)
-        else:
-            encoded_meta_data = None
+            meta_data = ArffMetaData(encoded_dataset.features, encoded_dataset.outputs, meta_data.outputs_at_start)
 
         # Perform cross-validation...
         k_fold = KFold(n_splits=num_folds, random_state=self.random_state, shuffle=True)
@@ -381,14 +360,6 @@ class CrossValidationSplitter(DataSplitter):
                             num_folds=num_folds,
                             is_last_fold=current_fold < 0 and i == num_folds - 1,
                             is_train_test_separated=True)
-                train_dataset = Dataset(
-                    x=train_x,
-                    y=train_y,
-                    meta_data=MetaData(features=encoded_meta_data.features if encoded_meta_data else meta_data.features,
-                                       outputs=encoded_meta_data.outputs if encoded_meta_data else meta_data.outputs))
-                test_dataset = Dataset(
-                    x=test_x,
-                    y=test_y,
-                    meta_data=MetaData(features=encoded_meta_data.features if encoded_meta_data else meta_data.features,
-                                       outputs=encoded_meta_data.outputs if encoded_meta_data else meta_data.outputs))
+                train_dataset = Dataset(x=train_x, y=train_y, features=meta_data.features, outputs=meta_data.outputs)
+                test_dataset = Dataset(x=test_x, y=test_y, features=meta_data.features, outputs=meta_data.outputs)
                 callback.train_and_evaluate(fold, train_dataset=train_dataset, test_dataset=test_dataset)
