@@ -9,9 +9,9 @@ from typing import Any, Optional
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.characteristics import OutputCharacteristics
-from mlrl.testbed.data import MetaData
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.fold import Fold
+from mlrl.testbed.meta_data import MetaData
 from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 from mlrl.testbed.problem_type import ProblemType

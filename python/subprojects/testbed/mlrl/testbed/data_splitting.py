@@ -15,11 +15,12 @@ from typing import List, Optional
 from scipy.sparse import vstack
 from sklearn.model_selection import KFold, train_test_split
 
-from mlrl.testbed.data import MetaData, load_data_set, load_data_set_and_meta_data
+from mlrl.testbed.data import load_data_set, load_data_set_and_meta_data
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_duration
 from mlrl.testbed.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name, get_file_name_per_fold
+from mlrl.testbed.meta_data import MetaData
 from mlrl.testbed.preprocessors import Preprocessor
 
 
@@ -139,7 +140,7 @@ class NoSplitter(DataSplitter):
             encoder = preprocessor.create_encoder()
             encoded_dataset = encoder.encode(Dataset(x, y, meta_data.features, meta_data.outputs))
             x = encoded_dataset.x
-            meta_data = MetaData(encoded_dataset.features, encoded_dataset.outputs, meta_data.outputs_at_start)
+            meta_data = MetaData(encoded_dataset.features, encoded_dataset.outputs)
 
         # Train and evaluate model...
         fold = Fold(index=None, num_folds=1, is_last_fold=True, is_train_test_separated=False)
@@ -189,7 +190,7 @@ class TrainTestSplitter(DataSplitter):
             encoder = preprocessor.create_encoder()
             encoded_dataset = encoder.encode(Dataset(train_x, train_y, meta_data.features, meta_data.outputs))
             train_x = encoded_dataset.x
-            encoded_meta_data = MetaData(encoded_dataset.features, encoded_dataset.outputs, meta_data.outputs_at_start)
+            encoded_meta_data = MetaData(encoded_dataset.features, encoded_dataset.outputs)
         else:
             encoder = None
             encoded_meta_data = None
@@ -289,7 +290,7 @@ class CrossValidationSplitter(DataSplitter):
             encoder = preprocessor.create_encoder()
             encoded_dataset = encoder.encode(Dataset(x, y, meta_data.features, meta_data.outputs))
             x = encoded_dataset.x
-            encoded_meta_data = MetaData(encoded_dataset.features, encoded_dataset.outputs, meta_data.outputs_at_start)
+            encoded_meta_data = MetaData(encoded_dataset.features, encoded_dataset.outputs)
         else:
             encoder = None
             encoded_meta_data = None
@@ -359,7 +360,7 @@ class CrossValidationSplitter(DataSplitter):
             encoder = preprocessor.create_encoder()
             encoded_dataset = encoder.encode(Dataset(x, y, meta_data.features, meta_data.outputs))
             x = encoded_dataset.x
-            encoded_meta_data = MetaData(encoded_dataset.features, encoded_dataset.outputs, meta_data.outputs_at_start)
+            encoded_meta_data = MetaData(encoded_dataset.features, encoded_dataset.outputs)
         else:
             encoded_meta_data = None
 
