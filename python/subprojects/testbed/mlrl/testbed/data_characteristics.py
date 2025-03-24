@@ -15,7 +15,6 @@ from mlrl.testbed.data import AttributeType
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, filter_formatters, format_table
-from mlrl.testbed.meta_data import MetaData
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 from mlrl.testbed.problem_type import ProblemType
@@ -37,18 +36,16 @@ OPTION_FEATURE_SPARSITY = 'feature_sparsity'
 
 class FeatureCharacteristics:
     """
-    Stores characteristics of a feature matrix.
+    Stores characteristics of the features in a dataset.
     """
 
-    def __init__(self, meta_data: MetaData, x):
+    def __init__(self, dataset: Dataset):
         """
-        :param meta_data:   The meta-data of the data set
-        :param x:           A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                            `(num_examples, num_features)`, that stores the feature values
+        :param dataset: The dataset
         """
-        self._x = x
-        self._meta_data = meta_data
-        self.num_examples = x.shape[0]
+        self._x = dataset.x
+        self._meta_data = dataset.meta_data
+        self.num_examples = dataset.num_examples
 
     @property
     def num_features(self):
@@ -185,12 +182,12 @@ class DataCharacteristicsWriter(OutputWriter):
             super().__init__(output_dir=output_dir, file_name='data_characteristics', options=options)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, dataset: Dataset, fold: Fold,
-                              learner, data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, dataset: Dataset, fold: Fold, learner,
+                              data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
-        feature_characteristics = FeatureCharacteristics(meta_data, dataset.x)
-        output_characteristics = OutputCharacteristics(dataset.y, problem_type)
+        feature_characteristics = FeatureCharacteristics(dataset)
+        output_characteristics = OutputCharacteristics(problem_type, dataset.y)
         return DataCharacteristicsWriter.DataCharacteristics(feature_characteristics=feature_characteristics,
                                                              output_characteristics=output_characteristics,
                                                              problem_type=problem_type)
