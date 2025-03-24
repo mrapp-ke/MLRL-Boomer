@@ -134,7 +134,7 @@ class GlobalEvaluation(Evaluation):
 
     def predict_and_evaluate(self, problem_type: ProblemType, meta_data: MetaData, fold: Fold, data_type: Dataset.Type,
                              train_time: float, learner, dataset: Dataset, **kwargs):
-        log.info('Predicting for %s %s examples...', dataset.x.shape[0], data_type.value)
+        log.info('Predicting for %s %s examples...', dataset.num_examples, data_type.value)
         start_time = timer()
         predict_proba_function = learner.predict_proba if callable(getattr(learner, 'predict_proba', None)) else None
         predictions = self._invoke_prediction_function(learner, learner.predict, predict_proba_function, dataset,
@@ -199,7 +199,7 @@ class IncrementalEvaluation(Evaluation):
             current_size = min(next_step_size, total_size)
 
             while incremental_predictor.has_next():
-                log.info('Predicting for %s %s examples using a model of size %s...', dataset.x.shape[0],
+                log.info('Predicting for %s %s examples using a model of size %s...', dataset.num_examples,
                          data_type.value, current_size)
                 start_time = timer()
                 predictions = incremental_predictor.apply_next(next_step_size)
@@ -349,7 +349,7 @@ class Experiment(DataSplitter.Callback):
             current_learner = loaded_learner
             train_time = 0
         else:
-            log.info('Fitting model to %s training examples...', train_dataset.x.shape[0])
+            log.info('Fitting model to %s training examples...', train_dataset.num_examples)
             train_time = self.__train(current_learner, train_dataset, **fit_kwargs)
             log.info('Successfully fit model in %s', format_duration(train_time))
 

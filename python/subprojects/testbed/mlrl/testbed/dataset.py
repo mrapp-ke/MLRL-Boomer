@@ -41,3 +41,24 @@ class Dataset:
             :return:                The file name
             """
             return dataset_name + '_' + str(self.value)
+
+    @property
+    def num_examples(self) -> int:
+        """
+        The number of examples in the dataset.
+        """
+        return self.x.shape[0]
+
+    @property
+    def num_features(self) -> int:
+        """
+        The number of features in the dataset.
+        """
+        return self.x.shape[1]
+
+    @property
+    def num_outputs(self) -> int:
+        """
+        The number of outputs in the dataset.
+        """
+        return self.y.shape[1]

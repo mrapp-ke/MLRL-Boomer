@@ -130,7 +130,7 @@ class LabelVectorWriter(OutputWriter):
                               learner, data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
-        return LabelVectorWriter.LabelVectors(num_labels=dataset.y.shape[1], y=dataset.y)
+        return LabelVectorWriter.LabelVectors(num_labels=dataset.num_outputs, y=dataset.y)
 
 
 class LabelVectorSetWriter(LabelVectorWriter):
@@ -164,7 +164,7 @@ class LabelVectorSetWriter(LabelVectorWriter):
             output_space_info = learner.output_space_info_
 
             if isinstance(output_space_info, LabelVectorSet):
-                visitor = LabelVectorSetWriter.Visitor(num_labels=dataset.y.shape[1])
+                visitor = LabelVectorSetWriter.Visitor(num_labels=dataset.num_outputs)
                 output_space_info.visit(visitor)
                 return visitor.label_vectors
 
