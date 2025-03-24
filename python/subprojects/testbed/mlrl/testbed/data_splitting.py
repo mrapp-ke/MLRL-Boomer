@@ -53,11 +53,10 @@ class DataSplitter(ABC):
         """
 
         @abstractmethod
-        def train_and_evaluate(self, meta_data: MetaData, fold: Fold, train_dataset: Dataset, test_dataset: Dataset):
+        def train_and_evaluate(self, fold: Fold, train_dataset: Dataset, test_dataset: Dataset):
             """
             The function that is invoked to train a model on a training set and evaluate it on a test set.
 
-            :param meta_data:       The meta-data of the dataset
             :param fold:            The fold of the available data to be used for training and evaluating the model
             :param train_dataset:   The dataset to be used for training
             :param test_dataset:    The dataset to be used for testing
@@ -145,7 +144,7 @@ class NoSplitter(DataSplitter):
         # Train and evaluate model...
         fold = Fold(index=None, num_folds=1, is_last_fold=True, is_train_test_separated=False)
         dataset = Dataset(x=x, y=y, meta_data=MetaData(features=meta_data.features, outputs=meta_data.outputs))
-        callback.train_and_evaluate(meta_data, fold, dataset, dataset)
+        callback.train_and_evaluate(fold, train_dataset=dataset, test_dataset=dataset)
 
 
 class TrainTestSplitter(DataSplitter):
@@ -224,10 +223,7 @@ class TrainTestSplitter(DataSplitter):
                                meta_data=MetaData(
                                    features=encoded_meta_data.features if encoded_meta_data else meta_data.features,
                                    outputs=encoded_meta_data.outputs if encoded_meta_data else meta_data.outputs))
-        callback.train_and_evaluate(encoded_meta_data if encoded_meta_data else meta_data,
-                                    fold,
-                                    train_dataset=train_dataset,
-                                    test_dataset=test_dataset)
+        callback.train_and_evaluate(fold, train_dataset=train_dataset, test_dataset=test_dataset)
 
 
 class CrossValidationSplitter(DataSplitter):
@@ -348,10 +344,7 @@ class CrossValidationSplitter(DataSplitter):
                                    meta_data=MetaData(
                                        features=encoded_meta_data.features if encoded_meta_data else meta_data.features,
                                        outputs=encoded_meta_data.outputs if encoded_meta_data else meta_data.outputs))
-            callback.train_and_evaluate(encoded_meta_data if encoded_meta_data else meta_data,
-                                        fold,
-                                        train_dataset=train_dataset,
-                                        test_dataset=test_dataset)
+            callback.train_and_evaluate(fold, train_dataset=train_dataset, test_dataset=test_dataset)
 
     def __cross_validation(self, callback: DataSplitter.Callback, data_dir: str, arff_file_name: str,
                            xml_file_name: str, num_folds: int, current_fold: int):
@@ -399,7 +392,4 @@ class CrossValidationSplitter(DataSplitter):
                     y=test_y,
                     meta_data=MetaData(features=encoded_meta_data.features if encoded_meta_data else meta_data.features,
                                        outputs=encoded_meta_data.outputs if encoded_meta_data else meta_data.outputs))
-                callback.train_and_evaluate(encoded_meta_data if encoded_meta_data else meta_data,
-                                            fold,
-                                            train_dataset=train_dataset,
-                                            test_dataset=test_dataset)
+                callback.train_and_evaluate(fold, train_dataset=train_dataset, test_dataset=test_dataset)
