@@ -49,7 +49,7 @@ class Attribute:
 
 
 @dataclass
-class MetaData:
+class ArffMetaData:
     """
     Stores the meta-data of a data set.
 
@@ -96,7 +96,7 @@ def load_data_set_and_meta_data(directory: str,
                                 arff_file_name: str,
                                 xml_file_name: Optional[str],
                                 feature_dtype=Float32,
-                                output_dtype=Uint8) -> Tuple[lil_array, lil_array, MetaData]:
+                                output_dtype=Uint8) -> Tuple[lil_array, lil_array, ArffMetaData]:
     """
     Loads a data set from an ARFF file and the corresponding Mulan XML file.
 
@@ -126,7 +126,7 @@ def load_data_set_and_meta_data(directory: str,
 
 def load_data_set(directory: str,
                   arff_file_name: str,
-                  meta_data: MetaData,
+                  meta_data: ArffMetaData,
                   feature_dtype=Float32,
                   output_dtype=Uint8) -> Tuple[lil_array, lil_array]:
     """
@@ -149,7 +149,7 @@ def load_data_set(directory: str,
     return x, y
 
 
-def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.ndarray, meta_data: MetaData):
+def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.ndarray, meta_data: ArffMetaData):
     """
     Saves a data set to an ARFF file.
 
@@ -210,7 +210,7 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
     log.info('Successfully saved data set to file \'%s\'.', str(arff_file))
 
 
-def __create_feature_and_output_matrix(matrix: csc_array, meta_data: MetaData,
+def __create_feature_and_output_matrix(matrix: csc_array, meta_data: ArffMetaData,
                                        output_dtype) -> Tuple[lil_array, lil_array]:
     """
     Creates and returns the feature and output matrix from a single matrix, representing the values in an ARFF file.
@@ -352,13 +352,13 @@ def __parse_output_names_from_relation(relation: str, attributes: List[Attribute
     return {__parse_attribute_name(attributes[i].name) for i in range(num_outputs)}
 
 
-def __create_meta_data(attributes: List[Attribute], output_names: Set[str]) -> MetaData:
+def __create_meta_data(attributes: List[Attribute], output_names: Set[str]) -> ArffMetaData:
     """
-    Creates and returns the `MetaData` of a data set.
+    Creates and returns the `ArffMetaData` of a data set.
 
     :param attributes:      A list that contains all attributes in the dataset, including features and outputs
     :param output_names:    A set that contains the names of all outputs
-    :return:                The `MetaData` that has been created
+    :return:                The `ArffMetaData` that has been created
     """
     outputs_at_start = False
     features = []
@@ -373,7 +373,7 @@ def __create_meta_data(attributes: List[Attribute], output_names: Set[str]) -> M
         else:
             features.append(attribute)
 
-    return MetaData(features, outputs, outputs_at_start)
+    return ArffMetaData(features, outputs, outputs_at_start)
 
 
 def __parse_attribute_name(name: str) -> str:
@@ -391,7 +391,7 @@ def __parse_attribute_name(name: str) -> str:
     return name.replace('\\\'', '\'').replace('\\"', '"')
 
 
-def __write_meta_data(xml_file: str, meta_data: MetaData):
+def __write_meta_data(xml_file: str, meta_data: ArffMetaData):
     """
     Writes meta-data to a Mulan XML file.
 

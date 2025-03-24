@@ -10,11 +10,12 @@ import numpy as np
 
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.data import Attribute, AttributeType, MetaData, save_arff_file
+from mlrl.testbed.data import ArffMetaData, Attribute, AttributeType, save_arff_file
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import OPTION_DECIMALS, format_array
 from mlrl.testbed.io import SUFFIX_ARFF, get_file_name_per_fold
+from mlrl.testbed.meta_data import MetaData
 from mlrl.testbed.output_writer import Formattable, OutputWriter
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 from mlrl.testbed.problem_type import ProblemType
@@ -102,7 +103,7 @@ class PredictionWriter(OutputWriter):
                 features.append(Attribute('Ground Truth ' + output.name, attribute_type, nominal_values))
                 outputs.append(Attribute('Prediction ' + output.name, attribute_type, nominal_values))
 
-            prediction_meta_data = MetaData(features, outputs)
+            prediction_meta_data = ArffMetaData(features, outputs)
             save_arff_file(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
 
     # pylint: disable=unused-argument

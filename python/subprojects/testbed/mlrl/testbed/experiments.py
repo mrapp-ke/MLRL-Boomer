@@ -17,11 +17,12 @@ from mlrl.common.data.arrays import is_sparse
 from mlrl.common.mixins import ClassifierMixin, IncrementalClassifierMixin, IncrementalRegressorMixin, \
     NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
 
-from mlrl.testbed.data import AttributeType, MetaData
+from mlrl.testbed.data import AttributeType
 from mlrl.testbed.data_splitting import DataSplitter
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_duration
+from mlrl.testbed.meta_data import MetaData
 from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.parameters import ParameterLoader
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
