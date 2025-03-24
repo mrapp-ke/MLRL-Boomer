@@ -15,7 +15,6 @@ from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import OPTION_DECIMALS, format_array
 from mlrl.testbed.io import SUFFIX_ARFF, get_file_name_per_fold
-from mlrl.testbed.meta_data import MetaData
 from mlrl.testbed.output_writer import Formattable, OutputWriter
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 from mlrl.testbed.problem_type import ProblemType
@@ -71,7 +70,7 @@ class PredictionWriter(OutputWriter):
             self.output_dir = output_dir
 
         # pylint: disable=unused-argument
-        def write_output(self, problem_type: ProblemType, meta_data: MetaData, fold: Fold,
+        def write_output(self, problem_type: ProblemType, dataset: Dataset, fold: Fold,
                          data_type: Optional[Dataset.Type], prediction_scope: Optional[PredictionScope], output_data,
                          **_):
             """
@@ -99,7 +98,7 @@ class PredictionWriter(OutputWriter):
             features = []
             outputs = []
 
-            for output in meta_data.outputs:
+            for output in dataset.meta_data.outputs:
                 features.append(Attribute('Ground Truth ' + output.name, attribute_type, nominal_values))
                 outputs.append(Attribute('Prediction ' + output.name, attribute_type, nominal_values))
 
