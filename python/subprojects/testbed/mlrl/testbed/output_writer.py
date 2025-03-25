@@ -68,15 +68,16 @@ class OutputWriter(ABC):
             self.options = options
 
         @abstractmethod
-        def write_output(self, scope: OutputScope, prediction_result: Optional[PredictionResult], output_data,
-                         **kwargs):
+        def write_output(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                         prediction_result: Optional[PredictionResult], output_data, **kwargs):
             """
             Must be implemented by subclasses in order to write output data to the sink.
 
             :param scope:               The scope of the output data
-            :param prediction_result:   A `PredictionResult` that provides access to predictions or None, if no
-                                        predictions have been obtained
-                                        incrementally or None, if no predictions have been obtained
+            :param training_result:     A `TrainingResult` that stores the result of a training process or None, if no
+                                        model has been trained
+            :param prediction_result:   A `PredictionResult` that stores the result of a prediction process or None, if
+                                        no predictions have been obtained
             :param output_data:         The output data that should be written to the sink
             """
 
@@ -92,8 +93,8 @@ class OutputWriter(ABC):
             super().__init__(options=options)
             self.title = title
 
-        def write_output(self, scope: OutputScope, prediction_result: Optional[PredictionResult], output_data,
-                         **kwargs):
+        def write_output(self, scope: OutputScope, _: Optional[TrainingResult],
+                         prediction_result: Optional[PredictionResult], output_data, **kwargs):
             message = self.title
             dataset_type = scope.dataset.type
 
@@ -130,8 +131,8 @@ class OutputWriter(ABC):
             self.output_dir = output_dir
             self.file_name = file_name
 
-        def write_output(self, scope: OutputScope, prediction_result: Optional[PredictionResult], output_data,
-                         **kwargs):
+        def write_output(self, scope: OutputScope, _: Optional[TrainingResult],
+                         prediction_result: Optional[PredictionResult], output_data, **kwargs):
             file_name = scope.dataset.type.get_file_name(self.file_name)
 
             with open_writable_text_file(self.output_dir, file_name, fold=scope.fold.index) as text_file:
@@ -151,8 +152,8 @@ class OutputWriter(ABC):
             self.output_dir = output_dir
             self.file_name = file_name
 
-        def write_output(self, scope: OutputScope, prediction_result: Optional[PredictionResult], output_data,
-                         **kwargs):
+        def write_output(self, scope: OutputScope, _: Optional[TrainingResult],
+                         prediction_result: Optional[PredictionResult], output_data, **kwargs):
             tabular_data = output_data.tabularize(self.options, **kwargs)
 
             if tabular_data:
@@ -215,4 +216,4 @@ class OutputWriter(ABC):
 
             if output_data:
                 for sink in sinks:
-                    sink.write_output(scope, prediction_result, output_data)
+                    sink.write_output(scope, training_result, prediction_result, output_data)

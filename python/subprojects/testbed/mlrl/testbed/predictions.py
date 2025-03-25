@@ -71,7 +71,8 @@ class PredictionWriter(OutputWriter):
             self.output_dir = output_dir
 
         # pylint: disable=unused-argument
-        def write_output(self, scope: OutputScope, prediction_result: Optional[PredictionResult], output_data, **_):
+        def write_output(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                         prediction_result: Optional[PredictionResult], output_data, **_):
             """
             See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
             """
