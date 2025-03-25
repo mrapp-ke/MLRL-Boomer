@@ -291,55 +291,54 @@ class Experiment(DataSplitter.Callback):
         See `DataSplitter.Callback.train_and_evaluate`
         """
         problem_type = self.problem_type
-        base_learner = self.base_learner
-        current_learner = clone(base_learner)
+        learner = clone(self.base_learner)
         fit_kwargs = self.fit_kwargs if self.fit_kwargs else {}
 
         # Apply parameter setting, if necessary...
         parameter_loader = self.parameter_loader
 
         if parameter_loader:
-            params = parameter_loader.load_parameters(fold)
+            parameters = parameter_loader.load_parameters(fold)
 
-            if params:
-                current_learner.set_params(**params)
-                log.info('Successfully applied parameter setting: %s', params)
+            if parameters:
+                learner.set_params(**parameters)
+                log.info('Successfully applied parameter setting: %s', parameters)
+        else:
+            parameters = learner.get_params()
 
         # Write output data before model is trained...
-        train_scope = OutputScope(problem_type=problem_type, dataset=train_dataset, fold=fold)
+        train_scope = OutputScope(problem_type=problem_type, dataset=train_dataset, fold=fold, parameters=parameters)
 
         for output_writer in self.pre_training_output_writers:
             output_writer.write_output(train_scope)
 
         # Set the indices of ordinal features, if supported...
-        if isinstance(current_learner, OrdinalFeatureSupportMixin):
+        if isinstance(learner, OrdinalFeatureSupportMixin):
             fit_kwargs[OrdinalFeatureSupportMixin.KWARG_ORDINAL_FEATURE_INDICES] = train_dataset.get_feature_indices(
                 AttributeType.ORDINAL)
 
         # Set the indices of nominal features, if supported...
-        if isinstance(current_learner, NominalFeatureSupportMixin):
+        if isinstance(learner, NominalFeatureSupportMixin):
             fit_kwargs[NominalFeatureSupportMixin.KWARG_NOMINAL_FEATURE_INDICES] = train_dataset.get_feature_indices(
                 AttributeType.NOMINAL)
 
         # Load model from disk, if possible, otherwise train a new model...
         loaded_learner = self.__load_model(fold)
 
-        if isinstance(loaded_learner, type(current_learner)):
-            current_params = current_learner.get_params()
-            self.__check_for_parameter_changes(expected_params=current_params,
-                                               actual_params=loaded_learner.get_params())
-            loaded_learner.set_params(**current_params)
-            current_learner = loaded_learner
+        if isinstance(loaded_learner, type(learner)):
+            self.__check_for_parameter_changes(expected_params=parameters, actual_params=loaded_learner.get_params())
+            loaded_learner.set_params(**parameters)
+            learner = loaded_learner
             train_time = 0
         else:
             log.info('Fitting model to %s training examples...', train_dataset.num_examples)
-            train_time = self.__train(current_learner, train_dataset, **fit_kwargs)
+            train_time = self.__train(learner, train_dataset, **fit_kwargs)
             log.info('Successfully fit model in %s', format_duration(train_time))
 
             # Save model to disk...
-            self.__save_model(current_learner, fold)
+            self.__save_model(learner, fold)
 
-        training_result = TrainingResult(learner=current_learner, train_time=train_time)
+        training_result = TrainingResult(learner=learner, train_time=train_time)
 
         # Obtain and evaluate predictions for training data, if necessary...
         train_evaluation = self.train_evaluation
@@ -352,7 +351,7 @@ class Experiment(DataSplitter.Callback):
         test_evaluation = self.test_evaluation
 
         if test_evaluation:
-            test_scope = OutputScope(problem_type=problem_type, dataset=test_dataset, fold=fold)
+            test_scope = OutputScope(problem_type=problem_type, dataset=test_dataset, fold=fold, parameters=parameters)
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
             self.__predict_and_evaluate(test_scope, training_result, test_evaluation, **predict_kwargs)
 
