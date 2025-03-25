@@ -142,9 +142,8 @@ class NoSplitter(DataSplitter):
 
         # Train and evaluate model...
         fold = Fold(index=None, num_folds=1, is_last_fold=True, is_train_test_separated=False)
-        train_dataset = Dataset(x, y, meta_data.features, meta_data.outputs, Dataset.Type.TRAINING)
-        test_dataset = Dataset(x, y, meta_data.features, meta_data.outputs, Dataset.Type.TEST)
-        callback.train_and_evaluate(fold, train_dataset=train_dataset, test_dataset=test_dataset)
+        dataset = Dataset(x, y, meta_data.features, meta_data.outputs, Dataset.Type.TRAINING)
+        callback.train_and_evaluate(fold, train_dataset=dataset, test_dataset=dataset)
 
 
 class TrainTestSplitter(DataSplitter):
