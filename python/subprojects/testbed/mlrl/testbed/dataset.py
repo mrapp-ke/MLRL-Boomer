@@ -10,6 +10,8 @@ from typing import List, Optional
 
 from scipy.sparse import lil_array
 
+from mlrl.common.data.arrays import is_sparse
+
 
 class AttributeType(Enum):
     """
@@ -120,3 +122,17 @@ class Dataset:
         The number of outputs in the dataset.
         """
         return self.y.shape[1]
+
+    @property
+    def has_sparse_features(self) -> bool:
+        """
+        True, if feature values in the dataset are sparse, False otherwise.
+        """
+        return is_sparse(self.x)
+
+    @property
+    def has_sparse_outputs(self) -> bool:
+        """
+        True, if the ground truth in the dataset is sparse, False otherwise.
+        """
+        return is_sparse(self.y)
