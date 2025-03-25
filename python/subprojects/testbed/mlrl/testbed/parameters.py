@@ -18,6 +18,7 @@ from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_reader, get_file_name_pe
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
 from mlrl.testbed.prediction_result import PredictionResult
+from mlrl.testbed.training_result import TrainingResult
 
 
 class ParameterLoader(ABC):
@@ -124,6 +125,8 @@ class ParameterWriter(OutputWriter):
             super().__init__(output_dir=output_dir, file_name='parameters')
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, scope: OutputScope, learner, prediction_result: Optional[PredictionResult],
-                              train_time: float) -> Optional[Any]:
-        return ParameterWriter.Parameters(learner)
+    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+        if training_result:
+            return ParameterWriter.Parameters(training_result.learner)
+        return None

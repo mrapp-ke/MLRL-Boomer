@@ -23,6 +23,7 @@ from mlrl.testbed.format import format_float
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter
 from mlrl.testbed.prediction_result import PredictionResult
+from mlrl.testbed.training_result import TrainingResult
 
 OPTION_PRINT_FEATURE_NAMES = 'print_feature_names'
 
@@ -248,13 +249,17 @@ class RuleModelWriter(ModelWriter):
             return text
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, scope: OutputScope, learner, prediction_result: Optional[PredictionResult],
-                              train_time: float) -> Optional[Any]:
-        if isinstance(learner, (ClassifierMixin, RegressorMixin)):
-            model = learner.model_
+    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+        if training_result:
+            learner = training_result.learner
 
-            if isinstance(model, RuleModel):
-                return RuleModelWriter.RuleModelFormattable(scope.dataset, model)
+            if isinstance(learner, (ClassifierMixin, RegressorMixin)):
+                model = learner.model_
 
-        log.error('The learner does not support to create a textual representation of the model')
+                if isinstance(model, RuleModel):
+                    return RuleModelWriter.RuleModelFormattable(scope.dataset, model)
+
+            log.error('The learner does not support to create a textual representation of the model')
+
         return None

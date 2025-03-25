@@ -19,6 +19,7 @@ from mlrl.testbed.format import format_table
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
 from mlrl.testbed.prediction_result import PredictionResult
+from mlrl.testbed.training_result import TrainingResult
 
 OPTION_SPARSE = 'sparse'
 
@@ -123,8 +124,8 @@ class LabelVectorWriter(OutputWriter):
             super().__init__(output_dir=output_dir, file_name='label_vectors', options=options)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, scope: OutputScope, learner, prediction_result: Optional[PredictionResult],
-                              train_time: float) -> Optional[Any]:
+    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
         dataset = scope.dataset
         return LabelVectorWriter.LabelVectors(num_labels=dataset.num_outputs, y=dataset.y)
 
@@ -152,14 +153,17 @@ class LabelVectorSetWriter(LabelVectorWriter):
             """
             self.label_vectors.unique_label_vectors.append((label_vector, frequency))
 
-    def _generate_output_data(self, scope: OutputScope, learner, prediction_result: Optional[PredictionResult],
-                              train_time: float) -> Optional[Any]:
-        if isinstance(learner, ClassificationRuleLearner):
-            output_space_info = learner.output_space_info_
+    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+        if training_result:
+            learner = training_result.learner
 
-            if isinstance(output_space_info, LabelVectorSet):
-                visitor = LabelVectorSetWriter.Visitor(num_labels=scope.dataset.num_outputs)
-                output_space_info.visit(visitor)
-                return visitor.label_vectors
+            if isinstance(learner, ClassificationRuleLearner):
+                output_space_info = learner.output_space_info_
 
-        return super()._generate_output_data(scope, learner, prediction_result, train_time)
+                if isinstance(output_space_info, LabelVectorSet):
+                    visitor = LabelVectorSetWriter.Visitor(num_labels=scope.dataset.num_outputs)
+                    output_space_info.visit(visitor)
+                    return visitor.label_vectors
+
+        return super()._generate_output_data(scope, training_result, prediction_result)

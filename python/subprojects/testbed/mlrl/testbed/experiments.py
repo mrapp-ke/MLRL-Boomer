@@ -27,6 +27,7 @@ from mlrl.testbed.persistence import ModelLoader, ModelSaver
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.prediction_scope import GlobalPrediction, IncrementalPrediction, PredictionType
 from mlrl.testbed.problem_type import ProblemType
+from mlrl.testbed.training_result import TrainingResult
 
 
 class Evaluation(ABC):
@@ -94,7 +95,7 @@ class Evaluation(ABC):
         :param learner:             The learner, the predictions have been obtained from
         """
         for output_writer in self.output_writers:
-            output_writer.write_output(scope, learner, prediction_result, train_time)
+            output_writer.write_output(scope, TrainingResult(learner=learner, train_time=train_time), prediction_result)
 
     @abstractmethod
     def predict_and_evaluate(self, scope: OutputScope, train_time: float, learner, **kwargs):
@@ -306,7 +307,7 @@ class Experiment(DataSplitter.Callback):
         train_scope = OutputScope(problem_type=problem_type, dataset=train_dataset, fold=fold)
 
         for output_writer in self.pre_training_output_writers:
-            output_writer.write_output(train_scope, current_learner)
+            output_writer.write_output(train_scope)
 
         # Set the indices of ordinal features, if supported...
         if isinstance(current_learner, OrdinalFeatureSupportMixin):
@@ -353,7 +354,8 @@ class Experiment(DataSplitter.Callback):
 
         # Write output data after model was trained...
         for output_writer in self.post_training_output_writers:
-            output_writer.write_output(train_scope, current_learner, train_time=train_time)
+            training_result = TrainingResult(learner=current_learner, train_time=train_time)
+            output_writer.write_output(train_scope, training_result=training_result)
 
     @staticmethod
     def __predict_and_evaluate(scope: OutputScope, evaluation: Evaluation, train_time: float, learner, **kwargs):

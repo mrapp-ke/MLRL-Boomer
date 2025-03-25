@@ -18,6 +18,7 @@ from mlrl.testbed.format import OPTION_DECIMALS, format_float, format_table
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
 from mlrl.testbed.prediction_result import PredictionResult
+from mlrl.testbed.training_result import TrainingResult
 
 
 class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
@@ -152,18 +153,21 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
         """
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, scope: OutputScope, learner, prediction_result: Optional[PredictionResult],
-                              train_time: float) -> Optional[Any]:
-        if isinstance(learner, ClassificationRuleLearner):
-            calibration_model = self._get_calibration_model(learner)
+    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+        if training_result:
+            learner = training_result.learner
+            if isinstance(learner, ClassificationRuleLearner):
+                calibration_model = self._get_calibration_model(learner)
 
-            if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
-                return ProbabilityCalibrationModelWriter.IsotonicProbabilityCalibrationModelFormattable(
-                    calibration_model=calibration_model, list_title=self.list_title)
-            if isinstance(calibration_model, NoProbabilityCalibrationModel):
-                return ProbabilityCalibrationModelWriter.NoProbabilityCalibrationModelFormattable()
+                if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
+                    return ProbabilityCalibrationModelWriter.IsotonicProbabilityCalibrationModelFormattable(
+                        calibration_model=calibration_model, list_title=self.list_title)
+                if isinstance(calibration_model, NoProbabilityCalibrationModel):
+                    return ProbabilityCalibrationModelWriter.NoProbabilityCalibrationModelFormattable()
 
-        log.error('The learner does not support to create a textual representation of the calibration model')
+            log.error('The learner does not support to create a textual representation of the calibration model')
+
         return None
 
 

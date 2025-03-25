@@ -18,6 +18,7 @@ from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.problem_type import ProblemType
+from mlrl.testbed.training_result import TrainingResult
 
 
 class PredictionWriter(OutputWriter):
@@ -105,9 +106,8 @@ class PredictionWriter(OutputWriter):
                 SUFFIX_ARFF, scope.fold.index)
             save_arff_file(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
 
-    # pylint: disable=unused-argument
-    def _generate_output_data(self, scope: OutputScope, learner, prediction_result: Optional[PredictionResult],
-                              train_time: float) -> Optional[Any]:
+    def _generate_output_data(self, scope: OutputScope, _: Optional[TrainingResult],
+                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
         if prediction_result:
             return PredictionWriter.Predictions(predictions=prediction_result.predictions, ground_truth=scope.dataset.y)
         return None
