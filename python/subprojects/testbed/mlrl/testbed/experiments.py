@@ -6,6 +6,7 @@ Provides classes for performing experiments.
 import logging as log
 
 from abc import ABC, abstractmethod
+from dataclasses import replace
 from functools import reduce
 from timeit import default_timer as timer
 from typing import Any, Dict, List, Optional
@@ -100,18 +101,15 @@ class Evaluation(ABC):
                                        predict_time)
 
     @abstractmethod
-    def predict_and_evaluate(self, problem_type: ProblemType, fold: Fold, train_time: float, learner, dataset: Dataset,
-                             **kwargs):
+    def predict_and_evaluate(self, scope: OutputScope, train_time: float, learner, **kwargs):
         """
         Must be implemented by subclasses in order to obtain and evaluate predictions for given query examples from a
         previously trained model.
 
-        :param problem_type:    The type of the machine learning problem
-        :param fold:            The fold of the available data, the predictions and ground truth correspond to
-        :param train_time:      The time needed to train the model
-        :param learner:         The learner, the predictions should be obtained from
-        :param dataset:         The dataset that stores the query examples
-        :param kwargs:          Optional keyword arguments to be passed to the model when obtaining predictions
+        :param scope:       The scope of the output data
+        :param train_time:  The time needed to train the model
+        :param learner:     The learner, the predictions should be obtained from
+        :param kwargs:      Optional keyword arguments to be passed to the model when obtaining predictions
         """
 
 
@@ -120,8 +118,8 @@ class GlobalEvaluation(Evaluation):
     Obtains and evaluates predictions from a previously trained global model.
     """
 
-    def predict_and_evaluate(self, problem_type: ProblemType, fold: Fold, train_time: float, learner, dataset: Dataset,
-                             **kwargs):
+    def predict_and_evaluate(self, scope: OutputScope, train_time: float, learner, **kwargs):
+        dataset = scope.dataset
         log.info('Predicting for %s %s examples...', dataset.num_examples, dataset.type.value)
         start_time = timer()
         predict_proba_function = learner.predict_proba if callable(getattr(learner, 'predict_proba', None)) else None
@@ -132,7 +130,7 @@ class GlobalEvaluation(Evaluation):
 
         if predictions is not None:
             log.info('Successfully predicted in %s', format_duration(predict_time))
-            self._evaluate_predictions(scope=OutputScope(problem_type=problem_type, dataset=dataset, fold=fold),
+            self._evaluate_predictions(scope=scope,
                                        prediction_scope=GlobalPrediction(),
                                        train_time=train_time,
                                        predict_time=predict_time,
@@ -160,13 +158,13 @@ class IncrementalEvaluation(Evaluation):
         self.max_size = max_size
         self.step_size = step_size
 
-    def predict_and_evaluate(self, problem_type: ProblemType, fold: Fold, train_time: float, learner, dataset: Dataset,
-                             **kwargs):
+    def predict_and_evaluate(self, scope: OutputScope, train_time: float, learner, **kwargs):
         if not isinstance(learner, IncrementalClassifierMixin) and not isinstance(learner, IncrementalRegressorMixin):
             raise ValueError('Cannot obtain incremental predictions from a model of type ' + type(learner.__name__))
 
         predict_proba_function = learner.predict_proba_incrementally if callable(
             getattr(learner, 'predict_proba_incrementally', None)) else None
+        dataset = scope.dataset
         incremental_predictor = self._invoke_prediction_function(learner, learner.predict_incrementally,
                                                                  predict_proba_function, dataset, **kwargs)
 
@@ -192,7 +190,7 @@ class IncrementalEvaluation(Evaluation):
 
                 if predictions is not None:
                     log.info('Successfully predicted in %s', format_duration(predict_time))
-                    self._evaluate_predictions(scope=OutputScope(problem_type=problem_type, dataset=dataset, fold=fold),
+                    self._evaluate_predictions(scope=scope,
                                                prediction_scope=IncrementalPrediction(current_size),
                                                train_time=train_time,
                                                predict_time=predict_time,
@@ -343,41 +341,39 @@ class Experiment(DataSplitter.Callback):
 
         if train_evaluation and test_dataset.type != Dataset.Type.TRAINING:
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-            self.__predict_and_evaluate(problem_type, train_evaluation, fold, train_time, current_learner,
-                                        train_dataset, **predict_kwargs)
+            self.__predict_and_evaluate(train_scope, train_evaluation, train_time, current_learner, **predict_kwargs)
 
         # Obtain and evaluate predictions for test data, if necessary...
         test_evaluation = self.test_evaluation
 
         if test_evaluation:
+            test_scope = OutputScope(problem_type=problem_type, dataset=test_dataset, fold=fold)
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-            self.__predict_and_evaluate(problem_type, test_evaluation, fold, train_time, current_learner, test_dataset,
-                                        **predict_kwargs)
+            self.__predict_and_evaluate(test_scope, test_evaluation, train_time, current_learner, **predict_kwargs)
 
         # Write output data after model was trained...
         for output_writer in self.post_training_output_writers:
             output_writer.write_output(train_scope, current_learner, train_time=train_time)
 
     @staticmethod
-    def __predict_and_evaluate(problem_type: ProblemType, evaluation: Evaluation, fold: Fold, train_time: float,
-                               learner, dataset: Dataset, **kwargs):
+    def __predict_and_evaluate(scope: OutputScope, evaluation: Evaluation, train_time: float, learner, **kwargs):
         """
         Obtains and evaluates predictions for given query examples from a previously trained model.
 
-        :param problem_type:    The type of the machine learning problem
-        :param evaluation:      The `Evaluation` to be used
-        :param fold:            The fold of the available data, the predictions and ground truth correspond to
-        :param train_time:      The time needed to train the model
-        :param learner:         The learner, the predictions should be obtained from
-        :param dataset:         The dataset that stores the query examples
-        :param kwargs:          Optional keyword arguments to be passed to the model when obtaining predictions
+        :param scope:       The scope of the output data
+        :param evaluation:  The `Evaluation` to be used
+        :param train_time:  The time needed to train the model
+        :param learner:     The learner, the predictions should be obtained from
+        :param kwargs:      Optional keyword arguments to be passed to the model when obtaining predictions
         """
         try:
-            return evaluation.predict_and_evaluate(problem_type, fold, train_time, learner, dataset, **kwargs)
+            return evaluation.predict_and_evaluate(scope, train_time, learner, **kwargs)
         except ValueError as error:
+            dataset = scope.dataset
+
             if dataset.has_sparse_features:
-                return Experiment.__predict_and_evaluate(problem_type, evaluation, fold, train_time, learner,
-                                                         dataset.enforce_dense_features(), **kwargs)
+                return Experiment.__predict_and_evaluate(replace(scope, dataset=dataset.enforce_dense_features()),
+                                                         evaluation, train_time, learner, **kwargs)
             raise error
 
     @staticmethod
