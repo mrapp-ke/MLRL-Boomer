@@ -11,8 +11,7 @@ import numpy as np
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.data import ArffMetaData, save_arff_file
-from mlrl.testbed.dataset import Attribute, AttributeType, Dataset
-from mlrl.testbed.fold import Fold
+from mlrl.testbed.dataset import Attribute, AttributeType
 from mlrl.testbed.format import OPTION_DECIMALS, format_array
 from mlrl.testbed.io import SUFFIX_ARFF, get_file_name_per_fold
 from mlrl.testbed.output_scope import OutputScope
@@ -71,8 +70,7 @@ class PredictionWriter(OutputWriter):
             self.output_dir = output_dir
 
         # pylint: disable=unused-argument
-        def write_output(self, problem_type: ProblemType, dataset: Dataset, fold: Fold,
-                         prediction_scope: Optional[PredictionScope], output_data, **_):
+        def write_output(self, scope: OutputScope, prediction_scope: Optional[PredictionScope], output_data, **_):
             """
             See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
             """
@@ -82,7 +80,7 @@ class PredictionWriter(OutputWriter):
             nominal_values = None
 
             if issubclass(predictions.dtype.type, np.integer):
-                if problem_type == ProblemType.CLASSIFICATION:
+                if scope.problem_type == ProblemType.CLASSIFICATION:
                     attribute_type = AttributeType.NOMINAL
                     nominal_values = [str(value) for value in np.unique(predictions)]
                 else:
@@ -93,6 +91,7 @@ class PredictionWriter(OutputWriter):
                 if decimals > 0:
                     predictions = np.around(predictions, decimals=decimals)
 
+            dataset = scope.dataset
             features = []
             outputs = []
 
@@ -102,7 +101,8 @@ class PredictionWriter(OutputWriter):
 
             prediction_meta_data = ArffMetaData(features, outputs)
             file_name = get_file_name_per_fold(
-                prediction_scope.get_file_name(dataset.type.get_file_name('predictions')), SUFFIX_ARFF, fold.index)
+                prediction_scope.get_file_name(dataset.type.get_file_name('predictions')), SUFFIX_ARFF,
+                scope.fold.index)
             save_arff_file(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
 
     # pylint: disable=unused-argument

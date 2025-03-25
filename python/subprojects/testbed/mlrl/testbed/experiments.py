@@ -96,8 +96,8 @@ class Evaluation(ABC):
         :param learner:             The learner, the predictions have been obtained from
         """
         for output_writer in self.output_writers:
-            output_writer.write_output(scope, learner,
-                                       self.prediction_type, prediction_scope, predictions, train_time, predict_time)
+            output_writer.write_output(scope, learner, self.prediction_type, prediction_scope, predictions, train_time,
+                                       predict_time)
 
     @abstractmethod
     def predict_and_evaluate(self, problem_type: ProblemType, fold: Fold, train_time: float, learner, dataset: Dataset,

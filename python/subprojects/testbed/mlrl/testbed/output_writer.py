@@ -11,13 +11,10 @@ from typing import Any, Dict, List, Optional
 
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.dataset import Dataset
-from mlrl.testbed.fold import Fold
 from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_writer, get_file_name_per_fold, open_writable_csv_file, \
     open_writable_text_file
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
-from mlrl.testbed.problem_type import ProblemType
 
 
 class Formattable(ABC):
@@ -70,14 +67,11 @@ class OutputWriter(ABC):
             self.options = options
 
         @abstractmethod
-        def write_output(self, problem_type: ProblemType, dataset: Dataset, fold: Fold,
-                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
+        def write_output(self, scope: OutputScope, prediction_scope: Optional[PredictionScope], output_data, **kwargs):
             """
             Must be implemented by subclasses in order to write output data to the sink.
 
-            :param problem_type:        The type of the machine learning problem
-            :param dataset:             The dataset, the output data corresponds to
-            :param fold:                The fold of the available data, the output data corresponds to
+            :param scope:               The scope of the output data
             :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
                                         incrementally or None, if no predictions have been obtained
             :param output_data:         The output data that should be written to the sink
@@ -95,15 +89,17 @@ class OutputWriter(ABC):
             super().__init__(options=options)
             self.title = title
 
-        def write_output(self, problem_type: ProblemType, dataset: Dataset, fold: Fold,
-                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
+        def write_output(self, scope: OutputScope, prediction_scope: Optional[PredictionScope], output_data, **kwargs):
             message = self.title
+            dataset_type = scope.dataset.type
 
-            if dataset.type:
-                message += ' for ' + dataset.type.value + ' data'
+            if dataset_type:
+                message += ' for ' + dataset_type.value + ' data'
 
             if prediction_scope and not prediction_scope.is_global():
                 message += ' using a model of size ' + str(prediction_scope.get_model_size())
+
+            fold = scope.fold
 
             if fold.is_cross_validation_used:
                 message += ' ('
@@ -128,11 +124,10 @@ class OutputWriter(ABC):
             self.output_dir = output_dir
             self.file_name = file_name
 
-        def write_output(self, problem_type: ProblemType, dataset: Dataset, fold: Fold,
-                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
-            file_name = dataset.type.get_file_name(self.file_name)
+        def write_output(self, scope: OutputScope, prediction_scope: Optional[PredictionScope], output_data, **kwargs):
+            file_name = scope.dataset.type.get_file_name(self.file_name)
 
-            with open_writable_text_file(directory=self.output_dir, file_name=file_name, fold=fold.index) as text_file:
+            with open_writable_text_file(self.output_dir, file_name, fold=scope.fold.index) as text_file:
                 text_file.write(output_data.format(self.options, **kwargs))
 
     class CsvFileSink(Sink):
@@ -149,8 +144,7 @@ class OutputWriter(ABC):
             self.output_dir = output_dir
             self.file_name = file_name
 
-        def write_output(self, problem_type: ProblemType, dataset: Dataset, fold: Fold,
-                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
+        def write_output(self, scope: OutputScope, prediction_scope: Optional[PredictionScope], output_data, **kwargs):
             tabular_data = output_data.tabularize(self.options, **kwargs)
 
             if tabular_data:
@@ -162,8 +156,8 @@ class OutputWriter(ABC):
 
                 if tabular_data:
                     header = sorted(tabular_data[0].keys())
-                    file_name = get_file_name_per_fold(dataset.type.get_file_name(self.file_name), SUFFIX_CSV,
-                                                       fold.index)
+                    file_name = get_file_name_per_fold(scope.dataset.type.get_file_name(self.file_name), SUFFIX_CSV,
+                                                       scope.fold.index)
                     file_path = path.join(self.output_dir, file_name)
 
                     with open_writable_csv_file(file_path, append=incremental_prediction) as csv_file:
@@ -229,4 +223,4 @@ class OutputWriter(ABC):
 
             if output_data:
                 for sink in sinks:
-                    sink.write_output(scope.problem_type, scope.dataset, scope.fold, prediction_scope, output_data)
+                    sink.write_output(scope, prediction_scope, output_data)
