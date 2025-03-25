@@ -17,7 +17,6 @@ from mlrl.testbed.io import SUFFIX_ARFF, get_file_name_per_fold
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter
 from mlrl.testbed.prediction_result import PredictionResult
-from mlrl.testbed.prediction_scope import PredictionScope
 from mlrl.testbed.problem_type import ProblemType
 
 
@@ -71,7 +70,7 @@ class PredictionWriter(OutputWriter):
             self.output_dir = output_dir
 
         # pylint: disable=unused-argument
-        def write_output(self, scope: OutputScope, prediction_scope: Optional[PredictionScope], output_data, **_):
+        def write_output(self, scope: OutputScope, prediction_result: Optional[PredictionResult], output_data, **_):
             """
             See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
             """
@@ -102,8 +101,8 @@ class PredictionWriter(OutputWriter):
 
             prediction_meta_data = ArffMetaData(features, outputs)
             file_name = get_file_name_per_fold(
-                prediction_scope.get_file_name(dataset.type.get_file_name('predictions')), SUFFIX_ARFF,
-                scope.fold.index)
+                prediction_result.prediction_scope.get_file_name(dataset.type.get_file_name('predictions')),
+                SUFFIX_ARFF, scope.fold.index)
             save_arff_file(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
 
     # pylint: disable=unused-argument
