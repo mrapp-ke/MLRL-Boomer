@@ -346,9 +346,8 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
 
     # pylint: disable=unused-argument
     def _generate_output_data(self, problem_type: ProblemType, dataset: Dataset, fold: Fold, learner,
-                              data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
-                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
-                              train_time: float, predict_time: float) -> Optional[Any]:
+                              prediction_type: Optional[PredictionType], prediction_scope: Optional[PredictionScope],
+                              predictions: Optional[Any], train_time: float, predict_time: float) -> Optional[Any]:
         if isinstance(learner, (ClassifierMixin, RegressorMixin)):
             model = learner.model_
 
