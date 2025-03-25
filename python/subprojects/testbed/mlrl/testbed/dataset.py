@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing datasets.
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from enum import Enum, auto
 from functools import reduce
 from typing import List, Optional
@@ -73,35 +73,6 @@ class Dataset:
     outputs: List[Attribute]
     type: Type = Type.TRAINING
 
-    def get_num_features(self, *feature_types: AttributeType) -> int:
-        """
-        Returns the number of features with one out of a given set of types.  If no types are given, all features are
-        counted.
-
-        :param feature_types:   The types of the features to be counted
-        :return:                The number of features of the given types
-        """
-        feature_types = set(feature_types)
-
-        if feature_types:
-            return reduce(lambda aggr, feature: aggr + (1 if feature.attribute_type in feature_types else 0),
-                          self.features, 0)
-
-        return len(self.features)
-
-    def get_feature_indices(self, *feature_types: AttributeType) -> List[int]:
-        """
-        Returns a list that contains the indices of all features with one out of a given set of types (in ascending
-        order). If no types are given, all indices are returned.
-
-        :param feature_types:   The types of the features whose indices should be returned
-        :return:                A list that contains the indices of all features of the given types
-        """
-        feature_types = set(feature_types)
-        return [
-            i for i, feature in enumerate(self.features) if not feature_types or feature.attribute_type in feature_types
-        ]
-
     @property
     def num_examples(self) -> int:
         """
@@ -136,3 +107,52 @@ class Dataset:
         True, if the ground truth in the dataset is sparse, False otherwise.
         """
         return is_sparse(self.y)
+
+    def enforce_dense_features(self) -> 'Dataset':
+        """
+        Creates and returns a copy of this dataset, where the feature values have been converted into a dense format.
+
+        :return: The dataset that has been created
+        """
+        if self.has_sparse_features:
+            return replace(self, x=self.x.toarray())
+        return self
+
+    def enforce_dense_outputs(self) -> 'Dataset':
+        """
+        Creates and returns a copy of this dataset, where the ground truth has been converted into a dense format.
+
+        :return: The dataset that has been created
+        """
+        if self.has_sparse_outputs:
+            return replace(self, y=self.y.toarray())
+        return self
+
+    def get_num_features(self, *feature_types: AttributeType) -> int:
+        """
+        Returns the number of features with one out of a given set of types.  If no types are given, all features are
+        counted.
+
+        :param feature_types:   The types of the features to be counted
+        :return:                The number of features of the given types
+        """
+        feature_types = set(feature_types)
+
+        if feature_types:
+            return reduce(lambda aggr, feature: aggr + (1 if feature.attribute_type in feature_types else 0),
+                          self.features, 0)
+
+        return len(self.features)
+
+    def get_feature_indices(self, *feature_types: AttributeType) -> List[int]:
+        """
+        Returns a list that contains the indices of all features with one out of a given set of types (in ascending
+        order). If no types are given, all indices are returned.
+
+        :param feature_types:   The types of the features whose indices should be returned
+        :return:                A list that contains the indices of all features of the given types
+        """
+        feature_types = set(feature_types)
+        return [
+            i for i, feature in enumerate(self.features) if not feature_types or feature.attribute_type in feature_types
+        ]

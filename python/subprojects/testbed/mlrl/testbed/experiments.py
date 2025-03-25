@@ -6,7 +6,6 @@ Provides classes for performing experiments.
 import logging as log
 
 from abc import ABC, abstractmethod
-from dataclasses import replace
 from functools import reduce
 from timeit import default_timer as timer
 from typing import Any, Dict, List, Optional
@@ -389,7 +388,7 @@ class Experiment(DataSplitter.Callback):
         except ValueError as error:
             if dataset.has_sparse_features:
                 return Experiment.__predict_and_evaluate(problem_type, evaluation, fold, train_time, learner,
-                                                         replace(dataset, x=dataset.x.toarray()), **kwargs)
+                                                         dataset.enforce_dense_features(), **kwargs)
             raise error
 
     @staticmethod
@@ -409,9 +408,9 @@ class Experiment(DataSplitter.Callback):
             return end_time - start_time
         except ValueError as error:
             if dataset.has_sparse_features:
-                return Experiment.__train(learner, replace(dataset, x=dataset.x.toarray()), **kwargs)
+                return Experiment.__train(learner, dataset.enforce_dense_features(), **kwargs)
             if dataset.has_sparse_outputs:
-                return Experiment.__train(learner, replace(dataset, y=dataset.y.toarray()), **kwargs)
+                return Experiment.__train(learner, dataset.enforce_dense_outputs(), **kwargs)
             raise error
 
     def __load_model(self, fold: Fold):
