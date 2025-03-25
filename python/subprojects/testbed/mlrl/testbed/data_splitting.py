@@ -141,7 +141,7 @@ class NoSplitter(DataSplitter):
             meta_data = ArffMetaData(encoded_dataset.features, encoded_dataset.outputs, meta_data.outputs_at_start)
 
         # Train and evaluate model...
-        fold = Fold(index=None, num_folds=1, is_last_fold=True, is_train_test_separated=False)
+        fold = Fold(index=None, num_folds=1, is_last_fold=True)
         dataset = Dataset(x, y, meta_data.features, meta_data.outputs, Dataset.Type.TRAINING)
         callback.train_and_evaluate(fold, train_dataset=dataset, test_dataset=dataset)
 
@@ -209,7 +209,7 @@ class TrainTestSplitter(DataSplitter):
                                                                 shuffle=True)
 
         # Train and evaluate model...
-        fold = Fold(index=None, num_folds=1, is_last_fold=True, is_train_test_separated=True)
+        fold = Fold(index=None, num_folds=1, is_last_fold=True)
         train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, Dataset.Type.TRAINING)
         test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, Dataset.Type.TEST)
         callback.train_and_evaluate(fold, train_dataset=train_dataset, test_dataset=test_dataset)
@@ -318,10 +318,7 @@ class CrossValidationSplitter(DataSplitter):
             test_x, test_y = data[i]
 
             # Train and evaluate model...
-            fold = Fold(index=i,
-                        num_folds=num_folds,
-                        is_last_fold=current_fold < 0 and i == num_folds - 1,
-                        is_train_test_separated=True)
+            fold = Fold(index=i, num_folds=num_folds, is_last_fold=current_fold < 0 and i == num_folds - 1)
             train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, Dataset.Type.TRAINING)
             test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, Dataset.Type.TEST)
             callback.train_and_evaluate(fold, train_dataset=train_dataset, test_dataset=test_dataset)
@@ -356,10 +353,7 @@ class CrossValidationSplitter(DataSplitter):
                 test_y = y[test_indices]
 
                 # Train and evaluate model...
-                fold = Fold(index=i,
-                            num_folds=num_folds,
-                            is_last_fold=current_fold < 0 and i == num_folds - 1,
-                            is_train_test_separated=True)
+                fold = Fold(index=i, num_folds=num_folds, is_last_fold=current_fold < 0 and i == num_folds - 1)
                 train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, Dataset.Type.TRAINING)
                 test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, Dataset.Type.TEST)
                 callback.train_and_evaluate(fold, train_dataset=train_dataset, test_dataset=test_dataset)

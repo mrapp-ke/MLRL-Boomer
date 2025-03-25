@@ -358,10 +358,7 @@ class EvaluationWriter(OutputWriter, ABC):
             super().write_output(problem_type, dataset, fold, prediction_scope, output_data, **new_kwargs)
 
             if fold.is_cross_validation_used and fold.is_last_fold:
-                overall_fold = Fold(index=None,
-                                    num_folds=fold.num_folds,
-                                    is_last_fold=True,
-                                    is_train_test_separated=True)
+                overall_fold = Fold(index=None, num_folds=fold.num_folds, is_last_fold=True)
                 super().write_output(problem_type, dataset, overall_fold, prediction_scope, output_data, **kwargs)
 
     class CsvFileSink(OutputWriter.CsvFileSink):
@@ -381,10 +378,7 @@ class EvaluationWriter(OutputWriter, ABC):
             super().write_output(problem_type, dataset, fold, prediction_scope, output_data, **new_kwargs)
 
             if fold.is_cross_validation_used and fold.is_last_fold:
-                overall_fold = Fold(index=None,
-                                    num_folds=fold.num_folds,
-                                    is_last_fold=True,
-                                    is_train_test_separated=True)
+                overall_fold = Fold(index=None, num_folds=fold.num_folds, is_last_fold=True)
                 super().write_output(problem_type, dataset, overall_fold, prediction_scope, output_data, **kwargs)
 
     def __init__(self, sinks: List[OutputWriter.Sink]):
