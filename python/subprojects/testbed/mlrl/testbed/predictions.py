@@ -71,8 +71,7 @@ class PredictionWriter(OutputWriter):
 
         # pylint: disable=unused-argument
         def write_output(self, problem_type: ProblemType, dataset: Dataset, fold: Fold,
-                         data_type: Optional[Dataset.Type], prediction_scope: Optional[PredictionScope], output_data,
-                         **_):
+                         prediction_scope: Optional[PredictionScope], output_data, **_):
             """
             See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
             """
@@ -93,8 +92,6 @@ class PredictionWriter(OutputWriter):
                 if decimals > 0:
                     predictions = np.around(predictions, decimals=decimals)
 
-            file_name = get_file_name_per_fold(prediction_scope.get_file_name(data_type.get_file_name('predictions')),
-                                               SUFFIX_ARFF, fold.index)
             features = []
             outputs = []
 
@@ -103,6 +100,8 @@ class PredictionWriter(OutputWriter):
                 outputs.append(Attribute('Prediction ' + output.name, attribute_type, nominal_values))
 
             prediction_meta_data = ArffMetaData(features, outputs)
+            file_name = get_file_name_per_fold(
+                prediction_scope.get_file_name(dataset.type.get_file_name('predictions')), SUFFIX_ARFF, fold.index)
             save_arff_file(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
 
     # pylint: disable=unused-argument

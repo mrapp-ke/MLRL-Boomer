@@ -70,16 +70,13 @@ class OutputWriter(ABC):
 
         @abstractmethod
         def write_output(self, problem_type: ProblemType, dataset: Dataset, fold: Fold,
-                         data_type: Optional[Dataset.Type], prediction_scope: Optional[PredictionScope], output_data,
-                         **kwargs):
+                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
             """
             Must be implemented by subclasses in order to write output data to the sink.
 
             :param problem_type:        The type of the machine learning problem
             :param dataset:             The dataset, the output data corresponds to
             :param fold:                The fold of the available data, the output data corresponds to
-            :param data_type:           Specifies whether the predictions and ground truth correspond to the training or
-                                        test data or None, if no predictions have been obtained
             :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
                                         incrementally or None, if no predictions have been obtained
             :param output_data:         The output data that should be written to the sink
@@ -98,12 +95,11 @@ class OutputWriter(ABC):
             self.title = title
 
         def write_output(self, problem_type: ProblemType, dataset: Dataset, fold: Fold,
-                         data_type: Optional[Dataset.Type], prediction_scope: Optional[PredictionScope], output_data,
-                         **kwargs):
+                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
             message = self.title
 
-            if data_type:
-                message += ' for ' + data_type.value + ' data'
+            if dataset.type:
+                message += ' for ' + dataset.type.value + ' data'
 
             if prediction_scope and not prediction_scope.is_global():
                 message += ' using a model of size ' + str(prediction_scope.get_model_size())
@@ -132,9 +128,8 @@ class OutputWriter(ABC):
             self.file_name = file_name
 
         def write_output(self, problem_type: ProblemType, dataset: Dataset, fold: Fold,
-                         data_type: Optional[Dataset.Type], prediction_scope: Optional[PredictionScope], output_data,
-                         **kwargs):
-            file_name = data_type.get_file_name(self.file_name) if data_type else self.file_name
+                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
+            file_name = dataset.type.get_file_name(self.file_name)
 
             with open_writable_text_file(directory=self.output_dir, file_name=file_name, fold=fold.index) as text_file:
                 text_file.write(output_data.format(self.options, **kwargs))
@@ -154,8 +149,7 @@ class OutputWriter(ABC):
             self.file_name = file_name
 
         def write_output(self, problem_type: ProblemType, dataset: Dataset, fold: Fold,
-                         data_type: Optional[Dataset.Type], prediction_scope: Optional[PredictionScope], output_data,
-                         **kwargs):
+                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
             tabular_data = output_data.tabularize(self.options, **kwargs)
 
             if tabular_data:
@@ -167,8 +161,7 @@ class OutputWriter(ABC):
 
                 if tabular_data:
                     header = sorted(tabular_data[0].keys())
-                    file_name = data_type.get_file_name(self.file_name) if data_type else self.file_name
-                    file_name = get_file_name_per_fold(file_name, SUFFIX_CSV, fold.index)
+                    file_name = get_file_name_per_fold(dataset.get_file_name(self.file_name), SUFFIX_CSV, fold.index)
                     file_path = path.join(self.output_dir, file_name)
 
                     with open_writable_csv_file(file_path, append=incremental_prediction) as csv_file:
@@ -246,4 +239,4 @@ class OutputWriter(ABC):
 
             if output_data:
                 for sink in sinks:
-                    sink.write_output(problem_type, dataset, fold, data_type, prediction_scope, output_data)
+                    sink.write_output(problem_type, dataset, fold, prediction_scope, output_data)

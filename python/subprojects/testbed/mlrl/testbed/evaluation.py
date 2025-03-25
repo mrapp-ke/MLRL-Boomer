@@ -350,21 +350,19 @@ class EvaluationWriter(OutputWriter, ABC):
             super().__init__(title='Evaluation result', options=options)
 
         def write_output(self, problem_type: ProblemType, dataset: Dataset, fold: Fold,
-                         data_type: Optional[Dataset.Type], prediction_scope: Optional[PredictionScope], output_data,
-                         **kwargs):
+                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
             """
             See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
             """
             new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold.index if fold.is_cross_validation_used else 0}}
-            super().write_output(problem_type, dataset, fold, data_type, prediction_scope, output_data, **new_kwargs)
+            super().write_output(problem_type, dataset, fold, prediction_scope, output_data, **new_kwargs)
 
             if fold.is_cross_validation_used and fold.is_last_fold:
                 overall_fold = Fold(index=None,
                                     num_folds=fold.num_folds,
                                     is_last_fold=True,
                                     is_train_test_separated=True)
-                super().write_output(problem_type, dataset, overall_fold, data_type, prediction_scope, output_data,
-                                     **kwargs)
+                super().write_output(problem_type, dataset, overall_fold, prediction_scope, output_data, **kwargs)
 
     class CsvFileSink(OutputWriter.CsvFileSink):
         """
@@ -375,21 +373,19 @@ class EvaluationWriter(OutputWriter, ABC):
             super().__init__(output_dir=output_dir, file_name='evaluation', options=options)
 
         def write_output(self, problem_type: ProblemType, dataset: Dataset, fold: Fold,
-                         data_type: Optional[Dataset.Type], prediction_scope: Optional[PredictionScope], output_data,
-                         **kwargs):
+                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
             """
             See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
             """
             new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold.index if fold.is_cross_validation_used else 0}}
-            super().write_output(problem_type, dataset, fold, data_type, prediction_scope, output_data, **new_kwargs)
+            super().write_output(problem_type, dataset, fold, prediction_scope, output_data, **new_kwargs)
 
             if fold.is_cross_validation_used and fold.is_last_fold:
                 overall_fold = Fold(index=None,
                                     num_folds=fold.num_folds,
                                     is_last_fold=True,
                                     is_train_test_separated=True)
-                super().write_output(problem_type, dataset, overall_fold, data_type, prediction_scope, output_data,
-                                     **kwargs)
+                super().write_output(problem_type, dataset, overall_fold, prediction_scope, output_data, **kwargs)
 
     def __init__(self, sinks: List[OutputWriter.Sink]):
         super().__init__(sinks)
