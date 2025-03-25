@@ -15,6 +15,7 @@ from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_writer, get_file_name_pe
     open_writable_text_file
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
+from mlrl.testbed.training_result import TrainingResult
 
 
 class Formattable(ABC):
@@ -180,38 +181,37 @@ class OutputWriter(ABC):
         self.sinks = sinks
 
     @abstractmethod
-    def _generate_output_data(self, scope: OutputScope, learner, prediction_result: Optional[PredictionResult],
-                              train_time: float) -> Optional[Any]:
+    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
         """
         Must be implemented by subclasses in order to generate the output data that should be written to the available
         sinks.
 
         :param scope:               The scope of the output data
-        :param learner:             The learner that has been trained
-        :param prediction_result:   A `PredictionResult` that provides access to predictions or None, if no predictions
-                                    have been obtained
-        :param train_time:          The time needed for training or 0, if no model has been trained
+        :param training_result:     A `TrainingResult` that stores the result of a training process or None, if no model
+                                    has been trained
+        :param prediction_result:   A `PredictionResult` that stores the result of a prediction process or None, if no
+                                    predictions have been obtained
         :return:                    The output data that has been generated or None, if no output data was generated
         """
 
     def write_output(self,
                      scope: OutputScope,
-                     learner,
-                     prediction_result: Optional[PredictionResult] = None,
-                     train_time: float = 0):
+                     training_result: Optional[TrainingResult] = None,
+                     prediction_result: Optional[PredictionResult] = None):
         """
         Generates the output data and writes it to all available sinks.
 
         :param scope:               The scope of the output data
-        :param learner:             The learner that has been trained
-        :param prediction_result:   A `PredictionResult` that provides access to predictions or None, if no predictions
-                                    have been obtained
-        :param train_time:          The time needed for training or 0, if no model has been trained
+        :param training_result:     A `TrainingResult` that stores the result of a training process or None, if no model
+                                    has been trained
+        :param prediction_result:   A `PredictionResult` that stores the result of a prediction process or None, if no
+                                    predictions have been obtained
         """
         sinks = self.sinks
 
         if sinks:
-            output_data = self._generate_output_data(scope, learner, prediction_result, train_time)
+            output_data = self._generate_output_data(scope, training_result, prediction_result)
 
             if output_data:
                 for sink in sinks:

@@ -20,6 +20,7 @@ from mlrl.testbed.format import format_float, format_percentage, format_table
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
 from mlrl.testbed.prediction_result import PredictionResult
+from mlrl.testbed.training_result import TrainingResult
 
 
 class ModelCharacteristicsWriter(OutputWriter, ABC):
@@ -343,26 +344,30 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                 self.num_neg_predictions.append(num_neg_predictions)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, scope: OutputScope, learner, prediction_result: Optional[PredictionResult],
-                              train_time: float) -> Optional[Any]:
-        if isinstance(learner, (ClassifierMixin, RegressorMixin)):
-            model = learner.model_
+    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+        if training_result:
+            learner = training_result.learner
 
-            if isinstance(model, RuleModel):
-                visitor = RuleModelCharacteristicsWriter.RuleModelCharacteristicsVisitor()
-                model.visit_used(visitor)
-                return RuleModelCharacteristicsWriter.RuleModelCharacteristics(
-                    default_rule_index=visitor.default_rule_index,
-                    default_rule_pos_predictions=visitor.default_rule_pos_predictions,
-                    default_rule_neg_predictions=visitor.default_rule_neg_predictions,
-                    num_numerical_leq=np.asarray(visitor.num_numerical_leq),
-                    num_numerical_gr=np.asarray(visitor.num_numerical_gr),
-                    num_ordinal_leq=np.asarray(visitor.num_ordinal_leq),
-                    num_ordinal_gr=np.asarray(visitor.num_ordinal_gr),
-                    num_nominal_eq=np.asarray(visitor.num_nominal_eq),
-                    num_nominal_neq=np.asarray(visitor.num_nominal_neq),
-                    num_pos_predictions=np.asarray(visitor.num_pos_predictions),
-                    num_neg_predictions=np.asarray(visitor.num_neg_predictions))
+            if isinstance(learner, (ClassifierMixin, RegressorMixin)):
+                model = learner.model_
 
-        log.error('The learner does not support to obtain model characteristics')
+                if isinstance(model, RuleModel):
+                    visitor = RuleModelCharacteristicsWriter.RuleModelCharacteristicsVisitor()
+                    model.visit_used(visitor)
+                    return RuleModelCharacteristicsWriter.RuleModelCharacteristics(
+                        default_rule_index=visitor.default_rule_index,
+                        default_rule_pos_predictions=visitor.default_rule_pos_predictions,
+                        default_rule_neg_predictions=visitor.default_rule_neg_predictions,
+                        num_numerical_leq=np.asarray(visitor.num_numerical_leq),
+                        num_numerical_gr=np.asarray(visitor.num_numerical_gr),
+                        num_ordinal_leq=np.asarray(visitor.num_ordinal_leq),
+                        num_ordinal_gr=np.asarray(visitor.num_ordinal_gr),
+                        num_nominal_eq=np.asarray(visitor.num_nominal_eq),
+                        num_nominal_neq=np.asarray(visitor.num_nominal_neq),
+                        num_pos_predictions=np.asarray(visitor.num_pos_predictions),
+                        num_neg_predictions=np.asarray(visitor.num_neg_predictions))
+
+            log.error('The learner does not support to obtain model characteristics')
+
         return None

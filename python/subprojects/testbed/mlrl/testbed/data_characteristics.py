@@ -17,6 +17,7 @@ from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.problem_type import ProblemType
+from mlrl.testbed.training_result import TrainingResult
 
 OPTION_EXAMPLES = 'examples'
 
@@ -186,8 +187,8 @@ class DataCharacteristicsWriter(OutputWriter):
             super().__init__(output_dir=output_dir, file_name='data_characteristics', options=options)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, scope: OutputScope, learner, prediction_result: Optional[PredictionResult],
-                              train_time: float) -> Optional[Any]:
+    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
         problem_type = scope.problem_type
         dataset = scope.dataset
         feature_characteristics = FeatureCharacteristics(dataset)

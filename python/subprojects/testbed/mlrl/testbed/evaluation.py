@@ -22,6 +22,7 @@ from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, f
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
 from mlrl.testbed.prediction_result import PredictionResult
+from mlrl.testbed.training_result import TrainingResult
 
 OPTION_ENABLE_ALL = 'enable_all'
 
@@ -400,15 +401,18 @@ class EvaluationWriter(OutputWriter, ABC):
         """
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, scope: OutputScope, learner, prediction_result: Optional[PredictionResult],
-                              train_time: float) -> Optional[Any]:
-        if prediction_result:
+    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+        if training_result and prediction_result:
             dataset = scope.dataset
             data_type = dataset.type
             result = self.results[data_type] if data_type in self.results else EvaluationWriter.EvaluationResult()
             self.results[data_type] = result
             fold = scope.fold
-            result.put(EVALUATION_MEASURE_TRAINING_TIME, train_time, num_folds=fold.num_folds, fold=fold.index)
+            result.put(EVALUATION_MEASURE_TRAINING_TIME,
+                       training_result.train_time,
+                       num_folds=fold.num_folds,
+                       fold=fold.index)
             result.put(EVALUATION_MEASURE_PREDICTION_TIME,
                        prediction_result.predict_time,
                        num_folds=fold.num_folds,
