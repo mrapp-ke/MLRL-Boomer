@@ -348,7 +348,7 @@ class EvaluationWriter(OutputWriter, ABC):
         """
 
         def __init__(self, options: Options = Options()):
-            super().__init__(title='Evaluation result', options=options)
+            super().__init__(OutputWriter.LogSink.TitleFormatter('Evaluation result'), options=options)
 
         def write_output(self, scope: OutputScope, training_result: Optional[TrainingResult],
                          prediction_result: Optional[PredictionResult], output_data, **kwargs):

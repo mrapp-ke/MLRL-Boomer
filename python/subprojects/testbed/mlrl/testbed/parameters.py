@@ -114,7 +114,7 @@ class ParameterWriter(OutputWriter):
         """
 
         def __init__(self):
-            super().__init__(title='Custom parameters')
+            super().__init__(OutputWriter.LogSink.TitleFormatter('Custom parameters', include_dataset_type=False))
 
     class CsvFileSink(OutputWriter.CsvFileSink):
         """

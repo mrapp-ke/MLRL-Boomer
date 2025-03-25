@@ -34,7 +34,7 @@ class ModelCharacteristicsWriter(OutputWriter, ABC):
         """
 
         def __init__(self):
-            super().__init__(title='Model characteristics')
+            super().__init__(OutputWriter.LogSink.TitleFormatter('Model characteristics', include_dataset_type=False))
 
     class CsvFileSink(OutputWriter.CsvFileSink):
         """
