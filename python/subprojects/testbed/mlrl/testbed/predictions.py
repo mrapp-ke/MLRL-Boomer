@@ -56,7 +56,7 @@ class PredictionWriter(OutputWriter):
         """
 
         def __init__(self, options: Options = Options()):
-            super().__init__(title='Predictions', options=options)
+            super().__init__(OutputWriter.LogSink.TitleFormatter('Predictions'), options=options)
 
     class ArffFileSink(OutputWriter.Sink):
         """

@@ -183,7 +183,9 @@ class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWrite
         """
 
         def __init__(self, options: Options = Options()):
-            super().__init__(title='Marginal probability calibration model', options=options)
+            super().__init__(OutputWriter.LogSink.TitleFormatter('Marginal probability calibration model',
+                                                                 include_dataset_type=False),
+                             options=options)
 
     class CsvFileSink(OutputWriter.CsvFileSink):
         """
@@ -211,7 +213,9 @@ class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
         """
 
         def __init__(self, options: Options = Options()):
-            super().__init__(title='Joint probability calibration model', options=options)
+            super().__init__(OutputWriter.LogSink.TitleFormatter('Joint probability calibration model',
+                                                                 include_dataset_type=False),
+                             options=options)
 
     class CsvFileSink(OutputWriter.CsvFileSink):
         """

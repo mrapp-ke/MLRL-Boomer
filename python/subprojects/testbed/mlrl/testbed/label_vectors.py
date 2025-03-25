@@ -113,7 +113,8 @@ class LabelVectorWriter(OutputWriter):
         """
 
         def __init__(self, options: Options = Options()):
-            super().__init__(title='Label vectors', options=options)
+            super().__init__(OutputWriter.LogSink.TitleFormatter('Label vectors', include_dataset_type=False),
+                             options=options)
 
     class CsvFileSink(OutputWriter.CsvFileSink):
         """

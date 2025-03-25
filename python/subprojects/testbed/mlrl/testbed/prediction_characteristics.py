@@ -27,7 +27,7 @@ class PredictionCharacteristicsWriter(OutputWriter):
         """
 
         def __init__(self, options: Options = Options()):
-            super().__init__(title='Prediction characteristics', options=options)
+            super().__init__(OutputWriter.LogSink.TitleFormatter('Prediction characteristics'), options=options)
 
     class CsvFileSink(OutputWriter.CsvFileSink):
         """

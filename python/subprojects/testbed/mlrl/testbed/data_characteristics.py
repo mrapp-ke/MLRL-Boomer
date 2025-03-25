@@ -176,7 +176,8 @@ class DataCharacteristicsWriter(OutputWriter):
         """
 
         def __init__(self, options: Options = Options()):
-            super().__init__(title='Data characteristics', options=options)
+            super().__init__(OutputWriter.LogSink.TitleFormatter('Data characteristics', include_dataset_type=False),
+                             options=options)
 
     class CsvFileSink(OutputWriter.CsvFileSink):
         """
