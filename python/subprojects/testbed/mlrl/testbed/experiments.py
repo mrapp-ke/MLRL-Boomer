@@ -25,7 +25,7 @@ from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.parameters import ParameterLoader
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
 from mlrl.testbed.prediction_result import PredictionResult
-from mlrl.testbed.prediction_scope import GlobalPrediction, IncrementalPrediction, PredictionScope, PredictionType
+from mlrl.testbed.prediction_scope import GlobalPrediction, IncrementalPrediction, PredictionType
 from mlrl.testbed.problem_type import ProblemType
 
 
@@ -82,26 +82,18 @@ class Evaluation(ABC):
 
         return result
 
-    def _evaluate_predictions(self, scope: OutputScope, prediction_scope: PredictionScope, train_time: float,
-                              predict_time: float, predictions, learner):
+    def _evaluate_predictions(self, scope: OutputScope, prediction_result: PredictionResult, train_time: float,
+                              learner):
         """
         May be used by subclasses in order to evaluate predictions that have been obtained from a previously trained
         model.
 
         :param scope:               The scope of the output data
-        :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
-                                    incrementally
+        :param prediction_result:   A `PredictionResult` that provides access to the predictions have been obtained
         :param train_time:          The time needed to train the model
-        :param predict_time:        The time needed to obtain the predictions
-        :param predictions:         A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` matrix, shape
-                                    `(num_examples, num_outputs)`, that stores the predictions for the query examples
         :param learner:             The learner, the predictions have been obtained from
         """
         for output_writer in self.output_writers:
-            prediction_result = PredictionResult(predictions=predictions,
-                                                 prediction_type=self.prediction_type,
-                                                 prediction_scope=prediction_scope,
-                                                 predict_time=predict_time)
             output_writer.write_output(scope, learner, prediction_result, train_time)
 
     @abstractmethod
@@ -134,11 +126,13 @@ class GlobalEvaluation(Evaluation):
 
         if predictions is not None:
             log.info('Successfully predicted in %s', format_duration(predict_time))
+            prediction_result = PredictionResult(predictions=predictions,
+                                                 prediction_type=self.prediction_type,
+                                                 prediction_scope=GlobalPrediction(),
+                                                 predict_time=predict_time)
             self._evaluate_predictions(scope=scope,
-                                       prediction_scope=GlobalPrediction(),
+                                       prediction_result=prediction_result,
                                        train_time=train_time,
-                                       predict_time=predict_time,
-                                       predictions=predictions,
                                        learner=learner)
 
 
@@ -194,11 +188,13 @@ class IncrementalEvaluation(Evaluation):
 
                 if predictions is not None:
                     log.info('Successfully predicted in %s', format_duration(predict_time))
+                    prediction_result = PredictionResult(predictions=predictions,
+                                                         prediction_type=self.prediction_type,
+                                                         prediction_scope=IncrementalPrediction(current_size),
+                                                         predict_time=predict_time)
                     self._evaluate_predictions(scope=scope,
-                                               prediction_scope=IncrementalPrediction(current_size),
+                                               prediction_result=prediction_result,
                                                train_time=train_time,
-                                               predict_time=predict_time,
-                                               predictions=predictions,
                                                learner=learner)
 
                 next_step_size = step_size
