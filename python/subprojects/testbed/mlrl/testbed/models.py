@@ -22,7 +22,7 @@ from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.format import format_float
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter
-from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
+from mlrl.testbed.prediction_result import PredictionResult
 
 OPTION_PRINT_FEATURE_NAMES = 'print_feature_names'
 
@@ -248,9 +248,8 @@ class RuleModelWriter(ModelWriter):
             return text
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, scope: OutputScope, learner, prediction_type: Optional[PredictionType],
-                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
-                              train_time: float, predict_time: float) -> Optional[Any]:
+    def _generate_output_data(self, scope: OutputScope, learner, prediction_result: Optional[PredictionResult],
+                              train_time: float) -> Optional[Any]:
         if isinstance(learner, (ClassifierMixin, RegressorMixin)):
             model = learner.model_
 

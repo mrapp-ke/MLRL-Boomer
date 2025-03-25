@@ -14,7 +14,8 @@ from mlrl.common.config.options import Options
 from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_writer, get_file_name_per_fold, open_writable_csv_file, \
     open_writable_text_file
 from mlrl.testbed.output_scope import OutputScope
-from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
+from mlrl.testbed.prediction_result import PredictionResult
+from mlrl.testbed.prediction_scope import PredictionScope
 
 
 class Formattable(ABC):
@@ -173,54 +174,40 @@ class OutputWriter(ABC):
         self.sinks = sinks
 
     @abstractmethod
-    def _generate_output_data(self, scope: OutputScope, learner, prediction_type: Optional[PredictionType],
-                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
-                              train_time: float, predict_time: float) -> Optional[Any]:
+    def _generate_output_data(self, scope: OutputScope, learner, prediction_result: Optional[PredictionResult],
+                              train_time: float) -> Optional[Any]:
         """
         Must be implemented by subclasses in order to generate the output data that should be written to the available
         sinks.
 
         :param scope:               The scope of the output data
         :param learner:             The learner that has been trained
-        :param prediction_type:     The type of the predictions or None, if no predictions have been obtained
-        :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
-                                    incrementally or None, if no predictions have been obtained
-        :param predictions:         A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                                    `(num_examples, num_outputs)`, that stores the predictions for the query examples or
-                                    None, if no predictions have been obtained
+        :param prediction_result:   A `PredictionResult` that provides access to predictions or None, if no predictions
+                                    have been obtained
         :param train_time:          The time needed for training or 0, if no model has been trained
-        :param predict_time:        The time needed for prediction or 0, if no predictions have been obtained
         :return:                    The output data that has been generated or None, if no output data was generated
         """
 
     def write_output(self,
                      scope: OutputScope,
                      learner,
-                     prediction_type: Optional[PredictionType] = None,
-                     prediction_scope: Optional[PredictionScope] = None,
-                     predictions: Optional[Any] = None,
-                     train_time: float = 0,
-                     predict_time: float = 0):
+                     prediction_result: Optional[PredictionResult] = None,
+                     train_time: float = 0):
         """
         Generates the output data and writes it to all available sinks.
 
         :param scope:               The scope of the output data
         :param learner:             The learner that has been trained
-        :param prediction_type:     The type of the predictions or None, if no predictions have been obtained
-        :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
-                                    incrementally or None, if no predictions have been obtained
-        :param predictions:         A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                                    `(num_examples, num_outputs)`, that stores the predictions for the query examples or
-                                    None, if no predictions have been obtained
+        :param prediction_result:   A `PredictionResult` that provides access to predictions or None, if no predictions
+                                    have been obtained
         :param train_time:          The time needed for training or 0, if no model has been trained
-        :param predict_time:        The time needed for prediction or 0, if no predictions have been obtained
         """
         sinks = self.sinks
 
         if sinks:
-            output_data = self._generate_output_data(scope, learner, prediction_type, prediction_scope, predictions,
-                                                     train_time, predict_time)
+            output_data = self._generate_output_data(scope, learner, prediction_result, train_time)
 
             if output_data:
                 for sink in sinks:
-                    sink.write_output(scope, prediction_scope, output_data)
+                    sink.write_output(scope, prediction_result.prediction_scope if prediction_result else None,
+                                      output_data)

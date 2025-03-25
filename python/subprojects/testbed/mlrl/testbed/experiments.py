@@ -24,6 +24,7 @@ from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.parameters import ParameterLoader
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
+from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.prediction_scope import GlobalPrediction, IncrementalPrediction, PredictionScope, PredictionType
 from mlrl.testbed.problem_type import ProblemType
 
@@ -97,8 +98,11 @@ class Evaluation(ABC):
         :param learner:             The learner, the predictions have been obtained from
         """
         for output_writer in self.output_writers:
-            output_writer.write_output(scope, learner, self.prediction_type, prediction_scope, predictions, train_time,
-                                       predict_time)
+            prediction_result = PredictionResult(predictions=predictions,
+                                                 prediction_type=self.prediction_type,
+                                                 prediction_scope=prediction_scope,
+                                                 predict_time=predict_time)
+            output_writer.write_output(scope, learner, prediction_result, train_time)
 
     @abstractmethod
     def predict_and_evaluate(self, scope: OutputScope, train_time: float, learner, **kwargs):

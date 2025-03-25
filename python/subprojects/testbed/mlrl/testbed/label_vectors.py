@@ -18,7 +18,7 @@ from mlrl.common.learners import ClassificationRuleLearner
 from mlrl.testbed.format import format_table
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
-from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
+from mlrl.testbed.prediction_result import PredictionResult
 
 OPTION_SPARSE = 'sparse'
 
@@ -123,9 +123,8 @@ class LabelVectorWriter(OutputWriter):
             super().__init__(output_dir=output_dir, file_name='label_vectors', options=options)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, scope: OutputScope, learner, prediction_type: Optional[PredictionType],
-                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
-                              train_time: float, predict_time: float) -> Optional[Any]:
+    def _generate_output_data(self, scope: OutputScope, learner, prediction_result: Optional[PredictionResult],
+                              train_time: float) -> Optional[Any]:
         dataset = scope.dataset
         return LabelVectorWriter.LabelVectors(num_labels=dataset.num_outputs, y=dataset.y)
 
@@ -153,9 +152,8 @@ class LabelVectorSetWriter(LabelVectorWriter):
             """
             self.label_vectors.unique_label_vectors.append((label_vector, frequency))
 
-    def _generate_output_data(self, scope: OutputScope, learner, prediction_type: Optional[PredictionType],
-                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
-                              train_time: float, predict_time: float) -> Optional[Any]:
+    def _generate_output_data(self, scope: OutputScope, learner, prediction_result: Optional[PredictionResult],
+                              train_time: float) -> Optional[Any]:
         if isinstance(learner, ClassificationRuleLearner):
             output_space_info = learner.output_space_info_
 
@@ -164,5 +162,4 @@ class LabelVectorSetWriter(LabelVectorWriter):
                 output_space_info.visit(visitor)
                 return visitor.label_vectors
 
-        return super()._generate_output_data(scope, learner, prediction_type, prediction_scope, predictions, train_time,
-                                             predict_time)
+        return super()._generate_output_data(scope, learner, prediction_result, train_time)
