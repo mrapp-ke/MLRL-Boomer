@@ -42,7 +42,6 @@ class FeatureCharacteristics:
         """
         :param dataset: The dataset
         """
-        self._x = dataset.x
         self.dataset = dataset
 
     @property
@@ -85,7 +84,7 @@ class FeatureCharacteristics:
         """
         The feature density.
         """
-        return density(self._x)
+        return density(self.dataset.x)
 
     @property
     def feature_sparsity(self) -> float:
