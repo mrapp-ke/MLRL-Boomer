@@ -79,17 +79,14 @@ class Evaluation(ABC):
 
         return result
 
-    def _evaluate_predictions(self, problem_type: ProblemType, fold: Fold, data_type: Dataset.Type,
-                              prediction_scope: PredictionScope, train_time: float, predict_time: float,
-                              dataset: Dataset, predictions, learner):
+    def _evaluate_predictions(self, problem_type: ProblemType, fold: Fold, prediction_scope: PredictionScope,
+                              train_time: float, predict_time: float, dataset: Dataset, predictions, learner):
         """
         May be used by subclasses in order to evaluate predictions that have been obtained from a previously trained
         model.
 
         :param problem_type:        The type of the machine learning problem
         :param fold:                The fold of the available data, the predictions and ground truth correspond to
-        :param data_type:           Specifies whether the predictions and ground truth correspond to the training or
-                                    test data
         :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
                                     incrementally
         :param train_time:          The time needed to train the model
@@ -100,23 +97,21 @@ class Evaluation(ABC):
         :param learner:             The learner, the predictions have been obtained from
         """
         for output_writer in self.output_writers:
-            output_writer.write_output(problem_type, dataset, fold, learner, data_type, self.prediction_type,
+            output_writer.write_output(problem_type, dataset, fold, learner, dataset.type, self.prediction_type,
                                        prediction_scope, predictions, train_time, predict_time)
 
     @abstractmethod
-    def predict_and_evaluate(self, problem_type: ProblemType, fold: Fold, data_type: Dataset.Type, train_time: float,
-                             learner, test_dataset: Dataset, **kwargs):
+    def predict_and_evaluate(self, problem_type: ProblemType, fold: Fold, train_time: float, learner, dataset: Dataset,
+                             **kwargs):
         """
         Must be implemented by subclasses in order to obtain and evaluate predictions for given query examples from a
         previously trained model.
 
         :param problem_type:    The type of the machine learning problem
         :param fold:            The fold of the available data, the predictions and ground truth correspond to
-        :param data_type:       Specifies whether the predictions and ground truth correspond to the training or test
-                                data
         :param train_time:      The time needed to train the model
         :param learner:         The learner, the predictions should be obtained from
-        :param test_dataset:    The dataset that stores the query examples
+        :param dataset:         The dataset that stores the query examples
         :param kwargs:          Optional keyword arguments to be passed to the model when obtaining predictions
         """
 
@@ -126,12 +121,12 @@ class GlobalEvaluation(Evaluation):
     Obtains and evaluates predictions from a previously trained global model.
     """
 
-    def predict_and_evaluate(self, problem_type: ProblemType, fold: Fold, data_type: Dataset.Type, train_time: float,
-                             learner, test_dataset: Dataset, **kwargs):
-        log.info('Predicting for %s %s examples...', test_dataset.num_examples, data_type.value)
+    def predict_and_evaluate(self, problem_type: ProblemType, fold: Fold, train_time: float, learner, dataset: Dataset,
+                             **kwargs):
+        log.info('Predicting for %s %s examples...', dataset.num_examples, dataset.type.value)
         start_time = timer()
         predict_proba_function = learner.predict_proba if callable(getattr(learner, 'predict_proba', None)) else None
-        predictions = self._invoke_prediction_function(learner, learner.predict, predict_proba_function, test_dataset,
+        predictions = self._invoke_prediction_function(learner, learner.predict, predict_proba_function, dataset,
                                                        **kwargs)
         end_time = timer()
         predict_time = end_time - start_time
@@ -140,11 +135,10 @@ class GlobalEvaluation(Evaluation):
             log.info('Successfully predicted in %s', format_duration(predict_time))
             self._evaluate_predictions(problem_type=problem_type,
                                        fold=fold,
-                                       data_type=data_type,
                                        prediction_scope=GlobalPrediction(),
                                        train_time=train_time,
                                        predict_time=predict_time,
-                                       dataset=test_dataset,
+                                       dataset=dataset,
                                        predictions=predictions,
                                        learner=learner)
 
@@ -169,15 +163,15 @@ class IncrementalEvaluation(Evaluation):
         self.max_size = max_size
         self.step_size = step_size
 
-    def predict_and_evaluate(self, problem_type: ProblemType, fold: Fold, data_type: Dataset.Type, train_time: float,
-                             learner, test_dataset: Dataset, **kwargs):
+    def predict_and_evaluate(self, problem_type: ProblemType, fold: Fold, train_time: float, learner, dataset: Dataset,
+                             **kwargs):
         if not isinstance(learner, IncrementalClassifierMixin) and not isinstance(learner, IncrementalRegressorMixin):
             raise ValueError('Cannot obtain incremental predictions from a model of type ' + type(learner.__name__))
 
         predict_proba_function = learner.predict_proba_incrementally if callable(
             getattr(learner, 'predict_proba_incrementally', None)) else None
         incremental_predictor = self._invoke_prediction_function(learner, learner.predict_incrementally,
-                                                                 predict_proba_function, test_dataset, **kwargs)
+                                                                 predict_proba_function, dataset, **kwargs)
 
         if incremental_predictor:
             step_size = self.step_size
@@ -192,8 +186,8 @@ class IncrementalEvaluation(Evaluation):
             current_size = min(next_step_size, total_size)
 
             while incremental_predictor.has_next():
-                log.info('Predicting for %s %s examples using a model of size %s...', test_dataset.num_examples,
-                         data_type.value, current_size)
+                log.info('Predicting for %s %s examples using a model of size %s...', dataset.num_examples,
+                         dataset.type.value, current_size)
                 start_time = timer()
                 predictions = incremental_predictor.apply_next(next_step_size)
                 end_time = timer()
@@ -203,11 +197,10 @@ class IncrementalEvaluation(Evaluation):
                     log.info('Successfully predicted in %s', format_duration(predict_time))
                     self._evaluate_predictions(problem_type=problem_type,
                                                fold=fold,
-                                               data_type=data_type,
                                                prediction_scope=IncrementalPrediction(current_size),
                                                train_time=train_time,
                                                predict_time=predict_time,
-                                               dataset=test_dataset,
+                                               dataset=dataset,
                                                predictions=predictions,
                                                learner=learner)
 
@@ -383,8 +376,7 @@ class Experiment(DataSplitter.Callback):
         :param kwargs:          Optional keyword arguments to be passed to the model when obtaining predictions
         """
         try:
-            return evaluation.predict_and_evaluate(problem_type, fold, dataset.type, train_time, learner, dataset,
-                                                   **kwargs)
+            return evaluation.predict_and_evaluate(problem_type, fold, train_time, learner, dataset, **kwargs)
         except ValueError as error:
             if dataset.has_sparse_features:
                 return Experiment.__predict_and_evaluate(problem_type, evaluation, fold, train_time, learner,
