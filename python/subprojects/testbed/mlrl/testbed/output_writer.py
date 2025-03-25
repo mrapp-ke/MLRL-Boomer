@@ -161,7 +161,8 @@ class OutputWriter(ABC):
 
                 if tabular_data:
                     header = sorted(tabular_data[0].keys())
-                    file_name = get_file_name_per_fold(dataset.get_file_name(self.file_name), SUFFIX_CSV, fold.index)
+                    file_name = get_file_name_per_fold(dataset.type.get_file_name(self.file_name), SUFFIX_CSV,
+                                                       fold.index)
                     file_path = path.join(self.output_dir, file_name)
 
                     with open_writable_csv_file(file_path, append=incremental_prediction) as csv_file:
@@ -178,9 +179,8 @@ class OutputWriter(ABC):
 
     @abstractmethod
     def _generate_output_data(self, problem_type: ProblemType, dataset: Dataset, fold: Fold, learner,
-                              data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
-                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
-                              train_time: float, predict_time: float) -> Optional[Any]:
+                              prediction_type: Optional[PredictionType], prediction_scope: Optional[PredictionScope],
+                              predictions: Optional[Any], train_time: float, predict_time: float) -> Optional[Any]:
         """
         Must be implemented by subclasses in order to generate the output data that should be written to the available
         sinks.
@@ -189,8 +189,6 @@ class OutputWriter(ABC):
         :param dataset:             The dataset, the output data corresponds to
         :param fold:                The fold of the available data, the output data corresponds to
         :param learner:             The learner that has been trained
-        :param data_type:           Specifies whether the predictions and ground truth correspond to the training or
-                                    test data or None, if no predictions have been obtained
         :param prediction_type:     The type of the predictions or None, if no predictions have been obtained
         :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
                                     incrementally or None, if no predictions have been obtained
@@ -207,7 +205,6 @@ class OutputWriter(ABC):
                      dataset: Dataset,
                      fold: Fold,
                      learner,
-                     data_type: Optional[Dataset.Type] = None,
                      prediction_type: Optional[PredictionType] = None,
                      prediction_scope: Optional[PredictionScope] = None,
                      predictions: Optional[Any] = None,
@@ -220,8 +217,6 @@ class OutputWriter(ABC):
         :param dataset:             The dataset, the output data corresponds to
         :param fold:                The fold of the available data, the output data corresponds to
         :param learner:             The learner that has been trained
-        :param data_type:           Specifies whether the predictions and ground truth correspond to the training or
-                                    test data or None, if no predictions have been obtained
         :param prediction_type:     The type of the predictions or None, if no predictions have been obtained
         :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
                                     incrementally or None, if no predictions have been obtained
@@ -234,7 +229,7 @@ class OutputWriter(ABC):
         sinks = self.sinks
 
         if sinks:
-            output_data = self._generate_output_data(problem_type, dataset, fold, learner, data_type, prediction_type,
+            output_data = self._generate_output_data(problem_type, dataset, fold, learner, prediction_type,
                                                      prediction_scope, predictions, train_time, predict_time)
 
             if output_data:

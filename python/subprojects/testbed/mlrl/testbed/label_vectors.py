@@ -126,9 +126,8 @@ class LabelVectorWriter(OutputWriter):
 
     # pylint: disable=unused-argument
     def _generate_output_data(self, problem_type: ProblemType, dataset: Dataset, fold: Fold, learner,
-                              data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
-                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
-                              train_time: float, predict_time: float) -> Optional[Any]:
+                              prediction_type: Optional[PredictionType], prediction_scope: Optional[PredictionScope],
+                              predictions: Optional[Any], train_time: float, predict_time: float) -> Optional[Any]:
         return LabelVectorWriter.LabelVectors(num_labels=dataset.num_outputs, y=dataset.y)
 
 
@@ -156,9 +155,8 @@ class LabelVectorSetWriter(LabelVectorWriter):
             self.label_vectors.unique_label_vectors.append((label_vector, frequency))
 
     def _generate_output_data(self, problem_type: ProblemType, dataset: Dataset, fold: Fold, learner,
-                              data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
-                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
-                              train_time: float, predict_time: float) -> Optional[Any]:
+                              prediction_type: Optional[PredictionType], prediction_scope: Optional[PredictionScope],
+                              predictions: Optional[Any], train_time: float, predict_time: float) -> Optional[Any]:
         if isinstance(learner, ClassificationRuleLearner):
             output_space_info = learner.output_space_info_
 
@@ -167,5 +165,5 @@ class LabelVectorSetWriter(LabelVectorWriter):
                 output_space_info.visit(visitor)
                 return visitor.label_vectors
 
-        return super()._generate_output_data(problem_type, dataset, fold, learner, data_type, prediction_type,
-                                             prediction_scope, predictions, train_time, predict_time)
+        return super()._generate_output_data(problem_type, dataset, fold, learner, prediction_type, prediction_scope,
+                                             predictions, train_time, predict_time)

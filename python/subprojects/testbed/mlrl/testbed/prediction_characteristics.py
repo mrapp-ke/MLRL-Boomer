@@ -39,8 +39,7 @@ class PredictionCharacteristicsWriter(OutputWriter):
 
     # pylint: disable=unused-argument
     def _generate_output_data(self, problem_type: ProblemType, dataset: Dataset, fold: Fold, learner,
-                              data_type: Optional[Dataset.Type], prediction_type: Optional[PredictionType],
-                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
-                              train_time: float, predict_time: float) -> Optional[Any]:
+                              prediction_type: Optional[PredictionType], prediction_scope: Optional[PredictionScope],
+                              predictions: Optional[Any], train_time: float, predict_time: float) -> Optional[Any]:
         # Prediction characteristics can only be determined in the case of binary predictions...
         return OutputCharacteristics(problem_type, predictions) if prediction_type == PredictionType.BINARY else None
