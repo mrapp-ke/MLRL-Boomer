@@ -19,6 +19,7 @@ from mlrl.testbed.data_splitting import DataSplitter
 from mlrl.testbed.dataset import AttributeType, Dataset
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_duration
+from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.parameters import ParameterLoader
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
@@ -79,26 +80,24 @@ class Evaluation(ABC):
 
         return result
 
-    def _evaluate_predictions(self, problem_type: ProblemType, fold: Fold, prediction_scope: PredictionScope,
-                              train_time: float, predict_time: float, dataset: Dataset, predictions, learner):
+    def _evaluate_predictions(self, scope: OutputScope, prediction_scope: PredictionScope, train_time: float,
+                              predict_time: float, predictions, learner):
         """
         May be used by subclasses in order to evaluate predictions that have been obtained from a previously trained
         model.
 
-        :param problem_type:        The type of the machine learning problem
-        :param fold:                The fold of the available data, the predictions and ground truth correspond to
+        :param scope:               The scope of the output data
         :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
                                     incrementally
         :param train_time:          The time needed to train the model
         :param predict_time:        The time needed to obtain the predictions
-        :param dataset:             The dataset for which the predictions have been obtained
         :param predictions:         A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` matrix, shape
                                     `(num_examples, num_outputs)`, that stores the predictions for the query examples
         :param learner:             The learner, the predictions have been obtained from
         """
         for output_writer in self.output_writers:
-            output_writer.write_output(problem_type, dataset, fold, learner, self.prediction_type, prediction_scope,
-                                       predictions, train_time, predict_time)
+            output_writer.write_output(scope, learner,
+                                       self.prediction_type, prediction_scope, predictions, train_time, predict_time)
 
     @abstractmethod
     def predict_and_evaluate(self, problem_type: ProblemType, fold: Fold, train_time: float, learner, dataset: Dataset,
@@ -133,12 +132,10 @@ class GlobalEvaluation(Evaluation):
 
         if predictions is not None:
             log.info('Successfully predicted in %s', format_duration(predict_time))
-            self._evaluate_predictions(problem_type=problem_type,
-                                       fold=fold,
+            self._evaluate_predictions(scope=OutputScope(problem_type=problem_type, dataset=dataset, fold=fold),
                                        prediction_scope=GlobalPrediction(),
                                        train_time=train_time,
                                        predict_time=predict_time,
-                                       dataset=dataset,
                                        predictions=predictions,
                                        learner=learner)
 
@@ -195,12 +192,10 @@ class IncrementalEvaluation(Evaluation):
 
                 if predictions is not None:
                     log.info('Successfully predicted in %s', format_duration(predict_time))
-                    self._evaluate_predictions(problem_type=problem_type,
-                                               fold=fold,
+                    self._evaluate_predictions(scope=OutputScope(problem_type=problem_type, dataset=dataset, fold=fold),
                                                prediction_scope=IncrementalPrediction(current_size),
                                                train_time=train_time,
                                                predict_time=predict_time,
-                                               dataset=dataset,
                                                predictions=predictions,
                                                learner=learner)
 
@@ -310,8 +305,10 @@ class Experiment(DataSplitter.Callback):
                 log.info('Successfully applied parameter setting: %s', params)
 
         # Write output data before model is trained...
+        train_scope = OutputScope(problem_type=problem_type, dataset=train_dataset, fold=fold)
+
         for output_writer in self.pre_training_output_writers:
-            output_writer.write_output(problem_type, train_dataset, fold, current_learner)
+            output_writer.write_output(train_scope, current_learner)
 
         # Set the indices of ordinal features, if supported...
         if isinstance(current_learner, OrdinalFeatureSupportMixin):
@@ -359,7 +356,7 @@ class Experiment(DataSplitter.Callback):
 
         # Write output data after model was trained...
         for output_writer in self.post_training_output_writers:
-            output_writer.write_output(problem_type, train_dataset, fold, current_learner, train_time=train_time)
+            output_writer.write_output(train_scope, current_learner, train_time=train_time)
 
     @staticmethod
     def __predict_and_evaluate(problem_type: ProblemType, evaluation: Evaluation, fold: Fold, train_time: float,

@@ -19,6 +19,7 @@ from mlrl.common.data.types import Float32, Uint8
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
+from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 from mlrl.testbed.problem_type import ProblemType
@@ -398,12 +399,14 @@ class EvaluationWriter(OutputWriter, ABC):
         """
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, problem_type: ProblemType, dataset: Dataset, fold: Fold, learner,
-                              prediction_type: Optional[PredictionType], prediction_scope: Optional[PredictionScope],
-                              predictions: Optional[Any], train_time: float, predict_time: float) -> Optional[Any]:
+    def _generate_output_data(self, scope: OutputScope, learner, prediction_type: Optional[PredictionType],
+                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
+                              train_time: float, predict_time: float) -> Optional[Any]:
+        dataset = scope.dataset
         data_type = dataset.type
         result = self.results[data_type] if data_type in self.results else EvaluationWriter.EvaluationResult()
         self.results[data_type] = result
+        fold = scope.fold
         result.put(EVALUATION_MEASURE_TRAINING_TIME, train_time, num_folds=fold.num_folds, fold=fold.index)
         result.put(EVALUATION_MEASURE_PREDICTION_TIME, predict_time, num_folds=fold.num_folds, fold=fold.index)
         self._populate_result(fold, result, predictions, dataset.y)

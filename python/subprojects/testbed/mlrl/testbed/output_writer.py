@@ -15,6 +15,7 @@ from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_writer, get_file_name_per_fold, open_writable_csv_file, \
     open_writable_text_file
+from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 from mlrl.testbed.problem_type import ProblemType
 
@@ -178,16 +179,14 @@ class OutputWriter(ABC):
         self.sinks = sinks
 
     @abstractmethod
-    def _generate_output_data(self, problem_type: ProblemType, dataset: Dataset, fold: Fold, learner,
-                              prediction_type: Optional[PredictionType], prediction_scope: Optional[PredictionScope],
-                              predictions: Optional[Any], train_time: float, predict_time: float) -> Optional[Any]:
+    def _generate_output_data(self, scope: OutputScope, learner, prediction_type: Optional[PredictionType],
+                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
+                              train_time: float, predict_time: float) -> Optional[Any]:
         """
         Must be implemented by subclasses in order to generate the output data that should be written to the available
         sinks.
 
-        :param problem_type:        The type of the machine learning problem
-        :param dataset:             The dataset, the output data corresponds to
-        :param fold:                The fold of the available data, the output data corresponds to
+        :param scope:               The scope of the output data
         :param learner:             The learner that has been trained
         :param prediction_type:     The type of the predictions or None, if no predictions have been obtained
         :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
@@ -201,9 +200,7 @@ class OutputWriter(ABC):
         """
 
     def write_output(self,
-                     problem_type: ProblemType,
-                     dataset: Dataset,
-                     fold: Fold,
+                     scope: OutputScope,
                      learner,
                      prediction_type: Optional[PredictionType] = None,
                      prediction_scope: Optional[PredictionScope] = None,
@@ -213,9 +210,7 @@ class OutputWriter(ABC):
         """
         Generates the output data and writes it to all available sinks.
 
-        :param problem_type:        The type of the machine learning problem
-        :param dataset:             The dataset, the output data corresponds to
-        :param fold:                The fold of the available data, the output data corresponds to
+        :param scope:               The scope of the output data
         :param learner:             The learner that has been trained
         :param prediction_type:     The type of the predictions or None, if no predictions have been obtained
         :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
@@ -229,9 +224,9 @@ class OutputWriter(ABC):
         sinks = self.sinks
 
         if sinks:
-            output_data = self._generate_output_data(problem_type, dataset, fold, learner, prediction_type,
-                                                     prediction_scope, predictions, train_time, predict_time)
+            output_data = self._generate_output_data(scope, learner, prediction_type, prediction_scope, predictions,
+                                                     train_time, predict_time)
 
             if output_data:
                 for sink in sinks:
-                    sink.write_output(problem_type, dataset, fold, prediction_scope, output_data)
+                    sink.write_output(scope.problem_type, scope.dataset, scope.fold, prediction_scope, output_data)

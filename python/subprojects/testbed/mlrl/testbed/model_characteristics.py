@@ -16,12 +16,10 @@ from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBo
     RuleModelVisitor
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
-from mlrl.testbed.dataset import Dataset
-from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_float, format_percentage, format_table
+from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
-from mlrl.testbed.problem_type import ProblemType
 
 
 class ModelCharacteristicsWriter(OutputWriter, ABC):
@@ -345,9 +343,9 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                 self.num_neg_predictions.append(num_neg_predictions)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, problem_type: ProblemType, dataset: Dataset, fold: Fold, learner,
-                              prediction_type: Optional[PredictionType], prediction_scope: Optional[PredictionScope],
-                              predictions: Optional[Any], train_time: float, predict_time: float) -> Optional[Any]:
+    def _generate_output_data(self, scope: OutputScope, learner, prediction_type: Optional[PredictionType],
+                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
+                              train_time: float, predict_time: float) -> Optional[Any]:
         if isinstance(learner, (ClassifierMixin, RegressorMixin)):
             model = learner.model_
 

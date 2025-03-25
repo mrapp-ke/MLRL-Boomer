@@ -12,8 +12,8 @@ from mlrl.common.config.options import Options
 from mlrl.testbed.characteristics import LABEL_CHARACTERISTICS, OUTPUT_CHARACTERISTICS, Characteristic, \
     OutputCharacteristics, density
 from mlrl.testbed.dataset import AttributeType, Dataset
-from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, filter_formatters, format_table
+from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 from mlrl.testbed.problem_type import ProblemType
@@ -186,9 +186,11 @@ class DataCharacteristicsWriter(OutputWriter):
             super().__init__(output_dir=output_dir, file_name='data_characteristics', options=options)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, problem_type: ProblemType, dataset: Dataset, fold: Fold, learner,
-                              prediction_type: Optional[PredictionType], prediction_scope: Optional[PredictionScope],
-                              predictions: Optional[Any], train_time: float, predict_time: float) -> Optional[Any]:
+    def _generate_output_data(self, scope: OutputScope, learner, prediction_type: Optional[PredictionType],
+                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
+                              train_time: float, predict_time: float) -> Optional[Any]:
+        problem_type = scope.problem_type
+        dataset = scope.dataset
         feature_characteristics = FeatureCharacteristics(dataset)
         output_characteristics = OutputCharacteristics(problem_type, dataset.y)
         return DataCharacteristicsWriter.DataCharacteristics(feature_characteristics=feature_characteristics,
