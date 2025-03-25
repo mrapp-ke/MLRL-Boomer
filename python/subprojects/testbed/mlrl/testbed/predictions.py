@@ -15,6 +15,7 @@ from mlrl.testbed.dataset import Attribute, AttributeType, Dataset
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import OPTION_DECIMALS, format_array
 from mlrl.testbed.io import SUFFIX_ARFF, get_file_name_per_fold
+from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 from mlrl.testbed.problem_type import ProblemType
@@ -105,7 +106,7 @@ class PredictionWriter(OutputWriter):
             save_arff_file(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, problem_type: ProblemType, dataset: Dataset, fold: Fold, learner,
-                              prediction_type: Optional[PredictionType], prediction_scope: Optional[PredictionScope],
-                              predictions: Optional[Any], train_time: float, predict_time: float) -> Optional[Any]:
-        return PredictionWriter.Predictions(predictions=predictions, ground_truth=dataset.y)
+    def _generate_output_data(self, scope: OutputScope, learner, prediction_type: Optional[PredictionType],
+                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
+                              train_time: float, predict_time: float) -> Optional[Any]:
+        return PredictionWriter.Predictions(predictions=predictions, ground_truth=scope.dataset.y)
