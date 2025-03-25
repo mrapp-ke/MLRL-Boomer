@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that specify the score of output data.
 """
 from dataclasses import dataclass
+from typing import Any, Dict
 
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.fold import Fold
@@ -19,7 +20,9 @@ class OutputScope:
         problem_type:   The type of the machine learning problem
         dataset:        The dataset, the output data corresponds to
         fold:           The fold of the dataset, the output data corresponds to
+        parameters:     Algorithmic parameters to be used by the learner
     """
     problem_type: ProblemType
     dataset: Dataset
     fold: Fold
+    parameters: Dict[str, Any]

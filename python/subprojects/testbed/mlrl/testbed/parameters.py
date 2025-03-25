@@ -72,22 +72,22 @@ class ParameterWriter(OutputWriter):
         Stores the parameter settings of a learner.
         """
 
-        def __init__(self, learner):
+        def __init__(self, parameters: Dict[str, Any]):
             """
-            :param learner: A learner
+            :param parameters: A dictionary that stores the parameters
             """
-            self.params = learner.get_params()
+            self.parameters = parameters
 
         # pylint: disable=unused-argument
         def format(self, options: Options, **_):
             """
             See :func:`mlrl.testbed.output_writer.Formattable.format`
             """
-            params = self.params
+            parameters = self.parameters
             rows = []
 
-            for key in sorted(params):
-                value = params[key]
+            for key in sorted(parameters):
+                value = parameters[key]
 
                 if value is not None:
                     rows.append([str(key), str(value)])
@@ -99,10 +99,10 @@ class ParameterWriter(OutputWriter):
             """
             See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
             """
-            params = self.params
+            parameters = self.parameters
             columns = {}
 
-            for key, value in params.items():
+            for key, value in parameters.items():
                 if value is not None:
                     columns[key] = value
 
@@ -127,6 +127,4 @@ class ParameterWriter(OutputWriter):
     # pylint: disable=unused-argument
     def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
                               prediction_result: Optional[PredictionResult]) -> Optional[Any]:
-        if training_result:
-            return ParameterWriter.Parameters(training_result.learner)
-        return None
+        return ParameterWriter.Parameters(scope.parameters)
