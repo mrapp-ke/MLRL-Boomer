@@ -351,21 +351,21 @@ class Experiment(DataSplitter.Callback):
             self.__save_model(current_learner, fold)
 
         # Obtain and evaluate predictions for training data, if necessary...
-        evaluation = self.train_evaluation
+        train_evaluation = self.train_evaluation
 
-        if evaluation and fold.is_train_test_separated:
+        if train_evaluation and fold.is_train_test_separated:
             data_type = Dataset.Type.TRAINING
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-            self.__predict_and_evaluate(problem_type, evaluation, fold, data_type, train_time, current_learner,
+            self.__predict_and_evaluate(problem_type, train_evaluation, fold, data_type, train_time, current_learner,
                                         train_dataset, **predict_kwargs)
 
         # Obtain and evaluate predictions for test data, if necessary...
-        evaluation = self.test_evaluation
+        test_evaluation = self.test_evaluation
 
-        if evaluation:
+        if test_evaluation:
             data_type = Dataset.Type.TEST if fold.is_train_test_separated else Dataset.Type.TRAINING
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-            self.__predict_and_evaluate(problem_type, evaluation, fold, data_type, train_time, current_learner,
+            self.__predict_and_evaluate(problem_type, test_evaluation, fold, data_type, train_time, current_learner,
                                         test_dataset, **predict_kwargs)
 
         # Write output data after model was trained...
