@@ -353,48 +353,44 @@ class Experiment(DataSplitter.Callback):
         # Obtain and evaluate predictions for training data, if necessary...
         train_evaluation = self.train_evaluation
 
-        if train_evaluation and fold.is_train_test_separated:
-            data_type = Dataset.Type.TRAINING
+        if train_evaluation and test_dataset.type != Dataset.Type.TRAINING:
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-            self.__predict_and_evaluate(problem_type, train_evaluation, fold, data_type, train_time, current_learner,
+            self.__predict_and_evaluate(problem_type, train_evaluation, fold, train_time, current_learner,
                                         train_dataset, **predict_kwargs)
 
         # Obtain and evaluate predictions for test data, if necessary...
         test_evaluation = self.test_evaluation
 
         if test_evaluation:
-            data_type = Dataset.Type.TEST if fold.is_train_test_separated else Dataset.Type.TRAINING
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-            self.__predict_and_evaluate(problem_type, test_evaluation, fold, data_type, train_time, current_learner,
-                                        test_dataset, **predict_kwargs)
+            self.__predict_and_evaluate(problem_type, test_evaluation, fold, train_time, current_learner, test_dataset,
+                                        **predict_kwargs)
 
         # Write output data after model was trained...
         for output_writer in self.post_training_output_writers:
             output_writer.write_output(problem_type, train_dataset, fold, current_learner, train_time=train_time)
 
     @staticmethod
-    def __predict_and_evaluate(problem_type: ProblemType, evaluation: Evaluation, fold: Fold, data_type: Dataset.Type,
-                               train_time: float, learner, test_dataset: Dataset, **kwargs):
+    def __predict_and_evaluate(problem_type: ProblemType, evaluation: Evaluation, fold: Fold, train_time: float,
+                               learner, dataset: Dataset, **kwargs):
         """
         Obtains and evaluates predictions for given query examples from a previously trained model.
 
         :param problem_type:    The type of the machine learning problem
         :param evaluation:      The `Evaluation` to be used
         :param fold:            The fold of the available data, the predictions and ground truth correspond to
-        :param data_type:       Specifies whether the predictions and ground truth correspond to the training or test
-                                data
         :param train_time:      The time needed to train the model
         :param learner:         The learner, the predictions should be obtained from
-        :param test_dataset:    The dataset that stores the query examples
+        :param dataset:         The dataset that stores the query examples
         :param kwargs:          Optional keyword arguments to be passed to the model when obtaining predictions
         """
         try:
-            return evaluation.predict_and_evaluate(problem_type, fold, data_type, train_time, learner, test_dataset,
+            return evaluation.predict_and_evaluate(problem_type, fold, dataset.type, train_time, learner, dataset,
                                                    **kwargs)
         except ValueError as error:
-            if is_sparse(test_dataset.x):
-                return Experiment.__predict_and_evaluate(problem_type, evaluation, fold, data_type, train_time, learner,
-                                                         replace(test_dataset, x=test_dataset.x.toarray()), **kwargs)
+            if is_sparse(dataset.x):
+                return Experiment.__predict_and_evaluate(problem_type, evaluation, fold, train_time, learner,
+                                                         replace(dataset, x=dataset.x.toarray()), **kwargs)
             raise error
 
     @staticmethod
