@@ -13,7 +13,6 @@ from typing import Any, Dict, List, Optional
 
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator, RegressorMixin as SkLearnRegressorMixin, clone
 
-from mlrl.common.data.arrays import is_sparse
 from mlrl.common.mixins import ClassifierMixin, IncrementalClassifierMixin, IncrementalRegressorMixin, \
     NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
 
@@ -388,34 +387,31 @@ class Experiment(DataSplitter.Callback):
             return evaluation.predict_and_evaluate(problem_type, fold, dataset.type, train_time, learner, dataset,
                                                    **kwargs)
         except ValueError as error:
-            if is_sparse(dataset.x):
+            if dataset.has_sparse_features:
                 return Experiment.__predict_and_evaluate(problem_type, evaluation, fold, train_time, learner,
                                                          replace(dataset, x=dataset.x.toarray()), **kwargs)
             raise error
 
     @staticmethod
-    def __train(learner, train_dataset: Dataset, **kwargs):
+    def __train(learner, dataset: Dataset, **kwargs):
         """
         Fits a learner to training data.
 
         :param learner: The learner
-        :param train_dataset: The training dataset
+        :param dataset: The training dataset
         :param kwargs:  Optional keyword arguments to be passed to the learner when fitting model
         :return:        The time needed for training
         """
-        x = train_dataset.x
-        y = train_dataset.y
-
         try:
             start_time = timer()
-            learner.fit(x, y, **kwargs)
+            learner.fit(dataset.x, dataset.y, **kwargs)
             end_time = timer()
             return end_time - start_time
         except ValueError as error:
-            if is_sparse(y):
-                return Experiment.__train(learner, replace(train_dataset, y=y.toarray()), **kwargs)
-            if is_sparse(x):
-                return Experiment.__train(learner, replace(train_dataset, x=x.toarray()), **kwargs)
+            if dataset.has_sparse_features:
+                return Experiment.__train(learner, replace(dataset, x=dataset.x.toarray()), **kwargs)
+            if dataset.has_sparse_outputs:
+                return Experiment.__train(learner, replace(dataset, y=dataset.y.toarray()), **kwargs)
             raise error
 
     def __load_model(self, fold: Fold):
