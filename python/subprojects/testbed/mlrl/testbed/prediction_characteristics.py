@@ -11,7 +11,8 @@ from mlrl.common.config.options import Options
 from mlrl.testbed.characteristics import OutputCharacteristics
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import OutputWriter
-from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
+from mlrl.testbed.prediction_result import PredictionResult
+from mlrl.testbed.prediction_scope import PredictionType
 
 
 class PredictionCharacteristicsWriter(OutputWriter):
@@ -36,10 +37,9 @@ class PredictionCharacteristicsWriter(OutputWriter):
             super().__init__(output_dir=output_dir, file_name='prediction_characteristics', options=options)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, scope: OutputScope, learner, prediction_type: Optional[PredictionType],
-                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
-                              train_time: float, predict_time: float) -> Optional[Any]:
+    def _generate_output_data(self, scope: OutputScope, learner, prediction_result: Optional[PredictionResult],
+                              train_time: float) -> Optional[Any]:
         # Prediction characteristics can only be determined in the case of binary predictions...
-        if prediction_type == PredictionType.BINARY:
-            return OutputCharacteristics(scope.problem_type, predictions)
+        if prediction_result and prediction_result.prediction_type == PredictionType.BINARY:
+            return OutputCharacteristics(scope.problem_type, prediction_result.predictions)
         return None
