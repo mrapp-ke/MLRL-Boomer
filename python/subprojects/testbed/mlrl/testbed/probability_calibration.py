@@ -14,9 +14,10 @@ from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibr
     IsotonicProbabilityCalibrationModelVisitor, NoProbabilityCalibrationModel
 from mlrl.common.learners import ClassificationRuleLearner
 
-from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink, Sink
+from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
 from mlrl.testbed.format import OPTION_DECIMALS, format_float, format_table
 from mlrl.testbed.output.converters import TableConverter, TextConverter
+from mlrl.testbed.output.sinks.sink import Sink
 from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult

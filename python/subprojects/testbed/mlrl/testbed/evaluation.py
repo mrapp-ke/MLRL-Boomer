@@ -17,10 +17,11 @@ from mlrl.common.config.options import Options
 from mlrl.common.data.arrays import enforce_dense
 from mlrl.common.data.types import Float32, Uint8
 
-from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink, Sink
+from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
 from mlrl.testbed.output.converters import TableConverter, TextConverter
+from mlrl.testbed.output.sinks.sink import Sink
 from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
@@ -355,7 +356,7 @@ class EvaluationWriter(OutputWriter, ABC):
         def write_output(self, scope: OutputScope, training_result: Optional[TrainingResult],
                          prediction_result: Optional[PredictionResult], output_data, **kwargs):
             """
-            See :func:`mlrl.testbed.data_sinks.Sink.write_output`
+            See :func:`mlrl.testbed.output.sinks.sink.Sink.write_output`
             """
             fold = scope.fold
             new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold.index if fold.is_cross_validation_used else 0}}
@@ -381,7 +382,7 @@ class EvaluationWriter(OutputWriter, ABC):
         def write_output(self, scope: OutputScope, training_result: Optional[TrainingResult],
                          prediction_result: Optional[PredictionResult], output_data, **kwargs):
             """
-            See :func:`mlrl.testbed.data_sinks.Sink.write_output`
+            See :func:`mlrl.testbed.output.sinks.sink.Sink.write_output`
             """
             fold = scope.fold
             new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold.index if fold.is_cross_validation_used else 0}}
