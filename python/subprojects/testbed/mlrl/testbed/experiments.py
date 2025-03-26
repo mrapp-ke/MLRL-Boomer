@@ -20,8 +20,8 @@ from mlrl.testbed.data_splitting import DataSplitter
 from mlrl.testbed.dataset import AttributeType, Dataset
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_duration
+from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope
-from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.parameters import ParameterLoader
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
 from mlrl.testbed.prediction_result import PredictionResult
