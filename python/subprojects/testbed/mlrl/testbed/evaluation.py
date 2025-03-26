@@ -392,8 +392,8 @@ class EvaluationWriter(OutputWriter, ABC):
                 super().write_output(replace(scope, fold=overall_fold), training_result, prediction_result, output_data,
                                      **kwargs)
 
-    def __init__(self, sinks: List[Sink]):
-        super().__init__(sinks)
+    def __init__(self, *sinks: Sink):
+        super().__init__(*sinks)
         self.results: Dict[str, EvaluationWriter.EvaluationResult] = {}
 
     @abstractmethod
@@ -436,8 +436,8 @@ class BinaryEvaluationWriter(EvaluationWriter):
     used bipartition measures.
     """
 
-    def __init__(self, sinks: List[Sink]):
-        super().__init__(sinks)
+    def __init__(self, *sinks: Sink):
+        super().__init__(*sinks)
         options = [sink.options for sink in sinks]
         self.multi_label_evaluation_functions = filter_formatters(MULTI_LABEL_EVALUATION_MEASURES, options)
         self.single_label_evaluation_functions = filter_formatters(SINGLE_LABEL_EVALUATION_MEASURES, options)
@@ -462,8 +462,8 @@ class RegressionEvaluationWriter(EvaluationWriter):
     regression measures.
     """
 
-    def __init__(self, sinks: List[Sink]):
-        super().__init__(sinks)
+    def __init__(self, *sinks: Sink):
+        super().__init__(*sinks)
         options = [sink.options for sink in sinks]
         self.regression_evaluation_functions = filter_formatters(REGRESSION_EVALUATION_MEASURES, options)
 
@@ -483,8 +483,8 @@ class RankingEvaluationWriter(EvaluationWriter):
     regression and ranking measures.
     """
 
-    def __init__(self, sinks: List[Sink]):
-        super().__init__(sinks)
+    def __init__(self, *sinks: Sink):
+        super().__init__(*sinks)
         options = [sink.options for sink in sinks]
         self.regression_evaluation_functions = filter_formatters(REGRESSION_EVALUATION_MEASURES, options)
         self.ranking_evaluation_functions = filter_formatters(RANKING_EVALUATION_MEASURES, options)
