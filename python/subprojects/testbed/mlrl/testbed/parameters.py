@@ -14,7 +14,6 @@ from mlrl.common.config.options import Options
 
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_table
-from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_reader, get_file_name_per_fold, open_readable_file
 from mlrl.testbed.output.converters import TableConverter, TextConverter
 from mlrl.testbed.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.output.sinks.sink_log import LogSink as BaseLogSink
@@ -22,6 +21,7 @@ from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
+from mlrl.testbed.util.io import SUFFIX_CSV, create_csv_dict_reader, get_file_name_per_fold, open_readable_file
 
 
 class ParameterLoader(ABC):

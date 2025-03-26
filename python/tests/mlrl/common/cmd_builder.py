@@ -10,7 +10,7 @@ from functools import reduce
 from os import environ, makedirs, path
 from typing import List, Optional
 
-from mlrl.testbed.io import ENCODING_UTF8
+from mlrl.testbed.util.io import ENCODING_UTF8
 
 ENV_OVERWRITE_OUTPUT_FILES = 'OVERWRITE_OUTPUT_FILES'
 

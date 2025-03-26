@@ -5,11 +5,11 @@ Provides classes that allow writing output data to text files.
 """
 from typing import Optional
 
-from mlrl.testbed.io import open_writable_file
 from mlrl.testbed.output.sinks.sink import FileSink
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
+from mlrl.testbed.util.io import open_writable_file
 
 
 class TextFileSink(FileSink):

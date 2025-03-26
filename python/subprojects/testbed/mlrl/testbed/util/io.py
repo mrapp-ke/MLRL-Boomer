@@ -1,7 +1,7 @@
 """
 Author Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides functions for writing and reading files.
+Provides utility functions for reading and writing files.
 """
 import xml.etree.ElementTree as XmlTree
 

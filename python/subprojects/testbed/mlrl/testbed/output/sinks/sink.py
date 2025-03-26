@@ -9,10 +9,10 @@ from typing import Optional
 
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.io import get_file_name_per_fold
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
+from mlrl.testbed.util.io import get_file_name_per_fold
 
 
 class Sink(ABC):

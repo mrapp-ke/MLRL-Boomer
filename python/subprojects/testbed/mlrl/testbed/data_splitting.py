@@ -19,8 +19,8 @@ from mlrl.testbed.data import ArffMetaData, load_data_set, load_data_set_and_met
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_duration
-from mlrl.testbed.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name, get_file_name_per_fold
 from mlrl.testbed.preprocessors import Preprocessor
+from mlrl.testbed.util.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name, get_file_name_per_fold
 
 
 class DataSet:

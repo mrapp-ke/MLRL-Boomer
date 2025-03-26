@@ -13,7 +13,6 @@ from mlrl.common.config.options import Options
 from mlrl.testbed.data import ArffMetaData, save_arff_file
 from mlrl.testbed.dataset import Attribute, AttributeType
 from mlrl.testbed.format import OPTION_DECIMALS, format_array
-from mlrl.testbed.io import SUFFIX_ARFF
 from mlrl.testbed.output.converters import TextConverter
 from mlrl.testbed.output.sinks.sink import FileSink
 from mlrl.testbed.output.sinks.sink_log import LogSink as BaseLogSink
@@ -22,6 +21,7 @@ from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.problem_type import ProblemType
 from mlrl.testbed.training_result import TrainingResult
+from mlrl.testbed.util.io import SUFFIX_ARFF
 
 
 class PredictionWriter(OutputWriter):
