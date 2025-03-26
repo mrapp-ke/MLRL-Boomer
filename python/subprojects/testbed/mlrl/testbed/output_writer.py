@@ -18,8 +18,6 @@ class OutputWriter(ABC):
     output files.
     """
 
-    KWARG_DATA_SPLIT = 'data_split'
-
     def __init__(self, sinks: List[Sink]):
         """
         :param sinks: A list that contains all sinks, output data should be written to
