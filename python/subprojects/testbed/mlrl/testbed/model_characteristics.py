@@ -16,12 +16,12 @@ from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBo
     RuleModelVisitor
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
-from mlrl.testbed.data import MetaData
-from mlrl.testbed.data_splitting import DataSplit, DataType
+from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
 from mlrl.testbed.format import format_float, format_percentage, format_table
+from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
-from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
-from mlrl.testbed.problem_type import ProblemType
+from mlrl.testbed.prediction_result import PredictionResult
+from mlrl.testbed.training_result import TrainingResult
 
 
 class ModelCharacteristicsWriter(OutputWriter, ABC):
@@ -29,24 +29,25 @@ class ModelCharacteristicsWriter(OutputWriter, ABC):
     An abstract base class for all classes that allow to write the characteristics of a model to one or several sinks.
     """
 
-    class LogSink(OutputWriter.LogSink):
+    class LogSink(BaseLogSink):
         """
         Allows to write the characteristics of a model to the console.
         """
 
         def __init__(self):
-            super().__init__(title='Model characteristics')
+            super().__init__(BaseLogSink.TitleFormatter('Model characteristics', include_dataset_type=False))
 
-    class CsvFileSink(OutputWriter.CsvFileSink):
+    class CsvFileSink(BaseCsvFileSink):
         """
-        Allows to write the characteristics of a model to CSV files.
+        Allows to write the characteristics of a model to a CSV file.
         """
 
-        def __init__(self, output_dir: str):
-            super().__init__(output_dir=output_dir, file_name='model_characteristics')
-
-    def __init__(self, sinks: List[OutputWriter.Sink]):
-        super().__init__(sinks)
+        def __init__(self, directory: str):
+            """
+            :param directory: The path to the directory, where the CSV file should be located
+            """
+            super().__init__(
+                BaseCsvFileSink.PathFormatter(directory, 'model_characteristics', include_dataset_type=False))
 
 
 class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
@@ -345,28 +346,30 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                 self.num_neg_predictions.append(num_neg_predictions)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
-                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
-                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
-                              train_time: float, predict_time: float) -> Optional[Any]:
-        if isinstance(learner, (ClassifierMixin, RegressorMixin)):
-            model = learner.model_
+    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+        if training_result:
+            learner = training_result.learner
 
-            if isinstance(model, RuleModel):
-                visitor = RuleModelCharacteristicsWriter.RuleModelCharacteristicsVisitor()
-                model.visit_used(visitor)
-                return RuleModelCharacteristicsWriter.RuleModelCharacteristics(
-                    default_rule_index=visitor.default_rule_index,
-                    default_rule_pos_predictions=visitor.default_rule_pos_predictions,
-                    default_rule_neg_predictions=visitor.default_rule_neg_predictions,
-                    num_numerical_leq=np.asarray(visitor.num_numerical_leq),
-                    num_numerical_gr=np.asarray(visitor.num_numerical_gr),
-                    num_ordinal_leq=np.asarray(visitor.num_ordinal_leq),
-                    num_ordinal_gr=np.asarray(visitor.num_ordinal_gr),
-                    num_nominal_eq=np.asarray(visitor.num_nominal_eq),
-                    num_nominal_neq=np.asarray(visitor.num_nominal_neq),
-                    num_pos_predictions=np.asarray(visitor.num_pos_predictions),
-                    num_neg_predictions=np.asarray(visitor.num_neg_predictions))
+            if isinstance(learner, (ClassifierMixin, RegressorMixin)):
+                model = learner.model_
 
-        log.error('The learner does not support to obtain model characteristics')
+                if isinstance(model, RuleModel):
+                    visitor = RuleModelCharacteristicsWriter.RuleModelCharacteristicsVisitor()
+                    model.visit_used(visitor)
+                    return RuleModelCharacteristicsWriter.RuleModelCharacteristics(
+                        default_rule_index=visitor.default_rule_index,
+                        default_rule_pos_predictions=visitor.default_rule_pos_predictions,
+                        default_rule_neg_predictions=visitor.default_rule_neg_predictions,
+                        num_numerical_leq=np.asarray(visitor.num_numerical_leq),
+                        num_numerical_gr=np.asarray(visitor.num_numerical_gr),
+                        num_ordinal_leq=np.asarray(visitor.num_ordinal_leq),
+                        num_ordinal_gr=np.asarray(visitor.num_ordinal_gr),
+                        num_nominal_eq=np.asarray(visitor.num_nominal_eq),
+                        num_nominal_neq=np.asarray(visitor.num_nominal_neq),
+                        num_pos_predictions=np.asarray(visitor.num_pos_predictions),
+                        num_neg_predictions=np.asarray(visitor.num_neg_predictions))
+
+            log.error('The learner does not support to obtain model characteristics')
+
         return None
