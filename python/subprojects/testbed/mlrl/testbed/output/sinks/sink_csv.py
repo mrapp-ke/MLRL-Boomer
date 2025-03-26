@@ -9,7 +9,8 @@ from mlrl.testbed.output.sinks.sink import FileSink
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
-from mlrl.testbed.util.io import SUFFIX_CSV, create_csv_dict_writer, open_writable_file
+from mlrl.testbed.util.io import SUFFIX_CSV, open_writable_file
+from mlrl.testbed.util.io_csv import CsvWriter
 
 
 class CsvFileSink(FileSink):
@@ -47,7 +48,7 @@ class CsvFileSink(FileSink):
                 header = sorted(tabular_data[0].keys())
 
                 with open_writable_file(file_path, append=incremental_prediction) as csv_file:
-                    csv_writer = create_csv_dict_writer(csv_file, header)
+                    csv_writer = CsvWriter(csv_file, header)
 
                     for row in tabular_data:
                         csv_writer.writerow(row)

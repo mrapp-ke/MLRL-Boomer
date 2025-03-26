@@ -21,7 +21,8 @@ from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
-from mlrl.testbed.util.io import SUFFIX_CSV, create_csv_dict_reader, get_file_name_per_fold, open_readable_file
+from mlrl.testbed.util.io import SUFFIX_CSV, get_file_name_per_fold, open_readable_file
+from mlrl.testbed.util.io_csv import CsvReader
 
 
 class ParameterLoader(ABC):
@@ -57,7 +58,7 @@ class CsvParameterLoader(ParameterLoader):
 
         try:
             with open_readable_file(file_path) as csv_file:
-                csv_reader = create_csv_dict_reader(csv_file)
+                csv_reader = CsvReader(csv_file)
                 log.info('Successfully loaded parameters from file \"%s\"', file_path)
                 return dict(next(csv_reader))
         except IOError:
