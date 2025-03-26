@@ -11,10 +11,11 @@ from mlrl.common.config.options import Options
 
 from mlrl.testbed.characteristics import LABEL_CHARACTERISTICS, OUTPUT_CHARACTERISTICS, Characteristic, \
     OutputCharacteristics, density
-from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
+from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.dataset import AttributeType, Dataset
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, filter_formatters, format_table
 from mlrl.testbed.output.converters import TableConverter, TextConverter
+from mlrl.testbed.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
