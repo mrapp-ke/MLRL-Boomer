@@ -17,9 +17,9 @@ from mlrl.common.learners import ClassificationRuleLearner
 
 from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
 from mlrl.testbed.format import format_table
-from mlrl.testbed.output.converters import TextConverter
+from mlrl.testbed.output.converters import TableConverter, TextConverter
 from mlrl.testbed.output_scope import OutputScope
-from mlrl.testbed.output_writer import OutputWriter, Tabularizable
+from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
 
@@ -31,7 +31,7 @@ class LabelVectorWriter(OutputWriter):
     Allows to write unique label vectors that are contained in a data set to one or several sinks.
     """
 
-    class LabelVectors(TextConverter, Tabularizable):
+    class LabelVectors(TextConverter, TableConverter):
         """
         Stores unique label vectors that are contained in a data set.
         """
@@ -92,20 +92,19 @@ class LabelVectorWriter(OutputWriter):
 
             return format_table(rows, header=header)
 
-        def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
+        def to_table(self, options: Options, **_) -> Optional[TableConverter.Table]:
             """
-            See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+            See :func:`mlrl.testbed.output.converters.TableConverter.to_table`
             """
             sparse = options.get_bool(OPTION_SPARSE, False)
             rows = []
 
             for i, (sparse_label_vector, frequency) in enumerate(self.unique_label_vectors):
-                columns = {
+                rows.append({
                     self.COLUMN_INDEX: i + 1,
                     self.COLUMN_LABEL_VECTOR: self.__format_label_vector(sparse_label_vector, sparse=sparse),
                     self.COLUMN_FREQUENCY: frequency
-                }
-                rows.append(columns)
+                })
 
             return rows
 

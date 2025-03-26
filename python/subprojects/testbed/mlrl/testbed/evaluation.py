@@ -20,9 +20,9 @@ from mlrl.common.data.types import Float32, Uint8
 from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink, Sink
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
-from mlrl.testbed.output.converters import TextConverter
+from mlrl.testbed.output.converters import TableConverter, TextConverter
 from mlrl.testbed.output_scope import OutputScope
-from mlrl.testbed.output_writer import OutputWriter, Tabularizable
+from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
 
@@ -205,7 +205,7 @@ class EvaluationWriter(OutputWriter, ABC):
 
     KWARG_FOLD = 'fold_index'
 
-    class EvaluationResult(TextConverter, Tabularizable):
+    class EvaluationResult(TextConverter, TableConverter):
         """
         Stores the evaluation results according to different measures.
         """
@@ -322,9 +322,9 @@ class EvaluationWriter(OutputWriter, ABC):
 
             return format_table(rows)
 
-        def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
+        def to_table(self, options: Options, **kwargs) -> Optional[TableConverter.Table]:
             """
-            See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+            See :func:`mlrl.testbed.output.converters.TableConverter.to_table`
             """
             fold = kwargs.get(EvaluationWriter.KWARG_FOLD)
             percentage = options.get_bool(OPTION_PERCENTAGE, True)
