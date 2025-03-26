@@ -17,8 +17,9 @@ from mlrl.common.learners import ClassificationRuleLearner
 
 from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
 from mlrl.testbed.format import format_table
+from mlrl.testbed.output.converters import TextConverter
 from mlrl.testbed.output_scope import OutputScope
-from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
+from mlrl.testbed.output_writer import OutputWriter, Tabularizable
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
 
@@ -30,7 +31,7 @@ class LabelVectorWriter(OutputWriter):
     Allows to write unique label vectors that are contained in a data set to one or several sinks.
     """
 
-    class LabelVectors(Formattable, Tabularizable):
+    class LabelVectors(TextConverter, Tabularizable):
         """
         Stores unique label vectors that are contained in a data set.
         """
@@ -78,9 +79,9 @@ class LabelVectorWriter(OutputWriter):
             dense_label_vector[sparse_label_vector] = 1
             return str(dense_label_vector)
 
-        def format(self, options: Options, **_) -> str:
+        def to_text(self, options: Options, **_) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            See :func:`mlrl.testbed.output.converters.TextConverter.to_text`
             """
             sparse = options.get_bool(OPTION_SPARSE, False)
             header = [self.COLUMN_INDEX, self.COLUMN_LABEL_VECTOR, self.COLUMN_FREQUENCY]

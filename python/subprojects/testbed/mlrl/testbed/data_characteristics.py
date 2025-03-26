@@ -14,8 +14,9 @@ from mlrl.testbed.characteristics import LABEL_CHARACTERISTICS, OUTPUT_CHARACTER
 from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
 from mlrl.testbed.dataset import AttributeType, Dataset
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, filter_formatters, format_table
+from mlrl.testbed.output.converters import TextConverter
 from mlrl.testbed.output_scope import OutputScope
-from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
+from mlrl.testbed.output_writer import OutputWriter, Tabularizable
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.problem_type import ProblemType
 from mlrl.testbed.training_result import TrainingResult
@@ -112,7 +113,7 @@ class DataCharacteristicsWriter(OutputWriter):
     Allows to write the characteristics of a data set to one or several sinks.
     """
 
-    class DataCharacteristics(Formattable, Tabularizable):
+    class DataCharacteristics(TextConverter, Tabularizable):
         """
         Stores characteristics of a feature matrix and an output matrix.
         """
@@ -129,9 +130,9 @@ class DataCharacteristicsWriter(OutputWriter):
             classification = problem_type == ProblemType.CLASSIFICATION
             self.output_formatters = LABEL_CHARACTERISTICS if classification else OUTPUT_CHARACTERISTICS
 
-        def format(self, options: Options, **_) -> str:
+        def to_text(self, options: Options, **_) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            See :func:`mlrl.testbed.output.converters.TextConverter.to_text`
             """
             percentage = options.get_bool(OPTION_PERCENTAGE, True)
             decimals = options.get_int(OPTION_DECIMALS, 2)

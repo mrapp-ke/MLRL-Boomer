@@ -123,7 +123,7 @@ class LogSink(Sink):
     def write_output(self, scope: OutputScope, _: Optional[TrainingResult],
                      prediction_result: Optional[PredictionResult], output_data, **kwargs):
         log.info('%s:\n\n%s\n', self.title_formatter.format(scope, prediction_result),
-                 output_data.format(self.options, **kwargs))
+                 output_data.to_text(self.options, **kwargs))
 
 
 class FileSink(Sink, ABC):
@@ -239,7 +239,7 @@ class TextFileSink(FileSink):
     def _write_output(self, file_path: str, scope: OutputScope, training_result: Optional[TrainingResult],
                       prediction_result: Optional[PredictionResult], output_data, **kwargs):
         with open_writable_text_file(file_path) as text_file:
-            text_file.write(output_data.format(self.options, **kwargs))
+            text_file.write(output_data.to_text(self.options, **kwargs))
 
 
 class CsvFileSink(FileSink):

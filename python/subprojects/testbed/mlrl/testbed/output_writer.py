@@ -14,21 +14,6 @@ from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
 
 
-class Formattable(ABC):
-    """
-    An abstract base class for all classes from which a textual representation can be created.
-    """
-
-    @abstractmethod
-    def format(self, options: Options, **kwargs) -> str:
-        """
-        Creates and returns a textual representation of the object.
-
-        :param options: Options to be taken into account
-        :return:        The textual representation that has been created
-        """
-
-
 class Tabularizable(ABC):
     """
     An abstract base class for all classes from which a tabular representation can be created.
