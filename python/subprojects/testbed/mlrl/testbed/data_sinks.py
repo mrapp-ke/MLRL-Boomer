@@ -5,38 +5,11 @@ Provides classes that implement sinks, output data can be written to.
 """
 from typing import Optional
 
-from mlrl.testbed.io import SUFFIX_CSV, SUFFIX_TEXT, create_csv_dict_writer, open_writable_csv_file, \
-    open_writable_text_file
+from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_writer, open_writable_csv_file
 from mlrl.testbed.output.sinks.sink import FileSink
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
-
-
-class TextFileSink(FileSink):
-    """
-    Allows to write output data to a text file.
-    """
-
-    class PathFormatter(FileSink.PathFormatter):
-        """
-        Allows to determine the paths to text files to which output data is written.
-        """
-
-        def __init__(self,
-                     directory: str,
-                     file_name: str,
-                     include_dataset_type: bool = True,
-                     include_prediction_scope: bool = True,
-                     include_fold: bool = True):
-            super().__init__(directory, file_name, SUFFIX_TEXT, include_dataset_type, include_prediction_scope,
-                             include_fold)
-
-    # pylint: disable=unused-argument
-    def _write_to_file(self, file_path: str, scope: OutputScope, training_result: Optional[TrainingResult],
-                       prediction_result: Optional[PredictionResult], output_data, **kwargs):
-        with open_writable_text_file(file_path) as text_file:
-            text_file.write(output_data.to_text(self.options, **kwargs))
 
 
 class CsvFileSink(FileSink):
