@@ -12,7 +12,8 @@ from mlrl.common.config.options import Options
 from mlrl.common.data.arrays import is_sparse
 
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
-from mlrl.testbed.output_writer import Formattable, Tabularizable
+from mlrl.testbed.output.converters import TextConverter
+from mlrl.testbed.output_writer import Tabularizable
 from mlrl.testbed.problem_type import ProblemType
 
 OPTION_OUTPUTS = 'outputs'
@@ -100,7 +101,7 @@ def label_imbalance_ratio(y) -> float:
     return 0.0
 
 
-class OutputCharacteristics(Formattable, Tabularizable):
+class OutputCharacteristics(TextConverter, Tabularizable):
     """
     Stores characteristics of the outputs in a dataset.
     """
@@ -157,9 +158,9 @@ class OutputCharacteristics(Formattable, Tabularizable):
         """
         return distinct_label_vectors(self.array)
 
-    def format(self, options: Options, **_) -> str:
+    def to_text(self, options: Options, **_) -> Optional[str]:
         """
-        See :func:`mlrl.testbed.output_writer.Formattable.format`
+        See :func:`mlrl.testbed.output.converters.TextConverter.to_text`
         """
         percentage = options.get_bool(OPTION_PERCENTAGE, True)
         decimals = options.get_int(OPTION_DECIMALS, 2)

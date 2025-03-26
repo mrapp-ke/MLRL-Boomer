@@ -16,8 +16,9 @@ from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as B
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_table
 from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_reader, get_file_name_per_fold, open_readable_csv_file
+from mlrl.testbed.output.converters import TextConverter
 from mlrl.testbed.output_scope import OutputScope
-from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
+from mlrl.testbed.output_writer import OutputWriter, Tabularizable
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
 
@@ -68,7 +69,7 @@ class ParameterWriter(OutputWriter):
     Allows to write parameter settings to one or several sinks.
     """
 
-    class Parameters(Formattable, Tabularizable):
+    class Parameters(TextConverter, Tabularizable):
         """
         Stores the parameter settings of a learner.
         """
@@ -80,9 +81,9 @@ class ParameterWriter(OutputWriter):
             self.parameters = parameters
 
         # pylint: disable=unused-argument
-        def format(self, options: Options, **_):
+        def to_text(self, options: Options, **_) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            See :func:`mlrl.testbed.output.converters.TextConverter.to_text`
             """
             parameters = self.parameters
             rows = []
