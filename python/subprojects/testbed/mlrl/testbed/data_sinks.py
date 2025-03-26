@@ -269,7 +269,7 @@ class CsvFileSink(FileSink):
 
     def _write_output(self, file_path: str, scope: OutputScope, training_result: Optional[TrainingResult],
                       prediction_result: Optional[PredictionResult], output_data, **kwargs):
-        tabular_data = output_data.tabularize(self.options, **kwargs)
+        tabular_data = output_data.to_table(self.options, **kwargs)
 
         if tabular_data:
             incremental_prediction = prediction_result and not prediction_result.prediction_scope.is_global()

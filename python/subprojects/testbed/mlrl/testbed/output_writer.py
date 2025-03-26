@@ -4,29 +4,12 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utilities for writing output data to sinks like the console or output files.
 """
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
-
-from mlrl.common.config.options import Options
+from typing import Any, List, Optional
 
 from mlrl.testbed.data_sinks import Sink
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
-
-
-class Tabularizable(ABC):
-    """
-    An abstract base class for all classes from which a tabular representation can be created.
-    """
-
-    @abstractmethod
-    def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
-        """
-        Creates and returns a tabular representation of the object.
-
-        :param options: Options to be taken into account
-        :return:        The tabular representation that has been created
-        """
 
 
 class OutputWriter(ABC):
