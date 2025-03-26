@@ -353,19 +353,19 @@ class EvaluationWriter(OutputWriter, ABC):
         def __init__(self, options: Options = Options()):
             super().__init__(BaseLogSink.TitleFormatter('Evaluation result'), options=options)
 
-        def write_output(self, scope: OutputScope, training_result: Optional[TrainingResult],
-                         prediction_result: Optional[PredictionResult], output_data, **kwargs):
+        def write_to_sink(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                          prediction_result: Optional[PredictionResult], output_data, **kwargs):
             """
-            See :func:`mlrl.testbed.output.sinks.sink.Sink.write_output`
+            See :func:`mlrl.testbed.output.sinks.sink.Sink.write_to_sink`
             """
             fold = scope.fold
             new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold.index if fold.is_cross_validation_used else 0}}
-            super().write_output(scope, training_result, prediction_result, output_data, **new_kwargs)
+            super().write_to_sink(scope, training_result, prediction_result, output_data, **new_kwargs)
 
             if fold.is_cross_validation_used and fold.is_last_fold:
                 overall_fold = Fold(index=None, num_folds=fold.num_folds, is_last_fold=True)
-                super().write_output(replace(scope, fold=overall_fold), training_result, prediction_result, output_data,
-                                     **kwargs)
+                super().write_to_sink(replace(scope, fold=overall_fold), training_result, prediction_result,
+                                      output_data, **kwargs)
 
     class CsvFileSink(BaseCsvFileSink):
         """
@@ -379,19 +379,19 @@ class EvaluationWriter(OutputWriter, ABC):
             super().__init__(BaseCsvFileSink.PathFormatter(directory, 'evaluation', include_prediction_scope=False),
                              options=options)
 
-        def write_output(self, scope: OutputScope, training_result: Optional[TrainingResult],
-                         prediction_result: Optional[PredictionResult], output_data, **kwargs):
+        def write_to_sink(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                          prediction_result: Optional[PredictionResult], output_data, **kwargs):
             """
-            See :func:`mlrl.testbed.output.sinks.sink.Sink.write_output`
+            See :func:`mlrl.testbed.output.sinks.sink.Sink.write_to_sink`
             """
             fold = scope.fold
             new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold.index if fold.is_cross_validation_used else 0}}
-            super().write_output(scope, training_result, prediction_result, output_data, **new_kwargs)
+            super().write_to_sink(scope, training_result, prediction_result, output_data, **new_kwargs)
 
             if fold.is_cross_validation_used and fold.is_last_fold:
                 overall_fold = Fold(index=None, num_folds=fold.num_folds, is_last_fold=True)
-                super().write_output(replace(scope, fold=overall_fold), training_result, prediction_result, output_data,
-                                     **kwargs)
+                super().write_to_sink(replace(scope, fold=overall_fold), training_result, prediction_result,
+                                      output_data, **kwargs)
 
     def __init__(self, *sinks: Sink):
         super().__init__(*sinks)

@@ -95,10 +95,10 @@ class LogSink(Sink):
         super().__init__(options=options)
         self.title_formatter = title_formatter
 
-    def write_output(self, scope: OutputScope, _: Optional[TrainingResult],
-                     prediction_result: Optional[PredictionResult], output_data, **kwargs):
+    def write_to_sink(self, scope: OutputScope, _: Optional[TrainingResult],
+                      prediction_result: Optional[PredictionResult], output_data, **kwargs):
         """
-        See :func:`mlrl.testbed.output.sinks.sink.Sink.write_output`
+        See :func:`mlrl.testbed.output.sinks.sink.Sink.write_to_sink`
         """
         log.info('%s:\n\n%s\n', self.title_formatter.format(scope, prediction_result),
                  output_data.to_text(self.options, **kwargs))
@@ -168,10 +168,10 @@ class FileSink(Sink, ABC):
         super().__init__(options)
         self.path_formatter = path_formatter
 
-    def write_output(self, scope: OutputScope, training_result: Optional[TrainingResult],
-                     prediction_result: Optional[PredictionResult], output_data, **kwargs):
+    def write_to_sink(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                      prediction_result: Optional[PredictionResult], output_data, **kwargs):
         """
-        See :func:`mlrl.testbed.output.sinks.sink.Sink.write_output`
+        See :func:`mlrl.testbed.output.sinks.sink.Sink.write_to_sink`
         """
         file_path = self.path_formatter.format(scope, prediction_result)
         self._write_output(file_path, scope, training_result, prediction_result, output_data, **kwargs)
