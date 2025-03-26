@@ -12,11 +12,12 @@ from typing import Any, Dict, Optional
 
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
+from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_table
 from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_reader, get_file_name_per_fold, open_readable_csv_file
 from mlrl.testbed.output.converters import TableConverter, TextConverter
+from mlrl.testbed.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
