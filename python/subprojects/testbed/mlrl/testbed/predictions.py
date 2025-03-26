@@ -11,11 +11,12 @@ import numpy as np
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.data import ArffMetaData, save_arff_file
-from mlrl.testbed.data_sinks import FileSink, LogSink as BaseLogSink
+from mlrl.testbed.data_sinks import LogSink as BaseLogSink
 from mlrl.testbed.dataset import Attribute, AttributeType
 from mlrl.testbed.format import OPTION_DECIMALS, format_array
 from mlrl.testbed.io import SUFFIX_ARFF
 from mlrl.testbed.output.converters import TextConverter
+from mlrl.testbed.output.sinks.sink import FileSink
 from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
