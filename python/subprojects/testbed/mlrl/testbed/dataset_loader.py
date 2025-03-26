@@ -8,7 +8,7 @@ from typing import Optional
 
 from mlrl.testbed.data import load_data_set, load_data_set_and_meta_data
 from mlrl.testbed.dataset import Dataset
-from mlrl.testbed.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name
+from mlrl.testbed.util.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name
 
 
 class DatasetLoader(ABC):
