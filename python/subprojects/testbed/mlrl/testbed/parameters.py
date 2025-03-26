@@ -14,7 +14,7 @@ from mlrl.common.config.options import Options
 
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_table
-from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_reader, get_file_name_per_fold, open_readable_csv_file
+from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_reader, get_file_name_per_fold, open_readable_file
 from mlrl.testbed.output.converters import TableConverter, TextConverter
 from mlrl.testbed.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.output.sinks.sink_log import LogSink as BaseLogSink
@@ -56,7 +56,7 @@ class CsvParameterLoader(ParameterLoader):
         log.debug('Loading parameters from file \"%s\"...', file_path)
 
         try:
-            with open_readable_csv_file(file_path) as csv_file:
+            with open_readable_file(file_path) as csv_file:
                 csv_reader = create_csv_dict_reader(csv_file)
                 log.info('Successfully loaded parameters from file \"%s\"', file_path)
                 return dict(next(csv_reader))
