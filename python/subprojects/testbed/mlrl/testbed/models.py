@@ -7,7 +7,7 @@ e.g., to the console or to a file.
 import logging as log
 
 from abc import ABC
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 import numpy as np
 
@@ -18,6 +18,7 @@ from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBo
     RuleModelVisitor
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
+from mlrl.testbed.data_sinks import LogSink as BaseLogSink, TextFileSink as BaseTextFileSink
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.format import format_float
 from mlrl.testbed.output_scope import OutputScope
@@ -46,24 +47,25 @@ class ModelWriter(OutputWriter, ABC):
     sinks.
     """
 
-    class LogSink(OutputWriter.LogSink):
+    class LogSink(BaseLogSink):
         """
         Allows to write textual representations of models to the console.
         """
 
         def __init__(self, options: Options = Options()):
-            super().__init__(OutputWriter.LogSink.TitleFormatter('Model', include_dataset_type=False), options=options)
+            super().__init__(BaseLogSink.TitleFormatter('Model', include_dataset_type=False), options=options)
 
-    class TextFileSink(OutputWriter.TextFileSink):
+    class TextFileSink(BaseTextFileSink):
         """
-        Allows to write textual representations of models to text files.
+        Allows to write textual representations of models to a text file.
         """
 
-        def __init__(self, output_dir: str, options: Options = Options()):
-            super().__init__(output_dir=output_dir, file_name='rules', options=options)
-
-    def __init__(self, sinks: List[OutputWriter.Sink]):
-        super().__init__(sinks)
+        def __init__(self, directory: str, options: Options = Options()):
+            """
+            :param directory: The path to the directory, where the text file should be located
+            """
+            super().__init__(BaseTextFileSink.PathFormatter(directory, 'rules', include_dataset_type=False),
+                             options=options)
 
 
 class RuleModelWriter(ModelWriter):

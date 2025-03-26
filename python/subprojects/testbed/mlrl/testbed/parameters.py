@@ -12,6 +12,7 @@ from typing import Any, Dict, List, Optional
 
 from mlrl.common.config.options import Options
 
+from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_table
 from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_reader, get_file_name_per_fold, open_readable_csv_file
@@ -108,21 +109,24 @@ class ParameterWriter(OutputWriter):
 
             return [columns]
 
-    class LogSink(OutputWriter.LogSink):
+    class LogSink(BaseLogSink):
         """
         Allows to write parameter settings to the console.
         """
 
         def __init__(self):
-            super().__init__(OutputWriter.LogSink.TitleFormatter('Custom parameters', include_dataset_type=False))
+            super().__init__(BaseLogSink.TitleFormatter('Custom parameters', include_dataset_type=False))
 
-    class CsvFileSink(OutputWriter.CsvFileSink):
+    class CsvFileSink(BaseCsvFileSink):
         """
         Allows to write parameter settings to CSV files.
         """
 
-        def __init__(self, output_dir: str):
-            super().__init__(output_dir=output_dir, file_name='parameters')
+        def __init__(self, directory: str):
+            """
+            :param directory: The path to the directory, where the CSV file should be located
+            """
+            super().__init__(BaseCsvFileSink.PathFormatter(directory, 'parameters', include_dataset_type=False))
 
     # pylint: disable=unused-argument
     def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],

@@ -11,9 +11,10 @@ import numpy as np
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.data import ArffMetaData, save_arff_file
+from mlrl.testbed.data_sinks import FileSink, LogSink as BaseLogSink
 from mlrl.testbed.dataset import Attribute, AttributeType
 from mlrl.testbed.format import OPTION_DECIMALS, format_array
-from mlrl.testbed.io import SUFFIX_ARFF, get_file_name_per_fold
+from mlrl.testbed.io import SUFFIX_ARFF
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter
 from mlrl.testbed.prediction_result import PredictionResult
@@ -50,32 +51,28 @@ class PredictionWriter(OutputWriter):
             text += format_array(self.predictions, decimals=decimals)
             return text
 
-    class LogSink(OutputWriter.LogSink):
+    class LogSink(BaseLogSink):
         """
         Allows to write predictions and the corresponding ground truth to the console.
         """
 
         def __init__(self, options: Options = Options()):
-            super().__init__(OutputWriter.LogSink.TitleFormatter('Predictions'), options=options)
+            super().__init__(BaseLogSink.TitleFormatter('Predictions'), options=options)
 
-    class ArffFileSink(OutputWriter.Sink):
+    class ArffFileSink(FileSink):
         """
-        Allows to write predictions and the corresponding ground truth to ARFF files.
+        Allows to write predictions and the corresponding ground truth to an ARFF file.
         """
 
-        def __init__(self, output_dir: str, options: Options = Options()):
+        def __init__(self, directory: str, options: Options = Options()):
             """
-            :param output_dir: The path to the directory, where the ARFF file should be located
+            :param directory: The path to the directory, where the ARFF file should be located
             """
-            super().__init__(options=options)
-            self.output_dir = output_dir
+            super().__init__(FileSink.PathFormatter(directory, 'predictions', SUFFIX_ARFF), options)
 
         # pylint: disable=unused-argument
-        def write_output(self, scope: OutputScope, training_result: Optional[TrainingResult],
-                         prediction_result: Optional[PredictionResult], output_data, **_):
-            """
-            See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
-            """
+        def _write_output(self, file_path: str, scope: OutputScope, training_result: Optional[TrainingResult],
+                          prediction_result: Optional[PredictionResult], output_data, **_):
             decimals = self.options.get_int(OPTION_DECIMALS, 0)
             ground_truth = output_data.ground_truth
             predictions = output_data.predictions
@@ -101,11 +98,7 @@ class PredictionWriter(OutputWriter):
                 features.append(Attribute('Ground Truth ' + output.name, attribute_type, nominal_values))
                 outputs.append(Attribute('Prediction ' + output.name, attribute_type, nominal_values))
 
-            prediction_meta_data = ArffMetaData(features, outputs)
-            file_name = get_file_name_per_fold(
-                prediction_result.prediction_scope.get_file_name(dataset.type.get_file_name('predictions')),
-                SUFFIX_ARFF, scope.fold.index)
-            save_arff_file(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
+            save_arff_file(file_path, ground_truth, predictions, ArffMetaData(features, outputs))
 
     def _generate_output_data(self, scope: OutputScope, _: Optional[TrainingResult],
                               prediction_result: Optional[PredictionResult]) -> Optional[Any]:

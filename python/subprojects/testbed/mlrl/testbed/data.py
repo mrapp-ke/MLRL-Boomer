@@ -95,22 +95,20 @@ def load_data_set(directory: str,
     return x, y
 
 
-def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.ndarray, meta_data: ArffMetaData):
+def save_arff_file(file_path: str, x: np.ndarray, y: np.ndarray, meta_data: ArffMetaData):
     """
     Saves a data set to an ARFF file.
 
-    :param output_dir:      The path to the directory where the ARFF file should be saved
-    :param arff_file_name:  The name of the ARFF file (including the suffix)
-    :param x:               A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                            `(num_examples, num_features)`, that stores the features of the examples that are contained
-                            in the data set
-    :param y:               A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                            `(num_examples, num_outputs)`, that stores the outputs of the examples that are contained in
-                            the data set
-    :param meta_data:       The meta-data of the data set that should be saved
+    :param file_path:   The path to the ARFF file
+    :param x:           A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                        `(num_examples, num_features)`, that stores the features of the examples that are contained in
+                        the data set
+    :param y:           A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                        `(num_examples, num_outputs)`, that stores the outputs of the examples that are contained in the
+                        data set
+    :param meta_data:   The meta-data of the data set that should be saved
     """
-    arff_file = path.join(output_dir, arff_file_name)
-    log.debug('Saving data set to file \'%s\'...', str(arff_file))
+    log.debug('Saving data set to file \'%s\'...', file_path)
     sparse = is_sparse(x) and is_sparse(y)
     x = dok_array(x)
     y = dok_array(y)
@@ -145,7 +143,7 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
     for keys, value in list(y.items()):
         data[keys[0]][y_prefix + keys[1]] = value
 
-    with open(arff_file, 'w', encoding=ENCODING_UTF8) as file:
+    with open(file_path, 'w', encoding=ENCODING_UTF8) as file:
         file.write(
             arff.dumps({
                 'description': 'traindata',
@@ -153,7 +151,7 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
                 'attributes': attributes,
                 'data': data
             }))
-    log.info('Successfully saved data set to file \'%s\'.', str(arff_file))
+    log.info('Successfully saved data set to file \'%s\'.', file_path)
 
 
 def __create_feature_and_output_matrix(matrix: csc_array, meta_data: ArffMetaData,

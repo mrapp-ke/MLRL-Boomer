@@ -17,6 +17,7 @@ from mlrl.common.config.options import Options
 from mlrl.common.data.arrays import enforce_dense
 from mlrl.common.data.types import Float32, Uint8
 
+from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink, Sink
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
 from mlrl.testbed.output_scope import OutputScope
@@ -342,18 +343,18 @@ class EvaluationWriter(OutputWriter, ABC):
 
             return [filtered_columns]
 
-    class LogSink(OutputWriter.LogSink):
+    class LogSink(BaseLogSink):
         """
         Allows to write evaluation results to the console.
         """
 
         def __init__(self, options: Options = Options()):
-            super().__init__(OutputWriter.LogSink.TitleFormatter('Evaluation result'), options=options)
+            super().__init__(BaseLogSink.TitleFormatter('Evaluation result'), options=options)
 
         def write_output(self, scope: OutputScope, training_result: Optional[TrainingResult],
                          prediction_result: Optional[PredictionResult], output_data, **kwargs):
             """
-            See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
+            See :func:`mlrl.testbed.data_sinks.Sink.write_output`
             """
             fold = scope.fold
             new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold.index if fold.is_cross_validation_used else 0}}
@@ -364,18 +365,22 @@ class EvaluationWriter(OutputWriter, ABC):
                 super().write_output(replace(scope, fold=overall_fold), training_result, prediction_result, output_data,
                                      **kwargs)
 
-    class CsvFileSink(OutputWriter.CsvFileSink):
+    class CsvFileSink(BaseCsvFileSink):
         """
-        Allows to write evaluation results to CSV files.
+        Allows to write evaluation results to a CSV file.
         """
 
-        def __init__(self, output_dir: str, options: Options = Options()):
-            super().__init__(output_dir=output_dir, file_name='evaluation', options=options)
+        def __init__(self, directory: str, options: Options = Options()):
+            """
+            :param directory: The path to the directory, where the CSV file should be located
+            """
+            super().__init__(BaseCsvFileSink.PathFormatter(directory, 'evaluation', include_prediction_scope=False),
+                             options=options)
 
         def write_output(self, scope: OutputScope, training_result: Optional[TrainingResult],
                          prediction_result: Optional[PredictionResult], output_data, **kwargs):
             """
-            See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
+            See :func:`mlrl.testbed.data_sinks.Sink.write_output`
             """
             fold = scope.fold
             new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold.index if fold.is_cross_validation_used else 0}}
@@ -386,7 +391,7 @@ class EvaluationWriter(OutputWriter, ABC):
                 super().write_output(replace(scope, fold=overall_fold), training_result, prediction_result, output_data,
                                      **kwargs)
 
-    def __init__(self, sinks: List[OutputWriter.Sink]):
+    def __init__(self, sinks: List[Sink]):
         super().__init__(sinks)
         self.results: Dict[str, EvaluationWriter.EvaluationResult] = {}
 
@@ -430,7 +435,7 @@ class BinaryEvaluationWriter(EvaluationWriter):
     used bipartition measures.
     """
 
-    def __init__(self, sinks: List[OutputWriter.Sink]):
+    def __init__(self, sinks: List[Sink]):
         super().__init__(sinks)
         options = [sink.options for sink in sinks]
         self.multi_label_evaluation_functions = filter_formatters(MULTI_LABEL_EVALUATION_MEASURES, options)
@@ -456,7 +461,7 @@ class RegressionEvaluationWriter(EvaluationWriter):
     regression measures.
     """
 
-    def __init__(self, sinks: List[OutputWriter.Sink]):
+    def __init__(self, sinks: List[Sink]):
         super().__init__(sinks)
         options = [sink.options for sink in sinks]
         self.regression_evaluation_functions = filter_formatters(REGRESSION_EVALUATION_MEASURES, options)
@@ -477,7 +482,7 @@ class RankingEvaluationWriter(EvaluationWriter):
     regression and ranking measures.
     """
 
-    def __init__(self, sinks: List[OutputWriter.Sink]):
+    def __init__(self, sinks: List[Sink]):
         super().__init__(sinks)
         options = [sink.options for sink in sinks]
         self.regression_evaluation_functions = filter_formatters(REGRESSION_EVALUATION_MEASURES, options)
