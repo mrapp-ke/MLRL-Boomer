@@ -15,9 +15,10 @@ from mlrl.common.cython.output_space_info import LabelVectorSet, LabelVectorSetV
 from mlrl.common.data.types import Uint8
 from mlrl.common.learners import ClassificationRuleLearner
 
-from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
+from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.format import format_table
 from mlrl.testbed.output.converters import TableConverter, TextConverter
+from mlrl.testbed.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
