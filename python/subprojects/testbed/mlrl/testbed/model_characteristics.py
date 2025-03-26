@@ -18,8 +18,9 @@ from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
 from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
 from mlrl.testbed.format import format_float, format_percentage, format_table
+from mlrl.testbed.output.converters import TextConverter
 from mlrl.testbed.output_scope import OutputScope
-from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
+from mlrl.testbed.output_writer import OutputWriter, Tabularizable
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
 
@@ -55,7 +56,7 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
     Allows to write the characteristics of a `RuleModel` to one or several sinks.
     """
 
-    class RuleModelCharacteristics(Formattable, Tabularizable):
+    class RuleModelCharacteristics(TextConverter, Tabularizable):
         """
         Stores the characteristics of a `RuleModel`.
         """
@@ -98,9 +99,9 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
             self.num_neg_predictions = num_neg_predictions
 
         # pylint: disable=unused-argument
-        def format(self, options: Options, **_):
+        def to_text(self, options: Options, **_) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            See :func:`mlrl.testbed.output.converters.TextConverter.to_text`
             """
             num_predictions = self.num_pos_predictions + self.num_neg_predictions
             num_conditions = self.num_numerical_leq + self.num_numerical_gr + self.num_ordinal_leq + \
@@ -117,7 +118,6 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                 num_conditions_mean = np.mean(num_conditions)
                 num_conditions_min = np.min(num_conditions)
                 num_conditions_max = np.max(num_conditions)
-
             else:
                 frac_numerical_leq = 0.0
                 frac_numerical_gr = 0.0

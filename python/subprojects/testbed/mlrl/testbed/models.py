@@ -21,8 +21,9 @@ from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 from mlrl.testbed.data_sinks import LogSink as BaseLogSink, TextFileSink as BaseTextFileSink
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.format import format_float
+from mlrl.testbed.output.converters import TextConverter
 from mlrl.testbed.output_scope import OutputScope
-from mlrl.testbed.output_writer import Formattable, OutputWriter
+from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
 
@@ -73,7 +74,7 @@ class RuleModelWriter(ModelWriter):
     Allows to write textual representations of rule-based models to one or several sinks.
     """
 
-    class RuleModelFormattable(RuleModelVisitor, Formattable):
+    class RuleModelConverter(RuleModelVisitor, TextConverter):
         """
         Allows to create textual representations of the rules in a `RuleModel`.
         """
@@ -233,9 +234,9 @@ class RuleModelWriter(ModelWriter):
             elif self.print_bodies:
                 text.write('\n')
 
-        def format(self, options: Options, **_) -> str:
+        def to_text(self, options: Options, **_) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            See :func:`mlrl.testbed.output.converters.TextConverter.to_text`
             """
             self.print_feature_names = options.get_bool(OPTION_PRINT_FEATURE_NAMES, True)
             self.print_output_names = options.get_bool(OPTION_PRINT_OUTPUT_NAMES, True)
@@ -260,7 +261,7 @@ class RuleModelWriter(ModelWriter):
                 model = learner.model_
 
                 if isinstance(model, RuleModel):
-                    return RuleModelWriter.RuleModelFormattable(scope.dataset, model)
+                    return RuleModelWriter.RuleModelConverter(scope.dataset, model)
 
             log.error('The learner does not support to create a textual representation of the model')
 
