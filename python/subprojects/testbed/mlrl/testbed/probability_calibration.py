@@ -138,11 +138,11 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
             """
             return None
 
-    def __init__(self, sinks: List[Sink], list_title: str):
+    def __init__(self, list_title: str, *sinks: Sink):
         """
         :param list_title: The title of an individual list that is contained by a calibration model
         """
-        super().__init__(sinks)
+        super().__init__(*sinks)
         self.list_title = list_title
 
     @abstractmethod
@@ -203,8 +203,8 @@ class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWrite
                                                            include_dataset_type=False),
                              options=options)
 
-    def __init__(self, sinks: List[Sink]):
-        super().__init__(sinks, list_title='Label')
+    def __init__(self, *sinks: Sink):
+        super().__init__('Label', *sinks)
 
     def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Any:
         return learner.marginal_probability_calibration_model_
@@ -239,8 +239,8 @@ class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
                                                            include_dataset_type=False),
                              options=options)
 
-    def __init__(self, sinks: List[Sink]):
-        super().__init__(sinks, list_title='Label vector')
+    def __init__(self, *sinks: Sink):
+        super().__init__('Label vector', *sinks)
 
     def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Any:
         return learner.joint_probability_calibration_model_

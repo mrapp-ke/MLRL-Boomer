@@ -4,7 +4,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for writing output data to sinks.
 """
 from abc import ABC, abstractmethod
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 from mlrl.testbed.data_sinks import Sink
 from mlrl.testbed.output_scope import OutputScope
@@ -17,11 +17,11 @@ class OutputWriter(ABC):
     An abstract base class for all classes that allow to write output data to one or several sinks.
     """
 
-    def __init__(self, sinks: List[Sink]):
+    def __init__(self, *sinks: Sink):
         """
-        :param sinks: A list that contains all sinks, output data should be written to
+        :param sinks: The sinks, output data should be written to
         """
-        self.sinks = sinks
+        self.sinks = list(sinks)
 
     def write_output(self,
                      scope: OutputScope,
