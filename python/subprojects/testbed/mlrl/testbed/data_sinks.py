@@ -122,8 +122,8 @@ class TextFileSink(FileSink):
                              include_fold)
 
     # pylint: disable=unused-argument
-    def _write_output(self, file_path: str, scope: OutputScope, training_result: Optional[TrainingResult],
-                      prediction_result: Optional[PredictionResult], output_data, **kwargs):
+    def _write_to_file(self, file_path: str, scope: OutputScope, training_result: Optional[TrainingResult],
+                       prediction_result: Optional[PredictionResult], output_data, **kwargs):
         with open_writable_text_file(file_path) as text_file:
             text_file.write(output_data.to_text(self.options, **kwargs))
 
@@ -148,8 +148,8 @@ class CsvFileSink(FileSink):
                              include_fold)
 
     # pylint: disable=unused-argument
-    def _write_output(self, file_path: str, scope: OutputScope, training_result: Optional[TrainingResult],
-                      prediction_result: Optional[PredictionResult], output_data, **kwargs):
+    def _write_to_file(self, file_path: str, scope: OutputScope, training_result: Optional[TrainingResult],
+                       prediction_result: Optional[PredictionResult], output_data, **kwargs):
         tabular_data = output_data.to_table(self.options, **kwargs)
 
         if tabular_data:
