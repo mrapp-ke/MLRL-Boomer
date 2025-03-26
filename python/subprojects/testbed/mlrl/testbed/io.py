@@ -65,9 +65,9 @@ def open_writable_file(file_path: str, append: bool = False):
     return open(file_path, mode=mode, encoding=ENCODING_UTF8)
 
 
-def open_readable_csv_file(file_path: str):
+def open_readable_file(file_path: str):
     """
-    Opens a CSV file to be read from.
+    Opens a file to be read from.
 
     :param file_path:   The path to the file to be opened
     :return:            The file that has been opened
