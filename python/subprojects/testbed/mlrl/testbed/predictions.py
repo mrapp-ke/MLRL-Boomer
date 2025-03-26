@@ -73,8 +73,8 @@ class PredictionWriter(OutputWriter):
             super().__init__(FileSink.PathFormatter(directory, 'predictions', SUFFIX_ARFF), options)
 
         # pylint: disable=unused-argument
-        def _write_output(self, file_path: str, scope: OutputScope, training_result: Optional[TrainingResult],
-                          prediction_result: Optional[PredictionResult], output_data, **_):
+        def _write_to_file(self, file_path: str, scope: OutputScope, training_result: Optional[TrainingResult],
+                           prediction_result: Optional[PredictionResult], output_data, **_):
             decimals = self.options.get_int(OPTION_DECIMALS, 0)
             ground_truth = output_data.ground_truth
             predictions = output_data.predictions
