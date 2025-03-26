@@ -9,11 +9,12 @@ from typing import Any, Optional
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.characteristics import OutputCharacteristics
-from mlrl.testbed.data import MetaData
-from mlrl.testbed.data_splitting import DataSplit, DataType
+from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
+from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import OutputWriter
-from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
-from mlrl.testbed.problem_type import ProblemType
+from mlrl.testbed.prediction_result import PredictionResult
+from mlrl.testbed.prediction_scope import PredictionType
+from mlrl.testbed.training_result import TrainingResult
 
 
 class PredictionCharacteristicsWriter(OutputWriter):
@@ -21,26 +22,28 @@ class PredictionCharacteristicsWriter(OutputWriter):
     Allows to write the characteristics of binary predictions to one or several sinks.
     """
 
-    class LogSink(OutputWriter.LogSink):
+    class LogSink(BaseLogSink):
         """
         Allows to write the characteristics of binary predictions to the console.
         """
 
         def __init__(self, options: Options = Options()):
-            super().__init__(title='Prediction characteristics', options=options)
+            super().__init__(BaseLogSink.TitleFormatter('Prediction characteristics'), options=options)
 
-    class CsvFileSink(OutputWriter.CsvFileSink):
+    class CsvFileSink(BaseCsvFileSink):
         """
-        Allows to write the characteristics of binary predictions to CSV files.
+        Allows to write the characteristics of binary predictions to a CSV file.
         """
 
-        def __init__(self, output_dir: str, options: Options = Options()):
-            super().__init__(output_dir=output_dir, file_name='prediction_characteristics', options=options)
+        def __init__(self, directory: str, options: Options = Options()):
+            """
+            :param directory: The path to the directory, where the CSV file should be located
+            """
+            super().__init__(BaseCsvFileSink.PathFormatter(directory, 'prediction_characteristics'), options=options)
 
-    # pylint: disable=unused-argument
-    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
-                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
-                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
-                              train_time: float, predict_time: float) -> Optional[Any]:
+    def _generate_output_data(self, scope: OutputScope, _: Optional[TrainingResult],
+                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
         # Prediction characteristics can only be determined in the case of binary predictions...
-        return OutputCharacteristics(predictions, problem_type) if prediction_type == PredictionType.BINARY else None
+        if prediction_result and prediction_result.prediction_type == PredictionType.BINARY:
+            return OutputCharacteristics(scope.problem_type, prediction_result.predictions)
+        return None
