@@ -16,9 +16,9 @@ from mlrl.common.learners import ClassificationRuleLearner
 
 from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink, Sink
 from mlrl.testbed.format import OPTION_DECIMALS, format_float, format_table
-from mlrl.testbed.output.converters import TextConverter
+from mlrl.testbed.output.converters import TableConverter, TextConverter
 from mlrl.testbed.output_scope import OutputScope
-from mlrl.testbed.output_writer import OutputWriter, Tabularizable
+from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
 
@@ -30,7 +30,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
     """
 
     class IsotonicProbabilityCalibrationModelConverter(IsotonicProbabilityCalibrationModelVisitor, TextConverter,
-                                                       Tabularizable):
+                                                       TableConverter):
         """
         Allows to create a textual representation of a model for the calibration of probabilities via isotonic
         regression.
@@ -83,9 +83,9 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
 
             return result
 
-        def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
+        def to_table(self, options: Options, **_) -> Optional[TableConverter.Table]:
             """
-            See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+            See :func:`mlrl.testbed.output.converters.TableConverter.to_table`
             """
             self.calibration_model.visit(self)
             decimals = options.get_int(OPTION_DECIMALS, 0)
@@ -118,7 +118,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
 
             return rows
 
-    class NoProbabilityCalibrationModelConverter(TextConverter, Tabularizable):
+    class NoProbabilityCalibrationModelConverter(TextConverter, TableConverter):
         """
         Allows to create a textual representation of a model for the calibration of probabilities that does not make any
         adjustments.
@@ -132,9 +132,9 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
             return 'No calibration model used'
 
         # pylint: disable=unused-argument
-        def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
+        def to_table(self, options: Options, **_) -> Optional[TableConverter.Table]:
             """
-            See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+            See :func:`mlrl.testbed.output.converters.TableConverter.to_table`
             """
             return None
 

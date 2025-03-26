@@ -7,7 +7,7 @@ outputs, e.g., to the console or to a file.
 import logging as log
 
 from abc import ABC
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import numpy as np
 
@@ -18,9 +18,9 @@ from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
 from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
 from mlrl.testbed.format import format_float, format_percentage, format_table
-from mlrl.testbed.output.converters import TextConverter
+from mlrl.testbed.output.converters import TableConverter, TextConverter
 from mlrl.testbed.output_scope import OutputScope
-from mlrl.testbed.output_writer import OutputWriter, Tabularizable
+from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
 
@@ -56,7 +56,7 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
     Allows to write the characteristics of a `RuleModel` to one or several sinks.
     """
 
-    class RuleModelCharacteristics(TextConverter, Tabularizable):
+    class RuleModelCharacteristics(TextConverter, TableConverter):
         """
         Stores the characteristics of a `RuleModel`.
         """
@@ -217,9 +217,9 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
             return text + format_table(rows, header=header)
 
         # pylint: disable=unused-argument
-        def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
+        def to_table(self, options: Options, **_) -> Optional[TableConverter.Table]:
             """
-            See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+            See :func:`mlrl.testbed.output.converters.TableConverter.to_table`
             """
             rows = []
             default_rule_index = self.default_rule_index

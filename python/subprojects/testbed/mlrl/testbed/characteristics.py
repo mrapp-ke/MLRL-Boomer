@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides functions to determine certain characteristics of feature or output matrices.
 """
 from functools import cached_property
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 import numpy as np
 
@@ -12,8 +12,7 @@ from mlrl.common.config.options import Options
 from mlrl.common.data.arrays import is_sparse
 
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
-from mlrl.testbed.output.converters import TextConverter
-from mlrl.testbed.output_writer import Tabularizable
+from mlrl.testbed.output.converters import TableConverter, TextConverter
 from mlrl.testbed.problem_type import ProblemType
 
 OPTION_OUTPUTS = 'outputs'
@@ -101,7 +100,7 @@ def label_imbalance_ratio(y) -> float:
     return 0.0
 
 
-class OutputCharacteristics(TextConverter, Tabularizable):
+class OutputCharacteristics(TextConverter, TableConverter):
     """
     Stores characteristics of the outputs in a dataset.
     """
@@ -171,9 +170,9 @@ class OutputCharacteristics(TextConverter, Tabularizable):
 
         return format_table(rows)
 
-    def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
+    def to_table(self, options: Options, **_) -> Optional[TableConverter.Table]:
         """
-        See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+        See :func:`mlrl.testbed.output.converters.TableConverter.to_table`
         """
         percentage = options.get_bool(OPTION_PERCENTAGE, True)
         decimals = options.get_int(OPTION_DECIMALS, 0)
