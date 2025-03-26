@@ -16,8 +16,8 @@ from mlrl.testbed.dataset import Attribute, AttributeType
 from mlrl.testbed.format import OPTION_DECIMALS, format_array
 from mlrl.testbed.io import SUFFIX_ARFF
 from mlrl.testbed.output.converters import TextConverter
+from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope
-from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.problem_type import ProblemType
 from mlrl.testbed.training_result import TrainingResult

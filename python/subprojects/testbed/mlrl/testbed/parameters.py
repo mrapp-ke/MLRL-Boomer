@@ -17,8 +17,8 @@ from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_table
 from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_reader, get_file_name_per_fold, open_readable_csv_file
 from mlrl.testbed.output.converters import TableConverter, TextConverter
+from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope
-from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
 
