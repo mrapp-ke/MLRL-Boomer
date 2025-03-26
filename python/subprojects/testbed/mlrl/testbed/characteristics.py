@@ -198,7 +198,7 @@ class Characteristic(Formatter):
 
     def format(self, value, **kwargs) -> str:
         """
-        See :func:`mlrl.testbed.output_writer.Formattable.format`
+        See :func:`mlrl.testbed.format.Formatter.format`
         """
         return super().format(self.getter_function(value), **kwargs)
 
