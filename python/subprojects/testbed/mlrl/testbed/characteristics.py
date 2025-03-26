@@ -102,29 +102,35 @@ def label_imbalance_ratio(y) -> float:
 
 class OutputCharacteristics(Formattable, Tabularizable):
     """
-    Stores characteristics of an output matrix.
+    Stores characteristics of the outputs in a dataset.
     """
 
-    def __init__(self, y, problem_type: ProblemType):
+    def __init__(self, problem_type: ProblemType, array):
         """
-        :param y:               A `numpy.ndarray`, `scipy.sparse.spmatrix`, `scipy.sparse.sparray`, shape
-                                `(num_examples, num_outputs)`, that stores the ground truth
         :param problem_type:    The type of the machine learning problem
+        :param array:           A `numpy.ndarray`, `scipy.sparse.spmatrix`, `scipy.sparse.sparray`, shape
+                                `(num_examples, num_outputs)`, that stores predictions or the corresponding ground truth
         """
-        self._y = y
-        self.num_outputs = y.shape[1]
         classification = problem_type == ProblemType.CLASSIFICATION
         self.formatters = LABEL_CHARACTERISTICS if classification else OUTPUT_CHARACTERISTICS
+        self.array = array
+
+    @property
+    def num_outputs(self) -> int:
+        """
+        The total number of outputs.
+        """
+        return self.array.shape[1]
 
     @cached_property
-    def output_density(self):
+    def output_density(self) -> float:
         """
         The density of the output matrix.
         """
-        return density(self._y)
+        return density(self.array)
 
     @property
-    def output_sparsity(self):
+    def output_sparsity(self) -> float:
         """
         The sparsity of the output matrix.
         """
@@ -135,21 +141,21 @@ class OutputCharacteristics(Formattable, Tabularizable):
         """
         The average label imbalance ratio of the label matrix.
         """
-        return label_imbalance_ratio(self._y)
+        return label_imbalance_ratio(self.array)
 
     @cached_property
     def avg_label_cardinality(self):
         """
         The average label cardinality of the label matrix.
         """
-        return label_cardinality(self._y)
+        return label_cardinality(self.array)
 
     @cached_property
     def num_distinct_label_vectors(self):
         """
         The number of distinct label vectors in the label matrix.
         """
-        return distinct_label_vectors(self._y)
+        return distinct_label_vectors(self.array)
 
     def format(self, options: Options, **_) -> str:
         """
