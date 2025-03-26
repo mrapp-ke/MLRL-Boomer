@@ -16,9 +16,9 @@ from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBo
     RuleModelVisitor
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
-from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.format import format_float, format_percentage, format_table
 from mlrl.testbed.output.converters import TableConverter, TextConverter
+from mlrl.testbed.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope

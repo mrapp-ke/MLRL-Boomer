@@ -17,11 +17,11 @@ from mlrl.common.config.options import Options
 from mlrl.common.data.arrays import enforce_dense
 from mlrl.common.data.types import Float32, Uint8
 
-from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
 from mlrl.testbed.output.converters import TableConverter, TextConverter
 from mlrl.testbed.output.sinks.sink import Sink
+from mlrl.testbed.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope

@@ -75,18 +75,6 @@ def open_readable_csv_file(file_path: str):
     return open(file_path, mode='r', newline='', encoding=ENCODING_UTF8)
 
 
-def open_writable_csv_file(file_path: str, append: bool = False):
-    """
-    Opens a CSV file to be written to.
-
-    :param file_path:   The path to the file to be opened
-    :param append:      True, if new data should be appended to the file, if it already exists, False otherwise
-    :return:            The file that has been opened
-    """
-    write_mode = 'a' if append and path.isfile(file_path) else 'w'
-    return open(file_path, mode=write_mode, encoding=ENCODING_UTF8)
-
-
 def create_csv_dict_reader(csv_file) -> DictReader:
     """
     Creates and return a `DictReader` that allows to read from a CSV file.
