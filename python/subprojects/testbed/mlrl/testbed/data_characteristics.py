@@ -11,6 +11,7 @@ from mlrl.common.config.options import Options
 
 from mlrl.testbed.characteristics import LABEL_CHARACTERISTICS, OUTPUT_CHARACTERISTICS, Characteristic, \
     OutputCharacteristics, density
+from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
 from mlrl.testbed.dataset import AttributeType, Dataset
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, filter_formatters, format_table
 from mlrl.testbed.output_scope import OutputScope
@@ -170,22 +171,28 @@ class DataCharacteristicsWriter(OutputWriter):
 
             return [columns]
 
-    class LogSink(OutputWriter.LogSink):
+    class LogSink(BaseLogSink):
         """
         Allows to write the characteristics of a data set to the console.
         """
 
         def __init__(self, options: Options = Options()):
-            super().__init__(OutputWriter.LogSink.TitleFormatter('Data characteristics', include_dataset_type=False),
+            super().__init__(BaseLogSink.TitleFormatter('Data characteristics', include_dataset_type=False),
                              options=options)
 
-    class CsvFileSink(OutputWriter.CsvFileSink):
+    class CsvFileSink(BaseCsvFileSink):
         """
         Allows to write the characteristics of a data set to a CSV file.
         """
 
-        def __init__(self, output_dir: str, options: Options = Options()):
-            super().__init__(output_dir=output_dir, file_name='data_characteristics', options=options)
+        def __init__(self, directory: str, options: Options = Options()):
+            """
+            :param directory: The path to the directory, where the CSV file should be located
+            """
+            super().__init__(BaseCsvFileSink.PathFormatter(directory,
+                                                           'data_characteristics',
+                                                           include_dataset_type=False),
+                             options=options)
 
     # pylint: disable=unused-argument
     def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],

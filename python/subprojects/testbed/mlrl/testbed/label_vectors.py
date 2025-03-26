@@ -15,6 +15,7 @@ from mlrl.common.cython.output_space_info import LabelVectorSet, LabelVectorSetV
 from mlrl.common.data.types import Uint8
 from mlrl.common.learners import ClassificationRuleLearner
 
+from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
 from mlrl.testbed.format import format_table
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
@@ -107,22 +108,25 @@ class LabelVectorWriter(OutputWriter):
 
             return rows
 
-    class LogSink(OutputWriter.LogSink):
+    class LogSink(BaseLogSink):
         """
         Allows to write unique label vectors that are contained in a data set to the console.
         """
 
         def __init__(self, options: Options = Options()):
-            super().__init__(OutputWriter.LogSink.TitleFormatter('Label vectors', include_dataset_type=False),
-                             options=options)
+            super().__init__(BaseLogSink.TitleFormatter('Label vectors', include_dataset_type=False), options=options)
 
-    class CsvFileSink(OutputWriter.CsvFileSink):
+    class CsvFileSink(BaseCsvFileSink):
         """
         Allows to write unique label vectors that are contained in a data set to a CSV file.
         """
 
-        def __init__(self, output_dir: str, options: Options = Options()):
-            super().__init__(output_dir=output_dir, file_name='label_vectors', options=options)
+        def __init__(self, directory: str, options: Options = Options()):
+            """
+            :param directory: The path to the directory, where the CSV file should be located
+            """
+            super().__init__(BaseCsvFileSink.PathFormatter(directory, 'label_vectors', include_dataset_type=False),
+                             options=options)
 
     # pylint: disable=unused-argument
     def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],

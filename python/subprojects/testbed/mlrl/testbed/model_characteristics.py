@@ -16,6 +16,7 @@ from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBo
     RuleModelVisitor
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
+from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
 from mlrl.testbed.format import format_float, format_percentage, format_table
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
@@ -28,24 +29,25 @@ class ModelCharacteristicsWriter(OutputWriter, ABC):
     An abstract base class for all classes that allow to write the characteristics of a model to one or several sinks.
     """
 
-    class LogSink(OutputWriter.LogSink):
+    class LogSink(BaseLogSink):
         """
         Allows to write the characteristics of a model to the console.
         """
 
         def __init__(self):
-            super().__init__(OutputWriter.LogSink.TitleFormatter('Model characteristics', include_dataset_type=False))
+            super().__init__(BaseLogSink.TitleFormatter('Model characteristics', include_dataset_type=False))
 
-    class CsvFileSink(OutputWriter.CsvFileSink):
+    class CsvFileSink(BaseCsvFileSink):
         """
-        Allows to write the characteristics of a model to CSV files.
+        Allows to write the characteristics of a model to a CSV file.
         """
 
-        def __init__(self, output_dir: str):
-            super().__init__(output_dir=output_dir, file_name='model_characteristics')
-
-    def __init__(self, sinks: List[OutputWriter.Sink]):
-        super().__init__(sinks)
+        def __init__(self, directory: str):
+            """
+            :param directory: The path to the directory, where the CSV file should be located
+            """
+            super().__init__(
+                BaseCsvFileSink.PathFormatter(directory, 'model_characteristics', include_dataset_type=False))
 
 
 class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
