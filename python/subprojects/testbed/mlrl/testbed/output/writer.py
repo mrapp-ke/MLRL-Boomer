@@ -43,7 +43,7 @@ class OutputWriter(ABC):
 
             if output_data:
                 for sink in sinks:
-                    sink.write_output(scope, training_result, prediction_result, output_data)
+                    sink.write_to_sink(scope, training_result, prediction_result, output_data)
 
     @abstractmethod
     def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],

@@ -25,8 +25,8 @@ class Sink(ABC):
         self.options = options
 
     @abstractmethod
-    def write_output(self, scope: OutputScope, training_result: Optional[TrainingResult],
-                     prediction_result: Optional[PredictionResult], output_data, **kwargs):
+    def write_to_sink(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                      prediction_result: Optional[PredictionResult], output_data, **kwargs):
         """
         Must be implemented by subclasses in order to write output data to the sink.
 
