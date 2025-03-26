@@ -44,7 +44,7 @@ from mlrl.testbed.model_characteristics import ModelCharacteristicsWriter, RuleM
 from mlrl.testbed.models import OPTION_DECIMALS_BODY, OPTION_DECIMALS_HEAD, OPTION_PRINT_BODIES, \
     OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_HEADS, OPTION_PRINT_NOMINAL_VALUES, OPTION_PRINT_OUTPUT_NAMES, \
     ModelWriter, RuleModelWriter
-from mlrl.testbed.output_writer import OutputWriter
+from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.package_info import get_package_info as get_testbed_package_info
 from mlrl.testbed.parameters import CsvParameterLoader, ParameterLoader, ParameterWriter
 from mlrl.testbed.persistence import ModelLoader, ModelSaver

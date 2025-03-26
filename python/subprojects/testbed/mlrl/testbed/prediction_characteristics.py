@@ -10,8 +10,8 @@ from mlrl.common.config.options import Options
 
 from mlrl.testbed.characteristics import OutputCharacteristics
 from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
+from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope
-from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.prediction_scope import PredictionType
 from mlrl.testbed.training_result import TrainingResult

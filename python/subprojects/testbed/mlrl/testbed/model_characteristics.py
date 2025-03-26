@@ -19,8 +19,8 @@ from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
 from mlrl.testbed.format import format_float, format_percentage, format_table
 from mlrl.testbed.output.converters import TableConverter, TextConverter
+from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope
-from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
 
