@@ -11,12 +11,14 @@ from mlrl.common.config.options import Options
 
 from mlrl.testbed.characteristics import LABEL_CHARACTERISTICS, OUTPUT_CHARACTERISTICS, Characteristic, \
     OutputCharacteristics, density
-from mlrl.testbed.data import FeatureType, MetaData
-from mlrl.testbed.data_splitting import DataSplit, DataType
+from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
+from mlrl.testbed.dataset import AttributeType, Dataset
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, filter_formatters, format_table
+from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
-from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
+from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.problem_type import ProblemType
+from mlrl.testbed.training_result import TrainingResult
 
 OPTION_EXAMPLES = 'examples'
 
@@ -35,56 +37,59 @@ OPTION_FEATURE_SPARSITY = 'feature_sparsity'
 
 class FeatureCharacteristics:
     """
-    Stores characteristics of a feature matrix.
+    Stores characteristics of the features in a dataset.
     """
 
-    def __init__(self, meta_data: MetaData, x):
+    def __init__(self, dataset: Dataset):
         """
-        :param meta_data:   The meta-data of the data set
-        :param x:           A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                            `(num_examples, num_features)`, that stores the feature values
+        :param dataset: The dataset
         """
-        self._x = x
-        self._meta_data = meta_data
-        self.num_examples = x.shape[0]
+        self.dataset = dataset
 
     @property
-    def num_features(self):
+    def num_examples(self) -> int:
+        """
+        The total number of examples.
+        """
+        return self.dataset.num_examples
+
+    @property
+    def num_features(self) -> int:
         """
         The total number of features.
         """
-        return self._meta_data.get_num_features()
+        return self.dataset.num_features
 
     @cached_property
-    def num_nominal_features(self):
+    def num_nominal_features(self) -> int:
         """
         The total number of nominal features.
         """
-        return self._meta_data.get_num_features({FeatureType.NOMINAL})
+        return self.dataset.get_num_features(AttributeType.NOMINAL)
 
     @cached_property
-    def num_ordinal_features(self):
+    def num_ordinal_features(self) -> int:
         """
         The total number of ordinal features.
         """
-        return self._meta_data.get_num_features({FeatureType.ORDINAL})
+        return self.dataset.get_num_features(AttributeType.ORDINAL)
 
     @cached_property
-    def num_numerical_features(self):
+    def num_numerical_features(self) -> int:
         """
         The total number of numerical features.
         """
-        return self._meta_data.get_num_features({FeatureType.NUMERICAL})
+        return self.dataset.get_num_features(AttributeType.NUMERICAL)
 
     @cached_property
-    def feature_density(self):
+    def feature_density(self) -> float:
         """
         The feature density.
         """
-        return density(self._x)
+        return density(self.dataset.x)
 
     @property
-    def feature_sparsity(self):
+    def feature_sparsity(self) -> float:
         """
         The feature sparsity.
         """
@@ -166,29 +171,36 @@ class DataCharacteristicsWriter(OutputWriter):
 
             return [columns]
 
-    class LogSink(OutputWriter.LogSink):
+    class LogSink(BaseLogSink):
         """
         Allows to write the characteristics of a data set to the console.
         """
 
         def __init__(self, options: Options = Options()):
-            super().__init__(title='Data characteristics', options=options)
+            super().__init__(BaseLogSink.TitleFormatter('Data characteristics', include_dataset_type=False),
+                             options=options)
 
-    class CsvFileSink(OutputWriter.CsvFileSink):
+    class CsvFileSink(BaseCsvFileSink):
         """
         Allows to write the characteristics of a data set to a CSV file.
         """
 
-        def __init__(self, output_dir: str, options: Options = Options()):
-            super().__init__(output_dir=output_dir, file_name='data_characteristics', options=options)
+        def __init__(self, directory: str, options: Options = Options()):
+            """
+            :param directory: The path to the directory, where the CSV file should be located
+            """
+            super().__init__(BaseCsvFileSink.PathFormatter(directory,
+                                                           'data_characteristics',
+                                                           include_dataset_type=False),
+                             options=options)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
-                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
-                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
-                              train_time: float, predict_time: float) -> Optional[Any]:
-        feature_characteristics = FeatureCharacteristics(meta_data, x)
-        output_characteristics = OutputCharacteristics(y, problem_type)
+    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+        problem_type = scope.problem_type
+        dataset = scope.dataset
+        feature_characteristics = FeatureCharacteristics(dataset)
+        output_characteristics = OutputCharacteristics(problem_type, dataset.y)
         return DataCharacteristicsWriter.DataCharacteristics(feature_characteristics=feature_characteristics,
                                                              output_characteristics=output_characteristics,
                                                              problem_type=problem_type)

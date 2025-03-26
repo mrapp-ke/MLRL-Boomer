@@ -51,6 +51,7 @@ from mlrl.testbed.persistence import ModelLoader, ModelSaver
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsWriter
 from mlrl.testbed.prediction_scope import PredictionType
 from mlrl.testbed.predictions import PredictionWriter
+from mlrl.testbed.preprocessors import OneHotEncoder, Preprocessor
 from mlrl.testbed.probability_calibration import JointProbabilityCalibrationModelWriter, \
     MarginalProbabilityCalibrationModelWriter
 from mlrl.testbed.problem_type import ProblemType
@@ -508,10 +509,15 @@ class LearnerRunnable(Runnable, ABC):
     def __create_prediction_type(self, args) -> PredictionType:
         return PredictionType.parse(self.PARAM_PREDICTION_TYPE, args.prediction_type)
 
+    @staticmethod
+    def __create_preprocessor(args) -> Optional[Preprocessor]:
+        return OneHotEncoder() if args.one_hot_encoding else None
+
     def __create_data_splitter(self, args) -> DataSplitter:
         data_set = DataSet(data_dir=args.data_dir,
                            data_set_name=args.dataset,
                            use_one_hot_encoding=args.one_hot_encoding)
+        preprocessor = self.__create_preprocessor(args)
         value, options = parse_param_and_options(self.PARAM_DATA_SPLIT, args.data_split, self.DATA_SPLIT_VALUES)
 
         if value == self.DATA_SPLIT_CROSS_VALIDATION:
@@ -524,6 +530,7 @@ class LearnerRunnable(Runnable, ABC):
             random_state = int(args.random_state) if args.random_state else 1
             assert_greater_or_equal(self.PARAM_RANDOM_STATE, random_state, 1)
             return CrossValidationSplitter(data_set,
+                                           preprocessor,
                                            num_folds=num_folds,
                                            current_fold=current_fold - 1,
                                            random_state=random_state)
@@ -533,9 +540,9 @@ class LearnerRunnable(Runnable, ABC):
             assert_less(self.OPTION_TEST_SIZE, test_size, 1)
             random_state = int(args.random_state) if args.random_state else 1
             assert_greater_or_equal(self.PARAM_RANDOM_STATE, random_state, 1)
-            return TrainTestSplitter(data_set, test_size=test_size, random_state=random_state)
+            return TrainTestSplitter(data_set, preprocessor, test_size=test_size, random_state=random_state)
 
-        return NoSplitter(data_set)
+        return NoSplitter(data_set, preprocessor)
 
     @staticmethod
     def __create_pre_execution_hook(args, data_splitter: DataSplitter) -> Optional[Experiment.ExecutionHook]:
@@ -909,7 +916,7 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_EVALUATION_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(EvaluationWriter.CsvFileSink(output_dir=args.output_dir, options=options))
+            sinks.append(EvaluationWriter.CsvFileSink(args.output_dir, options=options))
 
         if len(sinks) == 0:
             return None
@@ -944,7 +951,7 @@ class LearnerRunnable(Runnable, ABC):
             sinks.append(ParameterWriter.LogSink())
 
         if args.parameter_save_dir:
-            sinks.append(ParameterWriter.CsvFileSink(output_dir=args.parameter_save_dir))
+            sinks.append(ParameterWriter.CsvFileSink(args.parameter_save_dir))
 
         return ParameterWriter(sinks) if sinks else None
 
@@ -966,7 +973,7 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_PREDICTIONS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(PredictionWriter.ArffFileSink(output_dir=args.output_dir, options=options))
+            sinks.append(PredictionWriter.ArffFileSink(args.output_dir, options=options))
 
         return PredictionWriter(sinks) if sinks else None
 
@@ -991,7 +998,7 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_PREDICTION_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(PredictionCharacteristicsWriter.CsvFileSink(output_dir=args.output_dir, options=options))
+            sinks.append(PredictionCharacteristicsWriter.CsvFileSink(args.output_dir, options=options))
 
         return PredictionCharacteristicsWriter(sinks) if sinks else None
 
@@ -1014,7 +1021,7 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_DATA_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(DataCharacteristicsWriter.CsvFileSink(output_dir=args.output_dir, options=options))
+            sinks.append(DataCharacteristicsWriter.CsvFileSink(args.output_dir, options=options))
 
         return DataCharacteristicsWriter(sinks) if sinks else None
 
@@ -1037,7 +1044,7 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_LABEL_VECTORS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(LabelVectorWriter.CsvFileSink(output_dir=args.output_dir, options=options))
+            sinks.append(LabelVectorWriter.CsvFileSink(args.output_dir, options=options))
 
         return LabelVectorWriter(sinks) if sinks else None
 
@@ -1331,7 +1338,7 @@ class RuleLearnerRunnable(LearnerRunnable):
         value, options = parse_param_and_options(self.PARAM_STORE_RULES, args.store_rules, self.STORE_RULES_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(ModelWriter.TextFileSink(output_dir=args.output_dir, options=options))
+            sinks.append(ModelWriter.TextFileSink(args.output_dir, options=options))
 
         return RuleModelWriter(sinks) if sinks else None
 
@@ -1349,7 +1356,7 @@ class RuleLearnerRunnable(LearnerRunnable):
             sinks.append(ModelCharacteristicsWriter.LogSink())
 
         if args.store_model_characteristics and args.output_dir:
-            sinks.append(ModelCharacteristicsWriter.CsvFileSink(output_dir=args.output_dir))
+            sinks.append(ModelCharacteristicsWriter.CsvFileSink(args.output_dir))
 
         return RuleModelCharacteristicsWriter(sinks) if sinks else None
 
@@ -1374,8 +1381,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                                                  self.STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(
-                MarginalProbabilityCalibrationModelWriter.CsvFileSink(output_dir=args.output_dir, options=options))
+            sinks.append(MarginalProbabilityCalibrationModelWriter.CsvFileSink(args.output_dir, options=options))
 
         return MarginalProbabilityCalibrationModelWriter(sinks) if sinks else None
 
@@ -1400,8 +1406,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                                                  self.STORE_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(JointProbabilityCalibrationModelWriter.CsvFileSink(output_dir=args.output_dir,
-                                                                            options=options))
+            sinks.append(JointProbabilityCalibrationModelWriter.CsvFileSink(args.output_dir, options=options))
 
         return JointProbabilityCalibrationModelWriter(sinks) if sinks else None
 
@@ -1436,7 +1441,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                                                  self.STORE_LABEL_VECTORS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(LabelVectorSetWriter.CsvFileSink(output_dir=args.output_dir, options=options))
+            sinks.append(LabelVectorSetWriter.CsvFileSink(args.output_dir, options=options))
 
         return LabelVectorSetWriter(sinks) if sinks else None
 

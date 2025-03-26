@@ -12,13 +12,14 @@ from typing import Any, Dict, List, Optional
 
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.data import MetaData
-from mlrl.testbed.data_splitting import DataSplit, DataType
+from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
+from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_table
 from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_reader, get_file_name_per_fold, open_readable_csv_file
+from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
-from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
-from mlrl.testbed.problem_type import ProblemType
+from mlrl.testbed.prediction_result import PredictionResult
+from mlrl.testbed.training_result import TrainingResult
 
 
 class ParameterLoader(ABC):
@@ -27,12 +28,12 @@ class ParameterLoader(ABC):
     """
 
     @abstractmethod
-    def load_parameters(self, data_split: DataSplit) -> Dict:
+    def load_parameters(self, fold: Fold) -> Dict:
         """
         Loads a parameter setting from the input.
 
-        :param data_split:  Information about the split of the available data, the parameter setting corresponds to
-        :return:            A dictionary that stores the parameters
+        :param fold:    The fold of the available data, the parameter setting corresponds to
+        :return:        A dictionary that stores the parameters
         """
 
 
@@ -47,8 +48,8 @@ class CsvParameterLoader(ParameterLoader):
         """
         self.input_dir = input_dir
 
-    def load_parameters(self, data_split: DataSplit) -> Dict:
-        file_name = get_file_name_per_fold('parameters', SUFFIX_CSV, data_split.get_fold())
+    def load_parameters(self, fold: Fold) -> Dict:
+        file_name = get_file_name_per_fold('parameters', SUFFIX_CSV, fold.index)
         file_path = path.join(self.input_dir, file_name)
         log.debug('Loading parameters from file \"%s\"...', file_path)
 
@@ -72,22 +73,22 @@ class ParameterWriter(OutputWriter):
         Stores the parameter settings of a learner.
         """
 
-        def __init__(self, learner):
+        def __init__(self, parameters: Dict[str, Any]):
             """
-            :param learner: A learner
+            :param parameters: A dictionary that stores the parameters
             """
-            self.params = learner.get_params()
+            self.parameters = parameters
 
         # pylint: disable=unused-argument
         def format(self, options: Options, **_):
             """
             See :func:`mlrl.testbed.output_writer.Formattable.format`
             """
-            params = self.params
+            parameters = self.parameters
             rows = []
 
-            for key in sorted(params):
-                value = params[key]
+            for key in sorted(parameters):
+                value = parameters[key]
 
                 if value is not None:
                     rows.append([str(key), str(value)])
@@ -99,34 +100,35 @@ class ParameterWriter(OutputWriter):
             """
             See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
             """
-            params = self.params
+            parameters = self.parameters
             columns = {}
 
-            for key, value in params.items():
+            for key, value in parameters.items():
                 if value is not None:
                     columns[key] = value
 
             return [columns]
 
-    class LogSink(OutputWriter.LogSink):
+    class LogSink(BaseLogSink):
         """
         Allows to write parameter settings to the console.
         """
 
         def __init__(self):
-            super().__init__(title='Custom parameters')
+            super().__init__(BaseLogSink.TitleFormatter('Custom parameters', include_dataset_type=False))
 
-    class CsvFileSink(OutputWriter.CsvFileSink):
+    class CsvFileSink(BaseCsvFileSink):
         """
         Allows to write parameter settings to CSV files.
         """
 
-        def __init__(self, output_dir: str):
-            super().__init__(output_dir=output_dir, file_name='parameters')
+        def __init__(self, directory: str):
+            """
+            :param directory: The path to the directory, where the CSV file should be located
+            """
+            super().__init__(BaseCsvFileSink.PathFormatter(directory, 'parameters', include_dataset_type=False))
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
-                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
-                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
-                              train_time: float, predict_time: float) -> Optional[Any]:
-        return ParameterWriter.Parameters(learner)
+    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+        return ParameterWriter.Parameters(scope.parameters)
