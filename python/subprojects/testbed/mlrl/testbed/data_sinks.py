@@ -13,35 +13,10 @@ from mlrl.common.config.options import Options
 
 from mlrl.testbed.io import SUFFIX_CSV, SUFFIX_TEXT, create_csv_dict_writer, get_file_name_per_fold, \
     open_writable_csv_file, open_writable_text_file
+from mlrl.testbed.output.sinks.sink import Sink
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
-
-
-class Sink(ABC):
-    """
-    An abstract base class for all sinks, output data may be written to.
-    """
-
-    def __init__(self, options: Options = Options()):
-        """
-        :param options: Options to be taken into account
-        """
-        self.options = options
-
-    @abstractmethod
-    def write_output(self, scope: OutputScope, training_result: Optional[TrainingResult],
-                     prediction_result: Optional[PredictionResult], output_data, **kwargs):
-        """
-        Must be implemented by subclasses in order to write output data to the sink.
-
-        :param scope:               The scope of the output data
-        :param training_result:     A `TrainingResult` that stores the result of a training process or None, if no
-                                    model has been trained
-        :param prediction_result:   A `PredictionResult` that stores the result of a prediction process or None, if
-                                    no predictions have been obtained
-        :param output_data:         The output data that should be written to the sink
-        """
 
 
 class LogSink(Sink):
@@ -122,6 +97,9 @@ class LogSink(Sink):
 
     def write_output(self, scope: OutputScope, _: Optional[TrainingResult],
                      prediction_result: Optional[PredictionResult], output_data, **kwargs):
+        """
+        See :func:`mlrl.testbed.output.sinks.sink.Sink.write_output`
+        """
         log.info('%s:\n\n%s\n', self.title_formatter.format(scope, prediction_result),
                  output_data.to_text(self.options, **kwargs))
 
@@ -192,6 +170,9 @@ class FileSink(Sink, ABC):
 
     def write_output(self, scope: OutputScope, training_result: Optional[TrainingResult],
                      prediction_result: Optional[PredictionResult], output_data, **kwargs):
+        """
+        See :func:`mlrl.testbed.output.sinks.sink.Sink.write_output`
+        """
         file_path = self.path_formatter.format(scope, prediction_result)
         self._write_output(file_path, scope, training_result, prediction_result, output_data, **kwargs)
 

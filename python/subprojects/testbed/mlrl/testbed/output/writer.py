@@ -6,7 +6,7 @@ Provides classes for writing output data to sinks.
 from abc import ABC, abstractmethod
 from typing import Any, Optional
 
-from mlrl.testbed.data_sinks import Sink
+from mlrl.testbed.output.sinks.sink import Sink
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
