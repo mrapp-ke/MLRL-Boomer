@@ -81,16 +81,15 @@ class Evaluation(ABC):
 
         return result
 
-    def _evaluate_predictions(self, state: ExperimentState, prediction_result: PredictionResult):
+    def _evaluate_predictions(self, state: ExperimentState):
         """
         May be used by subclasses in order to evaluate predictions that have been obtained from a previously trained
         model.
 
-        :param state:               The state that stores the predictions and the model
-        :param prediction_result:   A `PredictionResult` that provides access to the predictions have been obtained
+        :param state: The state that stores the predictions and the model
         """
         for output_writer in self.output_writers:
-            output_writer.write_output(state, prediction_result)
+            output_writer.write_output(state)
 
     @abstractmethod
     def predict_and_evaluate(self, state: ExperimentState, **kwargs):
@@ -121,11 +120,11 @@ class GlobalEvaluation(Evaluation):
 
         if predictions is not None:
             log.info('Successfully predicted in %s', format_duration(predict_time))
-            prediction_result = PredictionResult(predictions=predictions,
-                                                 prediction_type=self.prediction_type,
-                                                 prediction_scope=GlobalPrediction(),
-                                                 predict_time=predict_time)
-            self._evaluate_predictions(state=state, prediction_result=prediction_result)
+            state.prediction_result = PredictionResult(predictions=predictions,
+                                                       prediction_type=self.prediction_type,
+                                                       prediction_scope=GlobalPrediction(),
+                                                       predict_time=predict_time)
+            self._evaluate_predictions(state)
 
 
 class IncrementalEvaluation(Evaluation):
@@ -182,11 +181,11 @@ class IncrementalEvaluation(Evaluation):
 
                 if predictions is not None:
                     log.info('Successfully predicted in %s', format_duration(predict_time))
-                    prediction_result = PredictionResult(predictions=predictions,
-                                                         prediction_type=self.prediction_type,
-                                                         prediction_scope=IncrementalPrediction(current_size),
-                                                         predict_time=predict_time)
-                    self._evaluate_predictions(state=state, prediction_result=prediction_result)
+                    state.prediction_result = PredictionResult(predictions=predictions,
+                                                               prediction_type=self.prediction_type,
+                                                               prediction_scope=IncrementalPrediction(current_size),
+                                                               predict_time=predict_time)
+                    self._evaluate_predictions(state)
 
                 next_step_size = step_size
                 current_size = min(current_size + next_step_size, total_size)

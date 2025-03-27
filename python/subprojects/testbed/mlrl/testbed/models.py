@@ -23,7 +23,7 @@ from mlrl.testbed.experiments.output.converters import TextConverter
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.sinks.sink_text import TextFileSink as BaseTextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
-from mlrl.testbed.experiments.state import ExperimentState, PredictionResult
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.format import format_float
 
 OPTION_PRINT_FEATURE_NAMES = 'print_feature_names'
@@ -250,9 +250,7 @@ class RuleModelWriter(ModelWriter):
             self.text.close()
             return text
 
-    # pylint: disable=unused-argument
-    def _generate_output_data(self, state: ExperimentState,
-                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+    def _generate_output_data(self, state: ExperimentState) -> Optional[Any]:
         training_result = state.training_result
 
         if training_result:
