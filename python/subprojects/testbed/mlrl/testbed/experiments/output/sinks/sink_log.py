@@ -10,8 +10,7 @@ from typing import Optional
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.experiments.output.sinks.sink import Sink
-from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.prediction_result import PredictionResult
+from mlrl.testbed.experiments.state import ExperimentState, PredictionResult
 
 
 class LogSink(Sink):
