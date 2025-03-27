@@ -23,10 +23,9 @@ from mlrl.testbed.experiments.output.converters import TextConverter
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.sinks.sink_text import TextFileSink as BaseTextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
-from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.state import ExperimentState, TrainingResult
 from mlrl.testbed.format import format_float
 from mlrl.testbed.prediction_result import PredictionResult
-from mlrl.testbed.training_result import TrainingResult
 
 OPTION_PRINT_FEATURE_NAMES = 'print_feature_names'
 
