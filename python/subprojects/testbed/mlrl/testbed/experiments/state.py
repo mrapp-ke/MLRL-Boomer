@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing the state of experiments.
 """
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from sklearn.base import BaseEstimator
 
@@ -32,12 +32,14 @@ class ExperimentState:
     Represents the state of an experiment.
 
     Attributes:
-        problem_type:   The type of the machine learning problem, the experiment is concerned with
-        dataset:        The dataset used in the experiment
-        fold:           The current fold of the dataset used in the experiment
-        parameters:     Algorithmic parameters of the learner used in the experiment
+        problem_type:       The type of the machine learning problem, the experiment is concerned with
+        dataset:            The dataset used in the experiment
+        fold:               The current fold of the dataset used in the experiment
+        parameters:         Algorithmic parameters of the learner used in the experiment
+        training_result:    The result of the training process or None, if no model has been trained yet
     """
     problem_type: ProblemType
     dataset: Dataset
     fold: Fold
     parameters: Dict[str, Any]
+    training_result: Optional[TrainingResult] = None

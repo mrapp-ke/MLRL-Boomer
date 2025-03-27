@@ -9,7 +9,7 @@ from typing import Optional
 
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.experiments.state import ExperimentState, TrainingResult
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.util.io import get_file_name_per_fold
 
@@ -26,14 +26,12 @@ class Sink(ABC):
         self.options = options
 
     @abstractmethod
-    def write_to_sink(self, state: ExperimentState, training_result: Optional[TrainingResult],
-                      prediction_result: Optional[PredictionResult], output_data, **kwargs):
+    def write_to_sink(self, state: ExperimentState, prediction_result: Optional[PredictionResult], output_data,
+                      **kwargs):
         """
         Must be implemented by subclasses in order to write output data to the sink.
 
         :param state:               The state from which the output data has been generated
-        :param training_result:     A `TrainingResult` that stores the result of a training process or None, if no
-                                    model has been trained
         :param prediction_result:   A `PredictionResult` that stores the result of a prediction process or None, if
                                     no predictions have been obtained
         :param output_data:         The output data that should be written to the sink
@@ -104,24 +102,22 @@ class FileSink(Sink, ABC):
         super().__init__(options)
         self.path_formatter = path_formatter
 
-    def write_to_sink(self, state: ExperimentState, training_result: Optional[TrainingResult],
-                      prediction_result: Optional[PredictionResult], output_data, **kwargs):
+    def write_to_sink(self, state: ExperimentState, prediction_result: Optional[PredictionResult], output_data,
+                      **kwargs):
         """
         See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
         """
         file_path = self.path_formatter.format(state, prediction_result)
-        self._write_to_file(file_path, state, training_result, prediction_result, output_data, **kwargs)
+        self._write_to_file(file_path, state, prediction_result, output_data, **kwargs)
 
     @abstractmethod
-    def _write_to_file(self, file_path: str, state: ExperimentState, training_result: Optional[TrainingResult],
-                       prediction_result: Optional[PredictionResult], output_data, **kwargs):
+    def _write_to_file(self, file_path: str, state: ExperimentState, prediction_result: Optional[PredictionResult],
+                       output_data, **kwargs):
         """
         Must be implemented by subclasses in order to write output data to a specific file.
 
         :param file_path:           The path to the file to which the output data should be written
         :param state:               The state from which the output data has been generated
-        :param training_result:     A `TrainingResult` that stores the result of a training process or None, if no
-                                    model has been trained
         :param prediction_result:   A `PredictionResult` that stores the result of a prediction process or None, if
                                     no predictions have been obtained
         :param output_data:         The output data that should be written to the file

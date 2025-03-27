@@ -6,7 +6,7 @@ Provides classes that allow writing output data to text files.
 from typing import Optional
 
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
-from mlrl.testbed.experiments.state import ExperimentState, TrainingResult
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.util.io import open_writable_file
 
@@ -30,8 +30,8 @@ class TextFileSink(FileSink):
             super().__init__(directory, file_name, 'txt', include_dataset_type, include_prediction_scope, include_fold)
 
     # pylint: disable=unused-argument
-    def _write_to_file(self, file_path: str, state: ExperimentState, training_result: Optional[TrainingResult],
-                       prediction_result: Optional[PredictionResult], output_data, **kwargs):
+    def _write_to_file(self, file_path: str, state: ExperimentState, prediction_result: Optional[PredictionResult],
+                       output_data, **kwargs):
         text = output_data.to_text(self.options, **kwargs)
 
         if text:

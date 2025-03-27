@@ -82,29 +82,25 @@ class Evaluation(ABC):
 
         return result
 
-    def _evaluate_predictions(self, state: ExperimentState, prediction_result: PredictionResult, train_time: float,
-                              learner):
+    def _evaluate_predictions(self, state: ExperimentState, prediction_result: PredictionResult):
         """
         May be used by subclasses in order to evaluate predictions that have been obtained from a previously trained
         model.
 
         :param state:               The state that stores the predictions and the model
         :param prediction_result:   A `PredictionResult` that provides access to the predictions have been obtained
-        :param train_time:          The time needed to train the model
-        :param learner:             The learner, the predictions have been obtained from
         """
         for output_writer in self.output_writers:
-            output_writer.write_output(state, TrainingResult(learner=learner, train_time=train_time), prediction_result)
+            output_writer.write_output(state, prediction_result)
 
     @abstractmethod
-    def predict_and_evaluate(self, state: ExperimentState, training_result: TrainingResult, **kwargs):
+    def predict_and_evaluate(self, state: ExperimentState, **kwargs):
         """
         Must be implemented by subclasses in order to obtain and evaluate predictions for given query examples from a
         previously trained model.
 
-        :param state:           The state that stores the predictions and the model
-        :param training_result: A `TrainingResult` that stores the result of the training process
-        :param kwargs:          Optional keyword arguments to be passed to the model when obtaining predictions
+        :param state:   The state that stores the predictions and the model
+        :param kwargs:  Optional keyword arguments to be passed to the model when obtaining predictions
         """
 
 
@@ -113,10 +109,10 @@ class GlobalEvaluation(Evaluation):
     Obtains and evaluates predictions from a previously trained global model.
     """
 
-    def predict_and_evaluate(self, state: ExperimentState, training_result: TrainingResult, **kwargs):
+    def predict_and_evaluate(self, state: ExperimentState, **kwargs):
         dataset = state.dataset
         log.info('Predicting for %s %s examples...', dataset.num_examples, dataset.type.value)
-        learner = training_result.learner
+        learner = state.training_result.learner
         start_time = timer()
         predict_proba_function = learner.predict_proba if callable(getattr(learner, 'predict_proba', None)) else None
         predictions = self._invoke_prediction_function(learner, learner.predict, predict_proba_function, dataset,
@@ -130,10 +126,7 @@ class GlobalEvaluation(Evaluation):
                                                  prediction_type=self.prediction_type,
                                                  prediction_scope=GlobalPrediction(),
                                                  predict_time=predict_time)
-            self._evaluate_predictions(state=state,
-                                       prediction_result=prediction_result,
-                                       train_time=training_result.train_time,
-                                       learner=learner)
+            self._evaluate_predictions(state=state, prediction_result=prediction_result)
 
 
 class IncrementalEvaluation(Evaluation):
@@ -156,8 +149,8 @@ class IncrementalEvaluation(Evaluation):
         self.max_size = max_size
         self.step_size = step_size
 
-    def predict_and_evaluate(self, state: ExperimentState, training_result: TrainingResult, **kwargs):
-        learner = training_result.learner
+    def predict_and_evaluate(self, state: ExperimentState, **kwargs):
+        learner = state.training_result.learner
 
         if not isinstance(learner, IncrementalClassifierMixin) and not isinstance(learner, IncrementalRegressorMixin):
             raise ValueError('Cannot obtain incremental predictions from a model of type ' + type(learner.__name__))
@@ -194,10 +187,7 @@ class IncrementalEvaluation(Evaluation):
                                                          prediction_type=self.prediction_type,
                                                          prediction_scope=IncrementalPrediction(current_size),
                                                          predict_time=predict_time)
-                    self._evaluate_predictions(state=state,
-                                               prediction_result=prediction_result,
-                                               train_time=training_result.train_time,
-                                               learner=learner)
+                    self._evaluate_predictions(state=state, prediction_result=prediction_result)
 
                 next_step_size = step_size
                 current_size = min(current_size + next_step_size, total_size)
@@ -337,14 +327,14 @@ class Experiment(DataSplitter.Callback):
             # Save model to disk...
             self.__save_model(learner, fold)
 
-        training_result = TrainingResult(learner=learner, train_time=train_time)
+        state.training_result = TrainingResult(learner=learner, train_time=train_time)
 
         # Obtain and evaluate predictions for training data, if necessary...
         train_evaluation = self.train_evaluation
 
         if train_evaluation and test_dataset.type != Dataset.Type.TRAINING:
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-            self.__predict_and_evaluate(state, training_result, train_evaluation, **predict_kwargs)
+            self.__predict_and_evaluate(state, train_evaluation, **predict_kwargs)
 
         # Obtain and evaluate predictions for test data, if necessary...
         test_evaluation = self.test_evaluation
@@ -352,31 +342,29 @@ class Experiment(DataSplitter.Callback):
         if test_evaluation:
             test_state = replace(state, dataset=test_dataset)
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-            self.__predict_and_evaluate(test_state, training_result, test_evaluation, **predict_kwargs)
+            self.__predict_and_evaluate(test_state, test_evaluation, **predict_kwargs)
 
         # Write output data after model was trained...
         for output_writer in self.post_training_output_writers:
-            output_writer.write_output(state, training_result=training_result)
+            output_writer.write_output(state)
 
     @staticmethod
-    def __predict_and_evaluate(state: ExperimentState, training_result: TrainingResult, evaluation: Evaluation,
-                               **kwargs):
+    def __predict_and_evaluate(state: ExperimentState, evaluation: Evaluation, **kwargs):
         """
         Obtains and evaluates predictions for given query examples from a previously trained model.
 
-        :param state:           The state that stores the model
-        :param training_result: A `TrainingResult` that stores the result of the training process
-        :param evaluation:      The `Evaluation` to be used
-        :param kwargs:          Optional keyword arguments to be passed to the model when obtaining predictions
+        :param state:       The state that stores the model
+        :param evaluation:  The `Evaluation` to be used
+        :param kwargs:      Optional keyword arguments to be passed to the model when obtaining predictions
         """
         try:
-            return evaluation.predict_and_evaluate(state, training_result, **kwargs)
+            return evaluation.predict_and_evaluate(state, **kwargs)
         except ValueError as error:
             dataset = state.dataset
 
             if dataset.has_sparse_features:
                 dense_dataset = replace(state, dataset=dataset.enforce_dense_features())
-                return Experiment.__predict_and_evaluate(dense_dataset, evaluation, training_result, **kwargs)
+                return Experiment.__predict_and_evaluate(dense_dataset, evaluation, **kwargs)
 
             raise error
 

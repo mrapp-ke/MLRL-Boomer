@@ -19,7 +19,7 @@ from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
-from mlrl.testbed.experiments.state import ExperimentState, TrainingResult
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.format import OPTION_DECIMALS, format_float, format_table
 from mlrl.testbed.prediction_result import PredictionResult
 
@@ -156,8 +156,10 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
         """
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, state: ExperimentState, training_result: Optional[TrainingResult],
+    def _generate_output_data(self, state: ExperimentState,
                               prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+        training_result = state.training_result
+
         if training_result:
             learner = training_result.learner
             if isinstance(learner, ClassificationRuleLearner):
