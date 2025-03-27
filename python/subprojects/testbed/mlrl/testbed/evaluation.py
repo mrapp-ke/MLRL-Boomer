@@ -6,7 +6,7 @@ The evaluation results can be written to one or several outputs, e.g., to the co
 """
 from abc import ABC, abstractmethod
 from dataclasses import replace
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 import numpy as np
 
@@ -17,7 +17,8 @@ from mlrl.common.config.options import Options
 from mlrl.common.data.arrays import enforce_dense
 from mlrl.common.data.types import Float32, Uint8
 
-from mlrl.testbed.experiments.output.converters import TableConverter, TextConverter
+from mlrl.testbed.experiments.output.converters import TableConverter
+from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
@@ -205,12 +206,13 @@ class EvaluationWriter(OutputWriter, ABC):
 
     KWARG_FOLD = 'fold_index'
 
-    class EvaluationResult(TextConverter, TableConverter):
+    class EvaluationResult(OutputData):
         """
         Stores the evaluation results according to different measures.
         """
 
         def __init__(self):
+            super().__init__('Evaluation result', 'evaluation')
             self.measures: Set[Formatter] = set()
             self.results: Optional[List[Dict[Formatter, float]]] = None
 
@@ -352,7 +354,7 @@ class EvaluationWriter(OutputWriter, ABC):
         def __init__(self, options: Options = Options()):
             super().__init__(BaseLogSink.TitleFormatter('Evaluation result'), options=options)
 
-        def write_to_sink(self, state: ExperimentState, output_data, **kwargs):
+        def write_to_sink(self, state: ExperimentState, output_data: OutputData, **kwargs):
             """
             See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
             """
@@ -377,7 +379,7 @@ class EvaluationWriter(OutputWriter, ABC):
                 directory, 'evaluation', ExperimentState.FormatterOptions(include_prediction_scope=False)),
                              options=options)
 
-        def write_to_sink(self, state: ExperimentState, output_data, **kwargs):
+        def write_to_sink(self, state: ExperimentState, output_data: OutputData, **kwargs):
             """
             See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
             """
@@ -405,7 +407,7 @@ class EvaluationWriter(OutputWriter, ABC):
         :param ground_truth:    The ground truth
         """
 
-    def _generate_output_data(self, state: ExperimentState) -> Optional[Any]:
+    def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
         training_result = state.training_result
         prediction_result = state.prediction_result
 

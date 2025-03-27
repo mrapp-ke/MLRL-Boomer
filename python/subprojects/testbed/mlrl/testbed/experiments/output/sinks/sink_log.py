@@ -7,6 +7,7 @@ import logging as log
 
 from mlrl.common.config.options import Options
 
+from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.state import ExperimentState
 
@@ -79,7 +80,7 @@ class LogSink(Sink):
         super().__init__(options)
         self.title_formatter = title_formatter
 
-    def write_to_sink(self, state: ExperimentState, output_data, **kwargs):
+    def write_to_sink(self, state: ExperimentState, output_data: OutputData, **kwargs):
         """
         See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
         """

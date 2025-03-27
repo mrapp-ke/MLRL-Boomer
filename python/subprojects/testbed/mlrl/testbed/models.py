@@ -7,7 +7,7 @@ e.g., to the console or to a file.
 import logging as log
 
 from abc import ABC
-from typing import Any, Optional
+from typing import Optional
 
 import numpy as np
 
@@ -19,7 +19,8 @@ from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBo
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
 from mlrl.testbed.dataset import Dataset
-from mlrl.testbed.experiments.output.converters import TextConverter
+from mlrl.testbed.experiments.output.converters import TableConverter
+from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.sinks.sink_text import TextFileSink as BaseTextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
@@ -76,7 +77,7 @@ class RuleModelWriter(ModelWriter):
     Allows to write textual representations of rule-based models to one or several sinks.
     """
 
-    class RuleModelConverter(RuleModelVisitor, TextConverter):
+    class RuleModelConverter(OutputData, RuleModelVisitor):
         """
         Allows to create textual representations of the rules in a `RuleModel`.
         """
@@ -86,6 +87,7 @@ class RuleModelWriter(ModelWriter):
             :param dataset: The training dataset
             :param model:   The `RuleModel`
             """
+            super().__init__('Model', 'rules', ExperimentState.FormatterOptions(include_dataset_type=False))
             self.features = dataset.features
             self.outputs = dataset.outputs
             self.model = model
@@ -253,7 +255,13 @@ class RuleModelWriter(ModelWriter):
             self.text.close()
             return text
 
-    def _generate_output_data(self, state: ExperimentState) -> Optional[Any]:
+        def to_table(self, options: Options, **_) -> Optional[TableConverter.Table]:
+            """
+            See :func:`mlrl.testbed.experiments.output.converters.TableConverter.to_table`
+            """
+            raise NotImplementedError()
+
+    def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
         training_result = state.training_result
 
         if training_result:
