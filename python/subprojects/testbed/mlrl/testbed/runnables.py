@@ -38,6 +38,7 @@ from mlrl.testbed.evaluation import OPTION_ACCURACY, OPTION_COVERAGE_ERROR, OPTI
     BinaryEvaluationWriter, EvaluationWriter, RankingEvaluationWriter, RegressionEvaluationWriter
 from mlrl.testbed.experiment import Evaluation, Experiment, GlobalEvaluation, IncrementalEvaluation
 from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
 from mlrl.testbed.label_vectors import OPTION_SPARSE, LabelVectorSetWriter, LabelVectorWriter
 from mlrl.testbed.model_characteristics import ModelCharacteristicsWriter, RuleModelCharacteristicsWriter
@@ -53,7 +54,6 @@ from mlrl.testbed.predictions import PredictionWriter
 from mlrl.testbed.preprocessors import OneHotEncoder, Preprocessor
 from mlrl.testbed.probability_calibration import JointProbabilityCalibrationModelWriter, \
     MarginalProbabilityCalibrationModelWriter
-from mlrl.testbed.problem_type import ProblemType
 from mlrl.testbed.util.io import clear_directory
 
 LOG_FORMAT = '%(levelname)s %(message)s'

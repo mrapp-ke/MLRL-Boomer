@@ -12,8 +12,8 @@ from mlrl.common.config.options import Options
 from mlrl.common.data.arrays import is_sparse
 
 from mlrl.testbed.experiments.output.converters import TableConverter, TextConverter
+from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
-from mlrl.testbed.problem_type import ProblemType
 
 OPTION_OUTPUTS = 'outputs'
 
