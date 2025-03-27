@@ -9,9 +9,9 @@ from typing import Any, Optional
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.characteristics import OutputCharacteristics
-from mlrl.testbed.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
-from mlrl.testbed.output.sinks.sink_log import LogSink as BaseLogSink
-from mlrl.testbed.output.writer import OutputWriter
+from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
+from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
+from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.prediction_scope import PredictionType

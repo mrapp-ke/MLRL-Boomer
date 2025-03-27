@@ -12,11 +12,11 @@ from mlrl.common.config.options import Options
 from mlrl.testbed.characteristics import LABEL_CHARACTERISTICS, OUTPUT_CHARACTERISTICS, Characteristic, \
     OutputCharacteristics, density
 from mlrl.testbed.dataset import AttributeType, Dataset
+from mlrl.testbed.experiments.output.converters import TableConverter, TextConverter
+from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
+from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
+from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, filter_formatters, format_table
-from mlrl.testbed.output.converters import TableConverter, TextConverter
-from mlrl.testbed.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
-from mlrl.testbed.output.sinks.sink_log import LogSink as BaseLogSink
-from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.problem_type import ProblemType
@@ -133,7 +133,7 @@ class DataCharacteristicsWriter(OutputWriter):
 
         def to_text(self, options: Options, **_) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.output.converters.TextConverter.to_text`
+            See :func:`mlrl.testbed.experiments.output.converters.TextConverter.to_text`
             """
             percentage = options.get_bool(OPTION_PERCENTAGE, True)
             decimals = options.get_int(OPTION_DECIMALS, 2)
@@ -155,7 +155,7 @@ class DataCharacteristicsWriter(OutputWriter):
 
         def to_table(self, options: Options, **_) -> Optional[TableConverter.Table]:
             """
-            See :func:`mlrl.testbed.output.converters.TableConverter.to_table`
+            See :func:`mlrl.testbed.experiments.output.converters.TableConverter.to_table`
             """
             percentage = options.get_bool(OPTION_PERCENTAGE, True)
             decimals = options.get_int(OPTION_DECIMALS, 0)
