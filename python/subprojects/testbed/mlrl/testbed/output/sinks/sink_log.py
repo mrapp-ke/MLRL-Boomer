@@ -67,8 +67,8 @@ class LogSink(Sink):
             if self.include_prediction_scope and prediction_result:
                 prediction_scope = prediction_result.prediction_scope
 
-                if not prediction_scope.is_global():
-                    return ' using a model of size ' + str(prediction_scope.get_model_size())
+                if not prediction_scope.is_global:
+                    return ' using a model of size ' + str(prediction_scope.model_size)
 
             return ''
 
