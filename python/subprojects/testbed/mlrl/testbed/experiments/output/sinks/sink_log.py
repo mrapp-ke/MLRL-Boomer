@@ -23,30 +23,21 @@ class LogSink(Sink):
 
         def __init__(self,
                      title: str,
-                     include_dataset_type: bool = True,
-                     include_prediction_scope: bool = True,
-                     include_fold: bool = True):
+                     formatter_options: ExperimentState.FormatterOptions = ExperimentState.FormatterOptions()):
             """
-            :param title:                       A title
-            :param include_dataset_type:        True, if the type of the dataset should be included in the title, False
-                                                otherwise
-            :param include_prediction_scope:    True, if the scope of the predictions should be included in the title,
-                                                False otherwise
-            :param include_fold:                True, if the cross validation fold should be included in the title,
-                                                False otherwise
+            :param title:               A title
+            :param formatter_options:   The options to be used by the formatter
             """
             self.title = title
-            self.include_dataset_type = include_dataset_type
-            self.include_prediction_scope = include_prediction_scope
-            self.include_fold = include_fold
+            self.formatter_options = formatter_options
 
         def __format_dataset_type(self, state: ExperimentState) -> str:
-            if self.include_dataset_type:
+            if self.formatter_options.include_dataset_type:
                 return ' for ' + state.dataset.type.value + ' data'
             return ''
 
         def __format_fold(self, state: ExperimentState) -> str:
-            if self.include_fold:
+            if self.formatter_options.include_fold:
                 fold = state.fold
 
                 if fold.is_cross_validation_used:
@@ -60,7 +51,7 @@ class LogSink(Sink):
             return ''
 
         def __format_prediction_scope(self, state: ExperimentState) -> str:
-            if self.include_prediction_scope:
+            if self.formatter_options.include_prediction_scope:
                 prediction_result = state.prediction_result
 
                 if prediction_result:
