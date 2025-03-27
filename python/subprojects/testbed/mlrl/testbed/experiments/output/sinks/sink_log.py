@@ -10,7 +10,7 @@ from typing import Optional
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.experiments.output.sinks.sink import Sink
-from mlrl.testbed.experiments.state import ExperimentState, TrainingResult
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.prediction_result import PredictionResult
 
 
@@ -90,8 +90,8 @@ class LogSink(Sink):
         super().__init__(options)
         self.title_formatter = title_formatter
 
-    def write_to_sink(self, state: ExperimentState, _: Optional[TrainingResult],
-                      prediction_result: Optional[PredictionResult], output_data, **kwargs):
+    def write_to_sink(self, state: ExperimentState, prediction_result: Optional[PredictionResult], output_data,
+                      **kwargs):
         """
         See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
         """

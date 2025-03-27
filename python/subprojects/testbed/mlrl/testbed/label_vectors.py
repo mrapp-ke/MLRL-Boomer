@@ -19,7 +19,7 @@ from mlrl.testbed.experiments.output.converters import TableConverter, TextConve
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
-from mlrl.testbed.experiments.state import ExperimentState, TrainingResult
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.format import format_table
 from mlrl.testbed.prediction_result import PredictionResult
 
@@ -128,9 +128,7 @@ class LabelVectorWriter(OutputWriter):
             super().__init__(BaseCsvFileSink.PathFormatter(directory, 'label_vectors', include_dataset_type=False),
                              options=options)
 
-    # pylint: disable=unused-argument
-    def _generate_output_data(self, state: ExperimentState, training_result: Optional[TrainingResult],
-                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+    def _generate_output_data(self, state: ExperimentState, _: Optional[PredictionResult]) -> Optional[Any]:
         dataset = state.dataset
         return LabelVectorWriter.LabelVectors(num_labels=dataset.num_outputs, y=dataset.y)
 
@@ -158,8 +156,10 @@ class LabelVectorSetWriter(LabelVectorWriter):
             """
             self.label_vectors.unique_label_vectors.append((label_vector, frequency))
 
-    def _generate_output_data(self, state: ExperimentState, training_result: Optional[TrainingResult],
+    def _generate_output_data(self, state: ExperimentState,
                               prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+        training_result = state.training_result
+
         if training_result:
             learner = training_result.learner
 
@@ -171,4 +171,4 @@ class LabelVectorSetWriter(LabelVectorWriter):
                     output_space_info.visit(visitor)
                     return visitor.label_vectors
 
-        return super()._generate_output_data(state, training_result, prediction_result)
+        return super()._generate_output_data(state, prediction_result)

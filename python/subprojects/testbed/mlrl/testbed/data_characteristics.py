@@ -17,7 +17,7 @@ from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCs
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
-from mlrl.testbed.experiments.state import ExperimentState, TrainingResult
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, filter_formatters, format_table
 from mlrl.testbed.prediction_result import PredictionResult
 
@@ -195,9 +195,7 @@ class DataCharacteristicsWriter(OutputWriter):
                                                            include_dataset_type=False),
                              options=options)
 
-    # pylint: disable=unused-argument
-    def _generate_output_data(self, state: ExperimentState, training_result: Optional[TrainingResult],
-                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+    def _generate_output_data(self, state: ExperimentState, _: Optional[PredictionResult]) -> Optional[Any]:
         problem_type = state.problem_type
         dataset = state.dataset
         feature_characteristics = FeatureCharacteristics(dataset)
