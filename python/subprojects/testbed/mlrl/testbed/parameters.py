@@ -16,11 +16,10 @@ from mlrl.testbed.experiments.output.converters import TableConverter, TextConve
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
-from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.state import ExperimentState, TrainingResult
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_table
 from mlrl.testbed.prediction_result import PredictionResult
-from mlrl.testbed.training_result import TrainingResult
 from mlrl.testbed.util.io import SUFFIX_CSV, get_file_name_per_fold, open_readable_file
 from mlrl.testbed.util.io_csv import CsvReader
 

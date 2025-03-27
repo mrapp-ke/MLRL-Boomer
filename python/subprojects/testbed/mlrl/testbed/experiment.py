@@ -20,14 +20,13 @@ from mlrl.testbed.data_splitting import DataSplitter
 from mlrl.testbed.dataset import AttributeType, Dataset
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
-from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.state import ExperimentState, TrainingResult
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_duration
 from mlrl.testbed.parameters import ParameterLoader
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.prediction_scope import GlobalPrediction, IncrementalPrediction, PredictionType
-from mlrl.testbed.training_result import TrainingResult
 
 
 class Evaluation(ABC):
