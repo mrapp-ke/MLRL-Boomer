@@ -20,9 +20,8 @@ from mlrl.testbed.experiments.output.converters import TableConverter, TextConve
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
-from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.state import ExperimentState, PredictionResult
 from mlrl.testbed.format import format_float, format_percentage, format_table
-from mlrl.testbed.prediction_result import PredictionResult
 
 
 class ModelCharacteristicsWriter(OutputWriter, ABC):
