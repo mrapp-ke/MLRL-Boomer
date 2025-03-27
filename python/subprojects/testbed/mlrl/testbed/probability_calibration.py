@@ -19,7 +19,7 @@ from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
-from mlrl.testbed.experiments.state import ExperimentState, PredictionResult
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.format import OPTION_DECIMALS, format_float, format_table
 
 
@@ -154,9 +154,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
         :return:        The calibration model
         """
 
-    # pylint: disable=unused-argument
-    def _generate_output_data(self, state: ExperimentState,
-                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+    def _generate_output_data(self, state: ExperimentState) -> Optional[Any]:
         training_result = state.training_result
 
         if training_result:

@@ -17,7 +17,7 @@ from mlrl.testbed.experiments.output.sinks.sink import FileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
-from mlrl.testbed.experiments.state import ExperimentState, PredictionResult
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.format import OPTION_DECIMALS, format_array
 from mlrl.testbed.util.io import SUFFIX_ARFF
 
@@ -70,9 +70,7 @@ class PredictionWriter(OutputWriter):
             """
             super().__init__(FileSink.PathFormatter(directory, 'predictions', SUFFIX_ARFF), options)
 
-        # pylint: disable=unused-argument
-        def _write_to_file(self, file_path: str, state: ExperimentState, prediction_result: Optional[PredictionResult],
-                           output_data, **_):
+        def _write_to_file(self, file_path: str, state: ExperimentState, output_data, **_):
             decimals = self.options.get_int(OPTION_DECIMALS, 0)
             ground_truth = output_data.ground_truth
             predictions = output_data.predictions
@@ -100,8 +98,10 @@ class PredictionWriter(OutputWriter):
 
             save_arff_file(file_path, ground_truth, predictions, ArffMetaData(features, outputs))
 
-    def _generate_output_data(self, state: ExperimentState,
-                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+    def _generate_output_data(self, state: ExperimentState) -> Optional[Any]:
+        prediction_result = state.prediction_result
+
         if prediction_result:
             return PredictionWriter.Predictions(predictions=prediction_result.predictions, ground_truth=state.dataset.y)
+
         return None
