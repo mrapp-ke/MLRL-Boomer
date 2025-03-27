@@ -10,7 +10,7 @@ from typing import Optional
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.experiments.output.sinks.sink import Sink
-from mlrl.testbed.output_scope import OutputScope
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
 
@@ -44,14 +44,14 @@ class LogSink(Sink):
             self.include_prediction_scope = include_prediction_scope
             self.include_fold = include_fold
 
-        def __format_dataset_type(self, scope: OutputScope) -> str:
+        def __format_dataset_type(self, state: ExperimentState) -> str:
             if self.include_dataset_type:
-                return ' for ' + scope.dataset.type.value + ' data'
+                return ' for ' + state.dataset.type.value + ' data'
             return ''
 
-        def __format_fold(self, scope: OutputScope) -> str:
+        def __format_fold(self, state: ExperimentState) -> str:
             if self.include_fold:
-                fold = scope.fold
+                fold = state.fold
 
                 if fold.is_cross_validation_used:
                     if fold.index is None:
@@ -72,16 +72,16 @@ class LogSink(Sink):
 
             return ''
 
-        def format(self, scope: OutputScope, prediction_result: Optional[PredictionResult]) -> str:
+        def format(self, state: ExperimentState, prediction_result: Optional[PredictionResult]) -> str:
             """
             Formats and returns the title that is printed before the output data.
 
-            :param scope:               The scope of the output data
+            :param state:               The state from which the output data is generated
             :param prediction_result:   A `PredictionResult` that stores the result of a prediction process or None, if
                                         no predictions have been obtained
             """
-            return self.title + self.__format_dataset_type(scope) + self.__format_prediction_scope(
-                prediction_result) + self.__format_fold(scope)
+            return self.title + self.__format_dataset_type(state) + self.__format_prediction_scope(
+                prediction_result) + self.__format_fold(state)
 
     def __init__(self, title_formatter: TitleFormatter, options: Options = Options()):
         """
@@ -91,7 +91,7 @@ class LogSink(Sink):
         super().__init__(options)
         self.title_formatter = title_formatter
 
-    def write_to_sink(self, scope: OutputScope, _: Optional[TrainingResult],
+    def write_to_sink(self, state: ExperimentState, _: Optional[TrainingResult],
                       prediction_result: Optional[PredictionResult], output_data, **kwargs):
         """
         See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
@@ -99,4 +99,4 @@ class LogSink(Sink):
         text = output_data.to_text(self.options, **kwargs)
 
         if text:
-            log.info('%s:\n\n%s\n', self.title_formatter.format(scope, prediction_result), text)
+            log.info('%s:\n\n%s\n', self.title_formatter.format(state, prediction_result), text)
