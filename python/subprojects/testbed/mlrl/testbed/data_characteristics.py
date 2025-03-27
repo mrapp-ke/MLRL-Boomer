@@ -15,7 +15,6 @@ from mlrl.testbed.dataset import AttributeType, Dataset
 from mlrl.testbed.experiments.output.converters import TableConverter
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
-from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
@@ -173,16 +172,6 @@ class DataCharacteristicsWriter(OutputWriter):
                                                       decimals=decimals)
 
             return [columns]
-
-    class LogSink(BaseLogSink):
-        """
-        Allows to write the characteristics of a data set to the console.
-        """
-
-        def __init__(self, options: Options = Options()):
-            super().__init__(BaseLogSink.TitleFormatter('Data characteristics',
-                                                        ExperimentState.FormatterOptions(include_dataset_type=False)),
-                             options=options)
 
     class CsvFileSink(BaseCsvFileSink):
         """

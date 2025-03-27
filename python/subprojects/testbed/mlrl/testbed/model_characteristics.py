@@ -19,7 +19,6 @@ from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 from mlrl.testbed.experiments.output.converters import TableConverter
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
-from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.format import format_float, format_percentage, format_table
@@ -29,16 +28,6 @@ class ModelCharacteristicsWriter(OutputWriter, ABC):
     """
     An abstract base class for all classes that allow to write the characteristics of a model to one or several sinks.
     """
-
-    class LogSink(BaseLogSink):
-        """
-        Allows to write the characteristics of a model to the console.
-        """
-
-        def __init__(self):
-            super().__init__(
-                BaseLogSink.TitleFormatter('Model characteristics',
-                                           ExperimentState.FormatterOptions(include_dataset_type=False)))
 
     class CsvFileSink(BaseCsvFileSink):
         """

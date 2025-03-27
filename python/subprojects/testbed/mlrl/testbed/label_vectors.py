@@ -18,7 +18,6 @@ from mlrl.common.learners import ClassificationRuleLearner
 from mlrl.testbed.experiments.output.converters import TableConverter
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
-from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.format import format_table
@@ -109,16 +108,6 @@ class LabelVectorWriter(OutputWriter):
                 })
 
             return rows
-
-    class LogSink(BaseLogSink):
-        """
-        Allows to write unique label vectors that are contained in a data set to the console.
-        """
-
-        def __init__(self, options: Options = Options()):
-            super().__init__(BaseLogSink.TitleFormatter('Label vectors',
-                                                        ExperimentState.FormatterOptions(include_dataset_type=False)),
-                             options=options)
 
     class CsvFileSink(BaseCsvFileSink):
         """

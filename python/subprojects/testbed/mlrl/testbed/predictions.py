@@ -15,7 +15,6 @@ from mlrl.testbed.dataset import Attribute, AttributeType
 from mlrl.testbed.experiments.output.converters import TableConverter
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
-from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
@@ -58,14 +57,6 @@ class PredictionWriter(OutputWriter):
             See :func:`mlrl.testbed.experiments.output.converters.TableConverter.to_text`
             """
             raise NotImplementedError()
-
-    class LogSink(BaseLogSink):
-        """
-        Allows to write predictions and the corresponding ground truth to the console.
-        """
-
-        def __init__(self, options: Options = Options()):
-            super().__init__(BaseLogSink.TitleFormatter('Predictions'), options=options)
 
     class ArffFileSink(FileSink):
         """
