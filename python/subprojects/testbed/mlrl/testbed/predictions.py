@@ -12,11 +12,11 @@ from mlrl.common.config.options import Options
 
 from mlrl.testbed.data import ArffMetaData, save_arff_file
 from mlrl.testbed.dataset import Attribute, AttributeType
+from mlrl.testbed.experiments.output.converters import TextConverter
+from mlrl.testbed.experiments.output.sinks.sink import FileSink
+from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
+from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.format import OPTION_DECIMALS, format_array
-from mlrl.testbed.output.converters import TextConverter
-from mlrl.testbed.output.sinks.sink import FileSink
-from mlrl.testbed.output.sinks.sink_log import LogSink as BaseLogSink
-from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.problem_type import ProblemType
@@ -44,7 +44,7 @@ class PredictionWriter(OutputWriter):
 
         def to_text(self, options: Options, **_) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.output.converters.TextConverter.to_text`
+            See :func:`mlrl.testbed.experiments.output.converters.TextConverter.to_text`
             """
             decimals = options.get_int(OPTION_DECIMALS, 2)
             text = 'Ground truth:\n\n'

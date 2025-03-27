@@ -14,12 +14,12 @@ from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibr
     IsotonicProbabilityCalibrationModelVisitor, NoProbabilityCalibrationModel
 from mlrl.common.learners import ClassificationRuleLearner
 
+from mlrl.testbed.experiments.output.converters import TableConverter, TextConverter
+from mlrl.testbed.experiments.output.sinks.sink import Sink
+from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
+from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
+from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.format import OPTION_DECIMALS, format_float, format_table
-from mlrl.testbed.output.converters import TableConverter, TextConverter
-from mlrl.testbed.output.sinks.sink import Sink
-from mlrl.testbed.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
-from mlrl.testbed.output.sinks.sink_log import LogSink as BaseLogSink
-from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
@@ -62,7 +62,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
 
         def to_text(self, options: Options, **_) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.output.converters.TextConverter.to_text`
+            See :func:`mlrl.testbed.experiments.output.converters.TextConverter.to_text`
             """
             self.calibration_model.visit(self)
             decimals = options.get_int(OPTION_DECIMALS, 4)
@@ -87,7 +87,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
 
         def to_table(self, options: Options, **_) -> Optional[TableConverter.Table]:
             """
-            See :func:`mlrl.testbed.output.converters.TableConverter.to_table`
+            See :func:`mlrl.testbed.experiments.output.converters.TableConverter.to_table`
             """
             self.calibration_model.visit(self)
             decimals = options.get_int(OPTION_DECIMALS, 0)
@@ -129,14 +129,14 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
         # pylint: disable=unused-argument
         def to_text(self, options: Options, **_) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.output.converters.TextConverter.to_text`
+            See :func:`mlrl.testbed.experiments.output.converters.TextConverter.to_text`
             """
             return 'No calibration model used'
 
         # pylint: disable=unused-argument
         def to_table(self, options: Options, **_) -> Optional[TableConverter.Table]:
             """
-            See :func:`mlrl.testbed.output.converters.TableConverter.to_table`
+            See :func:`mlrl.testbed.experiments.output.converters.TableConverter.to_table`
             """
             return None
 

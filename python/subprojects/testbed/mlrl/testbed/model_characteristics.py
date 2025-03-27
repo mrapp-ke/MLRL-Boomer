@@ -16,11 +16,11 @@ from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBo
     RuleModelVisitor
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
+from mlrl.testbed.experiments.output.converters import TableConverter, TextConverter
+from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
+from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
+from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.format import format_float, format_percentage, format_table
-from mlrl.testbed.output.converters import TableConverter, TextConverter
-from mlrl.testbed.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
-from mlrl.testbed.output.sinks.sink_log import LogSink as BaseLogSink
-from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
@@ -102,7 +102,7 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
         # pylint: disable=unused-argument
         def to_text(self, options: Options, **_) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.output.converters.TextConverter.to_text`
+            See :func:`mlrl.testbed.experiments.output.converters.TextConverter.to_text`
             """
             num_predictions = self.num_pos_predictions + self.num_neg_predictions
             num_conditions = self.num_numerical_leq + self.num_numerical_gr + self.num_ordinal_leq + \
@@ -220,7 +220,7 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
         # pylint: disable=unused-argument
         def to_table(self, options: Options, **_) -> Optional[TableConverter.Table]:
             """
-            See :func:`mlrl.testbed.output.converters.TableConverter.to_table`
+            See :func:`mlrl.testbed.experiments.output.converters.TableConverter.to_table`
             """
             rows = []
             default_rule_index = self.default_rule_index

@@ -5,7 +5,7 @@ Provides classes that allow writing output data to CSV files.
 """
 from typing import Optional
 
-from mlrl.testbed.output.sinks.sink import FileSink
+from mlrl.testbed.experiments.output.sinks.sink import FileSink
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult

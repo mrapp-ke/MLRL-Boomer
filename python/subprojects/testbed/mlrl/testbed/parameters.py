@@ -12,12 +12,12 @@ from typing import Any, Dict, Optional
 
 from mlrl.common.config.options import Options
 
+from mlrl.testbed.experiments.output.converters import TableConverter, TextConverter
+from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
+from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
+from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_table
-from mlrl.testbed.output.converters import TableConverter, TextConverter
-from mlrl.testbed.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
-from mlrl.testbed.output.sinks.sink_log import LogSink as BaseLogSink
-from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
@@ -85,7 +85,7 @@ class ParameterWriter(OutputWriter):
         # pylint: disable=unused-argument
         def to_text(self, options: Options, **_) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.output.converters.TextConverter.to_text`
+            See :func:`mlrl.testbed.experiments.output.converters.TextConverter.to_text`
             """
             parameters = self.parameters
             rows = []
@@ -101,7 +101,7 @@ class ParameterWriter(OutputWriter):
         # pylint: disable=unused-argument
         def to_table(self, options: Options, **_) -> Optional[TableConverter.Table]:
             """
-            See :func:`mlrl.testbed.output.converters.TableConverter.to_table`
+            See :func:`mlrl.testbed.experiments.output.converters.TableConverter.to_table`
             """
             parameters = self.parameters
             columns = {}
