@@ -53,7 +53,9 @@ class ModelWriter(OutputWriter, ABC):
         """
 
         def __init__(self, options: Options = Options()):
-            super().__init__(BaseLogSink.TitleFormatter('Model', include_dataset_type=False), options=options)
+            super().__init__(BaseLogSink.TitleFormatter('Model',
+                                                        ExperimentState.FormatterOptions(include_dataset_type=False)),
+                             options=options)
 
     class TextFileSink(BaseTextFileSink):
         """
@@ -64,7 +66,8 @@ class ModelWriter(OutputWriter, ABC):
             """
             :param directory: The path to the directory, where the text file should be located
             """
-            super().__init__(BaseTextFileSink.PathFormatter(directory, 'rules', include_dataset_type=False),
+            super().__init__(BaseTextFileSink.PathFormatter(
+                directory, 'rules', ExperimentState.FormatterOptions(include_dataset_type=False)),
                              options=options)
 
 

@@ -21,10 +21,8 @@ class TextFileSink(FileSink):
         def __init__(self,
                      directory: str,
                      file_name: str,
-                     include_dataset_type: bool = True,
-                     include_prediction_scope: bool = True,
-                     include_fold: bool = True):
-            super().__init__(directory, file_name, 'txt', include_dataset_type, include_prediction_scope, include_fold)
+                     formatter_options: ExperimentState.FormatterOptions = ExperimentState.FormatterOptions()):
+            super().__init__(directory, file_name, 'txt', formatter_options)
 
     def _write_to_file(self, file_path: str, _: ExperimentState, output_data, **kwargs):
         text = output_data.to_text(self.options, **kwargs)

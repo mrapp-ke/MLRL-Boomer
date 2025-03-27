@@ -64,3 +64,17 @@ class ExperimentState:
     parameters: Dict[str, Any]
     training_result: Optional[TrainingResult] = None
     prediction_result: Optional[PredictionResult] = None
+
+    @dataclass
+    class FormatterOptions:
+        """
+        Options for creating a textual representation from an `ExperimentState`.
+
+        Attributes:
+            include_dataset_type:       True, if the type of the dataset should be included, False otherwise
+            include_prediction_scope:   True, if the scope of the predictions should be included, False otherwise
+            include_fold:               True, if the cross validation fold should be included, False otherwise
+        """
+        include_dataset_type: bool = True
+        include_prediction_scope: bool = True
+        include_fold: bool = True

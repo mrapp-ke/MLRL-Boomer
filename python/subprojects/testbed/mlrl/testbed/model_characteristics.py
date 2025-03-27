@@ -35,7 +35,9 @@ class ModelCharacteristicsWriter(OutputWriter, ABC):
         """
 
         def __init__(self):
-            super().__init__(BaseLogSink.TitleFormatter('Model characteristics', include_dataset_type=False))
+            super().__init__(
+                BaseLogSink.TitleFormatter('Model characteristics',
+                                           ExperimentState.FormatterOptions(include_dataset_type=False)))
 
     class CsvFileSink(BaseCsvFileSink):
         """
@@ -47,7 +49,8 @@ class ModelCharacteristicsWriter(OutputWriter, ABC):
             :param directory: The path to the directory, where the CSV file should be located
             """
             super().__init__(
-                BaseCsvFileSink.PathFormatter(directory, 'model_characteristics', include_dataset_type=False))
+                BaseCsvFileSink.PathFormatter(directory, 'model_characteristics',
+                                              ExperimentState.FormatterOptions(include_dataset_type=False)))
 
 
 class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):

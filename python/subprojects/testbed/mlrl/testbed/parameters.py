@@ -116,7 +116,9 @@ class ParameterWriter(OutputWriter):
         """
 
         def __init__(self):
-            super().__init__(BaseLogSink.TitleFormatter('Custom parameters', include_dataset_type=False))
+            super().__init__(
+                BaseLogSink.TitleFormatter('Custom parameters',
+                                           ExperimentState.FormatterOptions(include_dataset_type=False)))
 
     class CsvFileSink(BaseCsvFileSink):
         """
@@ -127,7 +129,9 @@ class ParameterWriter(OutputWriter):
             """
             :param directory: The path to the directory, where the CSV file should be located
             """
-            super().__init__(BaseCsvFileSink.PathFormatter(directory, 'parameters', include_dataset_type=False))
+            super().__init__(
+                BaseCsvFileSink.PathFormatter(directory, 'parameters',
+                                              ExperimentState.FormatterOptions(include_dataset_type=False)))
 
     def _generate_output_data(self, state: ExperimentState) -> Optional[Any]:
         return ParameterWriter.Parameters(state.parameters)
