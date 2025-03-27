@@ -20,8 +20,8 @@ class PredictionType(Enum):
     @staticmethod
     def parse(parameter_name: str, value: str) -> 'PredictionType':
         """
-        Parses and returns a parameter value that specifies the `PredictionType` of the prediction to be obtained from a
-        learner. If the given value is invalid, a `ValueError` is raised.
+        Parses and returns a parameter value that specifies the `PredictionType` of the predictions to be obtained from
+        a learner. If the given value is invalid, a `ValueError` is raised.
 
         :param parameter_name:  The name of the parameter
         :param value:           The value to be parsed
