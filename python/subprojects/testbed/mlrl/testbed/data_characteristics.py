@@ -177,7 +177,8 @@ class DataCharacteristicsWriter(OutputWriter):
         """
 
         def __init__(self, options: Options = Options()):
-            super().__init__(BaseLogSink.TitleFormatter('Data characteristics', include_dataset_type=False),
+            super().__init__(BaseLogSink.TitleFormatter('Data characteristics',
+                                                        ExperimentState.FormatterOptions(include_dataset_type=False)),
                              options=options)
 
     class CsvFileSink(BaseCsvFileSink):
@@ -189,9 +190,8 @@ class DataCharacteristicsWriter(OutputWriter):
             """
             :param directory: The path to the directory, where the CSV file should be located
             """
-            super().__init__(BaseCsvFileSink.PathFormatter(directory,
-                                                           'data_characteristics',
-                                                           include_dataset_type=False),
+            super().__init__(BaseCsvFileSink.PathFormatter(
+                directory, 'data_characteristics', ExperimentState.FormatterOptions(include_dataset_type=False)),
                              options=options)
 
     def _generate_output_data(self, state: ExperimentState) -> Optional[Any]:

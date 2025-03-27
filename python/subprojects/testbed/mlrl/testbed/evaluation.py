@@ -373,7 +373,8 @@ class EvaluationWriter(OutputWriter, ABC):
             """
             :param directory: The path to the directory, where the CSV file should be located
             """
-            super().__init__(BaseCsvFileSink.PathFormatter(directory, 'evaluation', include_prediction_scope=False),
+            super().__init__(BaseCsvFileSink.PathFormatter(
+                directory, 'evaluation', ExperimentState.FormatterOptions(include_prediction_scope=False)),
                              options=options)
 
         def write_to_sink(self, state: ExperimentState, output_data, **kwargs):

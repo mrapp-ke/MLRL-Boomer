@@ -113,7 +113,9 @@ class LabelVectorWriter(OutputWriter):
         """
 
         def __init__(self, options: Options = Options()):
-            super().__init__(BaseLogSink.TitleFormatter('Label vectors', include_dataset_type=False), options=options)
+            super().__init__(BaseLogSink.TitleFormatter('Label vectors',
+                                                        ExperimentState.FormatterOptions(include_dataset_type=False)),
+                             options=options)
 
     class CsvFileSink(BaseCsvFileSink):
         """
@@ -124,7 +126,8 @@ class LabelVectorWriter(OutputWriter):
             """
             :param directory: The path to the directory, where the CSV file should be located
             """
-            super().__init__(BaseCsvFileSink.PathFormatter(directory, 'label_vectors', include_dataset_type=False),
+            super().__init__(BaseCsvFileSink.PathFormatter(
+                directory, 'label_vectors', ExperimentState.FormatterOptions(include_dataset_type=False)),
                              options=options)
 
     def _generate_output_data(self, state: ExperimentState) -> Optional[Any]:

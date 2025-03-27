@@ -186,7 +186,7 @@ class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWrite
 
         def __init__(self, options: Options = Options()):
             super().__init__(BaseLogSink.TitleFormatter('Marginal probability calibration model',
-                                                        include_dataset_type=False),
+                                                        ExperimentState.FormatterOptions(include_dataset_type=False)),
                              options=options)
 
     class CsvFileSink(BaseCsvFileSink):
@@ -198,9 +198,9 @@ class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWrite
             """
             :param directory: The path to the directory, where the CSV file should be located
             """
-            super().__init__(BaseCsvFileSink.PathFormatter(directory,
-                                                           'marginal_probability_calibration_model',
-                                                           include_dataset_type=False),
+            super().__init__(BaseCsvFileSink.PathFormatter(
+                directory, 'marginal_probability_calibration_model',
+                ExperimentState.FormatterOptions(include_dataset_type=False)),
                              options=options)
 
     def __init__(self, *sinks: Sink):
@@ -222,7 +222,7 @@ class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
 
         def __init__(self, options: Options = Options()):
             super().__init__(BaseLogSink.TitleFormatter('Joint probability calibration model',
-                                                        include_dataset_type=False),
+                                                        ExperimentState.FormatterOptions(include_dataset_type=False)),
                              options=options)
 
     class CsvFileSink(BaseCsvFileSink):
@@ -234,9 +234,9 @@ class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
             """
             :param directory: The path to the directory, where the CSV file should be located
             """
-            super().__init__(BaseCsvFileSink.PathFormatter(directory,
-                                                           'joint_probability_calibration_model',
-                                                           include_dataset_type=False),
+            super().__init__(BaseCsvFileSink.PathFormatter(
+                directory, 'joint_probability_calibration_model',
+                ExperimentState.FormatterOptions(include_dataset_type=False)),
                              options=options)
 
     def __init__(self, *sinks: Sink):
