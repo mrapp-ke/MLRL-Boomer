@@ -12,7 +12,7 @@ from mlrl.testbed.characteristics import OutputCharacteristics
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
-from mlrl.testbed.experiments.state import ExperimentState, TrainingResult
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.prediction_scope import PredictionType
 
@@ -41,7 +41,7 @@ class PredictionCharacteristicsWriter(OutputWriter):
             """
             super().__init__(BaseCsvFileSink.PathFormatter(directory, 'prediction_characteristics'), options=options)
 
-    def _generate_output_data(self, state: ExperimentState, _: Optional[TrainingResult],
+    def _generate_output_data(self, state: ExperimentState,
                               prediction_result: Optional[PredictionResult]) -> Optional[Any]:
         # Prediction characteristics can only be determined in the case of binary predictions...
         if prediction_result and prediction_result.prediction_type == PredictionType.BINARY:

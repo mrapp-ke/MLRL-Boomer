@@ -22,7 +22,7 @@ from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
-from mlrl.testbed.experiments.state import ExperimentState, TrainingResult
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
 from mlrl.testbed.prediction_result import PredictionResult
@@ -353,19 +353,18 @@ class EvaluationWriter(OutputWriter, ABC):
         def __init__(self, options: Options = Options()):
             super().__init__(BaseLogSink.TitleFormatter('Evaluation result'), options=options)
 
-        def write_to_sink(self, state: ExperimentState, training_result: Optional[TrainingResult],
-                          prediction_result: Optional[PredictionResult], output_data, **kwargs):
+        def write_to_sink(self, state: ExperimentState, prediction_result: Optional[PredictionResult], output_data,
+                          **kwargs):
             """
             See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
             """
             fold = state.fold
             new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold.index if fold.is_cross_validation_used else 0}}
-            super().write_to_sink(state, training_result, prediction_result, output_data, **new_kwargs)
+            super().write_to_sink(state, prediction_result, output_data, **new_kwargs)
 
             if fold.is_cross_validation_used and fold.is_last_fold:
                 overall_fold = Fold(index=None, num_folds=fold.num_folds, is_last_fold=True)
-                super().write_to_sink(replace(state, fold=overall_fold), training_result, prediction_result,
-                                      output_data, **kwargs)
+                super().write_to_sink(replace(state, fold=overall_fold), prediction_result, output_data, **kwargs)
 
     class CsvFileSink(BaseCsvFileSink):
         """
@@ -379,19 +378,18 @@ class EvaluationWriter(OutputWriter, ABC):
             super().__init__(BaseCsvFileSink.PathFormatter(directory, 'evaluation', include_prediction_scope=False),
                              options=options)
 
-        def write_to_sink(self, state: ExperimentState, training_result: Optional[TrainingResult],
-                          prediction_result: Optional[PredictionResult], output_data, **kwargs):
+        def write_to_sink(self, state: ExperimentState, prediction_result: Optional[PredictionResult], output_data,
+                          **kwargs):
             """
             See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
             """
             fold = state.fold
             new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold.index if fold.is_cross_validation_used else 0}}
-            super().write_to_sink(state, training_result, prediction_result, output_data, **new_kwargs)
+            super().write_to_sink(state, prediction_result, output_data, **new_kwargs)
 
             if fold.is_cross_validation_used and fold.is_last_fold:
                 overall_fold = Fold(index=None, num_folds=fold.num_folds, is_last_fold=True)
-                super().write_to_sink(replace(state, fold=overall_fold), training_result, prediction_result,
-                                      output_data, **kwargs)
+                super().write_to_sink(replace(state, fold=overall_fold), prediction_result, output_data, **kwargs)
 
     def __init__(self, *sinks: Sink):
         super().__init__(*sinks)
@@ -409,9 +407,10 @@ class EvaluationWriter(OutputWriter, ABC):
         :param ground_truth:    The ground truth
         """
 
-    # pylint: disable=unused-argument
-    def _generate_output_data(self, state: ExperimentState, training_result: Optional[TrainingResult],
+    def _generate_output_data(self, state: ExperimentState,
                               prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+        training_result = state.training_result
+
         if training_result and prediction_result:
             dataset = state.dataset
             data_type = dataset.type
