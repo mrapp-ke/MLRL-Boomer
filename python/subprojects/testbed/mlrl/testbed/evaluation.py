@@ -351,9 +351,6 @@ class EvaluationWriter(OutputWriter, ABC):
         Allows to write evaluation results to the console.
         """
 
-        def __init__(self, options: Options = Options()):
-            super().__init__(BaseLogSink.TitleFormatter('Evaluation result'), options=options)
-
         def write_to_sink(self, state: ExperimentState, output_data: OutputData, **kwargs):
             """
             See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
