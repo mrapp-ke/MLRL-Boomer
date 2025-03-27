@@ -7,8 +7,8 @@ from dataclasses import dataclass
 from typing import Any, Dict
 
 from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.fold import Fold
-from mlrl.testbed.problem_type import ProblemType
 
 
 @dataclass
