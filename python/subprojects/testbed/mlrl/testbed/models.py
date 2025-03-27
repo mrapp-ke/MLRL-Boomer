@@ -23,8 +23,8 @@ from mlrl.testbed.experiments.output.converters import TextConverter
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.sinks.sink_text import TextFileSink as BaseTextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.format import format_float
-from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
 
@@ -253,7 +253,7 @@ class RuleModelWriter(ModelWriter):
             return text
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
+    def _generate_output_data(self, state: ExperimentState, training_result: Optional[TrainingResult],
                               prediction_result: Optional[PredictionResult]) -> Optional[Any]:
         if training_result:
             learner = training_result.learner
@@ -262,7 +262,7 @@ class RuleModelWriter(ModelWriter):
                 model = learner.model_
 
                 if isinstance(model, RuleModel):
-                    return RuleModelWriter.RuleModelConverter(scope.dataset, model)
+                    return RuleModelWriter.RuleModelConverter(state.dataset, model)
 
             log.error('The learner does not support to create a textual representation of the model')
 

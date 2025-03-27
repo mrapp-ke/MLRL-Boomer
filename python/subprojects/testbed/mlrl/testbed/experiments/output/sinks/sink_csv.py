@@ -6,7 +6,7 @@ Provides classes that allow writing output data to CSV files.
 from typing import Optional
 
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
-from mlrl.testbed.output_scope import OutputScope
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
 from mlrl.testbed.util.io import SUFFIX_CSV, open_writable_file
@@ -33,7 +33,7 @@ class CsvFileSink(FileSink):
                              include_fold)
 
     # pylint: disable=unused-argument
-    def _write_to_file(self, file_path: str, scope: OutputScope, training_result: Optional[TrainingResult],
+    def _write_to_file(self, file_path: str, state: ExperimentState, training_result: Optional[TrainingResult],
                        prediction_result: Optional[PredictionResult], output_data, **kwargs):
         tabular_data = output_data.to_table(self.options, **kwargs)
 

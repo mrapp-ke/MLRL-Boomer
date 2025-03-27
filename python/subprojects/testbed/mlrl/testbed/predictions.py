@@ -16,8 +16,8 @@ from mlrl.testbed.experiments.output.converters import TextConverter
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.format import OPTION_DECIMALS, format_array
-from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.problem_type import ProblemType
 from mlrl.testbed.training_result import TrainingResult
@@ -73,7 +73,7 @@ class PredictionWriter(OutputWriter):
             super().__init__(FileSink.PathFormatter(directory, 'predictions', SUFFIX_ARFF), options)
 
         # pylint: disable=unused-argument
-        def _write_to_file(self, file_path: str, scope: OutputScope, training_result: Optional[TrainingResult],
+        def _write_to_file(self, file_path: str, state: ExperimentState, training_result: Optional[TrainingResult],
                            prediction_result: Optional[PredictionResult], output_data, **_):
             decimals = self.options.get_int(OPTION_DECIMALS, 0)
             ground_truth = output_data.ground_truth
@@ -81,7 +81,7 @@ class PredictionWriter(OutputWriter):
             nominal_values = None
 
             if issubclass(predictions.dtype.type, np.integer):
-                if scope.problem_type == ProblemType.CLASSIFICATION:
+                if state.problem_type == ProblemType.CLASSIFICATION:
                     attribute_type = AttributeType.NOMINAL
                     nominal_values = [str(value) for value in np.unique(predictions)]
                 else:
@@ -92,7 +92,7 @@ class PredictionWriter(OutputWriter):
                 if decimals > 0:
                     predictions = np.around(predictions, decimals=decimals)
 
-            dataset = scope.dataset
+            dataset = state.dataset
             features = []
             outputs = []
 
@@ -102,8 +102,8 @@ class PredictionWriter(OutputWriter):
 
             save_arff_file(file_path, ground_truth, predictions, ArffMetaData(features, outputs))
 
-    def _generate_output_data(self, scope: OutputScope, _: Optional[TrainingResult],
+    def _generate_output_data(self, state: ExperimentState, _: Optional[TrainingResult],
                               prediction_result: Optional[PredictionResult]) -> Optional[Any]:
         if prediction_result:
-            return PredictionWriter.Predictions(predictions=prediction_result.predictions, ground_truth=scope.dataset.y)
+            return PredictionWriter.Predictions(predictions=prediction_result.predictions, ground_truth=state.dataset.y)
         return None

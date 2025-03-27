@@ -16,9 +16,9 @@ from mlrl.testbed.experiments.output.converters import TableConverter, TextConve
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_table
-from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
 from mlrl.testbed.util.io import SUFFIX_CSV, get_file_name_per_fold, open_readable_file
@@ -132,6 +132,6 @@ class ParameterWriter(OutputWriter):
             super().__init__(BaseCsvFileSink.PathFormatter(directory, 'parameters', include_dataset_type=False))
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
+    def _generate_output_data(self, state: ExperimentState, training_result: Optional[TrainingResult],
                               prediction_result: Optional[PredictionResult]) -> Optional[Any]:
-        return ParameterWriter.Parameters(scope.parameters)
+        return ParameterWriter.Parameters(state.parameters)

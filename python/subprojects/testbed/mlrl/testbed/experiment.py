@@ -19,9 +19,9 @@ from mlrl.common.mixins import ClassifierMixin, IncrementalClassifierMixin, Incr
 from mlrl.testbed.data_splitting import DataSplitter
 from mlrl.testbed.dataset import AttributeType, Dataset
 from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_duration
-from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.parameters import ParameterLoader
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
 from mlrl.testbed.prediction_result import PredictionResult
@@ -83,27 +83,27 @@ class Evaluation(ABC):
 
         return result
 
-    def _evaluate_predictions(self, scope: OutputScope, prediction_result: PredictionResult, train_time: float,
+    def _evaluate_predictions(self, state: ExperimentState, prediction_result: PredictionResult, train_time: float,
                               learner):
         """
         May be used by subclasses in order to evaluate predictions that have been obtained from a previously trained
         model.
 
-        :param scope:               The scope of the output data
+        :param state:               The state that stores the predictions and the model
         :param prediction_result:   A `PredictionResult` that provides access to the predictions have been obtained
         :param train_time:          The time needed to train the model
         :param learner:             The learner, the predictions have been obtained from
         """
         for output_writer in self.output_writers:
-            output_writer.write_output(scope, TrainingResult(learner=learner, train_time=train_time), prediction_result)
+            output_writer.write_output(state, TrainingResult(learner=learner, train_time=train_time), prediction_result)
 
     @abstractmethod
-    def predict_and_evaluate(self, scope: OutputScope, training_result: TrainingResult, **kwargs):
+    def predict_and_evaluate(self, state: ExperimentState, training_result: TrainingResult, **kwargs):
         """
         Must be implemented by subclasses in order to obtain and evaluate predictions for given query examples from a
         previously trained model.
 
-        :param scope:           The scope of the output data
+        :param state:           The state that stores the predictions and the model
         :param training_result: A `TrainingResult` that stores the result of the training process
         :param kwargs:          Optional keyword arguments to be passed to the model when obtaining predictions
         """
@@ -114,8 +114,8 @@ class GlobalEvaluation(Evaluation):
     Obtains and evaluates predictions from a previously trained global model.
     """
 
-    def predict_and_evaluate(self, scope: OutputScope, training_result: TrainingResult, **kwargs):
-        dataset = scope.dataset
+    def predict_and_evaluate(self, state: ExperimentState, training_result: TrainingResult, **kwargs):
+        dataset = state.dataset
         log.info('Predicting for %s %s examples...', dataset.num_examples, dataset.type.value)
         learner = training_result.learner
         start_time = timer()
@@ -131,7 +131,7 @@ class GlobalEvaluation(Evaluation):
                                                  prediction_type=self.prediction_type,
                                                  prediction_scope=GlobalPrediction(),
                                                  predict_time=predict_time)
-            self._evaluate_predictions(scope=scope,
+            self._evaluate_predictions(state=state,
                                        prediction_result=prediction_result,
                                        train_time=training_result.train_time,
                                        learner=learner)
@@ -157,7 +157,7 @@ class IncrementalEvaluation(Evaluation):
         self.max_size = max_size
         self.step_size = step_size
 
-    def predict_and_evaluate(self, scope: OutputScope, training_result: TrainingResult, **kwargs):
+    def predict_and_evaluate(self, state: ExperimentState, training_result: TrainingResult, **kwargs):
         learner = training_result.learner
 
         if not isinstance(learner, IncrementalClassifierMixin) and not isinstance(learner, IncrementalRegressorMixin):
@@ -165,7 +165,7 @@ class IncrementalEvaluation(Evaluation):
 
         predict_proba_function = learner.predict_proba_incrementally if callable(
             getattr(learner, 'predict_proba_incrementally', None)) else None
-        dataset = scope.dataset
+        dataset = state.dataset
         incremental_predictor = self._invoke_prediction_function(learner, learner.predict_incrementally,
                                                                  predict_proba_function, dataset, **kwargs)
 
@@ -195,7 +195,7 @@ class IncrementalEvaluation(Evaluation):
                                                          prediction_type=self.prediction_type,
                                                          prediction_scope=IncrementalPrediction(current_size),
                                                          predict_time=predict_time)
-                    self._evaluate_predictions(scope=scope,
+                    self._evaluate_predictions(state=state,
                                                prediction_result=prediction_result,
                                                train_time=training_result.train_time,
                                                learner=learner)
@@ -307,10 +307,10 @@ class Experiment(DataSplitter.Callback):
             parameters = learner.get_params()
 
         # Write output data before model is trained...
-        train_scope = OutputScope(problem_type=problem_type, dataset=train_dataset, fold=fold, parameters=parameters)
+        state = ExperimentState(problem_type=problem_type, dataset=train_dataset, fold=fold, parameters=parameters)
 
         for output_writer in self.pre_training_output_writers:
-            output_writer.write_output(train_scope)
+            output_writer.write_output(state)
 
         # Set the indices of ordinal features, if supported...
         if isinstance(learner, OrdinalFeatureSupportMixin):
@@ -345,37 +345,38 @@ class Experiment(DataSplitter.Callback):
 
         if train_evaluation and test_dataset.type != Dataset.Type.TRAINING:
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-            self.__predict_and_evaluate(train_scope, training_result, train_evaluation, **predict_kwargs)
+            self.__predict_and_evaluate(state, training_result, train_evaluation, **predict_kwargs)
 
         # Obtain and evaluate predictions for test data, if necessary...
         test_evaluation = self.test_evaluation
 
         if test_evaluation:
-            test_scope = OutputScope(problem_type=problem_type, dataset=test_dataset, fold=fold, parameters=parameters)
+            test_state = replace(state, dataset=test_dataset)
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-            self.__predict_and_evaluate(test_scope, training_result, test_evaluation, **predict_kwargs)
+            self.__predict_and_evaluate(test_state, training_result, test_evaluation, **predict_kwargs)
 
         # Write output data after model was trained...
         for output_writer in self.post_training_output_writers:
-            output_writer.write_output(train_scope, training_result=training_result)
+            output_writer.write_output(state, training_result=training_result)
 
     @staticmethod
-    def __predict_and_evaluate(scope: OutputScope, training_result: TrainingResult, evaluation: Evaluation, **kwargs):
+    def __predict_and_evaluate(state: ExperimentState, training_result: TrainingResult, evaluation: Evaluation,
+                               **kwargs):
         """
         Obtains and evaluates predictions for given query examples from a previously trained model.
 
-        :param scope:           The scope of the output data
+        :param state:           The state that stores the model
         :param training_result: A `TrainingResult` that stores the result of the training process
         :param evaluation:      The `Evaluation` to be used
         :param kwargs:          Optional keyword arguments to be passed to the model when obtaining predictions
         """
         try:
-            return evaluation.predict_and_evaluate(scope, training_result, **kwargs)
+            return evaluation.predict_and_evaluate(state, training_result, **kwargs)
         except ValueError as error:
-            dataset = scope.dataset
+            dataset = state.dataset
 
             if dataset.has_sparse_features:
-                dense_dataset = replace(scope, dataset=dataset.enforce_dense_features())
+                dense_dataset = replace(state, dataset=dataset.enforce_dense_features())
                 return Experiment.__predict_and_evaluate(dense_dataset, evaluation, training_result, **kwargs)
 
             raise error

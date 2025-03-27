@@ -19,8 +19,8 @@ from mlrl.testbed.experiments.output.converters import TableConverter, TextConve
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.format import format_table
-from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
 
@@ -130,9 +130,9 @@ class LabelVectorWriter(OutputWriter):
                              options=options)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
+    def _generate_output_data(self, state: ExperimentState, training_result: Optional[TrainingResult],
                               prediction_result: Optional[PredictionResult]) -> Optional[Any]:
-        dataset = scope.dataset
+        dataset = state.dataset
         return LabelVectorWriter.LabelVectors(num_labels=dataset.num_outputs, y=dataset.y)
 
 
@@ -159,7 +159,7 @@ class LabelVectorSetWriter(LabelVectorWriter):
             """
             self.label_vectors.unique_label_vectors.append((label_vector, frequency))
 
-    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
+    def _generate_output_data(self, state: ExperimentState, training_result: Optional[TrainingResult],
                               prediction_result: Optional[PredictionResult]) -> Optional[Any]:
         if training_result:
             learner = training_result.learner
@@ -168,8 +168,8 @@ class LabelVectorSetWriter(LabelVectorWriter):
                 output_space_info = learner.output_space_info_
 
                 if isinstance(output_space_info, LabelVectorSet):
-                    visitor = LabelVectorSetWriter.Visitor(num_labels=scope.dataset.num_outputs)
+                    visitor = LabelVectorSetWriter.Visitor(num_labels=state.dataset.num_outputs)
                     output_space_info.visit(visitor)
                     return visitor.label_vectors
 
-        return super()._generate_output_data(scope, training_result, prediction_result)
+        return super()._generate_output_data(state, training_result, prediction_result)
