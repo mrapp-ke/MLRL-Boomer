@@ -108,7 +108,7 @@ class FileSink(Sink, ABC):
     def write_to_sink(self, scope: OutputScope, training_result: Optional[TrainingResult],
                       prediction_result: Optional[PredictionResult], output_data, **kwargs):
         """
-        See :func:`mlrl.testbed.output.sinks.sink.Sink.write_to_sink`
+        See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
         """
         file_path = self.path_formatter.format(scope, prediction_result)
         self._write_to_file(file_path, scope, training_result, prediction_result, output_data, **kwargs)

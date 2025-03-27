@@ -11,8 +11,8 @@ import numpy as np
 from mlrl.common.config.options import Options
 from mlrl.common.data.arrays import is_sparse
 
+from mlrl.testbed.experiments.output.converters import TableConverter, TextConverter
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
-from mlrl.testbed.output.converters import TableConverter, TextConverter
 from mlrl.testbed.problem_type import ProblemType
 
 OPTION_OUTPUTS = 'outputs'
@@ -159,7 +159,7 @@ class OutputCharacteristics(TextConverter, TableConverter):
 
     def to_text(self, options: Options, **_) -> Optional[str]:
         """
-        See :func:`mlrl.testbed.output.converters.TextConverter.to_text`
+        See :func:`mlrl.testbed.experiments.output.converters.TextConverter.to_text`
         """
         percentage = options.get_bool(OPTION_PERCENTAGE, True)
         decimals = options.get_int(OPTION_DECIMALS, 2)
@@ -172,7 +172,7 @@ class OutputCharacteristics(TextConverter, TableConverter):
 
     def to_table(self, options: Options, **_) -> Optional[TableConverter.Table]:
         """
-        See :func:`mlrl.testbed.output.converters.TableConverter.to_table`
+        See :func:`mlrl.testbed.experiments.output.converters.TableConverter.to_table`
         """
         percentage = options.get_bool(OPTION_PERCENTAGE, True)
         decimals = options.get_int(OPTION_DECIMALS, 0)

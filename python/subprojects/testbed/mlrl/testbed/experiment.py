@@ -18,9 +18,9 @@ from mlrl.common.mixins import ClassifierMixin, IncrementalClassifierMixin, Incr
 
 from mlrl.testbed.data_splitting import DataSplitter
 from mlrl.testbed.dataset import AttributeType, Dataset
+from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import format_duration
-from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.parameters import ParameterLoader
 from mlrl.testbed.persistence import ModelLoader, ModelSaver

@@ -19,11 +19,11 @@ from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBo
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
 from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.experiments.output.converters import TextConverter
+from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
+from mlrl.testbed.experiments.output.sinks.sink_text import TextFileSink as BaseTextFileSink
+from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.format import format_float
-from mlrl.testbed.output.converters import TextConverter
-from mlrl.testbed.output.sinks.sink_log import LogSink as BaseLogSink
-from mlrl.testbed.output.sinks.sink_text import TextFileSink as BaseTextFileSink
-from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
@@ -237,7 +237,7 @@ class RuleModelWriter(ModelWriter):
 
         def to_text(self, options: Options, **_) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.output.converters.TextConverter.to_text`
+            See :func:`mlrl.testbed.experiments.output.converters.TextConverter.to_text`
             """
             self.print_feature_names = options.get_bool(OPTION_PRINT_FEATURE_NAMES, True)
             self.print_output_names = options.get_bool(OPTION_PRINT_OUTPUT_NAMES, True)

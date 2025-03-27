@@ -17,13 +17,13 @@ from mlrl.common.config.options import Options
 from mlrl.common.data.arrays import enforce_dense
 from mlrl.common.data.types import Float32, Uint8
 
+from mlrl.testbed.experiments.output.converters import TableConverter, TextConverter
+from mlrl.testbed.experiments.output.sinks.sink import Sink
+from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
+from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
+from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
-from mlrl.testbed.output.converters import TableConverter, TextConverter
-from mlrl.testbed.output.sinks.sink import Sink
-from mlrl.testbed.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
-from mlrl.testbed.output.sinks.sink_log import LogSink as BaseLogSink
-from mlrl.testbed.output.writer import OutputWriter
 from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
@@ -304,7 +304,7 @@ class EvaluationWriter(OutputWriter, ABC):
 
         def to_text(self, options: Options, **kwargs) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.output.converters.TextConverter.to_text`
+            See :func:`mlrl.testbed.experiments.output.converters.TextConverter.to_text`
             """
             fold = kwargs.get(EvaluationWriter.KWARG_FOLD)
             percentage = options.get_bool(OPTION_PERCENTAGE, True)
@@ -326,7 +326,7 @@ class EvaluationWriter(OutputWriter, ABC):
 
         def to_table(self, options: Options, **kwargs) -> Optional[TableConverter.Table]:
             """
-            See :func:`mlrl.testbed.output.converters.TableConverter.to_table`
+            See :func:`mlrl.testbed.experiments.output.converters.TableConverter.to_table`
             """
             fold = kwargs.get(EvaluationWriter.KWARG_FOLD)
             percentage = options.get_bool(OPTION_PERCENTAGE, True)
@@ -357,7 +357,7 @@ class EvaluationWriter(OutputWriter, ABC):
         def write_to_sink(self, scope: OutputScope, training_result: Optional[TrainingResult],
                           prediction_result: Optional[PredictionResult], output_data, **kwargs):
             """
-            See :func:`mlrl.testbed.output.sinks.sink.Sink.write_to_sink`
+            See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
             """
             fold = scope.fold
             new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold.index if fold.is_cross_validation_used else 0}}
@@ -383,7 +383,7 @@ class EvaluationWriter(OutputWriter, ABC):
         def write_to_sink(self, scope: OutputScope, training_result: Optional[TrainingResult],
                           prediction_result: Optional[PredictionResult], output_data, **kwargs):
             """
-            See :func:`mlrl.testbed.output.sinks.sink.Sink.write_to_sink`
+            See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
             """
             fold = scope.fold
             new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold.index if fold.is_cross_validation_used else 0}}
