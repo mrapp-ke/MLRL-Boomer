@@ -9,7 +9,7 @@ from typing import Optional
 
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.output_scope import OutputScope
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
 from mlrl.testbed.util.io import get_file_name_per_fold
@@ -27,12 +27,12 @@ class Sink(ABC):
         self.options = options
 
     @abstractmethod
-    def write_to_sink(self, scope: OutputScope, training_result: Optional[TrainingResult],
+    def write_to_sink(self, state: ExperimentState, training_result: Optional[TrainingResult],
                       prediction_result: Optional[PredictionResult], output_data, **kwargs):
         """
         Must be implemented by subclasses in order to write output data to the sink.
 
-        :param scope:               The scope of the output data
+        :param state:               The state from which the output data has been generated
         :param training_result:     A `TrainingResult` that stores the result of a training process or None, if no
                                     model has been trained
         :param prediction_result:   A `PredictionResult` that stores the result of a prediction process or None, if
@@ -76,24 +76,24 @@ class FileSink(Sink, ABC):
             self.include_prediction_scope = include_prediction_scope
             self.include_fold = include_fold
 
-        def format(self, scope: OutputScope, prediction_result: Optional[PredictionResult]) -> str:
+        def format(self, state: ExperimentState, prediction_result: Optional[PredictionResult]) -> str:
             """
             Determines and returns the path to the file to which the output data should be written.
 
-            :param scope:               The scope of the output data
+            :param state:               The state from which the output data is generated
             :param prediction_result:   A `PredictionResult` that stores the result of a prediction process or None, if
                                         no predictions have been obtained
             """
             file_name = self.file_name
 
             if self.include_dataset_type:
-                file_name = scope.dataset.type.get_file_name(file_name)
+                file_name = state.dataset.type.get_file_name(file_name)
 
             if self.include_prediction_scope and prediction_result:
                 file_name = prediction_result.prediction_scope.get_file_name(file_name)
 
             if self.include_fold:
-                file_name = get_file_name_per_fold(file_name, self.suffix, scope.fold.index)
+                file_name = get_file_name_per_fold(file_name, self.suffix, state.fold.index)
 
             return path.join(self.directory, file_name)
 
@@ -105,22 +105,22 @@ class FileSink(Sink, ABC):
         super().__init__(options)
         self.path_formatter = path_formatter
 
-    def write_to_sink(self, scope: OutputScope, training_result: Optional[TrainingResult],
+    def write_to_sink(self, state: ExperimentState, training_result: Optional[TrainingResult],
                       prediction_result: Optional[PredictionResult], output_data, **kwargs):
         """
         See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
         """
-        file_path = self.path_formatter.format(scope, prediction_result)
-        self._write_to_file(file_path, scope, training_result, prediction_result, output_data, **kwargs)
+        file_path = self.path_formatter.format(state, prediction_result)
+        self._write_to_file(file_path, state, training_result, prediction_result, output_data, **kwargs)
 
     @abstractmethod
-    def _write_to_file(self, file_path: str, scope: OutputScope, training_result: Optional[TrainingResult],
+    def _write_to_file(self, file_path: str, state: ExperimentState, training_result: Optional[TrainingResult],
                        prediction_result: Optional[PredictionResult], output_data, **kwargs):
         """
         Must be implemented by subclasses in order to write output data to a specific file.
 
         :param file_path:           The path to the file to which the output data should be written
-        :param scope:               The scope of the output data
+        :param state:               The state from which the output data has been generated
         :param training_result:     A `TrainingResult` that stores the result of a training process or None, if no
                                     model has been trained
         :param prediction_result:   A `PredictionResult` that stores the result of a prediction process or None, if

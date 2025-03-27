@@ -20,8 +20,8 @@ from mlrl.testbed.experiments.output.converters import TableConverter, TextConve
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.format import format_float, format_percentage, format_table
-from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.prediction_result import PredictionResult
 from mlrl.testbed.training_result import TrainingResult
 
@@ -347,7 +347,7 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                 self.num_neg_predictions.append(num_neg_predictions)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
+    def _generate_output_data(self, state: ExperimentState, training_result: Optional[TrainingResult],
                               prediction_result: Optional[PredictionResult]) -> Optional[Any]:
         if training_result:
             learner = training_result.learner
