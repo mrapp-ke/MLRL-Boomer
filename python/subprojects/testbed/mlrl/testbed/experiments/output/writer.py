@@ -4,8 +4,9 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for writing output data to sinks.
 """
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Optional
 
+from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.state import ExperimentState
 
@@ -37,7 +38,7 @@ class OutputWriter(ABC):
                     sink.write_to_sink(state, output_data)
 
     @abstractmethod
-    def _generate_output_data(self, state: ExperimentState) -> Optional[Any]:
+    def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
         """
         Must be implemented by subclasses in order to generate the output data that should be written to the available
         sinks.

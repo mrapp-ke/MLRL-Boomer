@@ -12,7 +12,8 @@ from typing import Any, Dict, Optional
 
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.experiments.output.converters import TableConverter, TextConverter
+from mlrl.testbed.experiments.output.converters import TableConverter
+from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
@@ -69,7 +70,7 @@ class ParameterWriter(OutputWriter):
     Allows to write parameter settings to one or several sinks.
     """
 
-    class Parameters(TextConverter, TableConverter):
+    class Parameters(OutputData):
         """
         Stores the parameter settings of a learner.
         """
@@ -78,6 +79,8 @@ class ParameterWriter(OutputWriter):
             """
             :param parameters: A dictionary that stores the parameters
             """
+            super().__init__('Custom parameters', 'parameters',
+                             ExperimentState.FormatterOptions(include_dataset_type=False))
             self.parameters = parameters
 
         # pylint: disable=unused-argument
@@ -133,5 +136,5 @@ class ParameterWriter(OutputWriter):
                 BaseCsvFileSink.PathFormatter(directory, 'parameters',
                                               ExperimentState.FormatterOptions(include_dataset_type=False)))
 
-    def _generate_output_data(self, state: ExperimentState) -> Optional[Any]:
+    def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
         return ParameterWriter.Parameters(state.parameters)

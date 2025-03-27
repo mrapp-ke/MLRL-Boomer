@@ -8,6 +8,7 @@ from os import path
 
 from mlrl.common.config.options import Options
 
+from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.io import get_file_name_per_fold
 
@@ -24,7 +25,7 @@ class Sink(ABC):
         self.options = options
 
     @abstractmethod
-    def write_to_sink(self, state: ExperimentState, output_data, **kwargs):
+    def write_to_sink(self, state: ExperimentState, output_data: OutputData, **kwargs):
         """
         Must be implemented by subclasses in order to write output data to the sink.
 
@@ -89,7 +90,7 @@ class FileSink(Sink, ABC):
         super().__init__(options)
         self.path_formatter = path_formatter
 
-    def write_to_sink(self, state: ExperimentState, output_data, **kwargs):
+    def write_to_sink(self, state: ExperimentState, output_data: OutputData, **kwargs):
         """
         See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
         """
@@ -97,7 +98,7 @@ class FileSink(Sink, ABC):
         self._write_to_file(file_path, state, output_data, **kwargs)
 
     @abstractmethod
-    def _write_to_file(self, file_path: str, state: ExperimentState, output_data, **kwargs):
+    def _write_to_file(self, file_path: str, state: ExperimentState, output_data: OutputData, **kwargs):
         """
         Must be implemented by subclasses in order to write output data to a specific file.
 
