@@ -5,14 +5,15 @@ Provides classes for printing certain characteristics of data sets. The characte
 outputs, e.g., to the console or to a file.
 """
 from functools import cached_property
-from typing import Any, List, Optional
+from typing import List, Optional
 
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.characteristics import LABEL_CHARACTERISTICS, OUTPUT_CHARACTERISTICS, Characteristic, \
     OutputCharacteristics, density
 from mlrl.testbed.dataset import AttributeType, Dataset
-from mlrl.testbed.experiments.output.converters import TableConverter, TextConverter
+from mlrl.testbed.experiments.output.converters import TableConverter
+from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
@@ -112,7 +113,7 @@ class DataCharacteristicsWriter(OutputWriter):
     Allows to write the characteristics of a data set to one or several sinks.
     """
 
-    class DataCharacteristics(TextConverter, TableConverter):
+    class DataCharacteristics(OutputData):
         """
         Stores characteristics of a feature matrix and an output matrix.
         """
@@ -124,6 +125,8 @@ class DataCharacteristicsWriter(OutputWriter):
             :param output_characteristics:  The characteristics of the output matrix
             :param problem_type:            The type of the machine learning problem
             """
+            super().__init__('Data characteristics', 'data_characteristics',
+                             ExperimentState.FormatterOptions(include_dataset_type=False))
             self.feature_characteristics = feature_characteristics
             self.output_characteristics = output_characteristics
             classification = problem_type == ProblemType.CLASSIFICATION
@@ -194,7 +197,7 @@ class DataCharacteristicsWriter(OutputWriter):
                 directory, 'data_characteristics', ExperimentState.FormatterOptions(include_dataset_type=False)),
                              options=options)
 
-    def _generate_output_data(self, state: ExperimentState) -> Optional[Any]:
+    def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
         problem_type = state.problem_type
         dataset = state.dataset
         feature_characteristics = FeatureCharacteristics(dataset)

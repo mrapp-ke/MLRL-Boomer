@@ -7,7 +7,7 @@ outputs, e.g., to the console or to a file.
 import logging as log
 
 from abc import ABC
-from typing import Any, Optional
+from typing import Optional
 
 import numpy as np
 
@@ -16,7 +16,8 @@ from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBo
     RuleModelVisitor
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
-from mlrl.testbed.experiments.output.converters import TableConverter, TextConverter
+from mlrl.testbed.experiments.output.converters import TableConverter
+from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
@@ -58,7 +59,7 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
     Allows to write the characteristics of a `RuleModel` to one or several sinks.
     """
 
-    class RuleModelCharacteristics(TextConverter, TableConverter):
+    class RuleModelCharacteristics(OutputData):
         """
         Stores the characteristics of a `RuleModel`.
         """
@@ -88,6 +89,8 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
             :param num_neg_predictions:             A `np.ndarray`, shape `(num_rules)` that stores the number of
                                                     negative predictions per rule
             """
+            super().__init__('Model characteristics', 'model_characteristics',
+                             ExperimentState.FormatterOptions(include_dataset_type=False))
             self.default_rule_index = default_rule_index
             self.default_rule_pos_predictions = default_rule_pos_predictions
             self.default_rule_neg_predictions = default_rule_neg_predictions
@@ -347,7 +350,7 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                 self.num_pos_predictions.append(num_pos_predictions)
                 self.num_neg_predictions.append(num_neg_predictions)
 
-    def _generate_output_data(self, state: ExperimentState) -> Optional[Any]:
+    def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
         training_result = state.training_result
 
         if training_result:

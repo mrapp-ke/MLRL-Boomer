@@ -14,7 +14,8 @@ from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibr
     IsotonicProbabilityCalibrationModelVisitor, NoProbabilityCalibrationModel
 from mlrl.common.learners import ClassificationRuleLearner
 
-from mlrl.testbed.experiments.output.converters import TableConverter, TextConverter
+from mlrl.testbed.experiments.output.converters import TableConverter
+from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
@@ -29,18 +30,23 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
     to one or several sinks.
     """
 
-    class IsotonicProbabilityCalibrationModelConverter(IsotonicProbabilityCalibrationModelVisitor, TextConverter,
-                                                       TableConverter):
+    class IsotonicProbabilityCalibrationModelConverter(OutputData, IsotonicProbabilityCalibrationModelVisitor):
         """
         Allows to create a textual representation of a model for the calibration of probabilities via isotonic
         regression.
         """
 
-        def __init__(self, calibration_model: IsotonicProbabilityCalibrationModel, list_title: str):
+        def __init__(self,
+                     calibration_model: IsotonicProbabilityCalibrationModel,
+                     list_title: str,
+                     name: str,
+                     file_name: str,
+                     formatter_options: ExperimentState.FormatterOptions = ExperimentState.FormatterOptions()):
             """
             :param calibration_model: The probability calibration model
             :param list_title:        The title of an individual list that is contained by the calibration model
             """
+            super().__init__(name, file_name, formatter_options)
             self.calibration_model = calibration_model
             self.list_title = list_title
             self.bins: Dict[int, List[Tuple[float, float]]] = {}
@@ -118,7 +124,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
 
             return rows
 
-    class NoProbabilityCalibrationModelConverter(TextConverter, TableConverter):
+    class NoProbabilityCalibrationModelConverter(OutputData):
         """
         Allows to create a textual representation of a model for the calibration of probabilities that does not make any
         adjustments.
@@ -138,11 +144,15 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
             """
             return None
 
-    def __init__(self, list_title: str, *sinks: Sink):
+    def __init__(self, name: str, file_name: str, formatter_options: ExperimentState.FormatterOptions, list_title: str,
+                 *sinks: Sink):
         """
         :param list_title: The title of an individual list that is contained by a calibration model
         """
         super().__init__(*sinks)
+        self.name = name
+        self.file_name = file_name
+        self.formatter_options = formatter_options
         self.list_title = list_title
 
     @abstractmethod
@@ -154,7 +164,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
         :return:        The calibration model
         """
 
-    def _generate_output_data(self, state: ExperimentState) -> Optional[Any]:
+    def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
         training_result = state.training_result
 
         if training_result:
@@ -164,9 +174,10 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
 
                 if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
                     return ProbabilityCalibrationModelWriter.IsotonicProbabilityCalibrationModelConverter(
-                        calibration_model=calibration_model, list_title=self.list_title)
+                        calibration_model, self.list_title, self.name, self.file_name, self.formatter_options)
                 if isinstance(calibration_model, NoProbabilityCalibrationModel):
-                    return ProbabilityCalibrationModelWriter.NoProbabilityCalibrationModelConverter()
+                    return ProbabilityCalibrationModelWriter.NoProbabilityCalibrationModelConverter(
+                        self.name, self.file_name, self.formatter_options)
 
             log.error('The learner does not support to create a textual representation of the calibration model')
 
@@ -204,7 +215,8 @@ class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWrite
                              options=options)
 
     def __init__(self, *sinks: Sink):
-        super().__init__('Label', *sinks)
+        super().__init__('Marginal probability calibration model', 'marginal_probability_calibration_model',
+                         ExperimentState.FormatterOptions(include_dataset_type=False), 'Label', *sinks)
 
     def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Any:
         return learner.marginal_probability_calibration_model_
@@ -240,7 +252,8 @@ class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
                              options=options)
 
     def __init__(self, *sinks: Sink):
-        super().__init__('Label vector', *sinks)
+        super().__init__('Joint probability calibration model', 'joint_probability_calibration_model',
+                         ExperimentState.FormatterOptions(include_dataset_type=False), 'Label vector', *sinks)
 
     def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Any:
         return learner.joint_probability_calibration_model_

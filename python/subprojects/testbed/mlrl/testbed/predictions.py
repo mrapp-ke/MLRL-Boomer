@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for printing the predictions of a model. The predictions can be written to one or several outputs,
 e.g., to the console or to a file.
 """
-from typing import Any, Optional
+from typing import Optional
 
 import numpy as np
 
@@ -12,7 +12,8 @@ from mlrl.common.config.options import Options
 
 from mlrl.testbed.data import ArffMetaData, save_arff_file
 from mlrl.testbed.dataset import Attribute, AttributeType
-from mlrl.testbed.experiments.output.converters import TextConverter
+from mlrl.testbed.experiments.output.converters import TableConverter
+from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
@@ -27,7 +28,7 @@ class PredictionWriter(OutputWriter):
     Allows to write predictions and the corresponding ground truth to one or several sinks.
     """
 
-    class Predictions(TextConverter):
+    class Predictions(OutputData):
         """
         Stores predictions and the corresponding ground truth.
         """
@@ -37,6 +38,7 @@ class PredictionWriter(OutputWriter):
             :param predictions:     The predictions
             :param ground_truth:    The ground truth
             """
+            super().__init__('Predictions', 'predictions')
             self.predictions = predictions
             self.ground_truth = ground_truth
 
@@ -50,6 +52,12 @@ class PredictionWriter(OutputWriter):
             text += '\n\nPredictions:\n\n'
             text += format_array(self.predictions, decimals=decimals)
             return text
+
+        def to_table(self, options: Options, **_) -> Optional[TableConverter.Table]:
+            """
+            See :func:`mlrl.testbed.experiments.output.converters.TableConverter.to_text`
+            """
+            raise NotImplementedError()
 
     class LogSink(BaseLogSink):
         """
@@ -70,7 +78,7 @@ class PredictionWriter(OutputWriter):
             """
             super().__init__(FileSink.PathFormatter(directory, 'predictions', SUFFIX_ARFF), options)
 
-        def _write_to_file(self, file_path: str, state: ExperimentState, output_data, **_):
+        def _write_to_file(self, file_path: str, state: ExperimentState, output_data: OutputData, **_):
             decimals = self.options.get_int(OPTION_DECIMALS, 0)
             ground_truth = output_data.ground_truth
             predictions = output_data.predictions
@@ -98,7 +106,7 @@ class PredictionWriter(OutputWriter):
 
             save_arff_file(file_path, ground_truth, predictions, ArffMetaData(features, outputs))
 
-    def _generate_output_data(self, state: ExperimentState) -> Optional[Any]:
+    def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
         prediction_result = state.prediction_result
 
         if prediction_result:

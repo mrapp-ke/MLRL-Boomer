@@ -3,6 +3,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing output data to CSV files.
 """
+from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.io import SUFFIX_CSV, open_writable_file
@@ -25,7 +26,7 @@ class CsvFileSink(FileSink):
                      formatter_options: ExperimentState.FormatterOptions = ExperimentState.FormatterOptions()):
             super().__init__(directory, file_name, SUFFIX_CSV, formatter_options)
 
-    def _write_to_file(self, file_path: str, state: ExperimentState, output_data, **kwargs):
+    def _write_to_file(self, file_path: str, state: ExperimentState, output_data: OutputData, **kwargs):
         tabular_data = output_data.to_table(self.options, **kwargs)
 
         if tabular_data:

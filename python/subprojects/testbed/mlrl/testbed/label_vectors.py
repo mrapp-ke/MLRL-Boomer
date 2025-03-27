@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for printing unique label vectors that are contained in a data set. The label vectors can be written to
 one or several outputs, e.g., to the console or to a file.
 """
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
@@ -15,7 +15,8 @@ from mlrl.common.cython.output_space_info import LabelVectorSet, LabelVectorSetV
 from mlrl.common.data.types import Uint8
 from mlrl.common.learners import ClassificationRuleLearner
 
-from mlrl.testbed.experiments.output.converters import TableConverter, TextConverter
+from mlrl.testbed.experiments.output.converters import TableConverter
+from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
@@ -30,7 +31,7 @@ class LabelVectorWriter(OutputWriter):
     Allows to write unique label vectors that are contained in a data set to one or several sinks.
     """
 
-    class LabelVectors(TextConverter, TableConverter):
+    class LabelVectors(OutputData):
         """
         Stores unique label vectors that are contained in a data set.
         """
@@ -47,6 +48,8 @@ class LabelVectorWriter(OutputWriter):
             :param y:           A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                                 `(num_examples, num_labels)`, that stores the ground truth labels
             """
+            super().__init__('Label vectors', 'label_vectors',
+                             ExperimentState.FormatterOptions(include_dataset_type=False))
             self.num_labels = num_labels
 
             if y is None:
@@ -130,7 +133,7 @@ class LabelVectorWriter(OutputWriter):
                 directory, 'label_vectors', ExperimentState.FormatterOptions(include_dataset_type=False)),
                              options=options)
 
-    def _generate_output_data(self, state: ExperimentState) -> Optional[Any]:
+    def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
         dataset = state.dataset
         return LabelVectorWriter.LabelVectors(num_labels=dataset.num_outputs, y=dataset.y)
 
@@ -158,7 +161,7 @@ class LabelVectorSetWriter(LabelVectorWriter):
             """
             self.label_vectors.unique_label_vectors.append((label_vector, frequency))
 
-    def _generate_output_data(self, state: ExperimentState) -> Optional[Any]:
+    def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
         training_result = state.training_result
 
         if training_result:
