@@ -38,11 +38,11 @@ class CsvFileSink(FileSink):
         tabular_data = output_data.to_table(self.options, **kwargs)
 
         if tabular_data:
-            incremental_prediction = prediction_result and not prediction_result.prediction_scope.is_global()
+            incremental_prediction = prediction_result and not prediction_result.prediction_scope.is_global
 
             if incremental_prediction:
                 for row in tabular_data:
-                    row['Model size'] = prediction_result.prediction_scope.get_model_size()
+                    row['Model size'] = prediction_result.prediction_scope.model_size
 
             if tabular_data:
                 header = sorted(tabular_data[0].keys())
