@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Optional
 
 from mlrl.testbed.experiments.output.sinks.sink import Sink
-from mlrl.testbed.experiments.state import ExperimentState, PredictionResult
+from mlrl.testbed.experiments.state import ExperimentState
 
 
 class OutputWriter(ABC):
@@ -21,32 +21,27 @@ class OutputWriter(ABC):
         """
         self.sinks = list(sinks)
 
-    def write_output(self, state: ExperimentState, prediction_result: Optional[PredictionResult] = None):
+    def write_output(self, state: ExperimentState):
         """
         Generates the output data and writes it to all available sinks.
 
-        :param state:               The state from which the output data should be generated
-        :param prediction_result:   A `PredictionResult` that stores the result of a prediction process or None, if no
-                                    predictions have been obtained
+        :param state: The state from which the output data should be generated
         """
         sinks = self.sinks
 
         if sinks:
-            output_data = self._generate_output_data(state, prediction_result)
+            output_data = self._generate_output_data(state)
 
             if output_data:
                 for sink in sinks:
-                    sink.write_to_sink(state, prediction_result, output_data)
+                    sink.write_to_sink(state, output_data)
 
     @abstractmethod
-    def _generate_output_data(self, state: ExperimentState,
-                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+    def _generate_output_data(self, state: ExperimentState) -> Optional[Any]:
         """
         Must be implemented by subclasses in order to generate the output data that should be written to the available
         sinks.
 
-        :param state:               The state from which the output data should be generated
-        :param prediction_result:   A `PredictionResult` that stores the result of a prediction process or None, if no
-                                    predictions have been obtained
-        :return:                    The output data that has been generated or None, if no output data was generated
+        :param state:   The state from which the output data should be generated
+        :return:        The output data that has been generated or None, if no output data was generated
         """

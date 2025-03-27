@@ -56,9 +56,11 @@ class ExperimentState:
         fold:               The current fold of the dataset used in the experiment
         parameters:         Algorithmic parameters of the learner used in the experiment
         training_result:    The result of the training process or None, if no model has been trained yet
+        prediction_result:  The result of the prediction process or None, if no predictions have been obtained yet
     """
     problem_type: ProblemType
     dataset: Dataset
     fold: Fold
     parameters: Dict[str, Any]
     training_result: Optional[TrainingResult] = None
+    prediction_result: Optional[PredictionResult] = None
