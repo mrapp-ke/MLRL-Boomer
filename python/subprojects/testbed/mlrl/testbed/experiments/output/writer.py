@@ -7,9 +7,8 @@ from abc import ABC, abstractmethod
 from typing import Any, Optional
 
 from mlrl.testbed.experiments.output.sinks.sink import Sink
-from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.state import ExperimentState, TrainingResult
 from mlrl.testbed.prediction_result import PredictionResult
-from mlrl.testbed.training_result import TrainingResult
 
 
 class OutputWriter(ABC):

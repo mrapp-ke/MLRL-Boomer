@@ -6,9 +6,24 @@ Provides classes for representing the state of experiments.
 from dataclasses import dataclass
 from typing import Any, Dict
 
+from sklearn.base import BaseEstimator
+
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.fold import Fold
+
+
+@dataclass
+class TrainingResult:
+    """
+    Stores the result of a training process.
+
+    Attributes:
+        learner:    The learner that has been trained
+        train_time: The time needed for training
+    """
+    learner: BaseEstimator
+    train_time: float
 
 
 @dataclass
