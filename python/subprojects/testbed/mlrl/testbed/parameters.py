@@ -15,7 +15,6 @@ from mlrl.common.config.options import Options
 from mlrl.testbed.experiments.output.converters import TableConverter
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
-from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.fold import Fold
@@ -112,16 +111,6 @@ class ParameterWriter(OutputWriter):
                     columns[key] = value
 
             return [columns]
-
-    class LogSink(BaseLogSink):
-        """
-        Allows to write parameter settings to the console.
-        """
-
-        def __init__(self):
-            super().__init__(
-                BaseLogSink.TitleFormatter('Custom parameters',
-                                           ExperimentState.FormatterOptions(include_dataset_type=False)))
 
     class CsvFileSink(BaseCsvFileSink):
         """

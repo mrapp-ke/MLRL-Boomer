@@ -21,7 +21,6 @@ from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.experiments.output.converters import TableConverter
 from mlrl.testbed.experiments.output.data import OutputData
-from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.sinks.sink_text import TextFileSink as BaseTextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
@@ -47,16 +46,6 @@ class ModelWriter(OutputWriter, ABC):
     An abstract base class for all classes that allow to write textual representations of models to one or several
     sinks.
     """
-
-    class LogSink(BaseLogSink):
-        """
-        Allows to write textual representations of models to the console.
-        """
-
-        def __init__(self, options: Options = Options()):
-            super().__init__(BaseLogSink.TitleFormatter('Model',
-                                                        ExperimentState.FormatterOptions(include_dataset_type=False)),
-                             options=options)
 
     class TextFileSink(BaseTextFileSink):
         """

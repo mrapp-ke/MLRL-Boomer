@@ -12,7 +12,6 @@ from mlrl.testbed.characteristics import OutputCharacteristics
 from mlrl.testbed.experiments.output.converters import TableConverter
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
-from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
@@ -45,14 +44,6 @@ class PredictionCharacteristicsWriter(OutputWriter):
     """
     Allows to write the characteristics of binary predictions to one or several sinks.
     """
-
-    class LogSink(BaseLogSink):
-        """
-        Allows to write the characteristics of binary predictions to the console.
-        """
-
-        def __init__(self, options: Options = Options()):
-            super().__init__(BaseLogSink.TitleFormatter('Prediction characteristics'), options=options)
 
     class CsvFileSink(BaseCsvFileSink):
         """
