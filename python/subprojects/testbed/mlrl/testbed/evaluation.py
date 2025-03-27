@@ -22,10 +22,9 @@ from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
-from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.state import ExperimentState, PredictionResult
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
-from mlrl.testbed.prediction_result import PredictionResult
 
 OPTION_ENABLE_ALL = 'enable_all'
 

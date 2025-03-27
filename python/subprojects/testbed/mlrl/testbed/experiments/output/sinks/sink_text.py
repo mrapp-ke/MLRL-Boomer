@@ -6,8 +6,7 @@ Provides classes that allow writing output data to text files.
 from typing import Optional
 
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
-from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.prediction_result import PredictionResult
+from mlrl.testbed.experiments.state import ExperimentState, PredictionResult
 from mlrl.testbed.util.io import open_writable_file
 
 
