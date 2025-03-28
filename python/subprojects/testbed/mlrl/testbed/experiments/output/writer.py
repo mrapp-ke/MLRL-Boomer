@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 from mlrl.testbed.experiments.output.data import OutputData
-from mlrl.testbed.experiments.output.sinks.sink import Sink
+from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.state import ExperimentState
 
 

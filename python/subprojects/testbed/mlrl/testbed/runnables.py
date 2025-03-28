@@ -37,9 +37,7 @@ from mlrl.testbed.evaluation import OPTION_ACCURACY, OPTION_COVERAGE_ERROR, OPTI
     OPTION_RECALL, OPTION_SUBSET_ACCURACY, OPTION_SUBSET_ZERO_ONE_LOSS, OPTION_TRAINING_TIME, OPTION_ZERO_ONE_LOSS, \
     BinaryEvaluationWriter, RankingEvaluationWriter, RegressionEvaluationWriter
 from mlrl.testbed.experiment import Evaluation, Experiment, GlobalEvaluation, IncrementalEvaluation
-from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
-from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
-from mlrl.testbed.experiments.output.sinks.sink_text import TextFileSink
+from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, TextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
