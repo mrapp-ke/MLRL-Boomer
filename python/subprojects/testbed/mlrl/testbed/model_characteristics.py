@@ -6,7 +6,6 @@ outputs, e.g., to the console or to a file.
 """
 import logging as log
 
-from abc import ABC
 from typing import Optional
 
 import numpy as np
@@ -18,32 +17,12 @@ from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
 from mlrl.testbed.experiments.output.converters import TableConverter
 from mlrl.testbed.experiments.output.data import OutputData
-from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.format import format_float, format_percentage, format_table
 
 
-class ModelCharacteristicsWriter(OutputWriter, ABC):
-    """
-    An abstract base class for all classes that allow to write the characteristics of a model to one or several sinks.
-    """
-
-    class CsvFileSink(BaseCsvFileSink):
-        """
-        Allows to write the characteristics of a model to a CSV file.
-        """
-
-        def __init__(self, directory: str):
-            """
-            :param directory: The path to the directory, where the CSV file should be located
-            """
-            super().__init__(
-                BaseCsvFileSink.PathFormatter(directory, 'model_characteristics',
-                                              ExperimentState.FormatterOptions(include_dataset_type=False)))
-
-
-class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
+class RuleModelCharacteristicsWriter(OutputWriter):
     """
     Allows to write the characteristics of a `RuleModel` to one or several sinks.
     """

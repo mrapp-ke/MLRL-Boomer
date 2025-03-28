@@ -20,7 +20,7 @@ from mlrl.common.data.types import Float32, Uint8
 from mlrl.testbed.experiments.output.converters import TableConverter
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink import Sink
-from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
+from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.fold import Fold
@@ -212,6 +212,7 @@ class EvaluationWriter(OutputWriter, ABC):
 
         def __init__(self):
             super().__init__('Evaluation result', 'evaluation')
+            self.get_formatter_options(CsvFileSink).include_prediction_scope = False
             self.measures: Set[Formatter] = set()
             self.results: Optional[List[Dict[Formatter, float]]] = None
 
@@ -353,19 +354,6 @@ class EvaluationWriter(OutputWriter, ABC):
         if fold.is_cross_validation_used and fold.is_last_fold:
             overall_fold = replace(fold, index=None, is_last_fold=True)
             sink.write_to_sink(replace(state, fold=overall_fold), output_data)
-
-    class CsvFileSink(BaseCsvFileSink):
-        """
-        Allows to write evaluation results to a CSV file.
-        """
-
-        def __init__(self, directory: str, options: Options = Options()):
-            """
-            :param directory: The path to the directory, where the CSV file should be located
-            """
-            super().__init__(BaseCsvFileSink.PathFormatter(
-                directory, 'evaluation', ExperimentState.FormatterOptions(include_prediction_scope=False)),
-                             options=options)
 
     def __init__(self, *sinks: Sink):
         super().__init__(*sinks)

@@ -17,7 +17,6 @@ from mlrl.common.learners import ClassificationRuleLearner
 from mlrl.testbed.experiments.output.converters import TableConverter
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink import Sink
-from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.format import OPTION_DECIMALS, format_float, format_table
@@ -189,20 +188,6 @@ class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWrite
     sinks.
     """
 
-    class CsvFileSink(BaseCsvFileSink):
-        """
-        Allows to write textual representations of models for the calibration of marginal probabilities to a CSV file.
-        """
-
-        def __init__(self, directory: str, options: Options = Options()):
-            """
-            :param directory: The path to the directory, where the CSV file should be located
-            """
-            super().__init__(BaseCsvFileSink.PathFormatter(
-                directory, 'marginal_probability_calibration_model',
-                ExperimentState.FormatterOptions(include_dataset_type=False)),
-                             options=options)
-
     def __init__(self, *sinks: Sink):
         super().__init__('Marginal probability calibration model', 'marginal_probability_calibration_model',
                          ExperimentState.FormatterOptions(include_dataset_type=False), 'Label', *sinks)
@@ -215,20 +200,6 @@ class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
     """
     Allow to write textual representations of models for the calibration of joint probabilities to one or several sinks.
     """
-
-    class CsvFileSink(BaseCsvFileSink):
-        """
-        Allows to write textual representations of models for the calibration of joint probabilities to a CSV file.
-        """
-
-        def __init__(self, directory: str, options: Options = Options()):
-            """
-            :param directory: The path to the directory, where the CSV file should be located
-            """
-            super().__init__(BaseCsvFileSink.PathFormatter(
-                directory, 'joint_probability_calibration_model',
-                ExperimentState.FormatterOptions(include_dataset_type=False)),
-                             options=options)
 
     def __init__(self, *sinks: Sink):
         super().__init__('Joint probability calibration model', 'joint_probability_calibration_model',

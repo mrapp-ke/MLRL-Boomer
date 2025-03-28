@@ -3,6 +3,8 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing output data to text files.
 """
+from mlrl.common.config.options import Options
+
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
 from mlrl.testbed.experiments.state import ExperimentState
@@ -14,16 +16,12 @@ class TextFileSink(FileSink):
     Allows to write output data to a text file.
     """
 
-    class PathFormatter(FileSink.PathFormatter):
+    def __init__(self, directory: str, options: Options = Options()):
         """
-        Allows to determine the path to the text file to which output data is written.
+        :param directory:   The path to the directory of the file
+        :param options:     Options to be taken into account
         """
-
-        def __init__(self,
-                     directory: str,
-                     file_name: str,
-                     formatter_options: ExperimentState.FormatterOptions = ExperimentState.FormatterOptions()):
-            super().__init__(directory, file_name, 'txt', formatter_options)
+        super().__init__(directory=directory, suffix='txt', options=options)
 
     def _write_to_file(self, file_path: str, _: ExperimentState, output_data: OutputData, **kwargs):
         text = output_data.to_text(self.options, **kwargs)

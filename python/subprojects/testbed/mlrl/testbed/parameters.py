@@ -14,7 +14,6 @@ from mlrl.common.config.options import Options
 
 from mlrl.testbed.experiments.output.converters import TableConverter
 from mlrl.testbed.experiments.output.data import OutputData
-from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.fold import Fold
@@ -111,19 +110,6 @@ class ParameterWriter(OutputWriter):
                     columns[key] = value
 
             return [columns]
-
-    class CsvFileSink(BaseCsvFileSink):
-        """
-        Allows to write parameter settings to CSV files.
-        """
-
-        def __init__(self, directory: str):
-            """
-            :param directory: The path to the directory, where the CSV file should be located
-            """
-            super().__init__(
-                BaseCsvFileSink.PathFormatter(directory, 'parameters',
-                                              ExperimentState.FormatterOptions(include_dataset_type=False)))
 
     def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
         return ParameterWriter.Parameters(state.parameters)
