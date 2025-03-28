@@ -12,7 +12,6 @@ from typing import Any, Dict, Optional
 
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.experiments.output.converters import TableConverter
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
@@ -84,7 +83,7 @@ class ParameterWriter(OutputWriter):
         # pylint: disable=unused-argument
         def to_text(self, options: Options, **_) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.experiments.output.converters.TextConverter.to_text`
+            See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
             """
             parameters = self.parameters
             rows = []
@@ -98,9 +97,9 @@ class ParameterWriter(OutputWriter):
             return format_table(rows)
 
         # pylint: disable=unused-argument
-        def to_table(self, options: Options, **_) -> Optional[TableConverter.Table]:
+        def to_table(self, options: Options, **_) -> Optional[TabularOutputData.Table]:
             """
-            See :func:`mlrl.testbed.experiments.output.converters.TableConverter.to_table`
+            See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
             """
             parameters = self.parameters
             columns = {}

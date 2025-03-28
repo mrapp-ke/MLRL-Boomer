@@ -3,15 +3,16 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing output data.
 """
-from abc import ABC
+from abc import ABC, abstractmethod
 from dataclasses import replace
-from typing import Type
+from typing import Dict, List, Optional, Type
 
-from mlrl.testbed.experiments.output.converters import TableConverter, TextConverter
+from mlrl.common.config.options import Options
+
 from mlrl.testbed.experiments.state import ExperimentState
 
 
-class OutputData(TextConverter, ABC):
+class OutputData(ABC):
     """
     An abstract class for all classes that represent output data that can be converted into a textual representation.
     """
@@ -41,9 +42,29 @@ class OutputData(TextConverter, ABC):
         """
         return self.custom_formatter_options.setdefault(sink_type, replace(self.default_formatter_options))
 
+    @abstractmethod
+    def to_text(self, options: Options, **kwargs) -> Optional[str]:
+        """
+        Creates and returns a textual representation of the object.
 
-class TabularOutputData(OutputData, TableConverter, ABC):
+        :param options: Options to be taken into account
+        :return:        The textual representation that has been created
+        """
+
+
+class TabularOutputData(OutputData, ABC):
     """
     An abstract class for all classes that represent output data that can be converted into a textual, as well as a
     tabular, representation.
     """
+
+    Table = List[Dict[str, str]]
+
+    @abstractmethod
+    def to_table(self, options: Options, **kwargs) -> Optional[Table]:
+        """
+        Creates and returns a tabular representation of the object.
+
+        :param options: Options to be taken into account
+        :return:        The tabular representation that has been created
+        """

@@ -17,7 +17,6 @@ from mlrl.common.config.options import Options
 from mlrl.common.data.arrays import enforce_dense
 from mlrl.common.data.types import Float32, Uint8
 
-from mlrl.testbed.experiments.output.converters import TableConverter
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, Sink
 from mlrl.testbed.experiments.output.writer import OutputWriter
@@ -303,7 +302,7 @@ class EvaluationWriter(OutputWriter, ABC):
 
         def to_text(self, options: Options, **kwargs) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.experiments.output.converters.TextConverter.to_text`
+            See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
             """
             fold = kwargs.get(EvaluationWriter.KWARG_FOLD)
             percentage = options.get_bool(OPTION_PERCENTAGE, True)
@@ -323,9 +322,9 @@ class EvaluationWriter(OutputWriter, ABC):
 
             return format_table(rows)
 
-        def to_table(self, options: Options, **kwargs) -> Optional[TableConverter.Table]:
+        def to_table(self, options: Options, **kwargs) -> Optional[TabularOutputData.Table]:
             """
-            See :func:`mlrl.testbed.experiments.output.converters.TableConverter.to_table`
+            See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
             """
             fold = kwargs.get(EvaluationWriter.KWARG_FOLD)
             percentage = options.get_bool(OPTION_PERCENTAGE, True)
