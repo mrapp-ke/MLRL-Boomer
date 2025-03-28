@@ -19,8 +19,7 @@ from mlrl.common.data.types import Float32, Uint8
 
 from mlrl.testbed.experiments.output.converters import TableConverter
 from mlrl.testbed.experiments.output.data import OutputData
-from mlrl.testbed.experiments.output.sinks.sink import Sink
-from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
+from mlrl.testbed.experiments.output.sinks import CsvFileSink, Sink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.fold import Fold
