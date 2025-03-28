@@ -6,6 +6,7 @@ Provides utility functions for creating textual representations.
 import sys
 
 from functools import reduce
+from typing import List, Optional
 
 import numpy as np
 
@@ -90,7 +91,7 @@ def format_percentage(value: float, decimals: int = 2) -> str:
     return format_float(value, decimals) + '%'
 
 
-def format_table(rows, header=None, alignment=None) -> str:
+def format_table(rows: List[List[str]], header: Optional[List[str]] = None, alignment: List[str] = None) -> str:
     """
     Creates and returns a textual representation of tabular data.
 
