@@ -5,6 +5,8 @@ Provides classes that allow writing output data to the log.
 """
 import logging as log
 
+from mlrl.common.config.options import Options
+
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.state import ExperimentState
@@ -67,6 +69,12 @@ class LogSink(Sink):
             """
             return self.title + self.__format_dataset_type(state) + self.__format_prediction_scope(
                 state) + self.__format_fold(state)
+
+    def __init__(self, options: Options = Options()):
+        """
+        :param options: Options to be taken into account
+        """
+        self.options = options
 
     def write_to_sink(self, state: ExperimentState, output_data: OutputData, **kwargs):
         """
