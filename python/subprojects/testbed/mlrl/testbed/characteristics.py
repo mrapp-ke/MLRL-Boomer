@@ -165,7 +165,7 @@ class OutputCharacteristics(TabularOutputData):
         decimals = options.get_int(OPTION_DECIMALS, 2)
         rows = []
 
-        for formatter in filter_formatters(self.formatters, [options]):
+        for formatter in filter_formatters(self.formatters, options):
             rows.append([formatter.name, formatter.format(self, percentage=percentage, decimals=decimals)])
 
         return format_table(rows)
@@ -178,7 +178,7 @@ class OutputCharacteristics(TabularOutputData):
         decimals = options.get_int(OPTION_DECIMALS, 0)
         columns = {}
 
-        for formatter in filter_formatters(self.formatters, [options]):
+        for formatter in filter_formatters(self.formatters, options):
             columns[formatter] = formatter.format(self, percentage=percentage, decimals=decimals)
 
         return [columns]
