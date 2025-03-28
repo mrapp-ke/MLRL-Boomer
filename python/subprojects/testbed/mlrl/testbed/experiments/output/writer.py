@@ -35,7 +35,17 @@ class OutputWriter(ABC):
 
             if output_data:
                 for sink in sinks:
-                    sink.write_to_sink(state, output_data)
+                    self._write_to_sink(sink, state, output_data)
+
+    def _write_to_sink(self, sink: Sink, state: ExperimentState, output_data: OutputData):
+        """
+        May be overridden by subclasses in order to write output data to a specific sink.
+
+        :param sink:        The sink, the output data should be written to
+        :param state:       The state from which the output data has been generated
+        :param output_data: The output data that should be written to the sink
+        """
+        sink.write_to_sink(state, output_data)
 
     @abstractmethod
     def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
