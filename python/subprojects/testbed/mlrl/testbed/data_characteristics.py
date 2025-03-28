@@ -13,7 +13,7 @@ from mlrl.testbed.characteristics import LABEL_CHARACTERISTICS, OUTPUT_CHARACTER
     OutputCharacteristics, density
 from mlrl.testbed.dataset import AttributeType, Dataset
 from mlrl.testbed.experiments.output.converters import TableConverter
-from mlrl.testbed.experiments.output.data import OutputData
+from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
@@ -111,7 +111,7 @@ class DataCharacteristicsWriter(OutputWriter):
     Allows to write the characteristics of a data set to one or several sinks.
     """
 
-    class DataCharacteristics(OutputData):
+    class DataCharacteristics(TabularOutputData):
         """
         Stores characteristics of a feature matrix and an output matrix.
         """

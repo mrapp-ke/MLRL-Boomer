@@ -16,7 +16,7 @@ from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBo
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
 from mlrl.testbed.experiments.output.converters import TableConverter
-from mlrl.testbed.experiments.output.data import OutputData
+from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.format import format_float, format_percentage, format_table
@@ -27,7 +27,7 @@ class RuleModelCharacteristicsWriter(OutputWriter):
     Allows to write the characteristics of a `RuleModel` to one or several sinks.
     """
 
-    class RuleModelCharacteristics(OutputData):
+    class RuleModelCharacteristics(TabularOutputData):
         """
         Stores the characteristics of a `RuleModel`.
         """

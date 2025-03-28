@@ -15,7 +15,7 @@ from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibr
 from mlrl.common.learners import ClassificationRuleLearner
 
 from mlrl.testbed.experiments.output.converters import TableConverter
-from mlrl.testbed.experiments.output.data import OutputData
+from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
@@ -28,7 +28,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
     to one or several sinks.
     """
 
-    class IsotonicProbabilityCalibrationModelConverter(OutputData, IsotonicProbabilityCalibrationModelVisitor):
+    class IsotonicProbabilityCalibrationModelConverter(TabularOutputData, IsotonicProbabilityCalibrationModelVisitor):
         """
         Allows to create a textual representation of a model for the calibration of probabilities via isotonic
         regression.
@@ -122,7 +122,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
 
             return rows
 
-    class NoProbabilityCalibrationModelConverter(OutputData):
+    class NoProbabilityCalibrationModelConverter(TabularOutputData):
         """
         Allows to create a textual representation of a model for the calibration of probabilities that does not make any
         adjustments.

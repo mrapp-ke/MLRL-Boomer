@@ -5,7 +5,7 @@ Provides classes that allow writing output data to CSV files.
 """
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.experiments.output.data import OutputData
+from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.io import SUFFIX_CSV, open_writable_file
@@ -26,6 +26,10 @@ class CsvFileSink(FileSink):
         self.options = options
 
     def _write_to_file(self, file_path: str, state: ExperimentState, output_data: OutputData, **kwargs):
+        if not isinstance(output_data, TabularOutputData):
+            raise RuntimeError('Output data of type "' + type(output_data).__name__
+                               + '" cannot be converted into a tabular representation')
+
         tabular_data = output_data.to_table(self.options, **kwargs)
 
         if tabular_data:
