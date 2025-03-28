@@ -6,7 +6,6 @@ e.g., to the console or to a file.
 """
 import logging as log
 
-from abc import ABC
 from typing import Optional
 
 import numpy as np
@@ -21,7 +20,6 @@ from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.experiments.output.converters import TableConverter
 from mlrl.testbed.experiments.output.data import OutputData
-from mlrl.testbed.experiments.output.sinks.sink_text import TextFileSink as BaseTextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.format import format_float
@@ -41,27 +39,7 @@ OPTION_DECIMALS_BODY = 'decimals_body'
 OPTION_DECIMALS_HEAD = 'decimals_head'
 
 
-class ModelWriter(OutputWriter, ABC):
-    """
-    An abstract base class for all classes that allow to write textual representations of models to one or several
-    sinks.
-    """
-
-    class TextFileSink(BaseTextFileSink):
-        """
-        Allows to write textual representations of models to a text file.
-        """
-
-        def __init__(self, directory: str, options: Options = Options()):
-            """
-            :param directory: The path to the directory, where the text file should be located
-            """
-            super().__init__(BaseTextFileSink.PathFormatter(
-                directory, 'rules', ExperimentState.FormatterOptions(include_dataset_type=False)),
-                             options=options)
-
-
-class RuleModelWriter(ModelWriter):
+class RuleModelWriter(OutputWriter):
     """
     Allows to write textual representations of rule-based models to one or several sinks.
     """

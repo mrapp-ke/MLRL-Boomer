@@ -7,8 +7,6 @@ from abc import ABC
 from dataclasses import replace
 from typing import Type
 
-from mlrl.common.config.options import Options
-
 from mlrl.testbed.experiments.output.converters import TableConverter, TextConverter
 from mlrl.testbed.experiments.state import ExperimentState
 
