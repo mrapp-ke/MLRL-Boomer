@@ -11,9 +11,9 @@ from mlrl.testbed.experiments.output.converters import TableConverter, TextConve
 from mlrl.testbed.experiments.state import ExperimentState
 
 
-class OutputData(TextConverter, TableConverter, ABC):
+class OutputData(TextConverter, ABC):
     """
-    An abstract base class for all classes that represent output data.
+    An abstract class for all classes that represent output data that can be converted into a textual representation.
     """
 
     def __init__(self,
@@ -40,3 +40,10 @@ class OutputData(TextConverter, TableConverter, ABC):
         :return:            The options to be used by the given type of sink
         """
         return self.custom_formatter_options.setdefault(sink_type, replace(self.default_formatter_options))
+
+
+class TabularOutputData(OutputData, TableConverter, ABC):
+    """
+    An abstract class for all classes that represent output data that can be converted into a textual, as well as a
+    tabular, representation.
+    """

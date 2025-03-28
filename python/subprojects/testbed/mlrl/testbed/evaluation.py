@@ -18,7 +18,7 @@ from mlrl.common.data.arrays import enforce_dense
 from mlrl.common.data.types import Float32, Uint8
 
 from mlrl.testbed.experiments.output.converters import TableConverter
-from mlrl.testbed.experiments.output.data import OutputData
+from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, Sink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
@@ -204,7 +204,7 @@ class EvaluationWriter(OutputWriter, ABC):
 
     KWARG_FOLD = 'fold_index'
 
-    class EvaluationResult(OutputData):
+    class EvaluationResult(TabularOutputData):
         """
         Stores the evaluation results according to different measures.
         """

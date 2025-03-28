@@ -16,7 +16,7 @@ from mlrl.common.data.types import Uint8
 from mlrl.common.learners import ClassificationRuleLearner
 
 from mlrl.testbed.experiments.output.converters import TableConverter
-from mlrl.testbed.experiments.output.data import OutputData
+from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.format import format_table
@@ -29,7 +29,7 @@ class LabelVectorWriter(OutputWriter):
     Allows to write unique label vectors that are contained in a data set to one or several sinks.
     """
 
-    class LabelVectors(OutputData):
+    class LabelVectors(TabularOutputData):
         """
         Stores unique label vectors that are contained in a data set.
         """

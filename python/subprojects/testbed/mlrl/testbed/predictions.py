@@ -12,7 +12,6 @@ from mlrl.common.config.options import Options
 
 from mlrl.testbed.data import ArffMetaData, save_arff_file
 from mlrl.testbed.dataset import Attribute, AttributeType
-from mlrl.testbed.experiments.output.converters import TableConverter
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
@@ -51,12 +50,6 @@ class PredictionWriter(OutputWriter):
             text += '\n\nPredictions:\n\n'
             text += format_array(self.predictions, decimals=decimals)
             return text
-
-        def to_table(self, options: Options, **_) -> Optional[TableConverter.Table]:
-            """
-            See :func:`mlrl.testbed.experiments.output.converters.TableConverter.to_text`
-            """
-            raise NotImplementedError()
 
     class ArffFileSink(FileSink):
         """
