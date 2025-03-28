@@ -13,7 +13,7 @@ from typing import Any, Dict, Optional
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.experiments.output.converters import TableConverter
-from mlrl.testbed.experiments.output.data import OutputData
+from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.fold import Fold
@@ -68,7 +68,7 @@ class ParameterWriter(OutputWriter):
     Allows to write parameter settings to one or several sinks.
     """
 
-    class Parameters(OutputData):
+    class Parameters(TabularOutputData):
         """
         Stores the parameter settings of a learner.
         """

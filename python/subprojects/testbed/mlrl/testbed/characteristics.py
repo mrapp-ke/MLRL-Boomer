@@ -11,7 +11,8 @@ import numpy as np
 from mlrl.common.config.options import Options
 from mlrl.common.data.arrays import is_sparse
 
-from mlrl.testbed.experiments.output.converters import TableConverter, TextConverter
+from mlrl.testbed.experiments.output.converters import TableConverter
+from mlrl.testbed.experiments.outputs.data import TabularOutputData
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
 
@@ -100,7 +101,7 @@ def label_imbalance_ratio(y) -> float:
     return 0.0
 
 
-class OutputCharacteristics(TextConverter, TableConverter):
+class OutputCharacteristics(TabularOutputData):
     """
     Stores characteristics of the outputs in a dataset.
     """

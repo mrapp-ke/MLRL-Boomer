@@ -10,14 +10,14 @@ from mlrl.common.config.options import Options
 
 from mlrl.testbed.characteristics import OutputCharacteristics
 from mlrl.testbed.experiments.output.converters import TableConverter
-from mlrl.testbed.experiments.output.data import OutputData
+from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.prediction_scope import PredictionType
 
 
-class PredictionCharacteristics(OutputData):
+class PredictionCharacteristics(TabularOutputData):
     """
     Stores characteristics of predictions.
     """

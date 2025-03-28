@@ -18,7 +18,6 @@ from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBo
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
 from mlrl.testbed.dataset import Dataset
-from mlrl.testbed.experiments.output.converters import TableConverter
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
@@ -221,12 +220,6 @@ class RuleModelWriter(OutputWriter):
             text = self.text.getvalue()
             self.text.close()
             return text
-
-        def to_table(self, options: Options, **_) -> Optional[TableConverter.Table]:
-            """
-            See :func:`mlrl.testbed.experiments.output.converters.TableConverter.to_table`
-            """
-            raise NotImplementedError()
 
     def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
         training_result = state.training_result
