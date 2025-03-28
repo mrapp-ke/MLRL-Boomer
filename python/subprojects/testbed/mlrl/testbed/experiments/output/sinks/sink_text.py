@@ -21,7 +21,8 @@ class TextFileSink(FileSink):
         :param directory:   The path to the directory of the file
         :param options:     Options to be taken into account
         """
-        super().__init__(directory=directory, suffix='txt', options=options)
+        super().__init__(directory=directory, suffix='txt')
+        self.options = options
 
     def _write_to_file(self, file_path: str, _: ExperimentState, output_data: OutputData, **kwargs):
         text = output_data.to_text(self.options, **kwargs)

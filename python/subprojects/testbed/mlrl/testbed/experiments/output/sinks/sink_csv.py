@@ -22,7 +22,8 @@ class CsvFileSink(FileSink):
         :param directory:   The path to the directory of the file
         :param options:     Options to be taken into account
         """
-        super().__init__(directory=directory, suffix=SUFFIX_CSV, options=options)
+        super().__init__(directory=directory, suffix=SUFFIX_CSV)
+        self.options = options
 
     def _write_to_file(self, file_path: str, state: ExperimentState, output_data: OutputData, **kwargs):
         tabular_data = output_data.to_table(self.options, **kwargs)

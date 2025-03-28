@@ -6,8 +6,6 @@ Provides classes for implementing sinks, output data may be written to.
 from abc import ABC, abstractmethod
 from os import path
 
-from mlrl.common.config.options import Options
-
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.io import get_file_name_per_fold
@@ -17,12 +15,6 @@ class Sink(ABC):
     """
     An abstract base class for all sinks, output data may be written to.
     """
-
-    def __init__(self, options: Options = Options()):
-        """
-        :param options: Options to be taken into account
-        """
-        self.options = options
 
     @abstractmethod
     def write_to_sink(self, state: ExperimentState, output_data: OutputData, **kwargs):
@@ -79,13 +71,11 @@ class FileSink(Sink, ABC):
 
             return path.join(self.directory, file_name)
 
-    def __init__(self, directory: str, suffix: str, options: Options = Options()):
+    def __init__(self, directory: str, suffix: str):
         """
         :param directory:   The path to the directory of the file
         :param suffix:      The suffix of the file
-        :param options:     Options to be taken into account
         """
-        super().__init__(options)
         self.directory = directory
         self.suffix = suffix
 
