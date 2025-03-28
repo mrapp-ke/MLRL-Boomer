@@ -20,9 +20,7 @@ class LogSink(Sink):
         Allows to format the title that is printed before the output data.
         """
 
-        def __init__(self,
-                     title: str,
-                     formatter_options: ExperimentState.FormatterOptions = ExperimentState.FormatterOptions()):
+        def __init__(self, title: str, formatter_options: ExperimentState.FormatterOptions):
             """
             :param title:               A title
             :param formatter_options:   The options to be used by the formatter
@@ -77,6 +75,6 @@ class LogSink(Sink):
         text = output_data.to_text(self.options, **kwargs)
 
         if text:
-            title_formatter = LogSink.TitleFormatter(title=output_data.name,
-                                                     formatter_options=output_data.formatter_options)
+            title_formatter_options = output_data.get_formatter_options(type(self))
+            title_formatter = LogSink.TitleFormatter(title=output_data.name, formatter_options=title_formatter_options)
             log.info('%s:\n\n%s\n', title_formatter.format(state), text)
