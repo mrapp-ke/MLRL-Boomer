@@ -18,7 +18,7 @@ from mlrl.common.learners import ClassificationRuleLearner
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.format import format_table
+from mlrl.testbed.util.format import format_table
 
 OPTION_SPARSE = 'sparse'
 

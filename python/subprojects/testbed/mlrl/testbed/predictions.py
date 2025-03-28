@@ -17,7 +17,7 @@ from mlrl.testbed.experiments.output.sinks.sink import FileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.format import OPTION_DECIMALS, format_array
+from mlrl.testbed.util.format import OPTION_DECIMALS, format_array
 from mlrl.testbed.util.io import SUFFIX_ARFF
 
 
