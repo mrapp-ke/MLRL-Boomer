@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for representing certain characteristics of an output matrix that are part of output data.
+Provides classes for representing individual characteristics that are part of output data.
 """
 from numbers import Number
 from typing import Any, Callable
@@ -11,7 +11,7 @@ from mlrl.testbed.experiments.output.data import OutputValue
 
 class Characteristic(OutputValue):
     """
-    A certain characteristic that is part of output data.
+    An individual characteristic that is part of output data.
     """
 
     Function = Callable[[Any], Number]
