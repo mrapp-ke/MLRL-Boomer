@@ -37,6 +37,7 @@ from mlrl.testbed.evaluation import OPTION_ACCURACY, OPTION_COVERAGE_ERROR, OPTI
     OPTION_RECALL, OPTION_SUBSET_ACCURACY, OPTION_SUBSET_ZERO_ONE_LOSS, OPTION_TRAINING_TIME, OPTION_ZERO_ONE_LOSS, \
     BinaryEvaluationWriter, RankingEvaluationWriter, RegressionEvaluationWriter
 from mlrl.testbed.experiment import Evaluation, Experiment, GlobalEvaluation, IncrementalEvaluation
+from mlrl.testbed.experiments.input.preprocessors import OneHotEncoder, Preprocessor
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, TextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
@@ -52,7 +53,6 @@ from mlrl.testbed.persistence import ModelLoader, ModelSaver
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsWriter
 from mlrl.testbed.prediction_scope import PredictionType
 from mlrl.testbed.predictions import PredictionWriter
-from mlrl.testbed.preprocessors import OneHotEncoder, Preprocessor
 from mlrl.testbed.probability_calibration import JointProbabilityCalibrationModelWriter, \
     MarginalProbabilityCalibrationModelWriter
 from mlrl.testbed.util.io import clear_directory
@@ -512,7 +512,9 @@ class LearnerRunnable(Runnable, ABC):
 
     @staticmethod
     def __create_preprocessor(args) -> Optional[Preprocessor]:
-        return OneHotEncoder() if args.one_hot_encoding else None
+        if args.one_hot_encoding:
+            return OneHotEncoder()
+        return None
 
     def __create_data_splitter(self, args) -> DataSplitter:
         data_set = DataSet(data_dir=args.data_dir,
