@@ -911,7 +911,7 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.PRINT_EVALUATION_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            sinks.append(EvaluationWriter.LogSink(options))
+            sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_EVALUATION, args.store_evaluation,
                                                  self.STORE_EVALUATION_VALUES)

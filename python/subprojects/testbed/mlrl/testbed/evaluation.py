@@ -21,7 +21,6 @@ from mlrl.testbed.experiments.output.converters import TableConverter
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
-from mlrl.testbed.experiments.output.sinks.sink_log import LogSink as BaseLogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.fold import Fold
@@ -346,22 +345,14 @@ class EvaluationWriter(OutputWriter, ABC):
 
             return [filtered_columns]
 
-    class LogSink(BaseLogSink):
-        """
-        Allows to write evaluation results to the console.
-        """
+    def _write_to_sink(self, sink: Sink, state: ExperimentState, output_data: OutputData):
+        fold = state.fold
+        fold_index = fold.index if fold.is_cross_validation_used else 0
+        sink.write_to_sink(state, output_data, **{EvaluationWriter.KWARG_FOLD: fold_index})
 
-        def write_to_sink(self, state: ExperimentState, output_data: OutputData, **kwargs):
-            """
-            See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
-            """
-            fold = state.fold
-            new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold.index if fold.is_cross_validation_used else 0}}
-            super().write_to_sink(state, output_data, **new_kwargs)
-
-            if fold.is_cross_validation_used and fold.is_last_fold:
-                overall_fold = Fold(index=None, num_folds=fold.num_folds, is_last_fold=True)
-                super().write_to_sink(replace(state, fold=overall_fold), output_data, **kwargs)
+        if fold.is_cross_validation_used and fold.is_last_fold:
+            overall_fold = replace(fold, index=None, is_last_fold=True)
+            sink.write_to_sink(replace(state, fold=overall_fold), output_data)
 
     class CsvFileSink(BaseCsvFileSink):
         """
@@ -375,18 +366,6 @@ class EvaluationWriter(OutputWriter, ABC):
             super().__init__(BaseCsvFileSink.PathFormatter(
                 directory, 'evaluation', ExperimentState.FormatterOptions(include_prediction_scope=False)),
                              options=options)
-
-        def write_to_sink(self, state: ExperimentState, output_data: OutputData, **kwargs):
-            """
-            See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
-            """
-            fold = state.fold
-            new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold.index if fold.is_cross_validation_used else 0}}
-            super().write_to_sink(state, output_data, **new_kwargs)
-
-            if fold.is_cross_validation_used and fold.is_last_fold:
-                overall_fold = Fold(index=None, num_folds=fold.num_folds, is_last_fold=True)
-                super().write_to_sink(replace(state, fold=overall_fold), output_data, **kwargs)
 
     def __init__(self, *sinks: Sink):
         super().__init__(*sinks)
