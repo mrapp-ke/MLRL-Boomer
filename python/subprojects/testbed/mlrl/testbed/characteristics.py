@@ -11,9 +11,9 @@ import numpy as np
 from mlrl.common.config.options import Options
 from mlrl.common.data.arrays import is_sparse
 
-from mlrl.testbed.experiments.output.data import TabularOutputData
+from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
 from mlrl.testbed.experiments.problem_type import ProblemType
-from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
+from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
 
 OPTION_OUTPUTS = 'outputs'
 
@@ -112,7 +112,7 @@ class OutputCharacteristics(TabularOutputData):
                                 `(num_examples, num_outputs)`, that stores predictions or the corresponding ground truth
         """
         classification = problem_type == ProblemType.CLASSIFICATION
-        self.formatters = LABEL_CHARACTERISTICS if classification else OUTPUT_CHARACTERISTICS
+        self.characteristics = LABEL_CHARACTERISTICS if classification else OUTPUT_CHARACTERISTICS
         self.array = array
 
     @property
@@ -165,8 +165,8 @@ class OutputCharacteristics(TabularOutputData):
         decimals = options.get_int(OPTION_DECIMALS, 2)
         rows = []
 
-        for formatter in filter_formatters(self.formatters, options):
-            rows.append([formatter.name, formatter.format(self, percentage=percentage, decimals=decimals)])
+        for characteristic in OutputValue.filter_values(self.characteristics, options):
+            rows.append([characteristic.name, characteristic.format(self, percentage=percentage, decimals=decimals)])
 
         return format_table(rows)
 
@@ -178,13 +178,13 @@ class OutputCharacteristics(TabularOutputData):
         decimals = options.get_int(OPTION_DECIMALS, 0)
         columns = {}
 
-        for formatter in filter_formatters(self.formatters, options):
-            columns[formatter] = formatter.format(self, percentage=percentage, decimals=decimals)
+        for characteristic in Characteristic.filter_values(self.characteristics, options):
+            columns[characteristic] = characteristic.format(self, percentage=percentage, decimals=decimals)
 
         return [columns]
 
 
-class Characteristic(Formatter):
+class Characteristic(OutputValue):
     """
     Allows to create textual representations of characteristics.
     """
@@ -198,7 +198,7 @@ class Characteristic(Formatter):
 
     def format(self, value, **kwargs) -> str:
         """
-        See :func:`mlrl.testbed.format.Formatter.format`
+        See :func:`mlrl.testbed.experiments.data.OutputValue.format`
         """
         return super().format(self.getter_function(value), **kwargs)
 
