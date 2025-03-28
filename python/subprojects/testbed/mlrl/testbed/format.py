@@ -6,13 +6,10 @@ Provides utility functions for creating textual representations.
 import sys
 
 from functools import reduce
-from typing import List
 
 import numpy as np
 
 from tabulate import tabulate
-
-from mlrl.common.config.options import Options
 
 OPTION_DECIMALS = 'decimals'
 
@@ -106,61 +103,3 @@ def format_table(rows, header=None, alignment=None) -> str:
     if not header:
         return tabulate(rows, colalign=alignment, tablefmt='plain')
     return tabulate(rows, headers=header, colalign=alignment, tablefmt='simple_outline')
-
-
-class Formatter:
-    """
-    Allows to create textual representations of values.
-    """
-
-    def __init__(self, option: str, name: str, percentage: bool = False):
-        """
-        :param option:      The name of the option that can be used for filtering
-        :param name:        A name that describes the type of values
-        :param percentage:  True, if the values can be formatted as a percentage, False otherwise
-        """
-        self.option = option
-        self.name = name
-        self.percentage = percentage
-
-    def __str__(self):
-        return self.name
-
-    def __lt__(self, other):
-        return self.name < other.name
-
-    def __hash__(self):
-        return hash(self.name)
-
-    def format(self, value, **kwargs) -> str:
-        """
-        Creates and returns a textual representation of a given value.
-
-        :param value:   The value
-        :return:        The textual representation that has been created
-        """
-        decimals = kwargs.get(OPTION_DECIMALS, 0)
-
-        if self.percentage and kwargs.get(OPTION_PERCENTAGE, False):
-            value = value * 100
-
-        return format_float(value, decimals=decimals)
-
-
-def filter_formatters(formatters: List[Formatter], *options: Options) -> List[Formatter]:
-    """
-    Allows to filter a list of `Formatter` objects.
-
-    :param formatters:  A list of `Formatter` objects
-    :param options:     The options that should be used for filtering
-    :return:            A filtered list of the given `Formatter` objects
-    """
-    filtered = []
-
-    for formatter in formatters:
-        key = formatter.option
-
-        if any(current_options.get_bool(key, True) for current_options in options):
-            filtered.append(formatter)
-
-    return filtered
