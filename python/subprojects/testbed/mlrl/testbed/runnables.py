@@ -35,17 +35,19 @@ from mlrl.testbed.evaluation import OPTION_ACCURACY, OPTION_COVERAGE_ERROR, OPTI
     OPTION_MEDIAN_ABSOLUTE_ERROR, OPTION_MICRO_F1, OPTION_MICRO_JACCARD, OPTION_MICRO_PRECISION, OPTION_MICRO_RECALL, \
     OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, OPTION_PRECISION, OPTION_PREDICTION_TIME, OPTION_RANK_LOSS, \
     OPTION_RECALL, OPTION_SUBSET_ACCURACY, OPTION_SUBSET_ZERO_ONE_LOSS, OPTION_TRAINING_TIME, OPTION_ZERO_ONE_LOSS, \
-    BinaryEvaluationWriter, EvaluationWriter, RankingEvaluationWriter, RegressionEvaluationWriter
+    BinaryEvaluationWriter, RankingEvaluationWriter, RegressionEvaluationWriter
 from mlrl.testbed.experiment import Evaluation, Experiment, GlobalEvaluation, IncrementalEvaluation
+from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
+from mlrl.testbed.experiments.output.sinks.sink_text import TextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
 from mlrl.testbed.label_vectors import OPTION_SPARSE, LabelVectorSetWriter, LabelVectorWriter
-from mlrl.testbed.model_characteristics import ModelCharacteristicsWriter, RuleModelCharacteristicsWriter
+from mlrl.testbed.model_characteristics import RuleModelCharacteristicsWriter
 from mlrl.testbed.models import OPTION_DECIMALS_BODY, OPTION_DECIMALS_HEAD, OPTION_PRINT_BODIES, \
     OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_HEADS, OPTION_PRINT_NOMINAL_VALUES, OPTION_PRINT_OUTPUT_NAMES, \
-    ModelWriter, RuleModelWriter
+    RuleModelWriter
 from mlrl.testbed.package_info import get_package_info as get_testbed_package_info
 from mlrl.testbed.parameters import CsvParameterLoader, ParameterLoader, ParameterWriter
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
@@ -917,7 +919,7 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_EVALUATION_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(EvaluationWriter.CsvFileSink(args.output_dir, options=options))
+            sinks.append(CsvFileSink(args.output_dir, options=options))
 
         if len(sinks) == 0:
             return None
@@ -952,7 +954,7 @@ class LearnerRunnable(Runnable, ABC):
             sinks.append(LogSink())
 
         if args.parameter_save_dir:
-            sinks.append(ParameterWriter.CsvFileSink(args.parameter_save_dir))
+            sinks.append(CsvFileSink(args.parameter_save_dir))
 
         return ParameterWriter(*sinks) if sinks else None
 
@@ -999,7 +1001,7 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_PREDICTION_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(PredictionCharacteristicsWriter.CsvFileSink(args.output_dir, options=options))
+            sinks.append(CsvFileSink(args.output_dir, options=options))
 
         return PredictionCharacteristicsWriter(*sinks) if sinks else None
 
@@ -1022,7 +1024,7 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_DATA_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(DataCharacteristicsWriter.CsvFileSink(args.output_dir, options=options))
+            sinks.append(CsvFileSink(args.output_dir, options=options))
 
         return DataCharacteristicsWriter(*sinks) if sinks else None
 
@@ -1045,7 +1047,7 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_LABEL_VECTORS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(LabelVectorWriter.CsvFileSink(args.output_dir, options=options))
+            sinks.append(CsvFileSink(args.output_dir, options=options))
 
         return LabelVectorWriter(*sinks) if sinks else None
 
@@ -1339,7 +1341,7 @@ class RuleLearnerRunnable(LearnerRunnable):
         value, options = parse_param_and_options(self.PARAM_STORE_RULES, args.store_rules, self.STORE_RULES_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(ModelWriter.TextFileSink(args.output_dir, options=options))
+            sinks.append(TextFileSink(args.output_dir, options=options))
 
         return RuleModelWriter(*sinks) if sinks else None
 
@@ -1357,7 +1359,7 @@ class RuleLearnerRunnable(LearnerRunnable):
             sinks.append(LogSink())
 
         if args.store_model_characteristics and args.output_dir:
-            sinks.append(ModelCharacteristicsWriter.CsvFileSink(args.output_dir))
+            sinks.append(CsvFileSink(args.output_dir))
 
         return RuleModelCharacteristicsWriter(*sinks) if sinks else None
 
@@ -1382,7 +1384,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                                                  self.STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(MarginalProbabilityCalibrationModelWriter.CsvFileSink(args.output_dir, options=options))
+            sinks.append(CsvFileSink(args.output_dir, options=options))
 
         return MarginalProbabilityCalibrationModelWriter(*sinks) if sinks else None
 
@@ -1407,7 +1409,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                                                  self.STORE_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(JointProbabilityCalibrationModelWriter.CsvFileSink(args.output_dir, options=options))
+            sinks.append(CsvFileSink(args.output_dir, options=options))
 
         return JointProbabilityCalibrationModelWriter(*sinks) if sinks else None
 
@@ -1442,7 +1444,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                                                  self.STORE_LABEL_VECTORS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(LabelVectorSetWriter.CsvFileSink(args.output_dir, options=options))
+            sinks.append(CsvFileSink(args.output_dir, options=options))
 
         return LabelVectorSetWriter(*sinks) if sinks else None
 

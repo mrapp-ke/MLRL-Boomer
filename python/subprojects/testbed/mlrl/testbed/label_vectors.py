@@ -17,7 +17,6 @@ from mlrl.common.learners import ClassificationRuleLearner
 
 from mlrl.testbed.experiments.output.converters import TableConverter
 from mlrl.testbed.experiments.output.data import OutputData
-from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink as BaseCsvFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.format import format_table
@@ -108,19 +107,6 @@ class LabelVectorWriter(OutputWriter):
                 })
 
             return rows
-
-    class CsvFileSink(BaseCsvFileSink):
-        """
-        Allows to write unique label vectors that are contained in a data set to a CSV file.
-        """
-
-        def __init__(self, directory: str, options: Options = Options()):
-            """
-            :param directory: The path to the directory, where the CSV file should be located
-            """
-            super().__init__(BaseCsvFileSink.PathFormatter(
-                directory, 'label_vectors', ExperimentState.FormatterOptions(include_dataset_type=False)),
-                             options=options)
 
     def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
         dataset = state.dataset

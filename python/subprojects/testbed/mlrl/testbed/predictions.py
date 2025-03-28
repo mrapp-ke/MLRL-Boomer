@@ -67,7 +67,7 @@ class PredictionWriter(OutputWriter):
             """
             :param directory: The path to the directory, where the ARFF file should be located
             """
-            super().__init__(FileSink.PathFormatter(directory, 'predictions', SUFFIX_ARFF), options)
+            super().__init__(directory=directory, suffix=SUFFIX_ARFF, options=options)
 
         def _write_to_file(self, file_path: str, state: ExperimentState, output_data: OutputData, **_):
             decimals = self.options.get_int(OPTION_DECIMALS, 0)

@@ -44,11 +44,8 @@ class FileSink(Sink, ABC):
         Allows to determine the path to the file to which output data is written.
         """
 
-        def __init__(self,
-                     directory: str,
-                     file_name: str,
-                     suffix: str,
-                     formatter_options: ExperimentState.FormatterOptions = ExperimentState.FormatterOptions()):
+        def __init__(self, directory: str, file_name: str, suffix: str,
+                     formatter_options: ExperimentState.FormatterOptions):
             """
             :param directory:           The path to the directory of the file
             :param file_name:           The name of the file
@@ -82,19 +79,26 @@ class FileSink(Sink, ABC):
 
             return path.join(self.directory, file_name)
 
-    def __init__(self, path_formatter: PathFormatter, options: Options = Options()):
+    def __init__(self, directory: str, suffix: str, options: Options = Options()):
         """
-        :param: path_formatter: A `PathFormatter` to be used for determining the path to the file to which output data
-                                should be written
+        :param directory:   The path to the directory of the file
+        :param suffix:      The suffix of the file
+        :param options:     Options to be taken into account
         """
         super().__init__(options)
-        self.path_formatter = path_formatter
+        self.directory = directory
+        self.suffix = suffix
 
     def write_to_sink(self, state: ExperimentState, output_data: OutputData, **kwargs):
         """
         See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
         """
-        file_path = self.path_formatter.format(state)
+        path_formatter_options = output_data.get_formatter_options(type(self))
+        path_formatter = FileSink.PathFormatter(directory=self.directory,
+                                                file_name=output_data.file_name,
+                                                suffix=self.suffix,
+                                                formatter_options=path_formatter_options)
+        file_path = path_formatter.format(state)
         self._write_to_file(file_path, state, output_data, **kwargs)
 
     @abstractmethod
