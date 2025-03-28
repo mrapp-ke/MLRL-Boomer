@@ -296,7 +296,7 @@ class EvaluationWriter(OutputWriter, ABC):
             for measure in self.measures:
                 score, std_dev = self.avg(measure, **kwargs)
                 result[measure] = score
-                result[OutputValue(measure.option, 'Std.-dev. ' + measure.name, measure.percentage)] = std_dev
+                result[OutputValue(measure.option_key, 'Std.-dev. ' + measure.name, measure.percentage)] = std_dev
 
             return result
 
@@ -311,7 +311,7 @@ class EvaluationWriter(OutputWriter, ABC):
             rows = []
 
             for measure in sorted(self.measures):
-                if options.get_bool(measure.option, enable_all) and measure != EVALUATION_MEASURE_TRAINING_TIME \
+                if options.get_bool(measure.option_key, enable_all) and measure != EVALUATION_MEASURE_TRAINING_TIME \
                     and measure != EVALUATION_MEASURE_PREDICTION_TIME:
                     if fold is None:
                         score, std_dev = self.avg(measure, percentage=percentage, decimals=decimals)
@@ -339,7 +339,7 @@ class EvaluationWriter(OutputWriter, ABC):
             filtered_columns = {}
 
             for measure, value in columns.items():
-                if options.get_bool(measure.option, enable_all):
+                if options.get_bool(measure.option_key, enable_all):
                     filtered_columns[measure.name] = value
 
             return [filtered_columns]
