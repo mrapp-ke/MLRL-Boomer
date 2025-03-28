@@ -12,11 +12,11 @@ from mlrl.common.config.options import Options
 from mlrl.testbed.characteristics import LABEL_CHARACTERISTICS, OUTPUT_CHARACTERISTICS, Characteristic, \
     OutputCharacteristics, density
 from mlrl.testbed.dataset import AttributeType, Dataset
-from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
+from mlrl.testbed.experiments.output.data import OutputData, OutputValue, TabularOutputData
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, filter_formatters, format_table
+from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
 
 OPTION_EXAMPLES = 'examples'
 
@@ -127,7 +127,7 @@ class DataCharacteristicsWriter(OutputWriter):
             self.feature_characteristics = feature_characteristics
             self.output_characteristics = output_characteristics
             classification = problem_type == ProblemType.CLASSIFICATION
-            self.output_formatters = LABEL_CHARACTERISTICS if classification else OUTPUT_CHARACTERISTICS
+            self.characteristics = LABEL_CHARACTERISTICS if classification else OUTPUT_CHARACTERISTICS
 
         def to_text(self, options: Options, **_) -> Optional[str]:
             """
@@ -137,16 +137,16 @@ class DataCharacteristicsWriter(OutputWriter):
             decimals = options.get_int(OPTION_DECIMALS, 2)
             rows = []
 
-            for formatter in filter_formatters(FEATURE_CHARACTERISTICS, options):
+            for characteristic in OutputValue.filter_values(FEATURE_CHARACTERISTICS, options):
                 rows.append([
-                    formatter.name,
-                    formatter.format(self.feature_characteristics, percentage=percentage, decimals=decimals)
+                    characteristic.name,
+                    characteristic.format(self.feature_characteristics, percentage=percentage, decimals=decimals)
                 ])
 
-            for formatter in filter_formatters(self.output_formatters, options):
+            for characteristic in OutputValue.filter_values(self.characteristics, options):
                 rows.append([
-                    formatter.name,
-                    formatter.format(self.output_characteristics, percentage=percentage, decimals=decimals)
+                    characteristic.name,
+                    characteristic.format(self.output_characteristics, percentage=percentage, decimals=decimals)
                 ])
 
             return format_table(rows)
@@ -159,15 +159,15 @@ class DataCharacteristicsWriter(OutputWriter):
             decimals = options.get_int(OPTION_DECIMALS, 0)
             columns = {}
 
-            for formatter in filter_formatters(FEATURE_CHARACTERISTICS, options):
-                columns[formatter] = formatter.format(self.feature_characteristics,
-                                                      percentage=percentage,
-                                                      decimals=decimals)
+            for characteristic in OutputValue.filter_values(FEATURE_CHARACTERISTICS, options):
+                columns[characteristic] = characteristic.format(self.feature_characteristics,
+                                                                percentage=percentage,
+                                                                decimals=decimals)
 
-            for formatter in filter_formatters(self.output_formatters, options):
-                columns[formatter] = formatter.format(self.output_characteristics,
-                                                      percentage=percentage,
-                                                      decimals=decimals)
+            for characteristic in OutputValue.filter_values(self.characteristics, options):
+                columns[characteristic] = characteristic.format(self.output_characteristics,
+                                                                percentage=percentage,
+                                                                decimals=decimals)
 
             return [columns]
 
