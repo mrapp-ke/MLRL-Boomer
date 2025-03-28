@@ -15,7 +15,6 @@ from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBo
     RuleModelVisitor
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
-from mlrl.testbed.experiments.output.converters import TableConverter
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
@@ -74,7 +73,7 @@ class RuleModelCharacteristicsWriter(OutputWriter):
         # pylint: disable=unused-argument
         def to_text(self, options: Options, **_) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.experiments.output.converters.TextConverter.to_text`
+            See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
             """
             num_predictions = self.num_pos_predictions + self.num_neg_predictions
             num_conditions = self.num_numerical_leq + self.num_numerical_gr + self.num_ordinal_leq + \
@@ -190,9 +189,9 @@ class RuleModelCharacteristicsWriter(OutputWriter):
             return text + format_table(rows, header=header)
 
         # pylint: disable=unused-argument
-        def to_table(self, options: Options, **_) -> Optional[TableConverter.Table]:
+        def to_table(self, options: Options, **_) -> Optional[TabularOutputData.Table]:
             """
-            See :func:`mlrl.testbed.experiments.output.converters.TableConverter.to_table`
+            See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
             """
             rows = []
             default_rule_index = self.default_rule_index
