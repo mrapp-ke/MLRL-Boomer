@@ -137,13 +137,13 @@ class DataCharacteristicsWriter(OutputWriter):
             decimals = options.get_int(OPTION_DECIMALS, 2)
             rows = []
 
-            for formatter in filter_formatters(FEATURE_CHARACTERISTICS, [options]):
+            for formatter in filter_formatters(FEATURE_CHARACTERISTICS, options):
                 rows.append([
                     formatter.name,
                     formatter.format(self.feature_characteristics, percentage=percentage, decimals=decimals)
                 ])
 
-            for formatter in filter_formatters(self.output_formatters, [options]):
+            for formatter in filter_formatters(self.output_formatters, options):
                 rows.append([
                     formatter.name,
                     formatter.format(self.output_characteristics, percentage=percentage, decimals=decimals)
@@ -159,12 +159,12 @@ class DataCharacteristicsWriter(OutputWriter):
             decimals = options.get_int(OPTION_DECIMALS, 0)
             columns = {}
 
-            for formatter in filter_formatters(FEATURE_CHARACTERISTICS, [options]):
+            for formatter in filter_formatters(FEATURE_CHARACTERISTICS, options):
                 columns[formatter] = formatter.format(self.feature_characteristics,
                                                       percentage=percentage,
                                                       decimals=decimals)
 
-            for formatter in filter_formatters(self.output_formatters, [options]):
+            for formatter in filter_formatters(self.output_formatters, options):
                 columns[formatter] = formatter.format(self.output_characteristics,
                                                       percentage=percentage,
                                                       decimals=decimals)

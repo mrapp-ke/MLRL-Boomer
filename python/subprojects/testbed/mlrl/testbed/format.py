@@ -147,20 +147,20 @@ class Formatter:
         return format_float(value, decimals=decimals)
 
 
-def filter_formatters(formatters: List[Formatter], options_list: List[Options]) -> List[Formatter]:
+def filter_formatters(formatters: List[Formatter], *options: Options) -> List[Formatter]:
     """
     Allows to filter a list of `Formatter` objects.
 
-    :param formatters:      A list of `Formatter` objects
-    :param options_list:    A list of `Options` objects that should be used for filtering
-    :return:                A filtered list of the given `Formatter` objects
+    :param formatters:  A list of `Formatter` objects
+    :param options:     The options that should be used for filtering
+    :return:            A filtered list of the given `Formatter` objects
     """
-    filtered: List[Formatter] = []
+    filtered = []
 
     for formatter in formatters:
-        if reduce(lambda aggr, options, option=formatter.option: aggr | options.get_bool(option, True),
-                  options_list,
-                  False):
+        key = formatter.option
+
+        if any(current_options.get_bool(key, True) for current_options in options):
             filtered.append(formatter)
 
     return filtered
