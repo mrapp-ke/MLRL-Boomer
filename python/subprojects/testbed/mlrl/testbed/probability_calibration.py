@@ -14,7 +14,6 @@ from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibr
     IsotonicProbabilityCalibrationModelVisitor, NoProbabilityCalibrationModel
 from mlrl.common.learners import ClassificationRuleLearner
 
-from mlrl.testbed.experiments.output.converters import TableConverter
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import OutputWriter
@@ -64,7 +63,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
 
         def to_text(self, options: Options, **_) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.experiments.output.converters.TextConverter.to_text`
+            See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
             """
             self.calibration_model.visit(self)
             decimals = options.get_int(OPTION_DECIMALS, 4)
@@ -87,9 +86,9 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
 
             return result
 
-        def to_table(self, options: Options, **_) -> Optional[TableConverter.Table]:
+        def to_table(self, options: Options, **_) -> Optional[TabularOutputData.Table]:
             """
-            See :func:`mlrl.testbed.experiments.output.converters.TableConverter.to_table`
+            See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
             """
             self.calibration_model.visit(self)
             decimals = options.get_int(OPTION_DECIMALS, 0)
@@ -131,14 +130,14 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
         # pylint: disable=unused-argument
         def to_text(self, options: Options, **_) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.experiments.output.converters.TextConverter.to_text`
+            See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
             """
             return 'No calibration model used'
 
         # pylint: disable=unused-argument
-        def to_table(self, options: Options, **_) -> Optional[TableConverter.Table]:
+        def to_table(self, options: Options, **_) -> Optional[TabularOutputData.Table]:
             """
-            See :func:`mlrl.testbed.experiments.output.converters.TableConverter.to_table`
+            See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
             """
             return None
 

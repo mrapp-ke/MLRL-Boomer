@@ -206,7 +206,7 @@ class RuleModelWriter(OutputWriter):
 
         def to_text(self, options: Options, **_) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.experiments.output.converters.TextConverter.to_text`
+            See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
             """
             self.print_feature_names = options.get_bool(OPTION_PRINT_FEATURE_NAMES, True)
             self.print_output_names = options.get_bool(OPTION_PRINT_OUTPUT_NAMES, True)

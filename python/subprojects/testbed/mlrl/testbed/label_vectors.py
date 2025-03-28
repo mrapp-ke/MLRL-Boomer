@@ -15,7 +15,6 @@ from mlrl.common.cython.output_space_info import LabelVectorSet, LabelVectorSetV
 from mlrl.common.data.types import Uint8
 from mlrl.common.learners import ClassificationRuleLearner
 
-from mlrl.testbed.experiments.output.converters import TableConverter
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
@@ -81,7 +80,7 @@ class LabelVectorWriter(OutputWriter):
 
         def to_text(self, options: Options, **_) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.experiments.output.converters.TextConverter.to_text`
+            See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
             """
             sparse = options.get_bool(OPTION_SPARSE, False)
             header = [self.COLUMN_INDEX, self.COLUMN_LABEL_VECTOR, self.COLUMN_FREQUENCY]
@@ -92,9 +91,9 @@ class LabelVectorWriter(OutputWriter):
 
             return format_table(rows, header=header)
 
-        def to_table(self, options: Options, **_) -> Optional[TableConverter.Table]:
+        def to_table(self, options: Options, **_) -> Optional[TabularOutputData.Table]:
             """
-            See :func:`mlrl.testbed.experiments.output.converters.TableConverter.to_table`
+            See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
             """
             sparse = options.get_bool(OPTION_SPARSE, False)
             rows = []
