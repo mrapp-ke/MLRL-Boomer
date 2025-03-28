@@ -21,7 +21,7 @@ from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.format import format_float
+from mlrl.testbed.util.format import format_float
 
 OPTION_PRINT_FEATURE_NAMES = 'print_feature_names'
 

@@ -41,7 +41,6 @@ from mlrl.testbed.experiments.input.preprocessors import OneHotEncoder, Preproce
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, TextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
-from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
 from mlrl.testbed.label_vectors import OPTION_SPARSE, LabelVectorSetWriter, LabelVectorWriter
 from mlrl.testbed.model_characteristics import RuleModelCharacteristicsWriter
 from mlrl.testbed.models import OPTION_DECIMALS_BODY, OPTION_DECIMALS_HEAD, OPTION_PRINT_BODIES, \
@@ -55,6 +54,7 @@ from mlrl.testbed.prediction_scope import PredictionType
 from mlrl.testbed.predictions import PredictionWriter
 from mlrl.testbed.probability_calibration import JointProbabilityCalibrationModelWriter, \
     MarginalProbabilityCalibrationModelWriter
+from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
 from mlrl.testbed.util.io import clear_directory
 
 LOG_FORMAT = '%(levelname)s %(message)s'

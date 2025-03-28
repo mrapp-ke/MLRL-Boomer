@@ -16,7 +16,7 @@ from mlrl.testbed.experiments.output.data import OutputData, OutputValue, Tabula
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
+from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
 
 OPTION_EXAMPLES = 'examples'
 

@@ -18,7 +18,7 @@ from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.format import format_float, format_percentage, format_table
+from mlrl.testbed.util.format import format_float, format_percentage, format_table
 
 
 class RuleModelCharacteristicsWriter(OutputWriter):

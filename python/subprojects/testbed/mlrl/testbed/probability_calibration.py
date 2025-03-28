@@ -18,7 +18,7 @@ from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.format import OPTION_DECIMALS, format_float, format_table
+from mlrl.testbed.util.format import OPTION_DECIMALS, format_float, format_table
 
 
 class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
