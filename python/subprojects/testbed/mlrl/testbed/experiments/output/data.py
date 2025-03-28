@@ -10,7 +10,7 @@ from typing import Dict, Iterable, List, Optional, Type
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_float
+from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_float
 
 
 class OutputData(ABC):

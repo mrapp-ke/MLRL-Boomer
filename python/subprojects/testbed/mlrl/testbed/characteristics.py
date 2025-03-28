@@ -13,7 +13,7 @@ from mlrl.common.data.arrays import is_sparse
 
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
 from mlrl.testbed.experiments.problem_type import ProblemType
-from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
+from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
 
 OPTION_OUTPUTS = 'outputs'
 

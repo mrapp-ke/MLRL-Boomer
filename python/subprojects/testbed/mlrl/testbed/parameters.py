@@ -16,7 +16,7 @@ from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.fold import Fold
-from mlrl.testbed.format import format_table
+from mlrl.testbed.util.format import format_table
 from mlrl.testbed.util.io import SUFFIX_CSV, get_file_name_per_fold, open_readable_file
 from mlrl.testbed.util.io_csv import CsvReader
 

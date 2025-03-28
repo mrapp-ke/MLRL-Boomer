@@ -22,7 +22,7 @@ from mlrl.testbed.experiments.output.sinks import CsvFileSink, Sink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.fold import Fold
-from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
+from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
 
 OPTION_ENABLE_ALL = 'enable_all'
 
