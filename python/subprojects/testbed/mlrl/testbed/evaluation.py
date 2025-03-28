@@ -401,8 +401,8 @@ class BinaryEvaluationWriter(EvaluationWriter):
     def __init__(self, *sinks: Sink):
         super().__init__(*sinks)
         options = [sink.options for sink in sinks]
-        self.multi_label_evaluation_functions = filter_formatters(MULTI_LABEL_EVALUATION_MEASURES, options)
-        self.single_label_evaluation_functions = filter_formatters(SINGLE_LABEL_EVALUATION_MEASURES, options)
+        self.multi_label_evaluation_functions = filter_formatters(MULTI_LABEL_EVALUATION_MEASURES, *options)
+        self.single_label_evaluation_functions = filter_formatters(SINGLE_LABEL_EVALUATION_MEASURES, *options)
 
     def _populate_result(self, fold: Fold, result: EvaluationWriter.EvaluationResult, predictions, ground_truth):
         if is_multilabel(ground_truth):
@@ -427,7 +427,7 @@ class RegressionEvaluationWriter(EvaluationWriter):
     def __init__(self, *sinks: Sink):
         super().__init__(*sinks)
         options = [sink.options for sink in sinks]
-        self.regression_evaluation_functions = filter_formatters(REGRESSION_EVALUATION_MEASURES, options)
+        self.regression_evaluation_functions = filter_formatters(REGRESSION_EVALUATION_MEASURES, *options)
 
     def _populate_result(self, fold: Fold, result: EvaluationWriter.EvaluationResult, predictions, ground_truth):
         ground_truth = enforce_dense(ground_truth, order='C', dtype=Float32)
@@ -448,8 +448,8 @@ class RankingEvaluationWriter(EvaluationWriter):
     def __init__(self, *sinks: Sink):
         super().__init__(*sinks)
         options = [sink.options for sink in sinks]
-        self.regression_evaluation_functions = filter_formatters(REGRESSION_EVALUATION_MEASURES, options)
-        self.ranking_evaluation_functions = filter_formatters(RANKING_EVALUATION_MEASURES, options)
+        self.regression_evaluation_functions = filter_formatters(REGRESSION_EVALUATION_MEASURES, *options)
+        self.ranking_evaluation_functions = filter_formatters(RANKING_EVALUATION_MEASURES, *options)
 
     def _populate_result(self, fold: Fold, result: EvaluationWriter.EvaluationResult, predictions, ground_truth):
         ground_truth = enforce_dense(ground_truth, order='C', dtype=Uint8)
