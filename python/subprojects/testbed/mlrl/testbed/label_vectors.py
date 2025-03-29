@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for printing unique label vectors that are contained in a data set. The label vectors can be written to
 one or several outputs, e.g., to the console or to a file.
 """
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
@@ -15,12 +15,10 @@ from mlrl.common.cython.output_space_info import LabelVectorSet, LabelVectorSetV
 from mlrl.common.data.types import Uint8
 from mlrl.common.learners import ClassificationRuleLearner
 
-from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
-from mlrl.testbed.format import format_table
-from mlrl.testbed.output_scope import OutputScope
-from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
-from mlrl.testbed.prediction_result import PredictionResult
-from mlrl.testbed.training_result import TrainingResult
+from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
+from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.util.format import format_table
 
 OPTION_SPARSE = 'sparse'
 
@@ -30,7 +28,7 @@ class LabelVectorWriter(OutputWriter):
     Allows to write unique label vectors that are contained in a data set to one or several sinks.
     """
 
-    class LabelVectors(Formattable, Tabularizable):
+    class LabelVectors(TabularOutputData):
         """
         Stores unique label vectors that are contained in a data set.
         """
@@ -47,6 +45,8 @@ class LabelVectorWriter(OutputWriter):
             :param y:           A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                                 `(num_examples, num_labels)`, that stores the ground truth labels
             """
+            super().__init__('Label vectors', 'label_vectors',
+                             ExperimentState.FormatterOptions(include_dataset_type=False))
             self.num_labels = num_labels
 
             if y is None:
@@ -78,9 +78,9 @@ class LabelVectorWriter(OutputWriter):
             dense_label_vector[sparse_label_vector] = 1
             return str(dense_label_vector)
 
-        def format(self, options: Options, **_) -> str:
+        def to_text(self, options: Options, **_) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
             """
             sparse = options.get_bool(OPTION_SPARSE, False)
             header = [self.COLUMN_INDEX, self.COLUMN_LABEL_VECTOR, self.COLUMN_FREQUENCY]
@@ -91,47 +91,24 @@ class LabelVectorWriter(OutputWriter):
 
             return format_table(rows, header=header)
 
-        def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
+        def to_table(self, options: Options, **_) -> Optional[TabularOutputData.Table]:
             """
-            See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+            See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
             """
             sparse = options.get_bool(OPTION_SPARSE, False)
             rows = []
 
             for i, (sparse_label_vector, frequency) in enumerate(self.unique_label_vectors):
-                columns = {
+                rows.append({
                     self.COLUMN_INDEX: i + 1,
                     self.COLUMN_LABEL_VECTOR: self.__format_label_vector(sparse_label_vector, sparse=sparse),
                     self.COLUMN_FREQUENCY: frequency
-                }
-                rows.append(columns)
+                })
 
             return rows
 
-    class LogSink(BaseLogSink):
-        """
-        Allows to write unique label vectors that are contained in a data set to the console.
-        """
-
-        def __init__(self, options: Options = Options()):
-            super().__init__(BaseLogSink.TitleFormatter('Label vectors', include_dataset_type=False), options=options)
-
-    class CsvFileSink(BaseCsvFileSink):
-        """
-        Allows to write unique label vectors that are contained in a data set to a CSV file.
-        """
-
-        def __init__(self, directory: str, options: Options = Options()):
-            """
-            :param directory: The path to the directory, where the CSV file should be located
-            """
-            super().__init__(BaseCsvFileSink.PathFormatter(directory, 'label_vectors', include_dataset_type=False),
-                             options=options)
-
-    # pylint: disable=unused-argument
-    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
-                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
-        dataset = scope.dataset
+    def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
+        dataset = state.dataset
         return LabelVectorWriter.LabelVectors(num_labels=dataset.num_outputs, y=dataset.y)
 
 
@@ -158,8 +135,9 @@ class LabelVectorSetWriter(LabelVectorWriter):
             """
             self.label_vectors.unique_label_vectors.append((label_vector, frequency))
 
-    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
-                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+    def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
+        training_result = state.training_result
+
         if training_result:
             learner = training_result.learner
 
@@ -167,8 +145,8 @@ class LabelVectorSetWriter(LabelVectorWriter):
                 output_space_info = learner.output_space_info_
 
                 if isinstance(output_space_info, LabelVectorSet):
-                    visitor = LabelVectorSetWriter.Visitor(num_labels=scope.dataset.num_outputs)
+                    visitor = LabelVectorSetWriter.Visitor(num_labels=state.dataset.num_outputs)
                     output_space_info.visit(visitor)
                     return visitor.label_vectors
 
-        return super()._generate_output_data(scope, training_result, prediction_result)
+        return super()._generate_output_data(state)

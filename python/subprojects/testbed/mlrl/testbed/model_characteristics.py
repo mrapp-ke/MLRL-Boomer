@@ -6,8 +6,7 @@ outputs, e.g., to the console or to a file.
 """
 import logging as log
 
-from abc import ABC
-from typing import Any, Dict, List, Optional
+from typing import Optional
 
 import numpy as np
 
@@ -16,46 +15,18 @@ from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBo
     RuleModelVisitor
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
-from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
-from mlrl.testbed.format import format_float, format_percentage, format_table
-from mlrl.testbed.output_scope import OutputScope
-from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
-from mlrl.testbed.prediction_result import PredictionResult
-from mlrl.testbed.training_result import TrainingResult
+from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
+from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.util.format import format_float, format_percentage, format_table
 
 
-class ModelCharacteristicsWriter(OutputWriter, ABC):
-    """
-    An abstract base class for all classes that allow to write the characteristics of a model to one or several sinks.
-    """
-
-    class LogSink(BaseLogSink):
-        """
-        Allows to write the characteristics of a model to the console.
-        """
-
-        def __init__(self):
-            super().__init__(BaseLogSink.TitleFormatter('Model characteristics', include_dataset_type=False))
-
-    class CsvFileSink(BaseCsvFileSink):
-        """
-        Allows to write the characteristics of a model to a CSV file.
-        """
-
-        def __init__(self, directory: str):
-            """
-            :param directory: The path to the directory, where the CSV file should be located
-            """
-            super().__init__(
-                BaseCsvFileSink.PathFormatter(directory, 'model_characteristics', include_dataset_type=False))
-
-
-class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
+class RuleModelCharacteristicsWriter(OutputWriter):
     """
     Allows to write the characteristics of a `RuleModel` to one or several sinks.
     """
 
-    class RuleModelCharacteristics(Formattable, Tabularizable):
+    class RuleModelCharacteristics(TabularOutputData):
         """
         Stores the characteristics of a `RuleModel`.
         """
@@ -85,6 +56,8 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
             :param num_neg_predictions:             A `np.ndarray`, shape `(num_rules)` that stores the number of
                                                     negative predictions per rule
             """
+            super().__init__('Model characteristics', 'model_characteristics',
+                             ExperimentState.FormatterOptions(include_dataset_type=False))
             self.default_rule_index = default_rule_index
             self.default_rule_pos_predictions = default_rule_pos_predictions
             self.default_rule_neg_predictions = default_rule_neg_predictions
@@ -98,9 +71,9 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
             self.num_neg_predictions = num_neg_predictions
 
         # pylint: disable=unused-argument
-        def format(self, options: Options, **_):
+        def to_text(self, options: Options, **_) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
             """
             num_predictions = self.num_pos_predictions + self.num_neg_predictions
             num_conditions = self.num_numerical_leq + self.num_numerical_gr + self.num_ordinal_leq + \
@@ -117,7 +90,6 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                 num_conditions_mean = np.mean(num_conditions)
                 num_conditions_min = np.min(num_conditions)
                 num_conditions_max = np.max(num_conditions)
-
             else:
                 frac_numerical_leq = 0.0
                 frac_numerical_gr = 0.0
@@ -217,9 +189,9 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
             return text + format_table(rows, header=header)
 
         # pylint: disable=unused-argument
-        def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
+        def to_table(self, options: Options, **_) -> Optional[TabularOutputData.Table]:
             """
-            See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+            See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
             """
             rows = []
             default_rule_index = self.default_rule_index
@@ -345,9 +317,9 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                 self.num_pos_predictions.append(num_pos_predictions)
                 self.num_neg_predictions.append(num_neg_predictions)
 
-    # pylint: disable=unused-argument
-    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
-                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+    def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
+        training_result = state.training_result
+
         if training_result:
             learner = training_result.learner
 

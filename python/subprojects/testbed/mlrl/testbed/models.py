@@ -6,8 +6,7 @@ e.g., to the console or to a file.
 """
 import logging as log
 
-from abc import ABC
-from typing import Any, Optional
+from typing import Optional
 
 import numpy as np
 
@@ -18,13 +17,11 @@ from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBo
     RuleModelVisitor
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
-from mlrl.testbed.data_sinks import LogSink as BaseLogSink, TextFileSink as BaseTextFileSink
 from mlrl.testbed.dataset import Dataset
-from mlrl.testbed.format import format_float
-from mlrl.testbed.output_scope import OutputScope
-from mlrl.testbed.output_writer import Formattable, OutputWriter
-from mlrl.testbed.prediction_result import PredictionResult
-from mlrl.testbed.training_result import TrainingResult
+from mlrl.testbed.experiments.output.data import OutputData
+from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.util.format import format_float
 
 OPTION_PRINT_FEATURE_NAMES = 'print_feature_names'
 
@@ -41,39 +38,12 @@ OPTION_DECIMALS_BODY = 'decimals_body'
 OPTION_DECIMALS_HEAD = 'decimals_head'
 
 
-class ModelWriter(OutputWriter, ABC):
-    """
-    An abstract base class for all classes that allow to write textual representations of models to one or several
-    sinks.
-    """
-
-    class LogSink(BaseLogSink):
-        """
-        Allows to write textual representations of models to the console.
-        """
-
-        def __init__(self, options: Options = Options()):
-            super().__init__(BaseLogSink.TitleFormatter('Model', include_dataset_type=False), options=options)
-
-    class TextFileSink(BaseTextFileSink):
-        """
-        Allows to write textual representations of models to a text file.
-        """
-
-        def __init__(self, directory: str, options: Options = Options()):
-            """
-            :param directory: The path to the directory, where the text file should be located
-            """
-            super().__init__(BaseTextFileSink.PathFormatter(directory, 'rules', include_dataset_type=False),
-                             options=options)
-
-
-class RuleModelWriter(ModelWriter):
+class RuleModelWriter(OutputWriter):
     """
     Allows to write textual representations of rule-based models to one or several sinks.
     """
 
-    class RuleModelFormattable(RuleModelVisitor, Formattable):
+    class RuleModelConverter(OutputData, RuleModelVisitor):
         """
         Allows to create textual representations of the rules in a `RuleModel`.
         """
@@ -83,6 +53,7 @@ class RuleModelWriter(ModelWriter):
             :param dataset: The training dataset
             :param model:   The `RuleModel`
             """
+            super().__init__('Model', 'rules', ExperimentState.FormatterOptions(include_dataset_type=False))
             self.features = dataset.features
             self.outputs = dataset.outputs
             self.model = model
@@ -233,9 +204,9 @@ class RuleModelWriter(ModelWriter):
             elif self.print_bodies:
                 text.write('\n')
 
-        def format(self, options: Options, **_) -> str:
+        def to_text(self, options: Options, **_) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
             """
             self.print_feature_names = options.get_bool(OPTION_PRINT_FEATURE_NAMES, True)
             self.print_output_names = options.get_bool(OPTION_PRINT_OUTPUT_NAMES, True)
@@ -250,9 +221,9 @@ class RuleModelWriter(ModelWriter):
             self.text.close()
             return text
 
-    # pylint: disable=unused-argument
-    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
-                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+    def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
+        training_result = state.training_result
+
         if training_result:
             learner = training_result.learner
 
@@ -260,7 +231,7 @@ class RuleModelWriter(ModelWriter):
                 model = learner.model_
 
                 if isinstance(model, RuleModel):
-                    return RuleModelWriter.RuleModelFormattable(scope.dataset, model)
+                    return RuleModelWriter.RuleModelConverter(state.dataset, model)
 
             log.error('The learner does not support to create a textual representation of the model')
 

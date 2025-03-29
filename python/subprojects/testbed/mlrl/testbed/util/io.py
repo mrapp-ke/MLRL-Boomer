@@ -1,23 +1,13 @@
 """
 Author Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides functions for writing and reading files.
+Provides utility functions for reading and writing files.
 """
 import xml.etree.ElementTree as XmlTree
 
-from csv import QUOTE_MINIMAL, DictReader, DictWriter
 from os import listdir, path, unlink
 from typing import Optional
 from xml.dom import minidom
-
-# The delimiter used to separate the columns in a CSV file
-CSV_DELIMITER = ','
-
-# The character used for quotations in a CSV file
-CSV_QUOTE_CHAR = '"'
-
-# The suffix of a text file
-SUFFIX_TEXT = 'txt'
 
 # The suffix of a CSV file
 SUFFIX_CSV = 'csv'
@@ -56,69 +46,26 @@ def get_file_name_per_fold(name: str, suffix: str, fold: Optional[int]) -> str:
     return get_file_name(name + '_' + ('overall' if fold is None else 'fold-' + str(fold + 1)), suffix)
 
 
-def open_writable_text_file(file_path: str, append: bool = False):
+def open_writable_file(file_path: str, append: bool = False):
     """
-    Opens a text file to be written to.
+    Opens a file to be written to.
 
     :param file_path:   The path to the file to be opened
     :param append:      True, if new data should be appended to the file, if it already exists, False otherwise
     :return:            The file that has been opened
     """
-    write_mode = 'a' if append and path.isfile(file_path) else 'w'
-    return open(file_path, mode=write_mode, encoding=ENCODING_UTF8)
+    mode = 'a' if append and path.isfile(file_path) else 'w'
+    return open(file_path, mode=mode, encoding=ENCODING_UTF8)
 
 
-def open_readable_csv_file(file_path: str):
+def open_readable_file(file_path: str):
     """
-    Opens a CSV file to be read from.
+    Opens a file to be read from.
 
     :param file_path:   The path to the file to be opened
     :return:            The file that has been opened
     """
     return open(file_path, mode='r', newline='', encoding=ENCODING_UTF8)
-
-
-def open_writable_csv_file(file_path: str, append: bool = False):
-    """
-    Opens a CSV file to be written to.
-
-    :param file_path:   The path to the file to be opened
-    :param append:      True, if new data should be appended to the file, if it already exists, False otherwise
-    :return:            The file that has been opened
-    """
-    write_mode = 'a' if append and path.isfile(file_path) else 'w'
-    return open(file_path, mode=write_mode, encoding=ENCODING_UTF8)
-
-
-def create_csv_dict_reader(csv_file) -> DictReader:
-    """
-    Creates and return a `DictReader` that allows to read from a CSV file.
-
-    :param csv_file:    The CSV file
-    :return:            The 'DictReader' that has been created
-    """
-    return DictReader(csv_file, delimiter=CSV_DELIMITER, quotechar=CSV_QUOTE_CHAR)
-
-
-def create_csv_dict_writer(csv_file, header) -> DictWriter:
-    """
-    Creates and returns a `DictWriter` that allows to write a dictionary to a CSV file.
-
-    :param csv_file:    The CSV file
-    :param header:      A list that contains the headers of the CSV file. They must correspond to the keys in the
-                        directory that should be written to the file
-    :return:            The `DictWriter` that has been created
-    """
-    csv_writer = DictWriter(csv_file,
-                            delimiter=CSV_DELIMITER,
-                            quotechar=CSV_QUOTE_CHAR,
-                            quoting=QUOTE_MINIMAL,
-                            fieldnames=header)
-
-    if csv_file.mode == 'w':
-        csv_writer.writeheader()
-
-    return csv_writer
 
 
 def write_xml_file(xml_file, root_element: XmlTree.Element):

@@ -8,18 +8,17 @@ import logging as log
 
 from abc import ABC, abstractmethod
 from os import path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
+from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
+from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.fold import Fold
-from mlrl.testbed.format import format_table
-from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_reader, get_file_name_per_fold, open_readable_csv_file
-from mlrl.testbed.output_scope import OutputScope
-from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
-from mlrl.testbed.prediction_result import PredictionResult
-from mlrl.testbed.training_result import TrainingResult
+from mlrl.testbed.util.format import format_table
+from mlrl.testbed.util.io import SUFFIX_CSV, get_file_name_per_fold, open_readable_file
+from mlrl.testbed.util.io_csv import CsvReader
 
 
 class ParameterLoader(ABC):
@@ -54,8 +53,8 @@ class CsvParameterLoader(ParameterLoader):
         log.debug('Loading parameters from file \"%s\"...', file_path)
 
         try:
-            with open_readable_csv_file(file_path) as csv_file:
-                csv_reader = create_csv_dict_reader(csv_file)
+            with open_readable_file(file_path) as csv_file:
+                csv_reader = CsvReader(csv_file)
                 log.info('Successfully loaded parameters from file \"%s\"', file_path)
                 return dict(next(csv_reader))
         except IOError:
@@ -68,7 +67,7 @@ class ParameterWriter(OutputWriter):
     Allows to write parameter settings to one or several sinks.
     """
 
-    class Parameters(Formattable, Tabularizable):
+    class Parameters(TabularOutputData):
         """
         Stores the parameter settings of a learner.
         """
@@ -77,12 +76,14 @@ class ParameterWriter(OutputWriter):
             """
             :param parameters: A dictionary that stores the parameters
             """
+            super().__init__('Custom parameters', 'parameters',
+                             ExperimentState.FormatterOptions(include_dataset_type=False))
             self.parameters = parameters
 
         # pylint: disable=unused-argument
-        def format(self, options: Options, **_):
+        def to_text(self, options: Options, **_) -> Optional[str]:
             """
-            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
             """
             parameters = self.parameters
             rows = []
@@ -96,9 +97,9 @@ class ParameterWriter(OutputWriter):
             return format_table(rows)
 
         # pylint: disable=unused-argument
-        def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
+        def to_table(self, options: Options, **_) -> Optional[TabularOutputData.Table]:
             """
-            See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+            See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
             """
             parameters = self.parameters
             columns = {}
@@ -109,26 +110,5 @@ class ParameterWriter(OutputWriter):
 
             return [columns]
 
-    class LogSink(BaseLogSink):
-        """
-        Allows to write parameter settings to the console.
-        """
-
-        def __init__(self):
-            super().__init__(BaseLogSink.TitleFormatter('Custom parameters', include_dataset_type=False))
-
-    class CsvFileSink(BaseCsvFileSink):
-        """
-        Allows to write parameter settings to CSV files.
-        """
-
-        def __init__(self, directory: str):
-            """
-            :param directory: The path to the directory, where the CSV file should be located
-            """
-            super().__init__(BaseCsvFileSink.PathFormatter(directory, 'parameters', include_dataset_type=False))
-
-    # pylint: disable=unused-argument
-    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
-                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
-        return ParameterWriter.Parameters(scope.parameters)
+    def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
+        return ParameterWriter.Parameters(state.parameters)
