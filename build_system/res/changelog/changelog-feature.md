@@ -14,5 +14,6 @@
 
 # Quality-of-Life Improvements
 
-- The Python packages "mlrl-common", "mlrl-seco" and "mlrl-boosting" have been restructured by introducing subpackages. 
+- The Python package "mlrl-testbed" has completely been refactored, including a restructuring that introduces submodules.
+- The Python packages "mlrl-common", "mlrl-seco" and "mlrl-boosting" have been restructured by introducing submodules. 
 - C++ 20 is now required for compiling the project.
