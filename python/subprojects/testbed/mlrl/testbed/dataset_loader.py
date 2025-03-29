@@ -69,6 +69,7 @@ class ArffDatasetLoader(DatasetLoader):
             if meta_data:
                 x, y = load_data_set(directory=self.directory,
                                      arff_file_name=arff_file_name,
+                                     meta_data=meta_data,
                                      feature_dtype=feature_dtype,
                                      output_dtype=output_dtype)
             else:
