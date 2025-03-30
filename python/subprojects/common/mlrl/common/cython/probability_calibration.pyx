@@ -30,7 +30,6 @@ class NoProbabilityCalibrationModel(ABC):
     """
     Defines an interface for all models for the calibration of probabilities that do not make any adjustments.
     """
-    pass
 
 
 cdef class NoMarginalProbabilityCalibrationModel(MarginalProbabilityCalibrationModel, NoProbabilityCalibrationModel):
@@ -78,7 +77,6 @@ class IsotonicProbabilityCalibrationModelVisitor(ABC):
         :param threshold:   The threshold of the bin
         :param probability: The probability of the bin
         """
-        pass
 
 
 class IsotonicProbabilityCalibrationModel(ABC):
@@ -93,7 +91,6 @@ class IsotonicProbabilityCalibrationModel(ABC):
 
         :param visitor: The visitor to be invoked
         """
-        pass
 
 
 cdef class IsotonicMarginalProbabilityCalibrationModel(MarginalProbabilityCalibrationModel,
