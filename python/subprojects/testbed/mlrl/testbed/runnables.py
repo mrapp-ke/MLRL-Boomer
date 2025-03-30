@@ -34,15 +34,14 @@ from mlrl.testbed.evaluation import OPTION_ACCURACY, OPTION_COVERAGE_ERROR, OPTI
     BinaryEvaluationWriter, RankingEvaluationWriter, RegressionEvaluationWriter
 from mlrl.testbed.experiment import Evaluation, Experiment, GlobalEvaluation, IncrementalEvaluation
 from mlrl.testbed.experiments.input.preprocessors import OneHotEncoder, Preprocessor
+from mlrl.testbed.experiments.output.characteristics import DataCharacteristicsWriter, PredictionCharacteristicsWriter
 from mlrl.testbed.experiments.output.characteristics.characteristics_data import OPTION_EXAMPLES, \
     OPTION_FEATURE_DENSITY, OPTION_FEATURE_SPARSITY, OPTION_FEATURES, OPTION_NOMINAL_FEATURES, \
     OPTION_NUMERICAL_FEATURES
 from mlrl.testbed.experiments.output.characteristics.characteristics_output import OPTION_DISTINCT_LABEL_VECTORS, \
     OPTION_LABEL_CARDINALITY, OPTION_LABEL_IMBALANCE_RATIO, OPTION_OUTPUT_DENSITY, OPTION_OUTPUT_SPARSITY, \
     OPTION_OUTPUTS
-from mlrl.testbed.experiments.output.characteristics.writer_data import DataCharacteristicsWriter
-from mlrl.testbed.experiments.output.characteristics.writer_prediction import PredictionCharacteristicsWriter
-from mlrl.testbed.experiments.output.label_vectors.writer import OPTION_SPARSE, LabelVectorWriter
+from mlrl.testbed.experiments.output.label_vectors import LabelVectors, LabelVectorWriter
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, TextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
@@ -475,7 +474,7 @@ class LearnerRunnable(Runnable, ABC):
     PARAM_PRINT_LABEL_VECTORS = '--print-label-vectors'
 
     PRINT_LABEL_VECTORS_VALUES: Dict[str, Set[str]] = {
-        BooleanOption.TRUE.value: {OPTION_SPARSE},
+        BooleanOption.TRUE.value: {LabelVectors.OPTION_SPARSE},
         BooleanOption.FALSE.value: {}
     }
 
