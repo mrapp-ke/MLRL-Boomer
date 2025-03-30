@@ -15,7 +15,6 @@ cdef class EmptyBody:
     """
     A body of a rule that does not contain any conditions.
     """
-    pass
 
 
 cdef class ConjunctiveBody:
@@ -122,7 +121,6 @@ class RuleModelVisitor:
 
         :param body: An `EmptyBody` to be visited
         """
-        pass
 
     @abstractmethod
     def visit_conjunctive_body(self, body: ConjunctiveBody):
@@ -132,7 +130,6 @@ class RuleModelVisitor:
 
         :param body: A `ConjunctiveBody` to be visited
         """
-        pass
 
     @abstractmethod
     def visit_complete_head(self, head: CompleteHead):
@@ -141,7 +138,6 @@ class RuleModelVisitor:
 
         :param head: A `CompleteHead` to be visited
         """
-        pass
 
     @abstractmethod
     def visit_partial_head(self, head: PartialHead):
@@ -151,7 +147,6 @@ class RuleModelVisitor:
 
         :param head: A `PartialHead` to be visited
         """
-        pass
 
 
 cdef class RuleModel:
@@ -193,7 +188,6 @@ cdef class RuleModel:
 
         :param visitor: The `RuleModelVisitor` that should be used to access the bodies and heads
         """
-        pass
 
     def visit_used(self, visitor: RuleModelVisitor):
         """
@@ -202,7 +196,6 @@ cdef class RuleModel:
 
         :param visitor: The `RuleModelVisitor` that should be used to access the bodies and heads
         """
-        pass
 
 
 cdef class RuleList(RuleModel):
