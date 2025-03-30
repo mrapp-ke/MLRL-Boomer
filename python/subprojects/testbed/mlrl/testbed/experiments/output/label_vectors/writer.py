@@ -1,8 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for printing unique label vectors that are contained in a data set. The label vectors can be written to
-one or several outputs, e.g., to the console or to a file.
+Provides classes that allow writing unique label vectors that are contained in a dataset to one or several sinks.
 """
 from typing import Optional
 
@@ -20,7 +19,7 @@ from mlrl.testbed.experiments.state import ExperimentState
 
 class LabelVectorWriter(OutputWriter):
     """
-    Allows to write unique label vectors that are contained in a data set to one or several sinks.
+    Allows to write unique label vectors that are contained in a dataset to one or several sinks.
     """
 
     class Visitor(LabelVectorSetVisitor):
