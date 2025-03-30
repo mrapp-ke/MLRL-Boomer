@@ -22,5 +22,5 @@ class PyLint(Program):
         :param module:      The module, the program should be applied to
         """
         super().__init__('pylint', *module.find_source_files(), '--jobs=0', '--ignore=build',
-                         '--rcfile=' + path.join(build_unit.root_directory, '.pylintrc'), '--score=n')
+                         '--rcfile=' + path.join(build_unit.root_directory, '.pylintrc.toml'), '--score=n')
         self.set_build_unit(build_unit)

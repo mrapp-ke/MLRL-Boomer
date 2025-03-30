@@ -50,7 +50,6 @@ class LabelVectorSetVisitor:
                                 of the relevant labels
         :param frequency:       The frequency of the label vector    
         """
-        pass
 
 
 cdef class LabelVectorSet(OutputSpaceInfo):
