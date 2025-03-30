@@ -12,6 +12,7 @@ from scipy.sparse import lil_array
 from mlrl.common.config.options import Options
 from mlrl.common.data.types import Uint8
 
+from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import format_table
@@ -30,34 +31,39 @@ class LabelVectorHistogram(TabularOutputData):
 
     COLUMN_FREQUENCY = 'Frequency'
 
-    def __init__(self, num_labels: int, y=None):
+    def __init__(self, num_labels: int, unique_label_vectors: Optional[List[Tuple[np.array, int]]] = None):
         """
-        :param num_labels:  The total number of available labels
-        :param y:           A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                            `(num_examples, num_labels)`, that stores the ground truth labels
+        :param num_labels:              The total number of available labels
+        :param unique_label_vectors:    A list that contains the unique label vectors, as well as their frequency, or
+                                        None if not label vectors should be stored
         """
         super().__init__('Label vectors', 'label_vectors', ExperimentState.FormatterOptions(include_dataset_type=False))
         self.num_labels = num_labels
+        self.unique_label_vectors = unique_label_vectors if unique_label_vectors else []
 
-        if y is None:
-            self.unique_label_vectors = []
-        else:
-            unique_label_vector_strings: Dict[str, int] = {}
-            y = lil_array(y)
-            separator = ','
+    @staticmethod
+    def from_dataset(dataset: Dataset) -> 'LabelVectorHistogram':
+        """
+        Creates and returns a `LabelVectorHistogram` that stores all unique label vectors contained in a dataset.
 
-        for label_vector in lil_array(y).rows:
+        :param dataset: The dataset
+        :return:        The `LabelVectorHistogram` that has been created
+        """
+        unique_label_vector_strings = {}
+        separator = ','
+
+        for label_vector in lil_array(dataset.y).rows:
             label_vector_string = separator.join(map(str, label_vector))
             frequency = unique_label_vector_strings.setdefault(label_vector_string, 0)
             unique_label_vector_strings[label_vector_string] = frequency + 1
 
-            unique_label_vectors: List[Tuple[np.array, int]] = []
+        unique_label_vectors = []
 
-            for label_vector_string, frequency in unique_label_vector_strings.items():
-                label_vector = np.asarray([int(label_index) for label_index in label_vector_string.split(separator)])
-                unique_label_vectors.append((label_vector, frequency))
+        for label_vector_string, frequency in unique_label_vector_strings.items():
+            label_vector = np.asarray([int(label_index) for label_index in label_vector_string.split(separator)])
+            unique_label_vectors.append((label_vector, frequency))
 
-            self.unique_label_vectors = unique_label_vectors
+        return LabelVectorHistogram(dataset.num_outputs, unique_label_vectors)
 
     def __format_label_vector(self, sparse_label_vector: np.ndarray, sparse: bool) -> str:
         if sparse:

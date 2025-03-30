@@ -23,8 +23,7 @@ class LabelVectorWriter(OutputWriter):
     """
 
     def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
-        dataset = state.dataset
-        return LabelVectorHistogram(num_labels=dataset.num_outputs, y=dataset.y)
+        return LabelVectorHistogram.from_dataset(state.dataset)
 
 
 class LabelVectorSetWriter(LabelVectorWriter):
