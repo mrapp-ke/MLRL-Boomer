@@ -109,10 +109,21 @@ The unit and integration tests are run automatically via {ref}`Continuous Integr
 
 ## Code Style
 
-We aim to enforce a consistent code style across the entire project. For this purpose, we employ the following tools:
+We aim to enforce a consistent code style across the entire project. For this purpose, we employ the following tools.
 
-- For formatting the C++ code, we use [clang-format](https://clang.llvm.org/docs/ClangFormat.html). The desired C++ code style is defined in the file {repo-file}`.clang-format <build_system/targets/code_style/cpp/.clang-format>`. In addition, [cpplint](https://github.com/cpplint/cpplint) is used for static code analysis. It is configured according to the file {repo-file}`.cpplint.cfg <cpp/.cpplint.cfg>`.
-- We use [YAPF](https://github.com/google/yapf) to enforce the Python code style defined in the file {repo-file}`.style.yapf <build_system/targets/code_style/python/.style.yapf>`. In addition, [isort](https://github.com/PyCQA/isort) is used to keep the ordering of imports in Python and Cython source files consistent according to the configuration file {repo-file}`.isort.cfg <build_system/targets/code_style/python/.isort.cfg>` and [pylint](https://pylint.org/) is used to check for common issues in the Python code according to the configuration file {repo-file}`.pylintrc.toml <build_system/targets/code_style/python/.pylintrc.toml>`.
+### C++ Source Files
+
+- For formatting the C++ code, we use [clang-format](https://clang.llvm.org/docs/ClangFormat.html). The desired C++ code style is defined in the file {repo-file}`.clang-format <build_system/targets/code_style/cpp/.clang-format>`.
+- In addition, [cpplint](https://github.com/cpplint/cpplint) is used for static code analysis. It is configured according to the file {repo-file}`.cpplint.cfg <cpp/.cpplint.cfg>`.
+
+### Python Source Files
+
+- We use [YAPF](https://github.com/google/yapf) to enforce the Python code style defined in the file {repo-file}`.style.yapf <build_system/targets/code_style/python/.style.yapf>`.
+- In addition, [isort](https://github.com/PyCQA/isort) is used to keep the ordering of imports in Python and Cython source files consistent according to the configuration file {repo-file}`.isort.cfg <build_system/targets/code_style/python/.isort.cfg>`
+- We also use [pylint](https://pylint.org/) to check for common issues in the Python code according to the configuration file {repo-file}`.pylintrc.toml <build_system/targets/code_style/python/.pylintrc.toml>`.
+
+### Configuration Files
+
 - For applying a consistent style to Markdown files, including those used for writing the documentation, we use [mdformat](https://github.com/hukkin/mdformat).
 - We apply [yamlfix](https://github.com/lyz-code/yamlfix) to YAML files to enforce the code style defined in the file {repo-file}`.yamlfix.toml <build_system/targets/code_style/yaml/.yamlfix.toml>`.
 - We use [taplo](https://github.com/tamasfe/taplo) for validating and formatting TOML files according to the configuration file {repo-file}`.taplo.toml <build_system/targets/code_style/toml/.taplo.toml>`.
