@@ -23,16 +23,6 @@ class LabelVectorWriter(OutputWriter):
     Allows to write unique label vectors that are contained in a data set to one or several sinks.
     """
 
-    def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
-        return LabelVectors(LabelVectorHistogram.from_dataset(state.dataset))
-
-
-class LabelVectorSetWriter(LabelVectorWriter):
-    """
-    Allows to write unique label vectors that are stored as part of a model learned by a rule learning algorithm to one
-    or several sinks.
-    """
-
     class Visitor(LabelVectorSetVisitor):
         """
         Allows to access the label vectors and frequencies store by a `LabelVectorSet`.

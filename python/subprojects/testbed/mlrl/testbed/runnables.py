@@ -45,7 +45,7 @@ from mlrl.testbed.experiments.output.characteristics.writer_prediction import Pr
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, TextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
-from mlrl.testbed.label_vectors import OPTION_SPARSE, LabelVectorSetWriter, LabelVectorWriter
+from mlrl.testbed.label_vectors import OPTION_SPARSE, LabelVectorWriter
 from mlrl.testbed.model_characteristics import RuleModelCharacteristicsWriter
 from mlrl.testbed.models import OPTION_DECIMALS_BODY, OPTION_DECIMALS_HEAD, OPTION_PRINT_BODIES, \
     OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_HEADS, OPTION_PRINT_NOMINAL_VALUES, OPTION_PRINT_OUTPUT_NAMES, \
@@ -1434,22 +1434,6 @@ class RuleLearnerRunnable(LearnerRunnable):
                 step_size=step_size) if output_writers else None
 
         return super()._create_evaluation(args, prediction_type, output_writers)
-
-    def _create_label_vector_writer(self, args) -> Optional[OutputWriter]:
-        sinks = []
-        value, options = parse_param_and_options(self.PARAM_PRINT_LABEL_VECTORS, args.print_label_vectors,
-                                                 self.PRINT_LABEL_VECTORS_VALUES)
-
-        if value == BooleanOption.TRUE.value:
-            sinks.append(LogSink(options))
-
-        value, options = parse_param_and_options(self.PARAM_STORE_LABEL_VECTORS, args.store_label_vectors,
-                                                 self.STORE_LABEL_VECTORS_VALUES)
-
-        if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(CsvFileSink(args.output_dir, options=options))
-
-        return LabelVectorSetWriter(*sinks) if sinks else None
 
     def _create_post_training_output_writers(self, args) -> List[OutputWriter]:
         output_writers = super()._create_post_training_output_writers(args)
