@@ -30,7 +30,7 @@ jobs:
   build_doc:
     if: ${{ inputs.apidoc_cpp == true || inputs.apidoc_python == true || inputs.doc == true }}
     name: Build documentation
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     steps:
       - name: Checkout
         uses: actions/checkout@v4

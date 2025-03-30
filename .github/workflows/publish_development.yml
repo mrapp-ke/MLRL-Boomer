@@ -7,7 +7,7 @@ on:
 jobs:
   changes:
     name: Detect changes
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     outputs:
       code: ${{ steps.filter.outputs.code }}
       doc: ${{ steps.filter.outputs.doc }}
@@ -45,7 +45,7 @@ jobs:
     needs: changes
     name: Update development version
     if: ${{ !contains(github.event.head_commit.message, '[Bot]') && needs.changes.outputs.code == 'true' }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     steps:
       - name: Generate token
         uses: actions/create-github-app-token@v1
@@ -89,7 +89,7 @@ jobs:
   upload_to_pypi:
     needs: publish_packages
     name: Upload wheels to Test-PyPI
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     permissions:
       id-token: write
     steps:

@@ -12,7 +12,7 @@ concurrency:
 jobs:
   changes:
     name: Detect changes
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     outputs:
       linux: ${{ steps.filter.outputs.linux }}
       macos: ${{ steps.filter.outputs.macos }}
@@ -147,7 +147,7 @@ jobs:
     needs: test_build
     if: always()
     name: Publish test results
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     steps:
       - name: Download C++ test results
         uses: actions/download-artifact@v4
@@ -173,7 +173,7 @@ jobs:
     needs: test_build
     if: ${{ always() && !cancelled() }}
     name: Test build succeeded
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     steps:
       - name: Check for success
         run: |-

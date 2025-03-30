@@ -12,7 +12,7 @@ concurrency:
 jobs:
   changes:
     name: Detect changes
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     outputs:
       cpp: ${{ steps.filter.outputs.cpp }}
       python: ${{ steps.filter.outputs.python }}
@@ -71,7 +71,7 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.cpp == 'true' }}
     name: Check C++ source files
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -85,7 +85,7 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.python == 'true' }}
     name: Check Python source files
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -99,7 +99,7 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.cfg == 'true' }}
     name: Check .cfg files
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -113,7 +113,7 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.md == 'true' }}
     name: Check Markdown files
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -127,7 +127,7 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.yaml == 'true' }}
     name: Check YAML files
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -141,7 +141,7 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.toml == 'true' }}
     name: Check TOML files
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     steps:
       - name: Checkout
         uses: actions/checkout@v4
