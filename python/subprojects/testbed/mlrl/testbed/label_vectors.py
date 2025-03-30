@@ -13,6 +13,7 @@ from mlrl.common.learners import ClassificationRuleLearner
 
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.label_vectors.label_vector_histogram import LabelVectorHistogram
+from mlrl.testbed.experiments.output.label_vectors.label_vectors import LabelVectors
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
 
@@ -23,7 +24,7 @@ class LabelVectorWriter(OutputWriter):
     """
 
     def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
-        return LabelVectorHistogram.from_dataset(state.dataset)
+        return LabelVectors(LabelVectorHistogram.from_dataset(state.dataset))
 
 
 class LabelVectorSetWriter(LabelVectorWriter):
@@ -41,15 +42,16 @@ class LabelVectorSetWriter(LabelVectorWriter):
             """
             :param num_labels: The total number of available labels
             """
-            self.label_vectors = LabelVectorHistogram(num_labels)
+            self.label_vector_histogram = LabelVectorHistogram(num_labels)
 
         def visit_label_vector(self, label_vector: np.ndarray, frequency: int):
             """
             See :func:`mlrl.common.cython.output_space_info.LabelVectorSetVisitor.visit_label_vector`
             """
-            self.label_vectors.unique_label_vectors.append((label_vector, frequency))
+            self.label_vector_histogram.unique_label_vectors.append((label_vector, frequency))
 
     def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
+        dataset = state.dataset
         training_result = state.training_result
 
         if training_result:
@@ -59,8 +61,8 @@ class LabelVectorSetWriter(LabelVectorWriter):
                 output_space_info = learner.output_space_info_
 
                 if isinstance(output_space_info, LabelVectorSet):
-                    visitor = LabelVectorSetWriter.Visitor(num_labels=state.dataset.num_outputs)
+                    visitor = LabelVectorWriter.Visitor(num_labels=dataset.num_outputs)
                     output_space_info.visit(visitor)
-                    return visitor.label_vectors
+                    return LabelVectors(visitor.label_vector_histogram)
 
-        return super()._generate_output_data(state)
+        return LabelVectors(LabelVectorHistogram.from_dataset(dataset))
