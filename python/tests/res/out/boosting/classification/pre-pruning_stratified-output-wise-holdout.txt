@@ -1,7 +1,7 @@
 INFO Starting experiment using the classification algorithm "boomer"...
 INFO Using separate training and test sets...
-DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 DEBUG Loading data set from file "python/tests/res/data/emotions.arff"...
+DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 INFO Fitting model to 397 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
@@ -12,22 +12,22 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data:
 
-Example-wise F1         59.83
-Example-wise Jaccard    52.72
-Example-wise Precision  76.7
-Example-wise Recall     60.03
-Hamming Accuracy        80.87
-Hamming Loss            19.13
-Macro F1                63.93
-Macro Jaccard           47.84
-Macro Precision         76.46
-Macro Recall            57.67
-Micro F1                66.67
-Micro Jaccard           50
-Micro Precision         75
-Micro Recall            60
-Subset 0/1 Loss         68.37
-Subset Accuracy         31.63
+Example-wise F1         57.74
+Example-wise Jaccard    49.93
+Example-wise Precision  73.47
+Example-wise Recall     58.5
+Hamming Accuracy        79.08
+Hamming Loss            20.92
+Macro F1                60.63
+Macro Jaccard           44.9
+Macro Precision         69.41
+Macro Recall            55.78
+Micro F1                63.82
+Micro Jaccard           46.87
+Micro Precision         71.15
+Micro Recall            57.87
+Subset 0/1 Loss         72.96
+Subset Accuracy         27.04
 
 INFO Model characteristics:
 
@@ -35,20 +35,20 @@ INFO Model characteristics:
 │ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
 ├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
 │ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-│ 109 local rules               │     875 │                  53.26% │                 46.74% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 100 local rules               │     794 │                  52.14% │                 47.86% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
 └───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
 
 ┌────────────────────────────────┬─────────┬────────────┬────────────┐
 │ Statistics about predictions   │   Total │   Positive │   Negative │
 ├────────────────────────────────┼─────────┼────────────┼────────────┤
 │ Default rule                   │       6 │      0.00% │    100.00% │
-│ 109 local rules                │     654 │     38.07% │     61.93% │
+│ 100 local rules                │     600 │     37.33% │     62.67% │
 └────────────────────────────────┴─────────┴────────────┴────────────┘
 
 ┌─────────────────────────────┬───────────┬───────────┬───────────┐
 │ Statistics per local rule   │   Minimum │   Average │   Maximum │
 ├─────────────────────────────┼───────────┼───────────┼───────────┤
-│ Conditions                  │         2 │      8.03 │        17 │
+│ Conditions                  │         1 │      7.94 │        19 │
 │ Predictions                 │         6 │      6    │         6 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 

@@ -24,7 +24,7 @@ namespace seco {
              *
              * @return The value of the parameter "k"
              */
-            virtual float64 getK() const = 0;
+            virtual float32 getK() const = 0;
 
             /**
              * Sets the value of the parameter "k", which affects the steepness of the lift function.
@@ -34,7 +34,7 @@ namespace seco {
              * @return  A reference to an object of type `IKlnLiftFunctionConfig` that allows further configuration of
              *          the lift function
              */
-            virtual IKlnLiftFunctionConfig& setK(float64 k) = 0;
+            virtual IKlnLiftFunctionConfig& setK(float32 k) = 0;
     };
 
     /**
@@ -45,15 +45,15 @@ namespace seco {
                                         public IKlnLiftFunctionConfig {
         private:
 
-            float64 k_;
+            float32 k_;
 
         public:
 
             KlnLiftFunctionConfig();
 
-            float64 getK() const override;
+            float32 getK() const override;
 
-            IKlnLiftFunctionConfig& setK(float64 k) override;
+            IKlnLiftFunctionConfig& setK(float32 k) override;
 
             std::unique_ptr<ILiftFunctionFactory> createLiftFunctionFactory(
               const IRowWiseLabelMatrix& labelMatrix) const override;

@@ -9,17 +9,17 @@ import logging as log
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Tuple
 
+from mlrl.common.config.options import Options
 from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibrationModel, \
     IsotonicProbabilityCalibrationModelVisitor, NoProbabilityCalibrationModel
-from mlrl.common.options import Options
-from mlrl.common.rule_learners import ClassificationRuleLearner
+from mlrl.common.learners import ClassificationRuleLearner
 
-from mlrl.testbed.data import MetaData
-from mlrl.testbed.data_splitting import DataSplit, DataType
+from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink, Sink
 from mlrl.testbed.format import OPTION_DECIMALS, format_float, format_table
+from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
-from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
-from mlrl.testbed.problem_type import ProblemType
+from mlrl.testbed.prediction_result import PredictionResult
+from mlrl.testbed.training_result import TrainingResult
 
 
 class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
@@ -75,7 +75,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
                         [format_float(threshold, decimals=decimals),
                          format_float(probability, decimals=decimals)])
 
-                if len(result) > 0:
+                if result:
                     result += '\n'
 
                 result += format_table(rows, header=header)
@@ -137,7 +137,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
             """
             return None
 
-    def __init__(self, sinks: List[OutputWriter.Sink], list_title: str):
+    def __init__(self, sinks: List[Sink], list_title: str):
         """
         :param list_title: The title of an individual list that is contained by a calibration model
         """
@@ -154,20 +154,21 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
         """
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
-                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
-                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
-                              train_time: float, predict_time: float) -> Optional[Any]:
-        if isinstance(learner, ClassificationRuleLearner):
-            calibration_model = self._get_calibration_model(learner)
+    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+        if training_result:
+            learner = training_result.learner
+            if isinstance(learner, ClassificationRuleLearner):
+                calibration_model = self._get_calibration_model(learner)
 
-            if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
-                return ProbabilityCalibrationModelWriter.IsotonicProbabilityCalibrationModelFormattable(
-                    calibration_model=calibration_model, list_title=self.list_title)
-            if isinstance(calibration_model, NoProbabilityCalibrationModel):
-                return ProbabilityCalibrationModelWriter.NoProbabilityCalibrationModelFormattable()
+                if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
+                    return ProbabilityCalibrationModelWriter.IsotonicProbabilityCalibrationModelFormattable(
+                        calibration_model=calibration_model, list_title=self.list_title)
+                if isinstance(calibration_model, NoProbabilityCalibrationModel):
+                    return ProbabilityCalibrationModelWriter.NoProbabilityCalibrationModelFormattable()
 
-        log.error('The learner does not support to create a textual representation of the calibration model')
+            log.error('The learner does not support to create a textual representation of the calibration model')
+
         return None
 
 
@@ -177,23 +178,31 @@ class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWrite
     sinks.
     """
 
-    class LogSink(OutputWriter.LogSink):
+    class LogSink(BaseLogSink):
         """
         Allows to write textual representations of models for the calibration of marginal probabilities to the console.
         """
 
         def __init__(self, options: Options = Options()):
-            super().__init__(title='Marginal probability calibration model', options=options)
+            super().__init__(BaseLogSink.TitleFormatter('Marginal probability calibration model',
+                                                        include_dataset_type=False),
+                             options=options)
 
-    class CsvSink(OutputWriter.CsvSink):
+    class CsvFileSink(BaseCsvFileSink):
         """
         Allows to write textual representations of models for the calibration of marginal probabilities to a CSV file.
         """
 
-        def __init__(self, output_dir: str, options: Options = Options()):
-            super().__init__(output_dir=output_dir, file_name='marginal_probability_calibration_model', options=options)
+        def __init__(self, directory: str, options: Options = Options()):
+            """
+            :param directory: The path to the directory, where the CSV file should be located
+            """
+            super().__init__(BaseCsvFileSink.PathFormatter(directory,
+                                                           'marginal_probability_calibration_model',
+                                                           include_dataset_type=False),
+                             options=options)
 
-    def __init__(self, sinks: List[OutputWriter.Sink]):
+    def __init__(self, sinks: List[Sink]):
         super().__init__(sinks, list_title='Label')
 
     def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Any:
@@ -205,23 +214,31 @@ class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
     Allow to write textual representations of models for the calibration of joint probabilities to one or several sinks.
     """
 
-    class LogSink(OutputWriter.LogSink):
+    class LogSink(BaseLogSink):
         """
         Allows to write textual representations of models for the calibration of joint probabilities to the console.
         """
 
         def __init__(self, options: Options = Options()):
-            super().__init__(title='Joint probability calibration model', options=options)
+            super().__init__(BaseLogSink.TitleFormatter('Joint probability calibration model',
+                                                        include_dataset_type=False),
+                             options=options)
 
-    class CsvSink(OutputWriter.CsvSink):
+    class CsvFileSink(BaseCsvFileSink):
         """
         Allows to write textual representations of models for the calibration of joint probabilities to a CSV file.
         """
 
-        def __init__(self, output_dir: str, options: Options = Options()):
-            super().__init__(output_dir=output_dir, file_name='joint_probability_calibration_model', options=options)
+        def __init__(self, directory: str, options: Options = Options()):
+            """
+            :param directory: The path to the directory, where the CSV file should be located
+            """
+            super().__init__(BaseCsvFileSink.PathFormatter(directory,
+                                                           'joint_probability_calibration_model',
+                                                           include_dataset_type=False),
+                             options=options)
 
-    def __init__(self, sinks: List[OutputWriter.Sink]):
+    def __init__(self, sinks: List[Sink]):
         super().__init__(sinks, list_title='Label vector')
 
     def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Any:

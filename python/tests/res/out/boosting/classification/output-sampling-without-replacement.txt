@@ -1,7 +1,7 @@
 INFO Starting experiment using the classification algorithm "boomer"...
 INFO Using separate training and test sets...
-DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 DEBUG Loading data set from file "python/tests/res/data/emotions.arff"...
+DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 INFO Fitting model to 397 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
@@ -12,21 +12,21 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data:
 
-Example-wise F1         59.95
-Example-wise Jaccard    52.59
-Example-wise Precision  80.27
-Example-wise Recall     60.37
-Hamming Accuracy        81.21
-Hamming Loss            18.79
-Macro F1                64.81
-Macro Jaccard           49.37
-Macro Precision         75.47
-Macro Recall            58.11
-Micro F1                66.87
-Micro Jaccard           50.23
-Micro Precision         76.37
-Micro Recall            59.47
-Subset 0/1 Loss         70.92
-Subset Accuracy         29.08
+Example-wise F1         57.31
+Example-wise Jaccard    49.32
+Example-wise Precision  79.42
+Example-wise Recall     57.14
+Hamming Accuracy        80.44
+Hamming Loss            19.56
+Macro F1                62.55
+Macro Jaccard           47.01
+Macro Precision         75.26
+Macro Recall            55.63
+Micro F1                65.05
+Micro Jaccard           48.2
+Micro Precision         75.62
+Micro Recall            57.07
+Subset 0/1 Loss         77.04
+Subset Accuracy         22.96
 
 INFO Successfully finished after <duration>

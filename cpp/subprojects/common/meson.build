@@ -2,10 +2,11 @@ project('common', 'cpp', meson_version : '>=1.1')
 
 # Source files
 source_files = [
-    'src/mlrl/common/data/vector_bit.cpp',
     'src/mlrl/common/iterator/iterator_index.cpp',
     'src/mlrl/common/indices/index_vector_complete.cpp',
     'src/mlrl/common/indices/index_vector_partial.cpp',
+    'src/mlrl/common/input/example_weights_equal.cpp',
+    'src/mlrl/common/input/example_weights_real_valued.cpp',
     'src/mlrl/common/input/feature_binning_equal_frequency.cpp',
     'src/mlrl/common/input/feature_binning_equal_width.cpp',
     'src/mlrl/common/input/feature_binning_no.cpp',
@@ -29,8 +30,6 @@ source_files = [
     'src/mlrl/common/model/body_conjunctive.cpp',
     'src/mlrl/common/model/body_empty.cpp',
     'src/mlrl/common/model/condition_list.cpp',
-    'src/mlrl/common/model/head_complete.cpp',
-    'src/mlrl/common/model/head_partial.cpp',
     'src/mlrl/common/model/rule_list.cpp',
     'src/mlrl/common/multi_threading/multi_threading_manual.cpp',
     'src/mlrl/common/multi_threading/multi_threading_no.cpp',
@@ -49,6 +48,8 @@ source_files = [
     'src/mlrl/common/prediction/predictor_score_no.cpp',
     'src/mlrl/common/prediction/probability_calibration_isotonic.cpp',
     'src/mlrl/common/prediction/probability_calibration_no.cpp',
+    'src/mlrl/common/random/rng.cpp',
+    'src/mlrl/common/rule_evaluation/score_vector_bit.cpp',
     'src/mlrl/common/rule_evaluation/score_vector_binned_dense.cpp',
     'src/mlrl/common/rule_evaluation/score_vector_dense.cpp',
     'src/mlrl/common/rule_induction/rule_induction_top_down_beam_search.cpp',
@@ -58,13 +59,12 @@ source_files = [
     'src/mlrl/common/rule_pruning/rule_pruning_irep.cpp',
     'src/mlrl/common/rule_pruning/rule_pruning_no.cpp',
     'src/mlrl/common/rule_refinement/coverage_mask.cpp',
-    'src/mlrl/common/rule_refinement/feature_based_search.cpp',
     'src/mlrl/common/rule_refinement/feature_space_tabular.cpp',
     'src/mlrl/common/rule_refinement/prediction_complete.cpp',
     'src/mlrl/common/rule_refinement/prediction_partial.cpp',
     'src/mlrl/common/rule_refinement/refinement_comparator_fixed.cpp',
     'src/mlrl/common/rule_refinement/refinement_comparator_single.cpp',
-    'src/mlrl/common/rule_refinement/rule_refinement_feature_based.cpp',
+    'src/mlrl/common/rule_refinement/rule_refinement_statistics_based.cpp',
     'src/mlrl/common/rule_refinement/score_processor.cpp',
     'src/mlrl/common/sampling/feature_sampling_no.cpp',
     'src/mlrl/common/sampling/feature_sampling_predefined.cpp',
@@ -83,7 +83,6 @@ source_files = [
     'src/mlrl/common/sampling/partition_sampling_bi_stratified_output_wise.cpp',
     'src/mlrl/common/sampling/partition_sampling_no.cpp',
     'src/mlrl/common/sampling/partition_single.cpp',
-    'src/mlrl/common/sampling/random.cpp',
     'src/mlrl/common/sampling/stratified_sampling_example_wise.cpp',
     'src/mlrl/common/sampling/stratified_sampling_output_wise.cpp',
     'src/mlrl/common/sampling/weight_vector_bit.cpp',
@@ -97,7 +96,7 @@ source_files = [
     'src/mlrl/common/stopping/stopping_criterion_no.cpp',
     'src/mlrl/common/stopping/stopping_criterion_size.cpp',
     'src/mlrl/common/stopping/stopping_criterion_time.cpp',
-    'src/mlrl/common/info.cpp'
+    'src/mlrl/common/library_info.cpp'
 ]
 
 # Test files
@@ -116,7 +115,7 @@ test_files = [
     'test/mlrl/common/input/feature_vector_decorator_numerical.cpp',
     'test/mlrl/common/input/feature_vector_decorator_ordinal.cpp',
     'test/mlrl/common/input/feature_vector_equal.cpp',
-    'test/mlrl/common/info.cpp'
+    'test/mlrl/common/library_info.cpp'
 ]
 
 # Directory containing public headers

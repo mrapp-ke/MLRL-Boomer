@@ -1,7 +1,7 @@
 INFO Starting experiment using the classification algorithm "boomer"...
 INFO Performing full 10-fold cross validation...
-DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 DEBUG Loading data set from file "python/tests/res/data/emotions.arff"...
+DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 INFO Fold 1 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -68,10 +68,10 @@ INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 4):
 
 Outputs                  6
-Output Density          24.29
-Output Sparsity         75.71
-Label Imbalance Ratio    2.39
-Label Cardinality        1.46
+Output Density          24.58
+Output Sparsity         75.42
+Label Imbalance Ratio    2.37
+Label Cardinality        1.47
 Distinct Label Vectors  15
 
 INFO Fold 5 / 10:

@@ -7,23 +7,24 @@ e.g., to the console or to a file.
 import logging as log
 
 from abc import ABC
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 import numpy as np
 
 from _io import StringIO
 
+from mlrl.common.config.options import Options
 from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBody, PartialHead, RuleModel, \
     RuleModelVisitor
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
-from mlrl.common.options import Options
 
-from mlrl.testbed.data import MetaData
-from mlrl.testbed.data_splitting import DataSplit, DataType
+from mlrl.testbed.data_sinks import LogSink as BaseLogSink, TextFileSink as BaseTextFileSink
+from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.format import format_float
+from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter
-from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
-from mlrl.testbed.problem_type import ProblemType
+from mlrl.testbed.prediction_result import PredictionResult
+from mlrl.testbed.training_result import TrainingResult
 
 OPTION_PRINT_FEATURE_NAMES = 'print_feature_names'
 
@@ -46,24 +47,25 @@ class ModelWriter(OutputWriter, ABC):
     sinks.
     """
 
-    class LogSink(OutputWriter.LogSink):
+    class LogSink(BaseLogSink):
         """
         Allows to write textual representations of models to the console.
         """
 
         def __init__(self, options: Options = Options()):
-            super().__init__(title='Model', options=options)
+            super().__init__(BaseLogSink.TitleFormatter('Model', include_dataset_type=False), options=options)
 
-    class TxtSink(OutputWriter.TxtSink):
+    class TextFileSink(BaseTextFileSink):
         """
-        Allows to write textual representations of models to text files.
+        Allows to write textual representations of models to a text file.
         """
 
-        def __init__(self, output_dir: str, options: Options = Options()):
-            super().__init__(output_dir=output_dir, file_name='rules', options=options)
-
-    def __init__(self, sinks: List[OutputWriter.Sink]):
-        super().__init__(sinks)
+        def __init__(self, directory: str, options: Options = Options()):
+            """
+            :param directory: The path to the directory, where the text file should be located
+            """
+            super().__init__(BaseTextFileSink.PathFormatter(directory, 'rules', include_dataset_type=False),
+                             options=options)
 
 
 class RuleModelWriter(ModelWriter):
@@ -76,13 +78,13 @@ class RuleModelWriter(ModelWriter):
         Allows to create textual representations of the rules in a `RuleModel`.
         """
 
-        def __init__(self, meta_data: MetaData, model: RuleModel):
+        def __init__(self, dataset: Dataset, model: RuleModel):
             """
-            :param meta_data:   The meta-data of the training data set
-            :param model:       The `RuleModel`
+            :param dataset: The training dataset
+            :param model:   The `RuleModel`
             """
-            self.features = meta_data.features
-            self.outputs = meta_data.outputs
+            self.features = dataset.features
+            self.outputs = dataset.outputs
             self.model = model
             self.text = None
             self.print_feature_names = True
@@ -119,7 +121,7 @@ class RuleModelWriter(ModelWriter):
                     threshold = thresholds[i]
                     feature = features[feature_index] if len(features) > feature_index else None
 
-                    if print_feature_names and feature is not None:
+                    if print_feature_names and feature:
                         text.write(feature.name)
                     else:
                         text.write(str(feature_index))
@@ -128,7 +130,7 @@ class RuleModelWriter(ModelWriter):
                     text.write(operator)
                     text.write(' ')
 
-                    if feature is not None and feature.nominal_values is not None:
+                    if feature and feature.nominal_values:
                         nominal_value = int(threshold)
 
                         if print_nominal_values and len(feature.nominal_values) > nominal_value:
@@ -249,15 +251,17 @@ class RuleModelWriter(ModelWriter):
             return text
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
-                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
-                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
-                              train_time: float, predict_time: float) -> Optional[Any]:
-        if isinstance(learner, (ClassifierMixin, RegressorMixin)):
-            model = learner.model_
+    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+        if training_result:
+            learner = training_result.learner
 
-            if isinstance(model, RuleModel):
-                return RuleModelWriter.RuleModelFormattable(meta_data, model)
+            if isinstance(learner, (ClassifierMixin, RegressorMixin)):
+                model = learner.model_
 
-        log.error('The learner does not support to create a textual representation of the model')
+                if isinstance(model, RuleModel):
+                    return RuleModelWriter.RuleModelFormattable(scope.dataset, model)
+
+            log.error('The learner does not support to create a textual representation of the model')
+
         return None

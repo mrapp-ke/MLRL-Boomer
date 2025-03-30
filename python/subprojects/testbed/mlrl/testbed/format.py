@@ -12,7 +12,7 @@ import numpy as np
 
 from tabulate import tabulate
 
-from mlrl.common.options import Options
+from mlrl.common.config.options import Options
 
 OPTION_DECIMALS = 'decimals'
 
@@ -52,9 +52,8 @@ def format_duration(duration: float) -> str:
     if millis > 0 or len(substrings) == 0:
         substrings.append(str(millis) + ' millisecond' + ('' if millis == 1 else 's'))
 
-    return reduce(
-        lambda aggr, x: aggr + ((' and ' if x[0] == len(substrings) - 1 else ', ') if len(aggr) > 0 else '') + x[1],
-        enumerate(substrings), '')
+    return reduce(lambda aggr, x: aggr + ((' and ' if x[0] == len(substrings) - 1 else ', ') if aggr else '') + x[1],
+                  enumerate(substrings), '')
 
 
 def format_array(array: np.ndarray, decimals: int = 2) -> str:
@@ -104,7 +103,7 @@ def format_table(rows, header=None, alignment=None) -> str:
                         'center', or 'right'
     :return:            The textual representation that has been created
     """
-    if header is None:
+    if not header:
         return tabulate(rows, colalign=alignment, tablefmt='plain')
     return tabulate(rows, headers=header, colalign=alignment, tablefmt='simple_outline')
 

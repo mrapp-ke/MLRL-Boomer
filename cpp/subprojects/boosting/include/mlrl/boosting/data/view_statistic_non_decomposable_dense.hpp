@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/iterator/diagonal_iterator.hpp"
+#include "mlrl/boosting/iterator/iterator_diagonal.hpp"
 #include "mlrl/boosting/util/dll_exports.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/data/view_matrix_composite.hpp"
@@ -13,9 +13,12 @@ namespace boosting {
     /**
      * Implements row-wise read and write access to the gradients and Hessians that have been calculated using a
      * non-decomposable loss function and are stored in pre-allocated C-contiguous arrays.
+     *
+     * @tparam StatisticType The type of the gradients and Hessians
      */
+    template<typename StatisticType>
     class MLRLBOOSTING_API DenseNonDecomposableStatisticView
-        : public CompositeMatrix<AllocatedCContiguousView<float64>, AllocatedCContiguousView<float64>> {
+        : public CompositeMatrix<AllocatedCContiguousView<StatisticType>, AllocatedCContiguousView<StatisticType>> {
         public:
 
             /**
@@ -27,34 +30,34 @@ namespace boosting {
             /**
              * @param other A reference to an object of type `DenseNonDecomposableStatisticView` that should be copied
              */
-            DenseNonDecomposableStatisticView(DenseNonDecomposableStatisticView&& other);
+            DenseNonDecomposableStatisticView(DenseNonDecomposableStatisticView<StatisticType>&& other);
 
             virtual ~DenseNonDecomposableStatisticView() override {}
 
             /**
              * An iterator that provides read-only access to the gradients.
              */
-            typedef AllocatedCContiguousView<float64>::value_const_iterator gradient_const_iterator;
+            typedef typename AllocatedCContiguousView<StatisticType>::value_const_iterator gradient_const_iterator;
 
             /**
              * An iterator that provides access to the gradients and allows to modify them.
              */
-            typedef AllocatedCContiguousView<float64>::value_iterator gradient_iterator;
+            typedef typename AllocatedCContiguousView<StatisticType>::value_iterator gradient_iterator;
 
             /**
              * An iterator that provides read-only access to the Hessians.
              */
-            typedef AllocatedCContiguousView<float64>::value_const_iterator hessian_const_iterator;
+            typedef typename AllocatedCContiguousView<StatisticType>::value_const_iterator hessian_const_iterator;
 
             /**
              * An iterator that provides access to the Hessians and allows to modify them.
              */
-            typedef AllocatedCContiguousView<float64>::value_iterator hessian_iterator;
+            typedef typename AllocatedCContiguousView<StatisticType>::value_iterator hessian_iterator;
 
             /**
              * An iterator that provides read-only access to the Hessians that correspond to the diagonal of the matrix.
              */
-            typedef DiagonalConstIterator<float64> hessian_diagonal_const_iterator;
+            typedef DiagonalIterator<const StatisticType> hessian_diagonal_const_iterator;
 
             /**
              * Returns a `gradient_const_iterator` to the beginning of the gradients at a specific row.

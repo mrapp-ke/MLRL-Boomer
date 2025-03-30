@@ -5,6 +5,7 @@ Provides classes for evaluating the predictions provided by a machine learning m
 The evaluation results can be written to one or several outputs, e.g., to the console or to a file.
 """
 from abc import ABC, abstractmethod
+from dataclasses import replace
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 import numpy as np
@@ -12,16 +13,17 @@ import numpy as np
 from sklearn import metrics
 from sklearn.utils.multiclass import is_multilabel
 
-from mlrl.common.arrays import enforce_dense
-from mlrl.common.data_types import Float32, Uint8
-from mlrl.common.options import Options
+from mlrl.common.config.options import Options
+from mlrl.common.data.arrays import enforce_dense
+from mlrl.common.data.types import Float32, Uint8
 
-from mlrl.testbed.data import MetaData
-from mlrl.testbed.data_splitting import CrossValidationOverall, DataSplit, DataType
+from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink, Sink
+from mlrl.testbed.fold import Fold
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
+from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
-from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
-from mlrl.testbed.problem_type import ProblemType
+from mlrl.testbed.prediction_result import PredictionResult
+from mlrl.testbed.training_result import TrainingResult
 
 OPTION_ENABLE_ALL = 'enable_all'
 
@@ -200,7 +202,7 @@ class EvaluationWriter(OutputWriter, ABC):
     evaluation results to one or several sinks.
     """
 
-    KWARG_FOLD = 'fold'
+    KWARG_FOLD = 'fold_index'
 
     class EvaluationResult(Formattable, Tabularizable):
         """
@@ -220,13 +222,17 @@ class EvaluationWriter(OutputWriter, ABC):
             :param num_folds:   The total number of cross validation folds
             :param fold:        The fold, the score corresponds to, or None, if no cross validation is used
             """
-            if self.results is None:
-                self.results = [{} for _ in range(num_folds)]
-            elif len(self.results) != num_folds:
+            results = self.results
+
+            if not results:
+                results = [{} for _ in range(num_folds)]
+                self.results = results
+
+            if len(results) != num_folds:
                 raise AssertionError('Inconsistent number of total folds given')
 
             self.measures.add(measure)
-            values = self.results[fold if fold is not None else 0]
+            values = results[0 if fold is None else fold]
             values[measure] = score
 
         def get(self, measure: Formatter, fold: Optional[int], **kwargs) -> str:
@@ -237,10 +243,12 @@ class EvaluationWriter(OutputWriter, ABC):
             :param fold:    The fold, the score corresponds to, or None, if no cross validation is used
             :return:        A textual representation of the score
             """
-            if self.results is None:
+            results = self.results
+
+            if not results:
                 raise AssertionError('No evaluation results available')
 
-            score = self.results[fold if fold is not None else 0][measure]
+            score = results[0 if fold is None else fold][measure]
             return measure.format(score, **kwargs)
 
         def dict(self, fold: Optional[int], **kwargs) -> Dict[Formatter, str]:
@@ -251,15 +259,17 @@ class EvaluationWriter(OutputWriter, ABC):
             :return:        A dictionary that stores textual representations of the scores for the given fold according
                             to each measure
             """
-            if self.results is None:
+            results = self.results
+
+            if not results:
                 raise AssertionError('No evaluation results available')
 
-            results: Dict[Formatter, str] = {}
+            result_dict = {}
 
-            for measure, score in self.results[fold if fold is not None else 0].items():
-                results[measure] = measure.format(score, **kwargs)
+            for measure, score in results[0 if fold is None else fold].items():
+                result_dict[measure] = measure.format(score, **kwargs)
 
-            return results
+            return result_dict
 
         def avg(self, measure: Formatter, **kwargs) -> Tuple[str, str]:
             """
@@ -268,7 +278,7 @@ class EvaluationWriter(OutputWriter, ABC):
             :param measure: The measure
             :return:        A tuple consisting of textual representations of the averaged score and standard deviation
             """
-            values = [results[measure] for results in self.results if len(results) > 0]
+            values = [results[measure] for results in self.results if results]
             values = np.array(values)
             return measure.format(np.average(values), **kwargs), measure.format(np.std(values), **kwargs)
 
@@ -333,82 +343,90 @@ class EvaluationWriter(OutputWriter, ABC):
 
             return [filtered_columns]
 
-    class LogSink(OutputWriter.LogSink):
+    class LogSink(BaseLogSink):
         """
         Allows to write evaluation results to the console.
         """
 
         def __init__(self, options: Options = Options()):
-            super().__init__(title='Evaluation result', options=options)
+            super().__init__(BaseLogSink.TitleFormatter('Evaluation result'), options=options)
 
-        def write_output(self, problem_type: ProblemType, meta_data: MetaData, data_split: DataSplit,
-                         data_type: Optional[DataType], prediction_scope: Optional[PredictionScope], output_data,
-                         **kwargs):
+        def write_output(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                         prediction_result: Optional[PredictionResult], output_data, **kwargs):
             """
-            See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
+            See :func:`mlrl.testbed.data_sinks.Sink.write_output`
             """
-            fold = data_split.get_fold() if data_split.is_cross_validation_used() else 0
-            new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold}}
-            super().write_output(problem_type, meta_data, data_split, data_type, prediction_scope, output_data,
-                                 **new_kwargs)
+            fold = scope.fold
+            new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold.index if fold.is_cross_validation_used else 0}}
+            super().write_output(scope, training_result, prediction_result, output_data, **new_kwargs)
 
-            if data_split.is_cross_validation_used() and data_split.is_last_fold():
-                super().write_output(problem_type, meta_data, CrossValidationOverall(data_split.get_num_folds()),
-                                     data_type, prediction_scope, output_data, **kwargs)
+            if fold.is_cross_validation_used and fold.is_last_fold:
+                overall_fold = Fold(index=None, num_folds=fold.num_folds, is_last_fold=True)
+                super().write_output(replace(scope, fold=overall_fold), training_result, prediction_result, output_data,
+                                     **kwargs)
 
-    class CsvSink(OutputWriter.CsvSink):
+    class CsvFileSink(BaseCsvFileSink):
         """
-        Allows to write evaluation results to CSV files.
+        Allows to write evaluation results to a CSV file.
         """
 
-        def __init__(self, output_dir: str, options: Options = Options()):
-            super().__init__(output_dir=output_dir, file_name='evaluation', options=options)
-
-        def write_output(self, problem_type: ProblemType, meta_data: MetaData, data_split: DataSplit,
-                         data_type: Optional[DataType], prediction_scope: Optional[PredictionScope], output_data,
-                         **kwargs):
+        def __init__(self, directory: str, options: Options = Options()):
             """
-            See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
+            :param directory: The path to the directory, where the CSV file should be located
             """
-            fold = data_split.get_fold() if data_split.is_cross_validation_used() else 0
-            new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold}}
-            super().write_output(problem_type, meta_data, data_split, data_type, prediction_scope, output_data,
-                                 **new_kwargs)
+            super().__init__(BaseCsvFileSink.PathFormatter(directory, 'evaluation', include_prediction_scope=False),
+                             options=options)
 
-            if data_split.is_cross_validation_used() and data_split.is_last_fold():
-                super().write_output(problem_type, meta_data, CrossValidationOverall(data_split.get_num_folds()),
-                                     data_type, prediction_scope, output_data, **kwargs)
+        def write_output(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                         prediction_result: Optional[PredictionResult], output_data, **kwargs):
+            """
+            See :func:`mlrl.testbed.data_sinks.Sink.write_output`
+            """
+            fold = scope.fold
+            new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold.index if fold.is_cross_validation_used else 0}}
+            super().write_output(scope, training_result, prediction_result, output_data, **new_kwargs)
 
-    def __init__(self, sinks: List[OutputWriter.Sink]):
+            if fold.is_cross_validation_used and fold.is_last_fold:
+                overall_fold = Fold(index=None, num_folds=fold.num_folds, is_last_fold=True)
+                super().write_output(replace(scope, fold=overall_fold), training_result, prediction_result, output_data,
+                                     **kwargs)
+
+    def __init__(self, sinks: List[Sink]):
         super().__init__(sinks)
         self.results: Dict[str, EvaluationWriter.EvaluationResult] = {}
 
     @abstractmethod
-    def _populate_result(self, data_split: DataSplit, result: EvaluationResult, predictions, ground_truth):
+    def _populate_result(self, fold: Fold, result: EvaluationResult, predictions, ground_truth):
         """
         Must be implemented by subclasses in order to obtain evaluation results and store them in a given
         `EvaluationResult`.
 
-        :param data_split:      Information about the split of the available data that should be used for training and
-                                evaluating the model
+        :param fold:            The fold of the available data that should be used for training and evaluating the model
         :param result:          The `EvaluationResult` that should be used to store the results
         :param predictions:     The predictions
         :param ground_truth:    The ground truth
         """
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
-                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
-                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
-                              train_time: float, predict_time: float) -> Optional[Any]:
-        result = self.results[data_type] if data_type in self.results else EvaluationWriter.EvaluationResult()
-        self.results[data_type] = result
-        num_folds = data_split.get_num_folds()
-        fold = data_split.get_fold()
-        result.put(EVALUATION_MEASURE_TRAINING_TIME, train_time, num_folds=num_folds, fold=fold)
-        result.put(EVALUATION_MEASURE_PREDICTION_TIME, predict_time, num_folds=num_folds, fold=fold)
-        self._populate_result(data_split, result, predictions, y)
-        return result
+    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+        if training_result and prediction_result:
+            dataset = scope.dataset
+            data_type = dataset.type
+            result = self.results[data_type] if data_type in self.results else EvaluationWriter.EvaluationResult()
+            self.results[data_type] = result
+            fold = scope.fold
+            result.put(EVALUATION_MEASURE_TRAINING_TIME,
+                       training_result.train_time,
+                       num_folds=fold.num_folds,
+                       fold=fold.index)
+            result.put(EVALUATION_MEASURE_PREDICTION_TIME,
+                       prediction_result.predict_time,
+                       num_folds=fold.num_folds,
+                       fold=fold.index)
+            self._populate_result(fold, result, prediction_result.predictions, dataset.y)
+            return result
+        return None
 
 
 class BinaryEvaluationWriter(EvaluationWriter):
@@ -417,17 +435,13 @@ class BinaryEvaluationWriter(EvaluationWriter):
     used bipartition measures.
     """
 
-    def __init__(self, sinks: List[OutputWriter.Sink]):
+    def __init__(self, sinks: List[Sink]):
         super().__init__(sinks)
         options = [sink.options for sink in sinks]
         self.multi_label_evaluation_functions = filter_formatters(MULTI_LABEL_EVALUATION_MEASURES, options)
         self.single_label_evaluation_functions = filter_formatters(SINGLE_LABEL_EVALUATION_MEASURES, options)
 
-    def _populate_result(self, data_split: DataSplit, result: EvaluationWriter.EvaluationResult, predictions,
-                         ground_truth):
-        num_folds = data_split.get_num_folds()
-        fold = data_split.get_fold()
-
+    def _populate_result(self, fold: Fold, result: EvaluationWriter.EvaluationResult, predictions, ground_truth):
         if is_multilabel(ground_truth):
             evaluation_functions = self.multi_label_evaluation_functions
         else:
@@ -438,7 +452,7 @@ class BinaryEvaluationWriter(EvaluationWriter):
         for evaluation_function in evaluation_functions:
             if isinstance(evaluation_function, EvaluationFunction):
                 score = evaluation_function.evaluate(ground_truth, predictions)
-                result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
+                result.put(evaluation_function, score, num_folds=fold.num_folds, fold=fold.index)
 
 
 class RegressionEvaluationWriter(EvaluationWriter):
@@ -447,22 +461,19 @@ class RegressionEvaluationWriter(EvaluationWriter):
     regression measures.
     """
 
-    def __init__(self, sinks: List[OutputWriter.Sink]):
+    def __init__(self, sinks: List[Sink]):
         super().__init__(sinks)
         options = [sink.options for sink in sinks]
         self.regression_evaluation_functions = filter_formatters(REGRESSION_EVALUATION_MEASURES, options)
 
-    def _populate_result(self, data_split: DataSplit, result: EvaluationWriter.EvaluationResult, predictions,
-                         ground_truth):
-        num_folds = data_split.get_num_folds()
-        fold = data_split.get_fold()
+    def _populate_result(self, fold: Fold, result: EvaluationWriter.EvaluationResult, predictions, ground_truth):
         ground_truth = enforce_dense(ground_truth, order='C', dtype=Float32)
         evaluation_functions = self.regression_evaluation_functions
 
         for evaluation_function in evaluation_functions:
             if isinstance(evaluation_function, EvaluationFunction):
                 score = evaluation_function.evaluate(ground_truth, predictions)
-                result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
+                result.put(evaluation_function, score, num_folds=fold.num_folds, fold=fold.index)
 
 
 class RankingEvaluationWriter(EvaluationWriter):
@@ -471,16 +482,13 @@ class RankingEvaluationWriter(EvaluationWriter):
     regression and ranking measures.
     """
 
-    def __init__(self, sinks: List[OutputWriter.Sink]):
+    def __init__(self, sinks: List[Sink]):
         super().__init__(sinks)
         options = [sink.options for sink in sinks]
         self.regression_evaluation_functions = filter_formatters(REGRESSION_EVALUATION_MEASURES, options)
         self.ranking_evaluation_functions = filter_formatters(RANKING_EVALUATION_MEASURES, options)
 
-    def _populate_result(self, data_split: DataSplit, result: EvaluationWriter.EvaluationResult, predictions,
-                         ground_truth):
-        num_folds = data_split.get_num_folds()
-        fold = data_split.get_fold()
+    def _populate_result(self, fold: Fold, result: EvaluationWriter.EvaluationResult, predictions, ground_truth):
         ground_truth = enforce_dense(ground_truth, order='C', dtype=Uint8)
 
         if is_multilabel(ground_truth):
@@ -494,4 +502,4 @@ class RankingEvaluationWriter(EvaluationWriter):
         for evaluation_function in evaluation_functions:
             if isinstance(evaluation_function, EvaluationFunction):
                 score = evaluation_function.evaluate(ground_truth, predictions)
-                result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
+                result.put(evaluation_function, score, num_folds=fold.num_folds, fold=fold.index)
