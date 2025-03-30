@@ -61,7 +61,6 @@ class RNGMixin(ABC):
         
         :return: An `RNGConfig` that allows further configuration of the random number generators
         """
-        pass
 
 
 class SequentialRuleModelAssemblageMixin(ABC):
