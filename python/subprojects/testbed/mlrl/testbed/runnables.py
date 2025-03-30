@@ -42,10 +42,10 @@ from mlrl.testbed.experiments.output.characteristics.characteristics_output impo
     OPTION_OUTPUTS
 from mlrl.testbed.experiments.output.characteristics.writer_data import DataCharacteristicsWriter
 from mlrl.testbed.experiments.output.characteristics.writer_prediction import PredictionCharacteristicsWriter
+from mlrl.testbed.experiments.output.label_vectors.writer import OPTION_SPARSE, LabelVectorWriter
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, TextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
-from mlrl.testbed.label_vectors import OPTION_SPARSE, LabelVectorWriter
 from mlrl.testbed.model_characteristics import RuleModelCharacteristicsWriter
 from mlrl.testbed.models import OPTION_DECIMALS_BODY, OPTION_DECIMALS_HEAD, OPTION_PRINT_BODIES, \
     OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_HEADS, OPTION_PRINT_NOMINAL_VALUES, OPTION_PRINT_OUTPUT_NAMES, \
