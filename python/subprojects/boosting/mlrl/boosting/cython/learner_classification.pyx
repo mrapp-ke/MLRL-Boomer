@@ -20,7 +20,6 @@ class AutomaticPartitionSamplingMixin(ABC):
         """
         Configures the rule learner to automatically decide whether a holdout set should be used or not.
         """
-        pass
 
              
 class NoDefaultRuleMixin(ABC):
@@ -33,7 +32,6 @@ class NoDefaultRuleMixin(ABC):
         """
         Configures the rule learner to not induce a default rule.
         """
-        pass
              
              
 class AutomaticDefaultRuleMixin(ABC):
@@ -46,7 +44,6 @@ class AutomaticDefaultRuleMixin(ABC):
         """
         Configures the rule learner to automatically decide whether a default rule should be induced or not.
         """
-        pass
             
              
 class DenseStatisticsMixin(ABC):
@@ -59,7 +56,6 @@ class DenseStatisticsMixin(ABC):
         """
         Configures the rule learner to use a dense representation of gradients and Hessians.
         """
-        pass
             
              
 class SparseStatisticsMixin(ABC):
@@ -72,7 +68,6 @@ class SparseStatisticsMixin(ABC):
         """
         Configures the rule learner to use a sparse representation of gradients and Hessians, if possible.
         """
-        pass
             
              
 class AutomaticStatisticsMixin(ABC):
@@ -87,7 +82,6 @@ class AutomaticStatisticsMixin(ABC):
         Configures the rule learner to automatically decide whether a dense or sparse representation of gradients and
         Hessians should be used.
         """
-        pass
             
              
 class NonDecomposableLogisticLossMixin(ABC):
@@ -102,7 +96,6 @@ class NonDecomposableLogisticLossMixin(ABC):
         Configures the rule learner to use a loss function that implements a multivariate variant of the logistic loss
         that is non-decomposable.
         """
-        pass
             
              
 class NonDecomposableSquaredHingeLossMixin(ABC):
@@ -117,7 +110,6 @@ class NonDecomposableSquaredHingeLossMixin(ABC):
         Configures the rule learner to use a loss function that implements a multivariate variant of the squared hinge
         loss that is non-decomposable.
         """
-        pass
             
              
 class DecomposableLogisticLossMixin(ABC):
@@ -132,7 +124,6 @@ class DecomposableLogisticLossMixin(ABC):
         Configures the rule learner to use a loss function that implements a multivariate variant of the logistic loss
         that is decomposable.
         """
-        pass
             
              
 class DecomposableSquaredHingeLossMixin(ABC):
@@ -147,7 +138,6 @@ class DecomposableSquaredHingeLossMixin(ABC):
         Configures the rule learner to use a loss function that implements a multivariate variant of the squared hinge
         loss that is decomposable.
         """
-        pass
             
             
 class NoLabelBinningMixin(ABC):
@@ -160,7 +150,6 @@ class NoLabelBinningMixin(ABC):
         """
         Configures the rule learner to not use any method for the assignment of labels to bins.
         """
-        pass
             
              
 class EqualWidthLabelBinningMixin(ABC):
@@ -177,7 +166,6 @@ class EqualWidthLabelBinningMixin(ABC):
         :return: A `EqualWidthLabelBinningConfig` that allows further configuration of the method for the assignment of
                  labels to bins
         """
-        pass
             
              
 class AutomaticLabelBinningMixin(ABC):
@@ -192,7 +180,6 @@ class AutomaticLabelBinningMixin(ABC):
         Configures the rule learner to automatically decide whether a method for the assignment of labels to bins should
         be used or not.
         """
-        pass
             
              
 class IsotonicMarginalProbabilityCalibrationMixin(ABC):
@@ -207,7 +194,6 @@ class IsotonicMarginalProbabilityCalibrationMixin(ABC):
 
         :return: An `IsotonicMarginalProbabilityCalibratorConfig` that allows further configuration of the calibrator
         """
-        pass
 
 
 class IsotonicJointProbabilityCalibrationMixin(ABC):
@@ -222,7 +208,6 @@ class IsotonicJointProbabilityCalibrationMixin(ABC):
 
         :return: An `IsotonicJointProbabilityCalibratorConfig` that allows further configuration of the calibrator
         """
-        pass
 
 
 class OutputWiseProbabilityPredictorMixin(ABC):
@@ -239,7 +224,6 @@ class OutputWiseProbabilityPredictorMixin(ABC):
 
         :return: A `OutputWiseProbabilityPredictorConfig` that allows further configuration of the predictor
         """
-        pass
             
              
 class MarginalizedProbabilityPredictorMixin(ABC):
@@ -260,7 +244,6 @@ class MarginalizedProbabilityPredictorMixin(ABC):
 
         :return: A `MarginalizedProbabilityPredictorConfig` that allows further configuration of the predictor
         """
-        pass
             
              
 class AutomaticProbabilityPredictorMixin(ABC):
@@ -273,7 +256,6 @@ class AutomaticProbabilityPredictorMixin(ABC):
         """
         Configures the rule learner to automatically decide for a predictor for predicting probability estimates.
         """
-        pass
 
 
 class OutputWiseBinaryPredictorMixin(ABC):
@@ -291,7 +273,6 @@ class OutputWiseBinaryPredictorMixin(ABC):
 
         :return: A `OutputWiseBinaryPredictorConfig` that allows further configuration of the predictor
         """
-        pass
             
              
 class ExampleWiseBinaryPredictorMixin(ABC):
@@ -308,7 +289,6 @@ class ExampleWiseBinaryPredictorMixin(ABC):
 
         :return: An `ExampleWiseBinaryPredictorConfig` that allows further configuration of the predictor
         """
-        pass    
 
 
 class GfmBinaryPredictorMixin(ABC):
@@ -327,7 +307,6 @@ class GfmBinaryPredictorMixin(ABC):
 
         :return: A `GfmBinaryPredictorConfig` that allows further configuration of the predictor
         """
-        pass
             
              
 class AutomaticBinaryPredictorMixin(ABC):
@@ -342,4 +321,3 @@ class AutomaticBinaryPredictorMixin(ABC):
         Configures the rule learner to automatically decide for a predictor for predicting whether individual labels are
         relevant or irrelevant.
         """
-        pass

@@ -20,7 +20,6 @@ class AutomaticFeatureBinningMixin(ABC):
         Configures the rule learning to automatically decide whether a method for the assignment of numerical feature
         values to bins should be used or not.
         """
-        pass
              
              
 class AutomaticParallelRuleRefinementMixin(ABC):
@@ -35,7 +34,6 @@ class AutomaticParallelRuleRefinementMixin(ABC):
         Configures the rule learner to automatically decide whether multi-threading should be used for the parallel
         refinement of rules or not.
         """
-        pass
              
              
 class AutomaticParallelStatisticUpdateMixin(ABC):
@@ -50,7 +48,6 @@ class AutomaticParallelStatisticUpdateMixin(ABC):
         Configures the rule learner to automatically decide whether multi-threading should be used for the parallel
         update of statistics or not.
         """
-        pass
              
              
 class ConstantShrinkageMixin(ABC):
@@ -67,7 +64,6 @@ class ConstantShrinkageMixin(ABC):
 
         :return: A `ConstantShrinkageConfig` that allows further configuration of the post-processor
         """
-        pass
              
              
 class NoL1RegularizationMixin(ABC):
@@ -80,7 +76,6 @@ class NoL1RegularizationMixin(ABC):
         """
         Configures the rule learner to not use L1 regularization.
         """
-        pass
 
 
 class L1RegularizationMixin(ABC):
@@ -95,7 +90,6 @@ class L1RegularizationMixin(ABC):
 
         :return: A `ManualRegularizationConfig` that allows further configuration of the regularization term
         """
-        pass
             
              
 class NoL2RegularizationMixin(ABC):
@@ -108,7 +102,6 @@ class NoL2RegularizationMixin(ABC):
         """
         Configures the rule learner to not use L2 regularization.
         """
-        pass
             
              
 class L2RegularizationMixin(ABC):
@@ -123,7 +116,6 @@ class L2RegularizationMixin(ABC):
 
         :return: A `ManualRegularizationConfig` that allows further configuration of the regularization term
         """
-        pass
              
              
 class CompleteHeadMixin(ABC):
@@ -136,7 +128,6 @@ class CompleteHeadMixin(ABC):
         """
         Configures the rule learner to induce rules with complete heads that predict for all available outputs.
         """
-        pass
             
              
 class FixedPartialHeadMixin(ABC):
@@ -152,7 +143,6 @@ class FixedPartialHeadMixin(ABC):
 
         :return: A `FixedPartialHeadConfig` that allows further configuration of the rule heads
         """
-        pass
             
              
 class DynamicPartialHeadMixin(ABC):
@@ -170,7 +160,6 @@ class DynamicPartialHeadMixin(ABC):
 
         :return: A `DynamicPartialHeadConfig` that allows further configuration of the rule heads
         """
-        pass
             
              
 class SingleOutputHeadMixin(ABC):
@@ -183,7 +172,6 @@ class SingleOutputHeadMixin(ABC):
         """
         Configures the rule learner to induce rules with single-output heads that predict for a single output.
         """
-        pass
             
              
 class AutomaticHeadMixin(ABC):
@@ -196,7 +184,6 @@ class AutomaticHeadMixin(ABC):
         """
         Configures the rule learner to automatically decide for the type of rule heads to be used.
         """
-        pass
             
              
 class NonDecomposableSquaredErrorLossMixin(ABC):
@@ -211,7 +198,6 @@ class NonDecomposableSquaredErrorLossMixin(ABC):
         Configures the rule learner to use a loss function that implements a multivariant variant of the squared error
         loss that is non-decomposable.
         """
-        pass
             
              
 class DecomposableSquaredErrorLossMixin(ABC):
@@ -226,7 +212,6 @@ class DecomposableSquaredErrorLossMixin(ABC):
         Configures the rule learner to use a loss function that implements a multivariate variant of the squared error
         loss that is decomposable.
         """
-        pass
             
              
 class OutputWiseScorePredictorMixin(ABC):
@@ -241,4 +226,3 @@ class OutputWiseScorePredictorMixin(ABC):
         Configures the rule learner to use a predictor that predict output-wise scores for given query examples by
         summing up the scores that are provided by individual rules for each output individually.
         """
-        pass
