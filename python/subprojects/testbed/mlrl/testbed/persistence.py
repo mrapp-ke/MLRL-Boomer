@@ -9,52 +9,33 @@ from os import path
 
 import _pickle as pickle
 
-from mlrl.testbed.data_splitting import DataSplit
+from mlrl.testbed.fold import Fold
 from mlrl.testbed.io import get_file_name_per_fold
 
 SUFFIX_MODEL = 'model'
 
 
-class ModelPersistence:
+class ModelLoader:
     """
-    Allows to save a model in a file and load it later.
+    Allows to load models from a directory.
     """
 
-    def __init__(self, model_dir: str):
+    def __init__(self, directory: str):
         """
-        :param model_dir: The path to the directory where models should be saved
+        :param directory: The path to the directory from which models should be loaded
         """
-        self.model_dir = model_dir
+        self.directory = directory
 
-    def save_model(self, model, model_name: str, data_split: DataSplit):
-        """
-        Saves a model to a file.
-
-        :param model:       The model to be persisted
-        :param model_name:  The name of the model to be persisted
-        :param data_split:  Information about the split of the available data, the model corresponds to
-        """
-        file_name = get_file_name_per_fold(model_name, SUFFIX_MODEL, data_split.get_fold())
-        file_path = path.join(self.model_dir, file_name)
-        log.debug('Saving model to file \"%s\"...', file_path)
-
-        try:
-            with open(file_path, mode='wb') as output_stream:
-                pickle.dump(model, output_stream, -1)
-                log.info('Successfully saved model to file \"%s\"', file_path)
-        except IOError:
-            log.error('Failed to save model to file \"%s\"', file_path)
-
-    def load_model(self, model_name: str, data_split: DataSplit):
+    def load_model(self, model_name: str, fold: Fold):
         """
         Loads a model from a file.
 
         :param model_name:  The name of the model to be loaded
-        :param data_split:  Information about the split of the available data, the model corresponds to
+        :param fold:        The fold of the available data, the model corresponds to
         :return:            The loaded model
         """
-        file_name = get_file_name_per_fold(model_name, SUFFIX_MODEL, data_split.get_fold())
-        file_path = path.join(self.model_dir, file_name)
+        file_name = get_file_name_per_fold(model_name, SUFFIX_MODEL, fold.index)
+        file_path = path.join(self.directory, file_name)
         log.debug('Loading model from file \"%s\"...', file_path)
 
         try:
@@ -65,3 +46,34 @@ class ModelPersistence:
         except IOError:
             log.error('Failed to load model from file \"%s\"', file_path)
             return None
+
+
+class ModelSaver:
+    """
+    Allows to save models to a directory.
+    """
+
+    def __init__(self, directory: str):
+        """
+        :param directory: The path to the directory to which models should be saved
+        """
+        self.directory = directory
+
+    def save_model(self, model, model_name: str, fold: Fold):
+        """
+        Saves a model to a file.
+
+        :param model:       The model to be persisted
+        :param model_name:  The name of the model to be persisted
+        :param fold:        The fold of the available data, the model corresponds to
+        """
+        file_name = get_file_name_per_fold(model_name, SUFFIX_MODEL, fold.index)
+        file_path = path.join(self.directory, file_name)
+        log.debug('Saving model to file \"%s\"...', file_path)
+
+        try:
+            with open(file_path, mode='wb') as output_stream:
+                pickle.dump(model, output_stream, -1)
+                log.info('Successfully saved model to file \"%s\"', file_path)
+        except IOError:
+            log.error('Failed to save model to file \"%s\"', file_path)

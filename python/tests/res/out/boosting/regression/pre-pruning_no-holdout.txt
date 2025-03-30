@@ -1,7 +1,7 @@
 INFO Starting experiment using the regression algorithm "boomer"...
 INFO Using separate training and test sets...
-DEBUG Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
 DEBUG Loading data set from file "python/tests/res/data/atp7d.arff"...
+DEBUG Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
 INFO Fitting model to 198 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the regression scores of the training examples
@@ -14,8 +14,8 @@ INFO Evaluation result for test data:
 
 Mean Absolute Error               30.38
 Mean Absolute Percentage Error     2.09
-Mean Squared Error              2080.93
-Median Absolute Error             18.94
+Mean Squared Error              2078.35
+Median Absolute Error             19.22
 
 INFO Model characteristics:
 
@@ -23,7 +23,7 @@ INFO Model characteristics:
 │ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
 ├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
 │ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-│ 999 local rules               │    3355 │                  52.64% │                 47.36% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 999 local rules               │    3355 │                  52.76% │                 47.24% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
 └───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
 
 ┌────────────────────────────────┬─────────┬────────────┬────────────┐

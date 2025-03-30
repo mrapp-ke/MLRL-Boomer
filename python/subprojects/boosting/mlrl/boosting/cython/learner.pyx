@@ -64,8 +64,32 @@ class ConstantShrinkageMixin(ABC):
 
         :return: A `ConstantShrinkageConfig` that allows further configuration of the post-processor
         """
-             
-             
+
+
+class Float32StatisticsMixin(ABC):
+    """
+    Allows to configure a rule learner to use 32-bit floating point values for representing gradients and Hessians.
+    """
+
+    @abstractmethod
+    def use_32_bit_statistics(self):
+        """
+        Configures the rule learner to use 32-bit floating point values for representing gradients and Hessians.
+        """
+
+
+class Float64StatisticsMixin(ABC):
+    """
+    Allows to configure a rule learner to use 64-bit floating point values for representing gradients and Hessians.
+    """
+
+    @abstractmethod
+    def use_64_bit_statistics(self):
+        """
+        Configures the rule learner to use 64-bit floating point values for representing gradients and Hessians.
+        """
+
+
 class NoL1RegularizationMixin(ABC):
     """
     Allows to configure a rule learner to not use L1 regularization.

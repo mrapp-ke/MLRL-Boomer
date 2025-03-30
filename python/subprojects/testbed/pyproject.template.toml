@@ -44,4 +44,4 @@ documentation = "https://mlrl-boomer.readthedocs.io/en/latest"
 issues = "https://github.com/mrapp-ke/MLRL-Boomer/issues"
 
 [project.scripts]
-testbed = "mlrl.testbed.main:main"
+mlrl-testbed = "mlrl.testbed.main:main"

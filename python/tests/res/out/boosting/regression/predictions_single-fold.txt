@@ -1,7 +1,7 @@
 INFO Starting experiment using the regression algorithm "boomer"...
 INFO Performing fold 1 of 10-fold cross validation...
-DEBUG Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
 DEBUG Loading data set from file "python/tests/res/data/atp7d.arff"...
+DEBUG Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
 INFO Fold 1 / 10:
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -49,14 +49,14 @@ Ground truth:
 Predictions:
 
 [[ 28.09  78.98  86.08  80.57  19.08  82.06]
- [ 25.95 122.74 113.81  90.8   37.1   88.  ]
+ [ 29.39 139.6  115.04  78.82  44.19  76.1 ]
  [195.24 221.71 248.17 256.    46.77 251.92]
  [ 30.03  13.69  51.38  54.5   17.64  47.71]
- [ 96.27 107.77  87.71 142.23  69.24 101.04]
+ [ 75.56  94.35  87.35 135.42  85.77  92.44]
  [ 22.12  23.53  34.09  42.81  25.81  23.1 ]
  [ 48.49  27.93  53.63 106.19  28.62 109.26]
  [ 97.68  46.55  71.63 104.52  30.54 107.09]
- [145.96  36.27  77.3   65.78  35.43  54.62]
+ [144.99  36.51  76.56  64.94  34.5   54.31]
  [ 29.09  32.35  83.3   65.56  40.37  53.67]
  [ 23.66 111.63 124.88 110.81  35.5  112.48]
  [ 25.99  75.11  75.19  86.74  32.87  87.02]
@@ -67,7 +67,7 @@ Predictions:
  [ 85.62 131.95  46.46 195.53  51.85 213.18]
  [ 30.39  36.89 106.73 125.33  55.9  134.12]
  [ 32.87  56.56 111.87 113.55  45.   119.22]
- [ 57.41 143.49 170.5  170.45  71.11 160.04]
+ [ 55.23 139.66 167.54 168.72  69.68 158.4 ]
  [106.37 194.86 165.45 183.44  43.18 200.02]
  [ 89.86 201.27 153.47 205.79  22.2  205.  ]
  [  8.47 104.66 192.64 143.55  33.5  139.68]

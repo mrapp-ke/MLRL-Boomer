@@ -22,13 +22,13 @@ source_files = [
     'src/mlrl/seco/rule_evaluation/rule_evaluation_decomposable_single.cpp',
     'src/mlrl/seco/statistics/statistics_provider_decomposable_dense.cpp',
     'src/mlrl/seco/stopping/stopping_criterion_coverage.cpp',
-    'src/mlrl/seco/info.cpp',
-    'src/mlrl/seco/learner_seco_classifier.cpp'
+    'src/mlrl/seco/learner_seco_classifier.cpp',
+    'src/mlrl/seco/library_info.cpp'
 ]
 
 # Test files
 test_files = [
-    'test/mlrl/seco/info.cpp'
+    'test/mlrl/seco/library_info.cpp'
 ]
 
 # Dependencies

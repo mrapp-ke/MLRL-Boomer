@@ -10,17 +10,17 @@ import numpy as np
 
 from scipy.sparse import lil_array
 
+from mlrl.common.config.options import Options
 from mlrl.common.cython.output_space_info import LabelVectorSet, LabelVectorSetVisitor
-from mlrl.common.data_types import Uint8
-from mlrl.common.options import Options
-from mlrl.common.rule_learners import ClassificationRuleLearner
+from mlrl.common.data.types import Uint8
+from mlrl.common.learners import ClassificationRuleLearner
 
-from mlrl.testbed.data import MetaData
-from mlrl.testbed.data_splitting import DataSplit, DataType
+from mlrl.testbed.data_sinks import CsvFileSink as BaseCsvFileSink, LogSink as BaseLogSink
 from mlrl.testbed.format import format_table
+from mlrl.testbed.output_scope import OutputScope
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
-from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
-from mlrl.testbed.problem_type import ProblemType
+from mlrl.testbed.prediction_result import PredictionResult
+from mlrl.testbed.training_result import TrainingResult
 
 OPTION_SPARSE = 'sparse'
 
@@ -49,7 +49,9 @@ class LabelVectorWriter(OutputWriter):
             """
             self.num_labels = num_labels
 
-            if y is not None:
+            if y is None:
+                self.unique_label_vectors = []
+            else:
                 unique_label_vector_strings: Dict[str, int] = {}
                 y = lil_array(y)
                 separator = ','
@@ -67,8 +69,6 @@ class LabelVectorWriter(OutputWriter):
                     unique_label_vectors.append((label_vector, frequency))
 
                 self.unique_label_vectors = unique_label_vectors
-            else:
-                self.unique_label_vectors = []
 
         def __format_label_vector(self, sparse_label_vector: np.ndarray, sparse: bool) -> str:
             if sparse:
@@ -108,28 +108,31 @@ class LabelVectorWriter(OutputWriter):
 
             return rows
 
-    class LogSink(OutputWriter.LogSink):
+    class LogSink(BaseLogSink):
         """
         Allows to write unique label vectors that are contained in a data set to the console.
         """
 
         def __init__(self, options: Options = Options()):
-            super().__init__(title='Label vectors', options=options)
+            super().__init__(BaseLogSink.TitleFormatter('Label vectors', include_dataset_type=False), options=options)
 
-    class CsvSink(OutputWriter.CsvSink):
+    class CsvFileSink(BaseCsvFileSink):
         """
         Allows to write unique label vectors that are contained in a data set to a CSV file.
         """
 
-        def __init__(self, output_dir: str, options: Options = Options()):
-            super().__init__(output_dir=output_dir, file_name='label_vectors', options=options)
+        def __init__(self, directory: str, options: Options = Options()):
+            """
+            :param directory: The path to the directory, where the CSV file should be located
+            """
+            super().__init__(BaseCsvFileSink.PathFormatter(directory, 'label_vectors', include_dataset_type=False),
+                             options=options)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
-                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
-                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
-                              train_time: float, predict_time: float) -> Optional[Any]:
-        return LabelVectorWriter.LabelVectors(num_labels=y.shape[1], y=y)
+    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+        dataset = scope.dataset
+        return LabelVectorWriter.LabelVectors(num_labels=dataset.num_outputs, y=dataset.y)
 
 
 class LabelVectorSetWriter(LabelVectorWriter):
@@ -155,17 +158,17 @@ class LabelVectorSetWriter(LabelVectorWriter):
             """
             self.label_vectors.unique_label_vectors.append((label_vector, frequency))
 
-    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
-                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
-                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
-                              train_time: float, predict_time: float) -> Optional[Any]:
-        if isinstance(learner, ClassificationRuleLearner):
-            output_space_info = learner.output_space_info_
+    def _generate_output_data(self, scope: OutputScope, training_result: Optional[TrainingResult],
+                              prediction_result: Optional[PredictionResult]) -> Optional[Any]:
+        if training_result:
+            learner = training_result.learner
 
-            if isinstance(output_space_info, LabelVectorSet):
-                visitor = LabelVectorSetWriter.Visitor(num_labels=y.shape[1])
-                output_space_info.visit(visitor)
-                return visitor.label_vectors
+            if isinstance(learner, ClassificationRuleLearner):
+                output_space_info = learner.output_space_info_
 
-        return super()._generate_output_data(problem_type, meta_data, x, y, data_split, learner, data_type,
-                                             prediction_type, prediction_scope, predictions, train_time, predict_time)
+                if isinstance(output_space_info, LabelVectorSet):
+                    visitor = LabelVectorSetWriter.Visitor(num_labels=scope.dataset.num_outputs)
+                    output_space_info.visit(visitor)
+                    return visitor.label_vectors
+
+        return super()._generate_output_data(scope, training_result, prediction_result)
