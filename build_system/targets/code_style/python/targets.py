@@ -10,6 +10,7 @@ from util.files import FileType
 from util.log import Log
 
 from targets.code_style.modules import CodeModule
+from targets.code_style.python.autoflake import Autoflake
 from targets.code_style.python.isort import ISort
 from targets.code_style.python.pylint import PyLint
 from targets.code_style.python.yapf import Yapf
@@ -29,6 +30,7 @@ class CheckPythonCodeStyle(PhonyTarget.Runnable):
 
     def run(self, build_unit: BuildUnit, module: Module):
         Log.info('Checking Python code style in directory "%s"...', module.root_directory)
+        Autoflake(build_unit, module).run()
         ISort(build_unit, module).run()
         Yapf(build_unit, module).run()
         PyLint(build_unit, module).run()
@@ -44,6 +46,7 @@ class EnforcePythonCodeStyle(PhonyTarget.Runnable):
 
     def run(self, build_unit: BuildUnit, module: Module):
         Log.info('Formatting Python code in directory "%s"...', module.root_directory)
+        Autoflake(build_unit, module, enforce_changes=True).run()
         ISort(build_unit, module, enforce_changes=True).run()
         Yapf(build_unit, module, enforce_changes=True).run()
 
@@ -58,6 +61,7 @@ class CheckCythonCodeStyle(PhonyTarget.Runnable):
 
     def run(self, build_unit: BuildUnit, module: Module):
         Log.info('Checking Cython code style in directory "%s"...', module.root_directory)
+        Autoflake(build_unit, module).run()
         ISort(build_unit, module).run()
 
 
@@ -71,4 +75,5 @@ class EnforceCythonCodeStyle(PhonyTarget.Runnable):
 
     def run(self, build_unit: BuildUnit, module: Module):
         Log.info('Formatting Cython code in directory "%s"...', module.root_directory)
+        Autoflake(build_unit, module, enforce_changes=True).run()
         ISort(build_unit, module, enforce_changes=True).run()
