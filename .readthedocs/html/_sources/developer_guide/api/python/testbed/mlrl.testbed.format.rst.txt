@@ -1,7 +1,0 @@
-mlrl.testbed.format module
-==========================
-
-.. automodule:: mlrl.testbed.format
-   :members:
-   :show-inheritance:
-   :undoc-members:

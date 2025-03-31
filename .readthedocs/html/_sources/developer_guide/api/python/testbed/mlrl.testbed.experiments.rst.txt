@@ -1,7 +1,25 @@
-mlrl.testbed.experiments module
-===============================
+mlrl.testbed.experiments package
+================================
 
 .. automodule:: mlrl.testbed.experiments
    :members:
    :show-inheritance:
    :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed.experiments.input
+   mlrl.testbed.experiments.output
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed.experiments.problem_type
+   mlrl.testbed.experiments.state

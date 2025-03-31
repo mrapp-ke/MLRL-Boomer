@@ -1,0 +1,7 @@
+mlrl.testbed.experiments.output.characteristics.writer\_prediction module
+=========================================================================
+
+.. automodule:: mlrl.testbed.experiments.output.characteristics.writer_prediction
+   :members:
+   :show-inheritance:
+   :undoc-members:
