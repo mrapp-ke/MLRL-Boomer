@@ -20,7 +20,6 @@ class NoCoverageStoppingCriterionMixin(ABC):
         Configures the rule learner to not use any stopping criterion that stops the induction of rules as soon as the
         sum of the weights of the uncovered labels is smaller or equal to a certain threshold.
         """
-        pass
 
 
 class CoverageStoppingCriterionMixin(ABC):
@@ -37,7 +36,6 @@ class CoverageStoppingCriterionMixin(ABC):
 
         :return: A `CoverageStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
-        pass
     
 
 class SingleOutputHeadMixin(ABC):
@@ -50,7 +48,6 @@ class SingleOutputHeadMixin(ABC):
         """
         Configures the rule learner to induce rules with single-output heads that predict for a single output.
         """
-        pass
 
 
 class PartialHeadMixin(ABC):
@@ -64,7 +61,6 @@ class PartialHeadMixin(ABC):
         Configures the rule learner to induce rules with partial heads that predict for a subset of the available
         labels.
         """
-        pass
 
 
 class NoLiftFunctionMixin(ABC):
@@ -77,7 +73,6 @@ class NoLiftFunctionMixin(ABC):
         """
         Configures the rule learner to not use a lift function.
         """
-        pass
 
 
 class PeakLiftFunctionMixin(ABC):
@@ -94,7 +89,6 @@ class PeakLiftFunctionMixin(ABC):
 
         :return: A `PeakLiftFunctionConfig` that allows further configuration of the lift function
         """
-        pass
 
 
 class KlnLiftFunctionMixin(ABC):
@@ -111,7 +105,6 @@ class KlnLiftFunctionMixin(ABC):
 
         :return: A `KlnLiftFunctionConfig` that allows further configuration of the lift function
         """
-        pass
 
 
 class AccuracyHeuristicMixin(ABC):
@@ -124,7 +117,6 @@ class AccuracyHeuristicMixin(ABC):
         """
         Configures the rule learner to use the "Accuracy" heuristic for learning rules.
         """
-        pass
 
 
 class AccuracyPruningHeuristicMixin(ABC):
@@ -137,7 +129,6 @@ class AccuracyPruningHeuristicMixin(ABC):
         """
         Configures the rule learner to use the "Accuracy" heuristic for pruning rules.
         """
-        pass
 
 
 class FMeasureHeuristicMixin(ABC):
@@ -152,7 +143,6 @@ class FMeasureHeuristicMixin(ABC):
 
         :return: A `FMeasureConfig` that allows further configuration of the heuristic
         """
-        pass
 
 
 class FMeasurePruningHeuristicMixin(ABC):
@@ -167,7 +157,6 @@ class FMeasurePruningHeuristicMixin(ABC):
 
         :return: A `FMeasureConfig` that allows further configuration of the heuristic
         """
-        pass
 
 
 class MEstimateHeuristicMixin(ABC):
@@ -182,7 +171,6 @@ class MEstimateHeuristicMixin(ABC):
 
         :return: A `MEstimateConfig` that allows further configuration of the heuristic
         """
-        pass
 
 
 class MEstimatePruningHeuristicMixin(ABC):
@@ -197,7 +185,6 @@ class MEstimatePruningHeuristicMixin(ABC):
 
         :return: A `MEstimateConfig` that allows further configuration of the heuristic
         """
-        pass
 
 
 class LaplaceHeuristicMixin(ABC):
@@ -210,7 +197,6 @@ class LaplaceHeuristicMixin(ABC):
         """
         Configures the rule learner to use the "Laplace" heuristic for learning rules.
         """
-        pass
 
 
 class LaplacePruningHeuristicMixin(ABC):
@@ -223,7 +209,6 @@ class LaplacePruningHeuristicMixin(ABC):
         """
         Configures the rule learner to use the "Laplace" heuristic for pruning rules.
         """
-        pass
 
 
 class PrecisionHeuristicMixin(ABC):
@@ -236,7 +221,6 @@ class PrecisionHeuristicMixin(ABC):
         """
         Configures the rule learner to use the "Precision" heuristic for learning rules.
         """
-        pass
 
 
 class PrecisionPruningHeuristicMixin(ABC):
@@ -249,7 +233,6 @@ class PrecisionPruningHeuristicMixin(ABC):
         """
         Configures the rule learner to use the "Precision" heuristic for pruning rules.
         """
-        pass
 
 
 class RecallHeuristicMixin(ABC):
@@ -262,7 +245,6 @@ class RecallHeuristicMixin(ABC):
         """
         Configures the rule learner to use the "Recall" heuristic for learning rules.
         """
-        pass
 
 
 class RecallPruningHeuristicMixin(ABC):
@@ -275,7 +257,6 @@ class RecallPruningHeuristicMixin(ABC):
         """
         Configures the rule learner to use the "Recall" heuristic for pruning rules.
         """
-        pass
 
 
 class WraHeuristicMixin(ABC):
@@ -288,7 +269,6 @@ class WraHeuristicMixin(ABC):
         """
         Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for learning rules.
         """
-        pass
 
 
 class WraPruningHeuristicMixin(ABC):
@@ -301,7 +281,6 @@ class WraPruningHeuristicMixin(ABC):
         """
         Configures the rule learner to use the "Weighted Relative Accuracy" heuristic for pruning rules.
         """
-        pass
 
 
 class OutputWiseBinaryPredictionMixin(ABC):
@@ -318,4 +297,3 @@ class OutputWiseBinaryPredictionMixin(ABC):
         are relevant or irrelevant by processing rules of an existing rule-based model in the order they have been
         learned. If a rule covers an example, its prediction is applied to each label individually.
         """
-        pass
