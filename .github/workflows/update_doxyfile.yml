@@ -41,7 +41,10 @@ jobs:
           app-id: ${{ secrets.TOKEN_APP_ID }}
           private-key: ${{ secrets.TOKEN_APP_SECRET }}
       - name: Install Doxygen
-        uses: ssciwr/doxygen-install@v1
+        uses: awalsh128/cache-apt-pkgs-action@v1
+        with:
+          packages: doxygen
+          version: apt-cache-${{ runner.os }}-${{ runner.arch }}
       - name: Update Doxyfile
         run: |
           ./build update_doxyfile
