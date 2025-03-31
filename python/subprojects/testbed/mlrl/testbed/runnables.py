@@ -22,10 +22,6 @@ from mlrl.common.learners import RuleLearner, SparsePolicy
 from mlrl.common.package_info import PythonPackageInfo
 from mlrl.common.util.format import format_dict_keys, format_enum_values, format_iterable
 
-from mlrl.testbed.characteristics import OPTION_DISTINCT_LABEL_VECTORS, OPTION_LABEL_CARDINALITY, \
-    OPTION_LABEL_IMBALANCE_RATIO, OPTION_OUTPUT_DENSITY, OPTION_OUTPUT_SPARSITY, OPTION_OUTPUTS
-from mlrl.testbed.data_characteristics import OPTION_EXAMPLES, OPTION_FEATURE_DENSITY, OPTION_FEATURE_SPARSITY, \
-    OPTION_FEATURES, OPTION_NOMINAL_FEATURES, OPTION_NUMERICAL_FEATURES, DataCharacteristicsWriter
 from mlrl.testbed.data_splitting import CrossValidationSplitter, DataSet, DataSplitter, NoSplitter, TrainTestSplitter
 from mlrl.testbed.evaluation import OPTION_ACCURACY, OPTION_COVERAGE_ERROR, OPTION_DISCOUNTED_CUMULATIVE_GAIN, \
     OPTION_ENABLE_ALL, OPTION_EXAMPLE_WISE_F1, OPTION_EXAMPLE_WISE_JACCARD, OPTION_EXAMPLE_WISE_PRECISION, \
@@ -35,26 +31,28 @@ from mlrl.testbed.evaluation import OPTION_ACCURACY, OPTION_COVERAGE_ERROR, OPTI
     OPTION_MEDIAN_ABSOLUTE_ERROR, OPTION_MICRO_F1, OPTION_MICRO_JACCARD, OPTION_MICRO_PRECISION, OPTION_MICRO_RECALL, \
     OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, OPTION_PRECISION, OPTION_PREDICTION_TIME, OPTION_RANK_LOSS, \
     OPTION_RECALL, OPTION_SUBSET_ACCURACY, OPTION_SUBSET_ZERO_ONE_LOSS, OPTION_TRAINING_TIME, OPTION_ZERO_ONE_LOSS, \
-    BinaryEvaluationWriter, EvaluationWriter, RankingEvaluationWriter, RegressionEvaluationWriter
-from mlrl.testbed.experiments import Evaluation, Experiment, GlobalEvaluation, IncrementalEvaluation
-from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
-from mlrl.testbed.io import clear_directory
-from mlrl.testbed.label_vectors import OPTION_SPARSE, LabelVectorSetWriter, LabelVectorWriter
-from mlrl.testbed.model_characteristics import ModelCharacteristicsWriter, RuleModelCharacteristicsWriter
+    BinaryEvaluationWriter, RankingEvaluationWriter, RegressionEvaluationWriter
+from mlrl.testbed.experiment import Evaluation, Experiment, GlobalEvaluation, IncrementalEvaluation
+from mlrl.testbed.experiments.input.preprocessors import OneHotEncoder, Preprocessor
+from mlrl.testbed.experiments.output.characteristics import DataCharacteristics, DataCharacteristicsWriter, \
+    OutputCharacteristics, PredictionCharacteristicsWriter
+from mlrl.testbed.experiments.output.label_vectors import LabelVectors, LabelVectorWriter
+from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, TextFileSink
+from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.problem_type import ProblemType
+from mlrl.testbed.model_characteristics import RuleModelCharacteristicsWriter
 from mlrl.testbed.models import OPTION_DECIMALS_BODY, OPTION_DECIMALS_HEAD, OPTION_PRINT_BODIES, \
     OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_HEADS, OPTION_PRINT_NOMINAL_VALUES, OPTION_PRINT_OUTPUT_NAMES, \
-    ModelWriter, RuleModelWriter
-from mlrl.testbed.output_writer import OutputWriter
+    RuleModelWriter
 from mlrl.testbed.package_info import get_package_info as get_testbed_package_info
 from mlrl.testbed.parameters import CsvParameterLoader, ParameterLoader, ParameterWriter
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
-from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsWriter
 from mlrl.testbed.prediction_scope import PredictionType
 from mlrl.testbed.predictions import PredictionWriter
-from mlrl.testbed.preprocessors import OneHotEncoder, Preprocessor
 from mlrl.testbed.probability_calibration import JointProbabilityCalibrationModelWriter, \
     MarginalProbabilityCalibrationModelWriter
-from mlrl.testbed.problem_type import ProblemType
+from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
+from mlrl.testbed.util.io import clear_directory
 
 LOG_FORMAT = '%(levelname)s %(message)s'
 
@@ -442,8 +440,10 @@ class LearnerRunnable(Runnable, ABC):
 
     PRINT_PREDICTION_CHARACTERISTICS_VALUES: Dict[str, Set[str]] = {
         BooleanOption.TRUE.value: {
-            OPTION_OUTPUTS, OPTION_OUTPUT_DENSITY, OPTION_OUTPUT_SPARSITY, OPTION_LABEL_IMBALANCE_RATIO,
-            OPTION_LABEL_CARDINALITY, OPTION_DISTINCT_LABEL_VECTORS, OPTION_DECIMALS, OPTION_PERCENTAGE
+            OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,
+            OutputCharacteristics.OPTION_OUTPUT_SPARSITY, OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
+            OutputCharacteristics.OPTION_LABEL_CARDINALITY, OutputCharacteristics.OPTION_DISTINCT_LABEL_VECTORS,
+            OPTION_DECIMALS, OPTION_PERCENTAGE
         },
         BooleanOption.FALSE.value: {}
     }
@@ -456,10 +456,13 @@ class LearnerRunnable(Runnable, ABC):
 
     PRINT_DATA_CHARACTERISTICS_VALUES: Dict[str, Set[str]] = {
         BooleanOption.TRUE.value: {
-            OPTION_EXAMPLES, OPTION_FEATURES, OPTION_NUMERICAL_FEATURES, OPTION_NOMINAL_FEATURES,
-            OPTION_FEATURE_DENSITY, OPTION_FEATURE_SPARSITY, OPTION_OUTPUTS, OPTION_OUTPUT_DENSITY,
-            OPTION_OUTPUT_SPARSITY, OPTION_LABEL_IMBALANCE_RATIO, OPTION_LABEL_CARDINALITY,
-            OPTION_DISTINCT_LABEL_VECTORS, OPTION_DECIMALS, OPTION_PERCENTAGE
+            DataCharacteristics.OPTION_EXAMPLES, DataCharacteristics.OPTION_FEATURES,
+            DataCharacteristics.OPTION_NUMERICAL_FEATURES, DataCharacteristics.OPTION_NOMINAL_FEATURES,
+            DataCharacteristics.OPTION_FEATURE_DENSITY, DataCharacteristics.OPTION_FEATURE_SPARSITY,
+            OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,
+            OutputCharacteristics.OPTION_OUTPUT_SPARSITY, OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
+            OutputCharacteristics.OPTION_LABEL_CARDINALITY, OutputCharacteristics.OPTION_DISTINCT_LABEL_VECTORS,
+            OPTION_DECIMALS, OPTION_PERCENTAGE
         },
         BooleanOption.FALSE.value: {}
     }
@@ -471,7 +474,7 @@ class LearnerRunnable(Runnable, ABC):
     PARAM_PRINT_LABEL_VECTORS = '--print-label-vectors'
 
     PRINT_LABEL_VECTORS_VALUES: Dict[str, Set[str]] = {
-        BooleanOption.TRUE.value: {OPTION_SPARSE},
+        BooleanOption.TRUE.value: {LabelVectors.OPTION_SPARSE},
         BooleanOption.FALSE.value: {}
     }
 
@@ -511,7 +514,9 @@ class LearnerRunnable(Runnable, ABC):
 
     @staticmethod
     def __create_preprocessor(args) -> Optional[Preprocessor]:
-        return OneHotEncoder() if args.one_hot_encoding else None
+        if args.one_hot_encoding:
+            return OneHotEncoder()
+        return None
 
     def __create_data_splitter(self, args) -> DataSplitter:
         data_set = DataSet(data_dir=args.data_dir,
@@ -910,21 +915,21 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.PRINT_EVALUATION_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            sinks.append(EvaluationWriter.LogSink(options=options))
+            sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_EVALUATION, args.store_evaluation,
                                                  self.STORE_EVALUATION_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(EvaluationWriter.CsvFileSink(args.output_dir, options=options))
+            sinks.append(CsvFileSink(args.output_dir, options=options))
 
         if len(sinks) == 0:
             return None
         if problem_type == ProblemType.REGRESSION:
-            return RegressionEvaluationWriter(sinks)
+            return RegressionEvaluationWriter(*sinks)
         if prediction_type in {PredictionType.SCORES, PredictionType.PROBABILITIES}:
-            return RankingEvaluationWriter(sinks)
-        return BinaryEvaluationWriter(sinks)
+            return RankingEvaluationWriter(*sinks)
+        return BinaryEvaluationWriter(*sinks)
 
     def _create_parameter_loader(self, args) -> Optional[ParameterLoader]:
         """
@@ -948,12 +953,12 @@ class LearnerRunnable(Runnable, ABC):
         sinks = []
 
         if args.print_parameters:
-            sinks.append(ParameterWriter.LogSink())
+            sinks.append(LogSink())
 
         if args.parameter_save_dir:
-            sinks.append(ParameterWriter.CsvFileSink(args.parameter_save_dir))
+            sinks.append(CsvFileSink(args.parameter_save_dir))
 
-        return ParameterWriter(sinks) if sinks else None
+        return ParameterWriter(*sinks) if sinks else None
 
     def _create_prediction_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -967,7 +972,7 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.PRINT_PREDICTIONS_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            sinks.append(PredictionWriter.LogSink(options=options))
+            sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_PREDICTIONS, args.store_predictions,
                                                  self.STORE_PREDICTIONS_VALUES)
@@ -975,7 +980,7 @@ class LearnerRunnable(Runnable, ABC):
         if value == BooleanOption.TRUE.value and args.output_dir:
             sinks.append(PredictionWriter.ArffFileSink(args.output_dir, options=options))
 
-        return PredictionWriter(sinks) if sinks else None
+        return PredictionWriter(*sinks) if sinks else None
 
     def _create_prediction_characteristics_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -991,16 +996,16 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.PRINT_PREDICTION_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            sinks.append(PredictionCharacteristicsWriter.LogSink(options=options))
+            sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_PREDICTION_CHARACTERISTICS,
                                                  args.store_prediction_characteristics,
                                                  self.STORE_PREDICTION_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(PredictionCharacteristicsWriter.CsvFileSink(args.output_dir, options=options))
+            sinks.append(CsvFileSink(args.output_dir, options=options))
 
-        return PredictionCharacteristicsWriter(sinks) if sinks else None
+        return PredictionCharacteristicsWriter(*sinks) if sinks else None
 
     def _create_data_characteristics_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -1015,15 +1020,15 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.PRINT_DATA_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            sinks.append(DataCharacteristicsWriter.LogSink(options=options))
+            sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_DATA_CHARACTERISTICS, args.store_data_characteristics,
                                                  self.STORE_DATA_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(DataCharacteristicsWriter.CsvFileSink(args.output_dir, options=options))
+            sinks.append(CsvFileSink(args.output_dir, options=options))
 
-        return DataCharacteristicsWriter(sinks) if sinks else None
+        return DataCharacteristicsWriter(*sinks) if sinks else None
 
     def _create_label_vector_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -1038,15 +1043,15 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.PRINT_LABEL_VECTORS_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            sinks.append(LabelVectorWriter.LogSink(options=options))
+            sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_LABEL_VECTORS, args.store_label_vectors,
                                                  self.STORE_LABEL_VECTORS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(LabelVectorWriter.CsvFileSink(args.output_dir, options=options))
+            sinks.append(CsvFileSink(args.output_dir, options=options))
 
-        return LabelVectorWriter(sinks) if sinks else None
+        return LabelVectorWriter(*sinks) if sinks else None
 
     @abstractmethod
     def create_classifier(self, args) -> Optional[SkLearnClassifierMixin]:
@@ -1333,14 +1338,14 @@ class RuleLearnerRunnable(LearnerRunnable):
         value, options = parse_param_and_options(self.PARAM_PRINT_RULES, args.print_rules, self.PRINT_RULES_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            sinks.append(ModelWriter.LogSink(options=options))
+            sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_RULES, args.store_rules, self.STORE_RULES_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(ModelWriter.TextFileSink(args.output_dir, options=options))
+            sinks.append(TextFileSink(args.output_dir, options=options))
 
-        return RuleModelWriter(sinks) if sinks else None
+        return RuleModelWriter(*sinks) if sinks else None
 
     def _create_model_characteristics_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -1353,12 +1358,12 @@ class RuleLearnerRunnable(LearnerRunnable):
         sinks = []
 
         if args.print_model_characteristics:
-            sinks.append(ModelCharacteristicsWriter.LogSink())
+            sinks.append(LogSink())
 
         if args.store_model_characteristics and args.output_dir:
-            sinks.append(ModelCharacteristicsWriter.CsvFileSink(args.output_dir))
+            sinks.append(CsvFileSink(args.output_dir))
 
-        return RuleModelCharacteristicsWriter(sinks) if sinks else None
+        return RuleModelCharacteristicsWriter(*sinks) if sinks else None
 
     def _create_marginal_probability_calibration_model_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -1374,16 +1379,16 @@ class RuleLearnerRunnable(LearnerRunnable):
                                                  self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            sinks.append(MarginalProbabilityCalibrationModelWriter.LogSink(options=options))
+            sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL,
                                                  args.store_marginal_probability_calibration_model,
                                                  self.STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(MarginalProbabilityCalibrationModelWriter.CsvFileSink(args.output_dir, options=options))
+            sinks.append(CsvFileSink(args.output_dir, options=options))
 
-        return MarginalProbabilityCalibrationModelWriter(sinks) if sinks else None
+        return MarginalProbabilityCalibrationModelWriter(*sinks) if sinks else None
 
     def _create_joint_probability_calibration_model_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -1399,16 +1404,16 @@ class RuleLearnerRunnable(LearnerRunnable):
                                                  self.PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            sinks.append(JointProbabilityCalibrationModelWriter.LogSink(options=options))
+            sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_JOINT_PROBABILITY_CALIBRATION_MODEL,
                                                  args.store_joint_probability_calibration_model,
                                                  self.STORE_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(JointProbabilityCalibrationModelWriter.CsvFileSink(args.output_dir, options=options))
+            sinks.append(CsvFileSink(args.output_dir, options=options))
 
-        return JointProbabilityCalibrationModelWriter(sinks) if sinks else None
+        return JointProbabilityCalibrationModelWriter(*sinks) if sinks else None
 
     def _create_evaluation(self, args, prediction_type: PredictionType,
                            output_writers: List[OutputWriter]) -> Optional[Evaluation]:
@@ -1428,22 +1433,6 @@ class RuleLearnerRunnable(LearnerRunnable):
                 step_size=step_size) if output_writers else None
 
         return super()._create_evaluation(args, prediction_type, output_writers)
-
-    def _create_label_vector_writer(self, args) -> Optional[OutputWriter]:
-        sinks = []
-        value, options = parse_param_and_options(self.PARAM_PRINT_LABEL_VECTORS, args.print_label_vectors,
-                                                 self.PRINT_LABEL_VECTORS_VALUES)
-
-        if value == BooleanOption.TRUE.value:
-            sinks.append(LabelVectorSetWriter.LogSink(options=options))
-
-        value, options = parse_param_and_options(self.PARAM_STORE_LABEL_VECTORS, args.store_label_vectors,
-                                                 self.STORE_LABEL_VECTORS_VALUES)
-
-        if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(LabelVectorSetWriter.CsvFileSink(args.output_dir, options=options))
-
-        return LabelVectorSetWriter(sinks) if sinks else None
 
     def _create_post_training_output_writers(self, args) -> List[OutputWriter]:
         output_writers = super()._create_post_training_output_writers(args)

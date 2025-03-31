@@ -10,7 +10,7 @@ from os import path
 import _pickle as pickle
 
 from mlrl.testbed.fold import Fold
-from mlrl.testbed.io import get_file_name_per_fold
+from mlrl.testbed.util.io import get_file_name_per_fold
 
 SUFFIX_MODEL = 'model'
 
