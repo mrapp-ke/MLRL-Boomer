@@ -6,31 +6,35 @@ mlrl.testbed package
    :show-inheritance:
    :undoc-members:
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed.experiments
+   mlrl.testbed.util
+
 Submodules
 ----------
 
 .. toctree::
    :maxdepth: 4
 
-   mlrl.testbed.characteristics
    mlrl.testbed.data
-   mlrl.testbed.data_characteristics
    mlrl.testbed.data_splitting
+   mlrl.testbed.dataset
+   mlrl.testbed.dataset_loader
    mlrl.testbed.evaluation
-   mlrl.testbed.experiments
-   mlrl.testbed.format
-   mlrl.testbed.io
-   mlrl.testbed.label_vectors
+   mlrl.testbed.experiment
+   mlrl.testbed.fold
    mlrl.testbed.main
    mlrl.testbed.model_characteristics
    mlrl.testbed.models
-   mlrl.testbed.output_writer
    mlrl.testbed.package_info
    mlrl.testbed.parameters
    mlrl.testbed.persistence
-   mlrl.testbed.prediction_characteristics
    mlrl.testbed.prediction_scope
    mlrl.testbed.predictions
    mlrl.testbed.probability_calibration
-   mlrl.testbed.problem_type
    mlrl.testbed.runnables

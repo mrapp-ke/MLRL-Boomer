@@ -1,0 +1,17 @@
+mlrl.testbed.experiments.output.label\_vectors package
+======================================================
+
+.. automodule:: mlrl.testbed.experiments.output.label_vectors
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed.experiments.output.label_vectors.label_vector_histogram
+   mlrl.testbed.experiments.output.label_vectors.label_vectors
+   mlrl.testbed.experiments.output.label_vectors.writer
