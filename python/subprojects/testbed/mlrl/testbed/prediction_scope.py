@@ -20,8 +20,8 @@ class PredictionType(Enum):
     @staticmethod
     def parse(parameter_name: str, value: str) -> 'PredictionType':
         """
-        Parses and returns a parameter value that specifies the `PredictionType` of the prediction to be obtained from a
-        learner. If the given value is invalid, a `ValueError` is raised.
+        Parses and returns a parameter value that specifies the `PredictionType` of the predictions to be obtained from
+        a learner. If the given value is invalid, a `ValueError` is raised.
 
         :param parameter_name:  The name of the parameter
         :param value:           The value to be parsed
@@ -39,20 +39,18 @@ class PredictionScope(ABC):
     Provides information about whether predictions have been obtained from a global model or incrementally.
     """
 
+    @property
     @abstractmethod
     def is_global(self) -> bool:
         """
-        Returns whether the predictions have been obtained from a global model or not.
-
-        :return: True, if the predictions have been obtained from a global model, False otherwise
+        True, if the predictions have been obtained from a global model, False otherwise.
         """
 
+    @property
     @abstractmethod
-    def get_model_size(self) -> int:
+    def model_size(self) -> int:
         """
-        Returns the size of the model from which the prediction have been obtained.
-
-        :return: The size of the model or 0, if the predictions have been obtained from a global model
+        The size of the model or 0, if the predictions have been obtained from a global model.
         """
 
     @abstractmethod
@@ -70,10 +68,12 @@ class GlobalPrediction(PredictionScope):
     Provides information about predictions that have been obtained from a global model.
     """
 
+    @property
     def is_global(self) -> bool:
         return True
 
-    def get_model_size(self) -> int:
+    @property
+    def model_size(self) -> int:
         return 0
 
     def get_file_name(self, name: str) -> str:
@@ -89,13 +89,15 @@ class IncrementalPrediction(PredictionScope):
         """
         :param model_size: The size of the model, the predictions have been obtained from
         """
-        self.model_size = model_size
+        self._model_size = model_size
 
+    @property
     def is_global(self) -> bool:
         return False
 
-    def get_model_size(self) -> int:
-        return self.model_size
+    @property
+    def model_size(self) -> int:
+        return self._model_size
 
     def get_file_name(self, name: str) -> str:
         return name + '_model-size-' + str(self.model_size)

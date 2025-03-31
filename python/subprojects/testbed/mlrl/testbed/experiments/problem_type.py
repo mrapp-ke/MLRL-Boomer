@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides utility classes for dealing with different types of machine learning problems.
+Provides classes for dealing with different types of machine learning problems.
 """
 from enum import Enum
 
@@ -10,7 +10,7 @@ from mlrl.common.util.format import format_enum_values
 
 class ProblemType(Enum):
     """
-    All supported type of machine learning problems.
+    All types of machine learning problems, an experiment may be concerned with.
     """
     CLASSIFICATION = 'classification'
     REGRESSION = 'regression'
