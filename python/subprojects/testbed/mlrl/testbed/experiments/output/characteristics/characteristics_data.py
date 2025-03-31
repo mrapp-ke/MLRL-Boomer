@@ -18,35 +18,25 @@ from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
 
-OPTION_EXAMPLES = 'examples'
-
-OPTION_FEATURES = 'features'
-
-OPTION_NUMERICAL_FEATURES = 'numerical_features'
-
-OPTION_ORDINAL_FEATURES = 'ordinal_features'
-
-OPTION_NOMINAL_FEATURES = 'nominal_features'
-
-OPTION_FEATURE_DENSITY = 'feature_density'
-
-OPTION_FEATURE_SPARSITY = 'feature_sparsity'
-
-FEATURE_CHARACTERISTICS = [
-    Characteristic(OPTION_EXAMPLES, 'Examples', lambda x: x.num_examples),
-    Characteristic(OPTION_FEATURES, 'Features', lambda x: x.num_features),
-    Characteristic(OPTION_NUMERICAL_FEATURES, 'Numerical Features', lambda x: x.num_numerical_features),
-    Characteristic(OPTION_ORDINAL_FEATURES, 'Ordinal Features', lambda x: x.num_ordinal_features),
-    Characteristic(OPTION_NOMINAL_FEATURES, 'Nominal Features', lambda x: x.num_nominal_features),
-    Characteristic(OPTION_FEATURE_DENSITY, 'Feature Density', lambda x: x.feature_density, percentage=True),
-    Characteristic(OPTION_FEATURE_SPARSITY, 'Feature Sparsity', lambda x: x.feature_sparsity, percentage=True),
-]
-
 
 class DataCharacteristics(TabularOutputData):
     """
     Represents characteristics of a dataset that are part of output data.
     """
+
+    OPTION_EXAMPLES = 'examples'
+
+    OPTION_FEATURES = 'features'
+
+    OPTION_NUMERICAL_FEATURES = 'numerical_features'
+
+    OPTION_ORDINAL_FEATURES = 'ordinal_features'
+
+    OPTION_NOMINAL_FEATURES = 'nominal_features'
+
+    OPTION_FEATURE_DENSITY = 'feature_density'
+
+    OPTION_FEATURE_SPARSITY = 'feature_sparsity'
 
     def __init__(self, problem_type: ProblemType, dataset: Dataset):
         """
@@ -106,3 +96,44 @@ class DataCharacteristics(TabularOutputData):
                                                             decimals=decimals)
 
         return [columns]
+
+
+FEATURE_CHARACTERISTICS = [
+    Characteristic(
+        option_key=DataCharacteristics.OPTION_EXAMPLES,
+        name='Examples',
+        function=lambda x: x.num_examples,
+    ),
+    Characteristic(
+        option_key=DataCharacteristics.OPTION_FEATURES,
+        name='Features',
+        function=lambda x: x.num_features,
+    ),
+    Characteristic(
+        option_key=DataCharacteristics.OPTION_NUMERICAL_FEATURES,
+        name='Numerical Features',
+        function=lambda x: x.num_numerical_features,
+    ),
+    Characteristic(
+        option_key=DataCharacteristics.OPTION_ORDINAL_FEATURES,
+        name='Ordinal Features',
+        function=lambda x: x.num_ordinal_features,
+    ),
+    Characteristic(
+        option_key=DataCharacteristics.OPTION_NOMINAL_FEATURES,
+        name='Nominal Features',
+        function=lambda x: x.num_nominal_features,
+    ),
+    Characteristic(
+        option_key=DataCharacteristics.OPTION_FEATURE_DENSITY,
+        name='Feature Density',
+        function=lambda x: x.feature_density,
+        percentage=True,
+    ),
+    Characteristic(
+        option_key=DataCharacteristics.OPTION_FEATURE_SPARSITY,
+        name='Feature Sparsity',
+        function=lambda x: x.feature_sparsity,
+        percentage=True,
+    ),
+]

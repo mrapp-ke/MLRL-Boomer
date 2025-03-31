@@ -14,35 +14,23 @@ from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
 
-OPTION_OUTPUTS = 'outputs'
-
-OPTION_OUTPUT_DENSITY = 'output_density'
-
-OPTION_OUTPUT_SPARSITY = 'output_sparsity'
-
-OPTION_LABEL_IMBALANCE_RATIO = 'label_imbalance_ratio'
-
-OPTION_LABEL_CARDINALITY = 'label_cardinality'
-
-OPTION_DISTINCT_LABEL_VECTORS = 'distinct_label_vectors'
-
-OUTPUT_CHARACTERISTICS = [
-    Characteristic(OPTION_OUTPUTS, 'Outputs', lambda x: x.num_outputs),
-    Characteristic(OPTION_OUTPUT_DENSITY, 'Output Density', lambda x: x.output_density, percentage=True),
-    Characteristic(OPTION_OUTPUT_SPARSITY, 'Output Sparsity', lambda x: x.output_sparsity, percentage=True)
-]
-
-LABEL_CHARACTERISTICS = OUTPUT_CHARACTERISTICS + [
-    Characteristic(OPTION_LABEL_IMBALANCE_RATIO, 'Label Imbalance Ratio', lambda x: x.avg_label_imbalance_ratio),
-    Characteristic(OPTION_LABEL_CARDINALITY, 'Label Cardinality', lambda x: x.avg_label_cardinality),
-    Characteristic(OPTION_DISTINCT_LABEL_VECTORS, 'Distinct Label Vectors', lambda x: x.num_distinct_label_vectors)
-]
-
 
 class OutputCharacteristics(TabularOutputData):
     """
     Represents characteristics of an output matrix that are part of output data.
     """
+
+    OPTION_OUTPUTS = 'outputs'
+
+    OPTION_OUTPUT_DENSITY = 'output_density'
+
+    OPTION_OUTPUT_SPARSITY = 'output_sparsity'
+
+    OPTION_LABEL_IMBALANCE_RATIO = 'label_imbalance_ratio'
+
+    OPTION_LABEL_CARDINALITY = 'label_cardinality'
+
+    OPTION_DISTINCT_LABEL_VECTORS = 'distinct_label_vectors'
 
     def __init__(self,
                  problem_type: ProblemType,
@@ -97,3 +85,42 @@ class OutputCharacteristics(TabularOutputData):
                                                             decimals=decimals)
 
         return [columns]
+
+
+OUTPUT_CHARACTERISTICS = [
+    Characteristic(
+        option_key=OutputCharacteristics.OPTION_OUTPUTS,
+        name='Outputs',
+        function=lambda x: x.num_outputs,
+    ),
+    Characteristic(
+        option_key=OutputCharacteristics.OPTION_OUTPUT_DENSITY,
+        name='Output Density',
+        function=lambda x: x.output_density,
+        percentage=True,
+    ),
+    Characteristic(
+        option_key=OutputCharacteristics.OPTION_OUTPUT_SPARSITY,
+        name='Output Sparsity',
+        function=lambda x: x.output_sparsity,
+        percentage=True,
+    )
+]
+
+LABEL_CHARACTERISTICS = OUTPUT_CHARACTERISTICS + [
+    Characteristic(
+        option_key=OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
+        name='Label Imbalance Ratio',
+        function=lambda x: x.avg_label_imbalance_ratio,
+    ),
+    Characteristic(
+        option_key=OutputCharacteristics.OPTION_LABEL_CARDINALITY,
+        name='Label Cardinality',
+        function=lambda x: x.avg_label_cardinality,
+    ),
+    Characteristic(
+        option_key=OutputCharacteristics.OPTION_DISTINCT_LABEL_VECTORS,
+        name='Distinct Label Vectors',
+        function=lambda x: x.num_distinct_label_vectors,
+    )
+]
