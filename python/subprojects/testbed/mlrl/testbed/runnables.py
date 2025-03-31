@@ -34,13 +34,8 @@ from mlrl.testbed.evaluation import OPTION_ACCURACY, OPTION_COVERAGE_ERROR, OPTI
     BinaryEvaluationWriter, RankingEvaluationWriter, RegressionEvaluationWriter
 from mlrl.testbed.experiment import Evaluation, Experiment, GlobalEvaluation, IncrementalEvaluation
 from mlrl.testbed.experiments.input.preprocessors import OneHotEncoder, Preprocessor
-from mlrl.testbed.experiments.output.characteristics import DataCharacteristicsWriter, PredictionCharacteristicsWriter
-from mlrl.testbed.experiments.output.characteristics.characteristics_data import OPTION_EXAMPLES, \
-    OPTION_FEATURE_DENSITY, OPTION_FEATURE_SPARSITY, OPTION_FEATURES, OPTION_NOMINAL_FEATURES, \
-    OPTION_NUMERICAL_FEATURES
-from mlrl.testbed.experiments.output.characteristics.characteristics_output import OPTION_DISTINCT_LABEL_VECTORS, \
-    OPTION_LABEL_CARDINALITY, OPTION_LABEL_IMBALANCE_RATIO, OPTION_OUTPUT_DENSITY, OPTION_OUTPUT_SPARSITY, \
-    OPTION_OUTPUTS
+from mlrl.testbed.experiments.output.characteristics import DataCharacteristics, DataCharacteristicsWriter, \
+    OutputCharacteristics, PredictionCharacteristicsWriter
 from mlrl.testbed.experiments.output.label_vectors import LabelVectors, LabelVectorWriter
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, TextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
@@ -445,8 +440,10 @@ class LearnerRunnable(Runnable, ABC):
 
     PRINT_PREDICTION_CHARACTERISTICS_VALUES: Dict[str, Set[str]] = {
         BooleanOption.TRUE.value: {
-            OPTION_OUTPUTS, OPTION_OUTPUT_DENSITY, OPTION_OUTPUT_SPARSITY, OPTION_LABEL_IMBALANCE_RATIO,
-            OPTION_LABEL_CARDINALITY, OPTION_DISTINCT_LABEL_VECTORS, OPTION_DECIMALS, OPTION_PERCENTAGE
+            OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,
+            OutputCharacteristics.OPTION_OUTPUT_SPARSITY, OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
+            OutputCharacteristics.OPTION_LABEL_CARDINALITY, OutputCharacteristics.OPTION_DISTINCT_LABEL_VECTORS,
+            OPTION_DECIMALS, OPTION_PERCENTAGE
         },
         BooleanOption.FALSE.value: {}
     }
@@ -459,10 +456,13 @@ class LearnerRunnable(Runnable, ABC):
 
     PRINT_DATA_CHARACTERISTICS_VALUES: Dict[str, Set[str]] = {
         BooleanOption.TRUE.value: {
-            OPTION_EXAMPLES, OPTION_FEATURES, OPTION_NUMERICAL_FEATURES, OPTION_NOMINAL_FEATURES,
-            OPTION_FEATURE_DENSITY, OPTION_FEATURE_SPARSITY, OPTION_OUTPUTS, OPTION_OUTPUT_DENSITY,
-            OPTION_OUTPUT_SPARSITY, OPTION_LABEL_IMBALANCE_RATIO, OPTION_LABEL_CARDINALITY,
-            OPTION_DISTINCT_LABEL_VECTORS, OPTION_DECIMALS, OPTION_PERCENTAGE
+            DataCharacteristics.OPTION_EXAMPLES, DataCharacteristics.OPTION_FEATURES,
+            DataCharacteristics.OPTION_NUMERICAL_FEATURES, DataCharacteristics.OPTION_NOMINAL_FEATURES,
+            DataCharacteristics.OPTION_FEATURE_DENSITY, DataCharacteristics.OPTION_FEATURE_SPARSITY,
+            OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,
+            OutputCharacteristics.OPTION_OUTPUT_SPARSITY, OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
+            OutputCharacteristics.OPTION_LABEL_CARDINALITY, OutputCharacteristics.OPTION_DISTINCT_LABEL_VECTORS,
+            OPTION_DECIMALS, OPTION_PERCENTAGE
         },
         BooleanOption.FALSE.value: {}
     }
