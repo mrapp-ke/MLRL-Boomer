@@ -15,9 +15,9 @@ from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 
 
 @dataclass
-class TrainingResult:
+class TrainingState:
     """
-    Stores the result of a training process.
+    Represents the result of a training process.
 
     Attributes:
         learner:    The learner that has been trained
@@ -28,7 +28,7 @@ class TrainingResult:
 
 
 @dataclass
-class PredictionResult:
+class PredictionState:
     """
     Stores the result of a prediction process.
 
@@ -62,8 +62,8 @@ class ExperimentState:
     dataset: Dataset
     fold: Fold
     parameters: Dict[str, Any]
-    training_result: Optional[TrainingResult] = None
-    prediction_result: Optional[PredictionResult] = None
+    training_result: Optional[TrainingState] = None
+    prediction_result: Optional[PredictionState] = None
 
     @dataclass
     class FormatterOptions:
