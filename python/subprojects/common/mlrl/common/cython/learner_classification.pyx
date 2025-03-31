@@ -246,7 +246,6 @@ class OutputWiseStratifiedInstanceSamplingMixin(ABC):
         :return: An `OutputWiseStratifiedInstanceSamplingConfig` that allows further configuration of the method for
                  sampling instances
         """
-        pass
 
 
 class ExampleWiseStratifiedInstanceSamplingMixin(ABC):
@@ -263,7 +262,6 @@ class ExampleWiseStratifiedInstanceSamplingMixin(ABC):
         :return: An `ExampleWiseStratifiedInstanceSamplingConfig` that allows further configuration of the method for
                  sampling instances
         """
-        pass
 
 
 class OutputWiseStratifiedBiPartitionSamplingMixin(ABC):
@@ -281,7 +279,6 @@ class OutputWiseStratifiedBiPartitionSamplingMixin(ABC):
         :return: An `OutputWiseStratifiedBiPartitionSamplingConfig` that allows further configuration of the method for
                  partitioning the available training examples into a training and a holdout set
         """
-        pass
 
 
 class ExampleWiseStratifiedBiPartitionSamplingMixin(ABC):
@@ -299,4 +296,3 @@ class ExampleWiseStratifiedBiPartitionSamplingMixin(ABC):
         :return: An `ExampleWiseStratifiedBiPartitionSamplingConfig` that allows further configuration of the method for
                  partitioning the available training examples into a training and a holdout set
         """
-        pass

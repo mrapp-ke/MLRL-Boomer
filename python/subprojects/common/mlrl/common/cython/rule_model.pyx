@@ -17,7 +17,6 @@ cdef class EmptyBody:
     """
     A body of a rule that does not contain any conditions.
     """
-    pass
 
 
 cdef class ConjunctiveBody:
@@ -124,7 +123,6 @@ class RuleModelVisitor:
 
         :param body: An `EmptyBody` to be visited
         """
-        pass
 
     @abstractmethod
     def visit_conjunctive_body(self, body: ConjunctiveBody):
@@ -134,7 +132,6 @@ class RuleModelVisitor:
 
         :param body: A `ConjunctiveBody` to be visited
         """
-        pass
 
     @abstractmethod
     def visit_complete_head(self, head: CompleteHead):
@@ -144,8 +141,7 @@ class RuleModelVisitor:
 
         :param head: A `CompleteHead` to be visited
         """
-        pass
-    
+
     @abstractmethod
     def visit_partial_head(self, head: PartialHead):
         """
@@ -154,7 +150,6 @@ class RuleModelVisitor:
 
         :param head: A `PartialHead` to be visited
         """
-        pass
 
 
 cdef class RuleModel:
@@ -196,7 +191,6 @@ cdef class RuleModel:
 
         :param visitor: The `RuleModelVisitor` that should be used to access the bodies and heads
         """
-        pass
 
     def visit_used(self, visitor: RuleModelVisitor):
         """
@@ -205,7 +199,6 @@ cdef class RuleModel:
 
         :param visitor: The `RuleModelVisitor` that should be used to access the bodies and heads
         """
-        pass
 
 
 cdef class RuleList(RuleModel):
@@ -271,29 +264,29 @@ cdef class RuleList(RuleModel):
         cdef uint32 num_elements = head.getNumElements()
         cdef npc.ndarray values = np.asarray(<uint8[:num_elements]>head.values_cbegin())
         self.visitor.visit_complete_head(CompleteHead.__new__(CompleteHead, values))
-    
+
     cdef __visit_complete_32bit_head(self, const Complete32BitHeadImpl& head):
         cdef uint32 num_elements = head.getNumElements()
         cdef npc.ndarray values = np.asarray(<float32[:num_elements]>head.values_cbegin())
         self.visitor.visit_complete_head(CompleteHead.__new__(CompleteHead, values))
-    
+
     cdef __visit_complete_64bit_head(self, const Complete64BitHeadImpl& head):
         cdef uint32 num_elements = head.getNumElements()
         cdef npc.ndarray values = np.asarray(<float64[:num_elements]>head.values_cbegin())
         self.visitor.visit_complete_head(CompleteHead.__new__(CompleteHead, values))
-    
+
     cdef __visit_partial_binary_head(self, const PartialBinaryHeadImpl& head):
         cdef uint32 num_elements = head.getNumElements()
         cdef npc.ndarray indices = np.asarray(<uint32[:num_elements]>head.indices_cbegin())
         cdef npc.ndarray values = np.asarray(<uint8[:num_elements]>head.values_cbegin())
         self.visitor.visit_partial_head(PartialHead.__new__(PartialHead, indices, values))
-    
+
     cdef __visit_partial_32bit_head(self, const Partial32BitHeadImpl& head):
         cdef uint32 num_elements = head.getNumElements()
         cdef npc.ndarray indices = np.asarray(<uint32[:num_elements]>head.indices_cbegin())
         cdef npc.ndarray values = np.asarray(<float32[:num_elements]>head.values_cbegin())
         self.visitor.visit_partial_head(PartialHead.__new__(PartialHead, indices, values))
-    
+
     cdef __visit_partial_64bit_head(self, const Partial64BitHeadImpl& head):
         cdef uint32 num_elements = head.getNumElements()
         cdef npc.ndarray indices = np.asarray(<uint32[:num_elements]>head.indices_cbegin())
@@ -346,13 +339,13 @@ cdef class RuleList(RuleModel):
         cdef object head_state = (np.asarray(<uint8[:num_elements]>head.values_cbegin()),)
         cdef object rule_state = self.state[len(self.state) - 1]
         rule_state[1] = head_state
-    
+
     cdef __serialize_complete_32bit_head(self, const Complete32BitHeadImpl& head):
         cdef uint32 num_elements = head.getNumElements()
         cdef object head_state = (np.asarray(<float32[:num_elements]>head.values_cbegin()),)
         cdef object rule_state = self.state[len(self.state) - 1]
         rule_state[1] = head_state
-    
+
     cdef __serialize_complete_64bit_head(self, const Complete64BitHeadImpl& head):
         cdef uint32 num_elements = head.getNumElements()
         cdef object head_state = (np.asarray(<float64[:num_elements]>head.values_cbegin()),)
@@ -365,14 +358,14 @@ cdef class RuleList(RuleModel):
                                   np.asarray(<uint32[:num_elements]>head.indices_cbegin()))
         cdef object rule_state = self.state[len(self.state) - 1]
         rule_state[1] = head_state
-    
+
     cdef __serialize_partial_32bit_head(self, const Partial32BitHeadImpl& head):
         cdef uint32 num_elements = head.getNumElements()
         cdef object head_state = (np.asarray(<float32[:num_elements]>head.values_cbegin()),
                                   np.asarray(<uint32[:num_elements]>head.indices_cbegin()))
         cdef object rule_state = self.state[len(self.state) - 1]
         rule_state[1] = head_state
-    
+
     cdef __serialize_partial_64bit_head(self, const Partial64BitHeadImpl& head):
         cdef uint32 num_elements = head.getNumElements()
         cdef object head_state = (np.asarray(<float64[:num_elements]>head.values_cbegin()),
@@ -490,7 +483,7 @@ cdef class RuleList(RuleModel):
             value_iterator[i] = scores[i]
 
         return <unique_ptr[IHead]>move(head_ptr)
-    
+
     cdef unique_ptr[IHead] __deserialize_complete_32bit_head(self, object head_state):
         cdef const float32[::1] scores = head_state[0]
         cdef uint32 num_elements = scores.shape[0]
@@ -502,7 +495,7 @@ cdef class RuleList(RuleModel):
             value_iterator[i] = scores[i]
 
         return <unique_ptr[IHead]>move(head_ptr)
-    
+
     cdef unique_ptr[IHead] __deserialize_complete_64bit_head(self, object head_state):
         cdef const float64[::1] scores = head_state[0]
         cdef uint32 num_elements = scores.shape[0]
@@ -529,7 +522,7 @@ cdef class RuleList(RuleModel):
             index_iterator[i] = indices[i]
 
         return <unique_ptr[IHead]>move(head_ptr)
-    
+
     cdef unique_ptr[IHead] __deserialize_partial_32bit_head(self, object head_state):
         cdef const float32[::1] scores = head_state[0]
         cdef const uint32[::1] indices = head_state[1]

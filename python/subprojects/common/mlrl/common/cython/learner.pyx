@@ -61,7 +61,6 @@ class RNGMixin(ABC):
         
         :return: An `RNGConfig` that allows further configuration of the random number generators
         """
-        pass
 
 
 class SequentialRuleModelAssemblageMixin(ABC):
@@ -75,7 +74,6 @@ class SequentialRuleModelAssemblageMixin(ABC):
         Configures the rule learner to use an algorithm that sequentially induces several rules, optionally starting
         with a default rule, that are added to a rule-based model.
         """
-        pass
 
 
 class DefaultRuleMixin(ABC):
@@ -88,7 +86,6 @@ class DefaultRuleMixin(ABC):
         """
         Configures the rule learner to induce a default rule.
         """
-        pass
 
 
 class GreedyTopDownRuleInductionMixin(ABC):
@@ -104,7 +101,6 @@ class GreedyTopDownRuleInductionMixin(ABC):
         :return: A `GreedyTopDownRuleInductionConfig` that allows further configuration of the algorithm for the
                  induction of individual rules
         """
-        pass
 
 
 class BeamSearchTopDownRuleInductionMixin(ABC):
@@ -120,7 +116,6 @@ class BeamSearchTopDownRuleInductionMixin(ABC):
         :return: A `BeamSearchTopDownRuleInductionConfig` that allows further configuration of the algorithm for the
                  induction of individual rules
         """
-        pass
 
 
 class NoPostProcessorMixin(ABC):
@@ -133,7 +128,6 @@ class NoPostProcessorMixin(ABC):
         """
         Configures the rule learner to not use any post-processor.
         """
-        pass
 
 
 class NoFeatureBinningMixin(ABC):
@@ -146,7 +140,6 @@ class NoFeatureBinningMixin(ABC):
         """
         Configures the rule learner to not use any method for the assignment of numerical feature values to bins.
         """
-        pass
 
 
 class EqualWidthFeatureBinningMixin(ABC):
@@ -163,7 +156,6 @@ class EqualWidthFeatureBinningMixin(ABC):
         :return: An `EqualWidthFeatureBinningConfig` that allows further configuration of the method for the assignment
                  of numerical feature values to bins
         """
-        pass
 
 
 class EqualFrequencyFeatureBinningMixin(ABC):
@@ -180,7 +172,6 @@ class EqualFrequencyFeatureBinningMixin(ABC):
         :return: An `EqualFrequencyFeatureBinningConfig` that allows further configuration of the method for the
                  assignment of numerical feature values to bins
         """
-        pass
 
 
 class NoOutputSamplingMixin(ABC):
@@ -193,7 +184,6 @@ class NoOutputSamplingMixin(ABC):
         """
         Configures the rule learner to not sample from the available outputs whenever a new rule should be learned.
         """
-        pass
 
 
 class RoundRobinOutputSamplingMixin(ABC):
@@ -207,7 +197,6 @@ class RoundRobinOutputSamplingMixin(ABC):
         Configures the rule learner to sample a one output at a time in a round-robin fashion whenever a new rule should
         be learned.
         """
-        pass
 
 
 class OutputSamplingWithoutReplacementMixin(ABC):
@@ -223,7 +212,6 @@ class OutputSamplingWithoutReplacementMixin(ABC):
 
         :return: An `OutputSamplingWithoutReplacementConfig` that allows further configuration of the sampling method
         """
-        pass
 
 
 class NoInstanceSamplingMixin(ABC):
@@ -237,7 +225,6 @@ class NoInstanceSamplingMixin(ABC):
         Configures the rule learner to not sample from the available training examples whenever a new rule should be
         learned.
         """
-        pass
 
 
 class InstanceSamplingWithReplacementMixin(ABC):
@@ -255,7 +242,6 @@ class InstanceSamplingWithReplacementMixin(ABC):
         :return: An `InstanceSamplingWithReplacementConfig` that allows further configuration of the method for sampling
                  instances
         """
-        pass
 
 
 class InstanceSamplingWithoutReplacementMixin(ABC):
@@ -273,7 +259,6 @@ class InstanceSamplingWithoutReplacementMixin(ABC):
         :return: An `InstanceSamplingWithoutReplacementConfig` that allows further configuration of the method for
                  sampling instances
         """
-        pass
 
 
 class OutputWiseStratifiedInstanceSamplingMixin(ABC):
@@ -291,7 +276,6 @@ class OutputWiseStratifiedInstanceSamplingMixin(ABC):
         :return: An `OutputWiseStratifiedInstanceSamplingConfig` that allows further configuration of the method for
                  sampling instances
         """
-        pass
 
 
 class ExampleWiseStratifiedInstanceSamplingMixin(ABC):
@@ -308,7 +292,6 @@ class ExampleWiseStratifiedInstanceSamplingMixin(ABC):
         :return: An `ExampleWiseStratifiedInstanceSamplingConfig` that allows further configuration of the method for
                  sampling instances
         """
-        pass
 
 
 class NoFeatureSamplingMixin(ABC):
@@ -321,7 +304,6 @@ class NoFeatureSamplingMixin(ABC):
         """
         Configures the rule learner to not sample from the available features whenever a rule should be refined.
         """
-        pass
         
 
 class FeatureSamplingWithoutReplacementMixin(ABC):
@@ -338,7 +320,6 @@ class FeatureSamplingWithoutReplacementMixin(ABC):
         :return: A `FeatureSamplingWithoutReplacementConfig` that allows further configuration of the method for
                  sampling features
         """
-        pass
 
 
 class NoPartitionSamplingMixin(ABC):
@@ -353,7 +334,6 @@ class NoPartitionSamplingMixin(ABC):
         Configures the rule learner to not partition the available training examples into a training set and a holdout
         set.
         """
-        pass
 
 
 class RandomBiPartitionSamplingMixin(ABC):
@@ -371,7 +351,6 @@ class RandomBiPartitionSamplingMixin(ABC):
         :return: A `RandomBiPartitionSamplingConfig` that allows further configuration of the method for partitioning
                  the available training examples into a training set and a holdout set
         """
-        pass
 
 
 class OutputWiseStratifiedBiPartitionSamplingMixin(ABC):
@@ -389,7 +368,6 @@ class OutputWiseStratifiedBiPartitionSamplingMixin(ABC):
         :return: An `OutputWiseStratifiedBiPartitionSamplingConfig` that allows further configuration of the method for
                  partitioning the available training examples into a training and a holdout set
         """
-        pass
 
 
 class ExampleWiseStratifiedBiPartitionSamplingMixin(ABC):
@@ -407,7 +385,6 @@ class ExampleWiseStratifiedBiPartitionSamplingMixin(ABC):
         :return: An `ExampleWiseStratifiedBiPartitionSamplingConfig` that allows further configuration of the method for
                  partitioning the available training examples into a training and a holdout set
         """
-        pass
 
 
 class NoRulePruningMixin(ABC):
@@ -420,7 +397,6 @@ class NoRulePruningMixin(ABC):
         """
         Configures the rule learner to not prune individual rules.
         """
-        pass
 
 
 class IrepRulePruningMixin(ABC):
@@ -435,7 +411,6 @@ class IrepRulePruningMixin(ABC):
         Configures the rule learner to prune individual rules by following the principles of "incremental reduced error
         pruning" (IREP).
         """
-        pass
 
 
 class NoParallelRuleRefinementMixin(ABC):
@@ -448,7 +423,6 @@ class NoParallelRuleRefinementMixin(ABC):
         """
         Configures the rule learner to not use any multi-threading for the parallel refinement of rules.
         """
-        pass
 
 
 class ParallelRuleRefinementMixin(ABC):
@@ -463,7 +437,6 @@ class ParallelRuleRefinementMixin(ABC):
 
         :return: A `ManualMultiThreadingConfig` that allows further configuration of the multi-threading behavior
         """
-        pass
 
 
 class NoParallelStatisticUpdateMixin(ABC):
@@ -476,7 +449,6 @@ class NoParallelStatisticUpdateMixin(ABC):
         """
         Configures the rule learner to not use any multi-threading for the parallel update of statistics.
         """
-        pass
 
 
 class ParallelStatisticUpdateMixin(ABC):
@@ -491,7 +463,6 @@ class ParallelStatisticUpdateMixin(ABC):
 
         :return: A `ManualMultiThreadingConfig` that allows further configuration of the multi-threading behavior
         """
-        pass
 
 
 class NoParallelPredictionMixin(ABC):
@@ -504,7 +475,6 @@ class NoParallelPredictionMixin(ABC):
         """
         Configures the rule learner to not use any multi-threading to predict for several query examples in parallel.
         """
-        pass
 
 
 class ParallelPredictionMixin(ABC):
@@ -519,7 +489,6 @@ class ParallelPredictionMixin(ABC):
 
         :return: A `ManualMultiThreadingConfig` that allows further configuration of the multi-threading behavior
         """
-        pass
 
 
 class NoSizeStoppingCriterionMixin(ABC):
@@ -534,7 +503,6 @@ class NoSizeStoppingCriterionMixin(ABC):
         Configures the rule learner to not use a stopping criterion that ensures that the number of induced rules does
         not exceed a certain maximum.
         """
-        pass
 
 
 class SizeStoppingCriterionMixin(ABC):
@@ -551,7 +519,6 @@ class SizeStoppingCriterionMixin(ABC):
 
         :return: A `SizeStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
-        pass
 
 
 class NoTimeStoppingCriterionMixin(ABC):
@@ -566,7 +533,6 @@ class NoTimeStoppingCriterionMixin(ABC):
         Configures the rule learner to not use a stopping criterion that ensures that a certain time limit is not
         exceeded.
         """
-        pass
 
 
 class TimeStoppingCriterionMixin(ABC):
@@ -581,7 +547,6 @@ class TimeStoppingCriterionMixin(ABC):
 
         :return: A `TimeStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
-        pass
 
 
 class PrePruningMixin(ABC):
@@ -600,7 +565,6 @@ class PrePruningMixin(ABC):
 
         :return: A `PrePruningConfig` that allows further configuration of the stopping criterion
         """
-        pass
 
 
 class NoGlobalPruningMixin(ABC):
@@ -613,7 +577,6 @@ class NoGlobalPruningMixin(ABC):
         """
         Configures the rule learner to not use global pruning.
         """
-        pass
 
 
 class PostPruningMixin(ABC):
@@ -628,7 +591,6 @@ class PostPruningMixin(ABC):
         Configures the rule learner to use a stopping criterion that keeps track of the number of rules in a model that
         perform best with respect to the examples in the training or holdout set according to a certain measure.
         """
-        pass
 
 
 class NoSequentialPostOptimizationMixin(ABC):
@@ -643,7 +605,6 @@ class NoSequentialPostOptimizationMixin(ABC):
         Configures the rule learner to not use a post-optimization method that optimizes each rule in a model by
         relearning it in the context of the other rules.
         """
-        pass
 
 
 class SequentialPostOptimizationMixin(ABC):
@@ -660,7 +621,6 @@ class SequentialPostOptimizationMixin(ABC):
 
         :return: A `SequentialPostOptimizationConfig` that allows further configuration of the post-optimization method
         """
-        pass
 
 
 class NoMarginalProbabilityCalibrationMixin(ABC):
@@ -673,7 +633,6 @@ class NoMarginalProbabilityCalibrationMixin(ABC):
         """
         Configures the rule learner to not calibrate marginal probabilities.
         """
-        pass
 
 
 class NoJointProbabilityCalibrationMixin(ABC):
@@ -686,4 +645,3 @@ class NoJointProbabilityCalibrationMixin(ABC):
         """
         Configures the rule learner to not calibrate joint probabilities.
         """
-        pass

@@ -33,8 +33,7 @@ class PredictionState:
     Stores the result of a prediction process.
 
     Attributes:
-        predictions:        A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                            `(num_examples, num_outputs)`, that stores the predictions for the query examples
+        predictions:        A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` that stores predictions
         prediction_type:    The type of the predictions
         prediction_scope:   Specifies whether the predictions have been obtained from a global model or incrementally
         predict_time:       The time needed for prediction
