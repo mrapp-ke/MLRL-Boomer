@@ -24,9 +24,11 @@ MODULES = [
     CodeModule(
         file_type=FileType.toml(),
         root_directory=Project.BuildSystem.root_directory,
-        source_file_search=FileSearch().set_recursive(True).set_hidden(True),
+        source_file_search=Project.BuildSystem.file_search().set_hidden(True),
     ),
-    CodeModule(file_type=FileType.toml(),
-               root_directory=Project.Python.root_directory,
-               source_file_search=Project.Python.file_search()),
+    CodeModule(
+        file_type=FileType.toml(),
+        root_directory=Project.Python.root_directory,
+        source_file_search=Project.Python.file_search(),
+    ),
 ]
