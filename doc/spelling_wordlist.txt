@@ -48,12 +48,16 @@ multilabel
 multivariant
 natively
 nd
+num
 opencl
 openmp
 overfitting
 parallelizable
 pre
 preprint
+preprocess
+preprocessing
+preprocessors
 programmatically
 pRSL
 Rapp
