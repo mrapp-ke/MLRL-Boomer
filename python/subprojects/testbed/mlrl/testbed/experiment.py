@@ -20,7 +20,7 @@ from mlrl.testbed.data_splitting import DataSplitter
 from mlrl.testbed.dataset import AttributeType, Dataset
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
-from mlrl.testbed.experiments.state import ExperimentState, PredictionResult, TrainingResult
+from mlrl.testbed.experiments.state import ExperimentState, PredictionState, TrainingState
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.parameters import ParameterLoader
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
@@ -120,10 +120,10 @@ class GlobalEvaluation(Evaluation):
 
         if predictions is not None:
             log.info('Successfully predicted in %s', format_duration(predict_time))
-            state.prediction_result = PredictionResult(predictions=predictions,
-                                                       prediction_type=self.prediction_type,
-                                                       prediction_scope=GlobalPrediction(),
-                                                       predict_time=predict_time)
+            state.prediction_result = PredictionState(predictions=predictions,
+                                                      prediction_type=self.prediction_type,
+                                                      prediction_scope=GlobalPrediction(),
+                                                      predict_time=predict_time)
             self._evaluate_predictions(state)
 
 
@@ -181,10 +181,10 @@ class IncrementalEvaluation(Evaluation):
 
                 if predictions is not None:
                     log.info('Successfully predicted in %s', format_duration(predict_time))
-                    state.prediction_result = PredictionResult(predictions=predictions,
-                                                               prediction_type=self.prediction_type,
-                                                               prediction_scope=IncrementalPrediction(current_size),
-                                                               predict_time=predict_time)
+                    state.prediction_result = PredictionState(predictions=predictions,
+                                                              prediction_type=self.prediction_type,
+                                                              prediction_scope=IncrementalPrediction(current_size),
+                                                              predict_time=predict_time)
                     self._evaluate_predictions(state)
 
                 next_step_size = step_size
@@ -325,7 +325,7 @@ class Experiment(DataSplitter.Callback):
             # Save model to disk...
             self.__save_model(learner, fold)
 
-        state.training_result = TrainingResult(learner=learner, train_time=train_time)
+        state.training_result = TrainingState(learner=learner, train_time=train_time)
 
         # Obtain and evaluate predictions for training data, if necessary...
         train_evaluation = self.train_evaluation
