@@ -485,6 +485,15 @@ class FileType:
         return FileType(name='Cython', suffixes={'pyx', 'pxd'})
 
     @staticmethod
+    def cfg() -> 'FileType':
+        """
+        Creates and returns a `FileType` that corresponds to .cfg files.
+
+        :return: The `FileType` that has been created
+        """
+        return FileType(name=".cfg", suffixes={'cfg', 'yapf'})
+
+    @staticmethod
     def markdown() -> 'FileType':
         """
         Creates and returns a `FileType` that corresponds to Markdown files.
