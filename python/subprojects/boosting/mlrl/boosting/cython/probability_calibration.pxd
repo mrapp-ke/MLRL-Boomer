@@ -4,16 +4,15 @@ from libcpp cimport bool
 cdef extern from "mlrl/boosting/prediction/probability_calibration_isotonic.hpp" namespace "boosting" nogil:
 
     cdef cppclass IIsotonicMarginalProbabilityCalibratorConfig:
-        
+
         # Functions:
 
         bool isHoldoutSetUsed() const
 
         IIsotonicMarginalProbabilityCalibratorConfig& setUseHoldoutSet(bool useHoldoutSet)
 
-
     cdef cppclass IIsotonicJointProbabilityCalibratorConfig:
-        
+
         # Functions:
 
         bool isHoldoutSetUsed() const

@@ -18,7 +18,6 @@ cdef extern from "mlrl/common/input/label_matrix_c_contiguous.hpp" nogil:
     cdef cppclass ICContiguousLabelMatrix(IRowWiseLabelMatrix):
         pass
 
-
     unique_ptr[ICContiguousLabelMatrix] createCContiguousLabelMatrix(const uint8* array, uint32 numRows, uint32 numCols)
 
 
@@ -26,7 +25,6 @@ cdef extern from "mlrl/common/input/label_matrix_csr.hpp" nogil:
 
     cdef cppclass ICsrLabelMatrix(IRowWiseLabelMatrix):
         pass
-
 
     unique_ptr[ICsrLabelMatrix] createCsrLabelMatrix(uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols)
 

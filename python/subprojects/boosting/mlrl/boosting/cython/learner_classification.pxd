@@ -13,13 +13,11 @@ cdef extern from "mlrl/boosting/learner_classification.hpp" namespace "boosting"
 
         void useAutomaticPartitionSampling()
 
-
     cdef cppclass INoDefaultRuleMixin:
 
         # Functions:
 
         void useNoDefaultRule()
-
 
     cdef cppclass IAutomaticDefaultRuleMixin:
 
@@ -27,13 +25,11 @@ cdef extern from "mlrl/boosting/learner_classification.hpp" namespace "boosting"
 
         void useAutomaticDefaultRule()
 
-
     cdef cppclass IDenseStatisticsMixin:
 
         # Functions:
 
         void useDenseStatistics()
-
 
     cdef cppclass ISparseStatisticsMixin:
 
@@ -41,13 +37,11 @@ cdef extern from "mlrl/boosting/learner_classification.hpp" namespace "boosting"
 
         void useSparseStatistics()
 
-
     cdef cppclass IAutomaticStatisticsMixin:
 
         # Functions:
 
         void useAutomaticStatistics()
-
 
     cdef cppclass INonDecomposableLogisticLossMixin:
 
@@ -55,13 +49,11 @@ cdef extern from "mlrl/boosting/learner_classification.hpp" namespace "boosting"
 
         void useNonDecomposableLogisticLoss()
 
-
     cdef cppclass INonDecomposableSquaredHingeLossMixin:
 
         # Functions:
 
         void useNonDecomposableSquaredHingeLoss()
-
 
     cdef cppclass IDecomposableLogisticLossMixin:
 
@@ -69,13 +61,11 @@ cdef extern from "mlrl/boosting/learner_classification.hpp" namespace "boosting"
 
         void useDecomposableLogisticLoss()
 
-        
     cdef cppclass IDecomposableSquaredHingeLossMixin:
 
         # Functions:
 
         void useDecomposableSquaredHingeLoss()
-
 
     cdef cppclass INoLabelBinningMixin:
 
@@ -83,13 +73,11 @@ cdef extern from "mlrl/boosting/learner_classification.hpp" namespace "boosting"
 
         void useNoLabelBinning()
 
-
     cdef cppclass IEqualWidthLabelBinningMixin:
 
         # Functions:
 
         IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning()
-
 
     cdef cppclass IAutomaticLabelBinningMixin:
 
@@ -97,20 +85,17 @@ cdef extern from "mlrl/boosting/learner_classification.hpp" namespace "boosting"
 
         void useAutomaticLabelBinning()
 
-
     cdef cppclass IIsotonicMarginalProbabilityCalibrationMixin:
 
         # Functions:
 
         IIsotonicMarginalProbabilityCalibratorConfig& useIsotonicMarginalProbabilityCalibration()
 
-
     cdef cppclass IIsotonicJointProbabilityCalibrationMixin:
 
         # Functions:
 
         IIsotonicJointProbabilityCalibratorConfig& useIsotonicJointProbabilityCalibration()
-        
 
     cdef cppclass IOutputWiseProbabilityPredictorMixin:
 
@@ -118,20 +103,17 @@ cdef extern from "mlrl/boosting/learner_classification.hpp" namespace "boosting"
 
         IOutputWiseProbabilityPredictorConfig& useOutputWiseProbabilityPredictor()
 
-
     cdef cppclass IMarginalizedProbabilityPredictorMixin:
 
         # Functions:
 
         IMarginalizedProbabilityPredictorConfig& useMarginalizedProbabilityPredictor()
 
-
     cdef cppclass IAutomaticProbabilityPredictorMixin:
-        
+
         # Functions:
 
         void useAutomaticProbabilityPredictor()
-
 
     cdef cppclass IOutputWiseBinaryPredictorMixin:
 
@@ -139,20 +121,17 @@ cdef extern from "mlrl/boosting/learner_classification.hpp" namespace "boosting"
 
         IOutputWiseBinaryPredictorConfig& useOutputWiseBinaryPredictor()
 
-
     cdef cppclass IExampleWiseBinaryPredictorMixin:
 
         # Functions:
 
         IExampleWiseBinaryPredictorConfig& useExampleWiseBinaryPredictor()
 
-
     cdef cppclass IGfmBinaryPredictorMixin:
 
         # Functions:
 
         IGfmBinaryPredictorConfig& useGfmBinaryPredictor()
-
 
     cdef cppclass IAutomaticBinaryPredictorMixin:
 

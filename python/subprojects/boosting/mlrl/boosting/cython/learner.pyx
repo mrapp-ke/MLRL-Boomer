@@ -20,8 +20,8 @@ class AutomaticFeatureBinningMixin(ABC):
         Configures the rule learning to automatically decide whether a method for the assignment of numerical feature
         values to bins should be used or not.
         """
-             
-             
+
+
 class AutomaticParallelRuleRefinementMixin(ABC):
     """
     Allows to configure a rule learner to automatically decide whether multi-threading should be used for the parallel
@@ -34,8 +34,8 @@ class AutomaticParallelRuleRefinementMixin(ABC):
         Configures the rule learner to automatically decide whether multi-threading should be used for the parallel
         refinement of rules or not.
         """
-             
-             
+
+
 class AutomaticParallelStatisticUpdateMixin(ABC):
     """
     Allows to configure a rule learner to automatically decide whether multi-threading should be used for the parallel
@@ -48,8 +48,8 @@ class AutomaticParallelStatisticUpdateMixin(ABC):
         Configures the rule learner to automatically decide whether multi-threading should be used for the parallel
         update of statistics or not.
         """
-             
-             
+
+
 class ConstantShrinkageMixin(ABC):
     """
     Allows to configure a rule learner to use a post processor that shrinks the weights fo rules by a constant
@@ -64,8 +64,8 @@ class ConstantShrinkageMixin(ABC):
 
         :return: A `ConstantShrinkageConfig` that allows further configuration of the post-processor
         """
-             
-             
+
+
 class NoL1RegularizationMixin(ABC):
     """
     Allows to configure a rule learner to not use L1 regularization.
@@ -90,8 +90,8 @@ class L1RegularizationMixin(ABC):
 
         :return: A `ManualRegularizationConfig` that allows further configuration of the regularization term
         """
-            
-             
+
+
 class NoL2RegularizationMixin(ABC):
     """
     Allows to configure a rule learner to not use L2 regularization.
@@ -102,8 +102,8 @@ class NoL2RegularizationMixin(ABC):
         """
         Configures the rule learner to not use L2 regularization.
         """
-            
-             
+
+
 class L2RegularizationMixin(ABC):
     """
     Allows to configure a rule learner to use L2 regularization.
@@ -116,8 +116,8 @@ class L2RegularizationMixin(ABC):
 
         :return: A `ManualRegularizationConfig` that allows further configuration of the regularization term
         """
-             
-             
+
+
 class CompleteHeadMixin(ABC):
     """
     Allows to configure a rule learner to induce rules with complete heads that predict for all available outputs.
@@ -128,8 +128,8 @@ class CompleteHeadMixin(ABC):
         """
         Configures the rule learner to induce rules with complete heads that predict for all available outputs.
         """
-            
-             
+
+
 class FixedPartialHeadMixin(ABC):
     """
     Allows to configure a rule learner to induce rules with partial heads that predict for a predefined number of
@@ -143,8 +143,8 @@ class FixedPartialHeadMixin(ABC):
 
         :return: A `FixedPartialHeadConfig` that allows further configuration of the rule heads
         """
-            
-             
+
+
 class DynamicPartialHeadMixin(ABC):
     """
     Allows to configure a rule learner to induce rules with partial heads that predict for a subset of the available
@@ -160,8 +160,8 @@ class DynamicPartialHeadMixin(ABC):
 
         :return: A `DynamicPartialHeadConfig` that allows further configuration of the rule heads
         """
-            
-             
+
+
 class SingleOutputHeadMixin(ABC):
     """
     Allows to configure a rule learner to induce rules with single-output heads that predict for a single output.
@@ -172,8 +172,8 @@ class SingleOutputHeadMixin(ABC):
         """
         Configures the rule learner to induce rules with single-output heads that predict for a single output.
         """
-            
-             
+
+
 class AutomaticHeadMixin(ABC):
     """
     Allows to configure a rule learner to automatically decide for the type of rule heads that should be used.
@@ -184,8 +184,8 @@ class AutomaticHeadMixin(ABC):
         """
         Configures the rule learner to automatically decide for the type of rule heads to be used.
         """
-            
-             
+
+
 class NonDecomposableSquaredErrorLossMixin(ABC):
     """
     Allows to configure a rule learner to use a loss function that implements a multivariate variant of the squared
@@ -198,8 +198,8 @@ class NonDecomposableSquaredErrorLossMixin(ABC):
         Configures the rule learner to use a loss function that implements a multivariant variant of the squared error
         loss that is non-decomposable.
         """
-            
-             
+
+
 class DecomposableSquaredErrorLossMixin(ABC):
     """
     Allows to configure a rule learner to use a loss function that implements a multivariate variant of the squared
@@ -212,8 +212,8 @@ class DecomposableSquaredErrorLossMixin(ABC):
         Configures the rule learner to use a loss function that implements a multivariate variant of the squared error
         loss that is decomposable.
         """
-            
-             
+
+
 class OutputWiseScorePredictorMixin(ABC):
     """
     Allows to configure a rule learner to use a predictor that predicts output-wise scores for given query examples by

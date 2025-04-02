@@ -27,7 +27,7 @@ cdef extern from "mlrl/common/learner_classification.hpp" nogil:
         unique_ptr[ITrainingResult] fit(const IFeatureInfo& featureInfo, const IColumnWiseFeatureMatrix& featureMatrix,
                                         const IRowWiseLabelMatrix& labelMatrix, uint32 randomState) const
 
-        bool canPredictScores(const IRowWiseFeatureMatrix&  featureMatrix, uint32 numLabels) const
+        bool canPredictScores(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
 
         unique_ptr[IScorePredictor] createScorePredictor(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
@@ -55,13 +55,11 @@ cdef extern from "mlrl/common/learner_classification.hpp" nogil:
             const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
             const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
 
-
     cdef cppclass IOutputWiseStratifiedInstanceSamplingMixin:
 
         # Functions:
 
         IOutputWiseStratifiedInstanceSamplingConfig& useOutputWiseStratifiedInstanceSampling()
-
 
     cdef cppclass IExampleWiseStratifiedInstanceSamplingMixin:
 
@@ -69,13 +67,11 @@ cdef extern from "mlrl/common/learner_classification.hpp" nogil:
 
         IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling()
 
-
     cdef cppclass IOutputWiseStratifiedBiPartitionSamplingMixin:
 
         # Functions:
 
         IOutputWiseStratifiedBiPartitionSamplingConfig& useOutputWiseStratifiedBiPartitionSampling()
-
 
     cdef cppclass IExampleWiseStratifiedBiPartitionSamplingMixin:
 

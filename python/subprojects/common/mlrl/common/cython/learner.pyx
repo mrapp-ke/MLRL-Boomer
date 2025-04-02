@@ -35,7 +35,7 @@ cdef class TrainingResult:
         :param marginal_probability_calibration_model:  The `MarginalProbabilityCalibrationModel` that may be used for
                                                         the calibration of marginal probabilities
         :param joint_probability_calibration_model:     The `JointProbabilityCalibrationModel` that may be used for the
-                                                        calibration of joint probabilities    
+                                                        calibration of joint probabilities
         """
         self.num_outputs = num_outputs
         self.rule_model = rule_model
@@ -52,7 +52,7 @@ class SequentialRuleModelAssemblageMixin(ABC):
     """
     Allows to configure a rule learner to use an algorithm that sequentially induces several rules.
     """
-    
+
     @abstractmethod
     def use_sequential_rule_model_assemblage(self):
         """
@@ -289,7 +289,7 @@ class NoFeatureSamplingMixin(ABC):
         """
         Configures the rule learner to not sample from the available features whenever a rule should be refined.
         """
-        
+
 
 class FeatureSamplingWithoutReplacementMixin(ABC):
     """
@@ -624,7 +624,7 @@ class NoJointProbabilityCalibrationMixin(ABC):
     """
     Allows to configure a rule learner to not calibrate joint probabilities.
     """
-     
+
     @abstractmethod
     def use_no_joint_probability_calibration(self):
         """

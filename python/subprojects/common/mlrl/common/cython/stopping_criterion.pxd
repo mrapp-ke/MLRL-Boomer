@@ -62,7 +62,7 @@ cdef extern from "mlrl/common/stopping/global_pruning_pre.hpp" nogil:
 
         IPrePruningConfig& setUpdateInterval(uint32 updateInterval) except +
 
-        uint32 getStopInterval() const;
+        uint32 getStopInterval() const
 
         IPrePruningConfig& setStopInterval(uint32 stopInterval) except +
 

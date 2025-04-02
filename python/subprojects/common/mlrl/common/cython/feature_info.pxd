@@ -14,7 +14,6 @@ cdef extern from "mlrl/common/input/feature_info_equal.hpp" nogil:
     cdef cppclass IEqualFeatureInfo(IFeatureInfo):
         pass
 
-
     unique_ptr[IEqualFeatureInfo] createOrdinalFeatureInfo()
 
     unique_ptr[IEqualFeatureInfo] createNominalFeatureInfo()
@@ -33,7 +32,6 @@ cdef extern from "mlrl/common/input/feature_info_mixed.hpp" nogil:
         void setOrdinal(uint32 featureIndex)
 
         void setNominal(uint32 featureIndex)
-
 
     unique_ptr[IMixedFeatureInfo] createMixedFeatureInfo(uint32 numFeatures)
 

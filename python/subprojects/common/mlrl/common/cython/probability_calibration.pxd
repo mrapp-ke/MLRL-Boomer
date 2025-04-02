@@ -9,7 +9,7 @@ ctypedef void (*BinVisitor)(uint32, float64, float64)
 cdef extern from "mlrl/common/prediction/probability_calibration_marginal.hpp" nogil:
 
     cdef cppclass IMarginalProbabilityCalibrationModel:
-        pass        
+        pass
 
 
 cdef extern from "mlrl/common/prediction/probability_calibration_joint.hpp" nogil:
@@ -34,7 +34,7 @@ cdef extern from "mlrl/common/prediction/probability_calibration_isotonic.hpp" n
 
     cdef cppclass IIsotonicProbabilityCalibrationModel(IMarginalProbabilityCalibrationModel,
                                                        IJointProbabilityCalibrationModel):
-        
+
         # Functions:
 
         uint32 getNumBinLists() const
@@ -42,7 +42,6 @@ cdef extern from "mlrl/common/prediction/probability_calibration_isotonic.hpp" n
         void addBin(uint32 listIndex, float64 threshold, float64 probability)
 
         void visit(BinVisitor) const
-
 
     unique_ptr[IIsotonicProbabilityCalibrationModel] createIsotonicProbabilityCalibrationModel(uint32 numLists)
 
@@ -156,7 +155,7 @@ cdef inline MarginalProbabilityCalibrationModel create_marginal_probability_cali
         return no_marginal_probability_calibration_model
     else:
         isotonic_marginal_probability_calibration_model_ptr = dynamic_cast[IsotonicProbabilityCalibrationModelPtr](ptr)
-        
+
         if isotonic_marginal_probability_calibration_model_ptr != NULL:
             isotonic_marginal_probability_calibration_model = \
                 IsotonicMarginalProbabilityCalibrationModel.__new__(IsotonicMarginalProbabilityCalibrationModel)
