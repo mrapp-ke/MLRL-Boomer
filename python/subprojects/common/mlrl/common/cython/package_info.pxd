@@ -16,7 +16,6 @@ cdef extern from "mlrl/common/library_info.hpp" nogil:
 
         string value
 
-
     cdef cppclass HardwareResource"ILibraryInfo::HardwareResource":
 
         string resource
@@ -42,7 +41,6 @@ cdef extern from "mlrl/common/library_info.hpp" nogil:
         void visitBuildOptions(BuildOptionVisitor visitor) const
 
         void visitHardwareResources(HardwareResourceVisitor visitor) const
-
 
     unique_ptr[ILibraryInfo] getLibraryInfo()
 
@@ -91,7 +89,7 @@ cdef extern from *:
 
 
 cdef class CppLibraryInfo:
-    
+
     # Attributes:
 
     cdef unique_ptr[ILibraryInfo] library_info_ptr

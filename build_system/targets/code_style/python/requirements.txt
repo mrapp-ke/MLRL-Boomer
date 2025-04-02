@@ -1,4 +1,5 @@
 autoflake >= 2.3, < 2.4
+cython-lint >= 0.16, < 0.17
 isort >= 6.0, < 6.1
 pylint >= 3.3, < 3.4
 yapf >= 0.43, < 0.44

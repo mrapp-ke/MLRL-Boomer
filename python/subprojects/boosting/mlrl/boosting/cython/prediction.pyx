@@ -20,7 +20,7 @@ cdef class OutputWiseProbabilityPredictorConfig:
         return self.config_ptr.isProbabilityCalibrationModelUsed()
 
     def set_use_probability_calibration_model(
-        self, use_probability_calibration_model: bool) -> OutputWiseProbabilityPredictorConfig:
+            self, use_probability_calibration_model: bool) -> OutputWiseProbabilityPredictorConfig:
         """
         Sets whether a model for the calibration of probabilities should be used, if available, or not.
 
@@ -52,7 +52,7 @@ cdef class MarginalizedProbabilityPredictorConfig:
         return self.config_ptr.isProbabilityCalibrationModelUsed()
 
     def set_use_probability_calibration_model(
-        self, use_probability_calibration_model: bool) -> MarginalizedProbabilityPredictorConfig:
+            self, use_probability_calibration_model: bool) -> MarginalizedProbabilityPredictorConfig:
         """
         Sets whether a model for the calibration of probabilities should be used, if available, or not.
 
@@ -100,7 +100,7 @@ cdef class ExampleWiseBinaryPredictorConfig:
         return self.config_ptr.isProbabilityCalibrationModelUsed()
 
     def set_use_probability_calibration_model(
-        self, use_probability_calibration_model: bool) -> ExampleWiseBinaryPredictorConfig:
+            self, use_probability_calibration_model: bool) -> ExampleWiseBinaryPredictorConfig:
         """
         Sets whether a model for the calibration of probabilities should be used, if available, or not.
 
@@ -148,7 +148,7 @@ cdef class OutputWiseBinaryPredictorConfig:
         return self.config_ptr.isProbabilityCalibrationModelUsed()
 
     def set_use_probability_calibration_model(
-        self, use_probability_calibration_model: bool) -> OutputWiseBinaryPredictorConfig:
+            self, use_probability_calibration_model: bool) -> OutputWiseBinaryPredictorConfig:
         """
         Sets whether a model for the calibration of probabilities should be used, if available, or not.
 
