@@ -15,7 +15,6 @@ cdef extern from "mlrl/common/input/regression_matrix_c_contiguous.hpp" nogil:
     cdef cppclass ICContiguousRegressionMatrix(IRowWiseRegressionMatrix):
         pass
 
-
     unique_ptr[ICContiguousRegressionMatrix] createCContiguousRegressionMatrix(const float32* array, uint32 numRows,
                                                                                uint32 numCols)
 
@@ -24,7 +23,6 @@ cdef extern from "mlrl/common/input/regression_matrix_csr.hpp" nogil:
 
     cdef cppclass ICsrRegressionMatrix(IRowWiseRegressionMatrix):
         pass
-
 
     unique_ptr[ICsrRegressionMatrix] createCsrRegressionMatrix(float32* values, uint32* indices, uint32* indptr,
                                                                uint32 numRows, uint32 numCols)

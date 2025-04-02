@@ -11,13 +11,11 @@ cdef extern from "mlrl/seco/learner.hpp" namespace "seco" nogil:
 
         void useNoCoverageStoppingCriterion()
 
-
     cdef cppclass ICoverageStoppingCriterionMixin:
 
         # Functions:
 
         ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion()
-
 
     cdef cppclass ISingleOutputHeadMixin:
 
@@ -25,13 +23,11 @@ cdef extern from "mlrl/seco/learner.hpp" namespace "seco" nogil:
 
         void useSingleOutputHeads()
 
-
     cdef cppclass IPartialHeadMixin:
 
         # Functions:
 
         void usePartialHeads()
-
 
     cdef cppclass INoLiftFunctionMixin:
 
@@ -39,13 +35,11 @@ cdef extern from "mlrl/seco/learner.hpp" namespace "seco" nogil:
 
         void useNoLiftFunction()
 
-
     cdef cppclass IPeakLiftFunctionMixin:
 
         # Functions:
 
         IPeakLiftFunctionConfig& usePeakLiftFunction()
-
 
     cdef cppclass IKlnLiftFunctionMixin:
 
@@ -53,13 +47,11 @@ cdef extern from "mlrl/seco/learner.hpp" namespace "seco" nogil:
 
         IKlnLiftFunctionConfig& useKlnLiftFunction()
 
-
     cdef cppclass IAccuracyHeuristicMixin:
 
         # Functions:
 
         void useAccuracyHeuristic()
-
 
     cdef cppclass IAccuracyPruningHeuristicMixin:
 
@@ -67,13 +59,11 @@ cdef extern from "mlrl/seco/learner.hpp" namespace "seco" nogil:
 
         void useAccuracyPruningHeuristic()
 
-
     cdef cppclass IFMeasureHeuristicMixin:
 
         # Functions:
 
         IFMeasureConfig& useFMeasureHeuristic()
-
 
     cdef cppclass IFMeasurePruningHeuristicMixin:
 
@@ -81,13 +71,11 @@ cdef extern from "mlrl/seco/learner.hpp" namespace "seco" nogil:
 
         IFMeasureConfig& useFMeasurePruningHeuristic()
 
-
     cdef cppclass IMEstimateHeuristicMixin:
 
         # Functions:
 
         IMEstimateConfig& useMEstimateHeuristic()
-
 
     cdef cppclass IMEstimatePruningHeuristicMixin:
 
@@ -95,13 +83,11 @@ cdef extern from "mlrl/seco/learner.hpp" namespace "seco" nogil:
 
         IMEstimateConfig& useMEstimatePruningHeuristic()
 
-
     cdef cppclass ILaplaceHeuristicMixin:
 
         # Functions:
 
         void useLaplaceHeuristic()
-
 
     cdef cppclass ILaplacePruningHeuristicMixin:
 
@@ -109,13 +95,11 @@ cdef extern from "mlrl/seco/learner.hpp" namespace "seco" nogil:
 
         void useLaplacePruningHeuristic()
 
-
     cdef cppclass IPrecisionHeuristicMixin:
 
         # Functions:
 
         void usePrecisionHeuristic()
-
 
     cdef cppclass IPrecisionPruningHeuristicMixin:
 
@@ -123,13 +107,11 @@ cdef extern from "mlrl/seco/learner.hpp" namespace "seco" nogil:
 
         void usePrecisionPruningHeuristic()
 
-
     cdef cppclass IRecallHeuristicMixin:
 
         # Functions:
 
         void useRecallHeuristic()
-
 
     cdef cppclass IRecallPruningHeuristicMixin:
 
@@ -137,20 +119,17 @@ cdef extern from "mlrl/seco/learner.hpp" namespace "seco" nogil:
 
         void useRecallPruningHeuristic()
 
-
     cdef cppclass IWraHeuristicMixin:
 
         # Functions:
 
         void useWraHeuristic()
 
-
     cdef cppclass IWraPruningHeuristicMixin:
 
         # Functions:
 
         void useWraPruningHeuristic()
-
 
     cdef cppclass IOutputWiseBinaryPredictorMixin:
 

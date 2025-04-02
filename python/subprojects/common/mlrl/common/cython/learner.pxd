@@ -35,13 +35,11 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         unique_ptr[IJointProbabilityCalibrationModel]& getJointProbabilityCalibrationModel()
 
-
     cdef cppclass IRNGMixin:
 
         # Functions:
 
         IRNGConfig& useRNG()
-
 
     cdef cppclass ISequentialRuleModelAssemblageMixin:
 
@@ -49,13 +47,11 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         void useSequentialRuleModelAssemblage()
 
-
     cdef cppclass IDefaultRuleMixin:
 
         # Functions:
 
         void useDefaultRule()
-
 
     cdef cppclass IGreedyTopDownRuleInductionMixin:
 
@@ -63,13 +59,11 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction()
 
-        
     cdef cppclass IBeamSearchTopDownRuleInductionMixin:
 
         # Functions:
 
         IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction()
-
 
     cdef cppclass INoPostProcessorMixin:
 
@@ -77,13 +71,11 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         void useNoPostProcessor()
 
-
     cdef cppclass INoFeatureBinningMixin:
 
         # Functions:
 
         void useNoFeatureBinning()
-        
 
     cdef cppclass IEqualWidthFeatureBinningMixin:
 
@@ -91,13 +83,11 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning()
 
-
     cdef cppclass IEqualFrequencyFeatureBinningMixin:
 
         # Functions:
 
         IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning()
-
 
     cdef cppclass INoOutputSamplingMixin:
 
@@ -105,20 +95,17 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         void useNoOutputSampling()
 
-
     cdef cppclass IRoundRobinOutputSamplingMixin:
 
         # Functions:
 
         void useRoundRobinOutputSampling()
-    
-    
+
     cdef cppclass IOutputSamplingWithoutReplacementMixin:
 
         # Functions:
 
         IOutputSamplingWithoutReplacementConfig& useOutputSamplingWithoutReplacement()
-
 
     cdef cppclass INoInstanceSamplingMixin:
 
@@ -126,13 +113,11 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         void useNoInstanceSampling()
 
-
     cdef cppclass IInstanceSamplingWithoutReplacementMixin:
 
         # Functions:
 
         IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement()
-
 
     cdef cppclass IInstanceSamplingWithReplacementMixin:
 
@@ -140,13 +125,11 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement()
 
-
     cdef cppclass INoFeatureSamplingMixin:
 
         # Functions:
 
         void useNoFeatureSampling()
-
 
     cdef cppclass IFeatureSamplingWithoutReplacementMixin:
 
@@ -154,13 +137,11 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement()
 
-
     cdef cppclass INoPartitionSamplingMixin:
 
         # Functions:
 
         void useNoPartitionSampling()
-
 
     cdef cppclass IRandomBiPartitionSamplingMixin:
 
@@ -168,13 +149,11 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling()
 
-
     cdef cppclass INoRulePruningMixin:
 
         # Functions:
 
         void useNoRulePruning()
-
 
     cdef cppclass IIrepRulePruningMixin:
 
@@ -182,13 +161,11 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         void useIrepRulePruning()
 
-
     cdef cppclass INoParallelRuleRefinementMixin:
 
         # Functions:
 
         void useNoParallelRuleRefinement()
-
 
     cdef cppclass IParallelRuleRefinementMixin:
 
@@ -196,13 +173,11 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         IManualMultiThreadingConfig& useParallelRuleRefinement()
 
-    
     cdef cppclass INoParallelStatisticUpdateMixin:
 
         # Functions:
 
         void useNoParallelStatisticUpdate()
-
 
     cdef cppclass IParallelStatisticUpdateMixin:
 
@@ -210,20 +185,17 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         IManualMultiThreadingConfig& useParallelStatisticUpdate()
 
-
     cdef cppclass INoParallelPredictionMixin:
 
         # Functions:
 
         void useNoParallelPrediction()
 
-        
     cdef cppclass IParallelPredictionMixin:
 
         # Functions:
 
         IManualMultiThreadingConfig& useParallelPrediction()
-
 
     cdef cppclass INoSizeStoppingCriterionMixin:
 
@@ -231,13 +203,11 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         void useNoSizeStoppingCriterion()
 
-
     cdef cppclass ISizeStoppingCriterionMixin:
 
         # Functions:
 
         ISizeStoppingCriterionConfig& useSizeStoppingCriterion()
-
 
     cdef cppclass INoTimeStoppingCriterionMixin:
 
@@ -245,13 +215,11 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         void useNoTimeStoppingCriterion()
 
-
     cdef cppclass ITimeStoppingCriterionMixin:
 
         # Functions:
 
         ITimeStoppingCriterionConfig& useTimeStoppingCriterion()
-
 
     cdef cppclass IPrePruningMixin:
 
@@ -259,13 +227,11 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         IPrePruningConfig& useGlobalPrePruning()
 
-
     cdef cppclass INoGlobalPruningMixin:
 
         # Functions:
 
         void useNoGlobalPruning()
-
 
     cdef cppclass IPostPruningMixin:
 
@@ -273,13 +239,11 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         IPostPruningConfig& useGlobalPostPruning()
 
-
     cdef cppclass INoSequentialPostOptimizationMixin:
 
         # Functions:
 
         void useNoSequentialPostOptimization()
-
 
     cdef cppclass ISequentialPostOptimizationMixin:
 
@@ -287,13 +251,11 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         ISequentialPostOptimizationConfig& useSequentialPostOptimization()
 
-
     cdef cppclass INoMarginalProbabilityCalibrationMixin:
 
         # Functions:
 
         void useNoMarginalProbabilityCalibration()
-
 
     cdef cppclass INoJointProbabilityCalibrationMixin:
 
@@ -313,12 +275,12 @@ cdef class TrainingResult:
     cdef readonly OutputSpaceInfo output_space_info
 
     cdef readonly MarginalProbabilityCalibrationModel marginal_probability_calibration_model
-    
+
     cdef readonly JointProbabilityCalibrationModel joint_probability_calibration_model
 
 
 cdef class RuleLearnerConfig:
-    
+
     # Attributes:
 
     cdef dict __dict__

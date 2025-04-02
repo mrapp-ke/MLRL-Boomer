@@ -153,10 +153,10 @@ def is_gpu_support_enabled() -> bool:
 def is_gpu_available() -> bool:
     """
     Returns whether any supported GPUs are available on the machine or not.
-    
+
     :return: True, if at least one supported GPU is available, False otherwise
     """
-    return isGpuAvailable();
+    return isGpuAvailable()
 
 
 def get_gpu_devices() -> List[str]:

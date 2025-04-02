@@ -15,7 +15,6 @@ cdef extern from "mlrl/common/prediction/output_space_info_no.hpp" nogil:
     cdef cppclass INoOutputSpaceInfo(IOutputSpaceInfo):
         pass
 
-
     unique_ptr[INoOutputSpaceInfo] createNoOutputSpaceInfo()
 
 
@@ -52,7 +51,6 @@ cdef extern from "mlrl/common/prediction/label_vector_set.hpp" nogil:
         void addLabelVector(unique_ptr[LabelVector] labelVectorPtr, uint32 frequency)
 
         void visit(LabelVectorVisitor) const
-
 
     unique_ptr[ILabelVectorSet] createLabelVectorSet()
 

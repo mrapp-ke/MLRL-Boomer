@@ -28,7 +28,6 @@ cdef extern from "mlrl/common/input/feature_matrix_fortran_contiguous.hpp" nogil
     cdef cppclass IFortranContiguousFeatureMatrix(IColumnWiseFeatureMatrix):
         pass
 
-
     unique_ptr[IFortranContiguousFeatureMatrix] createFortranContiguousFeatureMatrix(const float32* array,
                                                                                      uint32 numRows, uint32 numCols,)
 
@@ -37,7 +36,6 @@ cdef extern from "mlrl/common/input/feature_matrix_csc.hpp" nogil:
 
     cdef cppclass ICscFeatureMatrix(IColumnWiseFeatureMatrix):
         pass
-
 
     unique_ptr[ICscFeatureMatrix] createCscFeatureMatrix(const float32* values, uint32* indices, uint32* indptr,
                                                          uint32 numRows, uint32 numCols, float32 sparseValue)
@@ -54,7 +52,6 @@ cdef extern from "mlrl/common/input/feature_matrix_c_contiguous.hpp" nogil:
     cdef cppclass ICContiguousFeatureMatrix(IRowWiseFeatureMatrix):
         pass
 
-
     unique_ptr[ICContiguousFeatureMatrix] createCContiguousFeatureMatrix(const float32* array, uint32 numRows,
                                                                          uint32 numCols)
 
@@ -63,7 +60,6 @@ cdef extern from "mlrl/common/input/feature_matrix_csr.hpp" nogil:
 
     cdef cppclass ICsrFeatureMatrix(IRowWiseFeatureMatrix):
         pass
-
 
     unique_ptr[ICsrFeatureMatrix] createCsrFeatureMatrix(const float32* values, uint32* indices, uint32* indptr,
                                                          uint32 numRows, uint32 numCols, float32 sparseValue)

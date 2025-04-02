@@ -85,13 +85,10 @@ cdef extern from "mlrl/seco/learner_seco_classifier.hpp" namespace "seco" nogil:
                                                                         ISequentialPostOptimizationMixin):
         pass
 
-
     cdef cppclass ISeCoClassifier(IClassificationRuleLearner):
         pass
 
-
     unique_ptr[ISeCoClassifierConfig] createSeCoClassifierConfig()
-
 
     unique_ptr[ISeCoClassifier] createSeCoClassifier(unique_ptr[ISeCoClassifierConfig] configPtr)
 

@@ -20,7 +20,7 @@ cdef extern from "mlrl/common/input/example_weights_equal.hpp" nogil:
 cdef extern from "mlrl/common/input/example_weights_real_valued.hpp" nogil:
 
     cdef cppclass IRealValuedExampleWeights(IExampleWeights):
-        
+
         # Functions
 
         void setWeight(uint32 index, float32 weight)
@@ -36,14 +36,14 @@ cdef class ExampleWeights:
 
 
 cdef class EqualExampleWeights(ExampleWeights):
-    
+
     # Attributes:
 
     cdef unique_ptr[IEqualExampleWeights] example_weights_ptr
 
 
 cdef class RealValuedExampleWeights(ExampleWeights):
-    
+
     # Attributes:
 
     cdef unique_ptr[IRealValuedExampleWeights] example_weights_ptr

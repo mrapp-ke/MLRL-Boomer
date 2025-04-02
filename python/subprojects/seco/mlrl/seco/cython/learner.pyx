@@ -36,7 +36,7 @@ class CoverageStoppingCriterionMixin(ABC):
 
         :return: A `CoverageStoppingCriterionConfig` that allows further configuration of the stopping criterion
         """
-    
+
 
 class SingleOutputHeadMixin(ABC):
     """
@@ -123,7 +123,7 @@ class AccuracyPruningHeuristicMixin(ABC):
     """
     Allows to configure a rule learner to use the "Accuracy" heuristic for pruning rules.
     """
-    
+
     @abstractmethod
     def use_accuracy_pruning_heuristic(self):
         """

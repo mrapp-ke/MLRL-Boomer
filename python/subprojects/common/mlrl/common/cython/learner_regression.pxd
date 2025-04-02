@@ -22,7 +22,7 @@ cdef extern from "mlrl/common/learner_regression.hpp" nogil:
                                         const IColumnWiseFeatureMatrix& featureMatrix,
                                         const IRowWiseRegressionMatrix& regressionMatrix) const
 
-        bool canPredictScores(const IRowWiseFeatureMatrix&  featureMatrix, uint32 numLabels) const
+        bool canPredictScores(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
 
         unique_ptr[IScorePredictor] createScorePredictor(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
