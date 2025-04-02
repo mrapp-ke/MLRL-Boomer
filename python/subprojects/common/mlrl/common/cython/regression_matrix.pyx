@@ -30,7 +30,7 @@ cdef class CContiguousRegressionMatrix(RowWiseRegressionMatrix):
 
     cdef IOutputMatrix* get_output_matrix_ptr(self):
         return self.regression_matrix_ptr.get()
-    
+
     cdef IRowWiseRegressionMatrix* get_row_wise_regression_matrix_ptr(self):
         return self.regression_matrix_ptr.get()
 
