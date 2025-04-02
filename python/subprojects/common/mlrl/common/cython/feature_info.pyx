@@ -39,7 +39,6 @@ cdef class EqualFeatureInfo(FeatureInfo):
         equal_feature_info.feature_info_ptr = createNumericalFeatureInfo()
         return equal_feature_info
 
-
     cdef IFeatureInfo* get_feature_info_ptr(self):
         return self.feature_info_ptr.get()
 

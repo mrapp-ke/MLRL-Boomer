@@ -19,13 +19,11 @@ cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
 
         void useAutomaticFeatureBinning()
 
-
     cdef cppclass IAutomaticParallelRuleRefinementMixin:
 
         # Functions:
 
         void useAutomaticParallelRuleRefinement()
-
 
     cdef cppclass IAutomaticParallelStatisticUpdateMixin:
 
@@ -33,13 +31,11 @@ cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
 
         void useAutomaticParallelStatisticUpdate()
 
-
     cdef cppclass IConstantShrinkageMixin:
 
         # Functions:
 
         IConstantShrinkageConfig& useConstantShrinkagePostProcessor()
-
 
     cdef cppclass INoL1RegularizationMixin:
 
@@ -47,13 +43,11 @@ cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
 
         void useNoL1Regularization()
 
-
     cdef cppclass IL1RegularizationMixin:
 
         # Functions:
 
         IManualRegularizationConfig& useL1Regularization()
-
 
     cdef cppclass INoL2RegularizationMixin:
 
@@ -61,13 +55,11 @@ cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
 
         void useNoL2Regularization()
 
-
     cdef cppclass IL2RegularizationMixin:
 
         # Functions:
 
         IManualRegularizationConfig& useL2Regularization()
-
 
     cdef cppclass ICompleteHeadMixin:
 
@@ -75,13 +67,11 @@ cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
 
         void useCompleteHeads()
 
-
     cdef cppclass IFixedPartialHeadMixin:
 
         # Functions:
 
         IFixedPartialHeadConfig& useFixedPartialHeads()
-
 
     cdef cppclass IDynamicPartialHeadMixin:
 
@@ -89,13 +79,11 @@ cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
 
         IDynamicPartialHeadConfig& useDynamicPartialHeads()
 
-
     cdef cppclass ISingleOutputHeadMixin:
 
         # Functions:
-        
-        void useSingleOutputHeads()
 
+        void useSingleOutputHeads()
 
     cdef cppclass IAutomaticHeadMixin:
 
@@ -103,20 +91,17 @@ cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
 
         void useAutomaticHeads()
 
-
     cdef cppclass INonDecomposableSquaredErrorLossMixin:
 
         # Functions:
 
         void useNonDecomposableSquaredErrorLoss()
 
-
     cdef cppclass IDecomposableSquaredErrorLossMixin:
 
         # Functions:
 
         void useDecomposableSquaredErrorLoss()
-
 
     cdef cppclass IOutputWiseScorePredictorMixin:
 

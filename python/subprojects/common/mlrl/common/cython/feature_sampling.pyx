@@ -35,11 +35,11 @@ cdef class FeatureSamplingWithoutReplacementConfig:
     def get_num_retained(self) -> int:
         """
         Returns the number of trailing features that are always included in a sample.
-        
+
         :return: The number of trailing features that are always included in a sample
         """
         return self.config_ptr.getNumRetained()
-    
+
     def set_num_retained(self, num_retained: int) -> FeatureSamplingWithoutReplacementConfig:
         """
         Sets the number fo trailing features that should always be included in a sample.

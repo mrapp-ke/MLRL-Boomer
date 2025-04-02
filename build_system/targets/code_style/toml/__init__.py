@@ -29,6 +29,6 @@ MODULES = [
     CodeModule(
         file_type=FileType.toml(),
         root_directory=Project.Python.root_directory,
-        source_file_search=Project.Python.file_search(),
+        source_file_search=Project.Python.file_search().set_hidden(True),
     ),
 ]

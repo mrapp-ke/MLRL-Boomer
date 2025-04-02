@@ -192,7 +192,7 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
 
     def use_precision_heuristic(self):
         self.config_ptr.get().usePrecisionHeuristic()
-    
+
     def use_precision_pruning_heuristic(self):
         self.config_ptr.get().usePrecisionPruningHeuristic()
 
@@ -248,7 +248,7 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
 
     def use_round_robin_output_sampling(self):
         self.config_ptr.get().useRoundRobinOutputSampling()
-    
+
     def use_output_sampling_without_replacement(self) -> OutputSamplingWithoutReplacementConfig:
         cdef IOutputSamplingWithoutReplacementConfig* config_ptr = \
             &self.config_ptr.get().useOutputSamplingWithoutReplacement()
@@ -305,7 +305,7 @@ cdef class SeCoClassifierConfig(RuleLearnerConfig,
 
     def use_no_partition_sampling(self):
         self.config_ptr.get().useNoPartitionSampling()
-    
+
     def use_random_bi_partition_sampling(self) -> RandomBiPartitionSamplingConfig:
         cdef IRandomBiPartitionSamplingConfig* config_ptr = \
             &self.config_ptr.get().useRandomBiPartitionSampling()

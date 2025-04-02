@@ -116,11 +116,12 @@ cdef class ClassificationRuleLearner:
         return self.get_classification_rule_learner_ptr().canPredictProbabilities(
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()), num_labels)
 
-    def create_probability_predictor(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
-                                     OutputSpaceInfo output_space_info not None,
-                                     MarginalProbabilityCalibrationModel marginal_probability_calibration_model not None,
-                                     JointProbabilityCalibrationModel joint_probability_calibration_model not None,
-                                     uint32 num_labels) -> ProbabilityPredictor:
+    def create_probability_predictor(
+            self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
+            OutputSpaceInfo output_space_info not None,
+            MarginalProbabilityCalibrationModel marginal_probability_calibration_model not None,
+            JointProbabilityCalibrationModel joint_probability_calibration_model not None,
+            uint32 num_labels) -> ProbabilityPredictor:
         """
         Creates and returns a predictor that may be used to predict probability estimates for given query examples. If
         the prediction of probability estimates is not supported by the rule learner, a `RuntimeError` is thrown.
@@ -133,7 +134,7 @@ cdef class ClassificationRuleLearner:
         :param marginal_probability_calibration_model:  The `MarginalProbabilityCalibrationModel` that may be used for
                                                         the calibration of marginal probabilities
         :param joint_probability_calibration_model:     The `JointProbabilityCalibrationModel` that may be used for the
-                                                        calibration of joint probabilities    
+                                                        calibration of joint probabilities
         :param num_labels:                              The number of labels to predict for
         :return:                                        A `ProbabilityPredictor` that may be used to predict probability
                                                         estimates for the given query examples
@@ -179,7 +180,7 @@ cdef class ClassificationRuleLearner:
         :param marginal_probability_calibration_model:  The `MarginalProbabilityCalibrationModel` that may be used for
                                                         the calibration of marginal probabilities
         :param joint_probability_calibration_model:     The `JointProbabilityCalibrationModel` that may be used for the
-                                                        calibration of joint probabilities    
+                                                        calibration of joint probabilities
         :param num_labels:                              The number of labels to predict for
         :return:                                        A `BinaryPredictor` that may be used to predict binary labels
                                                         for the given query examples
@@ -196,11 +197,12 @@ cdef class ClassificationRuleLearner:
         binary_predictor.predictor_ptr = move(predictor_ptr)
         return binary_predictor
 
-    def create_sparse_binary_predictor(self, RowWiseFeatureMatrix feature_matrix not None,
-                                       RuleModel rule_model not None, OutputSpaceInfo output_space_info not None,
-                                       MarginalProbabilityCalibrationModel marginal_probability_calibration_model not None,
-                                       JointProbabilityCalibrationModel joint_probability_calibration_model not None,
-                                       uint32 num_labels) -> SparseBinaryPredictor:
+    def create_sparse_binary_predictor(
+            self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
+            OutputSpaceInfo output_space_info not None,
+            MarginalProbabilityCalibrationModel marginal_probability_calibration_model not None,
+            JointProbabilityCalibrationModel joint_probability_calibration_model not None,
+            uint32 num_labels) -> SparseBinaryPredictor:
         """
         Creates and returns a predictor that may be used to predict sparse binary labels for given query examples. If
         the prediction of sparse binary labels is not supported by the rule learner, a `RuntimeError` is thrown.
@@ -213,7 +215,7 @@ cdef class ClassificationRuleLearner:
         :param marginal_probability_calibration_model:  The `MarginalProbabilityCalibrationModel` that may be used for
                                                         the calibration of marginal probabilities
         :param joint_probability_calibration_model:     The `JointProbabilityCalibrationModel` that may be used for the
-                                                        calibration of joint probabilities                                                            
+                                                        calibration of joint probabilities
         :param num_labels:                              The number of labels to predict for
         :return:                                        A `SparseBinaryPredictor` that may be used to predict sparse
                                                         binary labels for the given query examples

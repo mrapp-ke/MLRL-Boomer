@@ -30,7 +30,7 @@ cdef class RegressionRuleLearner:
             RowWiseRegressionMatrix regression_matrix not None, uint32 random_state) -> TrainingResult:
         """
         Applies the rule learner to given training examples and corresponding ground truth regression scores.
-        
+
         :param feature_info:        A reference to an object of type `IFeatureInfo` that provides information about the
                                     types of individual features
         :param feature_matrix:      A reference to an object of type `IColumnWiseFeatureMatrix` that provides

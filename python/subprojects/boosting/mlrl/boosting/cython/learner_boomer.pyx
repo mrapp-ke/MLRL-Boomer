@@ -216,7 +216,7 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
 
     def use_no_instance_sampling(self):
         self.config_ptr.get().useNoInstanceSampling()
-    
+
     def use_instance_sampling_with_replacement(self) -> InstanceSamplingWithReplacementConfig:
         cdef IInstanceSamplingWithReplacementConfig* config_ptr = \
             &self.config_ptr.get().useInstanceSamplingWithReplacement()
@@ -251,6 +251,7 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
 
     def use_automatic_probability_predictor(self):
         self.config_ptr.get().useAutomaticProbabilityPredictor()
+
     def use_output_wise_stratified_instance_sampling(self) -> OutputWiseStratifiedInstanceSamplingConfig:
         cdef IOutputWiseStratifiedInstanceSamplingConfig* config_ptr = \
             &self.config_ptr.get().useOutputWiseStratifiedInstanceSampling()
@@ -280,7 +281,7 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
 
     def use_no_partition_sampling(self):
         self.config_ptr.get().useNoPartitionSampling()
-    
+
     def use_random_bi_partition_sampling(self) -> RandomBiPartitionSamplingConfig:
         cdef IRandomBiPartitionSamplingConfig* config_ptr = \
             &self.config_ptr.get().useRandomBiPartitionSampling()
@@ -316,7 +317,7 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
 
     def use_no_parallel_rule_refinement(self):
         self.config_ptr.get().useNoParallelRuleRefinement()
-        
+
     def use_parallel_rule_refinement(self) -> ManualMultiThreadingConfig:
         cdef IManualMultiThreadingConfig* config_ptr = &self.config_ptr.get().useParallelRuleRefinement()
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)
@@ -624,7 +625,7 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
                                  PostPruningMixin,
                                  NoSequentialPostOptimizationMixin,
                                  SequentialPostOptimizationMixin):
-    """    
+    """
     Allows to configure the BOOMER algorithm for regression problems.
     """
 
@@ -690,7 +691,7 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
 
     def use_no_instance_sampling(self):
         self.config_ptr.get().useNoInstanceSampling()
-    
+
     def use_instance_sampling_with_replacement(self) -> InstanceSamplingWithReplacementConfig:
         cdef IInstanceSamplingWithReplacementConfig* config_ptr = \
             &self.config_ptr.get().useInstanceSamplingWithReplacement()
@@ -720,7 +721,7 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
 
     def use_no_partition_sampling(self):
         self.config_ptr.get().useNoPartitionSampling()
-    
+
     def use_random_bi_partition_sampling(self) -> RandomBiPartitionSamplingConfig:
         cdef IRandomBiPartitionSamplingConfig* config_ptr = \
             &self.config_ptr.get().useRandomBiPartitionSampling()
@@ -740,7 +741,7 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
 
     def use_no_parallel_rule_refinement(self):
         self.config_ptr.get().useNoParallelRuleRefinement()
-        
+
     def use_parallel_rule_refinement(self) -> ManualMultiThreadingConfig:
         cdef IManualMultiThreadingConfig* config_ptr = &self.config_ptr.get().useParallelRuleRefinement()
         cdef ManualMultiThreadingConfig config = ManualMultiThreadingConfig.__new__(ManualMultiThreadingConfig)

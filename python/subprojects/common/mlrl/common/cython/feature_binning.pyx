@@ -49,7 +49,7 @@ cdef class EqualWidthFeatureBinningConfig:
         :return:            An `EqualWidthFeatureBinningConfig` that allows further configuration of the method that
                             assigns numerical feature values to bins
         """
-        assert_greater_or_equal('min_bins', min_bins, 2);
+        assert_greater_or_equal('min_bins', min_bins, 2)
         self.config_ptr.setMinBins(min_bins)
         return self
 
