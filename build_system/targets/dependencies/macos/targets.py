@@ -7,7 +7,7 @@ import platform
 import shutil
 
 from os import path
-from typing import Tuple
+from typing import Any, Optional, Tuple
 
 from core.build_unit import BuildUnit
 from util.io import create_directories
@@ -23,22 +23,36 @@ SUFFIX_SRC = '.src'
 SUFFIX_SRC_TAR_XZ = SUFFIX_SRC + '.tar.xz'
 
 
+def __get_download_url_and_file_name_from_release(release: Any, package_name: str) -> Optional[Any]:
+    # Ignore release candidates
+    if not '-rc' in release.title:
+        assets = release.get_assets()
+        prefix = package_name + '-'
+
+        for asset in assets:
+            asset_name = asset.name
+
+            if asset_name.startswith(prefix) and asset_name.endswith(SUFFIX_SRC_TAR_XZ):
+                return asset
+
+    return None
+
+
 def __get_download_url_and_file_name(github_api: GithubApi, package_name: str) -> Tuple[str, str]:
-    assets = github_api.open_repository('llvm/llvm-project').get_latest_release().get_assets()
-    prefix = package_name + '-'
-    download_asset = None
+    repository = github_api.open_repository('llvm/llvm-project')
+    asset = __get_download_url_and_file_name_from_release(repository.get_latest_release(), package_name)
 
-    for asset in assets:
-        asset_name = asset.name
+    if not asset:
+        for release in repository.get_all_releases():
+            asset = __get_download_url_and_file_name_from_release(release, package_name)
 
-        if asset_name.startswith(prefix) and asset_name.endswith(SUFFIX_SRC_TAR_XZ):
-            download_asset = asset
-            break
+            if asset:
+                break
 
-    if not download_asset:
+    if not asset:
         Log.error('Failed to identify asset to be downloaded!')
 
-    return download_asset.browser_download_url, download_asset.name
+    return asset.browser_download_url, asset.name
 
 
 def __download_package(github_api: GithubApi, package_name: str) -> str:
