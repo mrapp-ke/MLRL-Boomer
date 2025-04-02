@@ -306,30 +306,21 @@ cdef class RuleList(RuleModel):
         cdef uint32 num_nominal_eq = body.getNumNominalEq()
         cdef uint32 num_nominal_neq = body.getNumNominalNeq()
         cdef object body_state = (
-            np.asarray(<float32[:num_numerical_leq]>body.numerical_leq_thresholds_cbegin()) \
-                if num_numerical_leq > 0 else None,
-            np.asarray(<uint32[:num_numerical_leq]>body.numerical_leq_indices_cbegin()) \
-                if num_numerical_leq > 0 else None,
-            np.asarray(<float32[:num_numerical_gr]>body.numerical_gr_thresholds_cbegin()) \
-                if num_numerical_gr > 0 else None,
-            np.asarray(<uint32[:num_numerical_gr]>body.numerical_gr_indices_cbegin()) \
-                if num_numerical_gr > 0 else None,
-            np.asarray(<int32[:num_ordinal_leq]>body.ordinal_leq_thresholds_cbegin()) \
-                if num_ordinal_leq > 0 else None,
-            np.asarray(<uint32[:num_ordinal_leq]>body.ordinal_leq_indices_cbegin()) \
-                if num_ordinal_leq > 0 else None,
-            np.asarray(<int32[:num_ordinal_gr]>body.ordinal_gr_thresholds_cbegin()) \
-                if num_ordinal_gr > 0 else None,
-            np.asarray(<uint32[:num_ordinal_gr]>body.ordinal_gr_indices_cbegin()) \
-                if num_ordinal_gr > 0 else None,
-            np.asarray(<int32[:num_nominal_eq]>body.nominal_eq_thresholds_cbegin()) \
-                if num_nominal_eq > 0 else None,
-            np.asarray(<uint32[:num_nominal_eq]>body.nominal_eq_indices_cbegin()) \
-                if num_nominal_eq > 0 else None,
-            np.asarray(<int32[:num_nominal_neq]>body.nominal_neq_thresholds_cbegin()) \
-                if num_nominal_neq > 0 else None,
-            np.asarray(<uint32[:num_nominal_neq]>body.nominal_neq_indices_cbegin()) \
-                if num_nominal_neq > 0 else None,
+            np.asarray(<float32[:num_numerical_leq]>body.numerical_leq_thresholds_cbegin())
+            if num_numerical_leq > 0 else None,
+            np.asarray(<uint32[:num_numerical_leq]>body.numerical_leq_indices_cbegin())
+            if num_numerical_leq > 0 else None,
+            np.asarray(<float32[:num_numerical_gr]>body.numerical_gr_thresholds_cbegin())
+            if num_numerical_gr > 0 else None,
+            np.asarray(<uint32[:num_numerical_gr]>body.numerical_gr_indices_cbegin()) if num_numerical_gr > 0 else None,
+            np.asarray(<int32[:num_ordinal_leq]>body.ordinal_leq_thresholds_cbegin()) if num_ordinal_leq > 0 else None,
+            np.asarray(<uint32[:num_ordinal_leq]>body.ordinal_leq_indices_cbegin()) if num_ordinal_leq > 0 else None,
+            np.asarray(<int32[:num_ordinal_gr]>body.ordinal_gr_thresholds_cbegin()) if num_ordinal_gr > 0 else None,
+            np.asarray(<uint32[:num_ordinal_gr]>body.ordinal_gr_indices_cbegin()) if num_ordinal_gr > 0 else None,
+            np.asarray(<int32[:num_nominal_eq]>body.nominal_eq_thresholds_cbegin()) if num_nominal_eq > 0 else None,
+            np.asarray(<uint32[:num_nominal_eq]>body.nominal_eq_indices_cbegin()) if num_nominal_eq > 0 else None,
+            np.asarray(<int32[:num_nominal_neq]>body.nominal_neq_thresholds_cbegin()) if num_nominal_neq > 0 else None,
+            np.asarray(<uint32[:num_nominal_neq]>body.nominal_neq_indices_cbegin()) if num_nominal_neq > 0 else None,
         )
         cdef object rule_state = [body_state, None]
         self.state.append(rule_state)
