@@ -128,7 +128,6 @@ cdef extern from "mlrl/common/model/head_complete.hpp" nogil:
 
         value_const_iterator values_cbegin() const
 
-
     cdef cppclass Complete32BitHeadImpl"CompleteHead<float32>"(IHead):
 
         ctypedef float32* value_iterator
@@ -143,7 +142,6 @@ cdef extern from "mlrl/common/model/head_complete.hpp" nogil:
 
         value_const_iterator values_cbegin() const
 
-
     cdef cppclass Complete64BitHeadImpl"CompleteHead<float64>"(IHead):
 
         ctypedef float64* value_iterator
@@ -157,7 +155,6 @@ cdef extern from "mlrl/common/model/head_complete.hpp" nogil:
         value_iterator values_begin()
 
         value_const_iterator values_cbegin() const
-
 
 cdef extern from "mlrl/common/model/head_partial.hpp" nogil:
 
@@ -183,7 +180,6 @@ cdef extern from "mlrl/common/model/head_partial.hpp" nogil:
 
         index_const_iterator indices_cbegin() const
 
-
     cdef cppclass Partial32BitHeadImpl"PartialHead<float32>"(IHead):
 
         ctypedef float32* value_iterator
@@ -205,7 +201,6 @@ cdef extern from "mlrl/common/model/head_partial.hpp" nogil:
         index_iterator indices_begin()
 
         index_const_iterator indices_cbegin() const
-
 
     cdef cppclass Partial64BitHeadImpl"PartialHead<float64>"(IHead):
 
@@ -307,13 +302,13 @@ cdef extern from *:
     typedef void (*ConjunctiveBodyCythonVisitor)(void*, const ConjunctiveBody&);
 
     typedef void (*CompleteBinaryHeadCythonVisitor)(void*, const CompleteHead<uint8>&);
-    
+
     typedef void (*Complete32BitHeadCythonVisitor)(void*, const CompleteHead<float32>&);
 
     typedef void (*Complete64BitHeadCythonVisitor)(void*, const CompleteHead<float64>&);
 
     typedef void (*PartialBinaryHeadCythonVisitor)(void*, const PartialHead<uint8>&);
-    
+
     typedef void (*Partial32BitHeadCythonVisitor)(void*, const PartialHead<float32>&);
 
     typedef void (*Partial64BitHeadCythonVisitor)(void*, const PartialHead<float64>&);
@@ -385,7 +380,7 @@ cdef extern from *:
     ctypedef void (*Complete64BitHeadCythonVisitor)(void*, const Complete64BitHeadImpl&)
 
     ctypedef void (*PartialBinaryHeadCythonVisitor)(void*, const PartialBinaryHeadImpl&)
-    
+
     ctypedef void (*Partial32BitHeadCythonVisitor)(void*, const Partial32BitHeadImpl&)
 
     ctypedef void (*Partial64BitHeadCythonVisitor)(void*, const Partial64BitHeadImpl&)
@@ -395,13 +390,13 @@ cdef extern from *:
     ConjunctiveBodyVisitor wrapConjunctiveBodyVisitor(void* self, ConjunctiveBodyCythonVisitor visitor)
 
     CompleteBinaryHeadVisitor wrapCompleteBinaryHeadVisitor(void* self, CompleteBinaryHeadCythonVisitor visitor)
-    
+
     Complete32BitHeadVisitor wrapComplete32BitHeadVisitor(void* self, Complete32BitHeadCythonVisitor visitor)
 
     Complete64BitHeadVisitor wrapComplete64BitHeadVisitor(void* self, Complete64BitHeadCythonVisitor visitor)
 
     PartialBinaryHeadVisitor wrapPartialBinaryHeadVisitor(void* self, PartialBinaryHeadCythonVisitor visitor)
-    
+
     Partial32BitHeadVisitor wrapPartial32BitHeadVisitor(void* self, Partial32BitHeadCythonVisitor visitor)
 
     Partial64BitHeadVisitor wrapPartial64BitHeadVisitor(void* self, Partial64BitHeadCythonVisitor visitor)
@@ -486,7 +481,7 @@ cdef class RuleList(RuleModel):
     cdef __visit_complete_64bit_head(self, const Complete64BitHeadImpl& head)
 
     cdef __visit_partial_binary_head(self, const PartialBinaryHeadImpl& head)
-    
+
     cdef __visit_partial_32bit_head(self, const Partial32BitHeadImpl& head)
 
     cdef __visit_partial_64bit_head(self, const Partial64BitHeadImpl& head)

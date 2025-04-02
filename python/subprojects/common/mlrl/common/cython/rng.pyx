@@ -1,7 +1,7 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less
+from mlrl.common.cython.validation import assert_greater_or_equal
 
 
 cdef class RNGConfig:
@@ -20,7 +20,7 @@ cdef class RNGConfig:
     def set_random_state(self, random_state: int) -> RNGConfig:
         """
         Sets the seed that should be used by random number generators.
-        
+
         :param random_state:    The seed that should be used. Must be at least 1
         :return:                An `RNGConfig` that allows further configuration of the random number generators
         """
