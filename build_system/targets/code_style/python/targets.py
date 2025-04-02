@@ -61,7 +61,6 @@ class CheckCythonCodeStyle(PhonyTarget.Runnable):
 
     def run(self, build_unit: BuildUnit, module: Module):
         Log.info('Checking Cython code style in directory "%s"...', module.root_directory)
-        Autoflake(build_unit, module).run()
         ISort(build_unit, module).run()
 
 
