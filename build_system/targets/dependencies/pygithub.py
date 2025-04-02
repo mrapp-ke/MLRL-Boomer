@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for accessing the GitHub API via "pygithub".
 """
 from os import environ
-from typing import Any, Optional
+from typing import Any, Iterable, Optional
 
 from core.build_unit import BuildUnit
 from util.env import get_env
@@ -24,6 +24,11 @@ class GithubApi:
         Allows to query information about a single GitHub repository.
         """
 
+        def __create_client(self) -> Any:
+            # pylint: disable=import-outside-toplevel
+            from github import Auth, Github
+            return Github(auth=Auth.Token(self.token) if self.token else None)
+
         def __init__(self, repository_name: str, token: str):
             """
             :param repository_name: The name of the repository
@@ -35,19 +40,31 @@ class GithubApi:
 
         def get_latest_release(self) -> Optional[Any]:
             """
-            Returns the tag of the repository's latest release, if any.
+            Returns repository's latest release, if any.
 
-            :return: The tag of the latest release or None, if no release is available
+            :return: The latest release or None, if no release is available
             """
-            # pylint: disable=import-outside-toplevel
-            from github import Auth, Github, UnknownObjectException
 
-            with Github(auth=Auth.Token(self.token) if self.token else None) as client:
+            with self.__create_client() as client:
                 try:
                     repository = client.get_repo(self.repository_name)
                     return repository.get_latest_release()
-                except UnknownObjectException as error:
+                except Exception as error:
                     raise RuntimeError('Failed to query latest release of GitHub repository "' + self.repository_name
+                                       + '"') from error
+
+        def get_all_releases(self) -> Iterable[Any]:
+            """
+            Returns all releases of the repository.
+
+            :return: The releases
+            """
+            with self.__create_client() as client:
+                try:
+                    repository = client.get_repo(self.repository_name)
+                    return repository.get_releases()
+                except Exception as error:
+                    raise RuntimeError('Failed to query releases of GitHub repository "' + self.repository_name
                                        + '"') from error
 
     def __init__(self, build_unit: BuildUnit):
