@@ -6,8 +6,8 @@
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/data/view_matrix_csr.hpp"
 #include "mlrl/common/data/view_matrix_csr_binary.hpp"
+#include "mlrl/common/random/rng.hpp"
 #include "mlrl/common/sampling/partition.hpp"
-#include "mlrl/common/sampling/random.hpp"
 
 #include <memory>
 
@@ -23,11 +23,10 @@ class IPartitionSampling {
         /**
          * Creates and returns a partition of the available training examples.
          *
-         * @param rng   A reference to an object of type `RNG`, implementing the random number generator to be used
-         * @return      A reference to an object of type `IPartition` that provides access to the indices of the
-         *              training examples that belong to the training set and holdout set, respectively
+         * @return A reference to an object of type `IPartition` that provides access to the indices of the training
+         *         examples that belong to the training set and holdout set, respectively
          */
-        virtual IPartition& partition(RNG& rng) = 0;
+        virtual IPartition& partition() = 0;
 };
 
 /**

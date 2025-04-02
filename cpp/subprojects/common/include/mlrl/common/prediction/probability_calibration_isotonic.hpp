@@ -3,12 +3,12 @@
  */
 #pragma once
 
-#include "mlrl/common/data/tuple.hpp"
 #include "mlrl/common/data/view_matrix_lil.hpp"
 #include "mlrl/common/prediction/probability_calibration_joint.hpp"
 
 #include <functional>
 #include <memory>
+#include <utility>
 
 /**
  * Defines an interface for all models for the calibration of marginal or joint probabilities via isotonic regression.
@@ -52,7 +52,7 @@ class MLRLCOMMON_API IIsotonicProbabilityCalibrationModel : public IMarginalProb
  * A model for the calibration of marginal or joint probabilities via isotonic regression.
  */
 class IsotonicProbabilityCalibrationModel final
-    : public IterableListOfListsDecorator<ViewDecorator<AllocatedListOfLists<Tuple<float64>>>>,
+    : public IterableListOfListsDecorator<ViewDecorator<AllocatedListOfLists<std::pair<float64, float64>>>>,
       public IIsotonicProbabilityCalibrationModel {
     public:
 

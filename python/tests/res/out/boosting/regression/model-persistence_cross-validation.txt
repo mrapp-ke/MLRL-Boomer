@@ -1,7 +1,7 @@
 INFO Starting experiment using the regression algorithm "boomer"...
 INFO Performing full 10-fold cross validation...
-DEBUG Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
 DEBUG Loading data set from file "python/tests/res/data/atp7d.arff"...
+DEBUG Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
 INFO Fold 1 / 10:
 DEBUG Loading model from file "python/tests/res/tmp/models/boomer_fold-1.model"...
 INFO Successfully loaded model from file "python/tests/res/tmp/models/boomer_fold-1.model"
@@ -11,10 +11,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 1):
 
-Mean Absolute Error               29.36
+Mean Absolute Error               29.23
 Mean Absolute Percentage Error     3.99
-Mean Squared Error              2139.56
-Median Absolute Error             17.04
+Mean Squared Error              2138.85
+Median Absolute Error             16.15
 
 INFO Fold 2 / 10:
 DEBUG Loading model from file "python/tests/res/tmp/models/boomer_fold-2.model"...
@@ -25,10 +25,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 2):
 
-Mean Absolute Error               27.42
+Mean Absolute Error               27.41
 Mean Absolute Percentage Error     0.9
-Mean Squared Error              1548.19
-Median Absolute Error             19.05
+Mean Squared Error              1546.91
+Median Absolute Error             18.99
 
 INFO Fold 3 / 10:
 DEBUG Loading model from file "python/tests/res/tmp/models/boomer_fold-3.model"...
@@ -39,10 +39,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 3):
 
-Mean Absolute Error               23.23
+Mean Absolute Error               23.26
 Mean Absolute Percentage Error     0.64
-Mean Squared Error              1271.4
-Median Absolute Error             14.33
+Mean Squared Error              1283.4
+Median Absolute Error             14.24
 
 INFO Fold 4 / 10:
 DEBUG Loading model from file "python/tests/res/tmp/models/boomer_fold-4.model"...
@@ -53,10 +53,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 4):
 
-Mean Absolute Error               22.6
+Mean Absolute Error               22.58
 Mean Absolute Percentage Error     0.72
-Mean Squared Error              1427.62
-Median Absolute Error             12.96
+Mean Squared Error              1426.88
+Median Absolute Error             12.81
 
 INFO Fold 5 / 10:
 DEBUG Loading model from file "python/tests/res/tmp/models/boomer_fold-5.model"...
@@ -67,10 +67,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 5):
 
-Mean Absolute Error               25.37
-Mean Absolute Percentage Error     0.81
-Mean Squared Error              1593.61
-Median Absolute Error             15.82
+Mean Absolute Error               25.06
+Mean Absolute Percentage Error     0.8
+Mean Squared Error              1583.37
+Median Absolute Error             15.29
 
 INFO Fold 6 / 10:
 DEBUG Loading model from file "python/tests/res/tmp/models/boomer_fold-6.model"...
@@ -81,10 +81,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 6):
 
-Mean Absolute Error               25.23
+Mean Absolute Error               25.62
 Mean Absolute Percentage Error     0.42
-Mean Squared Error              1666.41
-Median Absolute Error             16.01
+Mean Squared Error              1768.21
+Median Absolute Error             16.18
 
 INFO Fold 7 / 10:
 DEBUG Loading model from file "python/tests/res/tmp/models/boomer_fold-7.model"...
@@ -95,10 +95,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 7):
 
-Mean Absolute Error               26.83
-Mean Absolute Percentage Error     1.02
-Mean Squared Error              1496.76
-Median Absolute Error             17.79
+Mean Absolute Error               26.38
+Mean Absolute Percentage Error     1.44
+Mean Squared Error              1582.21
+Median Absolute Error             14.26
 
 INFO Fold 8 / 10:
 DEBUG Loading model from file "python/tests/res/tmp/models/boomer_fold-8.model"...
@@ -109,10 +109,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 8):
 
-Mean Absolute Error               27.03
-Mean Absolute Percentage Error     2.05
-Mean Squared Error              2174.5
-Median Absolute Error             12.01
+Mean Absolute Error               27.88
+Mean Absolute Percentage Error     2.1
+Mean Squared Error              2270.34
+Median Absolute Error             13
 
 INFO Fold 9 / 10:
 DEBUG Loading model from file "python/tests/res/tmp/models/boomer_fold-9.model"...
@@ -123,10 +123,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 9):
 
-Mean Absolute Error               21.55
-Mean Absolute Percentage Error     1.94
-Mean Squared Error              1254.37
-Median Absolute Error             10.4
+Mean Absolute Error               21.7
+Mean Absolute Percentage Error     1.93
+Mean Squared Error              1277.5
+Median Absolute Error             11.1
 
 INFO Fold 10 / 10:
 DEBUG Loading model from file "python/tests/res/tmp/models/boomer_fold-10.model"...
@@ -137,16 +137,16 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 10):
 
-Mean Absolute Error               28.97
+Mean Absolute Error               29.08
 Mean Absolute Percentage Error     2.35
-Mean Squared Error              1837.36
-Median Absolute Error             16.62
+Mean Squared Error              1843.79
+Median Absolute Error             16.05
 
 INFO Evaluation result for test data (Average across 10 folds):
 
-Mean Absolute Error               25.76  ±2.52
-Mean Absolute Percentage Error     1.48  ±1.05
-Mean Squared Error              1640.98  ±305.88
-Median Absolute Error             15.2   ±2.59
+Mean Absolute Error               25.82  ±2.53
+Mean Absolute Percentage Error     1.53  ±1.04
+Mean Squared Error              1672.15  ±318.28
+Median Absolute Error             14.81  ±2.11
 
 INFO Successfully finished after <duration>
