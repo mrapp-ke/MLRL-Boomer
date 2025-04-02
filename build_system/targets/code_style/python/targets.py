@@ -11,6 +11,7 @@ from util.log import Log
 
 from targets.code_style.modules import CodeModule
 from targets.code_style.python.autoflake import Autoflake
+from targets.code_style.python.cython_lint import CythonLint
 from targets.code_style.python.isort import ISort
 from targets.code_style.python.pylint import PyLint
 from targets.code_style.python.yapf import Yapf
@@ -62,6 +63,7 @@ class CheckCythonCodeStyle(PhonyTarget.Runnable):
     def run(self, build_unit: BuildUnit, module: Module):
         Log.info('Checking Cython code style in directory "%s"...', module.root_directory)
         ISort(build_unit, module).run()
+        CythonLint(build_unit, module).run()
 
 
 class EnforceCythonCodeStyle(PhonyTarget.Runnable):
