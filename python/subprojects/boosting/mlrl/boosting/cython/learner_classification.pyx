@@ -21,7 +21,7 @@ class AutomaticPartitionSamplingMixin(ABC):
         Configures the rule learner to automatically decide whether a holdout set should be used or not.
         """
 
-             
+
 class NoDefaultRuleMixin(ABC):
     """
     Allows to configure a rule learner to not induce a default rule.
@@ -32,8 +32,8 @@ class NoDefaultRuleMixin(ABC):
         """
         Configures the rule learner to not induce a default rule.
         """
-             
-             
+
+
 class AutomaticDefaultRuleMixin(ABC):
     """
     Allows to configure a rule learner to automatically decide whether a default rule should be induced or not.
@@ -44,8 +44,8 @@ class AutomaticDefaultRuleMixin(ABC):
         """
         Configures the rule learner to automatically decide whether a default rule should be induced or not.
         """
-            
-             
+
+
 class DenseStatisticsMixin(ABC):
     """
     Allows to configure a rule learner to use a dense representation of gradients and Hessians.
@@ -56,8 +56,8 @@ class DenseStatisticsMixin(ABC):
         """
         Configures the rule learner to use a dense representation of gradients and Hessians.
         """
-            
-             
+
+
 class SparseStatisticsMixin(ABC):
     """
     Allows to configure a rule learner to use a sparse representation of gradients and Hessians, if possible.
@@ -68,8 +68,8 @@ class SparseStatisticsMixin(ABC):
         """
         Configures the rule learner to use a sparse representation of gradients and Hessians, if possible.
         """
-            
-             
+
+
 class AutomaticStatisticsMixin(ABC):
     """
     Allows to configure a rule learner to automatically decide whether a dense or sparse representation of gradients and
@@ -82,8 +82,8 @@ class AutomaticStatisticsMixin(ABC):
         Configures the rule learner to automatically decide whether a dense or sparse representation of gradients and
         Hessians should be used.
         """
-            
-             
+
+
 class NonDecomposableLogisticLossMixin(ABC):
     """
     Allows to configure a rule learner to use a loss function that implements a multivariate variant of the logistic
@@ -96,8 +96,8 @@ class NonDecomposableLogisticLossMixin(ABC):
         Configures the rule learner to use a loss function that implements a multivariate variant of the logistic loss
         that is non-decomposable.
         """
-            
-             
+
+
 class NonDecomposableSquaredHingeLossMixin(ABC):
     """
     Allows to configure a rule learner to use a loss function that implements a multivariate variant of the squared
@@ -110,8 +110,8 @@ class NonDecomposableSquaredHingeLossMixin(ABC):
         Configures the rule learner to use a loss function that implements a multivariate variant of the squared hinge
         loss that is non-decomposable.
         """
-            
-             
+
+
 class DecomposableLogisticLossMixin(ABC):
     """
     Allows to configure a rule learner to use a loss function that implements a multivariate variant of the logistic
@@ -124,8 +124,8 @@ class DecomposableLogisticLossMixin(ABC):
         Configures the rule learner to use a loss function that implements a multivariate variant of the logistic loss
         that is decomposable.
         """
-            
-             
+
+
 class DecomposableSquaredHingeLossMixin(ABC):
     """
     Allows to configure a rule learner to use a loss function that implements a multivariate variant of the squared
@@ -138,8 +138,8 @@ class DecomposableSquaredHingeLossMixin(ABC):
         Configures the rule learner to use a loss function that implements a multivariate variant of the squared hinge
         loss that is decomposable.
         """
-            
-            
+
+
 class NoLabelBinningMixin(ABC):
     """
     Allows to configure a rule learner to not use any method for the assignment of labels to bins.
@@ -150,8 +150,8 @@ class NoLabelBinningMixin(ABC):
         """
         Configures the rule learner to not use any method for the assignment of labels to bins.
         """
-            
-             
+
+
 class EqualWidthLabelBinningMixin(ABC):
     """
     Allows to configure a rule learner to use a method for the assignment of labels to bins.
@@ -166,8 +166,8 @@ class EqualWidthLabelBinningMixin(ABC):
         :return: A `EqualWidthLabelBinningConfig` that allows further configuration of the method for the assignment of
                  labels to bins
         """
-            
-             
+
+
 class AutomaticLabelBinningMixin(ABC):
     """
     Allows to configure a rule learner to automatically decide whether a method for the assignment of labels to bins
@@ -180,8 +180,8 @@ class AutomaticLabelBinningMixin(ABC):
         Configures the rule learner to automatically decide whether a method for the assignment of labels to bins should
         be used or not.
         """
-            
-             
+
+
 class IsotonicMarginalProbabilityCalibrationMixin(ABC):
     """
     Allows to configure a rule learner to calibrate marginal probabilities via isotonic regression.
@@ -224,8 +224,8 @@ class OutputWiseProbabilityPredictorMixin(ABC):
 
         :return: A `OutputWiseProbabilityPredictorConfig` that allows further configuration of the predictor
         """
-            
-             
+
+
 class MarginalizedProbabilityPredictorMixin(ABC):
     """
     Allows to configure a rule learner to use predictor for predicting probability estimates by summing up the scores
@@ -244,13 +244,13 @@ class MarginalizedProbabilityPredictorMixin(ABC):
 
         :return: A `MarginalizedProbabilityPredictorConfig` that allows further configuration of the predictor
         """
-            
-             
+
+
 class AutomaticProbabilityPredictorMixin(ABC):
     """
     Allows to configure a rule learner to automatically decide for a predictor for predicting probability estimates.
     """
-    
+
     @abstractmethod
     def use_automatic_probability_predictor(self):
         """
@@ -273,14 +273,14 @@ class OutputWiseBinaryPredictorMixin(ABC):
 
         :return: A `OutputWiseBinaryPredictorConfig` that allows further configuration of the predictor
         """
-            
-             
+
+
 class ExampleWiseBinaryPredictorMixin(ABC):
     """
     Allows to configure a rule learner to use a predictor that predicts known label vectors for given query examples by
     comparing the predicted scores or probability estimates to the label vectors encountered in the training data.
     """
-            
+
     @abstractmethod
     def use_example_wise_binary_predictor(self) -> ExampleWiseBinaryPredictorConfig:
         """
@@ -307,8 +307,8 @@ class GfmBinaryPredictorMixin(ABC):
 
         :return: A `GfmBinaryPredictorConfig` that allows further configuration of the predictor
         """
-            
-             
+
+
 class AutomaticBinaryPredictorMixin(ABC):
     """
     Allows to configure a rule learner to automatically decide for a predictor for predicting whether individual labels

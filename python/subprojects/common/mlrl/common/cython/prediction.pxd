@@ -52,7 +52,6 @@ cdef extern from "mlrl/common/prediction/predictor.hpp" nogil:
 
         PredictionMatrix& applyNext(uint32 stepSize)
 
-
     cdef cppclass IPredictor[PredictionMatrix]:
 
         # Functions:
@@ -68,7 +67,6 @@ cdef extern from "mlrl/common/prediction/predictor_binary.hpp" nogil:
 
     cdef cppclass IBinaryPredictor(IPredictor[DensePredictionMatrix[uint8]]):
         pass
-
 
     cdef cppclass ISparseBinaryPredictor(IPredictor[BinarySparsePredictionMatrix]):
         pass

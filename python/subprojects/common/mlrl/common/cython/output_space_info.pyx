@@ -48,7 +48,7 @@ class LabelVectorSetVisitor:
 
         :param label_vector:    An `np.ndarray` of type `uint8`, shape `(num_relevant_labels)` that stores the indices
                                 of the relevant labels
-        :param frequency:       The frequency of the label vector    
+        :param frequency:       The frequency of the label vector
         """
 
 

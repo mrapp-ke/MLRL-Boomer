@@ -196,7 +196,6 @@ cdef extern from "mlrl/common/model/rule_list.hpp" nogil:
         void visitUsed(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor,
                        CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor) const
 
-
     unique_ptr[IRuleList] createRuleList(bool defaultRuleTakesPrecedence)
 
 

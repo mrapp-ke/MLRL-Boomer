@@ -107,7 +107,7 @@ cdef class IsotonicMarginalProbabilityCalibrationModel(MarginalProbabilityCalibr
 
     cdef IMarginalProbabilityCalibrationModel* get_marginal_probability_calibration_model_ptr(self):
         return self.probability_calibration_model_ptr.get()
-    
+
     cdef __visit_bin(self, uint32 list_index, float64 threshold, float64 probability):
         self.visitor.visit_bin(list_index, threshold, probability)
 
@@ -130,7 +130,7 @@ cdef class IsotonicMarginalProbabilityCalibrationModel(MarginalProbabilityCalibr
         if version != SERIALIZATION_VERSION:
             raise AssertionError('Version of the serialized IsotonicMarginalProbabilityCalibrationModel is '
                                  + str(version) + ', expected ' + str(SERIALIZATION_VERSION))
-        
+
         cdef list bins_per_list = state[1]
         cdef uint32 num_bin_lists = len(bins_per_list)
         cdef unique_ptr[IIsotonicProbabilityCalibrationModel] marginal_probability_calibration_model_ptr = \
@@ -188,7 +188,7 @@ cdef class IsotonicJointProbabilityCalibrationModel(JointProbabilityCalibrationM
         if version != SERIALIZATION_VERSION:
             raise AssertionError('Version of the serialized IsotonicJointProbabilityCalibrationModel is ' + str(version)
                                  + ', expected ' + str(SERIALIZATION_VERSION))
-        
+
         cdef list bins_per_list = state[1]
         cdef uint32 num_bin_lists = len(bins_per_list)
         cdef unique_ptr[IIsotonicProbabilityCalibrationModel] joint_probability_calibration_model_ptr = \
