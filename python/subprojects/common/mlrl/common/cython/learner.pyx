@@ -58,7 +58,7 @@ class RNGMixin(ABC):
     def use_rng(self) -> RNGConfig:
         """
         Configures the random number generators that are used by the rule learner.
-        
+
         :return: An `RNGConfig` that allows further configuration of the random number generators
         """
 
