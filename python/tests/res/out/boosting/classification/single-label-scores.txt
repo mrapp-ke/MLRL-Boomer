@@ -1,7 +1,7 @@
 INFO Starting experiment using the classification algorithm "boomer"...
 INFO Using separate training and test sets...
-DEBUG Parsing meta-data from file "python/tests/res/data/breast-cancer.xml"...
 DEBUG Loading data set from file "python/tests/res/data/breast-cancer.arff"...
+DEBUG Parsing meta-data from file "python/tests/res/data/breast-cancer.xml"...
 INFO Fitting model to 191 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
@@ -12,9 +12,9 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data:
 
-Mean Absolute Error              3.43
-Mean Absolute Percentage Error   1.06889e+16
-Mean Squared Error              17.13
-Median Absolute Error            2.85
+Mean Absolute Error              3.4
+Mean Absolute Percentage Error   1.06788e+16
+Mean Squared Error              16.75
+Median Absolute Error            2.72
 
 INFO Successfully finished after <duration>

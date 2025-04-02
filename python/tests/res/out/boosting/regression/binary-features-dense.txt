@@ -1,7 +1,7 @@
 INFO Starting experiment using the regression algorithm "boomer"...
 INFO Using separate training and test sets...
-DEBUG Parsing meta-data from file "python/tests/res/data/atp7d-binary.xml"...
 DEBUG Loading data set from file "python/tests/res/data/atp7d-binary.arff"...
+DEBUG Parsing meta-data from file "python/tests/res/data/atp7d-binary.xml"...
 INFO Fitting model to 198 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the regression scores of the training examples
@@ -12,9 +12,9 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data:
 
-Mean Absolute Error               30.6
-Mean Absolute Percentage Error     1.26
-Mean Squared Error              1989.77
-Median Absolute Error             19.25
+Mean Absolute Error               34.38
+Mean Absolute Percentage Error     1.71
+Mean Squared Error              2443.52
+Median Absolute Error             21.55
 
 INFO Successfully finished after <duration>

@@ -40,7 +40,7 @@ namespace boosting {
              */
             virtual void useNonDecomposableLogisticLoss() {
                 this->getClassificationLossConfig().set(
-                  std::make_unique<NonDecomposableLogisticLossConfig>(this->getHeadConfig()));
+                  std::make_unique<NonDecomposableLogisticLossConfig>(this->getStatisticTypeConfig()));
                 this->getRegressionLossConfig().set(nullptr);
             }
     };
@@ -60,7 +60,7 @@ namespace boosting {
              */
             virtual void useNonDecomposableSquaredHingeLoss() {
                 this->getClassificationLossConfig().set(
-                  std::make_unique<NonDecomposableSquaredHingeLossConfig>(this->getHeadConfig()));
+                  std::make_unique<NonDecomposableSquaredHingeLossConfig>(this->getStatisticTypeConfig()));
                 this->getRegressionLossConfig().set(nullptr);
             }
     };
@@ -80,7 +80,7 @@ namespace boosting {
              */
             virtual void useDecomposableLogisticLoss() {
                 this->getClassificationLossConfig().set(
-                  std::make_unique<DecomposableLogisticLossConfig>(this->getHeadConfig()));
+                  std::make_unique<DecomposableLogisticLossConfig>(this->getStatisticTypeConfig()));
                 this->getRegressionLossConfig().set(nullptr);
             }
     };
@@ -100,7 +100,7 @@ namespace boosting {
              */
             virtual void useDecomposableSquaredHingeLoss() {
                 this->getClassificationLossConfig().set(
-                  std::make_unique<DecomposableSquaredHingeLossConfig>(this->getHeadConfig()));
+                  std::make_unique<DecomposableSquaredHingeLossConfig>(this->getStatisticTypeConfig()));
                 this->getRegressionLossConfig().set(nullptr);
             }
     };

@@ -555,9 +555,9 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .store_evaluation(False) \
             .print_model_characteristics() \
             .print_parameters() \
-            .store_parameters() \
+            .set_parameter_save_dir() \
             .set_output_dir() \
-            .set_parameter_dir()
+            .set_parameter_load_dir()
         builder.run_cmd('parameters_train-test')
 
     def test_parameters_cross_validation(self):
@@ -571,9 +571,9 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .store_evaluation(False) \
             .print_model_characteristics() \
             .print_parameters() \
-            .store_parameters() \
+            .set_parameter_save_dir() \
             .set_output_dir() \
-            .set_parameter_dir()
+            .set_parameter_load_dir()
         builder.run_cmd('parameters_cross-validation')
 
     def test_parameters_single_fold(self):
@@ -587,9 +587,9 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .store_evaluation(False) \
             .print_model_characteristics() \
             .print_parameters() \
-            .store_parameters() \
+            .set_parameter_save_dir() \
             .set_output_dir() \
-            .set_parameter_dir()
+            .set_parameter_load_dir()
         builder.run_cmd('parameters_single-fold')
 
     def test_instance_sampling_no(self):
