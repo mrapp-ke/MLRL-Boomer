@@ -30,7 +30,7 @@ cdef class RegressionRuleLearner:
             RowWiseRegressionMatrix regression_matrix not None) -> TrainingResult:
         """
         Applies the rule learner to given training examples and corresponding ground truth regression scores.
-        
+
         :param example_weights:     `ExampleWeights` that provide access to the weights of individual training examples
         :param feature_info:        A reference to an object of type `IFeatureInfo` that provides information about the
                                     types of individual features
