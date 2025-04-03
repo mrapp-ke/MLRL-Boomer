@@ -12,9 +12,10 @@ from mlrl.common.mixins import IncrementalClassifierMixin, IncrementalRegressorM
 
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.prediction.predictor import Predictor
+from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.state import ExperimentState, PredictionState
 from mlrl.testbed.experiments.timer import Timer
-from mlrl.testbed.prediction_scope import IncrementalPrediction, PredictionType
+from mlrl.testbed.prediction_scope import IncrementalPrediction
 
 
 class IncrementalPredictor(Predictor):

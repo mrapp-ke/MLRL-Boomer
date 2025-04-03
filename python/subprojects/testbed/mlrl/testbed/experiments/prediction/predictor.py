@@ -13,9 +13,8 @@ from sklearn.base import RegressorMixin
 from mlrl.common.mixins import ClassifierMixin
 
 from mlrl.testbed.dataset import Dataset
-from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.prediction_scope import PredictionType
 
 
 class Predictor(ABC):
@@ -23,7 +22,7 @@ class Predictor(ABC):
     An abstract base class for all classes that allow to obtain predictions from a previously trained model.
     """
 
-    def __init__(self, prediction_type: PredictionType, output_writers: List[OutputWriter]):
+    def __init__(self, prediction_type: PredictionType, output_writers: List):
         """
         :param prediction_type: The type of the predictions to be obtained
         :param output_writers:  A list that contains all output writers to be invoked after predictions have been

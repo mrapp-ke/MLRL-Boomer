@@ -9,8 +9,8 @@ from mlrl.testbed.experiments.output.characteristics.characteristics_prediction 
 from mlrl.testbed.experiments.output.characteristics.matrix_label import LabelMatrix
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.prediction_scope import PredictionType
 
 
 class PredictionCharacteristicsWriter(OutputWriter):
