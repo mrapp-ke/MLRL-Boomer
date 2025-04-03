@@ -111,11 +111,11 @@ class EvaluationResult(TabularOutputData):
             if options.get_bool(measure.option_key, enable_all) and measure.option_key != self.OPTION_TRAINING_TIME \
                     and measure.option_key != self.OPTION_PREDICTION_TIME:
                 if fold is None:
-                    score, std_dev = measurements.avg(measure, percentage=percentage, decimals=decimals)
-                    rows.append([str(measure), score, '±' + std_dev])
+                    value, std_dev = measurements.avg(measure, percentage=percentage, decimals=decimals)
+                    rows.append([str(measure), value, '±' + std_dev])
                 else:
-                    score = measurements.get(measure, fold, percentage=percentage, decimals=decimals)
-                    rows.append([str(measure), score])
+                    value = measurements.get(measure, fold, percentage=percentage, decimals=decimals)
+                    rows.append([str(measure), value])
 
         return format_table(rows)
 
