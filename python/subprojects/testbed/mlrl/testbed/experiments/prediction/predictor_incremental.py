@@ -15,7 +15,7 @@ from mlrl.testbed.experiments.prediction.predictor import Predictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.state import ExperimentState, PredictionState
 from mlrl.testbed.experiments.timer import Timer
-from mlrl.testbed.prediction_scope import IncrementalPrediction
+from mlrl.testbed.prediction_scope import PredictionScope
 
 
 class IncrementalPredictor(Predictor):
@@ -23,6 +23,24 @@ class IncrementalPredictor(Predictor):
     Repeatedly obtains predictions from a previously trained ensemble model, e.g., a model consisting of several rules,
     using only a subset of the ensemble members with increasing size.
     """
+
+    class Scope(PredictionScope):
+        """
+        Provides information about predictions that have been obtained incrementally.
+        """
+
+        def __init__(self, model_size: int):
+            """
+            :param model_size: The size of the model, the predictions have been obtained from
+            """
+            self._model_size = model_size
+
+        @property
+        def model_size(self) -> int:
+            """
+            See :func:`mlrl.testbed.prediction_scope.PredictionScope.model_size`
+            """
+            return self._model_size
 
     def __init__(self, prediction_type: PredictionType, output_writers: List[OutputWriter], min_size: int,
                  max_size: int, step_size: int):
@@ -76,7 +94,7 @@ class IncrementalPredictor(Predictor):
                     log.info('Successfully predicted in %s', prediction_duration)
                     state.prediction_result = PredictionState(predictions=predictions,
                                                               prediction_type=self.prediction_type,
-                                                              prediction_scope=IncrementalPrediction(current_size),
+                                                              prediction_scope=IncrementalPredictor.Scope(current_size),
                                                               prediction_duration=prediction_duration)
                     self._evaluate_predictions(state)
 
