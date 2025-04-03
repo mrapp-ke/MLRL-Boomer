@@ -8,13 +8,27 @@ import logging as log
 
 from typing import Generator
 
+from sklearn.base import BaseEstimator
+
 from mlrl.common.mixins import IncrementalClassifierMixin, IncrementalRegressorMixin
 
-from mlrl.testbed.experiments.prediction.predictor import Predictor
+from mlrl.testbed.experiments.prediction.predictor import PredictionFunction, Predictor
 from mlrl.testbed.experiments.prediction_scope import PredictionScope
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.state import ExperimentState, PredictionState
 from mlrl.testbed.experiments.timer import Timer
+
+
+class IncrementalPredictionFunction(PredictionFunction):
+    """
+    A function that obtains and returns incremental predictions from a learner.
+    """
+
+    def __init__(self, learner: BaseEstimator):
+        super().__init__(learner=learner,
+                         predict_function=learner.predict_incrementally,
+                         predict_proba_function=learner.predict_proba_incrementally if callable(
+                             getattr(learner, 'predict_proba_incrementally', None)) else None)
 
 
 class IncrementalPredictor(Predictor):
@@ -63,11 +77,9 @@ class IncrementalPredictor(Predictor):
         if not isinstance(learner, IncrementalClassifierMixin) and not isinstance(learner, IncrementalRegressorMixin):
             raise ValueError('Cannot obtain incremental predictions from a model of type ' + type(learner.__name__))
 
-        predict_proba_function = learner.predict_proba_incrementally if callable(
-            getattr(learner, 'predict_proba_incrementally', None)) else None
         dataset = state.dataset
-        incremental_predictor = self._invoke_prediction_function(learner, learner.predict_incrementally,
-                                                                 predict_proba_function, dataset, **kwargs)
+        prediction_function = IncrementalPredictionFunction(learner)
+        incremental_predictor = prediction_function.invoke(dataset, self.prediction_type, **kwargs)
 
         if incremental_predictor:
             step_size = self.step_size
