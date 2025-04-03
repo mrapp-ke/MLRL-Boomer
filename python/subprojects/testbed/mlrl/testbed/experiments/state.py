@@ -9,10 +9,11 @@ from typing import Any, Dict, Optional
 from sklearn.base import BaseEstimator
 
 from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.fold import Fold
-from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
+from mlrl.testbed.prediction_scope import PredictionScope
 
 
 @dataclass
