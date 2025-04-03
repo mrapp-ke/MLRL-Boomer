@@ -6,9 +6,9 @@ Provides classes for obtaining predictions from global machine learning models.
 import logging as log
 
 from mlrl.testbed.experiments.prediction.predictor import Predictor
+from mlrl.testbed.experiments.prediction_scope import PredictionScope
 from mlrl.testbed.experiments.state import ExperimentState, PredictionState
 from mlrl.testbed.experiments.timer import Timer
-from mlrl.testbed.prediction_scope import PredictionScope
 
 
 class GlobalPredictor(Predictor):
