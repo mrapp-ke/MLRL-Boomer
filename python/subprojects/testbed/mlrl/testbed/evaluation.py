@@ -33,15 +33,6 @@ class EvaluationWriter(OutputWriter, ABC):
     evaluation results to one or several sinks.
     """
 
-    def _write_to_sink(self, sink: Sink, state: ExperimentState, output_data: OutputData):
-        fold = state.fold
-        fold_index = fold.index if fold.is_cross_validation_used else 0
-        sink.write_to_sink(state, output_data, **{EvaluationResult.KWARG_FOLD: fold_index})
-
-        if fold.is_cross_validation_used and fold.is_last_fold:
-            overall_fold = replace(fold, index=None, is_last_fold=True)
-            sink.write_to_sink(replace(state, fold=overall_fold), output_data)
-
     def __init__(self, *sinks: Sink):
         super().__init__(*sinks)
         self.measurements = {}
@@ -78,7 +69,17 @@ class EvaluationWriter(OutputWriter, ABC):
             evaluation_result = EvaluationResult(measurements)
             self._populate_result(fold, evaluation_result, prediction_result.predictions, dataset.y)
             return evaluation_result
+
         return None
+
+    def _write_to_sink(self, sink: Sink, state: ExperimentState, output_data: OutputData):
+        fold = state.fold
+        fold_index = fold.index if fold.is_cross_validation_used else 0
+        sink.write_to_sink(state, output_data, **{EvaluationResult.KWARG_FOLD: fold_index})
+
+        if fold.is_cross_validation_used and fold.is_last_fold:
+            overall_fold = replace(fold, index=None, is_last_fold=True)
+            sink.write_to_sink(replace(state, fold=overall_fold), output_data)
 
 
 ARGS_SINGLE_LABEL = {'zero_division': 1}
@@ -248,8 +249,8 @@ class BinaryEvaluationWriter(EvaluationWriter):
 
         for evaluation_measure in evaluation_measures:
             if isinstance(evaluation_measure, Measure):
-                score = evaluation_measure.evaluate(ground_truth, predictions)
-                result.measurements.put(evaluation_measure, score, num_folds=fold.num_folds, fold=fold.index)
+                value = evaluation_measure.evaluate(ground_truth, predictions)
+                result.measurements.put(evaluation_measure, value, num_folds=fold.num_folds, fold=fold.index)
 
 
 class RegressionEvaluationWriter(EvaluationWriter):
@@ -269,8 +270,8 @@ class RegressionEvaluationWriter(EvaluationWriter):
 
         for evaluation_measure in evaluation_measures:
             if isinstance(evaluation_measure, Measure):
-                score = evaluation_measure.evaluate(ground_truth, predictions)
-                result.measurements.put(evaluation_measure, score, num_folds=fold.num_folds, fold=fold.index)
+                value = evaluation_measure.evaluate(ground_truth, predictions)
+                result.measurements.put(evaluation_measure, value, num_folds=fold.num_folds, fold=fold.index)
 
 
 REGRESSION_EVALUATION_MEASURES = [
@@ -362,5 +363,5 @@ class RankingEvaluationWriter(EvaluationWriter):
 
         for evaluation_measure in evaluation_measures:
             if isinstance(evaluation_measure, Measure):
-                score = evaluation_measure.evaluate(ground_truth, predictions)
-                result.measurements.put(evaluation_measure, score, num_folds=fold.num_folds, fold=fold.index)
+                value = evaluation_measure.evaluate(ground_truth, predictions)
+                result.measurements.put(evaluation_measure, value, num_folds=fold.num_folds, fold=fold.index)
