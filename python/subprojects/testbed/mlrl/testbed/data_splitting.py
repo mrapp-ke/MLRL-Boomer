@@ -9,7 +9,6 @@ import logging as log
 from abc import ABC, abstractmethod
 from functools import reduce
 from os import path
-from timeit import default_timer as timer
 from typing import List, Optional
 
 from scipy.sparse import vstack
@@ -18,8 +17,8 @@ from sklearn.model_selection import KFold, train_test_split
 from mlrl.testbed.data import ArffMetaData, load_data_set, load_data_set_and_meta_data
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.experiments.input.preprocessors import Preprocessor
+from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.fold import Fold
-from mlrl.testbed.util.format import format_duration
 from mlrl.testbed.util.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name, get_file_name_per_fold
 
 
@@ -65,11 +64,10 @@ class DataSplitter(ABC):
         """
         :param callback: The callback that should be used for training and evaluating models
         """
-        start_time = timer()
+        start_time = Timer.start()
         self._split_data(callback)
-        end_time = timer()
-        run_time = end_time - start_time
-        log.info('Successfully finished after %s', format_duration(run_time))
+        run_time = Timer.stop(start_time)
+        log.info('Successfully finished after %s', run_time)
 
     @abstractmethod
     def _split_data(self, callback: Callback):
