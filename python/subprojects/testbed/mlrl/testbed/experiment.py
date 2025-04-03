@@ -11,184 +11,20 @@ from functools import reduce
 from timeit import default_timer as timer
 from typing import Any, Dict, List, Optional
 
-from sklearn.base import BaseEstimator, RegressorMixin, clone
+from sklearn.base import BaseEstimator, clone
 
-from mlrl.common.mixins import ClassifierMixin, IncrementalClassifierMixin, IncrementalRegressorMixin, \
-    NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
+from mlrl.common.mixins import NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
 
 from mlrl.testbed.data_splitting import DataSplitter
 from mlrl.testbed.dataset import AttributeType, Dataset
+from mlrl.testbed.experiments.evaluation import Evaluation
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
-from mlrl.testbed.experiments.state import ExperimentState, PredictionState, TrainingState
+from mlrl.testbed.experiments.state import ExperimentState, TrainingState
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.parameters import ParameterLoader
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
-from mlrl.testbed.prediction_scope import GlobalPrediction, IncrementalPrediction, PredictionType
 from mlrl.testbed.util.format import format_duration
-
-
-class Evaluation(ABC):
-    """
-    An abstract base class for all classes that allow to evaluate predictions that are obtained from a previously
-    trained model.
-    """
-
-    def __init__(self, prediction_type: PredictionType, output_writers: List[OutputWriter]):
-        """
-        :param prediction_type: The type of the predictions to be obtained
-        :param output_writers:  A list that contains all output writers to be invoked after predictions have been
-                                obtained
-        """
-        self.prediction_type = prediction_type
-        self.output_writers = output_writers
-
-    def _invoke_prediction_function(self, learner, predict_function, predict_proba_function, dataset: Dataset,
-                                    **kwargs):
-        """
-        May be used by subclasses in order to invoke the correct prediction function, depending on the type of
-        result that should be obtained.
-
-        :param learner:                 The learner, the result should be obtained from
-        :param predict_function:        The function to be invoked if binary results or scores should be obtained
-        :param predict_proba_function:  The function to be invoked if probability estimates should be obtained
-        :param dataset:                 The dataset that stores the query examples
-        :param kwargs:                  Optional keyword arguments to be passed to the `predict_function`
-        :return:                        The return value of the invoked function
-        """
-        prediction_type = self.prediction_type
-        x = dataset.x
-
-        if prediction_type == PredictionType.SCORES:
-            try:
-                if isinstance(learner, ClassifierMixin):
-                    result = predict_function(x, predict_scores=True, **kwargs)
-                elif isinstance(learner, RegressorMixin):
-                    result = predict_function(x, **kwargs)
-                else:
-                    raise RuntimeError()
-            except RuntimeError:
-                log.error('Prediction of scores not supported')
-                result = None
-        elif prediction_type == PredictionType.PROBABILITIES:
-            try:
-                result = predict_proba_function(x)
-            except RuntimeError:
-                log.error('Prediction of probabilities not supported')
-                result = None
-        else:
-            result = predict_function(x, **kwargs)
-
-        return result
-
-    def _evaluate_predictions(self, state: ExperimentState):
-        """
-        May be used by subclasses in order to evaluate predictions that have been obtained from a previously trained
-        model.
-
-        :param state: The state that stores the predictions and the model
-        """
-        for output_writer in self.output_writers:
-            output_writer.write_output(state)
-
-    @abstractmethod
-    def predict_and_evaluate(self, state: ExperimentState, **kwargs):
-        """
-        Must be implemented by subclasses in order to obtain and evaluate predictions for given query examples from a
-        previously trained model.
-
-        :param state:   The state that stores the predictions and the model
-        :param kwargs:  Optional keyword arguments to be passed to the model when obtaining predictions
-        """
-
-
-class GlobalEvaluation(Evaluation):
-    """
-    Obtains and evaluates predictions from a previously trained global model.
-    """
-
-    def predict_and_evaluate(self, state: ExperimentState, **kwargs):
-        dataset = state.dataset
-        log.info('Predicting for %s %s examples...', dataset.num_examples, dataset.type.value)
-        learner = state.training_result.learner
-        start_time = timer()
-        predict_proba_function = learner.predict_proba if callable(getattr(learner, 'predict_proba', None)) else None
-        predictions = self._invoke_prediction_function(learner, learner.predict, predict_proba_function, dataset,
-                                                       **kwargs)
-        end_time = timer()
-        predict_time = end_time - start_time
-
-        if predictions is not None:
-            log.info('Successfully predicted in %s', format_duration(predict_time))
-            state.prediction_result = PredictionState(predictions=predictions,
-                                                      prediction_type=self.prediction_type,
-                                                      prediction_scope=GlobalPrediction(),
-                                                      predict_time=predict_time)
-            self._evaluate_predictions(state)
-
-
-class IncrementalEvaluation(Evaluation):
-    """
-    Repeatedly obtains and evaluates predictions from a previously trained ensemble model, e.g., a model consisting of
-    several rules, using only a subset of the ensemble members with increasing size.
-    """
-
-    def __init__(self, prediction_type: PredictionType, output_writers: List[OutputWriter], min_size: int,
-                 max_size: int, step_size: int):
-        """
-        :param min_size:    The minimum number of ensemble members to be evaluated. Must be at least 0
-        :param max_size:    The maximum number of ensemble members to be evaluated. Must be greater than `min_size` or
-                            0, if all ensemble members should be evaluated
-        :param step_size:   The number of additional ensemble members to be considered at each repetition. Must be at
-                            least 1
-        """
-        super().__init__(prediction_type, output_writers)
-        self.min_size = min_size
-        self.max_size = max_size
-        self.step_size = step_size
-
-    def predict_and_evaluate(self, state: ExperimentState, **kwargs):
-        learner = state.training_result.learner
-
-        if not isinstance(learner, IncrementalClassifierMixin) and not isinstance(learner, IncrementalRegressorMixin):
-            raise ValueError('Cannot obtain incremental predictions from a model of type ' + type(learner.__name__))
-
-        predict_proba_function = learner.predict_proba_incrementally if callable(
-            getattr(learner, 'predict_proba_incrementally', None)) else None
-        dataset = state.dataset
-        incremental_predictor = self._invoke_prediction_function(learner, learner.predict_incrementally,
-                                                                 predict_proba_function, dataset, **kwargs)
-
-        if incremental_predictor:
-            step_size = self.step_size
-            total_size = incremental_predictor.get_num_next()
-            max_size = self.max_size
-
-            if max_size > 0:
-                total_size = min(max_size, total_size)
-
-            min_size = self.min_size
-            next_step_size = min_size if min_size > 0 else step_size
-            current_size = min(next_step_size, total_size)
-
-            while incremental_predictor.has_next():
-                log.info('Predicting for %s %s examples using a model of size %s...', dataset.num_examples,
-                         dataset.type.value, current_size)
-                start_time = timer()
-                predictions = incremental_predictor.apply_next(next_step_size)
-                end_time = timer()
-                predict_time = end_time - start_time
-
-                if predictions is not None:
-                    log.info('Successfully predicted in %s', format_duration(predict_time))
-                    state.prediction_result = PredictionState(predictions=predictions,
-                                                              prediction_type=self.prediction_type,
-                                                              prediction_scope=IncrementalPrediction(current_size),
-                                                              predict_time=predict_time)
-                    self._evaluate_predictions(state)
-
-                next_step_size = step_size
-                current_size = min(current_size + next_step_size, total_size)
 
 
 class Experiment(DataSplitter.Callback):
