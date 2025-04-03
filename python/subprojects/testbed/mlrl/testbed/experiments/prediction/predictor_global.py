@@ -5,6 +5,8 @@ Provides classes for obtaining predictions from global machine learning models.
 """
 import logging as log
 
+from typing import Generator
+
 from mlrl.testbed.experiments.prediction.predictor import Predictor
 from mlrl.testbed.experiments.prediction_scope import PredictionScope
 from mlrl.testbed.experiments.state import ExperimentState, PredictionState
@@ -28,9 +30,9 @@ class GlobalPredictor(Predictor):
             """
             return 0
 
-    def predict_and_evaluate(self, state: ExperimentState, **kwargs):
+    def obtain_predictions(self, state: ExperimentState, **kwargs) -> Generator[PredictionState]:
         """
-        See :func:`mlrl.testbed.experiments.prediction.predictor.Predictor.predict_and_evaluate`
+        See :func:`mlrl.testbed.experiments.prediction.predictor.Predictor.obtain_predictions`
         """
         dataset = state.dataset
         log.info('Predicting for %s %s examples...', dataset.num_examples, dataset.type.value)
@@ -43,8 +45,7 @@ class GlobalPredictor(Predictor):
 
         if predictions is not None:
             log.info('Successfully predicted in %s', prediction_duration)
-            state.prediction_result = PredictionState(predictions=predictions,
-                                                      prediction_type=self.prediction_type,
-                                                      prediction_scope=GlobalPredictor.Scope(),
-                                                      prediction_duration=prediction_duration)
-            self._evaluate_predictions(state)
+            yield PredictionState(predictions=predictions,
+                                  prediction_type=self.prediction_type,
+                                  prediction_scope=GlobalPredictor.Scope(),
+                                  prediction_duration=prediction_duration)

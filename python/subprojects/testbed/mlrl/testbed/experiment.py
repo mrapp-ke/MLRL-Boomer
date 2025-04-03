@@ -50,6 +50,7 @@ class Experiment(DataSplitter.Callback):
                  data_splitter: DataSplitter,
                  pre_training_output_writers: List[OutputWriter],
                  post_training_output_writers: List[OutputWriter],
+                 prediction_output_writers: List[OutputWriter],
                  pre_execution_hook: Optional[ExecutionHook] = None,
                  train_predictor: Optional[Predictor] = None,
                  test_predictor: Optional[Predictor] = None,
@@ -66,6 +67,8 @@ class Experiment(DataSplitter.Callback):
                                                 test sets
         :param pre_training_output_writers:     A list that contains all output writers to be invoked before training
         :param post_training_output_writers:    A list that contains all output writers to be invoked after training
+        :param prediction_output_writers:       A list that contains all output writers to be invoked each time
+                                                predictions are obtained from a model
         :param pre_execution_hook:              An operation that should be executed before the experiment
         :param train_predictor:                 The `Predictor` to be used for obtaining predictions for the training
                                                 data or None, if no such predictions should be obtained
@@ -84,6 +87,7 @@ class Experiment(DataSplitter.Callback):
         self.learner_name = learner_name
         self.data_splitter = data_splitter
         self.pre_training_output_writers = pre_training_output_writers
+        self.prediction_output_writers = prediction_output_writers
         self.post_training_output_writers = post_training_output_writers
         self.pre_execution_hook = pre_execution_hook
         self.train_predictor = train_predictor
@@ -181,8 +185,7 @@ class Experiment(DataSplitter.Callback):
         for output_writer in self.post_training_output_writers:
             output_writer.write_output(state)
 
-    @staticmethod
-    def __predict_and_evaluate(state: ExperimentState, predictor: Predictor, **kwargs):
+    def __predict_and_evaluate(self, state: ExperimentState, predictor: Predictor, **kwargs):
         """
         Obtains predictions for given query examples from a previously trained model.
 
@@ -191,13 +194,17 @@ class Experiment(DataSplitter.Callback):
         :param kwargs:      Optional keyword arguments to be passed to the model when obtaining predictions
         """
         try:
-            return predictor.predict_and_evaluate(state, **kwargs)
+            for prediction_state in predictor.obtain_predictions(state, **kwargs):
+                new_state = replace(state, prediction_result=prediction_state)
+
+                for output_writer in self.prediction_output_writers:
+                    output_writer.write_output(new_state)
         except ValueError as error:
             dataset = state.dataset
 
             if dataset.has_sparse_features:
                 dense_dataset = replace(state, dataset=dataset.enforce_dense_features())
-                return Experiment.__predict_and_evaluate(dense_dataset, predictor, **kwargs)
+                Experiment.__predict_and_evaluate(dense_dataset, predictor, **kwargs)
 
             raise error
 
