@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for evaluating predictions provided by a machine learning model.
+Provides classes for obtaining predictions from machine learning models.
 """
 import logging as log
 
@@ -18,9 +18,9 @@ from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.prediction_scope import PredictionType
 
 
-class Evaluation(ABC):
+class Predictor(ABC):
     """
-    An abstract base class for all classes that allow to evaluate predictions provided by a previously trained model.
+    An abstract base class for all classes that allow to obtain predictions from a previously trained model.
     """
 
     def __init__(self, prediction_type: PredictionType, output_writers: List[OutputWriter]):

@@ -33,13 +33,13 @@ from mlrl.testbed.evaluation import OPTION_ACCURACY, OPTION_COVERAGE_ERROR, OPTI
     OPTION_RECALL, OPTION_SUBSET_ACCURACY, OPTION_SUBSET_ZERO_ONE_LOSS, OPTION_TRAINING_TIME, OPTION_ZERO_ONE_LOSS, \
     BinaryEvaluationWriter, RankingEvaluationWriter, RegressionEvaluationWriter
 from mlrl.testbed.experiment import Experiment
-from mlrl.testbed.experiments.evaluation import Evaluation, GlobalEvaluation, IncrementalEvaluation
 from mlrl.testbed.experiments.input.preprocessors import OneHotEncoder, Preprocessor
 from mlrl.testbed.experiments.output.characteristics import DataCharacteristics, DataCharacteristicsWriter, \
     OutputCharacteristics, PredictionCharacteristicsWriter
 from mlrl.testbed.experiments.output.label_vectors import LabelVectors, LabelVectorWriter
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, TextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.prediction import GlobalPredictor, IncrementalPredictor, Predictor
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.model_characteristics import RuleModelCharacteristicsWriter
 from mlrl.testbed.models import OPTION_DECIMALS_BODY, OPTION_DECIMALS_HEAD, OPTION_PRINT_BODIES, \
@@ -701,8 +701,8 @@ class LearnerRunnable(Runnable, ABC):
         problem_type = self.__create_problem_type(args)
         base_learner = self.__create_base_learner(problem_type, args)
         prediction_type = self.__create_prediction_type(args)
-        train_evaluation = self._create_train_evaluation(args, problem_type, prediction_type)
-        test_evaluation = self._create_test_evaluation(args, problem_type, prediction_type)
+        train_predictor = self._create_train_predictor(args, problem_type, prediction_type)
+        test_predictor = self._create_test_predictor(args, problem_type, prediction_type)
         data_splitter = self.__create_data_splitter(args)
         pre_execution_hook = self.__create_pre_execution_hook(args, data_splitter)
         pre_training_output_writers = self._create_pre_training_output_writers(args)
@@ -715,8 +715,8 @@ class LearnerRunnable(Runnable, ABC):
                                              base_learner=base_learner,
                                              learner_name=self.learner_name,
                                              data_splitter=data_splitter,
-                                             train_evaluation=train_evaluation,
-                                             test_evaluation=test_evaluation,
+                                             train_predictor=train_predictor,
+                                             test_predictor=test_predictor,
                                              pre_training_output_writers=pre_training_output_writers,
                                              post_training_output_writers=post_training_output_writers,
                                              pre_execution_hook=pre_execution_hook,
@@ -729,10 +729,9 @@ class LearnerRunnable(Runnable, ABC):
     def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
                            data_splitter: DataSplitter, pre_training_output_writers: List[OutputWriter],
                            post_training_output_writers: List[OutputWriter],
-                           pre_execution_hook: Optional[Experiment.ExecutionHook],
-                           train_evaluation: Optional[Evaluation], test_evaluation: Optional[Evaluation],
-                           parameter_loader: Optional[ParameterLoader], model_loader: Optional[ModelLoader],
-                           model_saver: Optional[ModelSaver]) -> Experiment:
+                           pre_execution_hook: Optional[Experiment.ExecutionHook], train_predictor: Optional[Predictor],
+                           test_predictor: Optional[Predictor], parameter_loader: Optional[ParameterLoader],
+                           model_loader: Optional[ModelLoader], model_saver: Optional[ModelSaver]) -> Experiment:
         """
         May be overridden by subclasses in order to create the `Experiment` that should be run.
 
@@ -745,10 +744,10 @@ class LearnerRunnable(Runnable, ABC):
         :param pre_training_output_writers:     A list that contains all output writers to be invoked before training
         :param post_training_output_writers:    A list that contains all output writers to be invoked after training
         :param pre_execution_hook:              An operation that should be executed before the experiment
-        :param train_evaluation:                The method to be used for evaluating the predictions for the training
-                                                data or None, if the predictions should not be evaluated
-        :param test_evaluation:                 The method to be used for evaluating the predictions for the test data
-                                                or None, if the predictions should not be evaluated
+        :param train_predictor:                 The `Predictor` to be used for obtaining predictions for the training
+                                                data or None, if no such predictions should be obtained
+        :param test_predictor:                  The `Predictor` to be used for obtaining predictions for the test data
+                                                or None, if no such predictions should be obtained
         :param parameter_loader:                The `ParameterLoader` that should be used to read the parameter settings
         :param model_loader:                    The `ModelLoader` that should be used for loading models
         :param model_saver:                     The `ModelSaver` that should be used for saving models
@@ -761,8 +760,8 @@ class LearnerRunnable(Runnable, ABC):
                           pre_training_output_writers=pre_training_output_writers,
                           post_training_output_writers=post_training_output_writers,
                           pre_execution_hook=pre_execution_hook,
-                          train_evaluation=train_evaluation,
-                          test_evaluation=test_evaluation,
+                          train_predictor=train_predictor,
+                          test_predictor=test_predictor,
                           parameter_loader=parameter_loader,
                           model_loader=model_loader,
                           model_saver=model_saver)
@@ -853,52 +852,52 @@ class LearnerRunnable(Runnable, ABC):
         model_save_dir = args.model_save_dir
         return ModelSaver(model_save_dir) if model_save_dir else None
 
-    def _create_train_evaluation(self, args, problem_type: ProblemType,
-                                 prediction_type: PredictionType) -> Optional[Evaluation]:
+    def _create_train_predictor(self, args, problem_type: ProblemType,
+                                prediction_type: PredictionType) -> Optional[Predictor]:
         """
-        May be overridden by subclasses in order to create the `Evaluation` that should be used for evaluating
-        predictions obtained from a previously trained model for the training data.
+        May be overridden by subclasses in order to create the `Predictor` that should be used for obtaining predictions
+        for the trainig data from a previously trained model.
 
         :param args:            The command line arguments
         :param problem_type:    The type of the machine learning problem
         :param prediction_type: The type of the predictions to be obtained
-        :return:                The `Evaluation` that has been created
+        :return:                The `Predictor` that has been created
         """
         if args.evaluate_training_data:
             output_writers = self._create_evaluation_output_writers(args, problem_type, prediction_type)
         else:
             output_writers = []
 
-        return self._create_evaluation(args, prediction_type, output_writers)
+        return self._create_predictor(args, prediction_type, output_writers)
 
-    def _create_test_evaluation(self, args, problem_type: ProblemType,
-                                prediction_type: PredictionType) -> Optional[Evaluation]:
+    def _create_test_predictor(self, args, problem_type: ProblemType,
+                               prediction_type: PredictionType) -> Optional[Predictor]:
         """
-        May be overridden by subclasses in order to create the `Evaluation` that should be used for evaluating
-        predictions obtained from a previously trained model for the test data.
+        May be overridden by subclasses in order to create the `Predictor` that should be used for obtaining predictions
+        for the test data from a previously trained model.
 
         :param args:            The command line arguments
         :param problem_type:    The type of the machine learning problem
         :param prediction_type: The type of the predictions to be obtained
-        :return:                The `Evaluation` that has been created
+        :return:                The `Predictor` that has been created
         """
         output_writers = self._create_evaluation_output_writers(args, problem_type, prediction_type)
-        return self._create_evaluation(args, prediction_type, output_writers)
+        return self._create_predictor(args, prediction_type, output_writers)
 
     # pylint: disable=unused-argument
-    def _create_evaluation(self, args, prediction_type: PredictionType,
-                           output_writers: List[OutputWriter]) -> Optional[Evaluation]:
+    def _create_predictor(self, args, prediction_type: PredictionType,
+                          output_writers: List[OutputWriter]) -> Optional[Predictor]:
         """
-        May be overridden by subclasses in order to create the `Evaluation` that should be used for evaluating
-        predictions obtained from a previously trained model.
+        May be overridden by subclasses in order to create the `Predictor` that should be used for obtaining predictions
+        from a previously trained model.
 
         :param args:            The command line arguments
         :param prediction_type: The type of the predictions to be obtained
         :param output_writers:  A list that contains all output writers to be invoked after predictions have been
                                 obtained
-        :return:                The `Evaluation` that has been created
+        :return:                The `Predictor` that has been created
         """
-        return GlobalEvaluation(prediction_type, output_writers) if output_writers else None
+        return GlobalPredictor(prediction_type, output_writers) if output_writers else None
 
     def _create_evaluation_writer(self, args, problem_type: ProblemType,
                                   prediction_type: PredictionType) -> Optional[OutputWriter]:
@@ -1275,10 +1274,9 @@ class RuleLearnerRunnable(LearnerRunnable):
     def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
                            data_splitter: DataSplitter, pre_training_output_writers: List[OutputWriter],
                            post_training_output_writers: List[OutputWriter],
-                           pre_execution_hook: Optional[Experiment.ExecutionHook],
-                           train_evaluation: Optional[Evaluation], test_evaluation: Optional[Evaluation],
-                           parameter_loader: Optional[ParameterLoader], model_loader: Optional[ModelLoader],
-                           model_saver: Optional[ModelSaver]) -> Experiment:
+                           pre_execution_hook: Optional[Experiment.ExecutionHook], train_predictor: Optional[Predictor],
+                           test_predictor: Optional[Predictor], parameter_loader: Optional[ParameterLoader],
+                           model_loader: Optional[ModelLoader], model_saver: Optional[ModelSaver]) -> Experiment:
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
         return Experiment(problem_type=problem_type,
                           base_learner=base_learner,
@@ -1287,8 +1285,8 @@ class RuleLearnerRunnable(LearnerRunnable):
                           pre_training_output_writers=pre_training_output_writers,
                           post_training_output_writers=post_training_output_writers,
                           pre_execution_hook=pre_execution_hook,
-                          train_evaluation=train_evaluation,
-                          test_evaluation=test_evaluation,
+                          train_predictor=train_predictor,
+                          test_predictor=test_predictor,
                           parameter_loader=parameter_loader,
                           model_loader=model_loader,
                           model_saver=model_saver,
@@ -1416,8 +1414,8 @@ class RuleLearnerRunnable(LearnerRunnable):
 
         return JointProbabilityCalibrationModelWriter(*sinks) if sinks else None
 
-    def _create_evaluation(self, args, prediction_type: PredictionType,
-                           output_writers: List[OutputWriter]) -> Optional[Evaluation]:
+    def _create_predictor(self, args, prediction_type: PredictionType,
+                          output_writers: List[OutputWriter]) -> Optional[Predictor]:
         value, options = parse_param_and_options(self.PARAM_INCREMENTAL_EVALUATION, args.incremental_evaluation,
                                                  self.INCREMENTAL_EVALUATION_VALUES)
 
@@ -1429,11 +1427,11 @@ class RuleLearnerRunnable(LearnerRunnable):
                 assert_greater(self.OPTION_MAX_SIZE, max_size, min_size)
             step_size = options.get_int(self.OPTION_STEP_SIZE, 1)
             assert_greater_or_equal(self.OPTION_STEP_SIZE, step_size, 1)
-            return IncrementalEvaluation(
+            return IncrementalPredictor(
                 prediction_type, output_writers, min_size=min_size, max_size=max_size,
                 step_size=step_size) if output_writers else None
 
-        return super()._create_evaluation(args, prediction_type, output_writers)
+        return super()._create_predictor(args, prediction_type, output_writers)
 
     def _create_post_training_output_writers(self, args) -> List[OutputWriter]:
         output_writers = super()._create_post_training_output_writers(args)
