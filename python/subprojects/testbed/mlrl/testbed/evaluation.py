@@ -380,11 +380,11 @@ class EvaluationWriter(OutputWriter, ABC):
             self.results[data_type] = result
             fold = state.fold
             result.put(EVALUATION_MEASURE_TRAINING_TIME,
-                       training_result.train_time,
+                       training_result.training_duration.value,
                        num_folds=fold.num_folds,
                        fold=fold.index)
             result.put(EVALUATION_MEASURE_PREDICTION_TIME,
-                       prediction_result.predict_time,
+                       prediction_result.prediction_duration.value,
                        num_folds=fold.num_folds,
                        fold=fold.index)
             self._populate_result(fold, result, prediction_result.predictions, dataset.y)
