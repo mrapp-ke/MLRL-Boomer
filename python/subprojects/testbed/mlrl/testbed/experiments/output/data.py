@@ -79,7 +79,7 @@ class OutputValue:
     def __init__(self, option_key: str, name: str, percentage: bool = False):
         """
         :param option_key:  The key of the option that can be used for filtering
-        :param name:        A name that describes the type of values
+        :param name:        The name of the value
         :param percentage:  True, if the values can be formatted as a percentage, False otherwise
         """
         self.option_key = option_key
