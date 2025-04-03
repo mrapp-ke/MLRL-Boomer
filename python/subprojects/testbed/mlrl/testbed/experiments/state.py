@@ -9,9 +9,11 @@ from typing import Any, Dict, Optional
 from sklearn.base import BaseEstimator
 
 from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.experiments.prediction_scope import PredictionScope
+from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_type import ProblemType
+from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.fold import Fold
-from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 
 
 @dataclass
@@ -20,11 +22,11 @@ class TrainingState:
     Represents the result of a training process.
 
     Attributes:
-        learner:    The learner that has been trained
-        train_time: The time needed for training
+        learner:            The learner that has been trained
+        training_duration:  The time needed for training
     """
     learner: BaseEstimator
-    train_time: float
+    training_duration: Timer.Duration
 
 
 @dataclass
@@ -33,15 +35,17 @@ class PredictionState:
     Stores the result of a prediction process.
 
     Attributes:
-        predictions:        A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` that stores predictions
-        prediction_type:    The type of the predictions
-        prediction_scope:   Specifies whether the predictions have been obtained from a global model or incrementally
-        predict_time:       The time needed for prediction
+        predictions:            A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` that stores
+                                predictions
+        prediction_type:        The type of the predictions
+        prediction_scope:       Specifies whether the predictions have been obtained from a global model or
+                                incrementally
+        prediction_duration:    The time needed for prediction
     """
     predictions: Any
     prediction_type: PredictionType
     prediction_scope: PredictionScope
-    predict_time: float
+    prediction_duration: Timer.Duration
 
 
 @dataclass
