@@ -1,24 +1,24 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for evaluating predictions provided by a global machine learning model.
+Provides classes for obtaining predictions from global machine learning models.
 """
 import logging as log
 
-from mlrl.testbed.experiments.evaluation.evaluation import Evaluation
+from mlrl.testbed.experiments.prediction.predictor import Predictor
 from mlrl.testbed.experiments.state import ExperimentState, PredictionState
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.prediction_scope import GlobalPrediction
 
 
-class GlobalEvaluation(Evaluation):
+class GlobalPredictor(Predictor):
     """
-    Obtains and evaluates predictions from a previously trained global model.
+    Obtains predictions from a previously trained global model.
     """
 
     def predict_and_evaluate(self, state: ExperimentState, **kwargs):
         """
-        See :func:`mlrl.testbed.experiments.evaluation.evaluation.Evaluation.predict_and_evaluate`
+        See :func:`mlrl.testbed.experiments.prediction.predictor.Predictor.predict_and_evaluate`
         """
         dataset = state.dataset
         log.info('Predicting for %s %s examples...', dataset.num_examples, dataset.type.value)

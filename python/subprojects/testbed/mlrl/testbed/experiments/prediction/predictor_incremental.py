@@ -1,8 +1,8 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for repeatedly evaluating predictions provided by an ensemble model, using only a subset of the
-ensemble members.
+Provides classes for repeatedly obtaining predictions from an ensemble model, using only a subset of the ensemble
+members.
 """
 import logging as log
 
@@ -10,17 +10,17 @@ from typing import List
 
 from mlrl.common.mixins import IncrementalClassifierMixin, IncrementalRegressorMixin
 
-from mlrl.testbed.experiments.evaluation.evaluation import Evaluation
 from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.prediction.predictor import Predictor
 from mlrl.testbed.experiments.state import ExperimentState, PredictionState
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.prediction_scope import IncrementalPrediction, PredictionType
 
 
-class IncrementalEvaluation(Evaluation):
+class IncrementalPredictor(Predictor):
     """
-    Repeatedly obtains and evaluates predictions from a previously trained ensemble model, e.g., a model consisting of
-    several rules, using only a subset of the ensemble members with increasing size.
+    Repeatedly obtains predictions from a previously trained ensemble model, e.g., a model consisting of several rules,
+    using only a subset of the ensemble members with increasing size.
     """
 
     def __init__(self, prediction_type: PredictionType, output_writers: List[OutputWriter], min_size: int,
@@ -39,7 +39,7 @@ class IncrementalEvaluation(Evaluation):
 
     def predict_and_evaluate(self, state: ExperimentState, **kwargs):
         """
-        See :func:`mlrl.testbed.experiments.evaluation.evaluation.Evaluation.predict_and_evaluate`
+        See :func:`mlrl.testbed.experiments.prediction.predictor.Predictor.predict_and_evaluate`
         """
         learner = state.training_result.learner
 

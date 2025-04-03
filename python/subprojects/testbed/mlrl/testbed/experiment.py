@@ -16,8 +16,8 @@ from mlrl.common.mixins import NominalFeatureSupportMixin, OrdinalFeatureSupport
 
 from mlrl.testbed.data_splitting import DataSplitter
 from mlrl.testbed.dataset import AttributeType, Dataset
-from mlrl.testbed.experiments.evaluation import Evaluation
 from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.prediction import Predictor
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
@@ -51,8 +51,8 @@ class Experiment(DataSplitter.Callback):
                  pre_training_output_writers: List[OutputWriter],
                  post_training_output_writers: List[OutputWriter],
                  pre_execution_hook: Optional[ExecutionHook] = None,
-                 train_evaluation: Optional[Evaluation] = None,
-                 test_evaluation: Optional[Evaluation] = None,
+                 train_predictor: Optional[Predictor] = None,
+                 test_predictor: Optional[Predictor] = None,
                  parameter_loader: Optional[ParameterLoader] = None,
                  model_loader: Optional[ModelLoader] = None,
                  model_saver: Optional[ModelSaver] = None,
@@ -67,10 +67,10 @@ class Experiment(DataSplitter.Callback):
         :param pre_training_output_writers:     A list that contains all output writers to be invoked before training
         :param post_training_output_writers:    A list that contains all output writers to be invoked after training
         :param pre_execution_hook:              An operation that should be executed before the experiment
-        :param train_evaluation:                The method to be used for evaluating the predictions for the training
-                                                data or None, if the predictions should not be evaluated
-        :param test_evaluation:                 The method to be used for evaluating the predictions for the test data
-                                                or None, if the predictions should not be evaluated
+        :param train_predictor:                 The `Predictor` to be used for obtaining predictions for the training
+                                                data or None, if no such predictions should be obtained
+        :param test_predictor:                  The `Predictor` to be used for obtaining predictions for the test data
+                                                or None, if no such predictions should be obtained
         :param parameter_loader:                The `ParameterLoader` that should be used to read the parameter settings
         :param model_loader:                    The `ModelLoader` that should be used for loading models
         :param model_saver:                     The `ModelSaver` that should be used for saving models
@@ -86,8 +86,8 @@ class Experiment(DataSplitter.Callback):
         self.pre_training_output_writers = pre_training_output_writers
         self.post_training_output_writers = post_training_output_writers
         self.pre_execution_hook = pre_execution_hook
-        self.train_evaluation = train_evaluation
-        self.test_evaluation = test_evaluation
+        self.train_predictor = train_predictor
+        self.test_predictor = test_predictor
         self.parameter_loader = parameter_loader
         self.model_loader = model_loader
         self.model_saver = model_saver
@@ -163,41 +163,41 @@ class Experiment(DataSplitter.Callback):
         state.training_result = TrainingState(learner=learner, training_duration=training_duration)
 
         # Obtain and evaluate predictions for training data, if necessary...
-        train_evaluation = self.train_evaluation
+        train_predictor = self.train_predictor
 
-        if train_evaluation and test_dataset.type != Dataset.Type.TRAINING:
+        if train_predictor and test_dataset.type != Dataset.Type.TRAINING:
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-            self.__predict_and_evaluate(state, train_evaluation, **predict_kwargs)
+            self.__predict_and_evaluate(state, train_predictor, **predict_kwargs)
 
         # Obtain and evaluate predictions for test data, if necessary...
-        test_evaluation = self.test_evaluation
+        test_predictor = self.test_predictor
 
-        if test_evaluation:
+        if test_predictor:
             test_state = replace(state, dataset=test_dataset)
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-            self.__predict_and_evaluate(test_state, test_evaluation, **predict_kwargs)
+            self.__predict_and_evaluate(test_state, test_predictor, **predict_kwargs)
 
         # Write output data after model was trained...
         for output_writer in self.post_training_output_writers:
             output_writer.write_output(state)
 
     @staticmethod
-    def __predict_and_evaluate(state: ExperimentState, evaluation: Evaluation, **kwargs):
+    def __predict_and_evaluate(state: ExperimentState, predictor: Predictor, **kwargs):
         """
-        Obtains and evaluates predictions for given query examples from a previously trained model.
+        Obtains predictions for given query examples from a previously trained model.
 
         :param state:       The state that stores the model
-        :param evaluation:  The `Evaluation` to be used
+        :param predictor:   The `Predictor` to be used for obtaining the predictions
         :param kwargs:      Optional keyword arguments to be passed to the model when obtaining predictions
         """
         try:
-            return evaluation.predict_and_evaluate(state, **kwargs)
+            return predictor.predict_and_evaluate(state, **kwargs)
         except ValueError as error:
             dataset = state.dataset
 
             if dataset.has_sparse_features:
                 dense_dataset = replace(state, dataset=dataset.enforce_dense_features())
-                return Experiment.__predict_and_evaluate(dense_dataset, evaluation, **kwargs)
+                return Experiment.__predict_and_evaluate(dense_dataset, predictor, **kwargs)
 
             raise error
 
