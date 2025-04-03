@@ -7,10 +7,27 @@ import logging as log
 
 from typing import Generator
 
-from mlrl.testbed.experiments.prediction.predictor import Predictor
+from sklearn.base import BaseEstimator
+
+from mlrl.testbed.experiments.prediction.predictor import PredictionFunction, Predictor
 from mlrl.testbed.experiments.prediction_scope import PredictionScope
 from mlrl.testbed.experiments.state import ExperimentState, PredictionState
 from mlrl.testbed.experiments.timer import Timer
+
+
+class GlobalPredictionFunction(PredictionFunction):
+    """
+    A function that obtains and returns global predictions from a learner.
+    """
+
+    def __init__(self, learner: BaseEstimator):
+        """
+        :param learner: The learner, the predictions should be obtained from
+        """
+        super().__init__(
+            learner=learner,
+            predict_function=learner.predict,
+            predict_proba_function=learner.predict_proba if callable(getattr(learner, 'predict_proba', None)) else None)
 
 
 class GlobalPredictor(Predictor):
@@ -38,9 +55,8 @@ class GlobalPredictor(Predictor):
         log.info('Predicting for %s %s examples...', dataset.num_examples, dataset.type.value)
         learner = state.training_result.learner
         start_time = Timer.start()
-        predict_proba_function = learner.predict_proba if callable(getattr(learner, 'predict_proba', None)) else None
-        predictions = self._invoke_prediction_function(learner, learner.predict, predict_proba_function, dataset,
-                                                       **kwargs)
+        prediction_function = GlobalPredictionFunction(learner)
+        predictions = prediction_function.invoke(dataset, self.prediction_type, **kwargs)
         prediction_duration = Timer.stop(start_time)
 
         if predictions is not None:
