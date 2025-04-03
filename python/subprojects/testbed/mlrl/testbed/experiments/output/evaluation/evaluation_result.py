@@ -3,13 +3,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing evaluation results according to different measures that are part of output data.
 """
-from typing import Dict, List, Optional, Set, Tuple
-
-import numpy as np
+from typing import Optional
 
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
+from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
 from mlrl.testbed.experiments.output.sinks import CsvFileSink
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
 
@@ -89,116 +88,33 @@ class EvaluationResult(TabularOutputData):
 
     KWARG_FOLD = 'fold_index'
 
-    def __init__(self):
+    def __init__(self, measurements: Measurements):
+        """
+        :param measurements: The measurements according to different evaluation measures
+        """
         super().__init__('Evaluation result', 'evaluation')
         self.get_formatter_options(CsvFileSink).include_prediction_scope = False
-        self.measures: Set[OutputValue] = set()
-        self.results: Optional[List[Dict[OutputValue, float]]] = None
-
-    def put(self, measure: OutputValue, score: float, num_folds: int, fold: Optional[int]):
-        """
-        Adds a new score according to a specific measure to the evaluation result.
-
-        :param measure:     The measure
-        :param score:       The score according to the measure
-        :param num_folds:   The total number of cross validation folds
-        :param fold:        The fold, the score corresponds to, or None, if no cross validation is used
-        """
-        results = self.results
-
-        if not results:
-            results = [{} for _ in range(num_folds)]
-            self.results = results
-
-        if len(results) != num_folds:
-            raise AssertionError('Inconsistent number of total folds given')
-
-        self.measures.add(measure)
-        values = results[0 if fold is None else fold]
-        values[measure] = score
-
-    def get(self, measure: OutputValue, fold: Optional[int], **kwargs) -> str:
-        """
-        Returns the score according to a specific measure.
-
-        :param measure: The measure
-        :param fold:    The fold, the score corresponds to, or None, if no cross validation is used
-        :return:        A textual representation of the score
-        """
-        results = self.results
-
-        if not results:
-            raise AssertionError('No evaluation results available')
-
-        score = results[0 if fold is None else fold][measure]
-        return measure.format(score, **kwargs)
-
-    def dict(self, fold: Optional[int], **kwargs) -> Dict[OutputValue, str]:
-        """
-        Returns a dictionary that stores the scores for a specific fold according to each measure.
-
-        :param fold:    The fold, the scores correspond to, or None, if no cross validation is used
-        :return:        A dictionary that stores textual representations of the scores for the given fold according
-                        to each measure
-        """
-        results = self.results
-
-        if not results:
-            raise AssertionError('No evaluation results available')
-
-        result_dict = {}
-
-        for measure, score in results[0 if fold is None else fold].items():
-            result_dict[measure] = measure.format(score, **kwargs)
-
-        return result_dict
-
-    def avg(self, measure: OutputValue, **kwargs) -> Tuple[str, str]:
-        """
-        Returns the score and standard deviation according to a specific measure averaged over all available folds.
-
-        :param measure: The measure
-        :return:        A tuple consisting of textual representations of the averaged score and standard deviation
-        """
-        values = [results[measure] for results in self.results if results]
-        values = np.array(values)
-        return measure.format(np.average(values), **kwargs), measure.format(np.std(values), **kwargs)
-
-    def avg_dict(self, **kwargs) -> Dict[OutputValue, str]:
-        """
-        Returns a dictionary that stores the scores, averaged across all folds, as well as the standard deviation,
-        according to each measure.
-
-        :return: A dictionary that stores textual representations of the scores and standard deviation according to
-                 each measure
-        """
-        result: Dict[OutputValue, str] = {}
-
-        for measure in self.measures:
-            score, std_dev = self.avg(measure, **kwargs)
-            result[measure] = score
-            result[OutputValue(measure.option_key, 'Std.-dev. ' + measure.name, measure.percentage)] = std_dev
-
-        return result
+        self.measurements = measurements
 
     def to_text(self, options: Options, **kwargs) -> Optional[str]:
         """
         See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
         """
+        measurements = self.measurements
         fold = kwargs.get(self.KWARG_FOLD)
         percentage = options.get_bool(OPTION_PERCENTAGE, True)
         decimals = options.get_int(OPTION_DECIMALS, 2)
         enable_all = options.get_bool(self.OPTION_ENABLE_ALL, True)
         rows = []
 
-        for measure in sorted(self.measures):
+        for measure in sorted(measurements.measures):
             if options.get_bool(measure.option_key, enable_all) and measure.option_key != self.OPTION_TRAINING_TIME \
                     and measure.option_key != self.OPTION_PREDICTION_TIME:
                 if fold is None:
-                    score, std_dev = self.avg(measure, percentage=percentage, decimals=decimals)
+                    score, std_dev = measurements.avg(measure, percentage=percentage, decimals=decimals)
                     rows.append([str(measure), score, '±' + std_dev])
                 else:
-                    score = self.get(measure, fold, percentage=percentage, decimals=decimals)
+                    score = measurements.get(measure, fold, percentage=percentage, decimals=decimals)
                     rows.append([str(measure), score])
 
         return format_table(rows)
@@ -207,15 +123,16 @@ class EvaluationResult(TabularOutputData):
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
+        measurements = self.measurements
         fold = kwargs.get(self.KWARG_FOLD)
         percentage = options.get_bool(OPTION_PERCENTAGE, True)
         decimals = options.get_int(OPTION_DECIMALS, 0)
         enable_all = options.get_bool(self.OPTION_ENABLE_ALL, True)
 
         if fold is None:
-            columns = self.avg_dict(percentage=percentage, decimals=decimals)
+            columns = measurements.avg_dict(percentage=percentage, decimals=decimals)
         else:
-            columns = self.dict(fold, percentage=percentage, decimals=decimals)
+            columns = measurements.dict(fold, percentage=percentage, decimals=decimals)
 
         filtered_columns = {}
 

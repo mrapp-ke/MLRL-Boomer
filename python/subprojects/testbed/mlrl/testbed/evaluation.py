@@ -6,7 +6,7 @@ The evaluation results can be written to one or several outputs, e.g., to the co
 """
 from abc import ABC, abstractmethod
 from dataclasses import replace
-from typing import Dict, Optional
+from typing import Optional
 
 import numpy as np
 
@@ -44,7 +44,7 @@ class EvaluationWriter(OutputWriter, ABC):
 
     def __init__(self, *sinks: Sink):
         super().__init__(*sinks)
-        self.results: Dict[str, EvaluationResult] = {}
+        self.measurements = {}
 
     @abstractmethod
     def _populate_result(self, fold: Fold, result: EvaluationResult, predictions, ground_truth):
@@ -65,19 +65,19 @@ class EvaluationWriter(OutputWriter, ABC):
         if training_result and prediction_result:
             dataset = state.dataset
             data_type = dataset.type
-            result = self.results[data_type] if data_type in self.results else EvaluationResult()
-            self.results[data_type] = result
+            measurements = self.measurements.setdefault(data_type, Measurements())
             fold = state.fold
-            result.put(EVALUATION_MEASURE_TRAINING_TIME,
-                       training_result.training_duration.value,
-                       num_folds=fold.num_folds,
-                       fold=fold.index)
-            result.put(EVALUATION_MEASURE_PREDICTION_TIME,
-                       prediction_result.prediction_duration.value,
-                       num_folds=fold.num_folds,
-                       fold=fold.index)
-            self._populate_result(fold, result, prediction_result.predictions, dataset.y)
-            return result
+            measurements.put(EVALUATION_MEASURE_TRAINING_TIME,
+                             training_result.training_duration.value,
+                             num_folds=fold.num_folds,
+                             fold=fold.index)
+            measurements.put(EVALUATION_MEASURE_PREDICTION_TIME,
+                             prediction_result.prediction_duration.value,
+                             num_folds=fold.num_folds,
+                             fold=fold.index)
+            evaluation_result = EvaluationResult(measurements)
+            self._populate_result(fold, evaluation_result, prediction_result.predictions, dataset.y)
+            return evaluation_result
         return None
 
 
@@ -249,7 +249,7 @@ class BinaryEvaluationWriter(EvaluationWriter):
         for evaluation_measure in evaluation_measures:
             if isinstance(evaluation_measure, Measure):
                 score = evaluation_measure.evaluate(ground_truth, predictions)
-                result.put(evaluation_measure, score, num_folds=fold.num_folds, fold=fold.index)
+                result.measurements.put(evaluation_measure, score, num_folds=fold.num_folds, fold=fold.index)
 
 
 class RegressionEvaluationWriter(EvaluationWriter):
@@ -270,7 +270,7 @@ class RegressionEvaluationWriter(EvaluationWriter):
         for evaluation_measure in evaluation_measures:
             if isinstance(evaluation_measure, Measure):
                 score = evaluation_measure.evaluate(ground_truth, predictions)
-                result.put(evaluation_measure, score, num_folds=fold.num_folds, fold=fold.index)
+                result.measurements.put(evaluation_measure, score, num_folds=fold.num_folds, fold=fold.index)
 
 
 REGRESSION_EVALUATION_MEASURES = [
@@ -363,4 +363,4 @@ class RankingEvaluationWriter(EvaluationWriter):
         for evaluation_measure in evaluation_measures:
             if isinstance(evaluation_measure, Measure):
                 score = evaluation_measure.evaluate(ground_truth, predictions)
-                result.put(evaluation_measure, score, num_folds=fold.num_folds, fold=fold.index)
+                result.measurements.put(evaluation_measure, score, num_folds=fold.num_folds, fold=fold.index)
