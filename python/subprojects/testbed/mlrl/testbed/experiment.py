@@ -8,7 +8,6 @@ import logging as log
 from abc import ABC, abstractmethod
 from dataclasses import replace
 from functools import reduce
-from timeit import default_timer as timer
 from typing import Any, Dict, List, Optional
 
 from sklearn.base import BaseEstimator, clone
@@ -21,10 +20,10 @@ from mlrl.testbed.experiments.evaluation import Evaluation
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState, TrainingState
+from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.parameters import ParameterLoader
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
-from mlrl.testbed.util.format import format_duration
 
 
 class Experiment(DataSplitter.Callback):
@@ -152,16 +151,16 @@ class Experiment(DataSplitter.Callback):
             self.__check_for_parameter_changes(expected_params=parameters, actual_params=loaded_learner.get_params())
             loaded_learner.set_params(**parameters)
             learner = loaded_learner
-            train_time = 0
+            training_duration = Timer.Duration()
         else:
             log.info('Fitting model to %s training examples...', train_dataset.num_examples)
-            train_time = self.__train(learner, train_dataset, **fit_kwargs)
-            log.info('Successfully fit model in %s', format_duration(train_time))
+            training_duration = self.__train(learner, train_dataset, **fit_kwargs)
+            log.info('Successfully fit model in %s', training_duration)
 
             # Save model to disk...
             self.__save_model(learner, fold)
 
-        state.training_result = TrainingState(learner=learner, train_time=train_time)
+        state.training_result = TrainingState(learner=learner, training_duration=training_duration)
 
         # Obtain and evaluate predictions for training data, if necessary...
         train_evaluation = self.train_evaluation
@@ -203,7 +202,7 @@ class Experiment(DataSplitter.Callback):
             raise error
 
     @staticmethod
-    def __train(learner, dataset: Dataset, **kwargs):
+    def __train(learner, dataset: Dataset, **kwargs) -> Timer.Duration:
         """
         Fits a learner to training data.
 
@@ -213,10 +212,9 @@ class Experiment(DataSplitter.Callback):
         :return:        The time needed for training
         """
         try:
-            start_time = timer()
+            start_time = Timer.start()
             learner.fit(dataset.x, dataset.y, **kwargs)
-            end_time = timer()
-            return end_time - start_time
+            return Timer.stop(start_time)
         except ValueError as error:
             if dataset.has_sparse_features:
                 return Experiment.__train(learner, dataset.enforce_dense_features(), **kwargs)

@@ -6,7 +6,6 @@ ensemble members.
 """
 import logging as log
 
-from timeit import default_timer as timer
 from typing import List
 
 from mlrl.common.mixins import IncrementalClassifierMixin, IncrementalRegressorMixin
@@ -14,8 +13,8 @@ from mlrl.common.mixins import IncrementalClassifierMixin, IncrementalRegressorM
 from mlrl.testbed.experiments.evaluation.evaluation import Evaluation
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState, PredictionState
+from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.prediction_scope import IncrementalPrediction, PredictionType
-from mlrl.testbed.util.format import format_duration
 
 
 class IncrementalEvaluation(Evaluation):
@@ -68,17 +67,16 @@ class IncrementalEvaluation(Evaluation):
             while incremental_predictor.has_next():
                 log.info('Predicting for %s %s examples using a model of size %s...', dataset.num_examples,
                          dataset.type.value, current_size)
-                start_time = timer()
+                start_time = Timer.start()
                 predictions = incremental_predictor.apply_next(next_step_size)
-                end_time = timer()
-                predict_time = end_time - start_time
+                prediction_duration = Timer.stop(start_time)
 
                 if predictions is not None:
-                    log.info('Successfully predicted in %s', format_duration(predict_time))
+                    log.info('Successfully predicted in %s', prediction_duration)
                     state.prediction_result = PredictionState(predictions=predictions,
                                                               prediction_type=self.prediction_type,
                                                               prediction_scope=IncrementalPrediction(current_size),
-                                                              predict_time=predict_time)
+                                                              prediction_duration=prediction_duration)
                     self._evaluate_predictions(state)
 
                 next_step_size = step_size
