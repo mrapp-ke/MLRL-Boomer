@@ -23,12 +23,14 @@ from mlrl.common.package_info import PythonPackageInfo
 from mlrl.common.util.format import format_dict_keys, format_enum_values, format_iterable
 
 from mlrl.testbed.data_splitting import CrossValidationSplitter, DataSet, DataSplitter, NoSplitter, TrainTestSplitter
-from mlrl.testbed.evaluation import BinaryEvaluationWriter, RankingEvaluationWriter, RegressionEvaluationWriter
 from mlrl.testbed.experiment import Experiment
 from mlrl.testbed.experiments.input.preprocessors import OneHotEncoder, Preprocessor
 from mlrl.testbed.experiments.output.characteristics import DataCharacteristics, DataCharacteristicsWriter, \
     OutputCharacteristics, PredictionCharacteristicsWriter
 from mlrl.testbed.experiments.output.evaluation.evaluation_result import EvaluationResult
+from mlrl.testbed.experiments.output.evaluation.writer_classification import ClassificationEvaluationWriter
+from mlrl.testbed.experiments.output.evaluation.writer_ranking import RankingEvaluationWriter
+from mlrl.testbed.experiments.output.evaluation.writer_regression import RegressionEvaluationWriter
 from mlrl.testbed.experiments.output.label_vectors import LabelVectors, LabelVectorWriter
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, TextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
@@ -933,7 +935,7 @@ class LearnerRunnable(Runnable, ABC):
             return RegressionEvaluationWriter(*sinks)
         if prediction_type in {PredictionType.SCORES, PredictionType.PROBABILITIES}:
             return RankingEvaluationWriter(*sinks)
-        return BinaryEvaluationWriter(*sinks)
+        return ClassificationEvaluationWriter(*sinks)
 
     def _create_parameter_loader(self, args) -> Optional[ParameterLoader]:
         """
