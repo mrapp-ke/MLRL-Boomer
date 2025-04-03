@@ -8,13 +8,25 @@ import logging as log
 from mlrl.testbed.experiments.prediction.predictor import Predictor
 from mlrl.testbed.experiments.state import ExperimentState, PredictionState
 from mlrl.testbed.experiments.timer import Timer
-from mlrl.testbed.prediction_scope import GlobalPrediction
+from mlrl.testbed.prediction_scope import PredictionScope
 
 
 class GlobalPredictor(Predictor):
     """
     Obtains predictions from a previously trained global model.
     """
+
+    class Scope(PredictionScope):
+        """
+        Provides information about predictions that have been obtained from a global model.
+        """
+
+        @property
+        def model_size(self) -> int:
+            """
+            See :func:`mlrl.testbed.prediction_scope.PredictionScope.model_size`
+            """
+            return 0
 
     def predict_and_evaluate(self, state: ExperimentState, **kwargs):
         """
@@ -33,6 +45,6 @@ class GlobalPredictor(Predictor):
             log.info('Successfully predicted in %s', prediction_duration)
             state.prediction_result = PredictionState(predictions=predictions,
                                                       prediction_type=self.prediction_type,
-                                                      prediction_scope=GlobalPrediction(),
+                                                      prediction_scope=GlobalPredictor.Scope(),
                                                       prediction_duration=prediction_duration)
             self._evaluate_predictions(state)
