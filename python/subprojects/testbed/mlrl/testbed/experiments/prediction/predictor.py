@@ -6,7 +6,7 @@ Provides classes for obtaining predictions from machine learning models.
 import logging as log
 
 from abc import ABC, abstractmethod
-from typing import List
+from typing import Generator
 
 from sklearn.base import RegressorMixin
 
@@ -14,7 +14,7 @@ from mlrl.common.mixins import ClassifierMixin
 
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.experiments.prediction_type import PredictionType
-from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.state import ExperimentState, PredictionState
 
 
 class Predictor(ABC):
@@ -22,14 +22,11 @@ class Predictor(ABC):
     An abstract base class for all classes that allow to obtain predictions from a previously trained model.
     """
 
-    def __init__(self, prediction_type: PredictionType, output_writers: List):
+    def __init__(self, prediction_type: PredictionType):
         """
         :param prediction_type: The type of the predictions to be obtained
-        :param output_writers:  A list that contains all output writers to be invoked after predictions have been
-                                obtained
         """
         self.prediction_type = prediction_type
-        self.output_writers = output_writers
 
     def _invoke_prediction_function(self, learner, predict_function, predict_proba_function, dataset: Dataset,
                                     **kwargs):
@@ -69,21 +66,12 @@ class Predictor(ABC):
 
         return result
 
-    def _evaluate_predictions(self, state: ExperimentState):
-        """
-        May be used by subclasses in order to evaluate predictions that have been obtained from a previously trained
-        model.
-
-        :param state: The state that stores the predictions and the model
-        """
-        for output_writer in self.output_writers:
-            output_writer.write_output(state)
-
     @abstractmethod
-    def predict_and_evaluate(self, state: ExperimentState, **kwargs):
+    def obtain_predictions(self, state: ExperimentState, **kwargs) -> Generator[PredictionState]:
         """
-        Must be implemented by subclasses in order to obtain and evaluate predictions from a previously trained model.
+        Obtains predictions from a previously trained model once or several times.
 
         :param state:   The state that stores the model
         :param kwargs:  Optional keyword arguments to be passed to the model when obtaining predictions
+        :return:        A generator that provides access to the results of the individual prediction processes
         """

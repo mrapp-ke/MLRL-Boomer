@@ -6,11 +6,10 @@ members.
 """
 import logging as log
 
-from typing import List
+from typing import Generator
 
 from mlrl.common.mixins import IncrementalClassifierMixin, IncrementalRegressorMixin
 
-from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.prediction.predictor import Predictor
 from mlrl.testbed.experiments.prediction_scope import PredictionScope
 from mlrl.testbed.experiments.prediction_type import PredictionType
@@ -42,8 +41,7 @@ class IncrementalPredictor(Predictor):
             """
             return self._model_size
 
-    def __init__(self, prediction_type: PredictionType, output_writers: List[OutputWriter], min_size: int,
-                 max_size: int, step_size: int):
+    def __init__(self, prediction_type: PredictionType, min_size: int, max_size: int, step_size: int):
         """
         :param min_size:    The minimum number of ensemble members to be evaluated. Must be at least 0
         :param max_size:    The maximum number of ensemble members to be evaluated. Must be greater than `min_size` or
@@ -51,14 +49,14 @@ class IncrementalPredictor(Predictor):
         :param step_size:   The number of additional ensemble members to be considered at each repetition. Must be at
                             least 1
         """
-        super().__init__(prediction_type, output_writers)
+        super().__init__(prediction_type)
         self.min_size = min_size
         self.max_size = max_size
         self.step_size = step_size
 
-    def predict_and_evaluate(self, state: ExperimentState, **kwargs):
+    def obtain_predictions(self, state: ExperimentState, **kwargs) -> Generator[PredictionState]:
         """
-        See :func:`mlrl.testbed.experiments.prediction.predictor.Predictor.predict_and_evaluate`
+        See :func:`mlrl.testbed.experiments.prediction.predictor.Predictor.obtain_predictions`
         """
         learner = state.training_result.learner
 
@@ -92,11 +90,10 @@ class IncrementalPredictor(Predictor):
 
                 if predictions is not None:
                     log.info('Successfully predicted in %s', prediction_duration)
-                    state.prediction_result = PredictionState(predictions=predictions,
-                                                              prediction_type=self.prediction_type,
-                                                              prediction_scope=IncrementalPredictor.Scope(current_size),
-                                                              prediction_duration=prediction_duration)
-                    self._evaluate_predictions(state)
+                    yield PredictionState(predictions=predictions,
+                                          prediction_type=self.prediction_type,
+                                          prediction_scope=IncrementalPredictor.Scope(current_size),
+                                          prediction_duration=prediction_duration)
 
                 next_step_size = step_size
                 current_size = min(current_size + next_step_size, total_size)
