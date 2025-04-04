@@ -50,6 +50,7 @@ jobs:
             python:
               - *build_files
               - 'build_system/targets/code_style/python/*'
+              - '.cython-lint.toml'
               - '**/*.py'
             cfg:
               - *build_files
