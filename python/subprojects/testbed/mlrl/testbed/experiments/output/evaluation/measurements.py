@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for keeping track of several measurements according to different measures.
 """
 
-from typing import Dict, Optional, Tuple
+from typing import Dict, Set, Tuple
 
 import numpy as np
 
@@ -13,96 +13,65 @@ from mlrl.testbed.experiments.output.evaluation.measures import Measure
 
 class Measurements:
     """
-    Keeps track of measurements according to different measures.
+    Keeps track of values that correspond to different measures.
     """
 
-    def __init__(self):
-        self.measures = set()
-        self.results = None
-
-    def put(self, measure: Measure, value: float, num_folds: int, fold: Optional[int]):
+    def __init__(self, num_values_per_measure: int):
         """
-        Adds a new measurement according to a given measure.
-
-        :param measure:     The measure
-        :param value:       The value according to the measure
-        :param num_folds:   The total number of cross validation folds
-        :param fold:        The fold, the score corresponds to, or None, if no cross validation is used
+        :param num_values_per_measure: The number of values to be tracked of for each measure
         """
-        results = self.results
+        self.num_values_per_measure = num_values_per_measure
+        self._values_per_measure = {}
 
-        if not results:
-            results = [{} for _ in range(num_folds)]
-            self.results = results
-
-        if len(results) != num_folds:
-            raise AssertionError('Inconsistent number of total folds given')
-
-        self.measures.add(measure)
-        values = results[0 if fold is None else fold]
-        values[measure] = value
-
-    def get(self, measure: Measure, fold: Optional[int], **kwargs) -> str:
+    @property
+    def measures(self) -> Set[Measure]:
         """
-        Returns a textual representation of a value according to a given measure.
+        A set that contains all measures for which values have been tracked.
+        """
+        return set(self._values_per_measure.keys())
+
+    def values_by_measure(self, measure: Measure) -> np.ndarray:
+        """
+        Returns an array that stores the values that have been tracked for a given measure.
 
         :param measure: The measure
-        :param fold:    The fold, the value corresponds to, or None, if no cross validation is used
-        :return:        A textual representation of the value
+        :return:        A `np.ndarray`, shape `(num_values_per_measure)`, that stores the values for the given measure
         """
-        results = self.results
+        return self._values_per_measure.setdefault(
+            measure, np.full(shape=self.num_values_per_measure, dtype=float, fill_value=np.nan))
 
-        if not results:
-            raise AssertionError('No evaluation results available')
-
-        value = results[0 if fold is None else fold][measure]
-        return measure.format(value, **kwargs)
-
-    def dict(self, fold: Optional[int], **kwargs) -> Dict[Measure, str]:
+    def average_by_measure(self, measure: Measure) -> Tuple[float, float]:
         """
-        Returns a dictionary that stores the values for a specific fold according to each measure.
-
-        :param fold:    The fold, the values correspond to, or None, if no cross validation is used
-        :return:        A dictionary that stores textual representations of the values for the given fold according
-                        to each measure
-        """
-        results = self.results
-
-        if not results:
-            raise AssertionError('No evaluation results available')
-
-        result_dict = {}
-
-        for measure, score in results[0 if fold is None else fold].items():
-            result_dict[measure] = measure.format(score, **kwargs)
-
-        return result_dict
-
-    def avg(self, measure: Measure, **kwargs) -> Tuple[str, str]:
-        """
-        Returns the value and standard deviation according to a given measure, calculated as the average across all
-        available folds.
+        Returns an average and a corresponding standard deviation for a given measure. The average is calculated as the
+        arithmetic mean of all values that have been tracked for the measure.
 
         :param measure: The measure
-        :return:        A textual representation of the averaged value and the standard deviation
+        :return:        An average and a corresponding standard deviation
         """
-        values = [results[measure] for results in self.results if results]
-        values = np.array(values)
-        return measure.format(np.average(values), **kwargs), measure.format(np.std(values), **kwargs)
+        values = self._values_per_measure[measure]
+        return np.average(values), np.std(values)
 
-    def avg_dict(self, **kwargs) -> Dict[Measure, str]:
+    def values_as_dict(self, index: int) -> Dict[Measure, float]:
         """
-        Returns a dictionary that stores the values, averaged across all folds, as well as the standard deviation,
-        according to each measure.
+        Returns a dictionary that contains the value at a specific index that has been tracked for each measure.
 
-        :return: A dictionary that stores textual representations of the values and standard deviation according to
-                 each measure
+        :param index:   The index of the value that should be returned for each measure
+        :return:        A dictionary that stores a value for each measure
         """
-        result: Dict[Measure, str] = {}
+        return {measure: values[index] for measure, values in self._values_per_measure.items()}
 
-        for measure in self.measures:
-            score, std_dev = self.avg(measure, **kwargs)
-            result[measure] = score
+    def averages_as_dict(self) -> Dict[Measure, float]:
+        """
+        Returns a dictionary that stores an average and a corresponding standard deviation for each measure. The
+        averages are calculated as the arithmetic mean of all values that have been tracked for an individual measure.
+
+        :return: A dictionary that stores an average and a corresponding standard deviation for each measure
+        """
+        result = {}
+
+        for measure in self._values_per_measure:
+            average, std_dev = self.average_by_measure(measure)
+            result[measure] = average
             result[Measure(measure.option_key, 'Std.-dev. ' + measure.name, measure.percentage)] = std_dev
 
         return result

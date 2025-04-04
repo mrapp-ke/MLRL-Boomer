@@ -21,7 +21,6 @@ from mlrl.testbed.experiments.output.evaluation.measures_classification import M
     SINGLE_LABEL_EVALUATION_MEASURES
 from mlrl.testbed.experiments.output.evaluation.writer import EvaluationWriter
 from mlrl.testbed.experiments.output.sinks import Sink
-from mlrl.testbed.fold import Fold
 
 
 class ClassificationEvaluationWriter(EvaluationWriter):
@@ -35,7 +34,7 @@ class ClassificationEvaluationWriter(EvaluationWriter):
         self.multi_label_evaluation_measures = OutputValue.filter_values(MULTI_LABEL_EVALUATION_MEASURES, *options)
         self.single_label_evaluation_measures = OutputValue.filter_values(SINGLE_LABEL_EVALUATION_MEASURES, *options)
 
-    def _update_measurements(self, measurements: Measurements, ground_truth: Any, predictions: Any, fold: Fold):
+    def _update_measurements(self, measurements: Measurements, index: int, ground_truth: Any, predictions: Any):
         if is_multilabel(ground_truth):
             evaluation_measures = self.multi_label_evaluation_measures
         else:
@@ -46,4 +45,4 @@ class ClassificationEvaluationWriter(EvaluationWriter):
         for evaluation_measure in evaluation_measures:
             if isinstance(evaluation_measure, Measure):
                 value = evaluation_measure.evaluate(ground_truth, predictions)
-                measurements.put(evaluation_measure, value, num_folds=fold.num_folds, fold=fold.index)
+                measurements.values_by_measure(evaluation_measure)[index] = value
