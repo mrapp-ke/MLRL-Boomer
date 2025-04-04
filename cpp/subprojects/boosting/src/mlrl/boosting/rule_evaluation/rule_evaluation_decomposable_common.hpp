@@ -10,17 +10,19 @@ namespace boosting {
     /**
      * Returns the L1 regularization weight to be added to a specific gradient.
      *
+     * @tparam StatisticType            The type of the gradient
      * @param gradient                  The gradient, the L1 regularization weight should be added to
      * @param l1RegularizationWeight    The L1 regularization weight
      * @return                          The L1 regularization weight to be added to the gradient
      */
-    static inline constexpr float64 getL1RegularizationWeight(float64 gradient, float64 l1RegularizationWeight) {
+    template<typename StatisticType>
+    static inline constexpr float32 getL1RegularizationWeight(StatisticType gradient, float32 l1RegularizationWeight) {
         if (gradient > l1RegularizationWeight) {
             return -l1RegularizationWeight;
         } else if (gradient < -l1RegularizationWeight) {
             return l1RegularizationWeight;
         } else {
-            return 0;
+            return 0.0f;
         }
     }
 
@@ -28,15 +30,17 @@ namespace boosting {
      * Calculates and returns the optimal score to be predicted for a single output, based on the corresponding gradient
      * and Hessian and taking L1 and L2 regularization into account.
      *
+     * @tparam StatisticType            The type of the gradient and Hessian
      * @param gradient                  The gradient that corresponds to the output
      * @param hessian                   The Hessian that corresponds to the output
      * @param l1RegularizationWeight    The weight of the L1 regularization
      * @param l2RegularizationWeight    The weight of the L2 regularization
      * @return                          The predicted score that has been calculated
      */
-    static inline constexpr float64 calculateOutputWiseScore(float64 gradient, float64 hessian,
-                                                             float64 l1RegularizationWeight,
-                                                             float64 l2RegularizationWeight) {
+    template<typename StatisticType>
+    static inline constexpr StatisticType calculateOutputWiseScore(StatisticType gradient, StatisticType hessian,
+                                                                   float32 l1RegularizationWeight,
+                                                                   float32 l2RegularizationWeight) {
         return util::divideOrZero(-gradient + getL1RegularizationWeight(gradient, l1RegularizationWeight),
                                   hessian + l2RegularizationWeight);
     }
@@ -45,6 +49,7 @@ namespace boosting {
      * Calculates and returns the quality of the prediction for a single output, taking L1 and L2 regularization into
      * account.
      *
+     * @tparam StatisticType            The type of the predicted score, gradient and Hessian
      * @param score                     The predicted score
      * @param gradient                  The gradient
      * @param hessian                   The Hessian
@@ -52,12 +57,14 @@ namespace boosting {
      * @param l2RegularizationWeight    The weight of the L2 regularization
      * @return                          The quality that has been calculated
      */
-    static inline float64 calculateOutputWiseQuality(float64 score, float64 gradient, float64 hessian,
-                                                     float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
-        float64 scorePow = score * score;
-        float64 quality = (gradient * score) + (0.5 * hessian * scorePow);
-        float64 l1RegularizationTerm = l1RegularizationWeight * std::abs(score);
-        float64 l2RegularizationTerm = 0.5 * l2RegularizationWeight * scorePow;
+    template<typename StatisticType>
+    static inline StatisticType calculateOutputWiseQuality(StatisticType score, StatisticType gradient,
+                                                           StatisticType hessian, float32 l1RegularizationWeight,
+                                                           float32 l2RegularizationWeight) {
+        StatisticType scorePow = score * score;
+        StatisticType quality = (gradient * score) + (0.5 * hessian * scorePow);
+        StatisticType l1RegularizationTerm = l1RegularizationWeight * std::abs(score);
+        StatisticType l2RegularizationTerm = 0.5 * l2RegularizationWeight * scorePow;
         return quality + l1RegularizationTerm + l2RegularizationTerm;
     }
 

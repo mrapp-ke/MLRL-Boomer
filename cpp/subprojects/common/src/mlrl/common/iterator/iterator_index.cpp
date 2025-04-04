@@ -28,7 +28,7 @@ IndexIterator& IndexIterator::operator--() {
 }
 
 IndexIterator& IndexIterator::operator--(int n) {
-    index_++;
+    index_--;
     return *this;
 }
 

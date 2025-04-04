@@ -341,10 +341,13 @@ class RunnerUpdater(Workflows):
         return latest_runners
 
     def __get_latest_runner_version(self, runner: Runner) -> RunnerVersion:
-        if self.version_cache is None:
-            self.version_cache = self.__get_latest_runners_from_documentation()
+        version_cache = self.version_cache
 
-        latest_version = self.version_cache.get((runner.image, runner.architecture))
+        if version_cache is None:
+            version_cache = self.__get_latest_runners_from_documentation()
+            self.version_cache = version_cache
+
+        latest_version = version_cache.get((runner.image, runner.architecture))
 
         if not latest_version:
             Log.error('Latest version of runner "%s" is unknown!', runner)

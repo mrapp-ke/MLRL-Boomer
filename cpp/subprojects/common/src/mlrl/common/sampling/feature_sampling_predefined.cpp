@@ -2,10 +2,10 @@
 
 PredefinedFeatureSampling::PredefinedFeatureSampling(const IIndexVector& indexVector) : indexVector_(indexVector) {}
 
-const IIndexVector& PredefinedFeatureSampling::sample(RNG& rng) {
+const IIndexVector& PredefinedFeatureSampling::sample() {
     return indexVector_;
 }
 
-std::unique_ptr<IFeatureSampling> PredefinedFeatureSampling::createBeamSearchFeatureSampling(RNG& rng, bool resample) {
+std::unique_ptr<IFeatureSampling> PredefinedFeatureSampling::createBeamSearchFeatureSampling(bool resample) {
     return std::make_unique<PredefinedFeatureSampling>(indexVector_);
 }
