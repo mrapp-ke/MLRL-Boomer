@@ -13,5 +13,6 @@
 class UnusedRuleRemovalConfig final : public IPostOptimizationPhaseConfig {
     public:
 
-        std::unique_ptr<IPostOptimizationPhaseFactory> createPostOptimizationPhaseFactory() const override;
+        std::unique_ptr<IPostOptimizationPhaseFactory> createPostOptimizationPhaseFactory(
+          const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const override;
 };

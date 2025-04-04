@@ -18,6 +18,10 @@ GLOBAL_PRUNING_PRE = 'pre-pruning'
 
 GLOBAL_PRUNING_POST = 'post-pruning'
 
+STATISTIC_TYPE_FLOAT32 = '32-bit'
+
+STATISTIC_TYPE_FLOAT64 = '64-bit'
+
 
 class BoomerCmdBuilderMixin:
     """
@@ -66,6 +70,17 @@ class BoomerCmdBuilderMixin:
         """
         self.args.append('--statistic-format')
         self.args.append('sparse' if sparse else 'dense')
+        return self
+
+    def statistic_type(self, statistic_type: str = STATISTIC_TYPE_FLOAT64):
+        """
+        Configures the data type that should be used for representing gradients and Hessians.
+
+        :param statistic_type:  The type that should be used for representing gradients and Hessians
+        :return:                The builder itself
+        """
+        self.args.append('--statistic-type')
+        self.args.append(statistic_type)
         return self
 
     def global_pruning(self, global_pruning: str = GLOBAL_PRUNING_POST):

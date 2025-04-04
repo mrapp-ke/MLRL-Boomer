@@ -17,14 +17,29 @@ namespace boosting {
      * Defines an interface for all classes that allow to transform the scores that are predicted an example into a
      * joint probability that corresponds to the chance of a label vector being correct.
      */
-    class IJointProbabilityFunction : public IDistanceMeasure {
+    class IJointProbabilityFunction : public IDistanceMeasure<float64> {
         public:
 
             virtual ~IJointProbabilityFunction() override {}
 
             /**
-             * Transforms the scores that are predicted for an example into a joint probability that corresponds to the
-             * chance of a given label vector being correct.
+             * Transforms the scores, represented by 32-bit floating point values, that are predicted for an example
+             * into a joint probability that corresponds to the chance of a given label vector being correct.
+             *
+             * @param labelVectorIndex  The index of the label vector, the scores should be compared to
+             * @param labelVector       A reference to an object of type `LabelVector`, the scores should be compared to
+             * @param scoresBegin       An iterator to the beginning of the scores
+             * @param scoresEnd         An iterator to the end of the scores
+             * @return                  The joint probability that corresponds to the chance of the given label vector
+             *                          being correct
+             */
+            virtual float64 transformScoresIntoJointProbability(uint32 labelVectorIndex, const LabelVector& labelVector,
+                                                                View<float32>::const_iterator scoresBegin,
+                                                                View<float32>::const_iterator scoresEnd) const = 0;
+
+            /**
+             * Transforms the scores, represented by 64-bit floating point values, that are predicted for an example
+             * into a joint probability that corresponds to the chance of a given label vector being correct.
              *
              * @param labelVectorIndex  The index of the label vector, the scores should be compared to
              * @param labelVector       A reference to an object of type `LabelVector`, the scores should be compared to
@@ -38,8 +53,23 @@ namespace boosting {
                                                                 View<float64>::const_iterator scoresEnd) const = 0;
 
             /**
-             * Transforms the scores that are predicted for an example into a joint probability that corresponds to the
-             * chance of a given label vector being correct.
+             * Transforms the scores, represented by 32-bit floating point values, that are predicted for an example
+             * into a joint probability that corresponds to the chance of a given label vector being correct.
+             *
+             * @param labelVectorIndex  The index of the label vector, the scores should be compared to
+             * @param labelVector       A reference to an object of type `LabelVector`, the scores should be compared to
+             * @param scores            A `SparseSetView::const_row` that stores the scores
+             * @param numLabels         The total number of available labels
+             * @return                  The joint probability the corresponds to the chance of the given label vector
+             *                          being correct
+             */
+            virtual float64 transformScoresIntoJointProbability(uint32 labelVectorIndex, const LabelVector& labelVector,
+                                                                SparseSetView<float32>::const_row scores,
+                                                                uint32 numLabels) const = 0;
+
+            /**
+             * Transforms the scores, represented by 64-bit floating point values, that are predicted for an example
+             * into a joint probability that corresponds to the chance of a given label vector being correct.
              *
              * @param labelVectorIndex  The index of the label vector, the scores should be compared to
              * @param labelVector       A reference to an object of type `LabelVector`, the scores should be compared to
@@ -108,7 +138,7 @@ namespace boosting {
     /**
      * Defines an interface for all factories that allow to create instances of the type `IJointProbabilityFunction`.
      */
-    class IJointProbabilityFunctionFactory : public IDistanceMeasureFactory {
+    class IJointProbabilityFunctionFactory : public IDistanceMeasureFactory<float64> {
         public:
 
             virtual ~IJointProbabilityFunctionFactory() override {}
@@ -132,7 +162,7 @@ namespace boosting {
             /**
              * @see `IDistanceMeasureFactory::createDistanceMeasure`
              */
-            std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
+            std::unique_ptr<IDistanceMeasure<float64>> createDistanceMeasure(
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const override final {
                 return this->create(marginalProbabilityCalibrationModel, jointProbabilityCalibrationModel);
