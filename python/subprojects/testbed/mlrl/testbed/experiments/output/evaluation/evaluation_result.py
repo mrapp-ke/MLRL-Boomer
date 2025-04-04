@@ -111,11 +111,15 @@ class EvaluationResult(TabularOutputData):
             if options.get_bool(measure.option_key, enable_all) and measure.option_key != self.OPTION_TRAINING_TIME \
                     and measure.option_key != self.OPTION_PREDICTION_TIME:
                 if fold is None:
-                    value, std_dev = measurements.avg(measure, percentage=percentage, decimals=decimals)
-                    rows.append([str(measure), value, '±' + std_dev])
+                    average, std_dev = measurements.average_by_measure(measure)
+                    rows.append([
+                        str(measure),
+                        measure.format(average, percentage=percentage, decimals=decimals),
+                        '±' + measure.format(std_dev, percentage=percentage, decimals=decimals),
+                    ])
                 else:
-                    value = measurements.get(measure, fold, percentage=percentage, decimals=decimals)
-                    rows.append([str(measure), value])
+                    value = measurements.values_by_measure(measure)[fold]
+                    rows.append([str(measure), measure.format(value, percentage=percentage, decimals=decimals)])
 
         return format_table(rows)
 
@@ -129,10 +133,11 @@ class EvaluationResult(TabularOutputData):
         decimals = options.get_int(OPTION_DECIMALS, 0)
         enable_all = options.get_bool(self.OPTION_ENABLE_ALL, True)
 
-        if fold is None:
-            columns = measurements.avg_dict(percentage=percentage, decimals=decimals)
-        else:
-            columns = measurements.dict(fold, percentage=percentage, decimals=decimals)
+        dictionary = measurements.averages_as_dict() if fold is None else measurements.values_as_dict(index=fold)
+        columns = {
+            measure: measure.format(value, percentage=percentage, decimals=decimals)
+            for measure, value in dictionary.items()
+        }
 
         filtered_columns = {}
 

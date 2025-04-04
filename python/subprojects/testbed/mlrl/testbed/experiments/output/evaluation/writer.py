@@ -14,7 +14,6 @@ from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.fold import Fold
 
 
 class EvaluationWriter(OutputWriter, ABC):
@@ -27,16 +26,17 @@ class EvaluationWriter(OutputWriter, ABC):
         self.measurements = {}
 
     @abstractmethod
-    def _update_measurements(self, measurements: Measurements, ground_truth: Any, predictions: Any, fold: Fold):
+    def _update_measurements(self, measurements: Measurements, index: int, ground_truth: Any, predictions: Any):
         """
-        Must be implemented by subclasses in order to evaluate predictions and update given `Measurements` accordingly.
+        Must be implemented by subclasses in order to evaluate predictions and update a specific data point of given
+        `Measurements` accordingly.
 
         :param measurements:    The `Measurements` to be updated
+        :param index:           The index of the data point to be updated
         :param ground_truth:    A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                                 `(num_examples, num_outputs)`, that stores the ground truth
         :param predictions:     A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                                 `(num_examples, num_outputs)`, that stores the predictions to be evaluated
-        :param fold:            The fold of the dataset, the given predictions and ground truth correspond to
         """
 
     def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
@@ -47,19 +47,16 @@ class EvaluationWriter(OutputWriter, ABC):
             fold = state.fold
             dataset = state.dataset
             data_type = dataset.type
-            measurements = self.measurements.setdefault(data_type, Measurements())
-            measurements.put(EVALUATION_MEASURE_TRAINING_TIME,
-                             training_result.training_duration.value,
-                             num_folds=fold.num_folds,
-                             fold=fold.index)
-            measurements.put(EVALUATION_MEASURE_PREDICTION_TIME,
-                             prediction_result.prediction_duration.value,
-                             num_folds=fold.num_folds,
-                             fold=fold.index)
+            measurements = self.measurements.setdefault(data_type, Measurements(fold.num_folds))
+            index = 0 if fold.index is None else fold.index
+            training_duration = training_result.training_duration.value
+            prediction_duration = prediction_result.prediction_duration.value
+            measurements.values_by_measure(EVALUATION_MEASURE_TRAINING_TIME)[index] = training_duration
+            measurements.values_by_measure(EVALUATION_MEASURE_PREDICTION_TIME)[index] = prediction_duration
             self._update_measurements(measurements,
+                                      index,
                                       ground_truth=dataset.y,
-                                      predictions=prediction_result.predictions,
-                                      fold=fold)
+                                      predictions=prediction_result.predictions)
             return EvaluationResult(measurements)
 
         return None

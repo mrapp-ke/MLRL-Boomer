@@ -17,7 +17,6 @@ from mlrl.testbed.experiments.output.evaluation.measures_ranking import RANKING_
 from mlrl.testbed.experiments.output.evaluation.measures_regression import REGRESSION_EVALUATION_MEASURES
 from mlrl.testbed.experiments.output.evaluation.writer import EvaluationWriter
 from mlrl.testbed.experiments.output.sinks import Sink
-from mlrl.testbed.fold import Fold
 
 
 class RankingEvaluationWriter(EvaluationWriter):
@@ -31,7 +30,7 @@ class RankingEvaluationWriter(EvaluationWriter):
         self.regression_evaluation_measures = OutputValue.filter_values(REGRESSION_EVALUATION_MEASURES, *options)
         self.ranking_evaluation_measures = OutputValue.filter_values(RANKING_EVALUATION_MEASURES, *options)
 
-    def _update_measurements(self, measurements: Measurements, ground_truth: Any, predictions: Any, fold: Fold):
+    def _update_measurements(self, measurements: Measurements, index: int, ground_truth: Any, predictions: Any):
         ground_truth = enforce_dense(ground_truth, order='C', dtype=Uint8)
 
         if is_multilabel(ground_truth):
@@ -45,4 +44,4 @@ class RankingEvaluationWriter(EvaluationWriter):
         for evaluation_measure in evaluation_measures:
             if isinstance(evaluation_measure, Measure):
                 value = evaluation_measure.evaluate(ground_truth, predictions)
-                measurements.put(evaluation_measure, value, num_folds=fold.num_folds, fold=fold.index)
+                measurements.values_by_measure(evaluation_measure)[index] = value
