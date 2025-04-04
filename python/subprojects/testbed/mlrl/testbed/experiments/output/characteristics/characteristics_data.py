@@ -8,7 +8,7 @@ from typing import Optional
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.dataset import Dataset
-from mlrl.testbed.experiments.output.characteristics.characteristics_output import LABEL_CHARACTERISTICS, \
+from mlrl.testbed.experiments.output.characteristics.characteristics import LABEL_CHARACTERISTICS, \
     OUTPUT_CHARACTERISTICS, Characteristic
 from mlrl.testbed.experiments.output.characteristics.matrix_feature import FeatureMatrix
 from mlrl.testbed.experiments.output.characteristics.matrix_label import LabelMatrix
