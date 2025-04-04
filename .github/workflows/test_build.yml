@@ -118,12 +118,16 @@ jobs:
               - *python_tests
               - '.github/workflows/template_build_linux.yml'
             macos:
-              - *python_tests
+              - *cpp_common
+              - *cpp_boosting
+              - *cpp_seco
               - '.github/workflows/template_build_macos.yml'
               - 'build_system/targets/dependencies/*'
               - 'build_system/targets/dependencies/macos/*'
             windows:
-              - *python_tests
+              - *cpp_common
+              - *cpp_boosting
+              - *cpp_seco
               - '.github/workflows/template_build_windows.yml'
   test_build:
     needs: changes
