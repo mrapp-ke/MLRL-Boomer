@@ -385,7 +385,7 @@ class CmdBuilder:
         overwrite_output_files = self.__should_overwrite_output_files()
 
         if expected_output_file_name is not None:
-            stdout = str(out.stdout).splitlines()
+            stdout = [self.__format_cmd(self.args)] + str(out.stdout).splitlines()
             expected_output_dir = self.expected_output_dir
 
             if overwrite_output_files:
