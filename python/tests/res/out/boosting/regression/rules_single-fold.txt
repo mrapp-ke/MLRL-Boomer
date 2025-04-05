@@ -1012,4 +1012,5 @@ INFO Model (Fold 1):
 {aMULTavgp0'l2 <= 690.40 & aCOnumquotesA'l1 <= 370.50 & aFLnumquotesA'l1 <= 58.50 & aF9numquotes4'l2 <= 38.50 & ALLavgp4'l1 <= 721.50 & aUAnumquotes4'l1 > 208.50 & aUAavgp0 > 535.50 & aMULTavgp4'l1 > 892.50} => (LBL+ALLminpA+bt7d_000 = 0.60, LBL+ALLminp0+bt7d_000 = 0.19, LBL+aDLminpA+bt7d_000 = 0.09, LBL+aCOminpA+bt7d_000 = -0.08, LBL+aFLminpA+bt7d_000 = 0.21, LBL+aUAminpA+bt7d_000 = 0.08)
 
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/rules_fold-1.txt"...
 INFO Successfully finished after <duration>

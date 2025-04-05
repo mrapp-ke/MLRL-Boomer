@@ -19,4 +19,5 @@ Mean Absolute Percentage Error     3.99
 Mean Squared Error              2138.85
 Median Absolute Error             16.15
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-1.csv"...
 INFO Successfully finished after <duration>
