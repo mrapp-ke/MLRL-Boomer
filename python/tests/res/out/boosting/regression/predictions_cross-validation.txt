@@ -80,8 +80,6 @@ Predictions:
  [321.13 118.59 221.95 182.18 241.59 192.06]
  [153.89 105.24 174.4  124.37 153.38 125.04]]
 
-DEBUG Saving data set to file 'python/tests/res/tmp/results/predictions_test_fold-1.arff'...
-INFO Successfully saved data set to file 'python/tests/res/tmp/results/predictions_test_fold-1.arff'.
 INFO Fold 2 / 10:
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -159,8 +157,6 @@ Predictions:
  [167.64 158.01 180.26 193.88  67.48 192.44]
  [188.33 103.18 202.19 184.88 213.13 184.81]]
 
-DEBUG Saving data set to file 'python/tests/res/tmp/results/predictions_test_fold-2.arff'...
-INFO Successfully saved data set to file 'python/tests/res/tmp/results/predictions_test_fold-2.arff'.
 INFO Fold 3 / 10:
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -238,8 +234,6 @@ Predictions:
  [ 53.68 126.65 193.16  17.92  90.56  19.02]
  [189.46 146.99 180.56 199.06  91.48 190.51]]
 
-DEBUG Saving data set to file 'python/tests/res/tmp/results/predictions_test_fold-3.arff'...
-INFO Successfully saved data set to file 'python/tests/res/tmp/results/predictions_test_fold-3.arff'.
 INFO Fold 4 / 10:
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -317,8 +311,6 @@ Predictions:
  [188.06 194.58 224.84 217.28 111.65 200.42]
  [266.75 101.56 223.42 156.04 229.3  155.83]]
 
-DEBUG Saving data set to file 'python/tests/res/tmp/results/predictions_test_fold-4.arff'...
-INFO Successfully saved data set to file 'python/tests/res/tmp/results/predictions_test_fold-4.arff'.
 INFO Fold 5 / 10:
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -396,8 +388,6 @@ Predictions:
  [160.7  194.28 213.79 186.54  59.05 202.39]
  [207.89 146.87 174.99 227.43 236.08 227.26]]
 
-DEBUG Saving data set to file 'python/tests/res/tmp/results/predictions_test_fold-5.arff'...
-INFO Successfully saved data set to file 'python/tests/res/tmp/results/predictions_test_fold-5.arff'.
 INFO Fold 6 / 10:
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -475,8 +465,6 @@ Predictions:
  [227.04 229.29 191.92 220.63  59.48 228.71]
  [162.31 145.33 150.89 219.74 225.85 218.7 ]]
 
-DEBUG Saving data set to file 'python/tests/res/tmp/results/predictions_test_fold-6.arff'...
-INFO Successfully saved data set to file 'python/tests/res/tmp/results/predictions_test_fold-6.arff'.
 INFO Fold 7 / 10:
 INFO Fitting model to 267 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -552,8 +540,6 @@ Predictions:
  [165.17 113.88 156.81 178.72 193.19 178.38]
  [182.78  92.54 163.39  63.77 180.37  59.57]]
 
-DEBUG Saving data set to file 'python/tests/res/tmp/results/predictions_test_fold-7.arff'...
-INFO Successfully saved data set to file 'python/tests/res/tmp/results/predictions_test_fold-7.arff'.
 INFO Fold 8 / 10:
 INFO Fitting model to 267 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -629,8 +615,6 @@ Predictions:
  [221.98 147.32 259.08 139.41 262.05 139.3 ]
  [203.89 127.93 198.43 118.26 267.69 114.73]]
 
-DEBUG Saving data set to file 'python/tests/res/tmp/results/predictions_test_fold-8.arff'...
-INFO Successfully saved data set to file 'python/tests/res/tmp/results/predictions_test_fold-8.arff'.
 INFO Fold 9 / 10:
 INFO Fitting model to 267 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -706,8 +690,6 @@ Predictions:
  [100.41 153.67 219.01 115.03  83.31 115.87]
  [166.86 168.39 177.58 192.38 242.91 186.65]]
 
-DEBUG Saving data set to file 'python/tests/res/tmp/results/predictions_test_fold-9.arff'...
-INFO Successfully saved data set to file 'python/tests/res/tmp/results/predictions_test_fold-9.arff'.
 INFO Fold 10 / 10:
 INFO Fitting model to 267 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -783,6 +765,4 @@ Predictions:
  [  2.61 130.04 222.77  70.11  47.12  67.5 ]
  [149.26 195.29 170.4  178.75  11.42 177.46]]
 
-DEBUG Saving data set to file 'python/tests/res/tmp/results/predictions_test_fold-10.arff'...
-INFO Successfully saved data set to file 'python/tests/res/tmp/results/predictions_test_fold-10.arff'.
 INFO Successfully finished after <duration>
