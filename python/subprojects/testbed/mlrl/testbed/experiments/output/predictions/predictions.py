@@ -15,7 +15,7 @@ from mlrl.testbed.util.format import OPTION_DECIMALS, format_array, format_numbe
 
 class Predictions(TabularOutputData):
     """
-    Stores predictions and the corresponding ground truth.
+    Represents predictions and the corresponding ground truth that are part of output data.
     """
 
     def __init__(self, dataset: Dataset, predictions: Any):
