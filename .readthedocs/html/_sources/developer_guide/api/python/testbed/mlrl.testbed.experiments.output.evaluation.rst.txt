@@ -1,0 +1,24 @@
+mlrl.testbed.experiments.output.evaluation package
+==================================================
+
+.. automodule:: mlrl.testbed.experiments.output.evaluation
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed.experiments.output.evaluation.evaluation_result
+   mlrl.testbed.experiments.output.evaluation.measurements
+   mlrl.testbed.experiments.output.evaluation.measures
+   mlrl.testbed.experiments.output.evaluation.measures_classification
+   mlrl.testbed.experiments.output.evaluation.measures_ranking
+   mlrl.testbed.experiments.output.evaluation.measures_regression
+   mlrl.testbed.experiments.output.evaluation.writer
+   mlrl.testbed.experiments.output.evaluation.writer_classification
+   mlrl.testbed.experiments.output.evaluation.writer_ranking
+   mlrl.testbed.experiments.output.evaluation.writer_regression

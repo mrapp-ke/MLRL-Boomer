@@ -25,7 +25,6 @@ Submodules
    mlrl.testbed.data_splitting
    mlrl.testbed.dataset
    mlrl.testbed.dataset_loader
-   mlrl.testbed.evaluation
    mlrl.testbed.experiment
    mlrl.testbed.fold
    mlrl.testbed.main
@@ -34,7 +33,5 @@ Submodules
    mlrl.testbed.package_info
    mlrl.testbed.parameters
    mlrl.testbed.persistence
-   mlrl.testbed.prediction_scope
-   mlrl.testbed.predictions
    mlrl.testbed.probability_calibration
    mlrl.testbed.runnables

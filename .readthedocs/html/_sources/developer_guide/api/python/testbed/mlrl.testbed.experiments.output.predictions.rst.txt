@@ -1,0 +1,16 @@
+mlrl.testbed.experiments.output.predictions package
+===================================================
+
+.. automodule:: mlrl.testbed.experiments.output.predictions
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed.experiments.output.predictions.predictions
+   mlrl.testbed.experiments.output.predictions.writer

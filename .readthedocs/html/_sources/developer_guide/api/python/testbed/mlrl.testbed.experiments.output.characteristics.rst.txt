@@ -13,8 +13,8 @@ Submodules
    :maxdepth: 4
 
    mlrl.testbed.experiments.output.characteristics.characteristic
+   mlrl.testbed.experiments.output.characteristics.characteristics
    mlrl.testbed.experiments.output.characteristics.characteristics_data
-   mlrl.testbed.experiments.output.characteristics.characteristics_output
    mlrl.testbed.experiments.output.characteristics.characteristics_prediction
    mlrl.testbed.experiments.output.characteristics.matrix_feature
    mlrl.testbed.experiments.output.characteristics.matrix_label

@@ -1,0 +1,7 @@
+mlrl.testbed.experiments.output.predictions.writer module
+=========================================================
+
+.. automodule:: mlrl.testbed.experiments.output.predictions.writer
+   :members:
+   :show-inheritance:
+   :undoc-members:
