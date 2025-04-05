@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for representing evaluation results according to different measures that are part of output data.
+Provides classes for writing predictions to one or several sinks.
 """
 from typing import Optional
 
