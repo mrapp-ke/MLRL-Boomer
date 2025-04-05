@@ -108,7 +108,6 @@ def save_arff_file(file_path: str, x: np.ndarray, y: np.ndarray, meta_data: Arff
                         data set
     :param meta_data:   The meta-data of the data set that should be saved
     """
-    log.debug('Saving data set to file \'%s\'...', file_path)
     sparse = is_sparse(x) and is_sparse(y)
     x = dok_array(x)
     y = dok_array(y)
@@ -151,7 +150,6 @@ def save_arff_file(file_path: str, x: np.ndarray, y: np.ndarray, meta_data: Arff
                 'attributes': attributes,
                 'data': data
             }))
-    log.info('Successfully saved data set to file \'%s\'.', file_path)
 
 
 def __create_feature_and_output_matrix(matrix: csc_array, meta_data: ArffMetaData,
