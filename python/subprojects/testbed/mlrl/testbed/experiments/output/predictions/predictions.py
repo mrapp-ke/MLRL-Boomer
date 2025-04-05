@@ -9,11 +9,11 @@ from mlrl.common.config.options import Options
 from mlrl.common.data.arrays import enforce_dense
 
 from mlrl.testbed.dataset import Dataset
-from mlrl.testbed.experiments.output.data import TabularOutputData
-from mlrl.testbed.util.format import OPTION_DECIMALS, format_array, format_number
+from mlrl.testbed.experiments.output.data import OutputData
+from mlrl.testbed.util.format import OPTION_DECIMALS, format_array
 
 
-class Predictions(TabularOutputData):
+class Predictions(OutputData):
     """
     Represents predictions and the corresponding ground truth that are part of output data.
     """
@@ -38,26 +38,3 @@ class Predictions(TabularOutputData):
         text += '\n\nPredictions:\n\n'
         text += format_array(self.predictions, decimals=decimals)
         return text
-
-    def to_table(self, options: Options, **_) -> Optional[TabularOutputData.Table]:
-        """
-        See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
-        """
-        decimals = options.get_int(OPTION_DECIMALS, 2)
-        dataset = self.dataset
-        ground_truth = dataset.y
-        predictions = self.predictions
-        rows = []
-
-        for example_index in range(dataset.num_examples):
-            columns = {}
-
-            for output_index, output in enumerate(dataset.outputs):
-                columns['GroundTruth ' + output.name] = format_number(ground_truth[example_index, output_index],
-                                                                      decimals=decimals)
-                columns['Prediction ' + output.name] = format_number(predictions[example_index, output_index],
-                                                                     decimals=decimals)
-
-            rows.append(columns)
-
-        return rows
