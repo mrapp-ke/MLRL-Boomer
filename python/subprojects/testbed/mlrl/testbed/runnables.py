@@ -982,7 +982,7 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_PREDICTIONS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(PredictionWriter.ArffFileSink(args.output_dir, options=options))
+            sinks.append(CsvFileSink(args.output_dir, options=options))
 
         return PredictionWriter(*sinks) if sinks else None
 
