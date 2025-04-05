@@ -9,7 +9,7 @@ from mlrl.common.config.options import Options
 
 from mlrl.testbed.data import ArffMetaData, save_arff_file
 from mlrl.testbed.dataset import Attribute, AttributeType
-from mlrl.testbed.experiments.output.data import OutputData
+from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
@@ -19,7 +19,7 @@ from mlrl.testbed.util.io import SUFFIX_ARFF
 
 class ArffFileSink(FileSink):
     """
-    Allows to write predictions and the corresponding ground truth to an ARFF file.
+    Allows to write datasets to an ARFF file.
     """
 
     def __init__(self, directory: str, options: Options = Options()):
@@ -30,9 +30,14 @@ class ArffFileSink(FileSink):
         super().__init__(directory=directory, suffix=SUFFIX_ARFF)
         self.options = options
 
-    def _write_to_file(self, file_path: str, state: ExperimentState, output_data: OutputData, **_):
+    def _write_to_file(self, file_path: str, state: ExperimentState, output_data: OutputData, **kwargs):
+        if not isinstance(output_data, DatasetOutputData):
+            raise RuntimeError('Output data of type "' + type(output_data).__name__
+                               + '" cannot be converted into a dataset')
+
         decimals = self.options.get_int(OPTION_DECIMALS, 0)
-        predictions = output_data.predictions
+        dataset = output_data.to_dataset(self.options, **kwargs)
+        predictions = dataset.y
         nominal_values = None
 
         if issubclass(predictions.dtype.type, np.integer):
@@ -47,7 +52,6 @@ class ArffFileSink(FileSink):
             if decimals > 0:
                 predictions = np.around(predictions, decimals=decimals)
 
-        dataset = output_data.dataset
         features = []
         outputs = []
 
