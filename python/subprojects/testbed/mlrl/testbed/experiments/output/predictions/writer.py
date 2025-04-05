@@ -12,10 +12,10 @@ import numpy as np
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.data import ArffMetaData, save_arff_file
-from mlrl.testbed.dataset import Attribute, AttributeType
-from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData
+from mlrl.testbed.dataset import Attribute, AttributeType, Dataset
+from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.predictions.predictions import Predictions
-from mlrl.testbed.experiments.output.sinks.sink import FileSink
+from mlrl.testbed.experiments.output.sinks.sink import DatasetFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
@@ -28,7 +28,7 @@ class PredictionWriter(OutputWriter):
     Allows to write predictions and the corresponding ground truth to one or several sinks.
     """
 
-    class ArffFileSink(FileSink):
+    class ArffFileSink(DatasetFileSink):
         """
         Allows to write datasets to an ARFF file.
         """
@@ -38,16 +38,10 @@ class PredictionWriter(OutputWriter):
             :param directory:   The path to the directory, where the ARFF file should be located
             :param options:     Options to be taken into account
             """
-            super().__init__(directory=directory, suffix=SUFFIX_ARFF)
-            self.options = options
+            super().__init__(directory=directory, suffix=SUFFIX_ARFF, options=options)
 
-        def _write_to_file(self, file_path: str, state: ExperimentState, output_data: OutputData, **kwargs):
-            if not isinstance(output_data, DatasetOutputData):
-                raise RuntimeError('Output data of type "' + type(output_data).__name__
-                                   + '" cannot be converted into a dataset')
-
+        def _write_dataset_to_file(self, file_path: str, state: ExperimentState, dataset: Dataset, **_):
             decimals = self.options.get_int(OPTION_DECIMALS, 0)
-            dataset = output_data.to_dataset(self.options, **kwargs)
             predictions = dataset.y
             nominal_values = None
 

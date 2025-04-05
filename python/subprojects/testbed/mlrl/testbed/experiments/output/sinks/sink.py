@@ -8,7 +8,8 @@ from os import path
 
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
+from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData, TabularOutputData
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.io import get_file_name_per_fold
 
@@ -134,5 +135,39 @@ class TabularFileSink(FileSink):
 
         :param file_path:   The path to the file to which the output data should be written
         :param state:       The state from which the output data has been generated
-        :param output_data: The output data that should be written to the file
+        :param table:       The tabular output data that should be written to the file
+        """
+
+
+class DatasetFileSink(FileSink):
+    """
+    An abstract base class for all sinks that write datasets to a file.
+    """
+
+    def __init__(self, directory: str, suffix: str, options: Options = Options()):
+        """
+        :param directory:   The path to the directory of the file
+        :param suffix:      The suffix of the file
+        :param options:     Options to be taken into account
+        """
+        super().__init__(directory=directory, suffix=suffix)
+        self.options = options
+
+    def _write_to_file(self, file_path: str, state: ExperimentState, output_data: OutputData, **kwargs):
+        if not isinstance(output_data, DatasetOutputData):
+            raise RuntimeError('Output data of type "' + type(output_data).__name__
+                               + '" cannot be converted into a dataset')
+
+        dataset = output_data.to_dataset(self.options, **kwargs)
+
+        if dataset:
+            self._write_dataset_to_file(file_path, state, dataset, **kwargs)
+
+    def _write_dataset_to_file(self, file_path: str, state: ExperimentState, dataset: Dataset, **kwargs):
+        """
+        Must be implemented by subclasses in order to write a dataset to a specific file.
+
+        :param file_path:   The path to the file to which the output data should be written
+        :param state:       The state from which the output data has been generated
+        :param dataset:     The dataset that should be written to the file
         """
