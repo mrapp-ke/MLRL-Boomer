@@ -18,7 +18,7 @@ from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.util.format import OPTION_DECIMALS, format_float, format_table
+from mlrl.testbed.util.format import OPTION_DECIMALS, format_number, format_table
 
 
 class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
@@ -76,8 +76,8 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
 
                 for threshold, probability in bins[list_index]:
                     rows.append(
-                        [format_float(threshold, decimals=decimals),
-                         format_float(probability, decimals=decimals)])
+                        [format_number(threshold, decimals=decimals),
+                         format_number(probability, decimals=decimals)])
 
                 if result:
                     result += '\n'
@@ -107,8 +107,8 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
 
                     if len(bin_list) > i:
                         probability, threshold = bin_list[i]
-                        columns[column_probability] = format_float(probability, decimals=decimals)
-                        columns[column_threshold] = format_float(threshold, decimals=decimals)
+                        columns[column_probability] = format_number(probability, decimals=decimals)
+                        columns[column_threshold] = format_number(threshold, decimals=decimals)
                         end = False
                     else:
                         columns[column_probability] = None
