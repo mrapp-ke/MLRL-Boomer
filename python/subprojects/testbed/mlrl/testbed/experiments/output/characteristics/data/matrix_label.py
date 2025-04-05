@@ -9,7 +9,7 @@ import numpy as np
 
 from mlrl.common.data.arrays import is_sparse
 
-from mlrl.testbed.experiments.output.characteristics.matrix_output import OutputMatrix
+from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
 
 
 class LabelMatrix(OutputMatrix):

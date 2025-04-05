@@ -5,8 +5,8 @@ Provides classes for writing characteristics of binary predictions to one or sev
 """
 from typing import Optional
 
-from mlrl.testbed.experiments.output.characteristics.characteristics_prediction import PredictionCharacteristics
-from mlrl.testbed.experiments.output.characteristics.matrix_label import LabelMatrix
+from mlrl.testbed.experiments.output.characteristics.data.characteristics_prediction import PredictionCharacteristics
+from mlrl.testbed.experiments.output.characteristics.data.matrix_label import LabelMatrix
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.prediction_type import PredictionType
