@@ -30,4 +30,5 @@ Micro Recall            100
 Subset 0/1 Loss           0
 Subset Accuracy         100
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_training_overall.csv"...
 INFO Successfully finished after <duration>

@@ -3,6 +3,8 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for implementing sinks, output data may be written to.
 """
+import logging as log
+
 from abc import ABC, abstractmethod
 from os import path
 
@@ -92,6 +94,7 @@ class FileSink(Sink, ABC):
                                                 suffix=self.suffix,
                                                 formatter_options=path_formatter_options)
         file_path = path_formatter.format(state)
+        log.debug('Writing output data to file "%s"...', file_path)
         self._write_to_file(file_path, state, output_data, **kwargs)
 
     @abstractmethod

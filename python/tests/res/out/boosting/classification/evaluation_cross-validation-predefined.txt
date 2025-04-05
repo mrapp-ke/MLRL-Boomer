@@ -40,6 +40,7 @@ Micro Recall            62.16
 Subset 0/1 Loss         72.88
 Subset Accuracy         27.12
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-1.csv"...
 INFO Fold 2 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -68,6 +69,7 @@ Micro Recall            64.55
 Subset 0/1 Loss         57.63
 Subset Accuracy         42.37
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-2.csv"...
 INFO Fold 3 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -96,6 +98,7 @@ Micro Recall            65.49
 Subset 0/1 Loss         61.67
 Subset Accuracy         38.33
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-3.csv"...
 INFO Fold 4 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -124,6 +127,7 @@ Micro Recall            64.55
 Subset 0/1 Loss         77.97
 Subset Accuracy         22.03
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-4.csv"...
 INFO Fold 5 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -152,6 +156,7 @@ Micro Recall            66.97
 Subset 0/1 Loss         64.41
 Subset Accuracy         35.59
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-5.csv"...
 INFO Fold 6 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -180,6 +185,7 @@ Micro Recall            67.27
 Subset 0/1 Loss         74.58
 Subset Accuracy         25.42
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-6.csv"...
 INFO Fold 7 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -208,6 +214,7 @@ Micro Recall            61.95
 Subset 0/1 Loss         63.33
 Subset Accuracy         36.67
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-7.csv"...
 INFO Fold 8 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -236,6 +243,7 @@ Micro Recall            66.97
 Subset 0/1 Loss         72.88
 Subset Accuracy         27.12
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-8.csv"...
 INFO Fold 9 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -264,6 +272,7 @@ Micro Recall            66.36
 Subset 0/1 Loss         67.8
 Subset Accuracy         32.2
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-9.csv"...
 INFO Fold 10 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -311,4 +320,6 @@ Micro Recall            64.91  ±1.94
 Subset 0/1 Loss         68.81  ±6.44
 Subset Accuracy         31.19  ±6.44
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-10.csv"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Successfully finished after <duration>
