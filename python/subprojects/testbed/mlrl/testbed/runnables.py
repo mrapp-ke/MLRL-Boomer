@@ -30,7 +30,7 @@ from mlrl.testbed.experiments.output.characteristics import DataCharacteristics,
 from mlrl.testbed.experiments.output.evaluation import ClassificationEvaluationWriter, EvaluationResult, \
     RankingEvaluationWriter, RegressionEvaluationWriter
 from mlrl.testbed.experiments.output.label_vectors import LabelVectors, LabelVectorWriter
-from mlrl.testbed.experiments.output.models.writer_rules import RuleModelCharacteristicsWriter
+from mlrl.testbed.experiments.output.models import RuleModelCharacteristicsWriter
 from mlrl.testbed.experiments.output.predictions import PredictionWriter
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, TextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
