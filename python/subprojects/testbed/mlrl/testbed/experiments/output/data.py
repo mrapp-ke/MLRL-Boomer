@@ -10,7 +10,7 @@ from typing import Dict, Iterable, List, Optional, Type
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_float
+from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_number
 
 
 class OutputData(ABC):
@@ -115,7 +115,7 @@ class OutputValue:
         if self.percentage and kwargs.get(OPTION_PERCENTAGE, False):
             value = value * 100
 
-        return format_float(value, decimals=kwargs.get(OPTION_DECIMALS, 0))
+        return format_number(value, decimals=kwargs.get(OPTION_DECIMALS, 0))
 
     def __str__(self) -> str:
         return self.name
