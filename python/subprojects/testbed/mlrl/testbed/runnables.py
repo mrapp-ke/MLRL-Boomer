@@ -32,7 +32,7 @@ from mlrl.testbed.experiments.output.evaluation import ClassificationEvaluationW
     RankingEvaluationWriter, RegressionEvaluationWriter
 from mlrl.testbed.experiments.output.label_vectors import LabelVectors, LabelVectorWriter
 from mlrl.testbed.experiments.output.predictions import PredictionWriter
-from mlrl.testbed.experiments.output.sinks import ArffFileSink, CsvFileSink, LogSink, TextFileSink
+from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, TextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.prediction import GlobalPredictor, IncrementalPredictor, Predictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
@@ -982,7 +982,7 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_PREDICTIONS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(ArffFileSink(args.output_dir, options=options))
+            sinks.append(PredictionWriter.ArffFileSink(args.output_dir, options=options))
 
         return PredictionWriter(*sinks) if sinks else None
 
