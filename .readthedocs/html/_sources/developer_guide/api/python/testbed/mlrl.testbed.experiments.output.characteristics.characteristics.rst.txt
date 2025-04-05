@@ -1,7 +1,0 @@
-mlrl.testbed.experiments.output.characteristics.characteristics module
-======================================================================
-
-.. automodule:: mlrl.testbed.experiments.output.characteristics.characteristics
-   :members:
-   :show-inheritance:
-   :undoc-members:

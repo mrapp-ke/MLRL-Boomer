@@ -1,0 +1,7 @@
+mlrl.testbed.experiments.output.characteristics.model.statistics\_rules module
+==============================================================================
+
+.. automodule:: mlrl.testbed.experiments.output.characteristics.model.statistics_rules
+   :members:
+   :show-inheritance:
+   :undoc-members:

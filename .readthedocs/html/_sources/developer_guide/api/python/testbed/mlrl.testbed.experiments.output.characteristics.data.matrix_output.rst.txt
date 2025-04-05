@@ -1,0 +1,7 @@
+mlrl.testbed.experiments.output.characteristics.data.matrix\_output module
+==========================================================================
+
+.. automodule:: mlrl.testbed.experiments.output.characteristics.data.matrix_output
+   :members:
+   :show-inheritance:
+   :undoc-members:

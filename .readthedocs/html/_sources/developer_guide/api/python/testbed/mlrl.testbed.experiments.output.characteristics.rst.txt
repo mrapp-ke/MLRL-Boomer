@@ -6,18 +6,11 @@ mlrl.testbed.experiments.output.characteristics package
    :show-inheritance:
    :undoc-members:
 
-Submodules
-----------
+Subpackages
+-----------
 
 .. toctree::
    :maxdepth: 4
 
-   mlrl.testbed.experiments.output.characteristics.characteristic
-   mlrl.testbed.experiments.output.characteristics.characteristics
-   mlrl.testbed.experiments.output.characteristics.characteristics_data
-   mlrl.testbed.experiments.output.characteristics.characteristics_prediction
-   mlrl.testbed.experiments.output.characteristics.matrix_feature
-   mlrl.testbed.experiments.output.characteristics.matrix_label
-   mlrl.testbed.experiments.output.characteristics.matrix_output
-   mlrl.testbed.experiments.output.characteristics.writer_data
-   mlrl.testbed.experiments.output.characteristics.writer_prediction
+   mlrl.testbed.experiments.output.characteristics.data
+   mlrl.testbed.experiments.output.characteristics.model
