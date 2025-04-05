@@ -5,7 +5,7 @@ Provides classes for writing characteristics of datasets to one or several sinks
 """
 from typing import Optional
 
-from mlrl.testbed.experiments.output.characteristics.characteristics_data import DataCharacteristics
+from mlrl.testbed.experiments.output.characteristics.data.characteristics_data import DataCharacteristics
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState

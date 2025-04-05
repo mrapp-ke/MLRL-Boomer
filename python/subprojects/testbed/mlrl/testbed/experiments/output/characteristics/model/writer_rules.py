@@ -14,9 +14,9 @@ from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBo
     RuleModelVisitor
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
+from mlrl.testbed.experiments.output.characteristics.model.characteristics_rules import BodyStatistics, \
+    HeadStatistics, RuleModelCharacteristics, RuleModelStatistics, RuleStatistics
 from mlrl.testbed.experiments.output.data import OutputData
-from mlrl.testbed.experiments.output.models.characteristics_rules import BodyStatistics, HeadStatistics, \
-    RuleModelCharacteristics, RuleModelStatistics, RuleStatistics
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
 

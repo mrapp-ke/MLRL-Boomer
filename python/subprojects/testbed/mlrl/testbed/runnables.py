@@ -25,12 +25,12 @@ from mlrl.common.util.format import format_dict_keys, format_enum_values, format
 from mlrl.testbed.data_splitting import CrossValidationSplitter, DataSet, DataSplitter, NoSplitter, TrainTestSplitter
 from mlrl.testbed.experiment import Experiment
 from mlrl.testbed.experiments.input.preprocessors import OneHotEncoder, Preprocessor
-from mlrl.testbed.experiments.output.characteristics import DataCharacteristics, DataCharacteristicsWriter, \
+from mlrl.testbed.experiments.output.characteristics.data import DataCharacteristics, DataCharacteristicsWriter, \
     OutputCharacteristics, PredictionCharacteristicsWriter
+from mlrl.testbed.experiments.output.characteristics.model import RuleModelCharacteristicsWriter
 from mlrl.testbed.experiments.output.evaluation import ClassificationEvaluationWriter, EvaluationResult, \
     RankingEvaluationWriter, RegressionEvaluationWriter
 from mlrl.testbed.experiments.output.label_vectors import LabelVectors, LabelVectorWriter
-from mlrl.testbed.experiments.output.models import RuleModelCharacteristicsWriter
 from mlrl.testbed.experiments.output.predictions import PredictionWriter
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, TextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
