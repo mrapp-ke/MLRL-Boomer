@@ -30,13 +30,13 @@ from mlrl.testbed.experiments.output.characteristics import DataCharacteristics,
 from mlrl.testbed.experiments.output.evaluation import ClassificationEvaluationWriter, EvaluationResult, \
     RankingEvaluationWriter, RegressionEvaluationWriter
 from mlrl.testbed.experiments.output.label_vectors import LabelVectors, LabelVectorWriter
+from mlrl.testbed.experiments.output.models.writer_rules import RuleModelCharacteristicsWriter
 from mlrl.testbed.experiments.output.predictions import PredictionWriter
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, TextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.prediction import GlobalPredictor, IncrementalPredictor, Predictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_type import ProblemType
-from mlrl.testbed.model_characteristics import RuleModelCharacteristicsWriter
 from mlrl.testbed.models import OPTION_DECIMALS_BODY, OPTION_DECIMALS_HEAD, OPTION_PRINT_BODIES, \
     OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_HEADS, OPTION_PRINT_NOMINAL_VALUES, OPTION_PRINT_OUTPUT_NAMES, \
     RuleModelWriter
