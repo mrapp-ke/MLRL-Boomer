@@ -21,7 +21,7 @@ from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.util.format import format_float
+from mlrl.testbed.util.format import format_number
 
 OPTION_PRINT_FEATURE_NAMES = 'print_feature_names'
 
@@ -109,7 +109,7 @@ class RuleModelWriter(OutputWriter):
                         else:
                             text.write(str(nominal_value))
                     else:
-                        text.write(format_float(threshold, decimals=decimals))
+                        text.write(format_number(threshold, decimals=decimals))
 
                     result += 1
 
@@ -162,7 +162,7 @@ class RuleModelWriter(OutputWriter):
                         text.write(str(i))
 
                     text.write(' = ')
-                    text.write(format_float(scores[i], decimals=decimals))
+                    text.write(format_number(scores[i], decimals=decimals))
 
                 text.write(')\n')
             elif self.print_bodies:
@@ -198,7 +198,7 @@ class RuleModelWriter(OutputWriter):
                         text.write(str(output_index))
 
                     text.write(' = ')
-                    text.write(format_float(scores[i], decimals=decimals))
+                    text.write(format_number(scores[i], decimals=decimals))
 
                 text.write(')\n')
             elif self.print_bodies:
