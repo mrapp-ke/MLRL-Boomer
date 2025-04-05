@@ -55,4 +55,4 @@ class ArffFileSink(FileSink):
             features.append(Attribute('Ground Truth ' + output.name, attribute_type, nominal_values))
             outputs.append(Attribute('Prediction ' + output.name, attribute_type, nominal_values))
 
-        save_arff_file(file_path, dataset.y, predictions, ArffMetaData(features, outputs))
+        save_arff_file(file_path, dataset.x, predictions, ArffMetaData(features, outputs))
