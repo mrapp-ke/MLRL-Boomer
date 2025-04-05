@@ -1,7 +1,0 @@
-mlrl.testbed.experiments.output.characteristics.writer\_data module
-===================================================================
-
-.. automodule:: mlrl.testbed.experiments.output.characteristics.writer_data
-   :members:
-   :show-inheritance:
-   :undoc-members:

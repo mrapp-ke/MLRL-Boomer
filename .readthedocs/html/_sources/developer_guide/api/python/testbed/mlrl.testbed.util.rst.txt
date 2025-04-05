@@ -15,3 +15,4 @@ Submodules
    mlrl.testbed.util.format
    mlrl.testbed.util.io
    mlrl.testbed.util.io_csv
+   mlrl.testbed.util.math
