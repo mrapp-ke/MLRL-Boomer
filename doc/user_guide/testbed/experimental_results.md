@@ -102,7 +102,7 @@ In cases where the {ref}`evaluation results<output-evaluation-results>` obtained
    ```
 ````
 
-Alternatively, the argument `--store-predictions` can be used to save the predictions, as well as the ground truth, to [ARFF](https://waikato.github.io/weka-wiki/formats_and_processing/arff_stable/) files:
+Alternatively, the argument `--store-predictions` can be used to save the predictions, as well as the ground truth, to [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files:
 
 ````{tab} BOOMER
    ```text
@@ -129,21 +129,21 @@ Depending on the {ref}`type of predictions<prediction-types>`, the machine learn
 
 When using {ref}`train-test splits<train-test-split>`, a single model is trained and queried for predictions for the test set. These predictions are written into a single output file. When {ref}`evaluating on the training data<evaluating-training-data>`, predictions are also obtained for the training set and written into an additional output file. The names of the output files indicate whether the predictions have been obtained for the training or test set, respectively:
 
-- `predictions_train_overall.arff`
-- `predictions_test_overall.arff`
+- `predictions_train_overall.csv`
+- `predictions_test_overall.csv`
 
 When using a {ref}`cross validation<cross-validation>` for performance evaluation, a model is trained for each fold. Similar to before, the names of the output files indicate whether the predictions correspond to the training or test data:
 
-- `predictions_train_fold-1.arff`
-- `predictions_test_fold-1.arff`
-- `predictions_train_fold-2.arff`
-- `predictions_test_fold-2.arff`
-- `predictions_train_fold-3.arff`
-- `predictions_test_fold-3.arff`
-- `predictions_train_fold-4.arff`
-- `predictions_test_fold-4.arff`
-- `predictions_train_fold-5.arff`
-- `predictions_test_fold-5.arff`
+- `predictions_train_fold-1.csv`
+- `predictions_test_fold-1.csv`
+- `predictions_train_fold-2.csv`
+- `predictions_test_fold-2.csv`
+- `predictions_train_fold-3.csv`
+- `predictions_test_fold-3.csv`
+- `predictions_train_fold-4.csv`
+- `predictions_test_fold-4.csv`
+- `predictions_train_fold-5.csv`
+- `predictions_test_fold-5.csv`
 
 (output-prediction-characteristics)=
 
@@ -198,8 +198,8 @@ The output produced by the arguments ``--print-data-characteristics`` and ``--st
 
 The statistics obtained via the arguments given above correspond to the test data for which predictions are obtained from the model. Consequently, they depend on the strategy used for splitting a dataset into training and test sets. When using {ref}`train-test splits<train-test-split>`, predictions for a single test set are obtained and their characteristics are written into a file. In addition, statistics for the training data are written into an additional output file when {ref}`evaluating on the training data<evaluating-training-data>`:
 
-- `prediction_characteristics_train_overall.arff`
-- `prediction_characteristics_test_overall.arff`
+- `prediction_characteristics_train_overall.csv`
+- `prediction_characteristics_test_overall.csv`
 
 When using a {ref}`cross validation<cross-validation>`, the data is split into several parts of which each one is used once for prediction. Multiple output files are needed to save the statistics for different cross validation folds. For example, a 5-fold cross validation results in the following files:
 
