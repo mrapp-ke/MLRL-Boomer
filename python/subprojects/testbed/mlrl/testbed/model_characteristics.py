@@ -18,7 +18,7 @@ from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.util.format import format_float, format_percentage, format_table
+from mlrl.testbed.util.format import format_number, format_percentage, format_table
 
 
 class RuleModelCharacteristicsWriter(OutputWriter):
@@ -176,15 +176,15 @@ class RuleModelCharacteristicsWriter(OutputWriter):
             rows = []
             rows.append([
                 'Conditions',
-                format_float(num_conditions_min),
-                format_float(num_conditions_mean),
-                format_float(num_conditions_max)
+                format_number(num_conditions_min),
+                format_number(num_conditions_mean),
+                format_number(num_conditions_max)
             ])
             rows.append([
                 'Predictions',
-                format_float(num_predictions_min),
-                format_float(num_predictions_mean),
-                format_float(num_predictions_max)
+                format_number(num_predictions_min),
+                format_number(num_predictions_mean),
+                format_number(num_predictions_max)
             ])
             return text + format_table(rows, header=header)
 

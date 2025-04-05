@@ -5,6 +5,7 @@ Provides utility functions for creating textual representations.
 """
 import sys
 
+from numbers import Number
 from typing import List, Optional
 
 import numpy as np
@@ -31,14 +32,17 @@ def format_array(array: np.ndarray, decimals: int = 2) -> str:
     return np.array2string(array, threshold=sys.maxsize, formatter={'all': lambda x: str(x)})
 
 
-def format_float(value: float, decimals: int = 2) -> str:
+def format_number(value: Number, decimals: int = 2) -> str:
     """
-    Creates and returns a textual representation of a floating point value using a specific number of decimals.
+    Creates and returns a textual representation of a value using a specific number of decimals, if the value is a
+    floating point value.
 
     :param value:       The value
     :param decimals:    The number of decimals to be used or 0, if the number of decimals should not be restricted
     :return:            The textual representation that has been created
     """
+    if isinstance(value, (int, np.integer)):
+        return str(value)
     return ('{:.' + str(decimals) + 'f}').format(round(value, decimals)) if decimals > 0 else str(value)
 
 
@@ -50,7 +54,7 @@ def format_percentage(value: float, decimals: int = 2) -> str:
     :param decimals:    The number of decimals to be used or 0, if the number of decimals should not be restricted
     :return:            The textual representation that has been created
     """
-    return format_float(value, decimals) + '%'
+    return format_number(float(value), decimals) + '%'
 
 
 def format_table(rows: List[List[str]], header: Optional[List[str]] = None, alignment: List[str] = None) -> str:
