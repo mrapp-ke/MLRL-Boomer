@@ -8,11 +8,11 @@ from typing import Optional
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.dataset import Dataset
-from mlrl.testbed.experiments.output.characteristics.characteristics import LABEL_CHARACTERISTICS, \
+from mlrl.testbed.experiments.output.characteristics.data.characteristics import LABEL_CHARACTERISTICS, \
     OUTPUT_CHARACTERISTICS, Characteristic
-from mlrl.testbed.experiments.output.characteristics.matrix_feature import FeatureMatrix
-from mlrl.testbed.experiments.output.characteristics.matrix_label import LabelMatrix
-from mlrl.testbed.experiments.output.characteristics.matrix_output import OutputMatrix
+from mlrl.testbed.experiments.output.characteristics.data.matrix_feature import FeatureMatrix
+from mlrl.testbed.experiments.output.characteristics.data.matrix_label import LabelMatrix
+from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState

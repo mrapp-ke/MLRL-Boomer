@@ -7,8 +7,8 @@ from typing import Optional
 
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.experiments.output.characteristics.characteristic import Characteristic
-from mlrl.testbed.experiments.output.characteristics.matrix_output import OutputMatrix
+from mlrl.testbed.experiments.output.characteristics.data.characteristic import Characteristic
+from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState

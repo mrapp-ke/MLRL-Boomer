@@ -10,9 +10,9 @@ from typing import Any, Dict, List, Optional
 
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.experiments.output.data import TabularOutputData
-from mlrl.testbed.experiments.output.models.statistics_rules import BodyStatistics, HeadStatistics, \
+from mlrl.testbed.experiments.output.characteristics.model.statistics_rules import BodyStatistics, HeadStatistics, \
     RuleModelStatistics, RuleStatistics
+from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import format_number, format_percentage, format_table
 from mlrl.testbed.util.math import divide_or_zero
