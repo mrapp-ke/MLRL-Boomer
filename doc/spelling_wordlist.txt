@@ -32,6 +32,7 @@ José
 kln
 lapack
 laplace
+leq
 libmlrlboosting
 libmlrlcommon
 libmlrlseco
@@ -48,6 +49,7 @@ multilabel
 multivariant
 natively
 nd
+neq
 num
 opencl
 openmp
