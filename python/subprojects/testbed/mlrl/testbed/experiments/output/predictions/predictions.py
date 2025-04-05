@@ -3,16 +3,17 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing predictions that are part of output data.
 """
+from dataclasses import replace
 from typing import Optional
 
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.dataset import Dataset
-from mlrl.testbed.experiments.output.data import OutputData
+from mlrl.testbed.experiments.output.data import DatasetOutputData
 from mlrl.testbed.util.format import OPTION_DECIMALS, format_array
 
 
-class Predictions(OutputData):
+class Predictions(DatasetOutputData):
     """
     Represents predictions and the corresponding ground truth that are part of output data.
     """
@@ -37,3 +38,10 @@ class Predictions(OutputData):
         text += '\n\nPredictions:\n\n'
         text += format_array(self.prediction_dataset.y, decimals=decimals)
         return text
+
+    # pylint: disable=unused-argument
+    def to_dataset(self, options: Options, **_) -> Optional[Dataset]:
+        """
+        See :func:`mlrl.testbed.experiments.output.data.DatasetOutputData.to_dataset`
+        """
+        return replace(self.original_dataset, x=self.original_dataset.y, y=self.prediction_dataset.y)
