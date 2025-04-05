@@ -1,7 +1,7 @@
-mlrl.testbed.prediction\_scope module
+mlrl.testbed.experiments.timer module
 =====================================
 
-.. automodule:: mlrl.testbed.prediction_scope
+.. automodule:: mlrl.testbed.experiments.timer
    :members:
    :show-inheritance:
    :undoc-members:

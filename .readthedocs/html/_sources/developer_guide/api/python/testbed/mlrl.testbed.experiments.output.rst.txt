@@ -13,7 +13,9 @@ Subpackages
    :maxdepth: 4
 
    mlrl.testbed.experiments.output.characteristics
+   mlrl.testbed.experiments.output.evaluation
    mlrl.testbed.experiments.output.label_vectors
+   mlrl.testbed.experiments.output.predictions
    mlrl.testbed.experiments.output.sinks
 
 Submodules

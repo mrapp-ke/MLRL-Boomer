@@ -3,16 +3,16 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta property="og:title" content="mlrl.testbed.predictions module" />
+<meta property="og:title" content="mlrl.testbed.experiments.output.evaluation package" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="developer_guide/api/python/testbed/mlrl.testbed.predictions.html" />
+<meta property="og:url" content="developer_guide/api/python/testbed/mlrl.testbed.experiments.output.evaluation.html" />
 <meta property="og:site_name" content="BOOMER" />
-<meta property="og:description" content="Author: Michael Rapp ( michael.rapp.ml@gmail.com) Provides classes for printing the predictions of a model. The predictions can be written to one or several outputs, e.g., to the console or to a file." />
-<meta name="description" content="Author: Michael Rapp ( michael.rapp.ml@gmail.com) Provides classes for printing the predictions of a model. The predictions can be written to one or several outputs, e.g., to the console or to a file." />
-    <link href="../../../../_static/favicon.svg" rel="icon" type="image/svg+xml"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" /><link rel="next" title="mlrl.testbed.probability_calibration module" href="mlrl.testbed.probability_calibration.html" /><link rel="prev" title="mlrl.testbed.prediction_scope module" href="mlrl.testbed.prediction_scope.html" />
+<meta property="og:description" content="Author Michael Rapp ( michael.rapp.ml@gmail.com) Provides classes that allow to write evaluation results to different sinks. Submodules: mlrl.testbed.experiments.output.evaluation.evaluation_result..." />
+<meta name="description" content="Author Michael Rapp ( michael.rapp.ml@gmail.com) Provides classes that allow to write evaluation results to different sinks. Submodules: mlrl.testbed.experiments.output.evaluation.evaluation_result..." />
+    <link href="../../../../_static/favicon.svg" rel="icon" type="image/svg+xml"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" /><link rel="next" title="mlrl.testbed.experiments.output.evaluation.evaluation_result module" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html" /><link rel="prev" title="mlrl.testbed.experiments.output.characteristics.writer_prediction module" href="mlrl.testbed.experiments.output.characteristics.writer_prediction.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>mlrl.testbed.predictions module - BOOMER 1.0.0.dev95</title>
+        <title>mlrl.testbed.experiments.output.evaluation package - BOOMER 1.0.0.dev99</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=4c969af8" />
@@ -174,7 +174,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">BOOMER 1.0.0.dev95</div></a>
+      <a href="../../../../index.html"><div class="brand">BOOMER 1.0.0.dev99</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -198,7 +198,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
   
-  <span class="sidebar-brand-text">BOOMER 1.0.0.dev95</span>
+  <span class="sidebar-brand-text">BOOMER 1.0.0.dev99</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -242,35 +242,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../continuous_integration.html">Continuous Integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../coding_standards.html">Coding Standards</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../index.html">Python API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Python API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 has-children"><a class="reference internal" href="../seco/mlrl.seco.html">Package mlrl-seco</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Package mlrl-seco</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../seco/mlrl.seco.config.html">mlrl.seco.config package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of mlrl.seco.config package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.config.parameters.html">mlrl.seco.config.parameters module</a></li>
-</ul>
-</li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../seco/mlrl.seco.cython.html">mlrl.seco.cython package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of mlrl.seco.cython package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.heuristic.html">mlrl.seco.cython.heuristic module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.learner.html">mlrl.seco.cython.learner module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.learner_seco.html">mlrl.seco.cython.learner_seco module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.lift_function.html">mlrl.seco.cython.lift_function module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.package_info.html">mlrl.seco.cython.package_info module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.stopping_criterion.html">mlrl.seco.cython.stopping_criterion module</a></li>
-</ul>
-</li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../seco/mlrl.seco.testbed.html">mlrl.seco.testbed package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of mlrl.seco.testbed package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.testbed.runnables.html">mlrl.seco.testbed.runnables module</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../seco/mlrl.seco.learners.html">mlrl.seco.learners module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../seco/mlrl.seco.package_info.html">mlrl.seco.package_info module</a></li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../common/mlrl.common.html">Package mlrl-common</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Package mlrl-common</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../common/mlrl.common.config.html">mlrl.common.config package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of mlrl.common.config package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../common/mlrl.common.html">Package mlrl-common</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Package mlrl-common</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../common/mlrl.common.config.html">mlrl.common.config package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of mlrl.common.config package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.config.options.html">mlrl.common.config.options module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.config.parameters.html">mlrl.common.config.parameters module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../common/mlrl.common.cython.html">mlrl.common.cython package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of mlrl.common.cython package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../common/mlrl.common.cython.html">mlrl.common.cython package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of mlrl.common.cython package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.cython.example_weights.html">mlrl.common.cython.example_weights module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.cython.feature_binning.html">mlrl.common.cython.feature_binning module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.cython.feature_info.html">mlrl.common.cython.feature_info module</a></li>
@@ -298,12 +276,12 @@
 <li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.cython.validation.html">mlrl.common.cython.validation module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../common/mlrl.common.data.html">mlrl.common.data package</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle navigation of mlrl.common.data package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../common/mlrl.common.data.html">mlrl.common.data package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of mlrl.common.data package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.data.arrays.html">mlrl.common.data.arrays module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.data.types.html">mlrl.common.data.types module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../common/mlrl.common.util.html">mlrl.common.util package</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of mlrl.common.util package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../common/mlrl.common.util.html">mlrl.common.util package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of mlrl.common.util package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.util.format.html">mlrl.common.util.format module</a></li>
 </ul>
 </li>
@@ -312,12 +290,127 @@
 <li class="toctree-l3"><a class="reference internal" href="../common/mlrl.common.package_info.html">mlrl.common.package_info module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../boosting/mlrl.boosting.html">Package mlrl-boosting</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle navigation of Package mlrl-boosting</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../boosting/mlrl.boosting.config.html">mlrl.boosting.config package</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle navigation of mlrl.boosting.config package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="mlrl.testbed.html">Package mlrl-testbed</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Package mlrl-testbed</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 current has-children"><a class="reference internal" href="mlrl.testbed.experiments.html">mlrl.testbed.experiments package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l4 has-children"><a class="reference internal" href="mlrl.testbed.experiments.input.html">mlrl.testbed.experiments.input package</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments.input package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5 has-children"><a class="reference internal" href="mlrl.testbed.experiments.input.preprocessors.html">mlrl.testbed.experiments.input.preprocessors package</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments.input.preprocessors package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.input.preprocessors.one_hot_encoder.html">mlrl.testbed.experiments.input.preprocessors.one_hot_encoder module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.input.preprocessors.preprocessor.html">mlrl.testbed.experiments.input.preprocessors.preprocessor module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4 current has-children"><a class="reference internal" href="mlrl.testbed.experiments.output.html">mlrl.testbed.experiments.output package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments.output package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l5 has-children"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.html">mlrl.testbed.experiments.output.characteristics package</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments.output.characteristics package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.characteristic.html">mlrl.testbed.experiments.output.characteristics.characteristic module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.characteristics.html">mlrl.testbed.experiments.output.characteristics.characteristics module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.characteristics_data.html">mlrl.testbed.experiments.output.characteristics.characteristics_data module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.characteristics_prediction.html">mlrl.testbed.experiments.output.characteristics.characteristics_prediction module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.matrix_feature.html">mlrl.testbed.experiments.output.characteristics.matrix_feature module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.matrix_label.html">mlrl.testbed.experiments.output.characteristics.matrix_label module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.matrix_output.html">mlrl.testbed.experiments.output.characteristics.matrix_output module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.writer_data.html">mlrl.testbed.experiments.output.characteristics.writer_data module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.writer_prediction.html">mlrl.testbed.experiments.output.characteristics.writer_prediction module</a></li>
+</ul>
+</li>
+<li class="toctree-l5 current has-children current-page"><a class="current reference internal" href="#">mlrl.testbed.experiments.output.evaluation package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments.output.evaluation package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html">mlrl.testbed.experiments.output.evaluation.evaluation_result module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.measurements.html">mlrl.testbed.experiments.output.evaluation.measurements module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.measures.html">mlrl.testbed.experiments.output.evaluation.measures module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.measures_classification.html">mlrl.testbed.experiments.output.evaluation.measures_classification module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.measures_ranking.html">mlrl.testbed.experiments.output.evaluation.measures_ranking module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.measures_regression.html">mlrl.testbed.experiments.output.evaluation.measures_regression module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.writer.html">mlrl.testbed.experiments.output.evaluation.writer module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.writer_classification.html">mlrl.testbed.experiments.output.evaluation.writer_classification module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.writer_ranking.html">mlrl.testbed.experiments.output.evaluation.writer_ranking module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.writer_regression.html">mlrl.testbed.experiments.output.evaluation.writer_regression module</a></li>
+</ul>
+</li>
+<li class="toctree-l5 has-children"><a class="reference internal" href="mlrl.testbed.experiments.output.label_vectors.html">mlrl.testbed.experiments.output.label_vectors package</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments.output.label_vectors package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.label_vectors.label_vector_histogram.html">mlrl.testbed.experiments.output.label_vectors.label_vector_histogram module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.label_vectors.label_vectors.html">mlrl.testbed.experiments.output.label_vectors.label_vectors module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.label_vectors.writer.html">mlrl.testbed.experiments.output.label_vectors.writer module</a></li>
+</ul>
+</li>
+<li class="toctree-l5 has-children"><a class="reference internal" href="mlrl.testbed.experiments.output.predictions.html">mlrl.testbed.experiments.output.predictions package</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" role="switch" type="checkbox"/><label for="toctree-checkbox-18"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments.output.predictions package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.predictions.predictions.html">mlrl.testbed.experiments.output.predictions.predictions module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.predictions.writer.html">mlrl.testbed.experiments.output.predictions.writer module</a></li>
+</ul>
+</li>
+<li class="toctree-l5 has-children"><a class="reference internal" href="mlrl.testbed.experiments.output.sinks.html">mlrl.testbed.experiments.output.sinks package</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" role="switch" type="checkbox"/><label for="toctree-checkbox-19"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments.output.sinks package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.sinks.sink.html">mlrl.testbed.experiments.output.sinks.sink module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.sinks.sink_csv.html">mlrl.testbed.experiments.output.sinks.sink_csv module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.sinks.sink_log.html">mlrl.testbed.experiments.output.sinks.sink_log module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.sinks.sink_text.html">mlrl.testbed.experiments.output.sinks.sink_text module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="mlrl.testbed.experiments.output.data.html">mlrl.testbed.experiments.output.data module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="mlrl.testbed.experiments.output.writer.html">mlrl.testbed.experiments.output.writer module</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="mlrl.testbed.experiments.prediction.html">mlrl.testbed.experiments.prediction package</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" role="switch" type="checkbox"/><label for="toctree-checkbox-20"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments.prediction package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="mlrl.testbed.experiments.prediction.predictor.html">mlrl.testbed.experiments.prediction.predictor module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="mlrl.testbed.experiments.prediction.predictor_global.html">mlrl.testbed.experiments.prediction.predictor_global module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="mlrl.testbed.experiments.prediction.predictor_incremental.html">mlrl.testbed.experiments.prediction.predictor_incremental module</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="mlrl.testbed.experiments.prediction_scope.html">mlrl.testbed.experiments.prediction_scope module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mlrl.testbed.experiments.prediction_type.html">mlrl.testbed.experiments.prediction_type module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mlrl.testbed.experiments.problem_type.html">mlrl.testbed.experiments.problem_type module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mlrl.testbed.experiments.state.html">mlrl.testbed.experiments.state module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mlrl.testbed.experiments.timer.html">mlrl.testbed.experiments.timer module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="mlrl.testbed.util.html">mlrl.testbed.util package</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" role="switch" type="checkbox"/><label for="toctree-checkbox-21"><div class="visually-hidden">Toggle navigation of mlrl.testbed.util package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="mlrl.testbed.util.format.html">mlrl.testbed.util.format module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mlrl.testbed.util.io.html">mlrl.testbed.util.io module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mlrl.testbed.util.io_csv.html">mlrl.testbed.util.io_csv module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.data.html">mlrl.testbed.data module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.data_splitting.html">mlrl.testbed.data_splitting module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.dataset.html">mlrl.testbed.dataset module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.dataset_loader.html">mlrl.testbed.dataset_loader module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiment.html">mlrl.testbed.experiment module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.fold.html">mlrl.testbed.fold module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.main.html">mlrl.testbed.main module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.model_characteristics.html">mlrl.testbed.model_characteristics module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.models.html">mlrl.testbed.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.package_info.html">mlrl.testbed.package_info module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.parameters.html">mlrl.testbed.parameters module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.persistence.html">mlrl.testbed.persistence module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.probability_calibration.html">mlrl.testbed.probability_calibration module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.runnables.html">mlrl.testbed.runnables module</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../seco/mlrl.seco.html">Package mlrl-seco</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" role="switch" type="checkbox"/><label for="toctree-checkbox-22"><div class="visually-hidden">Toggle navigation of Package mlrl-seco</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../seco/mlrl.seco.config.html">mlrl.seco.config package</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" role="switch" type="checkbox"/><label for="toctree-checkbox-23"><div class="visually-hidden">Toggle navigation of mlrl.seco.config package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.config.parameters.html">mlrl.seco.config.parameters module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../seco/mlrl.seco.cython.html">mlrl.seco.cython package</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" role="switch" type="checkbox"/><label for="toctree-checkbox-24"><div class="visually-hidden">Toggle navigation of mlrl.seco.cython package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.heuristic.html">mlrl.seco.cython.heuristic module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.learner.html">mlrl.seco.cython.learner module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.learner_seco.html">mlrl.seco.cython.learner_seco module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.lift_function.html">mlrl.seco.cython.lift_function module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.package_info.html">mlrl.seco.cython.package_info module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.stopping_criterion.html">mlrl.seco.cython.stopping_criterion module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../seco/mlrl.seco.testbed.html">mlrl.seco.testbed package</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" role="switch" type="checkbox"/><label for="toctree-checkbox-25"><div class="visually-hidden">Toggle navigation of mlrl.seco.testbed package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.testbed.runnables.html">mlrl.seco.testbed.runnables module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../seco/mlrl.seco.learners.html">mlrl.seco.learners module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../seco/mlrl.seco.package_info.html">mlrl.seco.package_info module</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../boosting/mlrl.boosting.html">Package mlrl-boosting</a><input class="toctree-checkbox" id="toctree-checkbox-26" name="toctree-checkbox-26" role="switch" type="checkbox"/><label for="toctree-checkbox-26"><div class="visually-hidden">Toggle navigation of Package mlrl-boosting</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../boosting/mlrl.boosting.config.html">mlrl.boosting.config package</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" role="switch" type="checkbox"/><label for="toctree-checkbox-27"><div class="visually-hidden">Toggle navigation of mlrl.boosting.config package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../boosting/mlrl.boosting.config.parameters.html">mlrl.boosting.config.parameters module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../boosting/mlrl.boosting.cython.html">mlrl.boosting.cython package</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle navigation of mlrl.boosting.cython package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../boosting/mlrl.boosting.cython.html">mlrl.boosting.cython package</a><input class="toctree-checkbox" id="toctree-checkbox-28" name="toctree-checkbox-28" role="switch" type="checkbox"/><label for="toctree-checkbox-28"><div class="visually-hidden">Toggle navigation of mlrl.boosting.cython package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../boosting/mlrl.boosting.cython.head_type.html">mlrl.boosting.cython.head_type module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../boosting/mlrl.boosting.cython.label_binning.html">mlrl.boosting.cython.label_binning module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../boosting/mlrl.boosting.cython.learner.html">mlrl.boosting.cython.learner module</a></li>
@@ -330,7 +423,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../boosting/mlrl.boosting.cython.regularization.html">mlrl.boosting.cython.regularization module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../boosting/mlrl.boosting.testbed.html">mlrl.boosting.testbed package</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><div class="visually-hidden">Toggle navigation of mlrl.boosting.testbed package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../boosting/mlrl.boosting.testbed.html">mlrl.boosting.testbed package</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" role="switch" type="checkbox"/><label for="toctree-checkbox-29"><div class="visually-hidden">Toggle navigation of mlrl.boosting.testbed package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../boosting/mlrl.boosting.testbed.runnables.html">mlrl.boosting.testbed.runnables module</a></li>
 </ul>
 </li>
@@ -338,79 +431,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../boosting/mlrl.boosting.package_info.html">mlrl.boosting.package_info module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 current has-children"><a class="reference internal" href="mlrl.testbed.html">Package mlrl-testbed</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" role="switch" type="checkbox"/><label for="toctree-checkbox-18"><div class="visually-hidden">Toggle navigation of Package mlrl-testbed</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l3 has-children"><a class="reference internal" href="mlrl.testbed.experiments.html">mlrl.testbed.experiments package</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" role="switch" type="checkbox"/><label for="toctree-checkbox-19"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4 has-children"><a class="reference internal" href="mlrl.testbed.experiments.input.html">mlrl.testbed.experiments.input package</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" role="switch" type="checkbox"/><label for="toctree-checkbox-20"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments.input package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l5 has-children"><a class="reference internal" href="mlrl.testbed.experiments.input.preprocessors.html">mlrl.testbed.experiments.input.preprocessors package</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" role="switch" type="checkbox"/><label for="toctree-checkbox-21"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments.input.preprocessors package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.input.preprocessors.one_hot_encoder.html">mlrl.testbed.experiments.input.preprocessors.one_hot_encoder module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.input.preprocessors.preprocessor.html">mlrl.testbed.experiments.input.preprocessors.preprocessor module</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="mlrl.testbed.experiments.output.html">mlrl.testbed.experiments.output package</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" role="switch" type="checkbox"/><label for="toctree-checkbox-22"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments.output package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l5 has-children"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.html">mlrl.testbed.experiments.output.characteristics package</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" role="switch" type="checkbox"/><label for="toctree-checkbox-23"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments.output.characteristics package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.characteristic.html">mlrl.testbed.experiments.output.characteristics.characteristic module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.characteristics_data.html">mlrl.testbed.experiments.output.characteristics.characteristics_data module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.characteristics_output.html">mlrl.testbed.experiments.output.characteristics.characteristics_output module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.characteristics_prediction.html">mlrl.testbed.experiments.output.characteristics.characteristics_prediction module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.matrix_feature.html">mlrl.testbed.experiments.output.characteristics.matrix_feature module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.matrix_label.html">mlrl.testbed.experiments.output.characteristics.matrix_label module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.matrix_output.html">mlrl.testbed.experiments.output.characteristics.matrix_output module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.writer_data.html">mlrl.testbed.experiments.output.characteristics.writer_data module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.writer_prediction.html">mlrl.testbed.experiments.output.characteristics.writer_prediction module</a></li>
-</ul>
-</li>
-<li class="toctree-l5 has-children"><a class="reference internal" href="mlrl.testbed.experiments.output.label_vectors.html">mlrl.testbed.experiments.output.label_vectors package</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" role="switch" type="checkbox"/><label for="toctree-checkbox-24"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments.output.label_vectors package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.label_vectors.label_vector_histogram.html">mlrl.testbed.experiments.output.label_vectors.label_vector_histogram module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.label_vectors.label_vectors.html">mlrl.testbed.experiments.output.label_vectors.label_vectors module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.label_vectors.writer.html">mlrl.testbed.experiments.output.label_vectors.writer module</a></li>
-</ul>
-</li>
-<li class="toctree-l5 has-children"><a class="reference internal" href="mlrl.testbed.experiments.output.sinks.html">mlrl.testbed.experiments.output.sinks package</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" role="switch" type="checkbox"/><label for="toctree-checkbox-25"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments.output.sinks package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.sinks.sink.html">mlrl.testbed.experiments.output.sinks.sink module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.sinks.sink_csv.html">mlrl.testbed.experiments.output.sinks.sink_csv module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.sinks.sink_log.html">mlrl.testbed.experiments.output.sinks.sink_log module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.output.sinks.sink_text.html">mlrl.testbed.experiments.output.sinks.sink_text module</a></li>
-</ul>
-</li>
-<li class="toctree-l5"><a class="reference internal" href="mlrl.testbed.experiments.output.data.html">mlrl.testbed.experiments.output.data module</a></li>
-<li class="toctree-l5"><a class="reference internal" href="mlrl.testbed.experiments.output.writer.html">mlrl.testbed.experiments.output.writer module</a></li>
-</ul>
-</li>
-<li class="toctree-l4"><a class="reference internal" href="mlrl.testbed.experiments.problem_type.html">mlrl.testbed.experiments.problem_type module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mlrl.testbed.experiments.state.html">mlrl.testbed.experiments.state module</a></li>
-</ul>
-</li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="mlrl.testbed.util.html">mlrl.testbed.util package</a><input class="toctree-checkbox" id="toctree-checkbox-26" name="toctree-checkbox-26" role="switch" type="checkbox"/><label for="toctree-checkbox-26"><div class="visually-hidden">Toggle navigation of mlrl.testbed.util package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="mlrl.testbed.util.format.html">mlrl.testbed.util.format module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mlrl.testbed.util.io.html">mlrl.testbed.util.io module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="mlrl.testbed.util.io_csv.html">mlrl.testbed.util.io_csv module</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.data.html">mlrl.testbed.data module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.data_splitting.html">mlrl.testbed.data_splitting module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.dataset.html">mlrl.testbed.dataset module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.dataset_loader.html">mlrl.testbed.dataset_loader module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.evaluation.html">mlrl.testbed.evaluation module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiment.html">mlrl.testbed.experiment module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.fold.html">mlrl.testbed.fold module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.main.html">mlrl.testbed.main module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.model_characteristics.html">mlrl.testbed.model_characteristics module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.models.html">mlrl.testbed.models module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.package_info.html">mlrl.testbed.package_info module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.parameters.html">mlrl.testbed.parameters module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.persistence.html">mlrl.testbed.persistence module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.prediction_scope.html">mlrl.testbed.prediction_scope module</a></li>
-<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">mlrl.testbed.predictions module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.probability_calibration.html">mlrl.testbed.probability_calibration module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.runnables.html">mlrl.testbed.runnables module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../cpp/index.html">C++ API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" role="switch" type="checkbox"/><label for="toctree-checkbox-27"><div class="visually-hidden">Toggle navigation of C++ API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../cpp/common/filelist.html">Library libmlrlcommon</a><input class="toctree-checkbox" id="toctree-checkbox-28" name="toctree-checkbox-28" role="switch" type="checkbox"/><label for="toctree-checkbox-28"><div class="visually-hidden">Toggle navigation of Library libmlrlcommon</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../cpp/index.html">C++ API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" role="switch" type="checkbox"/><label for="toctree-checkbox-30"><div class="visually-hidden">Toggle navigation of C++ API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../cpp/common/filelist.html">Library libmlrlcommon</a><input class="toctree-checkbox" id="toctree-checkbox-31" name="toctree-checkbox-31" role="switch" type="checkbox"/><label for="toctree-checkbox-31"><div class="visually-hidden">Toggle navigation of Library libmlrlcommon</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../cpp/common/file/aggregation__function_8hpp.html">File aggregation_function.hpp</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cpp/common/file/array_8hpp.html">File array.hpp</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cpp/common/file/body_8hpp.html">File body.hpp</a></li>
@@ -639,44 +663,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../cpp/common/file/weight__vector__out__of__sample_8hpp.html">File weight_vector_out_of_sample.hpp</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../cpp/seco/filelist.html">Library libmlrlseco</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" role="switch" type="checkbox"/><label for="toctree-checkbox-29"><div class="visually-hidden">Toggle navigation of Library libmlrlseco</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/confusion__matrix_8hpp.html">File confusion_matrix.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/decision__list__builder_8hpp.html">File decision_list_builder.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/dll__exports_8hpp.html">File dll_exports.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/head__type_8hpp.html">File head_type.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/head__type__partial_8hpp.html">File head_type_partial.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/head__type__single_8hpp.html">File head_type_single.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic_8hpp.html">File heuristic.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__accuracy_8hpp.html">File heuristic_accuracy.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__f__measure_8hpp.html">File heuristic_f_measure.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__laplace_8hpp.html">File heuristic_laplace.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__m__estimate_8hpp.html">File heuristic_m_estimate.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__precision_8hpp.html">File heuristic_precision.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__recall_8hpp.html">File heuristic_recall.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__wra_8hpp.html">File heuristic_wra.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/learner_8hpp.html">File learner.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/learner__common_8hpp.html">File learner_common.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/learner__seco__classifier_8hpp.html">File learner_seco_classifier.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/library__info_8hpp.html">File library_info.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function_8hpp.html">File lift_function.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function__kln_8hpp.html">File lift_function_kln.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function__no_8hpp.html">File lift_function_no.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function__peak_8hpp.html">File lift_function_peak.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/matrix__coverage__dense_8hpp.html">File matrix_coverage_dense.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/predictor__binary__output__wise_8hpp.html">File predictor_binary_output_wise.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__compare__function_8hpp.html">File rule_compare_function.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation_8hpp.html">File rule_evaluation.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation__decomposable_8hpp.html">File rule_evaluation_decomposable.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation__decomposable__partial_8hpp.html">File rule_evaluation_decomposable_partial.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation__decomposable__single_8hpp.html">File rule_evaluation_decomposable_single.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/statistics_8hpp.html">File statistics.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/statistics__decomposable_8hpp.html">File statistics_decomposable.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/statistics__provider__decomposable__dense_8hpp.html">File statistics_provider_decomposable_dense.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/stopping__criterion__coverage_8hpp.html">File stopping_criterion_coverage.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/vector__confusion__matrix__dense_8hpp.html">File vector_confusion_matrix_dense.hpp</a></li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../cpp/boosting/filelist.html">Library libmlrlboosting</a><input class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" role="switch" type="checkbox"/><label for="toctree-checkbox-30"><div class="visually-hidden">Toggle navigation of Library libmlrlboosting</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../cpp/boosting/filelist.html">Library libmlrlboosting</a><input class="toctree-checkbox" id="toctree-checkbox-32" name="toctree-checkbox-32" role="switch" type="checkbox"/><label for="toctree-checkbox-32"><div class="visually-hidden">Toggle navigation of Library libmlrlboosting</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../cpp/boosting/file/blas_8hpp.html">File blas.hpp</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cpp/boosting/file/default__rule__auto_8hpp.html">File default_rule_auto.hpp</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cpp/boosting/file/discretization__function_8hpp.html">File discretization_function.hpp</a></li>
@@ -784,6 +771,43 @@
 <li class="toctree-l3"><a class="reference internal" href="../../cpp/boosting/file/view__statistic__non__decomposable__dense_8hpp.html">File view_statistic_non_decomposable_dense.hpp</a></li>
 </ul>
 </li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../cpp/seco/filelist.html">Library libmlrlseco</a><input class="toctree-checkbox" id="toctree-checkbox-33" name="toctree-checkbox-33" role="switch" type="checkbox"/><label for="toctree-checkbox-33"><div class="visually-hidden">Toggle navigation of Library libmlrlseco</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/confusion__matrix_8hpp.html">File confusion_matrix.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/decision__list__builder_8hpp.html">File decision_list_builder.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/dll__exports_8hpp.html">File dll_exports.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/head__type_8hpp.html">File head_type.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/head__type__partial_8hpp.html">File head_type_partial.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/head__type__single_8hpp.html">File head_type_single.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic_8hpp.html">File heuristic.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__accuracy_8hpp.html">File heuristic_accuracy.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__f__measure_8hpp.html">File heuristic_f_measure.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__laplace_8hpp.html">File heuristic_laplace.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__m__estimate_8hpp.html">File heuristic_m_estimate.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__precision_8hpp.html">File heuristic_precision.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__recall_8hpp.html">File heuristic_recall.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__wra_8hpp.html">File heuristic_wra.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/learner_8hpp.html">File learner.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/learner__common_8hpp.html">File learner_common.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/learner__seco__classifier_8hpp.html">File learner_seco_classifier.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/library__info_8hpp.html">File library_info.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function_8hpp.html">File lift_function.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function__kln_8hpp.html">File lift_function_kln.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function__no_8hpp.html">File lift_function_no.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function__peak_8hpp.html">File lift_function_peak.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/matrix__coverage__dense_8hpp.html">File matrix_coverage_dense.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/predictor__binary__output__wise_8hpp.html">File predictor_binary_output_wise.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__compare__function_8hpp.html">File rule_compare_function.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation_8hpp.html">File rule_evaluation.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation__decomposable_8hpp.html">File rule_evaluation_decomposable.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation__decomposable__partial_8hpp.html">File rule_evaluation_decomposable_partial.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation__decomposable__single_8hpp.html">File rule_evaluation_decomposable_single.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/statistics_8hpp.html">File statistics.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/statistics__decomposable_8hpp.html">File statistics_decomposable.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/statistics__provider__decomposable__dense_8hpp.html">File statistics_provider_decomposable_dense.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/stopping__criterion__coverage_8hpp.html">File stopping_criterion_coverage.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/vector__confusion__matrix__dense_8hpp.html">File vector_confusion_matrix_dense.hpp</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -815,7 +839,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="../../../../_sources/developer_guide/api/python/testbed/mlrl.testbed.predictions.rst.txt" title="View this page">
+  <a class="muted-link" href="../../../../_sources/developer_guide/api/python/testbed/mlrl.testbed.experiments.output.evaluation.rst.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -835,38 +859,97 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="module-mlrl.testbed.predictions">
-<span id="mlrl-testbed-predictions-module"></span><h1>mlrl.testbed.predictions module<a class="headerlink" href="#module-mlrl.testbed.predictions" title="Link to this heading">¶</a></h1>
-<p>Author: Michael Rapp (<a class="reference external" href="mailto:michael&#46;rapp&#46;ml&#37;&#52;&#48;gmail&#46;com">michael<span>&#46;</span>rapp<span>&#46;</span>ml<span>&#64;</span>gmail<span>&#46;</span>com</a>)</p>
-<p>Provides classes for printing the predictions of a model. The predictions can be written to one or several outputs,
-e.g., to the console or to a file.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="mlrl.testbed.predictions.PredictionWriter">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mlrl.testbed.predictions.</span></span><span class="sig-name descname"><span class="pre">PredictionWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">sinks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="mlrl.testbed.experiments.output.sinks.sink.html#mlrl.testbed.experiments.output.sinks.sink.Sink" title="mlrl.testbed.experiments.output.sinks.sink.Sink"><span class="pre">Sink</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mlrl.testbed.predictions.PredictionWriter" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="mlrl.testbed.experiments.output.writer.html#mlrl.testbed.experiments.output.writer.OutputWriter" title="mlrl.testbed.experiments.output.writer.OutputWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">OutputWriter</span></code></a></p>
-<p>Allows to write predictions and the corresponding ground truth to one or several sinks.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="mlrl.testbed.predictions.PredictionWriter.ArffFileSink">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ArffFileSink</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options:</span> <span class="pre">~mlrl.common.config.options.Options</span> <span class="pre">=</span> <span class="pre">&lt;mlrl.common.config.options.Options</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mlrl.testbed.predictions.PredictionWriter.ArffFileSink" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="mlrl.testbed.experiments.output.sinks.sink.html#mlrl.testbed.experiments.output.sinks.sink.FileSink" title="mlrl.testbed.experiments.output.sinks.sink.FileSink"><code class="xref py py-class docutils literal notranslate"><span class="pre">FileSink</span></code></a></p>
-<p>Allows to write predictions and the corresponding ground truth to an ARFF file.</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="mlrl.testbed.predictions.PredictionWriter.Predictions">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Predictions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mlrl.testbed.predictions.PredictionWriter.Predictions" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="mlrl.testbed.experiments.output.data.html#mlrl.testbed.experiments.output.data.OutputData" title="mlrl.testbed.experiments.output.data.OutputData"><code class="xref py py-class docutils literal notranslate"><span class="pre">OutputData</span></code></a></p>
-<p>Stores predictions and the corresponding ground truth.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="mlrl.testbed.predictions.PredictionWriter.Predictions.to_text">
-<span class="sig-name descname"><span class="pre">to_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../common/mlrl.common.config.options.html#mlrl.common.config.options.Options" title="mlrl.common.config.options.Options"><span class="pre">Options</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">_</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#mlrl.testbed.predictions.PredictionWriter.Predictions.to_text" title="Link to this definition">¶</a></dt>
-<dd><p>See <a class="reference internal" href="mlrl.testbed.experiments.output.data.html#mlrl.testbed.experiments.output.data.OutputData.to_text" title="mlrl.testbed.experiments.output.data.OutputData.to_text"><code class="xref py py-func docutils literal notranslate"><span class="pre">mlrl.testbed.experiments.output.data.OutputData.to_text()</span></code></a></p>
-</dd></dl>
-
-</dd></dl>
-
-</dd></dl>
-
+          <section id="module-mlrl.testbed.experiments.output.evaluation">
+<span id="mlrl-testbed-experiments-output-evaluation-package"></span><h1>mlrl.testbed.experiments.output.evaluation package<a class="headerlink" href="#module-mlrl.testbed.experiments.output.evaluation" title="Link to this heading">¶</a></h1>
+<p>Author Michael Rapp (<a class="reference external" href="mailto:michael&#46;rapp&#46;ml&#37;&#52;&#48;gmail&#46;com">michael<span>&#46;</span>rapp<span>&#46;</span>ml<span>&#64;</span>gmail<span>&#46;</span>com</a>)</p>
+<p>Provides classes that allow to write evaluation results to different sinks.</p>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html">mlrl.testbed.experiments.output.evaluation.evaluation_result module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult"><code class="docutils literal notranslate"><span class="pre">EvaluationResult</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.KWARG_FOLD"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.KWARG_FOLD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_ACCURACY"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_ACCURACY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_COVERAGE_ERROR"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_COVERAGE_ERROR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_DISCOUNTED_CUMULATIVE_GAIN"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_DISCOUNTED_CUMULATIVE_GAIN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_ENABLE_ALL"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_ENABLE_ALL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_EXAMPLE_WISE_F1"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_EXAMPLE_WISE_F1</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_EXAMPLE_WISE_JACCARD"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_EXAMPLE_WISE_JACCARD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_EXAMPLE_WISE_PRECISION"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_EXAMPLE_WISE_PRECISION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_EXAMPLE_WISE_RECALL"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_EXAMPLE_WISE_RECALL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_F1"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_F1</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_HAMMING_ACCURACY"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_HAMMING_ACCURACY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_HAMMING_LOSS"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_HAMMING_LOSS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_JACCARD"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_JACCARD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_LABEL_RANKING_AVERAGE_PRECISION"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_LABEL_RANKING_AVERAGE_PRECISION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_MACRO_F1"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_MACRO_F1</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_MACRO_JACCARD"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_MACRO_JACCARD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_MACRO_PRECISION"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_MACRO_PRECISION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_MACRO_RECALL"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_MACRO_RECALL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_MEAN_ABSOLUTE_ERROR"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_MEAN_ABSOLUTE_ERROR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_MEAN_SQUARED_ERROR"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_MEAN_SQUARED_ERROR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_MEDIAN_ABSOLUTE_ERROR"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_MEDIAN_ABSOLUTE_ERROR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_MICRO_F1"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_MICRO_F1</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_MICRO_JACCARD"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_MICRO_JACCARD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_MICRO_PRECISION"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_MICRO_PRECISION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_MICRO_RECALL"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_MICRO_RECALL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_PRECISION"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_PRECISION</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_PREDICTION_TIME"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_PREDICTION_TIME</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_RANK_LOSS"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_RANK_LOSS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_RECALL"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_RECALL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_SUBSET_ACCURACY"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_SUBSET_ACCURACY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_SUBSET_ZERO_ONE_LOSS"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_SUBSET_ZERO_ONE_LOSS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_TRAINING_TIME"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_TRAINING_TIME</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.OPTION_ZERO_ONE_LOSS"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.OPTION_ZERO_ONE_LOSS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.to_table"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.to_table()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html#mlrl.testbed.experiments.output.evaluation.evaluation_result.EvaluationResult.to_text"><code class="docutils literal notranslate"><span class="pre">EvaluationResult.to_text()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.measurements.html">mlrl.testbed.experiments.output.evaluation.measurements module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.measurements.html#mlrl.testbed.experiments.output.evaluation.measurements.Measurements"><code class="docutils literal notranslate"><span class="pre">Measurements</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.measurements.html#mlrl.testbed.experiments.output.evaluation.measurements.Measurements.average_by_measure"><code class="docutils literal notranslate"><span class="pre">Measurements.average_by_measure()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.measurements.html#mlrl.testbed.experiments.output.evaluation.measurements.Measurements.averages_as_dict"><code class="docutils literal notranslate"><span class="pre">Measurements.averages_as_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.measurements.html#mlrl.testbed.experiments.output.evaluation.measurements.Measurements.measures"><code class="docutils literal notranslate"><span class="pre">Measurements.measures</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.measurements.html#mlrl.testbed.experiments.output.evaluation.measurements.Measurements.values_as_dict"><code class="docutils literal notranslate"><span class="pre">Measurements.values_as_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.measurements.html#mlrl.testbed.experiments.output.evaluation.measurements.Measurements.values_by_measure"><code class="docutils literal notranslate"><span class="pre">Measurements.values_by_measure()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.measures.html">mlrl.testbed.experiments.output.evaluation.measures module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.measures.html#mlrl.testbed.experiments.output.evaluation.measures.Measure"><code class="docutils literal notranslate"><span class="pre">Measure</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.measures.html#mlrl.testbed.experiments.output.evaluation.measures.Measure.evaluate"><code class="docutils literal notranslate"><span class="pre">Measure.evaluate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.measures_classification.html">mlrl.testbed.experiments.output.evaluation.measures_classification module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.measures_ranking.html">mlrl.testbed.experiments.output.evaluation.measures_ranking module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.measures_regression.html">mlrl.testbed.experiments.output.evaluation.measures_regression module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.writer.html">mlrl.testbed.experiments.output.evaluation.writer module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.writer.html#mlrl.testbed.experiments.output.evaluation.writer.EvaluationWriter"><code class="docutils literal notranslate"><span class="pre">EvaluationWriter</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.writer_classification.html">mlrl.testbed.experiments.output.evaluation.writer_classification module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.writer_classification.html#mlrl.testbed.experiments.output.evaluation.writer_classification.ClassificationEvaluationWriter"><code class="docutils literal notranslate"><span class="pre">ClassificationEvaluationWriter</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.writer_ranking.html">mlrl.testbed.experiments.output.evaluation.writer_ranking module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.writer_ranking.html#mlrl.testbed.experiments.output.evaluation.writer_ranking.RankingEvaluationWriter"><code class="docutils literal notranslate"><span class="pre">RankingEvaluationWriter</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.writer_regression.html">mlrl.testbed.experiments.output.evaluation.writer_regression module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mlrl.testbed.experiments.output.evaluation.writer_regression.html#mlrl.testbed.experiments.output.evaluation.writer_regression.RegressionEvaluationWriter"><code class="docutils literal notranslate"><span class="pre">RegressionEvaluationWriter</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
 </section>
 
         </article>
@@ -874,23 +957,23 @@ e.g., to the console or to a file.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="mlrl.testbed.probability_calibration.html">
+          <a class="next-page" href="mlrl.testbed.experiments.output.evaluation.evaluation_result.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">mlrl.testbed.probability_calibration module</div>
+                <div class="title">mlrl.testbed.experiments.output.evaluation.evaluation_result module</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="mlrl.testbed.prediction_scope.html">
+          <a class="prev-page" href="mlrl.testbed.experiments.output.characteristics.writer_prediction.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">mlrl.testbed.prediction_scope module</div>
+                <div class="title">mlrl.testbed.experiments.output.characteristics.writer_prediction module</div>
                 
               </div>
             </a>
@@ -924,15 +1007,8 @@ e.g., to the console or to a file.</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">mlrl.testbed.predictions module</a><ul>
-<li><a class="reference internal" href="#mlrl.testbed.predictions.PredictionWriter"><code class="docutils literal notranslate"><span class="pre">PredictionWriter</span></code></a><ul>
-<li><a class="reference internal" href="#mlrl.testbed.predictions.PredictionWriter.ArffFileSink"><code class="docutils literal notranslate"><span class="pre">PredictionWriter.ArffFileSink</span></code></a></li>
-<li><a class="reference internal" href="#mlrl.testbed.predictions.PredictionWriter.Predictions"><code class="docutils literal notranslate"><span class="pre">PredictionWriter.Predictions</span></code></a><ul>
-<li><a class="reference internal" href="#mlrl.testbed.predictions.PredictionWriter.Predictions.to_text"><code class="docutils literal notranslate"><span class="pre">PredictionWriter.Predictions.to_text()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li><a class="reference internal" href="#">mlrl.testbed.experiments.output.evaluation package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
 </ul>
 </li>
 </ul>
@@ -944,7 +1020,7 @@ e.g., to the console or to a file.</p>
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=a0033327"></script>
+</div><script src="../../../../_static/documentation_options.js?v=7fe11a8f"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/furo.js?v=5fa4622c"></script>
