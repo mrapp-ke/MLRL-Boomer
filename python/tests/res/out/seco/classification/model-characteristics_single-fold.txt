@@ -31,4 +31,5 @@ INFO Model characteristics (Fold 1):
 │ Predictions                 │         1 │      1    │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-1.csv"...
 INFO Successfully finished after <duration>

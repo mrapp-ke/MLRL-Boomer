@@ -17,6 +17,7 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/data_characteristics_fold-1.csv"...
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the regression scores of the training examples

@@ -239,7 +239,7 @@ class CmdBuilder:
         """
         if self.predictions_stored:
             prefix = 'predictions'
-            suffix = 'csv'
+            suffix = 'arff'
             training_data = not self.separate_train_test_sets
             self._assert_output_files_exist(self._get_output_file_name(prefix, training_data=training_data), suffix)
 

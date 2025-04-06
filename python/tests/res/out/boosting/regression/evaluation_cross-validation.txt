@@ -19,6 +19,7 @@ Mean Absolute Percentage Error     3.99
 Mean Squared Error              2138.85
 Median Absolute Error             16.15
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-1.csv"...
 INFO Fold 2 / 10:
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -35,6 +36,7 @@ Mean Absolute Percentage Error     0.9
 Mean Squared Error              1546.91
 Median Absolute Error             18.99
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-2.csv"...
 INFO Fold 3 / 10:
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -51,6 +53,7 @@ Mean Absolute Percentage Error     0.64
 Mean Squared Error              1283.4
 Median Absolute Error             14.24
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-3.csv"...
 INFO Fold 4 / 10:
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -67,6 +70,7 @@ Mean Absolute Percentage Error     0.72
 Mean Squared Error              1426.88
 Median Absolute Error             12.81
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-4.csv"...
 INFO Fold 5 / 10:
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -83,6 +87,7 @@ Mean Absolute Percentage Error     0.8
 Mean Squared Error              1583.37
 Median Absolute Error             15.29
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-5.csv"...
 INFO Fold 6 / 10:
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -99,6 +104,7 @@ Mean Absolute Percentage Error     0.42
 Mean Squared Error              1768.21
 Median Absolute Error             16.18
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-6.csv"...
 INFO Fold 7 / 10:
 INFO Fitting model to 267 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -115,6 +121,7 @@ Mean Absolute Percentage Error     1.44
 Mean Squared Error              1582.21
 Median Absolute Error             14.26
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-7.csv"...
 INFO Fold 8 / 10:
 INFO Fitting model to 267 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -131,6 +138,7 @@ Mean Absolute Percentage Error     2.1
 Mean Squared Error              2270.34
 Median Absolute Error             13
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-8.csv"...
 INFO Fold 9 / 10:
 INFO Fitting model to 267 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -147,6 +155,7 @@ Mean Absolute Percentage Error     1.93
 Mean Squared Error              1277.5
 Median Absolute Error             11.1
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-9.csv"...
 INFO Fold 10 / 10:
 INFO Fitting model to 267 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -170,4 +179,6 @@ Mean Absolute Percentage Error     1.53  ±1.04
 Mean Squared Error              1672.15  ±318.28
 Median Absolute Error             14.81  ±2.11
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-10.csv"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Successfully finished after <duration>
