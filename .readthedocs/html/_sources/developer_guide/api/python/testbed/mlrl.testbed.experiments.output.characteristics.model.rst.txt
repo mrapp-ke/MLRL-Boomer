@@ -13,5 +13,6 @@ Submodules
    :maxdepth: 4
 
    mlrl.testbed.experiments.output.characteristics.model.characteristics_rules
+   mlrl.testbed.experiments.output.characteristics.model.extractor_rules
    mlrl.testbed.experiments.output.characteristics.model.statistics_rules
-   mlrl.testbed.experiments.output.characteristics.model.writer_rules
+   mlrl.testbed.experiments.output.characteristics.model.writer

@@ -1,7 +1,0 @@
-mlrl.testbed.experiments.output.evaluation.writer\_ranking module
-=================================================================
-
-.. automodule:: mlrl.testbed.experiments.output.evaluation.writer_ranking
-   :members:
-   :show-inheritance:
-   :undoc-members:

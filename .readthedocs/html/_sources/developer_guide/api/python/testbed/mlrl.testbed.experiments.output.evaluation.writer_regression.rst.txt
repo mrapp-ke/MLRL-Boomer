@@ -1,7 +1,0 @@
-mlrl.testbed.experiments.output.evaluation.writer\_regression module
-====================================================================
-
-.. automodule:: mlrl.testbed.experiments.output.evaluation.writer_regression
-   :members:
-   :show-inheritance:
-   :undoc-members:

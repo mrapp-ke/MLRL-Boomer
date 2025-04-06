@@ -1,7 +1,0 @@
-mlrl.testbed.experiments.output.characteristics.model.writer\_rules module
-==========================================================================
-
-.. automodule:: mlrl.testbed.experiments.output.characteristics.model.writer_rules
-   :members:
-   :show-inheritance:
-   :undoc-members:

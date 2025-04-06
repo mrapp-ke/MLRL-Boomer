@@ -1,0 +1,7 @@
+mlrl.testbed.experiments.output.label\_vectors.extractor\_rules module
+======================================================================
+
+.. automodule:: mlrl.testbed.experiments.output.label_vectors.extractor_rules
+   :members:
+   :show-inheritance:
+   :undoc-members:
