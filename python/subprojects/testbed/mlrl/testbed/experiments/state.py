@@ -15,6 +15,8 @@ from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.fold import Fold
 
+ParameterDict = Dict[str, Any]
+
 
 @dataclass
 class TrainingState:
@@ -62,7 +64,7 @@ class ExperimentState:
     problem_type: ProblemType
     dataset: Dataset
     fold: Fold
-    parameters: Dict[str, Any]
+    parameters: ParameterDict
     training_result: Optional[TrainingState] = None
     prediction_result: Optional[PredictionState] = None
 
