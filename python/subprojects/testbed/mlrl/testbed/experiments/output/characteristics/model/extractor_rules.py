@@ -1,8 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for printing certain characteristics of models. The characteristics can be written to one or several
-outputs, e.g., to the console or to a file.
+Provides classes for extracting characteristics from rule models.
 """
 import logging as log
 
