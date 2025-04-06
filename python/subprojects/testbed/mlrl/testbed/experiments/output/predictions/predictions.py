@@ -24,7 +24,7 @@ class Predictions(DatasetOutputData):
         :param prediction_dataset:  A copy of the original dataset, where the ground truth has been replaced with
                                     predictions obtained from a model
         """
-        super().__init__('Predictions', 'predictions')
+        super().__init__(name='Predictions', file_name='predictions')
         self.original_dataset = original_dataset.enforce_dense_outputs()
         self.prediction_dataset = prediction_dataset.enforce_dense_outputs()
 
