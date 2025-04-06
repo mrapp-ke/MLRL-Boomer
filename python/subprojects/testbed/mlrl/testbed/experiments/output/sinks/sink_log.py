@@ -14,7 +14,7 @@ from mlrl.testbed.experiments.state import ExperimentState
 
 class LogSink(Sink):
     """
-    Allows to write output data to the log.
+    Allows to write textual output data to the log.
     """
 
     class TitleFormatter:

@@ -13,7 +13,7 @@ from mlrl.testbed.util.io import open_writable_file
 
 class TextFileSink(FileSink):
     """
-    Allows to write output data to a text file.
+    Allows to write textual output data to a text file.
     """
 
     def __init__(self, directory: str, options: Options = Options()):
