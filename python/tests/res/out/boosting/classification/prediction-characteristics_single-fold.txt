@@ -21,4 +21,5 @@ Label Imbalance Ratio    2.21
 Label Cardinality        1.68
 Distinct Label Vectors  13
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-1.csv"...
 INFO Successfully finished after <duration>

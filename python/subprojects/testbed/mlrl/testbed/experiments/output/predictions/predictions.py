@@ -3,30 +3,30 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing predictions that are part of output data.
 """
-from typing import Any, Optional
+from dataclasses import replace
+from typing import Optional
 
 from mlrl.common.config.options import Options
-from mlrl.common.data.arrays import enforce_dense
 
 from mlrl.testbed.dataset import Dataset
-from mlrl.testbed.experiments.output.data import TabularOutputData
-from mlrl.testbed.util.format import OPTION_DECIMALS, format_array, format_number
+from mlrl.testbed.experiments.output.data import DatasetOutputData
+from mlrl.testbed.util.format import OPTION_DECIMALS, format_array
 
 
-class Predictions(TabularOutputData):
+class Predictions(DatasetOutputData):
     """
     Represents predictions and the corresponding ground truth that are part of output data.
     """
 
-    def __init__(self, dataset: Dataset, predictions: Any):
+    def __init__(self, original_dataset: Dataset, prediction_dataset: Dataset):
         """
-        :param dataset:     The dataset for which the predictions have been obtained
-        :param predictions: A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                            `(num_examples, num_outputs)`, that stores the predictions
+        :param original_dataset:    The original dataset containing the ground truth
+        :param prediction_dataset:  A copy of the original dataset, where the ground truth has been replaced with
+                                    predictions obtained from a model
         """
         super().__init__('Predictions', 'predictions')
-        self.dataset = dataset.enforce_dense_outputs()
-        self.predictions = enforce_dense(predictions, order='C', dtype=predictions.dtype)
+        self.original_dataset = original_dataset.enforce_dense_outputs()
+        self.prediction_dataset = prediction_dataset.enforce_dense_outputs()
 
     def to_text(self, options: Options, **_) -> Optional[str]:
         """
@@ -34,30 +34,14 @@ class Predictions(TabularOutputData):
         """
         decimals = options.get_int(OPTION_DECIMALS, 2)
         text = 'Ground truth:\n\n'
-        text += format_array(self.dataset.y, decimals=decimals)
+        text += format_array(self.original_dataset.y, decimals=decimals)
         text += '\n\nPredictions:\n\n'
-        text += format_array(self.predictions, decimals=decimals)
+        text += format_array(self.prediction_dataset.y, decimals=decimals)
         return text
 
-    def to_table(self, options: Options, **_) -> Optional[TabularOutputData.Table]:
+    # pylint: disable=unused-argument
+    def to_dataset(self, options: Options, **_) -> Optional[Dataset]:
         """
-        See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
+        See :func:`mlrl.testbed.experiments.output.data.DatasetOutputData.to_dataset`
         """
-        decimals = options.get_int(OPTION_DECIMALS, 2)
-        dataset = self.dataset
-        ground_truth = dataset.y
-        predictions = self.predictions
-        rows = []
-
-        for example_index in range(dataset.num_examples):
-            columns = {}
-
-            for output_index, output in enumerate(dataset.outputs):
-                columns['GroundTruth ' + output.name] = format_number(ground_truth[example_index, output_index],
-                                                                      decimals=decimals)
-                columns['Prediction ' + output.name] = format_number(predictions[example_index, output_index],
-                                                                     decimals=decimals)
-
-            rows.append(columns)
-
-        return rows
+        return replace(self.original_dataset, x=self.original_dataset.y, y=self.prediction_dataset.y)
