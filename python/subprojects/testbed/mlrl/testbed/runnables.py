@@ -32,6 +32,7 @@ from mlrl.testbed.experiments.output.characteristics.model import ModelCharacter
 from mlrl.testbed.experiments.output.evaluation import ClassificationEvaluationDataExtractor, EvaluationResult, \
     EvaluationWriter, RankingEvaluationDataExtractor, RegressionEvaluationDataExtractor
 from mlrl.testbed.experiments.output.label_vectors import LabelVectors, LabelVectorSetExtractor, LabelVectorWriter
+from mlrl.testbed.experiments.output.model_text import ModelAsTextWriter, RuleModelAsText, RuleModelAsTextExtractor
 from mlrl.testbed.experiments.output.parameters import ParameterWriter
 from mlrl.testbed.experiments.output.predictions import PredictionWriter
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, TextFileSink
@@ -39,9 +40,6 @@ from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.prediction import GlobalPredictor, IncrementalPredictor, Predictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_type import ProblemType
-from mlrl.testbed.models import OPTION_DECIMALS_BODY, OPTION_DECIMALS_HEAD, OPTION_PRINT_BODIES, \
-    OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_HEADS, OPTION_PRINT_NOMINAL_VALUES, OPTION_PRINT_OUTPUT_NAMES, \
-    ModelWriter
 from mlrl.testbed.package_info import get_package_info as get_testbed_package_info
 from mlrl.testbed.parameters import CsvParameterLoader, ParameterLoader
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
@@ -1106,8 +1104,10 @@ class RuleLearnerRunnable(LearnerRunnable):
 
     PRINT_RULES_VALUES: Dict[str, Set[str]] = {
         BooleanOption.TRUE.value: {
-            OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_OUTPUT_NAMES, OPTION_PRINT_NOMINAL_VALUES, OPTION_PRINT_BODIES,
-            OPTION_PRINT_HEADS, OPTION_DECIMALS_BODY, OPTION_DECIMALS_HEAD
+            RuleModelAsText.OPTION_PRINT_FEATURE_NAMES, RuleModelAsText.OPTION_PRINT_OUTPUT_NAMES,
+            RuleModelAsText.OPTION_PRINT_NOMINAL_VALUES, RuleModelAsText.OPTION_PRINT_BODIES,
+            RuleModelAsText.OPTION_PRINT_HEADS, RuleModelAsText.OPTION_DECIMALS_BODY,
+            RuleModelAsText.OPTION_DECIMALS_HEAD
         },
         BooleanOption.FALSE.value: {}
     }
@@ -1356,7 +1356,7 @@ class RuleLearnerRunnable(LearnerRunnable):
         if value == BooleanOption.TRUE.value and args.output_dir:
             sinks.append(TextFileSink(args.output_dir, options=options))
 
-        return ModelWriter().add_sinks(*sinks) if sinks else None
+        return ModelAsTextWriter(RuleModelAsTextExtractor()).add_sinks(*sinks) if sinks else None
 
     def _create_model_characteristics_writer(self, args) -> Optional[OutputWriter]:
         """
