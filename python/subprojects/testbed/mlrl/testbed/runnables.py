@@ -31,6 +31,7 @@ from mlrl.testbed.experiments.output.characteristics.model import RuleModelChara
 from mlrl.testbed.experiments.output.evaluation import ClassificationEvaluationWriter, EvaluationResult, \
     RankingEvaluationWriter, RegressionEvaluationWriter
 from mlrl.testbed.experiments.output.label_vectors import LabelVectors, LabelVectorWriter
+from mlrl.testbed.experiments.output.parameters.writer import ParameterWriter
 from mlrl.testbed.experiments.output.predictions import PredictionWriter
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, TextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
@@ -41,7 +42,7 @@ from mlrl.testbed.models import OPTION_DECIMALS_BODY, OPTION_DECIMALS_HEAD, OPTI
     OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_HEADS, OPTION_PRINT_NOMINAL_VALUES, OPTION_PRINT_OUTPUT_NAMES, \
     RuleModelWriter
 from mlrl.testbed.package_info import get_package_info as get_testbed_package_info
-from mlrl.testbed.parameters import CsvParameterLoader, ParameterLoader, ParameterWriter
+from mlrl.testbed.parameters import CsvParameterLoader, ParameterLoader
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
 from mlrl.testbed.probability_calibration import JointProbabilityCalibrationModelWriter, \
     MarginalProbabilityCalibrationModelWriter
