@@ -14,7 +14,7 @@ from mlrl.testbed.util.io_csv import CsvWriter
 
 class CsvFileSink(TabularFileSink):
     """
-    Allows to write output data to a CSV file.
+    Allows to write tabular output data to a CSV file.
     """
 
     def __init__(self, directory: str, options: Options = Options()):

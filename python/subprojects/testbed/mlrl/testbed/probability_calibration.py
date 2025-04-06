@@ -16,7 +16,7 @@ from mlrl.common.learners import ClassificationRuleLearner
 
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.sinks import Sink
-from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import OPTION_DECIMALS, format_number, format_table
 
@@ -141,44 +141,50 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
             """
             return None
 
-    def __init__(self, name: str, file_name: str, formatter_options: ExperimentState.FormatterOptions, list_title: str,
-                 *sinks: Sink):
+    class Extractor(DataExtractor, ABC):
         """
-        :param list_title: The title of an individual list that is contained by a calibration model
-        """
-        super().__init__(*sinks)
-        self.name = name
-        self.file_name = file_name
-        self.formatter_options = formatter_options
-        self.list_title = list_title
-
-    @abstractmethod
-    def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Any:
-        """
-        Must be implemented by subclasses in order to retrieve the calibration model from a rule learner.
-
-        :param learner: The rule learner
-        :return:        The calibration model
+        An abstract base class for all classes that obtain probability calibration models from a learner.
         """
 
-    def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
-        training_result = state.training_result
+        def __init__(self, name: str, file_name: str, formatter_options: ExperimentState.FormatterOptions,
+                     list_title: str):
+            self.name = name
+            self.file_name = file_name
+            self.formatter_options = formatter_options
+            self.list_title = list_title
 
-        if training_result:
-            learner = training_result.learner
-            if isinstance(learner, ClassificationRuleLearner):
-                calibration_model = self._get_calibration_model(learner)
+        def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
+            """
+            See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
+            """
+            training_result = state.training_result
 
-                if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
-                    return ProbabilityCalibrationModelWriter.IsotonicProbabilityCalibrationModelConverter(
-                        calibration_model, self.list_title, self.name, self.file_name, self.formatter_options)
-                if isinstance(calibration_model, NoProbabilityCalibrationModel):
-                    return ProbabilityCalibrationModelWriter.NoProbabilityCalibrationModelConverter(
-                        self.name, self.file_name, self.formatter_options)
+            if training_result:
+                learner = training_result.learner
 
-            log.error('The learner does not support to create a textual representation of the calibration model')
+                if isinstance(learner, ClassificationRuleLearner):
+                    calibration_model = self._get_calibration_model(learner)
 
-        return None
+                    if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
+                        return ProbabilityCalibrationModelWriter.IsotonicProbabilityCalibrationModelConverter(
+                            calibration_model, self.list_title, self.name, self.file_name, self.formatter_options)
+
+                    if isinstance(calibration_model, NoProbabilityCalibrationModel):
+                        return ProbabilityCalibrationModelWriter.NoProbabilityCalibrationModelConverter(
+                            self.name, self.file_name, self.formatter_options)
+
+                log.error('The learner does not support to create a textual representation of the calibration model')
+
+            return None
+
+        @abstractmethod
+        def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Any:
+            """
+            Must be implemented by subclasses in order to retrieve the calibration model from a rule learner.
+
+            :param learner: The rule learner
+            :return:        The calibration model
+            """
 
 
 class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
@@ -187,12 +193,27 @@ class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWrite
     sinks.
     """
 
-    def __init__(self, *sinks: Sink):
-        super().__init__('Marginal probability calibration model', 'marginal_probability_calibration_model',
-                         ExperimentState.FormatterOptions(include_dataset_type=False), 'Label', *sinks)
+    class Extractor(ProbabilityCalibrationModelWriter.Extractor):
+        """
+        Extracts models for the calibration of marginal probabilities from a learner.
+        """
 
-    def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Any:
-        return learner.marginal_probability_calibration_model_
+        def __init__(self):
+            super().__init__(
+                'Marginal probability calibration model',
+                'marginal_probability_calibration_model',
+                ExperimentState.FormatterOptions(include_dataset_type=False),
+                'Label',
+            )
+
+        def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Any:
+            return learner.marginal_probability_calibration_model_
+
+    def __init__(self, *extractors: DataExtractor):
+        """
+        :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
+        """
+        super().__init__(*extractors, MarginalProbabilityCalibrationModelWriter.Extractor())
 
 
 class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
@@ -200,9 +221,24 @@ class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
     Allow to write textual representations of models for the calibration of joint probabilities to one or several sinks.
     """
 
-    def __init__(self, *sinks: Sink):
-        super().__init__('Joint probability calibration model', 'joint_probability_calibration_model',
-                         ExperimentState.FormatterOptions(include_dataset_type=False), 'Label vector', *sinks)
+    class Extractor(ProbabilityCalibrationModelWriter.Extractor):
+        """
+        Extracts models for the calibration of joint probabilities from a learner.
+        """
 
-    def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Any:
-        return learner.joint_probability_calibration_model_
+        def __init__(self):
+            super().__init__(
+                'Joint probability calibration model',
+                'joint_probability_calibration_model',
+                ExperimentState.FormatterOptions(include_dataset_type=False),
+                'Label vector',
+            )
+
+        def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Any:
+            return learner.joint_probability_calibration_model_
+
+    def __init__(self, *extractors: DataExtractor):
+        """
+        :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
+        """
+        super().__init__(*extractors, JointProbabilityCalibrationModelWriter.Extractor())
