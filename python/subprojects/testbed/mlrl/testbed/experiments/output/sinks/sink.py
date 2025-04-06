@@ -108,7 +108,7 @@ class FileSink(Sink, ABC):
         """
 
 
-class TabularFileSink(FileSink):
+class TabularFileSink(FileSink, ABC):
     """
     An abstract base class for all sinks that write tabular output data to a file.
     """
@@ -142,7 +142,7 @@ class TabularFileSink(FileSink):
         """
 
 
-class DatasetFileSink(FileSink):
+class DatasetFileSink(FileSink, ABC):
     """
     An abstract base class for all sinks that write datasets to a file.
     """
