@@ -12,7 +12,7 @@ from mlrl.testbed.experiments.state import ExperimentState, ParameterDict
 from mlrl.testbed.util.format import format_table
 
 
-class Parameters(TabularOutputData):
+class CustomParameters(TabularOutputData):
     """
     Represents algorithmic parameters, set by the user, that are part of output data.
     """
