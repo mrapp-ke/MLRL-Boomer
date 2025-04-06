@@ -15,7 +15,6 @@ from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibr
 from mlrl.common.learners import ClassificationRuleLearner
 
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
-from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import OPTION_DECIMALS, format_number, format_table
@@ -141,12 +140,10 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
             """
             return None
 
-    def __init__(self, name: str, file_name: str, formatter_options: ExperimentState.FormatterOptions, list_title: str,
-                 *sinks: Sink):
+    def __init__(self, name: str, file_name: str, formatter_options: ExperimentState.FormatterOptions, list_title: str):
         """
         :param list_title: The title of an individual list that is contained by a calibration model
         """
-        super().__init__(*sinks)
         self.name = name
         self.file_name = file_name
         self.formatter_options = formatter_options
@@ -187,9 +184,9 @@ class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWrite
     sinks.
     """
 
-    def __init__(self, *sinks: Sink):
+    def __init__(self):
         super().__init__('Marginal probability calibration model', 'marginal_probability_calibration_model',
-                         ExperimentState.FormatterOptions(include_dataset_type=False), 'Label', *sinks)
+                         ExperimentState.FormatterOptions(include_dataset_type=False), 'Label')
 
     def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Any:
         return learner.marginal_probability_calibration_model_
@@ -200,9 +197,9 @@ class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
     Allow to write textual representations of models for the calibration of joint probabilities to one or several sinks.
     """
 
-    def __init__(self, *sinks: Sink):
+    def __init__(self):
         super().__init__('Joint probability calibration model', 'joint_probability_calibration_model',
-                         ExperimentState.FormatterOptions(include_dataset_type=False), 'Label vector', *sinks)
+                         ExperimentState.FormatterOptions(include_dataset_type=False), 'Label vector')
 
     def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Any:
         return learner.joint_probability_calibration_model_

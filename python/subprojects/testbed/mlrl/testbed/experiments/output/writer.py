@@ -3,6 +3,8 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for writing output data to sinks.
 """
+import logging as log
+
 from abc import ABC, abstractmethod
 from typing import Optional
 
@@ -16,11 +18,18 @@ class OutputWriter(ABC):
     An abstract base class for all classes that allow to write output data to one or several sinks.
     """
 
-    def __init__(self, *sinks: Sink):
+    def __init__(self):
+        self.sinks = []
+
+    def add_sinks(self, *sinks: Sink) -> 'OutputWriter':
         """
-        :param sinks: The sinks, output data should be written to
+        Adds one or several sinks, output data should be written to.
+
+        :param sinks:   The sinks to be added
+        :return:        The `OutputWriter` itself
         """
-        self.sinks = list(sinks)
+        self.sinks.extend(sinks)
+        return self
 
     def write_output(self, state: ExperimentState):
         """
@@ -36,6 +45,8 @@ class OutputWriter(ABC):
             if output_data:
                 for sink in sinks:
                     self._write_to_sink(sink, state, output_data)
+        else:
+            log.warning('No sinks have been added to output writer of type %s', type(self).__name__)
 
     def _write_to_sink(self, sink: Sink, state: ExperimentState, output_data: OutputData):
         """

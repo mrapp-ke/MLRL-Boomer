@@ -20,7 +20,6 @@ from mlrl.testbed.experiments.output.evaluation.measures import Measure
 from mlrl.testbed.experiments.output.evaluation.measures_classification import MULTI_LABEL_EVALUATION_MEASURES, \
     SINGLE_LABEL_EVALUATION_MEASURES
 from mlrl.testbed.experiments.output.evaluation.writer import EvaluationWriter
-from mlrl.testbed.experiments.output.sinks import Sink
 
 
 class ClassificationEvaluationWriter(EvaluationWriter):
@@ -28,19 +27,15 @@ class ClassificationEvaluationWriter(EvaluationWriter):
     Allows writing evaluation results according to classification evaluation measures to one or several sinks.
     """
 
-    def __init__(self, *sinks: Sink):
-        super().__init__(*sinks)
-        options = [sink.options for sink in sinks]
-        self.multi_label_evaluation_measures = OutputValue.filter_values(MULTI_LABEL_EVALUATION_MEASURES, *options)
-        self.single_label_evaluation_measures = OutputValue.filter_values(SINGLE_LABEL_EVALUATION_MEASURES, *options)
-
     def _update_measurements(self, measurements: Measurements, index: int, ground_truth: Any, predictions: Any):
+        options = [sink.options for sink in self.sinks]
+
         if is_multilabel(ground_truth):
-            evaluation_measures = self.multi_label_evaluation_measures
+            evaluation_measures = OutputValue.filter_values(MULTI_LABEL_EVALUATION_MEASURES, *options)
         else:
             predictions = np.ravel(enforce_dense(predictions, order='C', dtype=Uint8))
             ground_truth = np.ravel(enforce_dense(ground_truth, order='C', dtype=Uint8))
-            evaluation_measures = self.single_label_evaluation_measures
+            evaluation_measures = OutputValue.filter_values(SINGLE_LABEL_EVALUATION_MEASURES, *options)
 
         for evaluation_measure in evaluation_measures:
             if isinstance(evaluation_measure, Measure):
