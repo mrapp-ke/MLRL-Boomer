@@ -11,7 +11,7 @@ from os import path
 from typing import Dict, Optional
 
 from mlrl.testbed.experiments.output.data import OutputData
-from mlrl.testbed.experiments.output.parameters.parameters import Parameters
+from mlrl.testbed.experiments.output.parameters.parameters import CustomParameters
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.fold import Fold
@@ -66,4 +66,4 @@ class ParameterWriter(OutputWriter):
     """
 
     def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
-        return Parameters(state.parameters)
+        return CustomParameters(state.parameters)
