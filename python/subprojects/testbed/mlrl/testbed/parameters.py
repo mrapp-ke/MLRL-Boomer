@@ -8,15 +8,9 @@ import logging as log
 
 from abc import ABC, abstractmethod
 from os import path
-from typing import Any, Dict, Optional
+from typing import Dict
 
-from mlrl.common.config.options import Options
-
-from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
-from mlrl.testbed.experiments.output.writer import OutputWriter
-from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.fold import Fold
-from mlrl.testbed.util.format import format_table
 from mlrl.testbed.util.io import SUFFIX_CSV, get_file_name_per_fold, open_readable_file
 from mlrl.testbed.util.io_csv import CsvReader
 
@@ -60,55 +54,3 @@ class CsvParameterLoader(ParameterLoader):
         except IOError:
             log.error('Failed to load parameters from file \"%s\"', file_path)
             return {}
-
-
-class ParameterWriter(OutputWriter):
-    """
-    Allows to write parameter settings to one or several sinks.
-    """
-
-    class Parameters(TabularOutputData):
-        """
-        Stores the parameter settings of a learner.
-        """
-
-        def __init__(self, parameters: Dict[str, Any]):
-            """
-            :param parameters: A dictionary that stores the parameters
-            """
-            super().__init__('Custom parameters', 'parameters',
-                             ExperimentState.FormatterOptions(include_dataset_type=False))
-            self.parameters = parameters
-
-        # pylint: disable=unused-argument
-        def to_text(self, options: Options, **_) -> Optional[str]:
-            """
-            See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
-            """
-            parameters = self.parameters
-            rows = []
-
-            for key in sorted(parameters):
-                value = parameters[key]
-
-                if value is not None:
-                    rows.append([str(key), str(value)])
-
-            return format_table(rows)
-
-        # pylint: disable=unused-argument
-        def to_table(self, options: Options, **_) -> Optional[TabularOutputData.Table]:
-            """
-            See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
-            """
-            parameters = self.parameters
-            columns = {}
-
-            for key, value in parameters.items():
-                if value is not None:
-                    columns[key] = value
-
-            return [columns]
-
-    def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
-        return ParameterWriter.Parameters(state.parameters)
