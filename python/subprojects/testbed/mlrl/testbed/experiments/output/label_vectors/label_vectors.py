@@ -33,7 +33,9 @@ class LabelVectors(TabularOutputData):
         """
         :param label_vector_histogram: The histogram that stores unique label vectors and their respective frequency
         """
-        super().__init__('Label vectors', 'label_vectors', ExperimentState.FormatterOptions(include_dataset_type=False))
+        super().__init__(name='Label vectors',
+                         file_name='label_vectors',
+                         default_formatter_options=ExperimentState.FormatterOptions(include_dataset_type=False))
         self.label_vector_histogram = label_vector_histogram
 
     def __format_label_vector(self, label_vector: np.ndarray, sparse: bool) -> str:
