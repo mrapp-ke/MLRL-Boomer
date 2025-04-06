@@ -80,4 +80,5 @@ Predictions:
  [321.13 118.59 221.95 182.18 241.59 192.06]
  [153.89 105.24 174.4  124.37 153.38 125.04]]
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-1.arff"...
 INFO Successfully finished after <duration>

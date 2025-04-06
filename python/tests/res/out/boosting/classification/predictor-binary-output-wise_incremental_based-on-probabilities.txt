@@ -28,6 +28,7 @@ Micro Recall            68
 Subset 0/1 Loss         77.04
 Subset Accuracy         22.96
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Predicting for 196 test examples using a model of size 100...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 100:
@@ -49,6 +50,7 @@ Micro Recall            69.33
 Subset 0/1 Loss         75.51
 Subset Accuracy         24.49
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Predicting for 196 test examples using a model of size 150...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 150:
@@ -70,6 +72,7 @@ Micro Recall            68.8
 Subset 0/1 Loss         74.49
 Subset Accuracy         25.51
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Predicting for 196 test examples using a model of size 200...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 200:
@@ -91,6 +94,7 @@ Micro Recall            69.07
 Subset 0/1 Loss         73.98
 Subset Accuracy         26.02
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Predicting for 196 test examples using a model of size 250...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 250:
@@ -112,6 +116,7 @@ Micro Recall            67.73
 Subset 0/1 Loss         73.98
 Subset Accuracy         26.02
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Predicting for 196 test examples using a model of size 300...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 300:
@@ -133,6 +138,7 @@ Micro Recall            69.33
 Subset 0/1 Loss         72.96
 Subset Accuracy         27.04
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Predicting for 196 test examples using a model of size 350...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 350:
@@ -154,6 +160,7 @@ Micro Recall            68.8
 Subset 0/1 Loss         71.43
 Subset Accuracy         28.57
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Predicting for 196 test examples using a model of size 400...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 400:
@@ -175,6 +182,7 @@ Micro Recall            68.53
 Subset 0/1 Loss         70.92
 Subset Accuracy         29.08
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Predicting for 196 test examples using a model of size 450...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 450:
@@ -196,6 +204,7 @@ Micro Recall            68.53
 Subset 0/1 Loss         70.41
 Subset Accuracy         29.59
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Predicting for 196 test examples using a model of size 500...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 500:
@@ -217,6 +226,7 @@ Micro Recall            68.53
 Subset 0/1 Loss         69.39
 Subset Accuracy         30.61
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Predicting for 196 test examples using a model of size 550...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 550:
@@ -238,6 +248,7 @@ Micro Recall            69.07
 Subset 0/1 Loss         69.9
 Subset Accuracy         30.1
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Predicting for 196 test examples using a model of size 600...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 600:
@@ -259,6 +270,7 @@ Micro Recall            69.07
 Subset 0/1 Loss         69.39
 Subset Accuracy         30.61
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Predicting for 196 test examples using a model of size 650...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 650:
@@ -280,6 +292,7 @@ Micro Recall            69.07
 Subset 0/1 Loss         69.9
 Subset Accuracy         30.1
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Predicting for 196 test examples using a model of size 700...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 700:
@@ -301,6 +314,7 @@ Micro Recall            68.8
 Subset 0/1 Loss         69.39
 Subset Accuracy         30.61
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Predicting for 196 test examples using a model of size 750...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 750:
@@ -322,6 +336,7 @@ Micro Recall            68.53
 Subset 0/1 Loss         71.43
 Subset Accuracy         28.57
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Predicting for 196 test examples using a model of size 800...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 800:
@@ -343,6 +358,7 @@ Micro Recall            68
 Subset 0/1 Loss         70.41
 Subset Accuracy         29.59
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Predicting for 196 test examples using a model of size 850...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 850:
@@ -364,6 +380,7 @@ Micro Recall            68.27
 Subset 0/1 Loss         71.43
 Subset Accuracy         28.57
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Predicting for 196 test examples using a model of size 900...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 900:
@@ -385,6 +402,7 @@ Micro Recall            67.73
 Subset 0/1 Loss         71.43
 Subset Accuracy         28.57
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Predicting for 196 test examples using a model of size 950...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 950:
@@ -406,6 +424,7 @@ Micro Recall            67.73
 Subset 0/1 Loss         71.43
 Subset Accuracy         28.57
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Predicting for 196 test examples using a model of size 1000...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 1000:
@@ -427,6 +446,7 @@ Micro Recall            68
 Subset 0/1 Loss         70.92
 Subset Accuracy         29.08
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Marginal probability calibration model:
 
 ┌──────────────────────┬─────────────────────────┐
@@ -494,4 +514,5 @@ INFO Marginal probability calibration model:
 │               0.9862 │                  1      │
 └──────────────────────┴─────────────────────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/marginal_probability_calibration_model_overall.csv"...
 INFO Successfully finished after <duration>

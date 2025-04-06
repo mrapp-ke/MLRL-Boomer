@@ -1011,4 +1011,5 @@ INFO Model:
 {aDLminp0 <= 413.50 & aAAminpA'l1 <= 350.50 & aFLavgp4 <= 409.28 & aF9minpA > 325.00} => (LBL+ALLminpA+bt7d_000 = 0.27, LBL+ALLminp0+bt7d_000 = 0.05, LBL+aDLminpA+bt7d_000 = -0.05, LBL+aCOminpA+bt7d_000 = 0.12, LBL+aFLminpA+bt7d_000 = -0.27, LBL+aUAminpA+bt7d_000 = 0.09)
 
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/rules_overall.txt"...
 INFO Successfully finished after <duration>
