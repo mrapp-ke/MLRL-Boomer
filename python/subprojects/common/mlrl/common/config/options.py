@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides a data structure that allows to store and parse options that are provided as key-value pairs.
 """
 from enum import Enum
-from typing import Dict, Set, Tuple
+from typing import Any, Dict, Optional, Set, Tuple
 
 from mlrl.common.util.format import format_dict_keys, format_enum_values, format_set
 
@@ -42,8 +42,8 @@ class Options:
 
     ERROR_MESSAGE_INVALID_OPTION = 'Expected comma-separated list of key-value pairs'
 
-    def __init__(self):
-        self.dict = {}
+    def __init__(self, dictionary: Optional[Dict[str, Any]] = None):
+        self.dictionary = dictionary if dictionary is not None else {}
 
     @classmethod
     def create(cls, string: str, allowed_keys: Set[str]):
@@ -97,7 +97,7 @@ class Options:
                                              + ', but value is missing from element "' + option + '" at index '
                                              + str(option_index))
 
-                        options.dict[key] = value
+                        options.dictionary[key] = value
 
         return options
 
@@ -109,8 +109,8 @@ class Options:
         :param default_value:   The default value to be returned, if no value is associated with the given key
         :return:                The value that is associated with the given key or the given default value
         """
-        if key in self.dict:
-            return str(self.dict[key])
+        if key in self.dictionary:
+            return str(self.dictionary[key])
 
         return default_value
 
@@ -122,8 +122,8 @@ class Options:
         :param default_value:   The default value to be returned, if no value is associated with the given key
         :return:                The value that is associated with the given key or the given default value
         """
-        if key in self.dict:
-            value = str(self.dict[key])
+        if key in self.dictionary:
+            value = str(self.dictionary[key])
             return BooleanOption.parse(value)
 
         return default_value
@@ -136,8 +136,8 @@ class Options:
         :param default_value:   The default value to be returned, if no value is associated with the given key
         :return:                The value that is associated with the given key or the given default value
         """
-        if key in self.dict:
-            value = self.dict[key]
+        if key in self.dictionary:
+            value = self.dictionary[key]
 
             try:
                 value = int(value)
@@ -157,8 +157,8 @@ class Options:
         :param default_value:   The default value to be returned, if no value is associated with the given key
         :return:                The value that is associated with the given key or the given default value
         """
-        if key in self.dict:
-            value = self.dict[key]
+        if key in self.dictionary:
+            value = self.dictionary[key]
 
             try:
                 value = float(value)

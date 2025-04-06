@@ -6,7 +6,7 @@ outputs, e.g., to the console or to a file.
 """
 import logging as log
 
-from typing import Optional
+from typing import List, Optional
 
 import numpy as np
 
@@ -17,16 +17,17 @@ from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 from mlrl.testbed.experiments.output.characteristics.model.characteristics_rules import BodyStatistics, \
     HeadStatistics, RuleModelCharacteristics, RuleModelStatistics, RuleStatistics
 from mlrl.testbed.experiments.output.data import OutputData
-from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.output.sinks import Sink
+from mlrl.testbed.experiments.output.writer import DataExtractor
 from mlrl.testbed.experiments.state import ExperimentState
 
 
-class RuleModelCharacteristicsWriter(OutputWriter):
+class RuleModelCharacteristicsExtractor(DataExtractor):
     """
-    Allows to write the characteristics of a `RuleModel` to one or several sinks.
+    Allows to extract characteristics from a `RuleModel`.
     """
 
-    class ModelVisitor(RuleModelVisitor):
+    class Visitor(RuleModelVisitor):
         """
         A visitor that allows to determine the characteristics of a `RuleModel`.
         """
@@ -86,7 +87,10 @@ class RuleModelCharacteristicsWriter(OutputWriter):
             else:
                 self.statistics.rule_statistics[-1].head_statistics = head_statistics
 
-    def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
+    def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
+        """
+        See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
+        """
         training_result = state.training_result
 
         if training_result:
@@ -96,10 +100,10 @@ class RuleModelCharacteristicsWriter(OutputWriter):
                 model = learner.model_
 
                 if isinstance(model, RuleModel):
-                    visitor = RuleModelCharacteristicsWriter.ModelVisitor()
+                    visitor = RuleModelCharacteristicsExtractor.Visitor()
                     model.visit_used(visitor)
                     return RuleModelCharacteristics(visitor.statistics)
 
-            log.error('The learner does not support to obtain model characteristics')
+                log.error('Cannot handle model of type %s', type(model).__name__)
 
         return None
