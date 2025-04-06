@@ -27,10 +27,11 @@ from mlrl.testbed.experiment import Experiment
 from mlrl.testbed.experiments.input.preprocessors import OneHotEncoder, Preprocessor
 from mlrl.testbed.experiments.output.characteristics.data import DataCharacteristics, DataCharacteristicsWriter, \
     OutputCharacteristics, PredictionCharacteristicsWriter
-from mlrl.testbed.experiments.output.characteristics.model import RuleModelCharacteristicsWriter
-from mlrl.testbed.experiments.output.evaluation import ClassificationEvaluationWriter, EvaluationResult, \
-    RankingEvaluationWriter, RegressionEvaluationWriter
-from mlrl.testbed.experiments.output.label_vectors import LabelVectors, LabelVectorWriter
+from mlrl.testbed.experiments.output.characteristics.model import ModelCharacteristicsWriter, \
+    RuleModelCharacteristicsExtractor
+from mlrl.testbed.experiments.output.evaluation import ClassificationEvaluationDataExtractor, EvaluationResult, \
+    EvaluationWriter, RankingEvaluationDataExtractor, RegressionEvaluationDataExtractor
+from mlrl.testbed.experiments.output.label_vectors import LabelVectors, LabelVectorSetExtractor, LabelVectorWriter
 from mlrl.testbed.experiments.output.parameters import ParameterWriter
 from mlrl.testbed.experiments.output.predictions import PredictionWriter
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, TextFileSink
@@ -40,7 +41,7 @@ from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.models import OPTION_DECIMALS_BODY, OPTION_DECIMALS_HEAD, OPTION_PRINT_BODIES, \
     OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_HEADS, OPTION_PRINT_NOMINAL_VALUES, OPTION_PRINT_OUTPUT_NAMES, \
-    RuleModelWriter
+    ModelWriter
 from mlrl.testbed.package_info import get_package_info as get_testbed_package_info
 from mlrl.testbed.parameters import CsvParameterLoader, ParameterLoader
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
@@ -928,13 +929,17 @@ class LearnerRunnable(Runnable, ABC):
         if value == BooleanOption.TRUE.value and args.output_dir:
             sinks.append(CsvFileSink(args.output_dir, options=options))
 
-        if len(sinks) == 0:
-            return None
-        if problem_type == ProblemType.REGRESSION:
-            return RegressionEvaluationWriter().add_sinks(*sinks)
-        if prediction_type in {PredictionType.SCORES, PredictionType.PROBABILITIES}:
-            return RankingEvaluationWriter().add_sinks(*sinks)
-        return ClassificationEvaluationWriter().add_sinks(*sinks)
+        if sinks:
+            if problem_type == ProblemType.REGRESSION:
+                extractor = RegressionEvaluationDataExtractor()
+            elif prediction_type in {PredictionType.SCORES, PredictionType.PROBABILITIES}:
+                extractor = RankingEvaluationDataExtractor()
+            else:
+                extractor = ClassificationEvaluationDataExtractor()
+
+            return EvaluationWriter(extractor).add_sinks(*sinks)
+
+        return None
 
     def _create_parameter_loader(self, args) -> Optional[ParameterLoader]:
         """
@@ -1056,7 +1061,7 @@ class LearnerRunnable(Runnable, ABC):
         if value == BooleanOption.TRUE.value and args.output_dir:
             sinks.append(CsvFileSink(args.output_dir, options=options))
 
-        return LabelVectorWriter().add_sinks(*sinks) if sinks else None
+        return LabelVectorWriter(LabelVectorSetExtractor()).add_sinks(*sinks) if sinks else None
 
     @abstractmethod
     def create_classifier(self, args) -> Optional[SkLearnClassifierMixin]:
@@ -1351,7 +1356,7 @@ class RuleLearnerRunnable(LearnerRunnable):
         if value == BooleanOption.TRUE.value and args.output_dir:
             sinks.append(TextFileSink(args.output_dir, options=options))
 
-        return RuleModelWriter().add_sinks(*sinks) if sinks else None
+        return ModelWriter().add_sinks(*sinks) if sinks else None
 
     def _create_model_characteristics_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -1369,7 +1374,7 @@ class RuleLearnerRunnable(LearnerRunnable):
         if args.store_model_characteristics and args.output_dir:
             sinks.append(CsvFileSink(args.output_dir))
 
-        return RuleModelCharacteristicsWriter().add_sinks(*sinks) if sinks else None
+        return ModelCharacteristicsWriter(RuleModelCharacteristicsExtractor()).add_sinks(*sinks) if sinks else None
 
     def _create_marginal_probability_calibration_model_writer(self, args) -> Optional[OutputWriter]:
         """

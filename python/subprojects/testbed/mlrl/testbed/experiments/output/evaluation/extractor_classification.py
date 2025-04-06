@@ -11,6 +11,7 @@ import numpy as np
 
 from sklearn.utils.multiclass import is_multilabel
 
+from mlrl.common.config.options import Options
 from mlrl.common.data.arrays import enforce_dense
 from mlrl.common.data.types import Uint8
 
@@ -19,23 +20,22 @@ from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
 from mlrl.testbed.experiments.output.evaluation.measures import Measure
 from mlrl.testbed.experiments.output.evaluation.measures_classification import MULTI_LABEL_EVALUATION_MEASURES, \
     SINGLE_LABEL_EVALUATION_MEASURES
-from mlrl.testbed.experiments.output.evaluation.writer import EvaluationWriter
+from mlrl.testbed.experiments.output.evaluation.writer import EvaluationDataExtractor
 
 
-class ClassificationEvaluationWriter(EvaluationWriter):
+class ClassificationEvaluationDataExtractor(EvaluationDataExtractor):
     """
-    Allows writing evaluation results according to classification evaluation measures to one or several sinks.
+    Obtains evaluation results according to classification evaluation measures.
     """
 
-    def _update_measurements(self, measurements: Measurements, index: int, ground_truth: Any, predictions: Any):
-        options = [sink.options for sink in self.sinks]
-
+    def _update_measurements(self, measurements: Measurements, index: int, ground_truth: Any, predictions: Any,
+                             options: Options):
         if is_multilabel(ground_truth):
-            evaluation_measures = OutputValue.filter_values(MULTI_LABEL_EVALUATION_MEASURES, *options)
+            evaluation_measures = OutputValue.filter_values(MULTI_LABEL_EVALUATION_MEASURES, options)
         else:
             predictions = np.ravel(enforce_dense(predictions, order='C', dtype=Uint8))
             ground_truth = np.ravel(enforce_dense(ground_truth, order='C', dtype=Uint8))
-            evaluation_measures = OutputValue.filter_values(SINGLE_LABEL_EVALUATION_MEASURES, *options)
+            evaluation_measures = OutputValue.filter_values(SINGLE_LABEL_EVALUATION_MEASURES, options)
 
         for evaluation_measure in evaluation_measures:
             if isinstance(evaluation_measure, Measure):
