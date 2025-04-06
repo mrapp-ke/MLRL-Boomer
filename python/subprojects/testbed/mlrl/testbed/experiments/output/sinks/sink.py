@@ -21,6 +21,12 @@ class Sink(ABC):
     An abstract base class for all sinks, output data may be written to.
     """
 
+    def __init__(self, options: Options = Options()):
+        """
+        :param options: Options to be taken into account
+        """
+        self.options = options
+
     @abstractmethod
     def write_to_sink(self, state: ExperimentState, output_data: OutputData, **kwargs):
         """
@@ -76,11 +82,12 @@ class FileSink(Sink, ABC):
 
             return path.join(self.directory, file_name)
 
-    def __init__(self, directory: str, suffix: str):
+    def __init__(self, directory: str, suffix: str, options: Options = Options()):
         """
         :param directory:   The path to the directory of the file
         :param suffix:      The suffix of the file
         """
+        super().__init__(options)
         self.directory = directory
         self.suffix = suffix
 
@@ -108,7 +115,7 @@ class FileSink(Sink, ABC):
         """
 
 
-class TabularFileSink(FileSink):
+class TabularFileSink(FileSink, ABC):
     """
     An abstract base class for all sinks that write tabular output data to a file.
     """
@@ -119,8 +126,7 @@ class TabularFileSink(FileSink):
         :param suffix:      The suffix of the file
         :param options:     Options to be taken into account
         """
-        super().__init__(directory=directory, suffix=suffix)
-        self.options = options
+        super().__init__(directory=directory, suffix=suffix, options=options)
 
     def _write_to_file(self, file_path: str, state: ExperimentState, output_data: OutputData, **kwargs):
         if not isinstance(output_data, TabularOutputData):
@@ -142,7 +148,7 @@ class TabularFileSink(FileSink):
         """
 
 
-class DatasetFileSink(FileSink):
+class DatasetFileSink(FileSink, ABC):
     """
     An abstract base class for all sinks that write datasets to a file.
     """
@@ -153,8 +159,7 @@ class DatasetFileSink(FileSink):
         :param suffix:      The suffix of the file
         :param options:     Options to be taken into account
         """
-        super().__init__(directory=directory, suffix=suffix)
-        self.options = options
+        super().__init__(directory=directory, suffix=suffix, options=options)
 
     def _write_to_file(self, file_path: str, state: ExperimentState, output_data: OutputData, **kwargs):
         if not isinstance(output_data, DatasetOutputData):

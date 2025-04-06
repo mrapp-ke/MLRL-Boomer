@@ -6,7 +6,7 @@ e.g., to the console or to a file.
 """
 import logging as log
 
-from typing import Optional
+from typing import List, Optional
 
 import numpy as np
 
@@ -19,7 +19,8 @@ from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.experiments.output.data import OutputData
-from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.output.sinks import Sink
+from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import format_number
 
@@ -38,7 +39,7 @@ OPTION_DECIMALS_BODY = 'decimals_body'
 OPTION_DECIMALS_HEAD = 'decimals_head'
 
 
-class RuleModelWriter(OutputWriter):
+class ModelWriter(OutputWriter):
     """
     Allows to write textual representations of rule-based models to one or several sinks.
     """
@@ -221,18 +222,32 @@ class RuleModelWriter(OutputWriter):
             self.text.close()
             return text
 
-    def _generate_output_data(self, state: ExperimentState) -> Optional[OutputData]:
-        training_result = state.training_result
+    class DefaultExtractor(DataExtractor):
+        """
+        The extractor to be used by a `ModelWriter`, by default.
+        """
 
-        if training_result:
-            learner = training_result.learner
+        def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
+            """
+            See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
+            """
+            training_result = state.training_result
 
-            if isinstance(learner, (ClassifierMixin, RegressorMixin)):
-                model = learner.model_
+            if training_result:
+                learner = training_result.learner
 
-                if isinstance(model, RuleModel):
-                    return RuleModelWriter.RuleModelConverter(state.dataset, model)
+                if isinstance(learner, (ClassifierMixin, RegressorMixin)):
+                    model = learner.model_
 
-            log.error('The learner does not support to create a textual representation of the model')
+                    if isinstance(model, RuleModel):
+                        return ModelWriter.RuleModelConverter(state.dataset, model)
 
-        return None
+                log.error('The learner does not support to create a textual representation of the model')
+
+            return None
+
+    def __init__(self, *extractors: DataExtractor):
+        """
+        :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
+        """
+        super().__init__(*extractors, ModelWriter.DefaultExtractor())

@@ -104,12 +104,12 @@ class OutputValue:
         self.percentage = percentage
 
     @staticmethod
-    def filter_values(values: Iterable['OutputValue'], *options: Options) -> List['OutputValue']:
+    def filter_values(values: Iterable['OutputValue'], options: Options) -> List['OutputValue']:
         """
         Allows to filter given output values based on given options.
 
         :param values:      The output values to be filtered
-        :param options:     The options that should be used for filtering
+        :param options:     Options that should be used for filtering
         :return:            A list that contains the filtered output values
         """
         filtered = []
@@ -117,7 +117,7 @@ class OutputValue:
         for value in values:
             option_key = value.option_key
 
-            if any(current_options.get_bool(option_key, True) for current_options in options):
+            if options.get_bool(option_key, True):
                 filtered.append(value)
 
         return filtered
