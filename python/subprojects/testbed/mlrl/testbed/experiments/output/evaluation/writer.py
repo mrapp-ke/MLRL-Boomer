@@ -21,8 +21,7 @@ class EvaluationWriter(OutputWriter, ABC):
     An abstract base class for all classes that allow writing evaluation results to one or several sinks.
     """
 
-    def __init__(self, *sinks: Sink):
-        super().__init__(*sinks)
+    def __init__(self):
         self.measurements = {}
 
     @abstractmethod

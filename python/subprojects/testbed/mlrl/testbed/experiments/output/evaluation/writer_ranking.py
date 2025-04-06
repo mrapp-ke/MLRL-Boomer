@@ -16,7 +16,6 @@ from mlrl.testbed.experiments.output.evaluation.measures import Measure
 from mlrl.testbed.experiments.output.evaluation.measures_ranking import RANKING_EVALUATION_MEASURES
 from mlrl.testbed.experiments.output.evaluation.measures_regression import REGRESSION_EVALUATION_MEASURES
 from mlrl.testbed.experiments.output.evaluation.writer import EvaluationWriter
-from mlrl.testbed.experiments.output.sinks import Sink
 
 
 class RankingEvaluationWriter(EvaluationWriter):
@@ -24,19 +23,16 @@ class RankingEvaluationWriter(EvaluationWriter):
     Allows writing evaluation results according to ranking evaluation measures to one or several sinks.
     """
 
-    def __init__(self, *sinks: Sink):
-        super().__init__(*sinks)
-        options = [sink.options for sink in sinks]
-        self.regression_evaluation_measures = OutputValue.filter_values(REGRESSION_EVALUATION_MEASURES, *options)
-        self.ranking_evaluation_measures = OutputValue.filter_values(RANKING_EVALUATION_MEASURES, *options)
-
     def _update_measurements(self, measurements: Measurements, index: int, ground_truth: Any, predictions: Any):
         ground_truth = enforce_dense(ground_truth, order='C', dtype=Uint8)
+        options = options = [sink.options for sink in self.sinks]
+        regression_evaluation_measures = OutputValue.filter_values(REGRESSION_EVALUATION_MEASURES, *options)
 
         if is_multilabel(ground_truth):
-            evaluation_measures = self.ranking_evaluation_measures + self.regression_evaluation_measures
+            evaluation_measures = OutputValue.filter_values(RANKING_EVALUATION_MEASURES, *
+                                                            options) + regression_evaluation_measures
         else:
-            evaluation_measures = self.regression_evaluation_measures
+            evaluation_measures = regression_evaluation_measures
 
             if predictions.shape[1] > 1:
                 predictions = predictions[:, -1]
