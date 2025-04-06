@@ -24,7 +24,7 @@ class LabelVectorWriter(OutputWriter):
 
     class Visitor(LabelVectorSetVisitor):
         """
-        Allows to access the label vectors and frequencies store by a `LabelVectorSet`.
+        Allows to access the label vectors and frequencies stored by a `LabelVectorSet`.
         """
 
         def __init__(self, num_labels: int):
