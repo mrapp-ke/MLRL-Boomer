@@ -102,7 +102,7 @@ In cases where the {ref}`evaluation results<output-evaluation-results>` obtained
    ```
 ````
 
-Alternatively, the argument `--store-predictions` can be used to save the predictions, as well as the ground truth, to [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files:
+Alternatively, the argument `--store-predictions` can be used to save the predictions, as well as the ground truth, to [ARFF](https://waikato.github.io/weka-wiki/formats_and_processing/arff_stable/) files:
 
 ````{tab} BOOMER
    ```text
@@ -129,21 +129,21 @@ Depending on the {ref}`type of predictions<prediction-types>`, the machine learn
 
 When using {ref}`train-test splits<train-test-split>`, a single model is trained and queried for predictions for the test set. These predictions are written into a single output file. When {ref}`evaluating on the training data<evaluating-training-data>`, predictions are also obtained for the training set and written into an additional output file. The names of the output files indicate whether the predictions have been obtained for the training or test set, respectively:
 
-- `predictions_train_overall.csv`
-- `predictions_test_overall.csv`
+- `predictions_train_overall.arff`
+- `predictions_test_overall.arff`
 
 When using a {ref}`cross validation<cross-validation>` for performance evaluation, a model is trained for each fold. Similar to before, the names of the output files indicate whether the predictions correspond to the training or test data:
 
-- `predictions_train_fold-1.csv`
-- `predictions_test_fold-1.csv`
-- `predictions_train_fold-2.csv`
-- `predictions_test_fold-2.csv`
-- `predictions_train_fold-3.csv`
-- `predictions_test_fold-3.csv`
-- `predictions_train_fold-4.csv`
-- `predictions_test_fold-4.csv`
-- `predictions_train_fold-5.csv`
-- `predictions_test_fold-5.csv`
+- `predictions_train_fold-1.arff`
+- `predictions_test_fold-1.arff`
+- `predictions_train_fold-2.arff`
+- `predictions_test_fold-2.arff`
+- `predictions_train_fold-3.arff`
+- `predictions_test_fold-3.arff`
+- `predictions_train_fold-4.arff`
+- `predictions_test_fold-4.arff`
+- `predictions_train_fold-5.arff`
+- `predictions_test_fold-5.arff`
 
 (output-prediction-characteristics)=
 
