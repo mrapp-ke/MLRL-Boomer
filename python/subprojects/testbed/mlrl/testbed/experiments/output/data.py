@@ -9,6 +9,7 @@ from typing import Dict, Iterable, List, Optional, Type
 
 from mlrl.common.config.options import Options
 
+from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_number
 
@@ -68,6 +69,22 @@ class TabularOutputData(OutputData, ABC):
 
         :param options: Options to be taken into account
         :return:        The tabular representation that has been created
+        """
+
+
+class DatasetOutputData(OutputData, ABC):
+    """
+    An abstract base class for all classes that represent output data that can be converted into a textual
+    representation, as well as a dataset.
+    """
+
+    @abstractmethod
+    def to_dataset(self, options: Options, **kwargs) -> Optional[Dataset]:
+        """
+        Creates and returns a dataset from the object.
+
+        :param options: Options to be taken into account
+        :return:        The dataset that has been created
         """
 
 

@@ -1011,4 +1011,5 @@ INFO Model:
 {Std_Acc1298_Mean_Mem40_MFCC_11 <= 0.37 & Std_Acc1298_Mean_Mem40_MFCC_0 <= 6.18 & Std_Acc1298_Std_Mem40_MFCC_3 <= 0.35 & Mean_Acc1298_Mean_Mem40_MFCC_11 <= 0.75 & BHSUM1 <= 1.12 & Mean_Acc1298_Std_Mem40_MFCC_5 <= 0.81 & Std_Acc1298_Std_Mem40_MFCC_6 > 0.13 & Std_Acc1298_Std_Mem40_MFCC_0 > 3.38 & Mean_Acc1298_Std_Mem40_MFCC_5 > 0.48 & Std_Acc1298_Std_Mem40_MFCC_7 > 0.09 & Std_Acc1298_Std_Mem40_MFCC_5 > 0.10 & BH_HighPeakBPM > 109.00 & Std_Acc1298_Std_Mem40_Centroid > 0.02 & Mean_Acc1298_Mean_Mem40_MFCC_7 > -0.36} => (amazed-suprised = 0.02, happy-pleased = -0.00, relaxing-calm = 0.00, quiet-still = 0.04, sad-lonely = -0.02, angry-aggresive = -0.05)
 
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/rules_overall.txt"...
 INFO Successfully finished after <duration>
