@@ -6,6 +6,9 @@ on:
       subproject:
         required: true
         type: string
+      compile:
+        required: false
+        type: boolean
       run_cpp_tests:
         required: false
         type: boolean
@@ -24,6 +27,8 @@ jobs:
         os:
           - ubuntu-24.04
           - ubuntu-24.04-arm
+        exclude:
+          - os: ${{ inputs.compile == false && 'ubuntu-24.04-arm' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
