@@ -1,0 +1,7 @@
+mlrl.testbed.experiments.output.model\_text.model\_text\_rules module
+=====================================================================
+
+.. automodule:: mlrl.testbed.experiments.output.model_text.model_text_rules
+   :members:
+   :show-inheritance:
+   :undoc-members:

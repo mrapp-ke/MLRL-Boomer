@@ -28,7 +28,6 @@ Submodules
    mlrl.testbed.experiment
    mlrl.testbed.fold
    mlrl.testbed.main
-   mlrl.testbed.models
    mlrl.testbed.package_info
    mlrl.testbed.parameters
    mlrl.testbed.persistence
