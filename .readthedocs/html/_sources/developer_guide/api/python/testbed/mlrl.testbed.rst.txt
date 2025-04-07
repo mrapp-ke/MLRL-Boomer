@@ -31,5 +31,4 @@ Submodules
    mlrl.testbed.package_info
    mlrl.testbed.parameters
    mlrl.testbed.persistence
-   mlrl.testbed.probability_calibration
    mlrl.testbed.runnables

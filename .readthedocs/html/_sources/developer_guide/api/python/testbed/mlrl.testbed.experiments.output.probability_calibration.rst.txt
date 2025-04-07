@@ -1,0 +1,17 @@
+mlrl.testbed.experiments.output.probability\_calibration package
+================================================================
+
+.. automodule:: mlrl.testbed.experiments.output.probability_calibration
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed.experiments.output.probability_calibration.extractor_rules
+   mlrl.testbed.experiments.output.probability_calibration.model_isotonic
+   mlrl.testbed.experiments.output.probability_calibration.writer

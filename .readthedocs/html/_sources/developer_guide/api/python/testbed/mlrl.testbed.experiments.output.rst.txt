@@ -18,6 +18,7 @@ Subpackages
    mlrl.testbed.experiments.output.model_text
    mlrl.testbed.experiments.output.parameters
    mlrl.testbed.experiments.output.predictions
+   mlrl.testbed.experiments.output.probability_calibration
    mlrl.testbed.experiments.output.sinks
 
 Submodules
