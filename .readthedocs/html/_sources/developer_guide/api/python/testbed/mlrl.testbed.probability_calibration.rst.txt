@@ -1,7 +1,0 @@
-mlrl.testbed.probability\_calibration module
-============================================
-
-.. automodule:: mlrl.testbed.probability_calibration
-   :members:
-   :show-inheritance:
-   :undoc-members:
