@@ -35,6 +35,8 @@ from mlrl.testbed.experiments.output.label_vectors import LabelVectors, LabelVec
 from mlrl.testbed.experiments.output.model_text import ModelAsTextWriter, RuleModelAsText, RuleModelAsTextExtractor
 from mlrl.testbed.experiments.output.parameters import ParameterWriter
 from mlrl.testbed.experiments.output.predictions import PredictionWriter
+from mlrl.testbed.experiments.output.probability_calibration import IsotonicJointProbabilityCalibrationModelExtractor, \
+    IsotonicMarginalProbabilityCalibrationModelExtractor, ProbabilityCalibrationModelWriter
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, TextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.prediction import GlobalPredictor, IncrementalPredictor, Predictor
@@ -43,8 +45,6 @@ from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.package_info import get_package_info as get_testbed_package_info
 from mlrl.testbed.parameters import CsvParameterLoader, ParameterLoader
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
-from mlrl.testbed.probability_calibration import JointProbabilityCalibrationModelWriter, \
-    MarginalProbabilityCalibrationModelWriter
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
 from mlrl.testbed.util.io import clear_directory
 
@@ -1399,7 +1399,10 @@ class RuleLearnerRunnable(LearnerRunnable):
         if value == BooleanOption.TRUE.value and args.output_dir:
             sinks.append(CsvFileSink(args.output_dir, options=options))
 
-        return MarginalProbabilityCalibrationModelWriter().add_sinks(*sinks) if sinks else None
+        if sinks:
+            return ProbabilityCalibrationModelWriter(IsotonicMarginalProbabilityCalibrationModelExtractor()) \
+                .add_sinks(*sinks)
+        return None
 
     def _create_joint_probability_calibration_model_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -1424,7 +1427,10 @@ class RuleLearnerRunnable(LearnerRunnable):
         if value == BooleanOption.TRUE.value and args.output_dir:
             sinks.append(CsvFileSink(args.output_dir, options=options))
 
-        return JointProbabilityCalibrationModelWriter().add_sinks(*sinks) if sinks else None
+        if sinks:
+            return ProbabilityCalibrationModelWriter(IsotonicJointProbabilityCalibrationModelExtractor()) \
+                .add_sinks(*sinks)
+        return None
 
     def _create_predictor(self, args, prediction_type: PredictionType) -> Predictor:
         value, options = parse_param_and_options(self.PARAM_INCREMENTAL_EVALUATION, args.incremental_evaluation,

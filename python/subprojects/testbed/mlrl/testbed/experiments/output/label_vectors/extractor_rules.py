@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for representing unique label vectors contained in a dataset that are part of output data.
+Provides classes for extracting unique label vectors that are stored as part of rule models.
 """
 import logging as log
 
