@@ -115,7 +115,9 @@ jobs:
               - *python_tests_boosting
               - *python_tests_seco
             linux:
-              - *python_tests
+              - *cpp_common
+              - *cpp_boosting
+              - *cpp_seco
               - '.github/workflows/template_build_linux.yml'
             macos:
               - *cpp_common
