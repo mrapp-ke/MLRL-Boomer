@@ -9,12 +9,11 @@ import logging as log
 from abc import ABC, abstractmethod
 from typing import Any, List, Optional
 
-from mlrl.common.config.options import Options
 from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibrationModel, \
     NoProbabilityCalibrationModel
 from mlrl.common.learners import ClassificationRuleLearner
 
-from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
+from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.probability_calibration.model_isotonic import IsotonicRegressionModel
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
@@ -26,26 +25,6 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
     An abstract base class for all classes that allow to write textual representations of probability calibration models
     to one or several sinks.
     """
-
-    class NoProbabilityCalibrationModelConverter(TabularOutputData):
-        """
-        Allows to create a textual representation of a model for the calibration of probabilities that does not make any
-        adjustments.
-        """
-
-        # pylint: disable=unused-argument
-        def to_text(self, options: Options, **_) -> Optional[str]:
-            """
-            See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
-            """
-            return 'No calibration model used'
-
-        # pylint: disable=unused-argument
-        def to_table(self, options: Options, **_) -> Optional[TabularOutputData.Table]:
-            """
-            See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
-            """
-            return None
 
     class Extractor(DataExtractor, ABC):
         """
@@ -78,11 +57,9 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
                                                        default_formatter_options=self.formatter_options,
                                                        column_title_prefix=self.list_title)
 
-                    if isinstance(calibration_model, NoProbabilityCalibrationModel):
-                        return ProbabilityCalibrationModelWriter.NoProbabilityCalibrationModelConverter(
-                            self.name, self.file_name, self.formatter_options)
-
-                log.error('The learner does not support to create a textual representation of the calibration model')
+                    if not isinstance(calibration_model, NoProbabilityCalibrationModel):
+                        log.error('Cannot handle probability calibration model of type %s',
+                                  type(calibration_model).__name__)
 
             return None
 
