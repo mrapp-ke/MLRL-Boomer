@@ -9,7 +9,7 @@ from functools import reduce
 from os import environ, listdir, makedirs, path
 from typing import List, Optional
 
-from .comparison.comparison import FileComparison, TextFileComparison
+from .comparison import FileComparison, TextFileComparison
 
 ENV_OVERWRITE_OUTPUT_FILES = 'OVERWRITE_OUTPUT_FILES'
 
