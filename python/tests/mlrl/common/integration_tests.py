@@ -7,11 +7,7 @@ from typing import Any
 from unittest import SkipTest, TestCase
 
 from .cmd_builder import DATASET_BREAST_CANCER, DATASET_EMOTIONS, DATASET_EMOTIONS_NOMINAL, DATASET_EMOTIONS_ORDINAL, \
-    DATASET_ENRON, DATASET_LANGLOG, DATASET_MEKA, FEATURE_BINNING_EQUAL_FREQUENCY, FEATURE_BINNING_EQUAL_WIDTH, \
-    FEATURE_SAMPLING_NO, FEATURE_SAMPLING_WITHOUT_REPLACEMENT, INSTANCE_SAMPLING_NO, \
-    INSTANCE_SAMPLING_WITH_REPLACEMENT, INSTANCE_SAMPLING_WITHOUT_REPLACEMENT, OUTPUT_SAMPLING_NO, \
-    OUTPUT_SAMPLING_ROUND_ROBIN, OUTPUT_SAMPLING_WITHOUT_REPLACEMENT, RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH, \
-    RULE_PRUNING_IREP, RULE_PRUNING_NO
+    DATASET_ENRON, DATASET_LANGLOG, DATASET_MEKA, CmdBuilder
 from .cmd_runner import CmdRunner
 
 
@@ -564,7 +560,7 @@ class IntegrationTests(TestCase, ABC):
         Tests the rule learning algorithm when not using a method to sample from the available training examples.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
-            .instance_sampling(INSTANCE_SAMPLING_NO)
+            .instance_sampling(CmdBuilder.INSTANCE_SAMPLING_NO)
         CmdRunner(self, builder).run('instance-sampling-no')
 
     def test_instance_sampling_with_replacement(self):
@@ -573,7 +569,7 @@ class IntegrationTests(TestCase, ABC):
         replacement.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
-            .instance_sampling(INSTANCE_SAMPLING_WITH_REPLACEMENT)
+            .instance_sampling(CmdBuilder.INSTANCE_SAMPLING_WITH_REPLACEMENT)
         CmdRunner(self, builder).run('instance-sampling-with-replacement')
 
     def test_instance_sampling_without_replacement(self):
@@ -582,7 +578,7 @@ class IntegrationTests(TestCase, ABC):
         replacement.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
-            .instance_sampling(INSTANCE_SAMPLING_WITHOUT_REPLACEMENT)
+            .instance_sampling(CmdBuilder.INSTANCE_SAMPLING_WITHOUT_REPLACEMENT)
         CmdRunner(self, builder).run('instance-sampling-without-replacement')
 
     def test_feature_sampling_no(self):
@@ -590,7 +586,7 @@ class IntegrationTests(TestCase, ABC):
         Tests the rule learning algorithm when not using a method to sample from the available features.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
-            .feature_sampling(FEATURE_SAMPLING_NO)
+            .feature_sampling(CmdBuilder.FEATURE_SAMPLING_NO)
         CmdRunner(self, builder).run('feature-sampling-no')
 
     def test_feature_sampling_without_replacement(self):
@@ -598,7 +594,7 @@ class IntegrationTests(TestCase, ABC):
         Tests the rule learning algorithm when using a method to sample from the available features without replacement.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
-            .feature_sampling(FEATURE_SAMPLING_WITHOUT_REPLACEMENT)
+            .feature_sampling(CmdBuilder.FEATURE_SAMPLING_WITHOUT_REPLACEMENT)
         CmdRunner(self, builder).run('feature-sampling-without-replacement')
 
     def test_output_sampling_no(self):
@@ -606,7 +602,7 @@ class IntegrationTests(TestCase, ABC):
         Tests the rule learning algorithm when not using a method to sample from the available outputs.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
-            .output_sampling(OUTPUT_SAMPLING_NO)
+            .output_sampling(CmdBuilder.OUTPUT_SAMPLING_NO)
         CmdRunner(self, builder).run('output-sampling-no')
 
     def test_output_sampling_round_robin(self):
@@ -614,7 +610,7 @@ class IntegrationTests(TestCase, ABC):
         Tests the rule learning algorithm when using a method that samples single outputs in a round-robin fashion.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
-            .output_sampling(OUTPUT_SAMPLING_ROUND_ROBIN)
+            .output_sampling(CmdBuilder.OUTPUT_SAMPLING_ROUND_ROBIN)
         CmdRunner(self, builder).run('output-sampling-round-robin')
 
     def test_output_sampling_without_replacement(self):
@@ -622,7 +618,7 @@ class IntegrationTests(TestCase, ABC):
         Tests the rule learning algorithm when using a method to sample from the available outputs without replacement.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
-            .output_sampling(OUTPUT_SAMPLING_WITHOUT_REPLACEMENT)
+            .output_sampling(CmdBuilder.OUTPUT_SAMPLING_WITHOUT_REPLACEMENT)
         CmdRunner(self, builder).run('output-sampling-without-replacement')
 
     def test_pruning_no(self):
@@ -630,7 +626,7 @@ class IntegrationTests(TestCase, ABC):
         Tests the rule learning algorithm when not using a pruning method.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
-            .rule_pruning(RULE_PRUNING_NO)
+            .rule_pruning(CmdBuilder.RULE_PRUNING_NO)
         CmdRunner(self, builder).run('pruning-no')
 
     def test_pruning_irep(self):
@@ -639,7 +635,7 @@ class IntegrationTests(TestCase, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .instance_sampling() \
-            .rule_pruning(RULE_PRUNING_IREP)
+            .rule_pruning(CmdBuilder.RULE_PRUNING_IREP)
         CmdRunner(self, builder).run('pruning-irep')
 
     def test_rule_induction_top_down_beam_search(self):
@@ -647,7 +643,7 @@ class IntegrationTests(TestCase, ABC):
         Tests the rule learning algorithm when using a top-down beam search.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
-            .rule_induction(RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH)
+            .rule_induction(CmdBuilder.RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH)
         CmdRunner(self, builder).run('rule-induction-top-down-beam-search')
 
     def test_sequential_post_optimization(self):
@@ -664,7 +660,7 @@ class IntegrationTests(TestCase, ABC):
         binary features using a dense feature representation.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_binary) \
-            .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
+            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
             .sparse_feature_format(False)
         CmdRunner(self, builder).run('feature-binning-equal-width_binary-features-dense')
 
@@ -674,7 +670,7 @@ class IntegrationTests(TestCase, ABC):
         binary features using a sparse feature representation.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_binary) \
-            .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
+            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
             .sparse_feature_format()
         CmdRunner(self, builder).run('feature-binning-equal-width_binary-features-sparse')
 
@@ -684,7 +680,7 @@ class IntegrationTests(TestCase, ABC):
         nominal features using a dense feature representation.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_nominal) \
-            .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
+            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
             .sparse_feature_format(False)
         CmdRunner(self, builder).run('feature-binning-equal-width_nominal-features-dense')
 
@@ -694,7 +690,7 @@ class IntegrationTests(TestCase, ABC):
         nominal features using a sparse feature representation.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_nominal) \
-            .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
+            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
             .sparse_feature_format()
         CmdRunner(self, builder).run('feature-binning-equal-width_nominal-features-sparse')
 
@@ -704,7 +700,7 @@ class IntegrationTests(TestCase, ABC):
         numerical features using a dense feature representation.
         """
         builder = self._create_cmd_builder() \
-            .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
+            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
             .sparse_feature_format(False)
         CmdRunner(self, builder).run('feature-binning-equal-width_numerical-features-dense')
 
@@ -714,7 +710,7 @@ class IntegrationTests(TestCase, ABC):
         numerical features using a sparse feature representation.
         """
         builder = self._create_cmd_builder() \
-            .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
+            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
             .sparse_feature_format()
         CmdRunner(self, builder).run('feature-binning-equal-width_numerical-features-sparse')
 
@@ -724,7 +720,7 @@ class IntegrationTests(TestCase, ABC):
         with binary features using a dense feature representation.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_binary) \
-            .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
+            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format(False)
         CmdRunner(self, builder).run('feature-binning-equal-frequency_binary-features-dense')
 
@@ -734,7 +730,7 @@ class IntegrationTests(TestCase, ABC):
         with binary features using a sparse feature representation.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_binary) \
-            .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
+            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format()
         CmdRunner(self, builder).run('feature-binning-equal-frequency_binary-features-sparse')
 
@@ -744,7 +740,7 @@ class IntegrationTests(TestCase, ABC):
         with nominal features using a dense feature representation.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_nominal) \
-            .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
+            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format(False)
         CmdRunner(self, builder).run('feature-binning-equal-frequency_nominal-features-dense')
 
@@ -754,7 +750,7 @@ class IntegrationTests(TestCase, ABC):
         with nominal features using a sparse feature representation.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_nominal) \
-            .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
+            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format()
         CmdRunner(self, builder).run('feature-binning-equal-frequency_nominal-features-sparse')
 
@@ -764,7 +760,7 @@ class IntegrationTests(TestCase, ABC):
         with numerical features using a dense feature representation.
         """
         builder = self._create_cmd_builder() \
-            .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
+            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format(False)
         CmdRunner(self, builder).run('feature-binning-equal-frequency_numerical-features-dense')
 
@@ -774,6 +770,6 @@ class IntegrationTests(TestCase, ABC):
         with numerical features using a sparse feature representation.
         """
         builder = self._create_cmd_builder() \
-            .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
+            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format()
         CmdRunner(self, builder).run('feature-binning-equal-frequency_numerical-features-sparse')

@@ -1,10 +1,9 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from ..common.cmd_builder import HOLDOUT_NO, HOLDOUT_RANDOM
+from ..common.cmd_builder import CmdBuilder
 from ..common.cmd_runner import CmdRunner
-from .cmd_builder import GLOBAL_PRUNING_POST, GLOBAL_PRUNING_PRE, LOSS_SQUARED_ERROR_DECOMPOSABLE, \
-    LOSS_SQUARED_ERROR_NON_DECOMPOSABLE
+from .cmd_builder import BoomerCmdBuilderMixin
 
 
 class BoomerIntegrationTestsMixin:
@@ -17,7 +16,7 @@ class BoomerIntegrationTestsMixin:
         Tests the BOOMER algorithm when using the decomposable squared error loss function.
         """
         builder = self._create_cmd_builder() \
-            .loss(LOSS_SQUARED_ERROR_DECOMPOSABLE)
+            .loss(BoomerCmdBuilderMixin.LOSS_SQUARED_ERROR_DECOMPOSABLE)
         CmdRunner(self, builder).run('loss-squared-error-decomposable')
 
     def test_loss_squared_error_non_decomposable(self):
@@ -25,7 +24,7 @@ class BoomerIntegrationTestsMixin:
         Tests the BOOMER algorithm when using the non-decomposable squared error loss function.
         """
         builder = self._create_cmd_builder() \
-            .loss(LOSS_SQUARED_ERROR_NON_DECOMPOSABLE)
+            .loss(BoomerCmdBuilderMixin.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE)
         CmdRunner(self, builder).run('loss-squared-error-non-decomposable')
 
     def test_no_default_rule(self):
@@ -42,8 +41,8 @@ class BoomerIntegrationTestsMixin:
         Tests the BOOMER algorithm when using no holdout set for global post-pruning.
         """
         builder = self._create_cmd_builder() \
-            .global_pruning(GLOBAL_PRUNING_POST) \
-            .holdout(HOLDOUT_NO) \
+            .global_pruning(BoomerCmdBuilderMixin.GLOBAL_PRUNING_POST) \
+            .holdout(CmdBuilder.HOLDOUT_NO) \
             .print_model_characteristics()
         CmdRunner(self, builder).run('post-pruning_no-holdout')
 
@@ -52,8 +51,8 @@ class BoomerIntegrationTestsMixin:
         Tests the BOOMER algorithm when using a holdout set that is created via random sampling for global post-pruning.
         """
         builder = self._create_cmd_builder() \
-            .global_pruning(GLOBAL_PRUNING_POST) \
-            .holdout(HOLDOUT_RANDOM) \
+            .global_pruning(BoomerCmdBuilderMixin.GLOBAL_PRUNING_POST) \
+            .holdout(CmdBuilder.HOLDOUT_RANDOM) \
             .print_model_characteristics()
         CmdRunner(self, builder).run('post-pruning_random-holdout')
 
@@ -62,8 +61,8 @@ class BoomerIntegrationTestsMixin:
         Tests the BOOMER algorithm when using no holdout set for global pre-pruning.
         """
         builder = self._create_cmd_builder() \
-            .global_pruning(GLOBAL_PRUNING_PRE) \
-            .holdout(HOLDOUT_NO) \
+            .global_pruning(BoomerCmdBuilderMixin.GLOBAL_PRUNING_PRE) \
+            .holdout(CmdBuilder.HOLDOUT_NO) \
             .print_model_characteristics()
         CmdRunner(self, builder).run('pre-pruning_no-holdout')
 
@@ -72,7 +71,7 @@ class BoomerIntegrationTestsMixin:
         Tests the BOOMER algorithm when using a holdout set that is created via random sampling for global pre-pruning.
         """
         builder = self._create_cmd_builder() \
-            .global_pruning(GLOBAL_PRUNING_PRE) \
-            .holdout(HOLDOUT_RANDOM) \
+            .global_pruning(BoomerCmdBuilderMixin.GLOBAL_PRUNING_PRE) \
+            .holdout(CmdBuilder.HOLDOUT_RANDOM) \
             .print_model_characteristics()
         CmdRunner(self, builder).run('pre-pruning_random-holdout')

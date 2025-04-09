@@ -5,25 +5,25 @@ from typing import Optional
 
 from .cmd_builder import DATASET_EMOTIONS, CmdBuilder
 
-PREDICTION_TYPE_BINARY = 'binary'
-
-PREDICTION_TYPE_SCORES = 'scores'
-
-PREDICTION_TYPE_PROBABILITIES = 'probabilities'
-
-INSTANCE_SAMPLING_STRATIFIED_OUTPUT_WISE = 'stratified-output-wise'
-
-INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
-
-HOLDOUT_STRATIFIED_OUTPUT_WISE = 'stratified-output-wise'
-
-HOLDOUT_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
-
 
 class ClassificationCmdBuilder(CmdBuilder):
     """
     A builder that allows to configure a command for applying a rule learning algorithm to a classification problem.
     """
+
+    PREDICTION_TYPE_BINARY = 'binary'
+
+    PREDICTION_TYPE_SCORES = 'scores'
+
+    PREDICTION_TYPE_PROBABILITIES = 'probabilities'
+
+    INSTANCE_SAMPLING_STRATIFIED_OUTPUT_WISE = 'stratified-output-wise'
+
+    INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
+
+    HOLDOUT_STRATIFIED_OUTPUT_WISE = 'stratified-output-wise'
+
+    HOLDOUT_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
     def __init__(self,
                  expected_output_dir: str,
