@@ -3,7 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from typing import Optional
 
-from .cmd_builder import DATASET_ATP7D, CmdBuilder
+from .cmd_builder import CmdBuilder
+from .datasets import Dataset
 
 
 class RegressionCmdBuilder(CmdBuilder):
@@ -16,7 +17,7 @@ class RegressionCmdBuilder(CmdBuilder):
                  model_file_name: str,
                  runnable_module_name: str,
                  runnable_class_name: Optional[str] = None,
-                 dataset: str = DATASET_ATP7D):
+                 dataset: str = Dataset.ATP7D):
         super().__init__(expected_output_dir=expected_output_dir,
                          model_file_name=model_file_name,
                          runnable_module_name=runnable_module_name,

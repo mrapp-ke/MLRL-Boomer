@@ -4,6 +4,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 from os import path
 from typing import List, Optional
 
+from .datasets import Dataset
+
 DIR_RES = path.join('python', 'tests', 'res')
 
 DIR_IN = path.join(DIR_RES, 'in')
@@ -13,34 +15,6 @@ DIR_OUT = path.join(DIR_RES, 'out')
 DIR_TMP = path.join(DIR_RES, 'tmp')
 
 DIR_MODELS = path.join(DIR_TMP, 'models')
-
-DATASET_EMOTIONS = 'emotions'
-
-DATASET_EMOTIONS_NOMINAL = 'emotions-nominal'
-
-DATASET_EMOTIONS_ORDINAL = 'emotions-ordinal'
-
-DATASET_ENRON = 'enron'
-
-DATASET_LANGLOG = 'langlog'
-
-DATASET_BREAST_CANCER = 'breast-cancer'
-
-DATASET_MEKA = 'meka'
-
-DATASET_ATP7D = 'atp7d'
-
-DATASET_ATP7D_NUMERICAL_SPARSE = 'atp7d-numerical-sparse'
-
-DATASET_ATP7D_NOMINAL = 'atp7d-nominal'
-
-DATASET_ATP7D_BINARY = 'atp7d-binary'
-
-DATASET_ATP7D_ORDINAL = 'atp7d-ordinal'
-
-DATASET_ATP7D_MEKA = 'atp7d-meka'
-
-DATASET_HOUSING = 'housing'
 
 
 class CmdBuilder:
@@ -85,7 +59,7 @@ class CmdBuilder:
                  model_file_name: str,
                  runnable_module_name: str,
                  runnable_class_name: Optional[str] = None,
-                 dataset: str = DATASET_EMOTIONS):
+                 dataset: str = Dataset.EMOTIONS):
         """
         :param expected_output_dir:     The path to the directory that contains the file with the expected output
         :param model_file_name:         The name of files storing models that have been saved to disk (without suffix)

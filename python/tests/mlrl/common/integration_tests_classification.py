@@ -4,10 +4,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 from abc import ABC
 from unittest import SkipTest
 
-from .cmd_builder import DATASET_BREAST_CANCER, DATASET_EMOTIONS, DATASET_EMOTIONS_NOMINAL, DATASET_EMOTIONS_ORDINAL, \
-    DATASET_ENRON, DATASET_LANGLOG
 from .cmd_builder_classification import ClassificationCmdBuilder
 from .cmd_runner import CmdRunner
+from .datasets import Dataset
 from .integration_tests import IntegrationTests
 
 
@@ -19,12 +18,12 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
 
     # pylint: disable=invalid-name
     def __init__(self,
-                 dataset_default: str = DATASET_EMOTIONS,
-                 dataset_numerical_sparse: str = DATASET_LANGLOG,
-                 dataset_binary: str = DATASET_ENRON,
-                 dataset_nominal: str = DATASET_EMOTIONS_NOMINAL,
-                 dataset_ordinal: str = DATASET_EMOTIONS_ORDINAL,
-                 dataset_single_output: str = DATASET_BREAST_CANCER,
+                 dataset_default: str = Dataset.EMOTIONS,
+                 dataset_numerical_sparse: str = Dataset.LANGLOG,
+                 dataset_binary: str = Dataset.ENRON,
+                 dataset_nominal: str = Dataset.EMOTIONS_NOMINAL,
+                 dataset_ordinal: str = Dataset.EMOTIONS_ORDINAL,
+                 dataset_single_output: str = Dataset.BREAST_CANCER,
                  methodName='runTest'):
         super().__init__(dataset_default=dataset_default,
                          dataset_numerical_sparse=dataset_numerical_sparse,
