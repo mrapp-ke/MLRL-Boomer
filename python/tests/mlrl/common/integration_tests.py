@@ -6,9 +6,9 @@ from sys import platform
 from typing import Any
 from unittest import SkipTest, TestCase
 
-from .cmd_builder import DATASET_BREAST_CANCER, DATASET_EMOTIONS, DATASET_EMOTIONS_NOMINAL, DATASET_EMOTIONS_ORDINAL, \
-    DATASET_ENRON, DATASET_LANGLOG, DATASET_MEKA, CmdBuilder
+from .cmd_builder import CmdBuilder
 from .cmd_runner import CmdRunner
+from .datasets import Dataset
 
 
 class IntegrationTests(TestCase, ABC):
@@ -17,13 +17,13 @@ class IntegrationTests(TestCase, ABC):
     """
 
     def __init__(self,
-                 dataset_default: str = DATASET_EMOTIONS,
-                 dataset_numerical_sparse: str = DATASET_LANGLOG,
-                 dataset_binary: str = DATASET_ENRON,
-                 dataset_nominal: str = DATASET_EMOTIONS_NOMINAL,
-                 dataset_ordinal: str = DATASET_EMOTIONS_ORDINAL,
-                 dataset_single_output: str = DATASET_BREAST_CANCER,
-                 dataset_meka: str = DATASET_MEKA,
+                 dataset_default: str = Dataset.EMOTIONS,
+                 dataset_numerical_sparse: str = Dataset.LANGLOG,
+                 dataset_binary: str = Dataset.ENRON,
+                 dataset_nominal: str = Dataset.EMOTIONS_NOMINAL,
+                 dataset_ordinal: str = Dataset.EMOTIONS_ORDINAL,
+                 dataset_single_output: str = Dataset.BREAST_CANCER,
+                 dataset_meka: str = Dataset.MEKA,
                  methodName='runTest'):
         """
         :param dataset_default:             The name of the dataset that should be used by default
@@ -43,7 +43,7 @@ class IntegrationTests(TestCase, ABC):
         self.dataset_single_output = dataset_single_output
         self.dataset_meka = dataset_meka
 
-    def _create_cmd_builder(self, dataset: str = DATASET_EMOTIONS) -> Any:
+    def _create_cmd_builder(self, dataset: str = Dataset.EMOTIONS) -> Any:
         """
         Must be implemented by subclasses in order to create an object of type `CmdBuilder` that allows to configure the
         command for running a rule learner.

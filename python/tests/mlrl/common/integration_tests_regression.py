@@ -4,9 +4,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 from abc import ABC
 from unittest import SkipTest
 
-from .cmd_builder import DATASET_ATP7D, DATASET_ATP7D_BINARY, DATASET_ATP7D_MEKA, DATASET_ATP7D_NOMINAL, \
-    DATASET_ATP7D_NUMERICAL_SPARSE, DATASET_ATP7D_ORDINAL, DATASET_HOUSING
 from .cmd_runner import CmdRunner
+from .datasets import Dataset
 from .integration_tests import IntegrationTests
 
 
@@ -18,13 +17,13 @@ class RegressionIntegrationTests(IntegrationTests, ABC):
 
     # pylint: disable=invalid-name
     def __init__(self,
-                 dataset_default: str = DATASET_ATP7D,
-                 dataset_numerical_sparse: str = DATASET_ATP7D_NUMERICAL_SPARSE,
-                 dataset_binary: str = DATASET_ATP7D_BINARY,
-                 dataset_nominal: str = DATASET_ATP7D_NOMINAL,
-                 dataset_ordinal: str = DATASET_ATP7D_ORDINAL,
-                 dataset_single_output: str = DATASET_HOUSING,
-                 dataset_meka: str = DATASET_ATP7D_MEKA,
+                 dataset_default: str = Dataset.ATP7D,
+                 dataset_numerical_sparse: str = Dataset.ATP7D_NUMERICAL_SPARSE,
+                 dataset_binary: str = Dataset.ATP7D_BINARY,
+                 dataset_nominal: str = Dataset.ATP7D_NOMINAL,
+                 dataset_ordinal: str = Dataset.ATP7D_ORDINAL,
+                 dataset_single_output: str = Dataset.HOUSING,
+                 dataset_meka: str = Dataset.ATP7D_MEKA,
                  methodName='runTest'):
         super().__init__(dataset_default=dataset_default,
                          dataset_numerical_sparse=dataset_numerical_sparse,

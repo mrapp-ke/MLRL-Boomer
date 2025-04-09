@@ -3,8 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from typing import Any
 
-from ..common.cmd_builder import DATASET_ATP7D
 from ..common.cmd_runner import CmdRunner
+from ..common.datasets import Dataset
 from ..common.integration_tests_regression import RegressionIntegrationTests
 from .cmd_builder import BoomerCmdBuilderMixin
 from .cmd_builder_regression import BoomerRegressorCmdBuilder
@@ -20,7 +20,7 @@ class BoomerRegressorIntegrationTests(RegressionIntegrationTests, BoomerIntegrat
     def __init__(self, methodName='runTest'):
         super().__init__(methodName=methodName)
 
-    def _create_cmd_builder(self, dataset: str = DATASET_ATP7D) -> Any:
+    def _create_cmd_builder(self, dataset: str = Dataset.ATP7D) -> Any:
         return BoomerRegressorCmdBuilder(dataset=dataset)
 
     def test_decomposable_single_output_heads(self):

@@ -3,9 +3,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from typing import Any
 
-from ..common.cmd_builder import DATASET_EMOTIONS
 from ..common.cmd_builder_classification import ClassificationCmdBuilder
 from ..common.cmd_runner import CmdRunner
+from ..common.datasets import Dataset
 from ..common.integration_tests_classification import ClassificationIntegrationTests
 from .cmd_builder import BoomerCmdBuilderMixin
 from .cmd_builder_classification import BoomerClassifierCmdBuilder
@@ -21,7 +21,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
     def __init__(self, methodName='runTest'):
         super().__init__(methodName=methodName)
 
-    def _create_cmd_builder(self, dataset: str = DATASET_EMOTIONS) -> Any:
+    def _create_cmd_builder(self, dataset: str = Dataset.EMOTIONS) -> Any:
         return BoomerClassifierCmdBuilder(dataset=dataset)
 
     def test_single_label_scores(self):
