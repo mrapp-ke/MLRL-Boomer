@@ -21,9 +21,11 @@ DIR_IN = path.join(DIR_RES, 'in')
 
 DIR_OUT = path.join(DIR_RES, 'out')
 
-DIR_RESULTS = path.join(path.join(DIR_RES, 'tmp'), 'results')
+DIR_TMP = path.join(DIR_RES, 'tmp')
 
-DIR_MODELS = path.join(path.join(DIR_RES, 'tmp'), 'models')
+DIR_RESULTS = path.join(DIR_TMP, 'results')
+
+DIR_MODELS = path.join(DIR_TMP, 'models')
 
 DATASET_EMOTIONS = 'emotions'
 
@@ -174,12 +176,12 @@ class CmdBuilder:
 
         return out
 
-    def __remove_tmp_dirs(self):
+    @staticmethod
+    def __remove_tmp_dirs():
         """
         Removes the temporary directories that have been used by a command.
         """
-        for tmp_dir in self.tmp_dirs:
-            shutil.rmtree(tmp_dir, ignore_errors=True)
+        shutil.rmtree(DIR_TMP, ignore_errors=True)
 
     def __assert_model_files_exist(self):
         """
