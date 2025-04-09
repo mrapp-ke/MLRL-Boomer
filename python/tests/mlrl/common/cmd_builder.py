@@ -1,7 +1,6 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-import re
 import shutil
 import subprocess
 
@@ -10,7 +9,7 @@ from functools import reduce
 from os import environ, makedirs, path
 from typing import List, Optional
 
-from mlrl.testbed.io import ENCODING_UTF8
+from .comparison.comparison import FileComparison
 
 ENV_OVERWRITE_OUTPUT_FILES = 'OVERWRITE_OUTPUT_FILES'
 
@@ -172,32 +171,6 @@ class CmdBuilder:
                                                + '" terminated with non-zero exit code\n\n' + str(out.stderr))
 
         return out
-
-    @staticmethod
-    def __replace_durations_with_placeholders(line: str) -> str:
-        regex_duration = '(\\d+ (day(s)*|hour(s)*|minute(s)*|second(s)*|millisecond(s)*))'
-        return re.sub(regex_duration + '((, )' + regex_duration + ')*' + '(( and )' + regex_duration + ')?',
-                      '<duration>', line)
-
-    def __overwrite_output_file(self, stdout, expected_output_file):
-        with open(expected_output_file, 'w', encoding=ENCODING_UTF8) as file:
-            for line in stdout:
-                line = self.__replace_durations_with_placeholders(line)
-                line = line + '\n'
-                file.write(line)
-
-    def __assert_output_files_are_equal(self, stdout, expected_output_file):
-        with open(expected_output_file, 'r', encoding=ENCODING_UTF8) as file:
-            for i, expected_line in enumerate(file):
-                expected_line = expected_line.strip('\n')
-                line = stdout[i]
-                line = line.strip('\n')
-                line = self.__replace_durations_with_placeholders(line)
-
-                if expected_line != line:
-                    self.callback.on_assertion_failure('Output of command "' + self.__format_cmd(self.args)
-                                                       + '" differs at line ' + str(i + 1) + ': Should be "'
-                                                       + expected_line + '", but is "' + line + '"')
 
     def __remove_tmp_dirs(self):
         """
@@ -382,23 +355,16 @@ class CmdBuilder:
         if self.model_dir is not None:
             out = self.__run_cmd()
 
-        overwrite_output_files = self.__should_overwrite_output_files()
-
         if expected_output_file_name is not None:
             stdout = [self.__format_cmd(self.args)] + str(out.stdout).splitlines()
-            expected_output_dir = self.expected_output_dir
+            expected_output_file = path.join(self.expected_output_dir, expected_output_file_name + '.txt')
+            difference = FileComparison(stdout).compare_or_overwrite(expected_output_file)
 
-            if overwrite_output_files:
-                makedirs(expected_output_dir, exist_ok=True)
+            if difference:
+                self.callback.on_assertion_failure('Command "' + self.__format_cmd(self.args)
+                                                   + '" resulted in unexpected output: ' + str(difference))
 
-            expected_output_file = path.join(expected_output_dir, expected_output_file_name + '.txt')
-
-            if overwrite_output_files:
-                self.__overwrite_output_file(stdout, expected_output_file)
-            else:
-                self.__assert_output_files_are_equal(stdout, expected_output_file)
-
-        if not overwrite_output_files:
+        if not self.__should_overwrite_output_files():
             self._validate_output_files()
 
         self.__remove_tmp_dirs()
