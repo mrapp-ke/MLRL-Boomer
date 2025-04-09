@@ -126,7 +126,6 @@ class CmdBuilder:
         self.callback = callback
         self.expected_output_dir = expected_output_dir
         self.model_file_name = model_file_name
-        self.output_dir = None
         self.parameter_dir = None
         self.model_dir = None
         self.num_folds = 0
@@ -153,7 +152,7 @@ class CmdBuilder:
         if runnable_class_name:
             args.extend(['-r', runnable_class_name])
 
-        args.extend(['--log-level', 'DEBUG', '--data-dir', data_dir, '--dataset', dataset])
+        args.extend(['--log-level', 'DEBUG', '--data-dir', data_dir, '--dataset', dataset, '--output-dir', DIR_RESULTS])
         return args
 
     @staticmethod
@@ -319,7 +318,7 @@ class CmdBuilder:
         """
         Asserts that output files, which should be created by a command, exist.
         """
-        self._assert_files_exist(self.output_dir, file_name, suffix)
+        self._assert_files_exist(DIR_RESULTS, file_name, suffix)
 
     def _validate_output_files(self):
         """
@@ -351,6 +350,8 @@ class CmdBuilder:
 
         :param expected_output_file_name: The name of the text file that contains the expected output of the command
         """
+        makedirs(DIR_RESULTS, exist_ok=True)
+
         for tmp_dir in self.tmp_dirs:
             makedirs(tmp_dir, exist_ok=True)
 
@@ -372,21 +373,6 @@ class CmdBuilder:
             self._validate_output_files()
 
         self.__remove_tmp_dirs()
-
-    def set_output_dir(self, output_dir: Optional[str] = DIR_RESULTS):
-        """
-        Configures the rule learner to store output files in a given directory.
-
-        :param output_dir:  The path to the directory where output files should be stored
-        :return:            The builder itself
-        """
-        self.output_dir = output_dir
-
-        if output_dir is not None:
-            self.args.append('--output-dir')
-            self.args.append(output_dir)
-            self.tmp_dirs.append(output_dir)
-        return self
 
     def set_model_dir(self, model_dir: Optional[str] = DIR_MODELS):
         """

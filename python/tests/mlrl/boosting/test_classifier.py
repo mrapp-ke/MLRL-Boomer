@@ -98,7 +98,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .marginal_probability_calibration() \
             .print_marginal_probability_calibration_model() \
             .store_marginal_probability_calibration_model() \
-            .set_output_dir() \
             .store_evaluation(False) \
             .binary_predictor(BINARY_PREDICTOR_OUTPUT_WISE_BASED_ON_PROBABILITIES) \
             .print_predictions() \
@@ -113,7 +112,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
         builder = self._create_cmd_builder() \
             .binary_predictor(BINARY_PREDICTOR_OUTPUT_WISE) \
             .incremental_evaluation() \
-            .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
         builder.run_cmd('predictor-binary-output-wise_incremental')
@@ -129,7 +127,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .store_marginal_probability_calibration_model() \
             .binary_predictor(BINARY_PREDICTOR_OUTPUT_WISE_BASED_ON_PROBABILITIES) \
             .incremental_evaluation() \
-            .set_output_dir() \
             .print_evaluation() \
             .store_evaluation() \
             .set_model_dir()
@@ -154,7 +151,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .binary_predictor(BINARY_PREDICTOR_OUTPUT_WISE) \
             .sparse_prediction_format() \
             .incremental_evaluation() \
-            .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
         builder.run_cmd('predictor-binary-output-wise_sparse_incremental')
@@ -182,7 +178,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .joint_probability_calibration() \
             .print_joint_probability_calibration_model() \
             .store_joint_probability_calibration_model() \
-            .set_output_dir() \
             .store_evaluation(False) \
             .binary_predictor(BINARY_PREDICTOR_EXAMPLE_WISE_BASED_ON_PROBABILITIES) \
             .print_predictions() \
@@ -198,7 +193,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
         builder = self._create_cmd_builder() \
             .binary_predictor(BINARY_PREDICTOR_EXAMPLE_WISE) \
             .incremental_evaluation() \
-            .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
         builder.run_cmd('predictor-binary-example-wise_incremental')
@@ -217,7 +211,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .store_joint_probability_calibration_model() \
             .binary_predictor(BINARY_PREDICTOR_EXAMPLE_WISE_BASED_ON_PROBABILITIES) \
             .incremental_evaluation() \
-            .set_output_dir() \
             .print_evaluation() \
             .store_evaluation() \
             .set_model_dir()
@@ -244,7 +237,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .binary_predictor(BINARY_PREDICTOR_EXAMPLE_WISE) \
             .sparse_prediction_format() \
             .incremental_evaluation() \
-            .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
         builder.run_cmd('predictor-binary-example-wise_sparse_incremental')
@@ -261,7 +253,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .joint_probability_calibration() \
             .print_joint_probability_calibration_model() \
             .store_joint_probability_calibration_model() \
-            .set_output_dir() \
             .store_evaluation(False) \
             .binary_predictor(BINARY_PREDICTOR_GFM) \
             .print_predictions() \
@@ -283,7 +274,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .store_joint_probability_calibration_model() \
             .binary_predictor(BINARY_PREDICTOR_GFM) \
             .incremental_evaluation() \
-            .set_output_dir() \
             .print_evaluation() \
             .store_evaluation() \
             .set_model_dir()
@@ -301,7 +291,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .joint_probability_calibration() \
             .print_joint_probability_calibration_model() \
             .store_joint_probability_calibration_model() \
-            .set_output_dir() \
             .store_evaluation(False) \
             .binary_predictor(BINARY_PREDICTOR_GFM) \
             .print_predictions() \
@@ -325,7 +314,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .binary_predictor(BINARY_PREDICTOR_GFM) \
             .sparse_prediction_format() \
             .incremental_evaluation() \
-            .set_output_dir() \
             .print_evaluation() \
             .store_evaluation() \
             .set_model_dir()
@@ -348,7 +336,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
         builder = self._create_cmd_builder() \
             .prediction_type(PREDICTION_TYPE_SCORES) \
             .incremental_evaluation() \
-            .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
         builder.run_cmd('predictor-score-output-wise_incremental')
@@ -362,7 +349,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .marginal_probability_calibration() \
             .print_marginal_probability_calibration_model() \
             .store_marginal_probability_calibration_model() \
-            .set_output_dir() \
             .store_evaluation(False) \
             .prediction_type(PREDICTION_TYPE_PROBABILITIES) \
             .probability_predictor(PROBABILITY_PREDICTOR_OUTPUT_WISE) \
@@ -382,7 +368,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .prediction_type(PREDICTION_TYPE_PROBABILITIES) \
             .probability_predictor(PROBABILITY_PREDICTOR_OUTPUT_WISE) \
             .incremental_evaluation() \
-            .set_output_dir() \
             .print_evaluation() \
             .store_evaluation() \
             .set_model_dir()
@@ -400,7 +385,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .joint_probability_calibration() \
             .print_joint_probability_calibration_model() \
             .store_joint_probability_calibration_model() \
-            .set_output_dir() \
             .store_evaluation(False) \
             .prediction_type(PREDICTION_TYPE_PROBABILITIES) \
             .probability_predictor(PROBABILITY_PREDICTOR_MARGINALIZED) \
@@ -424,7 +408,6 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .prediction_type(PREDICTION_TYPE_PROBABILITIES) \
             .probability_predictor(PROBABILITY_PREDICTOR_MARGINALIZED) \
             .incremental_evaluation() \
-            .set_output_dir() \
             .print_evaluation() \
             .store_evaluation() \
             .set_model_dir()

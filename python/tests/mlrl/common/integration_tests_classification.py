@@ -52,7 +52,6 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_label_vectors() \
             .store_label_vectors()
         builder.run_cmd('label-vectors_train-test')
@@ -66,7 +65,6 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
             .cross_validation() \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_label_vectors() \
             .store_label_vectors()
         builder.run_cmd('label-vectors_cross-validation')
@@ -80,7 +78,6 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
             .cross_validation(current_fold=1) \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_label_vectors() \
             .store_label_vectors()
         builder.run_cmd('label-vectors_single-fold')
