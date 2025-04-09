@@ -106,7 +106,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .no_data_split() \
-            .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
         builder.run_cmd('evaluation_no-data-split')
@@ -117,7 +116,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         and test data.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
-            .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
         builder.run_cmd('evaluation_train-test')
@@ -128,7 +126,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         and test data, as provided by separate files.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default + '-predefined') \
-            .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
         builder.run_cmd('evaluation_train-test-predefined')
@@ -139,7 +136,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .cross_validation() \
-            .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
         builder.run_cmd('evaluation_cross-validation')
@@ -151,7 +147,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default + '-predefined') \
             .cross_validation() \
-            .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
         builder.run_cmd('evaluation_cross-validation-predefined')
@@ -162,7 +157,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .cross_validation(current_fold=1) \
-            .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
         builder.run_cmd('evaluation_single-fold')
@@ -173,7 +167,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .evaluate_training_data() \
-            .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
         builder.run_cmd('evaluation_training-data')
@@ -185,7 +178,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .incremental_evaluation() \
-            .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
         builder.run_cmd('evaluation_incremental')
@@ -225,7 +217,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_predictions() \
             .store_predictions()
         builder.run_cmd('predictions_train-test')
@@ -238,7 +229,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .cross_validation() \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_predictions() \
             .store_predictions()
         builder.run_cmd('predictions_cross-validation')
@@ -252,7 +242,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .cross_validation(current_fold=1) \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_predictions() \
             .store_predictions()
         builder.run_cmd('predictions_single-fold')
@@ -265,7 +254,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .evaluate_training_data() \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_predictions() \
             .store_predictions()
         builder.run_cmd('predictions_training-data')
@@ -278,7 +266,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_prediction_characteristics() \
             .store_prediction_characteristics()
         builder.run_cmd('prediction-characteristics_train-test')
@@ -292,7 +279,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .cross_validation() \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_prediction_characteristics() \
             .store_prediction_characteristics()
         builder.run_cmd('prediction-characteristics_cross-validation')
@@ -306,7 +292,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .cross_validation(current_fold=1) \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_prediction_characteristics() \
             .store_prediction_characteristics()
         builder.run_cmd('prediction-characteristics_single-fold')
@@ -320,7 +305,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .evaluate_training_data() \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_prediction_characteristics() \
             .store_prediction_characteristics()
         builder.run_cmd('prediction-characteristics_training-data')
@@ -333,7 +317,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_data_characteristics() \
             .store_data_characteristics()
         builder.run_cmd('data-characteristics_train-test')
@@ -347,7 +330,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .cross_validation() \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_data_characteristics() \
             .store_data_characteristics()
         builder.run_cmd('data-characteristics_cross-validation')
@@ -361,7 +343,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .cross_validation(current_fold=1) \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_data_characteristics() \
             .store_data_characteristics()
         builder.run_cmd('data-characteristics_single-fold')
@@ -374,7 +355,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_model_characteristics() \
             .store_model_characteristics()
         builder.run_cmd('model-characteristics_train-test')
@@ -387,7 +367,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .cross_validation() \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_model_characteristics() \
             .store_model_characteristics()
         builder.run_cmd('model-characteristics_cross-validation')
@@ -400,7 +379,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .cross_validation(current_fold=1) \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_model_characteristics() \
             .store_model_characteristics()
         builder.run_cmd('model-characteristics_single-fold')
@@ -413,7 +391,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_rules() \
             .store_rules()
         builder.run_cmd('rules_train-test')
@@ -426,7 +403,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .cross_validation() \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_rules() \
             .store_rules()
         builder.run_cmd('rules_cross-validation')
@@ -440,7 +416,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .cross_validation(current_fold=1) \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_rules() \
             .store_rules()
         builder.run_cmd('rules_single-fold')
@@ -556,7 +531,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .print_model_characteristics() \
             .print_parameters() \
             .store_parameters() \
-            .set_output_dir() \
             .set_parameter_dir()
         builder.run_cmd('parameters_train-test')
 
@@ -572,7 +546,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .print_model_characteristics() \
             .print_parameters() \
             .store_parameters() \
-            .set_output_dir() \
             .set_parameter_dir()
         builder.run_cmd('parameters_cross-validation')
 
@@ -588,7 +561,6 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .print_model_characteristics() \
             .print_parameters() \
             .store_parameters() \
-            .set_output_dir() \
             .set_parameter_dir()
         builder.run_cmd('parameters_single-fold')
 
