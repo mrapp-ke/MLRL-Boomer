@@ -79,7 +79,7 @@ class FileComparison(ABC):
         :param file:    The path to the file
         :return:        The `FileComparison` that has been created
         """
-        if file.endswith('.csv'):
+        if file.endswith('.' + CsvFileSink.SUFFIX_CSV):
             return CsvFileComparison(file)
 
         with open(file, mode='r', encoding=ENCODING_UTF8) as text_file:
