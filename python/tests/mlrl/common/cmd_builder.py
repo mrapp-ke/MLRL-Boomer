@@ -165,10 +165,12 @@ class CmdBuilder:
         :return: The output of the command
         """
         out = subprocess.run(self.args, capture_output=True, text=True, check=False)
+        exit_code = out.returncode
 
-        if out.returncode != 0:
+        if exit_code != 0:
             self.callback.on_assertion_failure('Command "' + self.__format_cmd(self.args)
-                                               + '" terminated with non-zero exit code\n\n' + str(out.stderr))
+                                               + '" terminated with non-zero exit code ' + str(exit_code) + '\n\n'
+                                               + str(out.stderr))
 
         return out
 
