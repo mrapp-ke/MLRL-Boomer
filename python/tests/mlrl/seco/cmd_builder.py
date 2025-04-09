@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from os import path
 
-from ..common.cmd_builder import DIR_OUT
 from ..common.cmd_builder_classification import ClassificationCmdBuilder
 from ..common.datasets import Dataset
 
@@ -38,7 +37,7 @@ class SeCoClassifierCmdBuilder(ClassificationCmdBuilder):
     LIFT_FUNCTION_KLN = 'kln'
 
     def __init__(self, dataset: str = Dataset.EMOTIONS):
-        super().__init__(expected_output_dir=path.join(DIR_OUT, 'seco', 'classification'),
+        super().__init__(expected_output_dir=path.join('seco', 'classification'),
                          model_file_name='seco',
                          runnable_module_name='mlrl.seco',
                          dataset=dataset)

@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from os import path
 
-from ..common.cmd_builder import DIR_OUT
 from ..common.cmd_builder_regression import RegressionCmdBuilder
 from ..common.datasets import Dataset
 from .cmd_builder import BoomerCmdBuilderMixin
@@ -15,7 +14,7 @@ class BoomerRegressorCmdBuilder(RegressionCmdBuilder, BoomerCmdBuilderMixin):
     """
 
     def __init__(self, dataset: str = Dataset.ATP7D):
-        super().__init__(expected_output_dir=path.join(DIR_OUT, 'boosting', 'regression'),
+        super().__init__(expected_output_dir=path.join('boosting', 'regression'),
                          model_file_name='boomer',
                          runnable_module_name='mlrl.boosting',
                          dataset=dataset)

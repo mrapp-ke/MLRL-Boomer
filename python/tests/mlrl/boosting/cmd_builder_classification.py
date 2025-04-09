@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from os import path
 
-from ..common.cmd_builder import DIR_OUT
 from ..common.cmd_builder_classification import ClassificationCmdBuilder
 from ..common.datasets import Dataset
 from .cmd_builder import BoomerCmdBuilderMixin
@@ -49,7 +48,7 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
     PROBABILITY_PREDICTOR_MARGINALIZED = 'marginalized'
 
     def __init__(self, dataset: str = Dataset.EMOTIONS):
-        super().__init__(expected_output_dir=path.join(DIR_OUT, 'boosting', 'classification'),
+        super().__init__(expected_output_dir=path.join('boosting', 'classification'),
                          model_file_name='boomer',
                          runnable_module_name='mlrl.boosting',
                          dataset=dataset)
