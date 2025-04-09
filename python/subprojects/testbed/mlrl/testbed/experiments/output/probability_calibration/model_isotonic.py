@@ -4,13 +4,15 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing models for the calibration of probabilities via isotonic regression.
 """
 
-from typing import List, Optional, Tuple
+from dataclasses import dataclass, field
+from typing import List, Optional
 
 from mlrl.common.config.options import Options
 from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibrationModel, \
     IsotonicProbabilityCalibrationModelVisitor
 
 from mlrl.testbed.experiments.output.data import TabularOutputData
+from mlrl.testbed.experiments.output.table import ColumnWiseTable, Table
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import OPTION_DECIMALS, format_number, format_table
 
@@ -20,7 +22,17 @@ class IsotonicRegressionModel(TabularOutputData):
     Represents an isotonic regression model.
     """
 
-    Bin = List[Tuple[float, float]]
+    @dataclass
+    class BinList:
+        """
+        A list of bins that is contained in an isotonic regression model.
+
+        Attributes:
+            thresholds:     A list the contains the thresholds of individual bins
+            probabilities:  A list that contains the probabilities of individual bins
+        """
+        thresholds: List[float] = field(default_factory=list)
+        probabilities: List[float] = field(default_factory=list)
 
     class Visitor(IsotonicProbabilityCalibrationModelVisitor):
         """
@@ -29,14 +41,15 @@ class IsotonicRegressionModel(TabularOutputData):
         """
 
         def __init__(self):
-            self.bins = {}
+            self.bin_lists = {}
 
         def visit_bin(self, list_index: int, threshold: float, probability: float):
             """
             See :func:`mlrl.common.cython.probability_calibration.IsotonicProbabilityCalibrationModelVisitor.visit_bin`
             """
-            bin_list = self.bins.setdefault(list_index, [])
-            bin_list.append((threshold, probability))
+            bin_list = self.bin_lists.setdefault(list_index, IsotonicRegressionModel.BinList())
+            bin_list.thresholds.append(threshold)
+            bin_list.probabilities.append(probability)
 
     def __init__(self,
                  calibration_model: IsotonicProbabilityCalibrationModel,
@@ -57,11 +70,11 @@ class IsotonicRegressionModel(TabularOutputData):
         self.calibration_model = calibration_model
         self.column_title_prefix = column_title_prefix
 
-    def _format_threshold_column(self, list_index: int) -> str:
+    def _format_threshold_header(self, list_index: int) -> str:
         prefix = self.column_title_prefix
         return (prefix + ' ' if prefix else '') + str(list_index + 1) + ' thresholds'
 
-    def _format_probability_column(self, list_index: int) -> str:
+    def _format_probability_header(self, list_index: int) -> str:
         prefix = self.column_title_prefix
         return (prefix + ' ' if prefix else '') + str(list_index + 1) + ' probabilities'
 
@@ -71,15 +84,16 @@ class IsotonicRegressionModel(TabularOutputData):
         """
         visitor = IsotonicRegressionModel.Visitor()
         self.calibration_model.visit(visitor)
-        bins = visitor.bins
+        bin_lists = visitor.bin_lists
         decimals = options.get_int(OPTION_DECIMALS, 4)
         result = ''
 
-        for list_index in sorted(bins.keys()):
-            header = [self._format_threshold_column(list_index), self._format_probability_column(list_index)]
+        for list_index in sorted(bin_lists.keys()):
+            header = [self._format_threshold_header(list_index), self._format_probability_header(list_index)]
+            bin_list = bin_lists[list_index]
             rows = []
 
-            for threshold, probability in bins[list_index]:
+            for threshold, probability in zip(bin_list.thresholds, bin_list.probabilities):
                 rows.append([
                     format_number(threshold, decimals=decimals),
                     format_number(probability, decimals=decimals),
@@ -92,38 +106,20 @@ class IsotonicRegressionModel(TabularOutputData):
 
         return result
 
-    def to_table(self, options: Options, **_) -> Optional[TabularOutputData.Table]:
+    def to_table(self, options: Options, **_) -> Optional[Table]:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
         visitor = IsotonicRegressionModel.Visitor()
         self.calibration_model.visit(visitor)
-        bins = visitor.bins
+        bin_lists = visitor.bin_lists
         decimals = options.get_int(OPTION_DECIMALS, 0)
-        rows = []
-        end = False
-        i = 0
+        table = ColumnWiseTable()
 
-        while not end:
-            columns = {}
-            end = True
+        for list_index, bin_list in bin_lists.items():
+            thresholds = map(lambda value: format_number(value, decimals=decimals), bin_list.thresholds)
+            table.add_column(*thresholds, header=self._format_threshold_header(list_index))
+            probabilities = map(lambda value: format_number(value, decimals=decimals), bin_list.probabilities)
+            table.add_column(*probabilities, header=self._format_probability_header(list_index))
 
-            for list_index, bin_list in bins.items():
-                column_probability = self._format_probability_column(list_index)
-                column_threshold = self._format_threshold_column(list_index)
-
-                if len(bin_list) > i:
-                    threshold, probability = bin_list[i]
-                    columns[column_probability] = format_number(probability, decimals=decimals)
-                    columns[column_threshold] = format_number(threshold, decimals=decimals)
-                    end = False
-                else:
-                    columns[column_probability] = None
-                    columns[column_threshold] = None
-
-            if not end:
-                rows.append(columns)
-
-            i += 1
-
-        return rows
+        return table

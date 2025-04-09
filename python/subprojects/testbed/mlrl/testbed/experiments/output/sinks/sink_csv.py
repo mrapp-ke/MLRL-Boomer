@@ -3,12 +3,12 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing output data to CSV files.
 """
-from csv import QUOTE_MINIMAL, DictWriter
+import csv
 
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.output.sinks.sink import TabularFileSink
+from mlrl.testbed.experiments.output.table import Table
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.io import open_writable_file
 
@@ -31,22 +31,25 @@ class CsvFileSink(TabularFileSink):
         """
         super().__init__(directory=directory, suffix=self.SUFFIX_CSV, options=options)
 
-    def _write_table_to_file(self, file_path: str, state: ExperimentState, table: TabularOutputData.Table, **_):
+    def _write_table_to_file(self, file_path: str, state: ExperimentState, table: Table, **_):
+        table = table.to_column_wise_table()
         prediction_result = state.prediction_result
         incremental_prediction = prediction_result and not prediction_result.prediction_scope.is_global
 
         if incremental_prediction:
-            for row in table:
-                row['Model size'] = prediction_result.prediction_scope.model_size
+            model_size = prediction_result.prediction_scope.model_size
+            table.add_column(*[model_size for _ in range(table.num_rows)], header='Model size')
 
-        header = sorted(table[0].keys())
+        table.sort_by_headers()
 
         with open_writable_file(file_path, append=incremental_prediction) as csv_file:
-            dict_writer = DictWriter(csv_file,
-                                     delimiter=self.DELIMITER,
-                                     quotechar=self.QUOTE_CHAR,
-                                     quoting=QUOTE_MINIMAL,
-                                     fieldnames=header)
+            csv_writer = csv.writer(csv_file,
+                                    delimiter=self.DELIMITER,
+                                    quotechar=self.QUOTE_CHAR,
+                                    quoting=csv.QUOTE_MINIMAL)
 
-            for row in table:
-                dict_writer.writerow(row)
+            if table.has_headers and csv_file.tell() == 0:
+                csv_writer.writerow(table.header_row)
+
+            for row in table.rows:
+                csv_writer.writerow(row)

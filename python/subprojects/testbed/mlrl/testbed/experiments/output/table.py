@@ -1,0 +1,547 @@
+"""
+Author Michael Rapp (michael.rapp.ml@gmail.com)
+
+Provides classes for representing tables.
+"""
+from abc import ABC, abstractmethod
+from enum import Enum
+from typing import Any, Dict, Generator, Iterable, List, Optional
+
+from tabulate import tabulate
+
+
+class Alignment(Enum):
+    """
+    All possible alignments of a table column.
+    """
+    AUTO = None
+    LEFT = 'left'
+    CENTER = 'center'
+    RIGHT = 'right'
+
+
+Header = Optional[Any]
+
+Cell = Optional[Any]
+
+
+class HeaderRow(Iterable[Optional[Any]], ABC):
+    """
+    Provides access to the headers of a table.
+    """
+
+    @property
+    @abstractmethod
+    def num_columns(self) -> int:
+        """
+        The number of columns in the table.
+        """
+
+    @abstractmethod
+    def __getitem__(self, column_index: int) -> Header:
+        """
+        Returns the header of the column at a specific index.
+
+        :param column_index:    The index of the column
+        :return:                The header at the given index
+        """
+
+
+class Row(Iterable[Cell], ABC):
+    """
+    Provides access to a single row of a table.
+    """
+
+    @property
+    @abstractmethod
+    def num_columns(self) -> int:
+        """
+        The nuber of columns in the table.
+        """
+
+    @abstractmethod
+    def __getitem__(self, column_index: int) -> Cell:
+        """
+        Returns the cell of the column at a specific index.
+
+        :param column_index:    The index of the column
+        :return:                The cell at the given index
+        """
+
+
+class Column(Iterable[Cell], ABC):
+    """
+    Provides access to a single column of a table.
+    """
+
+    @property
+    @abstractmethod
+    def num_rows(self) -> int:
+        """
+        The number of rows in the table.
+        """
+
+    @abstractmethod
+    def __getitem__(self, row_index: int) -> Cell:
+        """
+        Returns the cell of the row at a specific index.
+
+        :param row_index:   The index of the row
+        :return:            The cell at the given index
+        """
+
+
+class Table(ABC):
+    """
+    An abstract base class for all tables.
+    """
+
+    @property
+    def has_headers(self) -> bool:
+        """
+        True, if the table has any headers, False otherwise.
+        """
+        return self.header_row is not None
+
+    @property
+    @abstractmethod
+    def num_rows(self) -> int:
+        """
+        The number of rows in the table.
+        """
+
+    @property
+    @abstractmethod
+    def num_columns(self) -> int:
+        """
+        The number of columns in the table.
+        """
+
+    @property
+    def num_cells(self) -> int:
+        """
+        The number of cells in the table.
+        """
+        return self.num_rows * self.num_columns
+
+    @property
+    @abstractmethod
+    def header_row(self) -> Optional[HeaderRow]:
+        """
+        The header row of the table or None, if the table does not have any headers.
+        """
+
+    @property
+    @abstractmethod
+    def alignments(self) -> Optional[List[Alignment]]:
+        """
+        The individual alignments of the columns in the table or None, if no alignments have been specified.
+        """
+
+    @property
+    @abstractmethod
+    def rows(self) -> Generator[Row]:
+        """
+        A generator that provides access to the individual rows in the table.
+        """
+
+    @property
+    @abstractmethod
+    def columns(self) -> Generator[Column]:
+        """
+        A generator that provides access to the individual columns in the table.
+        """
+
+    @abstractmethod
+    def to_row_wise_table(self) -> 'RowWiseTable':
+        """
+        Creates and returns a `RowWiseTable` from this table.
+
+        :return: The `RowWiseTable` that has been created
+        """
+
+    @abstractmethod
+    def to_column_wise_table(self) -> 'ColumnWiseTable':
+        """
+        Creates and returns a `ColumnWiseTable` from this table.
+
+        :return: The `ColumnWiseTable` that has been created
+        """
+
+    def format(self) -> str:
+        """
+        Creates and returns a textual representation of the table.
+
+        :return: The textual representation that has been created
+        """
+        if self.num_cells > 0:
+            alignments = self.alignments
+            return tabulate(self.rows,
+                            headers=self.header_row,
+                            tablefmt='simple_outline' if self.has_headers else 'plain',
+                            colalign=map(lambda alignment: alignment.value, alignments) if alignments else None)
+
+        return ''
+
+
+class RowWiseTable(Table):
+    """
+    A table to which new rows can be added one by one.
+    """
+
+    class HeaderRow(HeaderRow):
+        """
+        Provides access to the headers of a `RowWiseTable`.
+        """
+
+        def __init__(self, table: 'RowWiseTable'):
+            """
+            :param table: The `RowWiseTable` to be accessed
+            """
+            self.table = table
+
+        @property
+        def num_columns(self) -> int:
+            return self.table.num_columns
+
+        def __getitem__(self, column_index: int) -> Header:
+            return self.table._headers[column_index]
+
+        def __iter__(self) -> Iterable[Header]:
+            return iter(self.table._headers)
+
+    class Row(Row):
+        """
+        Provides access to a single row of a `RowWiseTable`.
+        """
+
+        def __init__(self, table: 'RowWiseTable', row_index: int):
+            """
+            :param table:       The `RowWiseTable` to be accessed
+            :param row_index:   The index of the row to be accessed
+            """
+            self.table = table
+            self.row_index = row_index
+
+        @property
+        def num_columns(self) -> int:
+            return self.table.num_columns
+
+        def __getitem__(self, column_index: int) -> Cell:
+            if column_index >= self.num_columns:
+                raise IndexError('Invalid column index: Got ' + str(column_index) + ', but table has only '
+                                 + str(self.num_columns) + ' columns')
+
+            row = self.table._rows[self.row_index]
+            return row[column_index] if column_index < len(row) else None
+
+        def __iter__(self) -> Iterable[Cell]:
+            for column_index in range(self.num_columns):
+                yield self[column_index]
+
+    class Column(Column):
+        """
+        Provides access to a single column of a `RowWiseTable`.
+        """
+
+        def __init__(self, table: 'RowWiseTable', column_index: int):
+            """
+            :param table:           The `RowWiseTable` to be accessed
+            :param column_index:    The index of the column to be accessed
+            """
+            self.table = table
+            self.column_index = column_index
+
+        @property
+        def num_rows(self) -> int:
+            return self.table.num_rows
+
+        def __getitem__(self, row_index: int) -> Cell:
+            if row_index >= self.num_rows:
+                raise IndexError('Invalid row index: Got ' + str(row_index) + ', but table has only '
+                                 + str(self.num_rows) + ' rows')
+
+            row = self.table._rows[row_index]
+            column_index = self.column_index
+            return row[column_index] if column_index < len(row) else None
+
+        def __iter__(self) -> Iterable[Cell]:
+            for row_index in range(self.num_rows):
+                yield self[row_index]
+
+    def __init__(self, headers: Optional[List[Header]] = None, alignments: Optional[List[Alignment]] = None):
+        """
+        :param headers:     The headers of the individual columns or None
+        :param alignments:  The alignments of the individual columns or None
+        """
+        if headers and alignments and len(headers) != len(alignments):
+            raise ValueError('The number of alignments does not match the number headers: Expected ' + str(len(headers))
+                             + ', but got ' + str(len(alignments)))
+
+        self._headers = headers
+        self._alignments = alignments
+        self._rows = []
+        self._num_columns = len(headers) if headers else 0
+
+    @staticmethod
+    def empty(*headers: Header, alignments: Optional[List[Alignment]] = None) -> 'RowWiseTable':
+        """
+        Creates and returns an empty `RowWiseTable`.
+
+        :param headers:     The headers of the individual columns
+        :param alignments:  The alignments of the individual columns or None
+        :return:            The `RowWiseTable` that has been created
+        """
+        return RowWiseTable(headers=list(headers) if headers else None, alignments=alignments)
+
+    @staticmethod
+    def from_dict(dictionary: Dict[Any, Optional[Any]]) -> 'Table':
+        """
+        Creates and returns a `RowWiseTable` with a single row from a given dictionary, where the keys of the dictionary
+        are used as the headers and the corresponding values are used as the values of the first row.
+
+        :param dictionary:  The dictionary, the table should be created from
+        return:             The `RowWiseTable` that has been created
+        """
+        headers = list(dictionary.keys())
+        table = RowWiseTable(headers=headers)
+        table.add_row(*[dictionary[key] for key in headers])
+        return table
+
+    def add_row(self, *values: Optional[Any]):
+        """
+        Adds a new row to the end of the table.
+
+        :param values: The values in the row
+        """
+        values = list(values)
+        headers = self._headers
+
+        if headers and len(values) > len(headers):
+            raise ValueError('The row must contain at most ' + str(len(headers)) + ' values')
+
+        self._rows.append(values)
+        self._num_columns = max(len(values), self._num_columns)
+
+    @property
+    def num_rows(self) -> int:
+        return len(self._rows)
+
+    @property
+    def num_columns(self) -> int:
+        return self._num_columns
+
+    @property
+    def header_row(self) -> Optional[HeaderRow]:
+        return RowWiseTable.HeaderRow(self) if self._headers else None
+
+    @property
+    def alignments(self) -> Optional[List[Alignment]]:
+        return self._alignments
+
+    @property
+    def rows(self) -> Generator[Row]:
+        for row_index in range(self.num_rows):
+            yield RowWiseTable.Row(self, row_index)
+
+    @property
+    def columns(self) -> Generator[Column]:
+        for column_index in range(self.num_columns):
+            yield RowWiseTable.Column(self, column_index)
+
+    def to_row_wise_table(self) -> 'RowWiseTable':
+        return self
+
+    def to_column_wise_table(self) -> 'ColumnWiseTable':
+        table = ColumnWiseTable()
+        header_row = self.header_row
+        alignments = self.alignments
+
+        for column_index, column in enumerate(self.columns):
+            table.add_column(*column,
+                             header=header_row[column_index] if header_row else None,
+                             alignment=alignments[column_index] if alignments else None)
+
+        return table
+
+
+class ColumnWiseTable(Table):
+    """
+    A table to which new columns can be added one by one.
+    """
+
+    class HeaderRow(HeaderRow):
+        """
+        Provides access to the headers of a `ColumnWiseTable`.
+        """
+
+        def __init__(self, table: 'ColumnWiseTable'):
+            """
+            :param table: The `ColumnWiseTable` to be accessed
+            """
+            self.table = table
+
+        @property
+        def num_columns(self) -> int:
+            return self.table.num_columns
+
+        def __getitem__(self, column_index: int) -> Header:
+            return self.table._headers[column_index]
+
+        def __iter__(self) -> Iterable[Header]:
+            return iter(self.table._headers)
+
+    class Row(Row):
+        """
+        Provides access to a single row of a `ColumnWiseTable`.
+        """
+
+        def __init__(self, table: 'ColumnWiseTable', row_index: int):
+            """
+            :param table:       The `ColumnWiseTable` to be accessed
+            :param row_index:   The index of the row to be accessed
+            """
+            self.table = table
+            self.row_index = row_index
+
+        @property
+        def num_columns(self) -> int:
+            return self.table.num_columns
+
+        def __getitem__(self, column_index: int) -> Cell:
+            if column_index >= self.num_columns:
+                raise IndexError('Invalid column index: Got ' + str(column_index) + ', but table has only '
+                                 + str(self.num_columns) + ' columns')
+
+            column = self.table._columns[column_index]
+            row_index = self.row_index
+            return column[row_index] if row_index < len(column) else None
+
+        def __iter__(self) -> Iterable[Cell]:
+            for column_index in range(self.num_columns):
+                yield self[column_index]
+
+    class Column(Column):
+        """
+        Provides access to a single column of a `ColumnWiseTable`.
+        """
+
+        def __init__(self, table: 'ColumnWiseTable', column_index: int):
+            """
+            :param table:           The `ColumnWiseTable` to be accessed
+            :param column_index:    The index of the column to be accessed
+            """
+            self.table = table
+            self.column_index = column_index
+
+        @property
+        def num_rows(self) -> int:
+            return self.table.num_rows
+
+        def __getitem__(self, row_index: int) -> Cell:
+            if row_index >= self.num_rows:
+                raise IndexError('Invalid row index: Got ' + str(row_index) + ', but table has only '
+                                 + str(self.num_rows) + ' rows')
+
+            column = self.table._columns[self.column_index]
+            return column[row_index] if row_index < len(column) else None
+
+        def __iter__(self) -> Iterable[Cell]:
+            for row_index in range(self.num_rows):
+                yield self[row_index]
+
+    def __init__(self):
+        self._headers = None
+        self._alignments = None
+        self._columns = []
+        self._num_rows = 0
+
+    def add_column(self,
+                   *values: Optional[Any],
+                   header: Optional[Header] = None,
+                   alignment: Optional[Alignment] = None):
+        """
+        Adds a new column to the end of the table.
+
+        :param values:      The values in the column
+        :param header:      The header of the column or None
+        :param alignment:   The alignment of the column or None
+        """
+        values = list(values)
+
+        if header:
+            if not self._headers:
+                self._headers = [None for _ in range(self.num_columns)]
+
+            self._headers.append(header)
+
+        if alignment:
+            if not self._alignments:
+                self._alignments = [None for _ in range(self.num_columns)]
+
+            self._alignments.append(alignment)
+
+        self._columns.append(values)
+        self._num_rows = max(len(values), self._num_rows)
+
+    def sort_by_headers(self):
+        """
+        Sorts the columns in the table by their headers.
+        """
+        headers = self._headers
+
+        if headers:
+            columns = self._columns
+            alignments = self._alignments
+            sorted_column_indices = sorted(range(len(headers)), key=headers.__getitem__)
+            sorted_columns = []
+            sorted_headers = []
+            sorted_alignments = [] if alignments else None
+
+            for column_index in sorted_column_indices:
+                sorted_columns.append(columns[column_index])
+                sorted_headers.append(headers[column_index])
+
+                if alignments:
+                    sorted_alignments.append(alignments[column_index])
+
+            self._headers = sorted_headers
+            self._alignments = sorted_alignments
+            self._columns = sorted_columns
+
+    @property
+    def num_rows(self) -> int:
+        return self._num_rows
+
+    @property
+    def num_columns(self) -> int:
+        return len(self._columns)
+
+    @property
+    def header_row(self) -> Optional[HeaderRow]:
+        return ColumnWiseTable.HeaderRow(self) if self._headers else None
+
+    @property
+    def alignments(self) -> Optional[List[Alignment]]:
+        return self._alignments
+
+    @property
+    def rows(self) -> Generator[Row]:
+        for row_index in range(self.num_rows):
+            yield ColumnWiseTable.Row(self, row_index)
+
+    @property
+    def columns(self) -> Generator[Column]:
+        for column_index in range(self.num_columns):
+            yield ColumnWiseTable.Column(self, column_index)
+
+    def to_row_wise_table(self) -> RowWiseTable:
+        table = RowWiseTable(headers=self._headers, alignments=self._alignments)
+
+        for row in self.rows:
+            table.add_row(*row)
+
+        return table
+
+    def to_column_wise_table(self) -> 'ColumnWiseTable':
+        return self

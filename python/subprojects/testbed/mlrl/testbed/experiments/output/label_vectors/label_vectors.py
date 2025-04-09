@@ -12,6 +12,7 @@ from mlrl.common.data.types import Uint8
 
 from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.output.label_vectors.label_vector_histogram import LabelVectorHistogram
+from mlrl.testbed.experiments.output.table import RowWiseTable, Table
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import format_table
 
@@ -59,18 +60,14 @@ class LabelVectors(TabularOutputData):
 
         return format_table(rows, header=header)
 
-    def to_table(self, options: Options, **_) -> Optional[TabularOutputData.Table]:
+    def to_table(self, options: Options, **_) -> Optional[Table]:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
         sparse = options.get_bool(self.OPTION_SPARSE, False)
-        rows = []
+        table = RowWiseTable.empty(self.COLUMN_INDEX, self.COLUMN_LABEL_VECTOR, self.COLUMN_FREQUENCY)
 
         for i, (label_vector, frequency) in enumerate(self.label_vector_histogram.unique_label_vectors):
-            rows.append({
-                self.COLUMN_INDEX: i + 1,
-                self.COLUMN_LABEL_VECTOR: self.__format_label_vector(label_vector, sparse=sparse),
-                self.COLUMN_FREQUENCY: frequency
-            })
+            table.add_row(i + 1, self.__format_label_vector(label_vector, sparse=sparse), frequency)
 
-        return rows
+        return table
