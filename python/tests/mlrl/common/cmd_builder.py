@@ -6,16 +6,6 @@ from typing import List, Optional
 
 from .datasets import Dataset
 
-DIR_RES = path.join('python', 'tests', 'res')
-
-DIR_IN = path.join(DIR_RES, 'in')
-
-DIR_OUT = path.join(DIR_RES, 'out')
-
-DIR_TMP = path.join(DIR_RES, 'tmp')
-
-DIR_MODELS = path.join(DIR_TMP, 'models')
-
 
 class CmdBuilder:
     """
@@ -67,7 +57,7 @@ class CmdBuilder:
         :param runnable_class_name:     The class name of the runnable to be invoked by the 'testbed' program
         :param dataset:                 The name of the dataset
         """
-        self.expected_output_dir = expected_output_dir
+        self.expected_output_dir = path.join('python', 'tests', 'res', 'out', expected_output_dir)
         self.model_file_name = model_file_name
         self.runnable_module_name = runnable_module_name
         self.runnable_class_name = runnable_class_name
@@ -83,7 +73,7 @@ class CmdBuilder:
         """
         The path to the directory where output files should be stored.
         """
-        return path.join(DIR_TMP, 'results')
+        return path.join('python', 'tests', 'res', 'tmp', 'results')
 
     def build(self) -> List[str]:
         """
@@ -97,12 +87,12 @@ class CmdBuilder:
             args.extend(['-r', self.runnable_class_name])
 
         args.extend(['--log-level', 'DEBUG'])
-        args.extend(['--data-dir', path.join(DIR_RES, 'data')])
+        args.extend(['--data-dir', path.join('python', 'tests', 'res', 'data')])
         args.extend(['--dataset', self.dataset])
         args.extend(['--output-dir', self.output_dir])
         return args + self.args
 
-    def set_model_dir(self, model_dir: Optional[str] = DIR_MODELS):
+    def set_model_dir(self, model_dir: Optional[str] = path.join('python', 'tests', 'res', 'tmp', 'models')):
         """
         Configures the rule learner to store models in a given directory or load them, if available.
 
@@ -116,7 +106,7 @@ class CmdBuilder:
             self.args.append(model_dir)
         return self
 
-    def set_parameter_dir(self, parameter_dir: Optional[str] = DIR_IN):
+    def set_parameter_dir(self, parameter_dir: Optional[str] = path.join('python', 'tests', 'res', 'in')):
         """
         Configures the rule learner to load parameter settings from a given directory, if available.
 
