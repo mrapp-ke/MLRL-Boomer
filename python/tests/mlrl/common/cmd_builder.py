@@ -42,43 +42,43 @@ DATASET_ATP7D_MEKA = 'atp7d-meka'
 
 DATASET_HOUSING = 'housing'
 
-RULE_PRUNING_NO = 'none'
-
-RULE_PRUNING_IREP = 'irep'
-
-RULE_INDUCTION_TOP_DOWN_GREEDY = 'top-down-greedy'
-
-RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH = 'top-down-beam-search'
-
-INSTANCE_SAMPLING_NO = 'none'
-
-INSTANCE_SAMPLING_WITH_REPLACEMENT = 'with-replacement'
-
-INSTANCE_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
-
-FEATURE_SAMPLING_NO = 'none'
-
-FEATURE_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
-
-OUTPUT_SAMPLING_NO = 'none'
-
-OUTPUT_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
-
-OUTPUT_SAMPLING_ROUND_ROBIN = 'round-robin'
-
-HOLDOUT_NO = 'none'
-
-HOLDOUT_RANDOM = 'random'
-
-FEATURE_BINNING_EQUAL_WIDTH = 'equal-width'
-
-FEATURE_BINNING_EQUAL_FREQUENCY = 'equal-frequency'
-
 
 class CmdBuilder:
     """
     A builder that allows to configure a command for running a rule learner.
     """
+
+    RULE_PRUNING_NO = 'none'
+
+    RULE_PRUNING_IREP = 'irep'
+
+    RULE_INDUCTION_TOP_DOWN_GREEDY = 'top-down-greedy'
+
+    RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH = 'top-down-beam-search'
+
+    INSTANCE_SAMPLING_NO = 'none'
+
+    INSTANCE_SAMPLING_WITH_REPLACEMENT = 'with-replacement'
+
+    INSTANCE_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
+
+    FEATURE_SAMPLING_NO = 'none'
+
+    FEATURE_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
+
+    OUTPUT_SAMPLING_NO = 'none'
+
+    OUTPUT_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
+
+    OUTPUT_SAMPLING_ROUND_ROBIN = 'round-robin'
+
+    HOLDOUT_NO = 'none'
+
+    HOLDOUT_RANDOM = 'random'
+
+    FEATURE_BINNING_EQUAL_WIDTH = 'equal-width'
+
+    FEATURE_BINNING_EQUAL_FREQUENCY = 'equal-frequency'
 
     def __init__(self,
                  expected_output_dir: str,

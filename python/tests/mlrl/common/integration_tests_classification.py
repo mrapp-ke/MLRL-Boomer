@@ -6,8 +6,7 @@ from unittest import SkipTest
 
 from .cmd_builder import DATASET_BREAST_CANCER, DATASET_EMOTIONS, DATASET_EMOTIONS_NOMINAL, DATASET_EMOTIONS_ORDINAL, \
     DATASET_ENRON, DATASET_LANGLOG
-from .cmd_builder_classification import INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE, \
-    INSTANCE_SAMPLING_STRATIFIED_OUTPUT_WISE
+from .cmd_builder_classification import ClassificationCmdBuilder
 from .cmd_runner import CmdRunner
 from .integration_tests import IntegrationTests
 
@@ -89,7 +88,7 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
         label-wise stratification.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
-            .instance_sampling(INSTANCE_SAMPLING_STRATIFIED_OUTPUT_WISE)
+            .instance_sampling(ClassificationCmdBuilder.INSTANCE_SAMPLING_STRATIFIED_OUTPUT_WISE)
         CmdRunner(self, builder).run('instance-sampling-stratified-output-wise')
 
     def test_instance_sampling_stratified_example_wise(self):
@@ -98,5 +97,5 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
         example-wise stratification.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
-            .instance_sampling(INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE)
+            .instance_sampling(ClassificationCmdBuilder.INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE)
         CmdRunner(self, builder).run('instance-sampling-stratified-example-wise')
