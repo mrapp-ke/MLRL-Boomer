@@ -69,6 +69,17 @@ class FileComparison:
         """
         self.lines = lines
 
+    @staticmethod
+    def for_file(file: str) -> 'FileComparison':
+        """
+        Creates and returns a new object of type `FileComparison` for a specific file.
+
+        :param file:    The path to the file
+        :return:        The `FileComparison` that has been created
+        """
+        with open(file, mode='r', encoding=ENCODING_UTF8) as f:
+            return FileComparison(f.readlines())
+
     def compare_or_overwrite(self, another_file: str) -> Optional[Difference]:
         """
         Compares the file to another file or overwrites the latter with the former.

@@ -6,7 +6,7 @@ import subprocess
 
 from abc import ABC, abstractmethod
 from functools import reduce
-from os import environ, makedirs, path
+from os import environ, listdir, makedirs, path
 from typing import List, Optional
 
 from .comparison.comparison import FileComparison
@@ -344,11 +344,19 @@ class CmdBuilder:
         raise ValueError('Value of environment variable "' + ENV_OVERWRITE_OUTPUT_FILES + '" must be "true" or '
                          + '"false", but is "' + value + '"')
 
-    def run_cmd(self, expected_output_file_name: str = None):
+    def __compare_files(self, file_comparison: FileComparison, test_name: str, file_name: str):
+        expected_output_file = path.join(self.expected_output_dir, test_name, file_name)
+        difference = file_comparison.compare_or_overwrite(expected_output_file)
+
+        if difference:
+            self.callback.on_assertion_failure('Command "' + self.__format_cmd(self.args)
+                                               + '" resulted in unexpected output: ' + str(difference))
+
+    def run_cmd(self, test_name: Optional[str] = None):
         """
         Runs a command that has been configured via the builder.
 
-        :param expected_output_file_name: The name of the text file that contains the expected output of the command
+        :param test_name: The name of the directory that stores the output files produced by the command
         """
         makedirs(DIR_RESULTS, exist_ok=True)
 
@@ -360,14 +368,14 @@ class CmdBuilder:
         if self.model_dir is not None:
             out = self.__run_cmd()
 
-        if expected_output_file_name is not None:
+        if test_name:
             stdout = [self.__format_cmd(self.args)] + str(out.stdout).splitlines()
-            expected_output_file = path.join(self.expected_output_dir, expected_output_file_name + '.txt')
-            difference = FileComparison(stdout).compare_or_overwrite(expected_output_file)
+            self.__compare_files(FileComparison(stdout), test_name=test_name, file_name='std.out')
 
-            if difference:
-                self.callback.on_assertion_failure('Command "' + self.__format_cmd(self.args)
-                                                   + '" resulted in unexpected output: ' + str(difference))
+            for output_file in listdir(DIR_RESULTS):
+                self.__compare_files(FileComparison.for_file(path.join(DIR_RESULTS, output_file)),
+                                     test_name=test_name,
+                                     file_name=path.basename(output_file))
 
         if not self.__should_overwrite_output_files():
             self._validate_output_files()
