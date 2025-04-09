@@ -13,7 +13,7 @@ from typing import Dict
 
 from mlrl.testbed.experiments.output.sinks import CsvFileSink
 from mlrl.testbed.fold import Fold
-from mlrl.testbed.util.io import SUFFIX_CSV, get_file_name_per_fold, open_readable_file
+from mlrl.testbed.util.io import get_file_name_per_fold, open_readable_file
 
 
 class ParameterLoader(ABC):
@@ -43,7 +43,7 @@ class CsvParameterLoader(ParameterLoader):
         self.input_dir = input_dir
 
     def load_parameters(self, fold: Fold) -> Dict:
-        file_name = get_file_name_per_fold('parameters', SUFFIX_CSV, fold.index)
+        file_name = get_file_name_per_fold('parameters', CsvFileSink.SUFFIX_CSV, fold.index)
         file_path = path.join(self.input_dir, file_name)
         log.debug('Loading parameters from file \"%s\"...', file_path)
 

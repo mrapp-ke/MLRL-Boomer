@@ -9,9 +9,6 @@ from os import listdir, path, unlink
 from typing import Optional
 from xml.dom import minidom
 
-# The suffix of a CSV file
-SUFFIX_CSV = 'csv'
-
 # The suffix of an ARFF file
 SUFFIX_ARFF = 'arff'
 
