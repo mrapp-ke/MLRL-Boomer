@@ -11,10 +11,11 @@ from .cmd_builder import DATASET_BREAST_CANCER, DATASET_EMOTIONS, DATASET_EMOTIO
     FEATURE_SAMPLING_NO, FEATURE_SAMPLING_WITHOUT_REPLACEMENT, INSTANCE_SAMPLING_NO, \
     INSTANCE_SAMPLING_WITH_REPLACEMENT, INSTANCE_SAMPLING_WITHOUT_REPLACEMENT, OUTPUT_SAMPLING_NO, \
     OUTPUT_SAMPLING_ROUND_ROBIN, OUTPUT_SAMPLING_WITHOUT_REPLACEMENT, RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH, \
-    RULE_PRUNING_IREP, RULE_PRUNING_NO, CmdBuilder
+    RULE_PRUNING_IREP, RULE_PRUNING_NO
+from .cmd_runner import CmdRunner
 
 
-class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
+class IntegrationTests(TestCase, ABC):
     """
     Defines a series of integration tests for any type of rule learning algorithm.
     """
@@ -68,19 +69,13 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
 
         super().setUpClass()
 
-    def on_assertion_failure(self, message: str):
-        """
-        See `CmdBuilder.AssertionCallback.on_assertion_failure`.
-        """
-        self.fail(message)
-
     def test_single_output(self):
         """
         Tests the evaluation of the rule learning algorithm when predicting for a single output.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_single_output) \
             .print_evaluation()
-        builder.run_cmd('single-output')
+        CmdRunner(self, builder).run('single-output')
 
     def test_sparse_feature_value(self):
         """
@@ -89,7 +84,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_numerical_sparse) \
             .sparse_feature_value(1.0)
-        builder.run_cmd('sparse-feature-value')
+        CmdRunner(self, builder).run('sparse-feature-value')
 
     def test_meka_format(self):
         """
@@ -97,7 +92,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_meka) \
             .print_evaluation(False)
-        builder.run_cmd('meka-format')
+        CmdRunner(self, builder).run('meka-format')
 
     def test_evaluation_no_data_split(self):
         """
@@ -108,7 +103,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .no_data_split() \
             .print_evaluation() \
             .store_evaluation()
-        builder.run_cmd('evaluation_no-data-split')
+        CmdRunner(self, builder).run('evaluation_no-data-split')
 
     def test_evaluation_train_test(self):
         """
@@ -118,7 +113,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .print_evaluation() \
             .store_evaluation()
-        builder.run_cmd('evaluation_train-test')
+        CmdRunner(self, builder).run('evaluation_train-test')
 
     def test_evaluation_train_test_predefined(self):
         """
@@ -128,7 +123,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder(dataset=self.dataset_default + '-predefined') \
             .print_evaluation() \
             .store_evaluation()
-        builder.run_cmd('evaluation_train-test-predefined')
+        CmdRunner(self, builder).run('evaluation_train-test-predefined')
 
     def test_evaluation_cross_validation(self):
         """
@@ -138,7 +133,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .cross_validation() \
             .print_evaluation() \
             .store_evaluation()
-        builder.run_cmd('evaluation_cross-validation')
+        CmdRunner(self, builder).run('evaluation_cross-validation')
 
     def test_evaluation_cross_validation_predefined(self):
         """
@@ -149,7 +144,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .cross_validation() \
             .print_evaluation() \
             .store_evaluation()
-        builder.run_cmd('evaluation_cross-validation-predefined')
+        CmdRunner(self, builder).run('evaluation_cross-validation-predefined')
 
     def test_evaluation_single_fold(self):
         """
@@ -159,7 +154,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .cross_validation(current_fold=1) \
             .print_evaluation() \
             .store_evaluation()
-        builder.run_cmd('evaluation_single-fold')
+        CmdRunner(self, builder).run('evaluation_single-fold')
 
     def test_evaluation_training_data(self):
         """
@@ -169,7 +164,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .evaluate_training_data() \
             .print_evaluation() \
             .store_evaluation()
-        builder.run_cmd('evaluation_training-data')
+        CmdRunner(self, builder).run('evaluation_training-data')
 
     def test_evaluation_incremental(self):
         """
@@ -180,7 +175,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .incremental_evaluation() \
             .print_evaluation() \
             .store_evaluation()
-        builder.run_cmd('evaluation_incremental')
+        CmdRunner(self, builder).run('evaluation_incremental')
 
     def test_model_persistence_train_test(self):
         """
@@ -189,7 +184,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .set_model_dir()
-        builder.run_cmd('model-persistence_train-test')
+        CmdRunner(self, builder).run('model-persistence_train-test')
 
     def test_model_persistence_cross_validation(self):
         """
@@ -198,7 +193,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .cross_validation() \
             .set_model_dir()
-        builder.run_cmd('model-persistence_cross-validation')
+        CmdRunner(self, builder).run('model-persistence_cross-validation')
 
     def test_model_persistence_single_fold(self):
         """
@@ -207,7 +202,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .cross_validation(current_fold=1) \
             .set_model_dir()
-        builder.run_cmd('model-persistence_single-fold')
+        CmdRunner(self, builder).run('model-persistence_single-fold')
 
     def test_predictions_train_test(self):
         """
@@ -219,7 +214,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .store_evaluation(False) \
             .print_predictions() \
             .store_predictions()
-        builder.run_cmd('predictions_train-test')
+        CmdRunner(self, builder).run('predictions_train-test')
 
     def test_predictions_cross_validation(self):
         """
@@ -231,7 +226,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .store_evaluation(False) \
             .print_predictions() \
             .store_predictions()
-        builder.run_cmd('predictions_cross-validation')
+        CmdRunner(self, builder).run('predictions_cross-validation')
 
     def test_predictions_single_fold(self):
         """
@@ -244,7 +239,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .store_evaluation(False) \
             .print_predictions() \
             .store_predictions()
-        builder.run_cmd('predictions_single-fold')
+        CmdRunner(self, builder).run('predictions_single-fold')
 
     def test_predictions_training_data(self):
         """
@@ -256,7 +251,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .store_evaluation(False) \
             .print_predictions() \
             .store_predictions()
-        builder.run_cmd('predictions_training-data')
+        CmdRunner(self, builder).run('predictions_training-data')
 
     def test_prediction_characteristics_train_test(self):
         """
@@ -268,7 +263,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .store_evaluation(False) \
             .print_prediction_characteristics() \
             .store_prediction_characteristics()
-        builder.run_cmd('prediction-characteristics_train-test')
+        CmdRunner(self, builder).run('prediction-characteristics_train-test')
 
     def test_prediction_characteristics_cross_validation(self):
         """
@@ -281,7 +276,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .store_evaluation(False) \
             .print_prediction_characteristics() \
             .store_prediction_characteristics()
-        builder.run_cmd('prediction-characteristics_cross-validation')
+        CmdRunner(self, builder).run('prediction-characteristics_cross-validation')
 
     def test_prediction_characteristics_single_fold(self):
         """
@@ -294,7 +289,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .store_evaluation(False) \
             .print_prediction_characteristics() \
             .store_prediction_characteristics()
-        builder.run_cmd('prediction-characteristics_single-fold')
+        CmdRunner(self, builder).run('prediction-characteristics_single-fold')
 
     def test_prediction_characteristics_training_data(self):
         """
@@ -307,7 +302,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .store_evaluation(False) \
             .print_prediction_characteristics() \
             .store_prediction_characteristics()
-        builder.run_cmd('prediction-characteristics_training-data')
+        CmdRunner(self, builder).run('prediction-characteristics_training-data')
 
     def test_data_characteristics_train_test(self):
         """
@@ -319,7 +314,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .store_evaluation(False) \
             .print_data_characteristics() \
             .store_data_characteristics()
-        builder.run_cmd('data-characteristics_train-test')
+        CmdRunner(self, builder).run('data-characteristics_train-test')
 
     def test_data_characteristics_cross_validation(self):
         """
@@ -332,7 +327,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .store_evaluation(False) \
             .print_data_characteristics() \
             .store_data_characteristics()
-        builder.run_cmd('data-characteristics_cross-validation')
+        CmdRunner(self, builder).run('data-characteristics_cross-validation')
 
     def test_data_characteristics_single_fold(self):
         """
@@ -345,7 +340,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .store_evaluation(False) \
             .print_data_characteristics() \
             .store_data_characteristics()
-        builder.run_cmd('data-characteristics_single-fold')
+        CmdRunner(self, builder).run('data-characteristics_single-fold')
 
     def test_model_characteristics_train_test(self):
         """
@@ -357,7 +352,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .store_evaluation(False) \
             .print_model_characteristics() \
             .store_model_characteristics()
-        builder.run_cmd('model-characteristics_train-test')
+        CmdRunner(self, builder).run('model-characteristics_train-test')
 
     def test_model_characteristics_cross_validation(self):
         """
@@ -369,7 +364,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .store_evaluation(False) \
             .print_model_characteristics() \
             .store_model_characteristics()
-        builder.run_cmd('model-characteristics_cross-validation')
+        CmdRunner(self, builder).run('model-characteristics_cross-validation')
 
     def test_model_characteristics_single_fold(self):
         """
@@ -381,7 +376,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .store_evaluation(False) \
             .print_model_characteristics() \
             .store_model_characteristics()
-        builder.run_cmd('model-characteristics_single-fold')
+        CmdRunner(self, builder).run('model-characteristics_single-fold')
 
     def test_rules_train_test(self):
         """
@@ -393,7 +388,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .store_evaluation(False) \
             .print_rules() \
             .store_rules()
-        builder.run_cmd('rules_train-test')
+        CmdRunner(self, builder).run('rules_train-test')
 
     def test_rules_cross_validation(self):
         """
@@ -405,7 +400,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .store_evaluation(False) \
             .print_rules() \
             .store_rules()
-        builder.run_cmd('rules_cross-validation')
+        CmdRunner(self, builder).run('rules_cross-validation')
 
     def test_rules_single_fold(self):
         """
@@ -418,7 +413,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .store_evaluation(False) \
             .print_rules() \
             .store_rules()
-        builder.run_cmd('rules_single-fold')
+        CmdRunner(self, builder).run('rules_single-fold')
 
     def test_numeric_features_dense(self):
         """
@@ -427,7 +422,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_numerical_sparse) \
             .sparse_feature_format(False)
-        builder.run_cmd('numeric-features-dense')
+        CmdRunner(self, builder).run('numeric-features-dense')
 
     def test_numeric_features_sparse(self):
         """
@@ -436,7 +431,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_numerical_sparse) \
             .sparse_feature_format()
-        builder.run_cmd('numeric-features-sparse')
+        CmdRunner(self, builder).run('numeric-features-sparse')
 
     def test_binary_features_dense(self):
         """
@@ -444,7 +439,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_binary) \
             .sparse_feature_format(False)
-        builder.run_cmd('binary-features-dense')
+        CmdRunner(self, builder).run('binary-features-dense')
 
     def test_binary_features_sparse(self):
         """
@@ -452,7 +447,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_binary) \
             .sparse_feature_format()
-        builder.run_cmd('binary-features-sparse')
+        CmdRunner(self, builder).run('binary-features-sparse')
 
     def test_nominal_features_dense(self):
         """
@@ -460,7 +455,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_nominal) \
             .sparse_feature_format(False)
-        builder.run_cmd('nominal-features-dense')
+        CmdRunner(self, builder).run('nominal-features-dense')
 
     def test_nominal_features_sparse(self):
         """
@@ -468,7 +463,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_nominal) \
             .sparse_feature_format()
-        builder.run_cmd('nominal-features-sparse')
+        CmdRunner(self, builder).run('nominal-features-sparse')
 
     def test_ordinal_features_dense(self):
         """
@@ -476,7 +471,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_ordinal) \
             .sparse_feature_format(False)
-        builder.run_cmd('ordinal-features-dense')
+        CmdRunner(self, builder).run('ordinal-features-dense')
 
     def test_ordinal_features_sparse(self):
         """
@@ -484,7 +479,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_ordinal) \
             .sparse_feature_format()
-        builder.run_cmd('ordinal-features-sparse')
+        CmdRunner(self, builder).run('ordinal-features-sparse')
 
     def test_output_format_dense(self):
         """
@@ -492,7 +487,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .sparse_output_format(False)
-        builder.run_cmd('output-format-dense')
+        CmdRunner(self, builder).run('output-format-dense')
 
     def test_output_format_sparse(self):
         """
@@ -500,7 +495,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .sparse_output_format()
-        builder.run_cmd('output-format-sparse')
+        CmdRunner(self, builder).run('output-format-sparse')
 
     def test_prediction_format_dense(self):
         """
@@ -509,7 +504,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .sparse_prediction_format(False) \
             .print_predictions()
-        builder.run_cmd('prediction-format-dense')
+        CmdRunner(self, builder).run('prediction-format-dense')
 
     def test_prediction_format_sparse(self):
         """
@@ -518,7 +513,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .sparse_prediction_format() \
             .print_predictions()
-        builder.run_cmd('prediction-format-sparse')
+        CmdRunner(self, builder).run('prediction-format-sparse')
 
     def test_parameters_train_test(self):
         """
@@ -532,7 +527,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .print_parameters() \
             .store_parameters() \
             .set_parameter_dir()
-        builder.run_cmd('parameters_train-test')
+        CmdRunner(self, builder).run('parameters_train-test')
 
     def test_parameters_cross_validation(self):
         """
@@ -547,7 +542,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .print_parameters() \
             .store_parameters() \
             .set_parameter_dir()
-        builder.run_cmd('parameters_cross-validation')
+        CmdRunner(self, builder).run('parameters_cross-validation')
 
     def test_parameters_single_fold(self):
         """
@@ -562,7 +557,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
             .print_parameters() \
             .store_parameters() \
             .set_parameter_dir()
-        builder.run_cmd('parameters_single-fold')
+        CmdRunner(self, builder).run('parameters_single-fold')
 
     def test_instance_sampling_no(self):
         """
@@ -570,7 +565,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .instance_sampling(INSTANCE_SAMPLING_NO)
-        builder.run_cmd('instance-sampling-no')
+        CmdRunner(self, builder).run('instance-sampling-no')
 
     def test_instance_sampling_with_replacement(self):
         """
@@ -579,7 +574,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .instance_sampling(INSTANCE_SAMPLING_WITH_REPLACEMENT)
-        builder.run_cmd('instance-sampling-with-replacement')
+        CmdRunner(self, builder).run('instance-sampling-with-replacement')
 
     def test_instance_sampling_without_replacement(self):
         """
@@ -588,7 +583,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .instance_sampling(INSTANCE_SAMPLING_WITHOUT_REPLACEMENT)
-        builder.run_cmd('instance-sampling-without-replacement')
+        CmdRunner(self, builder).run('instance-sampling-without-replacement')
 
     def test_feature_sampling_no(self):
         """
@@ -596,7 +591,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .feature_sampling(FEATURE_SAMPLING_NO)
-        builder.run_cmd('feature-sampling-no')
+        CmdRunner(self, builder).run('feature-sampling-no')
 
     def test_feature_sampling_without_replacement(self):
         """
@@ -604,7 +599,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .feature_sampling(FEATURE_SAMPLING_WITHOUT_REPLACEMENT)
-        builder.run_cmd('feature-sampling-without-replacement')
+        CmdRunner(self, builder).run('feature-sampling-without-replacement')
 
     def test_output_sampling_no(self):
         """
@@ -612,7 +607,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .output_sampling(OUTPUT_SAMPLING_NO)
-        builder.run_cmd('output-sampling-no')
+        CmdRunner(self, builder).run('output-sampling-no')
 
     def test_output_sampling_round_robin(self):
         """
@@ -620,7 +615,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .output_sampling(OUTPUT_SAMPLING_ROUND_ROBIN)
-        builder.run_cmd('output-sampling-round-robin')
+        CmdRunner(self, builder).run('output-sampling-round-robin')
 
     def test_output_sampling_without_replacement(self):
         """
@@ -628,7 +623,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .output_sampling(OUTPUT_SAMPLING_WITHOUT_REPLACEMENT)
-        builder.run_cmd('output-sampling-without-replacement')
+        CmdRunner(self, builder).run('output-sampling-without-replacement')
 
     def test_pruning_no(self):
         """
@@ -636,7 +631,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .rule_pruning(RULE_PRUNING_NO)
-        builder.run_cmd('pruning-no')
+        CmdRunner(self, builder).run('pruning-no')
 
     def test_pruning_irep(self):
         """
@@ -645,7 +640,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .instance_sampling() \
             .rule_pruning(RULE_PRUNING_IREP)
-        builder.run_cmd('pruning-irep')
+        CmdRunner(self, builder).run('pruning-irep')
 
     def test_rule_induction_top_down_beam_search(self):
         """
@@ -653,7 +648,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .rule_induction(RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH)
-        builder.run_cmd('rule-induction-top-down-beam-search')
+        CmdRunner(self, builder).run('rule-induction-top-down-beam-search')
 
     def test_sequential_post_optimization(self):
         """
@@ -661,7 +656,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .sequential_post_optimization()
-        builder.run_cmd('sequential-post-optimization')
+        CmdRunner(self, builder).run('sequential-post-optimization')
 
     def test_feature_binning_equal_width_binary_features_dense(self):
         """
@@ -671,7 +666,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder(dataset=self.dataset_binary) \
             .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
             .sparse_feature_format(False)
-        builder.run_cmd('feature-binning-equal-width_binary-features-dense')
+        CmdRunner(self, builder).run('feature-binning-equal-width_binary-features-dense')
 
     def test_feature_binning_equal_width_binary_features_sparse(self):
         """
@@ -681,7 +676,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder(dataset=self.dataset_binary) \
             .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
             .sparse_feature_format()
-        builder.run_cmd('feature-binning-equal-width_binary-features-sparse')
+        CmdRunner(self, builder).run('feature-binning-equal-width_binary-features-sparse')
 
     def test_feature_binning_equal_width_nominal_features_dense(self):
         """
@@ -691,7 +686,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder(dataset=self.dataset_nominal) \
             .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
             .sparse_feature_format(False)
-        builder.run_cmd('feature-binning-equal-width_nominal-features-dense')
+        CmdRunner(self, builder).run('feature-binning-equal-width_nominal-features-dense')
 
     def test_feature_binning_equal_width_nominal_features_sparse(self):
         """
@@ -701,7 +696,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder(dataset=self.dataset_nominal) \
             .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
             .sparse_feature_format()
-        builder.run_cmd('feature-binning-equal-width_nominal-features-sparse')
+        CmdRunner(self, builder).run('feature-binning-equal-width_nominal-features-sparse')
 
     def test_feature_binning_equal_width_numerical_features_dense(self):
         """
@@ -711,7 +706,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder() \
             .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
             .sparse_feature_format(False)
-        builder.run_cmd('feature-binning-equal-width_numerical-features-dense')
+        CmdRunner(self, builder).run('feature-binning-equal-width_numerical-features-dense')
 
     def test_feature_binning_equal_width_numerical_features_sparse(self):
         """
@@ -721,7 +716,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder() \
             .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
             .sparse_feature_format()
-        builder.run_cmd('feature-binning-equal-width_numerical-features-sparse')
+        CmdRunner(self, builder).run('feature-binning-equal-width_numerical-features-sparse')
 
     def test_feature_binning_equal_frequency_binary_features_dense(self):
         """
@@ -731,7 +726,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder(dataset=self.dataset_binary) \
             .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format(False)
-        builder.run_cmd('feature-binning-equal-frequency_binary-features-dense')
+        CmdRunner(self, builder).run('feature-binning-equal-frequency_binary-features-dense')
 
     def test_feature_binning_equal_frequency_binary_features_sparse(self):
         """
@@ -741,7 +736,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder(dataset=self.dataset_binary) \
             .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format()
-        builder.run_cmd('feature-binning-equal-frequency_binary-features-sparse')
+        CmdRunner(self, builder).run('feature-binning-equal-frequency_binary-features-sparse')
 
     def test_feature_binning_equal_frequency_nominal_features_dense(self):
         """
@@ -751,7 +746,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder(dataset=self.dataset_nominal) \
             .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format(False)
-        builder.run_cmd('feature-binning-equal-frequency_nominal-features-dense')
+        CmdRunner(self, builder).run('feature-binning-equal-frequency_nominal-features-dense')
 
     def test_feature_binning_equal_frequency_nominal_features_sparse(self):
         """
@@ -761,7 +756,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder(dataset=self.dataset_nominal) \
             .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format()
-        builder.run_cmd('feature-binning-equal-frequency_nominal-features-sparse')
+        CmdRunner(self, builder).run('feature-binning-equal-frequency_nominal-features-sparse')
 
     def test_feature_binning_equal_frequency_numerical_features_dense(self):
         """
@@ -771,7 +766,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder() \
             .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format(False)
-        builder.run_cmd('feature-binning-equal-frequency_numerical-features-dense')
+        CmdRunner(self, builder).run('feature-binning-equal-frequency_numerical-features-dense')
 
     def test_feature_binning_equal_frequency_numerical_features_sparse(self):
         """
@@ -781,4 +776,4 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         builder = self._create_cmd_builder() \
             .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format()
-        builder.run_cmd('feature-binning-equal-frequency_numerical-features-sparse')
+        CmdRunner(self, builder).run('feature-binning-equal-frequency_numerical-features-sparse')

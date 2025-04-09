@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 from typing import Any
 
 from ..common.cmd_builder import DATASET_EMOTIONS, RULE_PRUNING_IREP
+from ..common.cmd_runner import CmdRunner
 from ..common.integration_tests_classification import ClassificationIntegrationTests
 from .cmd_builder import HEAD_TYPE_PARTIAL, HEAD_TYPE_SINGLE, HEURISTIC_ACCURACY, HEURISTIC_F_MEASURE, \
     HEURISTIC_LAPLACE, HEURISTIC_M_ESTIMATE, HEURISTIC_PRECISION, HEURISTIC_RECALL, HEURISTIC_WRA, LIFT_FUNCTION_KLN, \
@@ -20,7 +21,7 @@ class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
         super().__init__(methodName=methodName)
 
     def _create_cmd_builder(self, dataset: str = DATASET_EMOTIONS) -> Any:
-        return SeCoClassifierCmdBuilder(self, dataset=dataset)
+        return SeCoClassifierCmdBuilder(dataset=dataset)
 
     def test_heuristic_accuracy(self):
         """
@@ -28,7 +29,7 @@ class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
         """
         builder = self._create_cmd_builder() \
             .heuristic(HEURISTIC_ACCURACY)
-        builder.run_cmd('heuristic_accuracy')
+        CmdRunner(self, builder).run('heuristic_accuracy')
 
     def test_heuristic_precision(self):
         """
@@ -36,7 +37,7 @@ class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
         """
         builder = self._create_cmd_builder() \
             .heuristic(HEURISTIC_PRECISION)
-        builder.run_cmd('heuristic_precision')
+        CmdRunner(self, builder).run('heuristic_precision')
 
     def test_heuristic_recall(self):
         """
@@ -44,7 +45,7 @@ class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
         """
         builder = self._create_cmd_builder() \
             .heuristic(HEURISTIC_RECALL)
-        builder.run_cmd('heuristic_recall')
+        CmdRunner(self, builder).run('heuristic_recall')
 
     def test_heuristic_laplace(self):
         """
@@ -52,7 +53,7 @@ class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
         """
         builder = self._create_cmd_builder() \
             .heuristic(HEURISTIC_LAPLACE)
-        builder.run_cmd('heuristic_laplace')
+        CmdRunner(self, builder).run('heuristic_laplace')
 
     def test_heuristic_wra(self):
         """
@@ -60,7 +61,7 @@ class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
         """
         builder = self._create_cmd_builder() \
             .heuristic(HEURISTIC_WRA)
-        builder.run_cmd('heuristic_wra')
+        CmdRunner(self, builder).run('heuristic_wra')
 
     def test_heuristic_f_measure(self):
         """
@@ -68,7 +69,7 @@ class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
         """
         builder = self._create_cmd_builder() \
             .heuristic(HEURISTIC_F_MEASURE)
-        builder.run_cmd('heuristic_f-measure')
+        CmdRunner(self, builder).run('heuristic_f-measure')
 
     def test_heuristic_m_estimate(self):
         """
@@ -76,7 +77,7 @@ class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
         """
         builder = self._create_cmd_builder() \
             .heuristic(HEURISTIC_M_ESTIMATE)
-        builder.run_cmd('heuristic_m-estimate')
+        CmdRunner(self, builder).run('heuristic_m-estimate')
 
     def test_pruning_heuristic_accuracy(self):
         """
@@ -85,7 +86,7 @@ class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
         builder = self._create_cmd_builder() \
             .rule_pruning(RULE_PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_ACCURACY)
-        builder.run_cmd('pruning-heuristic_accuracy')
+        CmdRunner(self, builder).run('pruning-heuristic_accuracy')
 
     def test_pruning_heuristic_precision(self):
         """
@@ -94,7 +95,7 @@ class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
         builder = self._create_cmd_builder() \
             .rule_pruning(RULE_PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_PRECISION)
-        builder.run_cmd('pruning-heuristic_precision')
+        CmdRunner(self, builder).run('pruning-heuristic_precision')
 
     def test_pruning_heuristic_recall(self):
         """
@@ -103,7 +104,7 @@ class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
         builder = self._create_cmd_builder() \
             .rule_pruning(RULE_PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_RECALL)
-        builder.run_cmd('pruning-heuristic_recall')
+        CmdRunner(self, builder).run('pruning-heuristic_recall')
 
     def test_pruning_heuristic_laplace(self):
         """
@@ -112,7 +113,7 @@ class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
         builder = self._create_cmd_builder() \
             .rule_pruning(RULE_PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_LAPLACE)
-        builder.run_cmd('pruning-heuristic_laplace')
+        CmdRunner(self, builder).run('pruning-heuristic_laplace')
 
     def test_pruning_heuristic_wra(self):
         """
@@ -121,7 +122,7 @@ class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
         builder = self._create_cmd_builder() \
             .rule_pruning(RULE_PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_WRA)
-        builder.run_cmd('pruning-heuristic_wra')
+        CmdRunner(self, builder).run('pruning-heuristic_wra')
 
     def test_pruning_heuristic_f_measure(self):
         """
@@ -130,7 +131,7 @@ class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
         builder = self._create_cmd_builder() \
             .rule_pruning(RULE_PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_F_MEASURE)
-        builder.run_cmd('pruning-heuristic_f-measure')
+        CmdRunner(self, builder).run('pruning-heuristic_f-measure')
 
     def test_pruning_heuristic_m_estimate(self):
         """
@@ -139,7 +140,7 @@ class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
         builder = self._create_cmd_builder() \
             .rule_pruning(RULE_PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_M_ESTIMATE)
-        builder.run_cmd('pruning-heuristic_m-estimate')
+        CmdRunner(self, builder).run('pruning-heuristic_m-estimate')
 
     def test_single_output_heads(self):
         """
@@ -148,7 +149,7 @@ class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
         builder = self._create_cmd_builder() \
             .head_type(HEAD_TYPE_SINGLE) \
             .print_model_characteristics()
-        builder.run_cmd('single-output-heads')
+        CmdRunner(self, builder).run('single-output-heads')
 
     def test_partial_heads_no_lift_function(self):
         """
@@ -158,7 +159,7 @@ class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
             .head_type(HEAD_TYPE_PARTIAL) \
             .lift_function(LIFT_FUNCTION_NO) \
             .print_model_characteristics()
-        builder.run_cmd('partial-heads_no-lift-function')
+        CmdRunner(self, builder).run('partial-heads_no-lift-function')
 
     def test_partial_heads_peak_lift_function(self):
         """
@@ -168,7 +169,7 @@ class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
             .head_type(HEAD_TYPE_PARTIAL) \
             .lift_function(LIFT_FUNCTION_PEAK) \
             .print_model_characteristics()
-        builder.run_cmd('partial-heads_peak-lift-function')
+        CmdRunner(self, builder).run('partial-heads_peak-lift-function')
 
     def test_partial_heads_kln_lift_function(self):
         """
@@ -178,4 +179,4 @@ class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
             .head_type(HEAD_TYPE_PARTIAL) \
             .lift_function(LIFT_FUNCTION_KLN) \
             .print_model_characteristics()
-        builder.run_cmd('partial-heads_kln-lift-function')
+        CmdRunner(self, builder).run('partial-heads_kln-lift-function')
