@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from typing import Optional
 
-from .cmd_builder import DATASET_EMOTIONS, DIR_DATA, CmdBuilder
+from .cmd_builder import DATASET_EMOTIONS, CmdBuilder
 
 PREDICTION_TYPE_BINARY = 'binary'
 
@@ -26,50 +26,19 @@ class ClassificationCmdBuilder(CmdBuilder):
     """
 
     def __init__(self,
-                 callback: CmdBuilder.AssertionCallback,
                  expected_output_dir: str,
                  model_file_name: str,
                  runnable_module_name: str,
                  runnable_class_name: Optional[str] = None,
-                 data_dir: str = DIR_DATA,
                  dataset: str = DATASET_EMOTIONS):
-        super().__init__(callback=callback,
-                         expected_output_dir=expected_output_dir,
+        super().__init__(expected_output_dir=expected_output_dir,
                          model_file_name=model_file_name,
                          runnable_module_name=runnable_module_name,
                          runnable_class_name=runnable_class_name,
-                         data_dir=data_dir,
                          dataset=dataset)
         self.label_vectors_stored = False
         self.marginal_probability_calibration_model_stored = False
         self.joint_probability_calibration_model_stored = False
-
-    def __assert_label_vector_files_exist(self):
-        """
-        Asserts that the label vector files, which should be created by a command, exist.
-        """
-        if self.label_vectors_stored:
-            self._assert_output_files_exist('label_vectors', 'csv')
-
-    def __assert_marginal_probability_calibration_model_files_exist(self):
-        """
-        Asserts that the marginal probability calibration model files, which should be created by a command, exist.
-        """
-        if self.marginal_probability_calibration_model_stored:
-            self._assert_output_files_exist('marginal_probability_calibration_model', 'csv')
-
-    def __assert_joint_probability_calibration_model_files_exist(self):
-        """
-        Asserts that the joint probability calibration model files, which should be created by a command, exist.
-        """
-        if self.joint_probability_calibration_model_stored:
-            self._assert_output_files_exist('joint_probability_calibration_model', 'csv')
-
-    def _validate_output_files(self):
-        super()._validate_output_files()
-        self.__assert_label_vector_files_exist()
-        self.__assert_marginal_probability_calibration_model_files_exist()
-        self.__assert_joint_probability_calibration_model_files_exist()
 
     def print_label_vectors(self, print_label_vectors: bool = True):
         """

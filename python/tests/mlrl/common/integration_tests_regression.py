@@ -6,6 +6,7 @@ from unittest import SkipTest
 
 from .cmd_builder import DATASET_ATP7D, DATASET_ATP7D_BINARY, DATASET_ATP7D_MEKA, DATASET_ATP7D_NOMINAL, \
     DATASET_ATP7D_NUMERICAL_SPARSE, DATASET_ATP7D_ORDINAL, DATASET_HOUSING
+from .cmd_runner import CmdRunner
 from .integration_tests import IntegrationTests
 
 
@@ -51,4 +52,4 @@ class RegressionIntegrationTests(IntegrationTests, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_single_output) \
             .print_evaluation()
-        builder.run_cmd('single-output-regression')
+        CmdRunner(self, builder).run('single-output-regression')

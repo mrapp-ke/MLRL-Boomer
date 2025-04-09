@@ -2,6 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from ..common.cmd_builder import HOLDOUT_NO, HOLDOUT_RANDOM
+from ..common.cmd_runner import CmdRunner
 from .cmd_builder import GLOBAL_PRUNING_POST, GLOBAL_PRUNING_PRE, LOSS_SQUARED_ERROR_DECOMPOSABLE, \
     LOSS_SQUARED_ERROR_NON_DECOMPOSABLE
 
@@ -17,7 +18,7 @@ class BoomerIntegrationTestsMixin:
         """
         builder = self._create_cmd_builder() \
             .loss(LOSS_SQUARED_ERROR_DECOMPOSABLE)
-        builder.run_cmd('loss-squared-error-decomposable')
+        CmdRunner(self, builder).run('loss-squared-error-decomposable')
 
     def test_loss_squared_error_non_decomposable(self):
         """
@@ -25,7 +26,7 @@ class BoomerIntegrationTestsMixin:
         """
         builder = self._create_cmd_builder() \
             .loss(LOSS_SQUARED_ERROR_NON_DECOMPOSABLE)
-        builder.run_cmd('loss-squared-error-non-decomposable')
+        CmdRunner(self, builder).run('loss-squared-error-non-decomposable')
 
     def test_no_default_rule(self):
         """
@@ -34,7 +35,7 @@ class BoomerIntegrationTestsMixin:
         builder = self._create_cmd_builder() \
             .default_rule(False) \
             .print_model_characteristics()
-        builder.run_cmd('no-default-rule')
+        CmdRunner(self, builder).run('no-default-rule')
 
     def test_global_post_pruning_no_holdout(self):
         """
@@ -44,7 +45,7 @@ class BoomerIntegrationTestsMixin:
             .global_pruning(GLOBAL_PRUNING_POST) \
             .holdout(HOLDOUT_NO) \
             .print_model_characteristics()
-        builder.run_cmd('post-pruning_no-holdout')
+        CmdRunner(self, builder).run('post-pruning_no-holdout')
 
     def test_global_post_pruning_random_holdout(self):
         """
@@ -54,7 +55,7 @@ class BoomerIntegrationTestsMixin:
             .global_pruning(GLOBAL_PRUNING_POST) \
             .holdout(HOLDOUT_RANDOM) \
             .print_model_characteristics()
-        builder.run_cmd('post-pruning_random-holdout')
+        CmdRunner(self, builder).run('post-pruning_random-holdout')
 
     def test_global_pre_pruning_no_holdout(self):
         """
@@ -64,7 +65,7 @@ class BoomerIntegrationTestsMixin:
             .global_pruning(GLOBAL_PRUNING_PRE) \
             .holdout(HOLDOUT_NO) \
             .print_model_characteristics()
-        builder.run_cmd('pre-pruning_no-holdout')
+        CmdRunner(self, builder).run('pre-pruning_no-holdout')
 
     def test_global_pre_pruning_random_holdout(self):
         """
@@ -74,4 +75,4 @@ class BoomerIntegrationTestsMixin:
             .global_pruning(GLOBAL_PRUNING_PRE) \
             .holdout(HOLDOUT_RANDOM) \
             .print_model_characteristics()
-        builder.run_cmd('pre-pruning_random-holdout')
+        CmdRunner(self, builder).run('pre-pruning_random-holdout')

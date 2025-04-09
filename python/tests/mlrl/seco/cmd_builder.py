@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from os import path
 
-from ..common.cmd_builder import DATASET_EMOTIONS, DIR_OUT, CmdBuilder
+from ..common.cmd_builder import DATASET_EMOTIONS, DIR_OUT
 from ..common.cmd_builder_classification import ClassificationCmdBuilder
 
 HEURISTIC_ACCURACY = 'accuracy'
@@ -36,9 +36,8 @@ class SeCoClassifierCmdBuilder(ClassificationCmdBuilder):
     A builder that allows to configure a command for running the separate-and-conquer (SeCo) algorithm.
     """
 
-    def __init__(self, callback: CmdBuilder.AssertionCallback, dataset: str = DATASET_EMOTIONS):
-        super().__init__(callback,
-                         expected_output_dir=path.join(DIR_OUT, 'seco', 'classification'),
+    def __init__(self, dataset: str = DATASET_EMOTIONS):
+        super().__init__(expected_output_dir=path.join(DIR_OUT, 'seco', 'classification'),
                          model_file_name='seco',
                          runnable_module_name='mlrl.seco',
                          dataset=dataset)

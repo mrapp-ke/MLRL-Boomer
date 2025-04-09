@@ -8,6 +8,7 @@ from .cmd_builder import DATASET_BREAST_CANCER, DATASET_EMOTIONS, DATASET_EMOTIO
     DATASET_ENRON, DATASET_LANGLOG
 from .cmd_builder_classification import INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE, \
     INSTANCE_SAMPLING_STRATIFIED_OUTPUT_WISE
+from .cmd_runner import CmdRunner
 from .integration_tests import IntegrationTests
 
 
@@ -54,7 +55,7 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
             .store_evaluation(False) \
             .print_label_vectors() \
             .store_label_vectors()
-        builder.run_cmd('label-vectors_train-test')
+        CmdRunner(self, builder).run('label-vectors_train-test')
 
     def test_label_vectors_cross_validation(self):
         """
@@ -67,7 +68,7 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
             .store_evaluation(False) \
             .print_label_vectors() \
             .store_label_vectors()
-        builder.run_cmd('label-vectors_cross-validation')
+        CmdRunner(self, builder).run('label-vectors_cross-validation')
 
     def test_label_vectors_single_fold(self):
         """
@@ -80,7 +81,7 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
             .store_evaluation(False) \
             .print_label_vectors() \
             .store_label_vectors()
-        builder.run_cmd('label-vectors_single-fold')
+        CmdRunner(self, builder).run('label-vectors_single-fold')
 
     def test_instance_sampling_stratified_output_wise(self):
         """
@@ -89,7 +90,7 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .instance_sampling(INSTANCE_SAMPLING_STRATIFIED_OUTPUT_WISE)
-        builder.run_cmd('instance-sampling-stratified-output-wise')
+        CmdRunner(self, builder).run('instance-sampling-stratified-output-wise')
 
     def test_instance_sampling_stratified_example_wise(self):
         """
@@ -98,4 +99,4 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .instance_sampling(INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE)
-        builder.run_cmd('instance-sampling-stratified-example-wise')
+        CmdRunner(self, builder).run('instance-sampling-stratified-example-wise')
