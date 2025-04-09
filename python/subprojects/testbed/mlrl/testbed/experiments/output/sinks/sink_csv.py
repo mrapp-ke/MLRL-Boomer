@@ -3,19 +3,24 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing output data to CSV files.
 """
+from csv import QUOTE_MINIMAL, DictWriter
+
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.output.sinks.sink import TabularFileSink
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.io import SUFFIX_CSV, open_writable_file
-from mlrl.testbed.util.io_csv import CsvWriter
 
 
 class CsvFileSink(TabularFileSink):
     """
     Allows to write tabular output data to a CSV file.
     """
+
+    DELIMITER = ','
+
+    QUOTE_CHAR = '"'
 
     def __init__(self, directory: str, options: Options = Options()):
         """
@@ -35,7 +40,11 @@ class CsvFileSink(TabularFileSink):
         header = sorted(table[0].keys())
 
         with open_writable_file(file_path, append=incremental_prediction) as csv_file:
-            csv_writer = CsvWriter(csv_file, header)
+            dict_writer = DictWriter(csv_file,
+                                     delimiter=self.DELIMITER,
+                                     quotechar=self.QUOTE_CHAR,
+                                     quoting=QUOTE_MINIMAL,
+                                     fieldnames=header)
 
             for row in table:
-                csv_writer.writerow(row)
+                dict_writer.writerow(row)
