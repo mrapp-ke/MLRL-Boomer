@@ -9,7 +9,7 @@ from functools import reduce
 from os import environ, listdir, makedirs, path
 from typing import List, Optional
 
-from .comparison.comparison import FileComparison
+from .comparison.comparison import FileComparison, TextFileComparison
 
 ENV_OVERWRITE_OUTPUT_FILES = 'OVERWRITE_OUTPUT_FILES'
 
@@ -370,7 +370,7 @@ class CmdBuilder:
 
         if test_name:
             stdout = [self.__format_cmd(self.args)] + str(out.stdout).splitlines()
-            self.__compare_files(FileComparison(stdout), test_name=test_name, file_name='std.out')
+            self.__compare_files(TextFileComparison(stdout), test_name=test_name, file_name='std.out')
 
             for output_file in listdir(DIR_RESULTS):
                 self.__compare_files(FileComparison.for_file(path.join(DIR_RESULTS, output_file)),
