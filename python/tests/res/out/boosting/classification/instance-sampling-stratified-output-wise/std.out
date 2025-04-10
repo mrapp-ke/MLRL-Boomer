@@ -1,0 +1,34 @@
+mlrl-testbed mlrl.boosting --log-level DEBUG --data-dir python/tests/res/data --dataset emotions --output-dir python/tests/res/tmp/results --instance-sampling stratified-output-wise
+INFO Starting experiment using the classification algorithm "boomer"...
+INFO Using separate training and test sets...
+DEBUG Loading data set from file "python/tests/res/data/emotions.arff"...
+DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+INFO Fitting model to 397 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 196 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data:
+
+Example-wise F1         61.87
+Example-wise Jaccard    53.87
+Example-wise Precision  77.13
+Example-wise Recall     61.82
+Hamming Accuracy        81.21
+Hamming Loss            18.79
+Macro F1                65.55
+Macro Jaccard           49.82
+Macro Precision         75.1
+Macro Recall            60.21
+Micro F1                67.55
+Micro Jaccard           51
+Micro Precision         75.16
+Micro Recall            61.33
+Subset 0/1 Loss         71.94
+Subset Accuracy         28.06
+
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
+INFO Successfully finished after <duration>

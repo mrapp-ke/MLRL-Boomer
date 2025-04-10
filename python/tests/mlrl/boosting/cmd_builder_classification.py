@@ -3,41 +3,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from os import path
 
-from ..common.cmd_builder import DATASET_EMOTIONS, DIR_OUT, CmdBuilder
 from ..common.cmd_builder_classification import ClassificationCmdBuilder
+from ..common.datasets import Dataset
 from .cmd_builder import BoomerCmdBuilderMixin
-
-LOSS_LOGISTIC_DECOMPOSABLE = 'logistic-decomposable'
-
-LOSS_LOGISTIC_NON_DECOMPOSABLE = 'logistic-non-decomposable'
-
-LOSS_SQUARED_HINGE_DECOMPOSABLE = 'squared-hinge-decomposable'
-
-LOSS_SQUARED_HINGE_NON_DECOMPOSABLE = 'squared-hinge-non-decomposable'
-
-LABEL_BINNING_NO = 'none'
-
-LABEL_BINNING_EQUAL_WIDTH = 'equal-width'
-
-PROBABILITY_CALIBRATOR_ISOTONIC = 'isotonic'
-
-BINARY_PREDICTOR_AUTO = 'auto'
-
-BINARY_PREDICTOR_OUTPUT_WISE = 'output-wise'
-
-BINARY_PREDICTOR_OUTPUT_WISE_BASED_ON_PROBABILITIES = BINARY_PREDICTOR_OUTPUT_WISE + '{based_on_probabilities=true}'
-
-BINARY_PREDICTOR_EXAMPLE_WISE = 'example-wise'
-
-BINARY_PREDICTOR_EXAMPLE_WISE_BASED_ON_PROBABILITIES = BINARY_PREDICTOR_EXAMPLE_WISE + '{based_on_probabilities=true}'
-
-BINARY_PREDICTOR_GFM = 'gfm'
-
-PROBABILITY_PREDICTOR_AUTO = 'auto'
-
-PROBABILITY_PREDICTOR_OUTPUT_WISE = 'output-wise'
-
-PROBABILITY_PREDICTOR_MARGINALIZED = 'marginalized'
 
 
 class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin):
@@ -45,9 +13,42 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
     A builder that allows to configure a command for running the BOOMER algorithm for classification problems.
     """
 
-    def __init__(self, callback: CmdBuilder.AssertionCallback, dataset: str = DATASET_EMOTIONS):
-        super().__init__(callback,
-                         expected_output_dir=path.join(DIR_OUT, 'boosting', 'classification'),
+    LOSS_LOGISTIC_DECOMPOSABLE = 'logistic-decomposable'
+
+    LOSS_LOGISTIC_NON_DECOMPOSABLE = 'logistic-non-decomposable'
+
+    LOSS_SQUARED_HINGE_DECOMPOSABLE = 'squared-hinge-decomposable'
+
+    LOSS_SQUARED_HINGE_NON_DECOMPOSABLE = 'squared-hinge-non-decomposable'
+
+    LABEL_BINNING_NO = 'none'
+
+    LABEL_BINNING_EQUAL_WIDTH = 'equal-width'
+
+    PROBABILITY_CALIBRATOR_ISOTONIC = 'isotonic'
+
+    BINARY_PREDICTOR_AUTO = 'auto'
+
+    BINARY_PREDICTOR_OUTPUT_WISE = 'output-wise'
+
+    BINARY_PREDICTOR_OUTPUT_WISE_BASED_ON_PROBABILITIES = (BINARY_PREDICTOR_OUTPUT_WISE
+                                                           + '{based_on_probabilities=true}')
+
+    BINARY_PREDICTOR_EXAMPLE_WISE = 'example-wise'
+
+    BINARY_PREDICTOR_EXAMPLE_WISE_BASED_ON_PROBABILITIES = (BINARY_PREDICTOR_EXAMPLE_WISE
+                                                            + '{based_on_probabilities=true}')
+
+    BINARY_PREDICTOR_GFM = 'gfm'
+
+    PROBABILITY_PREDICTOR_AUTO = 'auto'
+
+    PROBABILITY_PREDICTOR_OUTPUT_WISE = 'output-wise'
+
+    PROBABILITY_PREDICTOR_MARGINALIZED = 'marginalized'
+
+    def __init__(self, dataset: str = Dataset.EMOTIONS):
+        super().__init__(expected_output_dir=path.join('boosting', 'classification'),
                          model_file_name='boomer',
                          runnable_module_name='mlrl.boosting',
                          dataset=dataset)
