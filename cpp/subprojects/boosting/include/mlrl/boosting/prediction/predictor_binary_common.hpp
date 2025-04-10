@@ -70,14 +70,15 @@ namespace boosting {
 
                 protected:
 
-                    DensePredictionMatrix<uint8>& applyNext(const FeatureMatrix& featureMatrix, uint32 numThreads,
+                    DensePredictionMatrix<uint8>& applyNext(const FeatureMatrix& featureMatrix,
+                                                            MultiThreadingSettings multiThreadingSettings,
                                                             typename Model::const_iterator rulesBegin,
                                                             typename Model::const_iterator rulesEnd) override {
                         if (binaryTransformationPtr_) {
                             IncrementalPredictionDelegate delegate(realMatrix_.getView(), predictionMatrix_.getView(),
                                                                    *binaryTransformationPtr_);
                             PredictionDispatcher<uint8, FeatureMatrix, Model>().predict(
-                              delegate, featureMatrix, rulesBegin, rulesEnd, numThreads);
+                              delegate, featureMatrix, rulesBegin, rulesEnd, multiThreadingSettings);
                         }
 
                         return predictionMatrix_;
@@ -88,7 +89,7 @@ namespace boosting {
                     IncrementalPredictor(const BinaryPredictor& predictor, uint32 maxRules,
                                          std::shared_ptr<IBinaryTransformation> binaryTransformationPtr)
                         : AbstractIncrementalPredictor<FeatureMatrix, Model, DensePredictionMatrix<uint8>>(
-                            predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
+                            predictor.featureMatrix_, predictor.model_, predictor.multiThreadingSettings_, maxRules),
                           binaryTransformationPtr_(binaryTransformationPtr),
                           realMatrix_(predictor.featureMatrix_.numRows, predictor.numLabels_,
                                       binaryTransformationPtr_ != nullptr),
@@ -134,7 +135,7 @@ namespace boosting {
 
             const uint32 numLabels_;
 
-            const uint32 numThreads_;
+            const MultiThreadingSettings multiThreadingSettings_;
 
             const std::shared_ptr<IBinaryTransformation> binaryTransformationPtr_;
 
@@ -146,15 +147,17 @@ namespace boosting {
              * @param model                     A reference to an object of template type `Model` that should be used to
              *                                  obtain predictions
              * @param numLabels                 The number of labels to predict for
-             * @param numThreads                The number of CPU threads to be used to make predictions for different
-             *                                  query examples in parallel. Must be at least 1
+             * @param multiThreadingSettings    An object of type `MultiThreadingSettings` that stores settings to be
+             *                                  used for making predictions for different query examples in parallel
              * @param binaryTransformationPtr   An unique pointer to an object of type `IBinaryTransformation` that
              *                                  should be used to transform aggregated scores into binary predictions or
              *                                  a null pointer, if all labels should be predicted as irrelevant
              */
-            BinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels, uint32 numThreads,
+            BinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
+                            MultiThreadingSettings multiThreadingSettings,
                             std::unique_ptr<IBinaryTransformation> binaryTransformationPtr)
-                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels),
+                  multiThreadingSettings_(multiThreadingSettings),
                   binaryTransformationPtr_(std::move(binaryTransformationPtr)) {}
 
             /**
@@ -166,11 +169,12 @@ namespace boosting {
                                                                  binaryTransformationPtr_ == nullptr);
 
                 if (binaryTransformationPtr_) {
-                    CContiguousMatrix<float64> scoreMatrix(numThreads_, numLabels_);
+                    CContiguousMatrix<float64> scoreMatrix(multiThreadingSettings_.numThreads, numLabels_);
                     PredictionDelegate delegate(scoreMatrix.getView(), predictionMatrixPtr->getView(),
                                                 *binaryTransformationPtr_);
                     PredictionDispatcher<uint8, FeatureMatrix, Model>().predict(
-                      delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
+                      delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules),
+                      multiThreadingSettings_);
                 }
 
                 return predictionMatrixPtr;
@@ -253,7 +257,8 @@ namespace boosting {
 
                 protected:
 
-                    BinarySparsePredictionMatrix& applyNext(const FeatureMatrix& featureMatrix, uint32 numThreads,
+                    BinarySparsePredictionMatrix& applyNext(const FeatureMatrix& featureMatrix,
+                                                            MultiThreadingSettings multiThreadingSettings,
                                                             typename Model::const_iterator rulesBegin,
                                                             typename Model::const_iterator rulesEnd) override {
                         uint32 numDenseElements;
@@ -262,7 +267,7 @@ namespace boosting {
                             IncrementalPredictionDelegate delegate(realMatrix_.getView(), predictionMatrix_,
                                                                    *binaryTransformationPtr_);
                             numDenseElements = BinarySparsePredictionDispatcher<FeatureMatrix, Model>().predict(
-                              delegate, featureMatrix, rulesBegin, rulesEnd, numThreads);
+                              delegate, featureMatrix, rulesBegin, rulesEnd, multiThreadingSettings);
                         } else {
                             numDenseElements = 0;
                         }
@@ -277,7 +282,7 @@ namespace boosting {
                     IncrementalPredictor(const SparseBinaryPredictor& predictor, uint32 maxRules,
                                          std::shared_ptr<IBinaryTransformation> binaryTransformationPtr)
                         : AbstractIncrementalPredictor<FeatureMatrix, Model, BinarySparsePredictionMatrix>(
-                            predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
+                            predictor.featureMatrix_, predictor.model_, predictor.multiThreadingSettings_, maxRules),
                           binaryTransformationPtr_(binaryTransformationPtr),
                           realMatrix_(predictor.featureMatrix_.numRows, predictor.numLabels_,
                                       binaryTransformationPtr_ != nullptr),
@@ -322,7 +327,7 @@ namespace boosting {
 
             const uint32 numLabels_;
 
-            const uint32 numThreads_;
+            const MultiThreadingSettings multiThreadingSettings_;
 
             const std::shared_ptr<IBinaryTransformation> binaryTransformationPtr_;
 
@@ -334,15 +339,17 @@ namespace boosting {
              * @param model                     A reference to an object of template type `Model` that should be used to
              *                                  obtain predictions
              * @param numLabels                 The number of labels to predict for
-             * @param numThreads                The number of CPU threads to be used to make predictions for different
-             *                                  query examples in parallel. Must be at least 1
+             * @param multiThreadingSettings    An object of type `MultiThreadingSettings` that stores settings to be
+             *                                  used for making predictions for different query examples in parallel
              * @param binaryTransformationPtr   An unique pointer to an object of type `IBinaryTransformation` that
              *                                  should be used to transform real-valued predictions into binary
              *                                  predictions or a null pointer, if no such object is available
              */
             SparseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
-                                  uint32 numThreads, std::unique_ptr<IBinaryTransformation> binaryTransformationPtr)
-                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
+                                  MultiThreadingSettings multiThreadingSettings,
+                                  std::unique_ptr<IBinaryTransformation> binaryTransformationPtr)
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels),
+                  multiThreadingSettings_(multiThreadingSettings),
                   binaryTransformationPtr_(std::move(binaryTransformationPtr)) {}
 
             /**
@@ -353,10 +360,11 @@ namespace boosting {
                 uint32 numDenseElements;
 
                 if (binaryTransformationPtr_) {
-                    CContiguousMatrix<float64> scoreMatrix(numThreads_, numLabels_);
+                    CContiguousMatrix<float64> scoreMatrix(multiThreadingSettings_.numThreads, numLabels_);
                     PredictionDelegate delegate(scoreMatrix.getView(), predictionMatrix, *binaryTransformationPtr_);
                     numDenseElements = BinarySparsePredictionDispatcher<FeatureMatrix, Model>().predict(
-                      delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
+                      delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules),
+                      multiThreadingSettings_);
                 } else {
                     numDenseElements = 0;
                 }

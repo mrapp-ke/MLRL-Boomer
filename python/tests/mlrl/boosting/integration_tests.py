@@ -11,21 +11,41 @@ class BoomerIntegrationTestsMixin:
     A mixin for integration tests for the BOOMER algorithm.
     """
 
-    def test_loss_squared_error_decomposable(self):
+    def test_loss_squared_error_decomposable_32bit_statistics(self):
         """
-        Tests the BOOMER algorithm when using the decomposable squared error loss function.
+        Tests the BOOMER algorithm when using the decomposable squared error loss function and 32-bit statistics.
         """
         builder = self._create_cmd_builder() \
-            .loss(BoomerCmdBuilderMixin.LOSS_SQUARED_ERROR_DECOMPOSABLE)
-        CmdRunner(self, builder).run('loss-squared-error-decomposable')
+            .loss(LOSS_SQUARED_ERROR_DECOMPOSABLE) \
+            .statistic_type(STATISTIC_TYPE_FLOAT32)
+        CmdRunner(self, builder).run('loss-squared-error-decomposable_32-bit-statistics')
 
-    def test_loss_squared_error_non_decomposable(self):
+    def test_loss_squared_error_decomposable_64bit_statistics(self):
         """
-        Tests the BOOMER algorithm when using the non-decomposable squared error loss function.
+        Tests the BOOMER algorithm when using the decomposable squared error loss function and 64-bit statistics.
         """
         builder = self._create_cmd_builder() \
-            .loss(BoomerCmdBuilderMixin.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE)
-        CmdRunner(self, builder).run('loss-squared-error-non-decomposable')
+            .loss(BoomerCmdBuilderMixin.LOSS_SQUARED_ERROR_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64)
+        CmdRunner(self, builder).run('loss-squared-error-decomposable_64-bit-statistics')
+
+    def test_loss_squared_error_non_decomposable_32bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using the non-decomposable squared error loss function and 32-bit statistics.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerCmdBuilderMixin.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32)
+        CmdRunner(self, builder).run('loss-squared-error-non-decomposable_32-bit-statistics')
+
+    def test_loss_squared_error_non_decomposable_64bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using the non-decomposable squared error loss function and 64-bit statistics.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerCmdBuilderMixin.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64)
+        CmdRunner(self, builder).run('loss-squared-error-non-decomposable_64-bit-statistics')
 
     def test_no_default_rule(self):
         """

@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/boosting/losses/loss_decomposable_sparse.hpp"
-#include "mlrl/boosting/rule_evaluation/head_type.hpp"
+#include "mlrl/boosting/statistics/statistic_type.hpp"
 #include "mlrl/common/util/properties.hpp"
 
 #include <memory>
@@ -18,19 +18,22 @@ namespace boosting {
     class DecomposableSquaredHingeLossConfig final : public ISparseDecomposableClassificationLossConfig {
         private:
 
-            const ReadableProperty<IHeadConfig> headConfig_;
+            const ReadableProperty<IStatisticTypeConfig> statisticTypeConfig_;
 
         public:
 
             /**
-             * @param headConfig A `ReadableProperty` that allows to access the `IHeadConfig` that stores the
-             *                   configuration of rule heads
+             *  @param statisticTypeConfig  A `ReadableProperty` that allows to access the `IStatisticTypeConfig` that
+             *                              stores the configuration of the data type that should be used for
+             *                              representing statistics about the quality of predictions for training
+             *                              examples
              */
-            DecomposableSquaredHingeLossConfig(ReadableProperty<IHeadConfig> headConfig);
+            DecomposableSquaredHingeLossConfig(ReadableProperty<IStatisticTypeConfig> statisticTypeConfig);
 
             std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-              const Lapack& lapack, bool preferSparseStatistics) const override;
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+              const BlasFactory& blasFactory, const LapackFactory& lapackFactory,
+              bool preferSparseStatistics) const override;
 
             std::unique_ptr<IMarginalProbabilityFunctionFactory> createMarginalProbabilityFunctionFactory()
               const override;
@@ -39,8 +42,11 @@ namespace boosting {
 
             float64 getDefaultPrediction() const override;
 
-            std::unique_ptr<ISparseDecomposableClassificationLossFactory>
-              createSparseDecomposableClassificationLossFactory() const override;
+            std::unique_ptr<ISparseDecomposableClassificationLossConfig::IPreset<float32>>
+              createSparseDecomposable32BitClassificationPreset() const override;
+
+            std::unique_ptr<ISparseDecomposableClassificationLossConfig::IPreset<float64>>
+              createSparseDecomposable64BitClassificationPreset() const override;
     };
 
 }

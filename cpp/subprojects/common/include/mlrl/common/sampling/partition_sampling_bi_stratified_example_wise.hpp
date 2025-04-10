@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/sampling/partition_sampling.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -44,11 +45,17 @@ class ExampleWiseStratifiedBiPartitionSamplingConfig final : public IClassificat
                                                              public IExampleWiseStratifiedBiPartitionSamplingConfig {
     private:
 
+        const ReadableProperty<RNGConfig> rngConfig_;
+
         float32 holdoutSetSize_;
 
     public:
 
-        ExampleWiseStratifiedBiPartitionSamplingConfig();
+        /**
+         * @param rngConfig A `ReadableProperty` that provides access to the `RNGConfig` that stores the configuration
+         *                  of random number generators
+         */
+        ExampleWiseStratifiedBiPartitionSamplingConfig(ReadableProperty<RNGConfig> rngConfig);
 
         float32 getHoldoutSetSize() const override;
 

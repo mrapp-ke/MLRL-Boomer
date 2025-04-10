@@ -14,18 +14,17 @@
 
 namespace boosting {
 
-    static inline void applyHead(const CompleteHead& head, View<float64>::iterator iterator) {
-        CompleteHead::value_const_iterator valueIterator = head.values_cbegin();
+    template<typename ScoreType>
+    static inline void applyHead(const CompleteHead<ScoreType>& head, View<float64>::iterator iterator) {
+        typename CompleteHead<ScoreType>::value_const_iterator valueIterator = head.values_cbegin();
         uint32 numElements = head.getNumElements();
-
-        for (uint32 i = 0; i < numElements; i++) {
-            iterator[i] += valueIterator[i];
-        }
+        util::addToView(iterator, valueIterator, numElements);
     }
 
-    static inline void applyHead(const PartialHead& head, View<float64>::iterator iterator) {
-        PartialHead::value_const_iterator valueIterator = head.values_cbegin();
-        PartialHead::index_const_iterator indexIterator = head.indices_cbegin();
+    template<typename ScoreType>
+    static inline void applyHead(const PartialHead<ScoreType>& head, View<float64>::iterator iterator) {
+        typename PartialHead<ScoreType>::value_const_iterator valueIterator = head.values_cbegin();
+        typename PartialHead<ScoreType>::index_const_iterator indexIterator = head.indices_cbegin();
         uint32 numElements = head.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -35,13 +34,26 @@ namespace boosting {
     }
 
     static inline void applyHead(const IHead& head, View<float64>::iterator scoreIterator) {
-        auto completeHeadVisitor = [=](const CompleteHead& head) {
+        auto completeBinaryHeadVisitor = [=](const CompleteHead<uint8>& head) {
             applyHead(head, scoreIterator);
         };
-        auto partialHeadVisitor = [=](const PartialHead& head) {
+        auto complete32BitHeadVisitor = [=](const CompleteHead<float32>& head) {
             applyHead(head, scoreIterator);
         };
-        head.visit(completeHeadVisitor, partialHeadVisitor);
+        auto complete64BitHeadVisitor = [=](const CompleteHead<float64>& head) {
+            applyHead(head, scoreIterator);
+        };
+        auto partialBinaryHeadVisitor = [=](const PartialHead<uint8>& head) {
+            applyHead(head, scoreIterator);
+        };
+        auto partial32BitHeadVisitor = [=](const PartialHead<float32>& head) {
+            applyHead(head, scoreIterator);
+        };
+        auto partial64BitHeadVisitor = [=](const PartialHead<float64>& head) {
+            applyHead(head, scoreIterator);
+        };
+        head.visit(completeBinaryHeadVisitor, complete32BitHeadVisitor, complete64BitHeadVisitor,
+                   partialBinaryHeadVisitor, partial32BitHeadVisitor, partial64BitHeadVisitor);
     }
 
     static inline void applyRule(const RuleList::Rule& rule, View<const float32>::const_iterator featureValuesBegin,
@@ -170,12 +182,13 @@ namespace boosting {
 
                 protected:
 
-                    DensePredictionMatrix<float64>& applyNext(const FeatureMatrix& featureMatrix, uint32 numThreads,
+                    DensePredictionMatrix<float64>& applyNext(const FeatureMatrix& featureMatrix,
+                                                              MultiThreadingSettings multiThreadingSettings,
                                                               typename Model::const_iterator rulesBegin,
                                                               typename Model::const_iterator rulesEnd) override {
                         ScorePredictionDelegate<FeatureMatrix, Model> delegate(predictionMatrix_.getView());
-                        PredictionDispatcher<float64, FeatureMatrix, Model>().predict(delegate, featureMatrix,
-                                                                                      rulesBegin, rulesEnd, numThreads);
+                        PredictionDispatcher<float64, FeatureMatrix, Model>().predict(
+                          delegate, featureMatrix, rulesBegin, rulesEnd, multiThreadingSettings);
                         return predictionMatrix_;
                     }
 
@@ -183,7 +196,7 @@ namespace boosting {
 
                     IncrementalPredictor(const ScorePredictor& predictor, uint32 maxRules)
                         : AbstractIncrementalPredictor<FeatureMatrix, Model, DensePredictionMatrix<float64>>(
-                            predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
+                            predictor.featureMatrix_, predictor.model_, predictor.multiThreadingSettings_, maxRules),
                           predictionMatrix_(predictor.featureMatrix_.numRows, predictor.numOutputs_, true) {}
             };
 
@@ -193,21 +206,23 @@ namespace boosting {
 
             const uint32 numOutputs_;
 
-            const uint32 numThreads_;
+            const MultiThreadingSettings multiThreadingSettings_;
 
         public:
 
             /**
-             * @param featureMatrix A reference to an object of template type `FeatureMatrix` that provides row-wise
-             *                      access to the feature values of the query examples
-             * @param model         A reference to an object of template type `Model` that should be used to obtain
-             *                      predictions
-             * @param numOutputs    The number of outputs to predict for
-             * @param numThreads    The number of CPU threads to be used to make predictions for different query
-             *                      examples in parallel. Must be at least 1
+             * @param featureMatrix             A reference to an object of template type `FeatureMatrix` that provides
+             *                                  row-wise access to the feature values of the query examples
+             * @param model                     A reference to an object of template type `Model` that should be used to
+             *                                  obtain predictions
+             * @param numOutputs                The number of outputs to predict for
+             * @param multiThreadingSettings    An object of type `MultiThreadingSettings` that stores the settings to
+             *                                  be used for making predictions for different query examples in parallel
              */
-            ScorePredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numOutputs, uint32 numThreads)
-                : featureMatrix_(featureMatrix), model_(model), numOutputs_(numOutputs), numThreads_(numThreads) {}
+            ScorePredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numOutputs,
+                           MultiThreadingSettings multiThreadingSettings)
+                : featureMatrix_(featureMatrix), model_(model), numOutputs_(numOutputs),
+                  multiThreadingSettings_(multiThreadingSettings) {}
 
             /**
              * @see `IPredictor::predict`
@@ -217,7 +232,8 @@ namespace boosting {
                   std::make_unique<DensePredictionMatrix<float64>>(featureMatrix_.numRows, numOutputs_, true);
                 ScorePredictionDelegate<FeatureMatrix, Model> delegate(predictionMatrixPtr->getView());
                 PredictionDispatcher<float64, FeatureMatrix, Model>().predict(
-                  delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
+                  delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules),
+                  multiThreadingSettings_);
                 return predictionMatrixPtr;
             }
 

@@ -70,14 +70,15 @@ namespace boosting {
 
                 protected:
 
-                    DensePredictionMatrix<float64>& applyNext(const FeatureMatrix& featureMatrix, uint32 numThreads,
+                    DensePredictionMatrix<float64>& applyNext(const FeatureMatrix& featureMatrix,
+                                                              MultiThreadingSettings multiThreadingSettings,
                                                               typename Model::const_iterator rulesBegin,
                                                               typename Model::const_iterator rulesEnd) override {
                         if (probabilityTransformationPtr_) {
                             PredictionDelegate delegate(scoreMatrix_.getView(), predictionMatrix_.getView(),
                                                         *probabilityTransformationPtr_);
                             PredictionDispatcher<float64, FeatureMatrix, Model>().predict(
-                              delegate, featureMatrix, rulesBegin, rulesEnd, numThreads);
+                              delegate, featureMatrix, rulesBegin, rulesEnd, multiThreadingSettings);
                         }
 
                         return predictionMatrix_;
@@ -88,7 +89,7 @@ namespace boosting {
                     IncrementalPredictor(const ProbabilityPredictor& predictor, uint32 maxRules,
                                          std::shared_ptr<IProbabilityTransformation> probabilityTransformationPtr)
                         : AbstractIncrementalPredictor<FeatureMatrix, Model, DensePredictionMatrix<float64>>(
-                            predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
+                            predictor.featureMatrix_, predictor.model_, predictor.multiThreadingSettings_, maxRules),
                           probabilityTransformationPtr_(probabilityTransformationPtr),
                           scoreMatrix_(predictor.featureMatrix_.numRows, predictor.numLabels_,
                                        probabilityTransformationPtr_ != nullptr),
@@ -102,7 +103,7 @@ namespace boosting {
 
             const uint32 numLabels_;
 
-            const uint32 numThreads_;
+            const MultiThreadingSettings multiThreadingSettings_;
 
             const std::shared_ptr<IProbabilityTransformation> probabilityTransformationPtr_;
 
@@ -114,17 +115,19 @@ namespace boosting {
              * @param model                         A reference to an object of template type `Model` that should be
              *                                      used to obtain predictions
              * @param numLabels                     The number of labels to predict for
-             * @param numThreads                    The number of CPU threads to be used to make predictions for
-             *                                      different query examples in parallel. Must be at least 1
+             * @param multiThreadingSettings        An object of type `MultiThreadingSettings` that stores the settings
+             *                                      to be used for making predictions for different query examples in
+             *                                      parallel
              * @param probabilityTransformationPtr  An unique pointer to an object of type `IProbabilityTransformation`
              *                                      that should be used to transform aggregated scores into probability
              *                                      estimates or a null pointer, if all probabilities should be set to
              *                                      zero
              */
             ProbabilityPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
-                                 uint32 numThreads,
+                                 MultiThreadingSettings multiThreadingSettings,
                                  std::unique_ptr<IProbabilityTransformation> probabilityTransformationPtr)
-                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads),
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels),
+                  multiThreadingSettings_(multiThreadingSettings),
                   probabilityTransformationPtr_(std::move(probabilityTransformationPtr)) {}
 
             /**
@@ -138,7 +141,8 @@ namespace boosting {
                     PredictionDelegate delegate(predictionMatrixPtr->getView(), predictionMatrixPtr->getView(),
                                                 *probabilityTransformationPtr_);
                     PredictionDispatcher<float64, FeatureMatrix, Model>().predict(
-                      delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
+                      delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules),
+                      multiThreadingSettings_);
                 }
 
                 return predictionMatrixPtr;

@@ -1,8 +1,12 @@
+<<<<<<<< HEAD:python/tests/res/out/boosting/classification/decomposable-partial-fixed-heads_equal-width-label-binning/std.out
 testbed mlrl.boosting --log-level DEBUG --data-dir python/tests/res/data --dataset emotions --output-dir python/tests/res/tmp/results --loss logistic-decomposable --head-type partial-fixed --label-binning equal-width --print-model-characteristics true
+========
+mlrl-testbed mlrl.boosting --log-level DEBUG --data-dir python/tests/res/data --dataset emotions --loss logistic-decomposable --statistic-type 32-bit --head-type partial-fixed --label-binning equal-width --print-model-characteristics true
+>>>>>>>> feature:python/tests/res/out/boosting/classification/decomposable-partial-fixed-heads_equal-width-label-binning_32-bit-statistics.txt
 INFO Starting experiment using the classification algorithm "boomer"...
 INFO Using separate training and test sets...
-DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 DEBUG Loading data set from file "python/tests/res/data/emotions.arff"...
+DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 INFO Fitting model to 397 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
@@ -13,20 +17,20 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data:
 
-Example-wise F1         62.51
-Example-wise Jaccard    55.57
-Example-wise Precision  80.48
-Example-wise Recall     63.18
-Hamming Accuracy        82.14
-Hamming Loss            17.86
-Macro F1                66.79
-Macro Jaccard           51.51
-Macro Precision         76.67
-Macro Recall            60.97
-Micro F1                69.03
-Micro Jaccard           52.7
-Micro Precision         77.23
-Micro Recall            62.4
+Example-wise F1         62.17
+Example-wise Jaccard    55.31
+Example-wise Precision  80.23
+Example-wise Recall     62.67
+Hamming Accuracy        82.06
+Hamming Loss            17.94
+Macro F1                66.62
+Macro Jaccard           51.3
+Macro Precision         76.6
+Macro Recall            60.7
+Micro F1                68.83
+Micro Jaccard           52.48
+Micro Precision         77.15
+Micro Recall            62.13
 Subset 0/1 Loss         66.33
 Subset Accuracy         33.67
 
@@ -36,7 +40,7 @@ INFO Model characteristics:
 │ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
 ├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
 │ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-│ 999 local rules               │    5567 │                  54.73% │                 45.27% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 999 local rules               │    5567 │                  54.77% │                 45.23% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
 └───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
 
 ┌────────────────────────────────┬─────────┬────────────┬────────────┐

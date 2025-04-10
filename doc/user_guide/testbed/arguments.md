@@ -25,7 +25,7 @@ The argument `--log-level` controls the level of detail used for log messages (D
 The most basic command for running the program, only including mandatory arguments, is as follows:
 
 ```text
-testbed <module_or_source_file> --data-dir /path/to/dataset/ --dataset dataset-name
+mlrl-testbed <module_or_source_file> --data-dir /path/to/dataset/ --dataset dataset-name
 ```
 
 ### Module
@@ -123,11 +123,15 @@ Depending on the characteristics of a dataset, it might be desirable to apply on
 
 > A more detailed description of the following arguments can be found {ref}`here<model-persistence>`.
 
-Because the training of models can be time-consuming, it might be desirable to store them on disk for later use. This requires to specify the path to a directory where models should be saved.
+Because the training of models can be time-consuming, it might be desirable to store them on disk for later use. This requires to specify the paths of directories to which models should be saved or loaded from.
 
-- `--model-dir` (Default value = `None`)
+- `--model-load-dir` (Default value = `None`)
 
-  - An absolute or relative path to the directory where models should be stored. If such models are found in the specified directory, they are used instead of learning a new model from scratch. If no models are available, the trained models are saved in the specified directory once training has completed.
+  - An absolute or relative path to the directory from which models should be loaded. If such models are found in the specified directory, they are used instead of learning a new model from scratch.
+
+- `--model-save-dir` (Default value = `None`)
+
+  - An absolute or relative path to the directory to which models should be saved once training has completed. Models are only saved if they could not be loaded from the directory specified via the argument `--model-load-dir`.
 
 ## Saving and Loading Parameters
 
@@ -135,19 +139,18 @@ Because the training of models can be time-consuming, it might be desirable to s
 
 As an alternative to storing the models learned by an algorithm, the algorithmic parameters used for training can be saved to disk. This may help to remember the configuration used for training a model and enables to reload the same parameter setting for additional experiments.
 
-- `--parameter-dir` (Default value = `None`)
+- `--parameter-load-dir` (Default value = `None`)
 
-  - An absolute or relative path to the directory where configuration files, which specify the parameters to be used by the algorithm, are located. If such files are found in the specified directory, the specified parameter settings are used instead of the parameters that are provided via command line arguments.
+  - An absolute or relative path to the directory from which parameters to be used by the algorithm should be loaded. If such files are found in the specified directory, the specified parameter settings are used instead of the parameters that are provided via command line arguments.
+
+- `--parameter-save-dir` (Default value = `None`)
+
+  - An absolute or relative path to the directory to which [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files that store algorithmic parameters set by the user should be saved.
 
 - `--print-parameters` (Default value = `false`)
 
   - `true` Algorithmic parameters are printed on the console.
   - `false` Algorithmic parameters are not printed on the console.
-
-- `--store-parameters` (Default value = `false`)
-
-  - `true` Algorithmic parameters that have been set by the user are written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files. Does only have an effect if the parameter `--output-dir` is specified.
-  - `false` Algorithmic parameters that have been set by the user are not written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files.
 
 ## Output of Experimental Results
 
@@ -462,7 +465,7 @@ For example, the value of the parameter `feature_binning` may be set as follows:
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --feature-binning equal-width
@@ -471,7 +474,7 @@ For example, the value of the parameter `feature_binning` may be set as follows:
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --feature-binning equal-width
@@ -482,7 +485,7 @@ Some algorithmic parameters, including the parameter `feature_binning`, allow to
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting\
+   mlrl-testbed mlrl.boosting\
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
@@ -491,7 +494,7 @@ Some algorithmic parameters, including the parameter `feature_binning`, allow to
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
