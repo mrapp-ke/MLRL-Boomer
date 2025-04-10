@@ -4,10 +4,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 from abc import ABC
 from unittest import SkipTest
 
-from .cmd_builder import DATASET_BREAST_CANCER, DATASET_EMOTIONS, DATASET_EMOTIONS_NOMINAL, DATASET_EMOTIONS_ORDINAL, \
-    DATASET_ENRON, DATASET_LANGLOG
-from .cmd_builder_classification import INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE, \
-    INSTANCE_SAMPLING_STRATIFIED_OUTPUT_WISE
+from .cmd_builder_classification import ClassificationCmdBuilder
+from .cmd_runner import CmdRunner
+from .datasets import Dataset
 from .integration_tests import IntegrationTests
 
 
@@ -19,12 +18,12 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
 
     # pylint: disable=invalid-name
     def __init__(self,
-                 dataset_default: str = DATASET_EMOTIONS,
-                 dataset_numerical_sparse: str = DATASET_LANGLOG,
-                 dataset_binary: str = DATASET_ENRON,
-                 dataset_nominal: str = DATASET_EMOTIONS_NOMINAL,
-                 dataset_ordinal: str = DATASET_EMOTIONS_ORDINAL,
-                 dataset_single_output: str = DATASET_BREAST_CANCER,
+                 dataset_default: str = Dataset.EMOTIONS,
+                 dataset_numerical_sparse: str = Dataset.LANGLOG,
+                 dataset_binary: str = Dataset.ENRON,
+                 dataset_nominal: str = Dataset.EMOTIONS_NOMINAL,
+                 dataset_ordinal: str = Dataset.EMOTIONS_ORDINAL,
+                 dataset_single_output: str = Dataset.BREAST_CANCER,
                  methodName='runTest'):
         super().__init__(dataset_default=dataset_default,
                          dataset_numerical_sparse=dataset_numerical_sparse,
@@ -52,10 +51,9 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_label_vectors() \
             .store_label_vectors()
-        builder.run_cmd('label-vectors_train-test')
+        CmdRunner(self, builder).run('label-vectors_train-test')
 
     def test_label_vectors_cross_validation(self):
         """
@@ -66,10 +64,9 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
             .cross_validation() \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_label_vectors() \
             .store_label_vectors()
-        builder.run_cmd('label-vectors_cross-validation')
+        CmdRunner(self, builder).run('label-vectors_cross-validation')
 
     def test_label_vectors_single_fold(self):
         """
@@ -80,10 +77,9 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
             .cross_validation(current_fold=1) \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .set_output_dir() \
             .print_label_vectors() \
             .store_label_vectors()
-        builder.run_cmd('label-vectors_single-fold')
+        CmdRunner(self, builder).run('label-vectors_single-fold')
 
     def test_instance_sampling_stratified_output_wise(self):
         """
@@ -91,8 +87,8 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
         label-wise stratification.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
-            .instance_sampling(INSTANCE_SAMPLING_STRATIFIED_OUTPUT_WISE)
-        builder.run_cmd('instance-sampling-stratified-output-wise')
+            .instance_sampling(ClassificationCmdBuilder.INSTANCE_SAMPLING_STRATIFIED_OUTPUT_WISE)
+        CmdRunner(self, builder).run('instance-sampling-stratified-output-wise')
 
     def test_instance_sampling_stratified_example_wise(self):
         """
@@ -100,5 +96,5 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
         example-wise stratification.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
-            .instance_sampling(INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE)
-        builder.run_cmd('instance-sampling-stratified-example-wise')
+            .instance_sampling(ClassificationCmdBuilder.INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE)
+        CmdRunner(self, builder).run('instance-sampling-stratified-example-wise')
