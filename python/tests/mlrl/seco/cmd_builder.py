@@ -3,32 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from os import path
 
-from ..common.cmd_builder import DATASET_EMOTIONS, DIR_OUT, CmdBuilder
 from ..common.cmd_builder_classification import ClassificationCmdBuilder
-
-HEURISTIC_ACCURACY = 'accuracy'
-
-HEURISTIC_PRECISION = 'precision'
-
-HEURISTIC_LAPLACE = 'laplace'
-
-HEURISTIC_RECALL = 'recall'
-
-HEURISTIC_WRA = 'weighted-relative-accuracy'
-
-HEURISTIC_F_MEASURE = 'f-measure'
-
-HEURISTIC_M_ESTIMATE = 'm-estimate'
-
-HEAD_TYPE_SINGLE = 'single'
-
-HEAD_TYPE_PARTIAL = 'partial'
-
-LIFT_FUNCTION_NO = 'none'
-
-LIFT_FUNCTION_PEAK = 'peak'
-
-LIFT_FUNCTION_KLN = 'kln'
+from ..common.datasets import Dataset
 
 
 class SeCoClassifierCmdBuilder(ClassificationCmdBuilder):
@@ -36,9 +12,32 @@ class SeCoClassifierCmdBuilder(ClassificationCmdBuilder):
     A builder that allows to configure a command for running the separate-and-conquer (SeCo) algorithm.
     """
 
-    def __init__(self, callback: CmdBuilder.AssertionCallback, dataset: str = DATASET_EMOTIONS):
-        super().__init__(callback,
-                         expected_output_dir=path.join(DIR_OUT, 'seco', 'classification'),
+    HEURISTIC_ACCURACY = 'accuracy'
+
+    HEURISTIC_PRECISION = 'precision'
+
+    HEURISTIC_LAPLACE = 'laplace'
+
+    HEURISTIC_RECALL = 'recall'
+
+    HEURISTIC_WRA = 'weighted-relative-accuracy'
+
+    HEURISTIC_F_MEASURE = 'f-measure'
+
+    HEURISTIC_M_ESTIMATE = 'm-estimate'
+
+    HEAD_TYPE_SINGLE = 'single'
+
+    HEAD_TYPE_PARTIAL = 'partial'
+
+    LIFT_FUNCTION_NO = 'none'
+
+    LIFT_FUNCTION_PEAK = 'peak'
+
+    LIFT_FUNCTION_KLN = 'kln'
+
+    def __init__(self, dataset: str = Dataset.EMOTIONS):
+        super().__init__(expected_output_dir=path.join('seco', 'classification'),
                          model_file_name='seco',
                          runnable_module_name='mlrl.seco',
                          dataset=dataset)

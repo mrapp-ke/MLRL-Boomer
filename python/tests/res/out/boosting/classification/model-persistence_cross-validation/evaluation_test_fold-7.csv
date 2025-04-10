@@ -1,0 +1,2 @@
+Example-wise F1,Example-wise Jaccard,Example-wise Precision,Example-wise Recall,Hamming Accuracy,Hamming Loss,Macro F1,Macro Jaccard,Macro Precision,Macro Recall,Micro F1,Micro Jaccard,Micro Precision,Micro Recall,Prediction Time,Subset 0/1 Loss,Subset Accuracy,Training Time
+60.508474576271176,53.81355932203389,71.46892655367233,62.14689265536724,81.35593220338984,18.64406779661017,63.47135399162017,48.38554192720859,68.54062604062604,60.41881569898811,67.0,50.37593984962406,71.27659574468085,63.20754716981132,<duration>,66.10169491525424,33.89830508474576,<duration>
