@@ -1,8 +1,8 @@
-testbed mlrl.boosting --log-level DEBUG --data-dir python/tests/res/data --dataset emotions --output-dir python/tests/res/tmp/results --data-split cross-validation{num_folds=10,current_fold=0} --print-evaluation false --store-evaluation false --print-model-characteristics true --store-model-characteristics true
+mlrl-testbed mlrl.boosting --log-level DEBUG --data-dir python/tests/res/data --dataset emotions --output-dir python/tests/res/tmp/results --data-split cross-validation{num_folds=10,current_fold=0} --print-evaluation false --store-evaluation false --print-model-characteristics true --store-model-characteristics true
 INFO Starting experiment using the classification algorithm "boomer"...
 INFO Performing full 10-fold cross validation...
-DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 DEBUG Loading data set from file "python/tests/res/data/emotions.arff"...
+DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 INFO Fold 1 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -14,7 +14,7 @@ INFO Model characteristics (Fold 1):
 │ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
 ├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
 │ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-│ 999 local rules               │   11068 │                  55.35% │                 44.65% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 999 local rules               │   11068 │                  55.34% │                 44.66% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
 └───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
 
 ┌────────────────────────────────┬─────────┬────────────┬────────────┐
@@ -31,6 +31,7 @@ INFO Model characteristics (Fold 1):
 │ Predictions                 │         6 │      6    │         6 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-1.csv"...
 INFO Fold 2 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -42,7 +43,7 @@ INFO Model characteristics (Fold 2):
 │ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
 ├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
 │ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-│ 999 local rules               │   11193 │                  55.45% │                 44.55% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 999 local rules               │   11193 │                  55.44% │                 44.56% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
 └───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
 
 ┌────────────────────────────────┬─────────┬────────────┬────────────┐
@@ -59,6 +60,7 @@ INFO Model characteristics (Fold 2):
 │ Predictions                 │         6 │       6   │         6 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-2.csv"...
 INFO Fold 3 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -70,7 +72,7 @@ INFO Model characteristics (Fold 3):
 │ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
 ├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
 │ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-│ 999 local rules               │   10806 │                  55.28% │                 44.72% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 999 local rules               │   10806 │                  55.29% │                 44.71% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
 └───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
 
 ┌────────────────────────────────┬─────────┬────────────┬────────────┐
@@ -87,6 +89,7 @@ INFO Model characteristics (Fold 3):
 │ Predictions                 │         6 │      6    │         6 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-3.csv"...
 INFO Fold 4 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -115,6 +118,7 @@ INFO Model characteristics (Fold 4):
 │ Predictions                 │         6 │      6    │         6 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-4.csv"...
 INFO Fold 5 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -126,7 +130,7 @@ INFO Model characteristics (Fold 5):
 │ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
 ├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
 │ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-│ 999 local rules               │   10755 │                  55.59% │                 44.41% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 999 local rules               │   10755 │                  55.57% │                 44.43% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
 └───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
 
 ┌────────────────────────────────┬─────────┬────────────┬────────────┐
@@ -143,6 +147,7 @@ INFO Model characteristics (Fold 5):
 │ Predictions                 │         6 │      6    │         6 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-5.csv"...
 INFO Fold 6 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -171,6 +176,7 @@ INFO Model characteristics (Fold 6):
 │ Predictions                 │         6 │      6    │         6 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-6.csv"...
 INFO Fold 7 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -199,6 +205,7 @@ INFO Model characteristics (Fold 7):
 │ Predictions                 │         6 │      6    │         6 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-7.csv"...
 INFO Fold 8 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -210,7 +217,7 @@ INFO Model characteristics (Fold 8):
 │ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
 ├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
 │ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-│ 999 local rules               │   11068 │                  55.39% │                 44.61% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 999 local rules               │   11068 │                  55.41% │                 44.59% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
 └───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
 
 ┌────────────────────────────────┬─────────┬────────────┬────────────┐
@@ -227,6 +234,7 @@ INFO Model characteristics (Fold 8):
 │ Predictions                 │         6 │      6    │         6 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-8.csv"...
 INFO Fold 9 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -255,6 +263,7 @@ INFO Model characteristics (Fold 9):
 │ Predictions                 │         6 │      6    │         6 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-9.csv"...
 INFO Fold 10 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -266,7 +275,7 @@ INFO Model characteristics (Fold 10):
 │ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
 ├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
 │ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-│ 999 local rules               │   10917 │                  54.87% │                 45.13% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 999 local rules               │   10917 │                  54.89% │                 45.11% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
 └───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
 
 ┌────────────────────────────────┬─────────┬────────────┬────────────┐
@@ -283,4 +292,5 @@ INFO Model characteristics (Fold 10):
 │ Predictions                 │         6 │      6    │         6 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/model_characteristics_fold-10.csv"...
 INFO Successfully finished after <duration>

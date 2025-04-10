@@ -1,8 +1,8 @@
-testbed mlrl.boosting --log-level DEBUG --data-dir python/tests/res/data --dataset atp7d --output-dir python/tests/res/tmp/results --problem-type regression --data-split cross-validation{num_folds=10,current_fold=0} --print-evaluation false --store-evaluation false --print-data-characteristics true --store-data-characteristics true
+mlrl-testbed mlrl.boosting --log-level DEBUG --data-dir python/tests/res/data --dataset atp7d --output-dir python/tests/res/tmp/results --problem-type regression --data-split cross-validation{num_folds=10,current_fold=0} --print-evaluation false --store-evaluation false --print-data-characteristics true --store-data-characteristics true
 INFO Starting experiment using the regression algorithm "boomer"...
 INFO Performing full 10-fold cross validation...
-DEBUG Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
 DEBUG Loading data set from file "python/tests/res/data/atp7d.arff"...
+DEBUG Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
 INFO Fold 1 / 10:
 INFO Data characteristics (Fold 1):
 
@@ -17,6 +17,7 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/data_characteristics_fold-1.csv"...
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the regression scores of the training examples
@@ -35,6 +36,7 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/data_characteristics_fold-2.csv"...
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the regression scores of the training examples
@@ -53,6 +55,7 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/data_characteristics_fold-3.csv"...
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the regression scores of the training examples
@@ -71,6 +74,7 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/data_characteristics_fold-4.csv"...
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the regression scores of the training examples
@@ -89,6 +93,7 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/data_characteristics_fold-5.csv"...
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the regression scores of the training examples
@@ -107,6 +112,7 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/data_characteristics_fold-6.csv"...
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the regression scores of the training examples
@@ -125,6 +131,7 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/data_characteristics_fold-7.csv"...
 INFO Fitting model to 267 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the regression scores of the training examples
@@ -143,6 +150,7 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/data_characteristics_fold-8.csv"...
 INFO Fitting model to 267 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the regression scores of the training examples
@@ -161,6 +169,7 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/data_characteristics_fold-9.csv"...
 INFO Fitting model to 267 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the regression scores of the training examples
@@ -179,6 +188,7 @@ Outputs               6
 Output Density      100
 Output Sparsity       0
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/data_characteristics_fold-10.csv"...
 INFO Fitting model to 267 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the regression scores of the training examples

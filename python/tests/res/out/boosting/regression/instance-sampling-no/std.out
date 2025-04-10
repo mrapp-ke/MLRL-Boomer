@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:python/tests/res/out/boosting/regression/instance-sampling-no/std.out
-testbed mlrl.boosting --log-level DEBUG --data-dir python/tests/res/data --dataset atp7d --output-dir python/tests/res/tmp/results --problem-type regression --instance-sampling none
-========
-mlrl-testbed mlrl.boosting --log-level DEBUG --data-dir python/tests/res/data --dataset atp7d --problem-type regression --loss squared-error-decomposable --statistic-type 64-bit
->>>>>>>> feature:python/tests/res/out/boosting/regression/loss-squared-error-decomposable_64-bit-statistics.txt
+mlrl-testbed mlrl.boosting --log-level DEBUG --data-dir python/tests/res/data --dataset atp7d --output-dir python/tests/res/tmp/results --problem-type regression --instance-sampling none
 INFO Starting experiment using the regression algorithm "boomer"...
 INFO Using separate training and test sets...
 DEBUG Loading data set from file "python/tests/res/data/atp7d.arff"...
@@ -22,4 +18,5 @@ Mean Absolute Percentage Error     2.09
 Mean Squared Error              2078.35
 Median Absolute Error             19.22
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Successfully finished after <duration>

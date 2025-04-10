@@ -1,8 +1,8 @@
-testbed mlrl.seco --log-level DEBUG --data-dir python/tests/res/data --dataset emotions --output-dir python/tests/res/tmp/results --data-split cross-validation{num_folds=10,current_fold=0} --print-evaluation false --store-evaluation false --print-label-vectors true --store-label-vectors true
+mlrl-testbed mlrl.seco --log-level DEBUG --data-dir python/tests/res/data --dataset emotions --output-dir python/tests/res/tmp/results --data-split cross-validation{num_folds=10,current_fold=0} --print-evaluation false --store-evaluation false --print-label-vectors true --store-label-vectors true
 INFO Starting experiment using the classification algorithm "seco"...
 INFO Performing full 10-fold cross validation...
-DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 DEBUG Loading data set from file "python/tests/res/data/emotions.arff"...
+DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 INFO Fold 1 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -41,6 +41,7 @@ INFO Label vectors (Fold 1):
 │      26 │ [1 0 0 0 1 1]  │           4 │
 └─────────┴────────────────┴─────────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/label_vectors_fold-1.csv"...
 INFO Fold 2 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -79,6 +80,7 @@ INFO Label vectors (Fold 2):
 │      26 │ [1 0 0 0 1 1]  │           3 │
 └─────────┴────────────────┴─────────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/label_vectors_fold-2.csv"...
 INFO Fold 3 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -117,6 +119,7 @@ INFO Label vectors (Fold 3):
 │      26 │ [1 0 0 0 1 1]  │           3 │
 └─────────┴────────────────┴─────────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/label_vectors_fold-3.csv"...
 INFO Fold 4 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -156,6 +159,7 @@ INFO Label vectors (Fold 4):
 │      27 │ [1 0 0 0 1 1]  │           4 │
 └─────────┴────────────────┴─────────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/label_vectors_fold-4.csv"...
 INFO Fold 5 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -195,6 +199,7 @@ INFO Label vectors (Fold 5):
 │      27 │ [1 0 0 0 1 1]  │           4 │
 └─────────┴────────────────┴─────────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/label_vectors_fold-5.csv"...
 INFO Fold 6 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -234,6 +239,7 @@ INFO Label vectors (Fold 6):
 │      27 │ [1 0 0 0 1 1]  │           4 │
 └─────────┴────────────────┴─────────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/label_vectors_fold-6.csv"...
 INFO Fold 7 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -273,6 +279,7 @@ INFO Label vectors (Fold 7):
 │      27 │ [1 0 0 0 1 1]  │           2 │
 └─────────┴────────────────┴─────────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/label_vectors_fold-7.csv"...
 INFO Fold 8 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -312,6 +319,7 @@ INFO Label vectors (Fold 8):
 │      27 │ [1 0 0 0 1 1]  │           4 │
 └─────────┴────────────────┴─────────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/label_vectors_fold-8.csv"...
 INFO Fold 9 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -350,6 +358,7 @@ INFO Label vectors (Fold 9):
 │      26 │ [1 0 0 0 1 1]  │           4 │
 └─────────┴────────────────┴─────────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/label_vectors_fold-9.csv"...
 INFO Fold 10 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -389,4 +398,5 @@ INFO Label vectors (Fold 10):
 │      27 │ [1 0 0 0 1 1]  │           4 │
 └─────────┴────────────────┴─────────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/label_vectors_fold-10.csv"...
 INFO Successfully finished after <duration>

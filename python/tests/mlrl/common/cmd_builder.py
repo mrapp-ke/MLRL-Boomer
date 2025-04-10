@@ -83,7 +83,7 @@ class CmdBuilder:
 
         :return: A list that contains the executable and arguments of the command
         """
-        args = ['testbed', self.runnable_module_name]
+        args = ['mlrl-testbed', self.runnable_module_name]
 
         if self.runnable_class_name:
             args.extend(['-r', self.runnable_class_name])
@@ -124,7 +124,8 @@ class CmdBuilder:
             self.args.append(parameter_dir)
         return self
 
-    def set_parameter_save_dir(self, parameter_dir: Optional[str] = self.output_dir):
+    def set_parameter_save_dir(self,
+                               parameter_dir: Optional[str] = path.join('python', 'tests', 'res', 'tmp', 'results')):
         """
         Configures the rule learner to save parameter settings to a given directory.
 

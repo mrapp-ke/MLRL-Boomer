@@ -47,8 +47,8 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
         Tests the BOOMER algorithm when using the decomposable logistic loss function and 32-bit statistics.
         """
         builder = self._create_cmd_builder() \
-            .loss(ClassificationCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
-            .statistic_type(ClassificationCmdBuilder.STATISTIC_TYPE_FLOAT32)
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32)
         CmdRunner(self, builder).run('loss-logistic-decomposable_32-bit-statistics')
 
     def test_loss_logistic_decomposable_64bit_statistics(self):
@@ -56,8 +56,8 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
         Tests the BOOMER algorithm when using the decomposable logistic loss function and 64-bit statistics.
         """
         builder = self._create_cmd_builder() \
-            .loss(ClassificationCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
-            .statistic_type(ClassificationCmdBuilder.STATISTIC_TYPE_FLOAT64)
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64)
         CmdRunner(self, builder).run('loss-logistic-decomposable_64-bit-statistics')
 
     def test_loss_logistic_non_decomposable_32bit_statistics(self):
@@ -65,8 +65,8 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
         Tests the BOOMER algorithm when using the non-decomposable logistic loss function and 32-bit statistics.
         """
         builder = self._create_cmd_builder() \
-            .loss(ClassificationCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
-            .statistic_type(ClassificationCmdBuilder.STATISTIC_TYPE_FLOAT32)
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32)
         CmdRunner(self, builder).run('loss-logistic-non-decomposable_32-bit-statistics')
 
     def test_loss_logistic_non_decomposable_64bit_statistics(self):
@@ -75,7 +75,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
         """
         builder = self._create_cmd_builder() \
             .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
-            .statistic_type(BoomerClassifierCmdBuilder.STATISTIC_TYPE_FLOAT64)
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64)
         CmdRunner(self, builder).run('loss-logistic-non-decomposable_64-bit-statistics')
 
     def test_loss_squared_hinge_decomposable_32bit_statistics(self):
@@ -84,7 +84,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
         """
         builder = self._create_cmd_builder() \
             .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
-            .statistic_type(BoomerClassifierCmdBuilder.STATISTIC_TYPE_FLOAT32)
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32)
         CmdRunner(self, builder).run('loss-squared-hinge-decomposable_32-bit-statistics')
 
     def test_loss_squared_hinge_decomposable_64bit_statistics(self):
@@ -93,7 +93,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
         """
         builder = self._create_cmd_builder() \
             .loss(BoomerClassifierCmdBuilder.LOSS_SQUARED_HINGE_DECOMPOSABLE) \
-            .statistic_type(BoomerClassifierCmdBuilder.STATISTIC_TYPE_FLOAT64)
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64)
         CmdRunner(self, builder).run('loss-squared-hinge-decomposable_64-bit-statistics')
 
     def test_loss_squared_hinge_non_decomposable_32bit_statistics(self):
@@ -102,7 +102,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
         """
         builder = self._create_cmd_builder() \
             .loss(BoomerClassifierCmdBuilder.LOSS_SQUARED_HINGE_NON_DECOMPOSABLE) \
-            .statistic_type(BoomerClassifierCmdBuilder.STATISTIC_TYPE_FLOAT32)
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32)
         CmdRunner(self, builder).run('loss-squared-hinge-non-decomposable_32-bit-statistics')
 
     def test_loss_squared_hinge_non_decomposable_64bit_statistics(self):
@@ -111,7 +111,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
         """
         builder = self._create_cmd_builder() \
             .loss(BoomerClassifierCmdBuilder.LOSS_SQUARED_HINGE_NON_DECOMPOSABLE) \
-            .statistic_type(BoomerClassifierCmdBuilder.STATISTIC_TYPE_FLOAT64)
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64)
         CmdRunner(self, builder).run('loss-squared-hinge-non-decomposable_64-bit-statistics')
 
     def test_predictor_binary_output_wise(self):
@@ -643,7 +643,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
             .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64) \
             .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_DYNAMIC) \
-            .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
+            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
             .print_model_characteristics()
         CmdRunner(self, builder).run('decomposable-partial-dynamic-heads_equal-width-label-binning_64-bit-statistics')
 
@@ -812,7 +812,8 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_DYNAMIC) \
             .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
             .print_model_characteristics()
-        CmdRunner(self, builder).run('non-decomposable-partial-dynamic-heads_equal-width-label-binning_32-bit-statistics')
+        CmdRunner(self,
+                  builder).run('non-decomposable-partial-dynamic-heads_equal-width-label-binning_32-bit-statistics')
 
     def test_non_decomposable_partial_dynamic_heads_equal_width_label_binning_64bit_statistics(self):
         """
@@ -825,7 +826,8 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_DYNAMIC) \
             .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
             .print_model_characteristics()
-        CmdRunner(self, builder).run('non-decomposable-partial-dynamic-heads_equal-width-label-binning_64-bit-statistics')
+        CmdRunner(self,
+                  builder).run('non-decomposable-partial-dynamic-heads_equal-width-label-binning_64-bit-statistics')
 
     def test_global_post_pruning_stratified_output_wise_holdout(self):
         """
