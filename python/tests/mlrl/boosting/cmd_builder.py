@@ -2,31 +2,31 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 
-LOSS_SQUARED_ERROR_DECOMPOSABLE = 'squared-error-decomposable'
-
-LOSS_SQUARED_ERROR_NON_DECOMPOSABLE = 'squared-error-non-decomposable'
-
-HEAD_TYPE_SINGLE = 'single'
-
-HEAD_TYPE_COMPLETE = 'complete'
-
-HEAD_TYPE_PARTIAL_FIXED = 'partial-fixed'
-
-HEAD_TYPE_PARTIAL_DYNAMIC = 'partial-dynamic'
-
-GLOBAL_PRUNING_PRE = 'pre-pruning'
-
-GLOBAL_PRUNING_POST = 'post-pruning'
-
-STATISTIC_TYPE_FLOAT32 = '32-bit'
-
-STATISTIC_TYPE_FLOAT64 = '64-bit'
-
 
 class BoomerCmdBuilderMixin:
     """
     A mixin for builders that allow to configure a command for running the BOOMER algorithm.
     """
+
+    LOSS_SQUARED_ERROR_DECOMPOSABLE = 'squared-error-decomposable'
+
+    LOSS_SQUARED_ERROR_NON_DECOMPOSABLE = 'squared-error-non-decomposable'
+
+    HEAD_TYPE_SINGLE = 'single'
+
+    HEAD_TYPE_COMPLETE = 'complete'
+
+    HEAD_TYPE_PARTIAL_FIXED = 'partial-fixed'
+
+    HEAD_TYPE_PARTIAL_DYNAMIC = 'partial-dynamic'
+
+    GLOBAL_PRUNING_PRE = 'pre-pruning'
+
+    GLOBAL_PRUNING_POST = 'post-pruning'
+
+    STATISTIC_TYPE_FLOAT32 = '32-bit'
+
+    STATISTIC_TYPE_FLOAT64 = '64-bit'
 
     def loss(self, loss: str):
         """
