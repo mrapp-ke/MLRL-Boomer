@@ -13,10 +13,12 @@ uint32 OutOfSampleWeightVector<WeightVector>::getNumElements() const {
 }
 
 template<typename WeightVector>
-bool OutOfSampleWeightVector<WeightVector>::operator[](uint32 pos) const {
+typename OutOfSampleWeightVector<WeightVector>::weight_type OutOfSampleWeightVector<WeightVector>::operator[](
+  uint32 pos) const {
     return isEqualToZero(vector_[pos]);
 }
 
 template class OutOfSampleWeightVector<EqualWeightVector>;
 template class OutOfSampleWeightVector<BitWeightVector>;
-template class OutOfSampleWeightVector<DenseWeightVector<uint32>>;
+template class OutOfSampleWeightVector<DenseWeightVector<uint16>>;
+template class OutOfSampleWeightVector<DenseWeightVector<float32>>;

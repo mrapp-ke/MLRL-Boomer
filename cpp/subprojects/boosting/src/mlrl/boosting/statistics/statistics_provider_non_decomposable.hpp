@@ -106,7 +106,7 @@ namespace boosting {
 
             std::unique_ptr<IDecomposableStatistics<DecomposableRuleEvaluationFactory>> decomposableStatisticsPtr_;
 
-            const uint32 numThreads_;
+            const MultiThreadingSettings multiThreadingSettings_;
 
         public:
 
@@ -119,16 +119,18 @@ namespace boosting {
              *                                      function `switchToPruningRuleEvaluation`
              * @param statisticsPtr                 An unique pointer to an object of type `INonDecomposableStatistics`
              *                                      to provide access to
-             * @param numThreads                    The number of threads that should be used to convert the statistics
-             *                                      for individual examples in parallel
+             * @param multiThreadingSettings        An object of type `MultiThreadingSettings` that stores the settings
+             *                                      to be used for converting the statistics for individual examples in
+             *                                      parallel
              */
             ConvertibleNonDecomposableStatisticsProvider(
               const DecomposableRuleEvaluationFactory& regularRuleEvaluationFactory,
               const DecomposableRuleEvaluationFactory& pruningRuleEvaluationFactory,
-              std::unique_ptr<NonDecomposableStatistics> statisticsPtr, uint32 numThreads)
+              std::unique_ptr<NonDecomposableStatistics> statisticsPtr, MultiThreadingSettings multiThreadingSettings)
                 : regularRuleEvaluationFactory_(regularRuleEvaluationFactory),
                   pruningRuleEvaluationFactory_(pruningRuleEvaluationFactory),
-                  nonDecomposableStatisticsPtr_(std::move(statisticsPtr)), numThreads_(numThreads) {}
+                  nonDecomposableStatisticsPtr_(std::move(statisticsPtr)),
+                  multiThreadingSettings_(multiThreadingSettings) {}
 
             /**
              * @see `IStatisticsProvider::get`
@@ -150,8 +152,8 @@ namespace boosting {
                 NonDecomposableStatistics* nonDecomposableStatistics = nonDecomposableStatisticsPtr_.get();
 
                 if (nonDecomposableStatistics) {
-                    decomposableStatisticsPtr_ =
-                      nonDecomposableStatistics->toDecomposableStatistics(regularRuleEvaluationFactory_, numThreads_);
+                    decomposableStatisticsPtr_ = nonDecomposableStatistics->toDecomposableStatistics(
+                      regularRuleEvaluationFactory_, multiThreadingSettings_);
                     nonDecomposableStatisticsPtr_.reset();
                 } else {
                     decomposableStatisticsPtr_->setRuleEvaluationFactory(regularRuleEvaluationFactory_);
@@ -165,8 +167,8 @@ namespace boosting {
                 NonDecomposableStatistics* nonDecomposableStatistics = nonDecomposableStatisticsPtr_.get();
 
                 if (nonDecomposableStatistics) {
-                    decomposableStatisticsPtr_ =
-                      nonDecomposableStatistics->toDecomposableStatistics(pruningRuleEvaluationFactory_, numThreads_);
+                    decomposableStatisticsPtr_ = nonDecomposableStatistics->toDecomposableStatistics(
+                      pruningRuleEvaluationFactory_, multiThreadingSettings_);
                     nonDecomposableStatisticsPtr_.reset();
                 } else {
                     decomposableStatisticsPtr_->setRuleEvaluationFactory(pruningRuleEvaluationFactory_);

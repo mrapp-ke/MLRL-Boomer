@@ -24,7 +24,7 @@ namespace boosting {
              *
              * @return The value of the "shrinkage" parameter
              */
-            virtual float64 getShrinkage() const = 0;
+            virtual float32 getShrinkage() const = 0;
 
             /**
              * Sets the value of the "shrinkage" parameter.
@@ -33,7 +33,7 @@ namespace boosting {
              * @return          A reference to an object of type `IConstantShrinkageConfig` that allows further
              *                  configuration of the post-processor
              */
-            virtual IConstantShrinkageConfig& setShrinkage(float64 shrinkage) = 0;
+            virtual IConstantShrinkageConfig& setShrinkage(float32 shrinkage) = 0;
     };
 
     /**
@@ -43,15 +43,15 @@ namespace boosting {
                                           public IConstantShrinkageConfig {
         private:
 
-            float64 shrinkage_;
+            float32 shrinkage_;
 
         public:
 
             ConstantShrinkageConfig();
 
-            float64 getShrinkage() const override;
+            float32 getShrinkage() const override;
 
-            IConstantShrinkageConfig& setShrinkage(float64 shrinkage) override;
+            IConstantShrinkageConfig& setShrinkage(float32 shrinkage) override;
 
             /**
              * @see `IPostProcessorConfig::createPostProcessorFactory`
