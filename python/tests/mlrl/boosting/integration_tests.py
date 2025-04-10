@@ -16,8 +16,8 @@ class BoomerIntegrationTestsMixin:
         Tests the BOOMER algorithm when using the decomposable squared error loss function and 32-bit statistics.
         """
         builder = self._create_cmd_builder() \
-            .loss(LOSS_SQUARED_ERROR_DECOMPOSABLE) \
-            .statistic_type(STATISTIC_TYPE_FLOAT32)
+            .loss(BoomerCmdBuilderMixin.LOSS_SQUARED_ERROR_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32)
         CmdRunner(self, builder).run('loss-squared-error-decomposable_32-bit-statistics')
 
     def test_loss_squared_error_decomposable_64bit_statistics(self):
