@@ -311,15 +311,21 @@ class RowWiseTable(Table):
         self._num_columns = max(len(values), self._num_columns)
         return self
 
-    def sort_by_columns(self, column_index: int, *additional_column_indices: int) -> 'RowWiseTable':
+    def sort_by_columns(self,
+                        column_index: int,
+                        *additional_column_indices: int,
+                        descending: bool = False) -> 'RowWiseTable':
         """
         Sorts the rows in the table by the values in one or several columns.
 
         :param column_index:                The index of the column to sort by
         :param additional_column_indices:   Additional indices of columns to sort by
+        :param descending:                  True, if the rows should be sorted in descending order, False, if the should
+                                            be sorted in ascending order
         :return:                            The sorted table
         """
-        self._rows.sort(key=lambda row: ([row[i] for i in [column_index] + list(additional_column_indices)]))
+        self._rows.sort(key=lambda row: ([row[i] for i in [column_index] + list(additional_column_indices)]),
+                        reverse=descending)
         return self
 
     @property
