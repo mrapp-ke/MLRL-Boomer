@@ -10,6 +10,7 @@ from abc import ABC, abstractmethod
 from argparse import ArgumentError, ArgumentParser
 from dataclasses import dataclass, field
 from enum import Enum
+from os import listdir, path, unlink
 from typing import Dict, Iterable, List, Optional, Set
 
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
@@ -47,7 +48,6 @@ from mlrl.testbed.package_info import get_package_info as get_testbed_package_in
 from mlrl.testbed.parameters import CsvParameterLoader, ParameterLoader
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
-from mlrl.testbed.util.io import clear_directory
 
 LOG_FORMAT = '%(levelname)s %(message)s'
 
@@ -361,7 +361,13 @@ class LearnerRunnable(Runnable, ABC):
             """
             See :func:`mlrl.testbed.experiments.Experiment.ExecutionHook.execute`
             """
-            clear_directory(self.output_dir)
+            output_dir = self.output_dir
+
+            for file in listdir(output_dir):
+                file_path = path.join(output_dir, file)
+
+                if path.isfile(file_path):
+                    unlink(file_path)
 
     PARAM_PROBLEM_TYPE = '--problem-type'
 

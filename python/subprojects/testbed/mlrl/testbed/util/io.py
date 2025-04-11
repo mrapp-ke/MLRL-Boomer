@@ -5,7 +5,7 @@ Provides utility functions for reading and writing files.
 """
 import xml.etree.ElementTree as XmlTree
 
-from os import listdir, path, unlink
+from os import path
 from typing import Optional
 from xml.dom import minidom
 
@@ -75,16 +75,3 @@ def write_xml_file(xml_file, root_element: XmlTree.Element):
     with open(xml_file, mode='w', encoding=ENCODING_UTF8) as file:
         xml_string = minidom.parseString(XmlTree.tostring(root_element)).toprettyxml(encoding=ENCODING_UTF8)
         file.write(xml_string.decode(ENCODING_UTF8))
-
-
-def clear_directory(directory: str):
-    """
-    Deletes all files contained in a directory (excluding subdirectories).
-
-    :param directory: The directory to be cleared
-    """
-    for file in listdir(directory):
-        file_path = path.join(directory, file)
-
-        if path.isfile(file_path):
-            unlink(file_path)
