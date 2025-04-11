@@ -11,7 +11,7 @@ from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
 from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
 from mlrl.testbed.experiments.output.sinks import CsvFileSink
 from mlrl.testbed.experiments.output.table import RowWiseTable, Table
-from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
+from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
 
 class EvaluationResult(TabularOutputData):
@@ -101,41 +101,39 @@ class EvaluationResult(TabularOutputData):
         """
         See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
         """
-        measurements = self.measurements
+        kwargs = dict(kwargs) | {OPTION_DECIMALS: 2}
+        table = self.to_table(options, **kwargs)
+        header_row = table.header_row
+        first_row = next(table.rows)
         fold = kwargs.get(self.KWARG_FOLD)
-        percentage = options.get_bool(OPTION_PERCENTAGE, True)
-        decimals = options.get_int(OPTION_DECIMALS, 2)
-        enable_all = options.get_bool(self.OPTION_ENABLE_ALL, True)
-        rows = []
+        rotated_table = RowWiseTable.empty()
 
-        for measure in sorted(measurements.measures):
-            if options.get_bool(measure.option_key, enable_all) and measure.option_key != self.OPTION_TRAINING_TIME \
-                    and measure.option_key != self.OPTION_PREDICTION_TIME:
+        for column_index in range(0, table.num_columns, 2 if fold is None else 1):
+            header = header_row[column_index]
+
+            if header.option_key not in {self.OPTION_TRAINING_TIME, self.OPTION_PREDICTION_TIME}:
+                value = first_row[column_index]
+                new_row = [header, value]
+
                 if fold is None:
-                    average, std_dev = measurements.average_by_measure(measure)
-                    rows.append([
-                        str(measure),
-                        measure.format(average, percentage=percentage, decimals=decimals),
-                        '±' + measure.format(std_dev, percentage=percentage, decimals=decimals),
-                    ])
-                else:
-                    value = measurements.values_by_measure(measure)[fold]
-                    rows.append([str(measure), measure.format(value, percentage=percentage, decimals=decimals)])
+                    std_dev = '±' + first_row[column_index + 1]
+                    new_row.append(std_dev)
 
-        return format_table(rows)
+                rotated_table.add_row(*new_row)
+
+        return rotated_table.sort_by_columns(0).format()
 
     def to_table(self, options: Options, **kwargs) -> Optional[Table]:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
+        percentage = options.get_bool(OPTION_PERCENTAGE, kwargs.get(OPTION_PERCENTAGE, True))
+        decimals = options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0))
+        enable_all = options.get_bool(self.OPTION_ENABLE_ALL, kwargs.get(self.OPTION_ENABLE_ALL, True))
         fold = kwargs.get(self.KWARG_FOLD)
-        measurements = self.measurements
-        dictionary = measurements.averages_as_dict() if fold is None else measurements.values_as_dict(index=fold)
-        percentage = options.get_bool(OPTION_PERCENTAGE, True)
-        decimals = options.get_int(OPTION_DECIMALS, 0)
-        enable_all = options.get_bool(self.OPTION_ENABLE_ALL, True)
+        dictionary = self.measurements.averages_as_dict() if fold is None else self.measurements.values_as_dict(fold)
         return RowWiseTable.from_dict({
-            measure.name: measure.format(value, percentage=percentage, decimals=decimals)
+            measure: measure.format(value, percentage=percentage, decimals=decimals)
             for measure, value in dictionary.items() if options.get_bool(measure.option_key, enable_all)
         })
 
