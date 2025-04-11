@@ -106,7 +106,7 @@ class EvaluationResult(TabularOutputData):
         header_row = table.header_row
         first_row = next(table.rows)
         fold = kwargs.get(self.KWARG_FOLD)
-        rotated_table = RowWiseTable.empty()
+        rotated_table = RowWiseTable()
 
         for column_index in range(0, table.num_columns, 2 if fold is None else 1):
             header = header_row[column_index]

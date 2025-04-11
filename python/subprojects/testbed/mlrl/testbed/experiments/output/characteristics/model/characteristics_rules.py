@@ -64,7 +64,7 @@ class RuleModelCharacteristics(TabularOutputData):
             'Ordinal <= operator', 'Ordinal > operator', 'Nominal == operator', 'Nominal != operator'
         ]
         alignments = [Alignment.LEFT] + [Alignment.RIGHT for _ in range(len(headers) - 1)]
-        table = RowWiseTable.empty(*headers, alignments=alignments)
+        table = RowWiseTable(*headers, alignments=alignments)
 
         if statistics.has_default_rule:
             body_statistics = statistics.default_rule_statistics.body_statistics
@@ -86,7 +86,7 @@ class RuleModelCharacteristics(TabularOutputData):
         statistics = self.statistics
         headers = ['Statistics about predictions', 'Total', 'Positive', 'Negative']
         alignments = [Alignment.LEFT] + [Alignment.RIGHT for _ in range(len(headers) - 1)]
-        table = RowWiseTable.empty(*headers, alignments=alignments)
+        table = RowWiseTable(*headers, alignments=alignments)
 
         if statistics.has_default_rule:
             head_statistics = statistics.default_rule_statistics.head_statistics
@@ -100,7 +100,7 @@ class RuleModelCharacteristics(TabularOutputData):
     def __format_aggregated_rule_statistics(self, aggregated_rule_statistics: RuleStatistics) -> str:
         statistics = self.statistics
         num_rules = statistics.num_rules
-        table = RowWiseTable.empty('Statistics per local rule', 'Minimum', 'Average', 'Maximum')
+        table = RowWiseTable('Statistics per local rule', 'Minimum', 'Average', 'Maximum')
         table.add_row(
             'Conditions',
             format_number(statistics.min_conditions),
@@ -123,10 +123,10 @@ class RuleModelCharacteristics(TabularOutputData):
         statistics = self.statistics
         has_default_rule = statistics.has_default_rule
         default_rule_statistics = [statistics.default_rule_statistics] if has_default_rule else []
-        table = RowWiseTable.empty('Rule', 'conditions', 'numerical conditions', 'numerical <= operator',
-                                   'numerical > operator', 'ordinal conditions', 'ordinal <= operator',
-                                   'ordinal > operator', 'nominal conditions', 'nominal == operator',
-                                   'nominal != operator', 'predictions', 'pos. predictions', 'neg. predictions')
+        table = RowWiseTable('Rule', 'conditions', 'numerical conditions', 'numerical <= operator',
+                             'numerical > operator', 'ordinal conditions', 'ordinal <= operator', 'ordinal > operator',
+                             'nominal conditions', 'nominal == operator', 'nominal != operator', 'predictions',
+                             'pos. predictions', 'neg. predictions')
 
         for i, rule_statistics in enumerate(chain(default_rule_statistics, statistics.rule_statistics)):
             rule_name = 'Rule ' + str(i + 1)
