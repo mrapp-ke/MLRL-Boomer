@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing characteristics of a datasets that are part of output data.
 """
+from itertools import chain
 from typing import Optional
 
 from mlrl.common.config.options import Options
@@ -14,9 +15,10 @@ from mlrl.testbed.experiments.output.characteristics.data.matrix_feature import 
 from mlrl.testbed.experiments.output.characteristics.data.matrix_label import LabelMatrix
 from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
+from mlrl.testbed.experiments.output.table import RowWiseTable, Table
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
+from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
 
 class DataCharacteristics(TabularOutputData):
@@ -55,47 +57,30 @@ class DataCharacteristics(TabularOutputData):
             self.output_characteristics = OUTPUT_CHARACTERISTICS
             self.output_matrix = OutputMatrix(values=dataset.y)
 
-    def to_text(self, options: Options, **_) -> Optional[str]:
+    def to_text(self, options: Options, **kwargs) -> Optional[str]:
         """
         See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
         """
-        percentage = options.get_bool(OPTION_PERCENTAGE, True)
-        decimals = options.get_int(OPTION_DECIMALS, 2)
-        rows = []
+        kwargs = dict(kwargs) | {OPTION_DECIMALS: 2}
+        return self.to_table(options, **kwargs).format()
 
-        for characteristic in OutputValue.filter_values(FEATURE_CHARACTERISTICS, options):
-            rows.append([
-                characteristic.name,
-                characteristic.format(self.feature_matrix, percentage=percentage, decimals=decimals)
-            ])
-
-        for characteristic in OutputValue.filter_values(self.output_characteristics, options):
-            rows.append([
-                characteristic.name,
-                characteristic.format(self.output_matrix, percentage=percentage, decimals=decimals)
-            ])
-
-        return format_table(rows)
-
-    def to_table(self, options: Options, **_) -> Optional[TabularOutputData.Table]:
+    def to_table(self, options: Options, **kwargs) -> Optional[Table]:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
-        percentage = options.get_bool(OPTION_PERCENTAGE, True)
-        decimals = options.get_int(OPTION_DECIMALS, 0)
-        columns = {}
-
-        for characteristic in OutputValue.filter_values(FEATURE_CHARACTERISTICS, options):
-            columns[characteristic] = characteristic.format(self.feature_matrix,
-                                                            percentage=percentage,
-                                                            decimals=decimals)
-
-        for characteristic in OutputValue.filter_values(self.output_characteristics, options):
-            columns[characteristic] = characteristic.format(self.output_matrix,
-                                                            percentage=percentage,
-                                                            decimals=decimals)
-
-        return [columns]
+        percentage = options.get_bool(OPTION_PERCENTAGE, kwargs.get(OPTION_PERCENTAGE, True))
+        decimals = options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0))
+        feature_characteristics = OutputValue.filter_values(FEATURE_CHARACTERISTICS, options)
+        output_characteristics = OutputValue.filter_values(self.output_characteristics, options)
+        values = chain(
+            map(
+                lambda characteristic: characteristic.format(
+                    self.feature_matrix, percentage=percentage, decimals=decimals), feature_characteristics),
+            map(
+                lambda characteristic: characteristic.format(
+                    self.output_matrix, percentage=percentage, decimals=decimals), output_characteristics),
+        )
+        return RowWiseTable(*chain(feature_characteristics, output_characteristics)).add_row(*values)
 
 
 FEATURE_CHARACTERISTICS = [
