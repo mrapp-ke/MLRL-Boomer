@@ -14,6 +14,7 @@ from typing import Dict, Iterable, List, Optional, Set
 
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
     RegressorMixin as SkLearnRegressorMixin
+from tabulate import tabulate
 
 from mlrl.common.config.options import BooleanOption, parse_param_and_options
 from mlrl.common.config.parameters import NONE, Parameter
@@ -45,7 +46,7 @@ from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.package_info import get_package_info as get_testbed_package_info
 from mlrl.testbed.parameters import CsvParameterLoader, ParameterLoader
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
-from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
+from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 from mlrl.testbed.util.io import clear_directory
 
 LOG_FORMAT = '%(levelname)s %(message)s'
@@ -249,7 +250,7 @@ class Runnable(ABC):
                 for j, info in enumerate(sorted(hardware_resources[hardware_resource])):
                     rows.append(['' if i > 0 else 'Hardware resources:', '' if j > 0 else hardware_resource, info])
 
-            return format_table(rows) if rows else ''
+            return tabulate(rows, tablefmt='plain') if rows else ''
 
         def __str__(self) -> str:
             result = self.name + ' ' + self.version
