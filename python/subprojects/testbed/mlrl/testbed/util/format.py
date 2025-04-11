@@ -6,11 +6,8 @@ Provides utility functions for creating textual representations.
 import sys
 
 from numbers import Number
-from typing import List, Optional
 
 import numpy as np
-
-from tabulate import tabulate
 
 OPTION_DECIMALS = 'decimals'
 
@@ -55,18 +52,3 @@ def format_percentage(fraction: float, decimals: int = 2) -> str:
     :return:            The textual representation that has been created
     """
     return format_number(float(fraction) * 100, decimals) + '%'
-
-
-def format_table(rows: List[List[str]], header: Optional[List[str]] = None, alignment: List[str] = None) -> str:
-    """
-    Creates and returns a textual representation of tabular data.
-
-    :param rows:        A list of lists that stores the tabular data
-    :param header:      A list that stores the header columns
-    :param alignment:   A list of strings that specify the alignment of the corresponding column as either 'left',
-                        'center', or 'right'
-    :return:            The textual representation that has been created
-    """
-    if not header:
-        return tabulate(rows, colalign=alignment, tablefmt='plain')
-    return tabulate(rows, headers=header, colalign=alignment, tablefmt='simple_outline')
