@@ -15,9 +15,9 @@ class LogSink(Sink):
     Allows to write textual output data to the log.
     """
 
-    class TitleFormatter:
+    class Title:
         """
-        Allows to format the title that is printed before the output data.
+        A title that is printed before output data.
         """
 
         def __init__(self, title: str, context: ExperimentState.Context):
@@ -63,7 +63,7 @@ class LogSink(Sink):
             """
             Formats and returns the title that is printed before the output data.
 
-            :param state: The state from which the output data is generated
+            :param state: The state from which the output data has been generated
             """
             return self.title + self.__format_dataset_type(state) + self.__format_prediction_scope(
                 state) + self.__format_fold(state)
@@ -76,5 +76,5 @@ class LogSink(Sink):
 
         if text:
             context = output_data.get_context(type(self))
-            title_formatter = LogSink.TitleFormatter(title=output_data.name, context=context)
-            log.info('%s:\n\n%s\n', title_formatter.format(state), text)
+            title = LogSink.Title(title=output_data.name, context=context)
+            log.info('%s:\n\n%s\n', title.format(state), text)
