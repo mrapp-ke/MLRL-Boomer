@@ -3,8 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for creating textual representations.
 """
-import sys
-
 from numbers import Number
 
 import numpy as np
@@ -12,21 +10,6 @@ import numpy as np
 OPTION_DECIMALS = 'decimals'
 
 OPTION_PERCENTAGE = 'percentage'
-
-
-def format_array(array: np.ndarray, decimals: int = 2) -> str:
-    """
-    Creates and returns a textual representation of an array.
-
-    :param array:       The array
-    :param decimals:    The number of decimals to be used or 0, if the number of decimals should not be restricted
-    :return:            The textual representation that has been created
-    """
-    if array.dtype.kind == 'f':
-        precision = decimals if decimals > 0 else None
-        return np.array2string(array, threshold=sys.maxsize, precision=precision, suppress_small=True)
-    # pylint: disable=unnecessary-lambda
-    return np.array2string(array, threshold=sys.maxsize, formatter={'all': lambda x: str(x)})
 
 
 def format_number(value: Number, decimals: int = 2) -> str:
