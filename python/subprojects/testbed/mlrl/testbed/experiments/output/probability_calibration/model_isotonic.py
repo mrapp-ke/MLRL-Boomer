@@ -113,7 +113,7 @@ class IsotonicRegressionModel(TabularOutputData):
                 column_threshold = self._format_threshold_column(list_index)
 
                 if len(bin_list) > i:
-                    probability, threshold = bin_list[i]
+                    threshold, probability = bin_list[i]
                     columns[column_probability] = format_number(probability, decimals=decimals)
                     columns[column_threshold] = format_number(threshold, decimals=decimals)
                     end = False
