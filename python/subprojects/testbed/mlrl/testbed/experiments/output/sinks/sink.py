@@ -43,16 +43,16 @@ class FileSink(Sink, ABC):
     An abstract base class for all sinks that write output data to a file.
     """
 
-    class PathFormatter:
+    class Path:
         """
-        Allows to determine the path to the file to which output data is written.
+        The path to a file to which output data is written.
         """
 
         def __init__(self, directory: str, file_name: str, suffix: str, context: ExperimentState.Context):
             """
-            :param directory:   The path to the directory of the file
+            :param directory:   The path to the directory, where the file is located
             :param file_name:   The name of the file
-            :param suffix:      The suffix of the file
+            :param suffix:      The suffix of the file (with leading dot)
             :param context:     An `ExperimentState.Context` to be used to determine the path
             """
             self.directory = directory
@@ -60,11 +60,11 @@ class FileSink(Sink, ABC):
             self.suffix = suffix
             self.context = context
 
-        def format(self, state: ExperimentState) -> str:
+        def resolve(self, state: ExperimentState) -> str:
             """
-            Determines and returns the path to the file to which the output data should be written.
+            Determines and returns the path to the file to which output data should be written.
 
-            :param state: The state from which the output data is generated
+            :param state: The state from which the output data has been generated
             """
             file_name = self.file_name
 
@@ -96,11 +96,11 @@ class FileSink(Sink, ABC):
         See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
         """
         context = output_data.get_context(type(self))
-        path_formatter = FileSink.PathFormatter(directory=self.directory,
-                                                file_name=output_data.file_name,
-                                                suffix=self.suffix,
-                                                context=context)
-        file_path = path_formatter.format(state)
+        file_path = FileSink.Path(directory=self.directory,
+                                  file_name=output_data.file_name,
+                                  suffix=self.suffix,
+                                  context=context)
+        file_path = file_path.resolve(state)
         log.debug('Writing output data to file "%s"...', file_path)
         self._write_to_file(file_path, state, output_data, **kwargs)
 
