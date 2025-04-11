@@ -1,8 +1,8 @@
-testbed mlrl.seco --log-level DEBUG --data-dir python/tests/res/data --dataset emotions --output-dir python/tests/res/tmp/results --data-split cross-validation{num_folds=10,current_fold=0} --model-dir python/tests/res/tmp/models
+mlrl-testbed mlrl.seco --log-level DEBUG --data-dir python/tests/res/data --dataset emotions --output-dir python/tests/res/tmp/results --data-split cross-validation{num_folds=10,current_fold=0} --model-load-dir python/tests/res/tmp/models --model-save-dir python/tests/res/tmp/models
 INFO Starting experiment using the classification algorithm "seco"...
 INFO Performing full 10-fold cross validation...
-DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 DEBUG Loading data set from file "python/tests/res/data/emotions.arff"...
+DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 INFO Fold 1 / 10:
 DEBUG Loading model from file "python/tests/res/tmp/models/seco_fold-1.model"...
 INFO Successfully loaded model from file "python/tests/res/tmp/models/seco_fold-1.model"
@@ -29,6 +29,7 @@ Micro Recall            59.83
 Subset 0/1 Loss         81.67
 Subset Accuracy         18.33
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-1.csv"...
 INFO Fold 2 / 10:
 DEBUG Loading model from file "python/tests/res/tmp/models/seco_fold-2.model"...
 INFO Successfully loaded model from file "python/tests/res/tmp/models/seco_fold-2.model"
@@ -55,6 +56,7 @@ Micro Recall            56.67
 Subset 0/1 Loss         81.67
 Subset Accuracy         18.33
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-2.csv"...
 INFO Fold 3 / 10:
 DEBUG Loading model from file "python/tests/res/tmp/models/seco_fold-3.model"...
 INFO Successfully loaded model from file "python/tests/res/tmp/models/seco_fold-3.model"
@@ -81,6 +83,7 @@ Micro Recall            60.53
 Subset 0/1 Loss         81.67
 Subset Accuracy         18.33
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-3.csv"...
 INFO Fold 4 / 10:
 DEBUG Loading model from file "python/tests/res/tmp/models/seco_fold-4.model"...
 INFO Successfully loaded model from file "python/tests/res/tmp/models/seco_fold-4.model"
@@ -107,6 +110,7 @@ Micro Recall            55.88
 Subset 0/1 Loss         77.97
 Subset Accuracy         22.03
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-4.csv"...
 INFO Fold 5 / 10:
 DEBUG Loading model from file "python/tests/res/tmp/models/seco_fold-5.model"...
 INFO Successfully loaded model from file "python/tests/res/tmp/models/seco_fold-5.model"
@@ -133,6 +137,7 @@ Micro Recall            66.96
 Subset 0/1 Loss         79.66
 Subset Accuracy         20.34
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-5.csv"...
 INFO Fold 6 / 10:
 DEBUG Loading model from file "python/tests/res/tmp/models/seco_fold-6.model"...
 INFO Successfully loaded model from file "python/tests/res/tmp/models/seco_fold-6.model"
@@ -159,6 +164,7 @@ Micro Recall            54.81
 Subset 0/1 Loss         86.44
 Subset Accuracy         13.56
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-6.csv"...
 INFO Fold 7 / 10:
 DEBUG Loading model from file "python/tests/res/tmp/models/seco_fold-7.model"...
 INFO Successfully loaded model from file "python/tests/res/tmp/models/seco_fold-7.model"
@@ -185,6 +191,7 @@ Micro Recall            56.6
 Subset 0/1 Loss         77.97
 Subset Accuracy         22.03
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-7.csv"...
 INFO Fold 8 / 10:
 DEBUG Loading model from file "python/tests/res/tmp/models/seco_fold-8.model"...
 INFO Successfully loaded model from file "python/tests/res/tmp/models/seco_fold-8.model"
@@ -211,6 +218,7 @@ Micro Recall            63.55
 Subset 0/1 Loss         76.27
 Subset Accuracy         23.73
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-8.csv"...
 INFO Fold 9 / 10:
 DEBUG Loading model from file "python/tests/res/tmp/models/seco_fold-9.model"...
 INFO Successfully loaded model from file "python/tests/res/tmp/models/seco_fold-9.model"
@@ -237,6 +245,7 @@ Micro Recall            60.18
 Subset 0/1 Loss         81.36
 Subset Accuracy         18.64
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-9.csv"...
 INFO Fold 10 / 10:
 DEBUG Loading model from file "python/tests/res/tmp/models/seco_fold-10.model"...
 INFO Successfully loaded model from file "python/tests/res/tmp/models/seco_fold-10.model"
@@ -282,4 +291,6 @@ Micro Recall            59.5   ±3.54
 Subset 0/1 Loss         79.58  ±3.87
 Subset Accuracy         20.42  ±3.87
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-10.csv"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
 INFO Successfully finished after <duration>

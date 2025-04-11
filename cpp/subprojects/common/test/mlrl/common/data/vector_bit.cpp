@@ -3,13 +3,13 @@
 #include <gtest/gtest.h>
 
 TEST(BitVectorTest, getNumElements) {
-    uint32 numElements = 10;
+    uint32 numElements = 270;
     BitVector vector(numElements);
     EXPECT_EQ(vector.getNumElements(), numElements);
 }
 
 TEST(BitVectorTest, defaultInitialization) {
-    uint32 numElements = 10;
+    uint32 numElements = 270;
     BitVector vector(numElements, true);
 
     for (uint32 i = 0; i < numElements; i++) {
@@ -18,7 +18,7 @@ TEST(BitVectorTest, defaultInitialization) {
 }
 
 TEST(BitVectorTest, set) {
-    uint32 numElements = 10;
+    uint32 numElements = 270;
     BitVector vector(numElements, false);
 
     for (uint32 i = 0; i < numElements; i++) {
@@ -28,7 +28,7 @@ TEST(BitVectorTest, set) {
 }
 
 TEST(BitVectorTest, clear) {
-    uint32 numElements = 10;
+    uint32 numElements = 270;
     BitVector vector(numElements);
 
     for (uint32 i = 0; i < numElements; i++) {

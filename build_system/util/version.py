@@ -58,7 +58,7 @@ class Version:
         return Version(tuple(numbers))
 
     def __str__(self) -> str:
-        return reduce(lambda aggr, number: aggr + ('.' if len(aggr) > 0 else '') + str(number), self.numbers, '')
+        return reduce(lambda aggr, number: aggr + ('.' if aggr else '') + str(number), self.numbers, '')
 
     def __eq__(self, other: 'Version') -> bool:
         return self.numbers == other.numbers

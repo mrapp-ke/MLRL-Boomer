@@ -20,6 +20,5 @@ def format_iterable(objects: Iterable[Any],
     :param mapping:     An optional function that maps each object in the iterable to another one
     :return:            The textual representation that has been created
     """
-    return reduce(
-        lambda aggr, obj: aggr + (separator
-                                  if len(aggr) > 0 else '') + delimiter + str(mapping(obj)) + delimiter, objects, '')
+    return reduce(lambda aggr, obj: aggr + (separator
+                                            if aggr else '') + delimiter + str(mapping(obj)) + delimiter, objects, '')
