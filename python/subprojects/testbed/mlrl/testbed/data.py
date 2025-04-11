@@ -20,7 +20,7 @@ from mlrl.common.data.arrays import is_sparse
 from mlrl.common.data.types import Float32, Uint8
 
 from mlrl.testbed.dataset import Attribute, AttributeType
-from mlrl.testbed.util.io import ENCODING_UTF8, write_xml_file
+from mlrl.testbed.util.io import ENCODING_UTF8
 
 
 @dataclass
@@ -347,4 +347,16 @@ def __write_meta_data(xml_file: str, meta_data: ArffMetaData):
         label_element = XmlTree.SubElement(root_element, 'label')
         label_element.set('name', output.name)
 
-    write_xml_file(xml_file, root_element)
+    __write_xml_file(xml_file, root_element)
+
+
+def __write_xml_file(xml_file, root_element: XmlTree.Element):
+    """
+    Writes an XML structure to a file.
+
+    :param xml_file:        The XML file
+    :param root_element:    The root element of the XML structure
+    """
+    with open(xml_file, mode='w', encoding=ENCODING_UTF8) as file:
+        xml_string = minidom.parseString(XmlTree.tostring(root_element)).toprettyxml(encoding=ENCODING_UTF8)
+        file.write(xml_string.decode(ENCODING_UTF8))
