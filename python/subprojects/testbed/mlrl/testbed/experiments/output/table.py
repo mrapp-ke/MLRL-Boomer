@@ -280,9 +280,9 @@ class RowWiseTable(Table):
             for row_index in range(self.num_rows):
                 yield self[row_index]
 
-    def __init__(self, headers: Optional[List[Header]] = None, alignments: Optional[List[Alignment]] = None):
+    def __init__(self, *headers: Header, alignments: Optional[List[Alignment]] = None):
         """
-        :param headers:     The headers of the individual columns or None
+        :param headers:     The headers of the individual columns
         :param alignments:  The alignments of the individual columns or None
         """
         if headers and alignments and len(headers) != len(alignments):
@@ -295,17 +295,6 @@ class RowWiseTable(Table):
         self._num_columns = len(headers) if headers else 0
 
     @staticmethod
-    def empty(*headers: Header, alignments: Optional[List[Alignment]] = None) -> 'RowWiseTable':
-        """
-        Creates and returns an empty `RowWiseTable`.
-
-        :param headers:     The headers of the individual columns
-        :param alignments:  The alignments of the individual columns or None
-        :return:            The `RowWiseTable` that has been created
-        """
-        return RowWiseTable(headers=list(headers) if headers else None, alignments=alignments)
-
-    @staticmethod
     def from_dict(dictionary: Dict[Any, Optional[Any]]) -> 'Table':
         """
         Creates and returns a `RowWiseTable` with a single row from a given dictionary, where the keys of the dictionary
@@ -314,8 +303,8 @@ class RowWiseTable(Table):
         :param dictionary:  The dictionary, the table should be created from
         return:             The `RowWiseTable` that has been created
         """
-        headers = list(dictionary.keys())
-        table = RowWiseTable(headers=headers)
+        headers = dictionary.keys()
+        table = RowWiseTable(*headers)
         table.add_row(*[dictionary[key] for key in headers])
         return table
 
@@ -562,7 +551,7 @@ class ColumnWiseTable(Table):
             yield ColumnWiseTable.Column(self, column_index)
 
     def to_row_wise_table(self) -> RowWiseTable:
-        table = RowWiseTable(headers=self._headers, alignments=self._alignments)
+        table = RowWiseTable(*self._headers, alignments=self._alignments)
 
         for row in self.rows:
             table.add_row(*row)

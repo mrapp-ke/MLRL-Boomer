@@ -51,7 +51,7 @@ class LabelVectors(TabularOutputData):
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
         sparse = options.get_bool(self.OPTION_SPARSE, kwargs.get(self.OPTION_SPARSE, False))
-        table = RowWiseTable.empty('Index', 'Label vector', 'Frequency')
+        table = RowWiseTable('Index', 'Label vector', 'Frequency')
 
         for i, (label_vector, frequency) in enumerate(self.label_vector_histogram.unique_label_vectors):
             table.add_row(i + 1, self.__format_label_vector(label_vector, sparse=sparse), frequency)
