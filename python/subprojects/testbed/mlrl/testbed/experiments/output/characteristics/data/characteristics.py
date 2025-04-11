@@ -69,10 +69,11 @@ class OutputCharacteristics(TabularOutputData):
         """
         percentage = options.get_bool(OPTION_PERCENTAGE, kwargs.get(OPTION_PERCENTAGE, True))
         decimals = options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0))
-        return RowWiseTable.from_dict({
-            characteristic.name: characteristic.format(self.output_matrix, percentage=percentage, decimals=decimals)
-            for characteristic in Characteristic.filter_values(self.characteristics, options)
-        })
+        characteristics = Characteristic.filter_values(self.characteristics, options)
+        values = map(
+            lambda characteristic: characteristic.format(self.output_matrix, percentage=percentage, decimals=decimals),
+            characteristics)
+        return RowWiseTable(*characteristics).add_row(*values)
 
 
 OUTPUT_CHARACTERISTICS = [

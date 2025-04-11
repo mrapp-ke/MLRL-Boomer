@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing characteristics of a datasets that are part of output data.
 """
+from itertools import chain
 from typing import Optional
 
 from mlrl.common.config.options import Options
@@ -69,15 +70,17 @@ class DataCharacteristics(TabularOutputData):
         """
         percentage = options.get_bool(OPTION_PERCENTAGE, kwargs.get(OPTION_PERCENTAGE, True))
         decimals = options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0))
-        feature_characteristics = {
-            characteristic.name: characteristic.format(self.feature_matrix, percentage=percentage, decimals=decimals)
-            for characteristic in OutputValue.filter_values(FEATURE_CHARACTERISTICS, options)
-        }
-        output_characteristics = {
-            characteristic.name: characteristic.format(self.output_matrix, percentage=percentage, decimals=decimals)
-            for characteristic in OutputValue.filter_values(self.output_characteristics, options)
-        }
-        return RowWiseTable.from_dict(feature_characteristics | output_characteristics)
+        feature_characteristics = OutputValue.filter_values(FEATURE_CHARACTERISTICS, options)
+        output_characteristics = OutputValue.filter_values(self.output_characteristics, options)
+        values = chain(
+            map(
+                lambda characteristic: characteristic.format(
+                    self.feature_matrix, percentage=percentage, decimals=decimals), feature_characteristics),
+            map(
+                lambda characteristic: characteristic.format(
+                    self.output_matrix, percentage=percentage, decimals=decimals), output_characteristics),
+        )
+        return RowWiseTable(*chain(feature_characteristics, output_characteristics)).add_row(*values)
 
 
 FEATURE_CHARACTERISTICS = [

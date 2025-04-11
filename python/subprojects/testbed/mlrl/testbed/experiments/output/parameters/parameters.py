@@ -37,4 +37,7 @@ class CustomParameters(TabularOutputData):
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
-        return RowWiseTable.from_dict(self.custom_parameters)
+        parameters = self.custom_parameters
+        parameter_names = parameters.keys()
+        parameter_values = map(lambda parameter_name: parameters[parameter_name], parameter_names)
+        return RowWiseTable(*parameter_names).add_row(*parameter_values)

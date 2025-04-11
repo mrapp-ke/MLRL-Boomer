@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for writing predictions to one or several sinks.
 """
+from itertools import tee
 from typing import Optional
 
 from mlrl.common.config.options import Options
@@ -132,10 +133,11 @@ class EvaluationResult(TabularOutputData):
         enable_all = options.get_bool(self.OPTION_ENABLE_ALL, kwargs.get(self.OPTION_ENABLE_ALL, True))
         fold = kwargs.get(self.KWARG_FOLD)
         dictionary = self.measurements.averages_as_dict() if fold is None else self.measurements.values_as_dict(fold)
-        return RowWiseTable.from_dict({
-            measure: measure.format(value, percentage=percentage, decimals=decimals)
-            for measure, value in dictionary.items() if options.get_bool(measure.option_key, enable_all)
-        })
+        headers, measures = tee(
+            filter(lambda measure: options.get_bool(measure.option_key, enable_all), dictionary.keys()))
+        values = map(lambda measure: measure.format(dictionary[measure], percentage=percentage, decimals=decimals),
+                     measures)
+        return RowWiseTable(*headers).add_row(*values)
 
 
 EVALUATION_MEASURE_TRAINING_TIME = OutputValue(EvaluationResult.OPTION_TRAINING_TIME, 'Training Time')

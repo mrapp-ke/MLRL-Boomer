@@ -5,7 +5,7 @@ Provides classes for representing tables.
 """
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Any, Dict, Generator, Iterable, List, Optional
+from typing import Any, Generator, Iterable, List, Optional
 
 from tabulate import tabulate
 
@@ -293,20 +293,6 @@ class RowWiseTable(Table):
         self._alignments = alignments
         self._rows = []
         self._num_columns = len(headers) if headers else 0
-
-    @staticmethod
-    def from_dict(dictionary: Dict[Any, Optional[Any]]) -> 'Table':
-        """
-        Creates and returns a `RowWiseTable` with a single row from a given dictionary, where the keys of the dictionary
-        are used as the headers and the corresponding values are used as the values of the first row.
-
-        :param dictionary:  The dictionary, the table should be created from
-        return:             The `RowWiseTable` that has been created
-        """
-        headers = dictionary.keys()
-        table = RowWiseTable(*headers)
-        table.add_row(*[dictionary[key] for key in headers])
-        return table
 
     def add_row(self, *values: Optional[Any]):
         """
