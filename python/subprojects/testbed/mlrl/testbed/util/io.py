@@ -40,6 +40,16 @@ def get_file_name_per_fold(name: str, suffix: str, fold: Optional[int]) -> str:
     return get_file_name(name + '_' + ('overall' if fold is None else 'fold-' + str(fold + 1)), suffix)
 
 
+def open_readable_file(file_path: str):
+    """
+    Opens a file to be read from.
+
+    :param file_path:   The path to the file to be opened
+    :return:            The file that has been opened
+    """
+    return open(file_path, mode='r', newline='', encoding=ENCODING_UTF8)
+
+
 def open_writable_file(file_path: str, append: bool = False):
     """
     Opens a file to be written to.
@@ -50,13 +60,3 @@ def open_writable_file(file_path: str, append: bool = False):
     """
     mode = 'a' if append and path.isfile(file_path) else 'w'
     return open(file_path, mode=mode, encoding=ENCODING_UTF8)
-
-
-def open_readable_file(file_path: str):
-    """
-    Opens a file to be read from.
-
-    :param file_path:   The path to the file to be opened
-    :return:            The file that has been opened
-    """
-    return open(file_path, mode='r', newline='', encoding=ENCODING_UTF8)
