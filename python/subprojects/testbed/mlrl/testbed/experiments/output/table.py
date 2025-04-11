@@ -168,18 +168,29 @@ class Table(ABC):
         :return: The `ColumnWiseTable` that has been created
         """
 
-    def format(self) -> str:
+    def format(self, auto_rotate: bool = True) -> str:
         """
         Creates and returns a textual representation of the table.
 
-        :return: The textual representation that has been created
+        :param auto_rotate: True, if tables with a single row should automatically be rotated for legibility, False
+                            otherwise
+        :return:            The textual representation that has been created
         """
         if self.num_cells > 0:
-            alignments = self.alignments
-            return tabulate(self.rows,
-                            headers=self.header_row,
-                            tablefmt='simple_outline' if self.has_headers else 'plain',
-                            colalign=map(lambda alignment: alignment.value, alignments) if alignments else None)
+            headers = self.header_row
+            rows = self.rows
+
+            if auto_rotate and headers and self.num_rows == 1:
+                first_row = next(self.rows)
+                rows = [[headers[column_index], first_row[column_index]] for column_index in range(self.num_columns)]
+                return tabulate(rows, tablefmt='plain')
+
+            if not headers:
+                return tabulate(rows, tablefmt='plain')
+
+            table_format = 'simple_outline' if headers else 'plain'
+            alignments = map(lambda alignment: alignment.value, self.alignments) if self.alignments else None
+            return tabulate(rows, headers=headers, tablefmt=table_format, colalign=alignments)
 
         return ''
 
@@ -322,6 +333,17 @@ class RowWiseTable(Table):
 
         self._rows.append(values)
         self._num_columns = max(len(values), self._num_columns)
+
+    def sort_by_columns(self, column_index: int, *additional_column_indices: int) -> 'RowWiseTable':
+        """
+        Sorts the rows in the table by the values in one or several columns.
+
+        :param column_index:                The index of the column to sort by
+        :param additional_column_indices:   Additional indices of columns to sort by
+        :return:                            The sorted table
+        """
+        self._rows.sort(key=lambda row: ([row[i] for i in [column_index] + list(additional_column_indices)]))
+        return self
 
     @property
     def num_rows(self) -> int:
@@ -484,9 +506,11 @@ class ColumnWiseTable(Table):
         self._columns.append(values)
         self._num_rows = max(len(values), self._num_rows)
 
-    def sort_by_headers(self):
+    def sort_by_headers(self) -> 'ColumnWiseTable':
         """
         Sorts the columns in the table by their headers.
+
+        :return: The sorted table
         """
         headers = self._headers
 
@@ -508,6 +532,8 @@ class ColumnWiseTable(Table):
             self._headers = sorted_headers
             self._alignments = sorted_alignments
             self._columns = sorted_columns
+
+        return self
 
     @property
     def num_rows(self) -> int:

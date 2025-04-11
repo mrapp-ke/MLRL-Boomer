@@ -14,7 +14,7 @@ from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibr
 from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.output.table import ColumnWiseTable, Table
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.util.format import OPTION_DECIMALS, format_number, format_table
+from mlrl.testbed.util.format import OPTION_DECIMALS, format_number
 
 
 class IsotonicRegressionModel(TabularOutputData):
@@ -78,42 +78,37 @@ class IsotonicRegressionModel(TabularOutputData):
         prefix = self.column_title_prefix
         return (prefix + ' ' if prefix else '') + str(list_index + 1) + ' probabilities'
 
-    def to_text(self, options: Options, **_) -> Optional[str]:
+    def to_text(self, options: Options, **kwargs) -> Optional[str]:
         """
         See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
         """
-        visitor = IsotonicRegressionModel.Visitor()
-        self.calibration_model.visit(visitor)
-        bin_lists = visitor.bin_lists
-        decimals = options.get_int(OPTION_DECIMALS, 4)
+        kwargs = dict(kwargs) | {OPTION_DECIMALS: 4}
+        table = self.to_table(options, **kwargs)
+        columns = table.columns
         result = ''
 
-        for list_index in sorted(bin_lists.keys()):
-            header = [self._format_threshold_header(list_index), self._format_probability_header(list_index)]
-            bin_list = bin_lists[list_index]
-            rows = []
-
-            for threshold, probability in zip(bin_list.thresholds, bin_list.probabilities):
-                rows.append([
-                    format_number(threshold, decimals=decimals),
-                    format_number(probability, decimals=decimals),
-                ])
+        for list_index, _ in enumerate(range(0, table.num_columns, 2)):
+            bin_list_table = ColumnWiseTable()
+            bin_list_table.add_column(*filter(lambda value: value is not None, next(columns)),
+                                      header=self._format_threshold_header(list_index))
+            bin_list_table.add_column(*filter(lambda value: value is not None, next(columns)),
+                                      header=self._format_probability_header(list_index))
 
             if result:
                 result += '\n'
 
-            result += format_table(rows, header=header)
+            result += bin_list_table.format(auto_rotate=False)
 
         return result
 
-    def to_table(self, options: Options, **_) -> Optional[Table]:
+    def to_table(self, options: Options, **kwargs) -> Optional[Table]:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
         visitor = IsotonicRegressionModel.Visitor()
         self.calibration_model.visit(visitor)
         bin_lists = visitor.bin_lists
-        decimals = options.get_int(OPTION_DECIMALS, 0)
+        decimals = options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0))
         table = ColumnWiseTable()
 
         for list_index, bin_list in bin_lists.items():

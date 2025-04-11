@@ -13,9 +13,9 @@ from mlrl.common.config.options import Options
 from mlrl.testbed.experiments.output.characteristics.model.statistics_rules import BodyStatistics, HeadStatistics, \
     RuleModelStatistics, RuleStatistics
 from mlrl.testbed.experiments.output.data import TabularOutputData
-from mlrl.testbed.experiments.output.table import RowWiseTable, Table
+from mlrl.testbed.experiments.output.table import Alignment, RowWiseTable, Table
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.util.format import format_number, format_percentage, format_table
+from mlrl.testbed.util.format import format_number, format_percentage
 from mlrl.testbed.util.math import divide_or_zero
 
 
@@ -59,22 +59,20 @@ class RuleModelCharacteristics(TabularOutputData):
 
     def __format_aggregated_body_statistics(self, aggregated_rule_statistics: RuleStatistics) -> str:
         statistics = self.statistics
-        rows = []
+        headers = [
+            'Statistics about conditions', 'Total', 'Numerical <= operator', 'Numerical > operator',
+            'Ordinal <= operator', 'Ordinal > operator', 'Nominal == operator', 'Nominal != operator'
+        ]
+        alignments = [Alignment.LEFT] + [Alignment.RIGHT for _ in range(len(headers) - 1)]
+        table = RowWiseTable.empty(*headers, alignments=alignments)
 
         if statistics.has_default_rule:
-            rows.append(['Default rule']
-                        + self.__format_body_statistics(statistics.default_rule_statistics.body_statistics))
+            body_statistics = statistics.default_rule_statistics.body_statistics
+            table.add_row('Default rule', *self.__format_body_statistics(body_statistics))
 
-        rows.append([str(statistics.num_rules) + ' local rules']
-                    + self.__format_body_statistics(aggregated_rule_statistics.body_statistics))
-
-        return format_table(rows,
-                            header=[
-                                'Statistics about conditions', 'Total', 'Numerical <= operator', 'Numerical > operator',
-                                'Ordinal <= operator', 'Ordinal > operator', 'Nominal == operator',
-                                'Nominal != operator'
-                            ],
-                            alignment=['left', 'right', 'right', 'right', 'right', 'right', 'right', 'right'])
+        body_statistics = aggregated_rule_statistics.body_statistics
+        table.add_row(str(statistics.num_rules) + ' local rules', *self.__format_body_statistics(body_statistics))
+        return table.format(auto_rotate=False)
 
     @staticmethod
     def __format_head_statistics(head_statistics: HeadStatistics) -> List[str]:
@@ -86,42 +84,36 @@ class RuleModelCharacteristics(TabularOutputData):
 
     def __format_aggregated_head_statistics(self, aggregated_rule_statistics: RuleStatistics) -> str:
         statistics = self.statistics
-        rows = []
+        headers = ['Statistics about predictions', 'Total', 'Positive', 'Negative']
+        alignments = [Alignment.LEFT] + [Alignment.RIGHT for _ in range(len(headers) - 1)]
+        table = RowWiseTable.empty(*headers, alignments=alignments)
 
         if statistics.has_default_rule:
-            rows.append(['Default rule']
-                        + self.__format_head_statistics(statistics.default_rule_statistics.head_statistics))
+            head_statistics = statistics.default_rule_statistics.head_statistics
+            table.add_row('Default rule', *self.__format_head_statistics(head_statistics))
 
-        rows.append([str(statistics.num_rules) + ' local rules']
-                    + self.__format_head_statistics(aggregated_rule_statistics.head_statistics))
+        head_statistics = aggregated_rule_statistics.head_statistics
+        table.add_row(str(statistics.num_rules) + ' local rules', *self.__format_head_statistics(head_statistics))
 
-        return format_table(rows,
-                            header=['Statistics about predictions', 'Total', 'Positive', 'Negative'],
-                            alignment=['left', 'right', 'right', 'right'])
+        return table.format(auto_rotate=False)
 
     def __format_aggregated_rule_statistics(self, aggregated_rule_statistics: RuleStatistics) -> str:
         statistics = self.statistics
-        return format_table(
-            rows=[
-                [
-                    'Conditions',
-                    format_number(statistics.min_conditions),
-                    format_number(
-                        divide_or_zero(aggregated_rule_statistics.body_statistics.num_conditions,
-                                       statistics.num_rules)),
-                    format_number(statistics.max_conditions)
-                ],
-                [
-                    'Predictions',
-                    format_number(statistics.min_predictions),
-                    format_number(
-                        divide_or_zero(aggregated_rule_statistics.head_statistics.num_predictions,
-                                       statistics.num_rules)),
-                    format_number(statistics.max_predictions)
-                ],
-            ],
-            header=['Statistics per local rule', 'Minimum', 'Average', 'Maximum'],
+        num_rules = statistics.num_rules
+        table = RowWiseTable.empty('Statistics per local rule', 'Minimum', 'Average', 'Maximum')
+        table.add_row(
+            'Conditions',
+            format_number(statistics.min_conditions),
+            format_number(divide_or_zero(aggregated_rule_statistics.body_statistics.num_conditions, num_rules)),
+            format_number(statistics.max_conditions),
         )
+        table.add_row(
+            'Predictions',
+            format_number(statistics.min_predictions),
+            format_number(divide_or_zero(aggregated_rule_statistics.head_statistics.num_predictions, num_rules)),
+            format_number(statistics.max_predictions),
+        )
+        return table.format(auto_rotate=False)
 
     # pylint: disable=unused-argument
     def to_table(self, options: Options, **_) -> Optional[Table]:

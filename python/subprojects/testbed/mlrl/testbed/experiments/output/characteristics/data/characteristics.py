@@ -9,11 +9,11 @@ from mlrl.common.config.options import Options
 
 from mlrl.testbed.experiments.output.characteristics.data.characteristic import Characteristic
 from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
-from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
+from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.output.table import RowWiseTable, Table
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
+from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
 
 class OutputCharacteristics(TabularOutputData):
@@ -56,36 +56,23 @@ class OutputCharacteristics(TabularOutputData):
         else:
             self.characteristics = OUTPUT_CHARACTERISTICS
 
-    def to_text(self, options: Options, **_) -> Optional[str]:
+    def to_text(self, options: Options, **kwargs) -> Optional[str]:
         """
         See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
         """
-        percentage = options.get_bool(OPTION_PERCENTAGE, True)
-        decimals = options.get_int(OPTION_DECIMALS, 2)
-        rows = []
+        kwargs = dict(kwargs) | {OPTION_DECIMALS: 2}
+        return self.to_table(options, **kwargs).format()
 
-        for characteristic in OutputValue.filter_values(self.characteristics, options):
-            rows.append([
-                characteristic.name,
-                characteristic.format(self.output_matrix, percentage=percentage, decimals=decimals)
-            ])
-
-        return format_table(rows)
-
-    def to_table(self, options: Options, **_) -> Optional[Table]:
+    def to_table(self, options: Options, **kwargs) -> Optional[Table]:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
-        percentage = options.get_bool(OPTION_PERCENTAGE, True)
-        decimals = options.get_int(OPTION_DECIMALS, 0)
-        characteristics = {}
-
-        for characteristic in Characteristic.filter_values(self.characteristics, options):
-            characteristics[characteristic] = characteristic.format(self.output_matrix,
-                                                                    percentage=percentage,
-                                                                    decimals=decimals)
-
-        return RowWiseTable.from_dict(characteristics)
+        percentage = options.get_bool(OPTION_PERCENTAGE, kwargs.get(OPTION_PERCENTAGE, True))
+        decimals = options.get_int(OPTION_DECIMALS, kwargs.get(OPTION_DECIMALS, 0))
+        return RowWiseTable.from_dict({
+            characteristic.name: characteristic.format(self.output_matrix, percentage=percentage, decimals=decimals)
+            for characteristic in Characteristic.filter_values(self.characteristics, options)
+        })
 
 
 OUTPUT_CHARACTERISTICS = [

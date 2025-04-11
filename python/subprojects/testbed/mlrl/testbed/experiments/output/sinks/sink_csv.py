@@ -7,6 +7,7 @@ import csv
 
 from mlrl.common.config.options import Options
 
+from mlrl.testbed.experiments.output.data import OutputValue
 from mlrl.testbed.experiments.output.sinks.sink import TabularFileSink
 from mlrl.testbed.experiments.output.table import Table
 from mlrl.testbed.experiments.state import ExperimentState
@@ -38,7 +39,8 @@ class CsvFileSink(TabularFileSink):
 
         if incremental_prediction:
             model_size = prediction_result.prediction_scope.model_size
-            table.add_column(*[model_size for _ in range(table.num_rows)], header='Model size')
+            table.add_column(*[model_size for _ in range(table.num_rows)],
+                             header=OutputValue('model_size', 'Model size'))
 
         table.sort_by_headers()
 
