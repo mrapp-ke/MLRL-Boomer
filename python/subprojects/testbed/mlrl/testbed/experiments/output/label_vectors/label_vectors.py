@@ -56,4 +56,4 @@ class LabelVectors(TabularOutputData):
         for i, (label_vector, frequency) in enumerate(self.label_vector_histogram.unique_label_vectors):
             table.add_row(i + 1, self.__format_label_vector(label_vector, sparse=sparse), frequency)
 
-        return table
+        return table.sort_by_columns(2, descending=True)
