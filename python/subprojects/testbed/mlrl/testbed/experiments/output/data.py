@@ -20,30 +20,27 @@ class OutputData(ABC):
     An abstract class for all classes that represent output data that can be converted into a textual representation.
     """
 
-    def __init__(self,
-                 name: str,
-                 file_name: str,
-                 default_formatter_options: ExperimentState.FormatterOptions = ExperimentState.FormatterOptions()):
+    def __init__(self, name: str, file_name: str, default_context: ExperimentState.Context = ExperimentState.Context()):
         """
-        :param name:                        A name to be included in log messages
-        :param file_name:                   A file name to be used for writing into output files
-        :param default_formatter_options:   The options to be used for creating textual representations of the
-                                            `ExperimentState`, the output data has been generated from
+        :param name:            A name to be included in log messages
+        :param file_name:       A file name to be used for writing into output files
+        :param default_context: An `ExperimentState.Context` to be used by default for finding a suitable sink this
+                                output data can be written to
         """
         self.name = name
         self.file_name = file_name
-        self.default_formatter_options = default_formatter_options
-        self.custom_formatter_options = {}
+        self.default_context = default_context
+        self.custom_context = {}
 
-    def get_formatter_options(self, sink_type: Type) -> ExperimentState.FormatterOptions:
+    def get_context(self, sink_type: Type) -> ExperimentState.Context:
         """
-        Returns the options to be used by a specific type of sink for creating textual representation of an
-        `ExperimentState`.
+        Returns an `ExperimentState.Context` to can be used for finding a suitable sink of a specific type this output
+        data can be written too.
 
-        :param sink_type:   The type of the sink
-        :return:            The options to be used by the given type of sink
+        :param sink_type:   The type of the sink to be found
+        :return:            An `ExperimentState.Context`
         """
-        return self.custom_formatter_options.setdefault(sink_type, replace(self.default_formatter_options))
+        return self.custom_context.setdefault(sink_type, replace(self.default_context))
 
     @abstractmethod
     def to_text(self, options: Options, **kwargs) -> Optional[str]:

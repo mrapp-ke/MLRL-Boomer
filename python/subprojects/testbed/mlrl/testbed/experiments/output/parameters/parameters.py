@@ -23,7 +23,7 @@ class CustomParameters(TabularOutputData):
         """
         super().__init__(name='Custom parameters',
                          file_name='parameters',
-                         default_formatter_options=ExperimentState.FormatterOptions(include_dataset_type=False))
+                         default_context=ExperimentState.Context(include_dataset_type=False))
         self.custom_parameters = {key: value for key, value in parameter_dict.items() if value is not None}
 
     def to_text(self, options: Options, **kwargs) -> Optional[str]:

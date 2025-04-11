@@ -55,18 +55,18 @@ class IsotonicRegressionModel(TabularOutputData):
                  calibration_model: IsotonicProbabilityCalibrationModel,
                  name: str,
                  file_name: str,
-                 default_formatter_options: ExperimentState.FormatterOptions = ExperimentState.FormatterOptions(),
+                 default_context: ExperimentState.Context = ExperimentState.Context(),
                  column_title_prefix: Optional[str] = None):
         """
-        :param calibration_model:           The isotonic calibration model
-        :param name:                        A name to be included in log messages
-        :param file_name:                   A file name to be used for writing into output files
-        :param default_formatter_options:   The options to be used for creating textual representations of the
-                                            `ExperimentState`, the output data has been generated from
-        :param column_title_prefix:         An optional prefix to be prepended to the titles of table columns that
-                                            contain thresholds or probabilities
+        :param calibration_model:   The isotonic calibration model
+        :param name:                A name to be included in log messages
+        :param file_name:           A file name to be used for writing into output files
+        :param default_context:     An `ExperimentState.Context` to be used by default for finding a suitable sink this
+                                    output data can be written to
+        :param column_title_prefix: An optional prefix to be prepended to the titles of table columns that contain
+                                    thresholds or probabilities
         """
-        super().__init__(name=name, file_name=file_name, default_formatter_options=default_formatter_options)
+        super().__init__(name=name, file_name=file_name, default_context=default_context)
         self.calibration_model = calibration_model
         self.column_title_prefix = column_title_prefix
 

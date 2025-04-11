@@ -227,7 +227,7 @@ class RuleModelAsText(OutputData):
         """
         super().__init__(name='Model',
                          file_name='rules',
-                         default_formatter_options=ExperimentState.FormatterOptions(include_dataset_type=False))
+                         default_context=ExperimentState.Context(include_dataset_type=False))
         self.model = model
         self.dataset = dataset
 

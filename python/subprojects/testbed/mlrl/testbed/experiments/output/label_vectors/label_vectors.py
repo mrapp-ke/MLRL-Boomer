@@ -29,7 +29,7 @@ class LabelVectors(TabularOutputData):
         """
         super().__init__(name='Label vectors',
                          file_name='label_vectors',
-                         default_formatter_options=ExperimentState.FormatterOptions(include_dataset_type=False))
+                         default_context=ExperimentState.Context(include_dataset_type=False))
         self.label_vector_histogram = label_vector_histogram
 
     def __format_label_vector(self, label_vector: LabelVector, sparse: bool) -> str:
