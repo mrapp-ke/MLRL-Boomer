@@ -312,7 +312,8 @@ class RowWiseTable(Table):
         """
         Adds a new row to the end of the table.
 
-        :param values: The values in the row
+        :param values:  The values in the row
+        :return:        The modified table
         """
         values = list(values)
         headers = self._headers
@@ -322,6 +323,7 @@ class RowWiseTable(Table):
 
         self._rows.append(values)
         self._num_columns = max(len(values), self._num_columns)
+        return self
 
     def sort_by_columns(self, column_index: int, *additional_column_indices: int) -> 'RowWiseTable':
         """
@@ -470,13 +472,14 @@ class ColumnWiseTable(Table):
     def add_column(self,
                    *values: Optional[Any],
                    header: Optional[Header] = None,
-                   alignment: Optional[Alignment] = None):
+                   alignment: Optional[Alignment] = None) -> 'ColumnWiseTable':
         """
         Adds a new column to the end of the table.
 
         :param values:      The values in the column
         :param header:      The header of the column or None
         :param alignment:   The alignment of the column or None
+        :return:            The modified table
         """
         values = list(values)
 
@@ -494,6 +497,7 @@ class ColumnWiseTable(Table):
 
         self._columns.append(values)
         self._num_rows = max(len(values), self._num_rows)
+        return self
 
     def sort_by_headers(self) -> 'ColumnWiseTable':
         """
