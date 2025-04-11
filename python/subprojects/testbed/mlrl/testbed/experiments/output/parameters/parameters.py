@@ -8,6 +8,7 @@ from typing import Optional
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.experiments.output.data import TabularOutputData
+from mlrl.testbed.experiments.output.table import RowWiseTable, Table
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict
 from mlrl.testbed.util.format import format_table
 
@@ -36,8 +37,8 @@ class CustomParameters(TabularOutputData):
         return format_table(rows)
 
     # pylint: disable=unused-argument
-    def to_table(self, options: Options, **_) -> Optional[TabularOutputData.Table]:
+    def to_table(self, options: Options, **_) -> Optional[Table]:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
-        return [self.custom_parameters]
+        return RowWiseTable.from_dict(self.custom_parameters)

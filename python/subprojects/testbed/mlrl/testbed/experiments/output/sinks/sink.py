@@ -12,6 +12,7 @@ from mlrl.common.config.options import Options
 
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData, TabularOutputData
+from mlrl.testbed.experiments.output.table import Table
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.io import get_file_name_per_fold
 
@@ -138,7 +139,7 @@ class TabularFileSink(FileSink, ABC):
         if tabular_data:
             self._write_table_to_file(file_path, state, tabular_data, **kwargs)
 
-    def _write_table_to_file(self, file_path: str, state: ExperimentState, table: TabularOutputData.Table, **kwargs):
+    def _write_table_to_file(self, file_path: str, state: ExperimentState, table: Table, **kwargs):
         """
         Must be implemented by subclasses in order to write tabular output data to a specific file.
 

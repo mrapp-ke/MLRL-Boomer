@@ -7,12 +7,13 @@ written to one or several outputs, e.g., to the console or to a file. They can a
 import logging as log
 
 from abc import ABC, abstractmethod
+from csv import DictReader
 from os import path
 from typing import Dict
 
+from mlrl.testbed.experiments.output.sinks import CsvFileSink
 from mlrl.testbed.fold import Fold
-from mlrl.testbed.util.io import SUFFIX_CSV, get_file_name_per_fold, open_readable_file
-from mlrl.testbed.util.io_csv import CsvReader
+from mlrl.testbed.util.io import get_file_name_per_fold, open_readable_file
 
 
 class ParameterLoader(ABC):
@@ -42,13 +43,13 @@ class CsvParameterLoader(ParameterLoader):
         self.input_dir = input_dir
 
     def load_parameters(self, fold: Fold) -> Dict:
-        file_name = get_file_name_per_fold('parameters', SUFFIX_CSV, fold.index)
+        file_name = get_file_name_per_fold('parameters', CsvFileSink.SUFFIX_CSV, fold.index)
         file_path = path.join(self.input_dir, file_name)
         log.debug('Loading parameters from file \"%s\"...', file_path)
 
         try:
             with open_readable_file(file_path) as csv_file:
-                csv_reader = CsvReader(csv_file)
+                csv_reader = DictReader(csv_file, delimiter=CsvFileSink.DELIMITER, quotechar=CsvFileSink.QUOTE_CHAR)
                 log.info('Successfully loaded parameters from file \"%s\"', file_path)
                 return dict(next(csv_reader))
         except IOError:

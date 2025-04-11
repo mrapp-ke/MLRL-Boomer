@@ -14,6 +14,7 @@ from mlrl.testbed.experiments.output.characteristics.data.matrix_feature import 
 from mlrl.testbed.experiments.output.characteristics.data.matrix_label import LabelMatrix
 from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
+from mlrl.testbed.experiments.output.table import RowWiseTable, Table
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
@@ -77,25 +78,25 @@ class DataCharacteristics(TabularOutputData):
 
         return format_table(rows)
 
-    def to_table(self, options: Options, **_) -> Optional[TabularOutputData.Table]:
+    def to_table(self, options: Options, **_) -> Optional[Table]:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
         percentage = options.get_bool(OPTION_PERCENTAGE, True)
         decimals = options.get_int(OPTION_DECIMALS, 0)
-        columns = {}
+        characteristics = {}
 
         for characteristic in OutputValue.filter_values(FEATURE_CHARACTERISTICS, options):
-            columns[characteristic] = characteristic.format(self.feature_matrix,
-                                                            percentage=percentage,
-                                                            decimals=decimals)
+            characteristics[characteristic] = characteristic.format(self.feature_matrix,
+                                                                    percentage=percentage,
+                                                                    decimals=decimals)
 
         for characteristic in OutputValue.filter_values(self.output_characteristics, options):
-            columns[characteristic] = characteristic.format(self.output_matrix,
-                                                            percentage=percentage,
-                                                            decimals=decimals)
+            characteristics[characteristic] = characteristic.format(self.output_matrix,
+                                                                    percentage=percentage,
+                                                                    decimals=decimals)
 
-        return [columns]
+        return RowWiseTable.from_dict(characteristics)
 
 
 FEATURE_CHARACTERISTICS = [

@@ -10,6 +10,7 @@ from mlrl.common.config.options import Options
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
 from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
 from mlrl.testbed.experiments.output.sinks import CsvFileSink
+from mlrl.testbed.experiments.output.table import RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
 
 
@@ -123,29 +124,20 @@ class EvaluationResult(TabularOutputData):
 
         return format_table(rows)
 
-    def to_table(self, options: Options, **kwargs) -> Optional[TabularOutputData.Table]:
+    def to_table(self, options: Options, **kwargs) -> Optional[Table]:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
-        measurements = self.measurements
         fold = kwargs.get(self.KWARG_FOLD)
+        measurements = self.measurements
+        dictionary = measurements.averages_as_dict() if fold is None else measurements.values_as_dict(index=fold)
         percentage = options.get_bool(OPTION_PERCENTAGE, True)
         decimals = options.get_int(OPTION_DECIMALS, 0)
         enable_all = options.get_bool(self.OPTION_ENABLE_ALL, True)
-
-        dictionary = measurements.averages_as_dict() if fold is None else measurements.values_as_dict(index=fold)
-        columns = {
-            measure: measure.format(value, percentage=percentage, decimals=decimals)
-            for measure, value in dictionary.items()
-        }
-
-        filtered_columns = {}
-
-        for measure, value in columns.items():
-            if options.get_bool(measure.option_key, enable_all):
-                filtered_columns[measure.name] = value
-
-        return [filtered_columns]
+        return RowWiseTable.from_dict({
+            measure.name: measure.format(value, percentage=percentage, decimals=decimals)
+            for measure, value in dictionary.items() if options.get_bool(measure.option_key, enable_all)
+        })
 
 
 EVALUATION_MEASURE_TRAINING_TIME = OutputValue(EvaluationResult.OPTION_TRAINING_TIME, 'Training Time')

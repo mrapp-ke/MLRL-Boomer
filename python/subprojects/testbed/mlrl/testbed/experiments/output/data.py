@@ -5,11 +5,12 @@ Provides classes for representing output data.
 """
 from abc import ABC, abstractmethod
 from dataclasses import replace
-from typing import Dict, Iterable, List, Optional, Type
+from typing import Iterable, List, Optional, Type
 
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.experiments.output.table import Table
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_number
 
@@ -59,8 +60,6 @@ class TabularOutputData(OutputData, ABC):
     An abstract class for all classes that represent output data that can be converted into a textual, as well as a
     tabular, representation.
     """
-
-    Table = List[Dict[str, str]]
 
     @abstractmethod
     def to_table(self, options: Options, **kwargs) -> Optional[Table]:
