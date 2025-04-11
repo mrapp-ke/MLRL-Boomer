@@ -17,6 +17,7 @@ jobs:
       cpp: ${{ steps.filter.outputs.cpp }}
       python: ${{ steps.filter.outputs.python }}
       doc: ${{ steps.filter.outputs.doc }}
+      doc_links: ${{ steps.filter.outputs.doc_links }}
       doc_spelling: ${{ steps.filter.outputs.doc_spelling }}
     steps:
       - name: Checkout
@@ -49,8 +50,14 @@ jobs:
               - 'doc/conf.py'
               - 'doc/index.md'
               - 'doc/**/*'
+            doc_links:
+              - *doc
+              - *cpp
+              - *python
             doc_spelling:
               - *doc
+              - *cpp
+              - *python
               - 'doc/spelling_wordlist.txt'
   build_doc:
     needs: changes
@@ -66,7 +73,7 @@ jobs:
     name: Check links in documentation
     uses: ./.github/workflows/template_doc.yml
     with:
-      doc: ${{ needs.changes.outputs.doc == 'true' }}
+      doc: ${{ needs.changes.outputs.doc_links == 'true' }}
       sphinx_builder: linkcheck
       ccache_key: check-links-ccache
   check_spelling:
