@@ -1,3 +1,7 @@
+# Fixes
+
+- An issue that caused thresholds and probabilities of isotonic regression models being swapped in output files when using the command line arguments `--store-marginal-probability-calibration-model` and `--store-joint-probability-calibration-model` has been fixed.
+
 # Quality-of-Life Improvements
 
 - The integration tests do now check the contents of output files.
