@@ -3,11 +3,8 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for reading and writing files.
 """
-import xml.etree.ElementTree as XmlTree
-
 from os import path
 from typing import Optional
-from xml.dom import minidom
 
 # The suffix of an ARFF file
 SUFFIX_ARFF = 'arff'
@@ -63,15 +60,3 @@ def open_readable_file(file_path: str):
     :return:            The file that has been opened
     """
     return open(file_path, mode='r', newline='', encoding=ENCODING_UTF8)
-
-
-def write_xml_file(xml_file, root_element: XmlTree.Element):
-    """
-    Writes an XML structure to a file.
-
-    :param xml_file:        The XML file
-    :param root_element:    The root element of the XML structure
-    """
-    with open(xml_file, mode='w', encoding=ENCODING_UTF8) as file:
-        xml_string = minidom.parseString(XmlTree.tostring(root_element)).toprettyxml(encoding=ENCODING_UTF8)
-        file.write(xml_string.decode(ENCODING_UTF8))
