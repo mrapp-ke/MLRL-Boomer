@@ -59,12 +59,11 @@ class IsotonicMarginalProbabilityCalibrationModelExtractor(ProbabilityCalibratio
         calibration_model = learner.marginal_probability_calibration_model_
 
         if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
-            return IsotonicRegressionModel(
-                calibration_model=calibration_model,
-                name='Marginal probability calibration model',
-                file_name='marginal_probability_calibration_model',
-                default_formatter_options=ExperimentState.FormatterOptions(include_dataset_type=False),
-                column_title_prefix='Label')
+            return IsotonicRegressionModel(calibration_model=calibration_model,
+                                           name='Marginal probability calibration model',
+                                           file_name='marginal_probability_calibration_model',
+                                           default_context=ExperimentState.Context(include_dataset_type=False),
+                                           column_title_prefix='Label')
 
         if not isinstance(calibration_model, NoProbabilityCalibrationModel):
             log.error('Cannot handle probability calibration model of type %s', type(calibration_model).__name__)
@@ -82,12 +81,11 @@ class IsotonicJointProbabilityCalibrationModelExtractor(ProbabilityCalibrationMo
         calibration_model = learner.joint_probability_calibration_model_
 
         if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
-            return IsotonicRegressionModel(
-                calibration_model=calibration_model,
-                name='Joint probability calibration model',
-                file_name='joint_probability_calibration_model',
-                default_formatter_options=ExperimentState.FormatterOptions(include_dataset_type=False),
-                column_title_prefix='Label vector')
+            return IsotonicRegressionModel(calibration_model=calibration_model,
+                                           name='Joint probability calibration model',
+                                           file_name='joint_probability_calibration_model',
+                                           default_context=ExperimentState.Context(include_dataset_type=False),
+                                           column_title_prefix='Label vector')
 
         if not isinstance(calibration_model, NoProbabilityCalibrationModel):
             log.error('Cannot handle probability calibration model of type %s', type(calibration_model).__name__)

@@ -95,7 +95,7 @@ class EvaluationResult(TabularOutputData):
         :param measurements: The measurements according to different evaluation measures
         """
         super().__init__(name='Evaluation result', file_name='evaluation')
-        self.get_formatter_options(CsvFileSink).include_prediction_scope = False
+        self.get_context(CsvFileSink).include_prediction_scope = False
         self.measurements = measurements
 
     def to_text(self, options: Options, **kwargs) -> Optional[str]:

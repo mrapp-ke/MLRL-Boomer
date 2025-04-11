@@ -20,21 +20,21 @@ class LogSink(Sink):
         Allows to format the title that is printed before the output data.
         """
 
-        def __init__(self, title: str, formatter_options: ExperimentState.FormatterOptions):
+        def __init__(self, title: str, context: ExperimentState.Context):
             """
-            :param title:               A title
-            :param formatter_options:   The options to be used by the formatter
+            :param title:   A title
+            :param context: An `ExperimentState.Context` to be used for formatting the title
             """
             self.title = title
-            self.formatter_options = formatter_options
+            self.context = context
 
         def __format_dataset_type(self, state: ExperimentState) -> str:
-            if self.formatter_options.include_dataset_type:
+            if self.context.include_dataset_type:
                 return ' for ' + state.dataset.type.value + ' data'
             return ''
 
         def __format_fold(self, state: ExperimentState) -> str:
-            if self.formatter_options.include_fold:
+            if self.context.include_fold:
                 fold = state.fold
 
                 if fold.is_cross_validation_used:
@@ -48,7 +48,7 @@ class LogSink(Sink):
             return ''
 
         def __format_prediction_scope(self, state: ExperimentState) -> str:
-            if self.formatter_options.include_prediction_scope:
+            if self.context.include_prediction_scope:
                 prediction_result = state.prediction_result
 
                 if prediction_result:
@@ -75,6 +75,6 @@ class LogSink(Sink):
         text = output_data.to_text(self.options, **kwargs)
 
         if text:
-            title_formatter_options = output_data.get_formatter_options(type(self))
-            title_formatter = LogSink.TitleFormatter(title=output_data.name, formatter_options=title_formatter_options)
+            context = output_data.get_context(type(self))
+            title_formatter = LogSink.TitleFormatter(title=output_data.name, context=context)
             log.info('%s:\n\n%s\n', title_formatter.format(state), text)

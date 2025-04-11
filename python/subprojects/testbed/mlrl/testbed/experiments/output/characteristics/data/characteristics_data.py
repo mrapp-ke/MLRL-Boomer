@@ -47,7 +47,7 @@ class DataCharacteristics(TabularOutputData):
         """
         super().__init__(name='Data characteristics',
                          file_name='data_characteristics',
-                         default_formatter_options=ExperimentState.FormatterOptions(include_dataset_type=False))
+                         default_context=ExperimentState.Context(include_dataset_type=False))
         self.feature_matrix = FeatureMatrix(dataset=dataset)
 
         if problem_type == ProblemType.CLASSIFICATION:

@@ -69,14 +69,15 @@ class ExperimentState:
     prediction_result: Optional[PredictionState] = None
 
     @dataclass
-    class FormatterOptions:
+    class Context:
         """
-        Options for creating a textual representation from an `ExperimentState`.
+        Specifies the aspects of an `ExperimentState` that should be taken into account for finding a suitable source or
+        sink to read from or write to.
 
         Attributes:
-            include_dataset_type:       True, if the type of the dataset should be included, False otherwise
-            include_prediction_scope:   True, if the scope of the predictions should be included, False otherwise
-            include_fold:               True, if the cross validation fold should be included, False otherwise
+            include_dataset_type:       True, if the type of the dataset should be taken into account, False otherwise
+            include_prediction_scope:   True, if the scope of predictions should be taken into account, False otherwise
+            include_fold:               True, if the cross validation fold should be taken into account, False otherwise
         """
         include_dataset_type: bool = True
         include_prediction_scope: bool = True

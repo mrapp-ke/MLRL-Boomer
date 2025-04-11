@@ -30,7 +30,7 @@ class RuleModelCharacteristics(TabularOutputData):
         """
         super().__init__(name='Model characteristics',
                          file_name='model_characteristics',
-                         default_formatter_options=ExperimentState.FormatterOptions(include_dataset_type=False))
+                         default_context=ExperimentState.Context(include_dataset_type=False))
         self.statistics = statistics
 
     # pylint: disable=unused-argument

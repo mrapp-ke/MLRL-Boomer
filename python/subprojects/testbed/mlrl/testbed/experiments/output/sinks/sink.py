@@ -48,18 +48,17 @@ class FileSink(Sink, ABC):
         Allows to determine the path to the file to which output data is written.
         """
 
-        def __init__(self, directory: str, file_name: str, suffix: str,
-                     formatter_options: ExperimentState.FormatterOptions):
+        def __init__(self, directory: str, file_name: str, suffix: str, context: ExperimentState.Context):
             """
-            :param directory:           The path to the directory of the file
-            :param file_name:           The name of the file
-            :param suffix:              The suffix of the file
-            :param formatter_options:   The Options to be used by the formatter
+            :param directory:   The path to the directory of the file
+            :param file_name:   The name of the file
+            :param suffix:      The suffix of the file
+            :param context:     An `ExperimentState.Context` to be used to determine the path
             """
             self.directory = directory
             self.file_name = file_name
             self.suffix = suffix
-            self.formatter_options = formatter_options
+            self.context = context
 
         def format(self, state: ExperimentState) -> str:
             """
@@ -69,16 +68,16 @@ class FileSink(Sink, ABC):
             """
             file_name = self.file_name
 
-            if self.formatter_options.include_dataset_type:
+            if self.context.include_dataset_type:
                 file_name = state.dataset.type.get_file_name(file_name)
 
-            if self.formatter_options.include_prediction_scope:
+            if self.context.include_prediction_scope:
                 prediction_result = state.prediction_result
 
                 if prediction_result:
                     file_name = prediction_result.prediction_scope.get_file_name(file_name)
 
-            if self.formatter_options.include_fold:
+            if self.context.include_fold:
                 file_name = get_file_name_per_fold(file_name, self.suffix, state.fold.index)
 
             return path.join(self.directory, file_name)
@@ -96,11 +95,11 @@ class FileSink(Sink, ABC):
         """
         See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
         """
-        path_formatter_options = output_data.get_formatter_options(type(self))
+        context = output_data.get_context(type(self))
         path_formatter = FileSink.PathFormatter(directory=self.directory,
                                                 file_name=output_data.file_name,
                                                 suffix=self.suffix,
-                                                formatter_options=path_formatter_options)
+                                                context=context)
         file_path = path_formatter.format(state)
         log.debug('Writing output data to file "%s"...', file_path)
         self._write_to_file(file_path, state, output_data, **kwargs)
