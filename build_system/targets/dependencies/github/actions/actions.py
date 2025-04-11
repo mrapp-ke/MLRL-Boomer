@@ -146,7 +146,7 @@ class Actions(Workflow):
 
         :param updated_actions: The actions to be updated
         """
-        updated_actions_by_name = reduce(lambda aggr, action: dict(aggr, **{action.name: action}), updated_actions, {})
+        updated_actions_by_name = reduce(lambda aggr, action: aggr | {action.name: action}, updated_actions, {})
         uses_prefix = self.TAG_USES + ':'
         updated_lines = []
 

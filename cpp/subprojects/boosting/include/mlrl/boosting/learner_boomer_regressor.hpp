@@ -80,13 +80,18 @@ namespace boosting {
      *
      * @param configPtr     An unique pointer to an object of type `IBoomerRegressor::IConfig` that specifies the
      *                      configuration that should be used by the rule learner
+     * @param sdotFunction  A function pointer to BLAS' SDOT routine
      * @param ddotFunction  A function pointer to BLAS' DDOT routine
+     * @param sspmvFunction A function pointer to BLAS' SSPMV routine
      * @param dspmvFunction A function pointer to BLAS' DSPMV routine
+     * @param ssysvFunction A function pointer to LAPACK'S SSYSV routine
      * @param dsysvFunction A function pointer to LAPACK'S DSYSV routine
      * @return              An unique pointer to an object of type `IBoomerRegressor` that has been created
      */
     MLRLBOOSTING_API std::unique_ptr<IBoomerRegressor> createBoomerRegressor(
-      std::unique_ptr<IBoomerRegressor::IConfig> configPtr, Blas::DdotFunction ddotFunction,
-      Blas::DspmvFunction dspmvFunction, Lapack::DsysvFunction dsysvFunction);
+      std::unique_ptr<IBoomerRegressor::IConfig> configPtr, Blas<float32>::DotFunction sdotFunction,
+      Blas<float64>::DotFunction ddotFunction, Blas<float32>::SpmvFunction sspmvFunction,
+      Blas<float64>::SpmvFunction dspmvFunction, Lapack<float32>::SysvFunction ssysvFunction,
+      Lapack<float64>::SysvFunction dsysvFunction);
 
 }

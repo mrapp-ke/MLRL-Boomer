@@ -42,37 +42,77 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .print_evaluation()
         CmdRunner(self, builder).run('single-label-probabilities')
 
-    def test_loss_logistic_decomposable(self):
+    def test_loss_logistic_decomposable_32bit_statistics(self):
         """
-        Tests the BOOMER algorithm when using the decomposable logistic loss function.
+        Tests the BOOMER algorithm when using the decomposable logistic loss function and 32-bit statistics.
         """
         builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE)
-        CmdRunner(self, builder).run('loss-logistic-decomposable')
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32)
+        CmdRunner(self, builder).run('loss-logistic-decomposable_32-bit-statistics')
 
-    def test_loss_logistic_non_decomposable(self):
+    def test_loss_logistic_decomposable_64bit_statistics(self):
         """
-        Tests the BOOMER algorithm when using the non-decomposable logistic loss function.
+        Tests the BOOMER algorithm when using the decomposable logistic loss function and 64-bit statistics.
         """
         builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE)
-        CmdRunner(self, builder).run('loss-logistic-non-decomposable')
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64)
+        CmdRunner(self, builder).run('loss-logistic-decomposable_64-bit-statistics')
 
-    def test_loss_squared_hinge_decomposable(self):
+    def test_loss_logistic_non_decomposable_32bit_statistics(self):
         """
-        Tests the BOOMER algorithm when using the decomposable squared hinge loss function.
+        Tests the BOOMER algorithm when using the non-decomposable logistic loss function and 32-bit statistics.
         """
         builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_SQUARED_HINGE_DECOMPOSABLE)
-        CmdRunner(self, builder).run('loss-squared-hinge-decomposable')
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32)
+        CmdRunner(self, builder).run('loss-logistic-non-decomposable_32-bit-statistics')
 
-    def test_loss_squared_hinge_non_decomposable(self):
+    def test_loss_logistic_non_decomposable_64bit_statistics(self):
         """
-        Tests the BOOMER algorithm when using the non-decomposable squared hinge loss function.
+        Tests the BOOMER algorithm when using the non-decomposable logistic loss function and 64-bit statistics.
         """
         builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_SQUARED_HINGE_NON_DECOMPOSABLE)
-        CmdRunner(self, builder).run('loss-squared-hinge-non-decomposable')
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64)
+        CmdRunner(self, builder).run('loss-logistic-non-decomposable_64-bit-statistics')
+
+    def test_loss_squared_hinge_decomposable_32bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using the decomposable squared hinge loss function and 32-bit statistics.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32)
+        CmdRunner(self, builder).run('loss-squared-hinge-decomposable_32-bit-statistics')
+
+    def test_loss_squared_hinge_decomposable_64bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using the decomposable squared hinge loss function and 64-bit statistics.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_SQUARED_HINGE_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64)
+        CmdRunner(self, builder).run('loss-squared-hinge-decomposable_64-bit-statistics')
+
+    def test_loss_squared_hinge_non_decomposable_32bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using the non-decomposable squared hinge loss function and 32-bit statistics.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_SQUARED_HINGE_NON_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32)
+        CmdRunner(self, builder).run('loss-squared-hinge-non-decomposable_32-bit-statistics')
+
+    def test_loss_squared_hinge_non_decomposable_64bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using the non-decomposable squared hinge loss function and 64-bit statistics.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_SQUARED_HINGE_NON_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64)
+        CmdRunner(self, builder).run('loss-squared-hinge-non-decomposable_64-bit-statistics')
 
     def test_predictor_binary_output_wise(self):
         """
@@ -433,168 +473,361 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_SINGLE)
         CmdRunner(self, builder).run('statistics-sparse_output-format-sparse')
 
-    def test_decomposable_single_output_heads(self):
+    def test_decomposable_single_output_heads_32bit_statistics(self):
         """
-        Tests the BOOMER algorithm when using a decomposable loss function for the induction of rules with single-output
-        heads.
+        Tests the BOOMER algorithm when using a decomposable loss function and 32-bit statistics for the induction of
+        rules with single-output heads.
         """
         builder = self._create_cmd_builder() \
             .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32) \
             .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_SINGLE) \
             .print_model_characteristics()
-        CmdRunner(self, builder).run('decomposable-single-output-heads')
+        CmdRunner(self, builder).run('decomposable-single-output-heads_32-bit-statistics')
 
-    def test_decomposable_complete_heads(self):
+    def test_decomposable_single_output_heads_64bit_statistics(self):
         """
-        Tests the BOOMER algorithm when using a decomposable loss function for the induction of rules with complete
-        heads.
+        Tests the BOOMER algorithm when using a decomposable loss function and 64-bit statistics for the induction of
+        rules with single-output heads.
         """
         builder = self._create_cmd_builder() \
             .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
-            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_COMPLETE) \
-            .print_model_characteristics()
-        CmdRunner(self, builder).run('decomposable-complete-heads')
-
-    def test_decomposable_complete_heads_equal_width_label_binning(self):
-        """
-        Tests the BOOMER algorithm when using a decomposable loss function and equal-width label binning for the
-        induction of rules with complete heads.
-        """
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
-            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_COMPLETE) \
-            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
-            .print_model_characteristics()
-        CmdRunner(self, builder).run('decomposable-complete-heads_equal-width-label-binning')
-
-    def test_decomposable_partial_fixed_heads(self):
-        """
-        Tests the BOOMER algorithm when using a decomposable loss function for the induction of rules that predict for a
-        number of labels
-        """
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
-            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_FIXED) \
-            .print_model_characteristics()
-        CmdRunner(self, builder).run('decomposable-partial-fixed-heads')
-
-    def test_decomposable_partial_fixed_heads_equal_width_label_binning(self):
-        """
-        Tests the BOOMER algorithm when using a decomposable loss function and equal-width label binning for the
-        induction of rules that predict for a number of labels
-        """
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
-            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_FIXED) \
-            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
-            .print_model_characteristics()
-        CmdRunner(self, builder).run('decomposable-partial-fixed-heads_equal-width-label-binning')
-
-    def test_decomposable_partial_dynamic_heads(self):
-        """
-        Tests the BOOMER algorithm when using a decomposable loss function for the induction of rules that predict for a
-        dynamically determined subset of the available labels.
-        """
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
-            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_DYNAMIC) \
-            .print_model_characteristics()
-        CmdRunner(self, builder).run('decomposable-partial-dynamic-heads')
-
-    def test_decomposable_partial_dynamic_heads_equal_width_label_binning(self):
-        """
-        Tests the BOOMER algorithm when using a decomposable loss function and equal-width label binning for the
-        induction of rules that predict for a dynamically determined subset of the available labels.
-        """
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
-            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_DYNAMIC) \
-            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
-            .print_model_characteristics()
-        CmdRunner(self, builder).run('decomposable-partial-dynamic-heads_equal-width-label-binning')
-
-    def test_non_decomposable_single_label_heads(self):
-        """
-        Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules with
-        single-output heads.
-        """
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64) \
             .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_SINGLE) \
             .print_model_characteristics()
-        CmdRunner(self, builder).run('non-decomposable-single-output-heads')
+        CmdRunner(self, builder).run('decomposable-single-output-heads_64-bit-statistics')
 
-    def test_non_decomposable_complete_heads(self):
+    def test_decomposable_complete_heads_32bit_statistics(self):
         """
-        Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules with complete
-        heads.
+        Tests the BOOMER algorithm when using a decomposable loss function and 32-bit statistics for the induction of
+        rules with complete heads.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32) \
+            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_COMPLETE) \
+            .print_model_characteristics()
+        CmdRunner(self, builder).run('decomposable-complete-heads_32-bit-statistics')
+
+    def test_decomposable_complete_heads_64bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using a decomposable loss function and 64-bit statistics for the induction of
+        rules with complete heads.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64) \
+            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_COMPLETE) \
+            .print_model_characteristics()
+        CmdRunner(self, builder).run('decomposable-complete-heads_64-bit-statistics')
+
+    def test_decomposable_complete_heads_equal_width_label_binning_32bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using a decomposable loss function and 32-bit statistics and equal-width label
+        binning for the induction of rules with complete heads.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32) \
+            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_COMPLETE) \
+            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
+            .print_model_characteristics()
+        CmdRunner(self, builder).run('decomposable-complete-heads_equal-width-label-binning_32-bit-statistics')
+
+    def test_decomposable_complete_heads_equal_width_label_binning_64bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using a decomposable loss function and 64-bit statistics and equal-width label
+        binning for the induction of rules with complete heads.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64) \
+            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_COMPLETE) \
+            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
+            .print_model_characteristics()
+        CmdRunner(self, builder).run('decomposable-complete-heads_equal-width-label-binning_64-bit-statistics')
+
+    def test_decomposable_partial_fixed_heads_32bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using a decomposable loss function and 32-bit statistics for the induction of
+        rules that predict for a number of labels.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32) \
+            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_FIXED) \
+            .print_model_characteristics()
+        CmdRunner(self, builder).run('decomposable-partial-fixed-heads_32-bit-statistics')
+
+    def test_decomposable_partial_fixed_heads_64bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using a decomposable loss function and 64-bit statistics for the induction of
+        rules that predict for a number of labels.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64) \
+            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_FIXED) \
+            .print_model_characteristics()
+        CmdRunner(self, builder).run('decomposable-partial-fixed-heads_64-bit-statistics')
+
+    def test_decomposable_partial_fixed_heads_equal_width_label_binning_32bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using a decomposable loss function, 32-bit statistics and equal-width label
+        binning for the induction of rules that predict for a number of labels.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32) \
+            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_FIXED) \
+            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
+            .print_model_characteristics()
+        CmdRunner(self, builder).run('decomposable-partial-fixed-heads_equal-width-label-binning_32-bit-statistics')
+
+    def test_decomposable_partial_fixed_heads_equal_width_label_binning_64bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using a decomposable loss function, 64-bit statistics and equal-width label
+        binning for the induction of rules that predict for a number of labels.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64) \
+            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_FIXED) \
+            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
+            .print_model_characteristics()
+        CmdRunner(self, builder).run('decomposable-partial-fixed-heads_equal-width-label-binning_64-bit-statistics')
+
+    def test_decomposable_partial_dynamic_heads_32bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using a decomposable loss function and 32-bit statistics for the induction of
+        rules that predict for a dynamically determined subset of the available labels.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32) \
+            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_DYNAMIC) \
+            .print_model_characteristics()
+        CmdRunner(self, builder).run('decomposable-partial-dynamic-heads_32-bit-statistics')
+
+    def test_decomposable_partial_dynamic_heads_64bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using a decomposable loss function and 64-bit statistics for the induction of
+        rules that predict for a dynamically determined subset of the available labels.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64) \
+            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_DYNAMIC) \
+            .print_model_characteristics()
+        CmdRunner(self, builder).run('decomposable-partial-dynamic-heads_64-bit-statistics')
+
+    def test_decomposable_partial_dynamic_heads_equal_width_label_binning_32bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using a decomposable loss function, 32-bit statistics and equal-width label
+        binning for the induction of rules that predict for a dynamically determined subset of the available labels.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32) \
+            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_DYNAMIC) \
+            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
+            .print_model_characteristics()
+        CmdRunner(self, builder).run('decomposable-partial-dynamic-heads_equal-width-label-binning_32-bit-statistics')
+
+    def test_decomposable_partial_dynamic_heads_equal_width_label_binning_64bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using a decomposable loss function, 64-bit statistics and equal-width label
+        binning for the induction of rules that predict for a dynamically determined subset of the available labels.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64) \
+            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_DYNAMIC) \
+            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
+            .print_model_characteristics()
+        CmdRunner(self, builder).run('decomposable-partial-dynamic-heads_equal-width-label-binning_64-bit-statistics')
+
+    def test_non_decomposable_single_label_heads_32bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using a non-decomposable loss function and 32-bit statistics for the induction
+        of rules with single-output heads.
         """
         builder = self._create_cmd_builder() \
             .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32) \
+            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_SINGLE) \
+            .print_model_characteristics()
+        CmdRunner(self, builder).run('non-decomposable-single-output-heads_32-bit-statistics')
+
+    def test_non_decomposable_single_label_heads_64bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using a non-decomposable loss function and 64-bit statistics for the induction
+        of rules with single-output heads.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64) \
+            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_SINGLE) \
+            .print_model_characteristics()
+        CmdRunner(self, builder).run('non-decomposable-single-output-heads_64-bit-statistics')
+
+    def test_non_decomposable_complete_heads_32bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using a non-decomposable loss function and 32-bit statistics for the induction
+        of rules with complete heads.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32) \
             .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_COMPLETE) \
             .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_NO) \
             .print_model_characteristics()
-        CmdRunner(self, builder).run('non-decomposable-complete-heads')
+        CmdRunner(self, builder).run('non-decomposable-complete-heads_32-bit-statistics')
 
-    def test_non_decomposable_complete_heads_equal_width_label_binning(self):
+    def test_non_decomposable_complete_heads_64bit_statistics(self):
         """
-        Tests the BOOMER algorithm when using a non-decomposable loss function and equal-width label binning for the
-        induction of rules with complete heads.
+        Tests the BOOMER algorithm when using a non-decomposable loss function and 64-bit statistics for the induction
+        of rules with complete heads.
         """
         builder = self._create_cmd_builder() \
             .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64) \
+            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_COMPLETE) \
+            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_NO) \
+            .print_model_characteristics()
+        CmdRunner(self, builder).run('non-decomposable-complete-heads_64-bit-statistics')
+
+    def test_non_decomposable_complete_heads_equal_width_label_binning_32bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using a non-decomposable loss function, 32-bit statistics and equal-width label
+        binning for the induction of rules with complete heads.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32) \
             .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_COMPLETE) \
             .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
             .print_model_characteristics()
-        CmdRunner(self, builder).run('non-decomposable-complete-heads_equal-width-label-binning')
+        CmdRunner(self, builder).run('non-decomposable-complete-heads_equal-width-label-binning_32-bit-statistics')
 
-    def test_non_decomposable_partial_fixed_heads(self):
+    def test_non_decomposable_complete_heads_equal_width_label_binning_64bit_statistics(self):
         """
-        Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules that predict
-        for a number of labels
+        Tests the BOOMER algorithm when using a non-decomposable loss function, 64-bit statistics and equal-width label
+        binning for the induction of rules with complete heads.
         """
         builder = self._create_cmd_builder() \
             .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64) \
+            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_COMPLETE) \
+            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
+            .print_model_characteristics()
+        CmdRunner(self, builder).run('non-decomposable-complete-heads_equal-width-label-binning_64-bit-statistics')
+
+    def test_non_decomposable_partial_fixed_heads_32bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using a non-decomposable loss function and 32-bit statistics for the induction
+        of rules that predict for a number of labels
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32) \
             .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_FIXED) \
             .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_NO) \
             .print_model_characteristics()
-        CmdRunner(self, builder).run('non-decomposable-partial-fixed-heads')
+        CmdRunner(self, builder).run('non-decomposable-partial-fixed-heads_32-bit-statistics')
 
-    def test_non_decomposable_partial_fixed_heads_equal_width_label_binning(self):
+    def test_non_decomposable_partial_fixed_heads_64bit_statistics(self):
         """
-        Tests the BOOMER algorithm when using a non-decomposable loss function and equal-width label binning for the
-        induction of rules that predict for a number of labels
+        Tests the BOOMER algorithm when using a non-decomposable loss function and 64-bit statistics for the induction
+        of rules that predict for a number of labels
         """
         builder = self._create_cmd_builder() \
             .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64) \
+            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_FIXED) \
+            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_NO) \
+            .print_model_characteristics()
+        CmdRunner(self, builder).run('non-decomposable-partial-fixed-heads_64-bit-statistics')
+
+    def test_non_decomposable_partial_fixed_heads_equal_width_label_binning_32bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using a non-decomposable loss function, 32-bit statistics and equal-width label
+        binning for the induction of rules that predict for a number of labels
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32) \
             .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_FIXED) \
             .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
             .print_model_characteristics()
-        CmdRunner(self, builder).run('non-decomposable-partial-fixed-heads_equal-width-label-binning')
+        CmdRunner(self, builder).run('non-decomposable-partial-fixed-heads_equal-width-label-binning_32-bit-statistics')
 
-    def test_non_decomposable_partial_dynamic_heads(self):
+    def test_non_decomposable_partial_fixed_heads_equal_width_label_binning_64bit_statistics(self):
         """
-        Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules that predict
-        for a dynamically determined subset of the available labels.
+        Tests the BOOMER algorithm when using a non-decomposable loss function, 64-bit statistics and equal-width label
+        binning for the induction of rules that predict for a number of labels
         """
         builder = self._create_cmd_builder() \
             .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64) \
+            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_FIXED) \
+            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
+            .print_model_characteristics()
+        CmdRunner(self, builder).run('non-decomposable-partial-fixed-heads_equal-width-label-binning_64-bit-statistics')
+
+    def test_non_decomposable_partial_dynamic_heads_32bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using a non-decomposable loss function and 32-bit statistics for the induction
+        of rules that predict for a dynamically determined subset of the available labels.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32) \
             .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_DYNAMIC) \
             .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_NO) \
             .print_model_characteristics()
-        CmdRunner(self, builder).run('non-decomposable-partial-dynamic-heads')
+        CmdRunner(self, builder).run('non-decomposable-partial-dynamic-heads_32-bit-statistics')
 
-    def test_non_decomposable_partial_dynamic_heads_equal_width_label_binning(self):
+    def test_non_decomposable_partial_dynamic_heads_64bit_statistics(self):
         """
-        Tests the BOOMER algorithm when using a non-decomposable loss function and equal-width label binning for the
-        induction of rules that predict for a dynamically determined subset of the available labels.
+        Tests the BOOMER algorithm when using a non-decomposable loss function and 64-bit statistics for the induction
+        of rules that predict for a dynamically determined subset of the available labels.
         """
         builder = self._create_cmd_builder() \
             .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64) \
+            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_DYNAMIC) \
+            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_NO) \
+            .print_model_characteristics()
+        CmdRunner(self, builder).run('non-decomposable-partial-dynamic-heads_64-bit-statistics')
+
+    def test_non_decomposable_partial_dynamic_heads_equal_width_label_binning_32bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using a non-decomposable loss function, 32-bit statistics and equal-width label
+        binning for the induction of rules that predict for a dynamically determined subset of the available labels.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32) \
             .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_DYNAMIC) \
             .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
             .print_model_characteristics()
-        CmdRunner(self, builder).run('non-decomposable-partial-dynamic-heads_equal-width-label-binning')
+        CmdRunner(self,
+                  builder).run('non-decomposable-partial-dynamic-heads_equal-width-label-binning_32-bit-statistics')
+
+    def test_non_decomposable_partial_dynamic_heads_equal_width_label_binning_64bit_statistics(self):
+        """
+        Tests the BOOMER algorithm when using a non-decomposable loss function, 64-bit statistics and equal-width label
+        binning for the induction of rules that predict for a dynamically determined subset of the available labels.
+        """
+        builder = self._create_cmd_builder() \
+            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
+            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64) \
+            .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_PARTIAL_DYNAMIC) \
+            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
+            .print_model_characteristics()
+        CmdRunner(self,
+                  builder).run('non-decomposable-partial-dynamic-heads_equal-width-label-binning_64-bit-statistics')
 
     def test_global_post_pruning_stratified_output_wise_holdout(self):
         """

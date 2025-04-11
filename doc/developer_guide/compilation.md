@@ -25,7 +25,7 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
    * - **OpenMP**
      - [OpenMP](https://en.wikipedia.org/wiki/OpenMP), which is optionally required for {ref}`multi-threading support <multi-threading-support>`, should be installable via your Linux distribution's package manager.         
    * - **OpenCL**
-     - If the project should be compiled with {ref}`GPU support <gpu-support>`, [OpenCL](https://www.khronos.org/opencl/) must be available. On Linux, it should be installable via your distribution's package manager.
+     - If the project should be compiled with {ref}`GPU support <gpu-support>`, [OpenCL](https://en.wikipedia.org/wiki/OpenCL) must be available. On Linux, it should be installable via your distribution's package manager.
    ```
 ````
 
@@ -40,7 +40,7 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
    * - **OpenMP**
      - If the project should be compiled with {ref}`multi-threading support <multi-threading-support>` enabled, the [OpenMP](https://en.wikipedia.org/wiki/OpenMP) library must be installed. We recommend to install it via [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) by running the command `brew install libomp`.
    * - **OpenCL**
-     - The [Xcode](https://developer.apple.com/support/xcode/) developer toolset should include [OpenCL](https://www.khronos.org/opencl/), which are needed for {ref}`GPU support <gpu-support>`. However, the [OpenCL C++ headers](https://github.com/KhronosGroup/OpenCL-Headers) must be installed manually. The easiest way to do so is via the [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) command `brew install opencl-clhpp-headers`.
+     - The [Xcode](https://developer.apple.com/support/xcode/) developer toolset should include [OpenCL](https://en.wikipedia.org/wiki/OpenCL), which are needed for {ref}`GPU support <gpu-support>`. However, the [OpenCL C++ headers](https://github.com/KhronosGroup/OpenCL-Headers) must be installed manually. The easiest way to do so is via the [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) command `brew install opencl-clhpp-headers`.
    ```
 ````
 
@@ -55,7 +55,7 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
    * - **OpenMP**
      - The [Build Tools for Visual Studio](https://visualstudio.microsoft.com/downloads/) also include the [OpenMP](https://en.wikipedia.org/wiki/OpenMP) library, which is utilized by the project for {ref}`multi-threading support <multi-threading-support>`.
    * - **OpenCL**
-     - If you intend to compile the project with {ref}`GPU support <gpu-support>` enabled, [OpenCL](https://www.khronos.org/opencl/) must be installed manually. In order to do so, we recommend to install the package `opencl` via the package manager [vcpkg](https://github.com/microsoft/vcpkg).
+     - If you intend to compile the project with {ref}`GPU support <gpu-support>` enabled, [OpenCL](https://en.wikipedia.org/wiki/OpenCL) must be installed manually. In order to do so, we recommend to install the package `opencl` via the package manager [vcpkg](https://github.com/microsoft/vcpkg).
    ```
 ````
 
@@ -374,7 +374,7 @@ This project comes with unit tests for the C++ code it contains (see {ref}`testi
 
 By default, the project is built with multi-threading support enabled. This requires [OpenMP](https://www.openmp.org/) to be available on the host system. In order to compile the project without multi-threading support, e.g., because OpenMP is not available, the build option `multi_threading_support` can be set to `disabled` instead of `enabled`. Alternatively, the desired value can be specified via the environment variable `MULTI_THREADING_SUPPORT`.
 
-When using the {ref}`command line API <testbed>`, the command `testbed mlrl.boosting --version` or `testbed mlrl.boosting -v` can be executed to check whether the program was built with multi-threading support enabled or not. It prints the build options used for compilation, as well as information about the CPU cores available on the system for multi-threading.
+When using the {ref}`command line API <testbed>`, the command `mlrl-testbed mlrl.boosting --version` or `mlrl-testbed mlrl.boosting -v` can be executed to check whether the program was built with multi-threading support enabled or not. It prints the build options used for compilation, as well as information about the CPU cores available on the system for multi-threading.
 
 If you need to access this information programmatically in your own Python or C++ code, the following code snippets can be used (see {ref}`python-apidoc` and {ref}`cpp-apidoc`):
 
@@ -389,7 +389,7 @@ If you need to access this information programmatically in your own Python or C+
 
 ````{tab} C++
    ```cpp
-   #include "mlrl/common/info.hpp"
+   #include "mlrl/common/library_info.hpp"
 
    bool multiThreadingSupportEnabled = isMultiThreadingSupportEnabled();
    uint32 numCpuCores = getNumCpuCores();
@@ -404,9 +404,9 @@ If you need to access this information programmatically in your own Python or C+
 So far, GPU support is still at an early stage of development. No algorithm provided by this project makes use of it yet.
 ```
 
-GPU support via [OpenCL](https://www.khronos.org/opencl/) is enabled by default when building the project. However, it can be disabled at compile-time by setting the build option `gpu_support` to `disabled` instead of `enabled`. Alternatively, the desired value can be specified via the environment variable `GPU_SUPPORT`.
+GPU support via [OpenCL](https://en.wikipedia.org/wiki/OpenCL) is enabled by default when building the project. However, it can be disabled at compile-time by setting the build option `gpu_support` to `disabled` instead of `enabled`. Alternatively, the desired value can be specified via the environment variable `GPU_SUPPORT`.
 
-An easy way to check whether the program was built with GPU support enabled or not, is to run the `testbed mlrl.boosting --version` or `testbed mlrl.boosting -v` command that is provided by the {ref}`command line API <testbed>`. It prints the build options used for compiling the program, together with a list of supported GPUs available on your machine.
+An easy way to check whether the program was built with GPU support enabled or not, is to run the `mlrl-testbed mlrl.boosting --version` or `mlrl-testbed mlrl.boosting -v` command that is provided by the {ref}`command line API <testbed>`. It prints the build options used for compiling the program, together with a list of supported GPUs available on your machine.
 
 Alternatively, this information can be retrieved programmatically via the Python or C++ API as shown below (see {ref}`python-apidoc` and {ref}`cpp-apidoc`):
 
@@ -423,7 +423,7 @@ Alternatively, this information can be retrieved programmatically via the Python
 
 ````{tab} C++
    ```cpp
-   #include "mlrl/common/info.hpp"
+   #include "mlrl/common/library_info.hpp"
 
    bool gpuSupportEnabled = isGpuSupportEnabled();
    bool gpuAvailable = isGpuAvailable();

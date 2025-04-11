@@ -9,7 +9,8 @@ from dataclasses import dataclass
 from os import environ, makedirs, path
 from typing import Any, Iterable, List, Optional, Set
 
-from mlrl.testbed.io import CSV_DELIMITER, CSV_QUOTE_CHAR, ENCODING_UTF8
+from mlrl.testbed.util.io import ENCODING_UTF8
+from mlrl.testbed.util.io_csv import DELIMITER, QUOTE_CHAR
 
 PLACEHOLDER_DURATION = '<duration>'
 
@@ -244,13 +245,13 @@ class CsvFileComparison(FileComparison):
 
     def _compare(self, another_file: str) -> Optional[Difference]:
         with open(self.file, mode='r', encoding=ENCODING_UTF8) as actual_file:
-            actual_csv_file = csv.reader(actual_file, delimiter=CSV_DELIMITER, quotechar=CSV_QUOTE_CHAR)
+            actual_csv_file = csv.reader(actual_file, delimiter=DELIMITER, quotechar=QUOTE_CHAR)
             num_actual_rows = sum(1 for _ in actual_csv_file)
             actual_file.seek(0)
             num_actual_columns = len(next(actual_csv_file))
 
             with open(another_file, mode='r', encoding=ENCODING_UTF8) as expected_file:
-                expected_csv_file = csv.reader(expected_file, delimiter=CSV_DELIMITER, quotechar=CSV_QUOTE_CHAR)
+                expected_csv_file = csv.reader(expected_file, delimiter=DELIMITER, quotechar=QUOTE_CHAR)
                 num_expected_rows = sum(1 for _ in expected_csv_file)
                 expected_file.seek(0)
                 headers = next(expected_csv_file)
@@ -288,14 +289,14 @@ class CsvFileComparison(FileComparison):
 
     def _overwrite(self, another_file: str):
         with open(self.file, 'r', encoding=ENCODING_UTF8) as input_file:
-            input_csv_file = csv.reader(input_file, delimiter=CSV_DELIMITER, quotechar=CSV_QUOTE_CHAR)
+            input_csv_file = csv.reader(input_file, delimiter=DELIMITER, quotechar=QUOTE_CHAR)
             headers = next(input_csv_file)
             duration_column_indices = self.__get_duration_column_indices(headers)
 
             with open(another_file, 'w+', encoding=ENCODING_UTF8) as output_file:
                 output_csv_file = csv.writer(output_file,
-                                             delimiter=CSV_DELIMITER,
-                                             quotechar=CSV_QUOTE_CHAR,
+                                             delimiter=DELIMITER,
+                                             quotechar=QUOTE_CHAR,
                                              quoting=csv.QUOTE_MINIMAL,
                                              lineterminator='\n')
                 output_csv_file.writerow(headers)

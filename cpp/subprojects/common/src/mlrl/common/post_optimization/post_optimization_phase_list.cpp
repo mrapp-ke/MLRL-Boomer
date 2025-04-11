@@ -36,15 +36,12 @@ class PostOptimizationPhaseList final : public IPostOptimization {
             return *intermediateModelBuilderPtr_;
         }
 
-        void optimizeModel(IFeatureSpace& featureSpace, const IRuleInduction& ruleInduction, IPartition& partition,
-                           IOutputSampling& outputSampling, IInstanceSampling& instanceSampling,
-                           IFeatureSampling& featureSampling, const IRulePruning& rulePruning,
-                           const IPostProcessor& postProcessor, RNG& rng) const override {
+        void optimizeModel(IPartition& partition, IOutputSampling& outputSampling, IInstanceSampling& instanceSampling,
+                           IFeatureSampling& featureSampling, IFeatureSpace& featureSpace) const override {
             for (auto it = postOptimizationPhases_.cbegin(); it != postOptimizationPhases_.cend(); it++) {
                 const std::unique_ptr<IPostOptimizationPhase>& postOptimizationPhasePtr = *it;
-                postOptimizationPhasePtr->optimizeModel(featureSpace, ruleInduction, partition, outputSampling,
-                                                        instanceSampling, featureSampling, rulePruning, postProcessor,
-                                                        rng);
+                postOptimizationPhasePtr->optimizeModel(partition, outputSampling, instanceSampling, featureSampling,
+                                                        featureSpace);
             }
         }
 };
@@ -71,10 +68,8 @@ class NoPostOptimization final : public IPostOptimization {
             return *modelBuilderPtr_;
         }
 
-        void optimizeModel(IFeatureSpace& featureSpace, const IRuleInduction& ruleInduction, IPartition& partition,
-                           IOutputSampling& outputSampling, IInstanceSampling& instanceSampling,
-                           IFeatureSampling& featureSampling, const IRulePruning& rulePruning,
-                           const IPostProcessor& postProcessor, RNG& rng) const override {
+        void optimizeModel(IPartition& partition, IOutputSampling& outputSampling, IInstanceSampling& instanceSampling,
+                           IFeatureSampling& featureSampling, IFeatureSpace& featureSpace) const override {
             return;
         }
 };

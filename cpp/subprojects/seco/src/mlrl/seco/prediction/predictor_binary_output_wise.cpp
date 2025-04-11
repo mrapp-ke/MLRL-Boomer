@@ -10,43 +10,54 @@
 
 namespace seco {
 
-    static inline void applyHead(const CompleteHead& head, View<uint8>::iterator iterator, BitVector& mask) {
-        CompleteHead::value_const_iterator valueIterator = head.values_cbegin();
+    static inline void applyHead(const CompleteHead<uint8>& head, View<uint8>::iterator iterator, BitVector& mask) {
+        CompleteHead<uint8>::value_const_iterator valueIterator = head.values_cbegin();
         uint32 numElements = head.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
             if (!mask[i]) {
-                uint8 prediction = valueIterator[i] > 0;
-                iterator[i] = prediction;
+                iterator[i] = valueIterator[i];
                 mask.set(i, true);
             }
         }
     }
 
-    static inline void applyHead(const PartialHead& head, View<uint8>::iterator iterator, BitVector& mask) {
-        PartialHead::value_const_iterator valueIterator = head.values_cbegin();
-        PartialHead::index_const_iterator indexIterator = head.indices_cbegin();
+    static inline void applyHead(const PartialHead<uint8>& head, View<uint8>::iterator iterator, BitVector& mask) {
+        PartialHead<uint8>::value_const_iterator valueIterator = head.values_cbegin();
+        PartialHead<uint8>::index_const_iterator indexIterator = head.indices_cbegin();
         uint32 numElements = head.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
             uint32 index = indexIterator[i];
 
             if (!mask[index]) {
-                uint8 prediction = valueIterator[i] > 0;
-                iterator[index] = prediction;
+                iterator[index] = valueIterator[i];
                 mask.set(index, true);
             }
         }
     }
 
     static inline void applyHead(const IHead& head, View<uint8>::iterator scoreIterator, BitVector& mask) {
-        auto completeHeadVisitor = [&](const CompleteHead& head) {
+        auto completeBinaryHeadVisitor = [&](const CompleteHead<uint8>& head) {
             applyHead(head, scoreIterator, mask);
         };
-        auto partialHeadVisitor = [&](const PartialHead& head) {
+        auto complete32BitHeadVisitor = [&](const CompleteHead<float32>& head) {
+            throw std::runtime_error("Visitor IHead::CompleteHead<float32> should neved be invoked");
+        };
+        auto complete64BitHeadVisitor = [&](const CompleteHead<float64>& head) {
+            throw std::runtime_error("Visitor IHead::CompleteHead<float64> should neved be invoked");
+        };
+        auto partialBinaryHeadVisitor = [&](const PartialHead<uint8>& head) {
             applyHead(head, scoreIterator, mask);
         };
-        head.visit(completeHeadVisitor, partialHeadVisitor);
+        auto partial32BitHeadVisitor = [&](const PartialHead<float32>& head) {
+            throw std::runtime_error("Visitor IHead::PartialHead<float32> should neved be invoked");
+        };
+        auto partial64BitHeadVisitor = [&](const PartialHead<float64>& head) {
+            throw std::runtime_error("Visitor IHead::PartialHead<float64> should neved be invoked");
+        };
+        head.visit(completeBinaryHeadVisitor, complete32BitHeadVisitor, complete64BitHeadVisitor,
+                   partialBinaryHeadVisitor, partial32BitHeadVisitor, partial64BitHeadVisitor);
     }
 
     static inline void predictForExampleInternally(const CContiguousView<const float32>& featureMatrix,
@@ -133,21 +144,22 @@ namespace seco {
 
             const uint32 numLabels_;
 
-            const uint32 numThreads_;
+            const MultiThreadingSettings multiThreadingSettings_;
 
         public:
 
             /**
-             * @param featureMatrix A reference to an object of template type `FeatureMatrix` that provides row-wise
-             *                      access to the feature values of the query examples
-             * @param model         A reference to an object of template type `Model` that should be used to obtain
-             *                      predictions
-             * @param numThreads    The number of CPU threads to be used to make predictions for different query
-             *                      examples in parallel. Must be at least 1
+             * @param featureMatrix             A reference to an object of template type `FeatureMatrix` that provides
+             *                                  row-wise access to the feature values of the query examples
+             * @param model                     A reference to an object of template type `Model` that should be used to
+             *                                  obtain predictions
+             * @param multiThreadingSettings    An object of type `MultiThreadingSettings` that stores the settings to
+             *                                  be used for making predictions for different query examples in parallel
              */
             OutputWiseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
-                                      uint32 numThreads)
-                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
+                                      MultiThreadingSettings multiThreadingSettings)
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels),
+                  multiThreadingSettings_(multiThreadingSettings) {}
 
             /**
              * @see `IPredictor::predict`
@@ -158,7 +170,8 @@ namespace seco {
                                                                  !model_.containsDefaultRule());
                 PredictionDelegate delegate(predictionMatrixPtr->getView());
                 PredictionDispatcher<uint8, FeatureMatrix, Model>().predict(
-                  delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
+                  delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules),
+                  multiThreadingSettings_);
                 return predictionMatrixPtr;
             }
 
@@ -188,15 +201,16 @@ namespace seco {
     class OutputWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
         private:
 
-            const uint32 numThreads_;
+            const MultiThreadingSettings multiThreadingSettings_;
 
         public:
 
             /**
-             * @param numThreads The number of CPU threads to be used to make predictions for different query examples
-             *                   in parallel. Must be at least 1
+             * @param multiThreadingSettings An object of type `MultiThreadingSettings` that stores the settings to be
+             *                               used for making predictions for different query examples in parallel
              */
-            OutputWiseBinaryPredictorFactory(uint32 numThreads) : numThreads_(numThreads) {}
+            OutputWiseBinaryPredictorFactory(MultiThreadingSettings multiThreadingSettings)
+                : multiThreadingSettings_(multiThreadingSettings) {}
 
             std::unique_ptr<IBinaryPredictor> create(
               const CContiguousView<const float32>& featureMatrix, const RuleList& model,
@@ -205,7 +219,7 @@ namespace seco {
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 return std::make_unique<OutputWiseBinaryPredictor<CContiguousView<const float32>, RuleList>>(
-                  featureMatrix, model, numLabels, numThreads_);
+                  featureMatrix, model, numLabels, multiThreadingSettings_);
             }
 
             std::unique_ptr<IBinaryPredictor> create(
@@ -214,7 +228,7 @@ namespace seco {
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 return std::make_unique<OutputWiseBinaryPredictor<CsrView<const float32>, RuleList>>(
-                  featureMatrix, model, numLabels, numThreads_);
+                  featureMatrix, model, numLabels, multiThreadingSettings_);
             }
     };
 
@@ -273,17 +287,30 @@ namespace seco {
     }
 
     static inline void applyHead(const IHead& head, BinaryLilMatrix::row predictionRow, uint32 numLabels) {
-        auto completeHeadVisitor = [&](const CompleteHead& head) {
+        auto completeBinaryHeadVisitor = [&](const CompleteHead<uint8>& head) {
             applyHead(createNonZeroIndexForwardIterator(head.values_cbegin(), head.values_cend()),
                       createNonZeroIndexForwardIterator(head.values_cend(), head.values_cend()), IndexIterator(0),
                       predictionRow, numLabels);
         };
-        auto partialHeadVisitor = [&](const PartialHead& head) {
+        auto complete32BitHeadVisitor = [&](const CompleteHead<float32>& head) {
+            throw std::runtime_error("Visitor IHead::CompleteHeadVisitor<float32> should never be invoked");
+        };
+        auto complete64BitHeadVisitor = [&](const CompleteHead<float64>& head) {
+            throw std::runtime_error("Visitor IHead::CompleteHeadVisitor<float64> should never be invoked");
+        };
+        auto partialBinaryHeadVisitor = [&](const PartialHead<uint8>& head) {
             applyHead(createNonZeroIndexForwardIterator(head.values_cbegin(), head.values_cend()),
                       createNonZeroIndexForwardIterator(head.values_cend(), head.values_cend()), head.indices_cbegin(),
                       predictionRow, numLabels);
         };
-        head.visit(completeHeadVisitor, partialHeadVisitor);
+        auto partial32BitHeadVisitor = [&](const PartialHead<float32>& head) {
+            throw std::runtime_error("Visitor IHead::PartialHeadVisitor<float32> should never be invoked");
+        };
+        auto partial64BitHeadVisitor = [&](const PartialHead<float64>& head) {
+            throw std::runtime_error("Visitor IHead::PartialHeadVisitor<float64> should never be invoked");
+        };
+        head.visit(completeBinaryHeadVisitor, complete32BitHeadVisitor, complete64BitHeadVisitor,
+                   partialBinaryHeadVisitor, partial32BitHeadVisitor, partial64BitHeadVisitor);
     }
 
     static inline void predictForExampleInternally(const CContiguousView<const float32>& featureMatrix,
@@ -373,21 +400,22 @@ namespace seco {
 
             const uint32 numLabels_;
 
-            const uint32 numThreads_;
+            const MultiThreadingSettings multiThreadingSettings_;
 
         public:
 
             /**
-             * @param featureMatrix A reference to an object of template type `FeatureMatrix` that provides row-wise
-             *                      access to the feature values of the query examples
-             * @param model         A reference to an object of template type `Model` that should be used to obtain
-             *                      predictions
-             * @param numThreads    The number of CPU threads to be used to make predictions for different query
-             *                      examples in parallel. Must be at least 1
+             * @param featureMatrix             A reference to an object of template type `FeatureMatrix` that provides
+             *                                  row-wise access to the feature values of the query examples
+             * @param model                     A reference to an object of template type `Model` that should be used to
+             *                                  obtain predictions
+             * @param multiThreadnigSettings    An object of type `MultiThreadingSettings` that stores the settings to
+             *                                  be used for making predictions for different query examples in parallel
              */
             OutputWiseSparseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
-                                            uint32 numThreads)
-                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
+                                            MultiThreadingSettings multiThreadingSettings)
+                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels),
+                  multiThreadingSettings_(multiThreadingSettings) {}
 
             /**
              * @see `IPredictor::predict`
@@ -396,7 +424,7 @@ namespace seco {
                 BinaryLilMatrix predictionMatrix(featureMatrix_.numRows, numLabels_);
                 Delegate delegate(predictionMatrix, numLabels_);
                 uint32 numDenseElements = Dispatcher().predict(delegate, featureMatrix_, model_.used_cbegin(maxRules),
-                                                               model_.used_cend(maxRules), numThreads_);
+                                                               model_.used_cend(maxRules), multiThreadingSettings_);
                 return createBinarySparsePredictionMatrix(predictionMatrix, numLabels_, numDenseElements);
             }
 
@@ -427,15 +455,16 @@ namespace seco {
     class OutputWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
         private:
 
-            const uint32 numThreads_;
+            const MultiThreadingSettings multiThreadingSettings_;
 
         public:
 
             /**
-             * @param numThreads The number of CPU threads to be used to make predictions for different query examples
-             *                   in parallel. Must be at least 1
+             * @param multiThreadingSettings An object of type `MultiThreadingSettings` that stores the settings to be
+             *                               used for making predictions for different query examples in parallel
              */
-            OutputWiseSparseBinaryPredictorFactory(uint32 numThreads) : numThreads_(numThreads) {}
+            OutputWiseSparseBinaryPredictorFactory(MultiThreadingSettings multiThreadingSettings)
+                : multiThreadingSettings_(multiThreadingSettings) {}
 
             std::unique_ptr<ISparseBinaryPredictor> create(
               const CContiguousView<const float32>& featureMatrix, const RuleList& model,
@@ -444,7 +473,7 @@ namespace seco {
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 return std::make_unique<OutputWiseSparseBinaryPredictor<CContiguousView<const float32>, RuleList>>(
-                  featureMatrix, model, numLabels, numThreads_);
+                  featureMatrix, model, numLabels, multiThreadingSettings_);
             }
 
             std::unique_ptr<ISparseBinaryPredictor> create(
@@ -453,7 +482,7 @@ namespace seco {
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 return std::make_unique<OutputWiseSparseBinaryPredictor<CsrView<const float32>, RuleList>>(
-                  featureMatrix, model, numLabels, numThreads_);
+                  featureMatrix, model, numLabels, multiThreadingSettings_);
             }
     };
 
@@ -463,14 +492,16 @@ namespace seco {
 
     std::unique_ptr<IBinaryPredictorFactory> OutputWiseBinaryPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, const uint32 numOutputs) const {
-        uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, numOutputs);
-        return std::make_unique<OutputWiseBinaryPredictorFactory>(numThreads);
+        MultiThreadingSettings multiThreadingSettings =
+          multiThreadingConfig_.get().getSettings(featureMatrix, numOutputs);
+        return std::make_unique<OutputWiseBinaryPredictorFactory>(multiThreadingSettings);
     }
 
     std::unique_ptr<ISparseBinaryPredictorFactory> OutputWiseBinaryPredictorConfig::createSparsePredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, const uint32 numLabels) const {
-        uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, numLabels);
-        return std::make_unique<OutputWiseSparseBinaryPredictorFactory>(numThreads);
+        MultiThreadingSettings multiThreadingSettings =
+          multiThreadingConfig_.get().getSettings(featureMatrix, numLabels);
+        return std::make_unique<OutputWiseSparseBinaryPredictorFactory>(multiThreadingSettings);
     }
 
     bool OutputWiseBinaryPredictorConfig::isLabelVectorSetNeeded() const {

@@ -18,7 +18,7 @@ By default, the predictive performance of all models trained during an experimen
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-evaluation true
@@ -27,7 +27,7 @@ By default, the predictive performance of all models trained during an experimen
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-evaluation true
@@ -38,7 +38,7 @@ Accordingly, the argument `--store-evaluation` allows to enable or disable savin
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
@@ -48,7 +48,7 @@ Accordingly, the argument `--store-evaluation` allows to enable or disable savin
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
@@ -86,7 +86,7 @@ In cases where the {ref}`evaluation results<output-evaluation-results>` obtained
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-predictions true
@@ -95,7 +95,7 @@ In cases where the {ref}`evaluation results<output-evaluation-results>` obtained
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-predictions true
@@ -106,7 +106,7 @@ Alternatively, the argument `--store-predictions` can be used to save the predic
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
@@ -116,7 +116,7 @@ Alternatively, the argument `--store-predictions` can be used to save the predic
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-prediction-characteristics true
@@ -153,7 +153,7 @@ By using the command line argument `--print-prediction-characteristics`, charact
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-prediction-characteristics true
@@ -162,7 +162,7 @@ By using the command line argument `--print-prediction-characteristics`, charact
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
@@ -174,7 +174,7 @@ Alternatively, they statistics can be written into a [.csv](https://en.wikipedia
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
@@ -184,7 +184,7 @@ Alternatively, they statistics can be written into a [.csv](https://en.wikipedia
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
@@ -198,8 +198,8 @@ The output produced by the arguments ``--print-data-characteristics`` and ``--st
 
 The statistics obtained via the arguments given above correspond to the test data for which predictions are obtained from the model. Consequently, they depend on the strategy used for splitting a dataset into training and test sets. When using {ref}`train-test splits<train-test-split>`, predictions for a single test set are obtained and their characteristics are written into a file. In addition, statistics for the training data are written into an additional output file when {ref}`evaluating on the training data<evaluating-training-data>`:
 
-- `prediction_characteristics_train_overall.arff`
-- `prediction_characteristics_test_overall.arff`
+- `prediction_characteristics_train_overall.csv`
+- `prediction_characteristics_test_overall.csv`
 
 When using a {ref}`cross validation<cross-validation>`, the data is split into several parts of which each one is used once for prediction. Multiple output files are needed to save the statistics for different cross validation folds. For example, a 5-fold cross validation results in the following files:
 
@@ -228,7 +228,7 @@ To obtain insightful statistics regarding the characteristics of a data set, the
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-data-characteristics true
@@ -237,7 +237,7 @@ To obtain insightful statistics regarding the characteristics of a data set, the
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-data-characteristics true
@@ -248,7 +248,7 @@ If you prefer to write the statistics into a [.csv](https://en.wikipedia.org/wik
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting --data-dir /path/to/datasets/ \
+   mlrl-testbed mlrl.boosting --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
        --store-data-characteristics true
@@ -257,7 +257,7 @@ If you prefer to write the statistics into a [.csv](https://en.wikipedia.org/wik
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
@@ -305,7 +305,7 @@ We refer to the unique labels combinations present for different examples in a c
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting --data-dir /path/to/datasets/ \
+   mlrl-testbed mlrl.boosting --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-label-vectors true
    ```
@@ -313,7 +313,7 @@ We refer to the unique labels combinations present for different examples in a c
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-label-vectors true
@@ -324,7 +324,7 @@ If you prefer writing the label vectors into an output file, the argument `--sto
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --store-label-vectors true
@@ -333,7 +333,7 @@ If you prefer writing the label vectors into an output file, the argument `--sto
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --store-label-vectors true
@@ -372,7 +372,7 @@ To obtain a quick overview of some statistics that characterize a rule-based mod
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-model-characteristics true
@@ -381,7 +381,7 @@ To obtain a quick overview of some statistics that characterize a rule-based mod
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-model-characteristics true
@@ -392,7 +392,7 @@ The above command results in a tabular representation of the characteristics bei
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
@@ -402,7 +402,7 @@ The above command results in a tabular representation of the characteristics bei
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
@@ -436,7 +436,7 @@ It is considered one of the advantages of rule-based machine learning models tha
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-rules true
@@ -445,7 +445,7 @@ It is considered one of the advantages of rule-based machine learning models tha
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-rules true
@@ -456,7 +456,7 @@ Alternatively, by using the argument `--store-rules`, a textual representation o
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
@@ -466,7 +466,7 @@ Alternatively, by using the argument `--store-rules`, a textual representation o
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
@@ -516,7 +516,7 @@ Some machine learning algorithms provided by this project allow to obtain probab
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-marginal-probability-calibration-model true \
@@ -526,7 +526,7 @@ Some machine learning algorithms provided by this project allow to obtain probab
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-marginal-probability-calibration-model true \
@@ -538,7 +538,7 @@ Alternatively, a representations of the calibration models can be written into [
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --store-marginal-probability-calibration-model true \
@@ -548,7 +548,7 @@ Alternatively, a representations of the calibration models can be written into [
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --store-marginal-probability-calibration-model true \
