@@ -56,7 +56,7 @@ class Row(Iterable[Cell], ABC):
     @abstractmethod
     def num_columns(self) -> int:
         """
-        The nuber of columns in the table.
+        The number of columns in the table.
         """
 
     @abstractmethod
