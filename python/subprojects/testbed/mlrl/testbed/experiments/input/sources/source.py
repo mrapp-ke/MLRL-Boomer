@@ -3,12 +3,13 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for implementing sources, input data may be read from.
 """
-from abc import ABC, abstractmethod
 import logging as log
-from typing import Optional, Any
+
+from abc import ABC, abstractmethod
+from typing import Any, Optional
 
 from mlrl.testbed.experiments.data import FilePath
-from mlrl.testbed.experiments.input.data import InputData
+from mlrl.testbed.experiments.input.data import InputData, TabularInputData
 from mlrl.testbed.experiments.state import ExperimentState
 
 
@@ -43,7 +44,6 @@ class FileSource(Source, ABC):
         self.suffix = suffix
         self.input_data = input_data
 
-
     def read_from_source(self, state: ExperimentState, input_data: InputData) -> Optional[Any]:
         context = input_data.get_context(type(self))
         file_path = FilePath(directory=self.directory,
@@ -57,7 +57,6 @@ class FileSource(Source, ABC):
         if data:
             input_data.update_state(state, data)
 
-
     @abstractmethod
     def _read_from_file(self, file_path: str, input_data: InputData) -> Optional[Any]:
         """
@@ -65,4 +64,30 @@ class FileSource(Source, ABC):
 
         :param file_path:   The path to the file from which the input data should be read
         :param input_data:  The input data that should be read
+        """
+
+
+class TabularFileSource(FileSource, ABC):
+    """
+    An abstract base class for all classes that allow to read tabular input data from a file.
+    """
+
+    def __init__(self, directory: str, suffix: str, input_data: TabularInputData):
+        """
+        :param directory:   The path to the directory of the file
+        :param suffix:      The suffix of the file
+        :param input_data:  The tabular input data that should be read
+        """
+        super().__init__(directory=directory, suffix=suffix, input_data=input_data)
+
+    def _read_from_file(self, file_path: str, input_data: InputData) -> Optional[Any]:
+        return self._read_table_from_file(file_path, self.input_data)
+
+    @abstractmethod
+    def _read_table_from_file(self, file_path: str, input_data: TabularInputData):
+        """
+        Must be implemented by subclasses in order to read tabular input data from a specific file.
+
+        :param file_path:   The path to the file from which the input data should be read
+        :param input_data:  The tabular input data that should be read
         """
