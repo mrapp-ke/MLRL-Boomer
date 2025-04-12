@@ -136,7 +136,7 @@ class Experiment(DataSplitter.Callback):
         state = ExperimentState(problem_type=problem_type, dataset=train_dataset, fold=fold, parameters=parameters)
 
         for output_writer in self.pre_training_output_writers:
-            output_writer.write_output(state)
+            output_writer.open_session(state).exchange()
 
         # Set the indices of ordinal features, if supported...
         if isinstance(learner, OrdinalFeatureSupportMixin):
@@ -183,7 +183,7 @@ class Experiment(DataSplitter.Callback):
 
         # Write output data after model was trained...
         for output_writer in self.post_training_output_writers:
-            output_writer.write_output(state)
+            output_writer.open_session(state).exchange()
 
     def __predict_and_evaluate(self, state: ExperimentState, predictor: Predictor, **kwargs):
         """
@@ -198,7 +198,7 @@ class Experiment(DataSplitter.Callback):
                 new_state = replace(state, prediction_result=prediction_state)
 
                 for output_writer in self.prediction_output_writers:
-                    output_writer.write_output(new_state)
+                    output_writer.open_session(new_state).exchange()
         except ValueError as error:
             dataset = state.dataset
 
