@@ -11,6 +11,7 @@ from os import path
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.table import Table
 from mlrl.testbed.experiments.state import ExperimentState
@@ -48,12 +49,12 @@ class FileSink(Sink, ABC):
         The path to a file to which output data is written.
         """
 
-        def __init__(self, directory: str, file_name: str, suffix: str, context: ExperimentState.Context):
+        def __init__(self, directory: str, file_name: str, suffix: str, context: Data.Context):
             """
             :param directory:   The path to the directory, where the file is located
             :param file_name:   The name of the file
             :param suffix:      The suffix of the file (with leading dot)
-            :param context:     An `ExperimentState.Context` to be used to determine the path
+            :param context:     A `Data.Context` to be used to determine the path
             """
             self.directory = directory
             self.file_name = file_name

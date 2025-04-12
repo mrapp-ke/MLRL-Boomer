@@ -5,6 +5,7 @@ Provides classes that allow writing output data to the log.
 """
 import logging as log
 
+from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.state import ExperimentState
@@ -20,10 +21,10 @@ class LogSink(Sink):
         A title that is printed before output data.
         """
 
-        def __init__(self, title: str, context: ExperimentState.Context):
+        def __init__(self, title: str, context: Data.Context):
             """
             :param title:   A title
-            :param context: An `ExperimentState.Context` to be used for formatting the title
+            :param context: A `Data.Context` to be used for formatting the title
             """
             self.title = title
             self.context = context

@@ -11,7 +11,6 @@ from mlrl.common.config.options import Options
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.output.table import Table
-from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_number
 
 
@@ -20,12 +19,12 @@ class OutputData(Data, ABC):
     An abstract class for all classes that represent output data that can be converted into a textual representation.
     """
 
-    def __init__(self, name: str, file_name: str, default_context: ExperimentState.Context = ExperimentState.Context()):
+    def __init__(self, name: str, file_name: str, default_context: Data.Context = Data.Context()):
         """
         :param name:            A name to be included in log messages
         :param file_name:       A file name to be used for writing into output files
-        :param default_context: An `ExperimentState.Context` to be used by default for finding a suitable sink this
-                                output data can be written to
+        :param default_context: A `Data.Context` to be used by default for finding a suitable sink this output data can
+                                be written to
         """
         super().__init__(default_context)
         self.name = name
