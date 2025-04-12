@@ -5,10 +5,10 @@ Provides classes for reading input data.
 """
 from abc import ABC
 
-from mlrl.testbed.experiments.connectors import Connector
+from mlrl.testbed.experiments.data import DataExchange
 
 
-class InputReader(Connector, ABC):
+class InputReader(DataExchange, ABC):
     """
     An abstract base class for all classes that allow to read input data.
     """

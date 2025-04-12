@@ -3,10 +3,10 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing input or output data.
 """
-from abc import ABC
+from abc import ABC, abstractmethod
 from dataclasses import dataclass, replace
 from os import path
-from typing import Type
+from typing import Optional, Type
 
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.io import get_file_name_per_fold
@@ -49,6 +49,35 @@ class Data(ABC):
         :return:                A `Data.Context`
         """
         return self.custom_context.setdefault(connector_type, replace(self.default_context))
+
+
+class DataExchange(ABC):
+    """
+    An abstract base class for all classes that allow to exchange data with the environment this software runs in.
+    """
+
+    class Session(ABC):
+        """
+        An abstract base class for all sessions of a `DataExchange` that can be used for exchanging data with the
+        environment this software runs in.
+        """
+
+        @abstractmethod
+        def exchange(self) -> Optional[Data]:
+            """
+            Exchanges data with the environment.
+
+            :return: Data that has been received from the environment or None, if no data has been received
+            """
+
+    @abstractmethod
+    def open_session(self, state: ExperimentState) -> Session:
+        """
+        Opens a session for exchanging data with the environment.
+
+        :param state:   The current state of the experiment
+        :return:        The session that has been opened
+        """
 
 
 class FilePath:

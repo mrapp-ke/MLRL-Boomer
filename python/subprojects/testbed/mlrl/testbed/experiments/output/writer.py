@@ -8,8 +8,7 @@ import logging as log
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from mlrl.testbed.experiments.connectors import Connector
-from mlrl.testbed.experiments.data import Data
+from mlrl.testbed.experiments.data import Data, DataExchange
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.state import ExperimentState
@@ -31,12 +30,12 @@ class DataExtractor(ABC):
         """
 
 
-class OutputWriter(Connector, ABC):
+class OutputWriter(DataExchange, ABC):
     """
     An abstract base class for all classes that allow to write output data to one or several sinks.
     """
 
-    class Session(Connector.Session):
+    class Session(DataExchange.Session):
         """
         A session that allows to pass output data to the environment this software runs in.
         """
@@ -51,7 +50,7 @@ class OutputWriter(Connector, ABC):
 
         def exchange(self) -> Optional[Data]:
             """
-            See :func:`mlrl.testbed.experiments.connectors.Connector.Session.exchange`
+            See :func:`mlrl.testbed.experiments.data.DataExchange.Session.exchange`
             """
             output_writer = self.output_writer
             sinks = output_writer.sinks
@@ -95,9 +94,9 @@ class OutputWriter(Connector, ABC):
         self.sinks.extend(sinks)
         return self
 
-    def open_session(self, state: ExperimentState) -> Connector.Session:
+    def open_session(self, state: ExperimentState) -> DataExchange.Session:
         """
-        See :func:`mlrl.testbed.experiments.connectors.Connector.open_session`
+        See :func:`mlrl.testbed.experiments.data.DataExchange.open_session`
         """
         return OutputWriter.Session(self, state)
 
