@@ -3,16 +3,16 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta property="og:title" content="mlrl.testbed.util.io_csv module" />
+<meta property="og:title" content="mlrl.testbed.experiments.output.table module" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="developer_guide/api/python/testbed/mlrl.testbed.util.io_csv.html" />
+<meta property="og:url" content="developer_guide/api/python/testbed/mlrl.testbed.experiments.output.table.html" />
 <meta property="og:site_name" content="BOOMER" />
-<meta property="og:description" content="Author Michael Rapp ( michael.rapp.ml@gmail.com) Provides utility functions for reading and writing CSV files." />
-<meta name="description" content="Author Michael Rapp ( michael.rapp.ml@gmail.com) Provides utility functions for reading and writing CSV files." />
-    <link href="../../../../_static/favicon.svg" rel="icon" type="image/svg+xml"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" /><link rel="next" title="mlrl.testbed.util.math module" href="mlrl.testbed.util.math.html" /><link rel="prev" title="mlrl.testbed.util.io module" href="mlrl.testbed.util.io.html" />
+<meta property="og:description" content="Author Michael Rapp ( michael.rapp.ml@gmail.com) Provides classes for representing tables." />
+<meta name="description" content="Author Michael Rapp ( michael.rapp.ml@gmail.com) Provides classes for representing tables." />
+    <link href="../../../../_static/favicon.svg" rel="icon" type="image/svg+xml"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" /><link rel="next" title="mlrl.testbed.experiments.output.writer module" href="mlrl.testbed.experiments.output.writer.html" /><link rel="prev" title="mlrl.testbed.experiments.output.data module" href="mlrl.testbed.experiments.output.data.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>mlrl.testbed.util.io_csv module - BOOMER 1.0.0.dev107</title>
+        <title>mlrl.testbed.experiments.output.table module - BOOMER 1.0.0.dev108</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css?v=4c969af8" />
@@ -174,7 +174,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">BOOMER 1.0.0.dev107</div></a>
+      <a href="../../../../index.html"><div class="brand">BOOMER 1.0.0.dev108</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -198,7 +198,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
   
-  <span class="sidebar-brand-text">BOOMER 1.0.0.dev107</span>
+  <span class="sidebar-brand-text">BOOMER 1.0.0.dev108</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -243,7 +243,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../coding_standards.html">Coding Standards</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../index.html">Python API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Python API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current has-children"><a class="reference internal" href="mlrl.testbed.html">Package mlrl-testbed</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Package mlrl-testbed</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l3 has-children"><a class="reference internal" href="mlrl.testbed.experiments.html">mlrl.testbed.experiments package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 current has-children"><a class="reference internal" href="mlrl.testbed.experiments.html">mlrl.testbed.experiments package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l4 has-children"><a class="reference internal" href="mlrl.testbed.experiments.input.html">mlrl.testbed.experiments.input package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments.input package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5 has-children"><a class="reference internal" href="mlrl.testbed.experiments.input.preprocessors.html">mlrl.testbed.experiments.input.preprocessors package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments.input.preprocessors package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l6"><a class="reference internal" href="mlrl.testbed.experiments.input.preprocessors.one_hot_encoder.html">mlrl.testbed.experiments.input.preprocessors.one_hot_encoder module</a></li>
@@ -252,7 +252,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="mlrl.testbed.experiments.output.html">mlrl.testbed.experiments.output package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments.output package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4 current has-children"><a class="reference internal" href="mlrl.testbed.experiments.output.html">mlrl.testbed.experiments.output package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments.output package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l5 has-children"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.html">mlrl.testbed.experiments.output.characteristics package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments.output.characteristics package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l6 has-children"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.data.html">mlrl.testbed.experiments.output.characteristics.data package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of mlrl.testbed.experiments.output.characteristics.data package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l7"><a class="reference internal" href="mlrl.testbed.experiments.output.characteristics.data.characteristic.html">mlrl.testbed.experiments.output.characteristics.data.characteristic module</a></li>
@@ -325,6 +325,7 @@
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="mlrl.testbed.experiments.output.data.html">mlrl.testbed.experiments.output.data module</a></li>
+<li class="toctree-l5 current current-page"><a class="current reference internal" href="#">mlrl.testbed.experiments.output.table module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="mlrl.testbed.experiments.output.writer.html">mlrl.testbed.experiments.output.writer module</a></li>
 </ul>
 </li>
@@ -341,10 +342,9 @@
 <li class="toctree-l4"><a class="reference internal" href="mlrl.testbed.experiments.timer.html">mlrl.testbed.experiments.timer module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 current has-children"><a class="reference internal" href="mlrl.testbed.util.html">mlrl.testbed.util package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" role="switch" type="checkbox"/><label for="toctree-checkbox-21"><div class="visually-hidden">Toggle navigation of mlrl.testbed.util package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="mlrl.testbed.util.html">mlrl.testbed.util package</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" role="switch" type="checkbox"/><label for="toctree-checkbox-21"><div class="visually-hidden">Toggle navigation of mlrl.testbed.util package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="mlrl.testbed.util.format.html">mlrl.testbed.util.format module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mlrl.testbed.util.io.html">mlrl.testbed.util.io module</a></li>
-<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">mlrl.testbed.util.io_csv module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="mlrl.testbed.util.math.html">mlrl.testbed.util.math module</a></li>
 </ul>
 </li>
@@ -361,13 +361,35 @@
 <li class="toctree-l3"><a class="reference internal" href="mlrl.testbed.runnables.html">mlrl.testbed.runnables module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../common/mlrl.common.html">Package mlrl-common</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" role="switch" type="checkbox"/><label for="toctree-checkbox-22"><div class="visually-hidden">Toggle navigation of Package mlrl-common</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../common/mlrl.common.config.html">mlrl.common.config package</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" role="switch" type="checkbox"/><label for="toctree-checkbox-23"><div class="visually-hidden">Toggle navigation of mlrl.common.config package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../seco/mlrl.seco.html">Package mlrl-seco</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" role="switch" type="checkbox"/><label for="toctree-checkbox-22"><div class="visually-hidden">Toggle navigation of Package mlrl-seco</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../seco/mlrl.seco.config.html">mlrl.seco.config package</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" role="switch" type="checkbox"/><label for="toctree-checkbox-23"><div class="visually-hidden">Toggle navigation of mlrl.seco.config package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.config.parameters.html">mlrl.seco.config.parameters module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../seco/mlrl.seco.cython.html">mlrl.seco.cython package</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" role="switch" type="checkbox"/><label for="toctree-checkbox-24"><div class="visually-hidden">Toggle navigation of mlrl.seco.cython package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.heuristic.html">mlrl.seco.cython.heuristic module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.learner.html">mlrl.seco.cython.learner module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.learner_seco.html">mlrl.seco.cython.learner_seco module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.lift_function.html">mlrl.seco.cython.lift_function module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.package_info.html">mlrl.seco.cython.package_info module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.stopping_criterion.html">mlrl.seco.cython.stopping_criterion module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../seco/mlrl.seco.testbed.html">mlrl.seco.testbed package</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" role="switch" type="checkbox"/><label for="toctree-checkbox-25"><div class="visually-hidden">Toggle navigation of mlrl.seco.testbed package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.testbed.runnables.html">mlrl.seco.testbed.runnables module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../seco/mlrl.seco.learners.html">mlrl.seco.learners module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../seco/mlrl.seco.package_info.html">mlrl.seco.package_info module</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../common/mlrl.common.html">Package mlrl-common</a><input class="toctree-checkbox" id="toctree-checkbox-26" name="toctree-checkbox-26" role="switch" type="checkbox"/><label for="toctree-checkbox-26"><div class="visually-hidden">Toggle navigation of Package mlrl-common</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../common/mlrl.common.config.html">mlrl.common.config package</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" role="switch" type="checkbox"/><label for="toctree-checkbox-27"><div class="visually-hidden">Toggle navigation of mlrl.common.config package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.config.options.html">mlrl.common.config.options module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.config.parameters.html">mlrl.common.config.parameters module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../common/mlrl.common.cython.html">mlrl.common.cython package</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" role="switch" type="checkbox"/><label for="toctree-checkbox-24"><div class="visually-hidden">Toggle navigation of mlrl.common.cython package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../common/mlrl.common.cython.html">mlrl.common.cython package</a><input class="toctree-checkbox" id="toctree-checkbox-28" name="toctree-checkbox-28" role="switch" type="checkbox"/><label for="toctree-checkbox-28"><div class="visually-hidden">Toggle navigation of mlrl.common.cython package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.cython.example_weights.html">mlrl.common.cython.example_weights module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.cython.feature_binning.html">mlrl.common.cython.feature_binning module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.cython.feature_info.html">mlrl.common.cython.feature_info module</a></li>
@@ -395,40 +417,18 @@
 <li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.cython.validation.html">mlrl.common.cython.validation module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../common/mlrl.common.data.html">mlrl.common.data package</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" role="switch" type="checkbox"/><label for="toctree-checkbox-25"><div class="visually-hidden">Toggle navigation of mlrl.common.data package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../common/mlrl.common.data.html">mlrl.common.data package</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" role="switch" type="checkbox"/><label for="toctree-checkbox-29"><div class="visually-hidden">Toggle navigation of mlrl.common.data package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.data.arrays.html">mlrl.common.data.arrays module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.data.types.html">mlrl.common.data.types module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../common/mlrl.common.util.html">mlrl.common.util package</a><input class="toctree-checkbox" id="toctree-checkbox-26" name="toctree-checkbox-26" role="switch" type="checkbox"/><label for="toctree-checkbox-26"><div class="visually-hidden">Toggle navigation of mlrl.common.util package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../common/mlrl.common.util.html">mlrl.common.util package</a><input class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" role="switch" type="checkbox"/><label for="toctree-checkbox-30"><div class="visually-hidden">Toggle navigation of mlrl.common.util package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../common/mlrl.common.util.format.html">mlrl.common.util.format module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../common/mlrl.common.learners.html">mlrl.common.learners module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../common/mlrl.common.mixins.html">mlrl.common.mixins module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../common/mlrl.common.package_info.html">mlrl.common.package_info module</a></li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../seco/mlrl.seco.html">Package mlrl-seco</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" role="switch" type="checkbox"/><label for="toctree-checkbox-27"><div class="visually-hidden">Toggle navigation of Package mlrl-seco</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../seco/mlrl.seco.config.html">mlrl.seco.config package</a><input class="toctree-checkbox" id="toctree-checkbox-28" name="toctree-checkbox-28" role="switch" type="checkbox"/><label for="toctree-checkbox-28"><div class="visually-hidden">Toggle navigation of mlrl.seco.config package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.config.parameters.html">mlrl.seco.config.parameters module</a></li>
-</ul>
-</li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../seco/mlrl.seco.cython.html">mlrl.seco.cython package</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" role="switch" type="checkbox"/><label for="toctree-checkbox-29"><div class="visually-hidden">Toggle navigation of mlrl.seco.cython package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.heuristic.html">mlrl.seco.cython.heuristic module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.learner.html">mlrl.seco.cython.learner module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.learner_seco.html">mlrl.seco.cython.learner_seco module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.lift_function.html">mlrl.seco.cython.lift_function module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.package_info.html">mlrl.seco.cython.package_info module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.cython.stopping_criterion.html">mlrl.seco.cython.stopping_criterion module</a></li>
-</ul>
-</li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../seco/mlrl.seco.testbed.html">mlrl.seco.testbed package</a><input class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" role="switch" type="checkbox"/><label for="toctree-checkbox-30"><div class="visually-hidden">Toggle navigation of mlrl.seco.testbed package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../seco/mlrl.seco.testbed.runnables.html">mlrl.seco.testbed.runnables module</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../seco/mlrl.seco.learners.html">mlrl.seco.learners module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../seco/mlrl.seco.package_info.html">mlrl.seco.package_info module</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../boosting/mlrl.boosting.html">Package mlrl-boosting</a><input class="toctree-checkbox" id="toctree-checkbox-31" name="toctree-checkbox-31" role="switch" type="checkbox"/><label for="toctree-checkbox-31"><div class="visually-hidden">Toggle navigation of Package mlrl-boosting</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -460,44 +460,7 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../cpp/index.html">C++ API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-35" name="toctree-checkbox-35" role="switch" type="checkbox"/><label for="toctree-checkbox-35"><div class="visually-hidden">Toggle navigation of C++ API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../cpp/seco/filelist.html">Library libmlrlseco</a><input class="toctree-checkbox" id="toctree-checkbox-36" name="toctree-checkbox-36" role="switch" type="checkbox"/><label for="toctree-checkbox-36"><div class="visually-hidden">Toggle navigation of Library libmlrlseco</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/confusion__matrix_8hpp.html">File confusion_matrix.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/decision__list__builder_8hpp.html">File decision_list_builder.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/dll__exports_8hpp.html">File dll_exports.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/head__type_8hpp.html">File head_type.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/head__type__partial_8hpp.html">File head_type_partial.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/head__type__single_8hpp.html">File head_type_single.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic_8hpp.html">File heuristic.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__accuracy_8hpp.html">File heuristic_accuracy.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__f__measure_8hpp.html">File heuristic_f_measure.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__laplace_8hpp.html">File heuristic_laplace.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__m__estimate_8hpp.html">File heuristic_m_estimate.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__precision_8hpp.html">File heuristic_precision.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__recall_8hpp.html">File heuristic_recall.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__wra_8hpp.html">File heuristic_wra.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/learner_8hpp.html">File learner.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/learner__common_8hpp.html">File learner_common.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/learner__seco__classifier_8hpp.html">File learner_seco_classifier.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/library__info_8hpp.html">File library_info.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function_8hpp.html">File lift_function.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function__kln_8hpp.html">File lift_function_kln.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function__no_8hpp.html">File lift_function_no.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function__peak_8hpp.html">File lift_function_peak.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/matrix__coverage__dense_8hpp.html">File matrix_coverage_dense.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/predictor__binary__output__wise_8hpp.html">File predictor_binary_output_wise.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__compare__function_8hpp.html">File rule_compare_function.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation_8hpp.html">File rule_evaluation.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation__decomposable_8hpp.html">File rule_evaluation_decomposable.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation__decomposable__partial_8hpp.html">File rule_evaluation_decomposable_partial.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation__decomposable__single_8hpp.html">File rule_evaluation_decomposable_single.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/statistics_8hpp.html">File statistics.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/statistics__decomposable_8hpp.html">File statistics_decomposable.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/statistics__provider__decomposable__dense_8hpp.html">File statistics_provider_decomposable_dense.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/stopping__criterion__coverage_8hpp.html">File stopping_criterion_coverage.hpp</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/vector__confusion__matrix__dense_8hpp.html">File vector_confusion_matrix_dense.hpp</a></li>
-</ul>
-</li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../cpp/boosting/filelist.html">Library libmlrlboosting</a><input class="toctree-checkbox" id="toctree-checkbox-37" name="toctree-checkbox-37" role="switch" type="checkbox"/><label for="toctree-checkbox-37"><div class="visually-hidden">Toggle navigation of Library libmlrlboosting</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../cpp/boosting/filelist.html">Library libmlrlboosting</a><input class="toctree-checkbox" id="toctree-checkbox-36" name="toctree-checkbox-36" role="switch" type="checkbox"/><label for="toctree-checkbox-36"><div class="visually-hidden">Toggle navigation of Library libmlrlboosting</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../cpp/boosting/file/blas_8hpp.html">File blas.hpp</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cpp/boosting/file/default__rule__auto_8hpp.html">File default_rule_auto.hpp</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cpp/boosting/file/discretization__function_8hpp.html">File discretization_function.hpp</a></li>
@@ -603,6 +566,43 @@
 <li class="toctree-l3"><a class="reference internal" href="../../cpp/boosting/file/vector__statistic__decomposable__sparse_8hpp.html">File vector_statistic_decomposable_sparse.hpp</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cpp/boosting/file/vector__statistic__non__decomposable__dense_8hpp.html">File vector_statistic_non_decomposable_dense.hpp</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cpp/boosting/file/view__statistic__non__decomposable__dense_8hpp.html">File view_statistic_non_decomposable_dense.hpp</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../cpp/seco/filelist.html">Library libmlrlseco</a><input class="toctree-checkbox" id="toctree-checkbox-37" name="toctree-checkbox-37" role="switch" type="checkbox"/><label for="toctree-checkbox-37"><div class="visually-hidden">Toggle navigation of Library libmlrlseco</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/confusion__matrix_8hpp.html">File confusion_matrix.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/decision__list__builder_8hpp.html">File decision_list_builder.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/dll__exports_8hpp.html">File dll_exports.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/head__type_8hpp.html">File head_type.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/head__type__partial_8hpp.html">File head_type_partial.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/head__type__single_8hpp.html">File head_type_single.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic_8hpp.html">File heuristic.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__accuracy_8hpp.html">File heuristic_accuracy.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__f__measure_8hpp.html">File heuristic_f_measure.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__laplace_8hpp.html">File heuristic_laplace.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__m__estimate_8hpp.html">File heuristic_m_estimate.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__precision_8hpp.html">File heuristic_precision.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__recall_8hpp.html">File heuristic_recall.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/heuristic__wra_8hpp.html">File heuristic_wra.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/learner_8hpp.html">File learner.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/learner__common_8hpp.html">File learner_common.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/learner__seco__classifier_8hpp.html">File learner_seco_classifier.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/library__info_8hpp.html">File library_info.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function_8hpp.html">File lift_function.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function__kln_8hpp.html">File lift_function_kln.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function__no_8hpp.html">File lift_function_no.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/lift__function__peak_8hpp.html">File lift_function_peak.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/matrix__coverage__dense_8hpp.html">File matrix_coverage_dense.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/predictor__binary__output__wise_8hpp.html">File predictor_binary_output_wise.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__compare__function_8hpp.html">File rule_compare_function.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation_8hpp.html">File rule_evaluation.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation__decomposable_8hpp.html">File rule_evaluation_decomposable.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation__decomposable__partial_8hpp.html">File rule_evaluation_decomposable_partial.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/rule__evaluation__decomposable__single_8hpp.html">File rule_evaluation_decomposable_single.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/statistics_8hpp.html">File statistics.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/statistics__decomposable_8hpp.html">File statistics_decomposable.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/statistics__provider__decomposable__dense_8hpp.html">File statistics_provider_decomposable_dense.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/stopping__criterion__coverage_8hpp.html">File stopping_criterion_coverage.hpp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cpp/seco/file/vector__confusion__matrix__dense_8hpp.html">File vector_confusion_matrix_dense.hpp</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../cpp/common/filelist.html">Library libmlrlcommon</a><input class="toctree-checkbox" id="toctree-checkbox-38" name="toctree-checkbox-38" role="switch" type="checkbox"/><label for="toctree-checkbox-38"><div class="visually-hidden">Toggle navigation of Library libmlrlcommon</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -865,7 +865,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="../../../../_sources/developer_guide/api/python/testbed/mlrl.testbed.util.io_csv.rst.txt" title="View this page">
+  <a class="muted-link" href="../../../../_sources/developer_guide/api/python/testbed/mlrl.testbed.experiments.output.table.rst.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -885,22 +885,436 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="module-mlrl.testbed.util.io_csv">
-<span id="mlrl-testbed-util-io-csv-module"></span><h1>mlrl.testbed.util.io_csv module<a class="headerlink" href="#module-mlrl.testbed.util.io_csv" title="Link to this heading">¶</a></h1>
+          <section id="module-mlrl.testbed.experiments.output.table">
+<span id="mlrl-testbed-experiments-output-table-module"></span><h1>mlrl.testbed.experiments.output.table module<a class="headerlink" href="#module-mlrl.testbed.experiments.output.table" title="Link to this heading">¶</a></h1>
 <p>Author Michael Rapp (<a class="reference external" href="mailto:michael&#46;rapp&#46;ml&#37;&#52;&#48;gmail&#46;com">michael<span>&#46;</span>rapp<span>&#46;</span>ml<span>&#64;</span>gmail<span>&#46;</span>com</a>)</p>
-<p>Provides utility functions for reading and writing CSV files.</p>
+<p>Provides classes for representing tables.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="mlrl.testbed.util.io_csv.CsvReader">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mlrl.testbed.util.io_csv.</span></span><span class="sig-name descname"><span class="pre">CsvReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mlrl.testbed.util.io_csv.CsvReader" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/csv.html#csv.DictReader" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DictReader</span></code></a></p>
-<p>Allows reading from a CSV file.</p>
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.Alignment">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mlrl.testbed.experiments.output.table.</span></span><span class="sig-name descname"><span class="pre">Alignment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.Alignment" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
+<p>All possible alignments of a table column.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.Alignment.AUTO">
+<span class="sig-name descname"><span class="pre">AUTO</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.Alignment.AUTO" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.Alignment.CENTER">
+<span class="sig-name descname"><span class="pre">CENTER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'center'</span></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.Alignment.CENTER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.Alignment.LEFT">
+<span class="sig-name descname"><span class="pre">LEFT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'left'</span></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.Alignment.LEFT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.Alignment.RIGHT">
+<span class="sig-name descname"><span class="pre">RIGHT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'right'</span></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.Alignment.RIGHT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="mlrl.testbed.util.io_csv.CsvWriter">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mlrl.testbed.util.io_csv.</span></span><span class="sig-name descname"><span class="pre">CsvWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Collection" title="(in Python v3.13)"><span class="pre">Collection</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mlrl.testbed.util.io_csv.CsvWriter" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/csv.html#csv.DictWriter" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DictWriter</span></code></a></p>
-<p>Allows writing to a CSV file.</p>
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.Column">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mlrl.testbed.experiments.output.table.</span></span><span class="sig-name descname"><span class="pre">Column</span></span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.Column" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<p>Provides access to a single column of a table.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.Column.num_rows">
+<em class="property"><span class="k"><span class="pre">abstract</span></span><span class="w"> </span><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_rows</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.Column.num_rows" title="Link to this definition">¶</a></dt>
+<dd><p>The number of rows in the table.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.ColumnWiseTable">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mlrl.testbed.experiments.output.table.</span></span><span class="sig-name descname"><span class="pre">ColumnWiseTable</span></span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlrl.testbed.experiments.output.table.Table" title="mlrl.testbed.experiments.output.table.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a></p>
+<p>A table to which new columns can be added one by one.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.ColumnWiseTable.Column">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable" title="mlrl.testbed.experiments.output.table.ColumnWiseTable"><span class="pre">ColumnWiseTable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.Column" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlrl.testbed.experiments.output.table.Column" title="mlrl.testbed.experiments.output.table.Column"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a></p>
+<p>Provides access to a single column of a <cite>ColumnWiseTable</cite>.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.ColumnWiseTable.Column.num_rows">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_rows</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.Column.num_rows" title="Link to this definition">¶</a></dt>
+<dd><p>The number of rows in the table.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.ColumnWiseTable.HeaderRow">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">HeaderRow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable" title="mlrl.testbed.experiments.output.table.ColumnWiseTable"><span class="pre">ColumnWiseTable</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.HeaderRow" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlrl.testbed.experiments.output.table.HeaderRow" title="mlrl.testbed.experiments.output.table.HeaderRow"><code class="xref py py-class docutils literal notranslate"><span class="pre">HeaderRow</span></code></a></p>
+<p>Provides access to the headers of a <cite>ColumnWiseTable</cite>.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.ColumnWiseTable.HeaderRow.num_columns">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_columns</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.HeaderRow.num_columns" title="Link to this definition">¶</a></dt>
+<dd><p>The number of columns in the table.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.ColumnWiseTable.Row">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable" title="mlrl.testbed.experiments.output.table.ColumnWiseTable"><span class="pre">ColumnWiseTable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.Row" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlrl.testbed.experiments.output.table.Row" title="mlrl.testbed.experiments.output.table.Row"><code class="xref py py-class docutils literal notranslate"><span class="pre">Row</span></code></a></p>
+<p>Provides access to a single row of a <cite>ColumnWiseTable</cite>.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.ColumnWiseTable.Row.num_columns">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_columns</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.Row.num_columns" title="Link to this definition">¶</a></dt>
+<dd><p>The number of columns in the table.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.ColumnWiseTable.add_column">
+<span class="sig-name descname"><span class="pre">add_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><span class="pre">Any</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><span class="pre">Any</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alignment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Alignment" title="mlrl.testbed.experiments.output.table.Alignment"><span class="pre">Alignment</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable" title="mlrl.testbed.experiments.output.table.ColumnWiseTable"><span class="pre">ColumnWiseTable</span></a></span></span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.add_column" title="Link to this definition">¶</a></dt>
+<dd><p>Adds a new column to the end of the table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> – The values in the column</p></li>
+<li><p><strong>header</strong> – The header of the column or None</p></li>
+<li><p><strong>alignment</strong> – The alignment of the column or None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The modified table</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.ColumnWiseTable.alignments">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">alignments</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Alignment" title="mlrl.testbed.experiments.output.table.Alignment"><span class="pre">Alignment</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.alignments" title="Link to this definition">¶</a></dt>
+<dd><p>The individual alignments of the columns in the table or None, if no alignments have been specified.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.ColumnWiseTable.columns">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">columns</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generator" title="(in Python v3.13)"><span class="pre">Generator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.Column" title="mlrl.testbed.experiments.output.table.ColumnWiseTable.Column"><span class="pre">Column</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.columns" title="Link to this definition">¶</a></dt>
+<dd><p>A generator that provides access to the individual columns in the table.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.ColumnWiseTable.header_row">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">header_row</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.HeaderRow" title="mlrl.testbed.experiments.output.table.ColumnWiseTable.HeaderRow"><span class="pre">HeaderRow</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.header_row" title="Link to this definition">¶</a></dt>
+<dd><p>The header row of the table or None, if the table does not have any headers.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.ColumnWiseTable.num_columns">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_columns</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.num_columns" title="Link to this definition">¶</a></dt>
+<dd><p>The number of columns in the table.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.ColumnWiseTable.num_rows">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_rows</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.num_rows" title="Link to this definition">¶</a></dt>
+<dd><p>The number of rows in the table.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.ColumnWiseTable.rows">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rows</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generator" title="(in Python v3.13)"><span class="pre">Generator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.Row" title="mlrl.testbed.experiments.output.table.ColumnWiseTable.Row"><span class="pre">Row</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.rows" title="Link to this definition">¶</a></dt>
+<dd><p>A generator that provides access to the individual rows in the table.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.ColumnWiseTable.sort_by_headers">
+<span class="sig-name descname"><span class="pre">sort_by_headers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable" title="mlrl.testbed.experiments.output.table.ColumnWiseTable"><span class="pre">ColumnWiseTable</span></a></span></span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.sort_by_headers" title="Link to this definition">¶</a></dt>
+<dd><p>Sorts the columns in the table by their headers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The sorted table</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.ColumnWiseTable.to_column_wise_table">
+<span class="sig-name descname"><span class="pre">to_column_wise_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable" title="mlrl.testbed.experiments.output.table.ColumnWiseTable"><span class="pre">ColumnWiseTable</span></a></span></span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.to_column_wise_table" title="Link to this definition">¶</a></dt>
+<dd><p>Creates and returns a <cite>ColumnWiseTable</cite> from this table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The <cite>ColumnWiseTable</cite> that has been created</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.ColumnWiseTable.to_row_wise_table">
+<span class="sig-name descname"><span class="pre">to_row_wise_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable" title="mlrl.testbed.experiments.output.table.RowWiseTable"><span class="pre">RowWiseTable</span></a></span></span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.to_row_wise_table" title="Link to this definition">¶</a></dt>
+<dd><p>Creates and returns a <cite>RowWiseTable</cite> from this table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The <cite>RowWiseTable</cite> that has been created</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.HeaderRow">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mlrl.testbed.experiments.output.table.</span></span><span class="sig-name descname"><span class="pre">HeaderRow</span></span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.HeaderRow" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<p>Provides access to the headers of a table.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.HeaderRow.num_columns">
+<em class="property"><span class="k"><span class="pre">abstract</span></span><span class="w"> </span><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_columns</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.HeaderRow.num_columns" title="Link to this definition">¶</a></dt>
+<dd><p>The number of columns in the table.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.Row">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mlrl.testbed.experiments.output.table.</span></span><span class="sig-name descname"><span class="pre">Row</span></span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.Row" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<p>Provides access to a single row of a table.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.Row.num_columns">
+<em class="property"><span class="k"><span class="pre">abstract</span></span><span class="w"> </span><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_columns</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.Row.num_columns" title="Link to this definition">¶</a></dt>
+<dd><p>The number of columns in the table.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.RowWiseTable">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mlrl.testbed.experiments.output.table.</span></span><span class="sig-name descname"><span class="pre">RowWiseTable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><span class="pre">Any</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">alignments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Alignment" title="mlrl.testbed.experiments.output.table.Alignment"><span class="pre">Alignment</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.RowWiseTable" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlrl.testbed.experiments.output.table.Table" title="mlrl.testbed.experiments.output.table.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a></p>
+<p>A table to which new rows can be added one by one.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.RowWiseTable.Column">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable" title="mlrl.testbed.experiments.output.table.RowWiseTable"><span class="pre">RowWiseTable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.RowWiseTable.Column" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlrl.testbed.experiments.output.table.Column" title="mlrl.testbed.experiments.output.table.Column"><code class="xref py py-class docutils literal notranslate"><span class="pre">Column</span></code></a></p>
+<p>Provides access to a single column of a <cite>RowWiseTable</cite>.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.RowWiseTable.Column.num_rows">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_rows</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.RowWiseTable.Column.num_rows" title="Link to this definition">¶</a></dt>
+<dd><p>The number of rows in the table.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.RowWiseTable.HeaderRow">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">HeaderRow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable" title="mlrl.testbed.experiments.output.table.RowWiseTable"><span class="pre">RowWiseTable</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.RowWiseTable.HeaderRow" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlrl.testbed.experiments.output.table.HeaderRow" title="mlrl.testbed.experiments.output.table.HeaderRow"><code class="xref py py-class docutils literal notranslate"><span class="pre">HeaderRow</span></code></a></p>
+<p>Provides access to the headers of a <cite>RowWiseTable</cite>.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.RowWiseTable.HeaderRow.num_columns">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_columns</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.RowWiseTable.HeaderRow.num_columns" title="Link to this definition">¶</a></dt>
+<dd><p>The number of columns in the table.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.RowWiseTable.Row">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable" title="mlrl.testbed.experiments.output.table.RowWiseTable"><span class="pre">RowWiseTable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.RowWiseTable.Row" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mlrl.testbed.experiments.output.table.Row" title="mlrl.testbed.experiments.output.table.Row"><code class="xref py py-class docutils literal notranslate"><span class="pre">Row</span></code></a></p>
+<p>Provides access to a single row of a <cite>RowWiseTable</cite>.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.RowWiseTable.Row.num_columns">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_columns</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.RowWiseTable.Row.num_columns" title="Link to this definition">¶</a></dt>
+<dd><p>The number of columns in the table.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.RowWiseTable.add_row">
+<span class="sig-name descname"><span class="pre">add_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><span class="pre">Any</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.RowWiseTable.add_row" title="Link to this definition">¶</a></dt>
+<dd><p>Adds a new row to the end of the table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>values</strong> – The values in the row</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The modified table</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.RowWiseTable.alignments">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">alignments</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Alignment" title="mlrl.testbed.experiments.output.table.Alignment"><span class="pre">Alignment</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.RowWiseTable.alignments" title="Link to this definition">¶</a></dt>
+<dd><p>The individual alignments of the columns in the table or None, if no alignments have been specified.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.RowWiseTable.columns">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">columns</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generator" title="(in Python v3.13)"><span class="pre">Generator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable.Column" title="mlrl.testbed.experiments.output.table.RowWiseTable.Column"><span class="pre">Column</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.RowWiseTable.columns" title="Link to this definition">¶</a></dt>
+<dd><p>A generator that provides access to the individual columns in the table.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.RowWiseTable.header_row">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">header_row</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable.HeaderRow" title="mlrl.testbed.experiments.output.table.RowWiseTable.HeaderRow"><span class="pre">HeaderRow</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.RowWiseTable.header_row" title="Link to this definition">¶</a></dt>
+<dd><p>The header row of the table or None, if the table does not have any headers.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.RowWiseTable.num_columns">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_columns</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.RowWiseTable.num_columns" title="Link to this definition">¶</a></dt>
+<dd><p>The number of columns in the table.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.RowWiseTable.num_rows">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_rows</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.RowWiseTable.num_rows" title="Link to this definition">¶</a></dt>
+<dd><p>The number of rows in the table.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.RowWiseTable.rows">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rows</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generator" title="(in Python v3.13)"><span class="pre">Generator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable.Row" title="mlrl.testbed.experiments.output.table.RowWiseTable.Row"><span class="pre">Row</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.RowWiseTable.rows" title="Link to this definition">¶</a></dt>
+<dd><p>A generator that provides access to the individual rows in the table.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.RowWiseTable.sort_by_columns">
+<span class="sig-name descname"><span class="pre">sort_by_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">additional_column_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">descending</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable" title="mlrl.testbed.experiments.output.table.RowWiseTable"><span class="pre">RowWiseTable</span></a></span></span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.RowWiseTable.sort_by_columns" title="Link to this definition">¶</a></dt>
+<dd><p>Sorts the rows in the table by the values in one or several columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column_index</strong> – The index of the column to sort by</p></li>
+<li><p><strong>additional_column_indices</strong> – Additional indices of columns to sort by</p></li>
+<li><p><strong>descending</strong> – True, if the rows should be sorted in descending order, False, if the should
+be sorted in ascending order</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The sorted table</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.RowWiseTable.to_column_wise_table">
+<span class="sig-name descname"><span class="pre">to_column_wise_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable" title="mlrl.testbed.experiments.output.table.ColumnWiseTable"><span class="pre">ColumnWiseTable</span></a></span></span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.RowWiseTable.to_column_wise_table" title="Link to this definition">¶</a></dt>
+<dd><p>Creates and returns a <cite>ColumnWiseTable</cite> from this table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The <cite>ColumnWiseTable</cite> that has been created</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.RowWiseTable.to_row_wise_table">
+<span class="sig-name descname"><span class="pre">to_row_wise_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable" title="mlrl.testbed.experiments.output.table.RowWiseTable"><span class="pre">RowWiseTable</span></a></span></span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.RowWiseTable.to_row_wise_table" title="Link to this definition">¶</a></dt>
+<dd><p>Creates and returns a <cite>RowWiseTable</cite> from this table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The <cite>RowWiseTable</cite> that has been created</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.Table">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mlrl.testbed.experiments.output.table.</span></span><span class="sig-name descname"><span class="pre">Table</span></span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.Table" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<p>An abstract base class for all tables.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.Table.alignments">
+<em class="property"><span class="k"><span class="pre">abstract</span></span><span class="w"> </span><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">alignments</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Alignment" title="mlrl.testbed.experiments.output.table.Alignment"><span class="pre">Alignment</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.Table.alignments" title="Link to this definition">¶</a></dt>
+<dd><p>The individual alignments of the columns in the table or None, if no alignments have been specified.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.Table.columns">
+<em class="property"><span class="k"><span class="pre">abstract</span></span><span class="w"> </span><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">columns</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generator" title="(in Python v3.13)"><span class="pre">Generator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Column" title="mlrl.testbed.experiments.output.table.Column"><span class="pre">Column</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.Table.columns" title="Link to this definition">¶</a></dt>
+<dd><p>A generator that provides access to the individual columns in the table.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.Table.format">
+<span class="sig-name descname"><span class="pre">format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auto_rotate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.Table.format" title="Link to this definition">¶</a></dt>
+<dd><p>Creates and returns a textual representation of the table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>auto_rotate</strong> – True, if tables with a single row should automatically be rotated for legibility, False
+otherwise</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The textual representation that has been created</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.Table.has_headers">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_headers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.Table.has_headers" title="Link to this definition">¶</a></dt>
+<dd><p>True, if the table has any headers, False otherwise.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.Table.header_row">
+<em class="property"><span class="k"><span class="pre">abstract</span></span><span class="w"> </span><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">header_row</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#mlrl.testbed.experiments.output.table.HeaderRow" title="mlrl.testbed.experiments.output.table.HeaderRow"><span class="pre">HeaderRow</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.Table.header_row" title="Link to this definition">¶</a></dt>
+<dd><p>The header row of the table or None, if the table does not have any headers.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.Table.num_cells">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_cells</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.Table.num_cells" title="Link to this definition">¶</a></dt>
+<dd><p>The number of cells in the table.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.Table.num_columns">
+<em class="property"><span class="k"><span class="pre">abstract</span></span><span class="w"> </span><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_columns</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.Table.num_columns" title="Link to this definition">¶</a></dt>
+<dd><p>The number of columns in the table.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.Table.num_rows">
+<em class="property"><span class="k"><span class="pre">abstract</span></span><span class="w"> </span><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_rows</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.Table.num_rows" title="Link to this definition">¶</a></dt>
+<dd><p>The number of rows in the table.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.Table.rows">
+<em class="property"><span class="k"><span class="pre">abstract</span></span><span class="w"> </span><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rows</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generator" title="(in Python v3.13)"><span class="pre">Generator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Row" title="mlrl.testbed.experiments.output.table.Row"><span class="pre">Row</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#mlrl.testbed.experiments.output.table.Table.rows" title="Link to this definition">¶</a></dt>
+<dd><p>A generator that provides access to the individual rows in the table.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.Table.to_column_wise_table">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_column_wise_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable" title="mlrl.testbed.experiments.output.table.ColumnWiseTable"><span class="pre">ColumnWiseTable</span></a></span></span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.Table.to_column_wise_table" title="Link to this definition">¶</a></dt>
+<dd><p>Creates and returns a <cite>ColumnWiseTable</cite> from this table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The <cite>ColumnWiseTable</cite> that has been created</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mlrl.testbed.experiments.output.table.Table.to_row_wise_table">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_row_wise_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable" title="mlrl.testbed.experiments.output.table.RowWiseTable"><span class="pre">RowWiseTable</span></a></span></span><a class="headerlink" href="#mlrl.testbed.experiments.output.table.Table.to_row_wise_table" title="Link to this definition">¶</a></dt>
+<dd><p>Creates and returns a <cite>RowWiseTable</cite> from this table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The <cite>RowWiseTable</cite> that has been created</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -910,23 +1324,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="mlrl.testbed.util.math.html">
+          <a class="next-page" href="mlrl.testbed.experiments.output.writer.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">mlrl.testbed.util.math module</div>
+                <div class="title">mlrl.testbed.experiments.output.writer module</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="mlrl.testbed.util.io.html">
+          <a class="prev-page" href="mlrl.testbed.experiments.output.data.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">mlrl.testbed.util.io module</div>
+                <div class="title">mlrl.testbed.experiments.output.data module</div>
                 
               </div>
             </a>
@@ -960,9 +1374,90 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">mlrl.testbed.util.io_csv module</a><ul>
-<li><a class="reference internal" href="#mlrl.testbed.util.io_csv.CsvReader"><code class="docutils literal notranslate"><span class="pre">CsvReader</span></code></a></li>
-<li><a class="reference internal" href="#mlrl.testbed.util.io_csv.CsvWriter"><code class="docutils literal notranslate"><span class="pre">CsvWriter</span></code></a></li>
+<li><a class="reference internal" href="#">mlrl.testbed.experiments.output.table module</a><ul>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Alignment"><code class="docutils literal notranslate"><span class="pre">Alignment</span></code></a><ul>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Alignment.AUTO"><code class="docutils literal notranslate"><span class="pre">Alignment.AUTO</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Alignment.CENTER"><code class="docutils literal notranslate"><span class="pre">Alignment.CENTER</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Alignment.LEFT"><code class="docutils literal notranslate"><span class="pre">Alignment.LEFT</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Alignment.RIGHT"><code class="docutils literal notranslate"><span class="pre">Alignment.RIGHT</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Column"><code class="docutils literal notranslate"><span class="pre">Column</span></code></a><ul>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Column.num_rows"><code class="docutils literal notranslate"><span class="pre">Column.num_rows</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable"><code class="docutils literal notranslate"><span class="pre">ColumnWiseTable</span></code></a><ul>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.Column"><code class="docutils literal notranslate"><span class="pre">ColumnWiseTable.Column</span></code></a><ul>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.Column.num_rows"><code class="docutils literal notranslate"><span class="pre">ColumnWiseTable.Column.num_rows</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.HeaderRow"><code class="docutils literal notranslate"><span class="pre">ColumnWiseTable.HeaderRow</span></code></a><ul>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.HeaderRow.num_columns"><code class="docutils literal notranslate"><span class="pre">ColumnWiseTable.HeaderRow.num_columns</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.Row"><code class="docutils literal notranslate"><span class="pre">ColumnWiseTable.Row</span></code></a><ul>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.Row.num_columns"><code class="docutils literal notranslate"><span class="pre">ColumnWiseTable.Row.num_columns</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.add_column"><code class="docutils literal notranslate"><span class="pre">ColumnWiseTable.add_column()</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.alignments"><code class="docutils literal notranslate"><span class="pre">ColumnWiseTable.alignments</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.columns"><code class="docutils literal notranslate"><span class="pre">ColumnWiseTable.columns</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.header_row"><code class="docutils literal notranslate"><span class="pre">ColumnWiseTable.header_row</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.num_columns"><code class="docutils literal notranslate"><span class="pre">ColumnWiseTable.num_columns</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.num_rows"><code class="docutils literal notranslate"><span class="pre">ColumnWiseTable.num_rows</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.rows"><code class="docutils literal notranslate"><span class="pre">ColumnWiseTable.rows</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.sort_by_headers"><code class="docutils literal notranslate"><span class="pre">ColumnWiseTable.sort_by_headers()</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.to_column_wise_table"><code class="docutils literal notranslate"><span class="pre">ColumnWiseTable.to_column_wise_table()</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.ColumnWiseTable.to_row_wise_table"><code class="docutils literal notranslate"><span class="pre">ColumnWiseTable.to_row_wise_table()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.HeaderRow"><code class="docutils literal notranslate"><span class="pre">HeaderRow</span></code></a><ul>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.HeaderRow.num_columns"><code class="docutils literal notranslate"><span class="pre">HeaderRow.num_columns</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Row"><code class="docutils literal notranslate"><span class="pre">Row</span></code></a><ul>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Row.num_columns"><code class="docutils literal notranslate"><span class="pre">Row.num_columns</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable"><code class="docutils literal notranslate"><span class="pre">RowWiseTable</span></code></a><ul>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable.Column"><code class="docutils literal notranslate"><span class="pre">RowWiseTable.Column</span></code></a><ul>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable.Column.num_rows"><code class="docutils literal notranslate"><span class="pre">RowWiseTable.Column.num_rows</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable.HeaderRow"><code class="docutils literal notranslate"><span class="pre">RowWiseTable.HeaderRow</span></code></a><ul>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable.HeaderRow.num_columns"><code class="docutils literal notranslate"><span class="pre">RowWiseTable.HeaderRow.num_columns</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable.Row"><code class="docutils literal notranslate"><span class="pre">RowWiseTable.Row</span></code></a><ul>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable.Row.num_columns"><code class="docutils literal notranslate"><span class="pre">RowWiseTable.Row.num_columns</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable.add_row"><code class="docutils literal notranslate"><span class="pre">RowWiseTable.add_row()</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable.alignments"><code class="docutils literal notranslate"><span class="pre">RowWiseTable.alignments</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable.columns"><code class="docutils literal notranslate"><span class="pre">RowWiseTable.columns</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable.header_row"><code class="docutils literal notranslate"><span class="pre">RowWiseTable.header_row</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable.num_columns"><code class="docutils literal notranslate"><span class="pre">RowWiseTable.num_columns</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable.num_rows"><code class="docutils literal notranslate"><span class="pre">RowWiseTable.num_rows</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable.rows"><code class="docutils literal notranslate"><span class="pre">RowWiseTable.rows</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable.sort_by_columns"><code class="docutils literal notranslate"><span class="pre">RowWiseTable.sort_by_columns()</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable.to_column_wise_table"><code class="docutils literal notranslate"><span class="pre">RowWiseTable.to_column_wise_table()</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.RowWiseTable.to_row_wise_table"><code class="docutils literal notranslate"><span class="pre">RowWiseTable.to_row_wise_table()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Table"><code class="docutils literal notranslate"><span class="pre">Table</span></code></a><ul>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Table.alignments"><code class="docutils literal notranslate"><span class="pre">Table.alignments</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Table.columns"><code class="docutils literal notranslate"><span class="pre">Table.columns</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Table.format"><code class="docutils literal notranslate"><span class="pre">Table.format()</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Table.has_headers"><code class="docutils literal notranslate"><span class="pre">Table.has_headers</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Table.header_row"><code class="docutils literal notranslate"><span class="pre">Table.header_row</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Table.num_cells"><code class="docutils literal notranslate"><span class="pre">Table.num_cells</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Table.num_columns"><code class="docutils literal notranslate"><span class="pre">Table.num_columns</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Table.num_rows"><code class="docutils literal notranslate"><span class="pre">Table.num_rows</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Table.rows"><code class="docutils literal notranslate"><span class="pre">Table.rows</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Table.to_column_wise_table"><code class="docutils literal notranslate"><span class="pre">Table.to_column_wise_table()</span></code></a></li>
+<li><a class="reference internal" href="#mlrl.testbed.experiments.output.table.Table.to_row_wise_table"><code class="docutils literal notranslate"><span class="pre">Table.to_row_wise_table()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -974,7 +1469,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=01d4a797"></script>
+</div><script src="../../../../_static/documentation_options.js?v=e9ce0455"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/furo.js?v=5fa4622c"></script>
