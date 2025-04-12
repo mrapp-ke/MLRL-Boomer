@@ -3,14 +3,8 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for reading and writing files.
 """
-import xml.etree.ElementTree as XmlTree
-
-from os import listdir, path, unlink
+from os import path
 from typing import Optional
-from xml.dom import minidom
-
-# The suffix of a CSV file
-SUFFIX_CSV = 'csv'
 
 # The suffix of an ARFF file
 SUFFIX_ARFF = 'arff'
@@ -46,18 +40,6 @@ def get_file_name_per_fold(name: str, suffix: str, fold: Optional[int]) -> str:
     return get_file_name(name + '_' + ('overall' if fold is None else 'fold-' + str(fold + 1)), suffix)
 
 
-def open_writable_file(file_path: str, append: bool = False):
-    """
-    Opens a file to be written to.
-
-    :param file_path:   The path to the file to be opened
-    :param append:      True, if new data should be appended to the file, if it already exists, False otherwise
-    :return:            The file that has been opened
-    """
-    mode = 'a' if append and path.isfile(file_path) else 'w'
-    return open(file_path, mode=mode, encoding=ENCODING_UTF8)
-
-
 def open_readable_file(file_path: str):
     """
     Opens a file to be read from.
@@ -68,26 +50,13 @@ def open_readable_file(file_path: str):
     return open(file_path, mode='r', newline='', encoding=ENCODING_UTF8)
 
 
-def write_xml_file(xml_file, root_element: XmlTree.Element):
+def open_writable_file(file_path: str, append: bool = False):
     """
-    Writes an XML structure to a file.
+    Opens a file to be written to.
 
-    :param xml_file:        The XML file
-    :param root_element:    The root element of the XML structure
+    :param file_path:   The path to the file to be opened
+    :param append:      True, if new data should be appended to the file, if it already exists, False otherwise
+    :return:            The file that has been opened
     """
-    with open(xml_file, mode='w', encoding=ENCODING_UTF8) as file:
-        xml_string = minidom.parseString(XmlTree.tostring(root_element)).toprettyxml(encoding=ENCODING_UTF8)
-        file.write(xml_string.decode(ENCODING_UTF8))
-
-
-def clear_directory(directory: str):
-    """
-    Deletes all files contained in a directory (excluding subdirectories).
-
-    :param directory: The directory to be cleared
-    """
-    for file in listdir(directory):
-        file_path = path.join(directory, file)
-
-        if path.isfile(file_path):
-            unlink(file_path)
+    mode = 'a' if append and path.isfile(file_path) else 'w'
+    return open(file_path, mode=mode, encoding=ENCODING_UTF8)

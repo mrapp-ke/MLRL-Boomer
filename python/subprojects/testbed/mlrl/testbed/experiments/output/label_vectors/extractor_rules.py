@@ -13,7 +13,7 @@ from mlrl.common.cython.output_space_info import LabelVectorSet, LabelVectorSetV
 from mlrl.common.learners import ClassificationRuleLearner
 
 from mlrl.testbed.experiments.output.data import OutputData
-from mlrl.testbed.experiments.output.label_vectors.label_vector_histogram import LabelVectorHistogram
+from mlrl.testbed.experiments.output.label_vectors.label_vector_histogram import LabelVector, LabelVectorHistogram
 from mlrl.testbed.experiments.output.label_vectors.label_vectors import LabelVectors
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor
@@ -41,7 +41,8 @@ class LabelVectorSetExtractor(DataExtractor):
             """
             See :func:`mlrl.common.cython.output_space_info.LabelVectorSetVisitor.visit_label_vector`
             """
-            self.label_vector_histogram.unique_label_vectors.append((label_vector, frequency))
+            label_vector = LabelVector(label_indices=label_vector, frequency=frequency)
+            self.label_vector_histogram.unique_label_vectors.append(label_vector)
 
     def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
         """
