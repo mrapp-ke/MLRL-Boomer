@@ -3,20 +3,39 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing predictions that are part of output data.
 """
+import sys
+
 from dataclasses import replace
 from typing import Optional
+
+import numpy as np
 
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.experiments.output.data import DatasetOutputData
-from mlrl.testbed.util.format import OPTION_DECIMALS, format_array
+from mlrl.testbed.util.format import OPTION_DECIMALS
 
 
 class Predictions(DatasetOutputData):
     """
     Represents predictions and the corresponding ground truth that are part of output data.
     """
+
+    @staticmethod
+    def __format_array(array: np.ndarray, decimals: int = 2) -> str:
+        """
+        Creates and returns a textual representation of an array.
+
+        :param array:       The array
+        :param decimals:    The number of decimals to be used or 0, if the number of decimals should not be restricted
+        :return:            The textual representation that has been created
+        """
+        if array.dtype.kind == 'f':
+            precision = decimals if decimals > 0 else None
+            return np.array2string(array, threshold=sys.maxsize, precision=precision, suppress_small=True)
+        # pylint: disable=unnecessary-lambda
+        return np.array2string(array, threshold=sys.maxsize, formatter={'all': lambda x: str(x)})
 
     def __init__(self, original_dataset: Dataset, prediction_dataset: Dataset):
         """
@@ -34,9 +53,9 @@ class Predictions(DatasetOutputData):
         """
         decimals = options.get_int(OPTION_DECIMALS, 2)
         text = 'Ground truth:\n\n'
-        text += format_array(self.original_dataset.y, decimals=decimals)
+        text += self.__format_array(self.original_dataset.y, decimals=decimals)
         text += '\n\nPredictions:\n\n'
-        text += format_array(self.prediction_dataset.y, decimals=decimals)
+        text += self.__format_array(self.prediction_dataset.y, decimals=decimals)
         return text
 
     # pylint: disable=unused-argument

@@ -8,6 +8,7 @@ from typing import Dict, Set, Tuple
 
 import numpy as np
 
+from mlrl.testbed.experiments.output.data import OutputValue
 from mlrl.testbed.experiments.output.evaluation.measures import Measure
 
 
@@ -72,6 +73,6 @@ class Measurements:
         for measure in self._values_per_measure:
             average, std_dev = self.average_by_measure(measure)
             result[measure] = average
-            result[Measure(measure.option_key, 'Std.-dev. ' + measure.name, measure.percentage)] = std_dev
+            result[OutputValue(measure.option_key, 'Std.-dev. ' + measure.name, measure.percentage)] = std_dev
 
         return result
