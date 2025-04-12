@@ -11,9 +11,9 @@ from mlrl.common.config.options import Options
 from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibrationModel, \
     IsotonicProbabilityCalibrationModelVisitor
 
+from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.output.table import ColumnWiseTable, Table
-from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import OPTION_DECIMALS, format_number
 
 
@@ -55,14 +55,14 @@ class IsotonicRegressionModel(TabularOutputData):
                  calibration_model: IsotonicProbabilityCalibrationModel,
                  name: str,
                  file_name: str,
-                 default_context: ExperimentState.Context = ExperimentState.Context(),
+                 default_context: Data.Context = Data.Context(),
                  column_title_prefix: Optional[str] = None):
         """
         :param calibration_model:   The isotonic calibration model
         :param name:                A name to be included in log messages
         :param file_name:           A file name to be used for writing into output files
-        :param default_context:     An `ExperimentState.Context` to be used by default for finding a suitable sink this
-                                    output data can be written to
+        :param default_context:     A `Data.Context` to be used by default for finding a suitable sink this output data
+                                    can be written to
         :param column_title_prefix: An optional prefix to be prepended to the titles of table columns that contain
                                     thresholds or probabilities
         """

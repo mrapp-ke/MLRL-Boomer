@@ -7,9 +7,10 @@ from typing import Optional
 
 from mlrl.common.config.options import Options
 
+from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.output.table import RowWiseTable, Table
-from mlrl.testbed.experiments.state import ExperimentState, ParameterDict
+from mlrl.testbed.experiments.state import ParameterDict
 
 
 class CustomParameters(TabularOutputData):
@@ -23,7 +24,7 @@ class CustomParameters(TabularOutputData):
         """
         super().__init__(name='Custom parameters',
                          file_name='parameters',
-                         default_context=ExperimentState.Context(include_dataset_type=False))
+                         default_context=Data.Context(include_dataset_type=False))
         self.custom_parameters = {key: value for key, value in parameter_dict.items() if value is not None}
 
     def to_text(self, options: Options, **kwargs) -> Optional[str]:

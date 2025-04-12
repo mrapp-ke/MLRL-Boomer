@@ -67,18 +67,3 @@ class ExperimentState:
     parameters: ParameterDict
     training_result: Optional[TrainingState] = None
     prediction_result: Optional[PredictionState] = None
-
-    @dataclass
-    class Context:
-        """
-        Specifies the aspects of an `ExperimentState` that should be taken into account for finding a suitable source or
-        sink to read from or write to.
-
-        Attributes:
-            include_dataset_type:       True, if the type of the dataset should be taken into account, False otherwise
-            include_prediction_scope:   True, if the scope of predictions should be taken into account, False otherwise
-            include_fold:               True, if the cross validation fold should be taken into account, False otherwise
-        """
-        include_dataset_type: bool = True
-        include_prediction_scope: bool = True
-        include_fold: bool = True
