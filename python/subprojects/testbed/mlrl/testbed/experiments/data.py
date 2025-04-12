@@ -14,14 +14,15 @@ from mlrl.testbed.util.io import get_file_name_per_fold
 
 class Data(ABC):
     """
-    An abstract class for all classes that represent data that can be processed by connectors.
+    An abstract class for all classes that represent data that can be exchanged with the environment, this software runs
+    in.
     """
 
     @dataclass
     class Context:
         """
-        Specifies the aspects of an `ExperimentState` that should be taken into account for finding a suitable connector
-        to exchange data with.
+        Specifies the aspects of an `ExperimentState` that should be taken into account for finding a suitable data
+        exchange for handling data.
 
         Attributes:
             include_dataset_type:       True, if the type of the dataset should be taken into account, False otherwise
@@ -34,21 +35,20 @@ class Data(ABC):
 
     def __init__(self, default_context: Context = Context()):
         """
-        :param default_context: A `Data.Context` to be used by default for finding a suitable connector this data can be
-                                exchanged with
+        :param default_context: A `Data.Context` to be used by default for finding a suitable data exchange this data
+                                can be handled by
         """
         self.default_context = default_context
         self.custom_context = {}
 
-    def get_context(self, connector_type: Type) -> Context:
+    def get_context(self, exchange_type: Type) -> Context:
         """
-        Returns a `Data.Context` to can be used for finding a suitable connector of a specific type this data can be
-        exchanged with.
+        Returns a `Data.Context` to can be used for finding a suitable data exchange for handling this data.
 
-        :param connector_type:  The type of the connector to search for
+        :param exchange_type:   The type of the data exchange to search for
         :return:                A `Data.Context`
         """
-        return self.custom_context.setdefault(connector_type, replace(self.default_context))
+        return self.custom_context.setdefault(exchange_type, replace(self.default_context))
 
 
 class DataExchange(ABC):
