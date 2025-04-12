@@ -4,18 +4,18 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing output data.
 """
 from abc import ABC, abstractmethod
-from dataclasses import replace
-from typing import Iterable, List, Optional, Type
+from typing import Iterable, List, Optional
 
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.output.table import Table
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_number
 
 
-class OutputData(ABC):
+class OutputData(Data, ABC):
     """
     An abstract class for all classes that represent output data that can be converted into a textual representation.
     """
@@ -27,20 +27,9 @@ class OutputData(ABC):
         :param default_context: An `ExperimentState.Context` to be used by default for finding a suitable sink this
                                 output data can be written to
         """
+        super().__init__(default_context)
         self.name = name
         self.file_name = file_name
-        self.default_context = default_context
-        self.custom_context = {}
-
-    def get_context(self, sink_type: Type) -> ExperimentState.Context:
-        """
-        Returns an `ExperimentState.Context` to can be used for finding a suitable sink of a specific type this output
-        data can be written too.
-
-        :param sink_type:   The type of the sink to be found
-        :return:            An `ExperimentState.Context`
-        """
-        return self.custom_context.setdefault(sink_type, replace(self.default_context))
 
     @abstractmethod
     def to_text(self, options: Options, **kwargs) -> Optional[str]:
