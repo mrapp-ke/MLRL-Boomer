@@ -5,7 +5,11 @@ Provides classes for representing input or output data.
 """
 from abc import ABC
 from dataclasses import dataclass, replace
+from os import path
 from typing import Type
+
+from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.util.io import get_file_name_per_fold
 
 
 class Data(ABC):
@@ -45,3 +49,43 @@ class Data(ABC):
         :return:                A `Data.Context`
         """
         return self.custom_context.setdefault(connector_type, replace(self.default_context))
+
+
+class FilePath:
+    """
+    The path to a file to exchange data with.
+    """
+
+    def __init__(self, directory: str, file_name: str, suffix: str, context: Data.Context):
+        """
+        :param directory:   The path to the directory, where the file is located
+        :param file_name:   The name of the file
+        :param suffix:      The suffix of the file (with leading dot)
+        :param context:     A `Data.Context` to be used to determine the path
+        """
+        self.directory = directory
+        self.file_name = file_name
+        self.suffix = suffix
+        self.context = context
+
+    def resolve(self, state: ExperimentState) -> str:
+        """
+        Determines and returns the path to the file to which output data should be written.
+
+        :param state: The state from which the output data has been generated
+        """
+        file_name = self.file_name
+
+        if self.context.include_dataset_type:
+            file_name = state.dataset.type.get_file_name(file_name)
+
+        if self.context.include_prediction_scope:
+            prediction_result = state.prediction_result
+
+            if prediction_result:
+                file_name = prediction_result.prediction_scope.get_file_name(file_name)
+
+        if self.context.include_fold:
+            file_name = get_file_name_per_fold(file_name, self.suffix, state.fold.index)
+
+        return path.join(self.directory, file_name)
