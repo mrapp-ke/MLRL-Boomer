@@ -11,6 +11,7 @@ from mlrl.common.config.options import Options
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.output.table import Table
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_number
 
 
@@ -18,6 +19,59 @@ class OutputData(Data, ABC):
     """
     An abstract class for all classes that represent output data that can be converted into a textual representation.
     """
+
+    class Title:
+        """
+        A title that is printed before output data.
+        """
+
+        def __init__(self, title: str, context: Data.Context):
+            """
+            :param title:   A title
+            :param context: A `Data.Context` to be used for formatting the title
+            """
+            self.title = title
+            self.context = context
+
+        def __format_dataset_type(self, state: ExperimentState) -> str:
+            if self.context.include_dataset_type:
+                return ' for ' + state.dataset.type.value + ' data'
+            return ''
+
+        def __format_fold(self, state: ExperimentState) -> str:
+            if self.context.include_fold:
+                fold = state.fold
+
+                if fold.is_cross_validation_used:
+                    if fold.index is None:
+                        formatted_fold = 'Average across ' + str(fold.num_folds) + ' folds'
+                    else:
+                        formatted_fold = 'Fold ' + str(fold.index + 1)
+
+                    return ' (' + formatted_fold + ')'
+
+            return ''
+
+        def __format_prediction_scope(self, state: ExperimentState) -> str:
+            if self.context.include_prediction_scope:
+                prediction_result = state.prediction_result
+
+                if prediction_result:
+                    prediction_scope = prediction_result.prediction_scope
+
+                    if not prediction_scope.is_global:
+                        return ' using a model of size ' + str(prediction_scope.model_size)
+
+            return ''
+
+        def format(self, state: ExperimentState) -> str:
+            """
+            Formats and returns the title that is printed before the output data.
+
+            :param state: The state from which the output data has been generated
+            """
+            return self.title + self.__format_dataset_type(state) + self.__format_prediction_scope(
+                state) + self.__format_fold(state)
 
     def __init__(self, name: str, file_name: str, default_context: Data.Context = Data.Context()):
         """
