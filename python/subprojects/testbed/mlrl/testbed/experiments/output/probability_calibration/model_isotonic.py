@@ -11,9 +11,9 @@ from mlrl.common.config.options import Options
 from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibrationModel, \
     IsotonicProbabilityCalibrationModelVisitor
 
+from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.output.data import TabularOutputData
-from mlrl.testbed.experiments.output.table import ColumnWiseTable, Table
-from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.table import ColumnWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, format_number
 
 
@@ -55,18 +55,18 @@ class IsotonicRegressionModel(TabularOutputData):
                  calibration_model: IsotonicProbabilityCalibrationModel,
                  name: str,
                  file_name: str,
-                 default_formatter_options: ExperimentState.FormatterOptions = ExperimentState.FormatterOptions(),
+                 default_context: Data.Context = Data.Context(),
                  column_title_prefix: Optional[str] = None):
         """
-        :param calibration_model:           The isotonic calibration model
-        :param name:                        A name to be included in log messages
-        :param file_name:                   A file name to be used for writing into output files
-        :param default_formatter_options:   The options to be used for creating textual representations of the
-                                            `ExperimentState`, the output data has been generated from
-        :param column_title_prefix:         An optional prefix to be prepended to the titles of table columns that
-                                            contain thresholds or probabilities
+        :param calibration_model:   The isotonic calibration model
+        :param name:                A name to be included in log messages
+        :param file_name:           A file name to be used for writing into output files
+        :param default_context:     A `Data.Context` to be used by default for finding a suitable sink this output data
+                                    can be written to
+        :param column_title_prefix: An optional prefix to be prepended to the titles of table columns that contain
+                                    thresholds or probabilities
         """
-        super().__init__(name=name, file_name=file_name, default_formatter_options=default_formatter_options)
+        super().__init__(name=name, file_name=file_name, default_context=default_context)
         self.calibration_model = calibration_model
         self.column_title_prefix = column_title_prefix
 

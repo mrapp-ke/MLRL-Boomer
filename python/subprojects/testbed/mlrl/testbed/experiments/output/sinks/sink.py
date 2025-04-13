@@ -6,15 +6,14 @@ Provides classes for implementing sinks, output data may be written to.
 import logging as log
 
 from abc import ABC, abstractmethod
-from os import path
 
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.experiments.data import FilePath
 from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData, TabularOutputData
-from mlrl.testbed.experiments.output.table import Table
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.util.io import get_file_name_per_fold
+from mlrl.testbed.experiments.table import Table
 
 
 class Sink(ABC):
@@ -43,46 +42,6 @@ class FileSink(Sink, ABC):
     An abstract base class for all sinks that write output data to a file.
     """
 
-    class PathFormatter:
-        """
-        Allows to determine the path to the file to which output data is written.
-        """
-
-        def __init__(self, directory: str, file_name: str, suffix: str,
-                     formatter_options: ExperimentState.FormatterOptions):
-            """
-            :param directory:           The path to the directory of the file
-            :param file_name:           The name of the file
-            :param suffix:              The suffix of the file
-            :param formatter_options:   The Options to be used by the formatter
-            """
-            self.directory = directory
-            self.file_name = file_name
-            self.suffix = suffix
-            self.formatter_options = formatter_options
-
-        def format(self, state: ExperimentState) -> str:
-            """
-            Determines and returns the path to the file to which the output data should be written.
-
-            :param state: The state from which the output data is generated
-            """
-            file_name = self.file_name
-
-            if self.formatter_options.include_dataset_type:
-                file_name = state.dataset.type.get_file_name(file_name)
-
-            if self.formatter_options.include_prediction_scope:
-                prediction_result = state.prediction_result
-
-                if prediction_result:
-                    file_name = prediction_result.prediction_scope.get_file_name(file_name)
-
-            if self.formatter_options.include_fold:
-                file_name = get_file_name_per_fold(file_name, self.suffix, state.fold.index)
-
-            return path.join(self.directory, file_name)
-
     def __init__(self, directory: str, suffix: str, options: Options = Options()):
         """
         :param directory:   The path to the directory of the file
@@ -96,12 +55,12 @@ class FileSink(Sink, ABC):
         """
         See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
         """
-        path_formatter_options = output_data.get_formatter_options(type(self))
-        path_formatter = FileSink.PathFormatter(directory=self.directory,
-                                                file_name=output_data.file_name,
-                                                suffix=self.suffix,
-                                                formatter_options=path_formatter_options)
-        file_path = path_formatter.format(state)
+        context = output_data.get_context(type(self))
+        file_path = FilePath(directory=self.directory,
+                             file_name=output_data.file_name,
+                             suffix=self.suffix,
+                             context=context)
+        file_path = file_path.resolve(state)
         log.debug('Writing output data to file "%s"...', file_path)
         self._write_to_file(file_path, state, output_data, **kwargs)
 

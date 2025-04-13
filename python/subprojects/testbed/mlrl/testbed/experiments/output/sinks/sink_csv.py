@@ -9,8 +9,8 @@ from mlrl.common.config.options import Options
 
 from mlrl.testbed.experiments.output.data import OutputValue
 from mlrl.testbed.experiments.output.sinks.sink import TabularFileSink
-from mlrl.testbed.experiments.output.table import Table
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.table import Table
 from mlrl.testbed.util.io import open_writable_file
 
 

@@ -4,8 +4,7 @@ INFO Performing full 10-fold cross validation...
 DEBUG Loading data set from file "python/tests/res/data/emotions.arff"...
 DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
 INFO Fold 1 / 10:
-DEBUG Loading parameters from file "python/tests/res/in/parameters_fold-1.csv"...
-INFO Successfully loaded parameters from file "python/tests/res/in/parameters_fold-1.csv"
+DEBUG Reading input data from file "python/tests/res/in/parameters_fold-1.csv"...
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 1):
 
@@ -41,8 +40,7 @@ INFO Model characteristics (Fold 1):
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
 INFO Fold 2 / 10:
-DEBUG Loading parameters from file "python/tests/res/in/parameters_fold-2.csv"...
-INFO Successfully loaded parameters from file "python/tests/res/in/parameters_fold-2.csv"
+DEBUG Reading input data from file "python/tests/res/in/parameters_fold-2.csv"...
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 2):
 
@@ -78,8 +76,7 @@ INFO Model characteristics (Fold 2):
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
 INFO Fold 3 / 10:
-DEBUG Loading parameters from file "python/tests/res/in/parameters_fold-3.csv"...
-INFO Successfully loaded parameters from file "python/tests/res/in/parameters_fold-3.csv"
+DEBUG Reading input data from file "python/tests/res/in/parameters_fold-3.csv"...
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 3):
 
@@ -115,8 +112,7 @@ INFO Model characteristics (Fold 3):
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
 INFO Fold 4 / 10:
-DEBUG Loading parameters from file "python/tests/res/in/parameters_fold-4.csv"...
-INFO Successfully loaded parameters from file "python/tests/res/in/parameters_fold-4.csv"
+DEBUG Reading input data from file "python/tests/res/in/parameters_fold-4.csv"...
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 4):
 
@@ -152,8 +148,7 @@ INFO Model characteristics (Fold 4):
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
 INFO Fold 5 / 10:
-DEBUG Loading parameters from file "python/tests/res/in/parameters_fold-5.csv"...
-INFO Successfully loaded parameters from file "python/tests/res/in/parameters_fold-5.csv"
+DEBUG Reading input data from file "python/tests/res/in/parameters_fold-5.csv"...
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 5):
 
@@ -189,8 +184,7 @@ INFO Model characteristics (Fold 5):
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
 INFO Fold 6 / 10:
-DEBUG Loading parameters from file "python/tests/res/in/parameters_fold-6.csv"...
-INFO Successfully loaded parameters from file "python/tests/res/in/parameters_fold-6.csv"
+DEBUG Reading input data from file "python/tests/res/in/parameters_fold-6.csv"...
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 6):
 
@@ -226,8 +220,7 @@ INFO Model characteristics (Fold 6):
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
 INFO Fold 7 / 10:
-DEBUG Loading parameters from file "python/tests/res/in/parameters_fold-7.csv"...
-INFO Successfully loaded parameters from file "python/tests/res/in/parameters_fold-7.csv"
+DEBUG Reading input data from file "python/tests/res/in/parameters_fold-7.csv"...
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 7):
 
@@ -263,8 +256,7 @@ INFO Model characteristics (Fold 7):
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
 INFO Fold 8 / 10:
-DEBUG Loading parameters from file "python/tests/res/in/parameters_fold-8.csv"...
-INFO Successfully loaded parameters from file "python/tests/res/in/parameters_fold-8.csv"
+DEBUG Reading input data from file "python/tests/res/in/parameters_fold-8.csv"...
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 8):
 
@@ -300,8 +292,7 @@ INFO Model characteristics (Fold 8):
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
 INFO Fold 9 / 10:
-DEBUG Loading parameters from file "python/tests/res/in/parameters_fold-9.csv"...
-INFO Successfully loaded parameters from file "python/tests/res/in/parameters_fold-9.csv"
+DEBUG Reading input data from file "python/tests/res/in/parameters_fold-9.csv"...
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 9):
 
@@ -337,8 +328,7 @@ INFO Model characteristics (Fold 9):
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
 INFO Fold 10 / 10:
-DEBUG Loading parameters from file "python/tests/res/in/parameters_fold-10.csv"...
-INFO Successfully loaded parameters from file "python/tests/res/in/parameters_fold-10.csv"
+DEBUG Reading input data from file "python/tests/res/in/parameters_fold-10.csv"...
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 10):
 
