@@ -3,9 +3,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing algorithmic parameters that are part of output data.
 """
+from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.input.data import TabularInputData
+from mlrl.testbed.experiments.output.table import Table
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.experiments.table import Table
 
 
 class InputParameters(TabularInputData):
@@ -14,7 +15,9 @@ class InputParameters(TabularInputData):
     """
 
     def __init__(self):
-        super().__init__(has_header=True)
+        super().__init__(has_header=True,
+                         file_name='parameters',
+                         default_context=Data.Context(include_dataset_type=False, include_prediction_scope=False))
 
     def _update_state(self, state: ExperimentState, table: Table):
         parameter_dict = {}
