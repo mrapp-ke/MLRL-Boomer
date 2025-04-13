@@ -28,5 +28,4 @@ Submodules
    :maxdepth: 4
 
    mlrl.testbed.experiments.output.data
-   mlrl.testbed.experiments.output.table
    mlrl.testbed.experiments.output.writer
