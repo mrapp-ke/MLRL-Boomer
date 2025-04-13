@@ -13,7 +13,7 @@ from mlrl.common.data.types import Uint8
 from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.output.label_vectors.label_vector_histogram import LabelVector, LabelVectorHistogram
-from mlrl.testbed.experiments.output.table import RowWiseTable, Table
+from mlrl.testbed.experiments.table import RowWiseTable, Table
 
 
 class LabelVectors(TabularOutputData):

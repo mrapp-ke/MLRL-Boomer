@@ -10,8 +10,8 @@ from mlrl.common.config.options import Options
 
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.experiments.data import Data
-from mlrl.testbed.experiments.output.table import Table
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.table import Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_number
 
 

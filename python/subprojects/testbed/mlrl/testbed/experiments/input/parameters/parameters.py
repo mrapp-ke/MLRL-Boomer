@@ -5,8 +5,8 @@ Provides classes for representing algorithmic parameters that are part of output
 """
 from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.input.data import TabularInputData
-from mlrl.testbed.experiments.output.table import Table
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.table import Table
 
 
 class InputParameters(TabularInputData):
