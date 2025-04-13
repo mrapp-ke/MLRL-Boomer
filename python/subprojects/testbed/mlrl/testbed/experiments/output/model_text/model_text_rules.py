@@ -14,11 +14,11 @@ from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBo
 
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.experiments.data import Data
-from mlrl.testbed.experiments.output.data import OutputData
+from mlrl.testbed.experiments.output.data import TextualOutputData
 from mlrl.testbed.util.format import format_number
 
 
-class RuleModelAsText(OutputData):
+class RuleModelAsText(TextualOutputData):
     """
     A textual representation of a rule model.
     """
@@ -231,7 +231,7 @@ class RuleModelAsText(OutputData):
 
     def to_text(self, options: Options, **_) -> Optional[str]:
         """
-        See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
+        See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
         visitor = RuleModelAsText.Visitor(self.dataset, options)
         self.model.visit_used(visitor)

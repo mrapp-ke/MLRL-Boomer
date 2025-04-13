@@ -29,7 +29,7 @@ class CustomParameters(TabularOutputData):
 
     def to_text(self, options: Options, **kwargs) -> Optional[str]:
         """
-        See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
+        See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
         return self.to_table(options, **kwargs).to_column_wise_table().sort_by_headers().format()
 

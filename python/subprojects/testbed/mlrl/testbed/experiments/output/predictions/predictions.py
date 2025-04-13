@@ -49,7 +49,7 @@ class Predictions(DatasetOutputData):
 
     def to_text(self, options: Options, **_) -> Optional[str]:
         """
-        See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
+        See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
         decimals = options.get_int(OPTION_DECIMALS, 2)
         text = 'Ground truth:\n\n'
