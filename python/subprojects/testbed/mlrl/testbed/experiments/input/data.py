@@ -16,6 +16,15 @@ class InputData(Data, ABC):
     An abstract class for all classes that represent input data that can be read.
     """
 
+    def __init__(self, file_name: str, default_context: Data.Context = Data.Context()):
+        """
+        :param file_name: A file name to be used for reading from input files
+        :param default_context: A `Data.Context` to be used by default for finding a suitable input reader this data
+                                can be handled by
+        """
+        super().__init__(default_context=default_context)
+        self.file_name = file_name
+
     @abstractmethod
     def update_state(self, state: ExperimentState, input_data: Any):
         """
@@ -31,14 +40,15 @@ class TabularInputData(InputData, ABC):
     An abstract class for all classes that represent input data that can be converted into a tabular representation.
     """
 
-    def __init__(self, has_header: bool, default_context: Data.Context = Data.Context()):
+    def __init__(self, has_header: bool, file_name: str, default_context: Data.Context = Data.Context()):
         """
+        :param has_header:      True, if the tabular input data has a header, False otherwise
+        :param file_name:       A file name to be used for reading from input files
         :param default_context: A `Data.Context` to be used by default for finding a suitable input reader this data
                                 can be handled by
-        :param has_header:      True, if the tabular input data has a header, False otherwise
 
         """
-        super().__init__(default_context)
+        super().__init__(file_name=file_name, default_context=default_context)
         self.has_header = has_header
 
     def update_state(self, state: ExperimentState, input_data: Any):
