@@ -46,6 +46,7 @@ class FileSink(Sink, ABC):
         """
         :param directory:   The path to the directory of the file
         :param suffix:      The suffix of the file
+        :param options:     Options to be taken into account
         """
         super().__init__(options)
         self.directory = directory
