@@ -45,7 +45,7 @@ class FileSource(Source, ABC):
     def read_from_source(self, state: ExperimentState, input_data: InputData) -> Optional[Any]:
         context = input_data.get_context(type(self))
         file_path = FilePath(directory=self.directory,
-                             file_name=input_data.file_name,
+                             file_name=input_data.properties.file_name,
                              suffix=self.suffix,
                              context=context)
         file_path = file_path.resolve(state)
