@@ -14,12 +14,10 @@ class RegressionCmdBuilder(CmdBuilder):
 
     def __init__(self,
                  expected_output_dir: str,
-                 model_file_name: str,
                  runnable_module_name: str,
                  runnable_class_name: Optional[str] = None,
                  dataset: str = Dataset.ATP7D):
         super().__init__(expected_output_dir=expected_output_dir,
-                         model_file_name=model_file_name,
                          runnable_module_name=runnable_module_name,
                          runnable_class_name=runnable_class_name,
                          dataset=dataset)
