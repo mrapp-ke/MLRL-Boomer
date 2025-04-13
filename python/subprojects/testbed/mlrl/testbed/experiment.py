@@ -16,7 +16,7 @@ from mlrl.common.mixins import NominalFeatureSupportMixin, OrdinalFeatureSupport
 
 from mlrl.testbed.data_splitting import DataSplitter
 from mlrl.testbed.dataset import AttributeType, Dataset
-from mlrl.testbed.experiments.input.parameters import ParameterReader
+from mlrl.testbed.experiments.input.reader import InputReader
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.prediction import Predictor
 from mlrl.testbed.experiments.problem_type import ProblemType
@@ -48,13 +48,13 @@ class Experiment(DataSplitter.Callback):
                  base_learner: BaseEstimator,
                  learner_name: str,
                  data_splitter: DataSplitter,
+                 input_readers: List[InputReader],
                  pre_training_output_writers: List[OutputWriter],
                  post_training_output_writers: List[OutputWriter],
                  prediction_output_writers: List[OutputWriter],
                  pre_execution_hook: Optional[ExecutionHook] = None,
                  train_predictor: Optional[Predictor] = None,
                  test_predictor: Optional[Predictor] = None,
-                 parameter_reader: ParameterReader = None,
                  model_loader: Optional[ModelLoader] = None,
                  model_saver: Optional[ModelSaver] = None,
                  fit_kwargs: Optional[Dict[str, Any]] = None,
@@ -65,6 +65,7 @@ class Experiment(DataSplitter.Callback):
         :param learner_name:                    The name of the machine learning algorithm
         :param data_splitter:                   The method to be used for splitting the available data into training and
                                                 test sets
+        :param input_readers:                   A list that contains all input readers to be invoked
         :param pre_training_output_writers:     A list that contains all output writers to be invoked before training
         :param post_training_output_writers:    A list that contains all output writers to be invoked after training
         :param prediction_output_writers:       A list that contains all output writers to be invoked each time
@@ -74,7 +75,6 @@ class Experiment(DataSplitter.Callback):
                                                 data or None, if no such predictions should be obtained
         :param test_predictor:                  The `Predictor` to be used for obtaining predictions for the test data
                                                 or None, if no such predictions should be obtained
-        :param parameter_reader:                The `ParameterReader` that should be used to read the parameter settings
         :param model_loader:                    The `ModelLoader` that should be used for loading models
         :param model_saver:                     The `ModelSaver` that should be used for saving models
         :param fit_kwargs:                      Optional keyword arguments to be passed to the learner when fitting a
@@ -86,13 +86,13 @@ class Experiment(DataSplitter.Callback):
         self.base_learner = base_learner
         self.learner_name = learner_name
         self.data_splitter = data_splitter
+        self.input_readers = input_readers
         self.pre_training_output_writers = pre_training_output_writers
         self.prediction_output_writers = prediction_output_writers
         self.post_training_output_writers = post_training_output_writers
         self.pre_execution_hook = pre_execution_hook
         self.train_predictor = train_predictor
         self.test_predictor = test_predictor
-        self.parameter_reader = parameter_reader
         self.model_loader = model_loader
         self.model_saver = model_saver
         self.fit_kwargs = fit_kwargs
@@ -116,20 +116,19 @@ class Experiment(DataSplitter.Callback):
         """
         See `DataSplitter.Callback.train_and_evaluate`
         """
-        problem_type = self.problem_type
-        state = ExperimentState(problem_type=problem_type, dataset=train_dataset, fold=fold)
-        learner = clone(self.base_learner)
-        fit_kwargs = self.fit_kwargs if self.fit_kwargs else {}
+        state = ExperimentState(problem_type=self.problem_type, dataset=train_dataset, fold=fold)
+
+        # Read input data...
+        for input_reader in self.input_readers:
+            input_reader.open_session(state).exchange()
 
         # Apply parameter setting, if necessary...
-        parameter_reader = self.parameter_reader
+        learner = clone(self.base_learner)
+        parameters = state.parameters
 
-        if parameter_reader:
-            parameters = parameter_reader.open_session(state).exchange()
-
-            if parameters:
-                learner.set_params(**parameters)
-                log.info('Successfully applied parameter setting: %s', parameters)
+        if parameters:
+            learner.set_params(**parameters)
+            log.info('Successfully applied parameter setting: %s', parameters)
         else:
             parameters = learner.get_params()
 
@@ -138,6 +137,8 @@ class Experiment(DataSplitter.Callback):
             output_writer.open_session(state).exchange()
 
         # Set the indices of ordinal features, if supported...
+        fit_kwargs = self.fit_kwargs if self.fit_kwargs else {}
+
         if isinstance(learner, OrdinalFeatureSupportMixin):
             fit_kwargs[OrdinalFeatureSupportMixin.KWARG_ORDINAL_FEATURE_INDICES] = train_dataset.get_feature_indices(
                 AttributeType.ORDINAL)
