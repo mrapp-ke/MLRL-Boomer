@@ -76,6 +76,13 @@ class Column(Iterable[Cell], ABC):
 
     @property
     @abstractmethod
+    def header(self) -> Optional[Header]:
+        """
+        The header of the column.
+        """
+
+    @property
+    @abstractmethod
     def num_rows(self) -> int:
         """
         The number of rows in the table.
@@ -264,6 +271,11 @@ class RowWiseTable(Table):
             self.column_index = column_index
 
         @property
+        def header(self) -> Optional[Header]:
+            header_row = self.table.header_row
+            return header_row[self.column_index] if header_row else None
+
+        @property
         def num_rows(self) -> int:
             return self.table.num_rows
 
@@ -438,6 +450,11 @@ class ColumnWiseTable(Table):
             """
             self.table = table
             self.column_index = column_index
+
+        @property
+        def header(self) -> Optional[Header]:
+            header_row = self.table.header_row
+            return header_row[self.column_index] if header_row else None
 
         @property
         def num_rows(self) -> int:

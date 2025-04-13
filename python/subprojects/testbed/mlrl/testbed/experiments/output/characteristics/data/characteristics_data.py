@@ -9,15 +9,15 @@ from typing import Optional
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.output.characteristics.data.characteristics import LABEL_CHARACTERISTICS, \
     OUTPUT_CHARACTERISTICS, Characteristic
 from mlrl.testbed.experiments.output.characteristics.data.matrix_feature import FeatureMatrix
 from mlrl.testbed.experiments.output.characteristics.data.matrix_label import LabelMatrix
 from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
-from mlrl.testbed.experiments.output.table import RowWiseTable, Table
 from mlrl.testbed.experiments.problem_type import ProblemType
-from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.table import RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
 
@@ -47,7 +47,7 @@ class DataCharacteristics(TabularOutputData):
         """
         super().__init__(name='Data characteristics',
                          file_name='data_characteristics',
-                         default_formatter_options=ExperimentState.FormatterOptions(include_dataset_type=False))
+                         default_context=Data.Context(include_dataset_type=False))
         self.feature_matrix = FeatureMatrix(dataset=dataset)
 
         if problem_type == ProblemType.CLASSIFICATION:
