@@ -23,7 +23,7 @@ from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.fold import Fold
-from mlrl.testbed.persistence import ModelLoader, ModelSaver
+from mlrl.testbed.persistence import ModelLoader
 
 
 class Experiment(DataSplitter.Callback):
@@ -56,7 +56,6 @@ class Experiment(DataSplitter.Callback):
                  train_predictor: Optional[Predictor] = None,
                  test_predictor: Optional[Predictor] = None,
                  model_loader: Optional[ModelLoader] = None,
-                 model_saver: Optional[ModelSaver] = None,
                  fit_kwargs: Optional[Dict[str, Any]] = None,
                  predict_kwargs: Optional[Dict[str, Any]] = None):
         """
@@ -76,7 +75,6 @@ class Experiment(DataSplitter.Callback):
         :param test_predictor:                  The `Predictor` to be used for obtaining predictions for the test data
                                                 or None, if no such predictions should be obtained
         :param model_loader:                    The `ModelLoader` that should be used for loading models
-        :param model_saver:                     The `ModelSaver` that should be used for saving models
         :param fit_kwargs:                      Optional keyword arguments to be passed to the learner when fitting a
                                                 model
         :param predict_kwargs:                  Optional keyword arguments to be passed to the learner when obtaining
@@ -94,7 +92,6 @@ class Experiment(DataSplitter.Callback):
         self.train_predictor = train_predictor
         self.test_predictor = test_predictor
         self.model_loader = model_loader
-        self.model_saver = model_saver
         self.fit_kwargs = fit_kwargs
         self.predict_kwargs = predict_kwargs
 
@@ -160,9 +157,6 @@ class Experiment(DataSplitter.Callback):
             log.info('Fitting model to %s training examples...', train_dataset.num_examples)
             training_duration = self.__train(learner, train_dataset, **fit_kwargs)
             log.info('Successfully fit model in %s', training_duration)
-
-            # Save model to disk...
-            self.__save_model(learner, fold)
 
         state.training_result = TrainingState(learner=learner, training_duration=training_duration)
 
@@ -239,21 +233,9 @@ class Experiment(DataSplitter.Callback):
         model_loader = self.model_loader
 
         if model_loader:
-            return model_loader.load_model(self.learner_name, fold)
+            return model_loader.load_model(fold)
 
         return None
-
-    def __save_model(self, model, fold: Fold):
-        """
-        Saves a model to disk.
-
-        :param model:   The model to be saved
-        :param fold:    The fold of the available data, the model corresponds to
-        """
-        model_saver = self.model_saver
-
-        if model_saver:
-            model_saver.save_model(model, self.learner_name, fold)
 
     @staticmethod
     def __check_for_parameter_changes(expected_params, actual_params):

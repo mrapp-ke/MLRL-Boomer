@@ -11,7 +11,7 @@ from mlrl.common.config.options import Options
 from mlrl.common.data.types import Uint8
 
 from mlrl.testbed.experiments.data import Data
-from mlrl.testbed.experiments.output.data import TabularOutputData
+from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.label_vectors.label_vector_histogram import LabelVector, LabelVectorHistogram
 from mlrl.testbed.experiments.table import RowWiseTable, Table
 
@@ -27,9 +27,8 @@ class LabelVectors(TabularOutputData):
         """
         :param label_vector_histogram: The histogram that stores unique label vectors and their respective frequency
         """
-        super().__init__(name='Label vectors',
-                         file_name='label_vectors',
-                         default_context=Data.Context(include_dataset_type=False))
+        super().__init__(OutputData.Properties(name='Label vectors', file_name='label_vectors'),
+                         Data.Context(include_dataset_type=False))
         self.label_vector_histogram = label_vector_histogram
 
     def __format_label_vector(self, label_vector: LabelVector, sparse: bool) -> str:
@@ -42,7 +41,7 @@ class LabelVectors(TabularOutputData):
 
     def to_text(self, options: Options, **kwargs) -> Optional[str]:
         """
-        See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
+        See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
         return self.to_table(options, **kwargs).format()
 
