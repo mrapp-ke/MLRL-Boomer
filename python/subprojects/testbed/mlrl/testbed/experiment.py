@@ -16,13 +16,13 @@ from mlrl.common.mixins import NominalFeatureSupportMixin, OrdinalFeatureSupport
 
 from mlrl.testbed.data_splitting import DataSplitter
 from mlrl.testbed.dataset import AttributeType, Dataset
+from mlrl.testbed.experiments.input.parameters import ParameterReader
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.prediction import Predictor
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.fold import Fold
-from mlrl.testbed.parameters import ParameterLoader
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
 
 
@@ -54,7 +54,7 @@ class Experiment(DataSplitter.Callback):
                  pre_execution_hook: Optional[ExecutionHook] = None,
                  train_predictor: Optional[Predictor] = None,
                  test_predictor: Optional[Predictor] = None,
-                 parameter_loader: Optional[ParameterLoader] = None,
+                 parameter_reader: ParameterReader = None,
                  model_loader: Optional[ModelLoader] = None,
                  model_saver: Optional[ModelSaver] = None,
                  fit_kwargs: Optional[Dict[str, Any]] = None,
@@ -74,7 +74,7 @@ class Experiment(DataSplitter.Callback):
                                                 data or None, if no such predictions should be obtained
         :param test_predictor:                  The `Predictor` to be used for obtaining predictions for the test data
                                                 or None, if no such predictions should be obtained
-        :param parameter_loader:                The `ParameterLoader` that should be used to read the parameter settings
+        :param parameter_reader:                The `ParameterReader` that should be used to read the parameter settings
         :param model_loader:                    The `ModelLoader` that should be used for loading models
         :param model_saver:                     The `ModelSaver` that should be used for saving models
         :param fit_kwargs:                      Optional keyword arguments to be passed to the learner when fitting a
@@ -92,7 +92,7 @@ class Experiment(DataSplitter.Callback):
         self.pre_execution_hook = pre_execution_hook
         self.train_predictor = train_predictor
         self.test_predictor = test_predictor
-        self.parameter_loader = parameter_loader
+        self.parameter_reader = parameter_reader
         self.model_loader = model_loader
         self.model_saver = model_saver
         self.fit_kwargs = fit_kwargs
@@ -117,14 +117,15 @@ class Experiment(DataSplitter.Callback):
         See `DataSplitter.Callback.train_and_evaluate`
         """
         problem_type = self.problem_type
+        state = ExperimentState(problem_type=problem_type, dataset=train_dataset, fold=fold)
         learner = clone(self.base_learner)
         fit_kwargs = self.fit_kwargs if self.fit_kwargs else {}
 
         # Apply parameter setting, if necessary...
-        parameter_loader = self.parameter_loader
+        parameter_reader = self.parameter_reader
 
-        if parameter_loader:
-            parameters = parameter_loader.load_parameters(fold)
+        if parameter_reader:
+            parameters = parameter_reader.open_session(state).exchange()
 
             if parameters:
                 learner.set_params(**parameters)
@@ -133,8 +134,6 @@ class Experiment(DataSplitter.Callback):
             parameters = learner.get_params()
 
         # Write output data before model is trained...
-        state = ExperimentState(problem_type=problem_type, dataset=train_dataset, fold=fold, parameters=parameters)
-
         for output_writer in self.pre_training_output_writers:
             output_writer.open_session(state).exchange()
 
