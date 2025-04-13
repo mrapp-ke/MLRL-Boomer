@@ -17,12 +17,11 @@ class CsvFileSource(TabularFileSource):
     Allows to read tabular input data from a CSV file.
     """
 
-    def __init__(self, directory: str, input_data: TabularInputData):
+    def __init__(self, directory: str):
         """
-        :param directory:   The path to the directory of the file
-        :param input_data:  The input data to be read
+        :param directory: The path to the directory of the file
         """
-        super().__init__(directory=directory, suffix=CsvFileSink.SUFFIX_CSV, input_data=input_data)
+        super().__init__(directory=directory, suffix=CsvFileSink.SUFFIX_CSV)
 
     def _read_table_from_file(self, file_path: str, input_data: TabularInputData):
         with open_readable_file(file_path) as csv_file:
