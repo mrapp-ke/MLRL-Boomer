@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing the state of experiments.
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Dict, Optional
 
 from sklearn.base import BaseEstimator
@@ -64,20 +64,6 @@ class ExperimentState:
     problem_type: ProblemType
     dataset: Dataset
     fold: Fold
-    parameters: ParameterDict
+    parameters: ParameterDict = field(default_factory=dict)
     training_result: Optional[TrainingState] = None
     prediction_result: Optional[PredictionState] = None
-
-    @dataclass
-    class FormatterOptions:
-        """
-        Options for creating a textual representation from an `ExperimentState`.
-
-        Attributes:
-            include_dataset_type:       True, if the type of the dataset should be included, False otherwise
-            include_prediction_scope:   True, if the scope of the predictions should be included, False otherwise
-            include_fold:               True, if the cross validation fold should be included, False otherwise
-        """
-        include_dataset_type: bool = True
-        include_prediction_scope: bool = True
-        include_fold: bool = True
