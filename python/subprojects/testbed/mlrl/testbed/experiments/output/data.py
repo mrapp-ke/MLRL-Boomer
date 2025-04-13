@@ -5,7 +5,7 @@ Provides classes for representing output data.
 """
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Iterable, List, Optional
+from typing import Any, Iterable, List, Optional
 
 from mlrl.common.config.options import Options
 
@@ -139,7 +139,22 @@ class DatasetOutputData(TextualOutputData, ABC):
         Creates and returns a dataset from the object.
 
         :param options: Options to be taken into account
-        :return:        The dataset that has been created
+        :return:        The dataset
+        """
+
+
+class ObjectOutputData(OutputData, ABC):
+    """
+    An abstract base class for all classes that represent output data that can be converted into a Python object.
+    """
+
+    @abstractmethod
+    def to_object(self, options: Options, **kwargs) -> Optional[Any]:
+        """
+        Returns an object.
+
+        :param options: Options to be taken into account
+        :return:        The object
         """
 
 
