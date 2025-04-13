@@ -10,7 +10,7 @@ from mlrl.common.config.options import Options
 from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.output.characteristics.data.characteristic import Characteristic
 from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
-from mlrl.testbed.experiments.output.data import TabularOutputData
+from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.table import RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
@@ -36,19 +36,17 @@ class OutputCharacteristics(TabularOutputData):
     def __init__(self,
                  problem_type: ProblemType,
                  output_matrix: OutputMatrix,
-                 name: str,
-                 file_name: str,
+                 properties: OutputData.Properties,
                  default_context: Data.Context = Data.Context()):
         """
 
         :param problem_type:    The type of the machine learning problem, the output matrix corresponds to
         :param output_matrix:   An output matrix
-        :param name:            A name to be included in log messages
-        :param file_name:       A file name to be used for writing into output files
+        :param properties:      The properties of the output data
         :param default_context: A `Data.Context` to be used by default for finding a suitable sink this output data can
                                 be written to
         """
-        super().__init__(name=name, file_name=file_name, default_context=default_context)
+        super().__init__(properties, default_context)
         self.output_matrix = output_matrix
 
         if problem_type == ProblemType.CLASSIFICATION:
@@ -58,7 +56,7 @@ class OutputCharacteristics(TabularOutputData):
 
     def to_text(self, options: Options, **kwargs) -> Optional[str]:
         """
-        See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
+        See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
         kwargs = dict(kwargs) | {OPTION_DECIMALS: 2}
         return self.to_table(options, **kwargs).format()
