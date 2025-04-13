@@ -1,7 +1,7 @@
-mlrl.testbed.experiments.output.table module
+mlrl.testbed.experiments.input.reader module
 ============================================
 
-.. automodule:: mlrl.testbed.experiments.output.table
+.. automodule:: mlrl.testbed.experiments.input.reader
    :members:
    :show-inheritance:
    :undoc-members:
