@@ -16,8 +16,8 @@ from mlrl.testbed.experiments.output.characteristics.data.matrix_feature import 
 from mlrl.testbed.experiments.output.characteristics.data.matrix_label import LabelMatrix
 from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
-from mlrl.testbed.experiments.output.table import RowWiseTable, Table
 from mlrl.testbed.experiments.problem_type import ProblemType
+from mlrl.testbed.experiments.table import RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
 

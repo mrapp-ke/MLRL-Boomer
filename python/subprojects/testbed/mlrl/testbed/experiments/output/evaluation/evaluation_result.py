@@ -11,7 +11,7 @@ from mlrl.common.config.options import Options
 from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
 from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
 from mlrl.testbed.experiments.output.sinks import CsvFileSink
-from mlrl.testbed.experiments.output.table import RowWiseTable, Table
+from mlrl.testbed.experiments.table import RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
 

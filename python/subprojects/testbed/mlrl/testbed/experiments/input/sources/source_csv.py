@@ -8,7 +8,7 @@ import csv
 from mlrl.testbed.experiments.input.data import TabularInputData
 from mlrl.testbed.experiments.input.sources.source import TabularFileSource
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
-from mlrl.testbed.experiments.output.table import RowWiseTable
+from mlrl.testbed.experiments.table import RowWiseTable
 from mlrl.testbed.util.io import open_readable_file
 
 
