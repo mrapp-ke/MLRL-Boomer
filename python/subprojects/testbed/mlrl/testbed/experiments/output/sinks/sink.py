@@ -57,7 +57,7 @@ class FileSink(Sink, ABC):
         """
         context = output_data.get_context(type(self))
         file_path = FilePath(directory=self.directory,
-                             file_name=output_data.file_name,
+                             file_name=output_data.properties.file_name,
                              suffix=self.suffix,
                              context=context)
         file_path = file_path.resolve(state)
