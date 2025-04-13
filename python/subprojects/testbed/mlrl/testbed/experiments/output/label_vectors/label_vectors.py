@@ -10,10 +10,10 @@ import numpy as np
 from mlrl.common.config.options import Options
 from mlrl.common.data.types import Uint8
 
+from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.output.data import TabularOutputData
 from mlrl.testbed.experiments.output.label_vectors.label_vector_histogram import LabelVector, LabelVectorHistogram
-from mlrl.testbed.experiments.output.table import RowWiseTable, Table
-from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.table import RowWiseTable, Table
 
 
 class LabelVectors(TabularOutputData):
@@ -29,7 +29,7 @@ class LabelVectors(TabularOutputData):
         """
         super().__init__(name='Label vectors',
                          file_name='label_vectors',
-                         default_formatter_options=ExperimentState.FormatterOptions(include_dataset_type=False))
+                         default_context=Data.Context(include_dataset_type=False))
         self.label_vector_histogram = label_vector_histogram
 
     def __format_label_vector(self, label_vector: LabelVector, sparse: bool) -> str:

@@ -26,7 +26,10 @@ from mlrl.common.util.format import format_dict_keys, format_enum_values, format
 
 from mlrl.testbed.data_splitting import CrossValidationSplitter, DataSet, DataSplitter, NoSplitter, TrainTestSplitter
 from mlrl.testbed.experiment import Experiment
+from mlrl.testbed.experiments.input.parameters import ParameterReader
 from mlrl.testbed.experiments.input.preprocessors import OneHotEncoder, Preprocessor
+from mlrl.testbed.experiments.input.reader import InputReader
+from mlrl.testbed.experiments.input.sources import CsvFileSource
 from mlrl.testbed.experiments.output.characteristics.data import DataCharacteristics, DataCharacteristicsWriter, \
     OutputCharacteristics, PredictionCharacteristicsWriter
 from mlrl.testbed.experiments.output.characteristics.model import ModelCharacteristicsWriter, \
@@ -45,7 +48,6 @@ from mlrl.testbed.experiments.prediction import GlobalPredictor, IncrementalPred
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.package_info import get_package_info as get_testbed_package_info
-from mlrl.testbed.parameters import CsvParameterLoader, ParameterLoader
 from mlrl.testbed.persistence import ModelLoader, ModelSaver
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
@@ -717,12 +719,12 @@ class LearnerRunnable(Runnable, ABC):
         prediction_type = self.__create_prediction_type(args)
         data_splitter = self.__create_data_splitter(args)
         pre_execution_hook = self.__create_pre_execution_hook(args, data_splitter)
+        input_readers = self._create_input_readers(args)
         pre_training_output_writers = self._create_pre_training_output_writers(args)
         post_training_output_writers = self._create_post_training_output_writers(args)
         prediction_output_writers = self._create_prediction_output_writers(args, problem_type, prediction_type)
         train_predictor = self._create_train_predictor(args, prediction_type) if prediction_output_writers else None
         test_predictor = self._create_test_predictor(args, prediction_type) if prediction_output_writers else None
-        parameter_loader = self._create_parameter_loader(args)
         model_loader = self._create_model_loader(args)
         model_saver = self._create_model_saver(args)
         experiment = self._create_experiment(args,
@@ -732,23 +734,24 @@ class LearnerRunnable(Runnable, ABC):
                                              data_splitter=data_splitter,
                                              train_predictor=train_predictor,
                                              test_predictor=test_predictor,
+                                             input_readers=input_readers,
                                              pre_training_output_writers=pre_training_output_writers,
                                              post_training_output_writers=post_training_output_writers,
                                              prediction_output_writers=prediction_output_writers,
                                              pre_execution_hook=pre_execution_hook,
-                                             parameter_loader=parameter_loader,
                                              model_loader=model_loader,
                                              model_saver=model_saver)
         experiment.run()
 
     # pylint: disable=unused-argument
     def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
-                           data_splitter: DataSplitter, pre_training_output_writers: List[OutputWriter],
+                           data_splitter: DataSplitter, input_readers: List[InputReader],
+                           pre_training_output_writers: List[OutputWriter],
                            post_training_output_writers: List[OutputWriter],
                            prediction_output_writers: List[OutputWriter],
                            pre_execution_hook: Optional[Experiment.ExecutionHook], train_predictor: Optional[Predictor],
-                           test_predictor: Optional[Predictor], parameter_loader: Optional[ParameterLoader],
-                           model_loader: Optional[ModelLoader], model_saver: Optional[ModelSaver]) -> Experiment:
+                           test_predictor: Optional[Predictor], model_loader: Optional[ModelLoader],
+                           model_saver: Optional[ModelSaver]) -> Experiment:
         """
         May be overridden by subclasses in order to create the `Experiment` that should be run.
 
@@ -758,6 +761,7 @@ class LearnerRunnable(Runnable, ABC):
         :param learner_name:                    The name of machine learning algorithm
         :param data_splitter:                   The method to be used for splitting the available data into training and
                                                 test sets
+        :param input_readers:                   A list that contains all input readers to be invoked
         :param pre_training_output_writers:     A list that contains all output writers to be invoked before training
         :param post_training_output_writers:    A list that contains all output writers to be invoked after training
         :param prediction_output_writers:       A list that contains all output writers to be invoked each time
@@ -767,7 +771,6 @@ class LearnerRunnable(Runnable, ABC):
                                                 data or None, if no such predictions should be obtained
         :param test_predictor:                  The `Predictor` to be used for obtaining predictions for the test data
                                                 or None, if no such predictions should be obtained
-        :param parameter_loader:                The `ParameterLoader` that should be used to read the parameter settings
         :param model_loader:                    The `ModelLoader` that should be used for loading models
         :param model_saver:                     The `ModelSaver` that should be used for saving models
         :return:                                The `Experiment` that has been created
@@ -776,13 +779,13 @@ class LearnerRunnable(Runnable, ABC):
                           base_learner=base_learner,
                           learner_name=learner_name,
                           data_splitter=data_splitter,
+                          input_readers=input_readers,
                           pre_training_output_writers=pre_training_output_writers,
                           post_training_output_writers=post_training_output_writers,
                           prediction_output_writers=prediction_output_writers,
                           pre_execution_hook=pre_execution_hook,
                           train_predictor=train_predictor,
                           test_predictor=test_predictor,
-                          parameter_loader=parameter_loader,
                           model_loader=model_loader,
                           model_saver=model_saver)
 
@@ -946,16 +949,33 @@ class LearnerRunnable(Runnable, ABC):
 
         return None
 
-    def _create_parameter_loader(self, args) -> Optional[ParameterLoader]:
+    def _create_input_readers(self, args) -> List[InputReader]:
         """
-        May be overridden by subclasses in order to create the `ParameterLoader` that should be used for loading
+        May be overridden by subclasses in order to create the `InputReaders`s that should be invoked before training a
+        model.
+
+        :param args:    The command line arguments
+        :return:        A list that contains the `InputReader`s that have been created
+        """
+        input_readers = []
+
+        parameter_reader = self._create_parameter_reader(args)
+
+        if parameter_reader:
+            input_readers.append(parameter_reader)
+
+        return input_readers
+
+    def _create_parameter_reader(self, args) -> Optional[ParameterReader]:
+        """
+        May be overridden by subclasses in order to create the `ParameterReader` that should be used for loading
         parameter settings.
 
         :param args:    The command line arguments
-        :return:        The `ParameterLoader` that has been created
+        :return:        The `ParameterReader` that has been created
         """
         parameter_load_dir = args.parameter_load_dir
-        return CsvParameterLoader(parameter_load_dir) if parameter_load_dir else None
+        return ParameterReader(CsvFileSource(parameter_load_dir)) if parameter_load_dir else None
 
     def _create_parameter_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -1289,24 +1309,25 @@ class RuleLearnerRunnable(LearnerRunnable):
         self.__configure_argument_parser(parser, config_type, parameters)
 
     def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
-                           data_splitter: DataSplitter, pre_training_output_writers: List[OutputWriter],
+                           data_splitter: DataSplitter, input_readers: List[InputReader],
+                           pre_training_output_writers: List[OutputWriter],
                            post_training_output_writers: List[OutputWriter],
                            prediction_output_writers: List[OutputWriter],
                            pre_execution_hook: Optional[Experiment.ExecutionHook], train_predictor: Optional[Predictor],
-                           test_predictor: Optional[Predictor], parameter_loader: Optional[ParameterLoader],
-                           model_loader: Optional[ModelLoader], model_saver: Optional[ModelSaver]) -> Experiment:
+                           test_predictor: Optional[Predictor], model_loader: Optional[ModelLoader],
+                           model_saver: Optional[ModelSaver]) -> Experiment:
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
         return Experiment(problem_type=problem_type,
                           base_learner=base_learner,
                           learner_name=learner_name,
                           data_splitter=data_splitter,
+                          input_readers=input_readers,
                           pre_training_output_writers=pre_training_output_writers,
                           post_training_output_writers=post_training_output_writers,
                           prediction_output_writers=prediction_output_writers,
                           pre_execution_hook=pre_execution_hook,
                           train_predictor=train_predictor,
                           test_predictor=test_predictor,
-                          parameter_loader=parameter_loader,
                           model_loader=model_loader,
                           model_saver=model_saver,
                           fit_kwargs=kwargs,
