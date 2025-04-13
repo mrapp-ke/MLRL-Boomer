@@ -61,8 +61,10 @@ class IsotonicMarginalProbabilityCalibrationModelExtractor(ProbabilityCalibratio
 
         if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
             return IsotonicRegressionModel(calibration_model=calibration_model,
-                                           name='Marginal probability calibration model',
-                                           file_name='marginal_probability_calibration_model',
+                                           properties=OutputData.Properties(
+                                               name='Marginal probability calibration model',
+                                               file_name='marginal_probability_calibration_model',
+                                           ),
                                            default_context=Data.Context(include_dataset_type=False),
                                            column_title_prefix='Label')
 
@@ -83,8 +85,10 @@ class IsotonicJointProbabilityCalibrationModelExtractor(ProbabilityCalibrationMo
 
         if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
             return IsotonicRegressionModel(calibration_model=calibration_model,
-                                           name='Joint probability calibration model',
-                                           file_name='joint_probability_calibration_model',
+                                           properties=OutputData.Properties(
+                                               name='Joint probability calibration model',
+                                               file_name='joint_probability_calibration_model',
+                                           ),
                                            default_context=Data.Context(include_dataset_type=False),
                                            column_title_prefix='Label vector')
 

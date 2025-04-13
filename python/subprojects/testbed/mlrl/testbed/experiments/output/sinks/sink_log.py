@@ -23,5 +23,5 @@ class LogSink(Sink):
 
         if text:
             context = output_data.get_context(type(self))
-            title = TextualOutputData.Title(title=output_data.name, context=context)
+            title = TextualOutputData.Title(title=output_data.properties.name, context=context)
             log.info('%s:\n\n%s\n', title.format(state), text)

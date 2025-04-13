@@ -14,7 +14,7 @@ from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBo
 
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.experiments.data import Data
-from mlrl.testbed.experiments.output.data import TextualOutputData
+from mlrl.testbed.experiments.output.data import OutputData, TextualOutputData
 from mlrl.testbed.util.format import format_number
 
 
@@ -225,7 +225,8 @@ class RuleModelAsText(TextualOutputData):
         :param model:   The rule model
         :param dataset: The dataset on which the model has been trained
         """
-        super().__init__(name='Model', file_name='rules', default_context=Data.Context(include_dataset_type=False))
+        super().__init__(OutputData.Properties(name='Model', file_name='rules'),
+                         Data.Context(include_dataset_type=False))
         self.model = model
         self.dataset = dataset
 

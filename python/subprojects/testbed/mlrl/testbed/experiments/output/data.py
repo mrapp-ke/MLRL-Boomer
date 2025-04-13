@@ -4,6 +4,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing output data.
 """
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from typing import Iterable, List, Optional
 
 from mlrl.common.config.options import Options
@@ -20,16 +21,26 @@ class OutputData(Data, ABC):
     An abstract class for all classes that represent output data.
     """
 
-    def __init__(self, name: str, file_name: str, default_context: Data.Context = Data.Context()):
+    @dataclass
+    class Properties:
         """
-        :param name:            A name to be included in log messages
-        :param file_name:       A file name to be used for writing into output files
+        Properties of output data.
+
+        Attributes:
+            name:       A name to be included in log messages
+            file_name:  A file name to be used for writing into output files
+        """
+        name: str
+        file_name: str
+
+    def __init__(self, properties: Properties, default_context: Data.Context = Data.Context()):
+        """
+        :param properties:      The properties of the output data
         :param default_context: A `Data.Context` to be used by default for finding a suitable sink this output data can
                                 be written to
         """
         super().__init__(default_context)
-        self.name = name
-        self.file_name = file_name
+        self.properties = properties
 
 
 class TextualOutputData(OutputData, ABC):
