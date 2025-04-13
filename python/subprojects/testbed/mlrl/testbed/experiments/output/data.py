@@ -17,12 +17,29 @@ from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_
 
 class OutputData(Data, ABC):
     """
+    An abstract class for all classes that represent output data.
+    """
+
+    def __init__(self, name: str, file_name: str, default_context: Data.Context = Data.Context()):
+        """
+        :param name:            A name to be included in log messages
+        :param file_name:       A file name to be used for writing into output files
+        :param default_context: A `Data.Context` to be used by default for finding a suitable sink this output data can
+                                be written to
+        """
+        super().__init__(default_context)
+        self.name = name
+        self.file_name = file_name
+
+
+class TextualOutputData(OutputData, ABC):
+    """
     An abstract class for all classes that represent output data that can be converted into a textual representation.
     """
 
     class Title:
         """
-        A title that is printed before output data.
+        A title that is printed before textual output data.
         """
 
         def __init__(self, title: str, context: Data.Context):
@@ -73,17 +90,6 @@ class OutputData(Data, ABC):
             return self.title + self.__format_dataset_type(state) + self.__format_prediction_scope(
                 state) + self.__format_fold(state)
 
-    def __init__(self, name: str, file_name: str, default_context: Data.Context = Data.Context()):
-        """
-        :param name:            A name to be included in log messages
-        :param file_name:       A file name to be used for writing into output files
-        :param default_context: A `Data.Context` to be used by default for finding a suitable sink this output data can
-                                be written to
-        """
-        super().__init__(default_context)
-        self.name = name
-        self.file_name = file_name
-
     @abstractmethod
     def to_text(self, options: Options, **kwargs) -> Optional[str]:
         """
@@ -94,7 +100,7 @@ class OutputData(Data, ABC):
         """
 
 
-class TabularOutputData(OutputData, ABC):
+class TabularOutputData(TextualOutputData, ABC):
     """
     An abstract class for all classes that represent output data that can be converted into a textual, as well as a
     tabular, representation.
@@ -110,7 +116,7 @@ class TabularOutputData(OutputData, ABC):
         """
 
 
-class DatasetOutputData(OutputData, ABC):
+class DatasetOutputData(TextualOutputData, ABC):
     """
     An abstract base class for all classes that represent output data that can be converted into a textual
     representation, as well as a dataset.

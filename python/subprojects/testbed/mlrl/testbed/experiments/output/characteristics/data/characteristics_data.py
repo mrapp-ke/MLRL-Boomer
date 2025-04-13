@@ -59,7 +59,7 @@ class DataCharacteristics(TabularOutputData):
 
     def to_text(self, options: Options, **kwargs) -> Optional[str]:
         """
-        See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
+        See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
         kwargs = dict(kwargs) | {OPTION_DECIMALS: 2}
         return self.to_table(options, **kwargs).format()

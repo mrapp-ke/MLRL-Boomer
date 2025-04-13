@@ -36,7 +36,7 @@ class RuleModelCharacteristics(TabularOutputData):
     # pylint: disable=unused-argument
     def to_text(self, options: Options, **_) -> Optional[str]:
         """
-        See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
+        See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
         aggregated_rule_statistics = reduce(lambda aggr, rule_statistics: aggr + rule_statistics,
                                             self.statistics.rule_statistics, RuleStatistics())
