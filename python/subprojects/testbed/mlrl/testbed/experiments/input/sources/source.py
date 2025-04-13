@@ -34,15 +34,13 @@ class FileSource(Source, ABC):
     An abstract base class for all sources that read input data from a file.
     """
 
-    def __init__(self, directory: str, suffix: str, input_data: InputData):
+    def __init__(self, directory: str, suffix: str):
         """
         :param directory:   The path to the directory of the file
         :param suffix:      The suffix of the file
-        :param input_data:  The input data to be read
         """
         self.directory = directory
         self.suffix = suffix
-        self.input_data = input_data
 
     def read_from_source(self, state: ExperimentState, input_data: InputData) -> Optional[Any]:
         context = input_data.get_context(type(self))
@@ -72,16 +70,15 @@ class TabularFileSource(FileSource, ABC):
     An abstract base class for all classes that allow to read tabular input data from a file.
     """
 
-    def __init__(self, directory: str, suffix: str, input_data: TabularInputData):
+    def __init__(self, directory: str, suffix: str):
         """
         :param directory:   The path to the directory of the file
         :param suffix:      The suffix of the file
-        :param input_data:  The tabular input data that should be read
         """
-        super().__init__(directory=directory, suffix=suffix, input_data=input_data)
+        super().__init__(directory=directory, suffix=suffix)
 
     def _read_from_file(self, file_path: str, input_data: InputData) -> Optional[Any]:
-        return self._read_table_from_file(file_path, self.input_data)
+        return self._read_table_from_file(file_path, input_data)
 
     @abstractmethod
     def _read_table_from_file(self, file_path: str, input_data: TabularInputData):
