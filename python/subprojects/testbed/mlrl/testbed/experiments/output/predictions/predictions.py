@@ -13,7 +13,7 @@ import numpy as np
 from mlrl.common.config.options import Options
 
 from mlrl.testbed.dataset import Dataset
-from mlrl.testbed.experiments.output.data import DatasetOutputData
+from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData
 from mlrl.testbed.util.format import OPTION_DECIMALS
 
 
@@ -43,13 +43,13 @@ class Predictions(DatasetOutputData):
         :param prediction_dataset:  A copy of the original dataset, where the ground truth has been replaced with
                                     predictions obtained from a model
         """
-        super().__init__(name='Predictions', file_name='predictions')
+        super().__init__(OutputData.Properties(name='Predictions', file_name='predictions'))
         self.original_dataset = original_dataset.enforce_dense_outputs()
         self.prediction_dataset = prediction_dataset.enforce_dense_outputs()
 
     def to_text(self, options: Options, **_) -> Optional[str]:
         """
-        See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
+        See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
         decimals = options.get_int(OPTION_DECIMALS, 2)
         text = 'Ground truth:\n\n'

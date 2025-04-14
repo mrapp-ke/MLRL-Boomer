@@ -26,7 +26,7 @@ class CsvFileSource(TabularFileSource):
     def _read_table_from_file(self, file_path: str, input_data: TabularInputData):
         with open_readable_file(file_path) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=CsvFileSink.DELIMITER, quotechar=CsvFileSink.QUOTE_CHAR)
-            header_row = next(csv_reader) if input_data.has_header else []
+            header_row = next(csv_reader) if input_data.properties.has_header else []
             table = RowWiseTable(*header_row)
 
             for row in csv_reader:

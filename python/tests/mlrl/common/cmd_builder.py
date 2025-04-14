@@ -46,20 +46,17 @@ class CmdBuilder:
 
     def __init__(self,
                  expected_output_dir: str,
-                 model_file_name: str,
                  runnable_module_name: str,
                  runnable_class_name: Optional[str] = None,
                  dataset: str = Dataset.EMOTIONS):
         """
         :param expected_output_dir:     The path to the directory that contains the file with the expected output
-        :param model_file_name:         The name of files storing models that have been saved to disk (without suffix)
         :param runnable_module_name:    The fully qualified name of the runnable to be invoked by the program
                                         'mlrl-testbed'
         :param runnable_class_name:     The class name of the runnable to be invoked by the program 'mlrl-testbed'
         :param dataset:                 The name of the dataset
         """
         self.expected_output_dir = path.join('python', 'tests', 'res', 'out', expected_output_dir)
-        self.model_file_name = model_file_name
         self.runnable_module_name = runnable_module_name
         self.runnable_class_name = runnable_class_name
         self.dataset = dataset

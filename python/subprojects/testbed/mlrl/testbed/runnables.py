@@ -37,18 +37,19 @@ from mlrl.testbed.experiments.output.characteristics.model import ModelCharacter
 from mlrl.testbed.experiments.output.evaluation import ClassificationEvaluationDataExtractor, EvaluationResult, \
     EvaluationWriter, RankingEvaluationDataExtractor, RegressionEvaluationDataExtractor
 from mlrl.testbed.experiments.output.label_vectors import LabelVectors, LabelVectorSetExtractor, LabelVectorWriter
+from mlrl.testbed.experiments.output.model import ModelWriter
 from mlrl.testbed.experiments.output.model_text import ModelAsTextWriter, RuleModelAsText, RuleModelAsTextExtractor
 from mlrl.testbed.experiments.output.parameters import ParameterWriter
 from mlrl.testbed.experiments.output.predictions import PredictionWriter
 from mlrl.testbed.experiments.output.probability_calibration import IsotonicJointProbabilityCalibrationModelExtractor, \
     IsotonicMarginalProbabilityCalibrationModelExtractor, ProbabilityCalibrationModelWriter
-from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, TextFileSink
+from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, PickleFileSink, TextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.prediction import GlobalPredictor, IncrementalPredictor, Predictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.package_info import get_package_info as get_testbed_package_info
-from mlrl.testbed.persistence import ModelLoader, ModelSaver
+from mlrl.testbed.persistence import ModelLoader
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
 LOG_FORMAT = '%(levelname)s %(message)s'
@@ -726,7 +727,6 @@ class LearnerRunnable(Runnable, ABC):
         train_predictor = self._create_train_predictor(args, prediction_type) if prediction_output_writers else None
         test_predictor = self._create_test_predictor(args, prediction_type) if prediction_output_writers else None
         model_loader = self._create_model_loader(args)
-        model_saver = self._create_model_saver(args)
         experiment = self._create_experiment(args,
                                              problem_type=problem_type,
                                              base_learner=base_learner,
@@ -739,8 +739,7 @@ class LearnerRunnable(Runnable, ABC):
                                              post_training_output_writers=post_training_output_writers,
                                              prediction_output_writers=prediction_output_writers,
                                              pre_execution_hook=pre_execution_hook,
-                                             model_loader=model_loader,
-                                             model_saver=model_saver)
+                                             model_loader=model_loader)
         experiment.run()
 
     # pylint: disable=unused-argument
@@ -750,8 +749,7 @@ class LearnerRunnable(Runnable, ABC):
                            post_training_output_writers: List[OutputWriter],
                            prediction_output_writers: List[OutputWriter],
                            pre_execution_hook: Optional[Experiment.ExecutionHook], train_predictor: Optional[Predictor],
-                           test_predictor: Optional[Predictor], model_loader: Optional[ModelLoader],
-                           model_saver: Optional[ModelSaver]) -> Experiment:
+                           test_predictor: Optional[Predictor], model_loader: Optional[ModelLoader]) -> Experiment:
         """
         May be overridden by subclasses in order to create the `Experiment` that should be run.
 
@@ -772,7 +770,6 @@ class LearnerRunnable(Runnable, ABC):
         :param test_predictor:                  The `Predictor` to be used for obtaining predictions for the test data
                                                 or None, if no such predictions should be obtained
         :param model_loader:                    The `ModelLoader` that should be used for loading models
-        :param model_saver:                     The `ModelSaver` that should be used for saving models
         :return:                                The `Experiment` that has been created
         """
         return Experiment(problem_type=problem_type,
@@ -786,8 +783,7 @@ class LearnerRunnable(Runnable, ABC):
                           pre_execution_hook=pre_execution_hook,
                           train_predictor=train_predictor,
                           test_predictor=test_predictor,
-                          model_loader=model_loader,
-                          model_saver=model_saver)
+                          model_loader=model_loader)
 
     def _create_pre_training_output_writers(self, args) -> List[OutputWriter]:
         """
@@ -819,6 +815,11 @@ class LearnerRunnable(Runnable, ABC):
         :return:        A list that contains the output writers that have been created
         """
         output_writers = []
+        output_writer = self._create_model_writer(args)
+
+        if output_writer:
+            output_writers.append(output_writer)
+
         output_writer = self._create_label_vector_writer(args)
 
         if output_writer:
@@ -865,15 +866,15 @@ class LearnerRunnable(Runnable, ABC):
         model_load_dir = args.model_load_dir
         return ModelLoader(model_load_dir) if model_load_dir else None
 
-    def _create_model_saver(self, args) -> Optional[ModelSaver]:
+    def _create_model_writer(self, args) -> Optional[ModelWriter]:
         """
-        May be overridden by subclasses in order to create the `ModelSaver` that should be used for saving models.
+        May be overridden by subclasses in order to create the `ModelWriter` that should be used for saving models.
 
         :param args:    The command line arguments
-        :return:        The `ModelSaver` that has been created
+        :return:        The `ModelWriter` that has been created
         """
         model_save_dir = args.model_save_dir
-        return ModelSaver(model_save_dir) if model_save_dir else None
+        return ModelWriter().add_sinks(PickleFileSink(model_save_dir)) if model_save_dir else None
 
     def _create_train_predictor(self, args, prediction_type: PredictionType) -> Optional[Predictor]:
         """
@@ -1314,8 +1315,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                            post_training_output_writers: List[OutputWriter],
                            prediction_output_writers: List[OutputWriter],
                            pre_execution_hook: Optional[Experiment.ExecutionHook], train_predictor: Optional[Predictor],
-                           test_predictor: Optional[Predictor], model_loader: Optional[ModelLoader],
-                           model_saver: Optional[ModelSaver]) -> Experiment:
+                           test_predictor: Optional[Predictor], model_loader: Optional[ModelLoader]) -> Experiment:
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
         return Experiment(problem_type=problem_type,
                           base_learner=base_learner,
@@ -1329,7 +1329,6 @@ class RuleLearnerRunnable(LearnerRunnable):
                           train_predictor=train_predictor,
                           test_predictor=test_predictor,
                           model_loader=model_loader,
-                          model_saver=model_saver,
                           fit_kwargs=kwargs,
                           predict_kwargs=kwargs)
 
@@ -1365,7 +1364,7 @@ class RuleLearnerRunnable(LearnerRunnable):
         kwargs['prediction_format'] = args.prediction_format
         return kwargs
 
-    def _create_model_writer(self, args) -> Optional[OutputWriter]:
+    def _create_model_as_text_writer(self, args) -> Optional[OutputWriter]:
         """
         May be overridden by subclasses in order to create the `OutputWriter` that should be used to output textual
         representations of models.
@@ -1478,7 +1477,7 @@ class RuleLearnerRunnable(LearnerRunnable):
 
     def _create_post_training_output_writers(self, args) -> List[OutputWriter]:
         output_writers = super()._create_post_training_output_writers(args)
-        output_writer = self._create_model_writer(args)
+        output_writer = self._create_model_as_text_writer(args)
 
         if output_writer:
             output_writers.append(output_writer)

@@ -8,7 +8,7 @@ from typing import Optional
 
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
+from mlrl.testbed.experiments.output.data import OutputData, OutputValue, TabularOutputData
 from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
 from mlrl.testbed.experiments.output.sinks import CsvFileSink
 from mlrl.testbed.experiments.table import RowWiseTable, Table
@@ -94,13 +94,13 @@ class EvaluationResult(TabularOutputData):
         """
         :param measurements: The measurements according to different evaluation measures
         """
-        super().__init__(name='Evaluation result', file_name='evaluation')
+        super().__init__(OutputData.Properties(name='Evaluation result', file_name='evaluation'))
         self.get_context(CsvFileSink).include_prediction_scope = False
         self.measurements = measurements
 
     def to_text(self, options: Options, **kwargs) -> Optional[str]:
         """
-        See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
+        See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
         kwargs = dict(kwargs) | {OPTION_DECIMALS: 2}
         table = self.to_table(options, **kwargs)

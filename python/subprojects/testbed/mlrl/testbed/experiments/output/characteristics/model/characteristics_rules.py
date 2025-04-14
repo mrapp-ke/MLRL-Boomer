@@ -13,7 +13,7 @@ from mlrl.common.config.options import Options
 from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.output.characteristics.model.statistics_rules import BodyStatistics, HeadStatistics, \
     RuleModelStatistics, RuleStatistics
-from mlrl.testbed.experiments.output.data import TabularOutputData
+from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.table import Alignment, RowWiseTable, Table
 from mlrl.testbed.util.format import format_number, format_percentage
 from mlrl.testbed.util.math import divide_or_zero
@@ -28,15 +28,14 @@ class RuleModelCharacteristics(TabularOutputData):
         """
         :param statistics: The statistics of a rule model
         """
-        super().__init__(name='Model characteristics',
-                         file_name='model_characteristics',
-                         default_context=Data.Context(include_dataset_type=False))
+        super().__init__(OutputData.Properties(name='Model characteristics', file_name='model_characteristics'),
+                         Data.Context(include_dataset_type=False))
         self.statistics = statistics
 
     # pylint: disable=unused-argument
     def to_text(self, options: Options, **_) -> Optional[str]:
         """
-        See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
+        See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
         aggregated_rule_statistics = reduce(lambda aggr, rule_statistics: aggr + rule_statistics,
                                             self.statistics.rule_statistics, RuleStatistics())
