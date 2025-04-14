@@ -1,0 +1,7 @@
+mlrl.testbed.experiments.output.sinks.sink\_pickle module
+=========================================================
+
+.. automodule:: mlrl.testbed.experiments.output.sinks.sink_pickle
+   :members:
+   :show-inheritance:
+   :undoc-members:

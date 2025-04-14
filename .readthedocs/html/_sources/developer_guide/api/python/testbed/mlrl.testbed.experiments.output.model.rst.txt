@@ -1,0 +1,16 @@
+mlrl.testbed.experiments.output.model package
+=============================================
+
+.. automodule:: mlrl.testbed.experiments.output.model
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed.experiments.output.model.model
+   mlrl.testbed.experiments.output.model.writer
