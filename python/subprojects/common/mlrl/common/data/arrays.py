@@ -11,8 +11,9 @@ import numpy as np
 from scipy.sparse import issparse, isspmatrix_coo, isspmatrix_csc, isspmatrix_csr, isspmatrix_dok, isspmatrix_lil, \
     sparray
 
+from mlrl.util.format import format_iterable
+
 from mlrl.common.data.types import Uint32
-from mlrl.common.util.format import format_iterable
 
 
 class SparseFormat(Enum):

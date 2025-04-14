@@ -17,12 +17,13 @@ from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin 
     RegressorMixin as SkLearnRegressorMixin
 from tabulate import tabulate
 
+from mlrl.util.format import format_dict_keys, format_enum_values, format_iterable
+
 from mlrl.common.config.options import BooleanOption, parse_param, parse_param_and_options
 from mlrl.common.config.parameters import AUTOMATIC, NONE, Parameter
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 from mlrl.common.learners import RuleLearner, SparsePolicy
 from mlrl.common.package_info import PythonPackageInfo
-from mlrl.common.util.format import format_dict_keys, format_enum_values, format_iterable
 
 from mlrl.testbed.experiments import Experiment, SkLearnExperiment
 from mlrl.testbed.experiments.input.dataset import DatasetReader, InputDataset
