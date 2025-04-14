@@ -9,6 +9,8 @@ from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 from typing import Optional, Set
 
+from mlrl.util.format import format_dict_keys, format_set
+
 from mlrl.common.config.options import BooleanOption, Options, parse_param, parse_param_and_options
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, EqualFrequencyFeatureBinningMixin, \
     EqualWidthFeatureBinningMixin, FeatureSamplingWithoutReplacementMixin, GreedyTopDownRuleInductionMixin, \
@@ -24,7 +26,6 @@ from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPar
     OutputWiseStratifiedInstanceSamplingMixin
 from mlrl.common.cython.package_info import get_num_cpu_cores, is_multi_threading_support_enabled
 from mlrl.common.cython.stopping_criterion import AggregationFunction
-from mlrl.common.util.format import format_dict_keys, format_set
 
 AUTOMATIC = 'auto'
 
