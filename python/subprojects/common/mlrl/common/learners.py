@@ -14,8 +14,6 @@ import numpy as np
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator
 from sklearn.utils.validation import check_array, validate_data
 
-from mlrl.util.format import format_enum_values
-
 from mlrl.common.config.parameters import Parameter
 from mlrl.common.cython.example_weights import EqualExampleWeights, ExampleWeights, RealValuedExampleWeights
 from mlrl.common.cython.feature_info import EqualFeatureInfo, FeatureInfo, MixedFeatureInfo
@@ -34,6 +32,8 @@ from mlrl.common.data.arrays import SparseFormat, enforce_2d, enforce_dense, is_
 from mlrl.common.data.types import Float32, Uint8, Uint32
 from mlrl.common.mixins import ClassifierMixin, IncrementalClassifierMixin, IncrementalPredictor, \
     IncrementalRegressorMixin, NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, RegressorMixin
+
+from mlrl.util.format import format_enum_values
 
 
 class SparsePolicy(Enum):
