@@ -131,7 +131,7 @@ Because the training of models can be time-consuming, it might be desirable to s
 
 - `--model-save-dir` (Default value = `None`)
 
-  - An absolute or relative path to the directory to which models should be saved once training has completed. Models are only saved if they could not be loaded from the directory specified via the argument `--model-load-dir`.
+  - An absolute or relative path to the directory to which models should be saved once training has completed.
 
 ## Saving and Loading Parameters
 
