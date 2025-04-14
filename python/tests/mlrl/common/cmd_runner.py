@@ -48,7 +48,7 @@ class CmdRunner:
 
     def __assert_model_files_exist(self):
         builder = self.builder
-        self.__assert_files_exist(builder.model_dir, builder.model_file_name, 'model')
+        self.__assert_files_exist(directory=builder.model_dir, file_name='model', suffix='pickle')
 
     def __assert_files_exist(self, directory: Optional[str], file_name: str, suffix: str):
         if directory:

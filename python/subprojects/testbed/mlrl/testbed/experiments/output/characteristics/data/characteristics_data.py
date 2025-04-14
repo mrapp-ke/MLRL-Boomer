@@ -15,7 +15,7 @@ from mlrl.testbed.experiments.output.characteristics.data.characteristics import
 from mlrl.testbed.experiments.output.characteristics.data.matrix_feature import FeatureMatrix
 from mlrl.testbed.experiments.output.characteristics.data.matrix_label import LabelMatrix
 from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
-from mlrl.testbed.experiments.output.data import OutputValue, TabularOutputData
+from mlrl.testbed.experiments.output.data import OutputData, OutputValue, TabularOutputData
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.table import RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
@@ -45,9 +45,8 @@ class DataCharacteristics(TabularOutputData):
         :param problem_type:    The type of the machine learning problem, the dataset is concerned with
         :param dataset:         The dataset
         """
-        super().__init__(name='Data characteristics',
-                         file_name='data_characteristics',
-                         default_context=Data.Context(include_dataset_type=False))
+        super().__init__(OutputData.Properties(file_name='data_characteristics', name='Data characteristics'),
+                         Data.Context(include_dataset_type=False))
         self.feature_matrix = FeatureMatrix(dataset=dataset)
 
         if problem_type == ProblemType.CLASSIFICATION:
@@ -59,7 +58,7 @@ class DataCharacteristics(TabularOutputData):
 
     def to_text(self, options: Options, **kwargs) -> Optional[str]:
         """
-        See :func:`mlrl.testbed.experiments.output.data.OutputData.to_text`
+        See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
         kwargs = dict(kwargs) | {OPTION_DECIMALS: 2}
         return self.to_table(options, **kwargs).format()

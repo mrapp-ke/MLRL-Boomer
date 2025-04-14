@@ -4,7 +4,8 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing output data.
 """
 from abc import ABC, abstractmethod
-from typing import Iterable, List, Optional
+from dataclasses import dataclass
+from typing import Any, Iterable, List, Optional
 
 from mlrl.common.config.options import Options
 
@@ -17,12 +18,39 @@ from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_
 
 class OutputData(Data, ABC):
     """
+    An abstract class for all classes that represent output data.
+    """
+
+    @dataclass
+    class Properties:
+        """
+        Properties of output data.
+
+        Attributes:
+            name:       A name to be included in log messages
+            file_name:  A file name to be used for writing into output files
+        """
+        name: str
+        file_name: str
+
+    def __init__(self, properties: Properties, default_context: Data.Context = Data.Context()):
+        """
+        :param properties:      The properties of the output data
+        :param default_context: A `Data.Context` to be used by default for finding a suitable sink this output data can
+                                be written to
+        """
+        super().__init__(default_context)
+        self.properties = properties
+
+
+class TextualOutputData(OutputData, ABC):
+    """
     An abstract class for all classes that represent output data that can be converted into a textual representation.
     """
 
     class Title:
         """
-        A title that is printed before output data.
+        A title that is printed before textual output data.
         """
 
         def __init__(self, title: str, context: Data.Context):
@@ -73,17 +101,6 @@ class OutputData(Data, ABC):
             return self.title + self.__format_dataset_type(state) + self.__format_prediction_scope(
                 state) + self.__format_fold(state)
 
-    def __init__(self, name: str, file_name: str, default_context: Data.Context = Data.Context()):
-        """
-        :param name:            A name to be included in log messages
-        :param file_name:       A file name to be used for writing into output files
-        :param default_context: A `Data.Context` to be used by default for finding a suitable sink this output data can
-                                be written to
-        """
-        super().__init__(default_context)
-        self.name = name
-        self.file_name = file_name
-
     @abstractmethod
     def to_text(self, options: Options, **kwargs) -> Optional[str]:
         """
@@ -94,7 +111,7 @@ class OutputData(Data, ABC):
         """
 
 
-class TabularOutputData(OutputData, ABC):
+class TabularOutputData(TextualOutputData, ABC):
     """
     An abstract class for all classes that represent output data that can be converted into a textual, as well as a
     tabular, representation.
@@ -110,7 +127,7 @@ class TabularOutputData(OutputData, ABC):
         """
 
 
-class DatasetOutputData(OutputData, ABC):
+class DatasetOutputData(TextualOutputData, ABC):
     """
     An abstract base class for all classes that represent output data that can be converted into a textual
     representation, as well as a dataset.
@@ -122,7 +139,22 @@ class DatasetOutputData(OutputData, ABC):
         Creates and returns a dataset from the object.
 
         :param options: Options to be taken into account
-        :return:        The dataset that has been created
+        :return:        The dataset
+        """
+
+
+class ObjectOutputData(OutputData, ABC):
+    """
+    An abstract base class for all classes that represent output data that can be converted into a Python object.
+    """
+
+    @abstractmethod
+    def to_object(self, options: Options, **kwargs) -> Optional[Any]:
+        """
+        Returns an object.
+
+        :param options: Options to be taken into account
+        :return:        The object
         """
 
 

@@ -15,9 +15,8 @@ class InputParameters(TabularInputData):
     """
 
     def __init__(self):
-        super().__init__(has_header=True,
-                         file_name='parameters',
-                         default_context=Data.Context(include_dataset_type=False, include_prediction_scope=False))
+        super().__init__(TabularInputData.Properties(file_name='parameters', has_header=True),
+                         Data.Context(include_dataset_type=False, include_prediction_scope=False))
 
     def _update_state(self, state: ExperimentState, table: Table):
         parameter_dict = {}
