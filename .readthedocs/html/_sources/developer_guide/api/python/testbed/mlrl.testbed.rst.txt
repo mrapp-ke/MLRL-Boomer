@@ -29,5 +29,4 @@ Submodules
    mlrl.testbed.fold
    mlrl.testbed.main
    mlrl.testbed.package_info
-   mlrl.testbed.persistence
    mlrl.testbed.runnables
