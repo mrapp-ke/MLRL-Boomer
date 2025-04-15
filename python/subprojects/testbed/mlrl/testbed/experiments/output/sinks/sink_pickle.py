@@ -17,12 +17,14 @@ class PickleFileSink(FileSink):
     Allows to write output data to a file by using Python's pickle mechanism.
     """
 
+    SUFFIX_PICKLE = 'pickle'
+
     def __init__(self, directory: str, options: Options = Options()):
         """
         :param directory:   The path to the directory of the file
         :param options:     Options to be taken into account
         """
-        super().__init__(directory=directory, suffix='pickle', options=options)
+        super().__init__(directory=directory, suffix=self.SUFFIX_PICKLE, options=options)
 
     # pylint: disable=unused-argument
     def _write_to_file(self, file_path: str, state: ExperimentState, output_data: OutputData, **_):
