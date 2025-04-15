@@ -23,7 +23,6 @@ from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.fold import Fold
-from mlrl.testbed.persistence import ModelLoader
 
 
 class Experiment(DataSplitter.Callback):
@@ -55,7 +54,6 @@ class Experiment(DataSplitter.Callback):
                  pre_execution_hook: Optional[ExecutionHook] = None,
                  train_predictor: Optional[Predictor] = None,
                  test_predictor: Optional[Predictor] = None,
-                 model_loader: Optional[ModelLoader] = None,
                  fit_kwargs: Optional[Dict[str, Any]] = None,
                  predict_kwargs: Optional[Dict[str, Any]] = None):
         """
@@ -74,7 +72,6 @@ class Experiment(DataSplitter.Callback):
                                                 data or None, if no such predictions should be obtained
         :param test_predictor:                  The `Predictor` to be used for obtaining predictions for the test data
                                                 or None, if no such predictions should be obtained
-        :param model_loader:                    The `ModelLoader` that should be used for loading models
         :param fit_kwargs:                      Optional keyword arguments to be passed to the learner when fitting a
                                                 model
         :param predict_kwargs:                  Optional keyword arguments to be passed to the learner when obtaining
@@ -91,7 +88,6 @@ class Experiment(DataSplitter.Callback):
         self.pre_execution_hook = pre_execution_hook
         self.train_predictor = train_predictor
         self.test_predictor = test_predictor
-        self.model_loader = model_loader
         self.fit_kwargs = fit_kwargs
         self.predict_kwargs = predict_kwargs
 
@@ -146,13 +142,13 @@ class Experiment(DataSplitter.Callback):
                 AttributeType.NOMINAL)
 
         # Load model from disk, if possible, otherwise train a new model...
-        loaded_learner = self.__load_model(fold)
+        loaded_learner = state.training_result.learner if state.training_result else None
 
         if isinstance(loaded_learner, type(learner)):
             self.__check_for_parameter_changes(expected_params=parameters, actual_params=loaded_learner.get_params())
             loaded_learner.set_params(**parameters)
             learner = loaded_learner
-            training_duration = Timer.Duration()
+            training_duration = state.training_result.training_duration
         else:
             log.info('Fitting model to %s training examples...', train_dataset.num_examples)
             training_duration = self.__train(learner, train_dataset, **fit_kwargs)
@@ -222,20 +218,6 @@ class Experiment(DataSplitter.Callback):
             if dataset.has_sparse_outputs:
                 return Experiment.__train(learner, dataset.enforce_dense_outputs(), **kwargs)
             raise error
-
-    def __load_model(self, fold: Fold):
-        """
-        Loads the model from disk, if available.
-
-        :param fold:    The fold of the available data, the model corresponds to
-        :return:        The loaded model
-        """
-        model_loader = self.model_loader
-
-        if model_loader:
-            return model_loader.load_model(fold)
-
-        return None
 
     @staticmethod
     def __check_for_parameter_changes(expected_params, actual_params):
