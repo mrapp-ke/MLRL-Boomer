@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for representing algorithmic parameters that are part of output data.
+Provides classes for representing algorithmic parameters that are part of input data.
 """
 from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.input.data import TabularInputData
