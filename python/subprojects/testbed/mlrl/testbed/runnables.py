@@ -26,10 +26,11 @@ from mlrl.common.util.format import format_dict_keys, format_enum_values, format
 
 from mlrl.testbed.data_splitting import CrossValidationSplitter, DataSet, DataSplitter, NoSplitter, TrainTestSplitter
 from mlrl.testbed.experiment import Experiment
+from mlrl.testbed.experiments.input.model import ModelReader
 from mlrl.testbed.experiments.input.parameters import ParameterReader
 from mlrl.testbed.experiments.input.preprocessors import OneHotEncoder, Preprocessor
 from mlrl.testbed.experiments.input.reader import InputReader
-from mlrl.testbed.experiments.input.sources import CsvFileSource
+from mlrl.testbed.experiments.input.sources import CsvFileSource, PickleFileSource
 from mlrl.testbed.experiments.output.characteristics.data import DataCharacteristics, DataCharacteristicsWriter, \
     OutputCharacteristics, PredictionCharacteristicsWriter
 from mlrl.testbed.experiments.output.characteristics.model import ModelCharacteristicsWriter, \
@@ -49,7 +50,6 @@ from mlrl.testbed.experiments.prediction import GlobalPredictor, IncrementalPred
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.package_info import get_package_info as get_testbed_package_info
-from mlrl.testbed.persistence import ModelLoader
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
 LOG_FORMAT = '%(levelname)s %(message)s'
@@ -726,7 +726,6 @@ class LearnerRunnable(Runnable, ABC):
         prediction_output_writers = self._create_prediction_output_writers(args, problem_type, prediction_type)
         train_predictor = self._create_train_predictor(args, prediction_type) if prediction_output_writers else None
         test_predictor = self._create_test_predictor(args, prediction_type) if prediction_output_writers else None
-        model_loader = self._create_model_loader(args)
         experiment = self._create_experiment(args,
                                              problem_type=problem_type,
                                              base_learner=base_learner,
@@ -738,8 +737,7 @@ class LearnerRunnable(Runnable, ABC):
                                              pre_training_output_writers=pre_training_output_writers,
                                              post_training_output_writers=post_training_output_writers,
                                              prediction_output_writers=prediction_output_writers,
-                                             pre_execution_hook=pre_execution_hook,
-                                             model_loader=model_loader)
+                                             pre_execution_hook=pre_execution_hook)
         experiment.run()
 
     # pylint: disable=unused-argument
@@ -749,7 +747,7 @@ class LearnerRunnable(Runnable, ABC):
                            post_training_output_writers: List[OutputWriter],
                            prediction_output_writers: List[OutputWriter],
                            pre_execution_hook: Optional[Experiment.ExecutionHook], train_predictor: Optional[Predictor],
-                           test_predictor: Optional[Predictor], model_loader: Optional[ModelLoader]) -> Experiment:
+                           test_predictor: Optional[Predictor]) -> Experiment:
         """
         May be overridden by subclasses in order to create the `Experiment` that should be run.
 
@@ -769,7 +767,6 @@ class LearnerRunnable(Runnable, ABC):
                                                 data or None, if no such predictions should be obtained
         :param test_predictor:                  The `Predictor` to be used for obtaining predictions for the test data
                                                 or None, if no such predictions should be obtained
-        :param model_loader:                    The `ModelLoader` that should be used for loading models
         :return:                                The `Experiment` that has been created
         """
         return Experiment(problem_type=problem_type,
@@ -782,8 +779,7 @@ class LearnerRunnable(Runnable, ABC):
                           prediction_output_writers=prediction_output_writers,
                           pre_execution_hook=pre_execution_hook,
                           train_predictor=train_predictor,
-                          test_predictor=test_predictor,
-                          model_loader=model_loader)
+                          test_predictor=test_predictor)
 
     def _create_pre_training_output_writers(self, args) -> List[OutputWriter]:
         """
@@ -856,15 +852,15 @@ class LearnerRunnable(Runnable, ABC):
 
         return output_writers
 
-    def _create_model_loader(self, args) -> Optional[ModelLoader]:
+    def _create_model_reader(self, args) -> Optional[ModelReader]:
         """
-        May be overridden by subclasses in order to create the `ModelLoader` that should be used for loading models.
+        May be overridden by subclasses in order to create the `ModelReader` that should be used for loading models.
 
         :param args:    The command line arguments
-        :return:        The `ModelLoader` that has been created
+        :return:        The `ModelReader` that has been created
         """
         model_load_dir = args.model_load_dir
-        return ModelLoader(model_load_dir) if model_load_dir else None
+        return ModelReader(PickleFileSource(model_load_dir)) if model_load_dir else None
 
     def _create_model_writer(self, args) -> Optional[ModelWriter]:
         """
@@ -959,11 +955,15 @@ class LearnerRunnable(Runnable, ABC):
         :return:        A list that contains the `InputReader`s that have been created
         """
         input_readers = []
+        input_reader = self._create_model_reader(args)
 
-        parameter_reader = self._create_parameter_reader(args)
+        if input_reader:
+            input_readers.append(input_reader)
 
-        if parameter_reader:
-            input_readers.append(parameter_reader)
+        input_reader = self._create_parameter_reader(args)
+
+        if input_reader:
+            input_readers.append(input_reader)
 
         return input_readers
 
@@ -1315,7 +1315,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                            post_training_output_writers: List[OutputWriter],
                            prediction_output_writers: List[OutputWriter],
                            pre_execution_hook: Optional[Experiment.ExecutionHook], train_predictor: Optional[Predictor],
-                           test_predictor: Optional[Predictor], model_loader: Optional[ModelLoader]) -> Experiment:
+                           test_predictor: Optional[Predictor]) -> Experiment:
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
         return Experiment(problem_type=problem_type,
                           base_learner=base_learner,
@@ -1328,7 +1328,6 @@ class RuleLearnerRunnable(LearnerRunnable):
                           pre_execution_hook=pre_execution_hook,
                           train_predictor=train_predictor,
                           test_predictor=test_predictor,
-                          model_loader=model_loader,
                           fit_kwargs=kwargs,
                           predict_kwargs=kwargs)
 
