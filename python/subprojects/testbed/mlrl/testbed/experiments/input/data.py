@@ -14,7 +14,7 @@ from mlrl.testbed.experiments.table import Table
 
 class InputData(Data, ABC):
     """
-    An abstract class for all classes that represent input data that can be read.
+    An abstract base class for all classes that represent input data.
     """
 
     @dataclass
@@ -48,7 +48,8 @@ class InputData(Data, ABC):
 
 class TabularInputData(InputData, ABC):
     """
-    An abstract class for all classes that represent input data that can be converted into a tabular representation.
+    An abstract base class for all classes that represent input data that can be converted into a tabular
+    representation.
     """
 
     @dataclass
