@@ -17,9 +17,10 @@ from sklearn.model_selection import KFold, train_test_split
 from mlrl.testbed.data import ArffMetaData, load_data_set, load_data_set_and_meta_data
 from mlrl.testbed.dataset import Dataset, DatasetType
 from mlrl.testbed.experiments.input.dataset.preprocessors import Preprocessor
+from mlrl.testbed.experiments.output.sinks import ArffFileSink
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.fold import Fold
-from mlrl.testbed.util.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name, get_file_name_per_fold
+from mlrl.testbed.util.io import SUFFIX_XML, get_file_name, get_file_name_per_fold
 
 
 class DataSet:
@@ -125,7 +126,7 @@ class NoSplitter(DataSplitter):
         data_set = self.data_set
         data_dir = data_set.data_dir
         data_set_name = data_set.data_set_name
-        arff_file_name = get_file_name(data_set_name, SUFFIX_ARFF)
+        arff_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_ARFF)
         xml_file_name = get_file_name(data_set_name, SUFFIX_XML)
         x, y, meta_data = load_data_set_and_meta_data(data_dir, arff_file_name, xml_file_name)
 
@@ -167,13 +168,14 @@ class TrainTestSplitter(DataSplitter):
         # Check if ARFF files with predefined training and test data are available...
         data_set = self.data_set
         data_set_name = data_set.data_set_name
-        train_arff_file_name = get_file_name(DatasetType.TRAINING.get_file_name(data_set_name), SUFFIX_ARFF)
-        test_arff_file_name = get_file_name(DatasetType.TEST.get_file_name(data_set_name), SUFFIX_ARFF)
+        train_arff_file_name = get_file_name(DatasetType.TRAINING.get_file_name(data_set_name),
+                                             ArffFileSink.SUFFIX_ARFF)
+        test_arff_file_name = get_file_name(DatasetType.TEST.get_file_name(data_set_name), ArffFileSink.SUFFIX_ARFF)
         data_dir = data_set.data_dir
         predefined_split = check_if_files_exist(data_dir, [train_arff_file_name, test_arff_file_name])
 
         if not predefined_split:
-            train_arff_file_name = get_file_name(data_set_name, SUFFIX_ARFF)
+            train_arff_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_ARFF)
 
         # Load (training) data set...
         xml_file_name = get_file_name(data_set_name, SUFFIX_XML)
@@ -243,7 +245,9 @@ class CrossValidationSplitter(DataSplitter):
         # Check if ARFF files with predefined folds are available...
         data_set = self.data_set
         data_set_name = data_set.data_set_name
-        arff_file_names = [get_file_name_per_fold(data_set_name, SUFFIX_ARFF, fold) for fold in range(num_folds)]
+        arff_file_names = [
+            get_file_name_per_fold(data_set_name, ArffFileSink.SUFFIX_ARFF, fold) for fold in range(num_folds)
+        ]
         data_dir = data_set.data_dir
         predefined_split = check_if_files_exist(data_dir, arff_file_names)
         xml_file_name = get_file_name(data_set_name, SUFFIX_XML)
@@ -256,7 +260,7 @@ class CrossValidationSplitter(DataSplitter):
                                                num_folds=num_folds,
                                                current_fold=current_fold)
         else:
-            arff_file_name = get_file_name(data_set_name, SUFFIX_ARFF)
+            arff_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_ARFF)
             self.__cross_validation(callback,
                                     data_dir=data_dir,
                                     arff_file_name=arff_file_name,
