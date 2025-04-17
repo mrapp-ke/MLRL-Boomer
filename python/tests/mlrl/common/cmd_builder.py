@@ -256,6 +256,28 @@ class CmdBuilder:
         self.args.append(str(store_predictions).lower())
         return self
 
+    def print_ground_truth(self, print_ground_truth: bool = True):
+        """
+        Configures whether the ground truth should be printed on the console or not.
+
+        :param print_ground_truth:  True, if the ground truth should be printed, False otherwise
+        :return:                    The builder itself
+        """
+        self.args.append('--print-ground-truth')
+        self.args.append(str(print_ground_truth).lower())
+        return self
+
+    def store_ground_truth(self, store_ground_truth: bool = True):
+        """
+        Configures whether the ground truth should be written into output files or not.
+
+        :param store_ground_truth:  True, if the ground truth should be written into output files, False otherwise
+        :return:                    The builder itself
+        """
+        self.args.append('--store-ground-truth')
+        self.args.append(str(store_ground_truth).lower())
+        return self
+
     def print_prediction_characteristics(self, print_prediction_characteristics: bool = True):
         """
         Configures whether the characteristics of predictions should be printed on the console or not.

@@ -120,7 +120,8 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
         """
         builder = self._create_cmd_builder() \
             .binary_predictor(BoomerClassifierCmdBuilder.BINARY_PREDICTOR_OUTPUT_WISE) \
-            .print_predictions()
+            .print_predictions() \
+            .print_ground_truth()
         CmdRunner(self, builder).run('predictor-binary-output-wise')
 
     def test_predictor_binary_output_wise_based_on_probabilities(self):
@@ -135,6 +136,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .store_evaluation(False) \
             .binary_predictor(BoomerClassifierCmdBuilder.BINARY_PREDICTOR_OUTPUT_WISE_BASED_ON_PROBABILITIES) \
             .print_predictions() \
+            .print_ground_truth() \
             .set_model_dir()
         CmdRunner(self, builder).run('predictor-binary-output-wise_based-on-probabilities')
 
@@ -173,6 +175,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
         builder = self._create_cmd_builder() \
             .binary_predictor(BoomerClassifierCmdBuilder.BINARY_PREDICTOR_OUTPUT_WISE) \
             .print_predictions() \
+            .print_ground_truth() \
             .sparse_prediction_format()
         CmdRunner(self, builder).run('predictor-binary-output-wise_sparse')
 
@@ -197,6 +200,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
         builder = self._create_cmd_builder() \
             .binary_predictor(BoomerClassifierCmdBuilder.BINARY_PREDICTOR_EXAMPLE_WISE) \
             .print_predictions() \
+            .print_ground_truth() \
             .print_label_vectors()
         CmdRunner(self, builder).run('predictor-binary-example-wise')
 
@@ -215,6 +219,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .store_evaluation(False) \
             .binary_predictor(BoomerClassifierCmdBuilder.BINARY_PREDICTOR_EXAMPLE_WISE_BASED_ON_PROBABILITIES) \
             .print_predictions() \
+            .print_ground_truth() \
             .print_label_vectors() \
             .set_model_dir()
         CmdRunner(self, builder).run('predictor-binary-example-wise_based-on-probabilities')
@@ -258,6 +263,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
         builder = self._create_cmd_builder() \
             .binary_predictor(BoomerClassifierCmdBuilder.BINARY_PREDICTOR_EXAMPLE_WISE) \
             .print_predictions() \
+            .print_ground_truth() \
             .print_label_vectors() \
             .sparse_prediction_format()
         CmdRunner(self, builder).run('predictor-binary-example-wise_sparse')
@@ -290,6 +296,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .store_evaluation(False) \
             .binary_predictor(BoomerClassifierCmdBuilder.BINARY_PREDICTOR_GFM) \
             .print_predictions() \
+            .print_ground_truth() \
             .print_label_vectors() \
             .set_model_dir()
         CmdRunner(self, builder).run('predictor-binary-gfm')
@@ -328,6 +335,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .store_evaluation(False) \
             .binary_predictor(BoomerClassifierCmdBuilder.BINARY_PREDICTOR_GFM) \
             .print_predictions() \
+            .print_ground_truth() \
             .print_label_vectors() \
             .sparse_prediction_format() \
             .set_model_dir()
@@ -359,7 +367,8 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
         """
         builder = self._create_cmd_builder() \
             .prediction_type(ClassificationCmdBuilder.PREDICTION_TYPE_SCORES) \
-            .print_predictions()
+            .print_predictions() \
+            .print_ground_truth()
         CmdRunner(self, builder).run('predictor-score-output-wise')
 
     def test_predictor_score_output_wise_incremental(self):
@@ -387,6 +396,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .prediction_type(ClassificationCmdBuilder.PREDICTION_TYPE_PROBABILITIES) \
             .probability_predictor(BoomerClassifierCmdBuilder.PROBABILITY_PREDICTOR_OUTPUT_WISE) \
             .print_predictions() \
+            .print_ground_truth() \
             .set_model_dir()
         CmdRunner(self, builder).run('predictor-probability-output-wise')
 
@@ -423,6 +433,7 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .prediction_type(ClassificationCmdBuilder.PREDICTION_TYPE_PROBABILITIES) \
             .probability_predictor(BoomerClassifierCmdBuilder.PROBABILITY_PREDICTOR_MARGINALIZED) \
             .print_predictions() \
+            .print_ground_truth() \
             .print_label_vectors() \
             .set_model_dir()
         CmdRunner(self, builder).run('predictor-probability-marginalized')
