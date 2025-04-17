@@ -5,7 +5,7 @@ Provides classes for representing predictions that are part of output data.
 """
 from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.experiments.output.data import OutputData
-from mlrl.testbed.experiments.output.predictions.dataset import OutputDataset
+from mlrl.testbed.experiments.output.dataset.dataset import OutputDataset
 
 
 class PredictionDataset(OutputDataset):
