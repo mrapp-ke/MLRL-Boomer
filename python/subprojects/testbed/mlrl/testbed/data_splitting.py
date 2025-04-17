@@ -16,7 +16,7 @@ from sklearn.model_selection import KFold, train_test_split
 
 from mlrl.testbed.data import ArffMetaData, load_data_set, load_data_set_and_meta_data
 from mlrl.testbed.dataset import Dataset
-from mlrl.testbed.experiments.input.preprocessors import Preprocessor
+from mlrl.testbed.experiments.input.dataset.preprocessors import Preprocessor
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.util.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name, get_file_name_per_fold
