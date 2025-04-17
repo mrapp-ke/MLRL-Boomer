@@ -5,21 +5,17 @@ Provides classes that allow writing datasets to ARFF files.
 """
 import xml.etree.ElementTree as XmlTree
 
-from dataclasses import replace
 from xml.dom import minidom
 
 import arff
-import numpy as np
 
 from scipy.sparse import dok_array
 
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.dataset import Attribute, AttributeType, Dataset
+from mlrl.testbed.dataset import AttributeType, Dataset
 from mlrl.testbed.experiments.output.sinks.sink import DatasetFileSink
-from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.util.format import OPTION_DECIMALS
 from mlrl.testbed.util.io import ENCODING_UTF8, open_writable_file
 
 
@@ -88,30 +84,7 @@ class ArffFileSink(DatasetFileSink):
         """
         super().__init__(directory=directory, suffix=self.SUFFIX_ARFF, options=options)
 
+    # pylint: disable=unused-argument
     def _write_dataset_to_file(self, file_path: str, state: ExperimentState, dataset: Dataset, **_):
-        decimals = self.options.get_int(OPTION_DECIMALS, 0)
-        predictions = dataset.y
-        nominal_values = None
-
-        if issubclass(predictions.dtype.type, np.integer):
-            if state.problem_type == ProblemType.CLASSIFICATION:
-                attribute_type = AttributeType.NOMINAL
-                nominal_values = [str(value) for value in np.unique(predictions)]
-            else:
-                attribute_type = AttributeType.ORDINAL
-        else:
-            attribute_type = AttributeType.NUMERICAL
-
-            if decimals > 0:
-                predictions = np.around(predictions, decimals=decimals)
-
-        features = []
-        outputs = []
-
-        for output in dataset.outputs:
-            features.append(Attribute('Ground Truth ' + output.name, attribute_type, nominal_values))
-            outputs.append(Attribute('Prediction ' + output.name, attribute_type, nominal_values))
-
-        output_dataset = replace(dataset, y=predictions, features=features, outputs=outputs)
-        self.__write_arff_file(file_path=file_path, dataset=output_dataset)
-        self.__write_xml_file(file_path=file_path.rsplit('.', 1)[0] + '.' + self.SUFFIX_XML, dataset=output_dataset)
+        self.__write_arff_file(file_path=file_path, dataset=dataset)
+        self.__write_xml_file(file_path=file_path.rsplit('.', 1)[0] + '.' + self.SUFFIX_XML, dataset=dataset)

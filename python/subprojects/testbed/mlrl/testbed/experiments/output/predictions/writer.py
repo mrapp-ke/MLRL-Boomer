@@ -6,11 +6,16 @@ Provides classes that allow writing predictions and the corresponding ground tru
 from dataclasses import replace
 from typing import List, Optional
 
+import numpy as np
+
+from mlrl.testbed.dataset import Attribute, AttributeType
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.predictions.predictions import Predictions
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
+from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.util.format import OPTION_DECIMALS
 
 
 class PredictionWriter(OutputWriter):
@@ -31,7 +36,25 @@ class PredictionWriter(OutputWriter):
 
             if prediction_result:
                 dataset = state.dataset
-                prediction_dataset = replace(dataset, y=prediction_result.predictions)
+                predictions = dataset.y
+                nominal_values = None
+
+                if issubclass(predictions.dtype.type, np.integer):
+                    if state.problem_type == ProblemType.CLASSIFICATION:
+                        attribute_type = AttributeType.NOMINAL
+                        nominal_values = [str(value) for value in np.unique(predictions)]
+                    else:
+                        attribute_type = AttributeType.ORDINAL
+                else:
+                    attribute_type = AttributeType.NUMERICAL
+                    decimals = self.options.get_int(OPTION_DECIMALS, 0)
+
+                    if decimals > 0:
+                        predictions = np.around(predictions, decimals=decimals)
+
+                outputs = dataset.outputs
+                outputs = [Attribute('Prediction ' + output.name, attribute_type, nominal_values) for output in outputs]
+                prediction_dataset = replace(dataset, y=predictions, outputs=outputs)
                 return Predictions(original_dataset=dataset, prediction_dataset=prediction_dataset)
 
             return None
