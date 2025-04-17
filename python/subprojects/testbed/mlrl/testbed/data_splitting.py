@@ -15,8 +15,8 @@ from scipy.sparse import vstack
 from sklearn.model_selection import KFold, train_test_split
 
 from mlrl.testbed.data import ArffMetaData, load_data_set, load_data_set_and_meta_data
-from mlrl.testbed.dataset import Dataset
-from mlrl.testbed.experiments.input.preprocessors import Preprocessor
+from mlrl.testbed.dataset import Dataset, DatasetType
+from mlrl.testbed.experiments.input.dataset.preprocessors import Preprocessor
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.util.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name, get_file_name_per_fold
@@ -140,7 +140,7 @@ class NoSplitter(DataSplitter):
 
         # Train and evaluate model...
         fold = Fold(index=None, num_folds=1, is_last_fold=True)
-        dataset = Dataset(x, y, meta_data.features, meta_data.outputs, Dataset.Type.TRAINING)
+        dataset = Dataset(x, y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
         callback.train_and_evaluate(fold, train_dataset=dataset, test_dataset=dataset)
 
 
@@ -167,8 +167,8 @@ class TrainTestSplitter(DataSplitter):
         # Check if ARFF files with predefined training and test data are available...
         data_set = self.data_set
         data_set_name = data_set.data_set_name
-        train_arff_file_name = get_file_name(Dataset.Type.TRAINING.get_file_name(data_set_name), SUFFIX_ARFF)
-        test_arff_file_name = get_file_name(Dataset.Type.TEST.get_file_name(data_set_name), SUFFIX_ARFF)
+        train_arff_file_name = get_file_name(DatasetType.TRAINING.get_file_name(data_set_name), SUFFIX_ARFF)
+        test_arff_file_name = get_file_name(DatasetType.TEST.get_file_name(data_set_name), SUFFIX_ARFF)
         data_dir = data_set.data_dir
         predefined_split = check_if_files_exist(data_dir, [train_arff_file_name, test_arff_file_name])
 
@@ -208,8 +208,8 @@ class TrainTestSplitter(DataSplitter):
 
         # Train and evaluate model...
         fold = Fold(index=None, num_folds=1, is_last_fold=True)
-        train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, Dataset.Type.TRAINING)
-        test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, Dataset.Type.TEST)
+        train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
+        test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, DatasetType.TEST)
         callback.train_and_evaluate(fold, train_dataset=train_dataset, test_dataset=test_dataset)
 
 
@@ -317,8 +317,8 @@ class CrossValidationSplitter(DataSplitter):
 
             # Train and evaluate model...
             fold = Fold(index=i, num_folds=num_folds, is_last_fold=current_fold < 0 and i == num_folds - 1)
-            train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, Dataset.Type.TRAINING)
-            test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, Dataset.Type.TEST)
+            train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
+            test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, DatasetType.TEST)
             callback.train_and_evaluate(fold, train_dataset=train_dataset, test_dataset=test_dataset)
 
     def __cross_validation(self, callback: DataSplitter.Callback, data_dir: str, arff_file_name: str,
@@ -352,6 +352,6 @@ class CrossValidationSplitter(DataSplitter):
 
                 # Train and evaluate model...
                 fold = Fold(index=i, num_folds=num_folds, is_last_fold=current_fold < 0 and i == num_folds - 1)
-                train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, Dataset.Type.TRAINING)
-                test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, Dataset.Type.TEST)
+                train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
+                test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, DatasetType.TEST)
                 callback.train_and_evaluate(fold, train_dataset=train_dataset, test_dataset=test_dataset)

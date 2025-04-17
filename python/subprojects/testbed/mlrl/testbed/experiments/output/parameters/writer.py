@@ -7,7 +7,7 @@ Provides classes that allow writing algorithmic parameters to one or several sin
 from typing import List, Optional
 
 from mlrl.testbed.experiments.output.data import OutputData
-from mlrl.testbed.experiments.output.parameters.parameters import CustomParameters
+from mlrl.testbed.experiments.output.parameters.parameters import OutputParameters
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
@@ -27,7 +27,7 @@ class ParameterWriter(OutputWriter):
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            return CustomParameters(state.parameters)
+            return OutputParameters(state.parameters)
 
     def __init__(self, *extractors: DataExtractor):
         """

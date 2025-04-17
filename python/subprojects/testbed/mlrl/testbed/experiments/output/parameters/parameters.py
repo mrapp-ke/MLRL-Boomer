@@ -13,7 +13,7 @@ from mlrl.testbed.experiments.state import ParameterDict
 from mlrl.testbed.experiments.table import RowWiseTable, Table
 
 
-class CustomParameters(TabularOutputData):
+class OutputParameters(TabularOutputData):
     """
     Represents algorithmic parameters, set by the user, that are part of output data.
     """

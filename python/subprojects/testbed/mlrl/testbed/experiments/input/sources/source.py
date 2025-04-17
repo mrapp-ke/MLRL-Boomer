@@ -11,6 +11,7 @@ from typing import Any, Optional
 from mlrl.testbed.experiments.data import FilePath
 from mlrl.testbed.experiments.input.data import InputData, TabularInputData
 from mlrl.testbed.experiments.state import ExperimentState
+from mlrl.testbed.experiments.table import Table
 
 
 class Source(ABC):
@@ -81,10 +82,11 @@ class TabularFileSource(FileSource, ABC):
         return self._read_table_from_file(file_path, input_data)
 
     @abstractmethod
-    def _read_table_from_file(self, file_path: str, input_data: TabularInputData):
+    def _read_table_from_file(self, file_path: str, input_data: TabularInputData) -> Optional[Table]:
         """
         Must be implemented by subclasses in order to read tabular input data from a specific file.
 
         :param file_path:   The path to the file from which the input data should be read
         :param input_data:  The tabular input data that should be read
+        :return:            A table that has been read from the file
         """
