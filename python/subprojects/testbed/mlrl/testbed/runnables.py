@@ -44,7 +44,7 @@ from mlrl.testbed.experiments.output.parameters import ParameterWriter
 from mlrl.testbed.experiments.output.predictions import PredictionWriter
 from mlrl.testbed.experiments.output.probability_calibration import IsotonicJointProbabilityCalibrationModelExtractor, \
     IsotonicMarginalProbabilityCalibrationModelExtractor, ProbabilityCalibrationModelWriter
-from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, PickleFileSink, TextFileSink
+from mlrl.testbed.experiments.output.sinks import ArffFileSink, CsvFileSink, LogSink, PickleFileSink, TextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.prediction import GlobalPredictor, IncrementalPredictor, Predictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
@@ -1014,7 +1014,7 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_PREDICTIONS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(PredictionWriter.ArffFileSink(args.output_dir, options=options))
+            sinks.append(ArffFileSink(args.output_dir, options=options))
 
         return PredictionWriter().add_sinks(*sinks) if sinks else None
 
