@@ -6,9 +6,6 @@ Provides utility functions for reading and writing files.
 from os import path
 from typing import Optional
 
-# The suffix of an XML file
-SUFFIX_XML = 'xml'
-
 # UTF-8 encoding
 ENCODING_UTF8 = 'utf-8'
 
