@@ -35,13 +35,13 @@ from mlrl.testbed.experiments.output.characteristics.data import DataCharacteris
     OutputCharacteristics, PredictionCharacteristicsWriter
 from mlrl.testbed.experiments.output.characteristics.model import ModelCharacteristicsWriter, \
     RuleModelCharacteristicsExtractor
+from mlrl.testbed.experiments.output.dataset import PredictionWriter
 from mlrl.testbed.experiments.output.evaluation import ClassificationEvaluationDataExtractor, EvaluationResult, \
     EvaluationWriter, RankingEvaluationDataExtractor, RegressionEvaluationDataExtractor
 from mlrl.testbed.experiments.output.label_vectors import LabelVectors, LabelVectorSetExtractor, LabelVectorWriter
 from mlrl.testbed.experiments.output.model import ModelWriter
 from mlrl.testbed.experiments.output.model_text import ModelAsTextWriter, RuleModelAsText, RuleModelAsTextExtractor
 from mlrl.testbed.experiments.output.parameters import ParameterWriter
-from mlrl.testbed.experiments.output.predictions import PredictionWriter
 from mlrl.testbed.experiments.output.probability_calibration import IsotonicJointProbabilityCalibrationModelExtractor, \
     IsotonicMarginalProbabilityCalibrationModelExtractor, ProbabilityCalibrationModelWriter
 from mlrl.testbed.experiments.output.sinks import ArffFileSink, CsvFileSink, LogSink, PickleFileSink, TextFileSink
