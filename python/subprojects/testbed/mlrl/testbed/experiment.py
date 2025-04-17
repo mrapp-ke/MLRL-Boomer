@@ -15,7 +15,7 @@ from sklearn.base import BaseEstimator, clone
 from mlrl.common.mixins import NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
 
 from mlrl.testbed.data_splitting import DataSplitter
-from mlrl.testbed.dataset import AttributeType, Dataset
+from mlrl.testbed.dataset import AttributeType, Dataset, DatasetType
 from mlrl.testbed.experiments.input.reader import InputReader
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.prediction import Predictor
@@ -159,7 +159,7 @@ class Experiment(DataSplitter.Callback):
         # Obtain and evaluate predictions for training data, if necessary...
         train_predictor = self.train_predictor
 
-        if train_predictor and test_dataset.type != Dataset.Type.TRAINING:
+        if train_predictor and test_dataset.type != DatasetType.TRAINING:
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
             self.__predict_and_evaluate(state, train_predictor, **predict_kwargs)
 

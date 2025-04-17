@@ -13,7 +13,7 @@ from mlrl.testbed.experiments.state import ExperimentState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
 
 
-class Model(InputData):
+class InputModel(InputData):
     """
     Represents a model is are part of input data.
     """
