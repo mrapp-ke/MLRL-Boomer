@@ -35,13 +35,13 @@ from mlrl.testbed.experiments.output.characteristics.data import DataCharacteris
     OutputCharacteristics, PredictionCharacteristicsWriter
 from mlrl.testbed.experiments.output.characteristics.model import ModelCharacteristicsWriter, \
     RuleModelCharacteristicsExtractor
+from mlrl.testbed.experiments.output.dataset import GroundTruthWriter, PredictionWriter
 from mlrl.testbed.experiments.output.evaluation import ClassificationEvaluationDataExtractor, EvaluationResult, \
     EvaluationWriter, RankingEvaluationDataExtractor, RegressionEvaluationDataExtractor
 from mlrl.testbed.experiments.output.label_vectors import LabelVectors, LabelVectorSetExtractor, LabelVectorWriter
 from mlrl.testbed.experiments.output.model import ModelWriter
 from mlrl.testbed.experiments.output.model_text import ModelAsTextWriter, RuleModelAsText, RuleModelAsTextExtractor
 from mlrl.testbed.experiments.output.parameters import ParameterWriter
-from mlrl.testbed.experiments.output.predictions import PredictionWriter
 from mlrl.testbed.experiments.output.probability_calibration import IsotonicJointProbabilityCalibrationModelExtractor, \
     IsotonicMarginalProbabilityCalibrationModelExtractor, ProbabilityCalibrationModelWriter
 from mlrl.testbed.experiments.output.sinks import ArffFileSink, CsvFileSink, LogSink, PickleFileSink, TextFileSink
@@ -454,6 +454,17 @@ class LearnerRunnable(Runnable, ABC):
 
     STORE_PREDICTIONS_VALUES = PRINT_PREDICTIONS_VALUES
 
+    PARAM_PRINT_GROUND_TRUTH = '--print-ground-truth'
+
+    PRINT_GROUND_TRUTH_VALUES: Dict[str, Set[str]] = {
+        BooleanOption.TRUE.value: {OPTION_DECIMALS},
+        BooleanOption.FALSE.value: {}
+    }
+
+    PARAM_STORE_GROUND_TRUTH = '--store-ground-truth'
+
+    STORE_GROUND_TRUTH_VALUES = PRINT_GROUND_TRUTH_VALUES
+
     PARAM_PRINT_PREDICTION_CHARACTERISTICS = '--print-prediction-characteristics'
 
     PRINT_PREDICTION_CHARACTERISTICS_VALUES: Dict[str, Set[str]] = {
@@ -708,6 +719,19 @@ class LearnerRunnable(Runnable, ABC):
                             + format_dict_keys(self.STORE_PREDICTIONS_VALUES) + '. Does only have an effect, if the '
                             + 'parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to '
                             + 'the documentation.')
+        parser.add_argument(self.PARAM_PRINT_GROUND_TRUTH,
+                            type=str,
+                            default=BooleanOption.FALSE.value,
+                            help='Whether the ground truth should be printed on the console or not. Must be one of '
+                            + format_dict_keys(self.PRINT_GROUND_TRUTH_VALUES) + '. For additional options refer '
+                            + 'to the documentation.')
+        parser.add_argument(self.PARAM_STORE_GROUND_TRUTH,
+                            type=str,
+                            default=BooleanOption.FALSE.value,
+                            help='Whether the ground truth should be written into output files or not. Must be one of '
+                            + format_dict_keys(self.STORE_GROUND_TRUTH_VALUES) + '. Does only have an effect, if '
+                            + 'the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options '
+                            + 'refer to the documentation.')
         parser.add_argument(self.PARAM_PREDICTION_TYPE,
                             type=str,
                             default=PredictionType.BINARY.value,
@@ -841,6 +865,11 @@ class LearnerRunnable(Runnable, ABC):
             output_writers.append(output_writer)
 
         output_writer = self._create_prediction_writer(args)
+
+        if output_writer:
+            output_writers.append(output_writer)
+
+        output_writer = self._create_ground_truth_writer(args)
 
         if output_writer:
             output_writers.append(output_writer)
@@ -1008,7 +1037,7 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.PRINT_PREDICTIONS_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            sinks.append(LogSink(options))
+            sinks.append(LogSink(options=options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_PREDICTIONS, args.store_predictions,
                                                  self.STORE_PREDICTIONS_VALUES)
@@ -1017,6 +1046,29 @@ class LearnerRunnable(Runnable, ABC):
             sinks.append(ArffFileSink(args.output_dir, options=options))
 
         return PredictionWriter().add_sinks(*sinks) if sinks else None
+
+    def _create_ground_truth_writer(self, args) -> Optional[OutputWriter]:
+        """
+        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output the ground
+        truth.
+
+        :param args:    The command line arguments
+        :return:        The `OutputWriter` that has been created
+        """
+        sinks = []
+        value, options = parse_param_and_options(self.PARAM_PRINT_GROUND_TRUTH, args.print_ground_truth,
+                                                 self.PRINT_GROUND_TRUTH_VALUES)
+
+        if value == BooleanOption.TRUE.value:
+            sinks.append(LogSink(options=options))
+
+        value, options = parse_param_and_options(self.PARAM_STORE_GROUND_TRUTH, args.store_ground_truth,
+                                                 self.STORE_GROUND_TRUTH_VALUES)
+
+        if value == BooleanOption.TRUE.value and args.output_dir:
+            sinks.append(ArffFileSink(args.output_dir, options=options))
+
+        return GroundTruthWriter().add_sinks(*sinks) if sinks else None
 
     def _create_prediction_characteristics_writer(self, args) -> Optional[OutputWriter]:
         """

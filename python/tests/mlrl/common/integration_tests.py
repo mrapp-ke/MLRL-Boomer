@@ -209,7 +209,9 @@ class IntegrationTests(TestCase, ABC):
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_predictions() \
-            .store_predictions()
+            .print_ground_truth() \
+            .store_predictions() \
+            .store_ground_truth()
         CmdRunner(self, builder).run('predictions_train-test')
 
     def test_predictions_cross_validation(self):
@@ -221,7 +223,9 @@ class IntegrationTests(TestCase, ABC):
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_predictions() \
-            .store_predictions()
+            .print_ground_truth() \
+            .store_predictions() \
+            .store_ground_truth()
         CmdRunner(self, builder).run('predictions_cross-validation')
 
     def test_predictions_single_fold(self):
@@ -234,7 +238,9 @@ class IntegrationTests(TestCase, ABC):
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_predictions() \
-            .store_predictions()
+            .print_ground_truth() \
+            .store_predictions() \
+            .store_ground_truth()
         CmdRunner(self, builder).run('predictions_single-fold')
 
     def test_predictions_training_data(self):
@@ -246,7 +252,9 @@ class IntegrationTests(TestCase, ABC):
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_predictions() \
-            .store_predictions()
+            .print_ground_truth() \
+            .store_predictions() \
+            .store_ground_truth()
         CmdRunner(self, builder).run('predictions_training-data')
 
     def test_prediction_characteristics_train_test(self):
@@ -499,7 +507,8 @@ class IntegrationTests(TestCase, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .sparse_prediction_format(False) \
-            .print_predictions()
+            .print_predictions() \
+            .print_ground_truth()
         CmdRunner(self, builder).run('prediction-format-dense')
 
     def test_prediction_format_sparse(self):
@@ -508,7 +517,8 @@ class IntegrationTests(TestCase, ABC):
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .sparse_prediction_format() \
-            .print_predictions()
+            .print_predictions() \
+            .print_ground_truth()
         CmdRunner(self, builder).run('prediction-format-sparse')
 
     def test_parameters_train_test(self):
