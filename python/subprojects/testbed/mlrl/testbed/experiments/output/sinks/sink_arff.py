@@ -3,8 +3,10 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing datasets to ARFF files.
 """
+import xml.etree.ElementTree as XmlTree
 
 from dataclasses import replace
+from xml.dom import minidom
 
 import arff
 import numpy as np
@@ -18,7 +20,7 @@ from mlrl.testbed.experiments.output.sinks.sink import DatasetFileSink
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import OPTION_DECIMALS
-from mlrl.testbed.util.io import open_writable_file
+from mlrl.testbed.util.io import ENCODING_UTF8, open_writable_file
 
 
 class ArffFileSink(DatasetFileSink):
@@ -66,6 +68,19 @@ class ArffFileSink(DatasetFileSink):
                     'data': data
                 }))
 
+    @staticmethod
+    def __write_xml_file(file_path: str, dataset: Dataset):
+        root_element = XmlTree.Element('labels')
+        root_element.set('xmlns', 'http://mulan.sourceforge.net/labels')
+
+        for output in dataset.outputs:
+            label_element = XmlTree.SubElement(root_element, 'label')
+            label_element.set('name', output.name)
+
+        with open_writable_file(file_path) as xml_file:
+            xml_string = minidom.parseString(XmlTree.tostring(root_element)).toprettyxml(encoding=ENCODING_UTF8)
+            xml_file.write(xml_string.decode(ENCODING_UTF8))
+
     def __init__(self, directory: str, options: Options = Options()):
         """
         :param directory:   The path to the directory, where the ARFF file should be located
@@ -99,3 +114,4 @@ class ArffFileSink(DatasetFileSink):
 
         output_dataset = replace(dataset, y=predictions, features=features, outputs=outputs)
         self.__write_arff_file(file_path=file_path, dataset=output_dataset)
+        self.__write_xml_file(file_path=file_path.rsplit('.', 1)[0] + '.' + self.SUFFIX_XML, dataset=output_dataset)
