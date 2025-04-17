@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides functions for loading and saving data sets.
 """
 import logging as log
-import xml.etree.ElementTree as XmlTree
 
 from dataclasses import dataclass
 from os import path
@@ -12,11 +11,9 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 from xml.dom import minidom
 
 import arff
-import numpy as np
 
-from scipy.sparse import coo_array, csc_array, dok_array, lil_array
+from scipy.sparse import coo_array, csc_array, lil_array
 
-from mlrl.common.data.arrays import is_sparse
 from mlrl.common.data.types import Float32, Uint8
 
 from mlrl.testbed.dataset import Attribute, AttributeType
@@ -93,63 +90,6 @@ def load_data_set(directory: str,
     matrix, _, _ = __load_arff(arff_file, feature_dtype=feature_dtype)
     x, y = __create_feature_and_output_matrix(matrix, meta_data, output_dtype)
     return x, y
-
-
-def save_arff_file(file_path: str, x: np.ndarray, y: np.ndarray, meta_data: ArffMetaData):
-    """
-    Saves a data set to an ARFF file.
-
-    :param file_path:   The path to the ARFF file
-    :param x:           A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                        `(num_examples, num_features)`, that stores the features of the examples that are contained in
-                        the data set
-    :param y:           A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                        `(num_examples, num_outputs)`, that stores the outputs of the examples that are contained in the
-                        data set
-    :param meta_data:   The meta-data of the data set that should be saved
-    """
-    sparse = is_sparse(x) and is_sparse(y)
-    x = dok_array(x)
-    y = dok_array(y)
-    x_prefix = 0
-    y_prefix = 0
-
-    features = meta_data.features
-    x_features = [(features[i].name, 'NUMERIC' if features[i].attribute_type == AttributeType.NUMERICAL
-                   or features[i].nominal_values is None else features[i].nominal_values) for i in range(x.shape[1])]
-
-    outputs = meta_data.outputs
-    y_features = [(outputs[i].name, 'NUMERIC' if outputs[i].attribute_type == AttributeType.NUMERICAL
-                   or outputs[i].nominal_values is None else outputs[i].nominal_values) for i in range(y.shape[1])]
-
-    if meta_data.outputs_at_start:
-        x_prefix = y.shape[1]
-        relation_sign = 1
-        attributes = y_features + x_features
-    else:
-        y_prefix = x.shape[1]
-        relation_sign = -1
-        attributes = x_features + y_features
-
-    if sparse:
-        data = [{} for _ in range(x.shape[0])]
-    else:
-        data = [[0 for _ in range(x.shape[1] + y.shape[1])] for _ in range(x.shape[0])]
-
-    for keys, value in list(x.items()):
-        data[keys[0]][x_prefix + keys[1]] = value
-
-    for keys, value in list(y.items()):
-        data[keys[0]][y_prefix + keys[1]] = value
-
-    with open(file_path, 'w', encoding=ENCODING_UTF8) as file:
-        file.write(
-            arff.dumps({
-                'description': 'traindata',
-                'relation': 'traindata: -C ' + str(y.shape[1] * relation_sign),
-                'attributes': attributes,
-                'data': data
-            }))
 
 
 def __create_feature_and_output_matrix(matrix: csc_array, meta_data: ArffMetaData,
@@ -331,32 +271,3 @@ def __parse_attribute_name(name: str) -> str:
     if name.endswith('\'') or name.endswith('"'):
         name = name[:(len(name) - 1)]
     return name.replace('\\\'', '\'').replace('\\"', '"')
-
-
-def __write_meta_data(xml_file: str, meta_data: ArffMetaData):
-    """
-    Writes meta-data to a Mulan XML file.
-
-    :param xml_file:    The path fo the XML file (including the suffix)
-    :param meta_data:   The meta-data to be written
-    """
-    root_element = XmlTree.Element('labels')
-    root_element.set('xmlns', 'http://mulan.sourceforge.net/labels')
-
-    for output in meta_data.outputs:
-        label_element = XmlTree.SubElement(root_element, 'label')
-        label_element.set('name', output.name)
-
-    __write_xml_file(xml_file, root_element)
-
-
-def __write_xml_file(xml_file, root_element: XmlTree.Element):
-    """
-    Writes an XML structure to a file.
-
-    :param xml_file:        The XML file
-    :param root_element:    The root element of the XML structure
-    """
-    with open(xml_file, mode='w', encoding=ENCODING_UTF8) as file:
-        xml_string = minidom.parseString(XmlTree.tostring(root_element)).toprettyxml(encoding=ENCODING_UTF8)
-        file.write(xml_string.decode(ENCODING_UTF8))
