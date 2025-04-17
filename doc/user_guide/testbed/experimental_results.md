@@ -82,14 +82,15 @@ When using a {ref}`cross validation<cross-validation>`, a model is trained and e
 
 ## Predictions
 
-In cases where the {ref}`evaluation results<output-evaluation-results>` obtained via the arguments `--print-evaluation` or `--store-evaluation` are not sufficient for a detailed analysis, it may be desired to directly inspect the predictions provided by the evaluated models. They can be printed on the console, together with the ground truth, by proving the argument `--print-predictions`:
+In cases where the {ref}`evaluation results<output-evaluation-results>` obtained via the arguments `--print-evaluation` or `--store-evaluation` are not sufficient for a detailed analysis, it may be desired to directly inspect the predictions provided by the evaluated models. They can be printed on the console by proving the argument `--print-predictions`. If the ground truth should also be printed, the argument `--print-ground-truth` must be provided as well:
 
 ````{tab} BOOMER
    ```text
    mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --print-predictions true
+       --print-predictions true \
+       --print-ground-truth true
    ```
 ````
 
@@ -98,11 +99,12 @@ In cases where the {ref}`evaluation results<output-evaluation-results>` obtained
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --print-predictions true
+       --print-predictions true \
+       --print-ground-truth true
    ```
 ````
 
-Alternatively, the argument `--store-predictions` can be used to save the predictions, as well as the ground truth, to [ARFF](https://waikato.github.io/weka-wiki/formats_and_processing/arff_stable/) files:
+Alternatively, the argument `--store-predictions` and `--store-ground-truth` can be used to save a dataset with the predictions or the ground truth, respectively, to [ARFF](https://waikato.github.io/weka-wiki/formats_and_processing/arff_stable/) files:
 
 ````{tab} BOOMER
    ```text
@@ -110,7 +112,8 @@ Alternatively, the argument `--store-predictions` can be used to save the predic
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
-       --store-predictions true
+       --store-predictions true \
+       --store-ground-truth true
    ```
 ````
 
@@ -119,12 +122,14 @@ Alternatively, the argument `--store-predictions` can be used to save the predic
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --print-prediction-characteristics true
+       --output-dir /path/to/results/ \
+       --store-predictions true \
+       --store-ground-truth true
    ```
 ````
 
 ```{tip}
-Depending on the {ref}`type of predictions<prediction-types>`, the machine learning models used in an experiment are supposed to provide, the predictions stored in the resulting output files are either binary values (if binary predictions are provided), or real values (if scores or probability estimates are provided). When working with real-valued predictions, the option ``decimals`` may be supplied to the arguments ``--print-predictions`` and ``--store-predictions`` to specify the number of decimals that should be included in the output (see {ref}`here<arguments-predictions>` for more information).
+Depending on the {ref}`type of predictions<prediction-types>`, the machine learning models used in an experiment are supposed to provide, the predictions stored in the resulting output files are either binary values (if binary predictions are provided), or real values (if scores or probability estimates are provided). When working with real-valued ground truth or predictions, the option ``decimals`` may be supplied to the arguments ``--print-predictions``, ``--store-predictions``, ``--print-ground-truth` and `--store-ground-truth` to specify the number of decimals that should be included in the output (see {ref}`here<arguments-predictions>` for more information).
 ```
 
 When using {ref}`train-test splits<train-test-split>`, a single model is trained and queried for predictions for the test set. These predictions are written into a single output file. When {ref}`evaluating on the training data<evaluating-training-data>`, predictions are also obtained for the training set and written into an additional output file. The names of the output files indicate whether the predictions have been obtained for the training or test set, respectively:
@@ -165,8 +170,7 @@ By using the command line argument `--print-prediction-characteristics`, charact
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --output-dir /path/to/results/ \
-       --store-predictions true
+       --print-prediction-characteristics true
    ```
 ````
 

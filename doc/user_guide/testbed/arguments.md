@@ -262,11 +262,27 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--store-predictions` (Default value = `false`)
 
-  - `true` The predictions for individual examples and outputs are written into ARFF files. Does only have an effect if the parameter `--output-dir` is specified.
+  - `true` Datasets, where the ground truth has been replaced with the predictions of a model, are written into ARFF files. Does only have an effect if the parameter `--output-dir` is specified.
 
     - `decimals` (Default value = `0`) The number of decimals to be used for real-valued predictions or 0, if the number of decimals should not be restricted.
 
-  - `false` Predictions are not written into ARFF files.
+  - `false` No datasets containing predictions are written into ARFF files.
+
+- `--print-ground-truth` (Default value = `false`)
+
+  - `true` The ground truth for individual examples and outputs is printed on the console.
+
+    - `decimals` (Default value = `2`) The number of decimals to be used for real-valued ground truth or 0, if the number of decimals should not be restricted.
+
+  - `false` The ground truth is not printed on the console.
+
+- `--store-ground-truth` (Default value = `false`)
+
+  - `true` Training datasets containing the ground truth are written into ARFF files. Does only have an effect if the parameter `--output-dir` is specified.
+
+    - `decimals` (Default value = `0`) The number of decimals to be used for real-valued ground truth or 0, if the number of decimals should not be restricted.
+
+  - `false` No dataset containing the ground truth are written into ARFF files.
 
 (arguments-prediction-characteristics)=
 
