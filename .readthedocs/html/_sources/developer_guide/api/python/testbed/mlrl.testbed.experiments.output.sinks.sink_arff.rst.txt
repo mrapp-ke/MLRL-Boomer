@@ -1,0 +1,7 @@
+mlrl.testbed.experiments.output.sinks.sink\_arff module
+=======================================================
+
+.. automodule:: mlrl.testbed.experiments.output.sinks.sink_arff
+   :members:
+   :show-inheritance:
+   :undoc-members:
