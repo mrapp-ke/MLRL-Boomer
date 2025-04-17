@@ -11,7 +11,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder as SkLearnOneHotEncoder
 
 from mlrl.testbed.dataset import AttributeType, Dataset
-from mlrl.testbed.experiments.input.preprocessors.preprocessor import Preprocessor
+from mlrl.testbed.experiments.input.dataset.preprocessors.preprocessor import Preprocessor
 
 
 class OneHotEncoder(Preprocessor):
@@ -29,7 +29,7 @@ class OneHotEncoder(Preprocessor):
 
         def encode(self, dataset: Dataset) -> Dataset:
             """
-            See :func:`mlrl.testbed.experiments.input.preprocessors.Preprocessor.Encoder.encode`
+            See :func:`mlrl.testbed.experiments.input.dataset.preprocessors.Preprocessor.Encoder.encode`
             """
             nominal_indices = dataset.get_feature_indices(AttributeType.NOMINAL)
             num_nominal_features = len(nominal_indices)
@@ -56,6 +56,6 @@ class OneHotEncoder(Preprocessor):
 
     def create_encoder(self) -> Preprocessor.Encoder:
         """
-        See :func:`mlrl.testbed.experiments.input.preprocessors.Preprocessor.create_encoder`
+        See :func:`mlrl.testbed.experiments.input.dataset.preprocessors.Preprocessor.create_encoder`
         """
         return OneHotEncoder.Encoder()

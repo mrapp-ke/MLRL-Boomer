@@ -11,7 +11,7 @@ from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.output.data import ObjectOutputData, OutputData
 
 
-class Model(ObjectOutputData):
+class OutputModel(ObjectOutputData):
     """
     Represents a model.
     """

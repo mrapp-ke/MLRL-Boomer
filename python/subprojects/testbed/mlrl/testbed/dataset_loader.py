@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 from mlrl.testbed.data import load_data_set, load_data_set_and_meta_data
-from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.dataset import Dataset, DatasetType
 from mlrl.testbed.util.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name
 
 
@@ -22,7 +22,7 @@ class DatasetLoader(ABC):
         """
 
         @abstractmethod
-        def load_dataset(self, feature_dtype, output_dtype, dataset_type: Optional[Dataset.Type] = None) -> Dataset:
+        def load_dataset(self, feature_dtype, output_dtype, dataset_type: Optional[DatasetType] = None) -> Dataset:
             """
             Loads and returns a dataset.
 
@@ -60,7 +60,7 @@ class ArffDatasetLoader(DatasetLoader):
             self.dataset_name = dataset_name
             self.meta_data = None
 
-        def load_dataset(self, feature_dtype, output_dtype, dataset_type: Optional[Dataset.Type] = None) -> Dataset:
+        def load_dataset(self, feature_dtype, output_dtype, dataset_type: Optional[DatasetType] = None) -> Dataset:
             dataset_name = self.dataset_name
             file_name = dataset_type.get_file_name(dataset_name) if dataset_type else dataset_name
             arff_file_name = get_file_name(file_name, SUFFIX_ARFF)
