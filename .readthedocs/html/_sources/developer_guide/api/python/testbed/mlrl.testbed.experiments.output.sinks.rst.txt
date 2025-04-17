@@ -13,6 +13,7 @@ Submodules
    :maxdepth: 4
 
    mlrl.testbed.experiments.output.sinks.sink
+   mlrl.testbed.experiments.output.sinks.sink_arff
    mlrl.testbed.experiments.output.sinks.sink_csv
    mlrl.testbed.experiments.output.sinks.sink_log
    mlrl.testbed.experiments.output.sinks.sink_pickle
