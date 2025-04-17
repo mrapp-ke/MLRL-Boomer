@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides functions for loading and saving data sets.
 """
 import logging as log
-import xml.etree.ElementTree as XmlTree
 
 from dataclasses import dataclass
 from os import path
@@ -272,32 +271,3 @@ def __parse_attribute_name(name: str) -> str:
     if name.endswith('\'') or name.endswith('"'):
         name = name[:(len(name) - 1)]
     return name.replace('\\\'', '\'').replace('\\"', '"')
-
-
-def __write_meta_data(xml_file: str, meta_data: ArffMetaData):
-    """
-    Writes meta-data to a Mulan XML file.
-
-    :param xml_file:    The path fo the XML file (including the suffix)
-    :param meta_data:   The meta-data to be written
-    """
-    root_element = XmlTree.Element('labels')
-    root_element.set('xmlns', 'http://mulan.sourceforge.net/labels')
-
-    for output in meta_data.outputs:
-        label_element = XmlTree.SubElement(root_element, 'label')
-        label_element.set('name', output.name)
-
-    __write_xml_file(xml_file, root_element)
-
-
-def __write_xml_file(xml_file, root_element: XmlTree.Element):
-    """
-    Writes an XML structure to a file.
-
-    :param xml_file:        The XML file
-    :param root_element:    The root element of the XML structure
-    """
-    with open(xml_file, mode='w', encoding=ENCODING_UTF8) as file:
-        xml_string = minidom.parseString(XmlTree.tostring(root_element)).toprettyxml(encoding=ENCODING_UTF8)
-        file.write(xml_string.decode(ENCODING_UTF8))

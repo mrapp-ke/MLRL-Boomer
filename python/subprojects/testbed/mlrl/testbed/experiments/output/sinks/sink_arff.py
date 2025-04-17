@@ -3,6 +3,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing datasets to ARFF files.
 """
+
 from dataclasses import replace
 
 import arff
@@ -27,8 +28,10 @@ class ArffFileSink(DatasetFileSink):
 
     SUFFIX_ARFF = 'arff'
 
+    SUFFIX_XML = 'xml'
+
     @staticmethod
-    def __save_arff_file(file_path: str, dataset: Dataset):
+    def __write_arff_file(file_path: str, dataset: Dataset):
         sparse = dataset.has_sparse_features and dataset.has_sparse_outputs
         num_examples = dataset.num_examples
         num_features = dataset.num_features
@@ -94,4 +97,5 @@ class ArffFileSink(DatasetFileSink):
             features.append(Attribute('Ground Truth ' + output.name, attribute_type, nominal_values))
             outputs.append(Attribute('Prediction ' + output.name, attribute_type, nominal_values))
 
-        self.__save_arff_file(file_path, replace(dataset, y=predictions, features=features, outputs=outputs))
+        output_dataset = replace(dataset, y=predictions, features=features, outputs=outputs)
+        self.__write_arff_file(file_path=file_path, dataset=output_dataset)

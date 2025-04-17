@@ -20,7 +20,7 @@ from mlrl.testbed.experiments.input.dataset.preprocessors import Preprocessor
 from mlrl.testbed.experiments.output.sinks import ArffFileSink
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.fold import Fold
-from mlrl.testbed.util.io import SUFFIX_XML, get_file_name, get_file_name_per_fold
+from mlrl.testbed.util.io import get_file_name, get_file_name_per_fold
 
 
 class DataSet:
@@ -127,7 +127,7 @@ class NoSplitter(DataSplitter):
         data_dir = data_set.data_dir
         data_set_name = data_set.data_set_name
         arff_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_ARFF)
-        xml_file_name = get_file_name(data_set_name, SUFFIX_XML)
+        xml_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_XML)
         x, y, meta_data = load_data_set_and_meta_data(data_dir, arff_file_name, xml_file_name)
 
         # Apply preprocessor, if necessary...
@@ -178,7 +178,7 @@ class TrainTestSplitter(DataSplitter):
             train_arff_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_ARFF)
 
         # Load (training) data set...
-        xml_file_name = get_file_name(data_set_name, SUFFIX_XML)
+        xml_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_XML)
         train_x, train_y, meta_data = load_data_set_and_meta_data(data_dir, train_arff_file_name, xml_file_name)
 
         # Apply preprocessor, if necessary...
@@ -250,7 +250,7 @@ class CrossValidationSplitter(DataSplitter):
         ]
         data_dir = data_set.data_dir
         predefined_split = check_if_files_exist(data_dir, arff_file_names)
-        xml_file_name = get_file_name(data_set_name, SUFFIX_XML)
+        xml_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_XML)
 
         if predefined_split:
             self.__predefined_cross_validation(callback,
