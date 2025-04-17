@@ -17,7 +17,7 @@ from mlrl.testbed.experiments.output.sinks.sink import DatasetFileSink
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import OPTION_DECIMALS
-from mlrl.testbed.util.io import ENCODING_UTF8
+from mlrl.testbed.util.io import open_writable_file
 
 
 class ArffFileSink(DatasetFileSink):
@@ -54,8 +54,8 @@ class ArffFileSink(DatasetFileSink):
         for keys, value in dok_array(dataset.y).items():
             data[keys[0]][num_features + keys[1]] = value
 
-        with open(file_path, 'w', encoding=ENCODING_UTF8) as file:
-            file.write(
+        with open_writable_file(file_path) as arff_file:
+            arff_file.write(
                 arff.dumps({
                     'description': 'traindata',
                     'relation': 'traindata: -C ' + str(-num_outputs),
