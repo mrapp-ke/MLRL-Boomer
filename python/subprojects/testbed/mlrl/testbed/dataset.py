@@ -37,6 +37,23 @@ class Attribute:
     nominal_values: Optional[List[str]] = None
 
 
+class DatasetType(Enum):
+    """
+    Characterizes a dataset as either training or test data.
+    """
+    TRAINING = 'training'
+    TEST = 'test'
+
+    def get_file_name(self, dataset_name: str) -> str:
+        """
+        Returns the name of a file name that corresponds to a specific type of data.
+
+        :param dataset_name:    The name of the dataset (without suffix)
+        :return:                The file name
+        """
+        return dataset_name + '_' + str(self.value)
+
+
 @dataclass
 class Dataset:
     """
@@ -50,28 +67,11 @@ class Dataset:
         outputs:    A list that contains all outputs in the data set
         type:       The type of the dataset or None, if the type is unspecified
     """
-
-    class Type(Enum):
-        """
-        Characterizes a dataset as either training or test data.
-        """
-        TRAINING = 'training'
-        TEST = 'test'
-
-        def get_file_name(self, dataset_name: str) -> str:
-            """
-            Returns the name of a file name that corresponds to a specific type of data.
-
-            :param dataset_name:    The name of the dataset (without suffix)
-            :return:                The file name
-            """
-            return dataset_name + '_' + str(self.value)
-
     x: lil_array
     y: lil_array
     features: List[Attribute]
     outputs: List[Attribute]
-    type: Type = Type.TRAINING
+    type: DatasetType = DatasetType.TRAINING
 
     @property
     def num_examples(self) -> int:
