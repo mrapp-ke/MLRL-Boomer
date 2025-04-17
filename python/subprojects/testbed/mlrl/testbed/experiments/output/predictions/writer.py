@@ -10,7 +10,7 @@ import numpy as np
 
 from mlrl.testbed.dataset import Attribute, AttributeType
 from mlrl.testbed.experiments.output.data import OutputData
-from mlrl.testbed.experiments.output.predictions.predictions import Predictions
+from mlrl.testbed.experiments.output.predictions.predictions import PredictionDataset
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
@@ -54,8 +54,7 @@ class PredictionWriter(OutputWriter):
 
                 outputs = dataset.outputs
                 outputs = [Attribute('Prediction ' + output.name, attribute_type, nominal_values) for output in outputs]
-                prediction_dataset = replace(dataset, y=predictions, outputs=outputs)
-                return Predictions(original_dataset=dataset, prediction_dataset=prediction_dataset)
+                return PredictionDataset(replace(dataset, y=predictions, outputs=outputs))
 
             return None
 
