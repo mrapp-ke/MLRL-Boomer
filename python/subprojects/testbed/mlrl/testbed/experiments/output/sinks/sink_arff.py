@@ -3,16 +3,21 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing datasets to ARFF files.
 """
+from dataclasses import replace
+
+import arff
 import numpy as np
+
+from scipy.sparse import dok_array
 
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.data import ArffMetaData, save_arff_file
 from mlrl.testbed.dataset import Attribute, AttributeType, Dataset
 from mlrl.testbed.experiments.output.sinks.sink import DatasetFileSink
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import OPTION_DECIMALS
+from mlrl.testbed.util.io import ENCODING_UTF8
 
 
 class ArffFileSink(DatasetFileSink):
@@ -21,6 +26,42 @@ class ArffFileSink(DatasetFileSink):
     """
 
     SUFFIX_ARFF = 'arff'
+
+    @staticmethod
+    def __save_arff_file(file_path: str, dataset: Dataset):
+        sparse = dataset.has_sparse_features and dataset.has_sparse_outputs
+        num_examples = dataset.num_examples
+        num_features = dataset.num_features
+        num_outputs = dataset.num_outputs
+
+        features = dataset.features
+        x_features = [(features[i].name, 'NUMERIC' if features[i].attribute_type == AttributeType.NUMERICAL
+                       or features[i].nominal_values is None else features[i].nominal_values)
+                      for i in range(num_features)]
+
+        outputs = dataset.outputs
+        y_features = [(outputs[i].name, 'NUMERIC' if outputs[i].attribute_type == AttributeType.NUMERICAL
+                       or outputs[i].nominal_values is None else outputs[i].nominal_values) for i in range(num_outputs)]
+
+        if sparse:
+            data = [{} for _ in range(num_examples)]
+        else:
+            data = [[0 for _ in range(num_features + num_outputs)] for _ in range(num_examples)]
+
+        for keys, value in dok_array(dataset.x).items():
+            data[keys[0]][keys[1]] = value
+
+        for keys, value in dok_array(dataset.y).items():
+            data[keys[0]][num_features + keys[1]] = value
+
+        with open(file_path, 'w', encoding=ENCODING_UTF8) as file:
+            file.write(
+                arff.dumps({
+                    'description': 'traindata',
+                    'relation': 'traindata: -C ' + str(-num_outputs),
+                    'attributes': x_features + y_features,
+                    'data': data
+                }))
 
     def __init__(self, directory: str, options: Options = Options()):
         """
@@ -53,4 +94,4 @@ class ArffFileSink(DatasetFileSink):
             features.append(Attribute('Ground Truth ' + output.name, attribute_type, nominal_values))
             outputs.append(Attribute('Prediction ' + output.name, attribute_type, nominal_values))
 
-        save_arff_file(file_path, dataset.x, predictions, ArffMetaData(features, outputs))
+        self.__save_arff_file(file_path, replace(dataset, y=predictions, features=features, outputs=outputs))
