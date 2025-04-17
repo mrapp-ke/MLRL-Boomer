@@ -6,7 +6,7 @@ Provides classes that allow writing models to one or several sinks.
 from typing import List, Optional
 
 from mlrl.testbed.experiments.output.data import OutputData
-from mlrl.testbed.experiments.output.model.model import Model
+from mlrl.testbed.experiments.output.model.model import OutputModel
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
@@ -29,7 +29,7 @@ class ModelWriter(OutputWriter):
             training_result = state.training_result
 
             if training_result:
-                return Model(training_result.learner)
+                return OutputModel(training_result.learner)
 
             return None
 
