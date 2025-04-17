@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes that allow writing predictions and the corresponding ground truth to one or several sinks.
+Provides classes that allow writing predictions to one or several sinks.
 """
 from dataclasses import replace
 from typing import List, Optional
@@ -20,7 +20,7 @@ from mlrl.testbed.util.format import OPTION_DECIMALS
 
 class PredictionWriter(OutputWriter):
     """
-    Allows to write predictions and the corresponding ground truth to one or several sinks.
+    Allows to write predictions to one or several sinks.
     """
 
     class DefaultExtractor(DataExtractor):
