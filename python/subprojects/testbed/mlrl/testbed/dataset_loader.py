@@ -8,7 +8,8 @@ from typing import Optional
 
 from mlrl.testbed.data import load_data_set, load_data_set_and_meta_data
 from mlrl.testbed.dataset import Dataset, DatasetType
-from mlrl.testbed.util.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name
+from mlrl.testbed.experiments.output.sinks import ArffFileSink
+from mlrl.testbed.util.io import get_file_name
 
 
 class DatasetLoader(ABC):
@@ -63,7 +64,7 @@ class ArffDatasetLoader(DatasetLoader):
         def load_dataset(self, feature_dtype, output_dtype, dataset_type: Optional[DatasetType] = None) -> Dataset:
             dataset_name = self.dataset_name
             file_name = dataset_type.get_file_name(dataset_name) if dataset_type else dataset_name
-            arff_file_name = get_file_name(file_name, SUFFIX_ARFF)
+            arff_file_name = get_file_name(file_name, ArffFileSink.SUFFIX_ARFF)
             meta_data = self.meta_data
 
             if meta_data:
@@ -73,7 +74,7 @@ class ArffDatasetLoader(DatasetLoader):
                                      feature_dtype=feature_dtype,
                                      output_dtype=output_dtype)
             else:
-                xml_file_name = get_file_name(dataset_name, SUFFIX_XML)
+                xml_file_name = get_file_name(dataset_name, ArffFileSink.SUFFIX_XML)
                 x, y, meta_data = load_data_set_and_meta_data(directory=self.directory,
                                                               arff_file_name=arff_file_name,
                                                               xml_file_name=xml_file_name,
