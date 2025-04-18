@@ -1,7 +1,0 @@
-mlrl.testbed.experiments.output.predictions.predictions module
-==============================================================
-
-.. automodule:: mlrl.testbed.experiments.output.predictions.predictions
-   :members:
-   :show-inheritance:
-   :undoc-members:
