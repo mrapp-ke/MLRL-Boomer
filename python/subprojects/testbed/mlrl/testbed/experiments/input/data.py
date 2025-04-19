@@ -7,6 +7,8 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any
 
+import numpy as np
+
 from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
@@ -44,6 +46,31 @@ class InputData(Data, ABC):
         :param state:       The state to be updated
         :param input_data:  The input data
         """
+
+
+class DatasetInputData(InputData):
+    """
+    An abstract base class for all classes that represent input data that can be converted into a dataset.
+    """
+
+    @dataclass
+    class Properties(InputData.Properties):
+        """
+        Properties of input data that represents a dataset.
+
+        Attributes:
+            feature_dtype:  The type of the feature matrix contained in the dataset
+            output_dtype:   The type of the output matrix contained in the dataset
+
+        """
+        feature_dtype: np.dtype
+        output_dtype: np.dtype
+
+    def update_state(self, state: ExperimentState, input_data: Any):
+        """
+        See :func:`mlrl.testbed.experiments.input.data.InputData.update_state`
+        """
+        state.dataset = input_data
 
 
 class TabularInputData(InputData, ABC):
