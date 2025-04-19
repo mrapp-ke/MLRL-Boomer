@@ -10,7 +10,7 @@ import numpy as np
 
 from scipy.sparse import lil_array
 
-from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.experiments.dataset import Dataset
 
 
 @dataclass

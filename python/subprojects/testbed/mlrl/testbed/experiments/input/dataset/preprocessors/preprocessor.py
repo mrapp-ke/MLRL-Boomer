@@ -5,7 +5,7 @@ Provides classes for implementing preprocessors.
 """
 from abc import ABC, abstractmethod
 
-from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.experiments.dataset import Dataset
 
 
 class Preprocessor(ABC):

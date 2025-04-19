@@ -16,7 +16,7 @@ from scipy.sparse import coo_array, csc_array, lil_array
 
 from mlrl.common.data.types import Float32, Uint8
 
-from mlrl.testbed.dataset import Attribute, AttributeType
+from mlrl.testbed.experiments.dataset import Attribute, AttributeType
 from mlrl.testbed.util.io import ENCODING_UTF8
 
 
