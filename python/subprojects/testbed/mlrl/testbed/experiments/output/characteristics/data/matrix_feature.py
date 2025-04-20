@@ -5,7 +5,7 @@ Provides classes that provide access to characteristics of feature values, assoc
 """
 from functools import cached_property
 
-from mlrl.testbed.dataset import AttributeType, Dataset
+from mlrl.testbed.experiments.dataset import AttributeType, Dataset
 from mlrl.testbed.experiments.output.characteristics.data.matrix_output import density
 
 

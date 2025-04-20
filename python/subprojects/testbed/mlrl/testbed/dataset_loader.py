@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 from mlrl.testbed.data import load_data_set, load_data_set_and_meta_data
-from mlrl.testbed.dataset import Dataset, DatasetType
+from mlrl.testbed.experiments.dataset import Dataset, DatasetType
 from mlrl.testbed.experiments.output.sinks import ArffFileSink
 from mlrl.testbed.util.io import get_file_name
 
