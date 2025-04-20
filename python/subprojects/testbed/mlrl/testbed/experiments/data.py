@@ -4,9 +4,8 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing input or output data.
 """
 from abc import ABC
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from os import path
-from typing import Type
 
 from mlrl.testbed.experiments.state import ExperimentState
 
@@ -31,22 +30,12 @@ class Data(ABC):
         include_prediction_scope: bool = True
         include_fold: bool = True
 
-    def __init__(self, default_context: Context = Context()):
+    def __init__(self, context: Context = Context()):
         """
-        :param default_context: A `Data.Context` to be used by default for finding a suitable source or sink this data
-                                can be handled by
+        :param context: A `Data.Context` to be used by default for finding a suitable source or sink this data can be
+                        handled by
         """
-        self.default_context = default_context
-        self.custom_context = {}
-
-    def get_context(self, lookup_type: Type) -> Context:
-        """
-        Returns a `Data.Context` that can be used for finding a suitable source or sink for handling this data.
-
-        :param lookup_type: The type of the source or sink to search for
-        :return:            A `Data.Context`
-        """
-        return self.custom_context.setdefault(lookup_type, replace(self.default_context))
+        self.context = context
 
 
 class FilePath:

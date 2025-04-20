@@ -66,7 +66,7 @@ class FileSource(Source, ABC):
         return FilePath(directory=self.directory,
                         file_name=input_data.properties.file_name,
                         suffix=self.suffix,
-                        context=input_data.get_context(type(self))).resolve(state)
+                        context=input_data.context).resolve(state)
 
     def is_available(self, state: ExperimentState, input_data: InputData) -> bool:
         return path.isfile(self._get_file_path(state, input_data))
@@ -98,11 +98,8 @@ class DatasetFileSource(FileSource, ABC):
     def _read_from_file(self, state: ExperimentState, file_path: str, input_data: InputData) -> Optional[Any]:
         dataset = self._read_dataset_from_file(file_path, input_data)
 
-        if dataset:
-            context = input_data.get_context(type(self))
-
-            if context.include_dataset_type:
-                dataset = replace(dataset, type=state.dataset_type)
+        if dataset and input_data.context.include_dataset_type:
+            dataset = replace(dataset, type=state.dataset_type)
 
         return dataset
 

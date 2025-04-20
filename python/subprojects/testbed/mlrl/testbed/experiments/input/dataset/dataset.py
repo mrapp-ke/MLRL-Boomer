@@ -19,4 +19,4 @@ class InputDataset(DatasetInputData):
         :param dataset_name: The name of the dataset
         """
         super().__init__(DatasetInputData.Properties(file_name=dataset_name, feature_dtype=Float32, output_dtype=Uint8),
-                         default_context=Data.Context(include_prediction_scope=False))
+                         context=Data.Context(include_prediction_scope=False))
