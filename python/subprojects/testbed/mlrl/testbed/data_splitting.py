@@ -7,6 +7,7 @@ and test sets.
 import logging as log
 
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from functools import reduce
 from os import path
 from typing import List, Optional
@@ -38,6 +39,20 @@ class DataSet:
         self.data_dir = data_dir
         self.data_set_name = data_set_name
         self.use_one_hot_encoding = use_one_hot_encoding
+
+
+@dataclass
+class DataSplit:
+    """
+    A split of a dataset into training and test datasets.
+
+    :param fold:                The fold, the split corresponds to
+    :param training_dataset:    The training dataset
+    :param test_dataset:        The test dataset
+    """
+    fold: Fold
+    training_dataset: Dataset
+    test_dataset: Dataset
 
 
 class DataSplitter(ABC):
