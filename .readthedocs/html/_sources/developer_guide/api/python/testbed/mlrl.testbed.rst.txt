@@ -23,7 +23,6 @@ Submodules
 
    mlrl.testbed.data
    mlrl.testbed.data_splitting
-   mlrl.testbed.dataset
    mlrl.testbed.dataset_loader
    mlrl.testbed.experiment
    mlrl.testbed.fold
