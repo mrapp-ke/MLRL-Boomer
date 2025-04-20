@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from functools import reduce
 from os import path
-from typing import List, Optional
+from typing import Generator, List, Optional
 
 from scipy.sparse import vstack
 from sklearn.model_selection import KFold, train_test_split
@@ -19,7 +19,6 @@ from mlrl.testbed.data import ArffMetaData, load_data_set, load_data_set_and_met
 from mlrl.testbed.experiments.dataset import Dataset, DatasetType
 from mlrl.testbed.experiments.input.dataset.preprocessors import Preprocessor
 from mlrl.testbed.experiments.output.sinks import ArffFileSink
-from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.fold import Fold
 from mlrl.testbed.util.io import get_file_name, get_file_name_per_fold
 
@@ -60,37 +59,12 @@ class DataSplitter(ABC):
     An abstract base class for all classes that split a data set into training and test data.
     """
 
-    class Callback(ABC):
-        """
-        An abstract base class for all classes that train and evaluate a model given a predefined split of the available
-        data.
-        """
-
-        @abstractmethod
-        def train_and_evaluate(self, fold: Fold, train_dataset: Dataset, test_dataset: Dataset):
-            """
-            The function that is invoked to train a model on a training set and evaluate it on a test set.
-
-            :param fold:            The fold of the available data to be used for training and evaluating the model
-            :param train_dataset:   The dataset to be used for training
-            :param test_dataset:    The dataset to be used for testing
-            """
-
-    def run(self, callback: Callback):
-        """
-        :param callback: The callback that should be used for training and evaluating models
-        """
-        start_time = Timer.start()
-        self._split_data(callback)
-        run_time = Timer.stop(start_time)
-        log.info('Successfully finished after %s', run_time)
-
     @abstractmethod
-    def _split_data(self, callback: Callback):
+    def split(self) -> Generator[DataSplit]:
         """
-        Must be implemented by subclasses in order to split the available data.
+        Returns a generator that generates the individual splits of the dataset into training and test data.
 
-        :param callback: The callback that should be used for training and evaluating models
+        :return: The generator
         """
 
 
@@ -134,7 +108,7 @@ class NoSplitter(DataSplitter):
         self.data_set = data_set
         self.preprocessor = preprocessor
 
-    def _split_data(self, callback: DataSplitter.Callback):
+    def split(self) -> Generator[DataSplit]:
         log.warning('Not using separate training and test sets. The model will be evaluated on the training data...')
 
         # Load data set...
@@ -157,7 +131,7 @@ class NoSplitter(DataSplitter):
         # Train and evaluate model...
         fold = Fold(index=None, num_folds=1, is_last_fold=True)
         dataset = Dataset(x, y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
-        callback.train_and_evaluate(fold, train_dataset=dataset, test_dataset=dataset)
+        yield DataSplit(fold=fold, training_dataset=dataset, test_dataset=dataset)
 
 
 class TrainTestSplitter(DataSplitter):
@@ -177,7 +151,7 @@ class TrainTestSplitter(DataSplitter):
         self.test_size = test_size
         self.random_state = random_state
 
-    def _split_data(self, callback: DataSplitter.Callback):
+    def split(self) -> Generator[DataSplit]:
         log.info('Using separate training and test sets...')
 
         # Check if ARFF files with predefined training and test data are available...
@@ -227,7 +201,7 @@ class TrainTestSplitter(DataSplitter):
         fold = Fold(index=None, num_folds=1, is_last_fold=True)
         train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
         test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, DatasetType.TEST)
-        callback.train_and_evaluate(fold, train_dataset=train_dataset, test_dataset=test_dataset)
+        yield DataSplit(fold=fold, training_dataset=train_dataset, test_dataset=test_dataset)
 
 
 class CrossValidationSplitter(DataSplitter):
@@ -251,7 +225,7 @@ class CrossValidationSplitter(DataSplitter):
         self.current_fold = current_fold
         self.random_state = random_state
 
-    def _split_data(self, callback: DataSplitter.Callback):
+    def split(self) -> Generator[DataSplit]:
         num_folds = self.num_folds
         current_fold = self.current_fold
         log.info('Performing %s %s-fold cross validation...',
@@ -268,23 +242,21 @@ class CrossValidationSplitter(DataSplitter):
         xml_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_XML)
 
         if predefined_split:
-            self.__predefined_cross_validation(callback,
-                                               data_dir=data_dir,
-                                               arff_file_names=arff_file_names,
-                                               xml_file_name=xml_file_name,
-                                               num_folds=num_folds,
-                                               current_fold=current_fold)
-        else:
-            arff_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_ARFF)
-            self.__cross_validation(callback,
-                                    data_dir=data_dir,
-                                    arff_file_name=arff_file_name,
-                                    xml_file_name=xml_file_name,
-                                    num_folds=num_folds,
-                                    current_fold=current_fold)
+            return self.__predefined_cross_validation(data_dir=data_dir,
+                                                      arff_file_names=arff_file_names,
+                                                      xml_file_name=xml_file_name,
+                                                      num_folds=num_folds,
+                                                      current_fold=current_fold)
 
-    def __predefined_cross_validation(self, callback: DataSplitter.Callback, data_dir: str, arff_file_names: List[str],
-                                      xml_file_name: str, num_folds: int, current_fold: int):
+        arff_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_ARFF)
+        return self.__cross_validation(data_dir=data_dir,
+                                       arff_file_name=arff_file_name,
+                                       xml_file_name=xml_file_name,
+                                       num_folds=num_folds,
+                                       current_fold=current_fold)
+
+    def __predefined_cross_validation(self, data_dir: str, arff_file_names: List[str], xml_file_name: str,
+                                      num_folds: int, current_fold: int) -> Generator[DataSplit]:
         # Load first data set for the first fold...
         x, y, meta_data = load_data_set_and_meta_data(data_dir, arff_file_names[0], xml_file_name)
 
@@ -338,10 +310,10 @@ class CrossValidationSplitter(DataSplitter):
             fold = Fold(index=i, num_folds=num_folds, is_last_fold=current_fold < 0 and i == num_folds - 1)
             train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
             test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, DatasetType.TEST)
-            callback.train_and_evaluate(fold, train_dataset=train_dataset, test_dataset=test_dataset)
+            yield DataSplit(fold=fold, training_dataset=train_dataset, test_dataset=test_dataset)
 
-    def __cross_validation(self, callback: DataSplitter.Callback, data_dir: str, arff_file_name: str,
-                           xml_file_name: str, num_folds: int, current_fold: int):
+    def __cross_validation(self, data_dir: str, arff_file_name: str, xml_file_name: str, num_folds: int,
+                           current_fold: int) -> Generator[DataSplit]:
         # Load data set...
         x, y, meta_data = load_data_set_and_meta_data(data_dir, arff_file_name, xml_file_name)
 
@@ -373,4 +345,4 @@ class CrossValidationSplitter(DataSplitter):
                 fold = Fold(index=i, num_folds=num_folds, is_last_fold=current_fold < 0 and i == num_folds - 1)
                 train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
                 test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, DatasetType.TEST)
-                callback.train_and_evaluate(fold, train_dataset=train_dataset, test_dataset=test_dataset)
+                yield DataSplit(fold=fold, training_dataset=train_dataset, test_dataset=test_dataset)
