@@ -12,7 +12,7 @@ from sklearn.base import BaseEstimator, RegressorMixin
 
 from mlrl.common.mixins import ClassifierMixin
 
-from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.state import ExperimentState, PredictionState
 

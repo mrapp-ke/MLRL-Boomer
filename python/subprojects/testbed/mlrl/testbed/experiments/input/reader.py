@@ -36,7 +36,7 @@ class InputReader(DataExchange, ABC):
             state = self.state
             input_reader = self.input_reader
             input_data = input_reader.input_data
-            input_reader.source.read_from_source(state, input_data)
+            return input_reader.source.read_from_source(state, input_data)
 
     def __init__(self, source: Source, input_data: Data):
         """
