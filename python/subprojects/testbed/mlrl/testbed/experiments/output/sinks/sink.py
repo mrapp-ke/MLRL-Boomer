@@ -9,8 +9,8 @@ from abc import ABC, abstractmethod
 
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.experiments.data import FilePath
+from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData, TabularOutputData
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table

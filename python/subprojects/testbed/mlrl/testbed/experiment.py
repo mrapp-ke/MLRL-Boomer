@@ -15,7 +15,7 @@ from sklearn.base import BaseEstimator, clone
 from mlrl.common.mixins import NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
 
 from mlrl.testbed.data_splitting import DataSplitter
-from mlrl.testbed.dataset import AttributeType, Dataset, DatasetType
+from mlrl.testbed.experiments.dataset import AttributeType, Dataset, DatasetType
 from mlrl.testbed.experiments.input.reader import InputReader
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.prediction import Predictor

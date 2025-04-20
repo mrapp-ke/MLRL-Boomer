@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing predictions that are part of output data.
 """
-from mlrl.testbed.dataset import Dataset
+from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.dataset.dataset import OutputDataset
 
