@@ -24,13 +24,14 @@ from mlrl.common.learners import RuleLearner, SparsePolicy
 from mlrl.common.package_info import PythonPackageInfo
 from mlrl.common.util.format import format_dict_keys, format_enum_values, format_iterable
 
-from mlrl.testbed.data_splitting import CrossValidationSplitter, DataSet, DatasetSplitter, NoSplitter, TrainTestSplitter
+from mlrl.testbed.data_splitting import CrossValidationSplitter, DatasetSplitter, NoSplitter, TrainTestSplitter
 from mlrl.testbed.experiment import Experiment
+from mlrl.testbed.experiments.input.dataset import DatasetReader, InputDataset
 from mlrl.testbed.experiments.input.dataset.preprocessors import OneHotEncoder, Preprocessor
 from mlrl.testbed.experiments.input.model import ModelReader
 from mlrl.testbed.experiments.input.parameters import ParameterReader
 from mlrl.testbed.experiments.input.reader import InputReader
-from mlrl.testbed.experiments.input.sources import CsvFileSource, PickleFileSource
+from mlrl.testbed.experiments.input.sources import ArffFileSource, CsvFileSource, PickleFileSource
 from mlrl.testbed.experiments.output.characteristics.data import DataCharacteristics, DataCharacteristicsWriter, \
     OutputCharacteristics, PredictionCharacteristicsWriter
 from mlrl.testbed.experiments.output.characteristics.model import ModelCharacteristicsWriter, \
@@ -542,16 +543,19 @@ class LearnerRunnable(Runnable, ABC):
         return PredictionType.parse(self.PARAM_PREDICTION_TYPE, args.prediction_type)
 
     @staticmethod
-    def __create_preprocessor(args) -> Optional[Preprocessor]:
+    def __create_preprocessors(args) -> List[Preprocessor]:
+        preprocessors = []
+
         if args.one_hot_encoding:
-            return OneHotEncoder()
-        return None
+            preprocessors.append(OneHotEncoder())
+
+        return preprocessors
 
     def __create_dataset_splitter(self, args) -> DatasetSplitter:
-        data_set = DataSet(data_dir=args.data_dir,
-                           data_set_name=args.dataset,
-                           use_one_hot_encoding=args.one_hot_encoding)
-        preprocessor = self.__create_preprocessor(args)
+        dataset = InputDataset(dataset_name=args.dataset)
+        source = ArffFileSource(directory=args.data_dir)
+        dataset_reader = DatasetReader(source=source, input_data=dataset)
+        dataset_reader.add_preprocessors(*self.__create_preprocessors(args))
         value, options = parse_param_and_options(self.PARAM_DATA_SPLIT, args.data_split, self.DATA_SPLIT_VALUES)
 
         if value == self.DATA_SPLIT_CROSS_VALIDATION:
@@ -563,8 +567,7 @@ class LearnerRunnable(Runnable, ABC):
                 assert_less_or_equal(self.OPTION_CURRENT_FOLD, current_fold, num_folds)
             random_state = int(args.random_state) if args.random_state else 1
             assert_greater_or_equal(self.PARAM_RANDOM_STATE, random_state, 1)
-            return CrossValidationSplitter(data_set,
-                                           preprocessor,
+            return CrossValidationSplitter(dataset_reader,
                                            num_folds=num_folds,
                                            current_fold=current_fold - 1,
                                            random_state=random_state)
@@ -574,9 +577,9 @@ class LearnerRunnable(Runnable, ABC):
             assert_less(self.OPTION_TEST_SIZE, test_size, 1)
             random_state = int(args.random_state) if args.random_state else 1
             assert_greater_or_equal(self.PARAM_RANDOM_STATE, random_state, 1)
-            return TrainTestSplitter(data_set, preprocessor, test_size=test_size, random_state=random_state)
+            return TrainTestSplitter(dataset_reader, test_size=test_size, random_state=random_state)
 
-        return NoSplitter(data_set, preprocessor)
+        return NoSplitter(dataset_reader)
 
     @staticmethod
     def __create_pre_execution_hook(args, dataset_splitter: DatasetSplitter) -> Optional[Experiment.ExecutionHook]:

@@ -22,17 +22,14 @@ class OutputDataset(DatasetOutputData):
     Represents a dataset that is part of output data.
     """
 
-    def __init__(self,
-                 dataset: Dataset,
-                 properties: OutputData.Properties,
-                 default_context: Data.Context = Data.Context()):
+    def __init__(self, dataset: Dataset, properties: OutputData.Properties, context: Data.Context = Data.Context()):
         """
-        :param dataset:         A dataset
-        :param properties:      The properties of the output data
-        :param default_context: A `Data.Context` to be used by default for finding a suitable sink this output data can
-                                be written to
+        :param dataset:     A dataset
+        :param properties:  The properties of the output data
+        :param context:     A `Data.Context` to be used by default for finding a suitable sink this output data can be
+                            written to
         """
-        super().__init__(properties=properties, default_context=default_context)
+        super().__init__(properties=properties, context=context)
         self.dataset = dataset.enforce_dense_outputs()
 
     def to_text(self, options: Options, **_) -> Optional[str]:

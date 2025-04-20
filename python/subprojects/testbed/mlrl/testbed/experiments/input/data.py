@@ -29,13 +29,13 @@ class InputData(Data, ABC):
         """
         file_name: str
 
-    def __init__(self, properties: Properties, default_context: Data.Context = Data.Context()):
+    def __init__(self, properties: Properties, context: Data.Context = Data.Context()):
         """
-        :param properties:      The properties of the input data
-        :param default_context: A `Data.Context` to be used by default for finding a suitable input reader this data
-                                can be handled by
+        :param properties:  The properties of the input data
+        :param context:     A `Data.Context` to be used by default for finding a suitable input reader this data can be
+                            handled by
         """
-        super().__init__(default_context=default_context)
+        super().__init__(context=context)
         self.properties = properties
 
     @abstractmethod
@@ -89,15 +89,15 @@ class TabularInputData(InputData, ABC):
         """
         has_header: bool
 
-    def __init__(self, properties: Properties, default_context: Data.Context = Data.Context()):
+    def __init__(self, properties: Properties, context: Data.Context = Data.Context()):
         """
 
-        :param properties:      The properties of the input data
-        :param default_context: A `Data.Context` to be used by default for finding a suitable input reader this data
-                                can be handled by
+        :param properties:  The properties of the input data
+        :param context:     A `Data.Context` to be used by default for finding a suitable input reader this data can be
+                            handled by
 
         """
-        super().__init__(properties, default_context)
+        super().__init__(properties, context)
 
     def update_state(self, state: ExperimentState, input_data: Any):
         self._update_state(state, input_data)
