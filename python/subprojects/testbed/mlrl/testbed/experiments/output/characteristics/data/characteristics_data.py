@@ -8,8 +8,8 @@ from typing import Optional
 
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.experiments.data import Data
+from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.output.characteristics.data.characteristics import LABEL_CHARACTERISTICS, \
     OUTPUT_CHARACTERISTICS, Characteristic
 from mlrl.testbed.experiments.output.characteristics.data.matrix_feature import FeatureMatrix

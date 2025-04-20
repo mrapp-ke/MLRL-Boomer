@@ -13,7 +13,7 @@ from scipy.sparse import dok_array
 
 from mlrl.common.config.options import Options
 
-from mlrl.testbed.dataset import AttributeType, Dataset
+from mlrl.testbed.experiments.dataset import AttributeType, Dataset
 from mlrl.testbed.experiments.output.sinks.sink import DatasetFileSink
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.io import ENCODING_UTF8, open_writable_file

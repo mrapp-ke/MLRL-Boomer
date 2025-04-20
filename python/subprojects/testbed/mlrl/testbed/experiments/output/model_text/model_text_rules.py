@@ -12,8 +12,8 @@ from mlrl.common.config.options import Options
 from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBody, PartialHead, RuleModel, \
     RuleModelVisitor
 
-from mlrl.testbed.dataset import Dataset
 from mlrl.testbed.experiments.data import Data
+from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.output.data import OutputData, TextualOutputData
 from mlrl.testbed.util.format import format_number
 
