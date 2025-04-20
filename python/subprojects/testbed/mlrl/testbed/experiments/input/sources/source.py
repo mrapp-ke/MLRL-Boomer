@@ -6,10 +6,12 @@ Provides classes for implementing sources, input data may be read from.
 import logging as log
 
 from abc import ABC, abstractmethod
+from dataclasses import replace
 from typing import Any, Optional
 
 from mlrl.testbed.experiments.data import FilePath
-from mlrl.testbed.experiments.input.data import InputData, TabularInputData
+from mlrl.testbed.experiments.dataset import Dataset
+from mlrl.testbed.experiments.input.data import DatasetInputData, InputData, TabularInputData
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
 
@@ -50,18 +52,46 @@ class FileSource(Source, ABC):
                              context=context)
         file_path = file_path.resolve(state)
         log.debug('Reading input data from file "%s"...', file_path)
-        data = self._read_from_file(file_path, input_data)
+        data = self._read_from_file(state, file_path, input_data)
 
         if data:
             input_data.update_state(state, data)
 
     @abstractmethod
-    def _read_from_file(self, file_path: str, input_data: InputData) -> Optional[Any]:
+    def _read_from_file(self, state: ExperimentState, file_path: str, input_data: InputData) -> Optional[Any]:
         """
         Must be implemented by subclasses in order to read input data from a specific sink.
 
+        :param state:       The state that should be used to store the input data
         :param file_path:   The path to the file from which the input data should be read
         :param input_data:  The input data that should be read
+        """
+
+
+class DatasetFileSource(FileSource, ABC):
+    """
+    An abstract base class for all classes that allow to read a dataset from a file.
+    """
+
+    def _read_from_file(self, state: ExperimentState, file_path: str, input_data: InputData) -> Optional[Any]:
+        dataset = self._read_dataset_from_file(file_path, input_data)
+
+        if dataset:
+            context = input_data.get_context(type(self))
+
+            if context.include_dataset_type:
+                dataset = replace(dataset, type=state.dataset_type)
+
+        return dataset
+
+    @abstractmethod
+    def _read_dataset_from_file(self, file_path: str, input_data: DatasetInputData) -> Optional[Dataset]:
+        """
+        Must be implemented by subclasses in order to read a dataset from a specific file.
+
+        :param file_path:   The path to the file from which the input data should be read
+        :param input_data:  The input data that should be read
+        :return:            A dataset that has been read from the file
         """
 
 
@@ -77,7 +107,7 @@ class TabularFileSource(FileSource, ABC):
         """
         super().__init__(directory=directory, suffix=suffix)
 
-    def _read_from_file(self, file_path: str, input_data: InputData) -> Optional[Any]:
+    def _read_from_file(self, _: ExperimentState, file_path: str, input_data: InputData) -> Optional[Any]:
         return self._read_table_from_file(file_path, input_data)
 
     @abstractmethod
