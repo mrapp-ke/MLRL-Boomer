@@ -6,7 +6,7 @@ Provides utility functions for reading and writing files.
 from os import path
 from typing import Optional
 
-from mlrl.testbed.fold import Fold
+from mlrl.testbed.experiments.fold import Fold
 
 # UTF-8 encoding
 ENCODING_UTF8 = 'utf-8'
