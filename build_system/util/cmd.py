@@ -86,12 +86,12 @@ class Command:
             exit_code = output.returncode
 
             if exit_code != 0:
+                if capture_output:
+                    Log.info('%s', str(output.stderr).strip())
+
                 message = ('Command "' + str(command) + '" terminated with non-zero exit code ' + str(exit_code))
 
                 if self.exit_on_error:
-                    if capture_output:
-                        Log.info('%s', str(output.stderr).strip())
-
                     Log.error(message, exit_code=exit_code)
                 else:
                     raise RuntimeError(message)
