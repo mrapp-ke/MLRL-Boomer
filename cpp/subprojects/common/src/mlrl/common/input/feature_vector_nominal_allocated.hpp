@@ -58,7 +58,7 @@ class MLRLCOMMON_API AllocatedNominalFeatureVector : public NominalFeatureVector
             NominalFeatureVector::values = util::reallocateMemory(NominalFeatureVector::values, numValues);
             NominalFeatureVector::indices = util::reallocateMemory(NominalFeatureVector::indices, numIndices);
             NominalFeatureVector::indptr = util::reallocateMemory(NominalFeatureVector::indptr, numValues + 1);
-            NominalFeatureVector::numValues = numValues;
+            NominalFeatureVector::numBins = numValues;
             NominalFeatureVector::indptr[numValues] = numIndices;
         }
 };
