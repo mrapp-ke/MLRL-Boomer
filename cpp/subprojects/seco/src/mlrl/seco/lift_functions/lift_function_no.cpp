@@ -8,11 +8,11 @@ namespace seco {
     class NoLiftFunction final : public ILiftFunction {
         public:
 
-            float64 calculateLift(uint32 numLabels) const override {
+            float32 calculateLift(uint32 numLabels) const override {
                 return 1;
             }
 
-            float64 getMaxLift(uint32 numLabels) const override {
+            float32 getMaxLift(uint32 numLabels) const override {
                 return 1;
             }
     };

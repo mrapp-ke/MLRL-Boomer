@@ -8,7 +8,7 @@ from mlrl.common.cython.learner cimport IBeamSearchTopDownRuleInductionMixin, ID
     INoParallelStatisticUpdateMixin, INoPartitionSamplingMixin, INoRulePruningMixin, \
     INoSequentialPostOptimizationMixin, INoSizeStoppingCriterionMixin, INoTimeStoppingCriterionMixin, \
     IOutputSamplingWithoutReplacementMixin, IParallelPredictionMixin, IParallelRuleRefinementMixin, \
-    IParallelStatisticUpdateMixin, IRandomBiPartitionSamplingMixin, IRoundRobinOutputSamplingMixin, \
+    IParallelStatisticUpdateMixin, IRandomBiPartitionSamplingMixin, IRNGMixin, IRoundRobinOutputSamplingMixin, \
     ISequentialPostOptimizationMixin, ISequentialRuleModelAssemblageMixin, ISizeStoppingCriterionMixin, \
     ITimeStoppingCriterionMixin, RuleLearnerConfig
 from mlrl.common.cython.learner_classification cimport ClassificationRuleLearner, IClassificationRuleLearner, \
@@ -25,7 +25,8 @@ from mlrl.seco.cython.learner cimport IAccuracyHeuristicMixin, IAccuracyPruningH
 
 cdef extern from "mlrl/seco/learner_seco_classifier.hpp" namespace "seco" nogil:
 
-    cdef cppclass ISeCoClassifierConfig"seco::ISeCoClassifier::IConfig"(INoCoverageStoppingCriterionMixin,
+    cdef cppclass ISeCoClassifierConfig"seco::ISeCoClassifier::IConfig"(IRNGMixin,
+                                                                        INoCoverageStoppingCriterionMixin,
                                                                         ICoverageStoppingCriterionMixin,
                                                                         ISingleOutputHeadMixin,
                                                                         IPartialHeadMixin,

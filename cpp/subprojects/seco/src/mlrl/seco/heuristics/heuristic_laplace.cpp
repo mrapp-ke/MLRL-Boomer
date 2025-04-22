@@ -8,10 +8,10 @@ namespace seco {
     class Laplace final : public IHeuristic {
         public:
 
-            float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                            float64 uip, float64 urn, float64 urp) const override {
-                float64 numCoveredCorrect = cin + crp;
-                float64 numCovered = numCoveredCorrect + cip + crn;
+            float32 evaluateConfusionMatrix(float32 cin, float32 cip, float32 crn, float32 crp, float32 uin,
+                                            float32 uip, float32 urn, float32 urp) const override {
+                float32 numCoveredCorrect = cin + crp;
+                float32 numCovered = numCoveredCorrect + cip + crn;
                 return (numCoveredCorrect + 1) / (numCovered + 2);
             }
     };

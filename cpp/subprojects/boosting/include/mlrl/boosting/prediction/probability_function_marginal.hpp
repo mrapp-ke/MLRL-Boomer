@@ -19,7 +19,18 @@ namespace boosting {
             virtual ~IMarginalProbabilityFunction() {}
 
             /**
-             * Transforms the score that is predicted for a specific label into a probability.
+             * Transforms a score, represented by a 32-bit floating point value, that is predicted for a specific label
+             * into a probability.
+             *
+             * @param labelIndex    The index of the label, the score is predicted for
+             * @param score         The score that is predicted
+             * @return              The probability into which the given score was transformed
+             */
+            virtual float64 transformScoreIntoMarginalProbability(uint32 labelIndex, float32 score) const = 0;
+
+            /**
+             * Transforms a score, represented by a 64-bit floating point value, that is predicted for a specific label
+             * into a probability.
              *
              * @param labelIndex    The index of the label, the score is predicted for
              * @param score         The score that is predicted
