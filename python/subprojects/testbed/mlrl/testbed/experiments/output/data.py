@@ -68,13 +68,15 @@ class TextualOutputData(OutputData, ABC):
 
         def __format_fold(self, state: ExperimentState) -> str:
             if self.context.include_fold:
-                fold = state.fold
+                folding_strategy = state.folding_strategy
 
-                if fold.is_cross_validation_used:
-                    if fold.index is None:
-                        formatted_fold = 'Average across ' + str(fold.num_folds) + ' folds'
-                    else:
+                if folding_strategy.is_cross_validation_used:
+                    fold = state.fold
+
+                    if fold:
                         formatted_fold = 'Fold ' + str(fold.index + 1)
+                    else:
+                        formatted_fold = 'Average across ' + str(folding_strategy.num_folds) + ' folds'
 
                     return ' (' + formatted_fold + ')'
 
