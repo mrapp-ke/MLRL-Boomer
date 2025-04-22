@@ -22,10 +22,9 @@ from mlrl.testbed.experiments.prediction import Predictor
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
-from mlrl.testbed.fold import Fold
 
 
-class Experiment(DataSplitter.Callback):
+class Experiment:
     """
     An experiment that trains and evaluates a machine learning model on a specific data set using cross validation or
     separate training and test sets.
@@ -91,6 +90,7 @@ class Experiment(DataSplitter.Callback):
         self.fit_kwargs = fit_kwargs
         self.predict_kwargs = predict_kwargs
 
+    # pylint: disable=too-many-branches
     def run(self):
         """
         Runs the experiment.
@@ -103,77 +103,85 @@ class Experiment(DataSplitter.Callback):
         if pre_execution_hook:
             pre_execution_hook.execute()
 
-        self.data_splitter.run(self)
+        start_time = Timer.start()
 
-    def train_and_evaluate(self, fold: Fold, train_dataset: Dataset, test_dataset: Dataset):
-        """
-        See `DataSplitter.Callback.train_and_evaluate`
-        """
-        state = ExperimentState(problem_type=self.problem_type, dataset=train_dataset, fold=fold)
+        for data_split in self.data_splitter.split():
+            training_dataset = data_split.training_dataset
+            test_dataset = data_split.test_dataset
+            state = ExperimentState(problem_type=self.problem_type,
+                                    dataset=training_dataset,
+                                    folding_strategy=data_split.folding_strategy,
+                                    fold=data_split.fold)
 
-        # Read input data...
-        for input_reader in self.input_readers:
-            input_reader.open_session(state).exchange()
+            # Read input data...
+            for input_reader in self.input_readers:
+                input_reader.open_session(state).exchange()
 
-        # Apply parameter setting, if necessary...
-        learner = clone(self.base_learner)
-        parameters = state.parameters
+            # Apply parameter setting, if necessary...
+            learner = clone(self.base_learner)
+            parameters = state.parameters
 
-        if parameters:
-            learner.set_params(**parameters)
-            log.info('Successfully applied parameter setting: %s', parameters)
-        else:
-            parameters = learner.get_params()
+            if parameters:
+                learner.set_params(**parameters)
+                log.info('Successfully applied parameter setting: %s', parameters)
+            else:
+                parameters = learner.get_params()
 
-        # Write output data before model is trained...
-        for output_writer in self.pre_training_output_writers:
-            output_writer.open_session(state).exchange()
+            # Write output data before model is trained...
+            for output_writer in self.pre_training_output_writers:
+                output_writer.open_session(state).exchange()
 
-        # Set the indices of ordinal features, if supported...
-        fit_kwargs = self.fit_kwargs if self.fit_kwargs else {}
+            # Set the indices of ordinal features, if supported...
+            fit_kwargs = self.fit_kwargs if self.fit_kwargs else {}
 
-        if isinstance(learner, OrdinalFeatureSupportMixin):
-            fit_kwargs[OrdinalFeatureSupportMixin.KWARG_ORDINAL_FEATURE_INDICES] = train_dataset.get_feature_indices(
-                AttributeType.ORDINAL)
+            if isinstance(learner, OrdinalFeatureSupportMixin):
+                fit_kwargs[
+                    OrdinalFeatureSupportMixin.KWARG_ORDINAL_FEATURE_INDICES] = training_dataset.get_feature_indices(
+                        AttributeType.ORDINAL)
 
-        # Set the indices of nominal features, if supported...
-        if isinstance(learner, NominalFeatureSupportMixin):
-            fit_kwargs[NominalFeatureSupportMixin.KWARG_NOMINAL_FEATURE_INDICES] = train_dataset.get_feature_indices(
-                AttributeType.NOMINAL)
+            # Set the indices of nominal features, if supported...
+            if isinstance(learner, NominalFeatureSupportMixin):
+                fit_kwargs[
+                    NominalFeatureSupportMixin.KWARG_NOMINAL_FEATURE_INDICES] = training_dataset.get_feature_indices(
+                        AttributeType.NOMINAL)
 
-        # Load model from disk, if possible, otherwise train a new model...
-        loaded_learner = state.training_result.learner if state.training_result else None
+            # Load model from disk, if possible, otherwise train a new model...
+            loaded_learner = state.training_result.learner if state.training_result else None
 
-        if isinstance(loaded_learner, type(learner)):
-            self.__check_for_parameter_changes(expected_params=parameters, actual_params=loaded_learner.get_params())
-            loaded_learner.set_params(**parameters)
-            learner = loaded_learner
-            training_duration = state.training_result.training_duration
-        else:
-            log.info('Fitting model to %s training examples...', train_dataset.num_examples)
-            training_duration = self.__train(learner, train_dataset, **fit_kwargs)
-            log.info('Successfully fit model in %s', training_duration)
+            if isinstance(loaded_learner, type(learner)):
+                self.__check_for_parameter_changes(expected_params=parameters,
+                                                   actual_params=loaded_learner.get_params())
+                loaded_learner.set_params(**parameters)
+                learner = loaded_learner
+                training_duration = state.training_result.training_duration
+            else:
+                log.info('Fitting model to %s training examples...', training_dataset.num_examples)
+                training_duration = self.__train(learner, training_dataset, **fit_kwargs)
+                log.info('Successfully fit model in %s', training_duration)
 
-        state.training_result = TrainingState(learner=learner, training_duration=training_duration)
+            state.training_result = TrainingState(learner=learner, training_duration=training_duration)
 
-        # Obtain and evaluate predictions for training data, if necessary...
-        train_predictor = self.train_predictor
+            # Obtain and evaluate predictions for training data, if necessary...
+            train_predictor = self.train_predictor
 
-        if train_predictor and test_dataset.type != DatasetType.TRAINING:
-            predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-            self.__predict_and_evaluate(state, train_predictor, **predict_kwargs)
+            if train_predictor and test_dataset.type != DatasetType.TRAINING:
+                predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
+                self.__predict_and_evaluate(state, train_predictor, **predict_kwargs)
 
-        # Obtain and evaluate predictions for test data, if necessary...
-        test_predictor = self.test_predictor
+            # Obtain and evaluate predictions for test data, if necessary...
+            test_predictor = self.test_predictor
 
-        if test_predictor:
-            test_state = replace(state, dataset=test_dataset)
-            predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-            self.__predict_and_evaluate(test_state, test_predictor, **predict_kwargs)
+            if test_predictor:
+                test_state = replace(state, dataset=test_dataset)
+                predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
+                self.__predict_and_evaluate(test_state, test_predictor, **predict_kwargs)
 
-        # Write output data after model was trained...
-        for output_writer in self.post_training_output_writers:
-            output_writer.open_session(state).exchange()
+            # Write output data after model was trained...
+            for output_writer in self.post_training_output_writers:
+                output_writer.open_session(state).exchange()
+
+        run_time = Timer.stop(start_time)
+        log.info('Successfully finished after %s', run_time)
 
     def __predict_and_evaluate(self, state: ExperimentState, predictor: Predictor, **kwargs):
         """
