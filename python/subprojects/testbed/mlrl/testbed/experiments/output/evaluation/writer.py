@@ -36,18 +36,17 @@ class EvaluationDataExtractor(DataExtractor, ABC):
         prediction_result = state.prediction_result
 
         if training_result and prediction_result:
-            fold = state.fold
             dataset = state.dataset
             data_type = dataset.type
-            measurements = self.measurements.setdefault(data_type, Measurements(fold.num_folds))
-            index = 0 if fold.index is None else fold.index
+            measurements = self.measurements.setdefault(data_type, Measurements(state.folding_strategy.num_folds))
+            fold_index = state.fold.index
             options = Options(reduce(lambda aggr, sink: aggr | sink.options.dictionary, sinks, {}))
             training_duration = training_result.training_duration.value
             prediction_duration = prediction_result.prediction_duration.value
-            measurements.values_by_measure(EVALUATION_MEASURE_TRAINING_TIME)[index] = training_duration
-            measurements.values_by_measure(EVALUATION_MEASURE_PREDICTION_TIME)[index] = prediction_duration
+            measurements.values_by_measure(EVALUATION_MEASURE_TRAINING_TIME)[fold_index] = training_duration
+            measurements.values_by_measure(EVALUATION_MEASURE_PREDICTION_TIME)[fold_index] = prediction_duration
             self._update_measurements(measurements,
-                                      index,
+                                      fold_index,
                                       ground_truth=dataset.y,
                                       predictions=prediction_result.predictions,
                                       options=options)
@@ -86,8 +85,11 @@ class EvaluationWriter(OutputWriter, ABC):
 
     def _write_to_sink(self, sink: Sink, state: ExperimentState, output_data: OutputData):
         fold = state.fold
-        fold_index = fold.index if fold.is_cross_validation_used else 0
-        sink.write_to_sink(state, output_data, **{EvaluationResult.KWARG_FOLD: fold_index})
+        sink.write_to_sink(state, output_data, **{EvaluationResult.KWARG_FOLD: fold.index})
+        folding_strategy = state.folding_strategy
 
-        if fold.is_cross_validation_used and fold.is_last_fold:
-            sink.write_to_sink(replace(state, fold=replace(fold, index=None)), output_data)
+        if folding_strategy.is_cross_validation_used \
+                and not folding_strategy.is_subset \
+                and folding_strategy.is_last_fold(fold):
+            new_state = replace(state, fold=None)
+            sink.write_to_sink(new_state, output_data)
