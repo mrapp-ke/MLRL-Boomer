@@ -6,6 +6,8 @@ Provides utility functions for reading and writing files.
 from os import path
 from typing import Optional
 
+from mlrl.testbed.experiments.fold import Fold
+
 # UTF-8 encoding
 ENCODING_UTF8 = 'utf-8'
 
@@ -21,17 +23,16 @@ def get_file_name(name: str, suffix: str) -> str:
     return name + '.' + suffix
 
 
-def get_file_name_per_fold(name: str, suffix: str, fold: Optional[int]) -> str:
+def get_file_name_per_fold(name: str, suffix: str, fold: Optional[Fold]) -> str:
     """
     Returns a file name, including a suffix, that corresponds to a certain fold.
 
     :param name:    The name of the file (without suffix)
     :param suffix:  The suffix of the file
-    :param fold:    The cross validation fold, the file corresponds to, or None, if the file does not correspond to a
-                    specific fold
+    :param fold:    The fold, the file corresponds to, or None, if the file does not correspond to a specific fold
     :return:        The file name
     """
-    return get_file_name(name + '_' + ('overall' if fold is None else 'fold-' + str(fold + 1)), suffix)
+    return get_file_name(name + '_' + ('overall' if fold is None else 'fold-' + str(fold.index + 1)), suffix)
 
 
 def open_readable_file(file_path: str):

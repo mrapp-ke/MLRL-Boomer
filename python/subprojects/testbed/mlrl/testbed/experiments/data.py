@@ -115,6 +115,7 @@ class FilePath:
                 file_name = prediction_result.prediction_scope.get_file_name(file_name)
 
         if self.context.include_fold:
-            file_name = get_file_name_per_fold(file_name, self.suffix, state.fold.index)
+            fold = state.fold if state.folding_strategy.is_cross_validation_used else None
+            file_name = get_file_name_per_fold(file_name, self.suffix, fold)
 
         return path.join(self.directory, file_name)
