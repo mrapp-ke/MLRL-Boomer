@@ -17,9 +17,9 @@ from sklearn.model_selection import KFold, train_test_split
 
 from mlrl.testbed.data import ArffMetaData, load_data_set, load_data_set_and_meta_data
 from mlrl.testbed.experiments.dataset import Dataset, DatasetType
+from mlrl.testbed.experiments.fold import Fold, FoldingStrategy
 from mlrl.testbed.experiments.input.dataset.preprocessors import Preprocessor
 from mlrl.testbed.experiments.output.sinks import ArffFileSink
-from mlrl.testbed.fold import Fold, FoldingStrategy
 from mlrl.testbed.util.io import get_file_name, get_file_name_per_fold
 
 
