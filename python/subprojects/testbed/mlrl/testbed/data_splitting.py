@@ -132,9 +132,13 @@ class NoSplitter(DataSplitter):
 
         # Train and evaluate model...
         folding_strategy = FoldingStrategy(num_folds=1, first=0, last=1)
-        fold = Fold(index=0)
-        dataset = Dataset(x, y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
-        yield DataSplit(folding_strategy=folding_strategy, fold=fold, training_dataset=dataset, test_dataset=dataset)
+
+        for fold in folding_strategy.folds:
+            dataset = Dataset(x, y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
+            yield DataSplit(folding_strategy=folding_strategy,
+                            fold=fold,
+                            training_dataset=dataset,
+                            test_dataset=dataset)
 
 
 class TrainTestSplitter(DataSplitter):
@@ -202,13 +206,14 @@ class TrainTestSplitter(DataSplitter):
 
         # Train and evaluate model...
         folding_strategy = FoldingStrategy(num_folds=1, first=0, last=1)
-        fold = Fold(index=0)
-        train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
-        test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, DatasetType.TEST)
-        yield DataSplit(folding_strategy=folding_strategy,
-                        fold=fold,
-                        training_dataset=train_dataset,
-                        test_dataset=test_dataset)
+
+        for fold in folding_strategy.folds:
+            train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
+            test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, DatasetType.TEST)
+            yield DataSplit(folding_strategy=folding_strategy,
+                            fold=fold,
+                            training_dataset=train_dataset,
+                            test_dataset=test_dataset)
 
 
 class CrossValidationSplitter(DataSplitter):
@@ -296,15 +301,15 @@ class CrossValidationSplitter(DataSplitter):
                                            first=0 if current_fold < 0 else current_fold,
                                            last=num_folds if current_fold < 0 else current_fold + 1)
 
-        for i in range(folding_strategy.first, folding_strategy.last):
-            log.info('Fold %s / %s:', (i + 1), num_folds)
+        for fold in folding_strategy.folds:
+            log.info('Fold %s / %s:', (fold.index + 1), num_folds)
 
             # Create training set for current fold...
             train_x = None
             train_y = None
 
             for other_fold in range(num_folds):
-                if other_fold != i:
+                if other_fold != fold.index:
                     x, y = data[other_fold]
 
                     if train_x is None:
@@ -315,10 +320,9 @@ class CrossValidationSplitter(DataSplitter):
                         train_y = vstack((train_y, y))
 
             # Obtain test set for current fold...
-            test_x, test_y = data[i]
+            test_x, test_y = data[fold.index]
 
             # Train and evaluate model...
-            fold = Fold(index=i)
             train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
             test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, DatasetType.TEST)
             yield DataSplit(folding_strategy=folding_strategy,
@@ -344,25 +348,28 @@ class CrossValidationSplitter(DataSplitter):
         folding_strategy = FoldingStrategy(num_folds=num_folds,
                                            first=0 if current_fold < 0 else current_fold,
                                            last=num_folds if current_fold < 0 else current_fold + 1)
-        k_fold = KFold(n_splits=num_folds, random_state=self.random_state, shuffle=True)
+        splits = enumerate(KFold(n_splits=num_folds, random_state=self.random_state, shuffle=True).split(x, y))
 
-        for i, (train_indices, test_indices) in enumerate(k_fold.split(x, y)):
-            if current_fold < 0 or i == current_fold:
-                log.info('Fold %s / %s:', (i + 1), num_folds)
+        for fold in folding_strategy.folds:
+            split_index, (train_indices, test_indices) = next(splits, (None, (None, None)))
 
-                # Create training set for current fold...
-                train_x = x[train_indices]
-                train_y = y[train_indices]
+            while split_index and split_index < fold.index:
+                split_index, (train_indices, test_indices) = next(splits, (None, (None, None)))
 
-                # Create test set for current fold...
-                test_x = x[test_indices]
-                test_y = y[test_indices]
+            log.info('Fold %s / %s:', (fold.index + 1), num_folds)
 
-                # Train and evaluate model...
-                fold = Fold(index=i)
-                train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
-                test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, DatasetType.TEST)
-                yield DataSplit(folding_strategy=folding_strategy,
-                                fold=fold,
-                                training_dataset=train_dataset,
-                                test_dataset=test_dataset)
+            # Create training set for current fold...
+            train_x = x[train_indices]
+            train_y = y[train_indices]
+
+            # Create test set for current fold...
+            test_x = x[test_indices]
+            test_y = y[test_indices]
+
+            # Train and evaluate model...
+            train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
+            test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, DatasetType.TEST)
+            yield DataSplit(folding_strategy=folding_strategy,
+                            fold=fold,
+                            training_dataset=train_dataset,
+                            test_dataset=test_dataset)

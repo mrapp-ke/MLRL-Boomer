@@ -4,6 +4,19 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing folds of a dataset.
 """
 from dataclasses import dataclass
+from typing import Generator
+
+
+@dataclass
+class Fold:
+    """
+    Represents an individual fold of a dataset, i.e., a specific subset of the examples that are contained in the
+    dataset.
+
+    Attributes:
+        index: The index of the fold
+    """
+    index: int
 
 
 @dataclass
@@ -20,6 +33,16 @@ class FoldingStrategy:
     num_folds: int
     first: int
     last: int
+
+    @property
+    def folds(self) -> Generator[Fold]:
+        """
+        Returns a generator that generates all folds that are created by the strategy.
+
+        :return: The generator
+        """
+        for index in range(self.first, self.last):
+            yield Fold(index=index)
 
     @property
     def is_subset(self):
@@ -43,15 +66,3 @@ class FoldingStrategy:
         :return:        True, if the given fold is the last fold, False otherwise
         """
         return fold.index == self.last - 1
-
-
-@dataclass
-class Fold:
-    """
-    Represents an individual fold of a dataset, i.e., a specific subset of the examples that are contained in the
-    dataset.
-
-    Attributes:
-        index: The index of the fold
-    """
-    index: int
