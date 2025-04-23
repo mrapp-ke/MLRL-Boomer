@@ -1,7 +1,0 @@
-mlrl.testbed.fold module
-========================
-
-.. automodule:: mlrl.testbed.fold
-   :members:
-   :show-inheritance:
-   :undoc-members:
