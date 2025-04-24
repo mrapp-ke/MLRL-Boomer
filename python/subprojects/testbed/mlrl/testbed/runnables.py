@@ -581,8 +581,8 @@ class LearnerRunnable(Runnable, ABC):
     @staticmethod
     def __create_pre_execution_hook(args, data_splitter: DataSplitter) -> Optional[Experiment.ExecutionHook]:
         output_dir = args.output_dir
-        current_fold = data_splitter.current_fold if isinstance(data_splitter, CrossValidationSplitter) else -1
-        return LearnerRunnable.ClearOutputDirHook(output_dir) if output_dir and current_fold < 0 else None
+        is_subset = data_splitter.folding_strategy.is_subset
+        return LearnerRunnable.ClearOutputDirHook(output_dir) if output_dir and not is_subset else None
 
     def configure_arguments(self, parser: ArgumentParser):
         super().configure_arguments(parser)

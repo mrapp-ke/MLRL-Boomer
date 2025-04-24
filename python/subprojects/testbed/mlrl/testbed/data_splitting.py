@@ -109,6 +109,7 @@ class NoSplitter(DataSplitter):
         """
         self.data_set = data_set
         self.preprocessor = preprocessor
+        self.folding_strategy = FoldingStrategy(num_folds=1, first=0, last=1)
 
     def split(self) -> Generator[DataSplit]:
         log.warning('Not using separate training and test sets. The model will be evaluated on the training data...')
@@ -131,7 +132,7 @@ class NoSplitter(DataSplitter):
             meta_data = ArffMetaData(encoded_dataset.features, encoded_dataset.outputs, meta_data.outputs_at_start)
 
         # Train and evaluate model...
-        folding_strategy = FoldingStrategy(num_folds=1, first=0, last=1)
+        folding_strategy = self.folding_strategy
 
         for fold in folding_strategy.folds:
             dataset = Dataset(x, y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
@@ -157,6 +158,7 @@ class TrainTestSplitter(DataSplitter):
         self.preprocessor = preprocessor
         self.test_size = test_size
         self.random_state = random_state
+        self.folding_strategy = FoldingStrategy(num_folds=1, first=0, last=1)
 
     def split(self) -> Generator[DataSplit]:
         log.info('Using separate training and test sets...')
@@ -204,7 +206,7 @@ class TrainTestSplitter(DataSplitter):
                                                                 shuffle=True)
 
         # Train and evaluate model...
-        folding_strategy = FoldingStrategy(num_folds=1, first=0, last=1)
+        folding_strategy = self.folding_strategy
 
         for fold in folding_strategy.folds:
             train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
@@ -232,15 +234,19 @@ class CrossValidationSplitter(DataSplitter):
         """
         self.data_set = data_set
         self.preprocessor = preprocessor
-        self.num_folds = num_folds
-        self.current_fold = current_fold
         self.random_state = random_state
+        self.folding_strategy = FoldingStrategy(num_folds=num_folds,
+                                                first=0 if current_fold < 0 else current_fold,
+                                                last=num_folds if current_fold < 0 else current_fold + 1)
 
     def split(self) -> Generator[DataSplit]:
-        num_folds = self.num_folds
-        current_fold = self.current_fold
-        log.info('Performing %s %s-fold cross validation...',
-                 'full' if current_fold < 0 else 'fold ' + str(current_fold + 1) + ' of', num_folds)
+        folding_strategy = self.folding_strategy
+        num_folds = folding_strategy.num_folds
+
+        log.info(
+            'Performing %s %s-fold cross validation...', 'fold ' + str(folding_strategy.first + 1) +
+            (' to ' + str(folding_strategy.last) if folding_strategy.num_folds_in_subset > 1 else '')
+            + ' of' if folding_strategy.is_subset else 'full', num_folds)
 
         # Check if ARFF files with predefined folds are available...
         data_set = self.data_set
@@ -255,19 +261,13 @@ class CrossValidationSplitter(DataSplitter):
         if predefined_split:
             return self.__predefined_cross_validation(data_dir=data_dir,
                                                       arff_file_names=arff_file_names,
-                                                      xml_file_name=xml_file_name,
-                                                      num_folds=num_folds,
-                                                      current_fold=current_fold)
+                                                      xml_file_name=xml_file_name)
 
         arff_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_ARFF)
-        return self.__cross_validation(data_dir=data_dir,
-                                       arff_file_name=arff_file_name,
-                                       xml_file_name=xml_file_name,
-                                       num_folds=num_folds,
-                                       current_fold=current_fold)
+        return self.__cross_validation(data_dir=data_dir, arff_file_name=arff_file_name, xml_file_name=xml_file_name)
 
-    def __predefined_cross_validation(self, data_dir: str, arff_file_names: List[str], xml_file_name: str,
-                                      num_folds: int, current_fold: int) -> Generator[DataSplit]:
+    def __predefined_cross_validation(self, data_dir: str, arff_file_names: List[str],
+                                      xml_file_name: str) -> Generator[DataSplit]:
         # Load first data set for the first fold...
         x, y, meta_data = load_data_set_and_meta_data(data_dir, arff_file_names[0], xml_file_name)
 
@@ -285,6 +285,9 @@ class CrossValidationSplitter(DataSplitter):
         data = [(x, y)]
 
         # Load data sets for the remaining folds...
+        folding_strategy = self.folding_strategy
+        num_folds = folding_strategy.num_folds
+
         for fold in range(1, num_folds):
             x, y = load_data_set(data_dir, arff_file_names[fold], meta_data)
 
@@ -296,10 +299,6 @@ class CrossValidationSplitter(DataSplitter):
             data.append((x, y))
 
         # Perform cross-validation...
-        folding_strategy = FoldingStrategy(num_folds=num_folds,
-                                           first=0 if current_fold < 0 else current_fold,
-                                           last=num_folds if current_fold < 0 else current_fold + 1)
-
         for fold in folding_strategy.folds:
             log.info('Fold %s / %s:', (fold.index + 1), num_folds)
 
@@ -329,8 +328,7 @@ class CrossValidationSplitter(DataSplitter):
                             training_dataset=train_dataset,
                             test_dataset=test_dataset)
 
-    def __cross_validation(self, data_dir: str, arff_file_name: str, xml_file_name: str, num_folds: int,
-                           current_fold: int) -> Generator[DataSplit]:
+    def __cross_validation(self, data_dir: str, arff_file_name: str, xml_file_name: str) -> Generator[DataSplit]:
         # Load data set...
         x, y, meta_data = load_data_set_and_meta_data(data_dir, arff_file_name, xml_file_name)
 
@@ -344,9 +342,8 @@ class CrossValidationSplitter(DataSplitter):
             meta_data = ArffMetaData(encoded_dataset.features, encoded_dataset.outputs, meta_data.outputs_at_start)
 
         # Perform cross-validation...
-        folding_strategy = FoldingStrategy(num_folds=num_folds,
-                                           first=0 if current_fold < 0 else current_fold,
-                                           last=num_folds if current_fold < 0 else current_fold + 1)
+        folding_strategy = self.folding_strategy
+        num_folds = folding_strategy.num_folds
         splits = enumerate(KFold(n_splits=num_folds, random_state=self.random_state, shuffle=True).split(x, y))
 
         for fold in folding_strategy.folds:
