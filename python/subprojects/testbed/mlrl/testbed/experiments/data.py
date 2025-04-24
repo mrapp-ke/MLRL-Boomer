@@ -105,7 +105,7 @@ class FilePath:
         file_name = self.file_name
 
         if self.context.include_dataset_type:
-            file_name = state.dataset.type.get_file_name(file_name)
+            file_name += '_' + state.dataset.type.value
 
         if self.context.include_prediction_scope:
             prediction_result = state.prediction_result
