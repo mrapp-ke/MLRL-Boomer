@@ -111,7 +111,10 @@ class FilePath:
             prediction_result = state.prediction_result
 
             if prediction_result:
-                file_name = prediction_result.prediction_scope.get_file_name(file_name)
+                prediction_scope = prediction_result.prediction_scope
+
+                if prediction_scope.is_global:
+                    file_name += '_model-size-' + str(prediction_scope.model_size)
 
         if self.context.include_fold and state.folding_strategy.is_cross_validation_used:
             fold = state.fold
