@@ -18,7 +18,7 @@ Mean Absolute Percentage Error      1.13
 Mean Squared Error              16477.5
 Median Absolute Error              69.95
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 INFO Model characteristics:
 
 ┌───────────────────────────────┬─────────┬─────────────────────────┬────────────────────────┬───────────────────────┬──────────────────────┬───────────────────────┬───────────────────────┐

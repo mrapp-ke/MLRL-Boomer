@@ -30,7 +30,7 @@ Micro Recall            60.8
 Subset 0/1 Loss         71.43
 Subset Accuracy         28.57
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 INFO Model characteristics:
 
 ┌───────────────────────────────┬─────────┬─────────────────────────┬────────────────────────┬───────────────────────┬──────────────────────┬───────────────────────┬───────────────────────┐
