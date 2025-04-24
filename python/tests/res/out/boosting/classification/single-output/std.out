@@ -20,5 +20,5 @@ Jaccard    22.92
 Precision  42.31
 Recall     33.33
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 INFO Successfully finished after <duration>
