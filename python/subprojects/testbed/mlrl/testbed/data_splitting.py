@@ -164,9 +164,8 @@ class TrainTestSplitter(DataSplitter):
         # Check if ARFF files with predefined training and test data are available...
         data_set = self.data_set
         data_set_name = data_set.data_set_name
-        train_arff_file_name = get_file_name(DatasetType.TRAINING.get_file_name(data_set_name),
-                                             ArffFileSink.SUFFIX_ARFF)
-        test_arff_file_name = get_file_name(DatasetType.TEST.get_file_name(data_set_name), ArffFileSink.SUFFIX_ARFF)
+        train_arff_file_name = get_file_name(data_set_name + '_' + DatasetType.TRAINING.value, ArffFileSink.SUFFIX_ARFF)
+        test_arff_file_name = get_file_name(data_set_name + '_' + DatasetType.TEST.value, ArffFileSink.SUFFIX_ARFF)
         data_dir = data_set.data_dir
         predefined_split = check_if_files_exist(data_dir, [train_arff_file_name, test_arff_file_name])
 
