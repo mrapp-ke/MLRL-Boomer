@@ -6,7 +6,7 @@ import re as regex
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from os import environ, makedirs, path
+from os import makedirs, path
 from typing import Any, Iterable, List, Optional, Set
 
 from mlrl.testbed.io import CSV_DELIMITER, CSV_QUOTE_CHAR, ENCODING_UTF8
@@ -57,19 +57,6 @@ class FileComparison(ABC):
             text += 'Actual:\n' + self.actual_line
             return text
 
-    ENV_OVERWRITE_OUTPUT_FILES = 'OVERWRITE_OUTPUT_FILES'
-
-    @staticmethod
-    def __should_overwrite_file() -> bool:
-        value = environ.get(FileComparison.ENV_OVERWRITE_OUTPUT_FILES, 'false').strip().lower()
-
-        if value == 'true':
-            return True
-        if value == 'false':
-            return False
-        raise ValueError('Value of environment variable "' + FileComparison.ENV_OVERWRITE_OUTPUT_FILES
-                         + '" must be "true" or "false", but is "' + value + '"')
-
     @staticmethod
     def for_file(file: str) -> 'FileComparison':
         """
@@ -84,16 +71,17 @@ class FileComparison(ABC):
         with open(file, mode='r', encoding=ENCODING_UTF8) as text_file:
             return TextFileComparison(text_file.readlines())
 
-    def compare_or_overwrite(self, another_file: str) -> Optional[Difference]:
+    def compare_or_overwrite(self, another_file: str, overwrite: bool = False) -> Optional[Difference]:
         """
         Compares the file to another file or overwrites the latter with the former.
 
         :param another_file:    The path to a file to compare with or to be overwritten
+        :param overwrite:       True, if the file should be overwritten, False otherwise
         :return:                The first difference that has been found or None, if the files are the same
         """
-        if self.__should_overwrite_file():
+        if overwrite:
             makedirs(path.dirname(another_file), exist_ok=True)
-            self._overwrite(another_file)
+            self._write(another_file)
             return None
 
         return self._compare(another_file)
@@ -108,11 +96,11 @@ class FileComparison(ABC):
         """
 
     @abstractmethod
-    def _overwrite(self, another_file: str):
+    def _write(self, file: str):
         """
-        Must be implemented by subclasses in order to overwrite a file with another one.
+        Must be implemented by subclasses in order to write an output file.
 
-        :param another_file: The path to another file that should be overwritten
+        :param file: The path to the output file
         """
 
 
@@ -149,11 +137,11 @@ class TextFileComparison(FileComparison):
 
         return None
 
-    def _overwrite(self, another_file: str):
-        with open(another_file, 'w+', encoding=ENCODING_UTF8) as file:
+    def _write(self, file: str):
+        with open(file, 'w+', encoding=ENCODING_UTF8) as output_file:
             for line in self.lines:
                 line = self.__replace_durations_with_placeholders(line.strip('\n'))
-                file.write(line + '\n')
+                output_file.write(line + '\n')
 
 
 class CsvFileComparison(FileComparison):
@@ -286,13 +274,13 @@ class CsvFileComparison(FileComparison):
 
         return None
 
-    def _overwrite(self, another_file: str):
+    def _write(self, file: str):
         with open(self.file, 'r', encoding=ENCODING_UTF8) as input_file:
             input_csv_file = csv.reader(input_file, delimiter=CSV_DELIMITER, quotechar=CSV_QUOTE_CHAR)
             headers = next(input_csv_file)
             duration_column_indices = self.__get_duration_column_indices(headers)
 
-            with open(another_file, 'w+', encoding=ENCODING_UTF8) as output_file:
+            with open(file, 'w+', encoding=ENCODING_UTF8) as output_file:
                 output_csv_file = csv.writer(output_file,
                                              delimiter=CSV_DELIMITER,
                                              quotechar=CSV_QUOTE_CHAR,
