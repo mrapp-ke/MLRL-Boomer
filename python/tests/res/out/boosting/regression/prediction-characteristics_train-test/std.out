@@ -17,5 +17,5 @@ Outputs            6
 Output Density   100
 Output Sparsity    0
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_overall.csv"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_model-size-0.csv"...
 INFO Successfully finished after <duration>

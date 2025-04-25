@@ -212,7 +212,7 @@ INFO Predictions for training data:
  [12 164 204 177 62 177]
  [14 53 93 93 14 93]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_training_overall.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_training_model-size-0.arff"...
 INFO Ground truth for training data:
 
 [[21 23 34 43 21 43]
@@ -414,7 +414,7 @@ INFO Ground truth for training data:
  [12 164 204 177 62 177]
  [14 53 93 93 14 93]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_training_overall.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_training_model-size-0.arff"...
 INFO Predicting for 98 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted scores
@@ -520,7 +520,7 @@ INFO Predictions for test data:
  [23 23 45 110 27 110]
  [199 199 191 232 42 232]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_overall.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_model-size-0.arff"...
 INFO Ground truth for test data:
 
 [[78 184 204 207 78 207]
@@ -622,5 +622,5 @@ INFO Ground truth for test data:
  [23 23 45 110 27 110]
  [199 199 191 232 42 232]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_overall.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_model-size-0.arff"...
 INFO Successfully finished after <duration>
