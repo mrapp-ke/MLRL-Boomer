@@ -63,7 +63,11 @@ class TextualOutputData(OutputData, ABC):
 
         def __format_dataset_type(self, state: ExperimentState) -> str:
             if self.context.include_dataset_type:
-                return ' for ' + state.dataset.type.value + ' data'
+                dataset = state.dataset
+
+                if dataset:
+                    return ' for ' + dataset.type.value + ' data'
+
             return ''
 
         def __format_fold(self, state: ExperimentState) -> str:

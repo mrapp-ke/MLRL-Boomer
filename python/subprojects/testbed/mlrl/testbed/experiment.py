@@ -109,9 +109,9 @@ class Experiment:
             training_dataset = data_split.training_dataset
             test_dataset = data_split.test_dataset
             state = ExperimentState(problem_type=self.problem_type,
-                                    dataset=training_dataset,
                                     folding_strategy=data_split.folding_strategy,
-                                    fold=data_split.fold)
+                                    fold=data_split.fold,
+                                    dataset=training_dataset)
 
             # Read input data...
             for input_reader in self.input_readers:
