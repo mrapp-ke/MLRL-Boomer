@@ -44,15 +44,6 @@ class DatasetType(Enum):
     TRAINING = 'training'
     TEST = 'test'
 
-    def get_file_name(self, dataset_name: str) -> str:
-        """
-        Returns the name of a file name that corresponds to a specific type of data.
-
-        :param dataset_name:    The name of the dataset (without suffix)
-        :return:                The file name
-        """
-        return dataset_name + '_' + str(self.value)
-
 
 @dataclass
 class Dataset:
