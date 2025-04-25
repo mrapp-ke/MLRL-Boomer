@@ -24,12 +24,3 @@ class PredictionScope(ABC):
         True, if the predictions have been obtained from a global model, False otherwise.
         """
         return self.model_size == 0
-
-    def get_file_name(self, name: str) -> str:
-        """
-        Returns a file name that corresponds to a specific prediction scope.
-
-        :param name:    The name of the file (without suffix)
-        :return:        The file name
-        """
-        return name if self.is_global else name + '_model-size-' + str(self.model_size)

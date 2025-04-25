@@ -23,7 +23,7 @@ Median Absolute Error             3.91
 NDCG                             88.65
 Ranking Loss                      0.14
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_overall.csv"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 INFO Predictions for test data:
 
 [[1 0 0 0 0 1]

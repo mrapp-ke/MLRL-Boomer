@@ -42,6 +42,7 @@ lwork
 macOS
 makefile
 María
+Marsaglia
 mixin
 mixins
 mlrl
@@ -89,3 +90,4 @@ Vlahavas
 whl
 Widmer
 wra
+Xorshift

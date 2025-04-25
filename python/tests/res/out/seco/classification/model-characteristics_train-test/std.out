@@ -30,5 +30,5 @@ INFO Model characteristics:
 │ Predictions                 │         1 │      1    │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/model_characteristics_overall.csv"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/model_characteristics.csv"...
 INFO Successfully finished after <duration>

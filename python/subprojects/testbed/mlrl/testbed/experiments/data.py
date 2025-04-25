@@ -9,7 +9,6 @@ from os import path
 from typing import Optional, Type
 
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.util.io import get_file_name_per_fold
 
 
 class Data(ABC):
@@ -106,16 +105,21 @@ class FilePath:
         file_name = self.file_name
 
         if self.context.include_dataset_type:
-            file_name = state.dataset.type.get_file_name(file_name)
+            file_name += '_' + state.dataset.type.value
 
         if self.context.include_prediction_scope:
             prediction_result = state.prediction_result
 
             if prediction_result:
-                file_name = prediction_result.prediction_scope.get_file_name(file_name)
+                prediction_scope = prediction_result.prediction_scope
 
-        if self.context.include_fold:
-            fold = state.fold if state.folding_strategy.is_cross_validation_used else None
-            file_name = get_file_name_per_fold(file_name, self.suffix, fold)
+                if prediction_scope.is_global:
+                    file_name += '_model-size-' + str(prediction_scope.model_size)
 
-        return path.join(self.directory, file_name)
+        if self.context.include_fold and state.folding_strategy.is_cross_validation_used:
+            fold = state.fold
+
+            if fold:
+                file_name += '_fold-' + str(fold.index + 1)
+
+        return path.join(self.directory, file_name + '.' + self.suffix)
