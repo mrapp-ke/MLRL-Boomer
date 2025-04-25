@@ -10,27 +10,26 @@ namespace boosting {
           headConfig_(headConfig), defaultRuleConfig_(defaultRuleConfig) {}
 
     std::unique_ptr<IClassificationStatisticsProviderFactory>
-      AutomaticStatisticsConfig::createClassificationStatisticsProviderFactory(const IFeatureMatrix& featureMatrix,
-                                                                               const IRowWiseLabelMatrix& labelMatrix,
-                                                                               const Blas& blas,
-                                                                               const Lapack& lapack) const {
+      AutomaticStatisticsConfig::createClassificationStatisticsProviderFactory(
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const BlasFactory& blasFactory,
+        const LapackFactory& lapackFactory) const {
         bool defaultRuleUsed = defaultRuleConfig_.get().isDefaultRuleUsed(labelMatrix);
         bool partialHeadsUsed = headConfig_.get().isPartial();
         bool preferSparseStatistics = shouldSparseStatisticsBePreferred(labelMatrix, defaultRuleUsed, partialHeadsUsed);
         return classificationLossConfig_.get().createClassificationStatisticsProviderFactory(
-          featureMatrix, labelMatrix, blas, lapack, preferSparseStatistics);
+          featureMatrix, labelMatrix, blasFactory, lapackFactory, preferSparseStatistics);
     }
 
     std::unique_ptr<IRegressionStatisticsProviderFactory>
       AutomaticStatisticsConfig::createRegressionStatisticsProviderFactory(
-        const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
-        const Lapack& lapack) const {
+        const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+        const BlasFactory& blasFactory, const LapackFactory& lapackFactory) const {
         bool defaultRuleUsed = defaultRuleConfig_.get().isDefaultRuleUsed(regressionMatrix);
         bool partialHeadsUsed = headConfig_.get().isPartial();
         bool preferSparseStatistics =
           shouldSparseStatisticsBePreferred(regressionMatrix, defaultRuleUsed, partialHeadsUsed);
         return regressionLossConfig_.get().createRegressionStatisticsProviderFactory(
-          featureMatrix, regressionMatrix, blas, lapack, preferSparseStatistics);
+          featureMatrix, regressionMatrix, blasFactory, lapackFactory, preferSparseStatistics);
     }
 
     bool AutomaticStatisticsConfig::isDense() const {

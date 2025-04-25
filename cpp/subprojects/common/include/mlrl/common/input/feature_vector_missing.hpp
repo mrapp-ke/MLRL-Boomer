@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_vector_dok_binary.hpp"
+#include "mlrl/common/data/vector_dok_binary.hpp"
 
 /**
  * A view that provides access to the indices of training examples with missing values for a certain feature.

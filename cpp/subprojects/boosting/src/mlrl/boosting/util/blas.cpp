@@ -2,27 +2,44 @@
 
 namespace boosting {
 
-    Blas::Blas(DdotFunction ddotFunction, DspmvFunction dspmvFunction)
-        : ddotFunction_(ddotFunction), dspmvFunction_(dspmvFunction) {}
+    template<typename T>
+    Blas<T>::Blas(const Routines& routines) : dot_(routines.dot), spmv_(routines.spmv) {}
 
-    float64 Blas::ddot(float64* x, float64* y, int n) const {
+    template<typename T>
+    T Blas<T>::dot(T* x, T* y, int n) const {
         // Storage spacing between the elements of the arrays x and y
         int inc = 1;
-        // Invoke the DDOT routine...
-        return ddotFunction_(&n, x, &inc, y, &inc);
+        // Invoke the DOT routine...
+        return dot_(&n, x, &inc, y, &inc);
     }
 
-    void Blas::dspmv(float64* a, float64* x, float64* output, int n) const {
+    template<typename T>
+    void Blas<T>::spmv(T* a, T* x, T* output, int n) const {
         // "U" if the upper-right triangle of A should be used, "L" if the lower-left triangle should be used
         char* uplo = const_cast<char*>("U");
         // A scalar to be multiplied with the matrix A
-        double alpha = 1;
+        T alpha = 1;
         // The increment for the elements of x and y
         int inc = 1;
         // A scalar to be multiplied with vector y
-        double beta = 0;
-        // Invoke the DSPMV routine...
-        dspmvFunction_(uplo, &n, &alpha, a, x, &inc, &beta, output, &inc);
+        T beta = 0;
+        // Invoke the SPMV routine...
+        spmv_(uplo, &n, &alpha, a, x, &inc, &beta, output, &inc);
+    }
+
+    template class Blas<float32>;
+    template class Blas<float64>;
+
+    BlasFactory::BlasFactory(const Blas<float32>::Routines& float32Routines,
+                             const Blas<float64>::Routines& float64Routines)
+        : float32Routines_(float32Routines), float64Routines_(float64Routines) {}
+
+    std::unique_ptr<Blas<float32>> BlasFactory::create32Bit() const {
+        return std::make_unique<Blas<float32>>(float32Routines_);
+    }
+
+    std::unique_ptr<Blas<float64>> BlasFactory::create64Bit() const {
+        return std::make_unique<Blas<float64>>(float64Routines_);
     }
 
 }

@@ -14,7 +14,7 @@
  * @tparam T The type of the weights
  */
 template<typename T>
-class DenseWeightVector final : public DenseVectorDecorator<AllocatedVector<T>>,
+class DenseWeightVector final : public ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<T>>>,
                                 public IWeightVector {
     private:
 
@@ -27,6 +27,19 @@ class DenseWeightVector final : public DenseVectorDecorator<AllocatedVector<T>>,
          * @param init          True, if all elements in the vector should be value-initialized, false otherwise
          */
         DenseWeightVector(uint32 numElements, bool init = false);
+
+        /**
+         * The type of the weights, the vector provides access to.
+         */
+        typedef T weight_type;
+
+        /**
+         * Sets the weight at a specific position.
+         *
+         * @param pos       The position
+         * @param weight    The weight to be set
+         */
+        void set(uint32 pos, weight_type weight);
 
         /**
          * Returns the number of non-zero weights.

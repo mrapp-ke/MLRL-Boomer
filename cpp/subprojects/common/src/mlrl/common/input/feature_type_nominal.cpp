@@ -7,7 +7,8 @@
 template<typename IndexIterator, typename ValueIterator>
 static inline std::unique_ptr<NominalFeatureVectorDecorator> createNominalFeatureVector(
   IndexIterator indexIterator, ValueIterator valueIterator, uint32 numElements,
-  std::unordered_map<int32, Tuple<uint32>>& mapping, uint32 numValues, uint32 numIndices, int32 majorityValue) {
+  std::unordered_map<int32, std::pair<uint32, uint32>>& mapping, uint32 numValues, uint32 numIndices,
+  int32 majorityValue) {
     AllocatedNominalFeatureVector nominalFeatureVector(numValues, numIndices, majorityValue);
     AllocatedMissingFeatureVector missingFeatureVector;
     AllocatedNominalFeatureVector::value_iterator vectorValueIterator = nominalFeatureVector.values;
@@ -22,9 +23,9 @@ static inline std::unique_ptr<NominalFeatureVectorDecorator> createNominalFeatur
         if (value != majorityValue) {
             vectorValueIterator[n] = value;
             vectorIndptrIterator[n] = offset;
-            Tuple<uint32>& tuple = entry.second;
-            tuple.first = n;
-            offset += tuple.second;
+            std::pair<uint32, uint32>& pair = entry.second;
+            pair.first = n;
+            offset += pair.second;
             n++;
         }
     }
@@ -39,11 +40,11 @@ static inline std::unique_ptr<NominalFeatureVectorDecorator> createNominalFeatur
             int32 nominalValue = static_cast<int32>(value);
 
             if (nominalValue != majorityValue) {
-                Tuple<uint32>& tuple = mapping.at(nominalValue);
-                uint32 numRemaining = tuple.second - 1;
-                tuple.second = numRemaining;
+                std::pair<uint32, uint32>& pair = mapping.at(nominalValue);
+                uint32 numRemaining = pair.second - 1;
+                pair.second = numRemaining;
                 NominalFeatureVector::index_iterator vectorIndexIterator =
-                  nominalFeatureVector.indices_begin(tuple.first);
+                  nominalFeatureVector.indices_begin(pair.first);
                 vectorIndexIterator[numRemaining] = index;
             }
         }
@@ -56,7 +57,7 @@ static inline std::unique_ptr<NominalFeatureVectorDecorator> createNominalFeatur
 template<typename IndexIterator, typename ValueIterator>
 static inline std::unique_ptr<NominalFeatureVectorDecorator> createNominalFeatureVector(
   IndexIterator indexIterator, ValueIterator valueIterator, uint32 numElements,
-  std::unordered_map<int32, Tuple<uint32>>& mapping, uint32 numValues, uint32 numExamples, bool sparse,
+  std::unordered_map<int32, std::pair<uint32, uint32>>& mapping, uint32 numValues, uint32 numExamples, bool sparse,
   int32 sparseValue) {
     int32 majorityValue;
     uint32 numMajorityExamples;
@@ -76,7 +77,7 @@ static inline std::unique_ptr<NominalFeatureVectorDecorator> createNominalFeatur
 template<typename IndexIterator, typename ValueIterator>
 static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
   IndexIterator indexIterator, ValueIterator valueIterator, uint32 numElements,
-  std::unordered_map<int32, Tuple<uint32>>& mapping, uint32 numValues, uint32 numExamples, bool sparse,
+  std::unordered_map<int32, std::pair<uint32, uint32>>& mapping, uint32 numValues, uint32 numExamples, bool sparse,
   int32 sparseValue) {
     if (numValues > 2) {
         return createNominalFeatureVector(indexIterator, valueIterator, numElements, mapping, numValues, numExamples,
@@ -93,7 +94,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
     FortranContiguousView<const float32>::value_const_iterator valueIterator =
       featureMatrix.values_cbegin(featureIndex);
     uint32 numElements = featureMatrix.numRows;
-    std::unordered_map<int32, Tuple<uint32>> mapping;
+    std::unordered_map<int32, std::pair<uint32, uint32>> mapping;
     uint32 numExamples = createMapping(valueIterator, numElements, mapping);
     uint32 numValues = static_cast<uint32>(mapping.size());
     return createFeatureVectorInternally(IndexIterator(), valueIterator, numElements, mapping, numValues, numExamples,
@@ -106,7 +107,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
     CscView<const float32>::value_const_iterator valuesBegin = featureMatrix.values_cbegin(featureIndex);
     CscView<const float32>::value_const_iterator valuesEnd = featureMatrix.values_cend(featureIndex);
     uint32 numElements = valuesEnd - valuesBegin;
-    std::unordered_map<int32, Tuple<uint32>> mapping;
+    std::unordered_map<int32, std::pair<uint32, uint32>> mapping;
     uint32 numExamples = createMapping(valuesBegin, numElements, mapping);
     uint32 numValues = static_cast<uint32>(mapping.size());
     bool sparse = numElements < featureMatrix.numRows;

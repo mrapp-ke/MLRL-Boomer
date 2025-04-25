@@ -3,16 +3,17 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_vector.hpp"
-#include "mlrl/common/indices/index_vector_partial.hpp"
 #include "mlrl/common/rule_refinement/prediction_evaluated.hpp"
 
 #include <memory>
 
 /**
  * Stores the scores that are predicted by a rule that predicts for a subset of the available outputs.
+ *
+ * @tparam ScoreType The type of the predicted scores
  */
-class PartialPrediction final : public ResizableVectorDecorator<VectorDecorator<ResizableVector<float64>>>,
+template<typename ScoreType>
+class PartialPrediction final : public VectorDecorator<ResizableVector<ScoreType>>,
                                 public IEvaluatedPrediction {
     private:
 
@@ -20,24 +21,28 @@ class PartialPrediction final : public ResizableVectorDecorator<VectorDecorator<
 
         bool sorted_;
 
+        std::unique_ptr<IStatisticsUpdate> statisticsUpdatePtr_;
+
     public:
 
         /**
-         * @param numElements   The number of outputs for which the rule predicts
-         * @param sorted        True, if the scores that are stored by this prediction are sorted in increasing order by
-         *                      the corresponding output indices, false otherwise
+         * @param numElements             The number of outputs for which the rule predicts
+         * @param sorted                  True, if the scores that are stored by this prediction are sorted in
+         *                                increasing order by the corresponding output indices, false otherwise
+         * @param statisticsUpdateFactory A reference to an object of type `IStatisticsUpdateFactory`
          */
-        PartialPrediction(uint32 numElements, bool sorted);
+        PartialPrediction(uint32 numElements, bool sorted,
+                          IStatisticsUpdateFactory<ScoreType>& statisticsUpdateFactory);
 
         /**
          * An iterator that provides access to the predicted scores and allows to modify them.
          */
-        typedef View<float64>::iterator value_iterator;
+        typedef typename View<ScoreType>::iterator value_iterator;
 
         /**
          * An iterator that provides read-only access to the predicted scores.
          */
-        typedef View<float64>::const_iterator value_const_iterator;
+        typedef typename View<ScoreType>::const_iterator value_const_iterator;
 
         /**
          * An iterator that provides access to the indices for which the rule predicts and allows to modify them.
@@ -114,21 +119,28 @@ class PartialPrediction final : public ResizableVectorDecorator<VectorDecorator<
          */
         void setSorted(bool sorted);
 
-        uint32 getNumElements() const override;
+        /**
+         * Sets the number of elements in the vector.
+         *
+         * @param statisticsUpdateFactory A reference to an object of type `IStatisticsUpdateFactory`
+         * @param numElements             The number of elements to be set
+         * @param freeMemory              True, if unused memory should be freed, if possible, false otherwise
+         */
+        void setNumElements(IStatisticsUpdateFactory<ScoreType>& statisticsUpdateFactory, uint32 numElements,
+                            bool freeMemory);
 
-        void setNumElements(uint32 numElements, bool freeMemory) override;
+        uint32 getNumElements() const override;
 
         void sort() override;
 
         void postProcess(const IPostProcessor& postProcessor) override;
 
-        void set(View<float64>::const_iterator begin, View<float64>::const_iterator end) override final;
-
-        void set(BinnedConstIterator<float64> begin, BinnedConstIterator<float64> end) override final;
-
         bool isPartial() const override;
 
         uint32 getIndex(uint32 pos) const override;
+
+        void visit(PartialIndexVectorVisitor partialIndexVectorVisitor,
+                   CompleteIndexVectorVisitor completeIndexVectorVisitor) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(const IStatistics& statistics,
                                                                   const EqualWeightVector& weights) const override;
@@ -137,7 +149,10 @@ class PartialPrediction final : public ResizableVectorDecorator<VectorDecorator<
                                                                   const BitWeightVector& weights) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
-          const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const override;
+          const IStatistics& statistics, const DenseWeightVector<uint16>& weights) const override;
+
+        std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
+          const IStatistics& statistics, const DenseWeightVector<float32>& weights) const override;
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
           const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const override;
@@ -147,14 +162,15 @@ class PartialPrediction final : public ResizableVectorDecorator<VectorDecorator<
 
         std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
           const IStatistics& statistics,
-          const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override;
+          const OutOfSampleWeightVector<DenseWeightVector<uint16>>& weights) const override;
 
-        std::unique_ptr<IRuleRefinement> createRuleRefinement(IFeatureSubspace& featureSubspace,
-                                                              uint32 featureIndex) const override;
+        std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
+          const IStatistics& statistics,
+          const OutOfSampleWeightVector<DenseWeightVector<float32>>& weights) const override;
 
-        void apply(IStatistics& statistics, uint32 statisticIndex) const override;
+        void applyPrediction(uint32 statisticIndex) override;
 
-        void revert(IStatistics& statistics, uint32 statisticIndex) const override;
+        void revertPrediction(uint32 statisticIndex) override;
 
         std::unique_ptr<IHead> createHead() const override;
 };
