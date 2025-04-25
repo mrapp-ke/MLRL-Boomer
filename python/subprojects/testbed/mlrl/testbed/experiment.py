@@ -111,6 +111,7 @@ class Experiment:
             state = ExperimentState(problem_type=self.problem_type,
                                     folding_strategy=data_split.folding_strategy,
                                     fold=data_split.fold,
+                                    dataset_type=DatasetType.TRAINING,
                                     dataset=training_dataset)
 
             # Read input data...
@@ -172,7 +173,7 @@ class Experiment:
             test_predictor = self.test_predictor
 
             if test_predictor:
-                test_state = replace(state, dataset=test_dataset)
+                test_state = replace(state, dataset_type=test_dataset.type, dataset=test_dataset)
                 predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
                 self.__predict_and_evaluate(test_state, test_predictor, **predict_kwargs)
 

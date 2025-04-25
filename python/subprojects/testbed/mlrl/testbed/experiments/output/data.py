@@ -63,10 +63,10 @@ class TextualOutputData(OutputData, ABC):
 
         def __format_dataset_type(self, state: ExperimentState) -> str:
             if self.context.include_dataset_type:
-                dataset = state.dataset
+                dataset_type = state.dataset_type
 
-                if dataset:
-                    return ' for ' + dataset.type.value + ' data'
+                if dataset_type:
+                    return ' for ' + dataset_type.value + ' data'
 
             return ''
 

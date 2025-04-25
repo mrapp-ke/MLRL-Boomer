@@ -8,7 +8,7 @@ from typing import Any, Dict, Optional
 
 from sklearn.base import BaseEstimator
 
-from mlrl.testbed.experiments.dataset import Dataset
+from mlrl.testbed.experiments.dataset import Dataset, DatasetType
 from mlrl.testbed.experiments.fold import Fold, FoldingStrategy
 from mlrl.testbed.experiments.prediction_scope import PredictionScope
 from mlrl.testbed.experiments.prediction_type import PredictionType
@@ -57,6 +57,7 @@ class ExperimentState:
         problem_type:       The type of the machine learning problem, the experiment is concerned with
         folding_strategy:   The strategy that is used for creating different folds of the dataset during the experiment
         fold:               The current fold of the dataset or None, if the state does not correspond to a specific fold
+        dataset_type:       The type of the dataset used in the experiment
         dataset:            The dataset used in the experiment or None, if no dataset has been loaded yet
         parameters:         Algorithmic parameters of the learner used in the experiment
         training_result:    The result of the training process or None, if no model has been trained yet
@@ -65,6 +66,7 @@ class ExperimentState:
     problem_type: ProblemType
     folding_strategy: FoldingStrategy
     fold: Optional[Fold]
+    dataset_type: DatasetType
     dataset: Optional[Dataset] = None
     parameters: ParameterDict = field(default_factory=dict)
     training_result: Optional[TrainingState] = None
