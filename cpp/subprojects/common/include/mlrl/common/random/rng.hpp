@@ -9,8 +9,7 @@
 #include <memory>
 
 /**
- * Implements a fast random number generator using 32 bit XOR shifts (for details, see
- * https://www.jstatsoft.org/article/view/v008i14/916).
+ * Implements a fast random number generator using 32 bit XOR shifts (see "Xorshift RNGs", Marsaglia, 2003).
  */
 class RNG final {
     private:
