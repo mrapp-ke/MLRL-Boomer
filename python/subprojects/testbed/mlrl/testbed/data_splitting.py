@@ -7,7 +7,7 @@ and test sets.
 import logging as log
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from functools import reduce
 from os import path
 from typing import Generator, List, Optional
@@ -15,11 +15,14 @@ from typing import Generator, List, Optional
 from scipy.sparse import vstack
 from sklearn.model_selection import KFold, train_test_split
 
-from mlrl.testbed.data import ArffMetaData, load_data_set, load_data_set_and_meta_data
 from mlrl.testbed.experiments.dataset import Dataset, DatasetType
 from mlrl.testbed.experiments.fold import Fold, FoldingStrategy
+from mlrl.testbed.experiments.input.dataset import InputDataset
 from mlrl.testbed.experiments.input.dataset.preprocessors import Preprocessor
+from mlrl.testbed.experiments.input.sources import ArffFileSource
 from mlrl.testbed.experiments.output.sinks import ArffFileSink
+from mlrl.testbed.experiments.problem_type import ProblemType
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.io import get_file_name, get_file_name_per_fold
 
 
@@ -118,24 +121,29 @@ class NoSplitter(DataSplitter):
         data_set = self.data_set
         data_dir = data_set.data_dir
         data_set_name = data_set.data_set_name
-        arff_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_ARFF)
-        xml_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_XML)
-        x, y, meta_data = load_data_set_and_meta_data(data_dir, arff_file_name, xml_file_name)
+        state = ExperimentState(problem_type=ProblemType.CLASSIFICATION,
+                                folding_strategy=self.folding_strategy,
+                                fold=Fold(index=0),
+                                dataset_type=DatasetType.TRAINING)
+        input_dataset = InputDataset(data_set_name)
+        context = input_dataset.default_context
+        context.include_prediction_scope = False
+        context.include_dataset_type = False
+        context.include_fold = False
+        ArffFileSource(directory=data_dir).read_from_source(state=state, input_data=input_dataset)
+        dataset = state.dataset
 
         # Apply preprocessor, if necessary...
         preprocessor = self.preprocessor
 
         if preprocessor:
             encoder = preprocessor.create_encoder()
-            encoded_dataset = encoder.encode(Dataset(x, y, meta_data.features, meta_data.outputs))
-            x = encoded_dataset.x
-            meta_data = ArffMetaData(encoded_dataset.features, encoded_dataset.outputs, meta_data.outputs_at_start)
+            dataset = encoder.encode(dataset)
 
         # Train and evaluate model...
         folding_strategy = self.folding_strategy
 
         for fold in folding_strategy.folds:
-            dataset = Dataset(x, y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
             yield DataSplit(folding_strategy=folding_strategy,
                             fold=fold,
                             training_dataset=dataset,
@@ -166,54 +174,62 @@ class TrainTestSplitter(DataSplitter):
         # Check if ARFF files with predefined training and test data are available...
         data_set = self.data_set
         data_set_name = data_set.data_set_name
-        train_arff_file_name = get_file_name(data_set_name + '_' + DatasetType.TRAINING.value, ArffFileSink.SUFFIX_ARFF)
-        test_arff_file_name = get_file_name(data_set_name + '_' + DatasetType.TEST.value, ArffFileSink.SUFFIX_ARFF)
         data_dir = data_set.data_dir
-        predefined_split = check_if_files_exist(data_dir, [train_arff_file_name, test_arff_file_name])
+        predefined_split = check_if_files_exist(data_dir, [
+            get_file_name(data_set_name + '_' + DatasetType.TRAINING.value, ArffFileSink.SUFFIX_ARFF),
+            get_file_name(data_set_name + '_' + DatasetType.TEST.value, ArffFileSink.SUFFIX_ARFF),
+        ])
 
-        if not predefined_split:
-            train_arff_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_ARFF)
+        input_dataset = InputDataset(data_set_name)
+        context = input_dataset.default_context
+        context.include_dataset_type = predefined_split
+        context.include_prediction_scope = False
+        context.include_fold = False
 
         # Load (training) data set...
-        xml_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_XML)
-        train_x, train_y, meta_data = load_data_set_and_meta_data(data_dir, train_arff_file_name, xml_file_name)
+        state = ExperimentState(problem_type=ProblemType.CLASSIFICATION,
+                                folding_strategy=self.folding_strategy,
+                                fold=Fold(index=0),
+                                dataset_type=DatasetType.TRAINING)
+        source = ArffFileSource(directory=data_dir)
+        source.read_from_source(state=state, input_data=input_dataset)
+        training_dataset = state.dataset
 
         # Apply preprocessor, if necessary...
         preprocessor = self.preprocessor
 
         if preprocessor:
             encoder = preprocessor.create_encoder()
-            encoded_dataset = encoder.encode(Dataset(train_x, train_y, meta_data.features, meta_data.outputs))
-            train_x = encoded_dataset.x
-            meta_data = ArffMetaData(encoded_dataset.features, encoded_dataset.outputs, meta_data.outputs_at_start)
+            training_dataset = encoder.encode(training_dataset)
         else:
             encoder = None
 
         if predefined_split:
             # Load test data set...
-            test_x, test_y = load_data_set(data_dir, test_arff_file_name, meta_data)
+            state.dataset_type = DatasetType.TEST
+            source.read_from_source(state=state, input_data=input_dataset)
+            test_dataset = state.dataset
 
             # Apply preprocessor, if necessary...
             if encoder:
-                encoded_dataset = encoder.encode(Dataset(test_x, test_y, meta_data.features, meta_data.outputs))
-                test_x = encoded_dataset.x
+                test_dataset = encoder.encode(test_dataset)
         else:
             # Split data set into training and test data...
-            train_x, test_x, train_y, test_y = train_test_split(train_x,
-                                                                train_y,
+            train_x, test_x, train_y, test_y = train_test_split(training_dataset.x,
+                                                                training_dataset.y,
                                                                 test_size=self.test_size,
                                                                 random_state=self.random_state,
                                                                 shuffle=True)
+            training_dataset = replace(training_dataset, x=train_x, y=train_y, type=DatasetType.TRAINING)
+            test_dataset = replace(training_dataset, x=test_x, y=test_y, type=DatasetType.TEST)
 
         # Train and evaluate model...
         folding_strategy = self.folding_strategy
 
         for fold in folding_strategy.folds:
-            train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
-            test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, DatasetType.TEST)
             yield DataSplit(folding_strategy=folding_strategy,
                             fold=fold,
-                            training_dataset=train_dataset,
+                            training_dataset=training_dataset,
                             test_dataset=test_dataset)
 
 
@@ -251,121 +267,135 @@ class CrossValidationSplitter(DataSplitter):
         # Check if ARFF files with predefined folds are available...
         data_set = self.data_set
         data_set_name = data_set.data_set_name
-        arff_file_names = [
-            get_file_name_per_fold(data_set_name, ArffFileSink.SUFFIX_ARFF, Fold(fold)) for fold in range(num_folds)
-        ]
         data_dir = data_set.data_dir
-        predefined_split = check_if_files_exist(data_dir, arff_file_names)
-        xml_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_XML)
+        predefined_split = check_if_files_exist(
+            data_dir,
+            [get_file_name_per_fold(data_set_name, ArffFileSink.SUFFIX_ARFF, Fold(fold)) for fold in range(num_folds)])
 
         if predefined_split:
-            return self.__predefined_cross_validation(data_dir=data_dir,
-                                                      arff_file_names=arff_file_names,
-                                                      xml_file_name=xml_file_name)
+            return self.__predefined_cross_validation(data_dir=data_dir, dataset_name=data_set_name)
 
-        arff_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_ARFF)
-        return self.__cross_validation(data_dir=data_dir, arff_file_name=arff_file_name, xml_file_name=xml_file_name)
+        return self.__cross_validation(data_dir=data_dir, dataset_name=data_set_name)
 
-    def __predefined_cross_validation(self, data_dir: str, arff_file_names: List[str],
-                                      xml_file_name: str) -> Generator[DataSplit]:
-        # Load first data set for the first fold...
-        x, y, meta_data = load_data_set_and_meta_data(data_dir, arff_file_names[0], xml_file_name)
+    def __predefined_cross_validation(self, data_dir: str, dataset_name: str) -> Generator[DataSplit]:
+        input_dataset = InputDataset(dataset_name)
+        context = input_dataset.default_context
+        context.include_dataset_type = False
+        context.include_prediction_scope = False
+        context.include_fold = True
+
+        # Load (training) data set...
+        state = ExperimentState(problem_type=ProblemType.CLASSIFICATION,
+                                folding_strategy=self.folding_strategy,
+                                fold=Fold(index=0),
+                                dataset_type=DatasetType.TRAINING)
+        source = ArffFileSource(directory=data_dir)
+        source.read_from_source(state=state, input_data=input_dataset)
+        dataset = state.dataset
 
         # Apply preprocessor, if necessary...
         preprocessor = self.preprocessor
 
         if preprocessor:
             encoder = preprocessor.create_encoder()
-            encoded_dataset = encoder.encode(Dataset(x, y, meta_data.features, meta_data.outputs))
-            x = encoded_dataset.x
-            meta_data = ArffMetaData(encoded_dataset.features, encoded_dataset.outputs, meta_data.outputs_at_start)
+            dataset = encoder.encode(dataset)
         else:
             encoder = None
 
-        data = [(x, y)]
+        data = [dataset]
 
         # Load data sets for the remaining folds...
         folding_strategy = self.folding_strategy
         num_folds = folding_strategy.num_folds
 
         for fold in range(1, num_folds):
-            x, y = load_data_set(data_dir, arff_file_names[fold], meta_data)
+            state = replace(state, fold=Fold(index=fold))
+            source.read_from_source(state=state, input_data=input_dataset)
+            dataset = state.dataset
 
             # Apply preprocessor, if necessary...
             if encoder:
-                encoded_dataset = encoder.encode(Dataset(x, y, meta_data.features, meta_data.outputs))
-                x = encoded_dataset.x
+                dataset = encoder.encode(dataset)
 
-            data.append((x, y))
+            data.append(dataset)
 
         # Perform cross-validation...
         for fold in folding_strategy.folds:
             log.info('Fold %s / %s:', (fold.index + 1), num_folds)
 
             # Create training set for current fold...
-            train_x = None
-            train_y = None
+            training_dataset = None
 
             for other_fold in range(num_folds):
                 if other_fold != fold.index:
-                    x, y = data[other_fold]
+                    dataset = data[other_fold]
 
-                    if train_x is None:
-                        train_x = x
-                        train_y = y
+                    if training_dataset:
+                        training_dataset.x = vstack((training_dataset.x, dataset.x))
+                        training_dataset.y = vstack((training_dataset.y, dataset.y))
                     else:
-                        train_x = vstack((train_x, x))
-                        train_y = vstack((train_y, y))
+                        training_dataset = replace(dataset, type=DatasetType.TRAINING)
 
             # Obtain test set for current fold...
-            test_x, test_y = data[fold.index]
+            test_dataset = replace(data[fold.index], type=DatasetType.TEST)
 
             # Train and evaluate model...
-            train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
-            test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, DatasetType.TEST)
             yield DataSplit(folding_strategy=folding_strategy,
                             fold=fold,
-                            training_dataset=train_dataset,
+                            training_dataset=training_dataset,
                             test_dataset=test_dataset)
 
-    def __cross_validation(self, data_dir: str, arff_file_name: str, xml_file_name: str) -> Generator[DataSplit]:
-        # Load data set...
-        x, y, meta_data = load_data_set_and_meta_data(data_dir, arff_file_name, xml_file_name)
+    def __cross_validation(self, data_dir: str, dataset_name: str) -> Generator[DataSplit]:
+        input_dataset = InputDataset(dataset_name)
+        context = input_dataset.default_context
+        context.include_dataset_type = False
+        context.include_prediction_scope = False
+        context.include_fold = False
+
+        # Load (training) data set...
+        state = ExperimentState(problem_type=ProblemType.CLASSIFICATION,
+                                folding_strategy=self.folding_strategy,
+                                fold=Fold(index=0),
+                                dataset_type=DatasetType.TRAINING)
+        source = ArffFileSource(directory=data_dir)
+        source.read_from_source(state=state, input_data=input_dataset)
+        dataset = state.dataset
 
         # Apply preprocessor, if necessary...
         preprocessor = self.preprocessor
 
         if preprocessor:
             encoder = preprocessor.create_encoder()
-            encoded_dataset = encoder.encode(Dataset(x, y, meta_data.features, meta_data.outputs))
-            x = encoded_dataset.x
-            meta_data = ArffMetaData(encoded_dataset.features, encoded_dataset.outputs, meta_data.outputs_at_start)
+            dataset = encoder.encode(dataset)
 
         # Perform cross-validation...
         folding_strategy = self.folding_strategy
         num_folds = folding_strategy.num_folds
-        splits = enumerate(KFold(n_splits=num_folds, random_state=self.random_state, shuffle=True).split(x, y))
+        splits = enumerate(
+            KFold(n_splits=num_folds, random_state=self.random_state, shuffle=True).split(dataset.x, dataset.y))
 
         for fold in folding_strategy.folds:
-            split_index, (train_indices, test_indices) = next(splits, (None, (None, None)))
+            split_index, (training_examples, test_examples) = next(splits, (None, (None, None)))
 
             while split_index and split_index < fold.index:
-                split_index, (train_indices, test_indices) = next(splits, (None, (None, None)))
+                split_index, (training_examples, test_examples) = next(splits, (None, (None, None)))
 
             log.info('Fold %s / %s:', (fold.index + 1), num_folds)
 
             # Create training set for current fold...
-            train_x = x[train_indices]
-            train_y = y[train_indices]
+            training_dataset = replace(dataset,
+                                       x=dataset.x[training_examples],
+                                       y=dataset.y[training_examples],
+                                       type=DatasetType.TRAINING)
 
             # Create test set for current fold...
-            test_x = x[test_indices]
-            test_y = y[test_indices]
+            test_dataset = replace(dataset,
+                                   x=dataset.x[test_examples],
+                                   y=dataset.y[test_examples],
+                                   type=DatasetType.TEST)
 
             # Train and evaluate model...
-            train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
-            test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, DatasetType.TEST)
             yield DataSplit(folding_strategy=folding_strategy,
                             fold=fold,
-                            training_dataset=train_dataset,
+                            training_dataset=training_dataset,
                             test_dataset=test_dataset)
