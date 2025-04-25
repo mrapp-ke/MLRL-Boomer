@@ -71,8 +71,7 @@ namespace boosting {
             int querySysvLworkParameter(T* tmpArray1, T* output, int n) const;
 
             /**
-             * Computes and returns the solution to a linear system A * X = B using LAPACK's SYSV solver (see
-             * https://www.netlib.org/lapack/explore-html/d8/ddb/group__hesv.html).
+             * Computes and returns the solution to a linear system A * X = B using LAPACK's DSYSV solver.
              *
              * The function `querySysvLworkParameter` must be run beforehand to determine the optimal value for the
              * parameter "lwork" and to allocate a temporary array depending on this value.

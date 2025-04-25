@@ -73,5 +73,5 @@ INFO Model:
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/rules_overall.txt"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/rules.txt"...
 INFO Successfully finished after <duration>

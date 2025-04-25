@@ -37,5 +37,5 @@ INFO Label vectors:
 │      22 │ [0 0 1 0 0 1]  │           1 │
 └─────────┴────────────────┴─────────────┘
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/label_vectors_overall.csv"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/label_vectors.csv"...
 INFO Successfully finished after <duration>

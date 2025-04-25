@@ -69,7 +69,7 @@ class CmdRunner:
     @staticmethod
     def __get_file_name(name: str, suffix: str, fold: Optional[int] = None):
         if fold is None:
-            return name + '_overall.' + suffix
+            return name + '.' + suffix
         return name + '_fold-' + str(fold) + '.' + suffix
 
     def __assert_file_exists(self, directory: str, file_name: str):

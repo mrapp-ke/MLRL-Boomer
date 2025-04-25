@@ -67,8 +67,7 @@ namespace boosting {
             Blas(const Routines& routines);
 
             /**
-             * Computes and returns the dot product x * y of two vectors x and y using BLAS' DOT routine (see
-             * https://www.netlib.org/lapack/explore-html/d1/dcc/group__dot.html).
+             * Computes and returns the dot product x * y of two vectors x and y using BLAS' DDOT routine.
              *
              * @param x A pointer to an array of template type `T`, shape `(n)`, representing the first vector x
              * @param y A pointer to an array of template type `T`, shape `(n)`, representing the second vector y
@@ -78,8 +77,7 @@ namespace boosting {
             T dot(T* x, T* y, int n) const;
 
             /**
-             * Computes and returns the solution to the matrix-vector operation A * x using BLAS' SPMV routine (see
-             * https://www.netlib.org/lapack/explore-html/d0/d4b/group__hpmv.html).
+             * Computes and returns the solution to the matrix-vector operation A * x using BLAS' DSPMV routine.
              *
              * SPMV expects the matrix A to be a symmetric matrix with shape `(n, n)` and x to be an array with shape
              * `(n)`. The matrix A must be supplied in packed form, i.e., as an array with shape `(n * (n + 1) / 2 )`
