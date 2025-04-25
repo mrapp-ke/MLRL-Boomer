@@ -34,9 +34,9 @@ class EvaluationDataExtractor(DataExtractor, ABC):
         """
         training_result = state.training_result
         prediction_result = state.prediction_result
+        dataset = state.dataset
 
-        if training_result and prediction_result:
-            dataset = state.dataset
+        if training_result and prediction_result and dataset:
             data_type = dataset.type
             measurements = self.measurements.setdefault(data_type, Measurements(state.folding_strategy.num_folds))
             fold_index = state.fold.index

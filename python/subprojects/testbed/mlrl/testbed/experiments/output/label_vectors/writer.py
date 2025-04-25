@@ -27,7 +27,12 @@ class LabelVectorWriter(OutputWriter):
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            return LabelVectors(LabelVectorHistogram.from_dataset(state.dataset))
+            dataset = state.dataset
+
+            if dataset:
+                return LabelVectors(LabelVectorHistogram.from_dataset(dataset))
+
+            return None
 
     def __init__(self, *extractors: DataExtractor):
         super().__init__(*extractors, LabelVectorWriter.DefaultExtractor())
