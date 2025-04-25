@@ -19,8 +19,7 @@
  * element the corresponding position in the sparse matrix, if available.
  *
  * The data structure that is used for the representation of a single row is often referred to as an "unordered sparse
- * set". It was originally proposed in "An efficient representation for sparse sets", Briggs, Torczon, 1993 (see
- * https://scholar.archive.org/work/fl4opoka5zbqxebcvo7pji7oga/access/wayback/http://www.dcs.gla.ac.uk:80/~pat/ads2/papers/sparseSets.pdf).
+ * set". It was originally proposed in "An efficient representation for sparse sets", Briggs, Torczon, 1993.
  *
  * @tparam T The type of the values, the view provides access to
  */
