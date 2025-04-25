@@ -7,18 +7,20 @@ and test sets.
 import logging as log
 
 from abc import ABC, abstractmethod
-from enum import Enum
+from dataclasses import dataclass
 from functools import reduce
 from os import path
-from timeit import default_timer as timer
-from typing import List, Optional
+from typing import Generator, List, Optional
 
 from scipy.sparse import vstack
 from sklearn.model_selection import KFold, train_test_split
 
-from mlrl.testbed.data import MetaData, load_data_set, load_data_set_and_meta_data, one_hot_encode
-from mlrl.testbed.format import format_duration
-from mlrl.testbed.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name, get_file_name_per_fold
+from mlrl.testbed.data import ArffMetaData, load_data_set, load_data_set_and_meta_data
+from mlrl.testbed.experiments.dataset import Dataset, DatasetType
+from mlrl.testbed.experiments.fold import Fold, FoldingStrategy
+from mlrl.testbed.experiments.input.dataset.preprocessors import Preprocessor
+from mlrl.testbed.experiments.output.sinks import ArffFileSink
+from mlrl.testbed.util.io import get_file_name, get_file_name_per_fold
 
 
 class DataSet:
@@ -38,155 +40,20 @@ class DataSet:
         self.use_one_hot_encoding = use_one_hot_encoding
 
 
-class DataSplit(ABC):
+@dataclass
+class DataSplit:
     """
-    Provides information about a split of the available data that is used for training and testing.
+    A split of a dataset into training and test datasets.
+
+    :param folding_strategy:    The strategy that is used for creating folds
+    :param fold:                The fold, the split corresponds to
+    :param training_dataset:    The training dataset
+    :param test_dataset:        The test dataset
     """
-
-    @abstractmethod
-    def is_train_test_separated(self) -> bool:
-        """
-        Returns whether the training data is separated from the test data or not.
-
-        :return: True, if the training data is separated from the test data, False otherwise
-        """
-
-    @abstractmethod
-    def get_num_folds(self) -> int:
-        """
-        Returns the total number of cross validation folds.
-
-        :return: The total number of cross validation folds or 1, if no cross validation is used
-        """
-
-    @abstractmethod
-    def get_fold(self) -> Optional[int]:
-        """
-        Returns the cross validation fold, this split corresponds to.
-
-        :return: The cross validation fold, starting at 0, or None, if no cross validation is used
-        """
-
-    @abstractmethod
-    def is_last_fold(self) -> bool:
-        """
-        Returns whether this split corresponds to the last fold of a cross validation or not.
-
-        :return: True, if this split corresponds to the last fold, False otherwise
-        """
-
-    def is_cross_validation_used(self) -> bool:
-        """
-        Returns whether cross validation is used or not.
-
-        :return: True, if cross validation is used, False otherwise
-        """
-        return self.get_num_folds() > 1
-
-
-class NoSplit(DataSplit):
-    """
-    Provides information about data that has not been split into separate training and test data.
-    """
-
-    def is_train_test_separated(self) -> bool:
-        return False
-
-    def get_num_folds(self) -> int:
-        return 1
-
-    def get_fold(self) -> Optional[int]:
-        return None
-
-    def is_last_fold(self) -> bool:
-        return True
-
-
-class TrainingTestSplit(DataSplit):
-    """
-    Provides information about a split of the available data into training and test data.
-    """
-
-    def is_train_test_separated(self) -> bool:
-        return True
-
-    def get_num_folds(self) -> int:
-        return 1
-
-    def get_fold(self) -> Optional[int]:
-        return None
-
-    def is_last_fold(self) -> bool:
-        return True
-
-
-class CrossValidationFold(DataSplit):
-    """
-    Provides information about a split of the available data that is used by a single fold of a cross validation.
-    """
-
-    def __init__(self, num_folds: int, fold: int, current_fold: int):
-        """
-        :param num_folds:       The total number of folds
-        :param fold:            The fold, starting at 0
-        :param current_fold:    The cross validation fold to be performed or -1, if all folds are performed
-        """
-        self.num_folds = num_folds
-        self.fold = fold
-        self.current_fold = current_fold
-
-    def is_train_test_separated(self) -> bool:
-        return True
-
-    def get_num_folds(self) -> int:
-        return self.num_folds
-
-    def get_fold(self) -> Optional[int]:
-        return self.fold
-
-    def is_last_fold(self) -> bool:
-        return self.current_fold < 0 and self.fold == self.num_folds - 1
-
-
-class CrossValidationOverall(DataSplit):
-    """
-    Provides information about the overall splits of a cross validation.
-    """
-
-    def __init__(self, num_folds: int):
-        """
-        :param num_folds: The total number of folds
-        """
-        self.num_folds = num_folds
-
-    def is_train_test_separated(self) -> bool:
-        return True
-
-    def get_num_folds(self) -> int:
-        return self.num_folds
-
-    def get_fold(self) -> Optional[int]:
-        return None
-
-    def is_last_fold(self) -> bool:
-        return True
-
-
-class DataType(Enum):
-    """
-    Characterizes data as either training or test data.
-    """
-    TRAINING = 'training'
-    TEST = 'test'
-
-    def get_file_name(self, name: str) -> str:
-        """
-        Returns a file name that corresponds to a specific type of data.
-
-        :param name:    The name of the file (without suffix)
-        :return:        The file name
-        """
-        return name + '_' + str(self.value)
+    folding_strategy: FoldingStrategy
+    fold: Fold
+    training_dataset: Dataset
+    test_dataset: Dataset
 
 
 class DataSplitter(ABC):
@@ -194,42 +61,12 @@ class DataSplitter(ABC):
     An abstract base class for all classes that split a data set into training and test data.
     """
 
-    class Callback(ABC):
-        """
-        An abstract base class for all classes that train and evaluate a model given a predefined split of the available
-        data.
-        """
-
-        @abstractmethod
-        def train_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, train_x, train_y, test_x, test_y):
-            """
-            The function that is invoked to train a model on a training set and evaluate it on a test set.
-
-            :param meta_data:   The meta-data of the training data set
-            :param data_split:  Information about the split of the available data that should be used for training and
-                                evaluating the model
-            :param train_x:     The feature matrix of the training examples
-            :param train_y:     The output matrix of the training examples
-            :param test_x:      The feature matrix of the test examples
-            :param test_y:      The output matrix of the test examples
-            """
-
-    def run(self, callback: Callback):
-        """
-        :param callback: The callback that should be used for training and evaluating models
-        """
-        start_time = timer()
-        self._split_data(callback)
-        end_time = timer()
-        run_time = end_time - start_time
-        log.info('Successfully finished after %s', format_duration(run_time))
-
     @abstractmethod
-    def _split_data(self, callback: Callback):
+    def split(self) -> Generator[DataSplit]:
         """
-        Must be implemented by subclasses in order to split the available data.
+        Returns a generator that generates the individual splits of the dataset into training and test data.
 
-        :param callback: The callback that should be used for training and evaluating models
+        :return: The generator
         """
 
 
@@ -257,7 +94,7 @@ def check_if_files_exist(directory: str, file_names: List[str]) -> bool:
         return False
     raise IOError('The following files do not exist: '
                   + reduce(lambda aggr, missing_file: aggr +
-                           (', ' if len(aggr) > 0 else '') + '"' + missing_file + '"', missing_files, ''))
+                           (', ' if aggr else '') + '"' + missing_file + '"', missing_files, ''))
 
 
 class NoSplitter(DataSplitter):
@@ -265,34 +102,43 @@ class NoSplitter(DataSplitter):
     Does not split the available data into separate train and test sets.
     """
 
-    def __init__(self, data_set: DataSet):
+    def __init__(self, data_set: DataSet, preprocessor: Optional[Preprocessor]):
         """
-        :param data_set: The properties of the data set to be used
+        :param data_set:        The properties of the data set to be used
+        :param preprocessor:    An optional `Preprocessor` to be applied to the available data
         """
         self.data_set = data_set
+        self.preprocessor = preprocessor
 
-    def _split_data(self, callback: DataSplitter.Callback):
+    def split(self) -> Generator[DataSplit]:
         log.warning('Not using separate training and test sets. The model will be evaluated on the training data...')
+
+        # Load data set...
         data_set = self.data_set
         data_dir = data_set.data_dir
         data_set_name = data_set.data_set_name
-        use_one_hot_encoding = data_set.use_one_hot_encoding
-
-        # Load data set...
-        arff_file_name = get_file_name(data_set_name, SUFFIX_ARFF)
-        xml_file_name = get_file_name(data_set_name, SUFFIX_XML)
+        arff_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_ARFF)
+        xml_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_XML)
         x, y, meta_data = load_data_set_and_meta_data(data_dir, arff_file_name, xml_file_name)
 
-        # Apply one-hot-encoding, if necessary...
-        if use_one_hot_encoding:
-            x, _, encoded_meta_data = one_hot_encode(x, y, meta_data)
-        else:
-            encoded_meta_data = None
+        # Apply preprocessor, if necessary...
+        preprocessor = self.preprocessor
+
+        if preprocessor:
+            encoder = preprocessor.create_encoder()
+            encoded_dataset = encoder.encode(Dataset(x, y, meta_data.features, meta_data.outputs))
+            x = encoded_dataset.x
+            meta_data = ArffMetaData(encoded_dataset.features, encoded_dataset.outputs, meta_data.outputs_at_start)
 
         # Train and evaluate model...
-        data_split = NoSplit()
-        callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data, data_split, x, y,
-                                    x, y)
+        folding_strategy = FoldingStrategy(num_folds=1, first=0, last=1)
+
+        for fold in folding_strategy.folds:
+            dataset = Dataset(x, y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
+            yield DataSplit(folding_strategy=folding_strategy,
+                            fold=fold,
+                            training_dataset=dataset,
+                            test_dataset=dataset)
 
 
 class TrainTestSplitter(DataSplitter):
@@ -300,49 +146,56 @@ class TrainTestSplitter(DataSplitter):
     Splits the available data into a single train and test set.
     """
 
-    def __init__(self, data_set: DataSet, test_size: float, random_state: int):
+    def __init__(self, data_set: DataSet, preprocessor: Optional[Preprocessor], test_size: float, random_state: int):
         """
         :param data_set:        The properties of the data set to be used
+        :param preprocessor:    An optional `Preprocessor` to be applied to the train and test set
         :param test_size:       The fraction of the available data to be used as the test set
         :param random_state:    The seed to be used by RNGs. Must be at least 1
         """
         self.data_set = data_set
+        self.preprocessor = preprocessor
         self.test_size = test_size
         self.random_state = random_state
 
-    def _split_data(self, callback: DataSplitter.Callback):
+    def split(self) -> Generator[DataSplit]:
         log.info('Using separate training and test sets...')
-        data_set = self.data_set
-        data_dir = data_set.data_dir
-        data_set_name = data_set.data_set_name
-        use_one_hot_encoding = data_set.use_one_hot_encoding
-        xml_file_name = get_file_name(data_set_name, SUFFIX_XML)
 
         # Check if ARFF files with predefined training and test data are available...
-        train_arff_file_name = get_file_name(DataType.TRAINING.get_file_name(data_set_name), SUFFIX_ARFF)
-        test_arff_file_name = get_file_name(DataType.TEST.get_file_name(data_set_name), SUFFIX_ARFF)
+        data_set = self.data_set
+        data_set_name = data_set.data_set_name
+        train_arff_file_name = get_file_name(DatasetType.TRAINING.get_file_name(data_set_name),
+                                             ArffFileSink.SUFFIX_ARFF)
+        test_arff_file_name = get_file_name(DatasetType.TEST.get_file_name(data_set_name), ArffFileSink.SUFFIX_ARFF)
+        data_dir = data_set.data_dir
         predefined_split = check_if_files_exist(data_dir, [train_arff_file_name, test_arff_file_name])
 
         if not predefined_split:
-            train_arff_file_name = get_file_name(data_set_name, SUFFIX_ARFF)
+            train_arff_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_ARFF)
 
         # Load (training) data set...
+        xml_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_XML)
         train_x, train_y, meta_data = load_data_set_and_meta_data(data_dir, train_arff_file_name, xml_file_name)
 
-        # Apply one-hot-encoding, if necessary...
-        if use_one_hot_encoding:
-            train_x, encoder, encoded_meta_data = one_hot_encode(train_x, train_y, meta_data)
+        # Apply preprocessor, if necessary...
+        preprocessor = self.preprocessor
+
+        if preprocessor:
+            encoder = preprocessor.create_encoder()
+            encoded_dataset = encoder.encode(Dataset(train_x, train_y, meta_data.features, meta_data.outputs))
+            train_x = encoded_dataset.x
+            meta_data = ArffMetaData(encoded_dataset.features, encoded_dataset.outputs, meta_data.outputs_at_start)
         else:
             encoder = None
-            encoded_meta_data = None
 
         if predefined_split:
             # Load test data set...
             test_x, test_y = load_data_set(data_dir, test_arff_file_name, meta_data)
 
-            # Apply one-hot-encoding, if necessary...
-            if encoder is not None:
-                test_x, _, _ = one_hot_encode(test_x, test_y, meta_data, encoder=encoder)
+            # Apply preprocessor, if necessary...
+            if encoder:
+                encoded_dataset = encoder.encode(Dataset(test_x, test_y, meta_data.features, meta_data.outputs))
+                test_x = encoded_dataset.x
         else:
             # Split data set into training and test data...
             train_x, test_x, train_y, test_y = train_test_split(train_x,
@@ -352,9 +205,15 @@ class TrainTestSplitter(DataSplitter):
                                                                 shuffle=True)
 
         # Train and evaluate model...
-        data_split = TrainingTestSplit()
-        callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data, data_split,
-                                    train_x, train_y, test_x, test_y)
+        folding_strategy = FoldingStrategy(num_folds=1, first=0, last=1)
+
+        for fold in folding_strategy.folds:
+            train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
+            test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, DatasetType.TEST)
+            yield DataSplit(folding_strategy=folding_strategy,
+                            fold=fold,
+                            training_dataset=train_dataset,
+                            test_dataset=test_dataset)
 
 
 class CrossValidationSplitter(DataSplitter):
@@ -362,65 +221,67 @@ class CrossValidationSplitter(DataSplitter):
     Splits the available data into training and test sets corresponding to the individual folds of a cross validation.
     """
 
-    def __init__(self, data_set: DataSet, num_folds: int, current_fold: int, random_state: int):
+    def __init__(self, data_set: DataSet, preprocessor: Optional[Preprocessor], num_folds: int, current_fold: int,
+                 random_state: int):
         """
         :param data_set:        The properties of the data set to be used
+        :param preprocessor:    An optional `Preprocessor` to be applied to the individual folds
         :param num_folds:       The total number of folds to be used by cross validation or 1, if separate training and
                                 test sets should be used
         :param current_fold:    The cross validation fold to be performed or -1, if all folds should be performed
         :param random_state:    The seed to be used by RNGs. Must be at least 1
         """
         self.data_set = data_set
+        self.preprocessor = preprocessor
         self.num_folds = num_folds
         self.current_fold = current_fold
         self.random_state = random_state
 
-    def _split_data(self, callback: DataSplitter.Callback):
+    def split(self) -> Generator[DataSplit]:
         num_folds = self.num_folds
         current_fold = self.current_fold
         log.info('Performing %s %s-fold cross validation...',
                  'full' if current_fold < 0 else 'fold ' + str(current_fold + 1) + ' of', num_folds)
-        data_set = self.data_set
-        data_dir = data_set.data_dir
-        data_set_name = data_set.data_set_name
-        use_one_hot_encoding = data_set.use_one_hot_encoding
-        xml_file_name = get_file_name(data_set_name, SUFFIX_XML)
 
         # Check if ARFF files with predefined folds are available...
-        arff_file_names = [get_file_name_per_fold(data_set_name, SUFFIX_ARFF, fold) for fold in range(num_folds)]
+        data_set = self.data_set
+        data_set_name = data_set.data_set_name
+        arff_file_names = [
+            get_file_name_per_fold(data_set_name, ArffFileSink.SUFFIX_ARFF, Fold(fold)) for fold in range(num_folds)
+        ]
+        data_dir = data_set.data_dir
         predefined_split = check_if_files_exist(data_dir, arff_file_names)
+        xml_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_XML)
 
         if predefined_split:
-            self.__predefined_cross_validation(callback,
-                                               data_dir=data_dir,
-                                               arff_file_names=arff_file_names,
-                                               xml_file_name=xml_file_name,
-                                               use_one_hot_encoding=use_one_hot_encoding,
-                                               num_folds=num_folds,
-                                               current_fold=current_fold)
-        else:
-            arff_file_name = get_file_name(data_set_name, SUFFIX_ARFF)
-            self.__cross_validation(callback,
-                                    data_dir=data_dir,
-                                    arff_file_name=arff_file_name,
-                                    xml_file_name=xml_file_name,
-                                    use_one_hot_encoding=use_one_hot_encoding,
-                                    num_folds=num_folds,
-                                    current_fold=current_fold)
+            return self.__predefined_cross_validation(data_dir=data_dir,
+                                                      arff_file_names=arff_file_names,
+                                                      xml_file_name=xml_file_name,
+                                                      num_folds=num_folds,
+                                                      current_fold=current_fold)
 
-    @staticmethod
-    def __predefined_cross_validation(callback: DataSplitter.Callback, data_dir: str, arff_file_names: List[str],
-                                      xml_file_name: str, use_one_hot_encoding: bool, num_folds: int,
-                                      current_fold: int):
+        arff_file_name = get_file_name(data_set_name, ArffFileSink.SUFFIX_ARFF)
+        return self.__cross_validation(data_dir=data_dir,
+                                       arff_file_name=arff_file_name,
+                                       xml_file_name=xml_file_name,
+                                       num_folds=num_folds,
+                                       current_fold=current_fold)
+
+    def __predefined_cross_validation(self, data_dir: str, arff_file_names: List[str], xml_file_name: str,
+                                      num_folds: int, current_fold: int) -> Generator[DataSplit]:
         # Load first data set for the first fold...
         x, y, meta_data = load_data_set_and_meta_data(data_dir, arff_file_names[0], xml_file_name)
 
-        # Apply one-hot-encoding, if necessary...
-        if use_one_hot_encoding:
-            x, encoder, encoded_meta_data = one_hot_encode(x, y, meta_data)
+        # Apply preprocessor, if necessary...
+        preprocessor = self.preprocessor
+
+        if preprocessor:
+            encoder = preprocessor.create_encoder()
+            encoded_dataset = encoder.encode(Dataset(x, y, meta_data.features, meta_data.outputs))
+            x = encoded_dataset.x
+            meta_data = ArffMetaData(encoded_dataset.features, encoded_dataset.outputs, meta_data.outputs_at_start)
         else:
             encoder = None
-            encoded_meta_data = None
 
         data = [(x, y)]
 
@@ -428,22 +289,27 @@ class CrossValidationSplitter(DataSplitter):
         for fold in range(1, num_folds):
             x, y = load_data_set(data_dir, arff_file_names[fold], meta_data)
 
-            # Apply one-hot-encoding, if necessary...
-            if encoder is not None:
-                x, _, _ = one_hot_encode(x, y, meta_data, encoder=encoder)
+            # Apply preprocessor, if necessary...
+            if encoder:
+                encoded_dataset = encoder.encode(Dataset(x, y, meta_data.features, meta_data.outputs))
+                x = encoded_dataset.x
 
             data.append((x, y))
 
         # Perform cross-validation...
-        for fold in range(0 if current_fold < 0 else current_fold, num_folds if current_fold < 0 else current_fold + 1):
-            log.info('Fold %s / %s:', (fold + 1), num_folds)
+        folding_strategy = FoldingStrategy(num_folds=num_folds,
+                                           first=0 if current_fold < 0 else current_fold,
+                                           last=num_folds if current_fold < 0 else current_fold + 1)
+
+        for fold in folding_strategy.folds:
+            log.info('Fold %s / %s:', (fold.index + 1), num_folds)
 
             # Create training set for current fold...
             train_x = None
             train_y = None
 
             for other_fold in range(num_folds):
-                if other_fold != fold:
+                if other_fold != fold.index:
                     x, y = data[other_fold]
 
                     if train_x is None:
@@ -454,40 +320,56 @@ class CrossValidationSplitter(DataSplitter):
                         train_y = vstack((train_y, y))
 
             # Obtain test set for current fold...
-            test_x, test_y = data[fold]
+            test_x, test_y = data[fold.index]
 
             # Train and evaluate model...
-            data_split = CrossValidationFold(num_folds=num_folds, fold=fold, current_fold=current_fold)
-            callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data, data_split,
-                                        train_x, train_y, test_x, test_y)
+            train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
+            test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, DatasetType.TEST)
+            yield DataSplit(folding_strategy=folding_strategy,
+                            fold=fold,
+                            training_dataset=train_dataset,
+                            test_dataset=test_dataset)
 
-    def __cross_validation(self, callback: DataSplitter.Callback, data_dir: str, arff_file_name: str,
-                           xml_file_name: str, use_one_hot_encoding: bool, num_folds: int, current_fold: int):
+    def __cross_validation(self, data_dir: str, arff_file_name: str, xml_file_name: str, num_folds: int,
+                           current_fold: int) -> Generator[DataSplit]:
         # Load data set...
         x, y, meta_data = load_data_set_and_meta_data(data_dir, arff_file_name, xml_file_name)
 
-        # Apply one-hot-encoding, if necessary...
-        if use_one_hot_encoding:
-            x, _, encoded_meta_data = one_hot_encode(x, y, meta_data)
-        else:
-            encoded_meta_data = None
+        # Apply preprocessor, if necessary...
+        preprocessor = self.preprocessor
+
+        if preprocessor:
+            encoder = preprocessor.create_encoder()
+            encoded_dataset = encoder.encode(Dataset(x, y, meta_data.features, meta_data.outputs))
+            x = encoded_dataset.x
+            meta_data = ArffMetaData(encoded_dataset.features, encoded_dataset.outputs, meta_data.outputs_at_start)
 
         # Perform cross-validation...
-        k_fold = KFold(n_splits=num_folds, random_state=self.random_state, shuffle=True)
+        folding_strategy = FoldingStrategy(num_folds=num_folds,
+                                           first=0 if current_fold < 0 else current_fold,
+                                           last=num_folds if current_fold < 0 else current_fold + 1)
+        splits = enumerate(KFold(n_splits=num_folds, random_state=self.random_state, shuffle=True).split(x, y))
 
-        for fold, (train_indices, test_indices) in enumerate(k_fold.split(x, y)):
-            if current_fold < 0 or fold == current_fold:
-                log.info('Fold %s / %s:', (fold + 1), num_folds)
+        for fold in folding_strategy.folds:
+            split_index, (train_indices, test_indices) = next(splits, (None, (None, None)))
 
-                # Create training set for current fold...
-                train_x = x[train_indices]
-                train_y = y[train_indices]
+            while split_index and split_index < fold.index:
+                split_index, (train_indices, test_indices) = next(splits, (None, (None, None)))
 
-                # Create test set for current fold...
-                test_x = x[test_indices]
-                test_y = y[test_indices]
+            log.info('Fold %s / %s:', (fold.index + 1), num_folds)
 
-                # Train and evaluate model...
-                data_split = CrossValidationFold(num_folds=num_folds, fold=fold, current_fold=current_fold)
-                callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data,
-                                            data_split, train_x, train_y, test_x, test_y)
+            # Create training set for current fold...
+            train_x = x[train_indices]
+            train_y = y[train_indices]
+
+            # Create test set for current fold...
+            test_x = x[test_indices]
+            test_y = y[test_indices]
+
+            # Train and evaluate model...
+            train_dataset = Dataset(train_x, train_y, meta_data.features, meta_data.outputs, DatasetType.TRAINING)
+            test_dataset = Dataset(test_x, test_y, meta_data.features, meta_data.outputs, DatasetType.TEST)
+            yield DataSplit(folding_strategy=folding_strategy,
+                            fold=fold,
+                            training_dataset=train_dataset,
+                            test_dataset=test_dataset)

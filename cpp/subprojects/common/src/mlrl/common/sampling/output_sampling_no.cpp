@@ -17,7 +17,7 @@ class NoOutputSampling final : public IOutputSampling {
          */
         NoOutputSampling(uint32 numOutputs) : indexVector_(numOutputs) {}
 
-        const IIndexVector& sample(RNG& rng) override {
+        const IIndexVector& sample() override {
             return indexVector_;
         }
 };

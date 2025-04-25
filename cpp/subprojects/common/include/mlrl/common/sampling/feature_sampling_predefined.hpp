@@ -23,7 +23,7 @@ class PredefinedFeatureSampling final : public IFeatureSampling {
          */
         PredefinedFeatureSampling(const IIndexVector& indexVector);
 
-        const IIndexVector& sample(RNG& rng) override;
+        const IIndexVector& sample() override;
 
-        std::unique_ptr<IFeatureSampling> createBeamSearchFeatureSampling(RNG& rng, bool resample) override;
+        std::unique_ptr<IFeatureSampling> createBeamSearchFeatureSampling(bool resample) override;
 };

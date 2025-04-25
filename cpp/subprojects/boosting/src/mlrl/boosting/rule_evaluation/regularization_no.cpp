@@ -2,8 +2,8 @@
 
 namespace boosting {
 
-    float64 NoRegularizationConfig::getWeight() const {
-        return 0;
+    float32 NoRegularizationConfig::getWeight() const {
+        return 0.0f;
     }
 
 }

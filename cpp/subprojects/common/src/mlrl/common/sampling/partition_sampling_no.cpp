@@ -18,7 +18,7 @@ class NoPartitionSampling final : public IPartitionSampling {
          */
         NoPartitionSampling(uint32 numExamples) : partition_(numExamples) {}
 
-        IPartition& partition(RNG& rng) override {
+        IPartition& partition() override {
             return partition_;
         }
 };

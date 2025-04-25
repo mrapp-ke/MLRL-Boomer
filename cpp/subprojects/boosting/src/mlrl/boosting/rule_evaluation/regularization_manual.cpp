@@ -4,19 +4,19 @@
 
 namespace boosting {
 
-    ManualRegularizationConfig::ManualRegularizationConfig() : regularizationWeight_(1) {}
+    ManualRegularizationConfig::ManualRegularizationConfig() : regularizationWeight_(1.0f) {}
 
-    float64 ManualRegularizationConfig::getRegularizationWeight() const {
+    float32 ManualRegularizationConfig::getRegularizationWeight() const {
         return regularizationWeight_;
     }
 
-    IManualRegularizationConfig& ManualRegularizationConfig::setRegularizationWeight(float64 regularizationWeight) {
-        util::assertGreater<float64>("regularizationWeight", regularizationWeight, 0);
+    IManualRegularizationConfig& ManualRegularizationConfig::setRegularizationWeight(float32 regularizationWeight) {
+        util::assertGreater<float32>("regularizationWeight", regularizationWeight, 0);
         regularizationWeight_ = regularizationWeight;
         return *this;
     }
 
-    float64 ManualRegularizationConfig::getWeight() const {
+    float32 ManualRegularizationConfig::getWeight() const {
         return regularizationWeight_;
     }
 

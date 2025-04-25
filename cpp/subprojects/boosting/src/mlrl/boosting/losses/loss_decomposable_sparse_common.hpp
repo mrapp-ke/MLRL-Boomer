@@ -14,25 +14,25 @@ namespace boosting {
 
     static inline constexpr uint32 LIMIT = std::numeric_limits<uint32>::max();
 
-    template<typename IndexIterator>
-    static inline uint32 fetchNextStatistic(IndexIterator& indexIterator, IndexIterator indicesEnd,
-                                            SparseSetView<float64>::value_const_iterator& scoreIterator,
-                                            SparseSetView<float64>::value_const_iterator scoresEnd,
-                                            Tuple<float64>& tuple,
-                                            DecomposableClassificationLoss::UpdateFunction updateFunction) {
+    template<typename StatisticType, typename IndexIterator>
+    static inline uint32 fetchNextStatistic(
+      IndexIterator& indexIterator, IndexIterator indicesEnd,
+      typename SparseSetView<StatisticType>::value_const_iterator& scoreIterator,
+      typename SparseSetView<StatisticType>::value_const_iterator scoresEnd, Statistic<StatisticType>& statistic,
+      typename DecomposableClassificationLoss<StatisticType>::UpdateFunction updateFunction) {
         uint32 outputIndex = indexIterator == indicesEnd ? LIMIT : *indexIterator;
         uint32 scoreIndex = scoreIterator == scoresEnd ? LIMIT : (*scoreIterator).index;
 
         if (scoreIndex < outputIndex) {
-            (*updateFunction)(false, (*scoreIterator).value, tuple.first, tuple.second);
+            (*updateFunction)(false, (*scoreIterator).value, statistic.gradient, statistic.hessian);
             scoreIterator++;
             return scoreIndex;
         } else if (outputIndex < scoreIndex) {
-            (*updateFunction)(true, 0, tuple.first, tuple.second);
+            (*updateFunction)(true, 0, statistic.gradient, statistic.hessian);
             indexIterator++;
             return outputIndex;
         } else if (outputIndex < LIMIT) {
-            (*updateFunction)(true, (*scoreIterator).value, tuple.first, tuple.second);
+            (*updateFunction)(true, (*scoreIterator).value, statistic.gradient, statistic.hessian);
             scoreIterator++;
             indexIterator++;
             return outputIndex;
@@ -41,43 +41,47 @@ namespace boosting {
         return LIMIT;
     }
 
-    template<typename IndexIterator>
-    static inline uint32 fetchNextNonZeroStatistic(IndexIterator& indexIterator, IndexIterator indicesEnd,
-                                                   SparseSetView<float64>::value_const_iterator& scoreIterator,
-                                                   SparseSetView<float64>::value_const_iterator scoresEnd,
-                                                   Tuple<float64>& tuple,
-                                                   DecomposableClassificationLoss::UpdateFunction updateFunction) {
-        uint32 index = fetchNextStatistic(indexIterator, indicesEnd, scoreIterator, scoresEnd, tuple, updateFunction);
+    template<typename StatisticType, typename IndexIterator>
+    static inline uint32 fetchNextNonZeroStatistic(
+      IndexIterator& indexIterator, IndexIterator indicesEnd,
+      typename SparseSetView<StatisticType>::value_const_iterator& scoreIterator,
+      typename SparseSetView<StatisticType>::value_const_iterator scoresEnd, Statistic<StatisticType>& statistic,
+      typename DecomposableClassificationLoss<StatisticType>::UpdateFunction updateFunction) {
+        uint32 index =
+          fetchNextStatistic(indexIterator, indicesEnd, scoreIterator, scoresEnd, statistic, updateFunction);
 
-        while (index < LIMIT && isEqualToZero(tuple.first)) {
-            index = fetchNextStatistic(indexIterator, indicesEnd, scoreIterator, scoresEnd, tuple, updateFunction);
+        while (index < LIMIT && isEqualToZero(statistic.gradient)) {
+            index = fetchNextStatistic(indexIterator, indicesEnd, scoreIterator, scoresEnd, statistic, updateFunction);
         }
 
         return index;
     }
 
-    template<typename IndexIterator>
+    template<typename StatisticType, typename IndexIterator>
     static inline void updateDecomposableStatisticsInternally(
-      IndexIterator indicesBegin, IndexIterator indicesEnd, SparseSetView<float64>::value_const_iterator scoresBegin,
-      SparseSetView<float64>::value_const_iterator scoresEnd, SparseSetView<Tuple<float64>>::row row,
-      DecomposableClassificationLoss::UpdateFunction updateFunction) {
+      IndexIterator indicesBegin, IndexIterator indicesEnd,
+      typename SparseSetView<StatisticType>::value_const_iterator scoresBegin,
+      typename SparseSetView<StatisticType>::value_const_iterator scoresEnd,
+      typename SparseSetView<Statistic<StatisticType>>::row row,
+      typename DecomposableClassificationLoss<StatisticType>::UpdateFunction updateFunction) {
         row.clear();
-        Tuple<float64> tuple;
+        Statistic<StatisticType> statistic;
         uint32 index;
 
-        while (
-          (index = fetchNextNonZeroStatistic(indicesBegin, indicesEnd, scoresBegin, scoresEnd, tuple, updateFunction))
-          < LIMIT) {
-            IndexedValue<Tuple<float64>>& entry = row.emplace(index);
-            entry.value = tuple;
+        while ((index = fetchNextNonZeroStatistic(indicesBegin, indicesEnd, scoresBegin, scoresEnd, statistic,
+                                                  updateFunction))
+               < LIMIT) {
+            IndexedValue<Statistic<StatisticType>>& entry = row.emplace(index);
+            entry.value = statistic;
         }
     }
 
-    template<typename IndexIterator>
-    static inline uint32 fetchNextEvaluation(IndexIterator& indexIterator, IndexIterator indicesEnd,
-                                             SparseSetView<float64>::value_const_iterator& scoreIterator,
-                                             SparseSetView<float64>::value_const_iterator scoresEnd, float64& score,
-                                             DecomposableClassificationLoss::EvaluateFunction evaluateFunction) {
+    template<typename ScoreType, typename IndexIterator>
+    static inline uint32 fetchNextEvaluation(
+      IndexIterator& indexIterator, IndexIterator indicesEnd,
+      typename SparseSetView<ScoreType>::value_const_iterator& scoreIterator,
+      typename SparseSetView<ScoreType>::value_const_iterator scoresEnd, ScoreType& score,
+      typename DecomposableClassificationLoss<ScoreType>::EvaluateFunction evaluateFunction) {
         uint32 outputIndex = indexIterator == indicesEnd ? LIMIT : *indexIterator;
         uint32 scoreIndex = scoreIterator == scoresEnd ? LIMIT : (*scoreIterator).index;
 
@@ -99,12 +103,12 @@ namespace boosting {
         return LIMIT;
     }
 
-    template<typename IndexIterator>
-    static inline uint32 fetchNextNonZeroEvaluation(IndexIterator& indexIterator, IndexIterator indicesEnd,
-                                                    SparseSetView<float64>::value_const_iterator& scoreIterator,
-                                                    SparseSetView<float64>::value_const_iterator scoresEnd,
-                                                    float64& score,
-                                                    DecomposableClassificationLoss::EvaluateFunction evaluateFunction) {
+    template<typename ScoreType, typename IndexIterator>
+    static inline uint32 fetchNextNonZeroEvaluation(
+      IndexIterator& indexIterator, IndexIterator indicesEnd,
+      typename SparseSetView<ScoreType>::value_const_iterator& scoreIterator,
+      typename SparseSetView<ScoreType>::value_const_iterator scoresEnd, ScoreType& score,
+      typename DecomposableClassificationLoss<ScoreType>::EvaluateFunction evaluateFunction) {
         uint32 index =
           fetchNextEvaluation(indexIterator, indicesEnd, scoreIterator, scoresEnd, score, evaluateFunction);
 
@@ -115,23 +119,23 @@ namespace boosting {
         return index;
     }
 
-    template<typename IndexIterator>
-    static inline float64 evaluateInternally(IndexIterator indicesBegin, IndexIterator indicesEnd,
-                                             SparseSetView<float64>::value_const_iterator scoresBegin,
-                                             SparseSetView<float64>::value_const_iterator scoresEnd,
-                                             DecomposableClassificationLoss::EvaluateFunction evaluateFunction,
-                                             uint32 numLabels) {
-        float64 mean = 0;
-        float64 score = 0;
+    template<typename ScoreType, typename IndexIterator>
+    static inline ScoreType evaluateInternally(
+      IndexIterator indicesBegin, IndexIterator indicesEnd,
+      typename SparseSetView<ScoreType>::value_const_iterator scoresBegin,
+      typename SparseSetView<ScoreType>::value_const_iterator scoresEnd,
+      typename DecomposableClassificationLoss<ScoreType>::EvaluateFunction evaluateFunction, uint32 numLabels) {
+        ScoreType mean = 0;
+        ScoreType score = 0;
         uint32 i = 0;
 
         while (fetchNextNonZeroEvaluation(indicesBegin, indicesEnd, scoresBegin, scoresEnd, score, evaluateFunction)
                < LIMIT) {
-            mean = util::iterativeArithmeticMean<float64>(i + 1, score, mean);
+            mean = util::iterativeArithmeticMean(i + 1, score, mean);
             i++;
         }
 
-        return mean * ((float64) i / (float64) numLabels);
+        return mean * ((ScoreType) i / (ScoreType) numLabels);
     }
 
     /**
@@ -139,59 +143,60 @@ namespace boosting {
      * "evaluation function" for updating the gradients and Hessians and evaluation the predictions for an individual
      * label, respectively.
      */
-    class SparseDecomposableClassificationLoss final : public DecomposableClassificationLoss,
-                                                       public ISparseDecomposableClassificationLoss {
+    template<typename StatisticType>
+    class SparseDecomposableClassificationLoss final : public DecomposableClassificationLoss<StatisticType>,
+                                                       public ISparseDecomposableClassificationLoss<StatisticType> {
         public:
 
             /**
              * @param updateFunction    The "update function" to be used for updating gradients and Hessians
              * @param evaluateFunction  The "evaluation function" to be used for evaluating predictions
              */
-            SparseDecomposableClassificationLoss(UpdateFunction updateFunction, EvaluateFunction evaluateFunction)
-                : DecomposableClassificationLoss(updateFunction, evaluateFunction) {}
+            SparseDecomposableClassificationLoss(
+              typename DecomposableClassificationLoss<StatisticType>::UpdateFunction updateFunction,
+              typename DecomposableClassificationLoss<StatisticType>::EvaluateFunction evaluateFunction)
+                : DecomposableClassificationLoss<StatisticType>(updateFunction, evaluateFunction) {}
 
             // Keep functions from the parent class rather than hiding them.
-            using DecomposableClassificationLoss::evaluate;
-            using DecomposableClassificationLoss::updateDecomposableStatistics;
+            using DecomposableClassificationLoss<StatisticType>::evaluate;
+            using DecomposableClassificationLoss<StatisticType>::updateDecomposableStatistics;
 
             void updateDecomposableStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-                                              const SparseSetView<float64>& scoreMatrix,
+                                              const SparseSetView<StatisticType>& scoreMatrix,
                                               CompleteIndexVector::const_iterator indicesBegin,
                                               CompleteIndexVector::const_iterator indicesEnd,
-                                              SparseSetView<Tuple<float64>>& statisticView) const override {
+                                              SparseSetView<Statistic<StatisticType>>& statisticView) const override {
                 auto labelIndicesBegin = createNonZeroIndexForwardIterator(labelMatrix.values_cbegin(exampleIndex),
                                                                            labelMatrix.values_cend(exampleIndex));
                 auto labelIndicesEnd = createNonZeroIndexForwardIterator(labelMatrix.values_cend(exampleIndex),
                                                                          labelMatrix.values_cend(exampleIndex));
-                updateDecomposableStatisticsInternally(
+                updateDecomposableStatisticsInternally<StatisticType, decltype(labelIndicesBegin)>(
                   labelIndicesBegin, labelIndicesEnd, scoreMatrix.values_cbegin(exampleIndex),
-                  scoreMatrix.values_cend(exampleIndex), statisticView[exampleIndex],
-                  DecomposableClassificationLoss::updateFunction_);
+                  scoreMatrix.values_cend(exampleIndex), statisticView[exampleIndex], this->updateFunction_);
             }
 
             void updateDecomposableStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-                                              const SparseSetView<float64>& scoreMatrix,
+                                              const SparseSetView<StatisticType>& scoreMatrix,
                                               PartialIndexVector::const_iterator indicesBegin,
                                               PartialIndexVector::const_iterator indicesEnd,
-                                              SparseSetView<Tuple<float64>>& statisticView) const override {
-                const SparseSetView<float64>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
+                                              SparseSetView<Statistic<StatisticType>>& statisticView) const override {
+                const typename SparseSetView<StatisticType>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
                 CContiguousView<const uint8>::value_const_iterator labelIterator =
                   labelMatrix.values_cbegin(exampleIndex);
-                SparseSetView<Tuple<float64>>::row statisticViewRow = statisticView[exampleIndex];
+                typename SparseSetView<Statistic<StatisticType>>::row statisticViewRow = statisticView[exampleIndex];
                 uint32 numElements = indicesEnd - indicesBegin;
-                Tuple<float64> tuple;
+                Statistic<StatisticType> statistic;
 
                 for (uint32 i = 0; i < numElements; i++) {
                     uint32 index = indicesBegin[i];
-                    const IndexedValue<float64>* scoreMatrixEntry = scoreMatrixRow[index];
-                    float64 predictedScore = scoreMatrixEntry ? scoreMatrixEntry->value : 0;
+                    const IndexedValue<StatisticType>* scoreMatrixEntry = scoreMatrixRow[index];
+                    StatisticType predictedScore = scoreMatrixEntry ? scoreMatrixEntry->value : 0;
                     bool trueLabel = labelIterator[index];
-                    (*DecomposableClassificationLoss::updateFunction_)(trueLabel, predictedScore, tuple.first,
-                                                                       tuple.second);
+                    (*this->updateFunction_)(trueLabel, predictedScore, statistic.gradient, statistic.hessian);
 
-                    if (!isEqualToZero(tuple.first)) {
-                        IndexedValue<Tuple<float64>>& statisticViewEntry = statisticViewRow.emplace(index);
-                        statisticViewEntry.value = tuple;
+                    if (!isEqualToZero(statistic.gradient)) {
+                        IndexedValue<Statistic<StatisticType>>& statisticViewEntry = statisticViewRow.emplace(index);
+                        statisticViewEntry.value = statistic;
                     } else {
                         statisticViewRow.erase(index);
                     }
@@ -199,40 +204,39 @@ namespace boosting {
             }
 
             void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                              const SparseSetView<float64>& scoreMatrix,
+                                              const SparseSetView<StatisticType>& scoreMatrix,
                                               CompleteIndexVector::const_iterator indicesBegin,
                                               CompleteIndexVector::const_iterator indicesEnd,
-                                              SparseSetView<Tuple<float64>>& statisticView) const override {
-                updateDecomposableStatisticsInternally(
+                                              SparseSetView<Statistic<StatisticType>>& statisticView) const override {
+                updateDecomposableStatisticsInternally<StatisticType, BinaryCsrView::index_const_iterator>(
                   labelMatrix.indices_cbegin(exampleIndex), labelMatrix.indices_cend(exampleIndex),
                   scoreMatrix.values_cbegin(exampleIndex), scoreMatrix.values_cend(exampleIndex),
-                  statisticView[exampleIndex], DecomposableClassificationLoss::updateFunction_);
+                  statisticView[exampleIndex], this->updateFunction_);
             }
 
             void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                              const SparseSetView<float64>& scoreMatrix,
+                                              const SparseSetView<StatisticType>& scoreMatrix,
                                               PartialIndexVector::const_iterator indicesBegin,
                                               PartialIndexVector::const_iterator indicesEnd,
-                                              SparseSetView<Tuple<float64>>& statisticView) const override {
-                const SparseSetView<float64>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
+                                              SparseSetView<Statistic<StatisticType>>& statisticView) const override {
+                const typename SparseSetView<StatisticType>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
                 BinaryCsrView::index_const_iterator labelIndicesBegin = labelMatrix.indices_cbegin(exampleIndex);
                 BinaryCsrView::index_const_iterator labelIndicesEnd = labelMatrix.indices_cend(exampleIndex);
-                SparseSetView<Tuple<float64>>::row statisticViewRow = statisticView[exampleIndex];
+                typename SparseSetView<Statistic<StatisticType>>::row statisticViewRow = statisticView[exampleIndex];
                 uint32 numElements = indicesEnd - indicesBegin;
-                Tuple<float64> tuple;
+                Statistic<StatisticType> statistic;
 
                 for (uint32 i = 0; i < numElements; i++) {
                     uint32 index = indicesBegin[i];
                     labelIndicesBegin = std::lower_bound(labelIndicesBegin, labelIndicesEnd, index);
                     bool trueLabel = labelIndicesBegin != labelIndicesEnd && *labelIndicesBegin == index;
-                    const IndexedValue<float64>* scoreMatrixEntry = scoreMatrixRow[index];
-                    float64 predictedScore = scoreMatrixEntry ? scoreMatrixEntry->value : 0;
-                    (*DecomposableClassificationLoss::updateFunction_)(trueLabel, predictedScore, tuple.first,
-                                                                       tuple.second);
+                    const IndexedValue<StatisticType>* scoreMatrixEntry = scoreMatrixRow[index];
+                    StatisticType predictedScore = scoreMatrixEntry ? scoreMatrixEntry->value : 0;
+                    (*this->updateFunction_)(trueLabel, predictedScore, statistic.gradient, statistic.hessian);
 
-                    if (!isEqualToZero(tuple.first)) {
-                        IndexedValue<Tuple<float64>>& statisticViewEntry = statisticViewRow.emplace(index);
-                        statisticViewEntry.value = tuple;
+                    if (!isEqualToZero(statistic.gradient)) {
+                        IndexedValue<Statistic<StatisticType>>& statisticViewEntry = statisticViewRow.emplace(index);
+                        statisticViewEntry.value = statistic;
                     } else {
                         statisticViewRow.erase(index);
                     }
@@ -242,26 +246,26 @@ namespace boosting {
             /**
              * @see `IClassificationEvaluationMeasure::evaluate`
              */
-            float64 evaluate(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-                             const SparseSetView<float64>& scoreMatrix) const override {
+            StatisticType evaluate(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+                                   const SparseSetView<StatisticType>& scoreMatrix) const override {
                 auto indicesBegin = createNonZeroIndexForwardIterator(labelMatrix.values_cbegin(exampleIndex),
                                                                       labelMatrix.values_cend(exampleIndex));
                 auto indicesEnd = createNonZeroIndexForwardIterator(labelMatrix.values_cend(exampleIndex),
                                                                     labelMatrix.values_cend(exampleIndex));
-                return evaluateInternally(indicesBegin, indicesEnd, scoreMatrix.values_cbegin(exampleIndex),
-                                          scoreMatrix.values_cend(exampleIndex),
-                                          DecomposableClassificationLoss::evaluateFunction_, labelMatrix.numCols);
+                return evaluateInternally<StatisticType, decltype(indicesBegin)>(
+                  indicesBegin, indicesEnd, scoreMatrix.values_cbegin(exampleIndex),
+                  scoreMatrix.values_cend(exampleIndex), this->evaluateFunction_, labelMatrix.numCols);
             }
 
             /**
              * @see `IClassificationEvaluationMeasure::evaluate`
              */
-            float64 evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                             const SparseSetView<float64>& scoreMatrix) const override {
-                return evaluateInternally(
+            StatisticType evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
+                                   const SparseSetView<StatisticType>& scoreMatrix) const override {
+                return evaluateInternally<StatisticType, BinaryCsrView::index_const_iterator>(
                   labelMatrix.indices_cbegin(exampleIndex), labelMatrix.indices_cend(exampleIndex),
                   scoreMatrix.values_cbegin(exampleIndex), scoreMatrix.values_cend(exampleIndex),
-                  DecomposableClassificationLoss::evaluateFunction_, labelMatrix.numCols);
+                  this->evaluateFunction_, labelMatrix.numCols);
             }
     };
 

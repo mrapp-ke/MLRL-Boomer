@@ -7,18 +7,18 @@
 
 namespace seco {
 
-    static inline float64 calculateLiftInternally(uint32 numLabels, uint32 totalLabels, uint32 peakLabel,
-                                                  float64 maxLift, float64 exponent) {
+    static inline float32 calculateLiftInternally(uint32 numLabels, uint32 totalLabels, uint32 peakLabel,
+                                                  float32 maxLift, float32 exponent) {
         if (numLabels == peakLabel) {
             return maxLift;
         } else {
-            float64 normalization;
+            float32 normalization;
 
             if (numLabels < peakLabel) {
-                normalization = ((float64) numLabels - 1) / ((float64) peakLabel - 1);
+                normalization = ((float32) numLabels - 1) / ((float32) peakLabel - 1);
             } else {
                 normalization =
-                  ((float64) numLabels - (float64) totalLabels) / ((float64) totalLabels - (float64) peakLabel);
+                  ((float32) numLabels - (float32) totalLabels) / ((float32) totalLabels - (float32) peakLabel);
             }
 
             return 1 + pow(normalization, exponent) * (maxLift - 1);
@@ -36,11 +36,11 @@ namespace seco {
 
             const uint32 peakLabel_;
 
-            const float64 maxLift_;
+            const float32 maxLift_;
 
-            const float64 exponent_;
+            const float32 exponent_;
 
-            const Array<float64>& maxLiftsAfterPeak_;
+            const Array<float32>& maxLiftsAfterPeak_;
 
         public:
 
@@ -50,20 +50,20 @@ namespace seco {
              * @param maxLift           The lift at the peak label. Must be at least 1
              * @param curvature         The curvature of the lift function. A greater value results in a steeper curve,
              *                          a smaller value results in a flatter curve. Must be greater than 0
-             * @param maxLiftsAfterPeak A reference to an object of type `Array<float64>` that specifies that maximum
+             * @param maxLiftsAfterPeak A reference to an object of type `Array<float32>` that specifies that maximum
                                         lifts that are possible by adding additional labels to heads that predict for
                                         more labels than the peak label
              */
-            PeakLiftFunction(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature,
-                             const Array<float64>& maxLiftsAfterPeak)
+            PeakLiftFunction(uint32 numLabels, uint32 peakLabel, float32 maxLift, float32 curvature,
+                             const Array<float32>& maxLiftsAfterPeak)
                 : numLabels_(numLabels), peakLabel_(peakLabel), maxLift_(maxLift), exponent_(1.0 / curvature),
                   maxLiftsAfterPeak_(maxLiftsAfterPeak) {}
 
-            float64 calculateLift(uint32 numLabels) const override {
+            float32 calculateLift(uint32 numLabels) const override {
                 return calculateLiftInternally(numLabels, numLabels_, peakLabel_, maxLift_, exponent_);
             }
 
-            float64 getMaxLift(uint32 numLabels) const override {
+            float32 getMaxLift(uint32 numLabels) const override {
                 if (numLabels < peakLabel_) {
                     return maxLift_;
                 } else {
@@ -83,11 +83,11 @@ namespace seco {
 
             const uint32 peakLabel_;
 
-            const float64 maxLift_;
+            const float32 maxLift_;
 
-            const float64 curvature_;
+            const float32 curvature_;
 
-            Array<float64> maxLiftsAfterPeak_;
+            Array<float32> maxLiftsAfterPeak_;
 
         public:
 
@@ -98,7 +98,7 @@ namespace seco {
              * @param curvature The curvature of the lift function. A greater value results in a steeper curvature, a
              *                  smaller value results in a flatter curvature. Must be greater than 0
              */
-            PeakLiftFunctionFactory(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature)
+            PeakLiftFunctionFactory(uint32 numLabels, uint32 peakLabel, float32 maxLift, float32 curvature)
                 : numLabels_(numLabels), peakLabel_(peakLabel), maxLift_(maxLift), curvature_(curvature),
                   maxLiftsAfterPeak_(numLabels - peakLabel) {
                 for (uint32 i = 0; i < numLabels - peakLabel; i++) {
@@ -113,7 +113,7 @@ namespace seco {
             }
     };
 
-    PeakLiftFunctionConfig::PeakLiftFunctionConfig() : peakLabel_(2), maxLift_(1.08), curvature_(1.0) {}
+    PeakLiftFunctionConfig::PeakLiftFunctionConfig() : peakLabel_(2), maxLift_(1.08f), curvature_(1.0f) {}
 
     uint32 PeakLiftFunctionConfig::getPeakLabel() const {
         return peakLabel_;
@@ -125,22 +125,22 @@ namespace seco {
         return *this;
     }
 
-    float64 PeakLiftFunctionConfig::getMaxLift() const {
+    float32 PeakLiftFunctionConfig::getMaxLift() const {
         return maxLift_;
     }
 
-    IPeakLiftFunctionConfig& PeakLiftFunctionConfig::setMaxLift(float64 maxLift) {
-        util::assertGreaterOrEqual<float64>("maxLift", maxLift, 1);
+    IPeakLiftFunctionConfig& PeakLiftFunctionConfig::setMaxLift(float32 maxLift) {
+        util::assertGreaterOrEqual<float32>("maxLift", maxLift, 1);
         maxLift_ = maxLift;
         return *this;
     }
 
-    float64 PeakLiftFunctionConfig::getCurvature() const {
+    float32 PeakLiftFunctionConfig::getCurvature() const {
         return curvature_;
     }
 
-    IPeakLiftFunctionConfig& PeakLiftFunctionConfig::setCurvature(float64 curvature) {
-        util::assertGreater<float64>("curvature", curvature, 0);
+    IPeakLiftFunctionConfig& PeakLiftFunctionConfig::setCurvature(float32 curvature) {
+        util::assertGreater<float32>("curvature", curvature, 0);
         curvature_ = curvature;
         return *this;
     }
