@@ -75,10 +75,10 @@ class FilePath:
         file_name = self.file_name
 
         if self.context.include_dataset_type:
-            dataset = state.dataset
+            dataset_type = state.dataset_type
 
-            if dataset:
-                file_name += '_' + state.dataset.type.value
+            if dataset_type:
+                file_name += '_' + dataset_type.value
 
         if self.context.include_prediction_scope:
             prediction_result = state.prediction_result
