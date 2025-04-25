@@ -5,7 +5,7 @@ import shutil
 import subprocess
 
 from functools import reduce
-from os import listdir, makedirs, path
+from os import environ, listdir, makedirs, path, remove
 from typing import Any, Optional
 
 from .cmd_builder import CmdBuilder
@@ -85,13 +85,26 @@ class CmdRunner:
             self.test_case.fail('Command "' + self.__format_cmd() + '" is expected to create file ' + str(file)
                                 + ', but it does not exist')
 
-    def __compare_files(self, file_comparison: FileComparison, test_name: str, file_name: str):
+    def __compare_or_overwrite_files(self, file_comparison: FileComparison, test_name: str, file_name: str):
         expected_output_file = path.join(self.builder.expected_output_dir, test_name, file_name)
-        difference = file_comparison.compare_or_overwrite(expected_output_file)
+        overwrite = self.__should_overwrite_files()
+        difference = file_comparison.compare_or_overwrite(expected_output_file, overwrite=overwrite)
 
         if difference:
             self.test_case.fail('Command "' + self.__format_cmd() + '" resulted in unexpected output: '
                                 + str(difference))
+
+    @staticmethod
+    def __should_overwrite_files() -> bool:
+        variable_name = 'OVERWRITE_OUTPUT_FILES'
+        value = environ.get(variable_name, 'false').strip().lower()
+
+        if value == 'true':
+            return True
+        if value == 'false':
+            return False
+        raise ValueError('Value of environment variable "' + variable_name + '" must be "true" or "false", but is "'
+                         + value + '"')
 
     def __init__(self, test_case: Any, builder: CmdBuilder):
         """
@@ -122,22 +135,30 @@ class CmdRunner:
         # Check if output of the command is as expected...
         stdout = [self.__format_cmd()] + str(out.stdout).splitlines()
         stdout_file = 'std.out'
-        self.__compare_files(TextFileComparison(stdout), test_name=test_name, file_name=stdout_file)
+        self.__compare_or_overwrite_files(TextFileComparison(stdout), test_name=test_name, file_name=stdout_file)
 
         # Check if all expected output files have been created...
         self.__assert_model_files_exist()
         output_dir = builder.output_dir
         expected_output_dir = builder.expected_output_dir
+        expected_files_to_be_deleted = []
 
         for expected_file in listdir(path.join(expected_output_dir, test_name)):
             if expected_file != stdout_file:
-                self.__assert_file_exists(output_dir, expected_file)
+                if self.__should_overwrite_files():
+                    if not path.isfile(path.join(output_dir, expected_file)):
+                        expected_files_to_be_deleted.append(path.join(expected_output_dir, test_name, expected_file))
+                else:
+                    self.__assert_file_exists(output_dir, expected_file)
+
+        for expected_file in expected_files_to_be_deleted:
+            remove(expected_file)
 
         # Check if all output files have the expected content...
         for output_file in listdir(output_dir):
-            self.__compare_files(FileComparison.for_file(path.join(output_dir, output_file)),
-                                 test_name=test_name,
-                                 file_name=path.basename(output_file))
+            self.__compare_or_overwrite_files(FileComparison.for_file(path.join(output_dir, output_file)),
+                                              test_name=test_name,
+                                              file_name=path.basename(output_file))
 
         # Delete temporary directories...
         self.__delete_temporary_directories()
