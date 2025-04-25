@@ -28,7 +28,7 @@ This requires to specify a directory via the command line argument `--parameter-
 
 If {ref}`train-test splits<train-test-split>` are used for splitting the available data into training and test sets, a single model is trained and its configuration is saved to a file:
 
-- `parameters_overall.csv`
+- `parameters.csv`
 
 If a {ref}`cross validation<cross-validation>` is performed instead, one model is trained per cross validation fold and the configurations of all of these models are stored in the specified directory. For example, a 5-fold cross validation results in the following files:
 
