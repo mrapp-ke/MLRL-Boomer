@@ -39,8 +39,7 @@ namespace boosting {
             Blas(DdotFunction ddotFunction, DspmvFunction dspmvFunction);
 
             /**
-             * Computes and returns the dot product x * y of two vectors x and y using BLAS' DDOT routine (see
-             * https://www.netlib.org/lapack/explore-html/d1/dcc/group__dot_ga2a42ecc597403b22ad786715c739196b.html#ga2a42ecc597403b22ad786715c739196b).
+             * Computes and returns the dot product x * y of two vectors x and y using BLAS' DDOT routine.
              *
              * @param x A pointer to an array of type `float64`, shape `(n)`, representing the first vector x
              * @param y A pointer to an array of type `float64`, shape `(n)`, representing the second vector y
@@ -50,8 +49,7 @@ namespace boosting {
             float64 ddot(float64* x, float64* y, int n) const;
 
             /**
-             * Computes and returns the solution to the matrix-vector operation A * x using BLAS' DSPMV routine (see
-             * https://www.netlib.org/lapack/explore-html/d0/d4b/group__hpmv_ga739f8dc2316523832bde2b237fcad8a6.html#ga739f8dc2316523832bde2b237fcad8a6).
+             * Computes and returns the solution to the matrix-vector operation A * x using BLAS' DSPMV routine.
              *
              * DSPMV expects the matrix A to be a symmetric matrix with shape `(n, n)` and x to be an array with shape
              * `(n)`. The matrix A must be supplied in packed form, i.e., as an array with shape `(n * (n + 1) / 2 )`
