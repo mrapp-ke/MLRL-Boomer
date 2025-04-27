@@ -5,7 +5,6 @@ Provides utility functions for reading and writing files.
 """
 from os import path
 
-# UTF-8 encoding
 ENCODING_UTF8 = 'utf-8'
 
 
