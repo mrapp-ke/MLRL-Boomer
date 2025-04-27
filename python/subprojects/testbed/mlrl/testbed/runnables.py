@@ -24,7 +24,7 @@ from mlrl.common.learners import RuleLearner, SparsePolicy
 from mlrl.common.package_info import PythonPackageInfo
 from mlrl.common.util.format import format_dict_keys, format_enum_values, format_iterable
 
-from mlrl.testbed.data_splitting import CrossValidationSplitter, DataSet, DataSplitter, NoSplitter, TrainTestSplitter
+from mlrl.testbed.data_splitting import CrossValidationSplitter, DataSet, DatasetSplitter, NoSplitter, TrainTestSplitter
 from mlrl.testbed.experiment import Experiment
 from mlrl.testbed.experiments.input.dataset.preprocessors import OneHotEncoder, Preprocessor
 from mlrl.testbed.experiments.input.model import ModelReader
@@ -547,7 +547,7 @@ class LearnerRunnable(Runnable, ABC):
             return OneHotEncoder()
         return None
 
-    def __create_data_splitter(self, args) -> DataSplitter:
+    def __create_dataset_splitter(self, args) -> DatasetSplitter:
         data_set = DataSet(data_dir=args.data_dir,
                            data_set_name=args.dataset,
                            use_one_hot_encoding=args.one_hot_encoding)
@@ -579,9 +579,9 @@ class LearnerRunnable(Runnable, ABC):
         return NoSplitter(data_set, preprocessor)
 
     @staticmethod
-    def __create_pre_execution_hook(args, data_splitter: DataSplitter) -> Optional[Experiment.ExecutionHook]:
+    def __create_pre_execution_hook(args, dataset_splitter: DatasetSplitter) -> Optional[Experiment.ExecutionHook]:
         output_dir = args.output_dir
-        is_subset = data_splitter.folding_strategy.is_subset
+        is_subset = dataset_splitter.folding_strategy.is_subset
         return LearnerRunnable.ClearOutputDirHook(output_dir) if output_dir and not is_subset else None
 
     def configure_arguments(self, parser: ArgumentParser):
@@ -742,8 +742,8 @@ class LearnerRunnable(Runnable, ABC):
         problem_type = self.__create_problem_type(args)
         base_learner = self.__create_base_learner(problem_type, args)
         prediction_type = self.__create_prediction_type(args)
-        data_splitter = self.__create_data_splitter(args)
-        pre_execution_hook = self.__create_pre_execution_hook(args, data_splitter)
+        dataset_splitter = self.__create_dataset_splitter(args)
+        pre_execution_hook = self.__create_pre_execution_hook(args, dataset_splitter)
         input_readers = self._create_input_readers(args)
         pre_training_output_writers = self._create_pre_training_output_writers(args)
         post_training_output_writers = self._create_post_training_output_writers(args)
@@ -754,7 +754,7 @@ class LearnerRunnable(Runnable, ABC):
                                              problem_type=problem_type,
                                              base_learner=base_learner,
                                              learner_name=self.learner_name,
-                                             data_splitter=data_splitter,
+                                             dataset_splitter=dataset_splitter,
                                              train_predictor=train_predictor,
                                              test_predictor=test_predictor,
                                              input_readers=input_readers,
@@ -766,7 +766,7 @@ class LearnerRunnable(Runnable, ABC):
 
     # pylint: disable=unused-argument
     def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
-                           data_splitter: DataSplitter, input_readers: List[InputReader],
+                           dataset_splitter: DatasetSplitter, input_readers: List[InputReader],
                            pre_training_output_writers: List[OutputWriter],
                            post_training_output_writers: List[OutputWriter],
                            prediction_output_writers: List[OutputWriter],
@@ -779,8 +779,8 @@ class LearnerRunnable(Runnable, ABC):
         :param problem_type:                    The type of the machine learning problem
         :param base_learner:                    The machine learning algorithm to be used
         :param learner_name:                    The name of machine learning algorithm
-        :param data_splitter:                   The method to be used for splitting the available data into training and
-                                                test sets
+        :param dataset_splitter:                The method to be used for splitting the dataset into training and test
+                                                datasets
         :param input_readers:                   A list that contains all input readers to be invoked
         :param pre_training_output_writers:     A list that contains all output writers to be invoked before training
         :param post_training_output_writers:    A list that contains all output writers to be invoked after training
@@ -796,7 +796,7 @@ class LearnerRunnable(Runnable, ABC):
         return Experiment(problem_type=problem_type,
                           base_learner=base_learner,
                           learner_name=learner_name,
-                          data_splitter=data_splitter,
+                          dataset_splitter=dataset_splitter,
                           input_readers=input_readers,
                           pre_training_output_writers=pre_training_output_writers,
                           post_training_output_writers=post_training_output_writers,
@@ -1362,7 +1362,7 @@ class RuleLearnerRunnable(LearnerRunnable):
         self.__configure_argument_parser(parser, config_type, parameters)
 
     def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
-                           data_splitter: DataSplitter, input_readers: List[InputReader],
+                           dataset_splitter: DatasetSplitter, input_readers: List[InputReader],
                            pre_training_output_writers: List[OutputWriter],
                            post_training_output_writers: List[OutputWriter],
                            prediction_output_writers: List[OutputWriter],
@@ -1372,7 +1372,7 @@ class RuleLearnerRunnable(LearnerRunnable):
         return Experiment(problem_type=problem_type,
                           base_learner=base_learner,
                           learner_name=learner_name,
-                          data_splitter=data_splitter,
+                          dataset_splitter=dataset_splitter,
                           input_readers=input_readers,
                           pre_training_output_writers=pre_training_output_writers,
                           post_training_output_writers=post_training_output_writers,

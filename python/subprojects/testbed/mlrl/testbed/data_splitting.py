@@ -59,7 +59,7 @@ class Split:
     test_dataset: Dataset
 
 
-class DataSplitter(ABC):
+class DatasetSplitter(ABC):
     """
     An abstract base class for all classes that split a data set into training and test data.
     """
@@ -100,7 +100,7 @@ def check_if_files_exist(directory: str, file_names: List[str]) -> bool:
                            (', ' if aggr else '') + '"' + missing_file + '"', missing_files, ''))
 
 
-class NoSplitter(DataSplitter):
+class NoSplitter(DatasetSplitter):
     """
     Does not split the available data into separate train and test sets.
     """
@@ -147,7 +147,7 @@ class NoSplitter(DataSplitter):
             yield Split(folding_strategy=folding_strategy, fold=fold, training_dataset=dataset, test_dataset=dataset)
 
 
-class TrainTestSplitter(DataSplitter):
+class TrainTestSplitter(DatasetSplitter):
     """
     Splits the available data into a single train and test set.
     """
@@ -230,7 +230,7 @@ class TrainTestSplitter(DataSplitter):
                         test_dataset=test_dataset)
 
 
-class CrossValidationSplitter(DataSplitter):
+class CrossValidationSplitter(DatasetSplitter):
     """
     Splits the available data into training and test sets corresponding to the individual folds of a cross validation.
     """
