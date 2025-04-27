@@ -105,12 +105,12 @@ class Experiment:
 
         start_time = Timer.start()
 
-        for data_split in self.data_splitter.split():
-            training_dataset = data_split.training_dataset
-            test_dataset = data_split.test_dataset
+        for split in self.data_splitter.split():
+            training_dataset = split.training_dataset
+            test_dataset = split.test_dataset
             state = ExperimentState(problem_type=self.problem_type,
-                                    folding_strategy=data_split.folding_strategy,
-                                    fold=data_split.fold,
+                                    folding_strategy=split.folding_strategy,
+                                    fold=split.fold,
                                     dataset_type=DatasetType.TRAINING,
                                     dataset=training_dataset)
 
