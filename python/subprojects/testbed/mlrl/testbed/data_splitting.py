@@ -44,7 +44,7 @@ class DataSet:
 
 
 @dataclass
-class DataSplit:
+class Split:
     """
     A split of a dataset into training and test datasets.
 
@@ -65,7 +65,7 @@ class DataSplitter(ABC):
     """
 
     @abstractmethod
-    def split(self) -> Generator[DataSplit]:
+    def split(self) -> Generator[Split]:
         """
         Returns a generator that generates the individual splits of the dataset into training and test data.
 
@@ -114,7 +114,7 @@ class NoSplitter(DataSplitter):
         self.preprocessor = preprocessor
         self.folding_strategy = FoldingStrategy(num_folds=1, first=0, last=1)
 
-    def split(self) -> Generator[DataSplit]:
+    def split(self) -> Generator[Split]:
         log.warning('Not using separate training and test sets. The model will be evaluated on the training data...')
 
         # Load data set...
@@ -144,10 +144,7 @@ class NoSplitter(DataSplitter):
         folding_strategy = self.folding_strategy
 
         for fold in folding_strategy.folds:
-            yield DataSplit(folding_strategy=folding_strategy,
-                            fold=fold,
-                            training_dataset=dataset,
-                            test_dataset=dataset)
+            yield Split(folding_strategy=folding_strategy, fold=fold, training_dataset=dataset, test_dataset=dataset)
 
 
 class TrainTestSplitter(DataSplitter):
@@ -168,7 +165,7 @@ class TrainTestSplitter(DataSplitter):
         self.random_state = random_state
         self.folding_strategy = FoldingStrategy(num_folds=1, first=0, last=1)
 
-    def split(self) -> Generator[DataSplit]:
+    def split(self) -> Generator[Split]:
         log.info('Using separate training and test sets...')
 
         # Check if ARFF files with predefined training and test data are available...
@@ -227,10 +224,10 @@ class TrainTestSplitter(DataSplitter):
         folding_strategy = self.folding_strategy
 
         for fold in folding_strategy.folds:
-            yield DataSplit(folding_strategy=folding_strategy,
-                            fold=fold,
-                            training_dataset=training_dataset,
-                            test_dataset=test_dataset)
+            yield Split(folding_strategy=folding_strategy,
+                        fold=fold,
+                        training_dataset=training_dataset,
+                        test_dataset=test_dataset)
 
 
 class CrossValidationSplitter(DataSplitter):
@@ -255,7 +252,7 @@ class CrossValidationSplitter(DataSplitter):
                                                 first=0 if current_fold < 0 else current_fold,
                                                 last=num_folds if current_fold < 0 else current_fold + 1)
 
-    def split(self) -> Generator[DataSplit]:
+    def split(self) -> Generator[Split]:
         folding_strategy = self.folding_strategy
         num_folds = folding_strategy.num_folds
 
@@ -277,7 +274,7 @@ class CrossValidationSplitter(DataSplitter):
 
         return self.__cross_validation(data_dir=data_dir, dataset_name=data_set_name)
 
-    def __predefined_cross_validation(self, data_dir: str, dataset_name: str) -> Generator[DataSplit]:
+    def __predefined_cross_validation(self, data_dir: str, dataset_name: str) -> Generator[Split]:
         input_dataset = InputDataset(dataset_name)
         context = input_dataset.default_context
         context.include_dataset_type = False
@@ -340,12 +337,12 @@ class CrossValidationSplitter(DataSplitter):
             test_dataset = replace(data[fold.index], type=DatasetType.TEST)
 
             # Train and evaluate model...
-            yield DataSplit(folding_strategy=folding_strategy,
-                            fold=fold,
-                            training_dataset=training_dataset,
-                            test_dataset=test_dataset)
+            yield Split(folding_strategy=folding_strategy,
+                        fold=fold,
+                        training_dataset=training_dataset,
+                        test_dataset=test_dataset)
 
-    def __cross_validation(self, data_dir: str, dataset_name: str) -> Generator[DataSplit]:
+    def __cross_validation(self, data_dir: str, dataset_name: str) -> Generator[Split]:
         input_dataset = InputDataset(dataset_name)
         context = input_dataset.default_context
         context.include_dataset_type = False
@@ -395,7 +392,7 @@ class CrossValidationSplitter(DataSplitter):
                                    type=DatasetType.TEST)
 
             # Train and evaluate model...
-            yield DataSplit(folding_strategy=folding_strategy,
-                            fold=fold,
-                            training_dataset=training_dataset,
-                            test_dataset=test_dataset)
+            yield Split(folding_strategy=folding_strategy,
+                        fold=fold,
+                        training_dataset=training_dataset,
+                        test_dataset=test_dataset)
