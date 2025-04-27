@@ -8,13 +8,15 @@ import logging as log
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, replace
-from functools import reduce
 from os import path
-from typing import Generator, List, Optional
+from typing import Generator, Optional
 
 from scipy.sparse import vstack
 from sklearn.model_selection import KFold, train_test_split
 
+from mlrl.common.util.format import format_iterable
+
+from mlrl.testbed.experiments.data import FilePath
 from mlrl.testbed.experiments.dataset import Dataset, DatasetType
 from mlrl.testbed.experiments.fold import Fold, FoldingStrategy
 from mlrl.testbed.experiments.input.dataset import InputDataset
@@ -23,7 +25,6 @@ from mlrl.testbed.experiments.input.sources import ArffFileSource
 from mlrl.testbed.experiments.output.sinks import ArffFileSink
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.util.io import get_file_name, get_file_name_per_fold
 
 
 class DataSet:
@@ -73,31 +74,20 @@ class DatasetSplitter(ABC):
         """
 
 
-def check_if_files_exist(directory: str, file_names: List[str]) -> bool:
+def check_if_files_exist(*files: str) -> bool:
     """
     Returns whether all given files exist or not. If some of the files are missing, an `IOError` is raised.
 
-    :param directory:   The path to the directory where the files should be located
-    :param file_names:  A list that contains the names of all files to be checked
-    :return:            True, if all files exist, False, if all files are missing
+    :param files:   The files to be checked
+    :return:        True, if all files exist, False, if all files are missing
     """
-    missing_files = []
+    missing_files = [file for file in files if not path.isfile(file)]
 
-    for file_name in file_names:
-        file = path.join(directory, file_name)
-
-        if not path.isfile(file):
-            missing_files.append(file)
-
-    num_missing_files = len(missing_files)
-
-    if num_missing_files == 0:
+    if not missing_files:
         return True
-    if num_missing_files == len(file_names):
+    if len(missing_files) == len(files):
         return False
-    raise IOError('The following files do not exist: '
-                  + reduce(lambda aggr, missing_file: aggr +
-                           (', ' if aggr else '') + '"' + missing_file + '"', missing_files, ''))
+    raise IOError('The following files do not exist: ' + format_iterable(missing_files, delimiter='"'))
 
 
 class NoSplitter(DatasetSplitter):
@@ -172,22 +162,25 @@ class TrainTestSplitter(DatasetSplitter):
         data_set = self.data_set
         data_set_name = data_set.data_set_name
         data_dir = data_set.data_dir
-        predefined_split = check_if_files_exist(data_dir, [
-            get_file_name(data_set_name + '_' + DatasetType.TRAINING.value, ArffFileSink.SUFFIX_ARFF),
-            get_file_name(data_set_name + '_' + DatasetType.TEST.value, ArffFileSink.SUFFIX_ARFF),
-        ])
 
         input_dataset = InputDataset(data_set_name)
         context = input_dataset.default_context
-        context.include_dataset_type = predefined_split
+        context.include_dataset_type = True
         context.include_prediction_scope = False
         context.include_fold = False
 
-        # Load (training) data set...
         state = ExperimentState(problem_type=ProblemType.CLASSIFICATION,
                                 folding_strategy=self.folding_strategy,
                                 fold=Fold(index=0),
                                 dataset_type=DatasetType.TRAINING)
+
+        file_path = FilePath(data_dir, data_set_name, ArffFileSink.SUFFIX_ARFF, context)
+        context.include_dataset_type = check_if_files_exist(
+            file_path.resolve(state),
+            file_path.resolve(replace(state, dataset_type=DatasetType.TEST)),
+        )
+
+        # Load (training) data set...
         source = ArffFileSource(directory=data_dir)
         source.read_from_source(state=state, input_data=input_dataset)
         training_dataset = state.dataset
@@ -201,7 +194,7 @@ class TrainTestSplitter(DatasetSplitter):
         else:
             encoder = None
 
-        if predefined_split:
+        if context.include_dataset_type:
             # Load test data set...
             state.dataset_type = DatasetType.TEST
             source.read_from_source(state=state, input_data=input_dataset)
@@ -265,9 +258,21 @@ class CrossValidationSplitter(DatasetSplitter):
         data_set = self.data_set
         data_set_name = data_set.data_set_name
         data_dir = data_set.data_dir
+
+        input_dataset = InputDataset(data_set_name)
+        context = input_dataset.default_context
+        context.include_dataset_type = False
+        context.include_prediction_scope = False
+        context.include_fold = True
+
+        state = ExperimentState(problem_type=ProblemType.CLASSIFICATION,
+                                folding_strategy=self.folding_strategy,
+                                fold=Fold(index=0),
+                                dataset_type=DatasetType.TRAINING)
+
+        file_path = FilePath(data_dir, data_set_name, ArffFileSink.SUFFIX_ARFF, context)
         predefined_split = check_if_files_exist(
-            data_dir,
-            [get_file_name_per_fold(data_set_name, ArffFileSink.SUFFIX_ARFF, Fold(fold)) for fold in range(num_folds)])
+            *[file_path.resolve(replace(state, fold=Fold(index=fold))) for fold in range(num_folds)])
 
         if predefined_split:
             return self.__predefined_cross_validation(data_dir=data_dir, dataset_name=data_set_name)
