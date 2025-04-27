@@ -14,7 +14,7 @@ from sklearn.base import BaseEstimator, clone
 
 from mlrl.common.mixins import NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
 
-from mlrl.testbed.data_splitting import DataSplitter
+from mlrl.testbed.data_splitting import DatasetSplitter
 from mlrl.testbed.experiments.dataset import AttributeType, Dataset, DatasetType
 from mlrl.testbed.experiments.input.reader import InputReader
 from mlrl.testbed.experiments.output.writer import OutputWriter
@@ -45,7 +45,7 @@ class Experiment:
                  problem_type: ProblemType,
                  base_learner: BaseEstimator,
                  learner_name: str,
-                 data_splitter: DataSplitter,
+                 dataset_splitter: DatasetSplitter,
                  input_readers: List[InputReader],
                  pre_training_output_writers: List[OutputWriter],
                  post_training_output_writers: List[OutputWriter],
@@ -59,8 +59,8 @@ class Experiment:
         :param problem_type:                    The type of the machine learning problem
         :param base_learner:                    The machine learning algorithm to be used
         :param learner_name:                    The name of the machine learning algorithm
-        :param data_splitter:                   The method to be used for splitting the available data into training and
-                                                test sets
+        :param dataset_splitter:                The method to be used for splitting the dataset into training and test
+                                                datasets
         :param input_readers:                   A list that contains all input readers to be invoked
         :param pre_training_output_writers:     A list that contains all output writers to be invoked before training
         :param post_training_output_writers:    A list that contains all output writers to be invoked after training
@@ -79,7 +79,7 @@ class Experiment:
         self.problem_type = problem_type
         self.base_learner = base_learner
         self.learner_name = learner_name
-        self.data_splitter = data_splitter
+        self.dataset_splitter = dataset_splitter
         self.input_readers = input_readers
         self.pre_training_output_writers = pre_training_output_writers
         self.prediction_output_writers = prediction_output_writers
@@ -105,7 +105,7 @@ class Experiment:
 
         start_time = Timer.start()
 
-        for split in self.data_splitter.split():
+        for split in self.dataset_splitter.split():
             training_dataset = split.training_dataset
             test_dataset = split.test_dataset
             state = ExperimentState(problem_type=self.problem_type,
