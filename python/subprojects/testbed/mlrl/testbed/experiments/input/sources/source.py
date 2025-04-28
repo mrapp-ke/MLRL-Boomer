@@ -7,6 +7,7 @@ import logging as log
 
 from abc import ABC, abstractmethod
 from dataclasses import replace
+from os import path
 from typing import Any, Optional
 
 from mlrl.testbed.experiments.data import FilePath
@@ -20,6 +21,16 @@ class Source(ABC):
     """
     An abstract base class for all sources, input data may be read from.
     """
+
+    @abstractmethod
+    def is_available(self, state: ExperimentState, input_data: InputData) -> bool:
+        """
+        Must be implemented by subclasses in order to check whether input data is available or not.
+
+        :param state:       The state that should be used to store the input data
+        :param input_data:  The input data that should be read
+        :return:            True, if the input data is available, False otherwise
+        """
 
     @abstractmethod
     def read_from_source(self, state: ExperimentState, input_data: InputData):
@@ -44,13 +55,24 @@ class FileSource(Source, ABC):
         self.directory = directory
         self.suffix = suffix
 
+    def _get_file_path(self, state: ExperimentState, input_data: InputData):
+        """
+        May be overridden by subclasses in order to determine the path of the file, the input data should be read from.
+
+        :param state:       The state that should be used to store the input data
+        :param input_data:  The input data that should be read
+        :return:            The path of the file, the input data should be read from
+        """
+        return FilePath(directory=self.directory,
+                        file_name=input_data.properties.file_name,
+                        suffix=self.suffix,
+                        context=input_data.get_context(type(self))).resolve(state)
+
+    def is_available(self, state: ExperimentState, input_data: InputData) -> bool:
+        return path.isfile(self._get_file_path(state, input_data))
+
     def read_from_source(self, state: ExperimentState, input_data: InputData):
-        context = input_data.get_context(type(self))
-        file_path = FilePath(directory=self.directory,
-                             file_name=input_data.properties.file_name,
-                             suffix=self.suffix,
-                             context=context)
-        file_path = file_path.resolve(state)
+        file_path = self._get_file_path(state, input_data)
         log.debug('Reading input data from file "%s"...', file_path)
         data = self._read_from_file(state, file_path, input_data)
 
