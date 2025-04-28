@@ -55,27 +55,13 @@ class DataExchange(ABC):
     An abstract base class for all classes that allow to exchange data with the environment this software runs in.
     """
 
-    class Session(ABC):
-        """
-        An abstract base class for all sessions of a `DataExchange` that can be used for exchanging data with the
-        environment this software runs in.
-        """
-
-        @abstractmethod
-        def exchange(self) -> Optional[Data]:
-            """
-            Exchanges data with the environment.
-
-            :return: Data that has been received from the environment or None, if no data has been received
-            """
-
     @abstractmethod
-    def open_session(self, state: ExperimentState) -> Session:
+    def exchange(self, state: ExperimentState) -> Optional[Data]:
         """
-        Opens a session for exchanging data with the environment.
+        Exchanges data with the environment.
 
         :param state:   The current state of the experiment
-        :return:        The session that has been opened
+        :return:        Data that has been received from the environment or None, if no data has been received
         """
 
 

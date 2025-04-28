@@ -115,7 +115,7 @@ class Experiment:
 
             # Read input data...
             for input_reader in self.input_readers:
-                input_reader.open_session(state).exchange()
+                input_reader.exchange(state)
 
             # Apply parameter setting, if necessary...
             learner = clone(self.base_learner)
@@ -129,7 +129,7 @@ class Experiment:
 
             # Write output data before model is trained...
             for output_writer in self.pre_training_output_writers:
-                output_writer.open_session(state).exchange()
+                output_writer.exchange(state)
 
             # Set the indices of ordinal features, if supported...
             fit_kwargs = self.fit_kwargs if self.fit_kwargs else {}
@@ -178,7 +178,7 @@ class Experiment:
 
             # Write output data after model was trained...
             for output_writer in self.post_training_output_writers:
-                output_writer.open_session(state).exchange()
+                output_writer.exchange(state)
 
         run_time = Timer.stop(start_time)
         log.info('Successfully finished after %s', run_time)
@@ -196,7 +196,7 @@ class Experiment:
                 new_state = replace(state, prediction_result=prediction_state)
 
                 for output_writer in self.prediction_output_writers:
-                    output_writer.open_session(new_state).exchange()
+                    output_writer.exchange(new_state)
         except ValueError as error:
             dataset = state.dataset
 
