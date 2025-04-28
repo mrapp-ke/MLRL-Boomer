@@ -3,25 +3,24 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing input or output data.
 """
-from abc import ABC, abstractmethod
+from abc import ABC
 from dataclasses import dataclass, replace
 from os import path
-from typing import Optional, Type
+from typing import Type
 
 from mlrl.testbed.experiments.state import ExperimentState
 
 
 class Data(ABC):
     """
-    An abstract class for all classes that represent data that can be exchanged with the environment, this software runs
-    in.
+    An abstract class for all classes that represent data that can be read from sources or written to sinks.
     """
 
     @dataclass
     class Context:
         """
-        Specifies the aspects of an `ExperimentState` that should be taken into account for finding a suitable data
-        exchange for handling data.
+        Specifies the aspects of an `ExperimentState` that should be taken into account for finding a suitable source or
+        sink for handling data.
 
         Attributes:
             include_dataset_type:       True, if the type of the dataset should be taken into account, False otherwise
@@ -34,40 +33,25 @@ class Data(ABC):
 
     def __init__(self, default_context: Context = Context()):
         """
-        :param default_context: A `Data.Context` to be used by default for finding a suitable data exchange this data
+        :param default_context: A `Data.Context` to be used by default for finding a suitable source or sink this data
                                 can be handled by
         """
         self.default_context = default_context
         self.custom_context = {}
 
-    def get_context(self, exchange_type: Type) -> Context:
+    def get_context(self, lookup_type: Type) -> Context:
         """
-        Returns a `Data.Context` to can be used for finding a suitable data exchange for handling this data.
+        Returns a `Data.Context` that can be used for finding a suitable source or sink for handling this data.
 
-        :param exchange_type:   The type of the data exchange to search for
-        :return:                A `Data.Context`
+        :param lookup_type: The type of the source or sink to search for
+        :return:            A `Data.Context`
         """
-        return self.custom_context.setdefault(exchange_type, replace(self.default_context))
-
-
-class DataExchange(ABC):
-    """
-    An abstract base class for all classes that allow to exchange data with the environment this software runs in.
-    """
-
-    @abstractmethod
-    def exchange(self, state: ExperimentState) -> Optional[Data]:
-        """
-        Exchanges data with the environment.
-
-        :param state:   The current state of the experiment
-        :return:        Data that has been received from the environment or None, if no data has been received
-        """
+        return self.custom_context.setdefault(lookup_type, replace(self.default_context))
 
 
 class FilePath:
     """
-    The path to a file to exchange data with.
+    The path to a file,  `Data` can be written to or read from.
     """
 
     def __init__(self, directory: str, file_name: str, suffix: str, context: Data.Context):

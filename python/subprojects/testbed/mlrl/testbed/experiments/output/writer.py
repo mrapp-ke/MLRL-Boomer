@@ -8,7 +8,6 @@ import logging as log
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from mlrl.testbed.experiments.data import Data, DataExchange
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.state import ExperimentState
@@ -30,9 +29,9 @@ class DataExtractor(ABC):
         """
 
 
-class OutputWriter(DataExchange, ABC):
+class OutputWriter:
     """
-    An abstract base class for all classes that allow to write output data to one or several sinks.
+    Allows to write output data to one or several sinks.
     """
 
     def __init__(self, *extractors: DataExtractor):
@@ -52,9 +51,11 @@ class OutputWriter(DataExchange, ABC):
         self.sinks.extend(sinks)
         return self
 
-    def exchange(self, state: ExperimentState) -> Optional[Data]:
+    def write(self, state: ExperimentState):
         """
-        See :func:`mlrl.testbed.experiments.data.DataExchange.exchange`
+        Writes the input data.
+
+        :param state: The current state of the experiment
         """
         sinks = self.sinks
 
