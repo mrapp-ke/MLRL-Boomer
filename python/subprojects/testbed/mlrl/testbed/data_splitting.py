@@ -117,7 +117,6 @@ class NoSplitter(DatasetSplitter):
                                 dataset_type=DatasetType.TRAINING)
         input_dataset = InputDataset(data_set_name)
         context = input_dataset.default_context
-        context.include_prediction_scope = False
         context.include_dataset_type = False
         context.include_fold = False
         ArffFileSource(directory=data_dir).read_from_source(state=state, input_data=input_dataset)
@@ -166,7 +165,6 @@ class TrainTestSplitter(DatasetSplitter):
         input_dataset = InputDataset(data_set_name)
         context = input_dataset.default_context
         context.include_dataset_type = True
-        context.include_prediction_scope = False
         context.include_fold = False
 
         state = ExperimentState(problem_type=ProblemType.CLASSIFICATION,
@@ -262,7 +260,6 @@ class CrossValidationSplitter(DatasetSplitter):
         input_dataset = InputDataset(data_set_name)
         context = input_dataset.default_context
         context.include_dataset_type = False
-        context.include_prediction_scope = False
         context.include_fold = True
 
         state = ExperimentState(problem_type=ProblemType.CLASSIFICATION,
@@ -283,7 +280,6 @@ class CrossValidationSplitter(DatasetSplitter):
         input_dataset = InputDataset(dataset_name)
         context = input_dataset.default_context
         context.include_dataset_type = False
-        context.include_prediction_scope = False
         context.include_fold = True
 
         # Load (training) data set...
@@ -351,7 +347,6 @@ class CrossValidationSplitter(DatasetSplitter):
         input_dataset = InputDataset(dataset_name)
         context = input_dataset.default_context
         context.include_dataset_type = False
-        context.include_prediction_scope = False
         context.include_fold = False
 
         # Load (training) data set...
