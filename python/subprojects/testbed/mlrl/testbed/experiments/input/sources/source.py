@@ -20,13 +20,12 @@ class Source(ABC):
     """
 
     @abstractmethod
-    def read_from_source(self, state: ExperimentState, input_data: InputData) -> Optional[Any]:
+    def read_from_source(self, state: ExperimentState, input_data: InputData):
         """
         Must be implemented by subclasses in order to read input data from the source.
 
         :param state:       The state that should be used to store the input data
         :param input_data:  The input data that should be read
-        :return:            The data that has been read
         """
 
 
@@ -43,7 +42,7 @@ class FileSource(Source, ABC):
         self.directory = directory
         self.suffix = suffix
 
-    def read_from_source(self, state: ExperimentState, input_data: InputData) -> Optional[Any]:
+    def read_from_source(self, state: ExperimentState, input_data: InputData):
         context = input_data.get_context(type(self))
         file_path = FilePath(directory=self.directory,
                              file_name=input_data.properties.file_name,
