@@ -21,6 +21,15 @@ class InputReader:
         self.source = source
         self.input_data = input_data
 
+    def is_available(self, state: ExperimentState) -> bool:
+        """
+        Checks whether the input data is available or not.
+
+        :param state:   The current state of the experiment
+        :return:        True, if the input data is available, False otherwise
+        """
+        return self.source.is_available(state, self.input_data)
+
     def read(self, state: ExperimentState):
         """
         Reads the input data.
