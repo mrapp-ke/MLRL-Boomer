@@ -10,7 +10,7 @@ from dataclasses import dataclass, field, replace
 from typing import Generator, List
 
 from scipy.sparse import vstack
-from sklearn.model_selection import KFold, train_test_split
+from sklearn.model_selection import KFold
 
 from mlrl.testbed.experiments.dataset import Dataset, DatasetType
 from mlrl.testbed.experiments.fold import Fold, FoldingStrategy
@@ -18,115 +18,6 @@ from mlrl.testbed.experiments.input.dataset import DatasetReader
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
-
-
-class TrainTestSplitter(DatasetSplitter):
-    """
-    Splits a dataset into distinct training and test datasets.
-    """
-
-    class PredefinedSplit(DatasetSplitter.Split):
-        """
-        A predefined split into a training and a test dataset.
-        """
-
-        def __init__(self, dataset_reader: DatasetReader, state: ExperimentState):
-            """
-            :param dataset_reader:  The reader that should be used for loading datasets
-            :param state:           The state that should be used to store the datasets
-            """
-            self.dataset_reader = dataset_reader
-            self.state = state
-            context = dataset_reader.input_data.context
-            context.include_dataset_type = True
-
-        def get_state(self, dataset_type: DatasetType) -> ExperimentState:
-            state = replace(self.state, dataset_type=dataset_type)
-            self.dataset_reader.read(state)
-            return state
-
-    class DynamicSplit(DatasetSplitter.Split):
-        """
-        A split into a training and a test dataset that has been created dynamically.
-        """
-
-        @dataclass
-        class Cache:
-            """
-            Caches training and test datasets that been created dynamically.
-
-            Attributes:
-                training_dataset:   The training dataset
-                test_dataset:       The test dataset
-            """
-            training_dataset: Dataset
-            test_dataset: Dataset
-
-        def __init__(self, splitter: 'TrainTestSplitter', state: ExperimentState):
-            """
-            :param splitter:    The `TrainTestSplitter` that has generated this split
-            :param state:       The state that should be used to store the datasets
-            """
-            self.splitter = splitter
-            self.state = state
-            context = self.splitter.dataset_reader.input_data.context
-            context.include_dataset_type = False
-
-        def get_state(self, dataset_type: DatasetType) -> ExperimentState:
-            state = self.state
-            splitter = self.splitter
-            cache = splitter.cache
-
-            if not cache:
-                splitter.dataset_reader.read(state)
-                dataset = state.dataset
-                x_training, x_test, y_training, y_test = train_test_split(dataset.x,
-                                                                          dataset.y,
-                                                                          test_size=splitter.test_size,
-                                                                          random_state=splitter.random_state,
-                                                                          shuffle=True)
-                training_dataset = replace(dataset, x=x_training, y=y_training, type=DatasetType.TRAINING)
-                test_dataset = replace(dataset, x=x_test, y=y_test, type=DatasetType.TEST)
-                cache = TrainTestSplitter.DynamicSplit.Cache(training_dataset=training_dataset,
-                                                             test_dataset=test_dataset)
-                splitter.cache = cache
-
-            dataset = cache.test_dataset if dataset_type == DatasetType.TEST else cache.training_dataset
-            return replace(state, dataset_type=dataset_type, dataset=dataset)
-
-    def __init__(self, dataset_reader: DatasetReader, test_size: float, random_state: int):
-        """
-        :param dataset_reader:  The reader that should be used for loading datasets
-        :param test_size:       The fraction of the available data to be used as the test set
-        :param random_state:    The seed to be used by RNGs. Must be at least 1
-        """
-        self.dataset_reader = dataset_reader
-        self.test_size = test_size
-        self.random_state = random_state
-        self.folding_strategy = FoldingStrategy(num_folds=1, first=0, last=1)
-        self.cache = None
-        context = dataset_reader.input_data.context
-        context.include_fold = False
-        context.include_dataset_type = True
-
-    def split(self, problem_type: ProblemType) -> Generator[DatasetSplitter.Split]:
-        log.info('Using separate training and test sets...')
-        dataset_reader = self.dataset_reader
-        folding_strategy = self.folding_strategy
-        state = ExperimentState(problem_type=problem_type, folding_strategy=folding_strategy)
-
-        # Check if predefined training and test datasets are available...
-        predefined_datasets_available = all(
-            dataset_reader.is_available(replace(state, dataset_type=dataset_type))
-            for dataset_type in [DatasetType.TRAINING, DatasetType.TEST])
-
-        for fold in folding_strategy.folds:
-            state = replace(state, fold=fold)
-
-            if predefined_datasets_available:
-                yield TrainTestSplitter.PredefinedSplit(dataset_reader=dataset_reader, state=state)
-            else:
-                yield TrainTestSplitter.DynamicSplit(splitter=self, state=state)
 
 
 class CrossValidationSplitter(DatasetSplitter):
