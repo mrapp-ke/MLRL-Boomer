@@ -6,7 +6,6 @@ and test sets.
 """
 import logging as log
 
-from abc import ABC, abstractmethod
 from dataclasses import dataclass, field, replace
 from typing import Generator, List
 
@@ -16,38 +15,9 @@ from sklearn.model_selection import KFold, train_test_split
 from mlrl.testbed.experiments.dataset import Dataset, DatasetType
 from mlrl.testbed.experiments.fold import Fold, FoldingStrategy
 from mlrl.testbed.experiments.input.dataset import DatasetReader
+from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
-
-
-class Split(ABC):
-    """
-    An abstract base class for all classes that represent a split of a dataset into training and test datasets.
-    """
-
-    @abstractmethod
-    def get_state(self, dataset_type: DatasetType) -> ExperimentState:
-        """
-        Returns a state that stores the dataset that corresponds to a specific `DatasetType`.
-
-        :param dataset_type:    The `DatasetType`
-        :return:                A state that stores the dataset that corresponds to the given `DatasetType`
-        """
-
-
-class DatasetSplitter(ABC):
-    """
-    An abstract base class for all classes that split a data set into training and test data.
-    """
-
-    @abstractmethod
-    def split(self, problem_type: ProblemType) -> Generator[Split]:
-        """
-        Returns a generator that generates the individual splits of the dataset into training and test data.
-
-        :param problem_type:    The type of the machine learning problem, the dataset is concerned with
-        :return:                The generator
-        """
 
 
 class NoSplitter(DatasetSplitter):
@@ -55,7 +25,7 @@ class NoSplitter(DatasetSplitter):
     Does not split a dataset.
     """
 
-    class Split(Split):
+    class Split(DatasetSplitter.Split):
         """
         A split that does not use separate training and test datasets.
         """
@@ -79,7 +49,7 @@ class NoSplitter(DatasetSplitter):
         context.include_dataset_type = False
         context.include_fold = False
 
-    def split(self, problem_type: ProblemType) -> Generator[Split]:
+    def split(self, problem_type: ProblemType) -> Generator[DatasetSplitter.Split]:
         log.warning('Not using separate training and test sets. The model will be evaluated on the training data...')
         folding_strategy = self.folding_strategy
         state = ExperimentState(problem_type=problem_type, folding_strategy=folding_strategy)
@@ -95,7 +65,7 @@ class TrainTestSplitter(DatasetSplitter):
     Splits a dataset into distinct training and test datasets.
     """
 
-    class PredefinedSplit(Split):
+    class PredefinedSplit(DatasetSplitter.Split):
         """
         A predefined split into a training and a test dataset.
         """
@@ -115,7 +85,7 @@ class TrainTestSplitter(DatasetSplitter):
             self.dataset_reader.read(state)
             return state
 
-    class DynamicSplit(Split):
+    class DynamicSplit(DatasetSplitter.Split):
         """
         A split into a training and a test dataset that has been created dynamically.
         """
@@ -179,7 +149,7 @@ class TrainTestSplitter(DatasetSplitter):
         context.include_fold = False
         context.include_dataset_type = True
 
-    def split(self, problem_type: ProblemType) -> Generator[Split]:
+    def split(self, problem_type: ProblemType) -> Generator[DatasetSplitter.Split]:
         log.info('Using separate training and test sets...')
         dataset_reader = self.dataset_reader
         folding_strategy = self.folding_strategy
@@ -204,7 +174,7 @@ class CrossValidationSplitter(DatasetSplitter):
     Splits the available data into training and test sets corresponding to the individual folds of a cross validation.
     """
 
-    class PredefinedSplit(Split):
+    class PredefinedSplit(DatasetSplitter.Split):
         """
         A predefined split into training and test datasets that corresponds to an individual fold of a cross validation.
         """
@@ -281,7 +251,7 @@ class CrossValidationSplitter(DatasetSplitter):
 
             return replace(state, dataset=dataset)
 
-    class DynamicSplit(Split):
+    class DynamicSplit(DatasetSplitter.Split):
         """
         A split into training and test datasets that corresponds to an individual fold of a cross validation and is
         created dynamically.
@@ -359,7 +329,7 @@ class CrossValidationSplitter(DatasetSplitter):
         context.include_dataset_type = False
         context.include_fold = True
 
-    def split(self, problem_type: ProblemType) -> Generator[Split]:
+    def split(self, problem_type: ProblemType) -> Generator[DatasetSplitter.Split]:
         folding_strategy = self.folding_strategy
         num_folds = folding_strategy.num_folds
 
