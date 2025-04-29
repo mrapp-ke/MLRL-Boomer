@@ -27,12 +27,12 @@ from mlrl.common.util.format import format_dict_keys, format_enum_values, format
 from mlrl.testbed.experiment import Experiment
 from mlrl.testbed.experiments.input.dataset import DatasetReader, InputDataset
 from mlrl.testbed.experiments.input.dataset.preprocessors import OneHotEncoder, Preprocessor
+from mlrl.testbed.experiments.input.dataset.splitters import BipartitionSplitter, CrossValidationSplitter, \
+    DatasetSplitter, NoSplitter
 from mlrl.testbed.experiments.input.model import ModelReader
 from mlrl.testbed.experiments.input.parameters import ParameterReader
 from mlrl.testbed.experiments.input.reader import InputReader
 from mlrl.testbed.experiments.input.sources import ArffFileSource, CsvFileSource, PickleFileSource
-from mlrl.testbed.experiments.inputs.dataset.splitters import BipartitionSplitter, CrossValidationSplitter, \
-    DatasetSplitter, NoSplitter
 from mlrl.testbed.experiments.output.characteristics.data import DataCharacteristics, DataCharacteristicsWriter, \
     OutputCharacteristics, PredictionCharacteristicsWriter
 from mlrl.testbed.experiments.output.characteristics.model import ModelCharacteristicsWriter, \
