@@ -1,8 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for training and evaluating machine learning models using either cross validation or separate training
-and test sets.
+Provides classes for splitting datasets into multiple, equally sized, folds consisting of a training and a test dataset.
 """
 import logging as log
 
@@ -89,6 +88,9 @@ class CrossValidationSplitter(DatasetSplitter):
             context.include_fold = True
 
         def get_state(self, dataset_type: DatasetType) -> ExperimentState:
+            """
+            See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.Split.get_state`
+            """
             state = replace(self.state, dataset_type=dataset_type)
             splitter = self.splitter
 
@@ -132,6 +134,9 @@ class CrossValidationSplitter(DatasetSplitter):
             context.include_fold = False
 
         def get_state(self, dataset_type: DatasetType) -> ExperimentState:
+            """
+            See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.Split.get_state`
+            """
             state = replace(self.state, dataset_type=dataset_type)
             splitter = self.splitter
             dataset_reader = splitter.dataset_reader
@@ -181,6 +186,9 @@ class CrossValidationSplitter(DatasetSplitter):
         context.include_fold = True
 
     def split(self, problem_type: ProblemType) -> Generator[DatasetSplitter.Split]:
+        """
+        See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.split`
+        """
         folding_strategy = self.folding_strategy
         num_folds = folding_strategy.num_folds
 
