@@ -3,6 +3,8 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for reading input data.
 """
+from dataclasses import replace
+
 from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.input.sources import Source
 from mlrl.testbed.experiments.state import ExperimentState
@@ -30,10 +32,13 @@ class InputReader:
         """
         return self.source.is_available(state, self.input_data)
 
-    def read(self, state: ExperimentState):
+    def read(self, state: ExperimentState) -> ExperimentState:
         """
         Reads the input data.
 
         :param state: The state that should be used to store the input data
+        :return:        A copy of the given state that stores the input data
         """
-        self.source.read_from_source(state, self.input_data)
+        new_state = replace(state)
+        self.source.read_from_source(new_state, self.input_data)
+        return new_state

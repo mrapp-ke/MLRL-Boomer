@@ -50,8 +50,7 @@ class CrossValidationSplitter(DatasetSplitter):
                     dataset = cache.datasets[fold_index]
 
                     if not dataset:
-                        state = replace(state, fold=Fold(index=fold_index))
-                        splitter.dataset_reader.read(state)
+                        state = splitter.dataset_reader.read(replace(state, fold=Fold(index=fold_index)))
                         dataset = state.dataset
                         cache.datasets[fold_index] = dataset
 
@@ -70,7 +69,7 @@ class CrossValidationSplitter(DatasetSplitter):
             dataset = cache.datasets[fold_index]
 
             if not dataset:
-                splitter.dataset_reader.read(state)
+                state = splitter.dataset_reader.read(state)
                 dataset = state.dataset
                 cache.datasets[fold_index] = dataset
 
@@ -143,7 +142,7 @@ class CrossValidationSplitter(DatasetSplitter):
             cache = splitter.cache
 
             if not cache:
-                dataset_reader.read(state)
+                state = dataset_reader.read(state)
                 dataset = state.dataset
                 cache = CrossValidationSplitter.DynamicSplit.Cache()
                 splits = KFold(n_splits=state.folding_strategy.num_folds,

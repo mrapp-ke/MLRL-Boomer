@@ -42,9 +42,7 @@ class BipartitionSplitter(DatasetSplitter):
             """
             See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.Split.get_state`
             """
-            state = replace(self.state, dataset_type=dataset_type)
-            self.dataset_reader.read(state)
-            return state
+            return self.dataset_reader.read(replace(self.state, dataset_type=dataset_type))
 
     class DynamicSplit(DatasetSplitter.Split):
         """
@@ -82,7 +80,7 @@ class BipartitionSplitter(DatasetSplitter):
             cache = splitter.cache
 
             if not cache:
-                splitter.dataset_reader.read(state)
+                state = splitter.dataset_reader.read(state)
                 dataset = state.dataset
                 x_training, x_test, y_training, y_test = train_test_split(dataset.x,
                                                                           dataset.y,
