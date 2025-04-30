@@ -14,8 +14,8 @@ from sklearn.base import BaseEstimator, clone
 
 from mlrl.common.mixins import NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
 
-from mlrl.testbed.data_splitting import DataSplitter
 from mlrl.testbed.experiments.dataset import AttributeType, Dataset, DatasetType
+from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.input.reader import InputReader
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.prediction import Predictor
@@ -45,7 +45,7 @@ class Experiment:
                  problem_type: ProblemType,
                  base_learner: BaseEstimator,
                  learner_name: str,
-                 data_splitter: DataSplitter,
+                 dataset_splitter: DatasetSplitter,
                  input_readers: List[InputReader],
                  pre_training_output_writers: List[OutputWriter],
                  post_training_output_writers: List[OutputWriter],
@@ -59,8 +59,8 @@ class Experiment:
         :param problem_type:                    The type of the machine learning problem
         :param base_learner:                    The machine learning algorithm to be used
         :param learner_name:                    The name of the machine learning algorithm
-        :param data_splitter:                   The method to be used for splitting the available data into training and
-                                                test sets
+        :param dataset_splitter:                The method to be used for splitting the dataset into training and test
+                                                datasets
         :param input_readers:                   A list that contains all input readers to be invoked
         :param pre_training_output_writers:     A list that contains all output writers to be invoked before training
         :param post_training_output_writers:    A list that contains all output writers to be invoked after training
@@ -79,7 +79,7 @@ class Experiment:
         self.problem_type = problem_type
         self.base_learner = base_learner
         self.learner_name = learner_name
-        self.data_splitter = data_splitter
+        self.dataset_splitter = dataset_splitter
         self.input_readers = input_readers
         self.pre_training_output_writers = pre_training_output_writers
         self.prediction_output_writers = prediction_output_writers
@@ -105,21 +105,17 @@ class Experiment:
 
         start_time = Timer.start()
 
-        for data_split in self.data_splitter.split():
-            training_dataset = data_split.training_dataset
-            test_dataset = data_split.test_dataset
-            state = ExperimentState(problem_type=self.problem_type,
-                                    dataset=training_dataset,
-                                    folding_strategy=data_split.folding_strategy,
-                                    fold=data_split.fold)
+        for split in self.dataset_splitter.split(problem_type=self.problem_type):
+            training_state = split.get_state(DatasetType.TRAINING)
+            training_dataset = training_state.dataset
 
             # Read input data...
             for input_reader in self.input_readers:
-                input_reader.open_session(state).exchange()
+                training_state = input_reader.read(training_state)
 
             # Apply parameter setting, if necessary...
             learner = clone(self.base_learner)
-            parameters = state.parameters
+            parameters = training_state.parameters
 
             if parameters:
                 learner.set_params(**parameters)
@@ -129,7 +125,7 @@ class Experiment:
 
             # Write output data before model is trained...
             for output_writer in self.pre_training_output_writers:
-                output_writer.open_session(state).exchange()
+                output_writer.write(training_state)
 
             # Set the indices of ordinal features, if supported...
             fit_kwargs = self.fit_kwargs if self.fit_kwargs else {}
@@ -146,39 +142,41 @@ class Experiment:
                         AttributeType.NOMINAL)
 
             # Load model from disk, if possible, otherwise train a new model...
-            loaded_learner = state.training_result.learner if state.training_result else None
+            loaded_learner = training_state.training_result.learner if training_state.training_result else None
 
             if isinstance(loaded_learner, type(learner)):
                 self.__check_for_parameter_changes(expected_params=parameters,
                                                    actual_params=loaded_learner.get_params())
                 loaded_learner.set_params(**parameters)
                 learner = loaded_learner
-                training_duration = state.training_result.training_duration
+                training_duration = training_state.training_result.training_duration
             else:
                 log.info('Fitting model to %s training examples...', training_dataset.num_examples)
                 training_duration = self.__train(learner, training_dataset, **fit_kwargs)
                 log.info('Successfully fit model in %s', training_duration)
 
-            state.training_result = TrainingState(learner=learner, training_duration=training_duration)
+            training_result = TrainingState(learner=learner, training_duration=training_duration)
+            training_state = replace(training_state, training_result=training_result)
+            test_state = replace(split.get_state(DatasetType.TEST), training_result=training_result)
 
             # Obtain and evaluate predictions for training data, if necessary...
+            test_dataset = test_state.dataset
             train_predictor = self.train_predictor
 
             if train_predictor and test_dataset.type != DatasetType.TRAINING:
                 predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-                self.__predict_and_evaluate(state, train_predictor, **predict_kwargs)
+                self.__predict_and_evaluate(training_state, train_predictor, **predict_kwargs)
 
             # Obtain and evaluate predictions for test data, if necessary...
             test_predictor = self.test_predictor
 
             if test_predictor:
-                test_state = replace(state, dataset=test_dataset)
                 predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
                 self.__predict_and_evaluate(test_state, test_predictor, **predict_kwargs)
 
             # Write output data after model was trained...
             for output_writer in self.post_training_output_writers:
-                output_writer.open_session(state).exchange()
+                output_writer.write(training_state)
 
         run_time = Timer.stop(start_time)
         log.info('Successfully finished after %s', run_time)
@@ -196,7 +194,7 @@ class Experiment:
                 new_state = replace(state, prediction_result=prediction_state)
 
                 for output_writer in self.prediction_output_writers:
-                    output_writer.open_session(new_state).exchange()
+                    output_writer.write(new_state)
         except ValueError as error:
             dataset = state.dataset
 

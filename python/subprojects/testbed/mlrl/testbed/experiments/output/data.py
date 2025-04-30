@@ -4,8 +4,8 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing output data.
 """
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
-from typing import Any, Iterable, List, Optional
+from dataclasses import dataclass, replace
+from typing import Any, Iterable, List, Optional, Type
 
 from mlrl.common.config.options import Options
 
@@ -33,14 +33,24 @@ class OutputData(Data, ABC):
         name: str
         file_name: str
 
-    def __init__(self, properties: Properties, default_context: Data.Context = Data.Context()):
+    def __init__(self, properties: Properties, context: Data.Context = Data.Context()):
         """
-        :param properties:      The properties of the output data
-        :param default_context: A `Data.Context` to be used by default for finding a suitable sink this output data can
-                                be written to
+        :param properties:  The properties of the output data
+        :param context:     A `Data.Context` to be used by default for finding a suitable sink this output data can be
+                            written to
         """
-        super().__init__(default_context)
+        super().__init__(context=context)
+        self.custom_context = {}
         self.properties = properties
+
+    def get_context(self, lookup_type: Type) -> Data.Context:
+        """
+        Returns a `Data.Context` that can be used for finding a suitable sink for handling this data.
+
+        :param lookup_type: The type of the sink to search for
+        :return:            A `Data.Context`
+        """
+        return self.custom_context.setdefault(lookup_type, replace(self.context))
 
 
 class TextualOutputData(OutputData, ABC):
@@ -63,7 +73,11 @@ class TextualOutputData(OutputData, ABC):
 
         def __format_dataset_type(self, state: ExperimentState) -> str:
             if self.context.include_dataset_type:
-                return ' for ' + state.dataset.type.value + ' data'
+                dataset_type = state.dataset_type
+
+                if dataset_type:
+                    return ' for ' + dataset_type.value + ' data'
+
             return ''
 
         def __format_fold(self, state: ExperimentState) -> str:
