@@ -13,3 +13,13 @@ Subpackages
    :maxdepth: 4
 
    mlrl.testbed.experiments.input.dataset.preprocessors
+   mlrl.testbed.experiments.input.dataset.splitters
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed.experiments.input.dataset.dataset
+   mlrl.testbed.experiments.input.dataset.reader

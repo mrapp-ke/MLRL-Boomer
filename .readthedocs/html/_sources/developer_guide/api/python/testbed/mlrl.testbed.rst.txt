@@ -21,8 +21,6 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   mlrl.testbed.data
-   mlrl.testbed.data_splitting
    mlrl.testbed.experiment
    mlrl.testbed.main
    mlrl.testbed.package_info
