@@ -34,11 +34,11 @@ class EvaluationDataExtractor(DataExtractor, ABC):
         """
         training_result = state.training_result
         prediction_result = state.prediction_result
+        dataset_type = state.dataset_type
+        dataset = state.dataset
 
-        if training_result and prediction_result:
-            dataset = state.dataset
-            data_type = dataset.type
-            measurements = self.measurements.setdefault(data_type, Measurements(state.folding_strategy.num_folds))
+        if training_result and prediction_result and dataset_type and dataset:
+            measurements = self.measurements.setdefault(dataset_type, Measurements(state.folding_strategy.num_folds))
             fold_index = state.fold.index
             options = Options(reduce(lambda aggr, sink: aggr | sink.options.dictionary, sinks, {}))
             training_duration = training_result.training_duration.value

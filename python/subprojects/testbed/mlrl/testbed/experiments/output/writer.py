@@ -8,7 +8,6 @@ import logging as log
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from mlrl.testbed.experiments.data import Data, DataExchange
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.state import ExperimentState
@@ -30,52 +29,10 @@ class DataExtractor(ABC):
         """
 
 
-class OutputWriter(DataExchange, ABC):
+class OutputWriter:
     """
-    An abstract base class for all classes that allow to write output data to one or several sinks.
+    Allows to write output data to one or several sinks.
     """
-
-    class Session(DataExchange.Session):
-        """
-        A session that allows to pass output data to the environment this software runs in.
-        """
-
-        def __init__(self, output_writer: 'OutputWriter', state: ExperimentState):
-            """
-            :param output_writer:   The output writer that has opened this session
-            :param state:           The state from which the output data has been generated
-            """
-            self.output_writer = output_writer
-            self.state = state
-
-        def exchange(self) -> Optional[Data]:
-            """
-            See :func:`mlrl.testbed.experiments.data.DataExchange.Session.exchange`
-            """
-            output_writer = self.output_writer
-            sinks = output_writer.sinks
-
-            if sinks:
-                extractors = output_writer.extractors
-
-                if extractors:
-                    state = self.state
-                    output_data = None
-
-                    for extractor in extractors:
-                        output_data = extractor.extract_data(state, sinks)
-
-                        if output_data:
-                            break
-
-                    if output_data:
-                        for sink in sinks:
-                            # pylint: disable=protected-access
-                            output_writer._write_to_sink(sink, state, output_data)
-                else:
-                    log.warning('No extractors have been added to output writer of type %s', type(self).__name__)
-            else:
-                log.warning('No sinks have been added to output writer of type %s', type(self).__name__)
 
     def __init__(self, *extractors: DataExtractor):
         """
@@ -94,11 +51,33 @@ class OutputWriter(DataExchange, ABC):
         self.sinks.extend(sinks)
         return self
 
-    def open_session(self, state: ExperimentState) -> DataExchange.Session:
+    def write(self, state: ExperimentState):
         """
-        See :func:`mlrl.testbed.experiments.data.DataExchange.open_session`
+        Writes the input data.
+
+        :param state: The current state of the experiment
         """
-        return OutputWriter.Session(self, state)
+        sinks = self.sinks
+
+        if sinks:
+            extractors = self.extractors
+
+            if extractors:
+                output_data = None
+
+                for extractor in extractors:
+                    output_data = extractor.extract_data(state, sinks)
+
+                    if output_data:
+                        break
+
+                if output_data:
+                    for sink in sinks:
+                        self._write_to_sink(sink, state, output_data)
+            else:
+                log.warning('No extractors have been added to output writer of type %s', type(self).__name__)
+        else:
+            log.warning('No sinks have been added to output writer of type %s', type(self).__name__)
 
     def _write_to_sink(self, sink: Sink, state: ExperimentState, output_data: OutputData):
         """

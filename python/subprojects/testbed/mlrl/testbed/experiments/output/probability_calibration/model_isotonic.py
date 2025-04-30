@@ -54,17 +54,17 @@ class IsotonicRegressionModel(TabularOutputData):
     def __init__(self,
                  calibration_model: IsotonicProbabilityCalibrationModel,
                  properties: OutputData.Properties,
-                 default_context: Data.Context = Data.Context(),
+                 context: Data.Context = Data.Context(),
                  column_title_prefix: Optional[str] = None):
         """
         :param calibration_model:   The isotonic calibration model
         :param properties:          The properties of the output data
-        :param default_context:     A `Data.Context` to be used by default for finding a suitable sink this output data
+        :param context:             A `Data.Context` to be used by default for finding a suitable sink this output data
                                     can be written to
         :param column_title_prefix: An optional prefix to be prepended to the titles of table columns that contain
                                     thresholds or probabilities
         """
-        super().__init__(properties, default_context)
+        super().__init__(properties=properties, context=context)
         self.calibration_model = calibration_model
         self.column_title_prefix = column_title_prefix
 

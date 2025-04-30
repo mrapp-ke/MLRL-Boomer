@@ -33,9 +33,9 @@ class PredictionWriter(OutputWriter):
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
             prediction_result = state.prediction_result
+            dataset = state.dataset
 
-            if prediction_result:
-                dataset = state.dataset
+            if prediction_result and dataset:
                 predictions = dataset.y
                 nominal_values = None
 

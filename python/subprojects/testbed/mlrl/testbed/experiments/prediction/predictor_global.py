@@ -52,7 +52,7 @@ class GlobalPredictor(Predictor):
         See :func:`mlrl.testbed.experiments.prediction.predictor.Predictor.obtain_predictions`
         """
         dataset = state.dataset
-        log.info('Predicting for %s %s examples...', dataset.num_examples, dataset.type.value)
+        log.info('Predicting for %s %s examples...', dataset.num_examples, state.dataset_type.value)
         learner = state.training_result.learner
         start_time = Timer.start()
         prediction_function = GlobalPredictionFunction(learner)
