@@ -111,7 +111,7 @@ class Experiment:
 
             # Read input data...
             for input_reader in self.input_readers:
-                input_reader.read(training_state)
+                training_state = input_reader.read(training_state)
 
             # Apply parameter setting, if necessary...
             learner = clone(self.base_learner)

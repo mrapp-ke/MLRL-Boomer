@@ -55,8 +55,8 @@ class NoSplitter(DatasetSplitter):
         log.warning('Not using separate training and test sets. The model will be evaluated on the training data...')
         folding_strategy = self.folding_strategy
         state = ExperimentState(problem_type=problem_type, folding_strategy=folding_strategy)
-        self.dataset_reader.read(state)
-        state = replace(state, dataset=state.dataset, dataset_type=DatasetType.TRAINING)
+        state = self.dataset_reader.read(state)
+        state = replace(state, dataset_type=DatasetType.TRAINING)
 
         for fold in folding_strategy.folds:
             yield NoSplitter.Split(state=replace(state, fold=fold))

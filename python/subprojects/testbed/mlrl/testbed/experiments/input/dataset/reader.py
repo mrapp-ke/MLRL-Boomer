@@ -3,6 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow reading datasets from a source.
 """
+from dataclasses import replace
+
 from mlrl.testbed.experiments.input.dataset.dataset import InputDataset
 from mlrl.testbed.experiments.input.dataset.preprocessors import Preprocessor
 from mlrl.testbed.experiments.input.reader import InputReader
@@ -34,11 +36,11 @@ class DatasetReader(InputReader):
         self.preprocessors.extend(preprocessors)
         return self
 
-    def read(self, state: ExperimentState):
+    def read(self, state: ExperimentState) -> ExperimentState:
         """
         See :func:`mlrl.testbed.experiments.input.reader.InputReader.read`
         """
-        dataset = super().read(state)
+        state = super().read(state)
         encoders = self.encoders
 
         if encoders is None:
@@ -46,6 +48,6 @@ class DatasetReader(InputReader):
             self.encoders = encoders
 
         for encoder in encoders:
-            dataset = encoder.encode(dataset)
+            state = replace(state, dataset=encoder.encode(state.dataset))
 
-        return dataset
+        return state
