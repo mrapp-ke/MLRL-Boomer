@@ -26,7 +26,12 @@ class DataCharacteristicsWriter(OutputWriter):
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            return DataCharacteristics(problem_type=state.problem_type, dataset=state.dataset)
+            dataset = state.dataset
+
+            if dataset:
+                return DataCharacteristics(problem_type=state.problem_type, dataset=dataset)
+
+            return None
 
     def __init__(self, *extractors: DataExtractor):
         """

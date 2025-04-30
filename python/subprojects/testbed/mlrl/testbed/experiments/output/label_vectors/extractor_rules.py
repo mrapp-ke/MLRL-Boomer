@@ -49,15 +49,16 @@ class LabelVectorSetExtractor(DataExtractor):
         See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
         """
         training_result = state.training_result
+        dataset = state.dataset
 
-        if training_result:
+        if training_result and dataset:
             learner = training_result.learner
 
             if isinstance(learner, ClassificationRuleLearner):
                 output_space_info = learner.output_space_info_
 
                 if isinstance(output_space_info, LabelVectorSet):
-                    visitor = LabelVectorSetExtractor.Visitor(num_labels=state.dataset.num_outputs)
+                    visitor = LabelVectorSetExtractor.Visitor(num_labels=dataset.num_outputs)
                     output_space_info.visit(visitor)
                     return LabelVectors(visitor.label_vector_histogram)
 

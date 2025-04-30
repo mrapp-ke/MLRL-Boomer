@@ -37,16 +37,16 @@ class OutputCharacteristics(TabularOutputData):
                  problem_type: ProblemType,
                  output_matrix: OutputMatrix,
                  properties: OutputData.Properties,
-                 default_context: Data.Context = Data.Context()):
+                 context: Data.Context = Data.Context()):
         """
 
         :param problem_type:    The type of the machine learning problem, the output matrix corresponds to
         :param output_matrix:   An output matrix
         :param properties:      The properties of the output data
-        :param default_context: A `Data.Context` to be used by default for finding a suitable sink this output data can
+        :param context:         A `Data.Context` to be used by default for finding a suitable sink this output data can
                                 be written to
         """
-        super().__init__(properties, default_context)
+        super().__init__(properties=properties, context=context)
         self.output_matrix = output_matrix
 
         if problem_type == ProblemType.CLASSIFICATION:

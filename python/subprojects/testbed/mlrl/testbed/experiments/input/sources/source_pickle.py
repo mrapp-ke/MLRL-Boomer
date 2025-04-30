@@ -11,6 +11,7 @@ from typing import Any, Optional
 from mlrl.testbed.experiments.input.data import InputData
 from mlrl.testbed.experiments.input.sources.source import FileSource
 from mlrl.testbed.experiments.output.sinks.sink_pickle import PickleFileSink
+from mlrl.testbed.experiments.state import ExperimentState
 
 
 class PickleFileSource(FileSource):
@@ -24,7 +25,8 @@ class PickleFileSource(FileSource):
         """
         super().__init__(directory=directory, suffix=PickleFileSink.SUFFIX_PICKLE)
 
-    def _read_from_file(self, file_path: str, _: InputData) -> Optional[Any]:
+    # pylint: disable=unused-argument
+    def _read_from_file(self, state: ExperimentState, file_path: str, _: InputData) -> Optional[Any]:
         try:
             with open(file_path, mode='rb') as pickle_file:
                 return pickle.load(pickle_file)

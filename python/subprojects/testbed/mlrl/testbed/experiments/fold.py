@@ -45,11 +45,18 @@ class FoldingStrategy:
             yield Fold(index=index)
 
     @property
+    def num_folds_in_subset(self) -> int:
+        """
+        The number of folds that are actually created.
+        """
+        return self.last - self.first
+
+    @property
     def is_subset(self):
         """
         True, if only a subset of the folds is actually created, False otherwise.
         """
-        return self.last - self.first < self.num_folds
+        return self.num_folds_in_subset < self.num_folds
 
     @property
     def is_cross_validation_used(self) -> bool:
