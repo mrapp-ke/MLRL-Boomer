@@ -27,15 +27,16 @@ class RuleModelAsTextExtractor(DataExtractor):
         See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
         """
         training_result = state.training_result
+        dataset = state.dataset
 
-        if training_result:
+        if training_result and dataset:
             learner = training_result.learner
 
             if isinstance(learner, (ClassifierMixin, RegressorMixin)):
                 model = learner.model_
 
                 if isinstance(model, RuleModel):
-                    return RuleModelAsText(model, state.dataset)
+                    return RuleModelAsText(model, dataset)
 
                 log.error('Cannot handle model of type %s', type(model).__name__)
 

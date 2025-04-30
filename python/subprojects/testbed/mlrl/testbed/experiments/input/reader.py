@@ -3,40 +3,17 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for reading input data.
 """
-from abc import ABC
-from typing import Optional
+from dataclasses import replace
 
-from mlrl.testbed.experiments.data import Data, DataExchange
+from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.input.sources import Source
 from mlrl.testbed.experiments.state import ExperimentState
 
 
-class InputReader(DataExchange, ABC):
+class InputReader:
     """
-    An abstract base class for all classes that allow to read input data from a source.
+    Allows to read input data from a source.
     """
-
-    class Session(DataExchange.Session):
-        """
-        A session that allows to read input data from a file.
-        """
-
-        def __init__(self, input_reader: 'InputReader', state: ExperimentState):
-            """
-            :param input_reader:    The input reader that has opened this session
-            :param state:           The state that should be used to store the input data
-            """
-            self.input_reader = input_reader
-            self.state = state
-
-        def exchange(self) -> Optional[Data]:
-            """
-            See :func:`mlrl.testbed.experiments.data.DataExchange.Session.exchange`
-            """
-            state = self.state
-            input_reader = self.input_reader
-            input_data = input_reader.input_data
-            return input_reader.source.read_from_source(state, input_data)
 
     def __init__(self, source: Source, input_data: Data):
         """
@@ -46,8 +23,22 @@ class InputReader(DataExchange, ABC):
         self.source = source
         self.input_data = input_data
 
-    def open_session(self, state: ExperimentState) -> Session:
+    def is_available(self, state: ExperimentState) -> bool:
         """
-        See :func:`mlrl.testbed.experiments.data.DataExchange.open_session`
+        Checks whether the input data is available or not.
+
+        :param state:   The current state of the experiment
+        :return:        True, if the input data is available, False otherwise
         """
-        return InputReader.Session(self, state)
+        return self.source.is_available(state, self.input_data)
+
+    def read(self, state: ExperimentState) -> ExperimentState:
+        """
+        Reads the input data.
+
+        :param state: The state that should be used to store the input data
+        :return:        A copy of the given state that stores the input data
+        """
+        new_state = replace(state)
+        self.source.read_from_source(new_state, self.input_data)
+        return new_state
