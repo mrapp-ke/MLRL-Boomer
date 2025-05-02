@@ -583,17 +583,17 @@ class LearnerRunnable(Runnable, ABC):
         return NoSplitter(dataset_reader)
 
     @staticmethod
-    def __create_experiment_listeners(args, dataset_splitter: DatasetSplitter) -> List[Experiment.Listener]:
-        listeners = []
+    def __create_clear_output_directory_listener(args,
+                                                 dataset_splitter: DatasetSplitter) -> Optional[Experiment.Listener]:
         output_dir = args.output_dir
 
         if output_dir:
             is_subset = dataset_splitter.folding_strategy.is_subset
 
             if not is_subset:
-                listeners.append(LearnerRunnable.ClearOutputDirectoryListener(output_dir))
+                return LearnerRunnable.ClearOutputDirectoryListener(output_dir)
 
-        return listeners
+        return None
 
     def configure_arguments(self, parser: ArgumentParser):
         super().configure_arguments(parser)
@@ -767,7 +767,9 @@ class LearnerRunnable(Runnable, ABC):
                                              test_predictor=test_predictor,
                                              input_readers=input_readers,
                                              prediction_output_writers=prediction_output_writers)
-        experiment.add_listeners(self.__create_experiment_listeners(args, dataset_splitter))
+        experiment.add_listeners(*filter(lambda listener: listener is not None, [
+            self.__create_clear_output_directory_listener(args, dataset_splitter),
+        ]))
         experiment.add_pre_training_output_writers(self._create_pre_training_output_writers(args))
         experiment.add_post_training_output_writers(self._create_post_training_output_writers(args))
         experiment.run()
