@@ -31,7 +31,6 @@ from mlrl.testbed.experiments.input.dataset.splitters import BipartitionSplitter
     DatasetSplitter, NoSplitter
 from mlrl.testbed.experiments.input.model import ModelReader
 from mlrl.testbed.experiments.input.parameters import ParameterReader
-from mlrl.testbed.experiments.input.reader import InputReader
 from mlrl.testbed.experiments.input.sources import ArffFileSource, CsvFileSource, PickleFileSource
 from mlrl.testbed.experiments.output.characteristics.data import DataCharacteristics, DataCharacteristicsWriter, \
     OutputCharacteristics, PredictionCharacteristicsWriter
@@ -768,7 +767,10 @@ class LearnerRunnable(Runnable, ABC):
         experiment.add_listeners(*filter(lambda listener: listener is not None, [
             self.__create_clear_output_directory_listener(args, dataset_splitter),
         ]))
-        experiment.add_input_readers(*self._create_input_readers(args))
+        experiment.add_input_readers(*filter(lambda listener: listener is not None, [
+            self._create_model_reader(args),
+            self._create_parameter_reader(args),
+        ]))
         experiment.add_pre_training_output_writers(*filter(lambda listener: listener is not None, [
             self._create_data_characteristics_writer(args),
             self._create_parameter_writer(args),
@@ -935,27 +937,6 @@ class LearnerRunnable(Runnable, ABC):
             return EvaluationWriter(extractor).add_sinks(*sinks)
 
         return None
-
-    def _create_input_readers(self, args) -> List[InputReader]:
-        """
-        May be overridden by subclasses in order to create the `InputReaders`s that should be invoked before training a
-        model.
-
-        :param args:    The command line arguments
-        :return:        A list that contains the `InputReader`s that have been created
-        """
-        input_readers = []
-        input_reader = self._create_model_reader(args)
-
-        if input_reader:
-            input_readers.append(input_reader)
-
-        input_reader = self._create_parameter_reader(args)
-
-        if input_reader:
-            input_readers.append(input_reader)
-
-        return input_readers
 
     def _create_parameter_reader(self, args) -> Optional[ParameterReader]:
         """
