@@ -42,6 +42,7 @@ class Experiment:
             :param experiment:  The experiment
             """
 
+        # pylint: disable=unused-argument
         def on_start(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
             """
             May be overridden by subclasses in order to be notified when an experiment has been started on a specific
@@ -53,6 +54,7 @@ class Experiment:
             """
             return state
 
+        # pylint: disable=unused-argument
         def before_training(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
             """
             May be overridden by subclasses in order to be notified before a machine learning model is trained.
@@ -63,6 +65,7 @@ class Experiment:
             """
             return state
 
+        # pylint: disable=unused-argument
         def after_training(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
             """
             May be overridden by subclasses in order to be notified after a machine learning model has been trained.
