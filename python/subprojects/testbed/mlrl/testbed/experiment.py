@@ -40,6 +40,15 @@ class Experiment:
             May be overridden by subclasses in order to be notified just before the experiment starts.
             """
 
+        def on_start(self, state: ExperimentState):
+            """
+            May be overridden by subclasses in order to be notified when an experiment has been started on a specific
+            dataset. May be called multiple times if several datasets are used.
+
+            :param state: The initial state of the experiment
+            """
+            return state
+
     def __init__(self,
                  problem_type: ProblemType,
                  base_learner: BaseEstimator,
@@ -113,6 +122,9 @@ class Experiment:
         for split in self.dataset_splitter.split(problem_type=self.problem_type):
             training_state = split.get_state(DatasetType.TRAINING)
             training_dataset = training_state.dataset
+
+            for listener in self.listeners:
+                listener.on_start(state=training_state)
 
             # Read input data...
             for input_reader in self.input_readers:
