@@ -80,7 +80,24 @@ class Experiment:
 
         def on_start(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
             return reduce(lambda current_state, input_reader: input_reader.read(current_state),
-                          experiment.input_readers)
+                          experiment.input_readers, state)
+
+    class OutputWriterListener(Listener):
+        """
+        Passes the state of an experiment to output writers that have been added to an experiment.
+        """
+
+        def before_training(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
+            for output_writer in experiment.pre_training_output_writers:
+                output_writer.write(state)
+
+            return state
+
+        def after_training(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
+            for output_writer in experiment.post_training_output_writers:
+                output_writer.write(state)
+
+            return state
 
     def __init__(self,
                  problem_type: ProblemType,
@@ -129,6 +146,7 @@ class Experiment:
         self.predict_kwargs = predict_kwargs
         self.listeners = [
             Experiment.InputReaderListener(),
+            Experiment.OutputWriterListener(),
         ]
 
     def add_listeners(self, *listeners: Listener) -> 'Experiment':
@@ -170,10 +188,6 @@ class Experiment:
                 log.info('Successfully applied parameter setting: %s', parameters)
             else:
                 parameters = learner.get_params()
-
-            # Write output data before model is trained...
-            for output_writer in self.pre_training_output_writers:
-                output_writer.write(training_state)
 
             for listener in self.listeners:
                 listener.before_training(self, training_state)
@@ -224,10 +238,6 @@ class Experiment:
             if test_predictor:
                 predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
                 self.__predict_and_evaluate(test_state, test_predictor, **predict_kwargs)
-
-            # Write output data after model was trained...
-            for output_writer in self.post_training_output_writers:
-                output_writer.write(training_state)
 
             for listener in self.listeners:
                 listener.after_training(self, training_state)
