@@ -351,7 +351,7 @@ class LearnerRunnable(Runnable, ABC):
     algorithm.
     """
 
-    class ClearOutputDirHook(Experiment.ExecutionHook):
+    class ClearOutputDirectoryListener(Experiment.Listener):
         """
         Deletes all files from the output directory before an experiment starts.
         """
@@ -362,9 +362,9 @@ class LearnerRunnable(Runnable, ABC):
             """
             self.output_dir = output_dir
 
-        def execute(self):
+        def before_start(self):
             """
-            See :func:`mlrl.testbed.experiments.Experiment.ExecutionHook.execute`
+            See :func:`mlrl.testbed.experiments.Experiment.Listener.before_start`
             """
             output_dir = self.output_dir
 
@@ -583,10 +583,17 @@ class LearnerRunnable(Runnable, ABC):
         return NoSplitter(dataset_reader)
 
     @staticmethod
-    def __create_pre_execution_hook(args, dataset_splitter: DatasetSplitter) -> Optional[Experiment.ExecutionHook]:
+    def __create_experiment_listeners(args, dataset_splitter: DatasetSplitter) -> List[Experiment.Listener]:
+        listeners = []
         output_dir = args.output_dir
-        is_subset = dataset_splitter.folding_strategy.is_subset
-        return LearnerRunnable.ClearOutputDirHook(output_dir) if output_dir and not is_subset else None
+
+        if output_dir:
+            is_subset = dataset_splitter.folding_strategy.is_subset
+
+            if not is_subset:
+                listeners.append(LearnerRunnable.ClearOutputDirectoryListener(output_dir))
+
+        return listeners
 
     def configure_arguments(self, parser: ArgumentParser):
         super().configure_arguments(parser)
@@ -747,7 +754,6 @@ class LearnerRunnable(Runnable, ABC):
         base_learner = self.__create_base_learner(problem_type, args)
         prediction_type = self.__create_prediction_type(args)
         dataset_splitter = self.__create_dataset_splitter(args)
-        pre_execution_hook = self.__create_pre_execution_hook(args, dataset_splitter)
         input_readers = self._create_input_readers(args)
         pre_training_output_writers = self._create_pre_training_output_writers(args)
         post_training_output_writers = self._create_post_training_output_writers(args)
@@ -764,8 +770,8 @@ class LearnerRunnable(Runnable, ABC):
                                              input_readers=input_readers,
                                              pre_training_output_writers=pre_training_output_writers,
                                              post_training_output_writers=post_training_output_writers,
-                                             prediction_output_writers=prediction_output_writers,
-                                             pre_execution_hook=pre_execution_hook)
+                                             prediction_output_writers=prediction_output_writers)
+        experiment.add_listeners(self.__create_experiment_listeners(args, dataset_splitter))
         experiment.run()
 
     # pylint: disable=unused-argument
@@ -773,8 +779,7 @@ class LearnerRunnable(Runnable, ABC):
                            dataset_splitter: DatasetSplitter, input_readers: List[InputReader],
                            pre_training_output_writers: List[OutputWriter],
                            post_training_output_writers: List[OutputWriter],
-                           prediction_output_writers: List[OutputWriter],
-                           pre_execution_hook: Optional[Experiment.ExecutionHook], train_predictor: Optional[Predictor],
+                           prediction_output_writers: List[OutputWriter], train_predictor: Optional[Predictor],
                            test_predictor: Optional[Predictor]) -> Experiment:
         """
         May be overridden by subclasses in order to create the `Experiment` that should be run.
@@ -790,7 +795,6 @@ class LearnerRunnable(Runnable, ABC):
         :param post_training_output_writers:    A list that contains all output writers to be invoked after training
         :param prediction_output_writers:       A list that contains all output writers to be invoked each time
                                                 predictions have been obtained from a model
-        :param pre_execution_hook:              An operation that should be executed before the experiment
         :param train_predictor:                 The `Predictor` to be used for obtaining predictions for the training
                                                 data or None, if no such predictions should be obtained
         :param test_predictor:                  The `Predictor` to be used for obtaining predictions for the test data
@@ -805,7 +809,6 @@ class LearnerRunnable(Runnable, ABC):
                           pre_training_output_writers=pre_training_output_writers,
                           post_training_output_writers=post_training_output_writers,
                           prediction_output_writers=prediction_output_writers,
-                          pre_execution_hook=pre_execution_hook,
                           train_predictor=train_predictor,
                           test_predictor=test_predictor)
 
@@ -1369,8 +1372,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                            dataset_splitter: DatasetSplitter, input_readers: List[InputReader],
                            pre_training_output_writers: List[OutputWriter],
                            post_training_output_writers: List[OutputWriter],
-                           prediction_output_writers: List[OutputWriter],
-                           pre_execution_hook: Optional[Experiment.ExecutionHook], train_predictor: Optional[Predictor],
+                           prediction_output_writers: List[OutputWriter], train_predictor: Optional[Predictor],
                            test_predictor: Optional[Predictor]) -> Experiment:
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
         return Experiment(problem_type=problem_type,
@@ -1381,7 +1383,6 @@ class RuleLearnerRunnable(LearnerRunnable):
                           pre_training_output_writers=pre_training_output_writers,
                           post_training_output_writers=post_training_output_writers,
                           prediction_output_writers=prediction_output_writers,
-                          pre_execution_hook=pre_execution_hook,
                           train_predictor=train_predictor,
                           test_predictor=test_predictor,
                           fit_kwargs=kwargs,

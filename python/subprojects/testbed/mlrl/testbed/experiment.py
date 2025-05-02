@@ -5,7 +5,7 @@ Provides classes for performing experiments.
 """
 import logging as log
 
-from abc import ABC, abstractmethod
+from abc import ABC
 from dataclasses import replace
 from functools import reduce
 from typing import Any, Dict, List, Optional
@@ -30,15 +30,14 @@ class Experiment:
     separate training and test sets.
     """
 
-    class ExecutionHook(ABC):
+    class Listener(ABC):
         """
-        An abstract base class for all operations that may be executed before or after an experiment.
+        An abstract base class for all listeners that may be informed about certain event during an experiment.
         """
 
-        @abstractmethod
-        def execute(self):
+        def before_start(self):
             """
-            Must be overridden by subclasses in order to execute the operation.
+            May be overridden by subclasses in order to be notified just before the experiment starts.
             """
 
     def __init__(self,
@@ -50,7 +49,6 @@ class Experiment:
                  pre_training_output_writers: List[OutputWriter],
                  post_training_output_writers: List[OutputWriter],
                  prediction_output_writers: List[OutputWriter],
-                 pre_execution_hook: Optional[ExecutionHook] = None,
                  train_predictor: Optional[Predictor] = None,
                  test_predictor: Optional[Predictor] = None,
                  fit_kwargs: Optional[Dict[str, Any]] = None,
@@ -66,7 +64,6 @@ class Experiment:
         :param post_training_output_writers:    A list that contains all output writers to be invoked after training
         :param prediction_output_writers:       A list that contains all output writers to be invoked each time
                                                 predictions are obtained from a model
-        :param pre_execution_hook:              An operation that should be executed before the experiment
         :param train_predictor:                 The `Predictor` to be used for obtaining predictions for the training
                                                 data or None, if no such predictions should be obtained
         :param test_predictor:                  The `Predictor` to be used for obtaining predictions for the test data
@@ -84,11 +81,22 @@ class Experiment:
         self.pre_training_output_writers = pre_training_output_writers
         self.prediction_output_writers = prediction_output_writers
         self.post_training_output_writers = post_training_output_writers
-        self.pre_execution_hook = pre_execution_hook
         self.train_predictor = train_predictor
         self.test_predictor = test_predictor
         self.fit_kwargs = fit_kwargs
         self.predict_kwargs = predict_kwargs
+        self.listeners = []
+
+    def add_listeners(self, *listeners: Listener) -> 'Experiment':
+        """
+        Adds one or several listeners that should be informed about certain events during the experiment.
+
+        :param listeners:   The listeners that should be added
+        :return:            The experiment itself
+        """
+        for listener in listeners:
+            self.listeners.append(listener)
+        return self
 
     # pylint: disable=too-many-branches
     def run(self):
@@ -97,11 +105,8 @@ class Experiment:
         """
         log.info('Starting experiment using the %s algorithm "%s"...', self.problem_type.value, self.learner_name)
 
-        # Run pre-execution hook, if necessary...
-        pre_execution_hook = self.pre_execution_hook
-
-        if pre_execution_hook:
-            pre_execution_hook.execute()
+        for listener in self.listeners:
+            listener.before_start()
 
         start_time = Timer.start()
 
