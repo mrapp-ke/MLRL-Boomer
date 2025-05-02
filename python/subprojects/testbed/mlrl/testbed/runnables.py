@@ -770,7 +770,10 @@ class LearnerRunnable(Runnable, ABC):
         experiment.add_listeners(*filter(lambda listener: listener is not None, [
             self.__create_clear_output_directory_listener(args, dataset_splitter),
         ]))
-        experiment.add_pre_training_output_writers(self._create_pre_training_output_writers(args))
+        experiment.add_pre_training_output_writers(*filter(lambda listener: listener is not None, [
+            self._create_data_characteristics_writer(args),
+            self._create_parameter_writer(args),
+        ]))
         experiment.add_post_training_output_writers(self._create_post_training_output_writers(args))
         experiment.run()
 
@@ -805,27 +808,6 @@ class LearnerRunnable(Runnable, ABC):
                           prediction_output_writers=prediction_output_writers,
                           train_predictor=train_predictor,
                           test_predictor=test_predictor)
-
-    def _create_pre_training_output_writers(self, args) -> List[OutputWriter]:
-        """
-        May be overridden by subclasses in order to create the `OutputWriter`s that should be invoked before training a
-        model.
-
-        :param args:    The command line arguments
-        :return:        A list that contains the `OutputWriter`s that have been created
-        """
-        output_writers = []
-        output_writer = self._create_data_characteristics_writer(args)
-
-        if output_writer:
-            output_writers.append(output_writer)
-
-        output_writer = self._create_parameter_writer(args)
-
-        if output_writer:
-            output_writers.append(output_writer)
-
-        return output_writers
 
     def _create_post_training_output_writers(self, args) -> List[OutputWriter]:
         """
