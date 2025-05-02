@@ -755,7 +755,6 @@ class LearnerRunnable(Runnable, ABC):
         prediction_type = self.__create_prediction_type(args)
         dataset_splitter = self.__create_dataset_splitter(args)
         input_readers = self._create_input_readers(args)
-        pre_training_output_writers = self._create_pre_training_output_writers(args)
         post_training_output_writers = self._create_post_training_output_writers(args)
         prediction_output_writers = self._create_prediction_output_writers(args, problem_type, prediction_type)
         train_predictor = self._create_train_predictor(args, prediction_type) if prediction_output_writers else None
@@ -768,16 +767,15 @@ class LearnerRunnable(Runnable, ABC):
                                              train_predictor=train_predictor,
                                              test_predictor=test_predictor,
                                              input_readers=input_readers,
-                                             pre_training_output_writers=pre_training_output_writers,
                                              post_training_output_writers=post_training_output_writers,
                                              prediction_output_writers=prediction_output_writers)
         experiment.add_listeners(self.__create_experiment_listeners(args, dataset_splitter))
+        experiment.add_pre_training_output_writers(self._create_pre_training_output_writers(args))
         experiment.run()
 
     # pylint: disable=unused-argument
     def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
                            dataset_splitter: DatasetSplitter, input_readers: List[InputReader],
-                           pre_training_output_writers: List[OutputWriter],
                            post_training_output_writers: List[OutputWriter],
                            prediction_output_writers: List[OutputWriter], train_predictor: Optional[Predictor],
                            test_predictor: Optional[Predictor]) -> Experiment:
@@ -791,7 +789,6 @@ class LearnerRunnable(Runnable, ABC):
         :param dataset_splitter:                The method to be used for splitting the dataset into training and test
                                                 datasets
         :param input_readers:                   A list that contains all input readers to be invoked
-        :param pre_training_output_writers:     A list that contains all output writers to be invoked before training
         :param post_training_output_writers:    A list that contains all output writers to be invoked after training
         :param prediction_output_writers:       A list that contains all output writers to be invoked each time
                                                 predictions have been obtained from a model
@@ -806,7 +803,6 @@ class LearnerRunnable(Runnable, ABC):
                           learner_name=learner_name,
                           dataset_splitter=dataset_splitter,
                           input_readers=input_readers,
-                          pre_training_output_writers=pre_training_output_writers,
                           post_training_output_writers=post_training_output_writers,
                           prediction_output_writers=prediction_output_writers,
                           train_predictor=train_predictor,
@@ -1370,7 +1366,6 @@ class RuleLearnerRunnable(LearnerRunnable):
 
     def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
                            dataset_splitter: DatasetSplitter, input_readers: List[InputReader],
-                           pre_training_output_writers: List[OutputWriter],
                            post_training_output_writers: List[OutputWriter],
                            prediction_output_writers: List[OutputWriter], train_predictor: Optional[Predictor],
                            test_predictor: Optional[Predictor]) -> Experiment:
@@ -1380,7 +1375,6 @@ class RuleLearnerRunnable(LearnerRunnable):
                           learner_name=learner_name,
                           dataset_splitter=dataset_splitter,
                           input_readers=input_readers,
-                          pre_training_output_writers=pre_training_output_writers,
                           post_training_output_writers=post_training_output_writers,
                           prediction_output_writers=prediction_output_writers,
                           train_predictor=train_predictor,
