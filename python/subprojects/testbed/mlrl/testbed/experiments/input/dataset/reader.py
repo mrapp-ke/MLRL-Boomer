@@ -33,7 +33,8 @@ class DatasetReader(InputReader):
         :param preprocessors:   The preprocessors to be added
         :return:                The `DatasetReader` itself
         """
-        self.preprocessors.extend(preprocessors)
+        if preprocessors:
+            self.preprocessors.extend(preprocessors)
         return self
 
     def read(self, state: ExperimentState) -> ExperimentState:
