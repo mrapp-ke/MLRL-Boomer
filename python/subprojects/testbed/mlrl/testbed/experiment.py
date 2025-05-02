@@ -105,7 +105,6 @@ class Experiment:
                  learner_name: str,
                  dataset_splitter: DatasetSplitter,
                  input_readers: List[InputReader],
-                 pre_training_output_writers: List[OutputWriter],
                  post_training_output_writers: List[OutputWriter],
                  prediction_output_writers: List[OutputWriter],
                  train_predictor: Optional[Predictor] = None,
@@ -119,7 +118,6 @@ class Experiment:
         :param dataset_splitter:                The method to be used for splitting the dataset into training and test
                                                 datasets
         :param input_readers:                   A list that contains all input readers to be invoked
-        :param pre_training_output_writers:     A list that contains all output writers to be invoked before training
         :param post_training_output_writers:    A list that contains all output writers to be invoked after training
         :param prediction_output_writers:       A list that contains all output writers to be invoked each time
                                                 predictions are obtained from a model
@@ -137,13 +135,13 @@ class Experiment:
         self.learner_name = learner_name
         self.dataset_splitter = dataset_splitter
         self.input_readers = input_readers
-        self.pre_training_output_writers = pre_training_output_writers
         self.prediction_output_writers = prediction_output_writers
         self.post_training_output_writers = post_training_output_writers
         self.train_predictor = train_predictor
         self.test_predictor = test_predictor
         self.fit_kwargs = fit_kwargs
         self.predict_kwargs = predict_kwargs
+        self.pre_training_output_writers = []
         self.listeners = [
             Experiment.InputReaderListener(),
             Experiment.OutputWriterListener(),
@@ -158,6 +156,17 @@ class Experiment:
         """
         for listener in listeners:
             self.listeners.append(listener)
+        return self
+
+    def add_pre_training_output_writers(self, *output_writers: OutputWriter) -> 'Experiment':
+        """
+        Adds one or several output writers that should be invoked before a machine learning model is trained.
+
+        :param output_writers:  The output writers to be added
+        :return:                The experiment itself
+        """
+        for output_writer in output_writers:
+            self.pre_training_output_writers.append(output_writer)
         return self
 
     # pylint: disable=too-many-branches
