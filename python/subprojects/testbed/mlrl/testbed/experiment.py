@@ -63,6 +63,16 @@ class Experiment:
             """
             return state
 
+        def after_training(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
+            """
+            May be overridden by subclasses in order to be notified after a machine learning model has been trained.
+
+            :param experiment:  The experiment
+            :param state:       The current state of the experiment
+            :return:            An update of the given state
+            """
+            return state
+
     class InputReaderListener(Listener):
         """
         Updates the state of an experiment by invoking the input readers that have been added to an experiment.
@@ -218,6 +228,9 @@ class Experiment:
             # Write output data after model was trained...
             for output_writer in self.post_training_output_writers:
                 output_writer.write(training_state)
+
+            for listener in self.listeners:
+                listener.after_training(self, training_state)
 
         run_time = Timer.stop(start_time)
         log.info('Successfully finished after %s', run_time)
