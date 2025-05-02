@@ -774,7 +774,10 @@ class LearnerRunnable(Runnable, ABC):
             self._create_data_characteristics_writer(args),
             self._create_parameter_writer(args),
         ]))
-        experiment.add_post_training_output_writers(self._create_post_training_output_writers(args))
+        experiment.add_post_training_output_writers(*filter(lambda listener: listener is not None, [
+            self._create_model_writer(args),
+            self._create_label_vector_writer(args),
+        ]))
         experiment.run()
 
     # pylint: disable=unused-argument
@@ -808,27 +811,6 @@ class LearnerRunnable(Runnable, ABC):
                           prediction_output_writers=prediction_output_writers,
                           train_predictor=train_predictor,
                           test_predictor=test_predictor)
-
-    def _create_post_training_output_writers(self, args) -> List[OutputWriter]:
-        """
-        May be overridden by subclasses in order to create the output writers that should be invoked after training a
-        model.
-
-        :param args:    The command line arguments
-        :return:        A list that contains the output writers that have been created
-        """
-        output_writers = []
-        output_writer = self._create_model_writer(args)
-
-        if output_writer:
-            output_writers.append(output_writer)
-
-        output_writer = self._create_label_vector_writer(args)
-
-        if output_writer:
-            output_writers.append(output_writer)
-
-        return output_writers
 
     def _create_prediction_output_writers(self, args, problem_type: ProblemType,
                                           prediction_type: PredictionType) -> List[OutputWriter]:
@@ -1349,16 +1331,22 @@ class RuleLearnerRunnable(LearnerRunnable):
                            prediction_output_writers: List[OutputWriter], train_predictor: Optional[Predictor],
                            test_predictor: Optional[Predictor]) -> Experiment:
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
-        return Experiment(problem_type=problem_type,
-                          base_learner=base_learner,
-                          learner_name=learner_name,
-                          dataset_splitter=dataset_splitter,
-                          input_readers=input_readers,
-                          prediction_output_writers=prediction_output_writers,
-                          train_predictor=train_predictor,
-                          test_predictor=test_predictor,
-                          fit_kwargs=kwargs,
-                          predict_kwargs=kwargs)
+        experiment = Experiment(problem_type=problem_type,
+                                base_learner=base_learner,
+                                learner_name=learner_name,
+                                dataset_splitter=dataset_splitter,
+                                prediction_output_writers=prediction_output_writers,
+                                train_predictor=train_predictor,
+                                test_predictor=test_predictor,
+                                fit_kwargs=kwargs,
+                                predict_kwargs=kwargs)
+        experiment.add_post_training_output_writers(*filter(lambda listener: listener is not None, [
+            self._create_model_as_text_writer(args),
+            self._create_model_characteristics_writer(args),
+            self._create_marginal_probability_calibration_model_writer(args),
+            self._create_joint_probability_calibration_model_writer(args),
+        ]))
+        return experiment
 
     def create_classifier(self, args) -> Optional[SkLearnClassifierMixin]:
         classifier_type = self.classifier_type
@@ -1502,27 +1490,3 @@ class RuleLearnerRunnable(LearnerRunnable):
             return IncrementalPredictor(prediction_type, min_size=min_size, max_size=max_size, step_size=step_size)
 
         return super()._create_predictor(args, prediction_type)
-
-    def _create_post_training_output_writers(self, args) -> List[OutputWriter]:
-        output_writers = super()._create_post_training_output_writers(args)
-        output_writer = self._create_model_as_text_writer(args)
-
-        if output_writer:
-            output_writers.append(output_writer)
-
-        output_writer = self._create_model_characteristics_writer(args)
-
-        if output_writer:
-            output_writers.append(output_writer)
-
-        output_writer = self._create_marginal_probability_calibration_model_writer(args)
-
-        if output_writer:
-            output_writers.append(output_writer)
-
-        output_writer = self._create_joint_probability_calibration_model_writer(args)
-
-        if output_writer:
-            output_writers.append(output_writer)
-
-        return output_writers
