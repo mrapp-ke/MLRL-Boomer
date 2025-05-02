@@ -754,7 +754,6 @@ class LearnerRunnable(Runnable, ABC):
         base_learner = self.__create_base_learner(problem_type, args)
         prediction_type = self.__create_prediction_type(args)
         dataset_splitter = self.__create_dataset_splitter(args)
-        input_readers = self._create_input_readers(args)
         prediction_output_writers = self._create_prediction_output_writers(args, problem_type, prediction_type)
         train_predictor = self._create_train_predictor(args, prediction_type) if prediction_output_writers else None
         test_predictor = self._create_test_predictor(args, prediction_type) if prediction_output_writers else None
@@ -765,11 +764,11 @@ class LearnerRunnable(Runnable, ABC):
                                              dataset_splitter=dataset_splitter,
                                              train_predictor=train_predictor,
                                              test_predictor=test_predictor,
-                                             input_readers=input_readers,
                                              prediction_output_writers=prediction_output_writers)
         experiment.add_listeners(*filter(lambda listener: listener is not None, [
             self.__create_clear_output_directory_listener(args, dataset_splitter),
         ]))
+        experiment.add_input_readers(*self._create_input_readers(args))
         experiment.add_pre_training_output_writers(*filter(lambda listener: listener is not None, [
             self._create_data_characteristics_writer(args),
             self._create_parameter_writer(args),
@@ -782,9 +781,8 @@ class LearnerRunnable(Runnable, ABC):
 
     # pylint: disable=unused-argument
     def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
-                           dataset_splitter: DatasetSplitter, input_readers: List[InputReader],
-                           prediction_output_writers: List[OutputWriter], train_predictor: Optional[Predictor],
-                           test_predictor: Optional[Predictor]) -> Experiment:
+                           dataset_splitter: DatasetSplitter, prediction_output_writers: List[OutputWriter],
+                           train_predictor: Optional[Predictor], test_predictor: Optional[Predictor]) -> Experiment:
         """
         May be overridden by subclasses in order to create the `Experiment` that should be run.
 
@@ -794,7 +792,6 @@ class LearnerRunnable(Runnable, ABC):
         :param learner_name:                    The name of machine learning algorithm
         :param dataset_splitter:                The method to be used for splitting the dataset into training and test
                                                 datasets
-        :param input_readers:                   A list that contains all input readers to be invoked
         :param prediction_output_writers:       A list that contains all output writers to be invoked each time
                                                 predictions have been obtained from a model
         :param train_predictor:                 The `Predictor` to be used for obtaining predictions for the training
@@ -807,7 +804,6 @@ class LearnerRunnable(Runnable, ABC):
                           base_learner=base_learner,
                           learner_name=learner_name,
                           dataset_splitter=dataset_splitter,
-                          input_readers=input_readers,
                           prediction_output_writers=prediction_output_writers,
                           train_predictor=train_predictor,
                           test_predictor=test_predictor)
@@ -1327,9 +1323,8 @@ class RuleLearnerRunnable(LearnerRunnable):
         self.__configure_argument_parser(parser, config_type, parameters)
 
     def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
-                           dataset_splitter: DatasetSplitter, input_readers: List[InputReader],
-                           prediction_output_writers: List[OutputWriter], train_predictor: Optional[Predictor],
-                           test_predictor: Optional[Predictor]) -> Experiment:
+                           dataset_splitter: DatasetSplitter, prediction_output_writers: List[OutputWriter],
+                           train_predictor: Optional[Predictor], test_predictor: Optional[Predictor]) -> Experiment:
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
         experiment = Experiment(problem_type=problem_type,
                                 base_learner=base_learner,

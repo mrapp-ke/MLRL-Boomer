@@ -104,7 +104,6 @@ class Experiment:
                  base_learner: BaseEstimator,
                  learner_name: str,
                  dataset_splitter: DatasetSplitter,
-                 input_readers: List[InputReader],
                  prediction_output_writers: List[OutputWriter],
                  train_predictor: Optional[Predictor] = None,
                  test_predictor: Optional[Predictor] = None,
@@ -116,7 +115,6 @@ class Experiment:
         :param learner_name:                    The name of the machine learning algorithm
         :param dataset_splitter:                The method to be used for splitting the dataset into training and test
                                                 datasets
-        :param input_readers:                   A list that contains all input readers to be invoked
         :param prediction_output_writers:       A list that contains all output writers to be invoked each time
                                                 predictions are obtained from a model
         :param train_predictor:                 The `Predictor` to be used for obtaining predictions for the training
@@ -132,12 +130,12 @@ class Experiment:
         self.base_learner = base_learner
         self.learner_name = learner_name
         self.dataset_splitter = dataset_splitter
-        self.input_readers = input_readers
         self.prediction_output_writers = prediction_output_writers
         self.train_predictor = train_predictor
         self.test_predictor = test_predictor
         self.fit_kwargs = fit_kwargs
         self.predict_kwargs = predict_kwargs
+        self.input_readers = []
         self.pre_training_output_writers = []
         self.post_training_output_writers = []
         self.listeners = [
@@ -154,6 +152,17 @@ class Experiment:
         """
         for listener in listeners:
             self.listeners.append(listener)
+        return self
+
+    def add_input_readers(self, *input_readers: InputReader) -> 'Experiment':
+        """
+        Adds one or several input readers that should be invoked when an experiment is started.
+
+        :param input_readers:   The input readers to be added
+        :return:                The experiment itself
+        """
+        for input_reader in input_readers:
+            self.input_readers.append(input_reader)
         return self
 
     def add_pre_training_output_writers(self, *output_writers: OutputWriter) -> 'Experiment':
