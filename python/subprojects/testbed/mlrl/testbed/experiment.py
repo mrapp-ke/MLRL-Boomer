@@ -174,8 +174,8 @@ class Experiment:
         :param output_writers:  The output writers to be added
         :return:                The experiment itself
         """
-        if output_writers:
-            self.post_training_output_writers.extend(*output_writers)
+        for output_writer in output_writers:
+            self.post_training_output_writers.append(output_writer)
         return self
 
     # pylint: disable=too-many-branches
