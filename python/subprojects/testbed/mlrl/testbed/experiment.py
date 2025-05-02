@@ -35,19 +35,32 @@ class Experiment:
         An abstract base class for all listeners that may be informed about certain event during an experiment.
         """
 
-        def before_start(self):
+        def before_start(self, experiment: 'Experiment'):
             """
             May be overridden by subclasses in order to be notified just before the experiment starts.
+
+            :param experiment:  The experiment
             """
 
-        def on_start(self, state: ExperimentState):
+        def on_start(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
             """
             May be overridden by subclasses in order to be notified when an experiment has been started on a specific
             dataset. May be called multiple times if several datasets are used.
 
-            :param state: The initial state of the experiment
+            :param experiment:  The experiment
+            :param state:       The initial state of the experiment
+            :return:            An update of the given state
             """
             return state
+
+    class InputReaderListener(Listener):
+        """
+        Updates the state of an experiment by invoking the input readers that have been added to an experiment.
+        """
+
+        def on_start(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
+            return reduce(lambda current_state, input_reader: input_reader.read(current_state),
+                          experiment.input_readers)
 
     def __init__(self,
                  problem_type: ProblemType,
@@ -94,7 +107,9 @@ class Experiment:
         self.test_predictor = test_predictor
         self.fit_kwargs = fit_kwargs
         self.predict_kwargs = predict_kwargs
-        self.listeners = []
+        self.listeners = [
+            Experiment.InputReaderListener(),
+        ]
 
     def add_listeners(self, *listeners: Listener) -> 'Experiment':
         """
@@ -115,7 +130,7 @@ class Experiment:
         log.info('Starting experiment using the %s algorithm "%s"...', self.problem_type.value, self.learner_name)
 
         for listener in self.listeners:
-            listener.before_start()
+            listener.before_start(self)
 
         start_time = Timer.start()
 
@@ -124,11 +139,7 @@ class Experiment:
             training_dataset = training_state.dataset
 
             for listener in self.listeners:
-                listener.on_start(state=training_state)
-
-            # Read input data...
-            for input_reader in self.input_readers:
-                training_state = input_reader.read(training_state)
+                training_state = listener.on_start(self, training_state)
 
             # Apply parameter setting, if necessary...
             learner = clone(self.base_learner)

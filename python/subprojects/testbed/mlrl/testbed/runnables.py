@@ -362,7 +362,7 @@ class LearnerRunnable(Runnable, ABC):
             """
             self.output_dir = output_dir
 
-        def before_start(self):
+        def before_start(self, _: Experiment):
             """
             See :func:`mlrl.testbed.experiments.Experiment.Listener.before_start`
             """
