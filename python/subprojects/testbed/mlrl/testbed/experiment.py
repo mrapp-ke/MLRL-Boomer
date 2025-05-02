@@ -53,6 +53,16 @@ class Experiment:
             """
             return state
 
+        def before_training(self, experiment: 'Experiment', state: ExperimentState) -> ExperimentState:
+            """
+            May be overridden by subclasses in order to be notified before a machine learning model is trained.
+
+            :param experiment:  The experiment
+            :param state:       The current state of the experiment
+            :return:            An update of the given state
+            """
+            return state
+
     class InputReaderListener(Listener):
         """
         Updates the state of an experiment by invoking the input readers that have been added to an experiment.
@@ -154,6 +164,9 @@ class Experiment:
             # Write output data before model is trained...
             for output_writer in self.pre_training_output_writers:
                 output_writer.write(training_state)
+
+            for listener in self.listeners:
+                listener.before_training(self, training_state)
 
             # Set the indices of ordinal features, if supported...
             fit_kwargs = self.fit_kwargs if self.fit_kwargs else {}
