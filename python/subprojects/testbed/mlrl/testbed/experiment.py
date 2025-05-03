@@ -235,15 +235,13 @@ class Experiment:
             train_predictor = self.train_predictor
 
             if train_predictor and test_dataset.type != DatasetType.TRAINING:
-                predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-                self.__predict_and_evaluate(training_state, train_predictor, **predict_kwargs)
+                self.__predict_and_evaluate(training_state, train_predictor)
 
             # Obtain and evaluate predictions for test data, if necessary...
             test_predictor = self.test_predictor
 
             if test_predictor:
-                predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-                self.__predict_and_evaluate(test_state, test_predictor, **predict_kwargs)
+                self.__predict_and_evaluate(test_state, test_predictor)
 
             for listener in self.listeners:
                 listener.after_training(self, training_state)
@@ -267,16 +265,17 @@ class Experiment:
 
         return learner
 
-    def __predict_and_evaluate(self, state: ExperimentState, predictor: Predictor, **kwargs):
+    def __predict_and_evaluate(self, state: ExperimentState, predictor: Predictor):
         """
         Obtains predictions for given query examples from a previously trained model.
 
         :param state:       The state that stores the model
         :param predictor:   The `Predictor` to be used for obtaining the predictions
-        :param kwargs:      Optional keyword arguments to be passed to the model when obtaining predictions
         """
+        predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
+
         try:
-            for prediction_state in predictor.obtain_predictions(state, **kwargs):
+            for prediction_state in predictor.obtain_predictions(state, **predict_kwargs):
                 new_state = replace(state, prediction_result=prediction_state)
 
                 for output_writer in self.prediction_output_writers:
@@ -286,7 +285,7 @@ class Experiment:
 
             if dataset.has_sparse_features:
                 dense_dataset = replace(state, dataset=dataset.enforce_dense_features())
-                Experiment.__predict_and_evaluate(dense_dataset, predictor, **kwargs)
+                Experiment.__predict_and_evaluate(dense_dataset, predictor, **predict_kwargs)
 
             raise error
 
