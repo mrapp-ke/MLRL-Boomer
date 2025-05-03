@@ -204,13 +204,11 @@ class Experiment:
 
         for split in self.dataset_splitter.split(problem_type=self.problem_type):
             training_state = split.get_state(DatasetType.TRAINING)
-            training_dataset = training_state.dataset
 
             for listener in self.listeners:
                 training_state = listener.on_start(self, training_state)
 
             learner = self._create_learner(training_state)
-            parameters = training_state.parameters
 
             for listener in self.listeners:
                 training_state = listener.before_training(self, training_state)
@@ -219,17 +217,16 @@ class Experiment:
             loaded_learner = training_state.training_result.learner if training_state.training_result else None
 
             if isinstance(loaded_learner, type(learner)):
-                self.__check_for_parameter_changes(expected_params=parameters,
+                self.__check_for_parameter_changes(expected_params=training_state.parameters,
                                                    actual_params=loaded_learner.get_params())
-                loaded_learner.set_params(**parameters)
-                learner = loaded_learner
-                training_duration = training_state.training_result.training_duration
+                training_result = TrainingState(learner=loaded_learner)
             else:
+                training_dataset = training_state.dataset
                 log.info('Fitting model to %s training examples...', training_dataset.num_examples)
                 training_duration = self.__train(learner, training_dataset)
+                training_result = TrainingState(learner=learner, training_duration=training_duration)
                 log.info('Successfully fit model in %s', training_duration)
 
-            training_result = TrainingState(learner=learner, training_duration=training_duration)
             training_state = replace(training_state, training_result=training_result)
             test_state = replace(split.get_state(DatasetType.TEST), training_result=training_result)
 
@@ -305,14 +302,12 @@ class Experiment:
         fit_kwargs = self.fit_kwargs if self.fit_kwargs else {}
 
         if isinstance(learner, OrdinalFeatureSupportMixin):
-            fit_kwargs[
-                OrdinalFeatureSupportMixin.KWARG_ORDINAL_FEATURE_INDICES] = dataset.get_feature_indices(
+            fit_kwargs[OrdinalFeatureSupportMixin.KWARG_ORDINAL_FEATURE_INDICES] = dataset.get_feature_indices(
                 AttributeType.ORDINAL)
 
         # Set the indices of nominal features, if supported...
         if isinstance(learner, NominalFeatureSupportMixin):
-            fit_kwargs[
-                NominalFeatureSupportMixin.KWARG_NOMINAL_FEATURE_INDICES] = dataset.get_feature_indices(
+            fit_kwargs[NominalFeatureSupportMixin.KWARG_NOMINAL_FEATURE_INDICES] = dataset.get_feature_indices(
                 AttributeType.NOMINAL)
 
         try:
