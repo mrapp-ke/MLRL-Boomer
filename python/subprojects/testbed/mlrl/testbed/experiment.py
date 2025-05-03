@@ -209,18 +209,11 @@ class Experiment:
             for listener in self.listeners:
                 training_state = listener.on_start(self, training_state)
 
-            # Apply parameter setting, if necessary...
-            learner = clone(self.base_learner)
+            learner = self._create_learner(training_state)
             parameters = training_state.parameters
 
-            if parameters:
-                learner.set_params(**parameters)
-                log.info('Successfully applied parameter setting: %s', parameters)
-            else:
-                parameters = learner.get_params()
-
             for listener in self.listeners:
-                listener.before_training(self, training_state)
+                training_state = listener.before_training(self, training_state)
 
             # Set the indices of ordinal features, if supported...
             fit_kwargs = self.fit_kwargs if self.fit_kwargs else {}
@@ -275,6 +268,22 @@ class Experiment:
         run_time = Timer.stop(start_time)
         log.info('Successfully finished after %s', run_time)
 
+    def _create_learner(self, state: ExperimentState) -> Any:
+        """
+        Must be implemented by subclasses in order to create the learner to be used in the experiment.
+
+        :param state:   The state that should be used to store the learner
+        :return:        The learner that has been created
+        """
+        learner = clone(self.base_learner)
+        parameters = state.parameters
+
+        if parameters:
+            learner.set_params(**parameters)
+            log.info('Successfully applied parameter setting: %s', parameters)
+
+        return learner
+
     def __predict_and_evaluate(self, state: ExperimentState, predictor: Predictor, **kwargs):
         """
         Obtains predictions for given query examples from a previously trained model.
@@ -299,7 +308,7 @@ class Experiment:
             raise error
 
     @staticmethod
-    def __train(learner, dataset: Dataset, **kwargs) -> Timer.Duration:
+    def __train(learner: BaseEstimator, dataset: Dataset, **kwargs) -> Timer.Duration:
         """
         Fits a learner to training data.
 
