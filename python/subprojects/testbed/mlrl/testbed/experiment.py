@@ -272,17 +272,17 @@ class Experiment:
         :param state:       The state that stores the model
         :param predictor:   The `Predictor` to be used for obtaining the predictions
         """
+        learner = state.training_result.learner
+        dataset = state.dataset
         predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
 
         try:
-            for prediction_state in predictor.obtain_predictions(state, **predict_kwargs):
+            for prediction_state in predictor.obtain_predictions(learner, dataset, **predict_kwargs):
                 new_state = replace(state, prediction_result=prediction_state)
 
                 for output_writer in self.prediction_output_writers:
                     output_writer.write(new_state)
         except ValueError as error:
-            dataset = state.dataset
-
             if dataset.has_sparse_features:
                 dense_dataset = replace(state, dataset=dataset.enforce_dense_features())
                 Experiment.__predict_and_evaluate(dense_dataset, predictor, **predict_kwargs)
