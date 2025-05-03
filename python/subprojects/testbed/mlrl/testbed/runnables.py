@@ -24,7 +24,7 @@ from mlrl.common.learners import RuleLearner, SparsePolicy
 from mlrl.common.package_info import PythonPackageInfo
 from mlrl.common.util.format import format_dict_keys, format_enum_values, format_iterable
 
-from mlrl.testbed.experiment import Experiment
+from mlrl.testbed.experiment import Experiment, SkLearnExperiment
 from mlrl.testbed.experiments.input.dataset import DatasetReader, InputDataset
 from mlrl.testbed.experiments.input.dataset.preprocessors import OneHotEncoder, Preprocessor
 from mlrl.testbed.experiments.input.dataset.splitters import BipartitionSplitter, CrossValidationSplitter, \
@@ -754,15 +754,13 @@ class LearnerRunnable(Runnable, ABC):
         prediction_type = self.__create_prediction_type(args)
         dataset_splitter = self.__create_dataset_splitter(args)
         prediction_output_writers = self._create_prediction_output_writers(args, problem_type, prediction_type)
-        train_predictor = self._create_train_predictor(args, prediction_type) if prediction_output_writers else None
-        test_predictor = self._create_test_predictor(args, prediction_type) if prediction_output_writers else None
+        predictor_factory = self._create_predictor_factory(args, prediction_type)
         experiment = self._create_experiment(args,
                                              problem_type=problem_type,
                                              base_learner=base_learner,
                                              learner_name=self.learner_name,
                                              dataset_splitter=dataset_splitter,
-                                             train_predictor=train_predictor,
-                                             test_predictor=test_predictor,
+                                             predictor_factory=predictor_factory,
                                              prediction_output_writers=prediction_output_writers)
         experiment.add_listeners(*filter(lambda listener: listener is not None, [
             self.__create_clear_output_directory_listener(args, dataset_splitter),
@@ -779,12 +777,13 @@ class LearnerRunnable(Runnable, ABC):
             self._create_model_writer(args),
             self._create_label_vector_writer(args),
         ]))
-        experiment.run()
+        experiment.run(predict_for_training_dataset=prediction_output_writers and args.evaluate_training_data,
+                       predict_for_test_dataset=prediction_output_writers)
 
     # pylint: disable=unused-argument
     def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
                            dataset_splitter: DatasetSplitter, prediction_output_writers: List[OutputWriter],
-                           train_predictor: Optional[Predictor], test_predictor: Optional[Predictor]) -> Experiment:
+                           predictor_factory: SkLearnExperiment.PredictorFactory) -> Experiment:
         """
         May be overridden by subclasses in order to create the `Experiment` that should be run.
 
@@ -796,19 +795,15 @@ class LearnerRunnable(Runnable, ABC):
                                                 datasets
         :param prediction_output_writers:       A list that contains all output writers to be invoked each time
                                                 predictions have been obtained from a model
-        :param train_predictor:                 The `Predictor` to be used for obtaining predictions for the training
-                                                data or None, if no such predictions should be obtained
-        :param test_predictor:                  The `Predictor` to be used for obtaining predictions for the test data
-                                                or None, if no such predictions should be obtained
+        :param predictor_factory:               A `SkLearnExperiment.PredictorFactory`
         :return:                                The `Experiment` that has been created
         """
-        return Experiment(problem_type=problem_type,
-                          base_learner=base_learner,
-                          learner_name=learner_name,
-                          dataset_splitter=dataset_splitter,
-                          prediction_output_writers=prediction_output_writers,
-                          train_predictor=train_predictor,
-                          test_predictor=test_predictor)
+        return SkLearnExperiment(problem_type=problem_type,
+                                 base_learner=base_learner,
+                                 learner_name=learner_name,
+                                 dataset_splitter=dataset_splitter,
+                                 prediction_output_writers=prediction_output_writers,
+                                 predictor_factory=predictor_factory)
 
     def _create_prediction_output_writers(self, args, problem_type: ProblemType,
                                           prediction_type: PredictionType) -> List[OutputWriter]:
@@ -864,34 +859,8 @@ class LearnerRunnable(Runnable, ABC):
         model_save_dir = args.model_save_dir
         return ModelWriter().add_sinks(PickleFileSink(model_save_dir)) if model_save_dir else None
 
-    def _create_train_predictor(self, args, prediction_type: PredictionType) -> Optional[Predictor]:
-        """
-        May be overridden by subclasses in order to create the `Predictor` that should be used for obtaining predictions
-        for the training data from a previously trained model.
-
-        :param args:            The command line arguments
-        :param prediction_type: The type of the predictions to be obtained
-        :return:                The `Predictor` that has been created or None, if no predictions should be obtained for
-                                the training data
-        """
-        if args.evaluate_training_data:
-            return self._create_predictor(args, prediction_type)
-        return None
-
-    def _create_test_predictor(self, args, prediction_type: PredictionType) -> Optional[Predictor]:
-        """
-        May be overridden by subclasses in order to create the `Predictor` that should be used for obtaining predictions
-        for the test data from a previously trained model.
-
-        :param args:            The command line arguments
-        :param prediction_type: The type of the predictions to be obtained
-        :return:                The `Predictor` that has been created or None, if no predictions should be obtained for
-                                the test data
-        """
-        return self._create_predictor(args, prediction_type)
-
     # pylint: disable=unused-argument
-    def _create_predictor(self, args, prediction_type: PredictionType) -> Predictor:
+    def _create_predictor_factory(self, args, prediction_type: PredictionType) -> Predictor:
         """
         May be overridden by subclasses in order to create the `Predictor` that should be used for obtaining predictions
         from a previously trained model.
@@ -900,7 +869,11 @@ class LearnerRunnable(Runnable, ABC):
         :param prediction_type: The type of the predictions to be obtained
         :return:                The `Predictor` that has been created
         """
-        return GlobalPredictor(prediction_type)
+
+        def predictor_factory():
+            return GlobalPredictor(prediction_type)
+
+        return predictor_factory
 
     def _create_evaluation_writer(self, args, problem_type: ProblemType,
                                   prediction_type: PredictionType) -> Optional[OutputWriter]:
@@ -1305,17 +1278,16 @@ class RuleLearnerRunnable(LearnerRunnable):
 
     def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
                            dataset_splitter: DatasetSplitter, prediction_output_writers: List[OutputWriter],
-                           train_predictor: Optional[Predictor], test_predictor: Optional[Predictor]) -> Experiment:
+                           predictor_factory: SkLearnExperiment.PredictorFactory) -> Experiment:
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
-        experiment = Experiment(problem_type=problem_type,
-                                base_learner=base_learner,
-                                learner_name=learner_name,
-                                dataset_splitter=dataset_splitter,
-                                prediction_output_writers=prediction_output_writers,
-                                train_predictor=train_predictor,
-                                test_predictor=test_predictor,
-                                fit_kwargs=kwargs,
-                                predict_kwargs=kwargs)
+        experiment = SkLearnExperiment(problem_type=problem_type,
+                                       base_learner=base_learner,
+                                       learner_name=learner_name,
+                                       dataset_splitter=dataset_splitter,
+                                       prediction_output_writers=prediction_output_writers,
+                                       predictor_factory=predictor_factory,
+                                       fit_kwargs=kwargs,
+                                       predict_kwargs=kwargs)
         experiment.add_post_training_output_writers(*filter(lambda listener: listener is not None, [
             self._create_model_as_text_writer(args),
             self._create_model_characteristics_writer(args),
@@ -1451,7 +1423,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                 .add_sinks(*sinks)
         return None
 
-    def _create_predictor(self, args, prediction_type: PredictionType) -> Predictor:
+    def _create_predictor_factory(self, args, prediction_type: PredictionType) -> Predictor:
         value, options = parse_param_and_options(self.PARAM_INCREMENTAL_EVALUATION, args.incremental_evaluation,
                                                  self.INCREMENTAL_EVALUATION_VALUES)
 
@@ -1463,6 +1435,10 @@ class RuleLearnerRunnable(LearnerRunnable):
                 assert_greater(self.OPTION_MAX_SIZE, max_size, min_size)
             step_size = options.get_int(self.OPTION_STEP_SIZE, 1)
             assert_greater_or_equal(self.OPTION_STEP_SIZE, step_size, 1)
-            return IncrementalPredictor(prediction_type, min_size=min_size, max_size=max_size, step_size=step_size)
 
-        return super()._create_predictor(args, prediction_type)
+            def predictor_factory():
+                return IncrementalPredictor(prediction_type, min_size=min_size, max_size=max_size, step_size=step_size)
+
+            return predictor_factory
+
+        return super()._create_predictor_factory(args, prediction_type)
