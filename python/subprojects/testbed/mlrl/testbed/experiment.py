@@ -215,20 +215,6 @@ class Experiment:
             for listener in self.listeners:
                 training_state = listener.before_training(self, training_state)
 
-            # Set the indices of ordinal features, if supported...
-            fit_kwargs = self.fit_kwargs if self.fit_kwargs else {}
-
-            if isinstance(learner, OrdinalFeatureSupportMixin):
-                fit_kwargs[
-                    OrdinalFeatureSupportMixin.KWARG_ORDINAL_FEATURE_INDICES] = training_dataset.get_feature_indices(
-                        AttributeType.ORDINAL)
-
-            # Set the indices of nominal features, if supported...
-            if isinstance(learner, NominalFeatureSupportMixin):
-                fit_kwargs[
-                    NominalFeatureSupportMixin.KWARG_NOMINAL_FEATURE_INDICES] = training_dataset.get_feature_indices(
-                        AttributeType.NOMINAL)
-
             # Load model from disk, if possible, otherwise train a new model...
             loaded_learner = training_state.training_result.learner if training_state.training_result else None
 
@@ -240,7 +226,7 @@ class Experiment:
                 training_duration = training_state.training_result.training_duration
             else:
                 log.info('Fitting model to %s training examples...', training_dataset.num_examples)
-                training_duration = self.__train(learner, training_dataset, **fit_kwargs)
+                training_duration = self.__train(learner, training_dataset)
                 log.info('Successfully fit model in %s', training_duration)
 
             training_result = TrainingState(learner=learner, training_duration=training_duration)
@@ -307,25 +293,37 @@ class Experiment:
 
             raise error
 
-    @staticmethod
-    def __train(learner: BaseEstimator, dataset: Dataset, **kwargs) -> Timer.Duration:
+    def __train(self, learner: BaseEstimator, dataset: Dataset) -> Timer.Duration:
         """
         Fits a learner to training data.
 
         :param learner: The learner
         :param dataset: The training dataset
-        :param kwargs:  Optional keyword arguments to be passed to the learner when fitting model
         :return:        The time needed for training
         """
+        # Set the indices of ordinal features, if supported...
+        fit_kwargs = self.fit_kwargs if self.fit_kwargs else {}
+
+        if isinstance(learner, OrdinalFeatureSupportMixin):
+            fit_kwargs[
+                OrdinalFeatureSupportMixin.KWARG_ORDINAL_FEATURE_INDICES] = dataset.get_feature_indices(
+                AttributeType.ORDINAL)
+
+        # Set the indices of nominal features, if supported...
+        if isinstance(learner, NominalFeatureSupportMixin):
+            fit_kwargs[
+                NominalFeatureSupportMixin.KWARG_NOMINAL_FEATURE_INDICES] = dataset.get_feature_indices(
+                AttributeType.NOMINAL)
+
         try:
             start_time = Timer.start()
-            learner.fit(dataset.x, dataset.y, **kwargs)
+            learner.fit(dataset.x, dataset.y, **fit_kwargs)
             return Timer.stop(start_time)
         except ValueError as error:
             if dataset.has_sparse_features:
-                return Experiment.__train(learner, dataset.enforce_dense_features(), **kwargs)
+                return Experiment.__train(learner, dataset.enforce_dense_features(), **fit_kwargs)
             if dataset.has_sparse_outputs:
-                return Experiment.__train(learner, dataset.enforce_dense_outputs(), **kwargs)
+                return Experiment.__train(learner, dataset.enforce_dense_outputs(), **fit_kwargs)
             raise error
 
     @staticmethod
