@@ -75,6 +75,16 @@ class Experiment(ABC):
             """
             return state
 
+        def after_prediction(self, experiment: 'Experiment', state: ExperimentState):
+            """
+            May be overridden by subclasses in order to be notified after predictions for a dataset have been obtained
+            from a machine learning model. May be called multiple times if predictions are obtained for several
+            datasets.
+
+            :param experiment:  The experiment
+            :param state:       The current state of the experiment
+            """
+
     class InputReaderListener(Listener):
         """
         Updates the state of an experiment by invoking the input readers that have been added to an experiment.
@@ -101,12 +111,16 @@ class Experiment(ABC):
 
             return state
 
+        def after_prediction(self, experiment: 'Experiment', state: ExperimentState):
+            for output_writer in experiment.prediction_output_writers:
+                output_writer.write(state)
+
     def __predict(self, state: ExperimentState):
         for prediction_result in self._predict(learner=state.training_result.learner, dataset=state.dataset):
             new_state = replace(state, prediction_result=prediction_result)
 
-            for output_writer in self.prediction_output_writers:
-                output_writer.write(new_state)
+            for listener in self.listeners:
+                listener.after_prediction(self, new_state)
 
     def __init__(self, problem_type: ProblemType, learner_name: str, dataset_splitter: DatasetSplitter):
         """
