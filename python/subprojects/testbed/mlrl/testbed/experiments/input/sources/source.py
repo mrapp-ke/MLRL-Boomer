@@ -6,7 +6,6 @@ Provides classes for implementing sources, input data may be read from.
 import logging as log
 
 from abc import ABC, abstractmethod
-from dataclasses import replace
 from os import path
 from typing import Any, Optional
 
@@ -96,12 +95,7 @@ class DatasetFileSource(FileSource, ABC):
     """
 
     def _read_from_file(self, state: ExperimentState, file_path: str, input_data: InputData) -> Optional[Any]:
-        dataset = self._read_dataset_from_file(file_path, input_data)
-
-        if dataset and input_data.context.include_dataset_type:
-            dataset = replace(dataset, type=state.dataset_type)
-
-        return dataset
+        return self._read_dataset_from_file(file_path, input_data)
 
     @abstractmethod
     def _read_dataset_from_file(self, file_path: str, input_data: DatasetInputData) -> Optional[Dataset]:

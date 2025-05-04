@@ -9,7 +9,7 @@ from typing import Any, Generator
 
 from sklearn.base import BaseEstimator
 
-from mlrl.testbed.experiments.dataset import Dataset
+from mlrl.testbed.experiments.dataset import Dataset, DatasetType
 from mlrl.testbed.experiments.prediction.predictor import PredictionFunction, Predictor
 from mlrl.testbed.experiments.prediction_scope import PredictionScope
 from mlrl.testbed.experiments.state import PredictionState
@@ -48,11 +48,12 @@ class GlobalPredictor(Predictor):
             """
             return 0
 
-    def obtain_predictions(self, learner: Any, dataset: Dataset, **kwargs) -> Generator[PredictionState]:
+    def obtain_predictions(self, learner: Any, dataset: Dataset, dataset_type: DatasetType,
+                           **kwargs) -> Generator[PredictionState]:
         """
         See :func:`mlrl.testbed.experiments.prediction.predictor.Predictor.obtain_predictions`
         """
-        log.info('Predicting for %s %s examples...', dataset.num_examples, dataset.type.value)
+        log.info('Predicting for %s %s examples...', dataset.num_examples, dataset_type.value)
         start_time = Timer.start()
         prediction_function = GlobalPredictionFunction(learner)
         predictions = prediction_function.invoke(dataset, self.prediction_type, **kwargs)

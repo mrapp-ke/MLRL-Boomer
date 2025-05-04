@@ -6,8 +6,6 @@ Provides classes for representing the state of experiments.
 from dataclasses import dataclass, field
 from typing import Any, Dict, Optional
 
-from sklearn.base import BaseEstimator
-
 from mlrl.testbed.experiments.dataset import Dataset, DatasetType
 from mlrl.testbed.experiments.fold import Fold, FoldingStrategy
 from mlrl.testbed.experiments.prediction_scope import PredictionScope
@@ -27,7 +25,7 @@ class TrainingState:
         learner:            The learner that has been trained
         training_duration:  The time needed for training
     """
-    learner: BaseEstimator
+    learner: Any
     training_duration: Timer.Duration = field(default_factory=Timer.Duration)
 
 
