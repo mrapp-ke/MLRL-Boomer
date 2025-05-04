@@ -24,8 +24,7 @@ from mlrl.common.learners import RuleLearner, SparsePolicy
 from mlrl.common.package_info import PythonPackageInfo
 from mlrl.common.util.format import format_dict_keys, format_enum_values, format_iterable
 
-from mlrl.testbed.experiment import SkLearnExperiment
-from mlrl.testbed.experiments import Experiment
+from mlrl.testbed.experiments import Experiment, SkLearnExperiment
 from mlrl.testbed.experiments.input.dataset import DatasetReader, InputDataset
 from mlrl.testbed.experiments.input.dataset.preprocessors import OneHotEncoder, Preprocessor
 from mlrl.testbed.experiments.input.dataset.splitters import BipartitionSplitter, CrossValidationSplitter, \
