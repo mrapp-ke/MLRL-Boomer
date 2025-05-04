@@ -5,13 +5,14 @@ Provides classes for obtaining predictions from global machine learning models.
 """
 import logging as log
 
-from typing import Generator
+from typing import Any, Generator
 
 from sklearn.base import BaseEstimator
 
+from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.prediction.predictor import PredictionFunction, Predictor
 from mlrl.testbed.experiments.prediction_scope import PredictionScope
-from mlrl.testbed.experiments.state import ExperimentState, PredictionState
+from mlrl.testbed.experiments.state import PredictionState
 from mlrl.testbed.experiments.timer import Timer
 
 
@@ -47,13 +48,11 @@ class GlobalPredictor(Predictor):
             """
             return 0
 
-    def obtain_predictions(self, state: ExperimentState, **kwargs) -> Generator[PredictionState]:
+    def obtain_predictions(self, learner: Any, dataset: Dataset, **kwargs) -> Generator[PredictionState]:
         """
         See :func:`mlrl.testbed.experiments.prediction.predictor.Predictor.obtain_predictions`
         """
-        dataset = state.dataset
-        log.info('Predicting for %s %s examples...', dataset.num_examples, state.dataset_type.value)
-        learner = state.training_result.learner
+        log.info('Predicting for %s %s examples...', dataset.num_examples, dataset.type.value)
         start_time = Timer.start()
         prediction_function = GlobalPredictionFunction(learner)
         predictions = prediction_function.invoke(dataset, self.prediction_type, **kwargs)
