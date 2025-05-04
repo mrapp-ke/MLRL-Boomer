@@ -87,8 +87,8 @@ class BipartitionSplitter(DatasetSplitter):
                                                                           test_size=splitter.test_size,
                                                                           random_state=splitter.random_state,
                                                                           shuffle=True)
-                training_dataset = replace(dataset, x=x_training, y=y_training, type=DatasetType.TRAINING)
-                test_dataset = replace(dataset, x=x_test, y=y_test, type=DatasetType.TEST)
+                training_dataset = replace(dataset, x=x_training, y=y_training)
+                test_dataset = replace(dataset, x=x_test, y=y_test)
                 cache = BipartitionSplitter.DynamicSplit.Cache(training_dataset=training_dataset,
                                                                test_dataset=test_dataset)
                 splitter.cache = cache
