@@ -111,7 +111,9 @@ class Experiment(ABC):
                 output_writer.write(state)
 
     def __predict(self, state: ExperimentState):
-        for prediction_result in self._predict(learner=state.training_result.learner, dataset=state.dataset):
+        for prediction_result in self._predict(learner=state.training_result.learner,
+                                               dataset=state.dataset,
+                                               dataset_type=state.dataset_type):
             new_state = replace(state, prediction_result=prediction_result)
 
             for listener in self.listeners:
@@ -250,12 +252,13 @@ class Experiment(ABC):
         """
 
     @abstractmethod
-    def _predict(self, learner: Any, dataset: Dataset) -> Generator[PredictionState]:
+    def _predict(self, learner: Any, dataset: Dataset, dataset_type: DatasetType) -> Generator[PredictionState]:
         """
         Must be implemented by subclasses in order to obtain predictions for given query examples from a previously
         trained learner.
 
-        :param learner: The learner
-        :param dataset: The dataset that contains the query examples
-        :return:        The `PredictionState` that stores the result of the prediction process
+        :param learner:         The learner
+        :param dataset:         The dataset that contains the query examples
+        :param dataset_type:    The type of the dataset
+        :return:                The `PredictionState` that stores the result of the prediction process
         """

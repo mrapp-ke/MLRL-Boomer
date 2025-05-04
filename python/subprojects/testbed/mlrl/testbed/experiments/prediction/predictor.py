@@ -81,12 +81,14 @@ class Predictor(ABC):
         self.prediction_type = prediction_type
 
     @abstractmethod
-    def obtain_predictions(self, learner: Any, dataset: Dataset, **kwargs) -> Generator[PredictionState]:
+    def obtain_predictions(self, learner: Any, dataset: Dataset, dataset_type: Dataset,
+                           **kwargs) -> Generator[PredictionState]:
         """
         Obtains predictions from a previously trained learner once or several times.
 
-        :param learner: The learner
-        :param dataset: The dataset that contains the query examples
-        :param kwargs:  Optional keyword arguments to be passed to the learner when obtaining predictions
-        :return:        A generator that provides access to the results of the individual prediction processes
+        :param learner:         The learner
+        :param dataset:         The dataset that contains the query examples
+        :param dataset_type:    The type of the dataset
+        :param kwargs:          Optional keyword arguments to be passed to the learner when obtaining predictions
+        :return:                A generator that provides access to the results of the individual prediction processes
         """
