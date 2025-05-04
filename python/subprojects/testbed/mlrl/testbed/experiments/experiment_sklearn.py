@@ -12,7 +12,7 @@ from sklearn.base import BaseEstimator, clone
 
 from mlrl.common.mixins import NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
 
-from mlrl.testbed.experiments.dataset import AttributeType, Dataset
+from mlrl.testbed.experiments.dataset import AttributeType, Dataset, DatasetType
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.prediction import Predictor
@@ -118,14 +118,14 @@ class SkLearnExperiment(Experiment):
         log.info('Successfully fit model in %s', training_duration)
         return TrainingState(learner=new_learner, training_duration=training_duration)
 
-    def _predict(self, learner: Any, dataset: Dataset) -> Generator[PredictionState]:
+    def _predict(self, learner: Any, dataset: Dataset, dataset_type: DatasetType) -> Generator[PredictionState]:
         predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
         predictor = self.predictor_factory()
 
         try:
-            return predictor.obtain_predictions(learner, dataset, **predict_kwargs)
+            return predictor.obtain_predictions(learner, dataset, dataset_type, **predict_kwargs)
         except ValueError as error:
             if dataset.has_sparse_features:
-                return self._predict(learner, dataset.enforce_dense_features())
+                return self._predict(learner, dataset.enforce_dense_features(), dataset_type)
 
             raise error

@@ -12,7 +12,7 @@ from sklearn.base import BaseEstimator
 
 from mlrl.common.mixins import IncrementalClassifierMixin, IncrementalRegressorMixin
 
-from mlrl.testbed.experiments.dataset import Dataset
+from mlrl.testbed.experiments.dataset import Dataset, DatasetType
 from mlrl.testbed.experiments.prediction.predictor import PredictionFunction, Predictor
 from mlrl.testbed.experiments.prediction_scope import PredictionScope
 from mlrl.testbed.experiments.prediction_type import PredictionType
@@ -69,7 +69,8 @@ class IncrementalPredictor(Predictor):
         self.max_size = max_size
         self.step_size = step_size
 
-    def obtain_predictions(self, learner: Any, dataset: Dataset, **kwargs) -> Generator[PredictionState]:
+    def obtain_predictions(self, learner: Any, dataset: Dataset, dataset_type: DatasetType,
+                           **kwargs) -> Generator[PredictionState]:
         """
         See :func:`mlrl.testbed.experiments.prediction.predictor.Predictor.obtain_predictions`
         """
@@ -93,7 +94,7 @@ class IncrementalPredictor(Predictor):
 
             while incremental_predictor.has_next():
                 log.info('Predicting for %s %s examples using a model of size %s...', dataset.num_examples,
-                         dataset.type.value, current_size)
+                         dataset_type.value, current_size)
                 start_time = Timer.start()
                 predictions = incremental_predictor.apply_next(next_step_size)
                 prediction_duration = Timer.stop(start_time)
