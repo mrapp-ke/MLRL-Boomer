@@ -58,7 +58,7 @@ class CrossValidationSplitter(DatasetSplitter):
                         training_dataset.x = vstack((training_dataset.x, dataset.x))
                         training_dataset.y = vstack((training_dataset.y, dataset.y))
                     else:
-                        training_dataset = replace(dataset, type=DatasetType.TRAINING)
+                        training_dataset = replace(dataset)
 
             return training_dataset
 
@@ -73,7 +73,7 @@ class CrossValidationSplitter(DatasetSplitter):
                 dataset = state.dataset
                 cache.datasets[fold_index] = dataset
 
-            return replace(dataset, type=DatasetType.TEST)
+            return dataset
 
         def __init__(self, splitter: 'CrossValidationSplitter', state: ExperimentState):
             """
@@ -150,15 +150,9 @@ class CrossValidationSplitter(DatasetSplitter):
                                shuffle=True).split(dataset.x, dataset.y)
 
                 for training_examples, test_examples in splits:
-                    training_dataset = replace(dataset,
-                                               x=dataset.x[training_examples],
-                                               y=dataset.y[training_examples],
-                                               type=DatasetType.TRAINING)
+                    training_dataset = replace(dataset, x=dataset.x[training_examples], y=dataset.y[training_examples])
                     cache.training_datasets.append(training_dataset)
-                    test_dataset = replace(dataset,
-                                           x=dataset.x[test_examples],
-                                           y=dataset.y[test_examples],
-                                           type=DatasetType.TEST)
+                    test_dataset = replace(dataset, x=dataset.x[test_examples], y=dataset.y[test_examples])
                     cache.test_datasets.append(test_dataset)
 
                 splitter.cache = cache

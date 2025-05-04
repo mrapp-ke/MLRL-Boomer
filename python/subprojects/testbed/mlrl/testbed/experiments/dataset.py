@@ -56,13 +56,11 @@ class Dataset:
         y:          A `lil_array`, shape `(num_examples, num_features)`, that stores the ground truth of examples
         features:   A list that contains all features in the data set
         outputs:    A list that contains all outputs in the data set
-        type:       The type of the dataset or None, if the type is unspecified
     """
     x: lil_array
     y: lil_array
     features: List[Attribute]
     outputs: List[Attribute]
-    type: DatasetType = DatasetType.TRAINING
 
     @property
     def num_examples(self) -> int:
