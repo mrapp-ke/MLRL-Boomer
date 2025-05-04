@@ -28,7 +28,7 @@ class TrainingState:
         training_duration:  The time needed for training
     """
     learner: BaseEstimator
-    training_duration: Timer.Duration
+    training_duration: Timer.Duration = field(default_factory=Timer.Duration)
 
 
 @dataclass

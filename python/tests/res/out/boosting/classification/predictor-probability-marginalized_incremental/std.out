@@ -307,7 +307,6 @@ NDCG                             79.2
 Ranking Loss                      0.45
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-DEBUG Writing output data to file "python/tests/res/tmp/models/model.pickle"...
 INFO Marginal probability calibration model:
 
 ┌──────────────────────┬─────────────────────────┐
@@ -568,4 +567,5 @@ INFO Joint probability calibration model:
 └──────────────────────────────┴─────────────────────────────────┘
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/joint_probability_calibration_model.csv"...
+DEBUG Writing output data to file "python/tests/res/tmp/models/model.pickle"...
 INFO Successfully finished after <duration>

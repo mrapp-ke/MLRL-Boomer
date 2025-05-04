@@ -32,11 +32,11 @@ class NoSplitter(DatasetSplitter):
             """
             self.state = state
 
-        def get_state(self, _: DatasetType) -> ExperimentState:
+        def get_state(self, dataset_type: DatasetType) -> ExperimentState:
             """
             See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.Split.get_state`
             """
-            return self.state
+            return self.state if dataset_type == DatasetType.TRAINING else None
 
     def __init__(self, dataset_reader: DatasetReader):
         """

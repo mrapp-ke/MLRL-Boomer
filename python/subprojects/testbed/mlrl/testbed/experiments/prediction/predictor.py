@@ -14,7 +14,7 @@ from mlrl.common.mixins import ClassifierMixin
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.prediction_type import PredictionType
-from mlrl.testbed.experiments.state import ExperimentState, PredictionState
+from mlrl.testbed.experiments.state import PredictionState
 
 
 class PredictionFunction:
@@ -81,11 +81,12 @@ class Predictor(ABC):
         self.prediction_type = prediction_type
 
     @abstractmethod
-    def obtain_predictions(self, state: ExperimentState, **kwargs) -> Generator[PredictionState]:
+    def obtain_predictions(self, learner: Any, dataset: Dataset, **kwargs) -> Generator[PredictionState]:
         """
-        Obtains predictions from a previously trained model once or several times.
+        Obtains predictions from a previously trained learner once or several times.
 
-        :param state:   The state that stores the model
-        :param kwargs:  Optional keyword arguments to be passed to the model when obtaining predictions
+        :param learner: The learner
+        :param dataset: The dataset that contains the query examples
+        :param kwargs:  Optional keyword arguments to be passed to the learner when obtaining predictions
         :return:        A generator that provides access to the results of the individual prediction processes
         """
