@@ -6,16 +6,17 @@ members.
 """
 import logging as log
 
-from typing import Generator
+from typing import Any, Generator
 
 from sklearn.base import BaseEstimator
 
 from mlrl.common.mixins import IncrementalClassifierMixin, IncrementalRegressorMixin
 
+from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.prediction.predictor import PredictionFunction, Predictor
 from mlrl.testbed.experiments.prediction_scope import PredictionScope
 from mlrl.testbed.experiments.prediction_type import PredictionType
-from mlrl.testbed.experiments.state import ExperimentState, PredictionState
+from mlrl.testbed.experiments.state import PredictionState
 from mlrl.testbed.experiments.timer import Timer
 
 
@@ -68,16 +69,13 @@ class IncrementalPredictor(Predictor):
         self.max_size = max_size
         self.step_size = step_size
 
-    def obtain_predictions(self, state: ExperimentState, **kwargs) -> Generator[PredictionState]:
+    def obtain_predictions(self, learner: Any, dataset: Dataset, **kwargs) -> Generator[PredictionState]:
         """
         See :func:`mlrl.testbed.experiments.prediction.predictor.Predictor.obtain_predictions`
         """
-        learner = state.training_result.learner
-
         if not isinstance(learner, IncrementalClassifierMixin) and not isinstance(learner, IncrementalRegressorMixin):
             raise ValueError('Cannot obtain incremental predictions from a model of type ' + type(learner.__name__))
 
-        dataset = state.dataset
         prediction_function = IncrementalPredictionFunction(learner)
         incremental_predictor = prediction_function.invoke(dataset, self.prediction_type, **kwargs)
 
@@ -95,7 +93,7 @@ class IncrementalPredictor(Predictor):
 
             while incremental_predictor.has_next():
                 log.info('Predicting for %s %s examples using a model of size %s...', dataset.num_examples,
-                         state.dataset_type.value, current_size)
+                         dataset.type.value, current_size)
                 start_time = Timer.start()
                 predictions = incremental_predictor.apply_next(next_step_size)
                 prediction_duration = Timer.stop(start_time)
