@@ -8,7 +8,7 @@ import logging as log
 from abc import ABC, abstractmethod
 from dataclasses import replace
 from functools import reduce
-from typing import Any, Callable, Dict, Generator, List, Optional
+from typing import Any, Callable, Dict, Generator, Optional
 
 from sklearn.base import BaseEstimator, clone
 
@@ -108,23 +108,19 @@ class Experiment(ABC):
             for output_writer in self.prediction_output_writers:
                 output_writer.write(new_state)
 
-    def __init__(self, problem_type: ProblemType, learner_name: str, dataset_splitter: DatasetSplitter,
-                 prediction_output_writers: List[OutputWriter]):
+    def __init__(self, problem_type: ProblemType, learner_name: str, dataset_splitter: DatasetSplitter):
         """
-        :param problem_type:                    The type of the machine learning problem
-        :param learner_name:                    The name of the machine learning algorithm
-        :param dataset_splitter:                The method to be used for splitting the dataset into training and test
-                                                datasets
-        :param prediction_output_writers:       A list that contains all output writers to be invoked each time
-                                                predictions are obtained from a model
+        :param problem_type:        The type of the machine learning problem
+        :param learner_name:        The name of the machine learning algorithm
+        :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
         """
         self.problem_type = problem_type
         self.learner_name = learner_name
         self.dataset_splitter = dataset_splitter
-        self.prediction_output_writers = prediction_output_writers
         self.input_readers = []
         self.pre_training_output_writers = []
         self.post_training_output_writers = []
+        self.prediction_output_writers = []
         self.listeners = [
             Experiment.InputReaderListener(),
             Experiment.OutputWriterListener(),
@@ -172,6 +168,18 @@ class Experiment(ABC):
         """
         for output_writer in output_writers:
             self.post_training_output_writers.append(output_writer)
+        return self
+
+    def add_prediction_output_writers(self, *output_writers: OutputWriter) -> 'Experiment':
+        """
+        Adds one or several output writers that should be invoked after predictions have been obtained from a machine
+        learning model.
+
+        :param output_writers:  The output writers to be added
+        :return:                The experiment itself
+        """
+        for output_writer in output_writers:
+            self.prediction_output_writers.append(output_writer)
         return self
 
     # pylint: disable=too-many-branches
@@ -309,28 +317,20 @@ class SkLearnExperiment(Experiment):
                  base_learner: BaseEstimator,
                  learner_name: str,
                  dataset_splitter: DatasetSplitter,
-                 prediction_output_writers: List[OutputWriter],
                  predictor_factory: PredictorFactory,
                  fit_kwargs: Optional[Dict[str, Any]] = None,
                  predict_kwargs: Optional[Dict[str, Any]] = None):
         """
-        :param problem_type:                    The type of the machine learning problem
-        :param base_learner:                    The machine learning algorithm to be used
-        :param learner_name:                    The name of the machine learning algorithm
-        :param dataset_splitter:                The method to be used for splitting the dataset into training and test
-                                                datasets
-        :param prediction_output_writers:       A list that contains all output writers to be invoked each time
-                                                predictions are obtained from a model
-        :param predictor_factory:               A `PredictorFactory`
-        :param fit_kwargs:                      Optional keyword arguments to be passed to the learner when fitting a
-                                                model
-        :param predict_kwargs:                  Optional keyword arguments to be passed to the learner when obtaining
-                                                predictions from a model
+        :param problem_type:        The type of the machine learning problem
+        :param base_learner:        The machine learning algorithm to be used
+        :param learner_name:        The name of the machine learning algorithm
+        :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
+        :param predictor_factory:   A `PredictorFactory`
+        :param fit_kwargs:          Optional keyword arguments to be passed to the learner when fitting a model
+        :param predict_kwargs:      Optional keyword arguments to be passed to the learner when obtaining predictions
+                                    from a model
         """
-        super().__init__(problem_type=problem_type,
-                         learner_name=learner_name,
-                         dataset_splitter=dataset_splitter,
-                         prediction_output_writers=prediction_output_writers)
+        super().__init__(problem_type=problem_type, learner_name=learner_name, dataset_splitter=dataset_splitter)
         self.base_learner = base_learner
         self.predictor_factory = predictor_factory
         self.fit_kwargs = fit_kwargs

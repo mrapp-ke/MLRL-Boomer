@@ -760,8 +760,7 @@ class LearnerRunnable(Runnable, ABC):
                                              base_learner=base_learner,
                                              learner_name=self.learner_name,
                                              dataset_splitter=dataset_splitter,
-                                             predictor_factory=predictor_factory,
-                                             prediction_output_writers=prediction_output_writers)
+                                             predictor_factory=predictor_factory)
         experiment.add_listeners(*filter(lambda listener: listener is not None, [
             self.__create_clear_output_directory_listener(args, dataset_splitter),
         ]))
@@ -777,32 +776,29 @@ class LearnerRunnable(Runnable, ABC):
             self._create_model_writer(args),
             self._create_label_vector_writer(args),
         ]))
+        experiment.add_prediction_output_writers(*prediction_output_writers)
         experiment.run(predict_for_training_dataset=prediction_output_writers and args.evaluate_training_data,
                        predict_for_test_dataset=prediction_output_writers)
 
     # pylint: disable=unused-argument
     def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
-                           dataset_splitter: DatasetSplitter, prediction_output_writers: List[OutputWriter],
+                           dataset_splitter: DatasetSplitter,
                            predictor_factory: SkLearnExperiment.PredictorFactory) -> Experiment:
         """
         May be overridden by subclasses in order to create the `Experiment` that should be run.
 
-        :param args:                            The command line arguments
-        :param problem_type:                    The type of the machine learning problem
-        :param base_learner:                    The machine learning algorithm to be used
-        :param learner_name:                    The name of machine learning algorithm
-        :param dataset_splitter:                The method to be used for splitting the dataset into training and test
-                                                datasets
-        :param prediction_output_writers:       A list that contains all output writers to be invoked each time
-                                                predictions have been obtained from a model
-        :param predictor_factory:               A `SkLearnExperiment.PredictorFactory`
-        :return:                                The `Experiment` that has been created
+        :param args:                The command line arguments
+        :param problem_type:        The type of the machine learning problem
+        :param base_learner:        The machine learning algorithm to be used
+        :param learner_name:        The name of machine learning algorithm
+        :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
+        :param predictor_factory:   A `SkLearnExperiment.PredictorFactory`
+        :return:                    The `Experiment` that has been created
         """
         return SkLearnExperiment(problem_type=problem_type,
                                  base_learner=base_learner,
                                  learner_name=learner_name,
                                  dataset_splitter=dataset_splitter,
-                                 prediction_output_writers=prediction_output_writers,
                                  predictor_factory=predictor_factory)
 
     def _create_prediction_output_writers(self, args, problem_type: ProblemType,
@@ -1277,14 +1273,13 @@ class RuleLearnerRunnable(LearnerRunnable):
         self.__configure_argument_parser(parser, config_type, parameters)
 
     def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
-                           dataset_splitter: DatasetSplitter, prediction_output_writers: List[OutputWriter],
+                           dataset_splitter: DatasetSplitter,
                            predictor_factory: SkLearnExperiment.PredictorFactory) -> Experiment:
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
         experiment = SkLearnExperiment(problem_type=problem_type,
                                        base_learner=base_learner,
                                        learner_name=learner_name,
                                        dataset_splitter=dataset_splitter,
-                                       prediction_output_writers=prediction_output_writers,
                                        predictor_factory=predictor_factory,
                                        fit_kwargs=kwargs,
                                        predict_kwargs=kwargs)
