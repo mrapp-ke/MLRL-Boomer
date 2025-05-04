@@ -10,7 +10,6 @@ from typing import Any
 from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.input.data import InputData
 from mlrl.testbed.experiments.state import ExperimentState, TrainingState
-from mlrl.testbed.experiments.timer import Timer
 
 
 class InputModel(InputData):
@@ -27,4 +26,4 @@ class InputModel(InputData):
         See :func:`mlrl.testbed.experiments.input.data.InputData.update_state`
         """
         log.info('Successfully loaded model')
-        state.training_result = TrainingState(learner=input_data, training_duration=Timer.Duration())
+        state.training_result = TrainingState(learner=input_data)
