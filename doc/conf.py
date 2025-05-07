@@ -59,9 +59,19 @@ intersphinx_mapping = {
 
 # Aliases for external links
 git_branch = environ.get('GIT_BRANCH', 'main')
+builder = environ.get('SPHINX_BUILDER', 'html')
+
+if builder == 'linkcheck':
+    # Use GitHub's REST API when using the builder "linkcheck", because it comes with a less restrictive rate limit
+    github_file_url = 'https://api.github.com/repos/mrapp-ke/MLRL-Boomer/contents/%s?ref=' + git_branch
+    github_dir_url = github_file_url
+else:
+    github_file_url = 'https://github.com/mrapp-ke/MLRL-Boomer/blob/' + git_branch + '/%s'
+    github_dir_url = 'https://github.com/mrapp-ke/MLRL-Boomer/tree/' + git_branch + '/%s'
+
 extlinks = {
-    'repo-file': ('https://github.com/mrapp-ke/MLRL-Boomer/blob/' + git_branch + '/%s', '%s'),
-    'repo-dir': ('https://github.com/mrapp-ke/MLRL-Boomer/tree/' + git_branch + '/%s', '%s'),
+    'repo-file': (github_file_url, '%s'),
+    'repo-dir': (github_dir_url, '%s'),
 }
 
 # Breathe configuration
