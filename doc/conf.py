@@ -74,6 +74,13 @@ extlinks = {
     'repo-dir': (github_dir_url, '%s'),
 }
 
+# Authentication headers to be used by builder "linkcheck"
+linkcheck_request_headers = {}
+github_token = environ.get('GITHUB_TOKEN')
+
+if github_token:
+    linkcheck_request_headers[r'^https://api.github.com/'] = {'Authorization': 'Token ' + github_token}
+
 # Breathe configuration
 breathe_projects = {
     file: Path('developer_guide', 'api', 'cpp', file, 'xml')
