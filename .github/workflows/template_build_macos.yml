@@ -25,6 +25,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ inputs.python_version }}
+          check-latest: true
       - name: Install OpenMP
         run: GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} ./build dependency_libomp
       - name: Install OpenCL
