@@ -10,8 +10,10 @@ from typing import Set
 from core.build_unit import BuildUnit
 from util.env import get_env_bool
 from util.files import FileSearch
+from util.pip import RequirementVersion
 
-from targets.version_files import DevelopmentVersionFile, SemanticVersion, VersionFile, VersionTextFile
+from targets.version_files import DevelopmentVersionFile, PythonVersionFile, SemanticVersion, VersionFile, \
+    VersionTextFile
 
 
 class Project:
@@ -113,13 +115,22 @@ class Project:
         wheel_metadata_directory_suffix = '.egg-info'
 
         @staticmethod
-        def python_version() -> str:
+        def supported_python_versions() -> RequirementVersion:
+            """
+            Returns the Python versions supported by the project.
+
+            :return: The Python versions supported by the project
+            """
+            return PythonVersionFile(path.join(Project.Python.root_directory, '.version-python')).supported_versions
+
+        @staticmethod
+        def minimum_python_version() -> str:
             """
             Returns the minimum Python version required by the project.
 
             :return: The minimum Python version required by the project
             """
-            return VersionTextFile(path.join(Project.Python.root_directory, '.version-python')).version_string
+            return RequirementVersion.PREFIX_GEQ + ' ' + Project.Python.supported_python_versions().min_version
 
         @staticmethod
         def file_search() -> FileSearch:

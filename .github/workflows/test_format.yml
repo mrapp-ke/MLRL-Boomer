@@ -23,10 +23,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Determine supported Python versions
+        id: python_version
+        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: python/.version-python
+          python-version: ${{ steps.python_version.outputs.python_version }}
       - name: Detect changes
         uses: dorny/paths-filter@v3
         id: filter
@@ -76,10 +79,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Determine supported Python versions
+        id: python_version
+        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: python/.version-python
+          python-version: ${{ steps.python_version.outputs.python_version }}
       - name: Check C++ source files
         run: ./build test_format_cpp
   test_format_python:
@@ -90,10 +96,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Determine supported Python versions
+        id: python_version
+        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: python/.version-python
+          python-version: ${{ steps.python_version.outputs.python_version }}
       - name: Check Python source files
         run: ./build test_format_python
   test_format_cfg:
@@ -104,10 +113,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Determine supported Python versions
+        id: python_version
+        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: python/.version-python
+          python-version: ${{ steps.python_version.outputs.python_version }}
       - name: Check .cfg files
         run: ./build test_format_cfg
   test_format_md:
@@ -118,10 +130,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Determine supported Python versions
+        id: python_version
+        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: python/.version-python
+          python-version: ${{ steps.python_version.outputs.python_version }}
       - name: Check Markdown files
         run: ./build test_format_md
   test_format_yaml:
@@ -132,10 +147,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Determine supported Python versions
+        id: python_version
+        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: python/.version-python
+          python-version: ${{ steps.python_version.outputs.python_version }}
       - name: Check YAML files
         run: ./build test_format_yaml
   test_format_toml:
@@ -146,9 +164,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Determine supported Python versions
+        id: python_version
+        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: python/.version-python
+          python-version: ${{ steps.python_version.outputs.python_version }}
       - name: Check TOML files
         run: ./build test_format_toml

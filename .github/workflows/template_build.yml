@@ -6,6 +6,9 @@ on:
       subproject:
         required: true
         type: string
+      python_version:
+        required: true
+        type: string
       linux:
         required: false
         type: boolean
@@ -34,15 +37,18 @@ jobs:
       compile: ${{ inputs.linux == true || inputs.compile == true }}
       run_cpp_tests: ${{ inputs.run_cpp_tests == true }}
       run_python_tests: ${{ inputs.run_python_tests == true }}
+      python_version: ${{ inputs.python_version }}
   macos_build:
     if: ${{ inputs.macos == true || inputs.compile == true }}
     name: Test MacOS build (${{ inputs.subproject }})
     uses: ./.github/workflows/template_build_macos.yml
     with:
       subproject: ${{ inputs.subproject }}
+      python_version: ${{ inputs.python_version }}
   windows_build:
     if: ${{ inputs.windows == true || inputs.compile == true }}
     name: Test windows build (${{ inputs.subproject }})
     uses: ./.github/workflows/template_build_windows.yml
     with:
       subproject: ${{ inputs.subproject }}
+      python_version: ${{ inputs.python_version }}
