@@ -12,6 +12,7 @@ jobs:
     uses: ./.github/workflows/template_doc.yml
     with:
       release: ${{ inputs.release }}
+    secrets: inherit
   push_doc:
     needs: build_doc
     name: Push documentation
