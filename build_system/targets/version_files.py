@@ -10,6 +10,7 @@ from typing import Optional
 
 from util.io import TextFile
 from util.log import Log
+from util.pip import RequirementVersion
 from util.version import Version
 
 
@@ -129,3 +130,16 @@ class DevelopmentVersionFile(VersionTextFile):
             del self.development_version
         except AttributeError:
             pass
+
+
+class PythonVersionFile(VersionFile):
+    """
+    The file that stores the supported Python versions.
+    """
+
+    @property
+    def supported_versions(self) -> RequirementVersion:
+        """
+        The supported versions that are stored in the file.
+        """
+        return RequirementVersion.parse(self.version_string)

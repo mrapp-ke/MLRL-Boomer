@@ -6,7 +6,7 @@ Defines targets and modules for installing Python dependencies that are required
 from os import path
 
 from core.build_unit import BuildUnit
-from core.targets import PhonyTarget, TargetBuilder
+from core.targets import TargetBuilder
 
 from targets.dependencies.python.modules import DependencyType, PythonDependencyModule
 from targets.dependencies.python.targets import CheckPythonDependencies, InstallPythonDependencies, \
