@@ -30,6 +30,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ steps.python_version.outputs.python_version }}
+          check-latest: true
       - name: Detect changes
         uses: dorny/paths-filter@v3
         id: filter
@@ -86,6 +87,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ steps.python_version.outputs.python_version }}
+          check-latest: true
       - name: Check C++ source files
         run: ./build test_format_cpp
   test_format_python:
@@ -103,6 +105,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ steps.python_version.outputs.python_version }}
+          check-latest: true
       - name: Check Python source files
         run: ./build test_format_python
   test_format_cfg:
@@ -120,6 +123,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ steps.python_version.outputs.python_version }}
+          check-latest: true
       - name: Check .cfg files
         run: ./build test_format_cfg
   test_format_md:
@@ -137,6 +141,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ steps.python_version.outputs.python_version }}
+          check-latest: true
       - name: Check Markdown files
         run: ./build test_format_md
   test_format_yaml:
@@ -154,6 +159,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ steps.python_version.outputs.python_version }}
+          check-latest: true
       - name: Check YAML files
         run: ./build test_format_yaml
   test_format_toml:
@@ -171,5 +177,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ steps.python_version.outputs.python_version }}
+          check-latest: true
       - name: Check TOML files
         run: ./build test_format_toml

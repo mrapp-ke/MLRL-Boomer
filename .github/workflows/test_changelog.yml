@@ -23,6 +23,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ steps.python_version.outputs.python_version }}
+          check-latest: true
       - name: Detect changes
         uses: dorny/paths-filter@v3
         id: filter
