@@ -27,7 +27,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Determine minimum Python version
+      - name: Determine supported Python versions
         uses: juliangruber/read-file-action@v1
         id: python_version
         with:

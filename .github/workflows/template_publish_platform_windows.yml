@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Prepare MSVC
         uses: ilammy/msvc-dev-cmd@v1
-      - name: Determine minimum Python version
+      - name: Determine supported Python versions
         uses: juliangruber/read-file-action@v1
         id: python_version
         with:

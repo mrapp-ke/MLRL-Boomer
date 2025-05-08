@@ -252,7 +252,8 @@ class Experiment(ABC):
         """
 
     @abstractmethod
-    def _predict(self, learner: Any, dataset: Dataset, dataset_type: DatasetType) -> Generator[PredictionState]:
+    def _predict(self, learner: Any, dataset: Dataset,
+                 dataset_type: DatasetType) -> Generator[PredictionState, None, None]:
         """
         Must be implemented by subclasses in order to obtain predictions for given query examples from a previously
         trained learner.
