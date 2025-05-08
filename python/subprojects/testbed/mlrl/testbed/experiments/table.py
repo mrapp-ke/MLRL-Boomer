@@ -147,14 +147,14 @@ class Table(ABC):
 
     @property
     @abstractmethod
-    def rows(self) -> Generator[Row]:
+    def rows(self) -> Generator[Row, None, None]:
         """
         A generator that provides access to the individual rows in the table.
         """
 
     @property
     @abstractmethod
-    def columns(self) -> Generator[Column]:
+    def columns(self) -> Generator[Column, None, None]:
         """
         A generator that provides access to the individual columns in the table.
         """
@@ -357,12 +357,12 @@ class RowWiseTable(Table):
         return self._alignments
 
     @property
-    def rows(self) -> Generator[Row]:
+    def rows(self) -> Generator[Row, None, None]:
         for row_index in range(self.num_rows):
             yield RowWiseTable.Row(self, row_index)
 
     @property
-    def columns(self) -> Generator[Column]:
+    def columns(self) -> Generator[Column, None, None]:
         for column_index in range(self.num_columns):
             yield RowWiseTable.Column(self, column_index)
 
@@ -554,12 +554,12 @@ class ColumnWiseTable(Table):
         return self._alignments
 
     @property
-    def rows(self) -> Generator[Row]:
+    def rows(self) -> Generator[Row, None, None]:
         for row_index in range(self.num_rows):
             yield ColumnWiseTable.Row(self, row_index)
 
     @property
-    def columns(self) -> Generator[Column]:
+    def columns(self) -> Generator[Column, None, None]:
         for column_index in range(self.num_columns):
             yield ColumnWiseTable.Column(self, column_index)
 
