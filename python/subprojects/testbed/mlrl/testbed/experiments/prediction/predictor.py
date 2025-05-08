@@ -82,7 +82,7 @@ class Predictor(ABC):
 
     @abstractmethod
     def obtain_predictions(self, learner: Any, dataset: Dataset, dataset_type: Dataset,
-                           **kwargs) -> Generator[PredictionState]:
+                           **kwargs) -> Generator[PredictionState, None, None]:
         """
         Obtains predictions from a previously trained learner once or several times.
 
