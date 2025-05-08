@@ -7,53 +7,51 @@ import logging as log
 import sys
 
 from abc import ABC, abstractmethod
-from argparse import ArgumentParser
+from argparse import ArgumentError, ArgumentParser
 from dataclasses import dataclass, field
 from enum import Enum
+from os import listdir, path, unlink
 from typing import Dict, Iterable, List, Optional, Set
 
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
     RegressorMixin as SkLearnRegressorMixin
+from tabulate import tabulate
 
-from mlrl.common.config import NONE, Parameter, configure_argument_parser, create_kwargs_from_parameters
+from mlrl.common.config.options import BooleanOption, parse_param_and_options
+from mlrl.common.config.parameters import NONE, Parameter
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
-from mlrl.common.format import format_dict_keys, format_enum_values, format_iterable
-from mlrl.common.info import PythonPackageInfo
-from mlrl.common.options import BooleanOption, parse_param_and_options
-from mlrl.common.rule_learners import KWARG_SPARSE_FEATURE_VALUE, SparsePolicy
+from mlrl.common.learners import RuleLearner, SparsePolicy
+from mlrl.common.package_info import PythonPackageInfo
+from mlrl.common.util.format import format_dict_keys, format_enum_values, format_iterable
 
-from mlrl.testbed.characteristics import OPTION_DISTINCT_LABEL_VECTORS, OPTION_LABEL_CARDINALITY, \
-    OPTION_LABEL_IMBALANCE_RATIO, OPTION_OUTPUT_DENSITY, OPTION_OUTPUT_SPARSITY, OPTION_OUTPUTS
-from mlrl.testbed.data_characteristics import OPTION_EXAMPLES, OPTION_FEATURE_DENSITY, OPTION_FEATURE_SPARSITY, \
-    OPTION_FEATURES, OPTION_NOMINAL_FEATURES, OPTION_NUMERICAL_FEATURES, DataCharacteristicsWriter
-from mlrl.testbed.data_splitting import CrossValidationSplitter, DataSet, DataSplitter, NoSplitter, TrainTestSplitter
-from mlrl.testbed.evaluation import OPTION_ACCURACY, OPTION_COVERAGE_ERROR, OPTION_DISCOUNTED_CUMULATIVE_GAIN, \
-    OPTION_ENABLE_ALL, OPTION_EXAMPLE_WISE_F1, OPTION_EXAMPLE_WISE_JACCARD, OPTION_EXAMPLE_WISE_PRECISION, \
-    OPTION_EXAMPLE_WISE_RECALL, OPTION_F1, OPTION_HAMMING_ACCURACY, OPTION_HAMMING_LOSS, OPTION_JACCARD, \
-    OPTION_LABEL_RANKING_AVERAGE_PRECISION, OPTION_MACRO_F1, OPTION_MACRO_JACCARD, OPTION_MACRO_PRECISION, \
-    OPTION_MACRO_RECALL, OPTION_MEAN_ABSOLUTE_ERROR, OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR, OPTION_MEAN_SQUARED_ERROR, \
-    OPTION_MEDIAN_ABSOLUTE_ERROR, OPTION_MICRO_F1, OPTION_MICRO_JACCARD, OPTION_MICRO_PRECISION, OPTION_MICRO_RECALL, \
-    OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, OPTION_PRECISION, OPTION_PREDICTION_TIME, OPTION_RANK_LOSS, \
-    OPTION_RECALL, OPTION_SUBSET_ACCURACY, OPTION_SUBSET_ZERO_ONE_LOSS, OPTION_TRAINING_TIME, OPTION_ZERO_ONE_LOSS, \
-    BinaryEvaluationWriter, EvaluationWriter, RankingEvaluationWriter, RegressionEvaluationWriter
-from mlrl.testbed.experiments import Evaluation, Experiment, GlobalEvaluation, IncrementalEvaluation
-from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
-from mlrl.testbed.info import get_package_info as get_testbed_package_info
-from mlrl.testbed.io import clear_directory
-from mlrl.testbed.label_vectors import OPTION_SPARSE, LabelVectorSetWriter, LabelVectorWriter
-from mlrl.testbed.model_characteristics import ModelCharacteristicsWriter, RuleModelCharacteristicsWriter
-from mlrl.testbed.models import OPTION_DECIMALS_BODY, OPTION_DECIMALS_HEAD, OPTION_PRINT_BODIES, \
-    OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_HEADS, OPTION_PRINT_NOMINAL_VALUES, OPTION_PRINT_OUTPUT_NAMES, \
-    ModelWriter, RuleModelWriter
-from mlrl.testbed.output_writer import OutputWriter
-from mlrl.testbed.parameters import ParameterCsvInput, ParameterInput, ParameterWriter
-from mlrl.testbed.persistence import ModelPersistence
-from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsWriter
-from mlrl.testbed.prediction_scope import PredictionType
-from mlrl.testbed.predictions import PredictionWriter
-from mlrl.testbed.probability_calibration import JointProbabilityCalibrationModelWriter, \
-    MarginalProbabilityCalibrationModelWriter
-from mlrl.testbed.problem_type import ProblemType
+from mlrl.testbed.experiments import Experiment, SkLearnExperiment
+from mlrl.testbed.experiments.input.dataset import DatasetReader, InputDataset
+from mlrl.testbed.experiments.input.dataset.preprocessors import OneHotEncoder, Preprocessor
+from mlrl.testbed.experiments.input.dataset.splitters import BipartitionSplitter, CrossValidationSplitter, \
+    DatasetSplitter, NoSplitter
+from mlrl.testbed.experiments.input.model import ModelReader
+from mlrl.testbed.experiments.input.parameters import ParameterReader
+from mlrl.testbed.experiments.input.sources import ArffFileSource, CsvFileSource, PickleFileSource
+from mlrl.testbed.experiments.output.characteristics.data import DataCharacteristics, DataCharacteristicsWriter, \
+    OutputCharacteristics, PredictionCharacteristicsWriter
+from mlrl.testbed.experiments.output.characteristics.model import ModelCharacteristicsWriter, \
+    RuleModelCharacteristicsExtractor
+from mlrl.testbed.experiments.output.dataset import GroundTruthWriter, PredictionWriter
+from mlrl.testbed.experiments.output.evaluation import ClassificationEvaluationDataExtractor, EvaluationResult, \
+    EvaluationWriter, RankingEvaluationDataExtractor, RegressionEvaluationDataExtractor
+from mlrl.testbed.experiments.output.label_vectors import LabelVectors, LabelVectorSetExtractor, LabelVectorWriter
+from mlrl.testbed.experiments.output.model import ModelWriter
+from mlrl.testbed.experiments.output.model_text import ModelAsTextWriter, RuleModelAsText, RuleModelAsTextExtractor
+from mlrl.testbed.experiments.output.parameters import ParameterWriter
+from mlrl.testbed.experiments.output.probability_calibration import IsotonicJointProbabilityCalibrationModelExtractor, \
+    IsotonicMarginalProbabilityCalibrationModelExtractor, ProbabilityCalibrationModelWriter
+from mlrl.testbed.experiments.output.sinks import ArffFileSink, CsvFileSink, LogSink, PickleFileSink, TextFileSink
+from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.prediction import GlobalPredictor, IncrementalPredictor, Predictor
+from mlrl.testbed.experiments.prediction_type import PredictionType
+from mlrl.testbed.experiments.problem_type import ProblemType
+from mlrl.testbed.package_info import get_package_info as get_testbed_package_info
+from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
 LOG_FORMAT = '%(levelname)s %(message)s'
 
@@ -132,15 +130,15 @@ class Runnable(ABC):
             result = ''
             year = self.year
 
-            if year is not None:
+            if year:
                 result += ' ' + year
 
             authors = self.authors
 
-            if len(authors) > 0:
+            if authors:
                 result += ' ' + format_iterable(authors)
 
-            return ('Copyright (c)' if len(result) > 0 else '') + result
+            return ('Copyright (c)' if result else '') + result
 
         def __collect_python_packages(self, python_packages: Iterable[PythonPackageInfo]) -> Set[str]:
             unique_packages = set()
@@ -211,7 +209,7 @@ class Runnable(ABC):
 
         @staticmethod
         def __format_parent_packages(parent_packages: Set[str]) -> str:
-            return 'used by ' + format_iterable(parent_packages) if len(parent_packages) > 0 else ''
+            return 'used by ' + format_iterable(parent_packages) if parent_packages else ''
 
         def __format_package_info(self) -> str:
             rows = []
@@ -220,7 +218,7 @@ class Runnable(ABC):
             for i, python_package in enumerate(sorted(self.__collect_python_packages(python_packages))):
                 rows.append(['' if i > 0 else 'Python packages:', python_package, ''])
 
-            if len(python_packages) > 0:
+            if python_packages:
                 rows.append(['', '', ''])
 
             dependencies = self.__collect_dependencies(python_packages)
@@ -229,7 +227,7 @@ class Runnable(ABC):
                 parent_packages = self.__format_parent_packages(dependencies[dependency])
                 rows.append(['' if i > 0 else 'Dependencies:', dependency, parent_packages])
 
-            if len(dependencies) > 0:
+            if dependencies:
                 rows.append(['', '', ''])
 
             cpp_libraries = self.__collect_cpp_libraries(python_packages)
@@ -238,7 +236,7 @@ class Runnable(ABC):
                 parent_packages = self.__format_parent_packages(cpp_libraries[cpp_library])
                 rows.append(['' if i > 0 else 'Shared libraries:', cpp_library, parent_packages])
 
-            if len(cpp_libraries) > 0:
+            if cpp_libraries:
                 rows.append(['', '', ''])
 
             build_options = self.__collect_build_options(python_packages)
@@ -247,7 +245,7 @@ class Runnable(ABC):
                 parent_libraries = self.__format_parent_packages(build_options[build_option])
                 rows.append(['' if i > 0 else 'Build options:', build_option, parent_libraries])
 
-            if len(build_options) > 0:
+            if build_options:
                 rows.append(['', '', ''])
 
             hardware_resources = self.__collect_hardware_resources(python_packages)
@@ -256,18 +254,18 @@ class Runnable(ABC):
                 for j, info in enumerate(sorted(hardware_resources[hardware_resource])):
                     rows.append(['' if i > 0 else 'Hardware resources:', '' if j > 0 else hardware_resource, info])
 
-            return format_table(rows) if len(rows) > 0 else ''
+            return tabulate(rows, tablefmt='plain') if rows else ''
 
         def __str__(self) -> str:
             result = self.name + ' ' + self.version
             formatted_copyright = self.__format_copyright()
 
-            if len(formatted_copyright) > 0:
+            if formatted_copyright:
                 result += '\n\n' + formatted_copyright
 
             formatted_package_info = self.__format_package_info()
 
-            if len(formatted_package_info) > 0:
+            if formatted_package_info:
                 result += '\n\n' + formatted_package_info
 
             return result
@@ -279,7 +277,7 @@ class Runnable(ABC):
 
         :return: A string that provides information about the program's version
         """
-        if program_info is not None:
+        if program_info:
             return str(program_info)
 
         raise RuntimeError('No information about the program version is available')
@@ -311,7 +309,7 @@ class Runnable(ABC):
         # pylint: disable=assignment-from-none
         program_info = self.get_program_info()
 
-        if program_info is not None:
+        if program_info:
             parser.add_argument('-v',
                                 '--version',
                                 action='version',
@@ -352,7 +350,7 @@ class LearnerRunnable(Runnable, ABC):
     algorithm.
     """
 
-    class ClearOutputDirHook(Experiment.ExecutionHook):
+    class ClearOutputDirectoryListener(Experiment.Listener):
         """
         Deletes all files from the output directory before an experiment starts.
         """
@@ -363,11 +361,17 @@ class LearnerRunnable(Runnable, ABC):
             """
             self.output_dir = output_dir
 
-        def execute(self):
+        def before_start(self, _: Experiment):
             """
-            See :func:`mlrl.testbed.experiments.Experiment.ExecutionHook.execute`
+            See :func:`mlrl.testbed.experiments.Experiment.Listener.before_start`
             """
-            clear_directory(self.output_dir)
+            output_dir = self.output_dir
+
+            for file in listdir(output_dir):
+                file_path = path.join(output_dir, file)
+
+                if path.isfile(file_path):
+                    unlink(file_path)
 
     PARAM_PROBLEM_TYPE = '--problem-type'
 
@@ -395,15 +399,22 @@ class LearnerRunnable(Runnable, ABC):
 
     PRINT_EVALUATION_VALUES: Dict[str, Set[str]] = {
         BooleanOption.TRUE.value: {
-            OPTION_ENABLE_ALL, OPTION_HAMMING_LOSS, OPTION_HAMMING_ACCURACY, OPTION_SUBSET_ZERO_ONE_LOSS,
-            OPTION_SUBSET_ACCURACY, OPTION_MICRO_PRECISION, OPTION_MICRO_RECALL, OPTION_MICRO_F1, OPTION_MICRO_JACCARD,
-            OPTION_MACRO_PRECISION, OPTION_MACRO_RECALL, OPTION_MACRO_F1, OPTION_MACRO_JACCARD,
-            OPTION_EXAMPLE_WISE_PRECISION, OPTION_EXAMPLE_WISE_RECALL, OPTION_EXAMPLE_WISE_F1,
-            OPTION_EXAMPLE_WISE_JACCARD, OPTION_ACCURACY, OPTION_ZERO_ONE_LOSS, OPTION_PRECISION, OPTION_RECALL,
-            OPTION_F1, OPTION_JACCARD, OPTION_MEAN_ABSOLUTE_ERROR, OPTION_MEAN_SQUARED_ERROR,
-            OPTION_MEDIAN_ABSOLUTE_ERROR, OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR, OPTION_RANK_LOSS,
-            OPTION_COVERAGE_ERROR, OPTION_LABEL_RANKING_AVERAGE_PRECISION, OPTION_DISCOUNTED_CUMULATIVE_GAIN,
-            OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, OPTION_DECIMALS, OPTION_PERCENTAGE
+            EvaluationResult.OPTION_ENABLE_ALL, EvaluationResult.OPTION_HAMMING_LOSS,
+            EvaluationResult.OPTION_HAMMING_ACCURACY, EvaluationResult.OPTION_SUBSET_ZERO_ONE_LOSS,
+            EvaluationResult.OPTION_SUBSET_ACCURACY, EvaluationResult.OPTION_MICRO_PRECISION,
+            EvaluationResult.OPTION_MICRO_RECALL, EvaluationResult.OPTION_MICRO_F1,
+            EvaluationResult.OPTION_MICRO_JACCARD, EvaluationResult.OPTION_MACRO_PRECISION,
+            EvaluationResult.OPTION_MACRO_RECALL, EvaluationResult.OPTION_MACRO_F1,
+            EvaluationResult.OPTION_MACRO_JACCARD, EvaluationResult.OPTION_EXAMPLE_WISE_PRECISION,
+            EvaluationResult.OPTION_EXAMPLE_WISE_RECALL, EvaluationResult.OPTION_EXAMPLE_WISE_F1,
+            EvaluationResult.OPTION_EXAMPLE_WISE_JACCARD, EvaluationResult.OPTION_ACCURACY,
+            EvaluationResult.OPTION_ZERO_ONE_LOSS, EvaluationResult.OPTION_PRECISION, EvaluationResult.OPTION_RECALL,
+            EvaluationResult.OPTION_F1, EvaluationResult.OPTION_JACCARD, EvaluationResult.OPTION_MEAN_ABSOLUTE_ERROR,
+            EvaluationResult.OPTION_MEAN_SQUARED_ERROR, EvaluationResult.OPTION_MEDIAN_ABSOLUTE_ERROR,
+            EvaluationResult.OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR, EvaluationResult.OPTION_RANK_LOSS,
+            EvaluationResult.OPTION_COVERAGE_ERROR, EvaluationResult.OPTION_LABEL_RANKING_AVERAGE_PRECISION,
+            EvaluationResult.OPTION_DISCOUNTED_CUMULATIVE_GAIN,
+            EvaluationResult.OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, OPTION_DECIMALS, OPTION_PERCENTAGE
         },
         BooleanOption.FALSE.value: {}
     }
@@ -412,16 +423,23 @@ class LearnerRunnable(Runnable, ABC):
 
     STORE_EVALUATION_VALUES: Dict[str, Set[str]] = {
         BooleanOption.TRUE.value: {
-            OPTION_ENABLE_ALL, OPTION_HAMMING_LOSS, OPTION_HAMMING_ACCURACY, OPTION_SUBSET_ZERO_ONE_LOSS,
-            OPTION_SUBSET_ACCURACY, OPTION_MICRO_PRECISION, OPTION_MICRO_RECALL, OPTION_MICRO_F1, OPTION_MICRO_JACCARD,
-            OPTION_MACRO_PRECISION, OPTION_MACRO_RECALL, OPTION_MACRO_F1, OPTION_MACRO_JACCARD,
-            OPTION_EXAMPLE_WISE_PRECISION, OPTION_EXAMPLE_WISE_RECALL, OPTION_EXAMPLE_WISE_F1,
-            OPTION_EXAMPLE_WISE_JACCARD, OPTION_ACCURACY, OPTION_ZERO_ONE_LOSS, OPTION_PRECISION, OPTION_RECALL,
-            OPTION_F1, OPTION_JACCARD, OPTION_MEAN_ABSOLUTE_ERROR, OPTION_MEAN_SQUARED_ERROR,
-            OPTION_MEDIAN_ABSOLUTE_ERROR, OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR, OPTION_RANK_LOSS,
-            OPTION_COVERAGE_ERROR, OPTION_LABEL_RANKING_AVERAGE_PRECISION, OPTION_DISCOUNTED_CUMULATIVE_GAIN,
-            OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, OPTION_TRAINING_TIME, OPTION_PREDICTION_TIME, OPTION_DECIMALS,
-            OPTION_PERCENTAGE
+            EvaluationResult.OPTION_ENABLE_ALL, EvaluationResult.OPTION_HAMMING_LOSS,
+            EvaluationResult.OPTION_HAMMING_ACCURACY, EvaluationResult.OPTION_SUBSET_ZERO_ONE_LOSS,
+            EvaluationResult.OPTION_SUBSET_ACCURACY, EvaluationResult.OPTION_MICRO_PRECISION,
+            EvaluationResult.OPTION_MICRO_RECALL, EvaluationResult.OPTION_MICRO_F1,
+            EvaluationResult.OPTION_MICRO_JACCARD, EvaluationResult.OPTION_MACRO_PRECISION,
+            EvaluationResult.OPTION_MACRO_RECALL, EvaluationResult.OPTION_MACRO_F1,
+            EvaluationResult.OPTION_MACRO_JACCARD, EvaluationResult.OPTION_EXAMPLE_WISE_PRECISION,
+            EvaluationResult.OPTION_EXAMPLE_WISE_RECALL, EvaluationResult.OPTION_EXAMPLE_WISE_F1,
+            EvaluationResult.OPTION_EXAMPLE_WISE_JACCARD, EvaluationResult.OPTION_ACCURACY,
+            EvaluationResult.OPTION_ZERO_ONE_LOSS, EvaluationResult.OPTION_PRECISION, EvaluationResult.OPTION_RECALL,
+            EvaluationResult.OPTION_F1, EvaluationResult.OPTION_JACCARD, EvaluationResult.OPTION_MEAN_ABSOLUTE_ERROR,
+            EvaluationResult.OPTION_MEAN_SQUARED_ERROR, EvaluationResult.OPTION_MEDIAN_ABSOLUTE_ERROR,
+            EvaluationResult.OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR, EvaluationResult.OPTION_RANK_LOSS,
+            EvaluationResult.OPTION_COVERAGE_ERROR, EvaluationResult.OPTION_LABEL_RANKING_AVERAGE_PRECISION,
+            EvaluationResult.OPTION_DISCOUNTED_CUMULATIVE_GAIN,
+            EvaluationResult.OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, EvaluationResult.OPTION_TRAINING_TIME,
+            EvaluationResult.OPTION_PREDICTION_TIME, OPTION_DECIMALS, OPTION_PERCENTAGE
         },
         BooleanOption.FALSE.value: {}
     }
@@ -437,12 +455,25 @@ class LearnerRunnable(Runnable, ABC):
 
     STORE_PREDICTIONS_VALUES = PRINT_PREDICTIONS_VALUES
 
+    PARAM_PRINT_GROUND_TRUTH = '--print-ground-truth'
+
+    PRINT_GROUND_TRUTH_VALUES: Dict[str, Set[str]] = {
+        BooleanOption.TRUE.value: {OPTION_DECIMALS},
+        BooleanOption.FALSE.value: {}
+    }
+
+    PARAM_STORE_GROUND_TRUTH = '--store-ground-truth'
+
+    STORE_GROUND_TRUTH_VALUES = PRINT_GROUND_TRUTH_VALUES
+
     PARAM_PRINT_PREDICTION_CHARACTERISTICS = '--print-prediction-characteristics'
 
     PRINT_PREDICTION_CHARACTERISTICS_VALUES: Dict[str, Set[str]] = {
         BooleanOption.TRUE.value: {
-            OPTION_OUTPUTS, OPTION_OUTPUT_DENSITY, OPTION_OUTPUT_SPARSITY, OPTION_LABEL_IMBALANCE_RATIO,
-            OPTION_LABEL_CARDINALITY, OPTION_DISTINCT_LABEL_VECTORS, OPTION_DECIMALS, OPTION_PERCENTAGE
+            OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,
+            OutputCharacteristics.OPTION_OUTPUT_SPARSITY, OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
+            OutputCharacteristics.OPTION_LABEL_CARDINALITY, OutputCharacteristics.OPTION_DISTINCT_LABEL_VECTORS,
+            OPTION_DECIMALS, OPTION_PERCENTAGE
         },
         BooleanOption.FALSE.value: {}
     }
@@ -455,10 +486,13 @@ class LearnerRunnable(Runnable, ABC):
 
     PRINT_DATA_CHARACTERISTICS_VALUES: Dict[str, Set[str]] = {
         BooleanOption.TRUE.value: {
-            OPTION_EXAMPLES, OPTION_FEATURES, OPTION_NUMERICAL_FEATURES, OPTION_NOMINAL_FEATURES,
-            OPTION_FEATURE_DENSITY, OPTION_FEATURE_SPARSITY, OPTION_OUTPUTS, OPTION_OUTPUT_DENSITY,
-            OPTION_OUTPUT_SPARSITY, OPTION_LABEL_IMBALANCE_RATIO, OPTION_LABEL_CARDINALITY,
-            OPTION_DISTINCT_LABEL_VECTORS, OPTION_DECIMALS, OPTION_PERCENTAGE
+            DataCharacteristics.OPTION_EXAMPLES, DataCharacteristics.OPTION_FEATURES,
+            DataCharacteristics.OPTION_NUMERICAL_FEATURES, DataCharacteristics.OPTION_NOMINAL_FEATURES,
+            DataCharacteristics.OPTION_FEATURE_DENSITY, DataCharacteristics.OPTION_FEATURE_SPARSITY,
+            OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,
+            OutputCharacteristics.OPTION_OUTPUT_SPARSITY, OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
+            OutputCharacteristics.OPTION_LABEL_CARDINALITY, OutputCharacteristics.OPTION_DISTINCT_LABEL_VECTORS,
+            OPTION_DECIMALS, OPTION_PERCENTAGE
         },
         BooleanOption.FALSE.value: {}
     }
@@ -470,7 +504,7 @@ class LearnerRunnable(Runnable, ABC):
     PARAM_PRINT_LABEL_VECTORS = '--print-label-vectors'
 
     PRINT_LABEL_VECTORS_VALUES: Dict[str, Set[str]] = {
-        BooleanOption.TRUE.value: {OPTION_SPARSE},
+        BooleanOption.TRUE.value: {LabelVectors.OPTION_SPARSE},
         BooleanOption.FALSE.value: {}
     }
 
@@ -500,7 +534,7 @@ class LearnerRunnable(Runnable, ABC):
         else:
             base_learner = None
 
-        if base_learner is not None:
+        if base_learner:
             return base_learner
         raise RuntimeError('The machine learning algorithm "' + self.learner_name + '" does not support '
                            + problem_type.value + ' problems')
@@ -508,10 +542,20 @@ class LearnerRunnable(Runnable, ABC):
     def __create_prediction_type(self, args) -> PredictionType:
         return PredictionType.parse(self.PARAM_PREDICTION_TYPE, args.prediction_type)
 
-    def __create_data_splitter(self, args) -> DataSplitter:
-        data_set = DataSet(data_dir=args.data_dir,
-                           data_set_name=args.dataset,
-                           use_one_hot_encoding=args.one_hot_encoding)
+    @staticmethod
+    def __create_preprocessors(args) -> List[Preprocessor]:
+        preprocessors = []
+
+        if args.one_hot_encoding:
+            preprocessors.append(OneHotEncoder())
+
+        return preprocessors
+
+    def __create_dataset_splitter(self, args) -> DatasetSplitter:
+        dataset = InputDataset(dataset_name=args.dataset)
+        source = ArffFileSource(directory=args.data_dir)
+        dataset_reader = DatasetReader(source=source, input_data=dataset)
+        dataset_reader.add_preprocessors(*self.__create_preprocessors(args))
         value, options = parse_param_and_options(self.PARAM_DATA_SPLIT, args.data_split, self.DATA_SPLIT_VALUES)
 
         if value == self.DATA_SPLIT_CROSS_VALIDATION:
@@ -523,7 +567,7 @@ class LearnerRunnable(Runnable, ABC):
                 assert_less_or_equal(self.OPTION_CURRENT_FOLD, current_fold, num_folds)
             random_state = int(args.random_state) if args.random_state else 1
             assert_greater_or_equal(self.PARAM_RANDOM_STATE, random_state, 1)
-            return CrossValidationSplitter(data_set,
+            return CrossValidationSplitter(dataset_reader,
                                            num_folds=num_folds,
                                            current_fold=current_fold - 1,
                                            random_state=random_state)
@@ -533,15 +577,22 @@ class LearnerRunnable(Runnable, ABC):
             assert_less(self.OPTION_TEST_SIZE, test_size, 1)
             random_state = int(args.random_state) if args.random_state else 1
             assert_greater_or_equal(self.PARAM_RANDOM_STATE, random_state, 1)
-            return TrainTestSplitter(data_set, test_size=test_size, random_state=random_state)
+            return BipartitionSplitter(dataset_reader, test_size=test_size, random_state=random_state)
 
-        return NoSplitter(data_set)
+        return NoSplitter(dataset_reader)
 
     @staticmethod
-    def __create_pre_execution_hook(args, data_splitter: DataSplitter) -> Optional[Experiment.ExecutionHook]:
-        current_fold = data_splitter.current_fold if isinstance(data_splitter, CrossValidationSplitter) else -1
-        return None if args.output_dir is None or current_fold >= 0 else LearnerRunnable.ClearOutputDirHook(
-            output_dir=args.output_dir)
+    def __create_clear_output_directory_listener(args,
+                                                 dataset_splitter: DatasetSplitter) -> Optional[Experiment.Listener]:
+        output_dir = args.output_dir
+
+        if output_dir:
+            is_subset = dataset_splitter.folding_strategy.is_subset
+
+            if not is_subset:
+                return LearnerRunnable.ClearOutputDirectoryListener(output_dir)
+
+        return None
 
     def configure_arguments(self, parser: ArgumentParser):
         super().configure_arguments(parser)
@@ -643,8 +694,17 @@ class LearnerRunnable(Runnable, ABC):
                             default=False,
                             help='Whether one-hot-encoding should be used to encode nominal features or not. Must be '
                             + 'one of ' + format_enum_values(BooleanOption) + '.')
-        parser.add_argument('--model-dir', type=str, help='The path to the directory where models should be stored.')
-        parser.add_argument('--parameter-dir',
+        parser.add_argument('--model-load-dir',
+                            type=str,
+                            help='The path to the directory from which models should be loaded.')
+        parser.add_argument('--model-save-dir',
+                            type=str,
+                            help='The path to the directory to which models should be saved.')
+        parser.add_argument('--parameter-load-dir',
+                            type=str,
+                            help='The path to the directory from which parameter to be used by the algorith should be '
+                            + 'loaded.')
+        parser.add_argument('--parameter-save-dir',
                             type=str,
                             help='The path to the directory where configuration files, which specify the parameters to '
                             + 'be used by the algorithm, are located.')
@@ -656,12 +716,6 @@ class LearnerRunnable(Runnable, ABC):
                             default=False,
                             help='Whether the parameter setting should be printed on the console or not. Must be one '
                             + 'of ' + format_enum_values(BooleanOption) + '.')
-        parser.add_argument('--store-parameters',
-                            type=BooleanOption.parse,
-                            default=False,
-                            help='Whether the parameter setting should be written into output files or not. Must be '
-                            + 'one of ' + format_enum_values(BooleanOption) + '. Does only have an effect, if the '
-                            + 'parameter ' + self.PARAM_OUTPUT_DIR + ' is specified.')
         parser.add_argument(self.PARAM_PRINT_PREDICTIONS,
                             type=str,
                             default=BooleanOption.FALSE.value,
@@ -675,6 +729,19 @@ class LearnerRunnable(Runnable, ABC):
                             + format_dict_keys(self.STORE_PREDICTIONS_VALUES) + '. Does only have an effect, if the '
                             + 'parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to '
                             + 'the documentation.')
+        parser.add_argument(self.PARAM_PRINT_GROUND_TRUTH,
+                            type=str,
+                            default=BooleanOption.FALSE.value,
+                            help='Whether the ground truth should be printed on the console or not. Must be one of '
+                            + format_dict_keys(self.PRINT_GROUND_TRUTH_VALUES) + '. For additional options refer '
+                            + 'to the documentation.')
+        parser.add_argument(self.PARAM_STORE_GROUND_TRUTH,
+                            type=str,
+                            default=BooleanOption.FALSE.value,
+                            help='Whether the ground truth should be written into output files or not. Must be one of '
+                            + format_dict_keys(self.STORE_GROUND_TRUTH_VALUES) + '. Does only have an effect, if '
+                            + 'the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options '
+                            + 'refer to the documentation.')
         parser.add_argument(self.PARAM_PREDICTION_TYPE,
                             type=str,
                             default=PredictionType.BINARY.value,
@@ -685,190 +752,124 @@ class LearnerRunnable(Runnable, ABC):
         problem_type = self.__create_problem_type(args)
         base_learner = self.__create_base_learner(problem_type, args)
         prediction_type = self.__create_prediction_type(args)
-        train_evaluation = self._create_train_evaluation(args, problem_type, prediction_type)
-        test_evaluation = self._create_test_evaluation(args, problem_type, prediction_type)
-        data_splitter = self.__create_data_splitter(args)
-        pre_execution_hook = self.__create_pre_execution_hook(args, data_splitter)
-        pre_training_output_writers = self._create_pre_training_output_writers(args)
-        post_training_output_writers = self._create_post_training_output_writers(args)
-        parameter_input = self._create_parameter_input(args)
-        persistence = self._create_persistence(args)
+        dataset_splitter = self.__create_dataset_splitter(args)
+        prediction_output_writers = self._create_prediction_output_writers(args, problem_type, prediction_type)
+        predictor_factory = self._create_predictor_factory(args, prediction_type)
         experiment = self._create_experiment(args,
                                              problem_type=problem_type,
                                              base_learner=base_learner,
                                              learner_name=self.learner_name,
-                                             data_splitter=data_splitter,
-                                             train_evaluation=train_evaluation,
-                                             test_evaluation=test_evaluation,
-                                             pre_training_output_writers=pre_training_output_writers,
-                                             post_training_output_writers=post_training_output_writers,
-                                             pre_execution_hook=pre_execution_hook,
-                                             parameter_input=parameter_input,
-                                             persistence=persistence)
-        experiment.run()
+                                             dataset_splitter=dataset_splitter,
+                                             predictor_factory=predictor_factory)
+        experiment.add_listeners(*filter(lambda listener: listener is not None, [
+            self.__create_clear_output_directory_listener(args, dataset_splitter),
+        ]))
+        experiment.add_input_readers(*filter(lambda listener: listener is not None, [
+            self._create_model_reader(args),
+            self._create_parameter_reader(args),
+        ]))
+        experiment.add_pre_training_output_writers(*filter(lambda listener: listener is not None, [
+            self._create_data_characteristics_writer(args),
+            self._create_parameter_writer(args),
+        ]))
+        experiment.add_post_training_output_writers(*filter(lambda listener: listener is not None, [
+            self._create_model_writer(args),
+            self._create_label_vector_writer(args),
+        ]))
+        experiment.add_prediction_output_writers(*prediction_output_writers)
+        experiment.run(predict_for_training_dataset=prediction_output_writers and args.evaluate_training_data,
+                       predict_for_test_dataset=prediction_output_writers)
 
     # pylint: disable=unused-argument
     def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
-                           data_splitter: DataSplitter, pre_training_output_writers: List[OutputWriter],
-                           post_training_output_writers: List[OutputWriter],
-                           pre_execution_hook: Optional[Experiment.ExecutionHook],
-                           train_evaluation: Optional[Evaluation], test_evaluation: Optional[Evaluation],
-                           parameter_input: Optional[ParameterInput],
-                           persistence: Optional[ModelPersistence]) -> Experiment:
+                           dataset_splitter: DatasetSplitter,
+                           predictor_factory: SkLearnExperiment.PredictorFactory) -> Experiment:
         """
         May be overridden by subclasses in order to create the `Experiment` that should be run.
 
-        :param args:                            The command line arguments
-        :param problem_type:                    The type of the machine learning problem
-        :param base_learner:                    The machine learning algorithm to be used
-        :param learner_name:                    The name of machine learning algorithm
-        :param data_splitter:                   The method to be used for splitting the available data into training and
-                                                test sets
-        :param pre_training_output_writers:     A list that contains all output writers to be invoked before training
-        :param post_training_output_writers:    A list that contains all output writers to be invoked after training
-        :param pre_execution_hook:              An operation that should be executed before the experiment
-        :param train_evaluation:                The method to be used for evaluating the predictions for the training
-                                                data or None, if the predictions should not be evaluated
-        :param test_evaluation:                 The method to be used for evaluating the predictions for the test data
-                                                or None, if the predictions should not be evaluated
-        :param parameter_input:                 The input that should be used to read the parameter settings
-        :param persistence:                     The `ModelPersistence` that should be used for loading and saving models
-        :return:                                The `Experiment` that has been created
+        :param args:                The command line arguments
+        :param problem_type:        The type of the machine learning problem
+        :param base_learner:        The machine learning algorithm to be used
+        :param learner_name:        The name of machine learning algorithm
+        :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
+        :param predictor_factory:   A `SkLearnExperiment.PredictorFactory`
+        :return:                    The `Experiment` that has been created
         """
-        return Experiment(problem_type=problem_type,
-                          base_learner=base_learner,
-                          learner_name=learner_name,
-                          data_splitter=data_splitter,
-                          pre_training_output_writers=pre_training_output_writers,
-                          post_training_output_writers=post_training_output_writers,
-                          pre_execution_hook=pre_execution_hook,
-                          train_evaluation=train_evaluation,
-                          test_evaluation=test_evaluation,
-                          parameter_input=parameter_input,
-                          persistence=persistence)
+        return SkLearnExperiment(problem_type=problem_type,
+                                 base_learner=base_learner,
+                                 learner_name=learner_name,
+                                 dataset_splitter=dataset_splitter,
+                                 predictor_factory=predictor_factory)
 
-    def _create_pre_training_output_writers(self, args) -> List[OutputWriter]:
-        """
-        May be overridden by subclasses in order to create the `OutputWriter`s that should be invoked before training a
-        model.
-
-        :param args:    The command line arguments
-        :return:        A list that contains the `OutputWriter`s that have been created
-        """
-        output_writers = []
-        output_writer = self._create_data_characteristics_writer(args)
-
-        if output_writer is not None:
-            output_writers.append(output_writer)
-
-        output_writer = self._create_parameter_writer(args)
-
-        if output_writer is not None:
-            output_writers.append(output_writer)
-
-        return output_writers
-
-    def _create_post_training_output_writers(self, args) -> List[OutputWriter]:
-        """
-        May be overridden by subclasses in order to create the `OutputWriter`s that should be invoked after training a
-        model.
-
-        :param args:    The command line arguments
-        :return:        A list that contains the `OutputWriters`s that have been created
-        """
-        output_writers = []
-        output_writer = self._create_label_vector_writer(args)
-
-        if output_writer is not None:
-            output_writers.append(output_writer)
-
-        return output_writers
-
-    def _create_evaluation_output_writers(self, args, problem_type: ProblemType,
+    def _create_prediction_output_writers(self, args, problem_type: ProblemType,
                                           prediction_type: PredictionType) -> List[OutputWriter]:
         """
-        May be overridden by subclasses in order to create the `OutputWriter`s that should be invoked after evaluating a
-        model.
+        May be overridden by subclasses in order to create the output writers that should be invoked each time
+        predictions have been obtained from a model.
 
         :param args:            The command line arguments
         :param problem_type:    The type of the machine learning problem
-        :param prediction_type: The type of the predictions
-        :return:                A list that contains the `OutputWriter`s that have been created
+        :param prediction_type: The type of the predictions that should be obtained
+        :return:                A list that contains the output writers that have been created
         """
         output_writers = []
         output_writer = self._create_evaluation_writer(args, problem_type, prediction_type)
 
-        if output_writer is not None:
+        if output_writer:
             output_writers.append(output_writer)
 
         output_writer = self._create_prediction_writer(args)
 
-        if output_writer is not None:
+        if output_writer:
+            output_writers.append(output_writer)
+
+        output_writer = self._create_ground_truth_writer(args)
+
+        if output_writer:
             output_writers.append(output_writer)
 
         output_writer = self._create_prediction_characteristics_writer(args)
 
-        if output_writer is not None:
+        if output_writer:
             output_writers.append(output_writer)
 
         return output_writers
 
-    def _create_persistence(self, args) -> Optional[ModelPersistence]:
+    def _create_model_reader(self, args) -> Optional[ModelReader]:
         """
-        May be overridden by subclasses in order to create the `ModelPersistence` that should be used to save and load
-        models.
+        May be overridden by subclasses in order to create the `ModelReader` that should be used for loading models.
 
         :param args:    The command line arguments
-        :return:        The `ModelPersistence` that has been created
+        :return:        The `ModelReader` that has been created
         """
-        return None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
+        model_load_dir = args.model_load_dir
+        return ModelReader(PickleFileSource(model_load_dir)) if model_load_dir else None
 
-    def _create_train_evaluation(self, args, problem_type: ProblemType,
-                                 prediction_type: PredictionType) -> Optional[Evaluation]:
+    def _create_model_writer(self, args) -> Optional[ModelWriter]:
         """
-        May be overridden by subclasses in order to create the `Evaluation` that should be used for evaluating
-        predictions obtained from a previously trained model for the training data.
+        May be overridden by subclasses in order to create the `ModelWriter` that should be used for saving models.
 
-        :param args:            The command line arguments
-        :param problem_type:    The type of the machine learning problem
-        :param prediction_type: The type of the predictions to be obtained
-        :return:                The `Evaluation` that has been created
+        :param args:    The command line arguments
+        :return:        The `ModelWriter` that has been created
         """
-        if args.evaluate_training_data:
-            output_writers = self._create_evaluation_output_writers(args, problem_type, prediction_type)
-        else:
-            output_writers = []
-
-        return self._create_evaluation(args, prediction_type, output_writers)
-
-    def _create_test_evaluation(self, args, problem_type: ProblemType,
-                                prediction_type: PredictionType) -> Optional[Evaluation]:
-        """
-        May be overridden by subclasses in order to create the `Evaluation` that should be used for evaluating
-        predictions obtained from a previously trained model for the test data.
-
-        :param args:            The command line arguments
-        :param problem_type:    The type of the machine learning problem
-        :param prediction_type: The type of the predictions to be obtained
-        :return:                The `Evaluation` that has been created
-        """
-        output_writers = self._create_evaluation_output_writers(args, problem_type, prediction_type)
-        return self._create_evaluation(args, prediction_type, output_writers)
+        model_save_dir = args.model_save_dir
+        return ModelWriter().add_sinks(PickleFileSink(model_save_dir)) if model_save_dir else None
 
     # pylint: disable=unused-argument
-    def _create_evaluation(self, args, prediction_type: PredictionType,
-                           output_writers: List[OutputWriter]) -> Optional[Evaluation]:
+    def _create_predictor_factory(self, args, prediction_type: PredictionType) -> Predictor:
         """
-        May be overridden by subclasses in order to create the `Evaluation` that should be used for evaluating
-        predictions obtained from a previously trained model.
+        May be overridden by subclasses in order to create the `Predictor` that should be used for obtaining predictions
+        from a previously trained model.
 
         :param args:            The command line arguments
         :param prediction_type: The type of the predictions to be obtained
-        :param output_writers:  A list that contains all output writers to be invoked after predictions have been
-                                obtained
-        :return:                The `Evaluation` that has been created
+        :return:                The `Predictor` that has been created
         """
-        return GlobalEvaluation(prediction_type, output_writers) if len(output_writers) > 0 else None
+
+        def predictor_factory():
+            return GlobalPredictor(prediction_type)
+
+        return predictor_factory
 
     def _create_evaluation_writer(self, args, problem_type: ProblemType,
                                   prediction_type: PredictionType) -> Optional[OutputWriter]:
@@ -886,31 +887,36 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.PRINT_EVALUATION_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            sinks.append(EvaluationWriter.LogSink(options=options))
+            sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_EVALUATION, args.store_evaluation,
                                                  self.STORE_EVALUATION_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(EvaluationWriter.CsvSink(output_dir=args.output_dir, options=options))
+        if value == BooleanOption.TRUE.value and args.output_dir:
+            sinks.append(CsvFileSink(args.output_dir, options=options))
 
-        if len(sinks) == 0:
-            return None
-        if problem_type == ProblemType.REGRESSION:
-            return RegressionEvaluationWriter(sinks)
-        if prediction_type in {PredictionType.SCORES, PredictionType.PROBABILITIES}:
-            return RankingEvaluationWriter(sinks)
-        return BinaryEvaluationWriter(sinks)
+        if sinks:
+            if problem_type == ProblemType.REGRESSION:
+                extractor = RegressionEvaluationDataExtractor()
+            elif prediction_type in {PredictionType.SCORES, PredictionType.PROBABILITIES}:
+                extractor = RankingEvaluationDataExtractor()
+            else:
+                extractor = ClassificationEvaluationDataExtractor()
 
-    def _create_parameter_input(self, args) -> Optional[ParameterInput]:
+            return EvaluationWriter(extractor).add_sinks(*sinks)
+
+        return None
+
+    def _create_parameter_reader(self, args) -> Optional[ParameterReader]:
         """
-        May be overridden by subclasses in order to create the `ParameterInput` that should be used to load parameter
-        settings.
+        May be overridden by subclasses in order to create the `ParameterReader` that should be used for loading
+        parameter settings.
 
         :param args:    The command line arguments
-        :return:        The `ParameterInput` that has been created
+        :return:        The `ParameterReader` that has been created
         """
-        return None if args.parameter_dir is None else ParameterCsvInput(input_dir=args.parameter_dir)
+        parameter_load_dir = args.parameter_load_dir
+        return ParameterReader(CsvFileSource(parameter_load_dir)) if parameter_load_dir else None
 
     def _create_parameter_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -923,12 +929,12 @@ class LearnerRunnable(Runnable, ABC):
         sinks = []
 
         if args.print_parameters:
-            sinks.append(ParameterWriter.LogSink())
+            sinks.append(LogSink())
 
-        if args.store_parameters and args.parameter_dir is not None:
-            sinks.append(ParameterWriter.CsvSink(output_dir=args.parameter_dir))
+        if args.parameter_save_dir:
+            sinks.append(CsvFileSink(args.parameter_save_dir))
 
-        return ParameterWriter(sinks) if len(sinks) > 0 else None
+        return ParameterWriter().add_sinks(*sinks) if sinks else None
 
     def _create_prediction_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -942,15 +948,38 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.PRINT_PREDICTIONS_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            sinks.append(PredictionWriter.LogSink(options=options))
+            sinks.append(LogSink(options=options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_PREDICTIONS, args.store_predictions,
                                                  self.STORE_PREDICTIONS_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(PredictionWriter.ArffSink(output_dir=args.output_dir, options=options))
+        if value == BooleanOption.TRUE.value and args.output_dir:
+            sinks.append(ArffFileSink(args.output_dir, options=options))
 
-        return PredictionWriter(sinks) if len(sinks) > 0 else None
+        return PredictionWriter().add_sinks(*sinks) if sinks else None
+
+    def _create_ground_truth_writer(self, args) -> Optional[OutputWriter]:
+        """
+        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output the ground
+        truth.
+
+        :param args:    The command line arguments
+        :return:        The `OutputWriter` that has been created
+        """
+        sinks = []
+        value, options = parse_param_and_options(self.PARAM_PRINT_GROUND_TRUTH, args.print_ground_truth,
+                                                 self.PRINT_GROUND_TRUTH_VALUES)
+
+        if value == BooleanOption.TRUE.value:
+            sinks.append(LogSink(options=options))
+
+        value, options = parse_param_and_options(self.PARAM_STORE_GROUND_TRUTH, args.store_ground_truth,
+                                                 self.STORE_GROUND_TRUTH_VALUES)
+
+        if value == BooleanOption.TRUE.value and args.output_dir:
+            sinks.append(ArffFileSink(args.output_dir, options=options))
+
+        return GroundTruthWriter().add_sinks(*sinks) if sinks else None
 
     def _create_prediction_characteristics_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -966,16 +995,16 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.PRINT_PREDICTION_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            sinks.append(PredictionCharacteristicsWriter.LogSink(options=options))
+            sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_PREDICTION_CHARACTERISTICS,
                                                  args.store_prediction_characteristics,
                                                  self.STORE_PREDICTION_CHARACTERISTICS_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(PredictionCharacteristicsWriter.CsvSink(output_dir=args.output_dir, options=options))
+        if value == BooleanOption.TRUE.value and args.output_dir:
+            sinks.append(CsvFileSink(args.output_dir, options=options))
 
-        return PredictionCharacteristicsWriter(sinks) if len(sinks) > 0 else None
+        return PredictionCharacteristicsWriter().add_sinks(*sinks) if sinks else None
 
     def _create_data_characteristics_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -990,15 +1019,15 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.PRINT_DATA_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            sinks.append(DataCharacteristicsWriter.LogSink(options=options))
+            sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_DATA_CHARACTERISTICS, args.store_data_characteristics,
                                                  self.STORE_DATA_CHARACTERISTICS_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(DataCharacteristicsWriter.CsvSink(output_dir=args.output_dir, options=options))
+        if value == BooleanOption.TRUE.value and args.output_dir:
+            sinks.append(CsvFileSink(args.output_dir, options=options))
 
-        return DataCharacteristicsWriter(sinks) if len(sinks) > 0 else None
+        return DataCharacteristicsWriter().add_sinks(*sinks) if sinks else None
 
     def _create_label_vector_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -1013,15 +1042,15 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.PRINT_LABEL_VECTORS_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            sinks.append(LabelVectorWriter.LogSink(options=options))
+            sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_LABEL_VECTORS, args.store_label_vectors,
                                                  self.STORE_LABEL_VECTORS_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(LabelVectorWriter.CsvSink(output_dir=args.output_dir, options=options))
+        if value == BooleanOption.TRUE.value and args.output_dir:
+            sinks.append(CsvFileSink(args.output_dir, options=options))
 
-        return LabelVectorWriter(sinks) if len(sinks) > 0 else None
+        return LabelVectorWriter(LabelVectorSetExtractor()).add_sinks(*sinks) if sinks else None
 
     @abstractmethod
     def create_classifier(self, args) -> Optional[SkLearnClassifierMixin]:
@@ -1066,8 +1095,10 @@ class RuleLearnerRunnable(LearnerRunnable):
 
     PRINT_RULES_VALUES: Dict[str, Set[str]] = {
         BooleanOption.TRUE.value: {
-            OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_OUTPUT_NAMES, OPTION_PRINT_NOMINAL_VALUES, OPTION_PRINT_BODIES,
-            OPTION_PRINT_HEADS, OPTION_DECIMALS_BODY, OPTION_DECIMALS_HEAD
+            RuleModelAsText.OPTION_PRINT_FEATURE_NAMES, RuleModelAsText.OPTION_PRINT_OUTPUT_NAMES,
+            RuleModelAsText.OPTION_PRINT_NOMINAL_VALUES, RuleModelAsText.OPTION_PRINT_BODIES,
+            RuleModelAsText.OPTION_PRINT_HEADS, RuleModelAsText.OPTION_DECIMALS_BODY,
+            RuleModelAsText.OPTION_DECIMALS_HEAD
         },
         BooleanOption.FALSE.value: {}
     }
@@ -1138,10 +1169,26 @@ class RuleLearnerRunnable(LearnerRunnable):
             config_type = None
             parameters = None
 
-        if config_type is not None and parameters is not None:
+        if config_type and parameters:
             return config_type, parameters
         raise RuntimeError('The machine learning algorithm "' + self.learner_name + '" does not support '
                            + problem_type.value + ' problems')
+
+    @staticmethod
+    def __configure_argument_parser(parser: ArgumentParser, config_type: type, parameters: Set[Parameter]):
+        """
+        Configure an `ArgumentParser` by taking into account a given set of parameters.
+
+        :param parser:      The `ArgumentParser` to be configured
+        :param config_type: The type of the configuration that should support the parameters
+        :param parameters:  A set that contains the parameters to be taken into account
+        """
+        for parameter in parameters:
+            try:
+                parameter.add_to_argument_parser(parser, config_type)
+            except ArgumentError:
+                # Argument has already been added, that's okay
+                pass
 
     def configure_problem_specific_arguments(self, parser: ArgumentParser, problem_type: ProblemType):
         super().configure_problem_specific_arguments(parser, problem_type)
@@ -1223,29 +1270,26 @@ class RuleLearnerRunnable(LearnerRunnable):
                             help='The format to be used for the representation of predictions. Must be one of '
                             + format_enum_values(SparsePolicy) + '.')
         config_type, parameters = self.__create_config_type_and_parameters(problem_type)
-        configure_argument_parser(parser, config_type, parameters)
+        self.__configure_argument_parser(parser, config_type, parameters)
 
     def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
-                           data_splitter: DataSplitter, pre_training_output_writers: List[OutputWriter],
-                           post_training_output_writers: List[OutputWriter],
-                           pre_execution_hook: Optional[Experiment.ExecutionHook],
-                           train_evaluation: Optional[Evaluation], test_evaluation: Optional[Evaluation],
-                           parameter_input: Optional[ParameterInput],
-                           persistence: Optional[ModelPersistence]) -> Experiment:
-        kwargs = {KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
-        return Experiment(problem_type=problem_type,
-                          base_learner=base_learner,
-                          learner_name=learner_name,
-                          data_splitter=data_splitter,
-                          pre_training_output_writers=pre_training_output_writers,
-                          post_training_output_writers=post_training_output_writers,
-                          pre_execution_hook=pre_execution_hook,
-                          train_evaluation=train_evaluation,
-                          test_evaluation=test_evaluation,
-                          parameter_input=parameter_input,
-                          persistence=persistence,
-                          fit_kwargs=kwargs,
-                          predict_kwargs=kwargs)
+                           dataset_splitter: DatasetSplitter,
+                           predictor_factory: SkLearnExperiment.PredictorFactory) -> Experiment:
+        kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
+        experiment = SkLearnExperiment(problem_type=problem_type,
+                                       base_learner=base_learner,
+                                       learner_name=learner_name,
+                                       dataset_splitter=dataset_splitter,
+                                       predictor_factory=predictor_factory,
+                                       fit_kwargs=kwargs,
+                                       predict_kwargs=kwargs)
+        experiment.add_post_training_output_writers(*filter(lambda listener: listener is not None, [
+            self._create_model_as_text_writer(args),
+            self._create_model_characteristics_writer(args),
+            self._create_marginal_probability_calibration_model_writer(args),
+            self._create_joint_probability_calibration_model_writer(args),
+        ]))
+        return experiment
 
     def create_classifier(self, args) -> Optional[SkLearnClassifierMixin]:
         classifier_type = self.classifier_type
@@ -1265,14 +1309,21 @@ class RuleLearnerRunnable(LearnerRunnable):
 
     @staticmethod
     def __create_kwargs_from_parameters(parameters: Set[Parameter], args):
-        kwargs = create_kwargs_from_parameters(args, parameters)
-        kwargs['random_state'] = args.random_state
+        kwargs = {}
+        args_dict = vars(args)
+
+        for parameter in parameters:
+            parameter_name = parameter.name
+
+            if parameter_name in args_dict:
+                kwargs[parameter_name] = args_dict[parameter_name]
+
         kwargs['feature_format'] = args.feature_format
         kwargs['output_format'] = args.output_format
         kwargs['prediction_format'] = args.prediction_format
         return kwargs
 
-    def _create_model_writer(self, args) -> Optional[OutputWriter]:
+    def _create_model_as_text_writer(self, args) -> Optional[OutputWriter]:
         """
         May be overridden by subclasses in order to create the `OutputWriter` that should be used to output textual
         representations of models.
@@ -1284,14 +1335,14 @@ class RuleLearnerRunnable(LearnerRunnable):
         value, options = parse_param_and_options(self.PARAM_PRINT_RULES, args.print_rules, self.PRINT_RULES_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            sinks.append(ModelWriter.LogSink(options=options))
+            sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_RULES, args.store_rules, self.STORE_RULES_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(ModelWriter.TxtSink(output_dir=args.output_dir, options=options))
+        if value == BooleanOption.TRUE.value and args.output_dir:
+            sinks.append(TextFileSink(args.output_dir, options=options))
 
-        return RuleModelWriter(sinks) if len(sinks) > 0 else None
+        return ModelAsTextWriter(RuleModelAsTextExtractor()).add_sinks(*sinks) if sinks else None
 
     def _create_model_characteristics_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -1304,12 +1355,12 @@ class RuleLearnerRunnable(LearnerRunnable):
         sinks = []
 
         if args.print_model_characteristics:
-            sinks.append(ModelCharacteristicsWriter.LogSink())
+            sinks.append(LogSink())
 
-        if args.store_model_characteristics and args.output_dir is not None:
-            sinks.append(ModelCharacteristicsWriter.CsvSink(output_dir=args.output_dir))
+        if args.store_model_characteristics and args.output_dir:
+            sinks.append(CsvFileSink(args.output_dir))
 
-        return RuleModelCharacteristicsWriter(sinks) if len(sinks) > 0 else None
+        return ModelCharacteristicsWriter(RuleModelCharacteristicsExtractor()).add_sinks(*sinks) if sinks else None
 
     def _create_marginal_probability_calibration_model_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -1325,16 +1376,19 @@ class RuleLearnerRunnable(LearnerRunnable):
                                                  self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            sinks.append(MarginalProbabilityCalibrationModelWriter.LogSink(options=options))
+            sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL,
                                                  args.store_marginal_probability_calibration_model,
                                                  self.STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(MarginalProbabilityCalibrationModelWriter.CsvSink(output_dir=args.output_dir, options=options))
+        if value == BooleanOption.TRUE.value and args.output_dir:
+            sinks.append(CsvFileSink(args.output_dir, options=options))
 
-        return MarginalProbabilityCalibrationModelWriter(sinks) if len(sinks) > 0 else None
+        if sinks:
+            return ProbabilityCalibrationModelWriter(IsotonicMarginalProbabilityCalibrationModelExtractor()) \
+                .add_sinks(*sinks)
+        return None
 
     def _create_joint_probability_calibration_model_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -1350,19 +1404,21 @@ class RuleLearnerRunnable(LearnerRunnable):
                                                  self.PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            sinks.append(JointProbabilityCalibrationModelWriter.LogSink(options=options))
+            sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_JOINT_PROBABILITY_CALIBRATION_MODEL,
                                                  args.store_joint_probability_calibration_model,
                                                  self.STORE_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(JointProbabilityCalibrationModelWriter.CsvSink(output_dir=args.output_dir, options=options))
+        if value == BooleanOption.TRUE.value and args.output_dir:
+            sinks.append(CsvFileSink(args.output_dir, options=options))
 
-        return JointProbabilityCalibrationModelWriter(sinks) if len(sinks) > 0 else None
+        if sinks:
+            return ProbabilityCalibrationModelWriter(IsotonicJointProbabilityCalibrationModelExtractor()) \
+                .add_sinks(*sinks)
+        return None
 
-    def _create_evaluation(self, args, prediction_type: PredictionType,
-                           output_writers: List[OutputWriter]) -> Optional[Evaluation]:
+    def _create_predictor_factory(self, args, prediction_type: PredictionType) -> Predictor:
         value, options = parse_param_and_options(self.PARAM_INCREMENTAL_EVALUATION, args.incremental_evaluation,
                                                  self.INCREMENTAL_EVALUATION_VALUES)
 
@@ -1374,48 +1430,10 @@ class RuleLearnerRunnable(LearnerRunnable):
                 assert_greater(self.OPTION_MAX_SIZE, max_size, min_size)
             step_size = options.get_int(self.OPTION_STEP_SIZE, 1)
             assert_greater_or_equal(self.OPTION_STEP_SIZE, step_size, 1)
-            return IncrementalEvaluation(
-                prediction_type, output_writers, min_size=min_size, max_size=max_size,
-                step_size=step_size) if len(output_writers) > 0 else None
 
-        return super()._create_evaluation(args, prediction_type, output_writers)
+            def predictor_factory():
+                return IncrementalPredictor(prediction_type, min_size=min_size, max_size=max_size, step_size=step_size)
 
-    def _create_label_vector_writer(self, args) -> Optional[OutputWriter]:
-        sinks = []
-        value, options = parse_param_and_options(self.PARAM_PRINT_LABEL_VECTORS, args.print_label_vectors,
-                                                 self.PRINT_LABEL_VECTORS_VALUES)
+            return predictor_factory
 
-        if value == BooleanOption.TRUE.value:
-            sinks.append(LabelVectorSetWriter.LogSink(options=options))
-
-        value, options = parse_param_and_options(self.PARAM_STORE_LABEL_VECTORS, args.store_label_vectors,
-                                                 self.STORE_LABEL_VECTORS_VALUES)
-
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(LabelVectorSetWriter.CsvSink(output_dir=args.output_dir, options=options))
-
-        return LabelVectorSetWriter(sinks) if len(sinks) > 0 else None
-
-    def _create_post_training_output_writers(self, args) -> List[OutputWriter]:
-        output_writers = super()._create_post_training_output_writers(args)
-        output_writer = self._create_model_writer(args)
-
-        if output_writer is not None:
-            output_writers.append(output_writer)
-
-        output_writer = self._create_model_characteristics_writer(args)
-
-        if output_writer is not None:
-            output_writers.append(output_writer)
-
-        output_writer = self._create_marginal_probability_calibration_model_writer(args)
-
-        if output_writer is not None:
-            output_writers.append(output_writer)
-
-        output_writer = self._create_joint_probability_calibration_model_writer(args)
-
-        if output_writer is not None:
-            output_writers.append(output_writer)
-
-        return output_writers
+        return super()._create_predictor_factory(args, prediction_type)

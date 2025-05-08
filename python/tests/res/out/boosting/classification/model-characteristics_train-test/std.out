@@ -1,8 +1,8 @@
-testbed mlrl.boosting --log-level DEBUG --data-dir python/tests/res/data --dataset emotions --output-dir python/tests/res/tmp/results --print-evaluation false --store-evaluation false --print-model-characteristics true --store-model-characteristics true
+mlrl-testbed mlrl.boosting --log-level DEBUG --data-dir python/tests/res/data --dataset emotions --output-dir python/tests/res/tmp/results --print-evaluation false --store-evaluation false --print-model-characteristics true --store-model-characteristics true
 INFO Starting experiment using the classification algorithm "boomer"...
 INFO Using separate training and test sets...
+DEBUG Reading input data from file "python/tests/res/data/emotions.arff"...
 DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
-DEBUG Loading data set from file "python/tests/res/data/emotions.arff"...
 INFO Fitting model to 397 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
@@ -13,7 +13,7 @@ INFO Model characteristics:
 │ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
 ├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
 │ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-│ 999 local rules               │   10652 │                  55.80% │                 44.20% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 999 local rules               │   10652 │                  55.77% │                 44.23% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
 └───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
 
 ┌────────────────────────────────┬─────────┬────────────┬────────────┐
@@ -30,4 +30,5 @@ INFO Model characteristics:
 │ Predictions                 │         6 │      6    │         6 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/model_characteristics.csv"...
 INFO Successfully finished after <duration>

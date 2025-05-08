@@ -22,17 +22,20 @@ class ExampleWiseStratifiedBiPartitionSampling final : public IPartitionSampling
     public:
 
         /**
+         * @param rngPtr        An unique pointer to an object of type `RNG` that should be used for generating random
+         *                      numbers
          * @param labelMatrix   A reference to an object of template type `LabelMatrix` that provides random or row-wise
          *                      access to the labels of the training examples
          * @param numTraining   The number of examples to be included in the training set
          * @param numHoldout    The number of examples to be included in the holdout set
          */
-        ExampleWiseStratifiedBiPartitionSampling(const LabelMatrix& labelMatrix, uint32 numTraining, uint32 numHoldout)
+        ExampleWiseStratifiedBiPartitionSampling(std::unique_ptr<RNG> rngPtr, const LabelMatrix& labelMatrix,
+                                                 uint32 numTraining, uint32 numHoldout)
             : partition_(numTraining, numHoldout),
-              stratification_(labelMatrix, IndexIterator(), IndexIterator(labelMatrix.numRows)) {}
+              stratification_(std::move(rngPtr), labelMatrix, IndexIterator(), IndexIterator(labelMatrix.numRows)) {}
 
-        IPartition& partition(RNG& rng) override {
-            stratification_.sampleBiPartition(partition_, rng);
+        IPartition& partition() override {
+            stratification_.sampleBiPartition(partition_);
             return partition_;
         }
 };
@@ -45,35 +48,42 @@ class ExampleWiseStratifiedBiPartitionSampling final : public IPartitionSampling
 class ExampleWiseStratifiedBiPartitionSamplingFactory final : public IClassificationPartitionSamplingFactory {
     private:
 
+        const std::unique_ptr<RNGFactory> rngFactoryPtr_;
+
         const float32 holdoutSetSize_;
 
     public:
 
         /**
-         * @param holdoutSetSize The fraction of examples to be included in the holdout set (e.g. a value of 0.6
-         *                       corresponds to 60 % of the available examples). Must be in (0, 1)
+         * @param rngFactoryPtr     An unique pointer to an object of type `RNGFactory` that allows to create random
+         *                          number generators
+         * @param holdoutSetSize    The fraction of examples to be included in the holdout set (e.g. a value of 0.6
+         *                          corresponds to 60 % of the available examples). Must be in (0, 1)
          */
-        ExampleWiseStratifiedBiPartitionSamplingFactory(float32 holdoutSetSize) : holdoutSetSize_(holdoutSetSize) {}
+        ExampleWiseStratifiedBiPartitionSamplingFactory(std::unique_ptr<RNGFactory> rngFactoryPtr,
+                                                        float32 holdoutSetSize)
+            : rngFactoryPtr_(std::move(rngFactoryPtr)), holdoutSetSize_(holdoutSetSize) {}
 
         std::unique_ptr<IPartitionSampling> create(const CContiguousView<const uint8>& labelMatrix) const override {
             uint32 numExamples = labelMatrix.numRows;
             uint32 numHoldout = static_cast<uint32>(holdoutSetSize_ * numExamples);
             uint32 numTraining = numExamples - numHoldout;
             return std::make_unique<ExampleWiseStratifiedBiPartitionSampling<CContiguousView<const uint8>>>(
-              labelMatrix, numTraining, numHoldout);
+              rngFactoryPtr_->create(), labelMatrix, numTraining, numHoldout);
         }
 
         std::unique_ptr<IPartitionSampling> create(const BinaryCsrView& labelMatrix) const override {
             uint32 numExamples = labelMatrix.numRows;
             uint32 numHoldout = static_cast<uint32>(holdoutSetSize_ * numExamples);
             uint32 numTraining = numExamples - numHoldout;
-            return std::make_unique<ExampleWiseStratifiedBiPartitionSampling<BinaryCsrView>>(labelMatrix, numTraining,
-                                                                                             numHoldout);
+            return std::make_unique<ExampleWiseStratifiedBiPartitionSampling<BinaryCsrView>>(
+              rngFactoryPtr_->create(), labelMatrix, numTraining, numHoldout);
         }
 };
 
-ExampleWiseStratifiedBiPartitionSamplingConfig::ExampleWiseStratifiedBiPartitionSamplingConfig()
-    : holdoutSetSize_(0.33f) {}
+ExampleWiseStratifiedBiPartitionSamplingConfig::ExampleWiseStratifiedBiPartitionSamplingConfig(
+  ReadableProperty<RNGConfig> rngConfig)
+    : rngConfig_(rngConfig), holdoutSetSize_(0.33f) {}
 
 float32 ExampleWiseStratifiedBiPartitionSamplingConfig::getHoldoutSetSize() const {
     return holdoutSetSize_;
@@ -89,5 +99,6 @@ IExampleWiseStratifiedBiPartitionSamplingConfig& ExampleWiseStratifiedBiPartitio
 
 std::unique_ptr<IClassificationPartitionSamplingFactory>
   ExampleWiseStratifiedBiPartitionSamplingConfig::createClassificationPartitionSamplingFactory() const {
-    return std::make_unique<ExampleWiseStratifiedBiPartitionSamplingFactory>(holdoutSetSize_);
+    return std::make_unique<ExampleWiseStratifiedBiPartitionSamplingFactory>(rngConfig_.get().createRNGFactory(),
+                                                                             holdoutSetSize_);
 }

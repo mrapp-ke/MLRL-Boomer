@@ -18,7 +18,7 @@ By default, the predictive performance of all models trained during an experimen
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-evaluation true
@@ -27,7 +27,7 @@ By default, the predictive performance of all models trained during an experimen
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-evaluation true
@@ -38,7 +38,7 @@ Accordingly, the argument `--store-evaluation` allows to enable or disable savin
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
@@ -48,7 +48,7 @@ Accordingly, the argument `--store-evaluation` allows to enable or disable savin
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
@@ -62,8 +62,8 @@ The command line arguments ``--print-evaluation`` and ``--store-evaluation`` com
 
 The number of models evaluated during an experiment varies depending on the strategy used for splitting the available data into training and test sets. When using {ref}`train-test splits<train-test-split>`, only a single model is evaluated. The performance scores according to different metrics that assess the quality of the model's predictions are saved to a single output file. In addition, when {ref}`evaluating on the training data<evaluating-training-data>`, the performance scores for the model's predictions on the training set are also evaluated and written to a file. As shown below, the names of the output files specify whether predictions for the training or test set have been evaluated:
 
-- `evaluation_train_overall.csv`
-- `evaluation_test_overall.csv`
+- `evaluation_train.csv`
+- `evaluation_test.csv`
 
 When using a {ref}`cross validation<cross-validation>`, a model is trained and evaluated for each fold. Again, the names of the output files specify whether predictions for the training or test data have been evaluated:
 
@@ -82,55 +82,60 @@ When using a {ref}`cross validation<cross-validation>`, a model is trained and e
 
 ## Predictions
 
-In cases where the {ref}`evaluation results<output-evaluation-results>` obtained via the arguments `--print-evaluation` or `--store-evaluation` are not sufficient for a detailed analysis, it may be desired to directly inspect the predictions provided by the evaluated models. They can be printed on the console, together with the ground truth, by proving the argument `--print-predictions`:
+In cases where the {ref}`evaluation results<output-evaluation-results>` obtained via the arguments `--print-evaluation` or `--store-evaluation` are not sufficient for a detailed analysis, it may be desired to directly inspect the predictions provided by the evaluated models. They can be printed on the console by proving the argument `--print-predictions`. If the ground truth should also be printed, the argument `--print-ground-truth` must be provided as well:
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --print-predictions true
+       --print-predictions true \
+       --print-ground-truth true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --print-predictions true
+       --print-predictions true \
+       --print-ground-truth true
    ```
 ````
 
-Alternatively, the argument `--store-predictions` can be used to save the predictions, as well as the ground truth, to [ARFF](https://waikato.github.io/weka-wiki/formats_and_processing/arff_stable/) files:
+Alternatively, the argument `--store-predictions` and `--store-ground-truth` can be used to save a dataset with the predictions or the ground truth, respectively, to [ARFF](https://waikato.github.io/weka-wiki/formats_and_processing/arff_stable/) files:
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
-       --store-predictions true
+       --store-predictions true \
+       --store-ground-truth true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --print-prediction-characteristics true
+       --output-dir /path/to/results/ \
+       --store-predictions true \
+       --store-ground-truth true
    ```
 ````
 
 ```{tip}
-Depending on the {ref}`type of predictions<prediction-types>`, the machine learning models used in an experiment are supposed to provide, the predictions stored in the resulting output files are either binary values (if binary predictions are provided), or real values (if scores or probability estimates are provided). When working with real-valued predictions, the option ``decimals`` may be supplied to the arguments ``--print-predictions`` and ``--store-predictions`` to specify the number of decimals that should be included in the output (see {ref}`here<arguments-predictions>` for more information).
+Depending on the {ref}`type of predictions<prediction-types>`, the machine learning models used in an experiment are supposed to provide, the predictions stored in the resulting output files are either binary values (if binary predictions are provided), or real values (if scores or probability estimates are provided). When working with real-valued ground truth or predictions, the option ``decimals`` may be supplied to the arguments ``--print-predictions``, ``--store-predictions``, ``--print-ground-truth` and `--store-ground-truth` to specify the number of decimals that should be included in the output (see {ref}`here<arguments-predictions>` for more information).
 ```
 
 When using {ref}`train-test splits<train-test-split>`, a single model is trained and queried for predictions for the test set. These predictions are written into a single output file. When {ref}`evaluating on the training data<evaluating-training-data>`, predictions are also obtained for the training set and written into an additional output file. The names of the output files indicate whether the predictions have been obtained for the training or test set, respectively:
 
-- `predictions_train_overall.arff`
-- `predictions_test_overall.arff`
+- `predictions_train.arff`
+- `predictions_test.arff`
 
 When using a {ref}`cross validation<cross-validation>` for performance evaluation, a model is trained for each fold. Similar to before, the names of the output files indicate whether the predictions correspond to the training or test data:
 
@@ -153,7 +158,7 @@ By using the command line argument `--print-prediction-characteristics`, charact
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-prediction-characteristics true
@@ -162,11 +167,10 @@ By using the command line argument `--print-prediction-characteristics`, charact
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --output-dir /path/to/results/ \
-       --store-predictions true
+       --print-prediction-characteristics true
    ```
 ````
 
@@ -174,7 +178,7 @@ Alternatively, they statistics can be written into a [.csv](https://en.wikipedia
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
@@ -184,7 +188,7 @@ Alternatively, they statistics can be written into a [.csv](https://en.wikipedia
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
@@ -198,8 +202,8 @@ The output produced by the arguments ``--print-data-characteristics`` and ``--st
 
 The statistics obtained via the arguments given above correspond to the test data for which predictions are obtained from the model. Consequently, they depend on the strategy used for splitting a dataset into training and test sets. When using {ref}`train-test splits<train-test-split>`, predictions for a single test set are obtained and their characteristics are written into a file. In addition, statistics for the training data are written into an additional output file when {ref}`evaluating on the training data<evaluating-training-data>`:
 
-- `prediction_characteristics_train_overall.arff`
-- `prediction_characteristics_test_overall.arff`
+- `prediction_characteristics_train.csv`
+- `prediction_characteristics_test.csv`
 
 When using a {ref}`cross validation<cross-validation>`, the data is split into several parts of which each one is used once for prediction. Multiple output files are needed to save the statistics for different cross validation folds. For example, a 5-fold cross validation results in the following files:
 
@@ -228,7 +232,7 @@ To obtain insightful statistics regarding the characteristics of a data set, the
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-data-characteristics true
@@ -237,7 +241,7 @@ To obtain insightful statistics regarding the characteristics of a data set, the
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-data-characteristics true
@@ -248,7 +252,7 @@ If you prefer to write the statistics into a [.csv](https://en.wikipedia.org/wik
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting --data-dir /path/to/datasets/ \
+   mlrl-testbed mlrl.boosting --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
        --store-data-characteristics true
@@ -257,7 +261,7 @@ If you prefer to write the statistics into a [.csv](https://en.wikipedia.org/wik
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
@@ -271,7 +275,7 @@ As shown {ref}`here<arguments-data-characteristics>`, the arguments ``--print-da
 
 The statistics provided by the previous commands are obtained on the training data and therefore depend on the strategy used for splitting a dataset into training and test sets. If {ref}`train-test splits<train-test-split>` are used, a single training set is used and its characteristics are saved to a file:
 
-- `data_characteristics_overall.csv`
+- `data_characteristics.csv`
 
 In contrast, when using a {ref}`cross validation<cross-validation>`, the data is split into several parts of which each one is used once for training. As a result, multiple output files are created in a such a scenario. For example, a 5-fold cross validation results in the following files:
 
@@ -305,7 +309,7 @@ We refer to the unique labels combinations present for different examples in a c
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting --data-dir /path/to/datasets/ \
+   mlrl-testbed mlrl.boosting --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-label-vectors true
    ```
@@ -313,7 +317,7 @@ We refer to the unique labels combinations present for different examples in a c
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-label-vectors true
@@ -324,7 +328,7 @@ If you prefer writing the label vectors into an output file, the argument `--sto
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --store-label-vectors true
@@ -333,7 +337,7 @@ If you prefer writing the label vectors into an output file, the argument `--sto
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --store-label-vectors true
@@ -342,7 +346,7 @@ If you prefer writing the label vectors into an output file, the argument `--sto
 
 When using {ref}`train-test splits<train-test-split>` for splitting the available data into distinct training and test sets, a single output file is created. It stores the label vectors present in the training data:
 
-- `label_vectors_overall.csv`
+- `label_vectors.csv`
 
 When using a {ref}`cross validation<cross-validation>`, several models are trained on different parts of the dataset. The label vectors present in each of these training sets are written into separate output files. For example, the following files result from a 5-fold cross validation:
 
@@ -372,7 +376,7 @@ To obtain a quick overview of some statistics that characterize a rule-based mod
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-model-characteristics true
@@ -381,7 +385,7 @@ To obtain a quick overview of some statistics that characterize a rule-based mod
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-model-characteristics true
@@ -392,7 +396,7 @@ The above command results in a tabular representation of the characteristics bei
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
@@ -402,7 +406,7 @@ The above command results in a tabular representation of the characteristics bei
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
@@ -412,7 +416,7 @@ The above command results in a tabular representation of the characteristics bei
 
 Model characteristics are obtained for each model training during an experiment. This means that a single output file is created when using on {ref}`train-test splits<train-test-split>`:
 
-- `model_characteristics_overall.csv`
+- `model_characteristics.csv`
 
 When using a {ref}`cross validation<cross-validation>`, several models are trained on different parts of the available data, resulting in multiple output files being saved to the output directory. For example, the following files are created when conducting a 5-fold cross validation:
 
@@ -436,7 +440,7 @@ It is considered one of the advantages of rule-based machine learning models tha
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-rules true
@@ -445,7 +449,7 @@ It is considered one of the advantages of rule-based machine learning models tha
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-rules true
@@ -456,7 +460,7 @@ Alternatively, by using the argument `--store-rules`, a textual representation o
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
@@ -466,7 +470,7 @@ Alternatively, by using the argument `--store-rules`, a textual representation o
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
@@ -480,7 +484,7 @@ Both, the ``--print-rules`` and ``--store-rules`` arguments, come with several o
 
 When using {ref}`train-test splits<train-test-split>`, only a single model is trained. Consequently, the above command results in a single output file being created:
 
-- `rules_overall.csv`
+- `rules.csv`
 
 A {ref}`cross validation<cross-validation>` results in multiple output files, each one corresponding to one of the models trained for an individual fold, being written. For example, a 5-fold cross validation produces the following files:
 
@@ -516,7 +520,7 @@ Some machine learning algorithms provided by this project allow to obtain probab
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-marginal-probability-calibration-model true \
@@ -526,7 +530,7 @@ Some machine learning algorithms provided by this project allow to obtain probab
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --print-marginal-probability-calibration-model true \
@@ -538,7 +542,7 @@ Alternatively, a representations of the calibration models can be written into [
 
 ````{tab} BOOMER
    ```text
-   testbed mlrl.boosting \
+   mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --store-marginal-probability-calibration-model true \
@@ -548,7 +552,7 @@ Alternatively, a representations of the calibration models can be written into [
 
 ````{tab} SeCo
    ```text
-   testbed mlrl.seco \
+   mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --store-marginal-probability-calibration-model true \
@@ -562,8 +566,8 @@ All of the above commands come with options for customizing the textual represen
 
 Calibration models are learned during training and depend on the training data. {ref}`train-test splits<train-test-split>`, where only a single model is trained, result in a single file being created for each type of calibration model:
 
-- `marginal_probability_calibration_model_overall.csv`
-- `joint_probability_calibration_model_overall.csv`
+- `marginal_probability_calibration_model.csv`
+- `joint_probability_calibration_model.csv`
 
 In contrast, a {ref}`cross validation<cross-validation>` produces multiple output files. Each one corresponds to a calibration model learned on the training data for an individual fold. For example, the following files are created when using a 5-fold cross validation:
 

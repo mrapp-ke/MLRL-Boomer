@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/types.hpp"
+#include "mlrl/common/util/iterators.hpp"
 
 namespace util {
 
@@ -27,12 +28,11 @@ namespace util {
      * @return          The L1 norm
      */
     template<typename Iterator>
-    static inline constexpr float64 l1Norm(Iterator iterator, uint32 n) {
-        float64 result = 0;
+    static inline constexpr typename util::iterator_value<Iterator> l1Norm(Iterator iterator, uint32 n) {
+        typename util::iterator_value<Iterator> result = 0;
 
         for (uint32 i = 0; i < n; i++) {
-            float64 value = iterator[i];
-            result += std::abs(value);
+            result += std::abs(iterator[i]);
         }
 
         return result;
@@ -52,13 +52,12 @@ namespace util {
      * @return                  The L1 norm
      */
     template<typename Iterator, typename WeightIterator>
-    static inline constexpr float64 l1Norm(Iterator iterator, WeightIterator weightIterator, uint32 n) {
-        float64 result = 0;
+    static inline constexpr typename util::iterator_value<Iterator> l1Norm(Iterator iterator,
+                                                                           WeightIterator weightIterator, uint32 n) {
+        typename util::iterator_value<Iterator> result = 0;
 
         for (uint32 i = 0; i < n; i++) {
-            float64 value = iterator[i];
-            float64 weight = weightIterator[i];
-            result += (std::abs(value) * weight);
+            result += (std::abs(iterator[i]) * weightIterator[i]);
         }
 
         return result;
@@ -75,11 +74,11 @@ namespace util {
      * @return          The square of the L2 norm
      */
     template<typename Iterator>
-    static inline constexpr float64 l2NormPow(Iterator iterator, uint32 n) {
-        float64 result = 0;
+    static inline constexpr typename util::iterator_value<Iterator> l2NormPow(Iterator iterator, uint32 n) {
+        typename util::iterator_value<Iterator> result = 0;
 
         for (uint32 i = 0; i < n; i++) {
-            float64 value = iterator[i];
+            typename util::iterator_value<Iterator> value = iterator[i];
             result += (value * value);
         }
 
@@ -101,13 +100,13 @@ namespace util {
      * @return                  The square of the L2 norm
      */
     template<typename Iterator, typename WeightIterator>
-    static inline constexpr float64 l2NormPow(Iterator iterator, WeightIterator weightIterator, uint32 n) {
-        float64 result = 0;
+    static inline constexpr typename util::iterator_value<Iterator> l2NormPow(Iterator iterator,
+                                                                              WeightIterator weightIterator, uint32 n) {
+        typename util::iterator_value<Iterator> result = 0;
 
         for (uint32 i = 0; i < n; i++) {
-            float64 value = iterator[i];
-            float64 weight = (float64) weightIterator[i];
-            result += ((value * value) * weight);
+            typename util::iterator_value<Iterator> value = iterator[i];
+            result += ((value * value) * weightIterator[i]);
         }
 
         return result;
@@ -120,15 +119,17 @@ namespace util {
      * stability (see, e.g., section "Numerically stable sigmoid function" in
      * https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/).
      *
-     * @param x The value `x`
-     * @return  The value that has been calculated
+     * @tparam T    The type of the value `x`
+     * @param x     The value `x`
+     * @return      The value that has been calculated
      */
-    static inline constexpr float64 logisticFunction(float64 x) {
+    template<typename T>
+    static inline constexpr T logisticFunction(T x) {
         if (x < 0) {
-            float64 exponential = std::exp(x);  // Evaluates to 0 for large x, resulting in 0 ultimately
+            T exponential = std::exp(x);  // Evaluates to 0 for large x, resulting in 0 ultimately
             return exponential / (1 + exponential);
         } else {
-            float64 exponential = std::exp(-x);  // Evaluates to 0 for large x, resulting in 1 ultimately
+            T exponential = std::exp(-x);  // Evaluates to 0 for large x, resulting in 1 ultimately
             return 1 / (1 + exponential);
         }
     }
