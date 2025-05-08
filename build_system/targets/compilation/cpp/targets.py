@@ -20,12 +20,12 @@ from targets.project import Project
 MODULE_FILTER = CompilationModule.Filter(FileType.cpp())
 
 BUILD_OPTIONS = BuildOptions() \
-        .add(ConstantBuildOption(name='cpp_std', value=Project.Cpp.cpp_version())) \
-        .add(EnvBuildOption(name=SubprojectModule.ENV_SUBPROJECTS.lower())) \
-        .add(EnvBuildOption(name='buildtype', default_value='release')) \
-        .add(EnvBuildOption(name='test_support', subproject='common')) \
-        .add(EnvBuildOption(name='multi_threading_support', subproject='common')) \
-        .add(EnvBuildOption(name='gpu_support', subproject='common'))
+        .add(ConstantBuildOption('cpp_std', Project.Cpp.cpp_version())) \
+        .add(EnvBuildOption(SubprojectModule.ENV_SUBPROJECTS.lower())) \
+        .add(EnvBuildOption('buildtype', default_value='release')) \
+        .add(EnvBuildOption('test_support', 'common')) \
+        .add(EnvBuildOption('multi_threading_support', 'common')) \
+        .add(EnvBuildOption('gpu_support', 'common'))
 
 MESON_OPTIONS = ['-D', 'library_version=' + str(Project.version(release=True))]
 

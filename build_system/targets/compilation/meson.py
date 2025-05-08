@@ -25,8 +25,9 @@ def get_meson_arguments(build_options: BuildOptions) -> List[str]:
 
     for build_option in build_options:
         if build_option:
-            arguments.append('-D')
-            arguments.append(build_option.key + '=' + build_option.value)
+            for key in build_option.keys:
+                arguments.append('-D')
+                arguments.append(key + '=' + build_option.value)
 
     return arguments
 
