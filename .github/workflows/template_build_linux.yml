@@ -6,6 +6,9 @@ on:
       subproject:
         required: true
         type: string
+      python_version:
+        required: true
+        type: string
       compile:
         required: false
         type: boolean
@@ -35,7 +38,8 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: python/.version-python
+          python-version: ${{ inputs.python_version }}
+          check-latest: true
       - name: Install OpenCL
         run: sudo apt update && sudo apt install -y opencl-headers ocl-icd-opencl-dev
       - name: Install GoogleTest

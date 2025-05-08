@@ -60,6 +60,9 @@ class Version:
     def __str__(self) -> str:
         return reduce(lambda aggr, number: aggr + ('.' if len(aggr) > 0 else '') + str(number), self.numbers, '')
 
+    def __hash__(self) -> int:
+        return hash(self.numbers)
+
     def __eq__(self, other: 'Version') -> bool:
         return self.numbers == other.numbers
 

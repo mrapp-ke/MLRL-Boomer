@@ -243,6 +243,48 @@ Adding dependencies to a software project always comes at a cost. Maintainers ne
 
 That being said, we still rely on several dependencies for Continuous Integration, compiling our source code, generating the documentation, or running the algorithms provided by this project. When using pre-built packages from [PyPI](https://pypi.org/project/mlrl-boomer/), there is no need to care about these dependencies, as they are already included in the packages. When {ref}`building from source <compilation>`, dependencies are automatically installed by the build system once they are needed, unless explicitly stated in the documentation.
 
+### Supported Python Versions
+
+The packages provided by this project are built from source code that must be compiled for specific Python versions. As a consequence, they do not work with arbitrary Python releases, but can only be used with the versions they have been built for. The supported Python versions are stored in the file {repo-file}`.version-python <python/.version-python>` and are regularly updated as new releases of Python are published. The following command provided by the project's build system checks if the latest Python release is currently supported by the project:
+
+````{tab} Linux
+   ```text
+   ./build check_python_version
+   ```
+````
+
+````{tab} macOS
+   ```text
+   ./build check_python_version
+   ```
+````
+
+````{tab} Windows
+   ```
+   build.bat check_python_version
+   ```
+````
+
+The following command updates the supported versions in the file {repo-file}`.version-python <python/.version-python>` to include the latest Python release:
+
+````{tab} Linux
+   ```text
+   ./build update_python_version
+   ```
+````
+
+````{tab} macOS
+   ```text
+   ./build update_python_version
+   ```
+````
+
+````{tab} Windows
+   ```
+   build.bat update_python_version
+   ```
+````
+
 ### Python Dependencies
 
 Python dependencies that are required by different aspects of the project, such as the build system, the documentation, or our own Python code, are defined in separate `requirements.txt` and `pyproject.template.toml` files. For dependencies that use [Semantic Versioning](https://semver.org/), we specify the earliest and latest version we support. For other dependencies, we demand for a specific version number. This strives to achieve a balance between flexibility for users and comfort for developers. On the one hand, supporting a range of versions provides more freedom to users, as our packages can more flexibly be used together with other ones, relying on the same dependencies. On the other hand, the project's maintainers must not manually update dependencies that have a minor release, while still requiring manual intervention for major updates.
