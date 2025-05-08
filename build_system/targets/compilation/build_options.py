@@ -49,6 +49,25 @@ class BuildOption(ABC):
         return self.value is not None
 
 
+class ConstantBuildOption(BuildOption):
+    """
+    A build options with a hardcoded value.
+    """
+
+    def __init__(self, name: str, value: str, subpackage: Optional[str] = None):
+        """
+        :param name:        The name of the build option
+        :param value:       The value of the build option
+        :param subpackage:  The subpackage, the build option corresponds to, or None, if it is a global option
+        """
+        super().__init__(name, subpackage)
+        self._value = value
+
+    @property
+    def value(self) -> Optional[str]:
+        return self._value
+
+
 class EnvBuildOption(BuildOption):
     """
     A build option, whose value is obtained from an environment variable.

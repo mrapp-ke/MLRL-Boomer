@@ -11,7 +11,7 @@ from core.targets import BuildTarget, PhonyTarget
 from util.files import FileType
 from util.log import Log
 
-from targets.compilation.build_options import BuildOptions, EnvBuildOption
+from targets.compilation.build_options import BuildOptions, ConstantBuildOption, EnvBuildOption
 from targets.compilation.meson import MesonCompile, MesonConfigure, MesonInstall, MesonSetup
 from targets.compilation.modules import CompilationModule
 from targets.modules import SubprojectModule
@@ -20,6 +20,7 @@ from targets.project import Project
 MODULE_FILTER = CompilationModule.Filter(FileType.cpp())
 
 BUILD_OPTIONS = BuildOptions() \
+        .add(ConstantBuildOption(name='cpp_std', value=Project.Cpp.cpp_version())) \
         .add(EnvBuildOption(name=SubprojectModule.ENV_SUBPROJECTS.lower())) \
         .add(EnvBuildOption(name='buildtype', default_value='release')) \
         .add(EnvBuildOption(name='test_support', subpackage='common')) \
