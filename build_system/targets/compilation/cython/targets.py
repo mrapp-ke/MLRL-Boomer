@@ -20,7 +20,7 @@ from targets.project import Project
 MODULE_FILTER = CompilationModule.Filter(FileType.cython())
 
 BUILD_OPTIONS = BuildOptions() \
-        .add(ConstantBuildOption('cpp_std', Project.Cpp.cpp_version())) \
+        .add(ConstantBuildOption('cpp_std', Project.Cpp.cpp_version(), 'common', 'boosting', 'seco')) \
         .add(EnvBuildOption(SubprojectModule.ENV_SUBPROJECTS.lower())) \
         .add(EnvBuildOption('buildtype', default_value='release'))
 
