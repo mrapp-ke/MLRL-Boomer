@@ -32,6 +32,7 @@ jobs:
               - cpp/subprojects/**/include/**
               - cpp/subprojects/**/src/**
               - python/subprojects/**/mlrl/**
+              - python/.version-python
             doc:
               - *code
               - ./.github/workflows/template_publish_doc.yml
