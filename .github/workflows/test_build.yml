@@ -131,8 +131,21 @@ jobs:
               - *cpp_boosting
               - *cpp_seco
               - '.github/workflows/template_build_windows.yml'
+  python_version:
+    name: Determine supported Python versions
+    runs-on: ubuntu-24.04
+    outputs:
+      python_version: ${{ steps.python_version.outputs.python_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Determine supported Python versions
+        id: python_version
+        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
   test_build:
-    needs: changes
+    needs:
+      - changes
+      - python_version
     name: Test build
     strategy:
       fail-fast: false
@@ -149,6 +162,7 @@ jobs:
       compile: ${{ needs.changes.outputs[format('cpp_{0}', matrix.subproject)] == 'true' }}
       run_cpp_tests: ${{ needs.changes.outputs[format('cpp_tests_{0}', matrix.subproject)] == 'true' }}
       run_python_tests: ${{ needs.changes.outputs[format('python_tests_{0}', matrix.subproject)] == 'true' }}
+      python_version: ${{ needs.python_version.outputs.python_version }}
   publish_test_results:
     needs: test_build
     if: always()

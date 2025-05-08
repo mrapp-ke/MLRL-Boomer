@@ -111,7 +111,7 @@ class BipartitionSplitter(DatasetSplitter):
         context.include_fold = False
         context.include_dataset_type = True
 
-    def split(self, problem_type: ProblemType) -> Generator[DatasetSplitter.Split]:
+    def split(self, problem_type: ProblemType) -> Generator[DatasetSplitter.Split, None, None]:
         """
         See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.split`
         """

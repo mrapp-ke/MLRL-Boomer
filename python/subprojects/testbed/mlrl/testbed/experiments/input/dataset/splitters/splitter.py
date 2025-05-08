@@ -32,7 +32,7 @@ class DatasetSplitter(ABC):
             """
 
     @abstractmethod
-    def split(self, problem_type: ProblemType) -> Generator[Split]:
+    def split(self, problem_type: ProblemType) -> Generator[Split, None, None]:
         """
         Returns a generator that generates the individual splits of the dataset into training and test data.
 

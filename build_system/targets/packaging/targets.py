@@ -55,7 +55,7 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
             if line.strip('\n').strip() == '[project]':
                 new_lines.append(line)
                 new_lines.append('version = "' + str(Project.version()) + '"\n')
-                new_lines.append('requires-python = "' + Project.Python.python_version() + '"\n')
+                new_lines.append('requires-python = "' + Project.Python.minimum_python_version() + '"\n')
             else:
                 for dependency, requirement in requirements.items():
                     if dependency in line:

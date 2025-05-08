@@ -6,6 +6,9 @@ on:
       subproject:
         required: true
         type: string
+      python_version:
+        required: true
+        type: string
 env:
   SUBPROJECTS: ${{ inputs.subproject }}
 jobs:
@@ -20,7 +23,8 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: python/.version-python
+          python-version: ${{ inputs.python_version }}
+          check-latest: true
       - name: Prepare MSVC
         uses: ilammy/msvc-dev-cmd@v1
       - name: Install OpenCL
