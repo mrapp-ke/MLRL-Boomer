@@ -10,6 +10,7 @@ from typing import Optional
 
 from util.io import TextFile
 from util.log import Log
+from util.pip import RequirementVersion
 from util.version import Version
 
 
@@ -127,5 +128,35 @@ class DevelopmentVersionFile(VersionTextFile):
 
         try:
             del self.development_version
+        except AttributeError:
+            pass
+
+
+class PythonVersionFile(VersionTextFile):
+    """
+    The file that stores the supported Python versions.
+    """
+
+    @cached_property
+    def supported_versions(self) -> RequirementVersion:
+        """
+        The supported versions that are stored in the file.
+        """
+        return RequirementVersion.parse(self.version_string)
+
+    def update(self, supported_versions: RequirementVersion):
+        """
+        Updates the supported Python versions that are stored in the file.
+
+        :param supported_versions: The supported version to be stored
+        """
+        self.write_lines(str(supported_versions))
+        Log.info('Updated supported Python versions to "%s"', str(supported_versions))
+
+    def write_lines(self, *lines: str):
+        super().write_lines(*lines)
+
+        try:
+            del self.supported_versions
         except AttributeError:
             pass

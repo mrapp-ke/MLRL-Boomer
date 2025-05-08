@@ -28,10 +28,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: feature
+      - name: Determine supported Python versions
+        id: python_version
+        run: echo "python_version=$(sed s/,//g python/.version-python)" >> $GITHUB_OUTPUT
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: python/.version-python
+          python-version: ${{ steps.python_version.outputs.python_version }}
+          check-latest: true
       - name: Setup git
         uses: fregante/setup-git-user@v2
       - name: Generate token
@@ -40,6 +44,10 @@ jobs:
         with:
           app-id: ${{ secrets.TOKEN_APP_ID }}
           private-key: ${{ secrets.TOKEN_APP_SECRET }}
+      - name: Update supported Python versions
+        run: |
+          ./build update_python_version
+          git add python/.version-python
       - name: Update runtime dependencies
         run: |
           ./build update_runtime_dependencies
