@@ -31,6 +31,7 @@ jobs:
               - ./.github/workflows/template_publish_platform_windows.yml
               - cpp/subprojects/**/include/**
               - cpp/subprojects/**/src/**
+              - cpp/.version-cpp
               - python/subprojects/**/mlrl/**
               - python/.version-python
             doc:
