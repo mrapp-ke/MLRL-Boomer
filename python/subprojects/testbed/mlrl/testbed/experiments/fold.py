@@ -35,7 +35,7 @@ class FoldingStrategy:
     last: int
 
     @property
-    def folds(self) -> Generator[Fold]:
+    def folds(self) -> Generator[Fold, None, None]:
         """
         Returns a generator that generates all folds that are created by the strategy.
 

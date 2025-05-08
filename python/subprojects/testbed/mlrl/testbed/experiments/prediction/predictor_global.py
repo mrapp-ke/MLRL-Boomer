@@ -49,7 +49,7 @@ class GlobalPredictor(Predictor):
             return 0
 
     def obtain_predictions(self, learner: Any, dataset: Dataset, dataset_type: DatasetType,
-                           **kwargs) -> Generator[PredictionState]:
+                           **kwargs) -> Generator[PredictionState, None, None]:
         """
         See :func:`mlrl.testbed.experiments.prediction.predictor.Predictor.obtain_predictions`
         """

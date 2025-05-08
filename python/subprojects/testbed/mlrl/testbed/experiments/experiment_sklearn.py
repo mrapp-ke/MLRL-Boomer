@@ -118,7 +118,8 @@ class SkLearnExperiment(Experiment):
         log.info('Successfully fit model in %s', training_duration)
         return TrainingState(learner=new_learner, training_duration=training_duration)
 
-    def _predict(self, learner: Any, dataset: Dataset, dataset_type: DatasetType) -> Generator[PredictionState]:
+    def _predict(self, learner: Any, dataset: Dataset,
+                 dataset_type: DatasetType) -> Generator[PredictionState, None, None]:
         predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
         predictor = self.predictor_factory()
 
