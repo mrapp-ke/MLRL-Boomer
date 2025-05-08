@@ -23,9 +23,9 @@ BUILD_OPTIONS = BuildOptions() \
         .add(ConstantBuildOption(name='cpp_std', value=Project.Cpp.cpp_version())) \
         .add(EnvBuildOption(name=SubprojectModule.ENV_SUBPROJECTS.lower())) \
         .add(EnvBuildOption(name='buildtype', default_value='release')) \
-        .add(EnvBuildOption(name='test_support', subpackage='common')) \
-        .add(EnvBuildOption(name='multi_threading_support', subpackage='common')) \
-        .add(EnvBuildOption(name='gpu_support', subpackage='common'))
+        .add(EnvBuildOption(name='test_support', subproject='common')) \
+        .add(EnvBuildOption(name='multi_threading_support', subproject='common')) \
+        .add(EnvBuildOption(name='gpu_support', subproject='common'))
 
 MESON_OPTIONS = ['-D', 'library_version=' + str(Project.version(release=True))]
 

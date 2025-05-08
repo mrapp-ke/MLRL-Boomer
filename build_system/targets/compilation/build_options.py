@@ -15,20 +15,20 @@ class BuildOption(ABC):
     An abstract base class for all build options.
     """
 
-    def __init__(self, name: str, subpackage: Optional[str] = None):
+    def __init__(self, name: str, subproject: Optional[str] = None):
         """
         :param name:        The name of the build option
-        :param subpackage:  The subpackage, the build option corresponds to, or None, if it is a global option
+        :param subproject:  The subproject, the build option corresponds to, or None, if it is a global option
         """
         self.name = name
-        self.subpackage = subpackage
+        self.subproject = subproject
 
     @property
     def key(self) -> str:
         """
         The key to be used for setting the build option.
         """
-        return (self.subpackage + ':' if self.subpackage else '') + self.name
+        return (self.subproject + ':' if self.subproject else '') + self.name
 
     @property
     @abstractmethod
@@ -54,13 +54,13 @@ class ConstantBuildOption(BuildOption):
     A build options with a hardcoded value.
     """
 
-    def __init__(self, name: str, value: str, subpackage: Optional[str] = None):
+    def __init__(self, name: str, value: str, subproject: Optional[str] = None):
         """
         :param name:        The name of the build option
         :param value:       The value of the build option
-        :param subpackage:  The subpackage, the build option corresponds to, or None, if it is a global option
+        :param subproject:  The subpackage, the build option corresponds to, or None, if it is a global option
         """
-        super().__init__(name, subpackage)
+        super().__init__(name, subproject)
         self._value = value
 
     @property
@@ -73,13 +73,13 @@ class EnvBuildOption(BuildOption):
     A build option, whose value is obtained from an environment variable.
     """
 
-    def __init__(self, name: str, default_value: Optional[str] = None, subpackage: Optional[str] = None):
+    def __init__(self, name: str, default_value: Optional[str] = None, subproject: Optional[str] = None):
         """
         :param name:            The name of the build option
         :param default_value:   An optional default value
-        :param subpackage:      The subpackage, the build option corresponds to, or None, if it is a global option
+        :param subproject:      The subproject, the build option corresponds to, or None, if it is a global option
         """
-        super().__init__(name, subpackage)
+        super().__init__(name, subproject)
         self.default_value = default_value
 
     @property
