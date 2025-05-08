@@ -44,6 +44,10 @@ jobs:
         with:
           app-id: ${{ secrets.TOKEN_APP_ID }}
           private-key: ${{ secrets.TOKEN_APP_SECRET }}
+      - name: Update supported Python versions
+        run: |
+          ./build update_python_version
+          git add python/.version-python
       - name: Update runtime dependencies
         run: |
           ./build update_runtime_dependencies
