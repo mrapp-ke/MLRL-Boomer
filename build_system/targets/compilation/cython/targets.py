@@ -20,9 +20,9 @@ from targets.project import Project
 MODULE_FILTER = CompilationModule.Filter(FileType.cython())
 
 BUILD_OPTIONS = BuildOptions() \
-        .add(ConstantBuildOption(name='cpp_std', value=Project.Cpp.cpp_version())) \
-        .add(EnvBuildOption(name=SubprojectModule.ENV_SUBPROJECTS.lower())) \
-        .add(EnvBuildOption(name='buildtype', default_value='release'))
+        .add(ConstantBuildOption('cpp_std', Project.Cpp.cpp_version())) \
+        .add(EnvBuildOption(SubprojectModule.ENV_SUBPROJECTS.lower())) \
+        .add(EnvBuildOption('buildtype', default_value='release'))
 
 
 class SetupCython(BuildTarget.Runnable):
