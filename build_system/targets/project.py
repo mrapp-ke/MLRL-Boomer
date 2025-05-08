@@ -115,13 +115,22 @@ class Project:
         wheel_metadata_directory_suffix = '.egg-info'
 
         @staticmethod
+        def python_version_file() -> PythonVersionFile:
+            """
+            Returns the file that stores the Python versions that are supported by the project.
+
+            :return: The file that stores the Python versions
+            """
+            return PythonVersionFile(path.join(Project.Python.root_directory, '.version-python'))
+
+        @staticmethod
         def supported_python_versions() -> RequirementVersion:
             """
             Returns the Python versions supported by the project.
 
             :return: The Python versions supported by the project
             """
-            return PythonVersionFile(path.join(Project.Python.root_directory, '.version-python')).supported_versions
+            return Project.Python.python_version_file().supported_versions
 
         @staticmethod
         def minimum_python_version() -> str:
