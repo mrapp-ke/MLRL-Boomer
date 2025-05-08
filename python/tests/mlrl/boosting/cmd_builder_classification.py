@@ -49,7 +49,6 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
 
     def __init__(self, dataset: str = Dataset.EMOTIONS):
         super().__init__(expected_output_dir=path.join('boosting', 'classification'),
-                         model_file_name='boomer',
                          runnable_module_name='mlrl.boosting',
                          dataset=dataset)
 

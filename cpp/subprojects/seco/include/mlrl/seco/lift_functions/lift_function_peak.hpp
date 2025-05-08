@@ -42,7 +42,7 @@ namespace seco {
              *
              * @return The lift at the peak label
              */
-            virtual float64 getMaxLift() const = 0;
+            virtual float32 getMaxLift() const = 0;
 
             /**
              * Sets the lift at the peak label.
@@ -51,14 +51,14 @@ namespace seco {
              * @return          A reference to an object of type `IPeakLiftFunctionConfig` that allows further
              *                  configuration of the lift function
              */
-            virtual IPeakLiftFunctionConfig& setMaxLift(float64 maxLift) = 0;
+            virtual IPeakLiftFunctionConfig& setMaxLift(float32 maxLift) = 0;
 
             /**
              * Returns the curvature of the lift function.
              *
              * @return The curvature of the lift function
              */
-            virtual float64 getCurvature() const = 0;
+            virtual float32 getCurvature() const = 0;
 
             /**
              * Sets the curvature of the lift function.
@@ -68,7 +68,7 @@ namespace seco {
              * @return          A reference to an object of type `IPeakLiftFunctionConfig` that allows further
              *                  configuration of the lift function
              */
-            virtual IPeakLiftFunctionConfig& setCurvature(float64 curvature) = 0;
+            virtual IPeakLiftFunctionConfig& setCurvature(float32 curvature) = 0;
     };
 
     /**
@@ -81,9 +81,9 @@ namespace seco {
 
             uint32 peakLabel_;
 
-            float64 maxLift_;
+            float32 maxLift_;
 
-            float64 curvature_;
+            float32 curvature_;
 
         public:
 
@@ -93,13 +93,13 @@ namespace seco {
 
             IPeakLiftFunctionConfig& setPeakLabel(uint32 peakLabel) override;
 
-            float64 getMaxLift() const override;
+            float32 getMaxLift() const override;
 
-            IPeakLiftFunctionConfig& setMaxLift(float64 maxLift) override;
+            IPeakLiftFunctionConfig& setMaxLift(float32 maxLift) override;
 
-            float64 getCurvature() const override;
+            float32 getCurvature() const override;
 
-            IPeakLiftFunctionConfig& setCurvature(float64 curvature) override;
+            IPeakLiftFunctionConfig& setCurvature(float32 curvature) override;
 
             std::unique_ptr<ILiftFunctionFactory> createLiftFunctionFactory(
               const IRowWiseLabelMatrix& labelMatrix) const override;
