@@ -101,14 +101,14 @@ By default, a 10-fold cross validation, where ten models are trained and evaluat
 ````
 
 `````{tip}
-When providing the option `current_fold`, only a single fold, instead of the entire procedure, is performed. This is particularly useful, if one intends to train and evaluate the models for each individual fold in parallel on different machines. For example, the following command does only execute the second fold of a 5-fold CV:
+By providing the options `first_fold` and `last_fold`, a subset of the folds, instead of the entire procedure, can be performed. This is particularly useful, if one intends to train and evaluate models for different folds in parallel on different machines. For example, the following command does only execute only the second fold of a 5-fold CV:
 
 ````{tab} BOOMER
    ```text
    mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --data-split 'cv{num_folds=5,current_fold=2}'
+       --data-split 'cv{num_folds=5,first_fold=2,last_fold=2}'
    ```
 ````
 
@@ -117,7 +117,7 @@ When providing the option `current_fold`, only a single fold, instead of the ent
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --data-split 'cv{num_folds=5,current_fold=2}'
+       --data-split 'cv{num_folds=5,first_fold=2,last_fold=2}'
    ```
 ````
 `````
