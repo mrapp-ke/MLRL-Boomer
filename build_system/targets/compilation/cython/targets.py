@@ -11,16 +11,18 @@ from core.targets import BuildTarget, PhonyTarget
 from util.files import FileType
 from util.log import Log
 
-from targets.compilation.build_options import BuildOptions, EnvBuildOption
+from targets.compilation.build_options import BuildOptions, ConstantBuildOption, EnvBuildOption
 from targets.compilation.meson import MesonCompile, MesonConfigure, MesonInstall, MesonSetup
 from targets.compilation.modules import CompilationModule
 from targets.modules import SubprojectModule
+from targets.project import Project
 
 MODULE_FILTER = CompilationModule.Filter(FileType.cython())
 
 BUILD_OPTIONS = BuildOptions() \
-        .add(EnvBuildOption(name=SubprojectModule.ENV_SUBPROJECTS.lower())) \
-        .add(EnvBuildOption(name='buildtype', default_value='release'))
+        .add(ConstantBuildOption('cpp_std', Project.Cpp.cpp_version(), 'common', 'boosting', 'seco')) \
+        .add(EnvBuildOption(SubprojectModule.ENV_SUBPROJECTS.lower())) \
+        .add(EnvBuildOption('buildtype', default_value='release'))
 
 
 class SetupCython(BuildTarget.Runnable):

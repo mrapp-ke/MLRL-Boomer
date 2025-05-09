@@ -1,4 +1,4 @@
-project('seco', 'cpp')
+project('seco', 'cpp', meson_version : '>=1.1')
 
 # Source files
 source_files = [
@@ -48,7 +48,7 @@ install_dir = install_root / meson.project_name() / 'mlrl' / meson.project_name(
 
 # Obtain information about the library
 library_name = 'mlrl' + meson.project_name()
-library_version = common_project.get_variable('library_version')
+library_version = get_option('library_version')
 target_architecture = common_project.get_variable('target_architecture')
 
 # Set configuration options
