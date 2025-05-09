@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/common/data/view_compressed.hpp"
 #include "mlrl/common/data/view_matrix.hpp"
 
 #include <utility>
@@ -10,19 +11,9 @@
 /**
  * A two-dimensional view that provides row- or column wise access to binary values stored in a sparse matrix.
  */
-class MLRLCOMMON_API BinarySparseMatrix : public Matrix {
+class MLRLCOMMON_API BinarySparseMatrix : public CompressedView,
+                                          public Matrix {
     public:
-
-        /**
-         * A pointer to an array that stores the row or column indices, the values in the matrix correspond to.
-         */
-        uint32* indices;
-
-        /**
-         * A pointer to an array that stores the indices of the first element in `indices` that corresponds to a certain
-         * column, if `indices` stores row indices, or row, if `indices` stores column indices.
-         */
-        uint32* indptr;
 
         /**
          * @param indices   A pointer to an array of type `uint32`, shape `(numDenseElements)`, that stores the row or
@@ -35,26 +26,19 @@ class MLRLCOMMON_API BinarySparseMatrix : public Matrix {
          * @param numCols   The number of columns in the view
          */
         BinarySparseMatrix(uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols)
-            : Matrix(numRows, numCols), indices(indices), indptr(indptr) {}
+            : CompressedView(indices, indptr), Matrix(numRows, numCols) {}
 
         /**
          * @param other A const reference to an object of type `SparseMatrix` that should be copied
          */
-        BinarySparseMatrix(const BinarySparseMatrix& other)
-            : Matrix(other), indices(other.indices), indptr(other.indptr) {}
+        BinarySparseMatrix(const BinarySparseMatrix& other) : CompressedView(other), Matrix(other) {}
 
         /**
          * @param other A reference to an object of type `SparseMatrix` that should be moved
          */
-        BinarySparseMatrix(BinarySparseMatrix&& other)
-            : Matrix(std::move(other)), indices(other.indices), indptr(other.indptr) {}
+        BinarySparseMatrix(BinarySparseMatrix&& other) : CompressedView(std::move(other)), Matrix(std::move(other)) {}
 
         virtual ~BinarySparseMatrix() override {}
-
-        /**
-         * The type of the indices, the view provides access to.
-         */
-        typedef uint32 index_type;
 
         /**
          * An iterator that provides read-only access to the indices in the view.
@@ -65,34 +49,6 @@ class MLRLCOMMON_API BinarySparseMatrix : public Matrix {
          * An iterator that provides access to the indices in the view and allows to modify them.
          */
         typedef View<index_type>::iterator index_iterator;
-
-        /**
-         * Releases the ownership of the array that stores the row or column indices, the dense elements explicitly
-         * stored in the matrix correspond to. As a result, the behavior of this view becomes undefined and it should
-         * not be used anymore. The caller is responsible for freeing the memory that is occupied by the array.
-         *
-         * @return  A pointer to the array that stores the row or column indices, the dense elements explicitly stored
-         *          in the matrix correspond to
-         */
-        index_type* releaseIndices() {
-            index_type* ptr = indices;
-            indices = nullptr;
-            return ptr;
-        }
-
-        /**
-         * Releases the ownership of the array that stores the indices of the first dense element that corresponds to
-         * a certain column or row. As a result, the behavior of this view becomes undefined and it should not be used
-         * anymore. The caller is responsible for freeing the memory that is occupied by the array.
-         *
-         * @return  A pointer to an array that stores the indices of the first dense element that corresponds to a
-         *          certain column or row
-         */
-        index_type* releaseIndptr() {
-            index_type* ptr = indptr;
-            indptr = nullptr;
-            return ptr;
-        }
 };
 
 /**

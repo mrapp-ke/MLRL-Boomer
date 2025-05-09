@@ -48,7 +48,7 @@ class CmdRunner:
 
     def __assert_model_files_exist(self):
         builder = self.builder
-        self.__assert_files_exist(builder.model_dir, builder.model_file_name, 'model')
+        self.__assert_files_exist(directory=builder.model_dir, file_name='model', suffix='pickle')
 
     def __assert_files_exist(self, directory: Optional[str], file_name: str, suffix: str):
         if directory:
@@ -69,7 +69,7 @@ class CmdRunner:
     @staticmethod
     def __get_file_name(name: str, suffix: str, fold: Optional[int] = None):
         if fold is None:
-            return name + '_overall.' + suffix
+            return name + '.' + suffix
         return name + '_fold-' + str(fold) + '.' + suffix
 
     def __assert_file_exists(self, directory: str, file_name: str):

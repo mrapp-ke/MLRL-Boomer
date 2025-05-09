@@ -1,4 +1,4 @@
-project('seco', 'cpp')
+project('seco', 'cpp', meson_version : '>=1.1')
 
 # Source files
 source_files = [
@@ -22,13 +22,13 @@ source_files = [
     'src/mlrl/seco/rule_evaluation/rule_evaluation_decomposable_single.cpp',
     'src/mlrl/seco/statistics/statistics_provider_decomposable_dense.cpp',
     'src/mlrl/seco/stopping/stopping_criterion_coverage.cpp',
-    'src/mlrl/seco/info.cpp',
-    'src/mlrl/seco/learner_seco_classifier.cpp'
+    'src/mlrl/seco/learner_seco_classifier.cpp',
+    'src/mlrl/seco/library_info.cpp'
 ]
 
 # Test files
 test_files = [
-    'test/mlrl/seco/info.cpp'
+    'test/mlrl/seco/library_info.cpp'
 ]
 
 # Dependencies
@@ -48,7 +48,7 @@ install_dir = install_root / meson.project_name() / 'mlrl' / meson.project_name(
 
 # Obtain information about the library
 library_name = 'mlrl' + meson.project_name()
-library_version = common_project.get_variable('library_version')
+library_version = get_option('library_version')
 target_architecture = common_project.get_variable('target_architecture')
 
 # Set configuration options

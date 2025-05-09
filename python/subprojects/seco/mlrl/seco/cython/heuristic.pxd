@@ -1,4 +1,4 @@
-from mlrl.common.cython._types cimport float64
+from mlrl.common.cython._types cimport float32
 
 
 cdef extern from "mlrl/seco/heuristics/heuristic_f_measure.hpp" namespace "seco" nogil:
@@ -7,9 +7,9 @@ cdef extern from "mlrl/seco/heuristics/heuristic_f_measure.hpp" namespace "seco"
 
         # Functions:
 
-        float64 getBeta() const
+        float32 getBeta() const
 
-        IFMeasureConfig& setBeta(float64 beta) except +
+        IFMeasureConfig& setBeta(float32 beta) except +
 
 
 cdef extern from "mlrl/seco/heuristics/heuristic_m_estimate.hpp" namespace "seco" nogil:
@@ -18,9 +18,9 @@ cdef extern from "mlrl/seco/heuristics/heuristic_m_estimate.hpp" namespace "seco
 
         # Functions:
 
-        float64 getM() const
+        float32 getM() const
 
-        IMEstimateConfig& setM(float64 m) except +
+        IMEstimateConfig& setM(float32 m) except +
 
 
 cdef class FMeasureConfig:

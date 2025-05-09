@@ -1,4 +1,4 @@
-project('boosting', 'cpp')
+project('boosting', 'cpp', meson_version : '>=1.1')
 
 # Source files
 source_files = [
@@ -65,19 +65,21 @@ source_files = [
     'src/mlrl/boosting/statistics/statistic_format_auto.cpp',
     'src/mlrl/boosting/statistics/statistic_format_dense.cpp',
     'src/mlrl/boosting/statistics/statistic_format_sparse.cpp',
+    'src/mlrl/boosting/statistics/statistic_type_float32.cpp',
+    'src/mlrl/boosting/statistics/statistic_type_float64.cpp',
     'src/mlrl/boosting/statistics/statistics_provider_decomposable_dense.cpp',
     'src/mlrl/boosting/statistics/statistics_provider_decomposable_sparse.cpp',
     'src/mlrl/boosting/statistics/statistics_provider_non_decomposable_dense.cpp',
     'src/mlrl/boosting/util/blas.cpp',
     'src/mlrl/boosting/util/lapack.cpp',
-    'src/mlrl/boosting/info.cpp',
     'src/mlrl/boosting/learner_boomer_classifier.cpp',
-    'src/mlrl/boosting/learner_boomer_regressor.cpp'
+    'src/mlrl/boosting/learner_boomer_regressor.cpp',
+    'src/mlrl/boosting/library_info.cpp'
 ]
 
 # Test files
 test_files = [
-    'test/mlrl/boosting/info.cpp'
+    'test/mlrl/boosting/library_info.cpp'
 ]
 
 # Dependencies
@@ -97,7 +99,7 @@ install_dir = install_root / meson.project_name() / 'mlrl' / meson.project_name(
 
 # Obtain information about the library
 library_name = 'mlrl' + meson.project_name()
-library_version = common_project.get_variable('library_version')
+library_version = get_option('library_version')
 target_architecture = common_project.get_variable('target_architecture')
 
 # Set configuration options

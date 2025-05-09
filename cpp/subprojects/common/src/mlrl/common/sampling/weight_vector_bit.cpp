@@ -21,7 +21,7 @@ bool BitWeightVector::hasZeroWeights() const {
     return numNonZeroWeights_ < vector_.getNumElements();
 }
 
-bool BitWeightVector::operator[](uint32 pos) const {
+BitWeightVector::weight_type BitWeightVector::operator[](uint32 pos) const {
     return vector_[pos];
 }
 

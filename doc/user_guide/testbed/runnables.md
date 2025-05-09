@@ -28,7 +28,7 @@ class Runnable(BaseRunnable):
 Assuming that the source code shown above is saved to a file named `custom_runnable.py` in the working directory, the command line API can be instructed to use it as follows:
 
 ```text
-testbed custom_runnable.py --data-dir path/to/datasets/ --dataset dataset-name
+mlrl-testbed custom_runnable.py --data-dir path/to/datasets/ --dataset dataset-name
 ```
 
 ## Defining Command Line Arguments

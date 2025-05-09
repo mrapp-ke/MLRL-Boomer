@@ -75,8 +75,8 @@ namespace seco {
              *              for which the prediction in the rule's head is positive (P)
              * @return      The quality that has been calculated
              */
-            virtual float64 evaluateConfusionMatrix(float64 cin, float64 cip, float64 crn, float64 crp, float64 uin,
-                                                    float64 uip, float64 urn, float64 urp) const = 0;
+            virtual float32 evaluateConfusionMatrix(float32 cin, float32 cip, float32 crn, float32 crp, float32 uin,
+                                                    float32 uip, float32 urn, float32 urp) const = 0;
     };
 
     /**
