@@ -8,7 +8,8 @@
 - By default, the command line API is not terminated anymore when an error occurs while writing output data. This behavior can be changed via the new argument `--exit-on-error`.
 - When passing the value `cross-validation` to the command line argument `--data-split`, the options `first_fold` and `last_fold` can now be used to specify a range of folds to be run. The option `current_fold` has been removed.
 - Output directories are now automatically created by the command line API. This behavior can be disabled via the newly added argument `--create-output-dir`.
-- The command line argument `--wipe-output-dir` has been added. It allows to prevent existing output files from being deleted before an experiment starts. 
+- The command line argument `--wipe-output-dir` has been added. It allows to prevent existing output files from being deleted before an experiment starts.
+- The new command line arguments `--store-all` and `--print-all` allow to print all output data on the console or to write it to files. 
 - The options `min_samples` and `max_samples` have been added to the values of the command line arguments `--feature-sampling` and `--instance-sampling`.
 - The indices of nominal and ordinal features are now provided to a learner's `fit`-method via the keyword arguments `nominal_feature_indices` and `ordinal_feature_indices`.
 - The Python API does now allow to provide custom weights for training examples to a learner's `fit`-method via the keyword argument `sample_weights`. 

@@ -754,6 +754,16 @@ class LearnerRunnable(Runnable, ABC):
                             default=False,
                             help='Whether the program should exit if an error occurs while writing experimental '
                             + 'results or not. Must be one of ' + format_enum_values(BooleanOption) + '.')
+        parser.add_argument('--print-all',
+                            type=BooleanOption.parse,
+                            default=False,
+                            help='Whether all output data should be printed on the console or not. Must be one of '
+                            + format_enum_values(BooleanOption) + '.')
+        parser.add_argument('--store-all',
+                            type=BooleanOption.parse,
+                            default=False,
+                            help='Whether all output data should be written to files or not. Must be one of '
+                            + format_enum_values(BooleanOption) + '.')
         parser.add_argument('--print-parameters',
                             type=BooleanOption.parse,
                             default=False,
@@ -933,13 +943,13 @@ class LearnerRunnable(Runnable, ABC):
         value, options = parse_param_and_options(self.PARAM_PRINT_EVALUATION, args.print_evaluation,
                                                  self.PRINT_EVALUATION_VALUES)
 
-        if value == BooleanOption.TRUE.value:
+        if (not value and args.print_all) or value == BooleanOption.TRUE.value:
             sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_EVALUATION, args.store_evaluation,
                                                  self.STORE_EVALUATION_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir:
+        if ((not value and args.store_all) or value == BooleanOption.TRUE.value) and args.output_dir:
             sinks.append(
                 CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
 
@@ -976,7 +986,7 @@ class LearnerRunnable(Runnable, ABC):
         """
         sinks = []
 
-        if args.print_parameters:
+        if args.print_parameters or args.print_all:
             sinks.append(LogSink())
 
         if args.parameter_save_dir:
@@ -995,7 +1005,7 @@ class LearnerRunnable(Runnable, ABC):
         value, options = parse_param_and_options(self.PARAM_PRINT_PREDICTIONS, args.print_predictions,
                                                  self.PRINT_PREDICTIONS_VALUES)
 
-        if value == BooleanOption.TRUE.value:
+        if (not value and args.print_all) or value == BooleanOption.TRUE.value:
             sinks.append(LogSink(options=options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_PREDICTIONS, args.store_predictions,
@@ -1019,13 +1029,13 @@ class LearnerRunnable(Runnable, ABC):
         value, options = parse_param_and_options(self.PARAM_PRINT_GROUND_TRUTH, args.print_ground_truth,
                                                  self.PRINT_GROUND_TRUTH_VALUES)
 
-        if value == BooleanOption.TRUE.value:
+        if (not value and args.print_all) or value == BooleanOption.TRUE.value:
             sinks.append(LogSink(options=options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_GROUND_TRUTH, args.store_ground_truth,
                                                  self.STORE_GROUND_TRUTH_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir:
+        if ((not value and args.store_all) or value == BooleanOption.TRUE.value) and args.output_dir:
             sinks.append(
                 ArffFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
 
@@ -1044,14 +1054,14 @@ class LearnerRunnable(Runnable, ABC):
                                                  args.print_prediction_characteristics,
                                                  self.PRINT_PREDICTION_CHARACTERISTICS_VALUES)
 
-        if value == BooleanOption.TRUE.value:
+        if (not value and args.print_all) or value == BooleanOption.TRUE.value:
             sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_PREDICTION_CHARACTERISTICS,
                                                  args.store_prediction_characteristics,
                                                  self.STORE_PREDICTION_CHARACTERISTICS_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir:
+        if ((not value and args.store_all) or value == BooleanOption.TRUE.value) and args.output_dir:
             sinks.append(
                 CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
 
@@ -1069,13 +1079,13 @@ class LearnerRunnable(Runnable, ABC):
         value, options = parse_param_and_options(self.PARAM_PRINT_DATA_CHARACTERISTICS, args.print_data_characteristics,
                                                  self.PRINT_DATA_CHARACTERISTICS_VALUES)
 
-        if value == BooleanOption.TRUE.value:
+        if (not value and args.print_all) or value == BooleanOption.TRUE.value:
             sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_DATA_CHARACTERISTICS, args.store_data_characteristics,
                                                  self.STORE_DATA_CHARACTERISTICS_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir:
+        if ((not value and args.store_all) or value == BooleanOption.TRUE.value) and args.output_dir:
             sinks.append(
                 CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
 
@@ -1093,13 +1103,13 @@ class LearnerRunnable(Runnable, ABC):
         value, options = parse_param_and_options(self.PARAM_PRINT_LABEL_VECTORS, args.print_label_vectors,
                                                  self.PRINT_LABEL_VECTORS_VALUES)
 
-        if value == BooleanOption.TRUE.value:
+        if (not value and args.print_all) or value == BooleanOption.TRUE.value:
             sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_LABEL_VECTORS, args.store_label_vectors,
                                                  self.STORE_LABEL_VECTORS_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir:
+        if ((not value and args.store_all) or value == BooleanOption.TRUE.value) and args.output_dir:
             sinks.append(
                 CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
 
@@ -1389,12 +1399,12 @@ class RuleLearnerRunnable(LearnerRunnable):
         sinks = []
         value, options = parse_param_and_options(self.PARAM_PRINT_RULES, args.print_rules, self.PRINT_RULES_VALUES)
 
-        if value == BooleanOption.TRUE.value:
+        if (not value and args.print_all) or value == BooleanOption.TRUE.value:
             sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_RULES, args.store_rules, self.STORE_RULES_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir:
+        if ((not value and args.store_all) or value == BooleanOption.TRUE.value) and args.output_dir:
             sinks.append(
                 TextFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
 
@@ -1412,10 +1422,10 @@ class RuleLearnerRunnable(LearnerRunnable):
         """
         sinks = []
 
-        if args.print_model_characteristics:
+        if args.print_model_characteristics or args.print_all:
             sinks.append(LogSink())
 
-        if args.store_model_characteristics and args.output_dir:
+        if (args.store_model_characteristics or args.store_all) and args.output_dir:
             sinks.append(CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir))
 
         if sinks:
@@ -1436,14 +1446,14 @@ class RuleLearnerRunnable(LearnerRunnable):
                                                  args.print_marginal_probability_calibration_model,
                                                  self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
-        if value == BooleanOption.TRUE.value:
+        if (not value and args.print_all) or value == BooleanOption.TRUE.value:
             sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL,
                                                  args.store_marginal_probability_calibration_model,
                                                  self.STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir:
+        if ((not value and args.store_all) or value == BooleanOption.TRUE.value) and args.output_dir:
             sinks.append(
                 CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
 
@@ -1465,14 +1475,14 @@ class RuleLearnerRunnable(LearnerRunnable):
                                                  args.print_joint_probability_calibration_model,
                                                  self.PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
-        if value == BooleanOption.TRUE.value:
+        if (not value and args.print_all) or value == BooleanOption.TRUE.value:
             sinks.append(LogSink(options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_JOINT_PROBABILITY_CALIBRATION_MODEL,
                                                  args.store_joint_probability_calibration_model,
                                                  self.STORE_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
-        if value == BooleanOption.TRUE.value and args.output_dir:
+        if ((not value and args.store_all) or value == BooleanOption.TRUE.value) and args.output_dir:
             sinks.append(
                 CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
 
