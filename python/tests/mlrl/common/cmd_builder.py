@@ -64,7 +64,7 @@ class CmdBuilder:
         self.parameter_save_dir = None
         self.model_dir = None
         self.num_folds = 0
-        self.current_fold = 0
+        self.current_fold = None
         self.args = []
 
     @property
@@ -141,23 +141,29 @@ class CmdBuilder:
         :return: The builder itself
         """
         self.num_folds = 0
-        self.current_fold = 0
+        self.current_fold = None
         self.args.append('--data-split')
         self.args.append('none')
         return self
 
-    def cross_validation(self, num_folds: int = 10, current_fold: int = 0):
+    def cross_validation(self, num_folds: int = 10, current_fold: Optional[int] = None):
         """
         Configures the rule learner to use a cross validation.
 
         :param num_folds:       The total number of folds
-        :param current_fold:    The fold to be run or 0, if all folds should be run
+        :param current_fold:    The fold to be run (starting at 1) or None, if all folds should be run
         :return:                The builder itself
         """
         self.num_folds = num_folds
         self.current_fold = current_fold
         self.args.append('--data-split')
-        self.args.append('cross-validation{num_folds=' + str(num_folds) + ',current_fold=' + str(current_fold) + '}')
+        value = 'cross-validation{num_folds=' + str(num_folds)
+
+        if current_fold:
+            value += ',first_fold=' + str(current_fold) + ',last_fold=' + str(current_fold)
+
+        value += '}'
+        self.args.append(value)
         return self
 
     def sparse_feature_value(self, sparse_feature_value: float = 0.0):

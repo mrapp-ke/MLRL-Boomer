@@ -58,11 +58,11 @@ class CmdRunner:
             if num_folds > 0:
                 current_fold = builder.current_fold
 
-                if current_fold > 0:
-                    self.__assert_file_exists(directory, self.__get_file_name(file_name, suffix, current_fold))
-                else:
+                if current_fold is None:
                     for i in range(num_folds):
                         self.__assert_file_exists(directory, self.__get_file_name(file_name, suffix, i + 1))
+                else:
+                    self.__assert_file_exists(directory, self.__get_file_name(file_name, suffix, current_fold))
             else:
                 self.__assert_file_exists(directory, self.__get_file_name(file_name, suffix))
 
