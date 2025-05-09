@@ -166,6 +166,17 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--output-dir` An absolute or relative path to the directory where experimental results should be saved.
 
+- `--create-output-dir` (Default value = `true`)
+
+  - `true` The directories specified via the arguments `--output-dir`, `--model-save-dir` and `--parameter-save-dir` are automatically created if they do not already exist.
+  - `false` The directories are not created automatically.
+
+- `--wipe-output-dir` (Default value = `auto`)
+
+  - `true` All files within the directory specified via the argument `--output-dir` are deleted before the experiment starts.
+  - `false` No files within the directory are deleted, but existing files may be overwritten by the experiment.
+  - `auto` All files within the directory are deleted unless the experiment runs a subset of the folds of a cross validation.
+
 - `--exit-on-error` (Default value = `false`)
 
   - `true` The program exits if an error occurs while writing experimental results.
