@@ -76,12 +76,13 @@ class EvaluationWriter(OutputWriter, ABC):
     An abstract base class for all classes that allow writing evaluation results to one or several sinks.
     """
 
-    def __init__(self, *extractors: EvaluationDataExtractor):
+    def __init__(self, *extractors: EvaluationDataExtractor, exit_on_error: bool = True):
         """
-        :param extractors: Extractors that should be used for obtaining evaluation results according to different
-                           evaluation measures
+        :param extractors:      Extractors that should be used for extracting the output data to be written to the sinks
+        :param exit_on_error:   True, if the program should exit when an error occurs while writing the output data,
+                                False otherwise
         """
-        super().__init__(*extractors)
+        super().__init__(*extractors, exit_on_error=exit_on_error)
 
     def _write_to_sink(self, sink: Sink, state: ExperimentState, output_data: OutputData):
         fold = state.fold
