@@ -641,11 +641,16 @@ class LearnerRunnable(Runnable, ABC):
                             + 'one of ' + format_dict_keys(self.STORE_EVALUATION_VALUES) + '. Does only have an effect '
                             + 'if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options '
                             + 'refer to the documentation.')
-        parser.add_argument('--evaluate-training-data',
+        parser.add_argument('--predict-for-training-data',
                             type=BooleanOption.parse,
                             default=False,
-                            help='Whether the models should not only be evaluated on the test data, but also on the '
-                            + 'training data. Must be one of ' + format_enum_values(BooleanOption) + '.')
+                            help='Whether predictions should be obtained for the training data or not. Must be one of '
+                            + format_enum_values(BooleanOption) + '.')
+        parser.add_argument('--predict-for-test-data',
+                            type=BooleanOption.parse,
+                            default=True,
+                            help='Whether predictions should be obtained for the test data or not. Must be one of '
+                            + format_enum_values(BooleanOption) + '.')
         parser.add_argument(self.PARAM_PRINT_PREDICTION_CHARACTERISTICS,
                             type=str,
                             default=BooleanOption.FALSE.value,
@@ -777,8 +782,8 @@ class LearnerRunnable(Runnable, ABC):
             self._create_label_vector_writer(args),
         ]))
         experiment.add_prediction_output_writers(*prediction_output_writers)
-        experiment.run(predict_for_training_dataset=prediction_output_writers and args.evaluate_training_data,
-                       predict_for_test_dataset=prediction_output_writers)
+        experiment.run(predict_for_training_dataset=prediction_output_writers and args.predict_for_training_data,
+                       predict_for_test_dataset=prediction_output_writers and args.predict_for_test_data)
 
     # pylint: disable=unused-argument
     def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
