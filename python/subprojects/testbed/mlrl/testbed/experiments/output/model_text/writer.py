@@ -33,8 +33,10 @@ class ModelAsTextWriter(OutputWriter):
                 log.error('Unable to extract model from learner of type %s. No suitable extractor available.',
                           type(training_result.learner).__name__)
 
-    def __init__(self, *extractors: DataExtractor):
+    def __init__(self, *extractors: DataExtractor, exit_on_error: bool = True):
         """
-        :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
+        :param extractors:      Extractors that should be used for extracting the output data to be written to the sinks
+        :param exit_on_error:   True, if the program should exit when an error occurs while writing the output data,
+                                False otherwise
         """
-        super().__init__(*extractors, ModelAsTextWriter.DefaultExtractor())
+        super().__init__(*extractors, ModelAsTextWriter.DefaultExtractor(), exit_on_error=exit_on_error)

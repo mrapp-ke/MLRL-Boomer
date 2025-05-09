@@ -81,6 +81,14 @@ One of the most important capabilities of the command line API is to train machi
 
   - `none` The available data is not split into separate training and test sets, but the entire data is used for training and evaluation. This strategy should only be used for testing purposes, as the evaluation results will be highly biased and overly optimistic. Given that `dataset-name` is provided as the value of the argument `--dataset`, the data must be stored pin a file named `dataset-name.arff`.
 
+### Types of Predictions
+
+- `--prediction-type` (Default value = `binary`)
+
+  - `scores` The learner is instructed to predict scores. In this case, ranking measures are used for evaluation.
+  - `probabilities` The learner is instructed to predict probability estimates. In this case, ranking measures are used for evaluation.
+  - `binary` The learner is instructed to predict binary labels. In this case, bi-partition evaluation measures are used for evaluation.
+
 - `--predict-for-training-data` (Default value = `false`)
 
   - `true` Predictions are obtained for the training data.
@@ -90,14 +98,6 @@ One of the most important capabilities of the command line API is to train machi
 
   - `true` Predictions are obtained for the test data.
   - `false` Predictions are not obtained for the test data.
-
-### Types of Predictions
-
-- `--prediction-type` (Default value = `binary`)
-
-  - `scores` The learner is instructed to predict scores. In this case, ranking measures are used for evaluation.
-  - `probabilities` The learner is instructed to predict probability estimates. In this case, ranking measures are used for evaluation.
-  - `binary` The learner is instructed to predict binary labels. In this case, bi-partition evaluation measures are used for evaluation.
 
 ### Incremental Evaluation
 
@@ -164,6 +164,11 @@ As an alternative to storing the models learned by an algorithm, the algorithmic
 To provide valuable insights into the models learned by an algorithm, the predictions they provide, or the data they have been derived from, a wide variety of experimental results can be written to output files or printed on the console. If the results should be written to files, it is necessary to specify an output directory:
 
 - `--output-dir` An absolute or relative path to the directory where experimental results should be saved.
+
+- `--exit-on-error` (Default value = `false`)
+
+  - `true` The program exits if an error occurs while writing experimental results.
+  - `false` Any error that occurs while writing experimental results is logged, but the program continues.
 
 (arguments-evaluation-results)=
 
