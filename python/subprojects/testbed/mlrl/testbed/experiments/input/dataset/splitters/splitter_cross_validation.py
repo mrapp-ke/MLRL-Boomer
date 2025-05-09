@@ -160,19 +160,19 @@ class CrossValidationSplitter(DatasetSplitter):
             datasets = cache.test_datasets if dataset_type == DatasetType.TEST else cache.training_datasets
             return replace(state, dataset=datasets[state.fold.index])
 
-    def __init__(self, dataset_reader: DatasetReader, num_folds: int, current_fold: int, random_state: int):
+    def __init__(self, dataset_reader: DatasetReader, num_folds: int, first_fold: int, last_fold: int,
+                 random_state: int):
         """
         :param dataset_reader:  The reader that should be used for loading datasets
         :param num_folds:       The total number of folds to be used by cross validation or 1, if separate training and
                                 test sets should be used
-        :param current_fold:    The cross validation fold to be performed or -1, if all folds should be performed
+        :param first_fold:      The index of the first cross validation fold to be performed (inclusive, starting at 0)
+        :param last_fold:       The index of the last cross validation fold to be performed (exclusive)
         :param random_state:    The seed to be used by RNGs. Must be at least 1
         """
         self.dataset_reader = dataset_reader
         self.random_state = random_state
-        self.folding_strategy = FoldingStrategy(num_folds=num_folds,
-                                                first=0 if current_fold < 0 else current_fold,
-                                                last=num_folds if current_fold < 0 else current_fold + 1)
+        self.folding_strategy = FoldingStrategy(num_folds=num_folds, first=first_fold, last=last_fold)
         self.cache = None
         context = dataset_reader.input_data.context
         context.include_dataset_type = False
