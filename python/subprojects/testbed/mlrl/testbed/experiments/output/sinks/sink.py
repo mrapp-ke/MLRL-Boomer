@@ -6,6 +6,7 @@ Provides classes for implementing sinks, output data may be written to.
 import logging as log
 
 from abc import ABC, abstractmethod
+from os import makedirs
 
 from mlrl.common.config.options import Options
 
@@ -42,22 +43,30 @@ class FileSink(Sink, ABC):
     An abstract base class for all sinks that write output data to a file.
     """
 
-    def __init__(self, directory: str, suffix: str, options: Options = Options()):
+    def __init__(self, directory: str, suffix: str, options: Options = Options(), create_directory: bool = False):
         """
-        :param directory:   The path to the directory of the file
-        :param suffix:      The suffix of the file
-        :param options:     Options to be taken into account
+        :param directory:           The path to the directory of the file
+        :param suffix:              The suffix of the file
+        :param options:             Options to be taken into account
+        :param create_directory:    True, if the given directory should be created, if it does not exist, False
+                                    otherwise
         """
         super().__init__(options)
         self.directory = directory
         self.suffix = suffix
+        self.create_directory = create_directory
 
     def write_to_sink(self, state: ExperimentState, output_data: OutputData, **kwargs):
         """
         See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
         """
         context = output_data.get_context(type(self))
-        file_path = FilePath(directory=self.directory,
+        directory = self.directory
+
+        if self.create_directory:
+            makedirs(directory, exist_ok=True)
+
+        file_path = FilePath(directory=directory,
                              file_name=output_data.properties.file_name,
                              suffix=self.suffix,
                              context=context)
@@ -81,13 +90,15 @@ class TabularFileSink(FileSink, ABC):
     An abstract base class for all sinks that write tabular output data to a file.
     """
 
-    def __init__(self, directory: str, suffix: str, options: Options = Options()):
+    def __init__(self, directory: str, suffix: str, options: Options = Options(), create_directory: bool = False):
         """
-        :param directory:   The path to the directory of the file
-        :param suffix:      The suffix of the file
-        :param options:     Options to be taken into account
+        :param directory:           The path to the directory of the file
+        :param suffix:              The suffix of the file
+        :param options:             Options to be taken into account
+        :param create_directory:    True, if the given directory should be created, if it does not exist, False
+                                    otherwise
         """
-        super().__init__(directory=directory, suffix=suffix, options=options)
+        super().__init__(directory=directory, suffix=suffix, options=options, create_directory=create_directory)
 
     def _write_to_file(self, file_path: str, state: ExperimentState, output_data: OutputData, **kwargs):
         if not isinstance(output_data, TabularOutputData):
@@ -114,13 +125,15 @@ class DatasetFileSink(FileSink, ABC):
     An abstract base class for all sinks that write datasets to a file.
     """
 
-    def __init__(self, directory: str, suffix: str, options: Options = Options()):
+    def __init__(self, directory: str, suffix: str, options: Options = Options(), create_directory: bool = False):
         """
-        :param directory:   The path to the directory of the file
-        :param suffix:      The suffix of the file
-        :param options:     Options to be taken into account
+        :param directory:           The path to the directory of the file
+        :param suffix:              The suffix of the file
+        :param options:             Options to be taken into account
+        :param create_directory:    True, if the given directory should be created, if it does not exist, False
+                                    otherwise
         """
-        super().__init__(directory=directory, suffix=suffix, options=options)
+        super().__init__(directory=directory, suffix=suffix, options=options, create_directory=create_directory)
 
     def _write_to_file(self, file_path: str, state: ExperimentState, output_data: OutputData, **kwargs):
         if not isinstance(output_data, DatasetOutputData):
