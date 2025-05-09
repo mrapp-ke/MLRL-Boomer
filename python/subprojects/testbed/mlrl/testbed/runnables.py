@@ -19,7 +19,6 @@ from tabulate import tabulate
 
 from mlrl.util.format import format_dict_keys, format_enum_values, format_iterable
 
-from mlrl.common.config.options import BooleanOption, parse_param_and_options
 from mlrl.common.config.parameters import NONE, Parameter
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 from mlrl.common.learners import RuleLearner, SparsePolicy
@@ -55,6 +54,7 @@ from mlrl.testbed.package_info import get_package_info as get_testbed_package_in
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
 from mlrl.util.format import format_enum_values, format_iterable, format_set
+from mlrl.util.options import BooleanOption, parse_param_and_options
 
 LOG_FORMAT = '%(levelname)s %(message)s'
 

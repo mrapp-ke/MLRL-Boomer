@@ -9,12 +9,12 @@ from typing import Optional
 
 import numpy as np
 
-from mlrl.common.config.options import Options
-
 from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData
 from mlrl.testbed.util.format import OPTION_DECIMALS
+
+from mlrl.util.options import Options
 
 
 class OutputDataset(DatasetOutputData):
