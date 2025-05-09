@@ -79,12 +79,17 @@ One of the most important capabilities of the command line API is to train machi
     - `num_folds` (Default value = `10`) The total number of cross validation folds to be performed. Must be at least 2.
     - `current_fold` (Default value = `0`) The cross validation fold to be performed. Must be in \[1, `num_folds`\] or 0, if all folds should be performed.
 
-  - `none` The available data is not split into separate training and test sets, but the entire data is used for training and evaluation. This strategy should only be used for testing purposes, as the evaluation results will be highly biased and overly optimistic. Given that `dataset-name` is provided as the value of the argument `--dataset`, the data must be stored in a file named `dataset-name.arff`.
+  - `none` The available data is not split into separate training and test sets, but the entire data is used for training and evaluation. This strategy should only be used for testing purposes, as the evaluation results will be highly biased and overly optimistic. Given that `dataset-name` is provided as the value of the argument `--dataset`, the data must be stored pin a file named `dataset-name.arff`.
 
-- `--evaluate-training-data` (Default value = `false`)
+- `--predict-for-training-data` (Default value = `false`)
 
-  - `true` The models are not only evaluated on the test data, but also on the training data.
-  - `false` The models are only evaluated on the test data.
+  - `true` Predictions are obtained for the training data.
+  - `false` Predictions are not obtained for the training data.
+
+- `--predict-for-test-data` (Default value = `true`)
+
+  - `true` Predictions are obtained for the test data.
+  - `false` Predictions are not obtained for the test data.
 
 ### Types of Predictions
 
