@@ -182,6 +182,16 @@ To provide valuable insights into the models learned by an algorithm, the predic
   - `true` The program exits if an error occurs while writing experimental results.
   - `false` Any error that occurs while writing experimental results is logged, but the program continues.
 
+- `--print-all` (Default value = `false`)
+
+  - `true` All output data is printed on the console unless specified otherwise.
+  - `false` No output data is printed on the console by default.
+
+- `--store-all` (Default value = `false`)
+
+  - `true` All output data is written to files.
+  - `false` No output data is written to files.
+
 (arguments-evaluation-results)=
 
 ### Evaluation Results
