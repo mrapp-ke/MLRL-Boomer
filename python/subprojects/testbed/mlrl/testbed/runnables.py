@@ -569,7 +569,8 @@ class LearnerRunnable(Runnable, ABC):
             assert_greater_or_equal(self.PARAM_RANDOM_STATE, random_state, 1)
             return CrossValidationSplitter(dataset_reader,
                                            num_folds=num_folds,
-                                           current_fold=current_fold - 1,
+                                           first_fold=0 if current_fold < 0 else current_fold - 1,
+                                           last_fold=num_folds if current_fold < 0 else current_fold + 1,
                                            random_state=random_state)
         if value == self.DATA_SPLIT_TRAIN_TEST:
             test_size = options.get_float(self.OPTION_TEST_SIZE, 0.33)
