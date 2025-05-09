@@ -3,8 +3,7 @@
 """
 from enum import Enum
 
-from mlrl.common.cython.validation import assert_greater_or_equal, assert_less_or_equal, assert_multiple, \
-    assert_not_none
+from mlrl.util.validation import assert_greater_or_equal, assert_less_or_equal, assert_multiple, assert_not_none
 
 
 cdef class SizeStoppingCriterionConfig:
