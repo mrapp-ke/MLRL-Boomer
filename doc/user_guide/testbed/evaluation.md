@@ -171,7 +171,9 @@ If you are interested in obtaining evaluation results for the training data in a
        --data-split cv \
        --predict-for-training-data true
    ```
-````    
+````
+
+The argument `--predict-for-test-data false` can be used analogously to control whether evaluation results should be obtained for the test data or not. 
 `````
 
 (prediction-types)=

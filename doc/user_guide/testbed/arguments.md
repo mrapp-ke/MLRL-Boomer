@@ -86,6 +86,11 @@ One of the most important capabilities of the command line API is to train machi
   - `true` Predictions are obtained for the training data.
   - `false` Predictions are not obtained for the training data.
 
+- `--predict-for-test-data` (Default value = `true`)
+
+  - `true` Predictions are obtained for the test data.
+  - `false` Predictions are not obtained for the test data.
+
 ### Types of Predictions
 
 - `--prediction-type` (Default value = `binary`)
