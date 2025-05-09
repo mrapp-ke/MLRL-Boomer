@@ -25,12 +25,17 @@ class CsvFileSink(TabularFileSink):
 
     QUOTE_CHAR = '"'
 
-    def __init__(self, directory: str, options: Options = Options()):
+    def __init__(self, directory: str, options: Options = Options(), create_directory: bool = False):
         """
-        :param directory:   The path to the directory of the file
-        :param options:     Options to be taken into account
+        :param directory:           The path to the directory of the file
+        :param options:             Options to be taken into account
+        :param create_directory:    True, if the given directory should be created, if it does not exist, False
+                                    otherwise
         """
-        super().__init__(directory=directory, suffix=self.SUFFIX_CSV, options=options)
+        super().__init__(directory=directory,
+                         suffix=self.SUFFIX_CSV,
+                         options=options,
+                         create_directory=create_directory)
 
     def _write_table_to_file(self, file_path: str, state: ExperimentState, table: Table, **_):
         table = table.to_column_wise_table()
