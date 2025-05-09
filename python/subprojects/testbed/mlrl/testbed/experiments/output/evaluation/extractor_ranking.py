@@ -11,7 +11,6 @@ import numpy as np
 from sklearn.utils.multiclass import is_multilabel
 
 from mlrl.common.config.options import Options
-from mlrl.common.data.arrays import enforce_dense
 
 from mlrl.testbed.experiments.output.data import OutputValue
 from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
@@ -19,6 +18,8 @@ from mlrl.testbed.experiments.output.evaluation.measures import Measure
 from mlrl.testbed.experiments.output.evaluation.measures_ranking import RANKING_EVALUATION_MEASURES
 from mlrl.testbed.experiments.output.evaluation.measures_regression import REGRESSION_EVALUATION_MEASURES
 from mlrl.testbed.experiments.output.evaluation.writer import EvaluationDataExtractor
+
+from mlrl.util.arrays import enforce_dense
 
 
 class RankingEvaluationDataExtractor(EvaluationDataExtractor):

@@ -7,9 +7,9 @@ from functools import cached_property
 
 import numpy as np
 
-from mlrl.common.data.arrays import is_sparse
-
 from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
+
+from mlrl.util.arrays import is_sparse
 
 
 class LabelMatrix(OutputMatrix):
