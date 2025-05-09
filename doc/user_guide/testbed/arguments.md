@@ -165,6 +165,11 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--output-dir` An absolute or relative path to the directory where experimental results should be saved.
 
+- `--exit-on-error` (Default value = `false`)
+
+  - `true` The program exits if an error occurs while writing experimental results.
+  - `false` Any error that occurs while writing experimental results is logged, but the program continues.
+
 (arguments-evaluation-results)=
 
 ### Evaluation Results
