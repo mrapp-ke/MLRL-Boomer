@@ -716,6 +716,11 @@ class LearnerRunnable(Runnable, ABC):
         parser.add_argument(self.PARAM_OUTPUT_DIR,
                             type=str,
                             help='The path to the directory where experimental results should be saved.')
+        parser.add_argument('--exit-on-error',
+                            type=BooleanOption.parse,
+                            default=False,
+                            help='Whether the program should exit if an error occurs while writing experimental '
+                            + 'results or not. Must be one of ' + format_enum_values(BooleanOption) + '.')
         parser.add_argument('--print-parameters',
                             type=BooleanOption.parse,
                             default=False,
@@ -858,7 +863,10 @@ class LearnerRunnable(Runnable, ABC):
         :return:        The `ModelWriter` that has been created
         """
         model_save_dir = args.model_save_dir
-        return ModelWriter().add_sinks(PickleFileSink(model_save_dir)) if model_save_dir else None
+
+        if model_save_dir:
+            return ModelWriter(exit_on_error=args.exit_on_error).add_sinks(PickleFileSink(model_save_dir))
+        return None
 
     # pylint: disable=unused-argument
     def _create_predictor_factory(self, args, prediction_type: PredictionType) -> Predictor:
@@ -1055,7 +1063,9 @@ class LearnerRunnable(Runnable, ABC):
         if value == BooleanOption.TRUE.value and args.output_dir:
             sinks.append(CsvFileSink(args.output_dir, options=options))
 
-        return LabelVectorWriter(LabelVectorSetExtractor()).add_sinks(*sinks) if sinks else None
+        if sinks:
+            return LabelVectorWriter(LabelVectorSetExtractor(), exit_on_error=args.exit_on_error).add_sinks(*sinks)
+        return None
 
     @abstractmethod
     def create_classifier(self, args) -> Optional[SkLearnClassifierMixin]:
@@ -1347,7 +1357,9 @@ class RuleLearnerRunnable(LearnerRunnable):
         if value == BooleanOption.TRUE.value and args.output_dir:
             sinks.append(TextFileSink(args.output_dir, options=options))
 
-        return ModelAsTextWriter(RuleModelAsTextExtractor()).add_sinks(*sinks) if sinks else None
+        if sinks:
+            return ModelAsTextWriter(RuleModelAsTextExtractor(), exit_on_error=args.exit_on_error).add_sinks(*sinks)
+        return None
 
     def _create_model_characteristics_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -1365,7 +1377,10 @@ class RuleLearnerRunnable(LearnerRunnable):
         if args.store_model_characteristics and args.output_dir:
             sinks.append(CsvFileSink(args.output_dir))
 
-        return ModelCharacteristicsWriter(RuleModelCharacteristicsExtractor()).add_sinks(*sinks) if sinks else None
+        if sinks:
+            return ModelCharacteristicsWriter(RuleModelCharacteristicsExtractor(),
+                                              exit_on_error=args.exit_on_error).add_sinks(*sinks)
+        return None
 
     def _create_marginal_probability_calibration_model_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -1391,8 +1406,8 @@ class RuleLearnerRunnable(LearnerRunnable):
             sinks.append(CsvFileSink(args.output_dir, options=options))
 
         if sinks:
-            return ProbabilityCalibrationModelWriter(IsotonicMarginalProbabilityCalibrationModelExtractor()) \
-                .add_sinks(*sinks)
+            return ProbabilityCalibrationModelWriter(IsotonicMarginalProbabilityCalibrationModelExtractor(),
+                                                     exit_on_error=args.exit_on_error).add_sinks(*sinks)
         return None
 
     def _create_joint_probability_calibration_model_writer(self, args) -> Optional[OutputWriter]:
@@ -1419,8 +1434,8 @@ class RuleLearnerRunnable(LearnerRunnable):
             sinks.append(CsvFileSink(args.output_dir, options=options))
 
         if sinks:
-            return ProbabilityCalibrationModelWriter(IsotonicJointProbabilityCalibrationModelExtractor()) \
-                .add_sinks(*sinks)
+            return ProbabilityCalibrationModelWriter(IsotonicJointProbabilityCalibrationModelExtractor(),
+                                                     exit_on_error=args.exit_on_error).add_sinks(*sinks)
         return None
 
     def _create_predictor_factory(self, args, prediction_type: PredictionType) -> Predictor:
