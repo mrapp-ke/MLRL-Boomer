@@ -77,7 +77,8 @@ One of the most important capabilities of the command line API is to train machi
   - `cross-validation` A cross validation is performed. Given that `dataset-name` is provided as the value of the argument `--dataset`, the data for individual folds must be stored in files named `dataset-name_fold-1`, `dataset-name_fold-2`, etc. If no such files are available, the program searches for a file with the name `dataset-name.arff` and splits it into training and test data for the individual folds automatically. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
     - `num_folds` (Default value = `10`) The total number of cross validation folds to be performed. Must be at least 2.
-    - `current_fold` (Default value = `0`) The cross validation fold to be performed. Must be in \[1, `num_folds`\] or 0, if all folds should be performed.
+    - `first_fold` (Default value = `1`) The first cross validation fold to be performed. Must be in \[1, `num_folds`\].
+    - `last_fold` (Default value = `num_folds`) The cross validation fold to be performed. Must be at least `first_fold` and in \[1, `num_folds`\].
 
   - `none` The available data is not split into separate training and test sets, but the entire data is used for training and evaluation. This strategy should only be used for testing purposes, as the evaluation results will be highly biased and overly optimistic. Given that `dataset-name` is provided as the value of the argument `--dataset`, the data must be stored pin a file named `dataset-name.arff`.
 
