@@ -27,6 +27,11 @@ class BitWeightVector final : public IWeightVector {
         BitWeightVector(uint32 numElements, bool init = false);
 
         /**
+         * The type of the weights, the vector provides access to.
+         */
+        typedef bool weight_type;
+
+        /**
          * Returns the number of elements in the vector.
          *
          * @return The number of elements
@@ -39,7 +44,7 @@ class BitWeightVector final : public IWeightVector {
          * @param pos   The position
          * @return      The weight at the specified position
          */
-        bool operator[](uint32 pos) const;
+        weight_type operator[](uint32 pos) const;
 
         /**
          * Sets the weight at a specific position.

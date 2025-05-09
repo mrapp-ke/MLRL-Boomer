@@ -54,27 +54,28 @@ class PredictionDispatcher final {
          * Obtains predictions for multiple query examples by delegating the prediction for individual examples to a
          * given `PredictionDelegate`.
          *
-         * @param delegate      A reference to an object of type `IPredictionDelegate`, the prediction for individual
-         *                      examples should be delegated to
-         * @param featureMatrix A reference to an object of template type `FeatureMatrix` that provides row-wise access
-         *                      to the feature values of the query examples
-         * @param rulesBegin    An iterator of type `Model::const_iterator` to the first rule that should be used for
-         *                      prediction
-         * @param rulesEnd      An iterator of type `Model::const_iterator` to the last rule (exclusive) that should be
-         *                      used for prediction
-         * @param numThreads    The number of CPU threads to be used to make predictions for different query examples in
-         *                      parallel. Must be at least 1
+         * @param delegate                  A reference to an object of type `IPredictionDelegate`, the prediction for
+         *                                  individual examples should be delegated to
+         * @param featureMatrix             A reference to an object of template type `FeatureMatrix` that provides
+         *                                  row-wise access to the feature values of the query examples
+         * @param rulesBegin                An iterator of type `Model::const_iterator` to the first rule that should be
+         *                                  used for prediction
+         * @param rulesEnd                  An iterator of type `Model::const_iterator` to the last rule (exclusive)
+         *                                  that should be used for prediction
+         * @param multiThreadingSettings    An object of type `MultiThreadingSettings` that stores the settings to be
+         *                                  used for making predictions for different query examples in parallel
          */
         void predict(const IPredictionDelegate& delegate, const FeatureMatrix& featureMatrix,
                      typename Model::const_iterator rulesBegin, typename Model::const_iterator rulesEnd,
-                     uint32 numThreads) const {
+                     MultiThreadingSettings multiThreadingSettings) const {
             uint32 numExamples = featureMatrix.numRows;
             const IPredictionDelegate* delegatePtr = &delegate;
             const FeatureMatrix* featureMatrixPtr = &featureMatrix;
 
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numExamples) firstprivate(delegatePtr) firstprivate(rulesBegin) \
-      firstprivate(rulesEnd) firstprivate(featureMatrixPtr) schedule(dynamic) num_threads(numThreads)
+      firstprivate(rulesEnd) firstprivate(featureMatrixPtr) schedule(dynamic) \
+      num_threads(multiThreadingSettings.numThreads)
 #endif
             for (int64 i = 0; i < numExamples; i++) {
 #if MULTI_THREADING_SUPPORT_ENABLED
@@ -134,22 +135,22 @@ class BinarySparsePredictionDispatcher final {
          * Obtains predictions for multiple query examples by delegating the prediction for individual examples to a
          * given `IPredictionDelegate`.
          *
-         * @param delegate      A reference to an object of type `IPredictionDelegate`, the prediction for individual
-         *                      examples should be delegated to
-         * @param featureMatrix A reference to an object of template type `FeatureMatrix` that provides row-wise access
-         *                      to the feature values of the query examples
-         * @param rulesBegin    An iterator of type `Model::const_iterator` to the first rule that should be used for
-         *                      prediction
-         * @param rulesEnd      An iterator of type `Model::const_iterator` to the last rule (exclusive) that should be
-         *                      used for prediction
-         * @param numThreads    The number of CPU threads to be used to make predictions for different query examples in
-         *                      parallel. Must be at least 1
-         * @return              The total number of dense predictions explicitly stored in the affected row of the
-                                prediction matrix
+         * @param delegate                  A reference to an object of type `IPredictionDelegate`, the prediction for
+         *                                  individual examples should be delegated to
+         * @param featureMatrix             A reference to an object of template type `FeatureMatrix` that provides
+         *                                  row-wise access to the feature values of the query examples
+         * @param rulesBegin                An iterator of type `Model::const_iterator` to the first rule that should be
+         *                                  used for prediction
+         * @param rulesEnd                  An iterator of type `Model::const_iterator` to the last rule (exclusive)
+         *                                  that should be used for prediction
+         * @param multiThreadingSettings    An object of type `MultiThreadingSettings` that stores the settings to be
+         *                                  used for making predictions for different query examples in parallel
+         * @return                          The total number of dense predictions explicitly stored in the affected row
+                                            of the prediction matrix
          */
         uint32 predict(const IPredictionDelegate& delegate, const FeatureMatrix& featureMatrix,
                        typename Model::const_iterator rulesBegin, typename Model::const_iterator rulesEnd,
-                       uint32 numThreads) const {
+                       MultiThreadingSettings multiThreadingSettings) const {
             uint32 numExamples = featureMatrix.numRows;
             const IPredictionDelegate* delegatePtr = &delegate;
             const FeatureMatrix* featureMatrixPtr = &featureMatrix;
@@ -158,7 +159,7 @@ class BinarySparsePredictionDispatcher final {
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for reduction(+ : numDenseElements) firstprivate(numExamples) firstprivate(delegatePtr) \
       firstprivate(rulesBegin) firstprivate(rulesEnd) firstprivate(featureMatrixPtr) schedule(dynamic) \
-      num_threads(numThreads)
+      num_threads(multiThreadingSettings.numThreads)
 #endif
             for (int64 i = 0; i < numExamples; i++) {
 #if MULTI_THREADING_SUPPORT_ENABLED
@@ -188,7 +189,7 @@ class AbstractIncrementalPredictor : public IIncrementalPredictor<PredictionMatr
 
         const FeatureMatrix& featureMatrix_;
 
-        const uint32 numThreads_;
+        const MultiThreadingSettings multiThreadingSettings_;
 
         typename Model::const_iterator current_;
 
@@ -199,35 +200,38 @@ class AbstractIncrementalPredictor : public IIncrementalPredictor<PredictionMatr
         /**
          * Must be implemented by subclasses in order to obtain predictions.
          *
-         * @param featureMatrix A reference to an object of template type `FeatureMatrix` that provides row-wise access
-         *                      to the feature values of the query examples
-         * @param numThreads    The number of CPU threads to be used to make predictions for different query examples in
-         *                      parallel. Must be at least 1
-         * @param rulesBegin    An iterator of type `Model::const_iterator` to the first rule that should be used for
-         *                      prediction
-         * @param rulesEnd      An iterator of type `Model::const_iterator` to the last rule (exclusive) that should be
-         *                      used for prediction
-         * @return              A reference to an object of template type `PredictionMatrix` that stores the predictions
+         * @param featureMatrix             A reference to an object of template type `FeatureMatrix` that provides
+         *                                  row-wise access to the feature values of the query examples
+         * @param multiThreadingSettings    An object of type `MultiThreadingSettings` that stores the settings to be
+         *                                  used for making predictions for different query examples in parallel
+         * @param rulesBegin                An iterator of type `Model::const_iterator` to the first rule that should be
+         *                                  used for prediction
+         * @param rulesEnd                  An iterator of type `Model::const_iterator` to the last rule (exclusive)
+         *                                  that should be used for prediction
+         * @return                          A reference to an object of template type `PredictionMatrix` that stores the
+         *                                  predictions
          */
-        virtual PredictionMatrix& applyNext(const FeatureMatrix& featureMatrix, uint32 numThreads,
+        virtual PredictionMatrix& applyNext(const FeatureMatrix& featureMatrix,
+                                            MultiThreadingSettings multiThreadingSettings,
                                             typename Model::const_iterator rulesBegin,
                                             typename Model::const_iterator rulesEnd) = 0;
 
     public:
 
         /**
-         * @param featureMatrix A reference to an object of template type `FeatureMatrix` that provides row-wise access
-         *                      to the feature values of the query examples
-         * @param model         A reference to an object of template type `Model` that should be used for prediction
-         * @param numThreads    The number of CPU threads to be used to make predictions for different query examples in
-         *                      parallel. Must be at least 1
-         * @param maxRules      The maximum number of rules to be used for prediction. Must be at least 1 or 0, if the
-         *                      number of rules should not be restricted
+         * @param featureMatrix             A reference to an object of template type `FeatureMatrix` that provides
+         *                                  row-wise access to the feature values of the query examples
+         * @param model                     A reference to an object of template type `Model` that should be used for
+         *                                  prediction
+         * @param multiThreadingSettings    An object of type `MultiThreadingSettings` that stores the settings to be
+         *                                  used for making predictions for different query examples in parallel
+         * @param maxRules                  The maximum number of rules to be used for prediction. Must be at least 1 or
+         *                                  0, if the number of rules should not be restricted
          */
-        AbstractIncrementalPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numThreads,
-                                     uint32 maxRules)
-            : featureMatrix_(featureMatrix), numThreads_(numThreads), current_(model.used_cbegin(maxRules)),
-              end_(model.used_cend(maxRules)) {}
+        AbstractIncrementalPredictor(const FeatureMatrix& featureMatrix, const Model& model,
+                                     MultiThreadingSettings multiThreadingSettings, uint32 maxRules)
+            : featureMatrix_(featureMatrix), multiThreadingSettings_(multiThreadingSettings),
+              current_(model.used_cbegin(maxRules)), end_(model.used_cend(maxRules)) {}
 
         virtual ~AbstractIncrementalPredictor() override {}
 
@@ -237,7 +241,8 @@ class AbstractIncrementalPredictor : public IIncrementalPredictor<PredictionMatr
 
         PredictionMatrix& applyNext(uint32 stepSize) override final {
             typename Model::const_iterator next = current_ + std::min(stepSize, this->getNumNext());
-            PredictionMatrix& predictionMatrix = this->applyNext(featureMatrix_, numThreads_, current_, next);
+            PredictionMatrix& predictionMatrix =
+              this->applyNext(featureMatrix_, multiThreadingSettings_, current_, next);
             current_ = next;
             return predictionMatrix;
         }

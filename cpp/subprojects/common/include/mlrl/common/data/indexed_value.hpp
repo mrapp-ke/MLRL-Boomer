@@ -6,7 +6,7 @@
 #include "mlrl/common/data/types.hpp"
 
 /**
- * A tuple that consists of an index and a value.
+ * An index and a corresponding value.
  *
  * @tparam T The type of the value
  */

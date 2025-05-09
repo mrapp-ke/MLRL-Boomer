@@ -3,10 +3,13 @@
  */
 #pragma once
 
-#include "mlrl/common/input/feature_vector.hpp"
+#include "mlrl/common/indices/index_vector.hpp"
+#include "mlrl/common/input/feature_matrix.hpp"
+#include "mlrl/common/rule_refinement/feature_subspace.hpp"
 #include "mlrl/common/rule_refinement/refinement_comparator_fixed.hpp"
 #include "mlrl/common/rule_refinement/refinement_comparator_single.hpp"
-#include "mlrl/common/statistics/statistics_weighted_immutable.hpp"
+
+#include <memory>
 
 /**
  * Defines an interface for all classes that allow to find the best refinement of existing rules.
@@ -14,71 +17,78 @@
 class IRuleRefinement {
     public:
 
-        /**
-         * Defines an interface for callbacks that may be invoked by subclasses of the the class `IRuleRefinement` in
-         * order to retrieve the information that is required to search for potential refinements. It consists of
-         * `IImmutableWeightedStatistics`, as well as an `IFeatureVector` that allows to determine the thresholds that
-         * may be used by potential conditions.
-         */
-        class ICallback {
-            public:
-
-                /**
-                 * The data that is provided via the callback's `get` function.
-                 */
-                struct Result final {
-                    public:
-
-                        /**
-                         * @param statistics    A reference to an object of type `IImmutableWeightedStatistics` that
-                         *                      should be used to search for potential refinements
-                         * @param featureVector A reference to an object of type `IFeatureVector` that should be used to
-                         *                      search for potential refinements
-                         */
-                        Result(const IImmutableWeightedStatistics& statistics, const IFeatureVector& featureVector)
-                            : statistics(statistics), featureVector(featureVector) {}
-
-                        /**
-                         * A reference to an object of type `IImmutableWeightedStatistics` that should be used to search
-                         * for potential refinements.
-                         */
-                        const IImmutableWeightedStatistics& statistics;
-
-                        /**
-                         * A reference to an object of type `IFeatureVector` that should be used to search for potential
-                         * refinements.
-                         */
-                        const IFeatureVector& featureVector;
-                };
-
-                virtual ~ICallback() {}
-
-                /**
-                 * Invokes the callback and returns its result.
-                 *
-                 * @return An object of type `Result` that stores references to the statistics and the feature vector
-                 *         that may be used to search for potential refinements
-                 */
-                virtual Result get() = 0;
-        };
-
         virtual ~IRuleRefinement() {}
 
         /**
          * Finds the best refinement of an existing rule.
          *
-         * @param comparator    A reference to an object of type `SingleRefinementComparator` that should be used for
-         *                      comparing potential refinements
-         * @param minCoverage   The minimum number of examples that must be covered by the refinement
+         * @param comparator        A reference to an object of type `SingleRefinementComparator` that should be used
+         *                          for comparing potential refinements
+         * @param featureSubspace   A reference to an object of type `IFeatureSubspace` that should be used to search
+         *                          for the potential refinements
+         * @param featureIndices    A reference to an object of type `IIndexVector` that provides access to the indices
+         *                          of the features that should be considered
+         * @param outputIndices     A reference to an object of type `IIndexVector` that provides access to the indices
+         *                          of the outputs for which the refinement(s) may predict
+         * @param minCoverage       The minimum number of examples that must be covered by the refinements
+         * @return                  True, if at least one refinement has been found, false otherwise
          */
-        virtual void findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) const = 0;
+        virtual bool findRefinement(SingleRefinementComparator& comparator, IFeatureSubspace& featureSubspace,
+                                    const IIndexVector& featureIndices, const IIndexVector& outputIndices,
+                                    uint32 minCoverage) const = 0;
 
         /**
          * Finds the best refinements of an existing rule.
          *
-         * @param comparator    A reference to an object of type `MultiRefinementComparator` that should be used for
-         *                      comparing potential refinements
-         * @param minCoverage   The minimum number of examples that must be covered by the refinements
+         * @param comparator        A reference to an object of type `FixedRefinementComparator` that should be used for
+         *                          comparing potential refinements
+         * @param featureSubspace   A reference to an object of type `IFeatureSubspace` that should be used to search
+         *                          for the potential refinements
+         * @param featureIndices    A reference to an object of type `IIndexVector` that provides access to the indices
+         *                          of the features that should be considered
+         * @param outputIndices     A reference to an object of type `IIndexVector` that provides access to the indices
+         *                          of the outputs for which the refinement(s) may predict
+         * @param minCoverage       The minimum number of examples that must be covered by the refinements
+         * @return                  True, if at least one refinement has been found, false otherwise
          */
-        virtual void findRefinement(FixedRefinementComparator& comparator, uint32 minCoverage) const = 0;
+        virtual bool findRefinement(FixedRefinementComparator& comparator, IFeatureSubspace& featureSubspace,
+                                    const IIndexVector& featureIndices, const IIndexVector& outputIndices,
+                                    uint32 minCoverage) const = 0;
+};
+
+/**
+ * Defines an interface for all factories that allow to create instances of the type `IRuleRefinement`.
+ */
+class IRuleRefinementFactory {
+    public:
+
+        virtual ~IRuleRefinementFactory() {}
+
+        /**
+         * Creates and returns a new object of type `IRuleRefinement`.
+         *
+         * @return An unique pointer to an object of type `IRuleRefinement` that has been created
+         */
+        virtual std::unique_ptr<IRuleRefinement> create() const = 0;
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a method for finding the best refinements of existing
+ * rules.
+ */
+class IRuleRefinementConfig {
+    public:
+
+        virtual ~IRuleRefinementConfig() {}
+
+        /**
+         * Creates and returns an new object of type `IRuleRefinementFactory`.
+         *
+         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
+         *                      values of the training examples
+         * @param numOutputs    The total number of available outputs
+         * @return              An unique pointer to an object of type `IRuleRefinementFactory` that has been created
+         */
+        virtual std::unique_ptr<IRuleRefinementFactory> createRuleRefinementFactory(const IFeatureMatrix& featureMatrix,
+                                                                                    uint32 numOutputs) const = 0;
 };

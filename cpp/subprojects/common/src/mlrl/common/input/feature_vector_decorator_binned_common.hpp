@@ -76,8 +76,8 @@ class AbstractBinnedFeatureVectorDecorator : public AbstractFeatureVectorDecorat
          */
         AbstractBinnedFeatureVectorDecorator(const AbstractBinnedFeatureVectorDecorator& other)
             : AbstractBinnedFeatureVectorDecorator<AllocatedFeatureVector>(
-                AllocatedFeatureVector(other.view.firstView.numValues,
-                                       other.view.firstView.indptr[other.view.firstView.numValues],
+                AllocatedFeatureVector(other.view.firstView.numBins,
+                                       other.view.firstView.indptr[other.view.firstView.numBins],
                                        other.view.firstView.majorityValue),
                 AllocatedMissingFeatureVector()) {}
 
