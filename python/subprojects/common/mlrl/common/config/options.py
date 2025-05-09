@@ -184,7 +184,7 @@ def parse_param(parameter_name: str, value: str, allowed_values: Set[str]) -> st
         return value
 
     raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
-                     + format_set(allowed_values) + ', but is "' + value + '"')
+                     + format_set(allowed_values) + ', but is "' + str(value) + '"')
 
 
 def parse_param_and_options(parameter_name: str, value: str,
