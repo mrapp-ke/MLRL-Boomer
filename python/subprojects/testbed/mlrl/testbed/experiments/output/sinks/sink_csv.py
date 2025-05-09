@@ -5,13 +5,13 @@ Provides classes that allow writing output data to CSV files.
 """
 import csv
 
-from mlrl.common.config.options import Options
-
 from mlrl.testbed.experiments.output.data import OutputValue
 from mlrl.testbed.experiments.output.sinks.sink import TabularFileSink
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
 from mlrl.testbed.util.io import open_writable_file
+
+from mlrl.util.options import Options
 
 
 class CsvFileSink(TabularFileSink):

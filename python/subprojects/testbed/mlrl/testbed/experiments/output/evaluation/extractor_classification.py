@@ -11,8 +11,6 @@ import numpy as np
 
 from sklearn.utils.multiclass import is_multilabel
 
-from mlrl.common.config.options import Options
-
 from mlrl.testbed.experiments.output.data import OutputValue
 from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
 from mlrl.testbed.experiments.output.evaluation.measures import Measure
@@ -21,6 +19,7 @@ from mlrl.testbed.experiments.output.evaluation.measures_classification import M
 from mlrl.testbed.experiments.output.evaluation.writer import EvaluationDataExtractor
 
 from mlrl.util.arrays import enforce_dense
+from mlrl.util.options import Options
 
 
 class ClassificationEvaluationDataExtractor(EvaluationDataExtractor):

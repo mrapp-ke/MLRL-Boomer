@@ -5,11 +5,11 @@ Provides classes that allow writing output data to files by using Python's pickl
 """
 import pickle
 
-from mlrl.common.config.options import Options
-
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
 from mlrl.testbed.experiments.state import ExperimentState
+
+from mlrl.util.options import Options
 
 
 class PickleFileSink(FileSink):

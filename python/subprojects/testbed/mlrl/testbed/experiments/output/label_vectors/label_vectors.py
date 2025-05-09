@@ -7,12 +7,12 @@ from typing import Optional
 
 import numpy as np
 
-from mlrl.common.config.options import Options
-
 from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.label_vectors.label_vector_histogram import LabelVector, LabelVectorHistogram
 from mlrl.testbed.experiments.table import RowWiseTable, Table
+
+from mlrl.util.options import Options
 
 
 class LabelVectors(TabularOutputData):
