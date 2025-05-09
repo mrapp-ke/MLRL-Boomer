@@ -171,16 +171,16 @@ class CmdBuilder:
         self.args.append(str(sparse_feature_value))
         return self
 
-    def evaluate_training_data(self, evaluate_training_data: bool = True):
+    def predict_for_training_data(self, predict_for_training_data: bool = True):
         """
-        Configures whether the rule learner should be evaluated on the training data or not.
+        Configures whether predictions should be obtained for the training data or not.
 
-        :param evaluate_training_data:  True, if the rule learner should be evaluated on the training data, False
-                                        otherwise
-        :return:                        The builder itself
+        :param predict_for_training_data:   True, if predictions should be obtained for the training data, False
+                                            otherwise
+        :return:                            The builder itself
         """
-        self.args.append('--evaluate-training-data')
-        self.args.append(str(evaluate_training_data).lower())
+        self.args.append('--predict-for-training-data')
+        self.args.append(str(predict_for_training_data).lower())
         return self
 
     def incremental_evaluation(self, incremental_evaluation: bool = True, step_size: int = 50):

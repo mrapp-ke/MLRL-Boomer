@@ -157,7 +157,7 @@ class IntegrationTests(TestCase, ABC):
         Tests the evaluation of the rule learning algorithm on the training data.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
-            .evaluate_training_data() \
+            .predict_for_training_data() \
             .print_evaluation() \
             .store_evaluation()
         CmdRunner(self, builder).run('evaluation_training-data')
@@ -248,7 +248,7 @@ class IntegrationTests(TestCase, ABC):
         Tests the functionality to store the predictions of the rule learning algorithm for the training data.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
-            .evaluate_training_data() \
+            .predict_for_training_data() \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_predictions() \
@@ -301,7 +301,7 @@ class IntegrationTests(TestCase, ABC):
         data.
         """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
-            .evaluate_training_data() \
+            .predict_for_training_data() \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_prediction_characteristics() \
