@@ -6,13 +6,13 @@ Provides classes for writing predictions to one or several sinks.
 from itertools import tee
 from typing import Optional
 
-from mlrl.common.config.options import Options
-
 from mlrl.testbed.experiments.output.data import OutputData, OutputValue, TabularOutputData
 from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
 from mlrl.testbed.experiments.output.sinks import CsvFileSink
 from mlrl.testbed.experiments.table import RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
+
+from mlrl.util.options import Options
 
 
 class EvaluationResult(TabularOutputData):
