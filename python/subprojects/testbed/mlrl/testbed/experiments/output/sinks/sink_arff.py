@@ -77,12 +77,17 @@ class ArffFileSink(DatasetFileSink):
             xml_string = minidom.parseString(XmlTree.tostring(root_element)).toprettyxml(encoding=ENCODING_UTF8)
             xml_file.write(xml_string.decode(ENCODING_UTF8))
 
-    def __init__(self, directory: str, options: Options = Options()):
+    def __init__(self, directory: str, options: Options = Options(), create_directory: bool = False):
         """
-        :param directory:   The path to the directory, where the ARFF file should be located
-        :param options:     Options to be taken into account
+        :param directory:           The path to the directory, where the ARFF file should be located
+        :param options:             Options to be taken into account
+        :param create_directory:    True, if the given directory should be created, if it does not exist, False
+                                    otherwise
         """
-        super().__init__(directory=directory, suffix=self.SUFFIX_ARFF, options=options)
+        super().__init__(directory=directory,
+                         suffix=self.SUFFIX_ARFF,
+                         options=options,
+                         create_directory=create_directory)
 
     # pylint: disable=unused-argument
     def _write_dataset_to_file(self, file_path: str, state: ExperimentState, dataset: Dataset, **_):

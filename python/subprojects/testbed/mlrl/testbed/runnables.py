@@ -17,8 +17,8 @@ from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin 
     RegressorMixin as SkLearnRegressorMixin
 from tabulate import tabulate
 
-from mlrl.common.config.options import BooleanOption, parse_param_and_options
-from mlrl.common.config.parameters import NONE, Parameter
+from mlrl.common.config.options import BooleanOption, parse_param, parse_param_and_options
+from mlrl.common.config.parameters import AUTOMATIC, NONE, Parameter
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 from mlrl.common.learners import RuleLearner, SparsePolicy
 from mlrl.common.package_info import PythonPackageInfo
@@ -367,11 +367,12 @@ class LearnerRunnable(Runnable, ABC):
             """
             output_dir = self.output_dir
 
-            for file in listdir(output_dir):
-                file_path = path.join(output_dir, file)
+            if path.isdir(output_dir):
+                for file in listdir(output_dir):
+                    file_path = path.join(output_dir, file)
 
-                if path.isfile(file_path):
-                    unlink(file_path)
+                    if path.isfile(file_path):
+                        unlink(file_path)
 
     PARAM_PROBLEM_TYPE = '--problem-type'
 
@@ -514,7 +515,19 @@ class LearnerRunnable(Runnable, ABC):
 
     STORE_LABEL_VECTORS_VALUES = PRINT_LABEL_VECTORS_VALUES
 
+    PARAM_MODEL_SAVE_DIR = '--model-save-dir'
+
+    PARAM_PARAMETER_SAVE_DIR = '--parameter-save-dir'
+
     PARAM_OUTPUT_DIR = '--output-dir'
+
+    PARAM_WIPE_OUTPUT_DIR = '--wipe-output-dir'
+
+    WIPE_OUTPUT_DIR_VALUES = {
+        BooleanOption.TRUE.value,
+        BooleanOption.FALSE.value,
+        AUTOMATIC,
+    }
 
     PARAM_PREDICTION_TYPE = '--prediction-type'
 
@@ -586,15 +599,15 @@ class LearnerRunnable(Runnable, ABC):
 
         return NoSplitter(dataset_reader)
 
-    @staticmethod
-    def __create_clear_output_directory_listener(args,
+    def __create_clear_output_directory_listener(self, args,
                                                  dataset_splitter: DatasetSplitter) -> Optional[Experiment.Listener]:
         output_dir = args.output_dir
 
         if output_dir:
-            is_subset = dataset_splitter.folding_strategy.is_subset
+            value = parse_param(self.PARAM_WIPE_OUTPUT_DIR, args.wipe_output_dir, self.WIPE_OUTPUT_DIR_VALUES)
 
-            if not is_subset:
+            if value == BooleanOption.TRUE.value or (value == AUTOMATIC
+                                                     and not dataset_splitter.folding_strategy.is_subset):
                 return LearnerRunnable.ClearOutputDirectoryListener(output_dir)
 
         return None
@@ -707,20 +720,35 @@ class LearnerRunnable(Runnable, ABC):
         parser.add_argument('--model-load-dir',
                             type=str,
                             help='The path to the directory from which models should be loaded.')
-        parser.add_argument('--model-save-dir',
+        parser.add_argument(self.PARAM_MODEL_SAVE_DIR,
                             type=str,
                             help='The path to the directory to which models should be saved.')
         parser.add_argument('--parameter-load-dir',
                             type=str,
                             help='The path to the directory from which parameter to be used by the algorith should be '
                             + 'loaded.')
-        parser.add_argument('--parameter-save-dir',
+        parser.add_argument(self.PARAM_PARAMETER_SAVE_DIR,
                             type=str,
                             help='The path to the directory where configuration files, which specify the parameters to '
                             + 'be used by the algorithm, are located.')
         parser.add_argument(self.PARAM_OUTPUT_DIR,
                             type=str,
                             help='The path to the directory where experimental results should be saved.')
+        parser.add_argument('--create-output-dir',
+                            type=BooleanOption.parse,
+                            default=True,
+                            help='Whether the directories specified via the arguments ' + self.PARAM_OUTPUT_DIR + ', '
+                            + self.PARAM_MODEL_SAVE_DIR + ' and ' + self.PARAM_PARAMETER_SAVE_DIR + ' should '
+                            + 'automatically be created, if they do not exist, or not. Must be one of '
+                            + format_enum_values(BooleanOption) + '.')
+        parser.add_argument(self.PARAM_WIPE_OUTPUT_DIR,
+                            type=str,
+                            default=AUTOMATIC,
+                            help='Whether all files in the directory specified via the argument '
+                            + self.PARAM_OUTPUT_DIR + ' should be deleted before an experiment starts or not. Must be '
+                            + 'one of ' + format_iterable(self.WIPE_OUTPUT_DIR_VALUES) + '. If set to ' + AUTOMATIC
+                            + ', the files are only deleted if the experiment does not run a subset of the folds of a '
+                            + 'cross validation.')
         parser.add_argument('--exit-on-error',
                             type=BooleanOption.parse,
                             default=False,
@@ -870,7 +898,8 @@ class LearnerRunnable(Runnable, ABC):
         model_save_dir = args.model_save_dir
 
         if model_save_dir:
-            return ModelWriter(exit_on_error=args.exit_on_error).add_sinks(PickleFileSink(model_save_dir))
+            pickle_sink = PickleFileSink(directory=model_save_dir, create_directory=args.create_output_dir)
+            return ModelWriter(exit_on_error=args.exit_on_error).add_sinks(pickle_sink)
         return None
 
     # pylint: disable=unused-argument
@@ -911,7 +940,8 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_EVALUATION_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(CsvFileSink(args.output_dir, options=options))
+            sinks.append(
+                CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
 
         if sinks:
             if problem_type == ProblemType.REGRESSION:
@@ -950,7 +980,7 @@ class LearnerRunnable(Runnable, ABC):
             sinks.append(LogSink())
 
         if args.parameter_save_dir:
-            sinks.append(CsvFileSink(args.parameter_save_dir))
+            sinks.append(CsvFileSink(directory=args.parameter_save_dir, create_directory=args.create_output_dir))
 
         return ParameterWriter().add_sinks(*sinks) if sinks else None
 
@@ -972,7 +1002,8 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_PREDICTIONS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(ArffFileSink(args.output_dir, options=options))
+            sinks.append(
+                ArffFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
 
         return PredictionWriter().add_sinks(*sinks) if sinks else None
 
@@ -995,7 +1026,8 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_GROUND_TRUTH_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(ArffFileSink(args.output_dir, options=options))
+            sinks.append(
+                ArffFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
 
         return GroundTruthWriter().add_sinks(*sinks) if sinks else None
 
@@ -1020,7 +1052,8 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_PREDICTION_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(CsvFileSink(args.output_dir, options=options))
+            sinks.append(
+                CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
 
         return PredictionCharacteristicsWriter().add_sinks(*sinks) if sinks else None
 
@@ -1043,7 +1076,8 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_DATA_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(CsvFileSink(args.output_dir, options=options))
+            sinks.append(
+                CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
 
         return DataCharacteristicsWriter().add_sinks(*sinks) if sinks else None
 
@@ -1066,7 +1100,8 @@ class LearnerRunnable(Runnable, ABC):
                                                  self.STORE_LABEL_VECTORS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(CsvFileSink(args.output_dir, options=options))
+            sinks.append(
+                CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
 
         if sinks:
             return LabelVectorWriter(LabelVectorSetExtractor(), exit_on_error=args.exit_on_error).add_sinks(*sinks)
@@ -1360,7 +1395,8 @@ class RuleLearnerRunnable(LearnerRunnable):
         value, options = parse_param_and_options(self.PARAM_STORE_RULES, args.store_rules, self.STORE_RULES_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(TextFileSink(args.output_dir, options=options))
+            sinks.append(
+                TextFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
 
         if sinks:
             return ModelAsTextWriter(RuleModelAsTextExtractor(), exit_on_error=args.exit_on_error).add_sinks(*sinks)
@@ -1380,7 +1416,7 @@ class RuleLearnerRunnable(LearnerRunnable):
             sinks.append(LogSink())
 
         if args.store_model_characteristics and args.output_dir:
-            sinks.append(CsvFileSink(args.output_dir))
+            sinks.append(CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir))
 
         if sinks:
             return ModelCharacteristicsWriter(RuleModelCharacteristicsExtractor(),
@@ -1408,7 +1444,8 @@ class RuleLearnerRunnable(LearnerRunnable):
                                                  self.STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(CsvFileSink(args.output_dir, options=options))
+            sinks.append(
+                CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
 
         if sinks:
             return ProbabilityCalibrationModelWriter(IsotonicMarginalProbabilityCalibrationModelExtractor(),
@@ -1436,7 +1473,8 @@ class RuleLearnerRunnable(LearnerRunnable):
                                                  self.STORE_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(CsvFileSink(args.output_dir, options=options))
+            sinks.append(
+                CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
 
         if sinks:
             return ProbabilityCalibrationModelWriter(IsotonicJointProbabilityCalibrationModelExtractor(),
