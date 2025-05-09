@@ -6,7 +6,7 @@ Provides a data structure that allows to store and parse options that are provid
 from enum import Enum
 from typing import Any, Dict, Optional, Set, Tuple
 
-from mlrl.util.format import format_dict_keys, format_enum_values, format_set
+from mlrl.util.format import format_enum_values, format_set
 
 
 class BooleanOption(Enum):
@@ -213,4 +213,4 @@ def parse_param_and_options(parameter_name: str, value: str,
             return allowed_value, Options()
 
     raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
-                     + format_dict_keys(allowed_values_and_options) + ', but is "' + value + '"')
+                     + format_set(allowed_values_and_options.keys()) + ', but is "' + value + '"')

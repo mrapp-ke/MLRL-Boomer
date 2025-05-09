@@ -54,7 +54,7 @@ from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.package_info import get_package_info as get_testbed_package_info
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
-from mlrl.util.format import format_dict_keys, format_enum_values, format_iterable
+from mlrl.util.format import format_enum_values, format_iterable, format_set
 
 LOG_FORMAT = '%(levelname)s %(message)s'
 
@@ -647,21 +647,21 @@ class LearnerRunnable(Runnable, ABC):
                             type=str,
                             default=self.DATA_SPLIT_TRAIN_TEST,
                             help='The strategy to be used for splitting the available data into training and test '
-                            + 'sets. Must be one of ' + format_dict_keys(self.DATA_SPLIT_VALUES) + '. For additional '
+                            + 'sets. Must be one of ' + format_set(self.DATA_SPLIT_VALUES.keys()) + '. For additional '
                             + 'options refer to the documentation.')
         parser.add_argument(self.PARAM_PRINT_EVALUATION,
                             type=str,
                             default=BooleanOption.TRUE.value,
                             help='Whether the evaluation results should be printed on the console or not. Must be one '
-                            + 'of ' + format_dict_keys(self.PRINT_EVALUATION_VALUES) + '. For additional options refer '
-                            + 'to the documentation.')
+                            + 'of ' + format_set(self.PRINT_EVALUATION_VALUES.keys()) + '. For additional options '
+                            + 'refer to the documentation.')
         parser.add_argument(self.PARAM_STORE_EVALUATION,
                             type=str,
                             default=BooleanOption.TRUE.value,
                             help='Whether the evaluation results should be written into output files or not. Must be '
-                            + 'one of ' + format_dict_keys(self.STORE_EVALUATION_VALUES) + '. Does only have an effect '
-                            + 'if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options '
-                            + 'refer to the documentation.')
+                            + 'one of ' + format_set(self.STORE_EVALUATION_VALUES.keys()) + '. Does only have an '
+                            + 'effect if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional '
+                            + 'options refer to the documentation.')
         parser.add_argument('--predict-for-training-data',
                             type=BooleanOption.parse,
                             default=False,
@@ -676,43 +676,43 @@ class LearnerRunnable(Runnable, ABC):
                             type=str,
                             default=BooleanOption.FALSE.value,
                             help='Whether the characteristics of binary predictions should be printed on the console '
-                            + 'or not. Must be one of ' + format_dict_keys(self.PRINT_PREDICTION_CHARACTERISTICS_VALUES)
-                            + '. Does only have an effect if the parameter ' + self.PARAM_PREDICTION_TYPE + ' is set '
-                            + 'to ' + PredictionType.BINARY.value + '. For additional options refer to the '
-                            + 'documentation.')
+                            + 'or not. Must be one of '
+                            + format_set(self.PRINT_PREDICTION_CHARACTERISTICS_VALUES.keys()) + '. Does only have an '
+                            + 'effect if the parameter ' + self.PARAM_PREDICTION_TYPE + ' is set to '
+                            + PredictionType.BINARY.value + '. For additional options refer to the documentation.')
         parser.add_argument(self.PARAM_STORE_PREDICTION_CHARACTERISTICS,
                             type=str,
                             default=BooleanOption.FALSE.value,
                             help='Whether the characteristics of binary predictions should be written into output '
                             + 'files or not. Must be one of '
-                            + format_dict_keys(self.STORE_PREDICTION_CHARACTERISTICS_VALUES) + '. Does only have an '
+                            + format_set(self.STORE_PREDICTION_CHARACTERISTICS_VALUES.keys()) + '. Does only have an '
                             + 'effect if the parameter ' + self.PARAM_PREDICTION_TYPE + ' is set to '
                             + PredictionType.BINARY.value + '. For additional options refer to the documentation.')
         parser.add_argument(self.PARAM_PRINT_DATA_CHARACTERISTICS,
                             type=str,
                             default=BooleanOption.FALSE.value,
                             help='Whether the characteristics of the training data should be printed on the console or '
-                            + 'not. Must be one of ' + format_dict_keys(self.PRINT_DATA_CHARACTERISTICS_VALUES) + '. '
+                            + 'not. Must be one of ' + format_set(self.PRINT_DATA_CHARACTERISTICS_VALUES.keys()) + '. '
                             + 'For additional options refer to the documentation.')
         parser.add_argument(self.PARAM_STORE_DATA_CHARACTERISTICS,
                             type=str,
                             default=BooleanOption.FALSE.value,
                             help='Whether the characteristics of the training data should be written into output files '
-                            + 'or not. Must be one of ' + format_dict_keys(self.STORE_DATA_CHARACTERISTICS_VALUES)
+                            + 'or not. Must be one of ' + format_set(self.STORE_DATA_CHARACTERISTICS_VALUES.keys())
                             + '. Does only have an effect if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. '
                             + 'For additional options refer to the documentation.')
         parser.add_argument(self.PARAM_PRINT_LABEL_VECTORS,
                             type=str,
                             default=BooleanOption.FALSE.value,
                             help='Whether the unique label vectors contained in the training data should be printed on '
-                            + 'the console or not. Must be one of ' + format_dict_keys(self.PRINT_LABEL_VECTORS_VALUES)
+                            + 'the console or not. Must be one of ' + format_set(self.PRINT_LABEL_VECTORS_VALUES.keys())
                             + '. For additional options refer to the documentation.')
         parser.add_argument(self.PARAM_STORE_LABEL_VECTORS,
                             type=str,
                             default=BooleanOption.FALSE.value,
                             help='Whether the unique label vectors contained in the training data should be written '
                             + 'into output files or not. Must be one of '
-                            + format_dict_keys(self.STORE_LABEL_VECTORS_VALUES) + '. Does only have an effect if the '
+                            + format_set(self.STORE_LABEL_VECTORS_VALUES.keys()) + '. Does only have an effect if the '
                             + 'parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to '
                             + 'the documentation.')
         parser.add_argument('--one-hot-encoding',
@@ -776,26 +776,26 @@ class LearnerRunnable(Runnable, ABC):
                             type=str,
                             default=BooleanOption.FALSE.value,
                             help='Whether predictions should be printed on the console or not. Must be one of '
-                            + format_dict_keys(self.PRINT_PREDICTIONS_VALUES) + '. For additional options refer to the '
-                            + 'documentation.')
+                            + format_set(self.PRINT_PREDICTIONS_VALUES.keys()) + '. For additional options refer to '
+                            + 'the documentation.')
         parser.add_argument(self.PARAM_STORE_PREDICTIONS,
                             type=str,
                             default=BooleanOption.FALSE.value,
                             help='Whether predictions should be written into output files or not. Must be one of '
-                            + format_dict_keys(self.STORE_PREDICTIONS_VALUES) + '. Does only have an effect, if the '
+                            + format_set(self.STORE_PREDICTIONS_VALUES.keys()) + '. Does only have an effect, if the '
                             + 'parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to '
                             + 'the documentation.')
         parser.add_argument(self.PARAM_PRINT_GROUND_TRUTH,
                             type=str,
                             default=BooleanOption.FALSE.value,
                             help='Whether the ground truth should be printed on the console or not. Must be one of '
-                            + format_dict_keys(self.PRINT_GROUND_TRUTH_VALUES) + '. For additional options refer '
+                            + format_set(self.PRINT_GROUND_TRUTH_VALUES.keys()) + '. For additional options refer '
                             + 'to the documentation.')
         parser.add_argument(self.PARAM_STORE_GROUND_TRUTH,
                             type=str,
                             default=BooleanOption.FALSE.value,
                             help='Whether the ground truth should be written into output files or not. Must be one of '
-                            + format_dict_keys(self.STORE_GROUND_TRUTH_VALUES) + '. Does only have an effect, if '
+                            + format_set(self.STORE_GROUND_TRUTH_VALUES.keys()) + '. Does only have an effect, if '
                             + 'the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options '
                             + 'refer to the documentation.')
         parser.add_argument(self.PARAM_PREDICTION_TYPE,
@@ -1281,15 +1281,15 @@ class RuleLearnerRunnable(LearnerRunnable):
                             type=str,
                             default=BooleanOption.FALSE.value,
                             help='Whether the induced rules should be printed on the console or not. Must be one of '
-                            + format_dict_keys(self.PRINT_RULES_VALUES) + '. For additional options refer to the '
+                            + format_set(self.PRINT_RULES_VALUES.keys()) + '. For additional options refer to the '
                             + 'documentation.')
         parser.add_argument(self.PARAM_STORE_RULES,
                             type=str,
                             default=BooleanOption.FALSE.value,
                             help='Whether the induced rules should be written into a text file or not. Must be one of '
-                            + format_dict_keys(self.STORE_RULES_VALUES) + '. Does only have an effect if the parameter '
-                            + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the '
-                            + 'documentation.')
+                            + format_set(self.STORE_RULES_VALUES.keys()) + '. Does only have an effect if the '
+                            + 'parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to '
+                            + 'the documentation.')
         parser.add_argument(self.PARAM_PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL,
                             type=str,
                             default=BooleanOption.FALSE.value,

@@ -5,7 +5,7 @@ Provides utility functions for creating textual representations.
 """
 from enum import EnumType as Enum
 from functools import reduce
-from typing import Any, Dict, Iterable
+from typing import Any, Iterable
 
 
 def format_iterable(objects: Iterable[Any], separator: str = ', ', delimiter: str = '') -> str:
@@ -38,13 +38,3 @@ def format_set(objects: Iterable[Any]) -> str:
     :return:        The textual representation that has been created
     """
     return '{' + format_iterable(objects, delimiter='"') + '}'
-
-
-def format_dict_keys(dictionary: Dict[Any, Any]) -> str:
-    """
-    Creates and returns a textual representation of the keys in a dictionary.
-
-    :param dictionary:  The dictionary to be formatted
-    :return:            The textual representation that has been created
-    """
-    return format_set(dictionary.keys())
