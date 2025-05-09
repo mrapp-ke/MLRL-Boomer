@@ -6,9 +6,10 @@ sinks.
 """
 from typing import Any
 
+import numpy as np
+
 from mlrl.common.config.options import Options
 from mlrl.common.data.arrays import enforce_dense
-from mlrl.common.data.types import Float32
 
 from mlrl.testbed.experiments.output.data import OutputValue
 from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
@@ -24,7 +25,7 @@ class RegressionEvaluationDataExtractor(EvaluationDataExtractor):
 
     def _update_measurements(self, measurements: Measurements, index: int, ground_truth: Any, predictions: Any,
                              options: Options):
-        ground_truth = enforce_dense(ground_truth, order='C', dtype=Float32)
+        ground_truth = enforce_dense(ground_truth, order='C', dtype=np.float32)
         evaluation_measures = OutputValue.filter_values(REGRESSION_EVALUATION_MEASURES, options)
 
         for evaluation_measure in evaluation_measures:
