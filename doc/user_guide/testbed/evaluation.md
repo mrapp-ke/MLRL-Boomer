@@ -151,7 +151,7 @@ Sometimes, evaluating the performance of a model on the data it has been trained
 ````
 
 `````{tip}
-If you are interested in obtaining evaluation results for the training data in addition to the test data when using a train-test-split or a cross validation, as discussed above, the argument `--evaluate-training-data true` may be used:
+If you are interested in obtaining evaluation results for the training data in addition to the test data when using a train-test-split or a cross validation, as discussed above, the argument `--predict-for-training-data true` may be used:
 
 ````{tab} BOOMER
    ```text
@@ -159,7 +159,7 @@ If you are interested in obtaining evaluation results for the training data in a
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --data-split cv \
-       --evaluate-training-data true
+       --predict-for-training-data true
    ```
 ````
 
@@ -169,7 +169,7 @@ If you are interested in obtaining evaluation results for the training data in a
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --data-split cv \
-       --evaluate-training-data true
+       --predict-for-training-data true
    ```
 ````    
 `````
