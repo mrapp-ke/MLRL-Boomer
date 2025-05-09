@@ -17,8 +17,8 @@ from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin 
     RegressorMixin as SkLearnRegressorMixin
 from tabulate import tabulate
 
-from mlrl.common.config.options import BooleanOption, parse_param_and_options
-from mlrl.common.config.parameters import NONE, Parameter
+from mlrl.common.config.options import BooleanOption, parse_param, parse_param_and_options
+from mlrl.common.config.parameters import AUTOMATIC, NONE, Parameter
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 from mlrl.common.learners import RuleLearner, SparsePolicy
 from mlrl.common.package_info import PythonPackageInfo
@@ -516,6 +516,14 @@ class LearnerRunnable(Runnable, ABC):
 
     PARAM_OUTPUT_DIR = '--output-dir'
 
+    PARAM_WIPE_OUTPUT_DIR = '--wipe-output-dir'
+
+    WIPE_OUTPUT_DIR_VALUES = {
+        BooleanOption.TRUE.value,
+        BooleanOption.FALSE.value,
+        AUTOMATIC,
+    }
+
     PARAM_PREDICTION_TYPE = '--prediction-type'
 
     def __init__(self, learner_name: str):
@@ -586,15 +594,15 @@ class LearnerRunnable(Runnable, ABC):
 
         return NoSplitter(dataset_reader)
 
-    @staticmethod
-    def __create_clear_output_directory_listener(args,
+    def __create_clear_output_directory_listener(self, args,
                                                  dataset_splitter: DatasetSplitter) -> Optional[Experiment.Listener]:
         output_dir = args.output_dir
 
         if output_dir:
-            is_subset = dataset_splitter.folding_strategy.is_subset
+            value = parse_param(self.PARAM_WIPE_OUTPUT_DIR, args.wipe_output_dir, self.WIPE_OUTPUT_DIR_VALUES)
 
-            if not is_subset:
+            if value == BooleanOption.TRUE.value or (value == AUTOMATIC
+                                                     and not dataset_splitter.folding_strategy.is_subset):
                 return LearnerRunnable.ClearOutputDirectoryListener(output_dir)
 
         return None
@@ -721,6 +729,14 @@ class LearnerRunnable(Runnable, ABC):
         parser.add_argument(self.PARAM_OUTPUT_DIR,
                             type=str,
                             help='The path to the directory where experimental results should be saved.')
+        parser.add_argument(self.PARAM_WIPE_OUTPUT_DIR,
+                            type=str,
+                            default=AUTOMATIC,
+                            help='Whether all files in the directory specified via the argument '
+                            + self.PARAM_OUTPUT_DIR + ' should be deleted before an experiment starts or not. Must be '
+                            + 'one of ' + format_iterable(self.WIPE_OUTPUT_DIR_VALUES) + '. If set to ' + AUTOMATIC
+                            + ', the files are only deleted if the experiment does not run a subset of the folds of a '
+                            + 'cross validation.')
         parser.add_argument('--exit-on-error',
                             type=BooleanOption.parse,
                             default=False,
