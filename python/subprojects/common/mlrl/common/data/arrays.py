@@ -11,8 +11,6 @@ import numpy as np
 from scipy.sparse import issparse, isspmatrix_coo, isspmatrix_csc, isspmatrix_csr, isspmatrix_dok, isspmatrix_lil, \
     sparray
 
-from mlrl.common.data.types import Uint32
-
 from mlrl.util.format import format_iterable
 
 
@@ -120,7 +118,7 @@ def is_sparse_and_memory_efficient(array, sparse_format: SparseFormat, dtype, sp
 
     if is_sparse(array):
         num_pointers = array.shape[1 if sparse_format == SparseFormat.CSC else 0]
-        size_int = np.dtype(Uint32).itemsize
+        size_int = np.dtype(np.uint32).itemsize
         size_data = np.dtype(dtype).itemsize
         size_sparse_data = size_data if sparse_values else 0
         num_dense_elements = array.nnz

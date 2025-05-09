@@ -8,7 +8,6 @@ from typing import Optional
 import numpy as np
 
 from mlrl.common.config.options import Options
-from mlrl.common.data.types import Uint8
 
 from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
@@ -35,7 +34,7 @@ class LabelVectors(TabularOutputData):
         if sparse:
             return str(label_vector)
 
-        dense_label_vector = np.zeros(shape=self.label_vector_histogram.num_labels, dtype=Uint8)
+        dense_label_vector = np.zeros(shape=self.label_vector_histogram.num_labels, dtype=np.uint8)
         dense_label_vector[label_vector.label_indices] = 1
         return str(dense_label_vector)
 
