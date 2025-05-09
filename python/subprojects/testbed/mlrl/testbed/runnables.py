@@ -387,12 +387,14 @@ class LearnerRunnable(Runnable, ABC):
 
     OPTION_NUM_FOLDS = 'num_folds'
 
-    OPTION_CURRENT_FOLD = 'current_fold'
+    OPTION_FIRST_FOLD = 'last_fold'
+
+    OPTION_LAST_FOLD = 'first_fold'
 
     DATA_SPLIT_VALUES: Dict[str, Set[str]] = {
         NONE: {},
         DATA_SPLIT_TRAIN_TEST: {OPTION_TEST_SIZE},
-        DATA_SPLIT_CROSS_VALIDATION: {OPTION_NUM_FOLDS, OPTION_CURRENT_FOLD}
+        DATA_SPLIT_CROSS_VALIDATION: {OPTION_NUM_FOLDS, OPTION_FIRST_FOLD, OPTION_LAST_FOLD}
     }
 
     PARAM_PRINT_EVALUATION = '--print-evaluation'
@@ -561,15 +563,18 @@ class LearnerRunnable(Runnable, ABC):
         if value == self.DATA_SPLIT_CROSS_VALIDATION:
             num_folds = options.get_int(self.OPTION_NUM_FOLDS, 10)
             assert_greater_or_equal(self.OPTION_NUM_FOLDS, num_folds, 2)
-            current_fold = options.get_int(self.OPTION_CURRENT_FOLD, 0)
-            if current_fold != 0:
-                assert_greater_or_equal(self.OPTION_CURRENT_FOLD, current_fold, 1)
-                assert_less_or_equal(self.OPTION_CURRENT_FOLD, current_fold, num_folds)
+            first_fold = options.get_int(self.OPTION_FIRST_FOLD, 1)
+            assert_greater_or_equal(self.OPTION_FIRST_FOLD, first_fold, 1)
+            assert_less_or_equal(self.OPTION_FIRST_FOLD, first_fold, num_folds)
+            last_fold = options.get_int(self.OPTION_LAST_FOLD, num_folds)
+            assert_greater_or_equal(self.OPTION_LAST_FOLD, last_fold, first_fold)
+            assert_less_or_equal(self.OPTION_LAST_FOLD, last_fold, num_folds)
             random_state = int(args.random_state) if args.random_state else 1
             assert_greater_or_equal(self.PARAM_RANDOM_STATE, random_state, 1)
             return CrossValidationSplitter(dataset_reader,
                                            num_folds=num_folds,
-                                           current_fold=current_fold - 1,
+                                           first_fold=first_fold - 1,
+                                           last_fold=last_fold,
                                            random_state=random_state)
         if value == self.DATA_SPLIT_TRAIN_TEST:
             test_size = options.get_float(self.OPTION_TEST_SIZE, 0.33)
