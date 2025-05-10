@@ -8,8 +8,6 @@ from functools import reduce
 from itertools import chain
 from typing import List, Optional
 
-from mlrl.common.config.options import Options
-
 from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.output.characteristics.model.statistics_rules import BodyStatistics, HeadStatistics, \
     RuleModelStatistics, RuleStatistics
@@ -17,6 +15,8 @@ from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.table import Alignment, RowWiseTable, Table
 from mlrl.testbed.util.format import format_number, format_percentage
 from mlrl.testbed.util.math import divide_or_zero
+
+from mlrl.util.options import Options
 
 
 class RuleModelCharacteristics(TabularOutputData):

@@ -7,7 +7,7 @@ from functools import cached_property
 
 import numpy as np
 
-from mlrl.common.data.arrays import is_sparse
+from mlrl.util.arrays import is_sparse
 
 
 def density(array) -> float:

@@ -27,12 +27,12 @@ from mlrl.common.cython.probability_calibration import JointProbabilityCalibrati
     MarginalProbabilityCalibrationModel
 from mlrl.common.cython.regression_matrix import CContiguousRegressionMatrix, CsrRegressionMatrix
 from mlrl.common.cython.rule_model import RuleModel
-from mlrl.common.cython.validation import assert_greater_or_equal
-from mlrl.common.data.arrays import SparseFormat, enforce_2d, enforce_dense, is_sparse, is_sparse_and_memory_efficient
-from mlrl.common.data.types import Float32, Uint8, Uint32
 from mlrl.common.mixins import ClassifierMixin, IncrementalClassifierMixin, IncrementalPredictor, \
     IncrementalRegressorMixin, NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, RegressorMixin
-from mlrl.common.util.format import format_enum_values
+
+from mlrl.util.arrays import SparseFormat, enforce_2d, enforce_dense, is_sparse, is_sparse_and_memory_efficient
+from mlrl.util.format import format_enum_values
+from mlrl.util.validation import assert_greater_or_equal
 
 
 class SparsePolicy(Enum):
@@ -292,14 +292,14 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         feature_indices = kwargs.get(input_name)
 
         if feature_indices:
-            feature_indices = enforce_dense(feature_indices, order='C', dtype=Uint32)
+            feature_indices = enforce_dense(feature_indices, order='C', dtype=np.uint32)
             return check_array(feature_indices,
                                ensure_2d=False,
-                               dtype=Uint32,
+                               dtype=np.uint32,
                                ensure_non_negative=True,
                                input_name=input_name)
 
-        return np.empty(shape=0, dtype=Uint32)
+        return np.empty(shape=0, dtype=np.uint32)
 
     def _create_feature_info(self, num_features: int, **kwargs) -> FeatureInfo:
         """
@@ -336,10 +336,10 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         example_weights = kwargs.get(self.KWARG_EXAMPLE_WEIGHTS)
 
         if example_weights:
-            example_weights = enforce_dense(example_weights, order='C', dtype=Float32)
+            example_weights = enforce_dense(example_weights, order='C', dtype=np.float32)
             example_weights = check_array(example_weights,
                                           ensure_2d=False,
-                                          dtype=Float32,
+                                          dtype=np.float32,
                                           ensure_non_negative=True,
                                           input_name=self.KWARG_EXAMPLE_WEIGHTS)
             return RealValuedExampleWeights(example_weights)
@@ -357,18 +357,22 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         sparse_feature_value = float(kwargs.get(self.KWARG_SPARSE_FEATURE_VALUE, 0.0))
         x_sparse_format = SparseFormat.CSC
         x_sparse_policy = SparsePolicy.parse('feature_format', self.feature_format)
-        x_enforce_sparse = x_sparse_policy.should_enforce_sparse(x, sparse_format=x_sparse_format, dtype=Float32)
+        x_enforce_sparse = x_sparse_policy.should_enforce_sparse(x, sparse_format=x_sparse_format, dtype=np.float32)
         x = x if x_enforce_sparse else enforce_2d(
-            enforce_dense(x, order='F', dtype=Float32, sparse_value=sparse_feature_value))
-        x = validate_data(self, X=x, accept_sparse=x_sparse_format.value, dtype=Float32, ensure_all_finite='allow-nan')
+            enforce_dense(x, order='F', dtype=np.float32, sparse_value=sparse_feature_value))
+        x = validate_data(self,
+                          X=x,
+                          accept_sparse=x_sparse_format.value,
+                          dtype=np.float32,
+                          ensure_all_finite='allow-nan')
 
         if is_sparse(x):
             log.debug(
                 'A sparse matrix with sparse value %s is used to store the feature values of the training examples',
                 sparse_feature_value)
-            x_data = np.ascontiguousarray(x.data, dtype=Float32)
-            x_indices = np.ascontiguousarray(x.indices, dtype=Uint32)
-            x_indptr = np.ascontiguousarray(x.indptr, dtype=Uint32)
+            x_data = np.ascontiguousarray(x.data, dtype=np.float32)
+            x_indices = np.ascontiguousarray(x.indices, dtype=np.uint32)
+            x_indptr = np.ascontiguousarray(x.indptr, dtype=np.uint32)
             return CscFeatureMatrix(x_data, x_indices, x_indptr, x.shape[0], x.shape[1], sparse_feature_value)
 
         log.debug('A dense matrix is used to store the feature values of the training examples')
@@ -388,22 +392,22 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         sparse_feature_value = float(kwargs.get(self.KWARG_SPARSE_FEATURE_VALUE, 0.0))
         sparse_format = SparseFormat.CSR
         sparse_policy = SparsePolicy.parse('feature_format', self.feature_format)
-        enforce_sparse = sparse_policy.should_enforce_sparse(x, sparse_format=sparse_format, dtype=Float32)
+        enforce_sparse = sparse_policy.should_enforce_sparse(x, sparse_format=sparse_format, dtype=np.float32)
         x = x if enforce_sparse else enforce_2d(
-            enforce_dense(x, order='C', dtype=Float32, sparse_value=sparse_feature_value))
+            enforce_dense(x, order='C', dtype=np.float32, sparse_value=sparse_feature_value))
         x = validate_data(self,
                           X=x,
                           reset=False,
                           accept_sparse=sparse_format.value,
-                          dtype=Float32,
+                          dtype=np.float32,
                           ensure_all_finite='allow-nan')
 
         if is_sparse(x):
             log.debug('A sparse matrix with sparse value %s is used to store the feature values of the query examples',
                       sparse_feature_value)
-            x_data = np.ascontiguousarray(x.data, dtype=Float32)
-            x_indices = np.ascontiguousarray(x.indices, dtype=Uint32)
-            x_indptr = np.ascontiguousarray(x.indptr, dtype=Uint32)
+            x_data = np.ascontiguousarray(x.data, dtype=np.float32)
+            x_indices = np.ascontiguousarray(x.indices, dtype=np.uint32)
+            x_indptr = np.ascontiguousarray(x.indptr, dtype=np.uint32)
             return CsrFeatureMatrix(x_data, x_indices, x_indptr, x.shape[0], x.shape[1], sparse_feature_value)
 
         log.debug('A dense matrix is used to store the feature values of the query examples')
@@ -422,12 +426,12 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         prediction_sparse_policy = SparsePolicy.parse('prediction_format', self.prediction_format)
         self.sparse_predictions_ = prediction_sparse_policy != SparsePolicy.FORCE_DENSE and (
             prediction_sparse_policy == SparsePolicy.FORCE_SPARSE
-            or is_sparse_and_memory_efficient(y, sparse_format=y_sparse_format, dtype=Uint8, sparse_values=False))
+            or is_sparse_and_memory_efficient(y, sparse_format=y_sparse_format, dtype=np.uint8, sparse_values=False))
 
         y_sparse_policy = SparsePolicy.parse('output_format', self.output_format)
         y_enforce_sparse = y_sparse_policy.should_enforce_sparse(y,
                                                                  sparse_format=y_sparse_format,
-                                                                 dtype=Uint8,
+                                                                 dtype=np.uint8,
                                                                  sparse_values=False)
         return self._create_row_wise_output_matrix(y, sparse_format=y_sparse_format, sparse=y_enforce_sparse)
 
@@ -491,15 +495,15 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
             return convert_into_sklearn_compatible_probabilities(super().apply_next(step_size))
 
     def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool, **_) -> Any:
-        y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=Uint8)),
+        y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=np.uint8)),
                         accept_sparse=sparse_format.value,
-                        dtype=Uint8,
+                        dtype=np.uint8,
                         ensure_non_negative=True)
 
         if is_sparse(y):
             log.debug('A sparse matrix is used to store the labels of the training examples')
-            y_indices = np.ascontiguousarray(y.indices, dtype=Uint32)
-            y_indptr = np.ascontiguousarray(y.indptr, dtype=Uint32)
+            y_indices = np.ascontiguousarray(y.indices, dtype=np.uint32)
+            y_indptr = np.ascontiguousarray(y.indptr, dtype=np.uint32)
             return CsrLabelMatrix(y_indices, y_indptr, y.shape[0], y.shape[1])
 
         log.debug('A dense matrix is used to store the labels of the training examples')
@@ -662,15 +666,15 @@ class RegressionRuleLearner(RuleLearner, RegressorMixin, IncrementalRegressorMix
     """
 
     def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool, **_) -> Any:
-        y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=Float32)),
+        y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=np.float32)),
                         accept_sparse=sparse_format.value,
-                        dtype=Float32)
+                        dtype=np.float32)
 
         if is_sparse(y):
             log.debug('A sparse matrix is used to store the regression scores of the training examples')
-            y_data = np.ascontiguousarray(y.data, dtype=Float32)
-            y_indices = np.ascontiguousarray(y.indices, dtype=Uint32)
-            y_indptr = np.ascontiguousarray(y.indptr, dtype=Uint32)
+            y_data = np.ascontiguousarray(y.data, dtype=np.float32)
+            y_indices = np.ascontiguousarray(y.indices, dtype=np.uint32)
+            y_indptr = np.ascontiguousarray(y.indptr, dtype=np.uint32)
             return CsrRegressionMatrix(y_data, y_indices, y_indptr, y.shape[0], y.shape[1])
 
         log.debug('A dense matrix is used to store the regression scores of the training examples')

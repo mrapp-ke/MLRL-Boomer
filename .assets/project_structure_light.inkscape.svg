@@ -3,12 +3,35 @@
 
 <svg
    width="220mm"
-   height="62.166664mm"
-   viewBox="0 0 220 62.166664"
+   height="86mm"
+   viewBox="0 0 220 86"
    version="1.1"
    id="svg5"
+   sodipodi:docname="project_structure_light.inkscape.svg"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.0442949"
+     inkscape:cx="294.93584"
+     inkscape:cy="26.333557"
+     inkscape:window-width="1920"
+     inkscape:window-height="1012"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
   <defs
      id="defs2">
     <rect
@@ -36,25 +59,25 @@
          width="158.75"
          height="21.166666"
          x="0"
-         y="39.6875" />
+         y="61.383354" />
       <rect
-         style="fill:#e5e5e5;fill-opacity:1;stroke:#006d93;stroke-width:1.25;stroke-linejoin:round;stroke-opacity:0.5"
+         style="fill:#e5e5e5;fill-opacity:1;stroke:#006d93;stroke-width:1.71687;stroke-linejoin:round;stroke-opacity:0.5"
          id="rect65836"
-         width="158.75"
-         height="21.166666"
-         x="0"
-         y="7.9375" />
+         width="158.28313"
+         height="40.048332"
+         x="0.23343316"
+         y="10.518229" />
       <path
          id="rect1978"
          style="fill:#afe2f5;fill-opacity:1;stroke:#006d93;stroke-width:1.37743;stroke-linejoin:round;stroke-opacity:0.5"
-         d="M 2.6458333,42.333332 H 47.625001 V 58.208333 H 2.6458333 Z" />
+         d="M 2.6458333,64.029179 H 47.625001 V 79.90418 H 2.6458333 Z" />
       <path
          id="rect1978-3"
          style="fill:#fac2d2;fill-opacity:1;stroke:#006d93;stroke-width:1.37743;stroke-linejoin:round;stroke-opacity:0.5"
-         d="M 50.270833,42.333333 H 95.250001 V 58.208334 H 50.270833 Z" />
+         d="M 50.270833,64.02918 H 95.250001 V 79.904181 H 50.270833 Z" />
       <g
          aria-label="libmlrlcommon"
-         transform="matrix(0.26458333,0,0,0.26458333,0,2.2405893)"
+         transform="matrix(0.26458333,0,0,0.26458333,0,23.936432)"
          id="text9475"
          style="font-size:24px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect9477)">
         <path
@@ -112,7 +135,7 @@
       </g>
       <g
          aria-label="libmlrlcommon"
-         transform="matrix(0.26458333,0,0,0.26458333,48.473855,5.6484229)"
+         transform="matrix(0.26458333,0,0,0.26458333,48.473855,27.344267)"
          id="text9475-6"
          style="font-size:24px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect9477)">
         <text
@@ -128,7 +151,7 @@
       </g>
       <text
          xml:space="preserve"
-         transform="matrix(0.26458333,0,0,0.26458333,2.11697,2.6956746)"
+         transform="matrix(0.26458333,0,0,0.26458333,2.11697,24.391517)"
          id="text32153"
          style="font-size:24px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect32155);display:inline"><tspan
            x="370"
@@ -136,99 +159,116 @@
            id="tspan1">...</tspan></text>
       <text
          xml:space="preserve"
-         style="font-size:6.35px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;stroke-width:0.264583;fill:#d1d1d1;fill-opacity:1"
+         style="font-size:6.35px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
          x="164.41518"
-         y="52.493332"
+         y="74.189186"
          id="text43158"><tspan
            id="tspan43156"
-           style="font-size:6.35px;stroke-width:0.264583;fill:#d1d1d1;fill-opacity:1"
+           style="font-size:6.35px;stroke-width:0.264583"
            x="164.41518"
-           y="52.493332">C++</tspan></text>
+           y="74.189186">C++</tspan></text>
       <rect
          style="fill:#afe2f5;fill-opacity:1;stroke:#006d93;stroke-width:1.25;stroke-linejoin:round;stroke-opacity:0.5"
          id="rect47384"
          width="44.979168"
          height="15.875"
          x="2.6458333"
-         y="10.583334" />
+         y="13.229166" />
+      <rect
+         style="fill:#c3d9e1;fill-opacity:1;stroke:#006d93;stroke-width:1.25;stroke-linejoin:round;stroke-opacity:0.5"
+         id="rect47384-1"
+         width="153.5"
+         height="15.875"
+         x="2.6458333"
+         y="31.766792" />
       <rect
          style="fill:#a2f6de;fill-opacity:1;stroke:#006d93;stroke-width:1.25;stroke-linejoin:round;stroke-opacity:0.5"
          id="rect47384-6"
          width="44.979168"
          height="15.875"
          x="111.125"
-         y="10.583333" />
+         y="13.229164" />
       <text
          xml:space="preserve"
          style="font-size:6.35px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
          x="7.838047"
-         y="20.965584"
+         y="23.61142"
          id="text49126"><tspan
            id="tspan49124"
            style="font-size:6.35px;stroke-width:0.264583"
            x="7.838047"
-           y="20.965584">mlrl-common</tspan></text>
+           y="23.61142">mlrl-common</tspan></text>
       <rect
          style="fill:#fac2d2;fill-opacity:1;stroke:#006d93;stroke-width:1.25;stroke-linejoin:round;stroke-opacity:0.5"
          id="rect54730"
          width="44.979168"
          height="15.875"
          x="50.270832"
-         y="10.583334" />
+         y="13.229166" />
       <text
          xml:space="preserve"
          style="font-size:6.35px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
          x="56.367916"
-         y="20.965584"
+         y="23.61142"
          id="text56065"><tspan
            id="tspan56063"
            style="font-size:6.35px;stroke-width:0.264583"
            x="56.367916"
-           y="20.965584">mlrl-boomer</tspan></text>
+           y="23.61142">mlrl-boomer</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:6.35px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="69.114372"
+         y="42.365604"
+         id="text56065-5"><tspan
+           id="tspan56063-6"
+           style="font-size:6.35px;stroke-width:0.264583"
+           x="69.114372"
+           y="42.365604">mlrl-util</tspan></text>
       <text
          xml:space="preserve"
          style="font-size:6.35px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
          x="118.21268"
-         y="20.965584"
+         y="23.61142"
          id="text62122"><tspan
            id="tspan62120"
            style="font-size:6.35px;stroke-width:0.264583"
            x="118.21268"
-           y="20.965584">mlrl-testbed</tspan></text>
+           y="23.61142">mlrl-testbed</tspan></text>
       <text
          xml:space="preserve"
-         style="font-size:6.35px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;stroke-width:0.264583;fill:#d1d1d1;fill-opacity:1"
+         style="font-size:6.35px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
          x="164.38919"
-         y="20.298834"
+         y="32.320408"
          id="text68758"><tspan
            id="tspan68756"
-           style="font-size:6.35px;stroke-width:0.264583;fill:#d1d1d1;fill-opacity:1"
+           style="font-size:6.35px;stroke-width:0.264583"
            x="164.38919"
-           y="20.298834">Python</tspan></text>
+           y="32.320408">Python</tspan></text>
       <path
-         style="fill:none;stroke:#d1d1d1;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:1, 4;stroke-dashoffset:0;stroke-opacity:1"
-         d="M 161.39583,34.395833 H -2.6458333"
+         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:1, 4;stroke-dashoffset:0;stroke-opacity:1"
+         d="M 161.39583,56.09168 H -2.6458333"
          id="path72981" />
       <text
          xml:space="preserve"
-         style="font-size:6.35px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;stroke-width:0.264583;fill:#d1d1d1;fill-opacity:1"
+         style="font-size:6.35px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
          x="164.08121"
-         y="36.173832"
+         y="57.869686"
          id="text86071"><tspan
            id="tspan86069"
-           style="font-size:6.35px;stroke-width:0.264583;fill:#d1d1d1;fill-opacity:1"
+           style="font-size:6.35px;stroke-width:0.264583"
            x="164.08121"
-           y="36.173832">Cython</tspan></text>
+           y="57.869686">Cython</tspan></text>
       <text
          xml:space="preserve"
          style="font-size:6.35px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
          x="100.0128"
-         y="18.774834"
+         y="21.42067"
          id="text97092"><tspan
            id="tspan97090"
            style="font-size:6.35px;stroke-width:0.264583"
            x="100.0128"
-           y="18.774834">...</tspan></text>
+           y="21.42067">...</tspan></text>
     </g>
   </g>
 </svg>

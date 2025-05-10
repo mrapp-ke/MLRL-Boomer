@@ -8,8 +8,6 @@ from abc import abstractmethod
 
 import numpy as np
 
-from mlrl.common.data.types import Float32, Float64, Uint8
-
 SERIALIZATION_VERSION = 4
 
 
@@ -445,20 +443,20 @@ cdef class RuleList(RuleModel):
         dtype = head_state[0].dtype
 
         if len(head_state) > 1:
-            if dtype == Uint8:
+            if dtype == np.uint8:
                 return move(self.__deserialize_partial_binary_head(head_state))
-            elif dtype == Float32:
+            elif dtype == np.float32:
                 return move(self.__deserialize_partial_32bit_head(head_state))
-            elif dtype == Float64:
+            elif dtype == np.float64:
                 return move(self.__deserialize_partial_64bit_head(head_state))
             else:
                 raise RuntimeError('Encountered partial head with unexpected score type: ' + str(dtype))
         else:
-            if dtype == Uint8:
+            if dtype == np.uint8:
                 return move(self.__deserialize_complete_binary_head(head_state))
-            elif dtype == Float32:
+            elif dtype == np.float32:
                 return move(self.__deserialize_complete_32bit_head(head_state))
-            elif dtype == Float64:
+            elif dtype == np.float64:
                 return move(self.__deserialize_complete_64bit_head(head_state))
             else:
                 raise RuntimeError('Encountered complete head with unexpected score type: ' + str(dtype))

@@ -8,8 +8,6 @@ from dataclasses import replace
 from functools import reduce
 from typing import Any, List, Optional
 
-from mlrl.common.config.options import Options
-
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.evaluation.evaluation_result import EVALUATION_MEASURE_PREDICTION_TIME, \
     EVALUATION_MEASURE_TRAINING_TIME, EvaluationResult
@@ -17,6 +15,8 @@ from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
 from mlrl.testbed.experiments.state import ExperimentState
+
+from mlrl.util.options import Options
 
 
 class EvaluationDataExtractor(DataExtractor, ABC):

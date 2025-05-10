@@ -9,7 +9,6 @@ from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 from typing import Optional, Set
 
-from mlrl.common.config.options import BooleanOption, Options, parse_param, parse_param_and_options
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, EqualFrequencyFeatureBinningMixin, \
     EqualWidthFeatureBinningMixin, FeatureSamplingWithoutReplacementMixin, GreedyTopDownRuleInductionMixin, \
     InstanceSamplingWithoutReplacementMixin, InstanceSamplingWithReplacementMixin, IrepRulePruningMixin, \
@@ -24,7 +23,9 @@ from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPar
     OutputWiseStratifiedInstanceSamplingMixin
 from mlrl.common.cython.package_info import get_num_cpu_cores, is_multi_threading_support_enabled
 from mlrl.common.cython.stopping_criterion import AggregationFunction
-from mlrl.common.util.format import format_dict_keys, format_set
+
+from mlrl.util.format import format_set
+from mlrl.util.options import BooleanOption, Options, parse_param, parse_param_and_options
 
 AUTOMATIC = 'auto'
 
@@ -199,14 +200,12 @@ class NominalParameter(Parameter, ABC):
             description += '. Must be one of '
 
             if isinstance(supported_values, dict):
-                description += format_dict_keys(supported_values)
-                suffix = ' For additional options refer to the documentation.'
                 supported_values = set(supported_values.keys())
+                suffix = ' For additional options refer to the documentation.'
             else:
-                description += format_set(supported_values)
                 suffix = ''
 
-            description += '.'
+            description += format_set(supported_values) + '.'
 
             for supported_value in supported_values:
                 value_description = self.values[supported_value].description

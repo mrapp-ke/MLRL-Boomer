@@ -1,5 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
+
+Provides utility functions for validation.
 """
 
 

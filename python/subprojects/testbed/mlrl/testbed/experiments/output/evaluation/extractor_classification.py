@@ -11,16 +11,15 @@ import numpy as np
 
 from sklearn.utils.multiclass import is_multilabel
 
-from mlrl.common.config.options import Options
-from mlrl.common.data.arrays import enforce_dense
-from mlrl.common.data.types import Uint8
-
 from mlrl.testbed.experiments.output.data import OutputValue
 from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
 from mlrl.testbed.experiments.output.evaluation.measures import Measure
 from mlrl.testbed.experiments.output.evaluation.measures_classification import MULTI_LABEL_EVALUATION_MEASURES, \
     SINGLE_LABEL_EVALUATION_MEASURES
 from mlrl.testbed.experiments.output.evaluation.writer import EvaluationDataExtractor
+
+from mlrl.util.arrays import enforce_dense
+from mlrl.util.options import Options
 
 
 class ClassificationEvaluationDataExtractor(EvaluationDataExtractor):
@@ -33,8 +32,8 @@ class ClassificationEvaluationDataExtractor(EvaluationDataExtractor):
         if is_multilabel(ground_truth):
             evaluation_measures = OutputValue.filter_values(MULTI_LABEL_EVALUATION_MEASURES, options)
         else:
-            predictions = np.ravel(enforce_dense(predictions, order='C', dtype=Uint8))
-            ground_truth = np.ravel(enforce_dense(ground_truth, order='C', dtype=Uint8))
+            predictions = np.ravel(enforce_dense(predictions, order='C', dtype=np.uint8))
+            ground_truth = np.ravel(enforce_dense(ground_truth, order='C', dtype=np.uint8))
             evaluation_measures = OutputValue.filter_values(SINGLE_LABEL_EVALUATION_MEASURES, options)
 
         for evaluation_measure in evaluation_measures:
