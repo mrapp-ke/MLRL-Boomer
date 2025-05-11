@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, replace
 from typing import Any, Iterable, List, Optional, Type
 
-from mlrl.testbed.experiments.data import Context
+from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table

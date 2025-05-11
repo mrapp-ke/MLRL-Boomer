@@ -7,7 +7,7 @@ from typing import Any, Optional
 
 from sklearn.base import BaseEstimator
 
-from mlrl.testbed.experiments.data import Context
+from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.output.data import ObjectOutputData, OutputData
 
 

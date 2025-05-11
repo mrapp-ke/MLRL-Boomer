@@ -11,7 +11,7 @@ import numpy as np
 from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBody, PartialHead, RuleModel, \
     RuleModelVisitor
 
-from mlrl.testbed.experiments.data import Context
+from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.output.data import OutputData, TextualOutputData
 from mlrl.testbed.util.format import format_number

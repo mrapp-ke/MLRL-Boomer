@@ -25,6 +25,6 @@ class Characteristic(OutputValue):
 
     def format(self, value, **kwargs) -> str:
         """
-        See :func:`mlrl.testbed.experiments.data.OutputValue.format`
+        See :func:`mlrl.testbed.experiments.output.data.OutputValue.format`
         """
         return super().format(self.function(value), **kwargs)

@@ -1,28 +1,12 @@
 """
 Author Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for representing input or output data.
+Provides classes for representing paths to files.
 """
-from dataclasses import dataclass
 from os import path
 
+from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.state import ExperimentState
-
-
-@dataclass
-class Context:
-    """
-    Specifies the aspects of an `ExperimentState` that should be taken into account for finding a suitable source or
-    sink for handling data.
-
-    Attributes:
-        include_dataset_type:       True, if the type of the dataset should be taken into account, False otherwise
-        include_prediction_scope:   True, if the scope of predictions should be taken into account, False otherwise
-        include_fold:               True, if the cross validation fold should be taken into account, False otherwise
-    """
-    include_dataset_type: bool = True
-    include_prediction_scope: bool = True
-    include_fold: bool = True
 
 
 class FilePath:

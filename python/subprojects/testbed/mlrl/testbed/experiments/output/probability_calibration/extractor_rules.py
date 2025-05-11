@@ -12,7 +12,7 @@ from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibr
     NoProbabilityCalibrationModel
 from mlrl.common.learners import ClassificationRuleLearner
 
-from mlrl.testbed.experiments.data import Context
+from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.probability_calibration.model_isotonic import IsotonicRegressionModel
 from mlrl.testbed.experiments.output.sinks import Sink
