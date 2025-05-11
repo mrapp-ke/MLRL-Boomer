@@ -3,12 +3,12 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing output data to text files.
 """
-from mlrl.common.config.options import Options
-
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.io import open_writable_file
+
+from mlrl.util.options import Options
 
 
 class TextFileSink(FileSink):

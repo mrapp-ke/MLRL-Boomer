@@ -10,7 +10,7 @@ from typing import List, Optional
 
 from scipy.sparse import lil_array
 
-from mlrl.common.data.arrays import is_sparse
+from mlrl.util.arrays import is_sparse
 
 
 class AttributeType(Enum):

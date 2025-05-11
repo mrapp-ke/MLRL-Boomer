@@ -5,7 +5,7 @@ Provides classes for dealing with different types of predictions.
 """
 from enum import Enum
 
-from mlrl.common.util.format import format_enum_values
+from mlrl.util.format import format_enum_values
 
 
 class PredictionType(Enum):
