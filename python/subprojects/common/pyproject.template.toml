@@ -33,9 +33,8 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "numpy",
+    "mlrl-util",
     "scikit-learn",
-    "scipy",
 ]
 
 [project.urls]
