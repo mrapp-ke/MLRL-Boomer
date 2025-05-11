@@ -5,8 +5,6 @@ Provides classes for representing characteristics of an output matrix that are p
 """
 from typing import Optional
 
-from mlrl.common.config.options import Options
-
 from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.output.characteristics.data.characteristic import Characteristic
 from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
@@ -14,6 +12,8 @@ from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.table import RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
+
+from mlrl.util.options import Options
 
 
 class OutputCharacteristics(TabularOutputData):

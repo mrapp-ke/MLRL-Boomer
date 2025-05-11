@@ -8,13 +8,13 @@ import logging as log
 from abc import ABC, abstractmethod
 from os import makedirs
 
-from mlrl.common.config.options import Options
-
 from mlrl.testbed.experiments.data import FilePath
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData, TabularOutputData
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
+
+from mlrl.util.options import Options
 
 
 class Sink(ABC):

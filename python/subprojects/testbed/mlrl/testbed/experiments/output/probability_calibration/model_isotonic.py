@@ -7,7 +7,6 @@ Provides classes for representing models for the calibration of probabilities vi
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-from mlrl.common.config.options import Options
 from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibrationModel, \
     IsotonicProbabilityCalibrationModelVisitor
 
@@ -15,6 +14,8 @@ from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.table import ColumnWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, format_number
+
+from mlrl.util.options import Options
 
 
 class IsotonicRegressionModel(TabularOutputData):

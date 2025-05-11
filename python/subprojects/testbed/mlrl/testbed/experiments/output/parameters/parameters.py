@@ -5,12 +5,12 @@ Provides classes for representing algorithmic parameters that are part of output
 """
 from typing import Optional
 
-from mlrl.common.config.options import Options
-
 from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.state import ParameterDict
 from mlrl.testbed.experiments.table import RowWiseTable, Table
+
+from mlrl.util.options import Options
 
 
 class OutputParameters(TabularOutputData):
