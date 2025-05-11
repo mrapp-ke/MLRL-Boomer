@@ -7,7 +7,7 @@ from typing import Any, Optional
 
 from sklearn.base import BaseEstimator
 
-from mlrl.testbed.experiments.data import Data
+from mlrl.testbed.experiments.data import Context
 from mlrl.testbed.experiments.output.data import ObjectOutputData, OutputData
 
 
@@ -21,7 +21,7 @@ class OutputModel(ObjectOutputData):
         :param learner: The learner that stores the model
         """
         super().__init__(OutputData.Properties(name='Model', file_name='model'),
-                         Data.Context(include_dataset_type=False, include_prediction_scope=False))
+                         Context(include_dataset_type=False, include_prediction_scope=False))
         self.learner = learner
 
     def to_object(self) -> Optional[Any]:

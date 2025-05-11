@@ -9,12 +9,12 @@ from typing import Any
 
 import numpy as np
 
-from mlrl.testbed.experiments.data import Data
+from mlrl.testbed.experiments.data import Context
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
 
 
-class InputData(Data, ABC):
+class InputData(ABC):
     """
     An abstract base class for all classes that represent input data.
     """
@@ -29,14 +29,14 @@ class InputData(Data, ABC):
         """
         file_name: str
 
-    def __init__(self, properties: Properties, context: Data.Context = Data.Context()):
+    def __init__(self, properties: Properties, context: Context = Context()):
         """
         :param properties:  The properties of the input data
-        :param context:     A `Data.Context` to be used by default for finding a suitable input reader this data can be
+        :param context:     A `Context` to be used by default for finding a suitable input reader this data can be
                             handled by
         """
-        super().__init__(context=context)
         self.properties = properties
+        self.context = context
 
     @abstractmethod
     def update_state(self, state: ExperimentState, input_data: Any):
@@ -89,15 +89,13 @@ class TabularInputData(InputData, ABC):
         """
         has_header: bool
 
-    def __init__(self, properties: Properties, context: Data.Context = Data.Context()):
+    def __init__(self, properties: Properties, context: Context = Context()):
         """
-
         :param properties:  The properties of the input data
-        :param context:     A `Data.Context` to be used by default for finding a suitable input reader this data can be
+        :param context:     A `Context` to be used by default for finding a suitable input reader this data can be
                             handled by
-
         """
-        super().__init__(properties, context)
+        super().__init__(properties=properties, context=context)
 
     def update_state(self, state: ExperimentState, input_data: Any):
         self._update_state(state, input_data)

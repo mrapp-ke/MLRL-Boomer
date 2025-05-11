@@ -5,7 +5,7 @@ Provides classes for representing characteristics of an output matrix that are p
 """
 from typing import Optional
 
-from mlrl.testbed.experiments.data import Data
+from mlrl.testbed.experiments.data import Context
 from mlrl.testbed.experiments.output.characteristics.data.characteristic import Characteristic
 from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
@@ -37,14 +37,14 @@ class OutputCharacteristics(TabularOutputData):
                  problem_type: ProblemType,
                  output_matrix: OutputMatrix,
                  properties: OutputData.Properties,
-                 context: Data.Context = Data.Context()):
+                 context: Context = Context()):
         """
 
         :param problem_type:    The type of the machine learning problem, the output matrix corresponds to
         :param output_matrix:   An output matrix
         :param properties:      The properties of the output data
-        :param context:         A `Data.Context` to be used by default for finding a suitable sink this output data can
-                                be written to
+        :param context:         A `Context` to be used by default for finding a suitable sink this output data can be
+                                written to
         """
         super().__init__(properties=properties, context=context)
         self.output_matrix = output_matrix

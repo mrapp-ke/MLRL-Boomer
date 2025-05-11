@@ -9,7 +9,7 @@ from typing import Optional
 
 import numpy as np
 
-from mlrl.testbed.experiments.data import Data
+from mlrl.testbed.experiments.data import Context
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData
 from mlrl.testbed.util.format import OPTION_DECIMALS
@@ -22,11 +22,11 @@ class OutputDataset(DatasetOutputData):
     Represents a dataset that is part of output data.
     """
 
-    def __init__(self, dataset: Dataset, properties: OutputData.Properties, context: Data.Context = Data.Context()):
+    def __init__(self, dataset: Dataset, properties: OutputData.Properties, context: Context = Context()):
         """
         :param dataset:     A dataset
         :param properties:  The properties of the output data
-        :param context:     A `Data.Context` to be used by default for finding a suitable sink this output data can be
+        :param context:     A `Context` to be used by default for finding a suitable sink this output data can be
                             written to
         """
         super().__init__(properties=properties, context=context)
