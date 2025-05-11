@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 from typing import Generator
 
 from mlrl.testbed.experiments.dataset import DatasetType
-from mlrl.testbed.experiments.problem_type import ProblemType
+from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.state import ExperimentState
 
 
@@ -32,10 +32,10 @@ class DatasetSplitter(ABC):
             """
 
     @abstractmethod
-    def split(self, problem_type: ProblemType) -> Generator[Split, None, None]:
+    def split(self, problem_domain: ProblemDomain) -> Generator[Split, None, None]:
         """
         Returns a generator that generates the individual splits of the dataset into training and test data.
 
-        :param problem_type:    The type of the machine learning problem, the dataset is concerned with
+        :param problem_domain:  The problem domain, the dataset is concerned with
         :return:                The generator
         """

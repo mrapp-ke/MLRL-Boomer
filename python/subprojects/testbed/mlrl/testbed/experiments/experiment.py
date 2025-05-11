@@ -210,7 +210,7 @@ class Experiment(ABC):
 
         start_time = Timer.start()
 
-        for split in self.dataset_splitter.split(problem_type=problem_domain.problem_type):
+        for split in self.dataset_splitter.split(problem_domain):
             training_state = split.get_state(DatasetType.TRAINING)
 
             for listener in self.listeners:
