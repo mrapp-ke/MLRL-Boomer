@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements modules that provide access to Python code that can be built as wheel packages.
 """
 from os import environ, path
-from typing import Optional
+from typing import Generator, List, Optional
 
 from core.build_unit import BuildUnit
 from core.modules import Module, ModuleRegistry
@@ -20,37 +20,65 @@ class PythonPackageModule(SubprojectModule):
     A module that provides access to Python code that can be built as wheel packages.
     """
 
+    class PackageNameFilter(Module.Filter):
+        """
+        Matches modules by their package name.
+        """
+
+        def __init__(self, package_name: str):
+            """
+            :param package_name: The package name to be matched
+            """
+            self.package_name = package_name
+
+        def matches(self, module: 'Module', module_registry: 'ModuleRegistry') -> bool:
+            build_unit = BuildUnit.for_file(__file__)
+            return isinstance(module, PythonPackageModule) and module.get_package_name(build_unit) == self.package_name
+
     class Filter(Module.Filter):
         """
         A filter that matches modules of type `PythonPackageModule`.
         """
 
-        def matches(self, module: Module, module_registry: ModuleRegistry) -> bool:
+        class TypeFilter(Module.Filter):
+            """
+            An internal filter that only checks the type of modules.
+            """
 
-            class TypeFilter(Module.Filter):
-                """
-                An internal filter that only checks the type of modules.
-                """
+            def matches(self, module: 'Module', _: ModuleRegistry) -> bool:
+                return isinstance(module, PythonPackageModule)
 
-                def matches(self, module: 'Module', _: ModuleRegistry) -> bool:
-                    return isinstance(module, PythonPackageModule)
+        def __needs_to_be_built(self, module: 'PythonPackageModule', module_registry: ModuleRegistry) -> bool:
+            return SubprojectModule.Filter.from_env(environ).matches(module, module_registry)
 
-            if TypeFilter().matches(module, module_registry):
-                build_unit = BuildUnit.for_file(__file__)
-                subproject_filter = SubprojectModule.Filter.from_env(environ)
+        def __is_dependency_to_be_built(self, module: 'PythonPackageModule', module_registry: ModuleRegistry) -> bool:
+            modules_to_be_built = module_registry.lookup(PythonPackageModule.Filter.TypeFilter(),
+                                                         SubprojectModule.Filter.from_env(environ))
+            return any(
+                self.__is_dependency_of_module(module, module_to_be_built, module_registry)
+                for module_to_be_built in modules_to_be_built)
 
-                if subproject_filter.matches(module, module_registry):
+        def __is_dependency_of_module(self, module: 'PythonPackageModule', other_module: 'PythonPackageModule',
+                                      module_registry: ModuleRegistry) -> bool:
+            package_name = module.get_package_name(self.build_unit)
+
+            for dependency_name in other_module.get_dependency_names(self.build_unit):
+                if dependency_name == package_name:
                     return True
 
-                other_modules = module_registry.lookup(TypeFilter(), SubprojectModule.Filter.from_env(environ))
-                package_name = PyprojectTomlFile(build_unit, module.pyproject_toml_template_file).package_name
-
-                for other_module in other_modules:
-                    dependencies = PyprojectTomlFile(build_unit, other_module.pyproject_toml_template_file).dependencies
-                    if any(dependency.startswith(package_name) for dependency in dependencies):
-                        return True
+            for dependency_module in other_module.get_dependencies(self.build_unit, module_registry):
+                if self.__is_dependency_of_module(module, dependency_module, module_registry):
+                    return True
 
             return False
+
+        def __init__(self):
+            self.build_unit = BuildUnit.for_file(__file__)
+
+        def matches(self, module: Module, module_registry: ModuleRegistry) -> bool:
+            return PythonPackageModule.Filter.TypeFilter().matches(
+                module, module_registry) and (self.__needs_to_be_built(module, module_registry)
+                                              or self.__is_dependency_to_be_built(module, module_registry))
 
     def __init__(self, root_directory: str, wheel_directory_name: str):
         """
@@ -59,6 +87,9 @@ class PythonPackageModule(SubprojectModule):
         """
         self.root_directory = root_directory
         self.wheel_directory_name = wheel_directory_name
+        self._package_name = None
+        self._dependency_names = None
+        self._dependencies = None
 
     @property
     def pyproject_toml_template_file(self) -> str:
@@ -73,6 +104,59 @@ class PythonPackageModule(SubprojectModule):
         The path to the pyproject.toml file that specifies the meta-data of the package.
         """
         return path.join(self.root_directory, 'pyproject.toml')
+
+    def get_package_name(self, build_unit: BuildUnit) -> str:
+        """
+        Retrieves and returns the name of the package from the pyproject.toml file.
+
+        :param build_unit:  The build unit this function is called from
+        :return:            The name of the package
+        """
+        package_name = self._package_name
+
+        if not package_name:
+            package_name = PyprojectTomlFile(build_unit, self.pyproject_toml_template_file).package_name
+            self._package_name = package_name
+
+        return package_name
+
+    def get_dependency_names(self, build_unit: BuildUnit) -> List[str]:
+        """
+        Retrieves and returns the names of the dependencies of the package from the pyproject.toml file.
+
+        :param build_unit:  The build unit this function is called from
+        :return:            The names of the dependencies of the package
+        """
+        dependency_names = self._dependency_names
+
+        if not dependency_names:
+            dependency_names = PyprojectTomlFile(build_unit, self.pyproject_toml_template_file).dependencies
+            self._dependency_names = dependency_names
+
+        return dependency_names
+
+    def get_dependencies(self, build_unit: BuildUnit,
+                         module_registry: ModuleRegistry) -> Generator['PythonPackageModule', None, None]:
+        """
+        Retries and returns the modules that are dependencies of the package from the pyproject.toml file.
+
+        :param build_unit:      The build unit this function is called from
+        :param module_registry: The module registry that should be used for looking up modules
+        :return:                The modules that are dependencies of the package
+        """
+        dependencies = self._dependencies
+
+        if not dependencies:
+            self._dependencies = []
+
+            for dependency_name in self.get_dependency_names(build_unit):
+                modules = module_registry.lookup(PythonPackageModule.PackageNameFilter(dependency_name))
+
+                if modules:
+                    self._dependencies.append(modules[0])
+                    yield modules[0]
+        else:
+            yield from dependencies
 
     @property
     def wheel_directory(self) -> str:
