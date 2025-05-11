@@ -36,4 +36,3 @@ Submodules
    mlrl.common.cython.rule_induction
    mlrl.common.cython.rule_model
    mlrl.common.cython.stopping_criterion
-   mlrl.common.cython.validation
