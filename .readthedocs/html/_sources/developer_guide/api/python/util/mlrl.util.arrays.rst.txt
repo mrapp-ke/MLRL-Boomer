@@ -1,0 +1,7 @@
+mlrl.util.arrays module
+=======================
+
+.. automodule:: mlrl.util.arrays
+   :members:
+   :show-inheritance:
+   :undoc-members:

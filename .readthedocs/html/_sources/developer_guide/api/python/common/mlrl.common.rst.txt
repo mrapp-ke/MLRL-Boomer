@@ -14,8 +14,6 @@ Subpackages
 
    mlrl.common.config
    mlrl.common.cython
-   mlrl.common.data
-   mlrl.common.util
 
 Submodules
 ----------

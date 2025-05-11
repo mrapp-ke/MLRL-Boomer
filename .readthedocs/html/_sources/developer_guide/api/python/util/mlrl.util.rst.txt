@@ -1,0 +1,18 @@
+mlrl.util package
+=================
+
+.. automodule:: mlrl.util
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.util.arrays
+   mlrl.util.format
+   mlrl.util.options
+   mlrl.util.validation

@@ -1,7 +1,0 @@
-mlrl.common.util.format module
-==============================
-
-.. automodule:: mlrl.common.util.format
-   :members:
-   :show-inheritance:
-   :undoc-members:

@@ -1,7 +1,0 @@
-mlrl.common.data.arrays module
-==============================
-
-.. automodule:: mlrl.common.data.arrays
-   :members:
-   :show-inheritance:
-   :undoc-members:
