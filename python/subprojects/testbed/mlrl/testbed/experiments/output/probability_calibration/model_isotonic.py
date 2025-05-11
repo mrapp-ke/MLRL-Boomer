@@ -10,7 +10,7 @@ from typing import List, Optional
 from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibrationModel, \
     IsotonicProbabilityCalibrationModelVisitor
 
-from mlrl.testbed.experiments.data import Data
+from mlrl.testbed.experiments.data import Context
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.table import ColumnWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, format_number
@@ -55,13 +55,13 @@ class IsotonicRegressionModel(TabularOutputData):
     def __init__(self,
                  calibration_model: IsotonicProbabilityCalibrationModel,
                  properties: OutputData.Properties,
-                 context: Data.Context = Data.Context(),
+                 context: Context = Context(),
                  column_title_prefix: Optional[str] = None):
         """
         :param calibration_model:   The isotonic calibration model
         :param properties:          The properties of the output data
-        :param context:             A `Data.Context` to be used by default for finding a suitable sink this output data
-                                    can be written to
+        :param context:             A `Context` to be used by default for finding a suitable sink this output data can
+                                    be written to
         :param column_title_prefix: An optional prefix to be prepended to the titles of table columns that contain
                                     thresholds or probabilities
         """

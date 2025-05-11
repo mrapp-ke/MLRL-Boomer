@@ -3,52 +3,39 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing input or output data.
 """
-from abc import ABC
 from dataclasses import dataclass
 from os import path
 
 from mlrl.testbed.experiments.state import ExperimentState
 
 
-class Data(ABC):
+@dataclass
+class Context:
     """
-    An abstract class for all classes that represent data that can be read from sources or written to sinks.
+    Specifies the aspects of an `ExperimentState` that should be taken into account for finding a suitable source or
+    sink for handling data.
+
+    Attributes:
+        include_dataset_type:       True, if the type of the dataset should be taken into account, False otherwise
+        include_prediction_scope:   True, if the scope of predictions should be taken into account, False otherwise
+        include_fold:               True, if the cross validation fold should be taken into account, False otherwise
     """
-
-    @dataclass
-    class Context:
-        """
-        Specifies the aspects of an `ExperimentState` that should be taken into account for finding a suitable source or
-        sink for handling data.
-
-        Attributes:
-            include_dataset_type:       True, if the type of the dataset should be taken into account, False otherwise
-            include_prediction_scope:   True, if the scope of predictions should be taken into account, False otherwise
-            include_fold:               True, if the cross validation fold should be taken into account, False otherwise
-        """
-        include_dataset_type: bool = True
-        include_prediction_scope: bool = True
-        include_fold: bool = True
-
-    def __init__(self, context: Context = Context()):
-        """
-        :param context: A `Data.Context` to be used by default for finding a suitable source or sink this data can be
-                        handled by
-        """
-        self.context = context
+    include_dataset_type: bool = True
+    include_prediction_scope: bool = True
+    include_fold: bool = True
 
 
 class FilePath:
     """
-    The path to a file,  `Data` can be written to or read from.
+    The path to a file, data can be written to or read from.
     """
 
-    def __init__(self, directory: str, file_name: str, suffix: str, context: Data.Context):
+    def __init__(self, directory: str, file_name: str, suffix: str, context: Context):
         """
         :param directory:   The path to the directory, where the file is located
         :param file_name:   The name of the file
         :param suffix:      The suffix of the file (with leading dot)
-        :param context:     A `Data.Context` to be used to determine the path
+        :param context:     A `Context` to be used to determine the path
         """
         self.directory = directory
         self.file_name = file_name

@@ -12,7 +12,7 @@ from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibr
     NoProbabilityCalibrationModel
 from mlrl.common.learners import ClassificationRuleLearner
 
-from mlrl.testbed.experiments.data import Data
+from mlrl.testbed.experiments.data import Context
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.probability_calibration.model_isotonic import IsotonicRegressionModel
 from mlrl.testbed.experiments.output.sinks import Sink
@@ -65,7 +65,7 @@ class IsotonicMarginalProbabilityCalibrationModelExtractor(ProbabilityCalibratio
                                                name='Marginal probability calibration model',
                                                file_name='marginal_probability_calibration_model',
                                            ),
-                                           context=Data.Context(include_dataset_type=False),
+                                           context=Context(include_dataset_type=False),
                                            column_title_prefix='Label')
 
         if not isinstance(calibration_model, NoProbabilityCalibrationModel):
@@ -89,7 +89,7 @@ class IsotonicJointProbabilityCalibrationModelExtractor(ProbabilityCalibrationMo
                                                name='Joint probability calibration model',
                                                file_name='joint_probability_calibration_model',
                                            ),
-                                           context=Data.Context(include_dataset_type=False),
+                                           context=Context(include_dataset_type=False),
                                            column_title_prefix='Label vector')
 
         if not isinstance(calibration_model, NoProbabilityCalibrationModel):
