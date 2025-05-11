@@ -5,7 +5,7 @@ Provides classes for representing characteristics of an output matrix that are p
 """
 from typing import Optional
 
-from mlrl.testbed.experiments.data import Context
+from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.output.characteristics.data.characteristic import Characteristic
 from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData

@@ -8,7 +8,7 @@ from functools import reduce
 from itertools import chain
 from typing import List, Optional
 
-from mlrl.testbed.experiments.data import Context
+from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.output.characteristics.model.statistics_rules import BodyStatistics, HeadStatistics, \
     RuleModelStatistics, RuleStatistics
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData

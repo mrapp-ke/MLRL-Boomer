@@ -5,7 +5,7 @@ Provides classes for representing datasets that are part of input data.
 """
 import numpy as np
 
-from mlrl.testbed.experiments.data import Context
+from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.input.data import DatasetInputData
 
 

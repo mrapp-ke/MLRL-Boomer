@@ -5,7 +5,7 @@ Provides classes for representing algorithmic parameters that are part of output
 """
 from typing import Optional
 
-from mlrl.testbed.experiments.data import Context
+from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.state import ParameterDict
 from mlrl.testbed.experiments.table import RowWiseTable, Table

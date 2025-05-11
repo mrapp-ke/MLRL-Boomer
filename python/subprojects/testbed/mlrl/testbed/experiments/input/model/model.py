@@ -7,7 +7,7 @@ import logging as log
 
 from typing import Any
 
-from mlrl.testbed.experiments.data import Context
+from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.input.data import InputData
 from mlrl.testbed.experiments.state import ExperimentState, TrainingState
 
