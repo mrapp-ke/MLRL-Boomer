@@ -5,7 +5,7 @@ Provides classes for representing datasets that are part of input data.
 """
 import numpy as np
 
-from mlrl.testbed.experiments.data import Data
+from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.input.data import DatasetInputData
 
 
@@ -21,4 +21,4 @@ class InputDataset(DatasetInputData):
         super().__init__(DatasetInputData.Properties(file_name=dataset_name,
                                                      feature_dtype=np.float32,
                                                      output_dtype=np.uint8),
-                         context=Data.Context(include_prediction_scope=False))
+                         context=Context(include_prediction_scope=False))
