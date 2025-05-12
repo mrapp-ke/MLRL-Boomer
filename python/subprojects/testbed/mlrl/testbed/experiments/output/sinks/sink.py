@@ -8,8 +8,8 @@ import logging as log
 from abc import ABC, abstractmethod
 from os import makedirs
 
-from mlrl.testbed.experiments.data import FilePath
 from mlrl.testbed.experiments.dataset import Dataset
+from mlrl.testbed.experiments.file_path import FilePath
 from mlrl.testbed.experiments.output.data import DatasetOutputData, OutputData, TabularOutputData
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
