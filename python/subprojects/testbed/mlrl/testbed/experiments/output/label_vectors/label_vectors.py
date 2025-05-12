@@ -7,7 +7,7 @@ from typing import Optional
 
 import numpy as np
 
-from mlrl.testbed.experiments.data import Data
+from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.label_vectors.label_vector_histogram import LabelVector, LabelVectorHistogram
 from mlrl.testbed.experiments.table import RowWiseTable, Table
@@ -27,7 +27,7 @@ class LabelVectors(TabularOutputData):
         :param label_vector_histogram: The histogram that stores unique label vectors and their respective frequency
         """
         super().__init__(OutputData.Properties(name='Label vectors', file_name='label_vectors'),
-                         Data.Context(include_dataset_type=False))
+                         Context(include_dataset_type=False))
         self.label_vector_histogram = label_vector_histogram
 
     def __format_label_vector(self, label_vector: LabelVector, sparse: bool) -> str:

@@ -7,7 +7,7 @@ import logging as log
 
 from typing import Any
 
-from mlrl.testbed.experiments.data import Data
+from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.input.data import InputData
 from mlrl.testbed.experiments.state import ExperimentState, TrainingState
 
@@ -19,7 +19,7 @@ class InputModel(InputData):
 
     def __init__(self):
         super().__init__(InputData.Properties(file_name='model'),
-                         Data.Context(include_dataset_type=False, include_prediction_scope=False))
+                         Context(include_dataset_type=False, include_prediction_scope=False))
 
     def update_state(self, state: ExperimentState, input_data: Any):
         """
