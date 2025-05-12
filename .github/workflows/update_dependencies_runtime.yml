@@ -17,7 +17,7 @@ on:
       - build_system/targets/dependencies/*
       - build_system/targets/dependencies/python/*
   schedule:
-    - cron: 0 3 * * 2
+    - cron: 0 3 * * 1
   workflow_dispatch:
 jobs:
   update_runtime_dependencies:
