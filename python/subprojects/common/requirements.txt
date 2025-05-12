@@ -1,2 +1,2 @@
 scikit-learn >= 1.6, < 1.7
-setuptools >= 80.3, < 80.4
+setuptools >= 80.4, < 80.5
