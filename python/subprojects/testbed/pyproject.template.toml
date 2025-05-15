@@ -29,8 +29,8 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "liac-arff",
     "mlrl-common",
+    "mlrl-testbed-arff",
     "mlrl-util",
     "tabulate",
 ]

@@ -14,10 +14,11 @@ import arff
 
 from scipy.sparse import coo_array, csc_array, sparray
 
+from mlrl.testbed_arff.experiments.output.sinks.sink_arff import ArffFileSink
+
 from mlrl.testbed.experiments.dataset import Attribute, AttributeType, Dataset
 from mlrl.testbed.experiments.input.data import DatasetInputData
 from mlrl.testbed.experiments.input.sources.source import DatasetFileSource
-from mlrl.testbed.experiments.output.sinks.sink_arff import ArffFileSink
 from mlrl.testbed.util.io import open_readable_file
 
 
