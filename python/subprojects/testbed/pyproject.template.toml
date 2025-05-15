@@ -18,7 +18,6 @@ keywords = [
     "multi-label classification",
     "multi-output regression",
     "multi-target regression",
-    "rule learning",
     "scikit-learn",
 ]
 classifiers = [
