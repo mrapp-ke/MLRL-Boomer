@@ -65,8 +65,9 @@ class PythonApidocModule(ApidocModule):
         return path.basename(self.output_directory)
 
     def create_reference(self) -> str:
-        return 'Package mlrl-' + path.basename(self.output_directory) + ' <' + path.join(
-            self.subproject_name, self.source_directory_name + '.' + self.subproject_name + '.rst') + '>'
+        rst_file_name = self.source_directory_name + '.' + self.subproject_name.replace('-', '_') + '.rst'
+        rst_file_path = path.join(self.subproject_name, rst_file_name)
+        return 'Package mlrl-' + path.basename(self.output_directory) + ' <' + rst_file_path + '>'
 
     def __str__(self) -> str:
         return 'PythonApidocModule {root_directory="' + self.root_directory + '"}'
