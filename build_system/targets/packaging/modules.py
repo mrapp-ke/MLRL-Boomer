@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements modules that provide access to Python code that can be built as wheel packages.
 """
 from os import environ, path
-from typing import Generator, List, Optional
+from typing import Generator, List, Optional, Set
 
 from core.build_unit import BuildUnit
 from core.modules import Module, ModuleRegistry
@@ -58,17 +58,27 @@ class PythonPackageModule(SubprojectModule):
                 self.__is_dependency_of_module(module, module_to_be_built, module_registry)
                 for module_to_be_built in modules_to_be_built)
 
-        def __is_dependency_of_module(self, module: 'PythonPackageModule', other_module: 'PythonPackageModule',
-                                      module_registry: ModuleRegistry) -> bool:
+        def __is_dependency_of_module(self,
+                                      module: 'PythonPackageModule',
+                                      other_module: 'PythonPackageModule',
+                                      module_registry: ModuleRegistry,
+                                      dependencies_to_be_skipped: Optional[Set[str]] = None) -> bool:
             package_name = module.get_package_name(self.build_unit)
+            dependency_names = other_module.get_dependency_names(self.build_unit)
 
-            for dependency_name in other_module.get_dependency_names(self.build_unit):
+            for dependency_name in dependency_names:
                 if dependency_name == package_name:
                     return True
 
+            dependencies_to_be_skipped = dependencies_to_be_skipped if dependencies_to_be_skipped else set()
+
             for dependency_module in other_module.get_dependencies(self.build_unit, module_registry):
-                if self.__is_dependency_of_module(module, dependency_module, module_registry):
-                    return True
+                dependency_package_name = dependency_module.get_package_name(self.build_unit)
+
+                if dependency_package_name not in dependencies_to_be_skipped:
+                    if self.__is_dependency_of_module(module, dependency_module, module_registry,
+                                                      dependencies_to_be_skipped | {dependency_package_name}):
+                        return True
 
             return False
 
@@ -87,8 +97,7 @@ class PythonPackageModule(SubprojectModule):
         """
         self.root_directory = root_directory
         self.wheel_directory_name = wheel_directory_name
-        self._package_name = None
-        self._dependency_names = None
+        self._pyproject_toml_file = None
         self._dependencies = None
 
     @property
@@ -112,13 +121,13 @@ class PythonPackageModule(SubprojectModule):
         :param build_unit:  The build unit this function is called from
         :return:            The name of the package
         """
-        package_name = self._package_name
+        pyproject_toml_file = self._pyproject_toml_file
 
-        if not package_name:
-            package_name = PyprojectTomlFile(build_unit, self.pyproject_toml_template_file).package_name
-            self._package_name = package_name
+        if not pyproject_toml_file:
+            pyproject_toml_file = PyprojectTomlFile(build_unit, self.pyproject_toml_template_file)
+            self._pyproject_toml_file = pyproject_toml_file
 
-        return package_name
+        return pyproject_toml_file.package_name
 
     def get_dependency_names(self, build_unit: BuildUnit) -> List[str]:
         """
@@ -127,13 +136,13 @@ class PythonPackageModule(SubprojectModule):
         :param build_unit:  The build unit this function is called from
         :return:            The names of the dependencies of the package
         """
-        dependency_names = self._dependency_names
+        pyproject_toml_file = self._pyproject_toml_file
 
-        if not dependency_names:
-            dependency_names = PyprojectTomlFile(build_unit, self.pyproject_toml_template_file).dependencies
-            self._dependency_names = dependency_names
+        if not pyproject_toml_file:
+            pyproject_toml_file = PyprojectTomlFile(build_unit, self.pyproject_toml_template_file)
+            self._pyproject_toml_file = pyproject_toml_file
 
-        return dependency_names
+        return pyproject_toml_file.dependencies
 
     def get_dependencies(self, build_unit: BuildUnit,
                          module_registry: ModuleRegistry) -> Generator['PythonPackageModule', None, None]:
@@ -147,16 +156,17 @@ class PythonPackageModule(SubprojectModule):
         dependencies = self._dependencies
 
         if not dependencies:
-            self._dependencies = []
+            dependencies = []
 
             for dependency_name in self.get_dependency_names(build_unit):
                 modules = module_registry.lookup(PythonPackageModule.PackageNameFilter(dependency_name))
 
                 if modules:
-                    self._dependencies.append(modules[0])
-                    yield modules[0]
-        else:
-            yield from dependencies
+                    dependencies.append(modules[0])
+
+            self._dependencies = dependencies
+
+        yield from dependencies
 
     @property
     def wheel_directory(self) -> str:
