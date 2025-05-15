@@ -24,6 +24,7 @@ jobs:
         subproject:
           - util
           - testbed
+          - testbed-arff
     uses: ./.github/workflows/template_publish_pure.yml
     with:
       subproject: ${{ matrix.subproject }}
