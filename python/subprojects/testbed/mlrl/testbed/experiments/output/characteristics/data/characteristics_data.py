@@ -14,8 +14,7 @@ from mlrl.testbed.experiments.output.characteristics.data.matrix_feature import 
 from mlrl.testbed.experiments.output.characteristics.data.matrix_label import LabelMatrix
 from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
 from mlrl.testbed.experiments.output.data import OutputData, OutputValue, TabularOutputData
-from mlrl.testbed.experiments.problem_domain import ProblemDomain
-from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificationProblem
+from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain
 from mlrl.testbed.experiments.table import RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
@@ -50,7 +49,7 @@ class DataCharacteristics(TabularOutputData):
                          Context(include_dataset_type=False))
         self.feature_matrix = FeatureMatrix(dataset=dataset)
 
-        if isinstance(problem_domain, SkLearnClassificationProblem):
+        if isinstance(problem_domain, ClassificationProblem):
             self.output_characteristics = LABEL_CHARACTERISTICS
             self.output_matrix = LabelMatrix(values=dataset.y)
         else:
