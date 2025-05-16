@@ -13,6 +13,5 @@ Submodules
    :maxdepth: 4
 
    mlrl.testbed.experiments.input.sources.source
-   mlrl.testbed.experiments.input.sources.source_arff
    mlrl.testbed.experiments.input.sources.source_csv
    mlrl.testbed.experiments.input.sources.source_pickle

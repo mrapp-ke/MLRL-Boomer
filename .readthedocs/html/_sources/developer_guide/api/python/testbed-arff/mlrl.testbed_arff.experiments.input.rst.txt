@@ -1,0 +1,15 @@
+mlrl.testbed\_arff.experiments.input package
+============================================
+
+.. automodule:: mlrl.testbed_arff.experiments.input
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed_arff.experiments.input.sources
