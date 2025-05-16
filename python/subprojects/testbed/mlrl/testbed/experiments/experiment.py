@@ -202,7 +202,7 @@ class Experiment(ABC):
                                                 available, False otherwise
         """
         problem_domain = self.problem_domain
-        log.info('Starting experiment using the %s algorithm "%s"...', problem_domain.problem_type.value,
+        log.info('Starting experiment using the %s algorithm "%s"...', problem_domain.problem_name,
                  problem_domain.learner_name)
 
         for listener in self.listeners:

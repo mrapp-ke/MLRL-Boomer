@@ -191,7 +191,7 @@ class CrossValidationSplitter(DatasetSplitter):
             + ' of' if folding_strategy.is_subset else 'full', num_folds)
 
         # Check if predefined folds are available...
-        state = ExperimentState(problem_type=problem_domain.problem_type, folding_strategy=folding_strategy)
+        state = ExperimentState(problem_domain=problem_domain, folding_strategy=folding_strategy)
         predefined_splits_available = all(
             self.dataset_reader.is_available(replace(state, fold=Fold(fold_index))) for fold_index in range(num_folds))
 
