@@ -535,7 +535,7 @@ class LearnerRunnable(Runnable, ABC):
 
     PARAM_PREDICTION_TYPE = '--prediction-type'
 
-    def __create_problem_type(self, args) -> ProblemType:
+    def _create_problem_type(self, args) -> ProblemType:
         problem_type = args.problem_type
 
         try:
@@ -621,18 +621,6 @@ class LearnerRunnable(Runnable, ABC):
                             default=ProblemType.CLASSIFICATION.value,
                             help='The type of the machine learning problem to be solved. Must be one of '
                             + format_enum_values(ProblemType) + '.')
-        problem_type = self.__create_problem_type(parser.parse_known_args()[0])
-        self.configure_problem_specific_arguments(parser, problem_type)
-
-    # pylint: disable=unused-argument
-    def configure_problem_specific_arguments(self, parser: ArgumentParser, problem_type: ProblemType):
-        """
-        May be overridden by subclasses in order to configure the command line arguments of the program, depending on
-        the type of machine learning problem to be solved.
-
-        :param parser:          An `ArgumentParser` that is used for parsing command line arguments
-        :param problem_type:    The type of the machine learning problem to be solved
-        """
         parser.add_argument(self.PARAM_RANDOM_STATE,
                             type=int,
                             default=None,
@@ -804,7 +792,7 @@ class LearnerRunnable(Runnable, ABC):
                             + format_enum_values(PredictionType) + '.')
 
     def _run(self, args):
-        problem_type = self.__create_problem_type(args)
+        problem_type = self._create_problem_type(args)
         base_learner = self.__create_base_learner(problem_type, args)
         prediction_type = self.__create_prediction_type(args)
         dataset_splitter = self.__create_dataset_splitter(args)
@@ -1251,8 +1239,8 @@ class RuleLearnerRunnable(LearnerRunnable):
                 # Argument has already been added, that's okay
                 pass
 
-    def configure_problem_specific_arguments(self, parser: ArgumentParser, problem_type: ProblemType):
-        super().configure_problem_specific_arguments(parser, problem_type)
+    def configure_arguments(self, parser: ArgumentParser):
+        super().configure_arguments(parser)
         parser.add_argument(self.PARAM_INCREMENTAL_EVALUATION,
                             type=str,
                             default=BooleanOption.FALSE.value,
@@ -1330,6 +1318,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                             default=None,
                             help='The format to be used for the representation of predictions. Must be one of '
                             + format_enum_values(SparsePolicy) + '.')
+        problem_type = self._create_problem_type(parser.parse_known_args()[0])
         config_type, parameters = self.__create_config_type_and_parameters(problem_type)
         self.__configure_argument_parser(parser, config_type, parameters)
 
