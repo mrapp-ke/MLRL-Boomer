@@ -9,8 +9,7 @@ from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.output.characteristics.data.characteristic import Characteristic
 from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
-from mlrl.testbed.experiments.problem_domain import ProblemDomain
-from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificationProblem
+from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain
 from mlrl.testbed.experiments.table import RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
@@ -50,7 +49,7 @@ class OutputCharacteristics(TabularOutputData):
         super().__init__(properties=properties, context=context)
         self.output_matrix = output_matrix
 
-        if isinstance(problem_domain, SkLearnClassificationProblem):
+        if isinstance(problem_domain, ClassificationProblem):
             self.characteristics = LABEL_CHARACTERISTICS
         else:
             self.characteristics = OUTPUT_CHARACTERISTICS

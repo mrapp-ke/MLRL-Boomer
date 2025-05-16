@@ -32,3 +32,29 @@ class ProblemDomain(ABC):
         """
         The name of the machine learning algorithm used to tackle the problem domain.
         """
+
+
+class ClassificationProblem(ProblemDomain, ABC):
+    """
+    Represents a classification problem.
+    """
+
+    @property
+    def problem_name(self) -> str:
+        """
+        See :func:`mlrl.testbed.experiments.problem_domain.ProblemDomain.learner_name`
+        """
+        return 'classification'
+
+
+class RegressionProblem(ProblemDomain, ABC):
+    """
+    Represents a regression problem.
+    """
+
+    @property
+    def problem_name(self) -> str:
+        """
+        See :func:`mlrl.testbed.experiments.problem_domain.ProblemDomain.learner_name`
+        """
+        return 'regression'

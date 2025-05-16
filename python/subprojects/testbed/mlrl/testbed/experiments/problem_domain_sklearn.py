@@ -9,7 +9,7 @@ from typing import Any, Callable, Dict, Optional
 from sklearn.base import BaseEstimator
 
 from mlrl.testbed.experiments.prediction import Predictor
-from mlrl.testbed.experiments.problem_domain import ProblemDomain
+from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
 from mlrl.testbed.experiments.problem_type import ProblemType
 
 
@@ -49,27 +49,13 @@ class SkLearnProblem(ProblemDomain, ABC):
         return type(self.base_learner).__name__
 
 
-class SkLearnClassificationProblem(SkLearnProblem):
+class SkLearnClassificationProblem(SkLearnProblem, ClassificationProblem):
     """
     Represents a classification problem to be tackled via the scikit-learn framework.
     """
 
-    @property
-    def problem_name(self) -> str:
-        """
-        See :func:`mlrl.testbed.experiments.problem_domain.ProblemDomain.learner_name`
-        """
-        return 'classification'
 
-
-class SkLearnRegressionProblem(SkLearnProblem):
+class SkLearnRegressionProblem(SkLearnProblem, RegressionProblem):
     """
     Represents a regression problem to be tackled via the scikit-learn framework.
     """
-
-    @property
-    def problem_name(self) -> str:
-        """
-        See :func:`mlrl.testbed.experiments.problem_domain.ProblemDomain.learner_name`
-        """
-        return 'regression'
