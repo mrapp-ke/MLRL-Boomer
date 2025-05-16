@@ -6,7 +6,7 @@ Provides classes for performing experiments.
 import logging as log
 
 from functools import reduce
-from typing import Any, Callable, Dict, Generator, Optional
+from typing import Any, Dict, Generator, Optional
 
 from sklearn.base import BaseEstimator, clone
 
@@ -14,9 +14,8 @@ from mlrl.common.mixins import NominalFeatureSupportMixin, OrdinalFeatureSupport
 
 from mlrl.testbed.experiments.dataset import AttributeType, Dataset, DatasetType
 from mlrl.testbed.experiments.experiment import Experiment
-from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
-from mlrl.testbed.experiments.prediction import Predictor
-from mlrl.testbed.experiments.problem_type import ProblemType
+from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
+from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnProblem
 from mlrl.testbed.experiments.state import ParameterDict, PredictionState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
 
@@ -26,10 +25,8 @@ class SkLearnExperiment(Experiment):
     An experiment that trains and evaluates a machine learning model using the scikit-learn framework.
     """
 
-    PredictorFactory = Callable[[], Predictor]
-
     def __create_learner(self, parameters: ParameterDict) -> BaseEstimator:
-        learner = clone(self.base_learner)
+        learner = clone(self.problem_domain.base_learner)
 
         if parameters:
             learner.set_params(**parameters)
@@ -59,7 +56,8 @@ class SkLearnExperiment(Experiment):
 
     def __train(self, learner: BaseEstimator, dataset: Dataset) -> Timer.Duration:
         # Set the indices of ordinal features, if supported...
-        fit_kwargs = self.fit_kwargs if self.fit_kwargs else {}
+        fit_kwargs = self.problem_domain.fit_kwargs
+        fit_kwargs = fit_kwargs if fit_kwargs else {}
 
         if isinstance(learner, OrdinalFeatureSupportMixin):
             fit_kwargs[OrdinalFeatureSupportMixin.KWARG_ORDINAL_FEATURE_INDICES] = dataset.get_feature_indices(
@@ -81,29 +79,13 @@ class SkLearnExperiment(Experiment):
                 return self.__train(learner, dataset.enforce_dense_outputs())
             raise error
 
-    def __init__(self,
-                 problem_type: ProblemType,
-                 base_learner: BaseEstimator,
-                 learner_name: str,
-                 dataset_splitter: DatasetSplitter,
-                 predictor_factory: PredictorFactory,
-                 fit_kwargs: Optional[Dict[str, Any]] = None,
-                 predict_kwargs: Optional[Dict[str, Any]] = None):
+    # pylint: disable=useless-parent-delegation
+    def __init__(self, problem_domain: SkLearnProblem, dataset_splitter: DatasetSplitter):
         """
-        :param problem_type:        The type of the machine learning problem
-        :param base_learner:        The machine learning algorithm to be used
-        :param learner_name:        The name of the machine learning algorithm
+        :param problem_domain:      The problem domain, the experiment is concerned with
         :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
-        :param predictor_factory:   A `PredictorFactory`
-        :param fit_kwargs:          Optional keyword arguments to be passed to the learner when fitting a model
-        :param predict_kwargs:      Optional keyword arguments to be passed to the learner when obtaining predictions
-                                    from a model
         """
-        super().__init__(problem_type=problem_type, learner_name=learner_name, dataset_splitter=dataset_splitter)
-        self.base_learner = base_learner
-        self.predictor_factory = predictor_factory
-        self.fit_kwargs = fit_kwargs
-        self.predict_kwargs = predict_kwargs
+        super().__init__(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
 
     def _train(self, learner: Optional[Any], parameters: ParameterDict, dataset: Dataset) -> TrainingState:
         new_learner = self.__create_learner(parameters=parameters)
@@ -120,8 +102,10 @@ class SkLearnExperiment(Experiment):
 
     def _predict(self, learner: Any, dataset: Dataset,
                  dataset_type: DatasetType) -> Generator[PredictionState, None, None]:
-        predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-        predictor = self.predictor_factory()
+        problem_domain = self.problem_domain
+        predict_kwargs = problem_domain.predict_kwargs
+        predict_kwargs = predict_kwargs if predict_kwargs else {}
+        predictor = problem_domain.predictor_factory()
 
         try:
             return predictor.obtain_predictions(learner, dataset, dataset_type, **predict_kwargs)

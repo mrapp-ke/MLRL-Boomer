@@ -10,7 +10,7 @@ from mlrl.testbed.experiments.dataset import Dataset, DatasetType
 from mlrl.testbed.experiments.fold import Fold, FoldingStrategy
 from mlrl.testbed.experiments.prediction_scope import PredictionScope
 from mlrl.testbed.experiments.prediction_type import PredictionType
-from mlrl.testbed.experiments.problem_type import ProblemType
+from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.timer import Timer
 
 ParameterDict = Dict[str, Any]
@@ -52,7 +52,7 @@ class ExperimentState:
     Represents the state of an experiment.
 
     Attributes:
-        problem_type:       The type of the machine learning problem, the experiment is concerned with
+        problem_domain:     The problem domain, the experiment is concerned with
         folding_strategy:   The strategy that is used for creating different folds of the dataset during the experiment
         dataset_type:       The type of the dataset used in the experiment
         dataset:            The dataset used in the experiment or None, if no dataset has been loaded yet
@@ -61,7 +61,7 @@ class ExperimentState:
         training_result:    The result of the training process or None, if no model has been trained yet
         prediction_result:  The result of the prediction process or None, if no predictions have been obtained yet
     """
-    problem_type: ProblemType
+    problem_domain: ProblemDomain
     folding_strategy: FoldingStrategy
     dataset_type: DatasetType = DatasetType.TRAINING
     dataset: Optional[Dataset] = None

@@ -14,7 +14,7 @@ from mlrl.testbed.experiments.output.characteristics.data.matrix_feature import 
 from mlrl.testbed.experiments.output.characteristics.data.matrix_label import LabelMatrix
 from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
 from mlrl.testbed.experiments.output.data import OutputData, OutputValue, TabularOutputData
-from mlrl.testbed.experiments.problem_type import ProblemType
+from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain
 from mlrl.testbed.experiments.table import RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
@@ -40,16 +40,16 @@ class DataCharacteristics(TabularOutputData):
 
     OPTION_FEATURE_SPARSITY = 'feature_sparsity'
 
-    def __init__(self, problem_type: ProblemType, dataset: Dataset):
+    def __init__(self, problem_domain: ProblemDomain, dataset: Dataset):
         """
-        :param problem_type:    The type of the machine learning problem, the dataset is concerned with
+        :param problem_domain:  The problem domain, the dataset is concerned with
         :param dataset:         The dataset
         """
         super().__init__(OutputData.Properties(file_name='data_characteristics', name='Data characteristics'),
                          Context(include_dataset_type=False))
         self.feature_matrix = FeatureMatrix(dataset=dataset)
 
-        if problem_type == ProblemType.CLASSIFICATION:
+        if isinstance(problem_domain, ClassificationProblem):
             self.output_characteristics = LABEL_CHARACTERISTICS
             self.output_matrix = LabelMatrix(values=dataset.y)
         else:
