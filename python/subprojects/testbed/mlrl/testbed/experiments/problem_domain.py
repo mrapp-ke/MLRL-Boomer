@@ -10,14 +10,21 @@ from mlrl.testbed.experiments.problem_type import ProblemType
 
 class ProblemDomain(ABC):
     """
-    An abstract base class for all classes that implement a specific problem domain.
+    An abstract base class for all classes that represent a specific problem domain.
     """
 
     def __init__(self, problem_type: ProblemType):
         """
-        :param problem_type:        The type of the machine learning problem
+        :param problem_type: The type of the machine learning problem
         """
         self.problem_type = problem_type
+
+    @property
+    @abstractmethod
+    def problem_name(self) -> str:
+        """
+        The name of the problem domain.
+        """
 
     @property
     @abstractmethod

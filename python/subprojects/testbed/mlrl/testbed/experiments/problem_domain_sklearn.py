@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for implementing different kinds of problem domains.
 """
+from abc import ABC
 from typing import Any, Callable, Dict, Optional
 
 from sklearn.base import BaseEstimator
@@ -12,9 +13,9 @@ from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.problem_type import ProblemType
 
 
-class SkLearnProblem(ProblemDomain):
+class SkLearnProblem(ProblemDomain, ABC):
     """
-    An abstract base class for all classes that implement a specific problem domain to be tackled via the scikit-learn
+    An abstract base class for all classes that represent a specific problem domain to be tackled via the scikit-learn
     framework.
     """
 
@@ -46,3 +47,29 @@ class SkLearnProblem(ProblemDomain):
         See :func:`mlrl.testbed.experiments.problem_domain.ProblemDomain.learner_name`
         """
         return type(self.base_learner).__name__
+
+
+class SkLearnClassificationProblem(SkLearnProblem):
+    """
+    Represents a classification problem to be tackled via the scikit-learn framework.
+    """
+
+    @property
+    def problem_name(self) -> str:
+        """
+        See :func:`mlrl.testbed.experiments.problem_domain.ProblemDomain.learner_name`
+        """
+        return 'classification'
+
+
+class SkLearnRegressionProblem(SkLearnProblem):
+    """
+    Represents a regression problem to be tackled via the scikit-learn framework.
+    """
+
+    @property
+    def problem_name(self) -> str:
+        """
+        See :func:`mlrl.testbed.experiments.problem_domain.ProblemDomain.learner_name`
+        """
+        return 'regression'
