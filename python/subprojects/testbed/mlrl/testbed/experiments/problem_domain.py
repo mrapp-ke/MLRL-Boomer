@@ -31,12 +31,14 @@ class ClassificationProblem(ProblemDomain, ABC):
     Represents a classification problem.
     """
 
+    NAME = 'classification'
+
     @property
     def problem_name(self) -> str:
         """
         See :func:`mlrl.testbed.experiments.problem_domain.ProblemDomain.learner_name`
         """
-        return 'classification'
+        return self.NAME
 
 
 class RegressionProblem(ProblemDomain, ABC):
@@ -44,9 +46,11 @@ class RegressionProblem(ProblemDomain, ABC):
     Represents a regression problem.
     """
 
+    NAME = 'regression'
+
     @property
     def problem_name(self) -> str:
         """
         See :func:`mlrl.testbed.experiments.problem_domain.ProblemDomain.learner_name`
         """
-        return 'regression'
+        return self.NAME
