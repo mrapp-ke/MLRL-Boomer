@@ -23,8 +23,7 @@ class SeCoRunnable(RuleLearnerRunnable):
     """
 
     def __init__(self):
-        super().__init__(learner_name='seco',
-                         classifier_type=SeCoClassifier,
+        super().__init__(classifier_type=SeCoClassifier,
                          classifier_config_type=SeCoClassifierConfig,
                          classifier_parameters=SECO_CLASSIFIER_PARAMETERS,
                          regressor_type=None,

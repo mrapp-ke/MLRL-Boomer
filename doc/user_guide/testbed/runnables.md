@@ -17,9 +17,6 @@ from sklearn.ensemble import RandomForestClassifier
 
 class Runnable(BaseRunnable):
 
-    def __init__(self):
-        super().__init__(learner_name='random-forest-classifier')
-
     def create_classifier(self, args):
         return RandomForestClassifier()
 
