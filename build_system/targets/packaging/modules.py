@@ -9,6 +9,8 @@ from typing import Generator, List, Optional
 from core.build_unit import BuildUnit
 from core.modules import Module, ModuleRegistry
 from util.files import FileSearch
+from util.format import format_iterable
+from util.log import Log
 
 from targets.modules import SubprojectModule
 from targets.packaging.pyproject_toml import PyprojectTomlFile
@@ -174,6 +176,10 @@ class PythonPackageModule(SubprojectModule):
         wheels = FileSearch() \
             .filter_by_substrings(contains=str(Project.version(release=True)), ends_with='.whl') \
             .list(self.wheel_directory)
+        if wheels and len(wheels) > 1:
+            Log.error(
+                'Found multiple wheel packages in directory "%s": \n\n%s\n\nRun "build_wheel --clean" to delete them.',
+                self.wheel_directory, format_iterable(wheels, separator='\n'))
         return wheels[0] if wheels else None
 
     @property
