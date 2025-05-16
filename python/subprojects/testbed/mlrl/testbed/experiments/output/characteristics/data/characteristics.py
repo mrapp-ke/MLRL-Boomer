@@ -9,7 +9,7 @@ from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.output.characteristics.data.characteristic import Characteristic
 from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
-from mlrl.testbed.experiments.problem_type import ProblemType
+from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain
 from mlrl.testbed.experiments.table import RowWiseTable, Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
@@ -34,13 +34,13 @@ class OutputCharacteristics(TabularOutputData):
     OPTION_DISTINCT_LABEL_VECTORS = 'distinct_label_vectors'
 
     def __init__(self,
-                 problem_type: ProblemType,
+                 problem_domain: ProblemDomain,
                  output_matrix: OutputMatrix,
                  properties: OutputData.Properties,
                  context: Context = Context()):
         """
 
-        :param problem_type:    The type of the machine learning problem, the output matrix corresponds to
+        :param problem_domain:  The problem domain, the output matrix corresponds to
         :param output_matrix:   An output matrix
         :param properties:      The properties of the output data
         :param context:         A `Context` to be used by default for finding a suitable sink this output data can be
@@ -49,7 +49,7 @@ class OutputCharacteristics(TabularOutputData):
         super().__init__(properties=properties, context=context)
         self.output_matrix = output_matrix
 
-        if problem_type == ProblemType.CLASSIFICATION:
+        if isinstance(problem_domain, ClassificationProblem):
             self.characteristics = LABEL_CHARACTERISTICS
         else:
             self.characteristics = OUTPUT_CHARACTERISTICS

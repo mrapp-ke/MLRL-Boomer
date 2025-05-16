@@ -23,8 +23,7 @@ class BoomerRunnable(RuleLearnerRunnable):
     """
 
     def __init__(self):
-        super().__init__(learner_name='boomer',
-                         classifier_type=BoomerClassifier,
+        super().__init__(classifier_type=BoomerClassifier,
                          classifier_config_type=BoomerClassifierConfig,
                          classifier_parameters=BOOMER_CLASSIFIER_PARAMETERS,
                          regressor_type=BoomerRegressor,
