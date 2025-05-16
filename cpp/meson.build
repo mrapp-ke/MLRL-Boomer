@@ -1,4 +1,4 @@
-project('mlrl', meson_version : '>=1.1', default_options : ['werror=true'])
+project('mlrl', meson_version : '>=1.1')
 
 subprojects = get_option('subprojects')
 
