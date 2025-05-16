@@ -837,13 +837,10 @@ class LearnerRunnable(Runnable, ABC):
         :return:                    The `Experiment` that has been created
         """
         if problem_type == ProblemType.CLASSIFICATION:
-            problem_domain = SkLearnClassificationProblem(problem_type=problem_type,
-                                                          base_learner=base_learner,
+            problem_domain = SkLearnClassificationProblem(base_learner=base_learner,
                                                           predictor_factory=predictor_factory)
         else:
-            problem_domain = SkLearnRegressionProblem(problem_type=problem_type,
-                                                      base_learner=base_learner,
-                                                      predictor_factory=predictor_factory)
+            problem_domain = SkLearnRegressionProblem(base_learner=base_learner, predictor_factory=predictor_factory)
         return SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
 
     def _create_prediction_output_writers(self, args, problem_type: ProblemType,
@@ -1334,14 +1331,12 @@ class RuleLearnerRunnable(LearnerRunnable):
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
 
         if problem_type == ProblemType.CLASSIFICATION:
-            problem_domain = SkLearnClassificationProblem(problem_type=problem_type,
-                                                          base_learner=base_learner,
+            problem_domain = SkLearnClassificationProblem(base_learner=base_learner,
                                                           predictor_factory=predictor_factory,
                                                           fit_kwargs=kwargs,
                                                           predict_kwargs=kwargs)
         else:
-            problem_domain = SkLearnRegressionProblem(problem_type=problem_type,
-                                                      base_learner=base_learner,
+            problem_domain = SkLearnRegressionProblem(base_learner=base_learner,
                                                       predictor_factory=predictor_factory,
                                                       fit_kwargs=kwargs,
                                                       predict_kwargs=kwargs)
