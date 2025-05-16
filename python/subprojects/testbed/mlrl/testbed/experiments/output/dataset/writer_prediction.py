@@ -13,7 +13,7 @@ from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.dataset.dataset_prediction import PredictionDataset
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
-from mlrl.testbed.experiments.problem_type import ProblemType
+from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificationProblem
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.format import OPTION_DECIMALS
 
@@ -40,7 +40,7 @@ class PredictionWriter(OutputWriter):
                 nominal_values = None
 
                 if issubclass(predictions.dtype.type, np.integer):
-                    if state.problem_type == ProblemType.CLASSIFICATION:
+                    if isinstance(state.problem_domain, SkLearnClassificationProblem):
                         attribute_type = AttributeType.NOMINAL
                         nominal_values = [str(value) for value in np.unique(predictions)]
                     else:

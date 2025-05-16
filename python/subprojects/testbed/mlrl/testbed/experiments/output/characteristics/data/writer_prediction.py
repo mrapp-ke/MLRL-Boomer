@@ -32,7 +32,8 @@ class PredictionCharacteristicsWriter(OutputWriter):
 
             # Prediction characteristics can only be determined in the case of binary predictions...
             if prediction_result and prediction_result.prediction_type == PredictionType.BINARY:
-                return PredictionCharacteristics(state.problem_type, LabelMatrix(prediction_result.predictions))
+                return PredictionCharacteristics(problem_domain=state.problem_domain,
+                                                 prediction_matrix=LabelMatrix(prediction_result.predictions))
 
             return None
 

@@ -118,7 +118,7 @@ class BipartitionSplitter(DatasetSplitter):
         log.info('Using separate training and test sets...')
         dataset_reader = self.dataset_reader
         folding_strategy = self.folding_strategy
-        state = ExperimentState(problem_type=problem_domain.problem_type, folding_strategy=folding_strategy)
+        state = ExperimentState(problem_domain=problem_domain, folding_strategy=folding_strategy)
 
         # Check if predefined training and test datasets are available...
         predefined_datasets_available = all(
