@@ -5,3 +5,5 @@ Provides classes that allow running experiments.
 """
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.experiment_sklearn import SkLearnExperiment
+from mlrl.testbed.experiments.problem_domain import ProblemDomain
+from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnProblem

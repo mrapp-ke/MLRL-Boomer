@@ -11,10 +11,9 @@ from functools import reduce
 from typing import Any, Generator, Optional
 
 from mlrl.testbed.experiments.dataset import Dataset, DatasetType
-from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.input.reader import InputReader
 from mlrl.testbed.experiments.output.writer import OutputWriter
-from mlrl.testbed.experiments.problem_type import ProblemType
+from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
 
@@ -119,15 +118,11 @@ class Experiment(ABC):
             for listener in self.listeners:
                 listener.after_prediction(self, new_state)
 
-    def __init__(self, problem_type: ProblemType, learner_name: str, dataset_splitter: DatasetSplitter):
+    def __init__(self, problem_domain: ProblemDomain):
         """
-        :param problem_type:        The type of the machine learning problem
-        :param learner_name:        The name of the machine learning algorithm
-        :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
+        :param problem_domain: The problem domain, the experiment is concerned with
         """
-        self.problem_type = problem_type
-        self.learner_name = learner_name
-        self.dataset_splitter = dataset_splitter
+        self.problem_domain = problem_domain
         self.input_readers = []
         self.pre_training_output_writers = []
         self.post_training_output_writers = []
@@ -203,14 +198,16 @@ class Experiment(ABC):
         :param predict_for_test_dataset:        True, if predictions should be obtained for the test dataset, if
                                                 available, False otherwise
         """
-        log.info('Starting experiment using the %s algorithm "%s"...', self.problem_type.value, self.learner_name)
+        problem_domain = self.problem_domain
+        log.info('Starting experiment using the %s algorithm "%s"...', problem_domain.problem_type.value,
+                 problem_domain.learner_name)
 
         for listener in self.listeners:
             listener.before_start(self)
 
         start_time = Timer.start()
 
-        for split in self.dataset_splitter.split(problem_type=self.problem_type):
+        for split in problem_domain.dataset_splitter.split(problem_type=problem_domain.problem_type):
             training_state = split.get_state(DatasetType.TRAINING)
 
             for listener in self.listeners:

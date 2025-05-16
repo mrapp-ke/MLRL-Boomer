@@ -24,7 +24,7 @@ from mlrl.common.package_info import PythonPackageInfo
 from mlrl.testbed_arff.experiments.input.sources import ArffFileSource
 from mlrl.testbed_arff.experiments.output.sinks import ArffFileSink
 
-from mlrl.testbed.experiments import Experiment, SkLearnExperiment
+from mlrl.testbed.experiments import Experiment, SkLearnExperiment, SkLearnProblem
 from mlrl.testbed.experiments.input.dataset import DatasetReader, InputDataset
 from mlrl.testbed.experiments.input.dataset.preprocessors import OneHotEncoder, Preprocessor
 from mlrl.testbed.experiments.input.dataset.splitters import BipartitionSplitter, CrossValidationSplitter, \
@@ -837,10 +837,9 @@ class LearnerRunnable(Runnable, ABC):
         experiment.run(predict_for_training_dataset=prediction_output_writers and args.predict_for_training_data,
                        predict_for_test_dataset=prediction_output_writers and args.predict_for_test_data)
 
-    # pylint: disable=unused-argument
     def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
                            dataset_splitter: DatasetSplitter,
-                           predictor_factory: SkLearnExperiment.PredictorFactory) -> Experiment:
+                           predictor_factory: SkLearnProblem.PredictorFactory) -> Experiment:
         """
         May be overridden by subclasses in order to create the `Experiment` that should be run.
 
@@ -849,14 +848,15 @@ class LearnerRunnable(Runnable, ABC):
         :param base_learner:        The machine learning algorithm to be used
         :param learner_name:        The name of machine learning algorithm
         :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
-        :param predictor_factory:   A `SkLearnExperiment.PredictorFactory`
+        :param predictor_factory:   A `SkLearnProblem.PredictorFactory`
         :return:                    The `Experiment` that has been created
         """
-        return SkLearnExperiment(problem_type=problem_type,
-                                 base_learner=base_learner,
-                                 learner_name=learner_name,
-                                 dataset_splitter=dataset_splitter,
-                                 predictor_factory=predictor_factory)
+        return SkLearnExperiment(
+            SkLearnProblem(problem_type=problem_type,
+                           learner_name=learner_name,
+                           dataset_splitter=dataset_splitter,
+                           base_learner=base_learner,
+                           predictor_factory=predictor_factory))
 
     def _create_prediction_output_writers(self, args, problem_type: ProblemType,
                                           prediction_type: PredictionType) -> List[OutputWriter]:
@@ -1343,15 +1343,16 @@ class RuleLearnerRunnable(LearnerRunnable):
 
     def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
                            dataset_splitter: DatasetSplitter,
-                           predictor_factory: SkLearnExperiment.PredictorFactory) -> Experiment:
+                           predictor_factory: SkLearnProblem.PredictorFactory) -> Experiment:
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
-        experiment = SkLearnExperiment(problem_type=problem_type,
-                                       base_learner=base_learner,
-                                       learner_name=learner_name,
-                                       dataset_splitter=dataset_splitter,
-                                       predictor_factory=predictor_factory,
-                                       fit_kwargs=kwargs,
-                                       predict_kwargs=kwargs)
+        experiment = SkLearnExperiment(
+            SkLearnProblem(problem_type=problem_type,
+                           learner_name=learner_name,
+                           dataset_splitter=dataset_splitter,
+                           base_learner=base_learner,
+                           predictor_factory=predictor_factory,
+                           fit_kwargs=kwargs,
+                           predict_kwargs=kwargs))
         experiment.add_post_training_output_writers(*filter(lambda listener: listener is not None, [
             self._create_model_as_text_writer(args),
             self._create_model_characteristics_writer(args),
