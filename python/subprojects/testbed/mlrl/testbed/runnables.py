@@ -535,13 +535,6 @@ class LearnerRunnable(Runnable, ABC):
 
     PARAM_PREDICTION_TYPE = '--prediction-type'
 
-    def __init__(self, learner_name: str):
-        """
-        :param learner_name: The name of the learner
-        """
-        super().__init__()
-        self.learner_name = learner_name
-
     def __create_problem_type(self, args) -> ProblemType:
         return ProblemType.parse(self.PARAM_PROBLEM_TYPE, args.problem_type)
 
@@ -555,8 +548,7 @@ class LearnerRunnable(Runnable, ABC):
 
         if base_learner:
             return base_learner
-        raise RuntimeError('The machine learning algorithm "' + self.learner_name + '" does not support '
-                           + problem_type.value + ' problems')
+        raise RuntimeError('The machine learning algorithm does not support ' + problem_type.value + ' problems')
 
     def __create_prediction_type(self, args) -> PredictionType:
         return PredictionType.parse(self.PARAM_PREDICTION_TYPE, args.prediction_type)
@@ -815,7 +807,6 @@ class LearnerRunnable(Runnable, ABC):
         experiment = self._create_experiment(args,
                                              problem_type=problem_type,
                                              base_learner=base_learner,
-                                             learner_name=self.learner_name,
                                              dataset_splitter=dataset_splitter,
                                              predictor_factory=predictor_factory)
         experiment.add_listeners(*filter(lambda listener: listener is not None, [
@@ -837,7 +828,7 @@ class LearnerRunnable(Runnable, ABC):
         experiment.run(predict_for_training_dataset=prediction_output_writers and args.predict_for_training_data,
                        predict_for_test_dataset=prediction_output_writers and args.predict_for_test_data)
 
-    def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
+    def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator,
                            dataset_splitter: DatasetSplitter,
                            predictor_factory: SkLearnProblem.PredictorFactory) -> Experiment:
         """
@@ -846,14 +837,12 @@ class LearnerRunnable(Runnable, ABC):
         :param args:                The command line arguments
         :param problem_type:        The type of the machine learning problem
         :param base_learner:        The machine learning algorithm to be used
-        :param learner_name:        The name of machine learning algorithm
         :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
         :param predictor_factory:   A `SkLearnProblem.PredictorFactory`
         :return:                    The `Experiment` that has been created
         """
         return SkLearnExperiment(
             SkLearnProblem(problem_type=problem_type,
-                           learner_name=learner_name,
                            dataset_splitter=dataset_splitter,
                            base_learner=base_learner,
                            predictor_factory=predictor_factory))
@@ -1202,7 +1191,7 @@ class RuleLearnerRunnable(LearnerRunnable):
 
     PARAM_SPARSE_FEATURE_VALUE = '--sparse-feature-value'
 
-    def __init__(self, learner_name: str, classifier_type: Optional[type], classifier_config_type: Optional[type],
+    def __init__(self, classifier_type: Optional[type], classifier_config_type: Optional[type],
                  classifier_parameters: Optional[Set[Parameter]], regressor_type: Optional[type],
                  regressor_config_type: Optional[type], regressor_parameters: Optional[Set[Parameter]]):
         """
@@ -1219,7 +1208,6 @@ class RuleLearnerRunnable(LearnerRunnable):
         :param regressor_parameters:    A set that contains the parameters that may be supported by the rule learner to
                                         be used in regression problems or None, if regression problems are not supported
         """
-        super().__init__(learner_name=learner_name)
         self.classifier_type = classifier_type
         self.classifier_config_type = classifier_config_type
         self.classifier_parameters = classifier_parameters
@@ -1240,8 +1228,7 @@ class RuleLearnerRunnable(LearnerRunnable):
 
         if config_type and parameters:
             return config_type, parameters
-        raise RuntimeError('The machine learning algorithm "' + self.learner_name + '" does not support '
-                           + problem_type.value + ' problems')
+        raise RuntimeError('The machine learning algorithm does not support ' + problem_type.value + ' problems')
 
     @staticmethod
     def __configure_argument_parser(parser: ArgumentParser, config_type: type, parameters: Set[Parameter]):
@@ -1341,13 +1328,12 @@ class RuleLearnerRunnable(LearnerRunnable):
         config_type, parameters = self.__create_config_type_and_parameters(problem_type)
         self.__configure_argument_parser(parser, config_type, parameters)
 
-    def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
+    def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator,
                            dataset_splitter: DatasetSplitter,
                            predictor_factory: SkLearnProblem.PredictorFactory) -> Experiment:
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
         experiment = SkLearnExperiment(
             SkLearnProblem(problem_type=problem_type,
-                           learner_name=learner_name,
                            dataset_splitter=dataset_splitter,
                            base_learner=base_learner,
                            predictor_factory=predictor_factory,

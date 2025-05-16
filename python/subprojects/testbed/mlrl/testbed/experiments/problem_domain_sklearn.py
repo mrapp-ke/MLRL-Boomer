@@ -23,7 +23,6 @@ class SkLearnProblem(ProblemDomain):
 
     def __init__(self,
                  problem_type: ProblemType,
-                 learner_name: str,
                  dataset_splitter: DatasetSplitter,
                  base_learner: BaseEstimator,
                  predictor_factory: PredictorFactory,
@@ -31,7 +30,6 @@ class SkLearnProblem(ProblemDomain):
                  predict_kwargs: Optional[Dict[str, Any]] = None):
         """
         :param problem_type:        The type of the machine learning problem
-        :param learner_name:        The name of the machine learning algorithm
         :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
         :param base_learner:        A sklearn estimator to be used in the experiment
         :param predictor_factory:   A `PredictorFactory`
@@ -39,8 +37,15 @@ class SkLearnProblem(ProblemDomain):
         :param predict_kwargs:      Optional keyword arguments to be passed to the learner when obtaining predictions
                                     from a model
         """
-        super().__init__(problem_type=problem_type, learner_name=learner_name, dataset_splitter=dataset_splitter)
+        super().__init__(problem_type=problem_type, dataset_splitter=dataset_splitter)
         self.base_learner = base_learner
         self.predictor_factory = predictor_factory
         self.fit_kwargs = fit_kwargs
         self.predict_kwargs = predict_kwargs
+
+    @property
+    def learner_name(self) -> str:
+        """
+        See :func:`mlrl.testbed.experiments.problem_domain.ProblemDomain.learner_name`
+        """
+        return type(self.base_learner).__name__
