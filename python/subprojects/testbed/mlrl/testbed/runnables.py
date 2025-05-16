@@ -536,7 +536,13 @@ class LearnerRunnable(Runnable, ABC):
     PARAM_PREDICTION_TYPE = '--prediction-type'
 
     def __create_problem_type(self, args) -> ProblemType:
-        return ProblemType.parse(self.PARAM_PROBLEM_TYPE, args.problem_type)
+        problem_type = args.problem_type
+
+        try:
+            return ProblemType(problem_type)
+        except ValueError as error:
+            raise ValueError('Invalid value given for parameter "' + self.PARAM_PROBLEM_TYPE + '": Must be one of '
+                             + format_enum_values(ProblemType) + ', but is "' + str(problem_type) + '"') from error
 
     def __create_base_learner(self, problem_type: ProblemType, args) -> SkLearnBaseEstimator:
         if problem_type == ProblemType.CLASSIFICATION:
