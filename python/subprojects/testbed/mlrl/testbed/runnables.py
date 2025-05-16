@@ -11,10 +11,9 @@ from argparse import ArgumentError, ArgumentParser
 from dataclasses import dataclass, field
 from enum import Enum
 from os import listdir, path, unlink
-from typing import Dict, Iterable, List, Optional, Set
+from typing import Any, Dict, Iterable, List, Optional, Set
 
-from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
-    RegressorMixin as SkLearnRegressorMixin
+from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
 from tabulate import tabulate
 
 from mlrl.common.config.parameters import AUTOMATIC, NONE, Parameter
@@ -24,7 +23,7 @@ from mlrl.common.package_info import PythonPackageInfo
 from mlrl.testbed_arff.experiments.input.sources import ArffFileSource
 from mlrl.testbed_arff.experiments.output.sinks import ArffFileSink
 
-from mlrl.testbed.experiments import Experiment, SkLearnExperiment, SkLearnProblem
+from mlrl.testbed.experiments import Experiment, SkLearnExperiment
 from mlrl.testbed.experiments.input.dataset import DatasetReader, InputDataset
 from mlrl.testbed.experiments.input.dataset.preprocessors import OneHotEncoder, Preprocessor
 from mlrl.testbed.experiments.input.dataset.splitters import BipartitionSplitter, CrossValidationSplitter, \
@@ -49,8 +48,8 @@ from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, PickleFi
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.prediction import GlobalPredictor, IncrementalPredictor, Predictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
+from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
 from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificationProblem, SkLearnRegressionProblem
-from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.package_info import get_package_info as get_testbed_package_info
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
@@ -381,6 +380,11 @@ class LearnerRunnable(Runnable, ABC):
 
     PARAM_PROBLEM_TYPE = '--problem-type'
 
+    PROBLEM_TYPE_VALUES = {
+        ClassificationProblem.NAME,
+        RegressionProblem.NAME,
+    }
+
     PARAM_RANDOM_STATE = '--random-state'
 
     PARAM_DATA_SPLIT = '--data-split'
@@ -536,26 +540,28 @@ class LearnerRunnable(Runnable, ABC):
 
     PARAM_PREDICTION_TYPE = '--prediction-type'
 
-    def _create_problem_type(self, args) -> ProblemType:
-        problem_type = args.problem_type
+    def _create_problem_domain(self,
+                               args,
+                               fit_kwargs: Optional[Dict[str, Any]] = None,
+                               predict_kwargs: Optional[Dict[str, Any]] = None) -> ProblemDomain:
+        prediction_type = self.__create_prediction_type(args)
+        predictor_factory = self._create_predictor_factory(args, prediction_type)
+        value = parse_param(self.PARAM_PROBLEM_TYPE, args.problem_type, self.PROBLEM_TYPE_VALUES)
 
-        try:
-            return ProblemType(problem_type)
-        except ValueError as error:
-            raise ValueError('Invalid value given for parameter "' + self.PARAM_PROBLEM_TYPE + '": Must be one of '
-                             + format_enum_values(ProblemType) + ', but is "' + str(problem_type) + '"') from error
-
-    def __create_base_learner(self, problem_type: ProblemType, args) -> SkLearnBaseEstimator:
-        if problem_type == ProblemType.CLASSIFICATION:
+        if value == ClassificationProblem.NAME:
             base_learner = self.create_classifier(args)
-        elif problem_type == ProblemType.REGRESSION:
-            base_learner = self.create_regressor(args)
-        else:
-            base_learner = None
+            return SkLearnClassificationProblem(base_learner=base_learner,
+                                                predictor_factory=predictor_factory,
+                                                prediction_type=prediction_type,
+                                                fit_kwargs=fit_kwargs,
+                                                predict_kwargs=predict_kwargs)
 
-        if base_learner:
-            return base_learner
-        raise RuntimeError('The machine learning algorithm does not support ' + problem_type.value + ' problems')
+        base_learner = self.create_regressor(args)
+        return SkLearnRegressionProblem(base_learner=base_learner,
+                                        predictor_factory=predictor_factory,
+                                        prediction_type=prediction_type,
+                                        fit_kwargs=fit_kwargs,
+                                        predict_kwargs=predict_kwargs)
 
     def __create_prediction_type(self, args) -> PredictionType:
         return PredictionType.parse(self.PARAM_PREDICTION_TYPE, args.prediction_type)
@@ -619,9 +625,9 @@ class LearnerRunnable(Runnable, ABC):
         super().configure_arguments(parser)
         parser.add_argument(self.PARAM_PROBLEM_TYPE,
                             type=str,
-                            default=ProblemType.CLASSIFICATION.value,
+                            default=ClassificationProblem.NAME,
                             help='The type of the machine learning problem to be solved. Must be one of '
-                            + format_enum_values(ProblemType) + '.')
+                            + format_set(self.PROBLEM_TYPE_VALUES) + '.')
         parser.add_argument(self.PARAM_RANDOM_STATE,
                             type=int,
                             default=None,
@@ -793,17 +799,8 @@ class LearnerRunnable(Runnable, ABC):
                             + format_enum_values(PredictionType) + '.')
 
     def _run(self, args):
-        problem_type = self._create_problem_type(args)
-        base_learner = self.__create_base_learner(problem_type, args)
-        prediction_type = self.__create_prediction_type(args)
         dataset_splitter = self.__create_dataset_splitter(args)
-        prediction_output_writers = self._create_prediction_output_writers(args, problem_type, prediction_type)
-        predictor_factory = self._create_predictor_factory(args, prediction_type)
-        experiment = self._create_experiment(args,
-                                             problem_type=problem_type,
-                                             base_learner=base_learner,
-                                             dataset_splitter=dataset_splitter,
-                                             predictor_factory=predictor_factory)
+        experiment = self._create_experiment(args, dataset_splitter)
         experiment.add_listeners(*filter(lambda listener: listener is not None, [
             self.__create_clear_output_directory_listener(args, dataset_splitter),
         ]))
@@ -819,43 +816,33 @@ class LearnerRunnable(Runnable, ABC):
             self._create_model_writer(args),
             self._create_label_vector_writer(args),
         ]))
+        prediction_output_writers = self._create_prediction_output_writers(args, experiment.problem_domain)
         experiment.add_prediction_output_writers(*prediction_output_writers)
         experiment.run(predict_for_training_dataset=prediction_output_writers and args.predict_for_training_data,
                        predict_for_test_dataset=prediction_output_writers and args.predict_for_test_data)
 
-    def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator,
-                           dataset_splitter: DatasetSplitter,
-                           predictor_factory: SkLearnProblem.PredictorFactory) -> Experiment:
+    def _create_experiment(self, args, dataset_splitter: DatasetSplitter) -> Experiment:
         """
         May be overridden by subclasses in order to create the `Experiment` that should be run.
 
         :param args:                The command line arguments
-        :param problem_type:        The type of the machine learning problem
-        :param base_learner:        The machine learning algorithm to be used
         :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
-        :param predictor_factory:   A `SkLearnProblem.PredictorFactory`
         :return:                    The `Experiment` that has been created
         """
-        if problem_type == ProblemType.CLASSIFICATION:
-            problem_domain = SkLearnClassificationProblem(base_learner=base_learner,
-                                                          predictor_factory=predictor_factory)
-        else:
-            problem_domain = SkLearnRegressionProblem(base_learner=base_learner, predictor_factory=predictor_factory)
+        problem_domain = self._create_problem_domain(args)
         return SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
 
-    def _create_prediction_output_writers(self, args, problem_type: ProblemType,
-                                          prediction_type: PredictionType) -> List[OutputWriter]:
+    def _create_prediction_output_writers(self, args, problem_domain: ProblemDomain) -> List[OutputWriter]:
         """
         May be overridden by subclasses in order to create the output writers that should be invoked each time
         predictions have been obtained from a model.
 
         :param args:            The command line arguments
-        :param problem_type:    The type of the machine learning problem
-        :param prediction_type: The type of the predictions that should be obtained
+        :param problem_domain:  The problem domain, the experiment is concerned with
         :return:                A list that contains the output writers that have been created
         """
         output_writers = []
-        output_writer = self._create_evaluation_writer(args, problem_type, prediction_type)
+        output_writer = self._create_evaluation_writer(args, problem_domain)
 
         if output_writer:
             output_writers.append(output_writer)
@@ -917,15 +904,13 @@ class LearnerRunnable(Runnable, ABC):
 
         return predictor_factory
 
-    def _create_evaluation_writer(self, args, problem_type: ProblemType,
-                                  prediction_type: PredictionType) -> Optional[OutputWriter]:
+    def _create_evaluation_writer(self, args, problem_domain: ProblemDomain) -> Optional[OutputWriter]:
         """
         May be overridden by subclasses in order to create the `OutputWriter` that should be used to output evaluation
         results.
 
         :param args:            The command line arguments
-        :param problem_type:    The type of the machine learning problem
-        :param prediction_type: The type of the predictions
+        :param problem_domain:  The problem domain, the experiment is concerned with
         :return:                The `OutputWriter` that has been created
         """
         sinks = []
@@ -943,9 +928,11 @@ class LearnerRunnable(Runnable, ABC):
                 CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
 
         if sinks:
-            if problem_type == ProblemType.REGRESSION:
+            if isinstance(problem_domain, RegressionProblem):
                 extractor = RegressionEvaluationDataExtractor()
-            elif prediction_type in {PredictionType.SCORES, PredictionType.PROBABILITIES}:
+            elif isinstance(problem_domain, ClassificationProblem) and problem_domain.prediction_type in {
+                    PredictionType.SCORES, PredictionType.PROBABILITIES
+            }:
                 extractor = RankingEvaluationDataExtractor()
             else:
                 extractor = ClassificationEvaluationDataExtractor()
@@ -1211,11 +1198,11 @@ class RuleLearnerRunnable(LearnerRunnable):
         self.regressor_config_type = regressor_config_type
         self.regressor_parameters = regressor_parameters
 
-    def __create_config_type_and_parameters(self, problem_type: ProblemType):
-        if problem_type == ProblemType.CLASSIFICATION:
+    def __create_config_type_and_parameters(self, problem_domain: ProblemDomain):
+        if isinstance(problem_domain, ClassificationProblem):
             config_type = self.classifier_config_type
             parameters = self.classifier_parameters
-        elif problem_type == ProblemType.REGRESSION:
+        elif isinstance(problem_domain, RegressionProblem):
             config_type = self.regressor_config_type
             parameters = self.regressor_parameters
         else:
@@ -1224,7 +1211,8 @@ class RuleLearnerRunnable(LearnerRunnable):
 
         if config_type and parameters:
             return config_type, parameters
-        raise RuntimeError('The machine learning algorithm does not support ' + problem_type.value + ' problems')
+        raise RuntimeError('The machine learning algorithm does not support ' + problem_domain.problem_name
+                           + ' problems')
 
     @staticmethod
     def __configure_argument_parser(parser: ArgumentParser, config_type: type, parameters: Set[Parameter]):
@@ -1321,26 +1309,13 @@ class RuleLearnerRunnable(LearnerRunnable):
                             default=None,
                             help='The format to be used for the representation of predictions. Must be one of '
                             + format_enum_values(SparsePolicy) + '.')
-        problem_type = self._create_problem_type(parser.parse_known_args()[0])
-        config_type, parameters = self.__create_config_type_and_parameters(problem_type)
+        problem_domain = self._create_problem_domain(parser.parse_known_args()[0])
+        config_type, parameters = self.__create_config_type_and_parameters(problem_domain)
         self.__configure_argument_parser(parser, config_type, parameters)
 
-    def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator,
-                           dataset_splitter: DatasetSplitter,
-                           predictor_factory: SkLearnProblem.PredictorFactory) -> Experiment:
+    def _create_experiment(self, args, dataset_splitter: DatasetSplitter) -> Experiment:
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
-
-        if problem_type == ProblemType.CLASSIFICATION:
-            problem_domain = SkLearnClassificationProblem(base_learner=base_learner,
-                                                          predictor_factory=predictor_factory,
-                                                          fit_kwargs=kwargs,
-                                                          predict_kwargs=kwargs)
-        else:
-            problem_domain = SkLearnRegressionProblem(base_learner=base_learner,
-                                                      predictor_factory=predictor_factory,
-                                                      fit_kwargs=kwargs,
-                                                      predict_kwargs=kwargs)
-
+        problem_domain = self._create_problem_domain(args, fit_kwargs=kwargs, predict_kwargs=kwargs)
         experiment = SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
         experiment.add_post_training_output_writers(*filter(lambda listener: listener is not None, [
             self._create_model_as_text_writer(args),
