@@ -14,7 +14,7 @@ from mlrl.testbed.experiments.dataset import Dataset, DatasetType
 from mlrl.testbed.experiments.fold import FoldingStrategy
 from mlrl.testbed.experiments.input.dataset import DatasetReader
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
-from mlrl.testbed.experiments.problem_type import ProblemType
+from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.state import ExperimentState
 
 
@@ -111,14 +111,14 @@ class BipartitionSplitter(DatasetSplitter):
         context.include_fold = False
         context.include_dataset_type = True
 
-    def split(self, problem_type: ProblemType) -> Generator[DatasetSplitter.Split, None, None]:
+    def split(self, problem_domain: ProblemDomain) -> Generator[DatasetSplitter.Split, None, None]:
         """
         See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.split`
         """
         log.info('Using separate training and test sets...')
         dataset_reader = self.dataset_reader
         folding_strategy = self.folding_strategy
-        state = ExperimentState(problem_type=problem_type, folding_strategy=folding_strategy)
+        state = ExperimentState(problem_domain=problem_domain, folding_strategy=folding_strategy)
 
         # Check if predefined training and test datasets are available...
         predefined_datasets_available = all(

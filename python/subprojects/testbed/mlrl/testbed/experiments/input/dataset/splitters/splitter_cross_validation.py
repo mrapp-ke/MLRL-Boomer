@@ -15,7 +15,7 @@ from mlrl.testbed.experiments.dataset import Dataset, DatasetType
 from mlrl.testbed.experiments.fold import Fold, FoldingStrategy
 from mlrl.testbed.experiments.input.dataset import DatasetReader
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
-from mlrl.testbed.experiments.problem_type import ProblemType
+from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.state import ExperimentState
 
 
@@ -178,7 +178,7 @@ class CrossValidationSplitter(DatasetSplitter):
         context.include_dataset_type = False
         context.include_fold = True
 
-    def split(self, problem_type: ProblemType) -> Generator[DatasetSplitter.Split, None, None]:
+    def split(self, problem_domain: ProblemDomain) -> Generator[DatasetSplitter.Split, None, None]:
         """
         See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.split`
         """
@@ -191,7 +191,7 @@ class CrossValidationSplitter(DatasetSplitter):
             + ' of' if folding_strategy.is_subset else 'full', num_folds)
 
         # Check if predefined folds are available...
-        state = ExperimentState(problem_type=problem_type, folding_strategy=folding_strategy)
+        state = ExperimentState(problem_domain=problem_domain, folding_strategy=folding_strategy)
         predefined_splits_available = all(
             self.dataset_reader.is_available(replace(state, fold=Fold(fold_index))) for fold_index in range(num_folds))
 

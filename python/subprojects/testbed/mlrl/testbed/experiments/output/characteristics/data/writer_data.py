@@ -29,7 +29,7 @@ class DataCharacteristicsWriter(OutputWriter):
             dataset = state.dataset
 
             if dataset:
-                return DataCharacteristics(problem_type=state.problem_type, dataset=dataset)
+                return DataCharacteristics(problem_domain=state.problem_domain, dataset=dataset)
 
             return None
 
