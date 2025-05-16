@@ -49,19 +49,40 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
     @staticmethod
     def __generate_pyproject_toml(template_file: PyprojectTomlFile) -> List[str]:
         requirements = GeneratePyprojectTomlFiles.__get_requirements(template_file)
+        lines = template_file.lines
+        num_lines = len(lines)
+        line_index = 0
         new_lines = []
 
-        for line in template_file.lines:
-            if line.strip('\n').strip() == '[project]':
+        while line_index < num_lines:
+            line = lines[line_index]
+            line_stripped = line.strip('\n').strip()
+
+            if line_stripped == '[project]':
+                line_index += 1
                 new_lines.append(line)
                 new_lines.append('version = "' + str(Project.version()) + '"\n')
                 new_lines.append('requires-python = "' + Project.Python.minimum_python_version() + '"\n')
-            else:
-                for dependency, requirement in requirements.items():
-                    if dependency in line:
-                        line = line.replace(dependency, str(requirement))
-                        break
+            elif line_stripped == '[project.optional-dependencies]' \
+                    or line_stripped.replace(' ', '').startswith('dependencies=['):
+                while line_index < num_lines:
+                    line = lines[line_index]
+                    line_stripped = line.strip('\n').strip()
+                    line_index += 1
 
+                    if line_stripped == '[project.optional-dependencies]':
+                        new_lines.append(line)
+                    elif line_stripped.replace(' ', '').startswith('dependencies=[') and line_stripped.endswith(']') \
+                            or line_stripped ==']':
+                        new_lines.append(line)
+                        break
+                    else:
+                        for dependency, requirement in requirements.items():
+                            line = line.replace(dependency, str(requirement))
+
+                        new_lines.append(line)
+            else:
+                line_index += 1
                 new_lines.append(line)
 
         return new_lines

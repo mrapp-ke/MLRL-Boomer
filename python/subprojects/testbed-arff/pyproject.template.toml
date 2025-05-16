@@ -5,20 +5,15 @@ requires = [
 ]
 
 [project]
-name = "mlrl-testbed"
-description = "Provides utilities for the training and evaluation of machine learning algorithms"
+name = "mlrl-testbed-arff"
+description = "Adds support for ARFF files to the package \"mlrl-testbed\""
 license = "MIT"
 readme = "README.md"
 authors = [
     { name = "Michael Rapp", email = "michael.rapp.ml@gmail.com" },
 ]
 keywords = [
-    "evaluation",
-    "machine learning",
-    "multi-label classification",
-    "multi-output regression",
-    "multi-target regression",
-    "scikit-learn",
+    "arff",
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -29,10 +24,8 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "mlrl-common",
-    "mlrl-testbed-arff",
-    "mlrl-util",
-    "tabulate",
+    "liac-arff",
+    "mlrl-testbed",
 ]
 
 [project.urls]
@@ -42,6 +35,3 @@ download = "https://github.com/mrapp-ke/MLRL-Boomer/releases"
 changelog = "https://raw.githubusercontent.com/mrapp-ke/MLRL-Boomer/refs/heads/main/CHANGELOG.md"
 documentation = "https://mlrl-boomer.readthedocs.io/en/latest"
 issues = "https://github.com/mrapp-ke/MLRL-Boomer/issues"
-
-[project.scripts]
-mlrl-testbed = "mlrl.testbed.main:main"
