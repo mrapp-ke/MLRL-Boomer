@@ -30,7 +30,8 @@ Submodules
    mlrl.testbed.experiments.fold
    mlrl.testbed.experiments.prediction_scope
    mlrl.testbed.experiments.prediction_type
-   mlrl.testbed.experiments.problem_type
+   mlrl.testbed.experiments.problem_domain
+   mlrl.testbed.experiments.problem_domain_sklearn
    mlrl.testbed.experiments.state
    mlrl.testbed.experiments.table
    mlrl.testbed.experiments.timer
