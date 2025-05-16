@@ -14,6 +14,7 @@ from mlrl.common.mixins import NominalFeatureSupportMixin, OrdinalFeatureSupport
 
 from mlrl.testbed.experiments.dataset import AttributeType, Dataset, DatasetType
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnProblem
 from mlrl.testbed.experiments.state import ParameterDict, PredictionState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
@@ -79,11 +80,12 @@ class SkLearnExperiment(Experiment):
             raise error
 
     # pylint: disable=useless-parent-delegation
-    def __init__(self, problem_domain: SkLearnProblem):
+    def __init__(self, problem_domain: SkLearnProblem, dataset_splitter: DatasetSplitter):
         """
-        :param problem_domain: The problem domain, the experiment is concerned with
+        :param problem_domain:      The problem domain, the experiment is concerned with
+        :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
         """
-        super().__init__(problem_domain)
+        super().__init__(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
 
     def _train(self, learner: Optional[Any], parameters: ParameterDict, dataset: Dataset) -> TrainingState:
         new_learner = self.__create_learner(parameters=parameters)

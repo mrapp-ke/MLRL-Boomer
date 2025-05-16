@@ -11,6 +11,7 @@ from functools import reduce
 from typing import Any, Generator, Optional
 
 from mlrl.testbed.experiments.dataset import Dataset, DatasetType
+from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.input.reader import InputReader
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
@@ -118,11 +119,13 @@ class Experiment(ABC):
             for listener in self.listeners:
                 listener.after_prediction(self, new_state)
 
-    def __init__(self, problem_domain: ProblemDomain):
+    def __init__(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter):
         """
-        :param problem_domain: The problem domain, the experiment is concerned with
+        :param problem_domain:      The problem domain, the experiment is concerned with
+        :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
         """
         self.problem_domain = problem_domain
+        self.dataset_splitter = dataset_splitter
         self.input_readers = []
         self.pre_training_output_writers = []
         self.post_training_output_writers = []
@@ -207,7 +210,7 @@ class Experiment(ABC):
 
         start_time = Timer.start()
 
-        for split in problem_domain.dataset_splitter.split(problem_type=problem_domain.problem_type):
+        for split in self.dataset_splitter.split(problem_type=problem_domain.problem_type):
             training_state = split.get_state(DatasetType.TRAINING)
 
             for listener in self.listeners:

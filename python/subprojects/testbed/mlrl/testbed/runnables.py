@@ -841,11 +841,10 @@ class LearnerRunnable(Runnable, ABC):
         :param predictor_factory:   A `SkLearnProblem.PredictorFactory`
         :return:                    The `Experiment` that has been created
         """
-        return SkLearnExperiment(
-            SkLearnProblem(problem_type=problem_type,
-                           dataset_splitter=dataset_splitter,
-                           base_learner=base_learner,
-                           predictor_factory=predictor_factory))
+        problem_domain = SkLearnProblem(problem_type=problem_type,
+                                        base_learner=base_learner,
+                                        predictor_factory=predictor_factory)
+        return SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
 
     def _create_prediction_output_writers(self, args, problem_type: ProblemType,
                                           prediction_type: PredictionType) -> List[OutputWriter]:
@@ -1332,13 +1331,12 @@ class RuleLearnerRunnable(LearnerRunnable):
                            dataset_splitter: DatasetSplitter,
                            predictor_factory: SkLearnProblem.PredictorFactory) -> Experiment:
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
-        experiment = SkLearnExperiment(
-            SkLearnProblem(problem_type=problem_type,
-                           dataset_splitter=dataset_splitter,
-                           base_learner=base_learner,
-                           predictor_factory=predictor_factory,
-                           fit_kwargs=kwargs,
-                           predict_kwargs=kwargs))
+        problem_domain = SkLearnProblem(problem_type=problem_type,
+                                        base_learner=base_learner,
+                                        predictor_factory=predictor_factory,
+                                        fit_kwargs=kwargs,
+                                        predict_kwargs=kwargs)
+        experiment = SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
         experiment.add_post_training_output_writers(*filter(lambda listener: listener is not None, [
             self._create_model_as_text_writer(args),
             self._create_model_characteristics_writer(args),
