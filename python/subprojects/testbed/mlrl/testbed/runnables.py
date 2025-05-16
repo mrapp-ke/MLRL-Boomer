@@ -49,6 +49,7 @@ from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, PickleFi
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.prediction import GlobalPredictor, IncrementalPredictor, Predictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
+from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificationProblem, SkLearnRegressionProblem
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.package_info import get_package_info as get_testbed_package_info
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
@@ -835,9 +836,14 @@ class LearnerRunnable(Runnable, ABC):
         :param predictor_factory:   A `SkLearnProblem.PredictorFactory`
         :return:                    The `Experiment` that has been created
         """
-        problem_domain = SkLearnProblem(problem_type=problem_type,
-                                        base_learner=base_learner,
-                                        predictor_factory=predictor_factory)
+        if problem_type == ProblemType.CLASSIFICATION:
+            problem_domain = SkLearnClassificationProblem(problem_type=problem_type,
+                                                          base_learner=base_learner,
+                                                          predictor_factory=predictor_factory)
+        else:
+            problem_domain = SkLearnRegressionProblem(problem_type=problem_type,
+                                                      base_learner=base_learner,
+                                                      predictor_factory=predictor_factory)
         return SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
 
     def _create_prediction_output_writers(self, args, problem_type: ProblemType,
@@ -1326,11 +1332,20 @@ class RuleLearnerRunnable(LearnerRunnable):
                            dataset_splitter: DatasetSplitter,
                            predictor_factory: SkLearnProblem.PredictorFactory) -> Experiment:
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
-        problem_domain = SkLearnProblem(problem_type=problem_type,
-                                        base_learner=base_learner,
-                                        predictor_factory=predictor_factory,
-                                        fit_kwargs=kwargs,
-                                        predict_kwargs=kwargs)
+
+        if problem_type == ProblemType.CLASSIFICATION:
+            problem_domain = SkLearnClassificationProblem(problem_type=problem_type,
+                                                          base_learner=base_learner,
+                                                          predictor_factory=predictor_factory,
+                                                          fit_kwargs=kwargs,
+                                                          predict_kwargs=kwargs)
+        else:
+            problem_domain = SkLearnRegressionProblem(problem_type=problem_type,
+                                                      base_learner=base_learner,
+                                                      predictor_factory=predictor_factory,
+                                                      fit_kwargs=kwargs,
+                                                      predict_kwargs=kwargs)
+
         experiment = SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
         experiment.add_post_training_output_writers(*filter(lambda listener: listener is not None, [
             self._create_model_as_text_writer(args),
