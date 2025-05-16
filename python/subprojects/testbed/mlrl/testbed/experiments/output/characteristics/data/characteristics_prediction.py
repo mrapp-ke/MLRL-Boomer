@@ -6,7 +6,7 @@ Provides classes for representing characteristics of binary predictions that are
 from mlrl.testbed.experiments.output.characteristics.data.characteristics import OutputCharacteristics
 from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
 from mlrl.testbed.experiments.output.data import OutputData
-from mlrl.testbed.experiments.problem_type import ProblemType
+from mlrl.testbed.experiments.problem_domain import ProblemDomain
 
 
 class PredictionCharacteristics(OutputCharacteristics):
@@ -14,11 +14,12 @@ class PredictionCharacteristics(OutputCharacteristics):
     Represents characteristics of binary predictions that are part of output data.
     """
 
-    def __init__(self, problem_type: ProblemType, prediction_matrix: OutputMatrix):
+    def __init__(self, problem_domain: ProblemDomain, prediction_matrix: OutputMatrix):
         """
-        :param problem_type:        The type of the machine learning problem, the prediction matrix corresponds to
+        :param problem_domain:      The problem domain, the prediction matrix corresponds to
         :param prediction_matrix:   A prediction matrix
         """
-        super().__init__(
-            problem_type, prediction_matrix,
-            OutputData.Properties(name='Prediction characteristics', file_name='prediction_characteristics'))
+        super().__init__(problem_domain=problem_domain,
+                         output_matrix=prediction_matrix,
+                         properties=OutputData.Properties(name='Prediction characteristics',
+                                                          file_name='prediction_characteristics'))

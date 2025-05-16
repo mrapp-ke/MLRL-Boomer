@@ -12,7 +12,7 @@ from mlrl.testbed.experiments.dataset import DatasetType
 from mlrl.testbed.experiments.fold import FoldingStrategy
 from mlrl.testbed.experiments.input.dataset import DatasetReader
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
-from mlrl.testbed.experiments.problem_type import ProblemType
+from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.state import ExperimentState
 
 
@@ -48,13 +48,13 @@ class NoSplitter(DatasetSplitter):
         context.include_dataset_type = False
         context.include_fold = False
 
-    def split(self, problem_type: ProblemType) -> Generator[DatasetSplitter.Split, None, None]:
+    def split(self, problem_domain: ProblemDomain) -> Generator[DatasetSplitter.Split, None, None]:
         """
         See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.split`
         """
         log.warning('Not using separate training and test sets. The model will be evaluated on the training data...')
         folding_strategy = self.folding_strategy
-        state = ExperimentState(problem_type=problem_type, folding_strategy=folding_strategy)
+        state = ExperimentState(problem_domain=problem_domain, folding_strategy=folding_strategy)
         state = self.dataset_reader.read(state)
         state = replace(state, dataset_type=DatasetType.TRAINING)
 
