@@ -99,13 +99,17 @@ def is_sparse(array, supported_formats: Optional[Set[SparseFormat]] = None) -> b
     return issparse(array)
 
 
-def is_sparse_and_memory_efficient(array, sparse_format: SparseFormat, dtype, sparse_values: bool = True) -> bool:
+def is_sparse_and_memory_efficient(array,
+                                   sparse_format: SparseFormat,
+                                   dtype: Optional[np.dtype] = None,
+                                   sparse_values: bool = True) -> bool:
     """
     Returns whether a given matrix uses sparse format and is expected to occupy less memory than a dense matrix.
 
     :param array:           A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` to be checked
     :param sparse_format:   The `SparseFormat` to be used. Must be `SparseFormat.CSC` or `SparseFormat.CSR`
-    :param dtype:           The type of the values that should be stored in the matrix
+    :param dtype:           The type of the values that should be stored in the matrix or None, if it should be obtained
+                            from the given array
     :param sparse_values:   True, if the values must explicitly be stored when using a sparse format, False otherwise
     :return:                True, if the given matrix uses a sparse format an is expected to occupy less memory than a
                             dense matrix, False otherwise
@@ -119,6 +123,7 @@ def is_sparse_and_memory_efficient(array, sparse_format: SparseFormat, dtype, sp
     if is_sparse(array):
         num_pointers = array.shape[1 if sparse_format == SparseFormat.CSC else 0]
         size_int = np.dtype(np.uint32).itemsize
+        dtype = dtype if dtype else array.dtype
         size_data = np.dtype(dtype).itemsize
         size_sparse_data = size_data if sparse_values else 0
         num_dense_elements = array.nnz
@@ -129,17 +134,19 @@ def is_sparse_and_memory_efficient(array, sparse_format: SparseFormat, dtype, sp
     return False
 
 
-def enforce_dense(array, order: str, dtype, sparse_value=0) -> np.ndarray:
+def enforce_dense(array, order: str, dtype: Optional[np.dtype] = None, sparse_value=0) -> np.ndarray:
     """
     Converts a given array into a `np.ndarray`, if necessary, and enforces a specific memory layout and data type to be
     used.
 
     :param array:           A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` to be converted
     :param order:           The memory layout to be used. Must be `C` or `F`
-    :param dtype:           The data type to be used
+    :param dtype:           The data type to be used or None, if the data type should not be changed
     :param sparse_value:    The value that should be used for sparse elements in the given array
     :return:                A `np.ndarray` that uses the given memory layout and data type
     """
+    dtype = dtype if dtype else array.dtype
+
     if is_sparse(array):
         if sparse_value != 0:
             dense_array = np.full(shape=array.shape, fill_value=sparse_value, dtype=dtype, order=order)

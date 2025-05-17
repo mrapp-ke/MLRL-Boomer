@@ -12,10 +12,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 1):
 
-Mean Absolute Error               29.23
-Mean Absolute Percentage Error     3.99
-Mean Squared Error              2138.85
-Median Absolute Error             16.15
+Mean Absolute Error               28.78
+Mean Absolute Percentage Error     0.08
+Mean Squared Error              2827.78
+Median Absolute Error             14.58
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-1.csv"...
 DEBUG Writing output data to file "python/tests/res/tmp/models/model_fold-1.pickle"...
@@ -28,10 +28,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 2):
 
-Mean Absolute Error               27.41
-Mean Absolute Percentage Error     0.9
-Mean Squared Error              1546.91
-Median Absolute Error             18.99
+Mean Absolute Error               23.5
+Mean Absolute Percentage Error     0.06
+Mean Squared Error              1826.78
+Median Absolute Error             13.96
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-2.csv"...
 DEBUG Writing output data to file "python/tests/res/tmp/models/model_fold-2.pickle"...
@@ -44,10 +44,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 3):
 
-Mean Absolute Error               23.26
-Mean Absolute Percentage Error     0.64
-Mean Squared Error              1283.4
-Median Absolute Error             14.24
+Mean Absolute Error               32.95
+Mean Absolute Percentage Error     0.08
+Mean Squared Error              3917.13
+Median Absolute Error             15.45
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-3.csv"...
 DEBUG Writing output data to file "python/tests/res/tmp/models/model_fold-3.pickle"...
@@ -60,10 +60,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 4):
 
-Mean Absolute Error               22.58
-Mean Absolute Percentage Error     0.72
-Mean Squared Error              1426.88
-Median Absolute Error             12.81
+Mean Absolute Error              18.68
+Mean Absolute Percentage Error    0.06
+Mean Squared Error              750.6
+Median Absolute Error            12.73
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-4.csv"...
 DEBUG Writing output data to file "python/tests/res/tmp/models/model_fold-4.pickle"...
@@ -76,10 +76,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 5):
 
-Mean Absolute Error               25.06
-Mean Absolute Percentage Error     0.8
-Mean Squared Error              1583.37
-Median Absolute Error             15.29
+Mean Absolute Error               28.76
+Mean Absolute Percentage Error     0.08
+Mean Squared Error              2439.06
+Median Absolute Error             12.68
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-5.csv"...
 DEBUG Writing output data to file "python/tests/res/tmp/models/model_fold-5.pickle"...
@@ -92,10 +92,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 6):
 
-Mean Absolute Error               25.62
-Mean Absolute Percentage Error     0.42
-Mean Squared Error              1768.21
-Median Absolute Error             16.18
+Mean Absolute Error              16.77
+Mean Absolute Percentage Error    0.05
+Mean Squared Error              711.67
+Median Absolute Error            10.87
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-6.csv"...
 DEBUG Writing output data to file "python/tests/res/tmp/models/model_fold-6.pickle"...
@@ -108,10 +108,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 7):
 
-Mean Absolute Error               26.38
-Mean Absolute Percentage Error     1.44
-Mean Squared Error              1582.21
-Median Absolute Error             14.26
+Mean Absolute Error               24.33
+Mean Absolute Percentage Error     0.06
+Mean Squared Error              1692.33
+Median Absolute Error             12.87
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-7.csv"...
 DEBUG Writing output data to file "python/tests/res/tmp/models/model_fold-7.pickle"...
@@ -124,10 +124,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 8):
 
-Mean Absolute Error               27.88
-Mean Absolute Percentage Error     2.1
-Mean Squared Error              2270.34
-Median Absolute Error             13
+Mean Absolute Error               21.27
+Mean Absolute Percentage Error     0.06
+Mean Squared Error              1197
+Median Absolute Error             13.1
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-8.csv"...
 DEBUG Writing output data to file "python/tests/res/tmp/models/model_fold-8.pickle"...
@@ -140,10 +140,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 9):
 
-Mean Absolute Error               21.7
-Mean Absolute Percentage Error     1.93
-Mean Squared Error              1277.5
-Median Absolute Error             11.1
+Mean Absolute Error               23.17
+Mean Absolute Percentage Error     0.06
+Mean Squared Error              2005.85
+Median Absolute Error             13.7
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-9.csv"...
 DEBUG Writing output data to file "python/tests/res/tmp/models/model_fold-9.pickle"...
@@ -156,17 +156,17 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 10):
 
-Mean Absolute Error               29.08
-Mean Absolute Percentage Error     2.35
-Mean Squared Error              1843.79
-Median Absolute Error             16.05
+Mean Absolute Error               32.52
+Mean Absolute Percentage Error     0.08
+Mean Squared Error              2710.9
+Median Absolute Error             18.24
 
 INFO Evaluation result for test data (Average across 10 folds):
 
-Mean Absolute Error               25.82  ±2.53
-Mean Absolute Percentage Error     1.53  ±1.04
-Mean Squared Error              1672.15  ±318.28
-Median Absolute Error             14.81  ±2.11
+Mean Absolute Error               25.07  ±5.25
+Mean Absolute Percentage Error     0.07  ±0.01
+Mean Squared Error              2007.91  ±951.23
+Median Absolute Error             13.82  ±1.88
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-10.csv"...
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
