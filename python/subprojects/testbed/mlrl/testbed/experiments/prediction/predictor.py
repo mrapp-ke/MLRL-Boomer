@@ -12,7 +12,7 @@ from sklearn.base import BaseEstimator, RegressorMixin
 
 from mlrl.common.mixins import ClassifierMixin
 
-from mlrl.testbed.experiments.dataset import Dataset
+from mlrl.testbed.experiments.dataset import Dataset, DatasetType
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.state import PredictionState
 
@@ -81,7 +81,7 @@ class Predictor(ABC):
         self.prediction_type = prediction_type
 
     @abstractmethod
-    def obtain_predictions(self, learner: Any, dataset: Dataset, dataset_type: Dataset,
+    def obtain_predictions(self, learner: Any, dataset: Dataset, dataset_type: DatasetType,
                            **kwargs) -> Generator[PredictionState, None, None]:
         """
         Obtains predictions from a previously trained learner once or several times.
