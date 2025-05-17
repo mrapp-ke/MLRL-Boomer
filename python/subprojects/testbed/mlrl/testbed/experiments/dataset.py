@@ -123,3 +123,10 @@ class Dataset:
         return [
             i for i, feature in enumerate(self.features) if not feature_types or feature.attribute_type in feature_types
         ]
+
+
+class TabularDataset(Dataset):
+    """
+    A tabular dataset consisting of two matrices `x` and `y`, storing the features of examples and their respective
+    ground truth, respectively.
+    """

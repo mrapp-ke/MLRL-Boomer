@@ -3,8 +3,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for writing characteristics of datasets to one or several sinks.
 """
+import logging as log
+
 from typing import List, Optional
 
+from mlrl.testbed.experiments.dataset import TabularDataset
 from mlrl.testbed.experiments.output.characteristics.data.characteristics_data import DataCharacteristics
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
@@ -28,9 +31,10 @@ class DataCharacteristicsWriter(OutputWriter):
             """
             dataset = state.dataset
 
-            if dataset:
+            if isinstance(dataset, TabularDataset):
                 return DataCharacteristics(problem_domain=state.problem_domain, dataset=dataset)
 
+            log.error('Cannot handle dataset of type %s', type(dataset).__name__)
             return None
 
     def __init__(self, *extractors: DataExtractor, exit_on_error: bool = True):
