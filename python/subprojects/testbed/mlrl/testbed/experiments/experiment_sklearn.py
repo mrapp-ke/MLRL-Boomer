@@ -12,7 +12,8 @@ from sklearn.base import BaseEstimator, clone
 
 from mlrl.common.mixins import NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
 
-from mlrl.testbed.experiments.dataset import AttributeType, Dataset, DatasetType
+from mlrl.testbed.experiments.dataset import Dataset, DatasetType, TabularDataset
+from mlrl.testbed.experiments.dataset_tabular import AttributeType
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnProblem
@@ -54,7 +55,7 @@ class SkLearnExperiment(Experiment):
                      if aggr else '') + '"' + change[0] + '" is "' + change[2] + '" instead of "' + change[1] + '"',
                     changes, ''))
 
-    def __train(self, learner: BaseEstimator, dataset: Dataset) -> Timer.Duration:
+    def __train(self, learner: BaseEstimator, dataset: TabularDataset) -> Timer.Duration:
         # Set the indices of ordinal features, if supported...
         fit_kwargs = self.problem_domain.fit_kwargs
         fit_kwargs = fit_kwargs if fit_kwargs else {}
