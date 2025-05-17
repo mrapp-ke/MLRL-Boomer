@@ -95,13 +95,15 @@ class DatasetFileSource(FileSource, ABC):
     """
 
     def _read_from_file(self, state: ExperimentState, file_path: str, input_data: InputData) -> Optional[Any]:
-        return self._read_dataset_from_file(file_path, input_data)
+        return self._read_dataset_from_file(state, file_path, input_data)
 
     @abstractmethod
-    def _read_dataset_from_file(self, file_path: str, input_data: DatasetInputData) -> Optional[Dataset]:
+    def _read_dataset_from_file(self, state: ExperimentState, file_path: str,
+                                input_data: DatasetInputData) -> Optional[Dataset]:
         """
         Must be implemented by subclasses in order to read a dataset from a specific file.
 
+        :param state:       The current state of the experiment
         :param file_path:   The path to the file from which the input data should be read
         :param input_data:  The input data that should be read
         :return:            A dataset that has been read from the file
