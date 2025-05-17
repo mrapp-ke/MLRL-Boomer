@@ -8,7 +8,7 @@ import logging as log
 from typing import List, Optional
 
 from mlrl.testbed.experiments.dataset import TabularDataset
-from mlrl.testbed.experiments.output.characteristics.data.characteristics_data import DataCharacteristics
+from mlrl.testbed.experiments.output.characteristics.data.tabular.characteristics_data import DataCharacteristics
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
