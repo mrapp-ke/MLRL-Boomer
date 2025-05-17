@@ -90,19 +90,18 @@ class RuleModelCharacteristicsExtractor(DataExtractor):
         """
         See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
         """
-        training_result = state.training_result
+        learner = state.learner_as(self, ClassifierMixin, RegressorMixin)
 
-        if training_result:
-            learner = training_result.learner
+        if learner:
+            model = learner.model_
 
-            if isinstance(learner, (ClassifierMixin, RegressorMixin)):
-                model = learner.model_
+            if isinstance(model, RuleModel):
+                visitor = RuleModelCharacteristicsExtractor.Visitor()
+                model.visit_used(visitor)
+                return RuleModelCharacteristics(visitor.statistics)
 
-                if isinstance(model, RuleModel):
-                    visitor = RuleModelCharacteristicsExtractor.Visitor()
-                    model.visit_used(visitor)
-                    return RuleModelCharacteristics(visitor.statistics)
-
-                log.error('Cannot handle model of type %s', type(model).__name__)
+            log.error('%s expected type of model to be %s, but model has type %s',
+                      type(self).__name__, RuleModel.__name__,
+                      type(model).__name__)
 
         return None

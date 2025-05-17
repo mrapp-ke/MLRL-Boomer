@@ -12,6 +12,7 @@ import numpy as np
 from mlrl.common.cython.output_space_info import LabelVectorSet, LabelVectorSetVisitor, NoOutputSpaceInfo
 from mlrl.common.learners import ClassificationRuleLearner
 
+from mlrl.testbed.experiments.dataset import TabularDataset
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.label_vectors.label_vector_histogram import LabelVector, LabelVectorHistogram
 from mlrl.testbed.experiments.output.label_vectors.label_vectors import LabelVectors
@@ -48,21 +49,20 @@ class LabelVectorSetExtractor(DataExtractor):
         """
         See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
         """
-        training_result = state.training_result
-        dataset = state.dataset
+        dataset = state.dataset_as(self, TabularDataset)
+        learner = state.learner_as(self, ClassificationRuleLearner)
 
-        if training_result and dataset:
-            learner = training_result.learner
+        if dataset and learner:
+            output_space_info = learner.output_space_info_
 
-            if isinstance(learner, ClassificationRuleLearner):
-                output_space_info = learner.output_space_info_
+            if isinstance(output_space_info, LabelVectorSet):
+                visitor = LabelVectorSetExtractor.Visitor(num_labels=dataset.num_outputs)
+                output_space_info.visit(visitor)
+                return LabelVectors(visitor.label_vector_histogram)
 
-                if isinstance(output_space_info, LabelVectorSet):
-                    visitor = LabelVectorSetExtractor.Visitor(num_labels=dataset.num_outputs)
-                    output_space_info.visit(visitor)
-                    return LabelVectors(visitor.label_vector_histogram)
-
-                if not isinstance(output_space_info, NoOutputSpaceInfo):
-                    log.error('Cannot handle output space info of type %s', type(output_space_info).__name__)
+            if not isinstance(output_space_info, NoOutputSpaceInfo):
+                log.error('%s expected type of output space info to be %s, but output space info has type %s',
+                          type(self).__name__, LabelVectorSet.__name__,
+                          type(output_space_info).__name__)
 
         return None
