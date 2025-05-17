@@ -3,19 +3,19 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing predictions that are part of output data.
 """
-from mlrl.testbed.experiments.dataset import Dataset
+from mlrl.testbed.experiments.dataset import TabularDataset
 from mlrl.testbed.experiments.output.data import OutputData
-from mlrl.testbed.experiments.output.dataset.dataset import OutputDataset
+from mlrl.testbed.experiments.output.dataset.tabular.dataset import TabularOutputDataset
 
 
-class GroundTruthDataset(OutputDataset):
+class GroundTruthDataset(TabularOutputDataset):
     """
-    Represents a ground truth that is part of output data.
+    Represents a ground truth for tabular data that is part of output data.
     """
 
-    def __init__(self, dataset: Dataset):
+    def __init__(self, dataset: TabularDataset):
         """
-        :param dataset: A dataset
+        :param dataset: A tabular dataset
         """
         super().__init__(dataset=dataset,
                          properties=OutputData.Properties(name='Ground truth', file_name='ground_truth'))
