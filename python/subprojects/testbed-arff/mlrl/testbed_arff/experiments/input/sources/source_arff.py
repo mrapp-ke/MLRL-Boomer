@@ -227,10 +227,11 @@ class ArffFileSource(DatasetFileSource):
     def _read_dataset_from_file(self, state: ExperimentState, file_path: str,
                                 input_data: DatasetInputData) -> Optional[Dataset]:
         properties = input_data.properties
-        arff_file = self.__read_arff_file(file_path=file_path, dtype=properties.feature_dtype)
+        problem_domain = state.problem_domain
+        arff_file = self.__read_arff_file(file_path=file_path, dtype=problem_domain.feature_dtype)
         xml_file_path = path.join(path.dirname(file_path), properties.file_name + '.' + ArffFileSink.SUFFIX_XML)
         arff_dataset = ArffFileSource.ArffDataset.from_file(arff_file=arff_file, file_path=xml_file_path)
         return Dataset(x=arff_dataset.feature_matrix.tolil(),
-                       y=arff_dataset.output_matrix.astype(properties.output_dtype).tolil(),
+                       y=arff_dataset.output_matrix.astype(problem_domain.output_dtype).tolil(),
                        features=arff_dataset.features,
                        outputs=arff_dataset.outputs)
