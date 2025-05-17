@@ -99,7 +99,10 @@ def is_sparse(array, supported_formats: Optional[Set[SparseFormat]] = None) -> b
     return issparse(array)
 
 
-def is_sparse_and_memory_efficient(array, sparse_format: SparseFormat, dtype, sparse_values: bool = True) -> bool:
+def is_sparse_and_memory_efficient(array,
+                                   sparse_format: SparseFormat,
+                                   dtype: np.dtype,
+                                   sparse_values: bool = True) -> bool:
     """
     Returns whether a given matrix uses sparse format and is expected to occupy less memory than a dense matrix.
 
@@ -129,7 +132,7 @@ def is_sparse_and_memory_efficient(array, sparse_format: SparseFormat, dtype, sp
     return False
 
 
-def enforce_dense(array, order: str, dtype, sparse_value=0) -> np.ndarray:
+def enforce_dense(array, order: str, dtype: np.dtype, sparse_value=0) -> np.ndarray:
     """
     Converts a given array into a `np.ndarray`, if necessary, and enforces a specific memory layout and data type to be
     used.

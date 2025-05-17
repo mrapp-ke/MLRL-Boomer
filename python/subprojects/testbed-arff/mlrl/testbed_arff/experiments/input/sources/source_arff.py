@@ -11,6 +11,7 @@ from typing import Any, List, Optional, Set
 from xml.dom import minidom
 
 import arff
+import numpy as np
 
 from scipy.sparse import coo_array, csc_array, sparray
 
@@ -58,7 +59,7 @@ class ArffFileSource(DatasetFileSource):
             self.relation = relation
 
         @staticmethod
-        def from_file(file_path: str, sparse: bool, dtype) -> 'ArffFileSource.ArffFile':
+        def from_file(file_path: str, sparse: bool, dtype: np.dtype) -> 'ArffFileSource.ArffFile':
             """
             Loads the content of an ARFF file.
 
@@ -210,7 +211,7 @@ class ArffFileSource(DatasetFileSource):
             return matrix[:, :num_outputs] if self.outputs_at_start else matrix[:, -num_outputs:]
 
     @staticmethod
-    def __read_arff_file(file_path: str, dtype) -> ArffFile:
+    def __read_arff_file(file_path: str, dtype: np.dtype) -> ArffFile:
         try:
             return ArffFileSource.ArffFile.from_file(file_path, sparse=True, dtype=dtype)
         except arff.BadLayout:
