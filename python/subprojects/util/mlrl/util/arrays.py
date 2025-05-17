@@ -101,14 +101,15 @@ def is_sparse(array, supported_formats: Optional[Set[SparseFormat]] = None) -> b
 
 def is_sparse_and_memory_efficient(array,
                                    sparse_format: SparseFormat,
-                                   dtype: np.dtype,
+                                   dtype: Optional[np.dtype] = None,
                                    sparse_values: bool = True) -> bool:
     """
     Returns whether a given matrix uses sparse format and is expected to occupy less memory than a dense matrix.
 
     :param array:           A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` to be checked
     :param sparse_format:   The `SparseFormat` to be used. Must be `SparseFormat.CSC` or `SparseFormat.CSR`
-    :param dtype:           The type of the values that should be stored in the matrix
+    :param dtype:           The type of the values that should be stored in the matrix or None, if it should be obtained
+                            from the given array
     :param sparse_values:   True, if the values must explicitly be stored when using a sparse format, False otherwise
     :return:                True, if the given matrix uses a sparse format an is expected to occupy less memory than a
                             dense matrix, False otherwise
@@ -122,6 +123,7 @@ def is_sparse_and_memory_efficient(array,
     if is_sparse(array):
         num_pointers = array.shape[1 if sparse_format == SparseFormat.CSC else 0]
         size_int = np.dtype(np.uint32).itemsize
+        dtype = dtype if dtype else array.dtype
         size_data = np.dtype(dtype).itemsize
         size_sparse_data = size_data if sparse_values else 0
         num_dense_elements = array.nnz
