@@ -196,25 +196,41 @@ class RuleModelStatistics:
         """
         The minimum number of conditions per rule.
         """
-        return min(map(lambda rule_statistics: rule_statistics.body_statistics.num_conditions, self.rule_statistics))
+        rule_statistics = self.rule_statistics
+
+        if rule_statistics:
+            return min(map(lambda statistics: statistics.body_statistics.num_conditions, rule_statistics))
+        return 0
 
     @cached_property
     def max_conditions(self) -> int:
         """
         The maximum number of conditions per rule.
         """
-        return max(map(lambda rule_statistics: rule_statistics.body_statistics.num_conditions, self.rule_statistics))
+        rule_statistics = self.rule_statistics
+
+        if rule_statistics:
+            return max(map(lambda statistics: statistics.body_statistics.num_conditions, rule_statistics))
+        return 0
 
     @cached_property
     def min_predictions(self) -> int:
         """
         The minimum number of predictions per rule.
         """
-        return min(map(lambda rule_statistics: rule_statistics.head_statistics.num_predictions, self.rule_statistics))
+        rule_statistics = self.rule_statistics
+
+        if rule_statistics:
+            return min(map(lambda statistics: statistics.head_statistics.num_predictions, rule_statistics))
+        return 0
 
     @cached_property
     def max_predictions(self) -> int:
         """
         The maximum number of predictions per rule.
         """
-        return max(map(lambda rule_statistics: rule_statistics.head_statistics.num_predictions, self.rule_statistics))
+        rule_statistics = self.rule_statistics
+
+        if rule_statistics:
+            return max(map(lambda statistics: statistics.head_statistics.num_predictions, rule_statistics))
+        return 0

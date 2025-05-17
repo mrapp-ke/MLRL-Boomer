@@ -11,6 +11,7 @@ from typing import Any, List, Optional, Set
 from xml.dom import minidom
 
 import arff
+import numpy as np
 
 from scipy.sparse import coo_array, csc_array, sparray
 
@@ -19,6 +20,7 @@ from mlrl.testbed_arff.experiments.output.sinks.sink_arff import ArffFileSink
 from mlrl.testbed.experiments.dataset import Attribute, AttributeType, Dataset
 from mlrl.testbed.experiments.input.data import DatasetInputData
 from mlrl.testbed.experiments.input.sources.source import DatasetFileSource
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.io import open_readable_file
 
 
@@ -58,7 +60,7 @@ class ArffFileSource(DatasetFileSource):
             self.relation = relation
 
         @staticmethod
-        def from_file(file_path: str, sparse: bool, dtype) -> 'ArffFileSource.ArffFile':
+        def from_file(file_path: str, sparse: bool, dtype: np.dtype) -> 'ArffFileSource.ArffFile':
             """
             Loads the content of an ARFF file.
 
@@ -210,7 +212,7 @@ class ArffFileSource(DatasetFileSource):
             return matrix[:, :num_outputs] if self.outputs_at_start else matrix[:, -num_outputs:]
 
     @staticmethod
-    def __read_arff_file(file_path: str, dtype) -> ArffFile:
+    def __read_arff_file(file_path: str, dtype: np.dtype) -> ArffFile:
         try:
             return ArffFileSource.ArffFile.from_file(file_path, sparse=True, dtype=dtype)
         except arff.BadLayout:
@@ -222,12 +224,14 @@ class ArffFileSource(DatasetFileSource):
         """
         super().__init__(directory=directory, suffix=ArffFileSink.SUFFIX_ARFF)
 
-    def _read_dataset_from_file(self, file_path: str, input_data: DatasetInputData) -> Optional[Dataset]:
+    def _read_dataset_from_file(self, state: ExperimentState, file_path: str,
+                                input_data: DatasetInputData) -> Optional[Dataset]:
         properties = input_data.properties
-        arff_file = self.__read_arff_file(file_path=file_path, dtype=properties.feature_dtype)
+        problem_domain = state.problem_domain
+        arff_file = self.__read_arff_file(file_path=file_path, dtype=problem_domain.feature_dtype)
         xml_file_path = path.join(path.dirname(file_path), properties.file_name + '.' + ArffFileSink.SUFFIX_XML)
         arff_dataset = ArffFileSource.ArffDataset.from_file(arff_file=arff_file, file_path=xml_file_path)
         return Dataset(x=arff_dataset.feature_matrix.tolil(),
-                       y=arff_dataset.output_matrix.astype(properties.output_dtype).tolil(),
+                       y=arff_dataset.output_matrix.astype(problem_domain.output_dtype).tolil(),
                        features=arff_dataset.features,
                        outputs=arff_dataset.outputs)

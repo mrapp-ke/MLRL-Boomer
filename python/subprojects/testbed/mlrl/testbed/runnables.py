@@ -576,7 +576,7 @@ class LearnerRunnable(Runnable, ABC):
         return preprocessors
 
     def __create_dataset_splitter(self, args) -> DatasetSplitter:
-        dataset = InputDataset(dataset_name=args.dataset)
+        dataset = InputDataset(name=args.dataset)
         source = ArffFileSource(directory=args.data_dir)
         dataset_reader = DatasetReader(source=source, input_data=dataset)
         dataset_reader.add_preprocessors(*self.__create_preprocessors(args))

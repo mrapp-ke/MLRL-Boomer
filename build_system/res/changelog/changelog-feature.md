@@ -19,6 +19,10 @@
 - Efficient data types and data structures are now used for storing binary scores calculated by the SeCo algorithm.
 - Unnecessary conversions from integer weights to floating point values are now avoided.
 
+# Fixes
+
+- Correct data types are now used for ground truth matrices when using the command line argument `--problem-type regression`. Previously, the values in these matrices were completely off, rendering any experiments using them invalid.
+
 # Quality-of-Life Improvements
 
 - The Python package "mlrl-testbed" has completely been refactored, including a restructuring that introduces submodules.

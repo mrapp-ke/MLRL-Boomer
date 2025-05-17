@@ -3,8 +3,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for implementing different kinds of problem domains.
 """
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Any, Callable, Dict, Optional
+
+import numpy as np
 
 from sklearn.base import BaseEstimator
 
@@ -48,14 +50,44 @@ class SkLearnProblem(ProblemDomain, ABC):
         """
         return type(self.base_learner).__name__
 
+    @property
+    @abstractmethod
+    def feature_dtype(self) -> np.dtype:
+        """
+        The data type to be used for features.
+        """
+
+    @property
+    @abstractmethod
+    def output_dtype(self) -> np.dtype:
+        """
+        The data type to be used for outputs.
+        """
+
 
 class SkLearnClassificationProblem(SkLearnProblem, ClassificationProblem):
     """
     Represents a classification problem to be tackled via the scikit-learn framework.
     """
 
+    @property
+    def feature_dtype(self) -> np.dtype:
+        return np.float32
+
+    @property
+    def output_dtype(self) -> np.dtype:
+        return np.uint8
+
 
 class SkLearnRegressionProblem(SkLearnProblem, RegressionProblem):
     """
     Represents a regression problem to be tackled via the scikit-learn framework.
     """
+
+    @property
+    def feature_dtype(self) -> np.dtype:
+        return np.float32
+
+    @property
+    def output_dtype(self) -> np.dtype:
+        return np.float32
