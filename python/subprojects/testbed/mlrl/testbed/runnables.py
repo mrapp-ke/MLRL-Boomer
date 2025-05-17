@@ -36,7 +36,7 @@ from mlrl.testbed.experiments.output.characteristics.data.tabular import DataCha
     DataCharacteristicsWriter, OutputCharacteristics, PredictionCharacteristicsWriter
 from mlrl.testbed.experiments.output.characteristics.model import ModelCharacteristicsWriter, \
     RuleModelCharacteristicsExtractor
-from mlrl.testbed.experiments.output.dataset import GroundTruthWriter, PredictionWriter
+from mlrl.testbed.experiments.output.dataset.tabular import GroundTruthWriter, PredictionWriter
 from mlrl.testbed.experiments.output.evaluation import ClassificationEvaluationDataExtractor, EvaluationResult, \
     EvaluationWriter, RankingEvaluationDataExtractor, RegressionEvaluationDataExtractor
 from mlrl.testbed.experiments.output.label_vectors import LabelVectors, LabelVectorSetExtractor, LabelVectorWriter
