@@ -20,6 +20,7 @@ from mlrl.testbed_arff.experiments.output.sinks.sink_arff import ArffFileSink
 from mlrl.testbed.experiments.dataset import Attribute, AttributeType, Dataset
 from mlrl.testbed.experiments.input.data import DatasetInputData
 from mlrl.testbed.experiments.input.sources.source import DatasetFileSource
+from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.io import open_readable_file
 
 
@@ -223,7 +224,8 @@ class ArffFileSource(DatasetFileSource):
         """
         super().__init__(directory=directory, suffix=ArffFileSink.SUFFIX_ARFF)
 
-    def _read_dataset_from_file(self, file_path: str, input_data: DatasetInputData) -> Optional[Dataset]:
+    def _read_dataset_from_file(self, state: ExperimentState, file_path: str,
+                                input_data: DatasetInputData) -> Optional[Dataset]:
         properties = input_data.properties
         arff_file = self.__read_arff_file(file_path=file_path, dtype=properties.feature_dtype)
         xml_file_path = path.join(path.dirname(file_path), properties.file_name + '.' + ArffFileSink.SUFFIX_XML)
