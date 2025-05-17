@@ -5,6 +5,7 @@ Provides classes for representing datasets that are part of output data.
 """
 import sys
 
+from abc import ABC
 from typing import Optional
 
 import numpy as np
@@ -17,9 +18,9 @@ from mlrl.testbed.util.format import OPTION_DECIMALS
 from mlrl.util.options import Options
 
 
-class OutputDataset(DatasetOutputData):
+class OutputDataset(DatasetOutputData, ABC):
     """
-    Represents a dataset that is part of output data.
+    An abstract base class for all classes that represent a dataset that is part of output data.
     """
 
     def __init__(self, dataset: Dataset, properties: OutputData.Properties, context: Context = Context()):
