@@ -32,10 +32,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 1):
 
-Mean Absolute Error               46.77
-Mean Absolute Percentage Error     0.74
-Mean Squared Error              3671.24
-Median Absolute Error             36.44
+Mean Absolute Error                84.54
+Mean Absolute Percentage Error      0.17
+Mean Squared Error              21298.9
+Median Absolute Error              58.34
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-1.csv"...
 INFO Fold 2 / 10:
@@ -49,10 +49,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 2):
 
-Mean Absolute Error               26.65
-Mean Absolute Percentage Error     0.94
-Mean Squared Error              1702.77
-Median Absolute Error             14.21
+Mean Absolute Error               29.82
+Mean Absolute Percentage Error     0.08
+Mean Squared Error              2439.75
+Median Absolute Error             16.86
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-2.csv"...
 INFO Fold 3 / 10:
@@ -66,10 +66,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 3):
 
-Mean Absolute Error               33.27
-Mean Absolute Percentage Error     1.71
-Mean Squared Error              3207.69
-Median Absolute Error             16.12
+Mean Absolute Error               36.34
+Mean Absolute Percentage Error     0.09
+Mean Squared Error              3652.85
+Median Absolute Error             21.59
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-3.csv"...
 INFO Fold 4 / 10:
@@ -83,10 +83,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 4):
 
-Mean Absolute Error               38.81
-Mean Absolute Percentage Error     1.93
-Mean Squared Error              3871.57
-Median Absolute Error             21.44
+Mean Absolute Error               26.86
+Mean Absolute Percentage Error     0.09
+Mean Squared Error              1284.06
+Median Absolute Error             21.21
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-4.csv"...
 INFO Fold 5 / 10:
@@ -100,10 +100,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 5):
 
-Mean Absolute Error               22.36
-Mean Absolute Percentage Error     0.63
-Mean Squared Error              1009.1
-Median Absolute Error             17.86
+Mean Absolute Error              17.22
+Mean Absolute Percentage Error    0.06
+Mean Squared Error              530.87
+Median Absolute Error            14.04
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-5.csv"...
 INFO Fold 6 / 10:
@@ -117,10 +117,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 6):
 
-Mean Absolute Error               38.06
-Mean Absolute Percentage Error     0.95
-Mean Squared Error              3915.95
-Median Absolute Error             22.01
+Mean Absolute Error               31
+Mean Absolute Percentage Error     0.11
+Mean Squared Error              1728.45
+Median Absolute Error             24.84
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-6.csv"...
 INFO Fold 7 / 10:
@@ -134,10 +134,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 7):
 
-Mean Absolute Error               50.49
-Mean Absolute Percentage Error     0.8
-Mean Squared Error              6059.94
-Median Absolute Error             27.57
+Mean Absolute Error               48.48
+Mean Absolute Percentage Error     0.14
+Mean Squared Error              9183.04
+Median Absolute Error             23.85
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-7.csv"...
 INFO Fold 8 / 10:
@@ -151,10 +151,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 8):
 
-Mean Absolute Error               53.74
-Mean Absolute Percentage Error     1.49
-Mean Squared Error              3966.34
-Median Absolute Error             51.56
+Mean Absolute Error               57.13
+Mean Absolute Percentage Error     0.14
+Mean Squared Error              5545.78
+Median Absolute Error             51.35
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-8.csv"...
 INFO Fold 9 / 10:
@@ -168,10 +168,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 9):
 
-Mean Absolute Error               65.23
-Mean Absolute Percentage Error     1.69
-Mean Squared Error              6163.35
-Median Absolute Error             55.28
+Mean Absolute Error               39.91
+Mean Absolute Percentage Error     0.12
+Mean Squared Error              2673.66
+Median Absolute Error             33.38
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-9.csv"...
 INFO Fold 10 / 10:
@@ -185,17 +185,17 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 10):
 
-Mean Absolute Error               80.63
-Mean Absolute Percentage Error    20.64
-Mean Squared Error              9536.47
-Median Absolute Error             81.58
+Mean Absolute Error               58.32
+Mean Absolute Percentage Error     0.18
+Mean Squared Error              4792.35
+Median Absolute Error             51.29
 
 INFO Evaluation result for test data (Average across 10 folds):
 
-Mean Absolute Error               45.6   ±16.91
-Mean Absolute Percentage Error     3.15  ±5.84
-Mean Squared Error              4310.44  ±2315.07
-Median Absolute Error             34.41  ±20.84
+Mean Absolute Error               42.96  ±18.67
+Mean Absolute Percentage Error     0.12  ±0.04
+Mean Squared Error              5312.97  ±5837.64
+Median Absolute Error             31.67  ±15.28
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-10.csv"...
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...

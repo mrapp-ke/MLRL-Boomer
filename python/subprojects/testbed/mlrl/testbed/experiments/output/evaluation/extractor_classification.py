@@ -32,8 +32,8 @@ class ClassificationEvaluationDataExtractor(EvaluationDataExtractor):
         if is_multilabel(ground_truth):
             evaluation_measures = OutputValue.filter_values(MULTI_LABEL_EVALUATION_MEASURES, options)
         else:
-            predictions = np.ravel(enforce_dense(predictions, order='C', dtype=np.uint8))
-            ground_truth = np.ravel(enforce_dense(ground_truth, order='C', dtype=np.uint8))
+            predictions = np.ravel(enforce_dense(predictions, order='C'))
+            ground_truth = np.ravel(enforce_dense(ground_truth, order='C'))
             evaluation_measures = OutputValue.filter_values(SINGLE_LABEL_EVALUATION_MEASURES, options)
 
         for evaluation_measure in evaluation_measures:
