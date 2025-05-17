@@ -30,15 +30,8 @@ class ProbabilityCalibrationModelExtractor(DataExtractor, ABC):
         """
         See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
         """
-        training_result = state.training_result
-
-        if training_result:
-            learner = training_result.learner
-
-            if isinstance(learner, ClassificationRuleLearner):
-                return self._get_calibration_model(learner)
-
-        return None
+        learner = state.learner_as(self, ClassificationRuleLearner)
+        return self._get_calibration_model(learner) if learner else None
 
     @abstractmethod
     def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Optional[OutputData]:
@@ -69,7 +62,9 @@ class IsotonicMarginalProbabilityCalibrationModelExtractor(ProbabilityCalibratio
                                            column_title_prefix='Label')
 
         if not isinstance(calibration_model, NoProbabilityCalibrationModel):
-            log.error('Cannot handle probability calibration model of type %s', type(calibration_model).__name__)
+            log.error('%s expected type of calibration model to be %s, but calibration model has type %s',
+                      type(self).__name__, IsotonicProbabilityCalibrationModel.__name__,
+                      type(calibration_model).__name__)
 
         return calibration_model
 
@@ -93,6 +88,8 @@ class IsotonicJointProbabilityCalibrationModelExtractor(ProbabilityCalibrationMo
                                            column_title_prefix='Label vector')
 
         if not isinstance(calibration_model, NoProbabilityCalibrationModel):
-            log.error('Cannot handle probability calibration model of type %s', type(calibration_model).__name__)
+            log.error('%s expected type of calibration model to be %s, but calibration model has type %s',
+                      type(self).__name__, IsotonicProbabilityCalibrationModel.__name__,
+                      type(calibration_model).__name__)
 
         return calibration_model

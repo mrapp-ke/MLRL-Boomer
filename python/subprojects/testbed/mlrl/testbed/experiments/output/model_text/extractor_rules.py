@@ -23,43 +23,21 @@ class RuleModelAsTextExtractor(DataExtractor):
     Allows to extract textual representation of rules from a `RuleModel`.
     """
 
-    @staticmethod
-    def __get_model(state: ExperimentState) -> Optional[RuleModel]:
-        training_result = state.training_result
-
-        if training_result:
-            learner = training_result.learner
-
-            if isinstance(learner, (ClassifierMixin, RegressorMixin)):
-                model = learner.model_
-
-                if isinstance(model, RuleModel):
-                    return model
-
-                log.error('Cannot handle model of type %s', type(model).__name__)
-
-        return None
-
-    @staticmethod
-    def __get_dataset(state: ExperimentState) -> Optional[TabularDataset]:
-        dataset = state.dataset
-
-        if isinstance(dataset, TabularDataset):
-            return dataset
-
-        log.error('Cannot handle dataset of type %s', type(dataset).__name__)
-        return None
-
     def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
         """
         See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
         """
-        model = self.__get_model(state)
+        dataset = state.dataset_as(self, TabularDataset)
+        learner = state.learner_as(self, ClassifierMixin, RegressorMixin)
 
-        if model:
-            dataset = self.__get_dataset(state)
+        if dataset and learner:
+            model = learner.model_
 
-            if dataset:
+            if isinstance(model, RuleModel):
                 return RuleModelAsText(model, dataset)
+
+            log.error('%s expected type of model to be %s, but model has type %s',
+                      type(self).__name__, RuleModel.__name__,
+                      type(model).__name__)
 
         return None

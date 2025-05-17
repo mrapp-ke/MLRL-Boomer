@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing predictions to one or several sinks.
 """
-import logging as log
 
 from dataclasses import replace
 from typing import List, Optional
@@ -30,21 +29,11 @@ class PredictionWriter(OutputWriter):
         The extractor to be used by a `PredictionWriter`, by default.
         """
 
-        @staticmethod
-        def __get_dataset(state: ExperimentState) -> Optional[TabularDataset]:
-            dataset = state.dataset
-
-            if isinstance(dataset, TabularDataset):
-                return dataset
-
-            log.error('Cannot handle dataset of type %s', type(dataset).__name__)
-            return None
-
         def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            dataset = self.__get_dataset(state)
+            dataset = state.dataset_as(self, TabularDataset)
 
             if state.prediction_result and dataset:
                 predictions = dataset.y

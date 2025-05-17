@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing unique label vectors that are contained in a dataset to one or several sinks.
 """
-import logging as log
 
 from typing import List, Optional
 
@@ -30,13 +29,8 @@ class LabelVectorWriter(OutputWriter):
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            dataset = state.dataset
-
-            if isinstance(dataset, TabularDataset):
-                return LabelVectors(LabelVectorHistogram.from_dataset(dataset))
-
-            log.error('Cannot handle dataset of type %s', type(dataset).__name__)
-            return None
+            dataset = state.dataset_as(self, TabularDataset)
+            return LabelVectors(LabelVectorHistogram.from_dataset(dataset)) if dataset else None
 
     def __init__(self, *extractors: DataExtractor, exit_on_error: bool = True):
         """
