@@ -13,9 +13,9 @@ class InputDataset(DatasetInputData):
     Represents a dataset that is part of input data.
     """
 
-    def __init__(self, dataset_name: str):
+    def __init__(self, name: str):
         """
-        :param dataset_name: The name of the dataset
+        :param name: The name of the dataset
         """
-        super().__init__(properties=InputData.Properties(file_name=dataset_name),
+        super().__init__(properties=InputData.Properties(file_name=name),
                          context=Context(include_prediction_scope=False))
