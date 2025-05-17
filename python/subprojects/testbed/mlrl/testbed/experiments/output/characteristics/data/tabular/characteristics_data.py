@@ -8,11 +8,11 @@ from typing import Optional
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.dataset import TabularDataset
-from mlrl.testbed.experiments.output.characteristics.data.characteristics import LABEL_CHARACTERISTICS, \
+from mlrl.testbed.experiments.output.characteristics.data.tabular.characteristics import LABEL_CHARACTERISTICS, \
     OUTPUT_CHARACTERISTICS, Characteristic
-from mlrl.testbed.experiments.output.characteristics.data.matrix_feature import FeatureMatrix
-from mlrl.testbed.experiments.output.characteristics.data.matrix_label import LabelMatrix
-from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
+from mlrl.testbed.experiments.output.characteristics.data.tabular.matrix_feature import FeatureMatrix
+from mlrl.testbed.experiments.output.characteristics.data.tabular.matrix_label import LabelMatrix
+from mlrl.testbed.experiments.output.characteristics.data.tabular.matrix_output import OutputMatrix
 from mlrl.testbed.experiments.output.data import OutputData, OutputValue, TabularOutputData
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain
 from mlrl.testbed.experiments.table import RowWiseTable, Table

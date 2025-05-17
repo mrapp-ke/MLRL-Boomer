@@ -32,8 +32,8 @@ from mlrl.testbed.experiments.input.dataset.splitters.tabular import Bipartition
 from mlrl.testbed.experiments.input.model import ModelReader
 from mlrl.testbed.experiments.input.parameters import ParameterReader
 from mlrl.testbed.experiments.input.sources import CsvFileSource, PickleFileSource
-from mlrl.testbed.experiments.output.characteristics.data import DataCharacteristics, DataCharacteristicsWriter, \
-    OutputCharacteristics, PredictionCharacteristicsWriter
+from mlrl.testbed.experiments.output.characteristics.data.tabular import DataCharacteristics, \
+    DataCharacteristicsWriter, OutputCharacteristics, PredictionCharacteristicsWriter
 from mlrl.testbed.experiments.output.characteristics.model import ModelCharacteristicsWriter, \
     RuleModelCharacteristicsExtractor
 from mlrl.testbed.experiments.output.dataset import GroundTruthWriter, PredictionWriter
