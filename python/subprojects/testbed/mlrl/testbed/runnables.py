@@ -25,7 +25,8 @@ from mlrl.testbed_arff.experiments.output.sinks import ArffFileSink
 
 from mlrl.testbed.experiments import Experiment, SkLearnExperiment
 from mlrl.testbed.experiments.input.dataset import DatasetReader, InputDataset
-from mlrl.testbed.experiments.input.dataset.preprocessors import OneHotEncoder, Preprocessor
+from mlrl.testbed.experiments.input.dataset.preprocessors import Preprocessor
+from mlrl.testbed.experiments.input.dataset.preprocessors.tabular import OneHotEncoder
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter, NoSplitter
 from mlrl.testbed.experiments.input.dataset.splitters.tabular import BipartitionSplitter, CrossValidationSplitter
 from mlrl.testbed.experiments.input.model import ModelReader
