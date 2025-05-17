@@ -6,8 +6,6 @@ Provides classes that allow writing evaluation results according to ranking eval
 from itertools import chain
 from typing import Any
 
-import numpy as np
-
 from sklearn.utils.multiclass import is_multilabel
 
 from mlrl.testbed.experiments.output.data import OutputValue
@@ -28,7 +26,7 @@ class RankingEvaluationDataExtractor(EvaluationDataExtractor):
 
     def _update_measurements(self, measurements: Measurements, index: int, ground_truth: Any, predictions: Any,
                              options: Options):
-        ground_truth = enforce_dense(ground_truth, order='C', dtype=np.uint8)
+        ground_truth = enforce_dense(ground_truth, order='C')
         regression_evaluation_measures = OutputValue.filter_values(REGRESSION_EVALUATION_MEASURES, options)
 
         if is_multilabel(ground_truth):
