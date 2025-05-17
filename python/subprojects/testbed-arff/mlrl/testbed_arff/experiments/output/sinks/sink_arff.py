@@ -11,7 +11,8 @@ import arff
 
 from scipy.sparse import dok_array
 
-from mlrl.testbed.experiments.dataset import AttributeType, Dataset
+from mlrl.testbed.experiments.dataset import Dataset
+from mlrl.testbed.experiments.dataset_tabular import AttributeType
 from mlrl.testbed.experiments.output.sinks.sink import DatasetFileSink
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.io import ENCODING_UTF8, open_writable_file
