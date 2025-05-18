@@ -6,11 +6,18 @@ mlrl.testbed.experiments.input.dataset.preprocessors package
    :show-inheritance:
    :undoc-members:
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed.experiments.input.dataset.preprocessors.tabular
+
 Submodules
 ----------
 
 .. toctree::
    :maxdepth: 4
 
-   mlrl.testbed.experiments.input.dataset.preprocessors.one_hot_encoder
    mlrl.testbed.experiments.input.dataset.preprocessors.preprocessor

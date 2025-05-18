@@ -1,7 +1,0 @@
-mlrl.testbed.experiments.input.dataset.splitters.splitter\_cross\_validation module
-===================================================================================
-
-.. automodule:: mlrl.testbed.experiments.input.dataset.splitters.splitter_cross_validation
-   :members:
-   :show-inheritance:
-   :undoc-members:

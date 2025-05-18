@@ -1,0 +1,7 @@
+mlrl.testbed.experiments.input.dataset.preprocessors.tabular.one\_hot\_encoder module
+=====================================================================================
+
+.. automodule:: mlrl.testbed.experiments.input.dataset.preprocessors.tabular.one_hot_encoder
+   :members:
+   :show-inheritance:
+   :undoc-members:
