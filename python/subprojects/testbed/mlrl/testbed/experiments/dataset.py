@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing datasets.
 """
+from abc import ABC
 from dataclasses import dataclass, replace
 from enum import Enum
 from functools import reduce
@@ -23,11 +24,17 @@ class DatasetType(Enum):
     TEST = 'test'
 
 
-@dataclass
-class Dataset:
+class Dataset(ABC):
     """
-    A dataset consisting of two matrices `x` and `y`, storing the features of examples and their respective ground
-    truth, respectively.
+    An abstract base class for all datasets.
+    """
+
+
+@dataclass
+class TabularDataset(Dataset):
+    """
+    A tabular dataset consisting of two matrices `x` and `y`, storing the features of examples and their respective
+    ground truth, respectively.
 
     Attributes:
         x:          A `lil_array`, shape `(num_examples, num_features)`, that stores the features of examples
@@ -75,7 +82,7 @@ class Dataset:
         """
         return is_sparse(self.y)
 
-    def enforce_dense_features(self) -> 'Dataset':
+    def enforce_dense_features(self) -> 'TabularDataset':
         """
         Creates and returns a copy of this dataset, where the feature values have been converted into a dense format.
 
@@ -85,7 +92,7 @@ class Dataset:
             return replace(self, x=self.x.toarray())
         return self
 
-    def enforce_dense_outputs(self) -> 'Dataset':
+    def enforce_dense_outputs(self) -> 'TabularDataset':
         """
         Creates and returns a copy of this dataset, where the ground truth has been converted into a dense format.
 
@@ -123,10 +130,3 @@ class Dataset:
         return [
             i for i, feature in enumerate(self.features) if not feature_types or feature.attribute_type in feature_types
         ]
-
-
-class TabularDataset(Dataset):
-    """
-    A tabular dataset consisting of two matrices `x` and `y`, storing the features of examples and their respective
-    ground truth, respectively.
-    """
