@@ -11,7 +11,8 @@ from typing import Generator, List
 from scipy.sparse import vstack
 from sklearn.model_selection import KFold
 
-from mlrl.testbed.experiments.dataset import Dataset, DatasetType
+from mlrl.testbed.experiments.dataset_tabular import TabularDataset
+from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.fold import Fold, FoldingStrategy
 from mlrl.testbed.experiments.input.dataset import DatasetReader
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
@@ -40,7 +41,7 @@ class CrossValidationSplitter(DatasetSplitter):
                 """
                 self.datasets = [None for _ in range(num_folds)]
 
-        def __get_training_dataset(self, state: ExperimentState) -> Dataset:
+        def __get_training_dataset(self, state: ExperimentState) -> TabularDataset:
             splitter = self.splitter
             cache = splitter.cache
             training_dataset = None
@@ -62,7 +63,7 @@ class CrossValidationSplitter(DatasetSplitter):
 
             return training_dataset
 
-        def __get_test_dataset(self, state: ExperimentState) -> Dataset:
+        def __get_test_dataset(self, state: ExperimentState) -> TabularDataset:
             splitter = self.splitter
             cache = splitter.cache
             fold_index = state.fold.index
@@ -118,8 +119,8 @@ class CrossValidationSplitter(DatasetSplitter):
                  training_datasets: A list that stores the training datasets
                  test_datasets:     A list that stores the test datasets
             """
-            training_datasets: List[Dataset] = field(default_factory=list)
-            test_datasets: List[Dataset] = field(default_factory=list)
+            training_datasets: List[TabularDataset] = field(default_factory=list)
+            test_datasets: List[TabularDataset] = field(default_factory=list)
 
         def __init__(self, splitter: 'CrossValidationSplitter', state: ExperimentState):
             """

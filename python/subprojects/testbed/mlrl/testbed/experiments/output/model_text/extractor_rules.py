@@ -10,6 +10,7 @@ from typing import List, Optional
 from mlrl.common.cython.rule_model import RuleModel
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
+from mlrl.testbed.experiments.dataset_tabular import TabularDataset
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.model_text.model_text_rules import RuleModelAsText
 from mlrl.testbed.experiments.output.sinks import Sink
@@ -26,18 +27,17 @@ class RuleModelAsTextExtractor(DataExtractor):
         """
         See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
         """
-        training_result = state.training_result
-        dataset = state.dataset
+        dataset = state.dataset_as(self, TabularDataset)
+        learner = state.learner_as(self, ClassifierMixin, RegressorMixin)
 
-        if training_result and dataset:
-            learner = training_result.learner
+        if dataset and learner:
+            model = learner.model_
 
-            if isinstance(learner, (ClassifierMixin, RegressorMixin)):
-                model = learner.model_
+            if isinstance(model, RuleModel):
+                return RuleModelAsText(model, dataset)
 
-                if isinstance(model, RuleModel):
-                    return RuleModelAsText(model, dataset)
-
-                log.error('Cannot handle model of type %s', type(model).__name__)
+            log.error('%s expected type of model to be %s, but model has type %s',
+                      type(self).__name__, RuleModel.__name__,
+                      type(model).__name__)
 
         return None

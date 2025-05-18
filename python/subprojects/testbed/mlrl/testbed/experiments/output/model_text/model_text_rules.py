@@ -12,7 +12,7 @@ from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBo
     RuleModelVisitor
 
 from mlrl.testbed.experiments.context import Context
-from mlrl.testbed.experiments.dataset import Dataset
+from mlrl.testbed.experiments.dataset_tabular import TabularDataset
 from mlrl.testbed.experiments.output.data import OutputData, TextualOutputData
 from mlrl.testbed.util.format import format_number
 
@@ -119,7 +119,7 @@ class RuleModelAsText(TextualOutputData):
                                               operator='!=')
             return offset
 
-        def __init__(self, dataset: Dataset, options: Options):
+        def __init__(self, dataset: TabularDataset, options: Options):
             """
             :param dataset: The dataset on which the model has been trained
             """
@@ -221,7 +221,7 @@ class RuleModelAsText(TextualOutputData):
             elif self.print_bodies:
                 text.write('\n')
 
-    def __init__(self, model: RuleModel, dataset: Dataset):
+    def __init__(self, model: RuleModel, dataset: TabularDataset):
         """
         :param model:   The rule model
         :param dataset: The dataset on which the model has been trained

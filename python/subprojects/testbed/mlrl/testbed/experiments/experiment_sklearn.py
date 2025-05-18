@@ -5,6 +5,7 @@ Provides classes for performing experiments.
 """
 import logging as log
 
+from dataclasses import replace
 from functools import reduce
 from typing import Any, Dict, Generator, Optional
 
@@ -12,11 +13,12 @@ from sklearn.base import BaseEstimator, clone
 
 from mlrl.common.mixins import NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
 
-from mlrl.testbed.experiments.dataset import AttributeType, Dataset, DatasetType
+from mlrl.testbed.experiments.dataset import Dataset
+from mlrl.testbed.experiments.dataset_tabular import AttributeType, TabularDataset
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnProblem
-from mlrl.testbed.experiments.state import ParameterDict, PredictionState, TrainingState
+from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
 
 
@@ -54,7 +56,7 @@ class SkLearnExperiment(Experiment):
                      if aggr else '') + '"' + change[0] + '" is "' + change[2] + '" instead of "' + change[1] + '"',
                     changes, ''))
 
-    def __train(self, learner: BaseEstimator, dataset: Dataset) -> Timer.Duration:
+    def __train(self, learner: BaseEstimator, dataset: TabularDataset) -> Timer.Duration:
         # Set the indices of ordinal features, if supported...
         fit_kwargs = self.problem_domain.fit_kwargs
         fit_kwargs = fit_kwargs if fit_kwargs else {}
@@ -100,17 +102,22 @@ class SkLearnExperiment(Experiment):
         log.info('Successfully fit model in %s', training_duration)
         return TrainingState(learner=new_learner, training_duration=training_duration)
 
-    def _predict(self, learner: Any, dataset: Dataset,
-                 dataset_type: DatasetType) -> Generator[PredictionState, None, None]:
-        problem_domain = self.problem_domain
-        predict_kwargs = problem_domain.predict_kwargs
-        predict_kwargs = predict_kwargs if predict_kwargs else {}
-        predictor = problem_domain.predictor_factory()
+    def _predict(self, state: ExperimentState) -> Generator[PredictionState, None, None]:
+        dataset = state.dataset_as(self, TabularDataset)
+        learner = state.learner_as(self, BaseEstimator)
 
-        try:
-            return predictor.obtain_predictions(learner, dataset, dataset_type, **predict_kwargs)
-        except ValueError as error:
-            if dataset.has_sparse_features:
-                return self._predict(learner, dataset.enforce_dense_features(), dataset_type)
+        if dataset and learner:
+            try:
+                problem_domain = self.problem_domain
+                predict_kwargs = problem_domain.predict_kwargs
+                predict_kwargs = predict_kwargs if predict_kwargs else {}
+                predictor = problem_domain.predictor_factory()
+                dataset_type = state.dataset_type
+                yield from predictor.obtain_predictions(learner, dataset, dataset_type, **predict_kwargs)
+            except ValueError as error:
+                if dataset.has_sparse_features:
+                    yield self._predict(replace(state, dataset=dataset.enforce_dense_features()))
 
-            raise error
+                raise error
+
+        yield

@@ -7,12 +7,12 @@ from itertools import chain
 from typing import Optional
 
 from mlrl.testbed.experiments.context import Context
-from mlrl.testbed.experiments.dataset import Dataset
-from mlrl.testbed.experiments.output.characteristics.data.characteristics import LABEL_CHARACTERISTICS, \
+from mlrl.testbed.experiments.dataset_tabular import TabularDataset
+from mlrl.testbed.experiments.output.characteristics.data.tabular.characteristics import LABEL_CHARACTERISTICS, \
     OUTPUT_CHARACTERISTICS, Characteristic
-from mlrl.testbed.experiments.output.characteristics.data.matrix_feature import FeatureMatrix
-from mlrl.testbed.experiments.output.characteristics.data.matrix_label import LabelMatrix
-from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
+from mlrl.testbed.experiments.output.characteristics.data.tabular.matrix_feature import FeatureMatrix
+from mlrl.testbed.experiments.output.characteristics.data.tabular.matrix_label import LabelMatrix
+from mlrl.testbed.experiments.output.characteristics.data.tabular.matrix_output import OutputMatrix
 from mlrl.testbed.experiments.output.data import OutputData, OutputValue, TabularOutputData
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain
 from mlrl.testbed.experiments.table import RowWiseTable, Table
@@ -23,7 +23,7 @@ from mlrl.util.options import Options
 
 class DataCharacteristics(TabularOutputData):
     """
-    Represents characteristics of a dataset that are part of output data.
+    Represents characteristics of a tabular dataset that are part of output data.
     """
 
     OPTION_EXAMPLES = 'examples'
@@ -40,7 +40,7 @@ class DataCharacteristics(TabularOutputData):
 
     OPTION_FEATURE_SPARSITY = 'feature_sparsity'
 
-    def __init__(self, problem_domain: ProblemDomain, dataset: Dataset):
+    def __init__(self, problem_domain: ProblemDomain, dataset: TabularDataset):
         """
         :param problem_domain:  The problem domain, the dataset is concerned with
         :param dataset:         The dataset
