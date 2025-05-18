@@ -11,7 +11,8 @@ import arff
 
 from scipy.sparse import dok_array
 
-from mlrl.testbed.experiments.dataset import AttributeType, Dataset
+from mlrl.testbed.experiments.dataset import Dataset
+from mlrl.testbed.experiments.dataset_tabular import AttributeType, TabularDataset
 from mlrl.testbed.experiments.output.sinks.sink import DatasetFileSink
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.util.io import ENCODING_UTF8, open_writable_file
@@ -29,7 +30,7 @@ class ArffFileSink(DatasetFileSink):
     SUFFIX_XML = 'xml'
 
     @staticmethod
-    def __write_arff_file(file_path: str, dataset: Dataset):
+    def __write_arff_file(file_path: str, dataset: TabularDataset):
         sparse = dataset.has_sparse_features and dataset.has_sparse_outputs
         num_examples = dataset.num_examples
         num_features = dataset.num_features
@@ -65,7 +66,7 @@ class ArffFileSink(DatasetFileSink):
                 }))
 
     @staticmethod
-    def __write_xml_file(file_path: str, dataset: Dataset):
+    def __write_xml_file(file_path: str, dataset: TabularDataset):
         root_element = XmlTree.Element('labels')
         root_element.set('xmlns', 'http://mulan.sourceforge.net/labels')
 

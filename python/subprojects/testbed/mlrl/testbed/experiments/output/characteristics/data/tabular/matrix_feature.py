@@ -5,8 +5,8 @@ Provides classes that provide access to characteristics of feature values, assoc
 """
 from functools import cached_property
 
-from mlrl.testbed.experiments.dataset import AttributeType, Dataset
-from mlrl.testbed.experiments.output.characteristics.data.matrix_output import density
+from mlrl.testbed.experiments.dataset_tabular import AttributeType, TabularDataset
+from mlrl.testbed.experiments.output.characteristics.data.tabular.matrix_output import density
 
 
 class FeatureMatrix:
@@ -15,7 +15,7 @@ class FeatureMatrix:
     dataset.
     """
 
-    def __init__(self, dataset: Dataset):
+    def __init__(self, dataset: TabularDataset):
         """
         :param dataset: The dataset
         """

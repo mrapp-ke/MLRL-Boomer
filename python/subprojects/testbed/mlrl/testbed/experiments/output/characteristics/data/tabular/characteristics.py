@@ -7,7 +7,7 @@ from typing import Optional
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.output.characteristics.data.characteristic import Characteristic
-from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
+from mlrl.testbed.experiments.output.characteristics.data.tabular.matrix_output import OutputMatrix
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain
 from mlrl.testbed.experiments.table import RowWiseTable, Table
