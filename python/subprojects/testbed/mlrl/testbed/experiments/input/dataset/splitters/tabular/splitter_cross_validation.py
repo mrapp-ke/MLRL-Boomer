@@ -11,7 +11,8 @@ from typing import Generator, List
 from scipy.sparse import vstack
 from sklearn.model_selection import KFold
 
-from mlrl.testbed.experiments.dataset import DatasetType, TabularDataset
+from mlrl.testbed.experiments.dataset import DatasetType
+from mlrl.testbed.experiments.dataset_tabular import TabularDataset
 from mlrl.testbed.experiments.fold import Fold, FoldingStrategy
 from mlrl.testbed.experiments.input.dataset import DatasetReader
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter

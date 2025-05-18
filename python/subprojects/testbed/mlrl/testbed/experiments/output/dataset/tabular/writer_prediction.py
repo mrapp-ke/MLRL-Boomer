@@ -9,8 +9,7 @@ from typing import List, Optional
 
 import numpy as np
 
-from mlrl.testbed.experiments.dataset import TabularDataset
-from mlrl.testbed.experiments.dataset_tabular import Attribute, AttributeType
+from mlrl.testbed.experiments.dataset_tabular import Attribute, AttributeType, TabularDataset
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.dataset.tabular.dataset_prediction import PredictionDataset
 from mlrl.testbed.experiments.output.sinks import Sink
