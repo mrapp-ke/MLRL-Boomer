@@ -20,5 +20,5 @@ Label Imbalance Ratio    1.68
 Label Cardinality        1.96
 Distinct Label Vectors  22
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_model-size-0.csv"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test.csv"...
 INFO Successfully finished after <duration>

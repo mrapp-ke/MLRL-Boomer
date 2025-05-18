@@ -45,7 +45,7 @@ INFO Predictions for test data (Fold 1):
  [243. 327. 496. 513. 243. 513.]
  [243. 372. 496. 513. 243. 513.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_model-size-0_fold-1.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-1.arff"...
 INFO Ground truth for test data (Fold 1):
 
 [[283. 319. 319. 319. 283. 319.]
@@ -79,5 +79,5 @@ INFO Ground truth for test data (Fold 1):
  [243. 327. 496. 513. 243. 513.]
  [243. 372. 496. 513. 243. 513.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_model-size-0_fold-1.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-1.arff"...
 INFO Successfully finished after <duration>
