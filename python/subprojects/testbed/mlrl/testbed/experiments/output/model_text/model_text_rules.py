@@ -12,7 +12,7 @@ from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBo
     RuleModelVisitor
 
 from mlrl.testbed.experiments.context import Context
-from mlrl.testbed.experiments.dataset import TabularDataset
+from mlrl.testbed.experiments.dataset_tabular import TabularDataset
 from mlrl.testbed.experiments.output.data import OutputData, TextualOutputData
 from mlrl.testbed.util.format import format_number
 

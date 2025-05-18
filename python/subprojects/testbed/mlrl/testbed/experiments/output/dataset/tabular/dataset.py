@@ -10,7 +10,7 @@ from typing import Optional
 import numpy as np
 
 from mlrl.testbed.experiments.context import Context
-from mlrl.testbed.experiments.dataset import TabularDataset
+from mlrl.testbed.experiments.dataset_tabular import TabularDataset
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.dataset.dataset import OutputDataset
 from mlrl.testbed.util.format import OPTION_DECIMALS

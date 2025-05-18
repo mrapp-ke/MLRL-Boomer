@@ -10,7 +10,7 @@ import numpy as np
 
 from scipy.sparse import lil_array
 
-from mlrl.testbed.experiments.dataset import TabularDataset
+from mlrl.testbed.experiments.dataset_tabular import TabularDataset
 
 
 @dataclass

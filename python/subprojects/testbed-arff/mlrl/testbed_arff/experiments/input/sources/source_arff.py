@@ -17,7 +17,8 @@ from scipy.sparse import coo_array, csc_array, sparray
 
 from mlrl.testbed_arff.experiments.output.sinks.sink_arff import ArffFileSink
 
-from mlrl.testbed.experiments.dataset import Attribute, AttributeType, Dataset, TabularDataset
+from mlrl.testbed.experiments.dataset import Dataset
+from mlrl.testbed.experiments.dataset_tabular import Attribute, AttributeType, TabularDataset
 from mlrl.testbed.experiments.input.data import DatasetInputData
 from mlrl.testbed.experiments.input.sources.source import DatasetFileSource
 from mlrl.testbed.experiments.state import ExperimentState

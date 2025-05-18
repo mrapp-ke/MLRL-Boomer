@@ -10,7 +10,7 @@ from typing import List, Optional
 from mlrl.common.cython.rule_model import RuleModel
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 
-from mlrl.testbed.experiments.dataset import TabularDataset
+from mlrl.testbed.experiments.dataset_tabular import TabularDataset
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.model_text.model_text_rules import RuleModelAsText
 from mlrl.testbed.experiments.output.sinks import Sink
