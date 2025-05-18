@@ -24,6 +24,8 @@ Submodules
 
    mlrl.testbed.experiments.context
    mlrl.testbed.experiments.dataset
+   mlrl.testbed.experiments.dataset_tabular
+   mlrl.testbed.experiments.dataset_type
    mlrl.testbed.experiments.experiment
    mlrl.testbed.experiments.experiment_sklearn
    mlrl.testbed.experiments.file_path

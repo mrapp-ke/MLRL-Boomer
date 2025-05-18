@@ -1,7 +1,0 @@
-mlrl.testbed.experiments.input.dataset.splitters.splitter\_bipartition module
-=============================================================================
-
-.. automodule:: mlrl.testbed.experiments.input.dataset.splitters.splitter_bipartition
-   :members:
-   :show-inheritance:
-   :undoc-members:

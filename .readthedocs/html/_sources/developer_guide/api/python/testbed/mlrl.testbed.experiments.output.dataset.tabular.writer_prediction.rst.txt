@@ -1,0 +1,7 @@
+mlrl.testbed.experiments.output.dataset.tabular.writer\_prediction module
+=========================================================================
+
+.. automodule:: mlrl.testbed.experiments.output.dataset.tabular.writer_prediction
+   :members:
+   :show-inheritance:
+   :undoc-members:

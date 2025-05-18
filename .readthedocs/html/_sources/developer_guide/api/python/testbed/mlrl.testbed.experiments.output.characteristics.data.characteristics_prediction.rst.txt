@@ -1,7 +1,0 @@
-mlrl.testbed.experiments.output.characteristics.data.characteristics\_prediction module
-=======================================================================================
-
-.. automodule:: mlrl.testbed.experiments.output.characteristics.data.characteristics_prediction
-   :members:
-   :show-inheritance:
-   :undoc-members:

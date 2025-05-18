@@ -1,7 +1,0 @@
-mlrl.testbed.experiments.output.dataset.writer\_prediction module
-=================================================================
-
-.. automodule:: mlrl.testbed.experiments.output.dataset.writer_prediction
-   :members:
-   :show-inheritance:
-   :undoc-members:
