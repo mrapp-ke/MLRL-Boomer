@@ -112,7 +112,7 @@ INFO Predictions for test data:
  [ 279.  279.  301.  366.  283.  366.]
  [ 199.  199.  447.  488.  298.  488.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_model-size-0.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test.arff"...
 INFO Ground truth for test data:
 
 [[ 334.  440.  460.  463.  334.  463.]
@@ -214,5 +214,5 @@ INFO Ground truth for test data:
  [ 279.  279.  301.  366.  283.  366.]
  [ 199.  199.  447.  488.  298.  488.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_model-size-0.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test.arff"...
 INFO Successfully finished after <duration>
