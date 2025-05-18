@@ -10,7 +10,7 @@ import numpy as np
 
 from scipy.sparse import lil_array
 
-from mlrl.testbed.experiments.dataset import Dataset
+from mlrl.testbed.experiments.dataset_tabular import TabularDataset
 
 
 @dataclass
@@ -44,7 +44,7 @@ class LabelVectorHistogram:
         self.unique_label_vectors = unique_label_vectors if unique_label_vectors else []
 
     @staticmethod
-    def from_dataset(dataset: Dataset) -> 'LabelVectorHistogram':
+    def from_dataset(dataset: TabularDataset) -> 'LabelVectorHistogram':
         """
         Creates and returns a `LabelVectorHistogram` that stores all unique label vectors contained in a dataset.
 

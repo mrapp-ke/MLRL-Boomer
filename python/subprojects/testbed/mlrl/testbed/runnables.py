@@ -25,17 +25,18 @@ from mlrl.testbed_arff.experiments.output.sinks import ArffFileSink
 
 from mlrl.testbed.experiments import Experiment, SkLearnExperiment
 from mlrl.testbed.experiments.input.dataset import DatasetReader, InputDataset
-from mlrl.testbed.experiments.input.dataset.preprocessors import OneHotEncoder, Preprocessor
-from mlrl.testbed.experiments.input.dataset.splitters import BipartitionSplitter, CrossValidationSplitter, \
-    DatasetSplitter, NoSplitter
+from mlrl.testbed.experiments.input.dataset.preprocessors import Preprocessor
+from mlrl.testbed.experiments.input.dataset.preprocessors.tabular import OneHotEncoder
+from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter, NoSplitter
+from mlrl.testbed.experiments.input.dataset.splitters.tabular import BipartitionSplitter, CrossValidationSplitter
 from mlrl.testbed.experiments.input.model import ModelReader
 from mlrl.testbed.experiments.input.parameters import ParameterReader
 from mlrl.testbed.experiments.input.sources import CsvFileSource, PickleFileSource
-from mlrl.testbed.experiments.output.characteristics.data import DataCharacteristics, DataCharacteristicsWriter, \
-    OutputCharacteristics, PredictionCharacteristicsWriter
+from mlrl.testbed.experiments.output.characteristics.data.tabular import DataCharacteristics, \
+    DataCharacteristicsWriter, OutputCharacteristics, PredictionCharacteristicsWriter
 from mlrl.testbed.experiments.output.characteristics.model import ModelCharacteristicsWriter, \
     RuleModelCharacteristicsExtractor
-from mlrl.testbed.experiments.output.dataset import GroundTruthWriter, PredictionWriter
+from mlrl.testbed.experiments.output.dataset.tabular import GroundTruthWriter, PredictionWriter
 from mlrl.testbed.experiments.output.evaluation import ClassificationEvaluationDataExtractor, EvaluationResult, \
     EvaluationWriter, RankingEvaluationDataExtractor, RegressionEvaluationDataExtractor
 from mlrl.testbed.experiments.output.label_vectors import LabelVectors, LabelVectorSetExtractor, LabelVectorWriter
@@ -46,10 +47,11 @@ from mlrl.testbed.experiments.output.probability_calibration import IsotonicJoin
     IsotonicMarginalProbabilityCalibrationModelExtractor, ProbabilityCalibrationModelWriter
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, PickleFileSink, TextFileSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
-from mlrl.testbed.experiments.prediction import GlobalPredictor, IncrementalPredictor, Predictor
+from mlrl.testbed.experiments.prediction import GlobalPredictor, IncrementalPredictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
-from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificationProblem, SkLearnRegressionProblem
+from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificationProblem, SkLearnProblem, \
+    SkLearnRegressionProblem
 from mlrl.testbed.package_info import get_package_info as get_testbed_package_info
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
@@ -889,14 +891,14 @@ class LearnerRunnable(Runnable, ABC):
         return None
 
     # pylint: disable=unused-argument
-    def _create_predictor_factory(self, args, prediction_type: PredictionType) -> Predictor:
+    def _create_predictor_factory(self, args, prediction_type: PredictionType) -> SkLearnProblem.PredictorFactory:
         """
-        May be overridden by subclasses in order to create the `Predictor` that should be used for obtaining predictions
-        from a previously trained model.
+        May be overridden by subclasses in order to create the `SkLearnProblem.PredictorFactory` that should be used for
+        obtaining predictions from a previously trained model.
 
         :param args:            The command line arguments
         :param prediction_type: The type of the predictions to be obtained
-        :return:                The `Predictor` that has been created
+        :return:                The `SkLearnProblem.PredictorFactory` that has been created
         """
 
         def predictor_factory():
@@ -1460,7 +1462,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                                                      exit_on_error=args.exit_on_error).add_sinks(*sinks)
         return None
 
-    def _create_predictor_factory(self, args, prediction_type: PredictionType) -> Predictor:
+    def _create_predictor_factory(self, args, prediction_type: PredictionType) -> SkLearnProblem.PredictorFactory:
         value, options = parse_param_and_options(self.PARAM_INCREMENTAL_EVALUATION, args.incremental_evaluation,
                                                  self.INCREMENTAL_EVALUATION_VALUES)
 

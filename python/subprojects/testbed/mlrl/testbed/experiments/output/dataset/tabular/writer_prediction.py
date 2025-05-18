@@ -3,14 +3,15 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing predictions to one or several sinks.
 """
+
 from dataclasses import replace
 from typing import List, Optional
 
 import numpy as np
 
-from mlrl.testbed.experiments.dataset import Attribute, AttributeType
+from mlrl.testbed.experiments.dataset_tabular import Attribute, AttributeType, TabularDataset
 from mlrl.testbed.experiments.output.data import OutputData
-from mlrl.testbed.experiments.output.dataset.dataset_prediction import PredictionDataset
+from mlrl.testbed.experiments.output.dataset.tabular.dataset_prediction import PredictionDataset
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem
@@ -31,10 +32,9 @@ class PredictionWriter(OutputWriter):
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
-            prediction_result = state.prediction_result
-            dataset = state.dataset
+            dataset = state.dataset_as(self, TabularDataset)
 
-            if prediction_result and dataset:
+            if state.prediction_result and dataset:
                 predictions = dataset.y
                 nominal_values = None
 
