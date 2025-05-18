@@ -10,7 +10,8 @@ from typing import Generator
 
 from sklearn.model_selection import train_test_split
 
-from mlrl.testbed.experiments.dataset import Dataset, DatasetType
+from mlrl.testbed.experiments.dataset_tabular import TabularDataset
+from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.fold import FoldingStrategy
 from mlrl.testbed.experiments.input.dataset import DatasetReader
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
@@ -58,8 +59,8 @@ class BipartitionSplitter(DatasetSplitter):
                 training_dataset:   The training dataset
                 test_dataset:       The test dataset
             """
-            training_dataset: Dataset
-            test_dataset: Dataset
+            training_dataset: TabularDataset
+            test_dataset: TabularDataset
 
         def __init__(self, splitter: 'BipartitionSplitter', state: ExperimentState):
             """

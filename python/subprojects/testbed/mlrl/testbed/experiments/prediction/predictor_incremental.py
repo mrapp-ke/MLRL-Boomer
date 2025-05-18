@@ -12,7 +12,8 @@ from sklearn.base import BaseEstimator
 
 from mlrl.common.mixins import IncrementalClassifierMixin, IncrementalRegressorMixin
 
-from mlrl.testbed.experiments.dataset import Dataset, DatasetType
+from mlrl.testbed.experiments.dataset import Dataset
+from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.prediction.predictor import PredictionFunction, Predictor
 from mlrl.testbed.experiments.prediction_scope import PredictionScope
 from mlrl.testbed.experiments.prediction_type import PredictionType

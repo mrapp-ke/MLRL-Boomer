@@ -7,7 +7,7 @@ from functools import cached_property
 
 import numpy as np
 
-from mlrl.testbed.experiments.output.characteristics.data.matrix_output import OutputMatrix
+from mlrl.testbed.experiments.output.characteristics.data.tabular.matrix_output import OutputMatrix
 
 from mlrl.util.arrays import is_sparse
 
