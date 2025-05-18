@@ -8,7 +8,7 @@ import logging as log
 from dataclasses import replace
 from typing import Generator
 
-from mlrl.testbed.experiments.dataset import DatasetType
+from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.fold import FoldingStrategy
 from mlrl.testbed.experiments.input.dataset import DatasetReader
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter

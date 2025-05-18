@@ -8,7 +8,8 @@ import logging as log
 from dataclasses import dataclass, field
 from typing import Any, Dict, Optional, Type
 
-from mlrl.testbed.experiments.dataset import Dataset, DatasetType
+from mlrl.testbed.experiments.dataset import Dataset
+from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.fold import Fold, FoldingStrategy
 from mlrl.testbed.experiments.prediction_scope import PredictionScope
 from mlrl.testbed.experiments.prediction_type import PredictionType

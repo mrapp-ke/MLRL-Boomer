@@ -10,7 +10,8 @@ from dataclasses import replace
 from functools import reduce
 from typing import Any, Generator, Optional
 
-from mlrl.testbed.experiments.dataset import Dataset, DatasetType
+from mlrl.testbed.experiments.dataset import Dataset
+from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.input.reader import InputReader
 from mlrl.testbed.experiments.output.writer import OutputWriter
