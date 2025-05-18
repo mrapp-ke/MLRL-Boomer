@@ -45,7 +45,7 @@ INFO Predictions for test data (Fold 1):
  [243. 327. 496. 513. 243. 513.]
  [243. 372. 496. 513. 243. 513.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_model-size-0_fold-1.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-1.arff"...
 INFO Ground truth for test data (Fold 1):
 
 [[283. 319. 319. 319. 283. 319.]
@@ -79,7 +79,7 @@ INFO Ground truth for test data (Fold 1):
  [243. 327. 496. 513. 243. 513.]
  [243. 372. 496. 513. 243. 513.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_model-size-0_fold-1.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-1.arff"...
 INFO Fold 2 / 10:
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -122,7 +122,7 @@ INFO Predictions for test data (Fold 2):
  [ 199.  199.  447.  488.  268.  488.]
  [ 199.  199.  199.  488.  243.  488.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_model-size-0_fold-2.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-2.arff"...
 INFO Ground truth for test data (Fold 2):
 
 [[ 315. 1182.  720.  720.  315.  720.]
@@ -156,7 +156,7 @@ INFO Ground truth for test data (Fold 2):
  [ 199.  199.  447.  488.  268.  488.]
  [ 199.  199.  199.  488.  243.  488.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_model-size-0_fold-2.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-2.arff"...
 INFO Fold 3 / 10:
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -199,7 +199,7 @@ INFO Predictions for test data (Fold 3):
  [ 288.  397.  456.  513.  344.  513.]
  [ 199.  199.  199.  488.  268.  488.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_model-size-0_fold-3.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-3.arff"...
 INFO Ground truth for test data (Fold 3):
 
 [[ 315. 1182.  720.  720.  315.  720.]
@@ -233,7 +233,7 @@ INFO Ground truth for test data (Fold 3):
  [ 288.  397.  456.  513.  344.  513.]
  [ 199.  199.  199.  488.  268.  488.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_model-size-0_fold-3.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-3.arff"...
 INFO Fold 4 / 10:
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -276,7 +276,7 @@ INFO Predictions for test data (Fold 4):
  [199. 199. 199. 488. 243. 488.]
  [243. 289. 407. 488. 243. 488.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_model-size-0_fold-4.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-4.arff"...
 INFO Ground truth for test data (Fold 4):
 
 [[283. 319. 319. 319. 283. 319.]
@@ -310,7 +310,7 @@ INFO Ground truth for test data (Fold 4):
  [199. 199. 199. 488. 243. 488.]
  [243. 289. 407. 488. 243. 488.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_model-size-0_fold-4.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-4.arff"...
 INFO Fold 5 / 10:
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -353,7 +353,7 @@ INFO Predictions for test data (Fold 5):
  [249. 249. 407. 447. 268. 468.]
  [199. 199. 199. 488. 243. 488.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_model-size-0_fold-5.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-5.arff"...
 INFO Ground truth for test data (Fold 5):
 
 [[326. 675. 626. 545. 326. 545.]
@@ -387,7 +387,7 @@ INFO Ground truth for test data (Fold 5):
  [249. 249. 407. 447. 268. 468.]
  [199. 199. 199. 488. 243. 488.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_model-size-0_fold-5.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-5.arff"...
 INFO Fold 6 / 10:
 INFO Fitting model to 266 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -430,7 +430,7 @@ INFO Predictions for test data (Fold 6):
  [199. 199. 447. 488. 268. 488.]
  [199. 199. 199. 488. 243. 488.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_model-size-0_fold-6.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-6.arff"...
 INFO Ground truth for test data (Fold 6):
 
 [[283. 299. 319. 319. 283. 319.]
@@ -464,7 +464,7 @@ INFO Ground truth for test data (Fold 6):
  [199. 199. 447. 488. 268. 488.]
  [199. 199. 199. 488. 243. 488.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_model-size-0_fold-6.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-6.arff"...
 INFO Fold 7 / 10:
 INFO Fitting model to 267 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -506,7 +506,7 @@ INFO Predictions for test data (Fold 7):
  [243. 289. 407. 488. 243. 488.]
  [243. 372. 496. 513. 243. 513.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_model-size-0_fold-7.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-7.arff"...
 INFO Ground truth for test data (Fold 7):
 
 [[315. 675. 631. 587. 315. 587.]
@@ -539,7 +539,7 @@ INFO Ground truth for test data (Fold 7):
  [243. 289. 407. 488. 243. 488.]
  [243. 372. 496. 513. 243. 513.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_model-size-0_fold-7.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-7.arff"...
 INFO Fold 8 / 10:
 INFO Fitting model to 267 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -581,7 +581,7 @@ INFO Predictions for test data (Fold 8):
  [ 244.  309.  244.  391.  244.  391.]
  [ 298.  372.  445.  462.  298.  455.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_model-size-0_fold-8.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-8.arff"...
 INFO Ground truth for test data (Fold 8):
 
 [[ 315. 1182.  720.  720.  315.  720.]
@@ -614,7 +614,7 @@ INFO Ground truth for test data (Fold 8):
  [ 244.  309.  244.  391.  244.  391.]
  [ 298.  372.  445.  462.  298.  455.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_model-size-0_fold-8.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-8.arff"...
 INFO Fold 9 / 10:
 INFO Fitting model to 267 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -656,7 +656,7 @@ INFO Predictions for test data (Fold 9):
  [288. 294. 447. 513. 313. 513.]
  [199. 199. 199. 488. 243. 488.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_model-size-0_fold-9.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-9.arff"...
 INFO Ground truth for test data (Fold 9):
 
 [[315. 675. 631. 587. 315. 587.]
@@ -689,7 +689,7 @@ INFO Ground truth for test data (Fold 9):
  [288. 294. 447. 513. 313. 513.]
  [199. 199. 199. 488. 243. 488.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_model-size-0_fold-9.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-9.arff"...
 INFO Fold 10 / 10:
 INFO Fitting model to 267 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -731,7 +731,7 @@ INFO Predictions for test data (Fold 10):
  [288. 397. 456. 513. 344. 513.]
  [199. 199. 447. 488. 268. 488.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_model-size-0_fold-10.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-10.arff"...
 INFO Ground truth for test data (Fold 10):
 
 [[315. 675. 631. 587. 315. 587.]
@@ -764,5 +764,5 @@ INFO Ground truth for test data (Fold 10):
  [288. 397. 456. 513. 344. 513.]
  [199. 199. 447. 488. 268. 488.]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_model-size-0_fold-10.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-10.arff"...
 INFO Successfully finished after <duration>
