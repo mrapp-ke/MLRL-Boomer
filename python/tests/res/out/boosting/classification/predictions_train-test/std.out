@@ -210,7 +210,7 @@ INFO Predictions for test data:
  [0 0 1 1 0 0]
  [1 0 0 0 0 1]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_model-size-0.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test.arff"...
 INFO Ground truth for test data:
 
 [[1 0 0 0 0 1]
@@ -410,5 +410,5 @@ INFO Ground truth for test data:
  [0 0 1 1 0 0]
  [1 0 0 0 0 1]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_model-size-0.arff"...
+DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test.arff"...
 INFO Successfully finished after <duration>
