@@ -211,7 +211,7 @@ class Project:
             return {
                 path.dirname(meson_file)
                 for meson_file in Project.Cpp.file_search().filter_by_name('meson.build').list(
-                    Project.Cpp.root_directory)
+                    Project.Cpp.root_directory) if path.dirname(meson_file) != Project.Cpp.root_directory
             }
 
     class Documentation:
