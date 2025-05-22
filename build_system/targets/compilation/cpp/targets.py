@@ -3,6 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for compiling C++ code.
 """
+from os import path
 from typing import List
 
 from core.build_unit import BuildUnit
@@ -20,7 +21,8 @@ from targets.project import Project
 MODULE_FILTER = CompilationModule.Filter(FileType.cpp())
 
 BUILD_OPTIONS = BuildOptions() \
-        .add(ConstantBuildOption('cpp_std', Project.Cpp.cpp_version())) \
+        .add(ConstantBuildOption('cpp_std', Project.Cpp.cpp_version(),
+                                 *[path.basename(subproject) for subproject in Project.Cpp.find_subprojects()])) \
         .add(EnvBuildOption(SubprojectModule.ENV_SUBPROJECTS.lower())) \
         .add(EnvBuildOption('buildtype', default_value='release')) \
         .add(EnvBuildOption('test_support', 'common')) \
