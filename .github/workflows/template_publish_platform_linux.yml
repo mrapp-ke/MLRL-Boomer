@@ -41,6 +41,8 @@ jobs:
           CIBW_ARCHS: auto64
           CIBW_SKIP: pp* *musllinux*
           CIBW_PROJECT_REQUIRES_PYTHON: ${{ steps.python_version.outputs.content }}
+          CIBW_BEFORE_TEST: SUBPROJECTS="common,testbed" ./build install_wheels
+          CIBW_TEST_COMMAND: . .venv/bin/activate && mlrl-testbed mlrl.${{ inputs.subproject }} --version && deactivate
         with:
           package-dir: python/subprojects/${{ inputs.subproject }}/
       - name: Upload wheels as artifacts
