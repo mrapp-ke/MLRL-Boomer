@@ -8,7 +8,6 @@ import sys
 
 from abc import ABC, abstractmethod
 from argparse import ArgumentError, ArgumentParser
-from enum import Enum
 from os import listdir, path, unlink
 from typing import Any, Dict, List, Optional, Set
 
@@ -50,6 +49,7 @@ from mlrl.testbed.experiments.problem_domain import ClassificationProblem, Probl
 from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificationProblem, SkLearnProblem, \
     SkLearnRegressionProblem
 from mlrl.testbed.profiles import Profile
+from mlrl.testbed.profiles.profile_log import LogProfile
 from mlrl.testbed.program_info import ProgramInfo
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
@@ -58,45 +58,6 @@ from mlrl.util.options import BooleanOption, parse_param, parse_param_and_option
 from mlrl.util.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 
 LOG_FORMAT = '%(levelname)s %(message)s'
-
-
-class LogLevel(Enum):
-    """
-    Specifies all valid textual representations of log levels.
-    """
-    DEBUG = 'debug'
-    INFO = 'info'
-    WARN = 'warn'
-    WARNING = 'warning'
-    ERROR = 'error'
-    CRITICAL = 'critical'
-    FATAL = 'fatal'
-    NOTSET = 'notset'
-
-    @staticmethod
-    def parse(text: str):
-        """
-        Parses a given text that represents a log level. If the given text does not represent a valid log level, a
-        `ValueError` is raised.
-
-        :param text:    The text to be parsed
-        :return:        A log level, depending on the given text
-        """
-        lower_text = text.lower()
-        if lower_text == LogLevel.DEBUG.value:
-            return log.DEBUG
-        if lower_text == LogLevel.INFO.value:
-            return log.INFO
-        if lower_text in (LogLevel.WARN.value, LogLevel.WARNING.value):
-            return log.WARN
-        if lower_text == LogLevel.ERROR.value:
-            return log.ERROR
-        if lower_text in (LogLevel.CRITICAL.value, LogLevel.FATAL.value):
-            return log.CRITICAL
-        if lower_text == LogLevel.NOTSET.value:
-            return log.NOTSET
-        raise ValueError('Invalid log level given. Must be one of ' + format_enum_values(LogLevel) + ', but is "'
-                         + str(text) + '".')
 
 
 class Runnable(ABC):
@@ -120,7 +81,7 @@ class Runnable(ABC):
 
         :return: A list that contains the profiles to be applied to the runnable
         """
-        return []
+        return [LogProfile()]
 
     def get_program_info(self) -> Optional[ProgramInfo]:
         """
@@ -148,12 +109,6 @@ class Runnable(ABC):
                                          action='version',
                                          version=str(program_info),
                                          help='Display information about the program\'s version.')
-
-        argument_parser.add_argument('--log-level',
-                                     type=LogLevel.parse,
-                                     default=LogLevel.INFO.value,
-                                     help='The log level to be used. Must be one of ' + format_enum_values(LogLevel)
-                                     + '.')
 
         for profile in self.get_profiles():
             profile.configure_arguments(argument_parser)
