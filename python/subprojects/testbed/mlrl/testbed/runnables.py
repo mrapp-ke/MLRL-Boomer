@@ -150,10 +150,9 @@ class Runnable(ABC):
         """
 
 
-class LearnerRunnable(Runnable, ABC):
+class SkLearnRunnable(Runnable, ABC):
     """
-    A base class for all programs that perform an experiment that involves training and evaluation of a machine learning
-    algorithm.
+    An abstract base class for all programs that run an experiment via the scikit-learn framework.
     """
 
     class ClearOutputDirectoryListener(Experiment.Listener):
@@ -419,7 +418,7 @@ class LearnerRunnable(Runnable, ABC):
 
             if value == BooleanOption.TRUE.value or (value == AUTOMATIC
                                                      and not dataset_splitter.folding_strategy.is_subset):
-                return LearnerRunnable.ClearOutputDirectoryListener(output_dir)
+                return SkLearnRunnable.ClearOutputDirectoryListener(output_dir)
 
         return None
 
@@ -905,7 +904,7 @@ class LearnerRunnable(Runnable, ABC):
         """
 
 
-class RuleLearnerRunnable(LearnerRunnable):
+class RuleLearnerRunnable(SkLearnRunnable):
     """
     A base class for all programs that perform an experiment that involves training and evaluation of a rule learner.
     """
