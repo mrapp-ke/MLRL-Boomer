@@ -11,8 +11,11 @@ from mlrl.boosting.cython.learner_boomer import BoomerClassifierConfig, BoomerRe
 from mlrl.boosting.learners import BoomerClassifier, BoomerRegressor
 from mlrl.boosting.package_info import get_package_info
 
+from mlrl.testbed.program_info import ProgramInfo
+from mlrl.testbed.program_info_rules import RuleLearnerProgramInfo
+
 try:
-    from mlrl.testbed.runnables import RuleLearnerRunnable, Runnable
+    from mlrl.testbed.runnables import RuleLearnerRunnable
 except ImportError as error:
     raise ImportError('Optional dependency "mlrl-testbed" is not installed') from error
 
@@ -30,13 +33,13 @@ class BoomerRunnable(RuleLearnerRunnable):
                          regressor_config_type=BoomerRegressorConfig,
                          regressor_parameters=BOOMER_REGRESSOR_PARAMETERS)
 
-    def get_program_info(self) -> Optional[Runnable.ProgramInfo]:
+    def get_program_info(self) -> Optional[ProgramInfo]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_program_info`
         """
         package_info = get_package_info()
-        return Runnable.ProgramInfo(name='BOOMER',
-                                    version=package_info.package_version,
-                                    year='2020 - 2025',
-                                    authors=['Michael Rapp et al.'],
-                                    python_packages=[package_info])
+        return RuleLearnerProgramInfo(name='BOOMER',
+                                      version=package_info.package_version,
+                                      year='2020 - 2025',
+                                      authors=['Michael Rapp et al.'],
+                                      python_packages=[package_info])
