@@ -15,7 +15,7 @@ from mlrl.testbed.program_info import ProgramInfo
 from mlrl.testbed.program_info_rules import RuleLearnerProgramInfo
 
 try:
-    from mlrl.testbed.runnables_sklearn import RuleLearnerRunnable
+    from mlrl.testbed.runnables_rules import RuleLearnerRunnable
 except ImportError as error:
     raise ImportError('Optional dependency "mlrl-testbed" is not installed') from error
 
