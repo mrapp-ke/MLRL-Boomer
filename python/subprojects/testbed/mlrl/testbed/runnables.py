@@ -8,17 +8,14 @@ import sys
 
 from abc import ABC, abstractmethod
 from argparse import ArgumentError, ArgumentParser
-from dataclasses import dataclass, field
 from enum import Enum
 from os import listdir, path, unlink
-from typing import Any, Dict, Iterable, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set
 
 from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
-from tabulate import tabulate
 
 from mlrl.common.config.parameters import AUTOMATIC, NONE, Parameter
 from mlrl.common.learners import RuleLearner, SparsePolicy
-from mlrl.common.package_info import PythonPackageInfo
 
 from mlrl.testbed_arff.experiments.input.sources import ArffFileSource
 from mlrl.testbed_arff.experiments.output.sinks import ArffFileSink
@@ -52,7 +49,7 @@ from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
 from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificationProblem, SkLearnProblem, \
     SkLearnRegressionProblem
-from mlrl.testbed.package_info import get_package_info as get_testbed_package_info
+from mlrl.testbed.program_info import ProgramInfo
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
 from mlrl.util.format import format_enum_values, format_iterable, format_set
@@ -106,188 +103,6 @@ class Runnable(ABC):
     A base class for all programs that can be configured via command line arguments.
     """
 
-    @dataclass
-    class ProgramInfo:
-        """
-        Provides information about a program.
-
-        :param name:            A string that specifies the program name
-        :param version:         A string that specifies the program version
-        :param year:            A string that specifies the year when the program was released
-        :param authors:         A set that contains the name of each author of the program
-        :param python_packages: A list that contains a `PythonPackageInfo` for each Python package that is used by the
-                                program
-        """
-        name: str
-        version: str
-        year: Optional[str] = None
-        authors: Set[str] = field(default_factory=set)
-        python_packages: List[PythonPackageInfo] = field(default_factory=list)
-
-        @property
-        def all_python_packages(self) -> List[PythonPackageInfo]:
-            """
-            A list that contains a `PythonPackageInfo` for each Python package that is used by the program, as well as
-            for the testbed package.
-            """
-            return [get_testbed_package_info()] + self.python_packages
-
-        def __format_copyright(self) -> str:
-            result = ''
-            year = self.year
-
-            if year:
-                result += ' ' + year
-
-            authors = self.authors
-
-            if authors:
-                result += ' ' + format_iterable(authors)
-
-            return ('Copyright (c)' if result else '') + result
-
-        def __collect_python_packages(self, python_packages: Iterable[PythonPackageInfo]) -> Set[str]:
-            unique_packages = set()
-
-            for python_package in python_packages:
-                unique_packages.add(str(python_package))
-                unique_packages.update(self.__collect_python_packages(python_package.python_packages))
-
-            return unique_packages
-
-        def __collect_dependencies(self, python_packages: Iterable[PythonPackageInfo]) -> Dict[str, Set[str]]:
-            unique_dependencies = {}
-
-            for python_package in python_packages:
-                for dependency in python_package.dependencies:
-                    parent_packages = unique_dependencies.setdefault(str(dependency), set())
-                    parent_packages.add(python_package.package_name)
-
-                for key, value in self.__collect_dependencies(python_package.python_packages).items():
-                    parent_packages = unique_dependencies.setdefault(key, set())
-                    parent_packages.update(value)
-
-            return unique_dependencies
-
-        def __collect_cpp_libraries(self, python_packages: Iterable[PythonPackageInfo]) -> Dict[str, Set[str]]:
-            unique_libraries = {}
-
-            for python_package in python_packages:
-                for cpp_library in python_package.cpp_libraries:
-                    parent_packages = unique_libraries.setdefault(str(cpp_library), set())
-                    parent_packages.add(python_package.package_name)
-
-                for key, value in self.__collect_cpp_libraries(python_package.python_packages).items():
-                    parent_packages = unique_libraries.setdefault(key, set())
-                    parent_packages.update(value)
-
-            return unique_libraries
-
-        def __collect_build_options(self, python_packages: Iterable[PythonPackageInfo]) -> Dict[str, Set[str]]:
-            unique_build_options = {}
-
-            for python_package in python_packages:
-                for cpp_library in python_package.cpp_libraries:
-                    for build_option in cpp_library.build_options:
-                        parent_libraries = unique_build_options.setdefault(str(build_option), set())
-                        parent_libraries.add(cpp_library.library_name)
-
-                for key, value in self.__collect_build_options(python_package.python_packages).items():
-                    parent_libraries = unique_build_options.setdefault(key, set())
-                    parent_libraries.update(value)
-
-            return unique_build_options
-
-        def __collect_hardware_resources(self, python_packages: Iterable[PythonPackageInfo]) -> Dict[str, Set[str]]:
-            unique_hardware_resources = {}
-
-            for python_package in python_packages:
-                for cpp_library in python_package.cpp_libraries:
-                    for hardware_resource in cpp_library.hardware_resources:
-                        info = unique_hardware_resources.setdefault(hardware_resource.resource, set())
-                        info.add(hardware_resource.info)
-
-                for key, value in self.__collect_hardware_resources(python_package.python_packages).items():
-                    info = unique_hardware_resources.setdefault(key, set())
-                    info.update(value)
-
-            return unique_hardware_resources
-
-        @staticmethod
-        def __format_parent_packages(parent_packages: Set[str]) -> str:
-            return 'used by ' + format_iterable(parent_packages) if parent_packages else ''
-
-        def __format_package_info(self) -> str:
-            rows = []
-            python_packages = self.all_python_packages
-
-            for i, python_package in enumerate(sorted(self.__collect_python_packages(python_packages))):
-                rows.append(['' if i > 0 else 'Python packages:', python_package, ''])
-
-            if python_packages:
-                rows.append(['', '', ''])
-
-            dependencies = self.__collect_dependencies(python_packages)
-
-            for i, dependency in enumerate(sorted(dependencies.keys())):
-                parent_packages = self.__format_parent_packages(dependencies[dependency])
-                rows.append(['' if i > 0 else 'Dependencies:', dependency, parent_packages])
-
-            if dependencies:
-                rows.append(['', '', ''])
-
-            cpp_libraries = self.__collect_cpp_libraries(python_packages)
-
-            for i, cpp_library in enumerate(sorted(cpp_libraries.keys())):
-                parent_packages = self.__format_parent_packages(cpp_libraries[cpp_library])
-                rows.append(['' if i > 0 else 'Shared libraries:', cpp_library, parent_packages])
-
-            if cpp_libraries:
-                rows.append(['', '', ''])
-
-            build_options = self.__collect_build_options(python_packages)
-
-            for i, build_option in enumerate(sorted(build_options.keys())):
-                parent_libraries = self.__format_parent_packages(build_options[build_option])
-                rows.append(['' if i > 0 else 'Build options:', build_option, parent_libraries])
-
-            if build_options:
-                rows.append(['', '', ''])
-
-            hardware_resources = self.__collect_hardware_resources(python_packages)
-
-            for i, hardware_resource in enumerate(sorted(hardware_resources.keys())):
-                for j, info in enumerate(sorted(hardware_resources[hardware_resource])):
-                    rows.append(['' if i > 0 else 'Hardware resources:', '' if j > 0 else hardware_resource, info])
-
-            return tabulate(rows, tablefmt='plain') if rows else ''
-
-        def __str__(self) -> str:
-            result = self.name + ' ' + self.version
-            formatted_copyright = self.__format_copyright()
-
-            if formatted_copyright:
-                result += '\n\n' + formatted_copyright
-
-            formatted_package_info = self.__format_package_info()
-
-            if formatted_package_info:
-                result += '\n\n' + formatted_package_info
-
-            return result
-
-    @staticmethod
-    def __get_version(program_info: Optional[ProgramInfo]) -> str:
-        """
-        May be overridden by subclasses in order to provide information about the program's version.
-
-        :return: A string that provides information about the program's version
-        """
-        if program_info:
-            return str(program_info)
-
-        raise RuntimeError('No information about the program version is available')
-
     def run(self, args):
         """
         Executes the runnable.
@@ -302,7 +117,7 @@ class Runnable(ABC):
         May be overridden by subclasses in order to provide information about the program to be printed via the command
         line argument '-v' or '--version'. 
 
-        :return: The `Runnable.ProgramInfo` that has been provided
+        :return: A `ProgramInfo` or None, if no information is provided
         """
         return None
 
@@ -319,7 +134,7 @@ class Runnable(ABC):
             parser.add_argument('-v',
                                 '--version',
                                 action='version',
-                                version=self.__get_version(program_info),
+                                version=str(program_info),
                                 help='Display information about the program\'s version.')
 
         parser.add_argument('--log-level',
