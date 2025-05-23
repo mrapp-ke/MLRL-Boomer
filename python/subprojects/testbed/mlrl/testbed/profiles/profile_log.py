@@ -4,13 +4,15 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the logger.
 """
 import logging as log
+import sys
 
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Namespace
 from enum import Enum
 
+from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.profiles.profile import Profile
 
-from mlrl.util.format import format_enum_values, format_set
+from mlrl.util.format import format_set
 
 
 class LogProfile(Profile):
@@ -59,3 +61,15 @@ class LogProfile(Profile):
                                      default=LogProfile.LogLevel.INFO.value,
                                      help='The log level to be used. Must be one of '
                                      + format_set(log_level.value[0] for log_level in LogProfile.LogLevel) + '.')
+
+    def configure_experiment(self, args: Namespace, _: Experiment):
+        """
+        See :func:`mlrl.testbed.profiles.profile.Profile.configure_experiment`
+        """
+        log_level = args.log_level
+        root = log.getLogger()
+        root.setLevel(log_level)
+        out_handler = log.StreamHandler(sys.stdout)
+        out_handler.setLevel(log_level)
+        out_handler.setFormatter(log.Formatter('%(levelname)s %(message)s'))
+        root.addHandler(out_handler)
