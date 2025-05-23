@@ -23,4 +23,6 @@ Submodules
 
    mlrl.testbed.main
    mlrl.testbed.package_info
+   mlrl.testbed.program_info
+   mlrl.testbed.program_info_rules
    mlrl.testbed.runnables

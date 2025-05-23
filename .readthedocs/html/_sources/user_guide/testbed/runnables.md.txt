@@ -59,7 +59,7 @@ Optionally, you can provide information about the version and authors of your cu
 
 ```python
 from typing import Optional
-from mlrl.testbed.runnables import LearnerRunnable
+from mlrl.testbed.program_info import ProgramInfo
 
 # ...
 
@@ -67,10 +67,10 @@ class Runnable(BaseRunnable):
 
     # ...
 
-    def get_program_info(self) -> Optional[LearnerRunnable.ProgramInfo]:
-        return LearnerRunnable.ProgramInfo(name='Random Forest Classifier',
-                                           version='1.0.0',
-                                           year='1934',
-                                           authors=['Bonnie', 'Clyde'])
+    def get_program_info(self) -> Optional[ProgramInfo]:
+        return ProgramInfo(name='Random Forest Classifier',
+                           version='1.0.0',
+                           year='1934',
+                           authors=['Bonnie', 'Clyde'])
 
 ```
