@@ -3,11 +3,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides base classes for programs that can be configured via command line arguments.
 """
-import logging as log
-import sys
 
 from abc import ABC, abstractmethod
-from argparse import ArgumentError, ArgumentParser
+from argparse import ArgumentError, ArgumentParser, Namespace
 from os import listdir, path, unlink
 from typing import Any, Dict, List, Optional, Set
 
@@ -57,8 +55,6 @@ from mlrl.util.format import format_enum_values, format_set
 from mlrl.util.options import BooleanOption, parse_param, parse_param_and_options
 from mlrl.util.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 
-LOG_FORMAT = '%(levelname)s %(message)s'
-
 
 class Runnable(ABC):
     """
@@ -66,14 +62,47 @@ class Runnable(ABC):
     is implemented by individual profiles that are applied to the runnable.
     """
 
-    def run(self, args):
+    class BaseProfile(Profile):
+        """
+        A basic profile that is applied to all runnables.
+        """
+
+        def configure_arguments(self, argument_parser: ArgumentParser):
+            """
+            See :func:`mlrl.testbed.profiles.profile.Profile.configure_arguments`
+            """
+            argument_parser.add_argument(
+                '--predict-for-training-data',
+                type=BooleanOption.parse,
+                default=False,
+                help='Whether predictions should be obtained for the training data or not. Must be one of '
+                + format_enum_values(BooleanOption) + '.')
+            argument_parser.add_argument(
+                '--predict-for-test-data',
+                type=BooleanOption.parse,
+                default=True,
+                help='Whether predictions should be obtained for the test data or not. Must be one of '
+                + format_enum_values(BooleanOption) + '.')
+
+        def configure_experiment(self, args: Namespace, _: Experiment):
+            """
+            See :func:`mlrl.testbed.profiles.profile.Profile.configure_experiment`
+            """
+
+    def run(self, args: Namespace):
         """
         Executes the runnable.
 
-        :param args: The command line arguments
+        :param args: The command line arguments specified by the user
         """
-        self.configure_logger(args)
-        self._run(args)
+        experiment = self.create_experiment(args)
+
+        for profile in self.get_profiles():
+            profile.configure_experiment(args, experiment)
+
+        should_predict = bool(experiment.prediction_output_writers)
+        experiment.run(predict_for_training_dataset=should_predict and args.predict_for_training_data,
+                       predict_for_test_dataset=should_predict and args.predict_for_test_data)
 
     def get_profiles(self) -> List[Profile]:
         """
@@ -81,7 +110,7 @@ class Runnable(ABC):
 
         :return: A list that contains the profiles to be applied to the runnable
         """
-        return [LogProfile()]
+        return [Runnable.BaseProfile(), LogProfile()]
 
     def get_program_info(self) -> Optional[ProgramInfo]:
         """
@@ -113,26 +142,13 @@ class Runnable(ABC):
         for profile in self.get_profiles():
             profile.configure_arguments(argument_parser)
 
-    def configure_logger(self, args):
-        """
-        May be overridden by subclasses in order to configure the logger to be used by the program.
-
-        :param args: The command line arguments
-        """
-        log_level = args.log_level
-        root = log.getLogger()
-        root.setLevel(log_level)
-        out_handler = log.StreamHandler(sys.stdout)
-        out_handler.setLevel(log_level)
-        out_handler.setFormatter(log.Formatter(LOG_FORMAT))
-        root.addHandler(out_handler)
-
     @abstractmethod
-    def _run(self, args):
+    def create_experiment(self, args: Namespace) -> Experiment:
         """
-        Must be implemented by subclasses in order to run the program.
+        Must be implemented by subclasses in order to create the experiment to be run by the program.
 
-        :param args: The command line arguments
+        :param args:    The command line arguments specified by the user
+        :return:        The experiment that has been created
         """
 
 
@@ -447,16 +463,6 @@ class LearnerRunnable(Runnable, ABC):
                             + 'one of ' + format_set(self.STORE_EVALUATION_VALUES.keys()) + '. Does only have an '
                             + 'effect if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional '
                             + 'options refer to the documentation.')
-        parser.add_argument('--predict-for-training-data',
-                            type=BooleanOption.parse,
-                            default=False,
-                            help='Whether predictions should be obtained for the training data or not. Must be one of '
-                            + format_enum_values(BooleanOption) + '.')
-        parser.add_argument('--predict-for-test-data',
-                            type=BooleanOption.parse,
-                            default=True,
-                            help='Whether predictions should be obtained for the test data or not. Must be one of '
-                            + format_enum_values(BooleanOption) + '.')
         parser.add_argument(self.PARAM_PRINT_PREDICTION_CHARACTERISTICS,
                             type=str,
                             default=BooleanOption.FALSE.value,
@@ -589,7 +595,7 @@ class LearnerRunnable(Runnable, ABC):
                             help='The type of predictions that should be obtained from the learner. Must be one of '
                             + format_enum_values(PredictionType) + '.')
 
-    def _run(self, args):
+    def create_experiment(self, args: Namespace):
         dataset_splitter = self.__create_dataset_splitter(args)
         experiment = self._create_experiment(args, dataset_splitter)
         experiment.add_listeners(*filter(lambda listener: listener is not None, [
@@ -609,8 +615,7 @@ class LearnerRunnable(Runnable, ABC):
         ]))
         prediction_output_writers = self._create_prediction_output_writers(args, experiment.problem_domain)
         experiment.add_prediction_output_writers(*prediction_output_writers)
-        experiment.run(predict_for_training_dataset=prediction_output_writers and args.predict_for_training_data,
-                       predict_for_test_dataset=prediction_output_writers and args.predict_for_test_data)
+        return experiment
 
     def _create_experiment(self, args, dataset_splitter: DatasetSplitter) -> Experiment:
         """
