@@ -11,8 +11,11 @@ from mlrl.seco.cython.learner_seco import SeCoClassifierConfig
 from mlrl.seco.learners import SeCoClassifier
 from mlrl.seco.package_info import get_package_info
 
+from mlrl.testbed.program_info import ProgramInfo
+from mlrl.testbed.program_info_rules import RuleLearnerProgramInfo
+
 try:
-    from mlrl.testbed.runnables import RuleLearnerRunnable, Runnable
+    from mlrl.testbed.runnables import RuleLearnerRunnable
 except ImportError as error:
     raise ImportError('Optional dependency "mlrl-testbed" is not installed') from error
 
@@ -30,13 +33,13 @@ class SeCoRunnable(RuleLearnerRunnable):
                          regressor_config_type=None,
                          regressor_parameters=None)
 
-    def get_program_info(self) -> Optional[Runnable.ProgramInfo]:
+    def get_program_info(self) -> Optional[ProgramInfo]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_program_info`
         """
         package_info = get_package_info()
-        return Runnable.ProgramInfo(name='Multi-label SeCo',
-                                    version=package_info.package_version,
-                                    year='2020 - 2025',
-                                    authors=['Michael Rapp et al.'],
-                                    python_packages=[package_info])
+        return RuleLearnerProgramInfo(name='Multi-label SeCo',
+                                      version=package_info.package_version,
+                                      year='2020 - 2025',
+                                      authors=['Michael Rapp et al.'],
+                                      python_packages=[package_info])
