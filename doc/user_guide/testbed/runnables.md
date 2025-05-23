@@ -6,16 +6,16 @@ When using the command line API, as described {ref}`here<arguments-basic-usage>`
 
 ## Integrating an Algorithm
 
-The module or source file, which is given to the command line API, must contain a class named `Runnable` that extends from {py:class}`mlrl.testbed.BaseRunnable <mlrl.testbed.runnables.LearnerRunnable>`. If you want to use a different class name, you can specify a different one via the command line arguments `-r` or `--runnable` as described {ref}`here<arguments-basic-usage>`. Besides the name of the machine learning algorithm to be integrated, the class must override the method {py:meth}`create_classifier <mlrl.testbed.runnables.LearnerRunnable.create_classifier>`. It must return a scikit-learn compatible [estimator](https://scikit-learn.org/stable/glossary.html#term-estimators) to be used in experiments.
+The module or source file, which is given to the command line API, must contain a class named `Runnable` that extends from {py:class}`mlrl.testbed.LearnerRunnable <mlrl.testbed.runnables.LearnerRunnable>`. If you want to use a different class name, you can specify a different one via the command line arguments `-r` or `--runnable` as described {ref}`here<arguments-basic-usage>`. Besides the name of the machine learning algorithm to be integrated, the class must override the method {py:meth}`create_classifier <mlrl.testbed.runnables.LearnerRunnable.create_classifier>`. It must return a scikit-learn compatible [estimator](https://scikit-learn.org/stable/glossary.html#term-estimators) to be used in experiments.
 
 In the following, we provide an exemplary implementation of such a class using scikit-learn's {py:class}`sklearn.ensemble.RandomForestClassifier`:
 
 ```python
-from mlrl.testbed import BaseRunnable
+from mlrl.testbed import LearnerRunnable
 from sklearn.ensemble import RandomForestClassifier
 
 
-class Runnable(BaseRunnable):
+class Runnable(LearnerRunnable):
 
     def create_classifier(self, args):
         return RandomForestClassifier()
@@ -30,14 +30,14 @@ mlrl-testbed custom_runnable.py --data-dir path/to/datasets/ --dataset dataset-n
 
 ## Defining Command Line Arguments
 
-To ease the configuration of a machine learning algorithm, for which you created a custom integration, the base class {py:class}`mlrl.testbed.BaseRunnable <mlrl.testbed.runnables.LearnerRunnable>` provides a simple mechanism for defining custom command line arguments by overriding the method {py:meth}`configure_arguments <mlrl.testbed.runnables.Runnable.configure_arguments>`. As illustrated below, the user-specified values for these arguments can then be retrieved in the method {py:meth}`create_classifier <mlrl.testbed.runnables.LearnerRunnable.create_classifier>`:
+To ease the configuration of a machine learning algorithm, for which you created a custom integration, the base class {py:class}`mlrl.testbed.LearnerRunnable <mlrl.testbed.runnables.LearnerRunnable>` provides a simple mechanism for defining custom command line arguments by overriding the method {py:meth}`configure_arguments <mlrl.testbed.runnables.Runnable.configure_arguments>`. As illustrated below, the user-specified values for these arguments can then be retrieved in the method {py:meth}`create_classifier <mlrl.testbed.runnables.LearnerRunnable.create_classifier>`:
 
 ```python
 from argparse import ArgumentParser
 
 # ...
 
-class Runnable(BaseRunnable):
+class Runnable(LearnerRunnable):
 
     # ...
 
@@ -55,7 +55,7 @@ The method {py:meth}`configure_arguments <mlrl.testbed.runnables.Runnable.config
 
 ## Providing Version Information
 
-Optionally, you can provide information about the version and authors of your custom program by overriding the method {py:meth}`get_program_info <mlrl.testbed.runnables.Runnable.get_program_info>` of the parent class {py:class}`mlrl.testbed.BaseRunnable <mlrl.testbed.runnables.LearnerRunnable>`:
+Optionally, you can provide information about the version and authors of your custom program by overriding the method {py:meth}`get_program_info <mlrl.testbed.runnables.Runnable.get_program_info>` of the parent class {py:class}`mlrl.testbed.LearnerRunnable <mlrl.testbed.runnables.LearnerRunnable>`:
 
 ```python
 from typing import Optional
@@ -63,7 +63,7 @@ from mlrl.testbed.program_info import ProgramInfo
 
 # ...
 
-class Runnable(BaseRunnable):
+class Runnable(LearnerRunnable):
 
     # ...
 
