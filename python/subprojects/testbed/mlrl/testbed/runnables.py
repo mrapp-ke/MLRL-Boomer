@@ -49,6 +49,7 @@ from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
 from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificationProblem, SkLearnProblem, \
     SkLearnRegressionProblem
+from mlrl.testbed.profiles import Profile
 from mlrl.testbed.program_info import ProgramInfo
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
@@ -100,7 +101,8 @@ class LogLevel(Enum):
 
 class Runnable(ABC):
     """
-    A base class for all programs that can be configured via command line arguments.
+    An abstract base class for all programs that can be configured via the command line API. The programs functionality
+    is implemented by individual profiles that are applied to the runnable.
     """
 
     def run(self, args):
@@ -112,6 +114,14 @@ class Runnable(ABC):
         self.configure_logger(args)
         self._run(args)
 
+    def get_profiles(self) -> List[Profile]:
+        """
+        May be overridden by subclasses in order to return the profiles that should be applied to the runnable.
+
+        :return: A list that contains the profiles to be applied to the runnable
+        """
+        return []
+
     def get_program_info(self) -> Optional[ProgramInfo]:
         """
         May be overridden by subclasses in order to provide information about the program to be printed via the command
@@ -122,27 +132,31 @@ class Runnable(ABC):
         return None
 
     # pylint: disable=unused-argument
-    def configure_arguments(self, parser: ArgumentParser, show_help: bool):
+    def configure_arguments(self, argument_parser: ArgumentParser, show_help: bool):
         """
-        May be overridden by subclasses in order to configure the command line arguments of the program.
+        Configures a given argument parser according to the profiles applied to the runnable.
 
-        :param parser:      An `ArgumentParser` that is used for parsing command line arguments
-        :param show_help:   True, if the help text of the program should be shown, False otherwise
+        :param argument_parser: The argument parser to be configured
+        :param show_help:       True, if the help text of the program should be shown, False otherwise
         """
         # pylint: disable=assignment-from-none
         program_info = self.get_program_info()
 
         if program_info:
-            parser.add_argument('-v',
-                                '--version',
-                                action='version',
-                                version=str(program_info),
-                                help='Display information about the program\'s version.')
+            argument_parser.add_argument('-v',
+                                         '--version',
+                                         action='version',
+                                         version=str(program_info),
+                                         help='Display information about the program\'s version.')
 
-        parser.add_argument('--log-level',
-                            type=LogLevel.parse,
-                            default=LogLevel.INFO.value,
-                            help='The log level to be used. Must be one of ' + format_enum_values(LogLevel) + '.')
+        argument_parser.add_argument('--log-level',
+                                     type=LogLevel.parse,
+                                     default=LogLevel.INFO.value,
+                                     help='The log level to be used. Must be one of ' + format_enum_values(LogLevel)
+                                     + '.')
+
+        for profile in self.get_profiles():
+            profile.configure_arguments(argument_parser)
 
     def configure_logger(self, args):
         """
