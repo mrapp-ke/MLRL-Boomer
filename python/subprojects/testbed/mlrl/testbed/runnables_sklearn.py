@@ -320,175 +320,192 @@ class SkLearnRunnable(Runnable, ABC):
 
         return None
 
-    def configure_arguments(self, parser: ArgumentParser):
+    def configure_arguments(self, argument_parser: ArgumentParser):
         """
         See :func:`mlrl.testbed.runnables.Runnable.configure_arguments`
         """
-        super().configure_arguments(parser)
-        parser.add_argument(self.PARAM_PROBLEM_TYPE,
-                            type=str,
-                            default=ClassificationProblem.NAME,
-                            help='The type of the machine learning problem to be solved. Must be one of '
-                            + format_set(self.PROBLEM_TYPE_VALUES) + '.')
-        parser.add_argument(self.PARAM_RANDOM_STATE,
-                            type=int,
-                            default=None,
-                            help='The seed to be used by random number generators. Must be at least 1.')
-        parser.add_argument('--data-dir',
-                            type=str,
-                            required=True,
-                            help='The path to the directory where the data set files are located.')
-        parser.add_argument('--dataset', type=str, required=True, help='The name of the data set files without suffix.')
-        parser.add_argument(self.PARAM_DATA_SPLIT,
-                            type=str,
-                            default=self.DATA_SPLIT_TRAIN_TEST,
-                            help='The strategy to be used for splitting the available data into training and test '
-                            + 'sets. Must be one of ' + format_set(self.DATA_SPLIT_VALUES.keys()) + '. For additional '
-                            + 'options refer to the documentation.')
-        parser.add_argument(self.PARAM_PRINT_EVALUATION,
-                            type=str,
-                            default=BooleanOption.TRUE.value,
-                            help='Whether the evaluation results should be printed on the console or not. Must be one '
-                            + 'of ' + format_set(self.PRINT_EVALUATION_VALUES.keys()) + '. For additional options '
-                            + 'refer to the documentation.')
-        parser.add_argument(self.PARAM_STORE_EVALUATION,
-                            type=str,
-                            default=BooleanOption.TRUE.value,
-                            help='Whether the evaluation results should be written into output files or not. Must be '
-                            + 'one of ' + format_set(self.STORE_EVALUATION_VALUES.keys()) + '. Does only have an '
-                            + 'effect if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional '
-                            + 'options refer to the documentation.')
-        parser.add_argument(self.PARAM_PRINT_PREDICTION_CHARACTERISTICS,
-                            type=str,
-                            default=BooleanOption.FALSE.value,
-                            help='Whether the characteristics of binary predictions should be printed on the console '
-                            + 'or not. Must be one of '
-                            + format_set(self.PRINT_PREDICTION_CHARACTERISTICS_VALUES.keys()) + '. Does only have an '
-                            + 'effect if the parameter ' + self.PARAM_PREDICTION_TYPE + ' is set to '
-                            + PredictionType.BINARY.value + '. For additional options refer to the documentation.')
-        parser.add_argument(self.PARAM_STORE_PREDICTION_CHARACTERISTICS,
-                            type=str,
-                            default=BooleanOption.FALSE.value,
-                            help='Whether the characteristics of binary predictions should be written into output '
-                            + 'files or not. Must be one of '
-                            + format_set(self.STORE_PREDICTION_CHARACTERISTICS_VALUES.keys()) + '. Does only have an '
-                            + 'effect if the parameter ' + self.PARAM_PREDICTION_TYPE + ' is set to '
-                            + PredictionType.BINARY.value + '. For additional options refer to the documentation.')
-        parser.add_argument(self.PARAM_PRINT_DATA_CHARACTERISTICS,
-                            type=str,
-                            default=BooleanOption.FALSE.value,
-                            help='Whether the characteristics of the training data should be printed on the console or '
-                            + 'not. Must be one of ' + format_set(self.PRINT_DATA_CHARACTERISTICS_VALUES.keys()) + '. '
-                            + 'For additional options refer to the documentation.')
-        parser.add_argument(self.PARAM_STORE_DATA_CHARACTERISTICS,
-                            type=str,
-                            default=BooleanOption.FALSE.value,
-                            help='Whether the characteristics of the training data should be written into output files '
-                            + 'or not. Must be one of ' + format_set(self.STORE_DATA_CHARACTERISTICS_VALUES.keys())
-                            + '. Does only have an effect if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. '
-                            + 'For additional options refer to the documentation.')
-        parser.add_argument(self.PARAM_PRINT_LABEL_VECTORS,
-                            type=str,
-                            default=BooleanOption.FALSE.value,
-                            help='Whether the unique label vectors contained in the training data should be printed on '
-                            + 'the console or not. Must be one of ' + format_set(self.PRINT_LABEL_VECTORS_VALUES.keys())
-                            + '. For additional options refer to the documentation.')
-        parser.add_argument(self.PARAM_STORE_LABEL_VECTORS,
-                            type=str,
-                            default=BooleanOption.FALSE.value,
-                            help='Whether the unique label vectors contained in the training data should be written '
-                            + 'into output files or not. Must be one of '
-                            + format_set(self.STORE_LABEL_VECTORS_VALUES.keys()) + '. Does only have an effect if the '
-                            + 'parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to '
-                            + 'the documentation.')
-        parser.add_argument('--one-hot-encoding',
-                            type=BooleanOption.parse,
-                            default=False,
-                            help='Whether one-hot-encoding should be used to encode nominal features or not. Must be '
-                            + 'one of ' + format_enum_values(BooleanOption) + '.')
-        parser.add_argument('--model-load-dir',
-                            type=str,
-                            help='The path to the directory from which models should be loaded.')
-        parser.add_argument(self.PARAM_MODEL_SAVE_DIR,
-                            type=str,
-                            help='The path to the directory to which models should be saved.')
-        parser.add_argument('--parameter-load-dir',
-                            type=str,
-                            help='The path to the directory from which parameter to be used by the algorith should be '
-                            + 'loaded.')
-        parser.add_argument(self.PARAM_PARAMETER_SAVE_DIR,
-                            type=str,
-                            help='The path to the directory where configuration files, which specify the parameters to '
-                            + 'be used by the algorithm, are located.')
-        parser.add_argument(self.PARAM_OUTPUT_DIR,
-                            type=str,
-                            help='The path to the directory where experimental results should be saved.')
-        parser.add_argument('--create-output-dir',
-                            type=BooleanOption.parse,
-                            default=True,
-                            help='Whether the directories specified via the arguments ' + self.PARAM_OUTPUT_DIR + ', '
-                            + self.PARAM_MODEL_SAVE_DIR + ' and ' + self.PARAM_PARAMETER_SAVE_DIR + ' should '
-                            + 'automatically be created, if they do not exist, or not. Must be one of '
-                            + format_enum_values(BooleanOption) + '.')
-        parser.add_argument(self.PARAM_WIPE_OUTPUT_DIR,
-                            type=str,
-                            default=AUTOMATIC,
-                            help='Whether all files in the directory specified via the argument '
-                            + self.PARAM_OUTPUT_DIR + ' should be deleted before an experiment starts or not. Must be '
-                            + 'one of ' + format_iterable(self.WIPE_OUTPUT_DIR_VALUES) + '. If set to ' + AUTOMATIC
-                            + ', the files are only deleted if the experiment does not run a subset of the folds of a '
-                            + 'cross validation.')
-        parser.add_argument('--exit-on-error',
-                            type=BooleanOption.parse,
-                            default=False,
-                            help='Whether the program should exit if an error occurs while writing experimental '
-                            + 'results or not. Must be one of ' + format_enum_values(BooleanOption) + '.')
-        parser.add_argument('--print-all',
-                            type=BooleanOption.parse,
-                            default=False,
-                            help='Whether all output data should be printed on the console or not. Must be one of '
-                            + format_enum_values(BooleanOption) + '.')
-        parser.add_argument('--store-all',
-                            type=BooleanOption.parse,
-                            default=False,
-                            help='Whether all output data should be written to files or not. Must be one of '
-                            + format_enum_values(BooleanOption) + '.')
-        parser.add_argument('--print-parameters',
-                            type=BooleanOption.parse,
-                            default=False,
-                            help='Whether the parameter setting should be printed on the console or not. Must be one '
-                            + 'of ' + format_enum_values(BooleanOption) + '.')
-        parser.add_argument(self.PARAM_PRINT_PREDICTIONS,
-                            type=str,
-                            default=BooleanOption.FALSE.value,
-                            help='Whether predictions should be printed on the console or not. Must be one of '
-                            + format_set(self.PRINT_PREDICTIONS_VALUES.keys()) + '. For additional options refer to '
-                            + 'the documentation.')
-        parser.add_argument(self.PARAM_STORE_PREDICTIONS,
-                            type=str,
-                            default=BooleanOption.FALSE.value,
-                            help='Whether predictions should be written into output files or not. Must be one of '
-                            + format_set(self.STORE_PREDICTIONS_VALUES.keys()) + '. Does only have an effect, if the '
-                            + 'parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to '
-                            + 'the documentation.')
-        parser.add_argument(self.PARAM_PRINT_GROUND_TRUTH,
-                            type=str,
-                            default=BooleanOption.FALSE.value,
-                            help='Whether the ground truth should be printed on the console or not. Must be one of '
-                            + format_set(self.PRINT_GROUND_TRUTH_VALUES.keys()) + '. For additional options refer '
-                            + 'to the documentation.')
-        parser.add_argument(self.PARAM_STORE_GROUND_TRUTH,
-                            type=str,
-                            default=BooleanOption.FALSE.value,
-                            help='Whether the ground truth should be written into output files or not. Must be one of '
-                            + format_set(self.STORE_GROUND_TRUTH_VALUES.keys()) + '. Does only have an effect, if '
-                            + 'the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options '
-                            + 'refer to the documentation.')
-        parser.add_argument(self.PARAM_PREDICTION_TYPE,
-                            type=str,
-                            default=PredictionType.BINARY.value,
-                            help='The type of predictions that should be obtained from the learner. Must be one of '
-                            + format_enum_values(PredictionType) + '.')
+        super().configure_arguments(argument_parser)
+        argument_parser.add_argument(self.PARAM_PROBLEM_TYPE,
+                                     type=str,
+                                     default=ClassificationProblem.NAME,
+                                     help='The type of the machine learning problem to be solved. Must be one of '
+                                     + format_set(self.PROBLEM_TYPE_VALUES) + '.')
+        argument_parser.add_argument(self.PARAM_RANDOM_STATE,
+                                     type=int,
+                                     default=None,
+                                     help='The seed to be used by random number generators. Must be at least 1.')
+        argument_parser.add_argument('--data-dir',
+                                     type=str,
+                                     required=True,
+                                     help='The path to the directory where the data set files are located.')
+        argument_parser.add_argument('--dataset',
+                                     type=str,
+                                     required=True,
+                                     help='The name of the data set files without suffix.')
+        argument_parser.add_argument(
+            self.PARAM_DATA_SPLIT,
+            type=str,
+            default=self.DATA_SPLIT_TRAIN_TEST,
+            help='The strategy to be used for splitting the available data into training and test '
+            + 'sets. Must be one of ' + format_set(self.DATA_SPLIT_VALUES.keys()) + '. For additional '
+            + 'options refer to the documentation.')
+        argument_parser.add_argument(
+            self.PARAM_PRINT_EVALUATION,
+            type=str,
+            default=BooleanOption.TRUE.value,
+            help='Whether the evaluation results should be printed on the console or not. Must be one ' + 'of '
+            + format_set(self.PRINT_EVALUATION_VALUES.keys()) + '. For additional options '
+            + 'refer to the documentation.')
+        argument_parser.add_argument(
+            self.PARAM_STORE_EVALUATION,
+            type=str,
+            default=BooleanOption.TRUE.value,
+            help='Whether the evaluation results should be written into output files or not. Must be ' + 'one of '
+            + format_set(self.STORE_EVALUATION_VALUES.keys()) + '. Does only have an ' + 'effect if the parameter '
+            + self.PARAM_OUTPUT_DIR + ' is specified. For additional ' + 'options refer to the documentation.')
+        argument_parser.add_argument(
+            self.PARAM_PRINT_PREDICTION_CHARACTERISTICS,
+            type=str,
+            default=BooleanOption.FALSE.value,
+            help='Whether the characteristics of binary predictions should be printed on the console '
+            + 'or not. Must be one of ' + format_set(self.PRINT_PREDICTION_CHARACTERISTICS_VALUES.keys())
+            + '. Does only have an ' + 'effect if the parameter ' + self.PARAM_PREDICTION_TYPE + ' is set to '
+            + PredictionType.BINARY.value + '. For additional options refer to the documentation.')
+        argument_parser.add_argument(
+            self.PARAM_STORE_PREDICTION_CHARACTERISTICS,
+            type=str,
+            default=BooleanOption.FALSE.value,
+            help='Whether the characteristics of binary predictions should be written into output '
+            + 'files or not. Must be one of ' + format_set(self.STORE_PREDICTION_CHARACTERISTICS_VALUES.keys())
+            + '. Does only have an ' + 'effect if the parameter ' + self.PARAM_PREDICTION_TYPE + ' is set to '
+            + PredictionType.BINARY.value + '. For additional options refer to the documentation.')
+        argument_parser.add_argument(
+            self.PARAM_PRINT_DATA_CHARACTERISTICS,
+            type=str,
+            default=BooleanOption.FALSE.value,
+            help='Whether the characteristics of the training data should be printed on the console or '
+            + 'not. Must be one of ' + format_set(self.PRINT_DATA_CHARACTERISTICS_VALUES.keys()) + '. '
+            + 'For additional options refer to the documentation.')
+        argument_parser.add_argument(
+            self.PARAM_STORE_DATA_CHARACTERISTICS,
+            type=str,
+            default=BooleanOption.FALSE.value,
+            help='Whether the characteristics of the training data should be written into output files '
+            + 'or not. Must be one of ' + format_set(self.STORE_DATA_CHARACTERISTICS_VALUES.keys())
+            + '. Does only have an effect if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. '
+            + 'For additional options refer to the documentation.')
+        argument_parser.add_argument(
+            self.PARAM_PRINT_LABEL_VECTORS,
+            type=str,
+            default=BooleanOption.FALSE.value,
+            help='Whether the unique label vectors contained in the training data should be printed on '
+            + 'the console or not. Must be one of ' + format_set(self.PRINT_LABEL_VECTORS_VALUES.keys())
+            + '. For additional options refer to the documentation.')
+        argument_parser.add_argument(
+            self.PARAM_STORE_LABEL_VECTORS,
+            type=str,
+            default=BooleanOption.FALSE.value,
+            help='Whether the unique label vectors contained in the training data should be written '
+            + 'into output files or not. Must be one of ' + format_set(self.STORE_LABEL_VECTORS_VALUES.keys())
+            + '. Does only have an effect if the ' + 'parameter ' + self.PARAM_OUTPUT_DIR
+            + ' is specified. For additional options refer to ' + 'the documentation.')
+        argument_parser.add_argument(
+            '--one-hot-encoding',
+            type=BooleanOption.parse,
+            default=False,
+            help='Whether one-hot-encoding should be used to encode nominal features or not. Must be ' + 'one of '
+            + format_enum_values(BooleanOption) + '.')
+        argument_parser.add_argument('--model-load-dir',
+                                     type=str,
+                                     help='The path to the directory from which models should be loaded.')
+        argument_parser.add_argument(self.PARAM_MODEL_SAVE_DIR,
+                                     type=str,
+                                     help='The path to the directory to which models should be saved.')
+        argument_parser.add_argument(
+            '--parameter-load-dir',
+            type=str,
+            help='The path to the directory from which parameter to be used by the algorith should be ' + 'loaded.')
+        argument_parser.add_argument(
+            self.PARAM_PARAMETER_SAVE_DIR,
+            type=str,
+            help='The path to the directory where configuration files, which specify the parameters to '
+            + 'be used by the algorithm, are located.')
+        argument_parser.add_argument(self.PARAM_OUTPUT_DIR,
+                                     type=str,
+                                     help='The path to the directory where experimental results should be saved.')
+        argument_parser.add_argument('--create-output-dir',
+                                     type=BooleanOption.parse,
+                                     default=True,
+                                     help='Whether the directories specified via the arguments ' + self.PARAM_OUTPUT_DIR
+                                     + ', ' + self.PARAM_MODEL_SAVE_DIR + ' and ' + self.PARAM_PARAMETER_SAVE_DIR
+                                     + ' should '
+                                     + 'automatically be created, if they do not exist, or not. Must be one of '
+                                     + format_enum_values(BooleanOption) + '.')
+        argument_parser.add_argument(
+            self.PARAM_WIPE_OUTPUT_DIR,
+            type=str,
+            default=AUTOMATIC,
+            help='Whether all files in the directory specified via the argument ' + self.PARAM_OUTPUT_DIR
+            + ' should be deleted before an experiment starts or not. Must be ' + 'one of '
+            + format_iterable(self.WIPE_OUTPUT_DIR_VALUES) + '. If set to ' + AUTOMATIC
+            + ', the files are only deleted if the experiment does not run a subset of the folds of a '
+            + 'cross validation.')
+        argument_parser.add_argument(
+            '--exit-on-error',
+            type=BooleanOption.parse,
+            default=False,
+            help='Whether the program should exit if an error occurs while writing experimental '
+            + 'results or not. Must be one of ' + format_enum_values(BooleanOption) + '.')
+        argument_parser.add_argument(
+            '--print-all',
+            type=BooleanOption.parse,
+            default=False,
+            help='Whether all output data should be printed on the console or not. Must be one of '
+            + format_enum_values(BooleanOption) + '.')
+        argument_parser.add_argument('--store-all',
+                                     type=BooleanOption.parse,
+                                     default=False,
+                                     help='Whether all output data should be written to files or not. Must be one of '
+                                     + format_enum_values(BooleanOption) + '.')
+        argument_parser.add_argument(
+            '--print-parameters',
+            type=BooleanOption.parse,
+            default=False,
+            help='Whether the parameter setting should be printed on the console or not. Must be one ' + 'of '
+            + format_enum_values(BooleanOption) + '.')
+        argument_parser.add_argument(self.PARAM_PRINT_PREDICTIONS,
+                                     type=str,
+                                     default=BooleanOption.FALSE.value,
+                                     help='Whether predictions should be printed on the console or not. Must be one of '
+                                     + format_set(self.PRINT_PREDICTIONS_VALUES.keys())
+                                     + '. For additional options refer to ' + 'the documentation.')
+        argument_parser.add_argument(
+            self.PARAM_STORE_PREDICTIONS,
+            type=str,
+            default=BooleanOption.FALSE.value,
+            help='Whether predictions should be written into output files or not. Must be one of '
+            + format_set(self.STORE_PREDICTIONS_VALUES.keys()) + '. Does only have an effect, if the ' + 'parameter '
+            + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to ' + 'the documentation.')
+        argument_parser.add_argument(
+            self.PARAM_PRINT_GROUND_TRUTH,
+            type=str,
+            default=BooleanOption.FALSE.value,
+            help='Whether the ground truth should be printed on the console or not. Must be one of '
+            + format_set(self.PRINT_GROUND_TRUTH_VALUES.keys()) + '. For additional options refer '
+            + 'to the documentation.')
+        argument_parser.add_argument(
+            self.PARAM_STORE_GROUND_TRUTH,
+            type=str,
+            default=BooleanOption.FALSE.value,
+            help='Whether the ground truth should be written into output files or not. Must be one of '
+            + format_set(self.STORE_GROUND_TRUTH_VALUES.keys()) + '. Does only have an effect, if ' + 'the parameter '
+            + self.PARAM_OUTPUT_DIR + ' is specified. For additional options ' + 'refer to the documentation.')
+        argument_parser.add_argument(
+            self.PARAM_PREDICTION_TYPE,
+            type=str,
+            default=PredictionType.BINARY.value,
+            help='The type of predictions that should be obtained from the learner. Must be one of '
+            + format_enum_values(PredictionType) + '.')
 
     def create_experiment(self, args: Namespace):
         """
