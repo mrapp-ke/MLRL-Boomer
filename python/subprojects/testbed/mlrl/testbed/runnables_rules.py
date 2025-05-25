@@ -14,8 +14,7 @@ from mlrl.common.learners import RuleLearner, SparsePolicy
 
 from mlrl.testbed.experiments import Experiment, SkLearnExperiment
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
-from mlrl.testbed.experiments.output.characteristics.model import ModelCharacteristicsWriter, \
-    RuleModelCharacteristicsExtractor
+from mlrl.testbed.experiments.output.characteristics.model.profile import RuleModelCharacteristicsProfile
 from mlrl.testbed.experiments.output.model_text.profile import RuleModelProfile
 from mlrl.testbed.experiments.output.probability_calibration import IsotonicJointProbabilityCalibrationModelExtractor, \
     IsotonicMarginalProbabilityCalibrationModelExtractor, ProbabilityCalibrationModelWriter
@@ -106,7 +105,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_profiles`
         """
-        return super().get_profiles() + [RuleModelProfile()]
+        return super().get_profiles() + [RuleModelProfile(), RuleModelCharacteristicsProfile()]
 
     def __create_config_type_and_parameters(self, problem_domain: ProblemDomain):
         if isinstance(problem_domain, ClassificationProblem):
@@ -151,17 +150,6 @@ class RuleLearnerRunnable(SkLearnRunnable):
                             help='Whether models should be evaluated repeatedly, using only a subset of the induced '
                             + 'rules with increasing size, or not. Must be one of ' + format_enum_values(BooleanOption)
                             + '. For additional options refer to the documentation.')
-        parser.add_argument('--print-model-characteristics',
-                            type=BooleanOption.parse,
-                            default=BooleanOption.FALSE.value,
-                            help='Whether the characteristics of models should be printed on the console or not. Must '
-                            + 'be one of ' + format_enum_values(BooleanOption) + '.')
-        parser.add_argument('--store-model-characteristics',
-                            type=BooleanOption.parse,
-                            default=BooleanOption.FALSE.value,
-                            help='Whether the characteristics of models should be written into output files or not. '
-                            + 'Must be one of ' + format_enum_values(BooleanOption) + '. Does only have an effect if '
-                            + 'the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified.')
         parser.add_argument(self.PARAM_PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL,
                             type=str,
                             default=BooleanOption.FALSE.value,
@@ -218,7 +206,6 @@ class RuleLearnerRunnable(SkLearnRunnable):
         problem_domain = self._create_problem_domain(args, fit_kwargs=kwargs, predict_kwargs=kwargs)
         experiment = SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
         experiment.add_post_training_output_writers(*filter(lambda listener: listener is not None, [
-            self._create_model_characteristics_writer(args),
             self._create_marginal_probability_calibration_model_writer(args),
             self._create_joint_probability_calibration_model_writer(args),
         ]))
@@ -261,27 +248,6 @@ class RuleLearnerRunnable(SkLearnRunnable):
         kwargs['output_format'] = args.output_format
         kwargs['prediction_format'] = args.prediction_format
         return kwargs
-
-    def _create_model_characteristics_writer(self, args) -> Optional[OutputWriter]:
-        """
-        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output the
-        characteristics of models.
-
-        :param args:    The command line arguments
-        :return:        The `OutputWriter` that has been created
-        """
-        sinks = []
-
-        if args.print_model_characteristics or args.print_all:
-            sinks.append(LogSink())
-
-        if (args.store_model_characteristics or args.store_all) and args.output_dir:
-            sinks.append(CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir))
-
-        if sinks:
-            return ModelCharacteristicsWriter(RuleModelCharacteristicsExtractor(),
-                                              exit_on_error=args.exit_on_error).add_sinks(*sinks)
-        return None
 
     def _create_marginal_probability_calibration_model_writer(self, args) -> Optional[OutputWriter]:
         """
