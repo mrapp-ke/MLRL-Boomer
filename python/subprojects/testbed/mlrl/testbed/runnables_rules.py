@@ -17,7 +17,8 @@ from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.output.characteristics.model.profile import RuleModelCharacteristicsProfile
 from mlrl.testbed.experiments.output.model_text.profile import RuleModelProfile
 from mlrl.testbed.experiments.output.probability_calibration import IsotonicJointProbabilityCalibrationModelExtractor, \
-    IsotonicMarginalProbabilityCalibrationModelExtractor, ProbabilityCalibrationModelWriter
+    ProbabilityCalibrationModelWriter
+from mlrl.testbed.experiments.output.probability_calibration.profile import MarginalProbabilityCalibrationModelProfile
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.prediction import IncrementalPredictor
@@ -50,17 +51,6 @@ class RuleLearnerRunnable(SkLearnRunnable):
         BooleanOption.TRUE.value: {OPTION_MIN_SIZE, OPTION_MAX_SIZE, OPTION_STEP_SIZE},
         BooleanOption.FALSE.value: {}
     }
-
-    PARAM_PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL = '--print-marginal-probability-calibration-model'
-
-    PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES: Dict[str, Set[str]] = {
-        BooleanOption.TRUE.value: {OPTION_DECIMALS},
-        BooleanOption.FALSE.value: {}
-    }
-
-    PARAM_STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL = '--store-marginal-probability-calibration-model'
-
-    STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES = PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES
 
     PARAM_PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL = '--print-joint-probability-calibration-model'
 
@@ -105,7 +95,11 @@ class RuleLearnerRunnable(SkLearnRunnable):
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_profiles`
         """
-        return super().get_profiles() + [RuleModelProfile(), RuleModelCharacteristicsProfile()]
+        return super().get_profiles() + [
+            RuleModelProfile(),
+            RuleModelCharacteristicsProfile(),
+            MarginalProbabilityCalibrationModelProfile()
+        ]
 
     def __create_config_type_and_parameters(self, problem_domain: ProblemDomain):
         if isinstance(problem_domain, ClassificationProblem):
@@ -150,19 +144,6 @@ class RuleLearnerRunnable(SkLearnRunnable):
                             help='Whether models should be evaluated repeatedly, using only a subset of the induced '
                             + 'rules with increasing size, or not. Must be one of ' + format_enum_values(BooleanOption)
                             + '. For additional options refer to the documentation.')
-        parser.add_argument(self.PARAM_PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL,
-                            type=str,
-                            default=BooleanOption.FALSE.value,
-                            help='Whether the model for the calibration of marginal probabilities should be printed on '
-                            + 'the console or not. Must be one of ' + format_enum_values(BooleanOption) + '. For '
-                            + 'additional options refer to the documentation.')
-        parser.add_argument(self.PARAM_STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL,
-                            type=str,
-                            default=BooleanOption.FALSE.value,
-                            help='Whether the model for the calibration of marginal probabilities should be written '
-                            + 'into an output file or not. Must be one of ' + format_enum_values(BooleanOption) + '. '
-                            + 'Does only have an effect if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. '
-                            + 'For additional options refer to the documentation.')
         parser.add_argument(self.PARAM_PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL,
                             type=str,
                             default=BooleanOption.FALSE.value,
@@ -206,7 +187,6 @@ class RuleLearnerRunnable(SkLearnRunnable):
         problem_domain = self._create_problem_domain(args, fit_kwargs=kwargs, predict_kwargs=kwargs)
         experiment = SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
         experiment.add_post_training_output_writers(*filter(lambda listener: listener is not None, [
-            self._create_marginal_probability_calibration_model_writer(args),
             self._create_joint_probability_calibration_model_writer(args),
         ]))
         return experiment
@@ -248,35 +228,6 @@ class RuleLearnerRunnable(SkLearnRunnable):
         kwargs['output_format'] = args.output_format
         kwargs['prediction_format'] = args.prediction_format
         return kwargs
-
-    def _create_marginal_probability_calibration_model_writer(self, args) -> Optional[OutputWriter]:
-        """
-        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output textual
-        representations of models for the calibration of marginal probabilities.
-
-        :param args:    The command line arguments
-        :return:        The `OutputWriter` that has been created
-        """
-        sinks = []
-        value, options = parse_param_and_options(self.PARAM_PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL,
-                                                 args.print_marginal_probability_calibration_model,
-                                                 self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES)
-
-        if (not value and args.print_all) or value == BooleanOption.TRUE.value:
-            sinks.append(LogSink(options))
-
-        value, options = parse_param_and_options(self.PARAM_STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL,
-                                                 args.store_marginal_probability_calibration_model,
-                                                 self.STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES)
-
-        if ((not value and args.store_all) or value == BooleanOption.TRUE.value) and args.output_dir:
-            sinks.append(
-                CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
-
-        if sinks:
-            return ProbabilityCalibrationModelWriter(IsotonicMarginalProbabilityCalibrationModelExtractor(),
-                                                     exit_on_error=args.exit_on_error).add_sinks(*sinks)
-        return None
 
     def _create_joint_probability_calibration_model_writer(self, args) -> Optional[OutputWriter]:
         """
