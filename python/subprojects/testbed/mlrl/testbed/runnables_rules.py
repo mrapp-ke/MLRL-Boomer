@@ -5,7 +5,7 @@ Provides base classes for programs that can be configured via command line argum
 """
 
 from argparse import ArgumentError, ArgumentParser
-from typing import Dict, Optional, Set
+from typing import Dict, List, Optional, Set
 
 from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
 
@@ -16,19 +16,20 @@ from mlrl.testbed.experiments import Experiment, SkLearnExperiment
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.output.characteristics.model import ModelCharacteristicsWriter, \
     RuleModelCharacteristicsExtractor
-from mlrl.testbed.experiments.output.model_text import ModelAsTextWriter, RuleModelAsText, RuleModelAsTextExtractor
+from mlrl.testbed.experiments.output.model_text.profile import RuleModelProfile
 from mlrl.testbed.experiments.output.probability_calibration import IsotonicJointProbabilityCalibrationModelExtractor, \
     IsotonicMarginalProbabilityCalibrationModelExtractor, ProbabilityCalibrationModelWriter
-from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, TextFileSink
+from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.prediction import IncrementalPredictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
 from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnProblem
+from mlrl.testbed.profiles.profile import Profile
 from mlrl.testbed.runnables_sklearn import SkLearnRunnable
 from mlrl.testbed.util.format import OPTION_DECIMALS
 
-from mlrl.util.format import format_enum_values, format_set
+from mlrl.util.format import format_enum_values
 from mlrl.util.options import BooleanOption, parse_param_and_options
 from mlrl.util.validation import assert_greater, assert_greater_or_equal
 
@@ -50,22 +51,6 @@ class RuleLearnerRunnable(SkLearnRunnable):
         BooleanOption.TRUE.value: {OPTION_MIN_SIZE, OPTION_MAX_SIZE, OPTION_STEP_SIZE},
         BooleanOption.FALSE.value: {}
     }
-
-    PARAM_PRINT_RULES = '--print-rules'
-
-    PRINT_RULES_VALUES: Dict[str, Set[str]] = {
-        BooleanOption.TRUE.value: {
-            RuleModelAsText.OPTION_PRINT_FEATURE_NAMES, RuleModelAsText.OPTION_PRINT_OUTPUT_NAMES,
-            RuleModelAsText.OPTION_PRINT_NOMINAL_VALUES, RuleModelAsText.OPTION_PRINT_BODIES,
-            RuleModelAsText.OPTION_PRINT_HEADS, RuleModelAsText.OPTION_DECIMALS_BODY,
-            RuleModelAsText.OPTION_DECIMALS_HEAD
-        },
-        BooleanOption.FALSE.value: {}
-    }
-
-    PARAM_STORE_RULES = '--store-rules'
-
-    STORE_RULES_VALUES = PRINT_RULES_VALUES
 
     PARAM_PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL = '--print-marginal-probability-calibration-model'
 
@@ -116,6 +101,12 @@ class RuleLearnerRunnable(SkLearnRunnable):
         self.regressor_type = regressor_type
         self.regressor_config_type = regressor_config_type
         self.regressor_parameters = regressor_parameters
+
+    def get_profiles(self) -> List[Profile]:
+        """
+        See :func:`mlrl.testbed.runnables.Runnable.get_profiles`
+        """
+        return super().get_profiles() + [RuleModelProfile()]
 
     def __create_config_type_and_parameters(self, problem_domain: ProblemDomain):
         if isinstance(problem_domain, ClassificationProblem):
@@ -171,19 +162,6 @@ class RuleLearnerRunnable(SkLearnRunnable):
                             help='Whether the characteristics of models should be written into output files or not. '
                             + 'Must be one of ' + format_enum_values(BooleanOption) + '. Does only have an effect if '
                             + 'the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified.')
-        parser.add_argument(self.PARAM_PRINT_RULES,
-                            type=str,
-                            default=BooleanOption.FALSE.value,
-                            help='Whether the induced rules should be printed on the console or not. Must be one of '
-                            + format_set(self.PRINT_RULES_VALUES.keys()) + '. For additional options refer to the '
-                            + 'documentation.')
-        parser.add_argument(self.PARAM_STORE_RULES,
-                            type=str,
-                            default=BooleanOption.FALSE.value,
-                            help='Whether the induced rules should be written into a text file or not. Must be one of '
-                            + format_set(self.STORE_RULES_VALUES.keys()) + '. Does only have an effect if the '
-                            + 'parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to '
-                            + 'the documentation.')
         parser.add_argument(self.PARAM_PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL,
                             type=str,
                             default=BooleanOption.FALSE.value,
@@ -240,7 +218,6 @@ class RuleLearnerRunnable(SkLearnRunnable):
         problem_domain = self._create_problem_domain(args, fit_kwargs=kwargs, predict_kwargs=kwargs)
         experiment = SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
         experiment.add_post_training_output_writers(*filter(lambda listener: listener is not None, [
-            self._create_model_as_text_writer(args),
             self._create_model_characteristics_writer(args),
             self._create_marginal_probability_calibration_model_writer(args),
             self._create_joint_probability_calibration_model_writer(args),
@@ -284,30 +261,6 @@ class RuleLearnerRunnable(SkLearnRunnable):
         kwargs['output_format'] = args.output_format
         kwargs['prediction_format'] = args.prediction_format
         return kwargs
-
-    def _create_model_as_text_writer(self, args) -> Optional[OutputWriter]:
-        """
-        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output textual
-        representations of models.
-
-        :param args:    The command line arguments
-        :return:        The `OutputWriter` that has been created
-        """
-        sinks = []
-        value, options = parse_param_and_options(self.PARAM_PRINT_RULES, args.print_rules, self.PRINT_RULES_VALUES)
-
-        if (not value and args.print_all) or value == BooleanOption.TRUE.value:
-            sinks.append(LogSink(options))
-
-        value, options = parse_param_and_options(self.PARAM_STORE_RULES, args.store_rules, self.STORE_RULES_VALUES)
-
-        if ((not value and args.store_all) or value == BooleanOption.TRUE.value) and args.output_dir:
-            sinks.append(
-                TextFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
-
-        if sinks:
-            return ModelAsTextWriter(RuleModelAsTextExtractor(), exit_on_error=args.exit_on_error).add_sinks(*sinks)
-        return None
 
     def _create_model_characteristics_writer(self, args) -> Optional[OutputWriter]:
         """
