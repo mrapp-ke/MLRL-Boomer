@@ -6,7 +6,7 @@ Provides classes for extracting probability calibration models that are stored a
 import logging as log
 
 from abc import ABC, abstractmethod
-from typing import Any, List, Optional
+from typing import List, Optional
 
 from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibrationModel, \
     NoProbabilityCalibrationModel
@@ -49,7 +49,7 @@ class IsotonicMarginalProbabilityCalibrationModelExtractor(ProbabilityCalibratio
     model.
     """
 
-    def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Any:
+    def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Optional[OutputData]:
         calibration_model = learner.marginal_probability_calibration_model_
 
         if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
@@ -75,7 +75,7 @@ class IsotonicJointProbabilityCalibrationModelExtractor(ProbabilityCalibrationMo
     model.
     """
 
-    def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Any:
+    def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Optional[OutputData]:
         calibration_model = learner.joint_probability_calibration_model_
 
         if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
