@@ -30,7 +30,7 @@ from mlrl.testbed.experiments.output.characteristics.data.tabular import DataCha
 from mlrl.testbed.experiments.output.dataset.tabular import GroundTruthWriter, PredictionWriter
 from mlrl.testbed.experiments.output.evaluation import ClassificationEvaluationDataExtractor, EvaluationResult, \
     EvaluationWriter, RankingEvaluationDataExtractor, RegressionEvaluationDataExtractor
-from mlrl.testbed.experiments.output.label_vectors import LabelVectors, LabelVectorSetExtractor, LabelVectorWriter
+from mlrl.testbed.experiments.output.label_vectors.profile import LabelVectorProfile
 from mlrl.testbed.experiments.output.model import ModelWriter
 from mlrl.testbed.experiments.output.parameters import ParameterWriter
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, PickleFileSink
@@ -40,6 +40,7 @@ from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
 from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificationProblem, SkLearnProblem, \
     SkLearnRegressionProblem
+from mlrl.testbed.profiles.profile import Profile
 from mlrl.testbed.runnables import Runnable
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
@@ -212,17 +213,6 @@ class SkLearnRunnable(Runnable, ABC):
 
     STORE_DATA_CHARACTERISTICS_VALUES = PRINT_DATA_CHARACTERISTICS_VALUES
 
-    PARAM_PRINT_LABEL_VECTORS = '--print-label-vectors'
-
-    PRINT_LABEL_VECTORS_VALUES: Dict[str, Set[str]] = {
-        BooleanOption.TRUE.value: {LabelVectors.OPTION_SPARSE},
-        BooleanOption.FALSE.value: {}
-    }
-
-    PARAM_STORE_LABEL_VECTORS = '--store-label-vectors'
-
-    STORE_LABEL_VECTORS_VALUES = PRINT_LABEL_VECTORS_VALUES
-
     PARAM_MODEL_SAVE_DIR = '--model-save-dir'
 
     PARAM_PARAMETER_SAVE_DIR = '--parameter-save-dir'
@@ -320,6 +310,12 @@ class SkLearnRunnable(Runnable, ABC):
 
         return None
 
+    def get_profiles(self) -> List[Profile]:
+        """
+        See :func:`mlrl.testbed.runnables.Runnable.get_profiles`
+        """
+        return super().get_profiles() + [LabelVectorProfile()]
+
     def configure_arguments(self, argument_parser: ArgumentParser):
         """
         See :func:`mlrl.testbed.runnables.Runnable.configure_arguments`
@@ -394,21 +390,6 @@ class SkLearnRunnable(Runnable, ABC):
             + 'or not. Must be one of ' + format_set(self.STORE_DATA_CHARACTERISTICS_VALUES.keys())
             + '. Does only have an effect if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. '
             + 'For additional options refer to the documentation.')
-        argument_parser.add_argument(
-            self.PARAM_PRINT_LABEL_VECTORS,
-            type=str,
-            default=BooleanOption.FALSE.value,
-            help='Whether the unique label vectors contained in the training data should be printed on '
-            + 'the console or not. Must be one of ' + format_set(self.PRINT_LABEL_VECTORS_VALUES.keys())
-            + '. For additional options refer to the documentation.')
-        argument_parser.add_argument(
-            self.PARAM_STORE_LABEL_VECTORS,
-            type=str,
-            default=BooleanOption.FALSE.value,
-            help='Whether the unique label vectors contained in the training data should be written '
-            + 'into output files or not. Must be one of ' + format_set(self.STORE_LABEL_VECTORS_VALUES.keys())
-            + '. Does only have an effect if the ' + 'parameter ' + self.PARAM_OUTPUT_DIR
-            + ' is specified. For additional options refer to ' + 'the documentation.')
         argument_parser.add_argument(
             '--one-hot-encoding',
             type=BooleanOption.parse,
@@ -526,7 +507,6 @@ class SkLearnRunnable(Runnable, ABC):
         ]))
         experiment.add_post_training_output_writers(*filter(lambda listener: listener is not None, [
             self._create_model_writer(args),
-            self._create_label_vector_writer(args),
         ]))
         prediction_output_writers = self._create_prediction_output_writers(args, experiment.problem_domain)
         experiment.add_prediction_output_writers(*prediction_output_writers)
@@ -777,32 +757,6 @@ class SkLearnRunnable(Runnable, ABC):
                 CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
 
         return DataCharacteristicsWriter().add_sinks(*sinks) if sinks else None
-
-    def _create_label_vector_writer(self, args) -> Optional[OutputWriter]:
-        """
-        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output unique label
-        vectors contained in the training data.
-
-        :param args:    The command line arguments
-        :return:        The `OutputWriter` that has been created
-        """
-        sinks = []
-        value, options = parse_param_and_options(self.PARAM_PRINT_LABEL_VECTORS, args.print_label_vectors,
-                                                 self.PRINT_LABEL_VECTORS_VALUES)
-
-        if (not value and args.print_all) or value == BooleanOption.TRUE.value:
-            sinks.append(LogSink(options))
-
-        value, options = parse_param_and_options(self.PARAM_STORE_LABEL_VECTORS, args.store_label_vectors,
-                                                 self.STORE_LABEL_VECTORS_VALUES)
-
-        if ((not value and args.store_all) or value == BooleanOption.TRUE.value) and args.output_dir:
-            sinks.append(
-                CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
-
-        if sinks:
-            return LabelVectorWriter(LabelVectorSetExtractor(), exit_on_error=args.exit_on_error).add_sinks(*sinks)
-        return None
 
     @abstractmethod
     def create_classifier(self, args) -> Optional[SkLearnClassifierMixin]:
