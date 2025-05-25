@@ -25,8 +25,9 @@ from mlrl.testbed.experiments.input.dataset.splitters.tabular import Bipartition
 from mlrl.testbed.experiments.input.model import ModelReader
 from mlrl.testbed.experiments.input.parameters import ParameterReader
 from mlrl.testbed.experiments.input.sources import CsvFileSource, PickleFileSource
-from mlrl.testbed.experiments.output.characteristics.data.tabular import DataCharacteristics, \
-    DataCharacteristicsWriter, OutputCharacteristics, PredictionCharacteristicsWriter
+from mlrl.testbed.experiments.output.characteristics.data.tabular import OutputCharacteristics, \
+    PredictionCharacteristicsWriter
+from mlrl.testbed.experiments.output.characteristics.data.tabular.profile import TabularDataCharacteristicProfile
 from mlrl.testbed.experiments.output.dataset.tabular import GroundTruthWriter, PredictionWriter
 from mlrl.testbed.experiments.output.evaluation import ClassificationEvaluationDataExtractor, EvaluationResult, \
     EvaluationWriter, RankingEvaluationDataExtractor, RegressionEvaluationDataExtractor
@@ -194,25 +195,6 @@ class SkLearnRunnable(Runnable, ABC):
 
     STORE_PREDICTION_CHARACTERISTICS_VALUES = PRINT_PREDICTION_CHARACTERISTICS_VALUES
 
-    PARAM_PRINT_DATA_CHARACTERISTICS = '--print-data-characteristics'
-
-    PRINT_DATA_CHARACTERISTICS_VALUES: Dict[str, Set[str]] = {
-        BooleanOption.TRUE.value: {
-            DataCharacteristics.OPTION_EXAMPLES, DataCharacteristics.OPTION_FEATURES,
-            DataCharacteristics.OPTION_NUMERICAL_FEATURES, DataCharacteristics.OPTION_NOMINAL_FEATURES,
-            DataCharacteristics.OPTION_FEATURE_DENSITY, DataCharacteristics.OPTION_FEATURE_SPARSITY,
-            OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,
-            OutputCharacteristics.OPTION_OUTPUT_SPARSITY, OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
-            OutputCharacteristics.OPTION_LABEL_CARDINALITY, OutputCharacteristics.OPTION_DISTINCT_LABEL_VECTORS,
-            OPTION_DECIMALS, OPTION_PERCENTAGE
-        },
-        BooleanOption.FALSE.value: {}
-    }
-
-    PARAM_STORE_DATA_CHARACTERISTICS = '--store-data-characteristics'
-
-    STORE_DATA_CHARACTERISTICS_VALUES = PRINT_DATA_CHARACTERISTICS_VALUES
-
     PARAM_MODEL_SAVE_DIR = '--model-save-dir'
 
     PARAM_PARAMETER_SAVE_DIR = '--parameter-save-dir'
@@ -314,7 +296,7 @@ class SkLearnRunnable(Runnable, ABC):
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_profiles`
         """
-        return super().get_profiles() + [LabelVectorProfile()]
+        return super().get_profiles() + [TabularDataCharacteristicProfile(), LabelVectorProfile()]
 
     def configure_arguments(self, argument_parser: ArgumentParser):
         """
@@ -375,21 +357,6 @@ class SkLearnRunnable(Runnable, ABC):
             + 'files or not. Must be one of ' + format_set(self.STORE_PREDICTION_CHARACTERISTICS_VALUES.keys())
             + '. Does only have an ' + 'effect if the parameter ' + self.PARAM_PREDICTION_TYPE + ' is set to '
             + PredictionType.BINARY.value + '. For additional options refer to the documentation.')
-        argument_parser.add_argument(
-            self.PARAM_PRINT_DATA_CHARACTERISTICS,
-            type=str,
-            default=BooleanOption.FALSE.value,
-            help='Whether the characteristics of the training data should be printed on the console or '
-            + 'not. Must be one of ' + format_set(self.PRINT_DATA_CHARACTERISTICS_VALUES.keys()) + '. '
-            + 'For additional options refer to the documentation.')
-        argument_parser.add_argument(
-            self.PARAM_STORE_DATA_CHARACTERISTICS,
-            type=str,
-            default=BooleanOption.FALSE.value,
-            help='Whether the characteristics of the training data should be written into output files '
-            + 'or not. Must be one of ' + format_set(self.STORE_DATA_CHARACTERISTICS_VALUES.keys())
-            + '. Does only have an effect if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. '
-            + 'For additional options refer to the documentation.')
         argument_parser.add_argument(
             '--one-hot-encoding',
             type=BooleanOption.parse,
@@ -502,7 +469,6 @@ class SkLearnRunnable(Runnable, ABC):
             self._create_parameter_reader(args),
         ]))
         experiment.add_pre_training_output_writers(*filter(lambda listener: listener is not None, [
-            self._create_data_characteristics_writer(args),
             self._create_parameter_writer(args),
         ]))
         experiment.add_post_training_output_writers(*filter(lambda listener: listener is not None, [
@@ -733,30 +699,6 @@ class SkLearnRunnable(Runnable, ABC):
                 CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
 
         return PredictionCharacteristicsWriter().add_sinks(*sinks) if sinks else None
-
-    def _create_data_characteristics_writer(self, args) -> Optional[OutputWriter]:
-        """
-        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output data
-        characteristics.
-
-        :param args:    The command line arguments
-        :return:        The `OutputWriter` that has been created
-        """
-        sinks = []
-        value, options = parse_param_and_options(self.PARAM_PRINT_DATA_CHARACTERISTICS, args.print_data_characteristics,
-                                                 self.PRINT_DATA_CHARACTERISTICS_VALUES)
-
-        if (not value and args.print_all) or value == BooleanOption.TRUE.value:
-            sinks.append(LogSink(options))
-
-        value, options = parse_param_and_options(self.PARAM_STORE_DATA_CHARACTERISTICS, args.store_data_characteristics,
-                                                 self.STORE_DATA_CHARACTERISTICS_VALUES)
-
-        if ((not value and args.store_all) or value == BooleanOption.TRUE.value) and args.output_dir:
-            sinks.append(
-                CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
-
-        return DataCharacteristicsWriter().add_sinks(*sinks) if sinks else None
 
     @abstractmethod
     def create_classifier(self, args) -> Optional[SkLearnClassifierMixin]:
