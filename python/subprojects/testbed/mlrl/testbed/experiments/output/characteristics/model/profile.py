@@ -4,10 +4,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write characteristics of rule models to outputs.
 """
 from argparse import ArgumentParser, Namespace
+from typing import List
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.characteristics.model.extractor_rules import RuleModelCharacteristicsExtractor
 from mlrl.testbed.experiments.output.characteristics.model.writer import ModelCharacteristicsWriter
+from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.profiles.profile import Profile
@@ -38,17 +40,23 @@ class RuleModelCharacteristicsProfile(Profile):
             help='Whether the characteristics of models should be written into output files or not. Must be one of '
             + format_enum_values(BooleanOption) + '.')
 
+    @staticmethod
+    def __create_log_sinks(args: Namespace) -> List[Sink]:
+        if args.print_model_characteristics or args.print_all:
+            return [LogSink()]
+        return []
+
+    @staticmethod
+    def __create_csv_file_sinks(args: Namespace) -> List[Sink]:
+        if (args.store_model_characteristics or args.store_all) and args.output_dir:
+            return [CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir)]
+        return []
+
     def configure_experiment(self, args: Namespace, experiment: Experiment):
         """
         See :func:`mlrl.testbed.profiles.profile.Profile.configure_experiment`
         """
-        sinks = []
-
-        if args.print_model_characteristics or args.print_all:
-            sinks.append(LogSink())
-
-        if (args.store_model_characteristics or args.store_all) and args.output_dir:
-            sinks.append(CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir))
+        sinks = self.__create_log_sinks(args) + self.__create_csv_file_sinks(args)
 
         if sinks:
             writer = ModelCharacteristicsWriter(RuleModelCharacteristicsExtractor(),
