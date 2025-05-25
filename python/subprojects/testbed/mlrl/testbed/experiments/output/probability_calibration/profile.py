@@ -4,12 +4,13 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write calibration models to outputs.
 """
 from argparse import ArgumentParser, Namespace
-from typing import Dict, Set
+from typing import Dict, List, Set
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.probability_calibration.extractor_rules import \
     IsotonicJointProbabilityCalibrationModelExtractor, IsotonicMarginalProbabilityCalibrationModelExtractor
 from mlrl.testbed.experiments.output.probability_calibration.writer import ProbabilityCalibrationModelWriter
+from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.profiles.profile import Profile
@@ -55,25 +56,28 @@ class MarginalProbabilityCalibrationModelProfile(Profile):
             + 'file or not. Must be one of ' + format_enum_values(BooleanOption) + '. For additional options '
             + 'refer to the documentation.')
 
-    def configure_experiment(self, args: Namespace, experiment: Experiment):
-        """
-        See :func:`mlrl.testbed.profiles.profile.Profile.configure_experiment`
-        """
-        sinks = []
+    def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         value, options = parse_param_and_options(self.PARAM_PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL,
                                                  args.print_marginal_probability_calibration_model,
                                                  self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES)
-
         if (not value and args.print_all) or value == BooleanOption.TRUE.value:
-            sinks.append(LogSink(options))
+            return [LogSink(options)]
+        return []
 
+    def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
         value, options = parse_param_and_options(self.PARAM_STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL,
                                                  args.store_marginal_probability_calibration_model,
                                                  self.STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES)
 
         if ((not value and args.store_all) or value == BooleanOption.TRUE.value) and args.output_dir:
-            sinks.append(
-                CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
+            return [CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options)]
+        return []
+
+    def configure_experiment(self, args: Namespace, experiment: Experiment):
+        """
+        See :func:`mlrl.testbed.profiles.profile.Profile.configure_experiment`
+        """
+        sinks = self.__create_log_sinks(args) + self.__create_csv_file_sinks(args)
 
         if sinks:
             writer = ProbabilityCalibrationModelWriter(IsotonicMarginalProbabilityCalibrationModelExtractor(),
