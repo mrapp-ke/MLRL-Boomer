@@ -15,6 +15,7 @@ from mlrl.common.learners import ClassificationRuleLearner
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.probability_calibration.model_isotonic import IsotonicRegressionModel
+from mlrl.testbed.experiments.output.probability_calibration.model_no import NoCalibrationModel
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor
 from mlrl.testbed.experiments.state import ExperimentState
@@ -51,22 +52,23 @@ class IsotonicMarginalProbabilityCalibrationModelExtractor(ProbabilityCalibratio
 
     def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Optional[OutputData]:
         calibration_model = learner.marginal_probability_calibration_model_
+        context = Context(include_dataset_type=False)
+        properties = OutputData.Properties(name='Marginal probability calibration model',
+                                           file_name='marginal_probability_calibration_model')
 
         if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
             return IsotonicRegressionModel(calibration_model=calibration_model,
-                                           properties=OutputData.Properties(
-                                               name='Marginal probability calibration model',
-                                               file_name='marginal_probability_calibration_model',
-                                           ),
-                                           context=Context(include_dataset_type=False),
+                                           properties=properties,
+                                           context=context,
                                            column_title_prefix='Label')
 
-        if not isinstance(calibration_model, NoProbabilityCalibrationModel):
-            log.error('%s expected type of calibration model to be %s, but calibration model has type %s',
-                      type(self).__name__, IsotonicProbabilityCalibrationModel.__name__,
-                      type(calibration_model).__name__)
+        if isinstance(calibration_model, NoProbabilityCalibrationModel):
+            return NoCalibrationModel(properties=properties, context=context)
 
-        return calibration_model
+        log.error('%s expected type of calibration model to be %s, but calibration model has type %s',
+                  type(self).__name__, IsotonicProbabilityCalibrationModel.__name__,
+                  type(calibration_model).__name__)
+        return None
 
 
 class IsotonicJointProbabilityCalibrationModelExtractor(ProbabilityCalibrationModelExtractor):
@@ -77,19 +79,20 @@ class IsotonicJointProbabilityCalibrationModelExtractor(ProbabilityCalibrationMo
 
     def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Optional[OutputData]:
         calibration_model = learner.joint_probability_calibration_model_
+        context = Context(include_dataset_type=False)
+        properties = OutputData.Properties(name='Joint probability calibration model',
+                                           file_name='joint_probability_calibration_model')
 
         if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
             return IsotonicRegressionModel(calibration_model=calibration_model,
-                                           properties=OutputData.Properties(
-                                               name='Joint probability calibration model',
-                                               file_name='joint_probability_calibration_model',
-                                           ),
-                                           context=Context(include_dataset_type=False),
+                                           properties=properties,
+                                           context=context,
                                            column_title_prefix='Label vector')
 
-        if not isinstance(calibration_model, NoProbabilityCalibrationModel):
-            log.error('%s expected type of calibration model to be %s, but calibration model has type %s',
-                      type(self).__name__, IsotonicProbabilityCalibrationModel.__name__,
-                      type(calibration_model).__name__)
+        if isinstance(calibration_model, NoProbabilityCalibrationModel):
+            return NoCalibrationModel(properties=properties, context=context)
 
-        return calibration_model
+        log.error('%s expected type of calibration model to be %s, but calibration model has type %s',
+                  type(self).__name__, IsotonicProbabilityCalibrationModel.__name__,
+                  type(calibration_model).__name__)
+        return None
