@@ -16,18 +16,14 @@ from mlrl.testbed.experiments import Experiment, SkLearnExperiment
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.output.characteristics.model.profile import RuleModelCharacteristicsProfile
 from mlrl.testbed.experiments.output.model_text.profile import RuleModelProfile
-from mlrl.testbed.experiments.output.probability_calibration import IsotonicJointProbabilityCalibrationModelExtractor, \
-    ProbabilityCalibrationModelWriter
-from mlrl.testbed.experiments.output.probability_calibration.profile import MarginalProbabilityCalibrationModelProfile
-from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink
-from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.output.probability_calibration.profile import JointProbabilityCalibrationModelProfile, \
+    MarginalProbabilityCalibrationModelProfile
 from mlrl.testbed.experiments.prediction import IncrementalPredictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
 from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnProblem
 from mlrl.testbed.profiles.profile import Profile
 from mlrl.testbed.runnables_sklearn import SkLearnRunnable
-from mlrl.testbed.util.format import OPTION_DECIMALS
 
 from mlrl.util.format import format_enum_values
 from mlrl.util.options import BooleanOption, parse_param_and_options
@@ -51,17 +47,6 @@ class RuleLearnerRunnable(SkLearnRunnable):
         BooleanOption.TRUE.value: {OPTION_MIN_SIZE, OPTION_MAX_SIZE, OPTION_STEP_SIZE},
         BooleanOption.FALSE.value: {}
     }
-
-    PARAM_PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL = '--print-joint-probability-calibration-model'
-
-    PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES: Dict[str, Set[str]] = {
-        BooleanOption.TRUE.value: {OPTION_DECIMALS},
-        BooleanOption.FALSE.value: {}
-    }
-
-    PARAM_STORE_JOINT_PROBABILITY_CALIBRATION_MODEL = '--store-joint-probability-calibration-model'
-
-    STORE_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES = PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES
 
     PARAM_FEATURE_FORMAT = '--feature-format'
 
@@ -98,7 +83,8 @@ class RuleLearnerRunnable(SkLearnRunnable):
         return super().get_profiles() + [
             RuleModelProfile(),
             RuleModelCharacteristicsProfile(),
-            MarginalProbabilityCalibrationModelProfile()
+            MarginalProbabilityCalibrationModelProfile(),
+            JointProbabilityCalibrationModelProfile()
         ]
 
     def __create_config_type_and_parameters(self, problem_domain: ProblemDomain):
@@ -144,19 +130,6 @@ class RuleLearnerRunnable(SkLearnRunnable):
                             help='Whether models should be evaluated repeatedly, using only a subset of the induced '
                             + 'rules with increasing size, or not. Must be one of ' + format_enum_values(BooleanOption)
                             + '. For additional options refer to the documentation.')
-        parser.add_argument(self.PARAM_PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL,
-                            type=str,
-                            default=BooleanOption.FALSE.value,
-                            help='Whether the model for the calibration of joint probabilities should be printed on '
-                            + 'the console or not. Must be one of ' + format_enum_values(BooleanOption) + '. For '
-                            + 'additional options refer to the documentation.')
-        parser.add_argument(self.PARAM_STORE_JOINT_PROBABILITY_CALIBRATION_MODEL,
-                            type=str,
-                            default=BooleanOption.FALSE.value,
-                            help='Whether the model for the calibration of joint probabilities should be written into '
-                            + 'an output file or not. Must be one of ' + format_enum_values(BooleanOption) + '. Does '
-                            + 'only have an effect if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For '
-                            + 'additional options refer to the documentation.')
         parser.add_argument(self.PARAM_FEATURE_FORMAT,
                             type=str,
                             default=None,
@@ -185,11 +158,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
     def _create_experiment(self, args, dataset_splitter: DatasetSplitter) -> Experiment:
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
         problem_domain = self._create_problem_domain(args, fit_kwargs=kwargs, predict_kwargs=kwargs)
-        experiment = SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
-        experiment.add_post_training_output_writers(*filter(lambda listener: listener is not None, [
-            self._create_joint_probability_calibration_model_writer(args),
-        ]))
-        return experiment
+        return SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
 
     def create_classifier(self, args) -> Optional[SkLearnClassifierMixin]:
         """
@@ -228,35 +197,6 @@ class RuleLearnerRunnable(SkLearnRunnable):
         kwargs['output_format'] = args.output_format
         kwargs['prediction_format'] = args.prediction_format
         return kwargs
-
-    def _create_joint_probability_calibration_model_writer(self, args) -> Optional[OutputWriter]:
-        """
-        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output textual
-        representations of models for the calibration of joint probabilities.
-
-        :param args:    The command line arguments
-        :return:        The `OutputWriter` that has been created
-        """
-        sinks = []
-        value, options = parse_param_and_options(self.PARAM_PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL,
-                                                 args.print_joint_probability_calibration_model,
-                                                 self.PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES)
-
-        if (not value and args.print_all) or value == BooleanOption.TRUE.value:
-            sinks.append(LogSink(options))
-
-        value, options = parse_param_and_options(self.PARAM_STORE_JOINT_PROBABILITY_CALIBRATION_MODEL,
-                                                 args.store_joint_probability_calibration_model,
-                                                 self.STORE_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES)
-
-        if ((not value and args.store_all) or value == BooleanOption.TRUE.value) and args.output_dir:
-            sinks.append(
-                CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
-
-        if sinks:
-            return ProbabilityCalibrationModelWriter(IsotonicJointProbabilityCalibrationModelExtractor(),
-                                                     exit_on_error=args.exit_on_error).add_sinks(*sinks)
-        return None
 
     def _create_predictor_factory(self, args, prediction_type: PredictionType) -> SkLearnProblem.PredictorFactory:
         value, options = parse_param_and_options(self.PARAM_INCREMENTAL_EVALUATION, args.incremental_evaluation,
