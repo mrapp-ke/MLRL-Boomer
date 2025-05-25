@@ -4,12 +4,13 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write rule models to outputs.
 """
 from argparse import ArgumentParser, Namespace
-from typing import Dict, Set
+from typing import Dict, List, Set
 
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.output.model_text import RuleModelAsText
 from mlrl.testbed.experiments.output.model_text.extractor_rules import RuleModelAsTextExtractor
 from mlrl.testbed.experiments.output.model_text.writer import ModelAsTextWriter
+from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.experiments.output.sinks.sink_text import TextFileSink
 from mlrl.testbed.profiles import Profile
@@ -56,21 +57,25 @@ class RuleModelProfile(Profile):
             help='Whether the induced rules should be written into a text file or not. Must be one of '
             + format_set(self.STORE_RULES_VALUES.keys()) + '. For additional options refer to the documentation.')
 
+    def __create_log_sinks(self, args: Namespace) -> List[Sink]:
+        value, options = parse_param_and_options(self.PARAM_PRINT_RULES, args.print_rules, self.PRINT_RULES_VALUES)
+
+        if (not value and args.print_all) or value == BooleanOption.TRUE.value:
+            return [LogSink(options)]
+        return []
+
+    def __create_text_file_sinks(self, args: Namespace) -> List[Sink]:
+        value, options = parse_param_and_options(self.PARAM_STORE_RULES, args.store_rules, self.STORE_RULES_VALUES)
+
+        if ((not value and args.store_all) or value == BooleanOption.TRUE.value) and args.output_dir:
+            return [TextFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options)]
+        return []
+
     def configure_experiment(self, args: Namespace, experiment: Experiment):
         """
         See :func:`mlrl.testbed.profiles.profile.Profile.configure_experiment`
         """
-        sinks = []
-        value, options = parse_param_and_options(self.PARAM_PRINT_RULES, args.print_rules, self.PRINT_RULES_VALUES)
-
-        if (not value and args.print_all) or value == BooleanOption.TRUE.value:
-            sinks.append(LogSink(options))
-
-        value, options = parse_param_and_options(self.PARAM_STORE_RULES, args.store_rules, self.STORE_RULES_VALUES)
-
-        if ((not value and args.store_all) or value == BooleanOption.TRUE.value) and args.output_dir:
-            sinks.append(
-                TextFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
+        sinks = self.__create_log_sinks(args) + self.__create_text_file_sinks(args)
 
         if sinks:
             writer = ModelAsTextWriter(RuleModelAsTextExtractor(), exit_on_error=args.exit_on_error).add_sinks(*sinks)
