@@ -32,9 +32,8 @@ from mlrl.testbed.experiments.output.dataset.tabular.extension_prediction import
 from mlrl.testbed.experiments.output.evaluation.extension import EvaluationExtension
 from mlrl.testbed.experiments.output.label_vectors.extension import LabelVectorExtension
 from mlrl.testbed.experiments.output.model import ModelWriter
-from mlrl.testbed.experiments.output.parameters import ParameterWriter
-from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, PickleFileSink
-from mlrl.testbed.experiments.output.writer import OutputWriter
+from mlrl.testbed.experiments.output.parameters.extension import ParameterOutputExtension
+from mlrl.testbed.experiments.output.sinks import PickleFileSink
 from mlrl.testbed.experiments.prediction import GlobalPredictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
@@ -107,8 +106,6 @@ class SkLearnRunnable(Runnable, ABC):
     }
 
     PARAM_MODEL_SAVE_DIR = '--model-save-dir'
-
-    PARAM_PARAMETER_SAVE_DIR = '--parameter-save-dir'
 
     PARAM_OUTPUT_DIR = '--output-dir'
 
@@ -208,6 +205,7 @@ class SkLearnRunnable(Runnable, ABC):
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
         """
         return super().get_extensions() + [
+            ParameterOutputExtension(),
             EvaluationExtension(),
             TabularDataCharacteristicExtension(),
             LabelVectorExtension(),
@@ -261,11 +259,6 @@ class SkLearnRunnable(Runnable, ABC):
             '--parameter-load-dir',
             type=str,
             help='The path to the directory from which parameter to be used by the algorithm should be ' + 'loaded.')
-        argument_parser.add_argument(
-            self.PARAM_PARAMETER_SAVE_DIR,
-            type=str,
-            help='The path to the directory where configuration files, which specify the parameters to '
-            + 'be used by the algorithm, are located.')
         argument_parser.add_argument(self.PARAM_OUTPUT_DIR,
                                      type=str,
                                      help='The path to the directory where experimental results should be saved.')
@@ -273,8 +266,8 @@ class SkLearnRunnable(Runnable, ABC):
                                      type=BooleanOption.parse,
                                      default=True,
                                      help='Whether the directories specified via the arguments ' + self.PARAM_OUTPUT_DIR
-                                     + ', ' + self.PARAM_MODEL_SAVE_DIR + ' and ' + self.PARAM_PARAMETER_SAVE_DIR
-                                     + ' should '
+                                     + ', ' + self.PARAM_MODEL_SAVE_DIR + ' and '
+                                     + ParameterOutputExtension.PARAM_PARAMETER_SAVE_DIR + ' should '
                                      + 'automatically be created, if they do not exist, or not. Must be one of '
                                      + format_enum_values(BooleanOption) + '.')
         argument_parser.add_argument(
@@ -304,12 +297,6 @@ class SkLearnRunnable(Runnable, ABC):
                                      help='Whether all output data should be written to files or not. Must be one of '
                                      + format_enum_values(BooleanOption) + '.')
         argument_parser.add_argument(
-            '--print-parameters',
-            type=BooleanOption.parse,
-            default=False,
-            help='Whether the parameter setting should be printed on the console or not. Must be one ' + 'of '
-            + format_enum_values(BooleanOption) + '.')
-        argument_parser.add_argument(
             self.PARAM_PREDICTION_TYPE,
             type=str,
             default=PredictionType.BINARY.value,
@@ -328,9 +315,6 @@ class SkLearnRunnable(Runnable, ABC):
         experiment.add_input_readers(*filter(lambda listener: listener is not None, [
             self._create_model_reader(args),
             self._create_parameter_reader(args),
-        ]))
-        experiment.add_pre_training_output_writers(*filter(lambda listener: listener is not None, [
-            self._create_parameter_writer(args),
         ]))
         experiment.add_post_training_output_writers(*filter(lambda listener: listener is not None, [
             self._create_model_writer(args),
@@ -398,24 +382,6 @@ class SkLearnRunnable(Runnable, ABC):
         """
         parameter_load_dir = args.parameter_load_dir
         return ParameterReader(CsvFileSource(parameter_load_dir)) if parameter_load_dir else None
-
-    def _create_parameter_writer(self, args) -> Optional[OutputWriter]:
-        """
-        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output parameter
-        settings.
-
-        :param args:    The command line arguments
-        :return:        The `OutputWriter` that has been created
-        """
-        sinks = []
-
-        if args.print_parameters or args.print_all:
-            sinks.append(LogSink())
-
-        if args.parameter_save_dir:
-            sinks.append(CsvFileSink(directory=args.parameter_save_dir, create_directory=args.create_output_dir))
-
-        return ParameterWriter().add_sinks(*sinks) if sinks else None
 
     @abstractmethod
     def create_classifier(self, args) -> Optional[SkLearnClassifierMixin]:
