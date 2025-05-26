@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes that allow configuring the functionality to write label vectors to outputs.
+Provides classes that allow configuring the functionality to write label vectors to one or several sinks.
 """
 from argparse import ArgumentParser, Namespace
 from typing import Dict, List, Set
@@ -21,7 +21,7 @@ from mlrl.util.options import BooleanOption, parse_param_and_options
 
 class LabelVectorExtension(Extension):
     """
-    An extension that configures the functionality to write label vectors to outputs.
+    An extension that configures the functionality to write label vectors to one or several sinks.
     """
 
     PARAM_PRINT_LABEL_VECTORS = '--print-label-vectors'
