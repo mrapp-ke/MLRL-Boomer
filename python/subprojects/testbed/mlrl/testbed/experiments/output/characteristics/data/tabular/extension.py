@@ -26,6 +26,9 @@ class TabularDataCharacteristicExtension(Extension):
     An extension that configures the functionality to write characteristics of tabular datasets to one or several sinks.
     """
 
+    # TODO remove
+    PARAM_OUTPUT_DIR = '--output-dir'
+
     PARAM_PRINT_DATA_CHARACTERISTICS = '--print-data-characteristics'
 
     PRINT_DATA_CHARACTERISTICS_VALUES: Dict[str, Set[str]] = {
@@ -61,8 +64,9 @@ class TabularDataCharacteristicExtension(Extension):
             type=str,
             default=BooleanOption.FALSE.value,
             help='Whether the characteristics of the training data should be written into output files or not. Must be '
-            + 'one of ' + format_set(self.STORE_DATA_CHARACTERISTICS_VALUES.keys()) + '. For additional options refer '
-            + 'to the documentation.')
+            + 'one of ' + format_set(self.STORE_DATA_CHARACTERISTICS_VALUES.keys()) + '. Does only have an effect if '
+            + 'the argument ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the '
+            + 'documentation.')
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         value, options = parse_param_and_options(self.PARAM_PRINT_DATA_CHARACTERISTICS, args.print_data_characteristics,

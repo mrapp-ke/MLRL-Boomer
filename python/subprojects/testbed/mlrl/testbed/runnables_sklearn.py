@@ -327,7 +327,7 @@ class SkLearnRunnable(Runnable, ABC):
             type=str,
             default=BooleanOption.TRUE.value,
             help='Whether the evaluation results should be written into output files or not. Must be ' + 'one of '
-            + format_set(self.STORE_EVALUATION_VALUES.keys()) + '. Does only have an ' + 'effect if the parameter '
+            + format_set(self.STORE_EVALUATION_VALUES.keys()) + '. Does only have an ' + 'effect if the argument '
             + self.PARAM_OUTPUT_DIR + ' is specified. For additional ' + 'options refer to the documentation.')
         argument_parser.add_argument(
             '--one-hot-encoding',
@@ -344,7 +344,7 @@ class SkLearnRunnable(Runnable, ABC):
         argument_parser.add_argument(
             '--parameter-load-dir',
             type=str,
-            help='The path to the directory from which parameter to be used by the algorith should be ' + 'loaded.')
+            help='The path to the directory from which parameter to be used by the algorithm should be ' + 'loaded.')
         argument_parser.add_argument(
             self.PARAM_PARAMETER_SAVE_DIR,
             type=str,
@@ -404,7 +404,7 @@ class SkLearnRunnable(Runnable, ABC):
             type=str,
             default=BooleanOption.FALSE.value,
             help='Whether predictions should be written into output files or not. Must be one of '
-            + format_set(self.STORE_PREDICTIONS_VALUES.keys()) + '. Does only have an effect, if the ' + 'parameter '
+            + format_set(self.STORE_PREDICTIONS_VALUES.keys()) + '. Does only have an effect, if the argument '
             + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to ' + 'the documentation.')
         argument_parser.add_argument(
             self.PARAM_PRINT_GROUND_TRUTH,
@@ -418,7 +418,7 @@ class SkLearnRunnable(Runnable, ABC):
             type=str,
             default=BooleanOption.FALSE.value,
             help='Whether the ground truth should be written into output files or not. Must be one of '
-            + format_set(self.STORE_GROUND_TRUTH_VALUES.keys()) + '. Does only have an effect, if ' + 'the parameter '
+            + format_set(self.STORE_GROUND_TRUTH_VALUES.keys()) + '. Does only have an effect, if ' + 'the argument '
             + self.PARAM_OUTPUT_DIR + ' is specified. For additional options ' + 'refer to the documentation.')
         argument_parser.add_argument(
             self.PARAM_PREDICTION_TYPE,

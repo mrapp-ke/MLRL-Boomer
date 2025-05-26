@@ -29,5 +29,5 @@ class PredictionType(Enum):
         try:
             return PredictionType(value)
         except ValueError as error:
-            raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
+            raise ValueError('Invalid value given for argument "' + parameter_name + '": Must be one of '
                              + format_enum_values(PredictionType) + ', but is "' + str(value) + '"') from error
