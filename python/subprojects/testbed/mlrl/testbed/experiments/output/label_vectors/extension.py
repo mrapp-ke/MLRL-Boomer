@@ -24,6 +24,9 @@ class LabelVectorExtension(Extension):
     An extension that configures the functionality to write label vectors to one or several sinks.
     """
 
+    # TODO remove
+    PARAM_OUTPUT_DIR = '--output-dir'
+
     PARAM_PRINT_LABEL_VECTORS = '--print-label-vectors'
 
     PRINT_LABEL_VECTORS_VALUES: Dict[str, Set[str]] = {
@@ -51,8 +54,9 @@ class LabelVectorExtension(Extension):
             type=str,
             default=BooleanOption.FALSE.value,
             help='Whether the unique label vectors contained in the training data should be written into output files '
-            + 'or not. Must be one of ' + format_set(self.STORE_LABEL_VECTORS_VALUES.keys()) + '. For additional '
-            + 'options refer to ' + 'the documentation.')
+            + 'or not. Must be one of ' + format_set(self.STORE_LABEL_VECTORS_VALUES.keys()) + '. Does only have an '
+            + 'effect if the argument ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the '
+            + 'documentation.')
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         value, options = parse_param_and_options(self.PARAM_PRINT_LABEL_VECTORS, args.print_label_vectors,

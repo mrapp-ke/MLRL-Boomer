@@ -24,6 +24,9 @@ class RuleModelCharacteristicsExtension(Extension):
     An extension that configures the functionality to write characteristics of rule models to one or several sinks.
     """
 
+    # TODO remove
+    PARAM_OUTPUT_DIR = '--output-dir'
+
     def configure_arguments(self, argument_parser: ArgumentParser):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_arguments`
@@ -39,7 +42,8 @@ class RuleModelCharacteristicsExtension(Extension):
             type=BooleanOption.parse,
             default=BooleanOption.FALSE.value,
             help='Whether the characteristics of models should be written into output files or not. Must be one of '
-            + format_enum_values(BooleanOption) + '.')
+            + format_enum_values(BooleanOption) + '. Does only have an effect if the argument ' + self.PARAM_OUTPUT_DIR
+            + ' is specified.')
 
     @staticmethod
     def __create_log_sinks(args: Namespace) -> List[Sink]:

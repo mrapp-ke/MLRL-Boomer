@@ -29,6 +29,9 @@ class PredictionCharacteristicsExtension(Extension):
     """
 
     # TODO remove
+    PARAM_OUTPUT_DIR = '--output-dir'
+
+    # TODO remove
     PARAM_PREDICTION_TYPE = '--prediction-type'
 
     PARAM_PRINT_PREDICTION_CHARACTERISTICS = '--print-prediction-characteristics'
@@ -57,7 +60,7 @@ class PredictionCharacteristicsExtension(Extension):
             default=BooleanOption.FALSE.value,
             help='Whether the characteristics of binary predictions should be printed on the console or not. Must be '
             + 'one of ' + format_set(self.PRINT_PREDICTION_CHARACTERISTICS_VALUES.keys()) + '. Does only have an '
-            + 'effect if the parameter ' + self.PARAM_PREDICTION_TYPE + ' is set to ' + PredictionType.BINARY.value
+            + 'effect if the argument ' + self.PARAM_PREDICTION_TYPE + ' is set to ' + PredictionType.BINARY.value
             + '. For additional options refer to the documentation.')
         argument_parser.add_argument(
             self.PARAM_STORE_PREDICTION_CHARACTERISTICS,
@@ -65,8 +68,9 @@ class PredictionCharacteristicsExtension(Extension):
             default=BooleanOption.FALSE.value,
             help='Whether the characteristics of binary predictions should be written into output files or not. Must '
             + 'be one of ' + format_set(self.STORE_PREDICTION_CHARACTERISTICS_VALUES.keys()) + '. Does only have an '
-            + 'effect if the parameter ' + self.PARAM_PREDICTION_TYPE + ' is set to ' + PredictionType.BINARY.value
-            + '. For additional options refer to the documentation.')
+            + 'effect if the argument ' + self.PARAM_PREDICTION_TYPE + ' is set to ' + PredictionType.BINARY.value
+            + ' and if the argument ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the '
+            + 'documentation.')
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         value, options = parse_param_and_options(self.PARAM_PRINT_PREDICTION_CHARACTERISTICS,

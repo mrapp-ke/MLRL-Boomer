@@ -26,6 +26,9 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
     outputs.
     """
 
+    # TODO remove
+    PARAM_OUTPUT_DIR = '--output-dir'
+
     PARAM_PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL = '--print-marginal-probability-calibration-model'
 
     PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES: Dict[str, Set[str]] = {
@@ -53,8 +56,9 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
             type=str,
             default=BooleanOption.FALSE.value,
             help='Whether the model for the calibration of marginal probabilities should be written into an output '
-            + 'file or not. Must be one of ' + format_enum_values(BooleanOption) + '. For additional options '
-            + 'refer to the documentation.')
+            + 'file or not. Must be one of ' + format_enum_values(BooleanOption) + '. Does only have an effect if the '
+            + 'argument ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the '
+            + 'documentation.')
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         value, options = parse_param_and_options(self.PARAM_PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL,
@@ -91,6 +95,9 @@ class JointProbabilityCalibrationModelExtension(Extension):
     outputs.
     """
 
+    # TODO remove
+    PARAM_OUTPUT_DIR = '--output-dir'
+
     PARAM_PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL = '--print-joint-probability-calibration-model'
 
     PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES: Dict[str, Set[str]] = {
@@ -118,8 +125,8 @@ class JointProbabilityCalibrationModelExtension(Extension):
             type=str,
             default=BooleanOption.FALSE.value,
             help='Whether the model for the calibration of joint probabilities should be written into an output file '
-            + 'or not. Must be one of ' + format_enum_values(BooleanOption) + '. For additional options refer to the '
-            + 'documentation.')
+            + 'or not. Must be one of ' + format_enum_values(BooleanOption) + '. Does only have an effect if the '
+            + 'argument ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the documentation.')
 
     def configure_experiment(self, args: Namespace, experiment: Experiment):
         """
