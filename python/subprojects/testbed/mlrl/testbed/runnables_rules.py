@@ -140,7 +140,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
                             default=0.0,
                             help='The value that should be used for sparse elements in the feature matrix. Does only '
                             + 'have an effect if a sparse format is used for the representation of the feature matrix, '
-                            + 'depending on the parameter ' + self.PARAM_FEATURE_FORMAT + '.')
+                            + 'depending on the argument ' + self.PARAM_FEATURE_FORMAT + '.')
         parser.add_argument('--output-format',
                             type=str,
                             default=None,
