@@ -1,7 +1,8 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes that allow configuring the functionality to write characteristics of rule models to outputs.
+Provides classes that allow configuring the functionality to write characteristics of rule models to one or several
+sinks.
 """
 from argparse import ArgumentParser, Namespace
 from typing import List
@@ -20,7 +21,7 @@ from mlrl.util.options import BooleanOption
 
 class RuleModelCharacteristicsExtension(Extension):
     """
-    An extension that configures the functionality to write characteristics of rule models to outputs.
+    An extension that configures the functionality to write characteristics of rule models to one or several sinks.
     """
 
     def configure_arguments(self, argument_parser: ArgumentParser):
