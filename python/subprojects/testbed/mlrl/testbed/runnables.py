@@ -9,8 +9,8 @@ from argparse import ArgumentParser, Namespace
 from typing import List, Optional
 
 from mlrl.testbed.experiments import Experiment
-from mlrl.testbed.profiles import Profile
-from mlrl.testbed.profiles.profile_log import LogProfile
+from mlrl.testbed.extensions import Extension
+from mlrl.testbed.extensions.extension_log import LogExtension
 from mlrl.testbed.program_info import ProgramInfo
 
 from mlrl.util.format import format_enum_values
@@ -20,17 +20,17 @@ from mlrl.util.options import BooleanOption
 class Runnable(ABC):
     """
     An abstract base class for all programs that can be configured via the command line API. The programs functionality
-    is implemented by individual profiles that are applied to the runnable.
+    is implemented by individual extensions that are applied to the runnable.
     """
 
-    class BaseProfile(Profile):
+    class BaseExtension(Extension):
         """
-        A basic profile that is applied to all runnables.
+        A basic extension that is applied to all runnables.
         """
 
         def configure_arguments(self, argument_parser: ArgumentParser):
             """
-            See :func:`mlrl.testbed.profiles.profile.Profile.configure_arguments`
+            See :func:`mlrl.testbed.extensions.extension.Extension.configure_arguments`
             """
             argument_parser.add_argument(
                 '--predict-for-training-data',
@@ -47,7 +47,7 @@ class Runnable(ABC):
 
         def configure_experiment(self, args: Namespace, _: Experiment):
             """
-            See :func:`mlrl.testbed.profiles.profile.Profile.configure_experiment`
+            See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
             """
 
     def run(self, args: Namespace):
@@ -58,20 +58,20 @@ class Runnable(ABC):
         """
         experiment = self.create_experiment(args)
 
-        for profile in self.get_profiles():
-            profile.configure_experiment(args, experiment)
+        for extension in self.get_extensions():
+            extension.configure_experiment(args, experiment)
 
         should_predict = bool(experiment.prediction_output_writers)
         experiment.run(predict_for_training_dataset=should_predict and args.predict_for_training_data,
                        predict_for_test_dataset=should_predict and args.predict_for_test_data)
 
-    def get_profiles(self) -> List[Profile]:
+    def get_extensions(self) -> List[Extension]:
         """
-        May be overridden by subclasses in order to return the profiles that should be applied to the runnable.
+        May be overridden by subclasses in order to return the extensions that should be applied to the runnable.
 
-        :return: A list that contains the profiles to be applied to the runnable
+        :return: A list that contains the extensions to be applied to the runnable
         """
-        return [Runnable.BaseProfile(), LogProfile()]
+        return [Runnable.BaseExtension(), LogExtension()]
 
     def get_program_info(self) -> Optional[ProgramInfo]:
         """
@@ -85,7 +85,7 @@ class Runnable(ABC):
     # pylint: disable=unused-argument
     def configure_arguments(self, argument_parser: ArgumentParser, show_help: bool):
         """
-        Configures a given argument parser according to the profiles applied to the runnable.
+        Configures a given argument parser according to the extensions applied to the runnable.
 
         :param argument_parser: The argument parser to be configured
         :param show_help:       True, if the help text of the program should be shown, False otherwise
@@ -100,8 +100,8 @@ class Runnable(ABC):
                                          version=str(program_info),
                                          help='Display information about the program\'s version.')
 
-        for profile in self.get_profiles():
-            profile.configure_arguments(argument_parser)
+        for extension in self.get_extensions():
+            extension.configure_arguments(argument_parser)
 
     @abstractmethod
     def create_experiment(self, args: Namespace) -> Experiment:
