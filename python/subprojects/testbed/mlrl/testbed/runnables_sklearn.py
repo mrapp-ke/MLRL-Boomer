@@ -28,7 +28,8 @@ from mlrl.testbed.experiments.input.sources import CsvFileSource, PickleFileSour
 from mlrl.testbed.experiments.output.characteristics.data.tabular.extension import TabularDataCharacteristicExtension
 from mlrl.testbed.experiments.output.characteristics.data.tabular.extension_prediction import \
     PredictionCharacteristicsExtension
-from mlrl.testbed.experiments.output.dataset.tabular import GroundTruthWriter, PredictionWriter
+from mlrl.testbed.experiments.output.dataset.tabular import GroundTruthWriter
+from mlrl.testbed.experiments.output.dataset.tabular.extension_prediction import PredictionExtension
 from mlrl.testbed.experiments.output.evaluation import ClassificationEvaluationDataExtractor, EvaluationResult, \
     EvaluationWriter, RankingEvaluationDataExtractor, RegressionEvaluationDataExtractor
 from mlrl.testbed.experiments.output.label_vectors.extension import LabelVectorExtension
@@ -157,17 +158,6 @@ class SkLearnRunnable(Runnable, ABC):
         BooleanOption.FALSE.value: {}
     }
 
-    PARAM_PRINT_PREDICTIONS = '--print-predictions'
-
-    PRINT_PREDICTIONS_VALUES: Dict[str, Set[str]] = {
-        BooleanOption.TRUE.value: {OPTION_DECIMALS},
-        BooleanOption.FALSE.value: {}
-    }
-
-    PARAM_STORE_PREDICTIONS = '--store-predictions'
-
-    STORE_PREDICTIONS_VALUES = PRINT_PREDICTIONS_VALUES
-
     PARAM_PRINT_GROUND_TRUTH = '--print-ground-truth'
 
     PRINT_GROUND_TRUTH_VALUES: Dict[str, Set[str]] = {
@@ -283,7 +273,8 @@ class SkLearnRunnable(Runnable, ABC):
         return super().get_extensions() + [
             TabularDataCharacteristicExtension(),
             LabelVectorExtension(),
-            PredictionCharacteristicsExtension()
+            PredictionExtension(),
+            PredictionCharacteristicsExtension(),
         ]
 
     def configure_arguments(self, argument_parser: ArgumentParser):
@@ -393,19 +384,6 @@ class SkLearnRunnable(Runnable, ABC):
             default=False,
             help='Whether the parameter setting should be printed on the console or not. Must be one ' + 'of '
             + format_enum_values(BooleanOption) + '.')
-        argument_parser.add_argument(self.PARAM_PRINT_PREDICTIONS,
-                                     type=str,
-                                     default=BooleanOption.FALSE.value,
-                                     help='Whether predictions should be printed on the console or not. Must be one of '
-                                     + format_set(self.PRINT_PREDICTIONS_VALUES.keys())
-                                     + '. For additional options refer to ' + 'the documentation.')
-        argument_parser.add_argument(
-            self.PARAM_STORE_PREDICTIONS,
-            type=str,
-            default=BooleanOption.FALSE.value,
-            help='Whether predictions should be written into output files or not. Must be one of '
-            + format_set(self.STORE_PREDICTIONS_VALUES.keys()) + '. Does only have an effect, if the argument '
-            + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to ' + 'the documentation.')
         argument_parser.add_argument(
             self.PARAM_PRINT_GROUND_TRUTH,
             type=str,
@@ -472,11 +450,6 @@ class SkLearnRunnable(Runnable, ABC):
         """
         output_writers = []
         output_writer = self._create_evaluation_writer(args, problem_domain)
-
-        if output_writer:
-            output_writers.append(output_writer)
-
-        output_writer = self._create_prediction_writer(args)
 
         if output_writer:
             output_writers.append(output_writer)
@@ -593,29 +566,6 @@ class SkLearnRunnable(Runnable, ABC):
             sinks.append(CsvFileSink(directory=args.parameter_save_dir, create_directory=args.create_output_dir))
 
         return ParameterWriter().add_sinks(*sinks) if sinks else None
-
-    def _create_prediction_writer(self, args) -> Optional[OutputWriter]:
-        """
-        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output predictions.
-
-        :param args:    The command line arguments
-        :return:        The `OutputWriter` that has been created
-        """
-        sinks = []
-        value, options = parse_param_and_options(self.PARAM_PRINT_PREDICTIONS, args.print_predictions,
-                                                 self.PRINT_PREDICTIONS_VALUES)
-
-        if (not value and args.print_all) or value == BooleanOption.TRUE.value:
-            sinks.append(LogSink(options=options))
-
-        value, options = parse_param_and_options(self.PARAM_STORE_PREDICTIONS, args.store_predictions,
-                                                 self.STORE_PREDICTIONS_VALUES)
-
-        if value == BooleanOption.TRUE.value and args.output_dir:
-            sinks.append(
-                ArffFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
-
-        return PredictionWriter().add_sinks(*sinks) if sinks else None
 
     def _create_ground_truth_writer(self, args) -> Optional[OutputWriter]:
         """
