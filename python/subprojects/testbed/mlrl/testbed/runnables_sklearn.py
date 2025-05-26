@@ -29,8 +29,7 @@ from mlrl.testbed.experiments.output.characteristics.data.tabular.extension_pred
     PredictionCharacteristicsExtension
 from mlrl.testbed.experiments.output.dataset.tabular.extension_ground_truth import GroundTruthExtension
 from mlrl.testbed.experiments.output.dataset.tabular.extension_prediction import PredictionExtension
-from mlrl.testbed.experiments.output.evaluation import ClassificationEvaluationDataExtractor, EvaluationResult, \
-    EvaluationWriter, RankingEvaluationDataExtractor, RegressionEvaluationDataExtractor
+from mlrl.testbed.experiments.output.evaluation.extension import EvaluationExtension
 from mlrl.testbed.experiments.output.label_vectors.extension import LabelVectorExtension
 from mlrl.testbed.experiments.output.model import ModelWriter
 from mlrl.testbed.experiments.output.parameters import ParameterWriter
@@ -43,7 +42,6 @@ from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificatio
     SkLearnRegressionProblem
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.runnables import Runnable
-from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
 from mlrl.util.format import format_enum_values, format_iterable, format_set
 from mlrl.util.options import BooleanOption, parse_param, parse_param_and_options
@@ -106,55 +104,6 @@ class SkLearnRunnable(Runnable, ABC):
         NONE: {},
         DATA_SPLIT_TRAIN_TEST: {OPTION_TEST_SIZE},
         DATA_SPLIT_CROSS_VALIDATION: {OPTION_NUM_FOLDS, OPTION_FIRST_FOLD, OPTION_LAST_FOLD}
-    }
-
-    PARAM_PRINT_EVALUATION = '--print-evaluation'
-
-    PRINT_EVALUATION_VALUES: Dict[str, Set[str]] = {
-        BooleanOption.TRUE.value: {
-            EvaluationResult.OPTION_ENABLE_ALL, EvaluationResult.OPTION_HAMMING_LOSS,
-            EvaluationResult.OPTION_HAMMING_ACCURACY, EvaluationResult.OPTION_SUBSET_ZERO_ONE_LOSS,
-            EvaluationResult.OPTION_SUBSET_ACCURACY, EvaluationResult.OPTION_MICRO_PRECISION,
-            EvaluationResult.OPTION_MICRO_RECALL, EvaluationResult.OPTION_MICRO_F1,
-            EvaluationResult.OPTION_MICRO_JACCARD, EvaluationResult.OPTION_MACRO_PRECISION,
-            EvaluationResult.OPTION_MACRO_RECALL, EvaluationResult.OPTION_MACRO_F1,
-            EvaluationResult.OPTION_MACRO_JACCARD, EvaluationResult.OPTION_EXAMPLE_WISE_PRECISION,
-            EvaluationResult.OPTION_EXAMPLE_WISE_RECALL, EvaluationResult.OPTION_EXAMPLE_WISE_F1,
-            EvaluationResult.OPTION_EXAMPLE_WISE_JACCARD, EvaluationResult.OPTION_ACCURACY,
-            EvaluationResult.OPTION_ZERO_ONE_LOSS, EvaluationResult.OPTION_PRECISION, EvaluationResult.OPTION_RECALL,
-            EvaluationResult.OPTION_F1, EvaluationResult.OPTION_JACCARD, EvaluationResult.OPTION_MEAN_ABSOLUTE_ERROR,
-            EvaluationResult.OPTION_MEAN_SQUARED_ERROR, EvaluationResult.OPTION_MEDIAN_ABSOLUTE_ERROR,
-            EvaluationResult.OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR, EvaluationResult.OPTION_RANK_LOSS,
-            EvaluationResult.OPTION_COVERAGE_ERROR, EvaluationResult.OPTION_LABEL_RANKING_AVERAGE_PRECISION,
-            EvaluationResult.OPTION_DISCOUNTED_CUMULATIVE_GAIN,
-            EvaluationResult.OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, OPTION_DECIMALS, OPTION_PERCENTAGE
-        },
-        BooleanOption.FALSE.value: {}
-    }
-
-    PARAM_STORE_EVALUATION = '--store-evaluation'
-
-    STORE_EVALUATION_VALUES: Dict[str, Set[str]] = {
-        BooleanOption.TRUE.value: {
-            EvaluationResult.OPTION_ENABLE_ALL, EvaluationResult.OPTION_HAMMING_LOSS,
-            EvaluationResult.OPTION_HAMMING_ACCURACY, EvaluationResult.OPTION_SUBSET_ZERO_ONE_LOSS,
-            EvaluationResult.OPTION_SUBSET_ACCURACY, EvaluationResult.OPTION_MICRO_PRECISION,
-            EvaluationResult.OPTION_MICRO_RECALL, EvaluationResult.OPTION_MICRO_F1,
-            EvaluationResult.OPTION_MICRO_JACCARD, EvaluationResult.OPTION_MACRO_PRECISION,
-            EvaluationResult.OPTION_MACRO_RECALL, EvaluationResult.OPTION_MACRO_F1,
-            EvaluationResult.OPTION_MACRO_JACCARD, EvaluationResult.OPTION_EXAMPLE_WISE_PRECISION,
-            EvaluationResult.OPTION_EXAMPLE_WISE_RECALL, EvaluationResult.OPTION_EXAMPLE_WISE_F1,
-            EvaluationResult.OPTION_EXAMPLE_WISE_JACCARD, EvaluationResult.OPTION_ACCURACY,
-            EvaluationResult.OPTION_ZERO_ONE_LOSS, EvaluationResult.OPTION_PRECISION, EvaluationResult.OPTION_RECALL,
-            EvaluationResult.OPTION_F1, EvaluationResult.OPTION_JACCARD, EvaluationResult.OPTION_MEAN_ABSOLUTE_ERROR,
-            EvaluationResult.OPTION_MEAN_SQUARED_ERROR, EvaluationResult.OPTION_MEDIAN_ABSOLUTE_ERROR,
-            EvaluationResult.OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR, EvaluationResult.OPTION_RANK_LOSS,
-            EvaluationResult.OPTION_COVERAGE_ERROR, EvaluationResult.OPTION_LABEL_RANKING_AVERAGE_PRECISION,
-            EvaluationResult.OPTION_DISCOUNTED_CUMULATIVE_GAIN,
-            EvaluationResult.OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, EvaluationResult.OPTION_TRAINING_TIME,
-            EvaluationResult.OPTION_PREDICTION_TIME, OPTION_DECIMALS, OPTION_PERCENTAGE
-        },
-        BooleanOption.FALSE.value: {}
     }
 
     PARAM_MODEL_SAVE_DIR = '--model-save-dir'
@@ -259,6 +208,7 @@ class SkLearnRunnable(Runnable, ABC):
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
         """
         return super().get_extensions() + [
+            EvaluationExtension(),
             TabularDataCharacteristicExtension(),
             LabelVectorExtension(),
             PredictionExtension(),
@@ -295,20 +245,6 @@ class SkLearnRunnable(Runnable, ABC):
             help='The strategy to be used for splitting the available data into training and test '
             + 'sets. Must be one of ' + format_set(self.DATA_SPLIT_VALUES.keys()) + '. For additional '
             + 'options refer to the documentation.')
-        argument_parser.add_argument(
-            self.PARAM_PRINT_EVALUATION,
-            type=str,
-            default=BooleanOption.TRUE.value,
-            help='Whether the evaluation results should be printed on the console or not. Must be one ' + 'of '
-            + format_set(self.PRINT_EVALUATION_VALUES.keys()) + '. For additional options '
-            + 'refer to the documentation.')
-        argument_parser.add_argument(
-            self.PARAM_STORE_EVALUATION,
-            type=str,
-            default=BooleanOption.TRUE.value,
-            help='Whether the evaluation results should be written into output files or not. Must be ' + 'one of '
-            + format_set(self.STORE_EVALUATION_VALUES.keys()) + '. Does only have an ' + 'effect if the argument '
-            + self.PARAM_OUTPUT_DIR + ' is specified. For additional ' + 'options refer to the documentation.')
         argument_parser.add_argument(
             '--one-hot-encoding',
             type=BooleanOption.parse,
@@ -399,8 +335,6 @@ class SkLearnRunnable(Runnable, ABC):
         experiment.add_post_training_output_writers(*filter(lambda listener: listener is not None, [
             self._create_model_writer(args),
         ]))
-        prediction_output_writers = self._create_prediction_output_writers(args, experiment.problem_domain)
-        experiment.add_prediction_output_writers(*prediction_output_writers)
         return experiment
 
     def _create_experiment(self, args, dataset_splitter: DatasetSplitter) -> Experiment:
@@ -413,23 +347,6 @@ class SkLearnRunnable(Runnable, ABC):
         """
         problem_domain = self._create_problem_domain(args)
         return SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
-
-    def _create_prediction_output_writers(self, args, problem_domain: ProblemDomain) -> List[OutputWriter]:
-        """
-        May be overridden by subclasses in order to create the output writers that should be invoked each time
-        predictions have been obtained from a model.
-
-        :param args:            The command line arguments
-        :param problem_domain:  The problem domain, the experiment is concerned with
-        :return:                A list that contains the output writers that have been created
-        """
-        output_writers = []
-        output_writer = self._create_evaluation_writer(args, problem_domain)
-
-        if output_writer:
-            output_writers.append(output_writer)
-
-        return output_writers
 
     def _create_model_reader(self, args) -> Optional[ModelReader]:
         """
@@ -470,43 +387,6 @@ class SkLearnRunnable(Runnable, ABC):
             return GlobalPredictor(prediction_type)
 
         return predictor_factory
-
-    def _create_evaluation_writer(self, args, problem_domain: ProblemDomain) -> Optional[OutputWriter]:
-        """
-        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output evaluation
-        results.
-
-        :param args:            The command line arguments
-        :param problem_domain:  The problem domain, the experiment is concerned with
-        :return:                The `OutputWriter` that has been created
-        """
-        sinks = []
-        value, options = parse_param_and_options(self.PARAM_PRINT_EVALUATION, args.print_evaluation,
-                                                 self.PRINT_EVALUATION_VALUES)
-
-        if (not value and args.print_all) or value == BooleanOption.TRUE.value:
-            sinks.append(LogSink(options))
-
-        value, options = parse_param_and_options(self.PARAM_STORE_EVALUATION, args.store_evaluation,
-                                                 self.STORE_EVALUATION_VALUES)
-
-        if ((not value and args.store_all) or value == BooleanOption.TRUE.value) and args.output_dir:
-            sinks.append(
-                CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
-
-        if sinks:
-            if isinstance(problem_domain, RegressionProblem):
-                extractor = RegressionEvaluationDataExtractor()
-            elif isinstance(problem_domain, ClassificationProblem) and problem_domain.prediction_type in {
-                    PredictionType.SCORES, PredictionType.PROBABILITIES
-            }:
-                extractor = RankingEvaluationDataExtractor()
-            else:
-                extractor = ClassificationEvaluationDataExtractor()
-
-            return EvaluationWriter(extractor).add_sinks(*sinks)
-
-        return None
 
     def _create_parameter_reader(self, args) -> Optional[ParameterReader]:
         """
