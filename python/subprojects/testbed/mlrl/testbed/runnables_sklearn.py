@@ -14,7 +14,6 @@ from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMix
 from mlrl.common.config.parameters import AUTOMATIC, NONE
 
 from mlrl.testbed_arff.experiments.input.sources import ArffFileSource
-from mlrl.testbed_arff.experiments.output.sinks import ArffFileSink
 
 from mlrl.testbed.experiments import Experiment, SkLearnExperiment
 from mlrl.testbed.experiments.input.dataset import DatasetReader, InputDataset
@@ -28,7 +27,7 @@ from mlrl.testbed.experiments.input.sources import CsvFileSource, PickleFileSour
 from mlrl.testbed.experiments.output.characteristics.data.tabular.extension import TabularDataCharacteristicExtension
 from mlrl.testbed.experiments.output.characteristics.data.tabular.extension_prediction import \
     PredictionCharacteristicsExtension
-from mlrl.testbed.experiments.output.dataset.tabular import GroundTruthWriter
+from mlrl.testbed.experiments.output.dataset.tabular.extension_ground_truth import GroundTruthExtension
 from mlrl.testbed.experiments.output.dataset.tabular.extension_prediction import PredictionExtension
 from mlrl.testbed.experiments.output.evaluation import ClassificationEvaluationDataExtractor, EvaluationResult, \
     EvaluationWriter, RankingEvaluationDataExtractor, RegressionEvaluationDataExtractor
@@ -158,17 +157,6 @@ class SkLearnRunnable(Runnable, ABC):
         BooleanOption.FALSE.value: {}
     }
 
-    PARAM_PRINT_GROUND_TRUTH = '--print-ground-truth'
-
-    PRINT_GROUND_TRUTH_VALUES: Dict[str, Set[str]] = {
-        BooleanOption.TRUE.value: {OPTION_DECIMALS},
-        BooleanOption.FALSE.value: {}
-    }
-
-    PARAM_STORE_GROUND_TRUTH = '--store-ground-truth'
-
-    STORE_GROUND_TRUTH_VALUES = PRINT_GROUND_TRUTH_VALUES
-
     PARAM_MODEL_SAVE_DIR = '--model-save-dir'
 
     PARAM_PARAMETER_SAVE_DIR = '--parameter-save-dir'
@@ -274,6 +262,7 @@ class SkLearnRunnable(Runnable, ABC):
             TabularDataCharacteristicExtension(),
             LabelVectorExtension(),
             PredictionExtension(),
+            GroundTruthExtension(),
             PredictionCharacteristicsExtension(),
         ]
 
@@ -385,20 +374,6 @@ class SkLearnRunnable(Runnable, ABC):
             help='Whether the parameter setting should be printed on the console or not. Must be one ' + 'of '
             + format_enum_values(BooleanOption) + '.')
         argument_parser.add_argument(
-            self.PARAM_PRINT_GROUND_TRUTH,
-            type=str,
-            default=BooleanOption.FALSE.value,
-            help='Whether the ground truth should be printed on the console or not. Must be one of '
-            + format_set(self.PRINT_GROUND_TRUTH_VALUES.keys()) + '. For additional options refer '
-            + 'to the documentation.')
-        argument_parser.add_argument(
-            self.PARAM_STORE_GROUND_TRUTH,
-            type=str,
-            default=BooleanOption.FALSE.value,
-            help='Whether the ground truth should be written into output files or not. Must be one of '
-            + format_set(self.STORE_GROUND_TRUTH_VALUES.keys()) + '. Does only have an effect, if ' + 'the argument '
-            + self.PARAM_OUTPUT_DIR + ' is specified. For additional options ' + 'refer to the documentation.')
-        argument_parser.add_argument(
             self.PARAM_PREDICTION_TYPE,
             type=str,
             default=PredictionType.BINARY.value,
@@ -450,11 +425,6 @@ class SkLearnRunnable(Runnable, ABC):
         """
         output_writers = []
         output_writer = self._create_evaluation_writer(args, problem_domain)
-
-        if output_writer:
-            output_writers.append(output_writer)
-
-        output_writer = self._create_ground_truth_writer(args)
 
         if output_writer:
             output_writers.append(output_writer)
@@ -566,30 +536,6 @@ class SkLearnRunnable(Runnable, ABC):
             sinks.append(CsvFileSink(directory=args.parameter_save_dir, create_directory=args.create_output_dir))
 
         return ParameterWriter().add_sinks(*sinks) if sinks else None
-
-    def _create_ground_truth_writer(self, args) -> Optional[OutputWriter]:
-        """
-        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output the ground
-        truth.
-
-        :param args:    The command line arguments
-        :return:        The `OutputWriter` that has been created
-        """
-        sinks = []
-        value, options = parse_param_and_options(self.PARAM_PRINT_GROUND_TRUTH, args.print_ground_truth,
-                                                 self.PRINT_GROUND_TRUTH_VALUES)
-
-        if (not value and args.print_all) or value == BooleanOption.TRUE.value:
-            sinks.append(LogSink(options=options))
-
-        value, options = parse_param_and_options(self.PARAM_STORE_GROUND_TRUTH, args.store_ground_truth,
-                                                 self.STORE_GROUND_TRUTH_VALUES)
-
-        if ((not value and args.store_all) or value == BooleanOption.TRUE.value) and args.output_dir:
-            sinks.append(
-                ArffFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
-
-        return GroundTruthWriter().add_sinks(*sinks) if sinks else None
 
     @abstractmethod
     def create_classifier(self, args) -> Optional[SkLearnClassifierMixin]:
