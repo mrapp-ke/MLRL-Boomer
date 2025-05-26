@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes that allow configuring the functionality to write calibration models to outputs.
+Provides classes that allow configuring the functionality to write calibration models to one or several sinks.
 """
 from argparse import ArgumentParser, Namespace
 from typing import Dict, List, Set

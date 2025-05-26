@@ -1,7 +1,8 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes that allow configuring the functionality to write characteristics of tabular datasets to outputs.
+Provides classes that allow configuring the functionality to write characteristics of tabular datasets to one or several
+sinks.
 """
 from argparse import ArgumentParser, Namespace
 from typing import Dict, List, Set
@@ -22,7 +23,7 @@ from mlrl.util.options import BooleanOption, parse_param_and_options
 
 class TabularDataCharacteristicExtension(Extension):
     """
-    An extension that configures the functionality to write characteristics of tabular datasets to outputs.
+    An extension that configures the functionality to write characteristics of tabular datasets to one or several sinks.
     """
 
     PARAM_PRINT_DATA_CHARACTERISTICS = '--print-data-characteristics'
