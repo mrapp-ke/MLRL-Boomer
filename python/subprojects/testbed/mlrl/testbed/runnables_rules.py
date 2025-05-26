@@ -14,15 +14,15 @@ from mlrl.common.learners import RuleLearner, SparsePolicy
 
 from mlrl.testbed.experiments import Experiment, SkLearnExperiment
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
-from mlrl.testbed.experiments.output.characteristics.model.profile import RuleModelCharacteristicsProfile
-from mlrl.testbed.experiments.output.model_text.profile import RuleModelProfile
-from mlrl.testbed.experiments.output.probability_calibration.profile import JointProbabilityCalibrationModelProfile, \
-    MarginalProbabilityCalibrationModelProfile
+from mlrl.testbed.experiments.output.characteristics.model.extension import RuleModelCharacteristicsExtension
+from mlrl.testbed.experiments.output.model_text.extension import RuleModelExtension
+from mlrl.testbed.experiments.output.probability_calibration.extension import \
+    JointProbabilityCalibrationModelExtension, MarginalProbabilityCalibrationModelExtension
 from mlrl.testbed.experiments.prediction import IncrementalPredictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
 from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnProblem
-from mlrl.testbed.profiles.profile import Profile
+from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.runnables_sklearn import SkLearnRunnable
 
 from mlrl.util.format import format_enum_values
@@ -76,15 +76,15 @@ class RuleLearnerRunnable(SkLearnRunnable):
         self.regressor_config_type = regressor_config_type
         self.regressor_parameters = regressor_parameters
 
-    def get_profiles(self) -> List[Profile]:
+    def get_extensions(self) -> List[Extension]:
         """
-        See :func:`mlrl.testbed.runnables.Runnable.get_profiles`
+        See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
         """
-        return super().get_profiles() + [
-            RuleModelProfile(),
-            RuleModelCharacteristicsProfile(),
-            MarginalProbabilityCalibrationModelProfile(),
-            JointProbabilityCalibrationModelProfile()
+        return super().get_extensions() + [
+            RuleModelExtension(),
+            RuleModelCharacteristicsExtension(),
+            MarginalProbabilityCalibrationModelExtension(),
+            JointProbabilityCalibrationModelExtension()
         ]
 
     def __create_config_type_and_parameters(self, problem_domain: ProblemDomain):

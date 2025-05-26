@@ -27,11 +27,11 @@ from mlrl.testbed.experiments.input.parameters import ParameterReader
 from mlrl.testbed.experiments.input.sources import CsvFileSource, PickleFileSource
 from mlrl.testbed.experiments.output.characteristics.data.tabular import OutputCharacteristics, \
     PredictionCharacteristicsWriter
-from mlrl.testbed.experiments.output.characteristics.data.tabular.profile import TabularDataCharacteristicProfile
+from mlrl.testbed.experiments.output.characteristics.data.tabular.extension import TabularDataCharacteristicExtension
 from mlrl.testbed.experiments.output.dataset.tabular import GroundTruthWriter, PredictionWriter
 from mlrl.testbed.experiments.output.evaluation import ClassificationEvaluationDataExtractor, EvaluationResult, \
     EvaluationWriter, RankingEvaluationDataExtractor, RegressionEvaluationDataExtractor
-from mlrl.testbed.experiments.output.label_vectors.profile import LabelVectorProfile
+from mlrl.testbed.experiments.output.label_vectors.extension import LabelVectorExtension
 from mlrl.testbed.experiments.output.model import ModelWriter
 from mlrl.testbed.experiments.output.parameters import ParameterWriter
 from mlrl.testbed.experiments.output.sinks import CsvFileSink, LogSink, PickleFileSink
@@ -41,7 +41,7 @@ from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
 from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificationProblem, SkLearnProblem, \
     SkLearnRegressionProblem
-from mlrl.testbed.profiles.profile import Profile
+from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.runnables import Runnable
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
@@ -292,11 +292,11 @@ class SkLearnRunnable(Runnable, ABC):
 
         return None
 
-    def get_profiles(self) -> List[Profile]:
+    def get_extensions(self) -> List[Extension]:
         """
-        See :func:`mlrl.testbed.runnables.Runnable.get_profiles`
+        See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
         """
-        return super().get_profiles() + [TabularDataCharacteristicProfile(), LabelVectorProfile()]
+        return super().get_extensions() + [TabularDataCharacteristicExtension(), LabelVectorExtension()]
 
     def configure_arguments(self, argument_parser: ArgumentParser):
         """
