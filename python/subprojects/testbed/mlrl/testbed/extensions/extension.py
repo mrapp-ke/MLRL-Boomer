@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for implementing profiles that add functionality to the command line API provided by this software
+Provides classes for implementing extensions that add functionality to the command line API provided by this software
 package.
 """
 from abc import ABC, abstractmethod
@@ -10,7 +10,7 @@ from argparse import ArgumentParser, Namespace
 from mlrl.testbed.experiments.experiment import Experiment
 
 
-class Profile(ABC):
+class Extension(ABC):
     """
     An abstract base class for all classes that add functionality to the command line API.
     """

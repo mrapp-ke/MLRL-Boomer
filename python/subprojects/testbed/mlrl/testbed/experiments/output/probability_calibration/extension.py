@@ -13,16 +13,16 @@ from mlrl.testbed.experiments.output.probability_calibration.writer import Proba
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
-from mlrl.testbed.profiles.profile import Profile
+from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.util.format import OPTION_DECIMALS
 
 from mlrl.util.format import format_enum_values
 from mlrl.util.options import BooleanOption, parse_param_and_options
 
 
-class MarginalProbabilityCalibrationModelProfile(Profile):
+class MarginalProbabilityCalibrationModelExtension(Extension):
     """
-    A profile that configures the functionality to write models for the calibration of marginal probabilities to
+    An extension that configures the functionality to write models for the calibration of marginal probabilities to
     outputs.
     """
 
@@ -39,7 +39,7 @@ class MarginalProbabilityCalibrationModelProfile(Profile):
 
     def configure_arguments(self, argument_parser: ArgumentParser):
         """
-        See :func:`mlrl.testbed.profiles.profile.Profile.configure_arguments`
+        See :func:`mlrl.testbed.extensions.extension.Extension.configure_arguments`
         """
         argument_parser.add_argument(
             self.PARAM_PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL,
@@ -75,7 +75,7 @@ class MarginalProbabilityCalibrationModelProfile(Profile):
 
     def configure_experiment(self, args: Namespace, experiment: Experiment):
         """
-        See :func:`mlrl.testbed.profiles.profile.Profile.configure_experiment`
+        See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
         sinks = self.__create_log_sinks(args) + self.__create_csv_file_sinks(args)
 
@@ -85,9 +85,10 @@ class MarginalProbabilityCalibrationModelProfile(Profile):
             experiment.add_post_training_output_writers(writer)
 
 
-class JointProbabilityCalibrationModelProfile(Profile):
+class JointProbabilityCalibrationModelExtension(Extension):
     """
-    A profile that configures the functionality to write models for the calibration of joint probabilities to outputs.
+    An extension that configures the functionality to write models for the calibration of joint probabilities to
+    outputs.
     """
 
     PARAM_PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL = '--print-joint-probability-calibration-model'
@@ -103,7 +104,7 @@ class JointProbabilityCalibrationModelProfile(Profile):
 
     def configure_arguments(self, argument_parser: ArgumentParser):
         """
-        See :func:`mlrl.testbed.profiles.profile.Profile.configure_arguments`
+        See :func:`mlrl.testbed.extensions.extension.Extension.configure_arguments`
         """
         argument_parser.add_argument(
             self.PARAM_PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL,
@@ -122,7 +123,7 @@ class JointProbabilityCalibrationModelProfile(Profile):
 
     def configure_experiment(self, args: Namespace, experiment: Experiment):
         """
-        See :func:`mlrl.testbed.profiles.profile.Profile.configure_experiment`
+        See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
         sinks = []
         value, options = parse_param_and_options(self.PARAM_PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL,

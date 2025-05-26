@@ -12,20 +12,20 @@ from mlrl.testbed.experiments.output.characteristics.model.writer import ModelCh
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
-from mlrl.testbed.profiles.profile import Profile
+from mlrl.testbed.extensions.extension import Extension
 
 from mlrl.util.format import format_enum_values
 from mlrl.util.options import BooleanOption
 
 
-class RuleModelCharacteristicsProfile(Profile):
+class RuleModelCharacteristicsExtension(Extension):
     """
-    A profile that configures the functionality to write characteristics of rule models to outputs.
+    An extension that configures the functionality to write characteristics of rule models to outputs.
     """
 
     def configure_arguments(self, argument_parser: ArgumentParser):
         """
-        See :func:`mlrl.testbed.profiles.profile.Profile.configure_arguments`
+        See :func:`mlrl.testbed.extensions.extension.Extension.configure_arguments`
         """
         argument_parser.add_argument(
             '--print-model-characteristics',
@@ -54,7 +54,7 @@ class RuleModelCharacteristicsProfile(Profile):
 
     def configure_experiment(self, args: Namespace, experiment: Experiment):
         """
-        See :func:`mlrl.testbed.profiles.profile.Profile.configure_experiment`
+        See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
         sinks = self.__create_log_sinks(args) + self.__create_csv_file_sinks(args)
 

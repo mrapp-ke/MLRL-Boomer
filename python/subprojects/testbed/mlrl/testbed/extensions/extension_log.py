@@ -10,14 +10,14 @@ from argparse import ArgumentParser, Namespace
 from enum import Enum
 
 from mlrl.testbed.experiments.experiment import Experiment
-from mlrl.testbed.profiles.profile import Profile
+from mlrl.testbed.extensions.extension import Extension
 
 from mlrl.util.format import format_set
 
 
-class LogProfile(Profile):
+class LogExtension(Extension):
     """
-    A profile that configures the logger to be used by the command line API.
+    An extension that configures the logger to be used by the command line API.
     """
 
     class LogLevel(Enum):
@@ -54,17 +54,17 @@ class LogProfile(Profile):
 
     def configure_arguments(self, argument_parser: ArgumentParser):
         """
-        See :func:`mlrl.testbed.profiles.profile.Profile.configure_arguments`
+        See :func:`mlrl.testbed.extensions.extension.Extension.configure_arguments`
         """
         argument_parser.add_argument('--log-level',
-                                     type=LogProfile.LogLevel.parse,
-                                     default=LogProfile.LogLevel.INFO.value,
+                                     type=LogExtension.LogLevel.parse,
+                                     default=LogExtension.LogLevel.INFO.value,
                                      help='The log level to be used. Must be one of '
-                                     + format_set(log_level.value[0] for log_level in LogProfile.LogLevel) + '.')
+                                     + format_set(log_level.value[0] for log_level in LogExtension.LogLevel) + '.')
 
     def configure_experiment(self, args: Namespace, _: Experiment):
         """
-        See :func:`mlrl.testbed.profiles.profile.Profile.configure_experiment`
+        See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
         log_level = args.log_level
         root = log.getLogger()
