@@ -30,9 +30,8 @@ from mlrl.testbed.experiments.output.dataset.tabular.extension_ground_truth impo
 from mlrl.testbed.experiments.output.dataset.tabular.extension_prediction import PredictionExtension
 from mlrl.testbed.experiments.output.evaluation.extension import EvaluationExtension
 from mlrl.testbed.experiments.output.label_vectors.extension import LabelVectorExtension
-from mlrl.testbed.experiments.output.model import ModelWriter
+from mlrl.testbed.experiments.output.model.extension import ModelOutputExtension
 from mlrl.testbed.experiments.output.parameters.extension import ParameterOutputExtension
-from mlrl.testbed.experiments.output.sinks import PickleFileSink
 from mlrl.testbed.experiments.prediction import GlobalPredictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
@@ -103,8 +102,6 @@ class SkLearnRunnable(Runnable, ABC):
         DATA_SPLIT_TRAIN_TEST: {OPTION_TEST_SIZE},
         DATA_SPLIT_CROSS_VALIDATION: {OPTION_NUM_FOLDS, OPTION_FIRST_FOLD, OPTION_LAST_FOLD}
     }
-
-    PARAM_MODEL_SAVE_DIR = '--model-save-dir'
 
     PARAM_OUTPUT_DIR = '--output-dir'
 
@@ -205,6 +202,7 @@ class SkLearnRunnable(Runnable, ABC):
         """
         return super().get_extensions() + [
             ModelInputExtension(),
+            ModelOutputExtension(),
             ParameterInputExtension(),
             ParameterOutputExtension(),
             EvaluationExtension(),
@@ -250,9 +248,6 @@ class SkLearnRunnable(Runnable, ABC):
             default=False,
             help='Whether one-hot-encoding should be used to encode nominal features or not. Must be ' + 'one of '
             + format_enum_values(BooleanOption) + '.')
-        argument_parser.add_argument(self.PARAM_MODEL_SAVE_DIR,
-                                     type=str,
-                                     help='The path to the directory to which models should be saved.')
         argument_parser.add_argument(self.PARAM_OUTPUT_DIR,
                                      type=str,
                                      help='The path to the directory where experimental results should be saved.')
@@ -260,7 +255,7 @@ class SkLearnRunnable(Runnable, ABC):
                                      type=BooleanOption.parse,
                                      default=True,
                                      help='Whether the directories specified via the arguments ' + self.PARAM_OUTPUT_DIR
-                                     + ', ' + self.PARAM_MODEL_SAVE_DIR + ' and '
+                                     + ', ' + ModelOutputExtension.PARAM_MODEL_SAVE_DIR + ' and '
                                      + ParameterOutputExtension.PARAM_PARAMETER_SAVE_DIR + ' should '
                                      + 'automatically be created, if they do not exist, or not. Must be one of '
                                      + format_enum_values(BooleanOption) + '.')
@@ -306,9 +301,6 @@ class SkLearnRunnable(Runnable, ABC):
         experiment.add_listeners(*filter(lambda listener: listener is not None, [
             self.__create_clear_output_directory_listener(args, dataset_splitter),
         ]))
-        experiment.add_post_training_output_writers(*filter(lambda listener: listener is not None, [
-            self._create_model_writer(args),
-        ]))
         return experiment
 
     def _create_experiment(self, args, dataset_splitter: DatasetSplitter) -> Experiment:
@@ -321,20 +313,6 @@ class SkLearnRunnable(Runnable, ABC):
         """
         problem_domain = self._create_problem_domain(args)
         return SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
-
-    def _create_model_writer(self, args) -> Optional[ModelWriter]:
-        """
-        May be overridden by subclasses in order to create the `ModelWriter` that should be used for saving models.
-
-        :param args:    The command line arguments
-        :return:        The `ModelWriter` that has been created
-        """
-        model_save_dir = args.model_save_dir
-
-        if model_save_dir:
-            pickle_sink = PickleFileSink(directory=model_save_dir, create_directory=args.create_output_dir)
-            return ModelWriter(exit_on_error=args.exit_on_error).add_sinks(pickle_sink)
-        return None
 
     # pylint: disable=unused-argument
     def _create_predictor_factory(self, args, prediction_type: PredictionType) -> SkLearnProblem.PredictorFactory:
