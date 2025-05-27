@@ -21,9 +21,8 @@ from mlrl.testbed.experiments.input.dataset.preprocessors import Preprocessor
 from mlrl.testbed.experiments.input.dataset.preprocessors.tabular import OneHotEncoder
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter, NoSplitter
 from mlrl.testbed.experiments.input.dataset.splitters.tabular import BipartitionSplitter, CrossValidationSplitter
-from mlrl.testbed.experiments.input.model import ModelReader
+from mlrl.testbed.experiments.input.model.extension import ModelInputExtension
 from mlrl.testbed.experiments.input.parameters.extension import ParameterInputExtension
-from mlrl.testbed.experiments.input.sources import PickleFileSource
 from mlrl.testbed.experiments.output.characteristics.data.tabular.extension import TabularDataCharacteristicExtension
 from mlrl.testbed.experiments.output.characteristics.data.tabular.extension_prediction import \
     PredictionCharacteristicsExtension
@@ -205,6 +204,7 @@ class SkLearnRunnable(Runnable, ABC):
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
         """
         return super().get_extensions() + [
+            ModelInputExtension(),
             ParameterInputExtension(),
             ParameterOutputExtension(),
             EvaluationExtension(),
@@ -250,9 +250,6 @@ class SkLearnRunnable(Runnable, ABC):
             default=False,
             help='Whether one-hot-encoding should be used to encode nominal features or not. Must be ' + 'one of '
             + format_enum_values(BooleanOption) + '.')
-        argument_parser.add_argument('--model-load-dir',
-                                     type=str,
-                                     help='The path to the directory from which models should be loaded.')
         argument_parser.add_argument(self.PARAM_MODEL_SAVE_DIR,
                                      type=str,
                                      help='The path to the directory to which models should be saved.')
@@ -309,9 +306,6 @@ class SkLearnRunnable(Runnable, ABC):
         experiment.add_listeners(*filter(lambda listener: listener is not None, [
             self.__create_clear_output_directory_listener(args, dataset_splitter),
         ]))
-        experiment.add_input_readers(*filter(lambda listener: listener is not None, [
-            self._create_model_reader(args),
-        ]))
         experiment.add_post_training_output_writers(*filter(lambda listener: listener is not None, [
             self._create_model_writer(args),
         ]))
@@ -327,16 +321,6 @@ class SkLearnRunnable(Runnable, ABC):
         """
         problem_domain = self._create_problem_domain(args)
         return SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
-
-    def _create_model_reader(self, args) -> Optional[ModelReader]:
-        """
-        May be overridden by subclasses in order to create the `ModelReader` that should be used for loading models.
-
-        :param args:    The command line arguments
-        :return:        The `ModelReader` that has been created
-        """
-        model_load_dir = args.model_load_dir
-        return ModelReader(PickleFileSource(model_load_dir)) if model_load_dir else None
 
     def _create_model_writer(self, args) -> Optional[ModelWriter]:
         """
