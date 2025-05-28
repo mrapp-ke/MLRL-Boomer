@@ -23,9 +23,9 @@ class Runnable(ABC):
     is implemented by individual extensions that are applied to the runnable.
     """
 
-    class BaseExtension(Extension):
+    class PredictionDatasetExtension(Extension):
         """
-        A basic extension that is applied to all runnables.
+        An extension that configures the functionality to predict for different datasets.
         """
 
         def configure_arguments(self, argument_parser: ArgumentParser):
@@ -102,7 +102,11 @@ class Runnable(ABC):
 
         :return: A list that contains the extensions to be applied to the runnable
         """
-        return [Runnable.BaseExtension(), Runnable.VersionExtension(self.get_program_info()), LogExtension()]
+        return [
+            Runnable.PredictionDatasetExtension(),
+            Runnable.VersionExtension(self.get_program_info()),
+            LogExtension()
+        ]
 
     def get_program_info(self) -> Optional[ProgramInfo]:
         """
