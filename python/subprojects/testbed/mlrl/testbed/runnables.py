@@ -81,21 +81,6 @@ class Runnable(ABC):
             See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
             """
 
-    def run(self, args: Namespace):
-        """
-        Executes the runnable.
-
-        :param args: The command line arguments specified by the user
-        """
-        experiment = self.create_experiment(args)
-
-        for extension in self.get_extensions():
-            extension.configure_experiment(args, experiment)
-
-        should_predict = bool(experiment.prediction_output_writers)
-        experiment.run(predict_for_training_dataset=should_predict and args.predict_for_training_data,
-                       predict_for_test_dataset=should_predict and args.predict_for_test_data)
-
     def get_extensions(self) -> List[Extension]:
         """
         May be overridden by subclasses in order to return the extensions that should be applied to the runnable.
@@ -116,6 +101,21 @@ class Runnable(ABC):
         :return: A `ProgramInfo` or None, if no information is provided
         """
         return None
+
+    def run(self, args: Namespace):
+        """
+        Executes the runnable.
+
+        :param args: The command line arguments specified by the user
+        """
+        experiment = self.create_experiment(args)
+
+        for extension in self.get_extensions():
+            extension.configure_experiment(args, experiment)
+
+        should_predict = bool(experiment.prediction_output_writers)
+        experiment.run(predict_for_training_dataset=should_predict and args.predict_for_training_data,
+                       predict_for_test_dataset=should_predict and args.predict_for_test_data)
 
     # pylint: disable=unused-argument
     def configure_arguments(self, argument_parser: ArgumentParser, show_help: bool):
