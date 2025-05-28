@@ -43,6 +43,8 @@ class Experiment(ABC):
             self.pre_training_output_writers = []
             self.post_training_output_writers = []
             self.prediction_output_writers = []
+            self.predict_for_training_dataset = False
+            self.predict_for_test_dataset = True
 
         def add_listeners(self, *listeners: 'Experiment.Listener') -> 'Experiment.Builder':
             """
@@ -95,6 +97,28 @@ class Experiment(ABC):
             self.prediction_output_writers.extend(output_writers)
             return self
 
+        def set_predict_for_training_dataset(self, predict_for_training_dataset: bool) -> 'Experiment.Builder':
+            """
+            Sets whether predictions should be obtained for the training dataset or not.
+
+            :param predict_for_training_dataset:    True, if predictions should be obtained for the training dataset,
+                                                    False otherwise
+            :return:                                The builder itself
+            """
+            self.predict_for_training_dataset = predict_for_training_dataset
+            return self
+
+        def set_predict_for_test_dataset(self, predict_for_test_dataset: bool) -> 'Experiment.Builder':
+            """
+            Sets whether predictions should be obtained for the test dataset, if available, or not.
+
+            :param predict_for_test_dataset:    True, if predictions should be obtained for the test dataset, if
+                                                available, False otherwise
+            :return:                            The builder itself
+            """
+            self.predict_for_test_dataset = predict_for_test_dataset
+            return self
+
         def build(self) -> 'Experiment':
             """
             Creates and returns a new experiment according to the specified configuration.
@@ -108,6 +132,14 @@ class Experiment(ABC):
             experiment.post_training_output_writers.extend(self.post_training_output_writers)
             experiment.prediction_output_writers.extend(self.prediction_output_writers)
             return experiment
+
+        def run(self):
+            """
+            Creates and runs a new experiment according to the specified configuration.
+            """
+            should_predict = bool(self.prediction_output_writers)
+            self.build().run(predict_for_training_dataset=should_predict and self.predict_for_training_dataset,
+                             predict_for_test_dataset=should_predict and self.predict_for_test_dataset)
 
         @abstractmethod
         def _create_experiment(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter) -> 'Experiment':
@@ -232,7 +264,7 @@ class Experiment(ABC):
         ]
 
     # pylint: disable=too-many-branches
-    def run(self, predict_for_training_dataset: bool = False, predict_for_test_dataset: bool = True):
+    def run(self, predict_for_training_dataset: bool, predict_for_test_dataset: bool):
         """
         Runs the experiment.
 
