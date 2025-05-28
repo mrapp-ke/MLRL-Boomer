@@ -3,11 +3,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow configuring the functionality to write ground truth to one or several sinks.
 """
-from argparse import ArgumentParser, Namespace
+from argparse import Namespace
 from typing import Dict, List, Set
 
 from mlrl.testbed_arff.experiments.output.sinks.sink_arff import ArffFileSink
 
+from mlrl.testbed.cli import Argument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.dataset.tabular.writer_ground_truth import GroundTruthWriter
 from mlrl.testbed.experiments.output.extension import OutputExtension
@@ -16,7 +17,6 @@ from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.util.format import OPTION_DECIMALS
 
-from mlrl.util.format import format_set
 from mlrl.util.options import BooleanOption, parse_param_and_options
 
 
@@ -36,24 +36,25 @@ class GroundTruthExtension(Extension):
 
     STORE_GROUND_TRUTH_VALUES = PRINT_GROUND_TRUTH_VALUES
 
-    def configure_arguments(self, argument_parser: ArgumentParser):
+    def get_arguments(self) -> List[Argument]:
         """
-        See :func:`mlrl.testbed.extensions.extension.Extension.configure_arguments`
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
-        argument_parser.add_argument(
-            self.PARAM_PRINT_GROUND_TRUTH,
-            type=str,
-            default=BooleanOption.FALSE.value,
-            help='Whether the ground truth should be printed on the console or not. Must be one of '
-            + format_set(self.PRINT_GROUND_TRUTH_VALUES.keys()) + '. For additional options refer to the '
-            + 'documentation.')
-        argument_parser.add_argument(
-            self.PARAM_STORE_GROUND_TRUTH,
-            type=str,
-            default=BooleanOption.FALSE.value,
-            help='Whether the ground truth should be written into output files or not. Must be one of '
-            + format_set(self.STORE_GROUND_TRUTH_VALUES.keys()) + '. Does only have an effect, if the argument '
-            + OutputExtension.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the documentation.')
+        return [
+            Argument.bool(
+                self.PARAM_PRINT_GROUND_TRUTH,
+                default=False,
+                help='Whether the ground truth should be printed on the console or not.',
+                true_options={OPTION_DECIMALS},
+            ),
+            Argument.bool(
+                self.PARAM_STORE_GROUND_TRUTH,
+                default=False,
+                help='Whether the ground truth should be written into output files or not. Does only have an effect, '
+                + 'if the argument ' + OutputExtension.PARAM_OUTPUT_DIR + ' is specified.',
+                true_options={OPTION_DECIMALS},
+            ),
+        ]
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         value, options = parse_param_and_options(self.PARAM_PRINT_GROUND_TRUTH, args.print_ground_truth,

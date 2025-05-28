@@ -5,8 +5,10 @@ Provides classes for implementing extensions that add functionality to the comma
 package.
 """
 from abc import ABC, abstractmethod
-from argparse import ArgumentParser, Namespace
+from argparse import Namespace
+from typing import List
 
+from mlrl.testbed.cli import Argument
 from mlrl.testbed.experiments.experiment import Experiment
 
 
@@ -16,11 +18,11 @@ class Extension(ABC):
     """
 
     @abstractmethod
-    def configure_arguments(self, argument_parser: ArgumentParser):
+    def get_arguments(self) -> List[Argument]:
         """
-        Must be implemented by subclasses in order to configure a given argument parser.
+        Must be implemented by subclasses in order to return the arguments that should be added to the command line API.
 
-        :param argument_parser: The argument parser to be configured
+        :return: A list that contains the argument that should be added to the command line API
         """
 
     @abstractmethod

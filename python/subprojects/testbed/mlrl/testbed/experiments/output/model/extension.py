@@ -3,8 +3,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow configuring the functionality to write models to one or several sinks.
 """
-from argparse import ArgumentParser, Namespace
+from argparse import Namespace
+from typing import List
 
+from mlrl.testbed.cli import Argument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.model.writer import ModelWriter
 from mlrl.testbed.experiments.output.sinks.sink_pickle import PickleFileSink
@@ -18,13 +20,16 @@ class ModelOutputExtension(Extension):
 
     PARAM_MODEL_SAVE_DIR = '--model-save-dir'
 
-    def configure_arguments(self, argument_parser: ArgumentParser):
+    def get_arguments(self) -> List[Argument]:
         """
-        See :func:`mlrl.testbed.extensions.extension.Extension.configure_arguments`
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
-        argument_parser.add_argument(self.PARAM_MODEL_SAVE_DIR,
-                                     type=str,
-                                     help='The path to the directory where models should be saved.')
+        return [
+            Argument.string(
+                self.PARAM_MODEL_SAVE_DIR,
+                help='The path to the directory where models should be saved.',
+            ),
+        ]
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """

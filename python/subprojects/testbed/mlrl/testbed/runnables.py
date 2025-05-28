@@ -5,16 +5,14 @@ Provides base classes for programs that can be configured via command line argum
 """
 
 from abc import ABC, abstractmethod
-from argparse import ArgumentParser, Namespace
+from argparse import Namespace
 from typing import List, Optional
 
+from mlrl.testbed.cli import Argument, CommandLineInterface
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.extensions import Extension
 from mlrl.testbed.extensions.extension_log import LogExtension
 from mlrl.testbed.program_info import ProgramInfo
-
-from mlrl.util.format import format_enum_values
-from mlrl.util.options import BooleanOption
 
 
 class Runnable(ABC):
@@ -28,22 +26,22 @@ class Runnable(ABC):
         An extension that configures the functionality to predict for different datasets.
         """
 
-        def configure_arguments(self, argument_parser: ArgumentParser):
+        def get_arguments(self) -> List[Argument]:
             """
-            See :func:`mlrl.testbed.extensions.extension.Extension.configure_arguments`
+            See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
             """
-            argument_parser.add_argument(
-                '--predict-for-training-data',
-                type=BooleanOption.parse,
-                default=False,
-                help='Whether predictions should be obtained for the training data or not. Must be one of '
-                + format_enum_values(BooleanOption) + '.')
-            argument_parser.add_argument(
-                '--predict-for-test-data',
-                type=BooleanOption.parse,
-                default=True,
-                help='Whether predictions should be obtained for the test data or not. Must be one of '
-                + format_enum_values(BooleanOption) + '.')
+            return [
+                Argument.bool(
+                    '--predict-for-training-data',
+                    default=False,
+                    help='Whether predictions should be obtained for the training data or not.',
+                ),
+                Argument.bool(
+                    '--predict-for-test-data',
+                    default=True,
+                    help='Whether predictions should be obtained for the test data or not.',
+                ),
+            ]
 
         def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
             """
@@ -52,48 +50,13 @@ class Runnable(ABC):
             experiment_builder.set_predict_for_training_dataset(args.predict_for_training_data)
             experiment_builder.set_predict_for_test_dataset(args.predict_for_test_data)
 
-    class VersionExtension(Extension):
-        """
-        An extension that configures the functionality to show information about a program when the "--version" flag is
-        passed to the command line API.
-        """
-
-        def __init__(self, program_info: Optional[ProgramInfo]):
-            """
-            :param program_info:    Information about a program to be shown when the "--version" flag is passed to the
-                                    command line API
-            """
-            self.program_info = program_info
-
-        def configure_arguments(self, argument_parser: ArgumentParser):
-            """
-            See :func:`mlrl.testbed.extensions.extension.Extension.configure_arguments`
-            """
-            program_info = self.program_info
-
-            if program_info:
-                argument_parser.add_argument('-v',
-                                             '--version',
-                                             action='version',
-                                             version=str(program_info),
-                                             help='Display information about the program\'s version.')
-
-        def configure_experiment(self, args: Namespace, _: Experiment.Builder):
-            """
-            See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
-            """
-
     def get_extensions(self) -> List[Extension]:
         """
         May be overridden by subclasses in order to return the extensions that should be applied to the runnable.
 
         :return: A list that contains the extensions to be applied to the runnable
         """
-        return [
-            Runnable.PredictionDatasetExtension(),
-            Runnable.VersionExtension(self.get_program_info()),
-            LogExtension()
-        ]
+        return [Runnable.PredictionDatasetExtension(), LogExtension()]
 
     def get_program_info(self) -> Optional[ProgramInfo]:
         """
@@ -117,16 +80,14 @@ class Runnable(ABC):
 
         experiment_builder.run()
 
-    # pylint: disable=unused-argument
-    def configure_arguments(self, argument_parser: ArgumentParser, show_help: bool):
+    def configure_arguments(self, cli: CommandLineInterface):
         """
-        Configures a given argument parser according to the extensions applied to the runnable.
+        Configures the command line interface according to the extensions applied to the runnable.
 
-        :param argument_parser: The argument parser to be configured
-        :param show_help:       True, if the help text of the program should be shown, False otherwise
+        :param cli: The command line interface to be configured
         """
         for extension in self.get_extensions():
-            extension.configure_arguments(argument_parser)
+            cli.add_arguments(*extension.get_arguments())
 
     @abstractmethod
     def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:
