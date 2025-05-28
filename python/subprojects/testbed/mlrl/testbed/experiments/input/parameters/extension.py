@@ -25,7 +25,7 @@ class ParameterInputExtension(Extension):
             type=str,
             help='The path to the directory from which parameter to be used by the algorithm should be loaded.')
 
-    def configure_experiment(self, args: Namespace, experiment: Experiment):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -33,4 +33,4 @@ class ParameterInputExtension(Extension):
 
         if parameter_load_dir:
             reader = ParameterReader(CsvFileSource(parameter_load_dir))
-            experiment.add_input_readers(reader)
+            experiment_builder.add_input_readers(reader)

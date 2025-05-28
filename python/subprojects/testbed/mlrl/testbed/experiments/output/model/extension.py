@@ -26,7 +26,7 @@ class ModelOutputExtension(Extension):
                                      type=str,
                                      help='The path to the directory where models should be saved.')
 
-    def configure_experiment(self, args: Namespace, experiment: Experiment):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -35,4 +35,4 @@ class ModelOutputExtension(Extension):
         if model_save_dir:
             pickle_sink = PickleFileSink(directory=model_save_dir, create_directory=args.create_output_dir)
             writer = ModelWriter(exit_on_error=args.exit_on_error).add_sinks(pickle_sink)
-            experiment.add_post_training_output_writers(writer)
+            experiment_builder.add_post_training_output_writers(writer)

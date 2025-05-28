@@ -58,7 +58,7 @@ class OutputExtension(Extension):
                                      + OutputExtension.PARAM_OUTPUT_DIR + ' should be deleted before an experiment '
                                      + 'starts or not. Must be one of ' + format_iterable(BooleanOption) + '.')
 
-    def configure_experiment(self, args: Namespace, experiment: Experiment):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -66,4 +66,4 @@ class OutputExtension(Extension):
 
         if output_dir and args.wipe_output_dir:
             listener = OutputExtension.WipeDirectoryListener(output_dir)
-            experiment.add_listeners(listener)
+            experiment_builder.add_listeners(listener)
