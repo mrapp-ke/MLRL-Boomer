@@ -79,5 +79,4 @@ class RuleModelExtension(Extension):
 
         if sinks:
             writer = ModelAsTextWriter(RuleModelAsTextExtractor()).add_sinks(*sinks)
-            writer.exit_on_error = args.exit_on_error
             experiment_builder.add_post_training_output_writers(writer)

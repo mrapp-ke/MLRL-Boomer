@@ -80,5 +80,4 @@ class LabelVectorExtension(Extension):
 
         if sinks:
             writer = LabelVectorWriter(LabelVectorSetExtractor()).add_sinks(*sinks)
-            writer.exit_on_error = args.exit_on_error
             experiment_builder.add_post_training_output_writers(writer)
