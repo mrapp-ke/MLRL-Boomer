@@ -62,6 +62,6 @@ class RuleModelCharacteristicsExtension(Extension):
         sinks = self.__create_log_sinks(args) + self.__create_csv_file_sinks(args)
 
         if sinks:
-            writer = ModelCharacteristicsWriter(RuleModelCharacteristicsExtractor(),
-                                                exit_on_error=args.exit_on_error).add_sinks(*sinks)
+            writer = ModelCharacteristicsWriter(RuleModelCharacteristicsExtractor()).add_sinks(*sinks)
+            writer.exit_on_error = args.exit_on_error
             experiment_builder.add_post_training_output_writers(writer)
