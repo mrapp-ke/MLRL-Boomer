@@ -24,7 +24,7 @@ class ModelInputExtension(Extension):
                                      type=str,
                                      help='The path to the directory from which models should be loaded.')
 
-    def configure_experiment(self, args: Namespace, experiment: Experiment):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -32,4 +32,4 @@ class ModelInputExtension(Extension):
 
         if model_load_dir:
             reader = ModelReader(PickleFileSource(model_load_dir))
-            experiment.add_input_readers(reader)
+            experiment_builder.add_input_readers(reader)

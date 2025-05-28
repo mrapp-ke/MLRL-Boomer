@@ -24,11 +24,11 @@ class Extension(ABC):
         """
 
     @abstractmethod
-    def configure_experiment(self, args: Namespace, experiment: Experiment):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         Must be implemented by subclasses in order to configure an experiment according to the command line arguments
         specified by the user.
 
-        :param args:        The command line arguments specified by the user
-        :param experiment:  The experiment to be configured
+        :param args:                The command line arguments specified by the user
+        :param experiment_builder:  A builder that allows to configure the experiment
         """

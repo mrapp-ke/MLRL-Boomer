@@ -113,14 +113,14 @@ class EvaluationExtension(Extension):
             return [CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options)]
         return []
 
-    def configure_experiment(self, args: Namespace, experiment: Experiment):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
         sinks = self.__create_log_sinks(args) + self.__create_csv_file_sinks(args)
 
         if sinks:
-            problem_domain = experiment.problem_domain
+            problem_domain = experiment_builder.problem_domain
 
             if isinstance(problem_domain, RegressionProblem):
                 extractor = RegressionEvaluationDataExtractor()
@@ -132,4 +132,4 @@ class EvaluationExtension(Extension):
                 extractor = ClassificationEvaluationDataExtractor()
 
             writer = EvaluationWriter(extractor).add_sinks(*sinks)
-            experiment.add_prediction_output_writers(writer)
+            experiment_builder.add_prediction_output_writers(writer)

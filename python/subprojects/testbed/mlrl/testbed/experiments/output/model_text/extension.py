@@ -71,7 +71,7 @@ class RuleModelExtension(Extension):
             return [TextFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options)]
         return []
 
-    def configure_experiment(self, args: Namespace, experiment: Experiment):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -79,4 +79,4 @@ class RuleModelExtension(Extension):
 
         if sinks:
             writer = ModelAsTextWriter(RuleModelAsTextExtractor(), exit_on_error=args.exit_on_error).add_sinks(*sinks)
-            experiment.add_post_training_output_writers(writer)
+            experiment_builder.add_post_training_output_writers(writer)
