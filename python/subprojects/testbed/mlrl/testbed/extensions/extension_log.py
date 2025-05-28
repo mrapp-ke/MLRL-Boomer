@@ -6,13 +6,13 @@ Provides classes that allow configuring the logger.
 import logging as log
 import sys
 
-from argparse import ArgumentParser, Namespace
+from argparse import Namespace
 from enum import Enum
+from typing import List
 
+from mlrl.testbed.cli import Argument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.extensions.extension import Extension
-
-from mlrl.util.format import format_set
 
 
 class LogExtension(Extension):
@@ -24,14 +24,14 @@ class LogExtension(Extension):
         """
         Specifies all valid textual representations of log levels.
         """
-        DEBUG = ('debug', log.DEBUG)
-        INFO = ('info', log.INFO)
-        WARN = ('warn', log.WARN)
-        WARNING = ('warning', log.WARNING)
-        ERROR = ('error', log.ERROR)
-        CRITICAL = ('critical', log.CRITICAL)
-        FATAL = ('fatal', log.FATAL)
-        NOTSET = ('notset', log.NOTSET)
+        DEBUG = log.DEBUG
+        INFO = log.INFO
+        WARN = log.WARN
+        WARNING = log.WARNING
+        ERROR = log.ERROR
+        CRITICAL = log.CRITICAL
+        FATAL = log.FATAL
+        NOTSET = log.NOTSET
 
         @classmethod
         def parse(cls, text: str):
@@ -45,28 +45,29 @@ class LogExtension(Extension):
             lower_text = text.lower()
 
             for enum in cls:
-                level_name, level_int = enum.value
-
-                if level_name == lower_text:
-                    return level_int
+                if enum.name.lower() == lower_text:
+                    return enum.value
 
             raise ValueError()
 
-    def configure_arguments(self, argument_parser: ArgumentParser):
+    def get_arguments(self) -> List[Argument]:
         """
-        See :func:`mlrl.testbed.extensions.extension.Extension.configure_arguments`
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
-        argument_parser.add_argument('--log-level',
-                                     type=LogExtension.LogLevel.parse,
-                                     default=LogExtension.LogLevel.INFO.value,
-                                     help='The log level to be used. Must be one of '
-                                     + format_set(log_level.value[0] for log_level in LogExtension.LogLevel) + '.')
+        return [
+            Argument.set(
+                '--log-level',
+                values=LogExtension.LogLevel,
+                default=LogExtension.LogLevel.INFO,
+                help='The log level to be used.',
+            ),
+        ]
 
     def configure_experiment(self, args: Namespace, _: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        log_level = args.log_level
+        log_level = LogExtension.LogLevel.parse(args.log_level)
         root = log.getLogger()
         root.setLevel(log_level)
         out_handler = log.StreamHandler(sys.stdout)

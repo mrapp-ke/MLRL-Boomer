@@ -4,9 +4,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write characteristics of binary predictions to one or
 several sinks.
 """
-from argparse import ArgumentParser, Namespace
+from argparse import Namespace
 from typing import Dict, List, Set
 
+from mlrl.testbed.cli import Argument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.characteristics.data.tabular.characteristics import OutputCharacteristics
 from mlrl.testbed.experiments.output.characteristics.data.tabular.writer_prediction import \
@@ -19,7 +20,6 @@ from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
-from mlrl.util.format import format_set
 from mlrl.util.options import BooleanOption, parse_param_and_options
 
 
@@ -48,27 +48,39 @@ class PredictionCharacteristicsExtension(Extension):
 
     STORE_PREDICTION_CHARACTERISTICS_VALUES = PRINT_PREDICTION_CHARACTERISTICS_VALUES
 
-    def configure_arguments(self, argument_parser: ArgumentParser):
+    def get_arguments(self) -> List[Argument]:
         """
-        See :func:`mlrl.testbed.extensions.extension.Extension.configure_arguments`
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
-        argument_parser.add_argument(
-            self.PARAM_PRINT_PREDICTION_CHARACTERISTICS,
-            type=str,
-            default=BooleanOption.FALSE.value,
-            help='Whether the characteristics of binary predictions should be printed on the console or not. Must be '
-            + 'one of ' + format_set(self.PRINT_PREDICTION_CHARACTERISTICS_VALUES.keys()) + '. Does only have an '
-            + 'effect if the argument ' + self.PARAM_PREDICTION_TYPE + ' is set to ' + PredictionType.BINARY.value
-            + '. For additional options refer to the documentation.')
-        argument_parser.add_argument(
-            self.PARAM_STORE_PREDICTION_CHARACTERISTICS,
-            type=str,
-            default=BooleanOption.FALSE.value,
-            help='Whether the characteristics of binary predictions should be written into output files or not. Must '
-            + 'be one of ' + format_set(self.STORE_PREDICTION_CHARACTERISTICS_VALUES.keys()) + '. Does only have an '
-            + 'effect if the argument ' + self.PARAM_PREDICTION_TYPE + ' is set to ' + PredictionType.BINARY.value
-            + ' and if the argument ' + OutputExtension.PARAM_OUTPUT_DIR + ' is specified. For additional options '
-            + 'refer to the documentation.')
+        return [
+            Argument.bool(
+                self.PARAM_PRINT_PREDICTION_CHARACTERISTICS,
+                default=False,
+                help='Whether the characteristics of binary predictions should be printed on the console or not. Does '
+                + 'only have an effect if the argument ' + self.PARAM_PREDICTION_TYPE + ' is set to '
+                + PredictionType.BINARY.value + '.',
+                true_options={
+                    OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,
+                    OutputCharacteristics.OPTION_OUTPUT_SPARSITY, OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
+                    OutputCharacteristics.OPTION_LABEL_CARDINALITY, OutputCharacteristics.OPTION_DISTINCT_LABEL_VECTORS,
+                    OPTION_DECIMALS, OPTION_PERCENTAGE
+                },
+            ),
+            Argument.bool(
+                self.PARAM_STORE_PREDICTION_CHARACTERISTICS,
+                default=False,
+                help='Whether the characteristics of binary predictions should be written into output files or not. '
+                + 'Does only have an effect if the argument ' + self.PARAM_PREDICTION_TYPE + ' is set to '
+                + PredictionType.BINARY.value + ' and if the argument ' + OutputExtension.PARAM_OUTPUT_DIR + ' is '
+                + 'specified.',
+                true_options={
+                    OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,
+                    OutputCharacteristics.OPTION_OUTPUT_SPARSITY, OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
+                    OutputCharacteristics.OPTION_LABEL_CARDINALITY, OutputCharacteristics.OPTION_DISTINCT_LABEL_VECTORS,
+                    OPTION_DECIMALS, OPTION_PERCENTAGE
+                },
+            ),
+        ]
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         value, options = parse_param_and_options(self.PARAM_PRINT_PREDICTION_CHARACTERISTICS,
