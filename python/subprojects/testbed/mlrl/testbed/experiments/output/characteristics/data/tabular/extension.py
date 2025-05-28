@@ -82,7 +82,7 @@ class TabularDataCharacteristicExtension(Extension):
             return [CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options)]
         return []
 
-    def configure_experiment(self, args: Namespace, experiment: Experiment):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -90,4 +90,4 @@ class TabularDataCharacteristicExtension(Extension):
 
         if sinks:
             writer = DataCharacteristicsWriter().add_sinks(*sinks)
-            experiment.add_pre_training_output_writers(writer)
+            experiment_builder.add_pre_training_output_writers(writer)

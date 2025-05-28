@@ -234,14 +234,14 @@ class SkLearnRunnable(Runnable, ABC):
             help='The type of predictions that should be obtained from the learner. Must be one of '
             + format_enum_values(PredictionType) + '.')
 
-    def create_experiment(self, args: Namespace):
+    def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:
         """
-        See :func:`mlrl.testbed.runnables.Runnable.create_experiment`
+        See :func:`mlrl.testbed.runnables.Runnable.create_experiment_builder`
         """
         dataset_splitter = self.__create_dataset_splitter(args)
-        return self._create_experiment(args, dataset_splitter)
+        return self._create_experiment_builder(args, dataset_splitter)
 
-    def _create_experiment(self, args, dataset_splitter: DatasetSplitter) -> Experiment:
+    def _create_experiment_builder(self, args, dataset_splitter: DatasetSplitter) -> Experiment.Builder:
         """
         May be overridden by subclasses in order to create the `Experiment` that should be run.
 
@@ -250,7 +250,7 @@ class SkLearnRunnable(Runnable, ABC):
         :return:                    The `Experiment` that has been created
         """
         problem_domain = self._create_problem_domain(args)
-        return SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
+        return SkLearnExperiment.Builder(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
 
     # pylint: disable=unused-argument
     def _create_predictor_factory(self, args, prediction_type: PredictionType) -> SkLearnProblem.PredictorFactory:
