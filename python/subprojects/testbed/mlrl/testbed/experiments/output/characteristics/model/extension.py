@@ -10,6 +10,7 @@ from typing import List
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.characteristics.model.extractor_rules import RuleModelCharacteristicsExtractor
 from mlrl.testbed.experiments.output.characteristics.model.writer import ModelCharacteristicsWriter
+from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
@@ -23,9 +24,6 @@ class RuleModelCharacteristicsExtension(Extension):
     """
     An extension that configures the functionality to write characteristics of rule models to one or several sinks.
     """
-
-    # TODO remove
-    PARAM_OUTPUT_DIR = '--output-dir'
 
     def configure_arguments(self, argument_parser: ArgumentParser):
         """
@@ -42,8 +40,8 @@ class RuleModelCharacteristicsExtension(Extension):
             type=BooleanOption.parse,
             default=BooleanOption.FALSE.value,
             help='Whether the characteristics of models should be written into output files or not. Must be one of '
-            + format_enum_values(BooleanOption) + '. Does only have an effect if the argument ' + self.PARAM_OUTPUT_DIR
-            + ' is specified.')
+            + format_enum_values(BooleanOption) + '. Does only have an effect if the argument '
+            + OutputExtension.PARAM_OUTPUT_DIR + ' is specified.')
 
     @staticmethod
     def __create_log_sinks(args: Namespace) -> List[Sink]:

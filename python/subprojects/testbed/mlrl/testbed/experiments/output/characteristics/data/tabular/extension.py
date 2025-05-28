@@ -11,6 +11,7 @@ from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.characteristics.data.tabular.characteristics import OutputCharacteristics
 from mlrl.testbed.experiments.output.characteristics.data.tabular.characteristics_data import DataCharacteristics
 from mlrl.testbed.experiments.output.characteristics.data.tabular.writer_data import DataCharacteristicsWriter
+from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
@@ -25,9 +26,6 @@ class TabularDataCharacteristicExtension(Extension):
     """
     An extension that configures the functionality to write characteristics of tabular datasets to one or several sinks.
     """
-
-    # TODO remove
-    PARAM_OUTPUT_DIR = '--output-dir'
 
     PARAM_PRINT_DATA_CHARACTERISTICS = '--print-data-characteristics'
 
@@ -65,7 +63,7 @@ class TabularDataCharacteristicExtension(Extension):
             default=BooleanOption.FALSE.value,
             help='Whether the characteristics of the training data should be written into output files or not. Must be '
             + 'one of ' + format_set(self.STORE_DATA_CHARACTERISTICS_VALUES.keys()) + '. Does only have an effect if '
-            + 'the argument ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the '
+            + 'the argument ' + OutputExtension.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the '
             + 'documentation.')
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
