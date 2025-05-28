@@ -10,6 +10,7 @@ from mlrl.testbed_arff.experiments.output.sinks.sink_arff import ArffFileSink
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.dataset.tabular.writer_ground_truth import GroundTruthWriter
+from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.extensions.extension import Extension
@@ -23,9 +24,6 @@ class GroundTruthExtension(Extension):
     """
     An extension that configures the functionality to write ground truth to one or several sinks.
     """
-
-    # TODO remove
-    PARAM_OUTPUT_DIR = '--output-dir'
 
     PARAM_PRINT_GROUND_TRUTH = '--print-ground-truth'
 
@@ -55,7 +53,7 @@ class GroundTruthExtension(Extension):
             default=BooleanOption.FALSE.value,
             help='Whether the ground truth should be written into output files or not. Must be one of '
             + format_set(self.STORE_GROUND_TRUTH_VALUES.keys()) + '. Does only have an effect, if the argument '
-            + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the documentation.')
+            + OutputExtension.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the documentation.')
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         value, options = parse_param_and_options(self.PARAM_PRINT_GROUND_TRUTH, args.print_ground_truth,

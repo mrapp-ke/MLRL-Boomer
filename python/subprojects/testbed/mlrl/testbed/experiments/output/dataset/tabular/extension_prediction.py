@@ -10,6 +10,7 @@ from mlrl.testbed_arff.experiments.output.sinks.sink_arff import ArffFileSink
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.dataset.tabular.writer_prediction import PredictionWriter
+from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.extensions.extension import Extension
@@ -23,9 +24,6 @@ class PredictionExtension(Extension):
     """
     An extension that configures the functionality to write predictions to one or several sinks.
     """
-
-    # TODO remove
-    PARAM_OUTPUT_DIR = '--output-dir'
 
     PARAM_PRINT_PREDICTIONS = '--print-predictions'
 
@@ -54,7 +52,7 @@ class PredictionExtension(Extension):
             default=BooleanOption.FALSE.value,
             help='Whether predictions should be written into output files or not. Must be one of '
             + format_set(self.STORE_PREDICTIONS_VALUES.keys()) + '. Does only have an effect, if the argument '
-            + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the documentation.')
+            + OutputExtension.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the documentation.')
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         value, options = parse_param_and_options(self.PARAM_PRINT_PREDICTIONS, args.print_predictions,

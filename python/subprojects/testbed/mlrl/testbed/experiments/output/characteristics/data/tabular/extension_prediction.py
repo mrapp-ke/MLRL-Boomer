@@ -11,6 +11,7 @@ from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.characteristics.data.tabular.characteristics import OutputCharacteristics
 from mlrl.testbed.experiments.output.characteristics.data.tabular.writer_prediction import \
     PredictionCharacteristicsWriter
+from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
@@ -27,9 +28,6 @@ class PredictionCharacteristicsExtension(Extension):
     An extension that configures the functionality to write characteristics of binary predictions to one or several
     sinks.
     """
-
-    # TODO remove
-    PARAM_OUTPUT_DIR = '--output-dir'
 
     # TODO remove
     PARAM_PREDICTION_TYPE = '--prediction-type'
@@ -69,8 +67,8 @@ class PredictionCharacteristicsExtension(Extension):
             help='Whether the characteristics of binary predictions should be written into output files or not. Must '
             + 'be one of ' + format_set(self.STORE_PREDICTION_CHARACTERISTICS_VALUES.keys()) + '. Does only have an '
             + 'effect if the argument ' + self.PARAM_PREDICTION_TYPE + ' is set to ' + PredictionType.BINARY.value
-            + ' and if the argument ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the '
-            + 'documentation.')
+            + ' and if the argument ' + OutputExtension.PARAM_OUTPUT_DIR + ' is specified. For additional options '
+            + 'refer to the documentation.')
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         value, options = parse_param_and_options(self.PARAM_PRINT_PREDICTION_CHARACTERISTICS,
