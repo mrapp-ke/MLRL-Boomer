@@ -45,10 +45,12 @@ class Runnable(ABC):
                 help='Whether predictions should be obtained for the test data or not. Must be one of '
                 + format_enum_values(BooleanOption) + '.')
 
-        def configure_experiment(self, args: Namespace, _: Experiment.Builder):
+        def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
             """
             See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
             """
+            experiment_builder.set_predict_for_training_dataset(args.predict_for_training_data)
+            experiment_builder.set_predict_for_test_dataset(args.predict_for_test_data)
 
     class VersionExtension(Extension):
         """
@@ -113,10 +115,7 @@ class Runnable(ABC):
         for extension in self.get_extensions():
             extension.configure_experiment(args, experiment_builder)
 
-        should_predict = bool(experiment_builder.prediction_output_writers)
-        experiment = experiment_builder.build()
-        experiment.run(predict_for_training_dataset=should_predict and args.predict_for_training_data,
-                       predict_for_test_dataset=should_predict and args.predict_for_test_data)
+        experiment_builder.run()
 
     # pylint: disable=unused-argument
     def configure_arguments(self, argument_parser: ArgumentParser, show_help: bool):
