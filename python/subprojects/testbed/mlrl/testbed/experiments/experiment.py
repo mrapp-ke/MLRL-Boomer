@@ -8,6 +8,7 @@ import logging as log
 from abc import ABC, abstractmethod
 from dataclasses import replace
 from functools import reduce
+from itertools import chain
 from typing import Any, Generator, Optional
 
 from mlrl.testbed.experiments.dataset import Dataset
@@ -45,6 +46,7 @@ class Experiment(ABC):
             self.prediction_output_writers = []
             self.predict_for_training_dataset = False
             self.predict_for_test_dataset = True
+            self.exit_on_error = True
 
         def add_listeners(self, *listeners: 'Experiment.Listener') -> 'Experiment.Builder':
             """
@@ -119,12 +121,28 @@ class Experiment(ABC):
             self.predict_for_test_dataset = predict_for_test_dataset
             return self
 
+        def set_exit_on_error(self, exit_on_error: bool) -> 'Experiment.Builder':
+            """
+            Sets whether the program should exit if an error occurs while writing experimental results.
+
+            :param exit_on_error:   True, if the program should be aborted if an error occurs, False otherwise
+            :return:                The builder itself
+            """
+            self.exit_on_error = exit_on_error
+            return self
+
         def build(self) -> 'Experiment':
             """
             Creates and returns a new experiment according to the specified configuration.
 
             :return: The experiment that has been created
             """
+            exit_on_error = self.exit_on_error
+
+            for output_writer in chain(self.pre_training_output_writers, self.post_training_output_writers,
+                                       self.prediction_output_writers):
+                output_writer.exit_on_error = exit_on_error
+
             experiment = self._create_experiment(self.problem_domain, self.dataset_splitter)
             experiment.listeners.extend(self.listeners)
             experiment.input_readers.extend(self.input_readers)
