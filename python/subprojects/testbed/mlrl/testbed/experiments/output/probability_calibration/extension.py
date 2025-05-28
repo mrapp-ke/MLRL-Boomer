@@ -7,6 +7,7 @@ from argparse import ArgumentParser, Namespace
 from typing import Dict, List, Set
 
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.probability_calibration.extractor_rules import \
     IsotonicJointProbabilityCalibrationModelExtractor, IsotonicMarginalProbabilityCalibrationModelExtractor
 from mlrl.testbed.experiments.output.probability_calibration.writer import ProbabilityCalibrationModelWriter
@@ -25,9 +26,6 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
     An extension that configures the functionality to write models for the calibration of marginal probabilities to
     outputs.
     """
-
-    # TODO remove
-    PARAM_OUTPUT_DIR = '--output-dir'
 
     PARAM_PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL = '--print-marginal-probability-calibration-model'
 
@@ -57,7 +55,7 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
             default=BooleanOption.FALSE.value,
             help='Whether the model for the calibration of marginal probabilities should be written into an output '
             + 'file or not. Must be one of ' + format_enum_values(BooleanOption) + '. Does only have an effect if the '
-            + 'argument ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the '
+            + 'argument ' + OutputExtension.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the '
             + 'documentation.')
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
@@ -95,9 +93,6 @@ class JointProbabilityCalibrationModelExtension(Extension):
     outputs.
     """
 
-    # TODO remove
-    PARAM_OUTPUT_DIR = '--output-dir'
-
     PARAM_PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL = '--print-joint-probability-calibration-model'
 
     PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES: Dict[str, Set[str]] = {
@@ -126,7 +121,8 @@ class JointProbabilityCalibrationModelExtension(Extension):
             default=BooleanOption.FALSE.value,
             help='Whether the model for the calibration of joint probabilities should be written into an output file '
             + 'or not. Must be one of ' + format_enum_values(BooleanOption) + '. Does only have an effect if the '
-            + 'argument ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the documentation.')
+            + 'argument ' + OutputExtension.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the '
+            + 'documentation.')
 
     def configure_experiment(self, args: Namespace, experiment: Experiment):
         """
