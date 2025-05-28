@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional, Set
 
 from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
 
-from mlrl.common.config.parameters import AUTOMATIC, NONE
+from mlrl.common.config.parameters import NONE
 
 from mlrl.testbed_arff.experiments.input.sources import ArffFileSource
 
@@ -105,14 +105,6 @@ class SkLearnRunnable(Runnable, ABC):
 
     PARAM_OUTPUT_DIR = '--output-dir'
 
-    PARAM_WIPE_OUTPUT_DIR = '--wipe-output-dir'
-
-    WIPE_OUTPUT_DIR_VALUES = {
-        BooleanOption.TRUE.value,
-        BooleanOption.FALSE.value,
-        AUTOMATIC,
-    }
-
     PARAM_PREDICTION_TYPE = '--prediction-type'
 
     def _create_problem_domain(self,
@@ -183,16 +175,11 @@ class SkLearnRunnable(Runnable, ABC):
 
         return NoSplitter(dataset_reader)
 
-    def __create_clear_output_directory_listener(self, args,
-                                                 dataset_splitter: DatasetSplitter) -> Optional[Experiment.Listener]:
+    def __create_clear_output_directory_listener(self, args) -> Optional[Experiment.Listener]:
         output_dir = args.output_dir
 
-        if output_dir:
-            value = parse_param(self.PARAM_WIPE_OUTPUT_DIR, args.wipe_output_dir, self.WIPE_OUTPUT_DIR_VALUES)
-
-            if value == BooleanOption.TRUE.value or (value == AUTOMATIC
-                                                     and not dataset_splitter.folding_strategy.is_subset):
-                return SkLearnRunnable.ClearOutputDirectoryListener(output_dir)
+        if output_dir and args.wipe_output_dir:
+            return SkLearnRunnable.ClearOutputDirectoryListener(output_dir)
 
         return None
 
@@ -260,14 +247,11 @@ class SkLearnRunnable(Runnable, ABC):
                                      + 'automatically be created, if they do not exist, or not. Must be one of '
                                      + format_enum_values(BooleanOption) + '.')
         argument_parser.add_argument(
-            self.PARAM_WIPE_OUTPUT_DIR,
-            type=str,
-            default=AUTOMATIC,
-            help='Whether all files in the directory specified via the argument ' + self.PARAM_OUTPUT_DIR
-            + ' should be deleted before an experiment starts or not. Must be ' + 'one of '
-            + format_iterable(self.WIPE_OUTPUT_DIR_VALUES) + '. If set to ' + AUTOMATIC
-            + ', the files are only deleted if the experiment does not run a subset of the folds of a '
-            + 'cross validation.')
+            '--wipe-output-dir',
+            type=BooleanOption.parse,
+            default=True,
+            help='Whether all files in the directory specified via the argument ' + self.PARAM_OUTPUT_DIR + ' should '
+            + 'be deleted before an experiment starts or not. Must be one of ' + format_iterable(BooleanOption) + '.')
         argument_parser.add_argument(
             '--exit-on-error',
             type=BooleanOption.parse,
@@ -299,7 +283,7 @@ class SkLearnRunnable(Runnable, ABC):
         dataset_splitter = self.__create_dataset_splitter(args)
         experiment = self._create_experiment(args, dataset_splitter)
         experiment.add_listeners(*filter(lambda listener: listener is not None, [
-            self.__create_clear_output_directory_listener(args, dataset_splitter),
+            self.__create_clear_output_directory_listener(args),
         ]))
         return experiment
 
