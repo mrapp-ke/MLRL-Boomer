@@ -45,7 +45,7 @@ class Runnable(ABC):
                 help='Whether predictions should be obtained for the test data or not. Must be one of '
                 + format_enum_values(BooleanOption) + '.')
 
-        def configure_experiment(self, args: Namespace, _: Experiment):
+        def configure_experiment(self, args: Namespace, _: Experiment.Builder):
             """
             See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
             """
@@ -76,7 +76,7 @@ class Runnable(ABC):
                                              version=str(program_info),
                                              help='Display information about the program\'s version.')
 
-        def configure_experiment(self, args: Namespace, _: Experiment):
+        def configure_experiment(self, args: Namespace, _: Experiment.Builder):
             """
             See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
             """
@@ -108,12 +108,13 @@ class Runnable(ABC):
 
         :param args: The command line arguments specified by the user
         """
-        experiment = self.create_experiment(args)
+        experiment_builder = self.create_experiment_builder(args)
 
         for extension in self.get_extensions():
-            extension.configure_experiment(args, experiment)
+            extension.configure_experiment(args, experiment_builder)
 
-        should_predict = bool(experiment.prediction_output_writers)
+        should_predict = bool(experiment_builder.prediction_output_writers)
+        experiment = experiment_builder.build()
         experiment.run(predict_for_training_dataset=should_predict and args.predict_for_training_data,
                        predict_for_test_dataset=should_predict and args.predict_for_test_data)
 
@@ -129,10 +130,11 @@ class Runnable(ABC):
             extension.configure_arguments(argument_parser)
 
     @abstractmethod
-    def create_experiment(self, args: Namespace) -> Experiment:
+    def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:
         """
-        Must be implemented by subclasses in order to create the experiment to be run by the program.
+        Must be implemented by subclasses in order to create the builder that allows to configure the experiment to be
+        run by the program.
 
         :param args:    The command line arguments specified by the user
-        :return:        The experiment that has been created
+        :return:        The builder that has been created
         """

@@ -55,7 +55,7 @@ class RuleModelCharacteristicsExtension(Extension):
             return [CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir)]
         return []
 
-    def configure_experiment(self, args: Namespace, experiment: Experiment):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -64,4 +64,4 @@ class RuleModelCharacteristicsExtension(Extension):
         if sinks:
             writer = ModelCharacteristicsWriter(RuleModelCharacteristicsExtractor(),
                                                 exit_on_error=args.exit_on_error).add_sinks(*sinks)
-            experiment.add_post_training_output_writers(writer)
+            experiment_builder.add_post_training_output_writers(writer)

@@ -62,7 +62,7 @@ class LogExtension(Extension):
                                      help='The log level to be used. Must be one of '
                                      + format_set(log_level.value[0] for log_level in LogExtension.LogLevel) + '.')
 
-    def configure_experiment(self, args: Namespace, _: Experiment):
+    def configure_experiment(self, args: Namespace, _: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """

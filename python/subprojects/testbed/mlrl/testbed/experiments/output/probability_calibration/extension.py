@@ -75,7 +75,7 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
             return [CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options)]
         return []
 
-    def configure_experiment(self, args: Namespace, experiment: Experiment):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -84,7 +84,7 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         if sinks:
             writer = ProbabilityCalibrationModelWriter(IsotonicMarginalProbabilityCalibrationModelExtractor(),
                                                        exit_on_error=args.exit_on_error).add_sinks(*sinks)
-            experiment.add_post_training_output_writers(writer)
+            experiment_builder.add_post_training_output_writers(writer)
 
 
 class JointProbabilityCalibrationModelExtension(Extension):
@@ -124,7 +124,7 @@ class JointProbabilityCalibrationModelExtension(Extension):
             + 'argument ' + OutputExtension.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the '
             + 'documentation.')
 
-    def configure_experiment(self, args: Namespace, experiment: Experiment):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
@@ -147,4 +147,4 @@ class JointProbabilityCalibrationModelExtension(Extension):
         if sinks:
             writer = ProbabilityCalibrationModelWriter(IsotonicJointProbabilityCalibrationModelExtractor(),
                                                        exit_on_error=args.exit_on_error).add_sinks(*sinks)
-            experiment.add_post_training_output_writers(writer)
+            experiment_builder.add_post_training_output_writers(writer)
