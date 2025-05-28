@@ -3,9 +3,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow configuring the functionality to write rule models to one or several sinks.
 """
-from argparse import ArgumentParser, Namespace
+from argparse import Namespace
 from typing import Dict, List, Set
 
+from mlrl.testbed.cli import Argument
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.output.model_text import RuleModelAsText
 from mlrl.testbed.experiments.output.model_text.extractor_rules import RuleModelAsTextExtractor
@@ -15,7 +16,6 @@ from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.experiments.output.sinks.sink_text import TextFileSink
 from mlrl.testbed.extensions import Extension
 
-from mlrl.util.format import format_set
 from mlrl.util.options import BooleanOption, parse_param_and_options
 
 
@@ -40,22 +40,34 @@ class RuleModelExtension(Extension):
 
     STORE_RULES_VALUES = PRINT_RULES_VALUES
 
-    def configure_arguments(self, argument_parser: ArgumentParser):
+    def get_arguments(self) -> List[Argument]:
         """
-        See :func:`mlrl.testbed.extensions.extension.Extension.configure_arguments`
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
-        argument_parser.add_argument(
-            self.PARAM_PRINT_RULES,
-            type=str,
-            default=BooleanOption.FALSE.value,
-            help='Whether the induced rules should be printed on the console or not. Must be one of '
-            + format_set(self.PRINT_RULES_VALUES.keys()) + '. For additional options refer to the documentation.')
-        argument_parser.add_argument(
-            self.PARAM_STORE_RULES,
-            type=str,
-            default=BooleanOption.FALSE.value,
-            help='Whether the induced rules should be written into a text file or not. Must be one of '
-            + format_set(self.STORE_RULES_VALUES.keys()) + '. For additional options refer to the documentation.')
+        return [
+            Argument.bool(
+                self.PARAM_PRINT_RULES,
+                default=False,
+                help='Whether the induced rules should be printed on the console or not.',
+                true_options={
+                    RuleModelAsText.OPTION_PRINT_FEATURE_NAMES, RuleModelAsText.OPTION_PRINT_OUTPUT_NAMES,
+                    RuleModelAsText.OPTION_PRINT_NOMINAL_VALUES, RuleModelAsText.OPTION_PRINT_BODIES,
+                    RuleModelAsText.OPTION_PRINT_HEADS, RuleModelAsText.OPTION_DECIMALS_BODY,
+                    RuleModelAsText.OPTION_DECIMALS_HEAD
+                },
+            ),
+            Argument.bool(
+                self.PARAM_STORE_RULES,
+                default=False,
+                help='Whether the induced rules should be written into a text file or not.',
+                true_options={
+                    RuleModelAsText.OPTION_PRINT_FEATURE_NAMES, RuleModelAsText.OPTION_PRINT_OUTPUT_NAMES,
+                    RuleModelAsText.OPTION_PRINT_NOMINAL_VALUES, RuleModelAsText.OPTION_PRINT_BODIES,
+                    RuleModelAsText.OPTION_PRINT_HEADS, RuleModelAsText.OPTION_DECIMALS_BODY,
+                    RuleModelAsText.OPTION_DECIMALS_HEAD
+                },
+            ),
+        ]
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         value, options = parse_param_and_options(self.PARAM_PRINT_RULES, args.print_rules, self.PRINT_RULES_VALUES)
