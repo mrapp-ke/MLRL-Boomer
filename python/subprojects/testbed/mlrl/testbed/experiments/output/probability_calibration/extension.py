@@ -82,8 +82,9 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         sinks = self.__create_log_sinks(args) + self.__create_csv_file_sinks(args)
 
         if sinks:
-            writer = ProbabilityCalibrationModelWriter(IsotonicMarginalProbabilityCalibrationModelExtractor(),
-                                                       exit_on_error=args.exit_on_error).add_sinks(*sinks)
+            writer = ProbabilityCalibrationModelWriter(
+                IsotonicMarginalProbabilityCalibrationModelExtractor()).add_sinks(*sinks)
+            writer.exit_on_error = args.exit_on_error
             experiment_builder.add_post_training_output_writers(writer)
 
 
@@ -145,6 +146,7 @@ class JointProbabilityCalibrationModelExtension(Extension):
                 CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options))
 
         if sinks:
-            writer = ProbabilityCalibrationModelWriter(IsotonicJointProbabilityCalibrationModelExtractor(),
-                                                       exit_on_error=args.exit_on_error).add_sinks(*sinks)
+            writer = ProbabilityCalibrationModelWriter(
+                IsotonicJointProbabilityCalibrationModelExtractor()).add_sinks(*sinks)
+            writer.exit_on_error = args.exit_on_error
             experiment_builder.add_post_training_output_writers(writer)
