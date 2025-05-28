@@ -83,6 +83,29 @@ class Runnable(ABC):
             See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
             """
 
+    class ExitOnErrorExtension(Extension):
+        """
+        An extension that configures the functionality to exit the program if an error occurs while writing experimental
+        results.
+        """
+
+        def configure_arguments(self, argument_parser: ArgumentParser):
+            """
+            See :func:`mlrl.testbed.extensions.extension.Extension.configure_arguments`
+            """
+            argument_parser.add_argument(
+                '--exit-on-error',
+                type=BooleanOption.parse,
+                default=False,
+                help='Whether the program should exit if an error occurs while writing experimental results or not. '
+                + 'Must be one of ' + format_enum_values(BooleanOption) + '.')
+
+        def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
+            """
+            See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
+            """
+            experiment_builder.set_exit_on_error(args.exit_on_error)
+
     def get_extensions(self) -> List[Extension]:
         """
         May be overridden by subclasses in order to return the extensions that should be applied to the runnable.
@@ -92,6 +115,7 @@ class Runnable(ABC):
         return [
             Runnable.PredictionDatasetExtension(),
             Runnable.VersionExtension(self.get_program_info()),
+            Runnable.ExitOnErrorExtension(),
             LogExtension()
         ]
 
