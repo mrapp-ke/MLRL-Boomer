@@ -12,6 +12,7 @@ from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMix
 from mlrl.common.config.parameters import Parameter
 from mlrl.common.learners import RuleLearner, SparsePolicy
 
+from mlrl.testbed.cli import Argument, CommandLineInterface
 from mlrl.testbed.experiments import Experiment, SkLearnExperiment
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.output.characteristics.model.extension import RuleModelCharacteristicsExtension
@@ -25,7 +26,6 @@ from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnProblem
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.runnables_sklearn import SkLearnRunnable
 
-from mlrl.util.format import format_enum_values
 from mlrl.util.options import BooleanOption, parse_param_and_options
 from mlrl.util.validation import assert_greater, assert_greater_or_equal
 
@@ -119,41 +119,45 @@ class RuleLearnerRunnable(SkLearnRunnable):
                 # Argument has already been added, that's okay
                 pass
 
-    def configure_arguments(self, parser: ArgumentParser):
+    def configure_arguments(self, cli: CommandLineInterface):
         """
         See :func:`mlrl.testbed.runnables.Runnable.configure_arguments`
         """
-        super().configure_arguments(parser)
-        parser.add_argument(self.PARAM_INCREMENTAL_EVALUATION,
-                            type=str,
-                            default=BooleanOption.FALSE.value,
-                            help='Whether models should be evaluated repeatedly, using only a subset of the induced '
-                            + 'rules with increasing size, or not. Must be one of ' + format_enum_values(BooleanOption)
-                            + '. For additional options refer to the documentation.')
-        parser.add_argument(self.PARAM_FEATURE_FORMAT,
-                            type=str,
-                            default=None,
-                            help='The format to be used for the representation of the feature matrix. Must be one of '
-                            + format_enum_values(SparsePolicy) + '.')
-        parser.add_argument(self.PARAM_SPARSE_FEATURE_VALUE,
-                            type=float,
-                            default=0.0,
-                            help='The value that should be used for sparse elements in the feature matrix. Does only '
-                            + 'have an effect if a sparse format is used for the representation of the feature matrix, '
-                            + 'depending on the argument ' + self.PARAM_FEATURE_FORMAT + '.')
-        parser.add_argument('--output-format',
-                            type=str,
-                            default=None,
-                            help='The format to be used for the representation of the output matrix. Must be one of '
-                            + format_enum_values(SparsePolicy) + '.')
-        parser.add_argument('--prediction-format',
-                            type=str,
-                            default=None,
-                            help='The format to be used for the representation of predictions. Must be one of '
-                            + format_enum_values(SparsePolicy) + '.')
-        problem_domain = self._create_problem_domain(parser.parse_known_args()[0])
+        super().configure_arguments(cli)
+        cli.add_arguments(
+            Argument.bool(
+                self.PARAM_INCREMENTAL_EVALUATION,
+                default=False,
+                help='Whether models should be evaluated repeatedly, using only a subset of the induced rules with '
+                + 'increasing size, or not.',
+                true_options={self.OPTION_MIN_SIZE, self.OPTION_MAX_SIZE, self.OPTION_STEP_SIZE},
+            ),
+            Argument.set(
+                self.PARAM_FEATURE_FORMAT,
+                values=SparsePolicy,
+                help='The format to be used for the representation of the feature matrix.',
+            ),
+            Argument.float(
+                self.PARAM_SPARSE_FEATURE_VALUE,
+                default=0.0,
+                help='The value that should be used for sparse elements in the feature matrix. Does only have an '
+                + 'effect if a sparse format is used for the representation of the feature matrix, depending on the '
+                + 'argument ' + self.PARAM_FEATURE_FORMAT + '.',
+            ),
+            Argument.set(
+                '--output-format',
+                values=SparsePolicy,
+                help='The format to be used for the representation of the output matrix.',
+            ),
+            Argument.set(
+                '--prediction-format',
+                values=SparsePolicy,
+                help='The format to be used for the representation of predictions.',
+            ),
+        )
+        problem_domain = self._create_problem_domain(cli.argument_parser.parse_known_args()[0])
         config_type, parameters = self.__create_config_type_and_parameters(problem_domain)
-        self.__configure_argument_parser(parser, config_type, parameters)
+        self.__configure_argument_parser(cli.argument_parser, config_type, parameters)
 
     def _create_experiment_builder(self, args, dataset_splitter: DatasetSplitter) -> Experiment.Builder:
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}

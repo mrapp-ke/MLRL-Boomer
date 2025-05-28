@@ -5,7 +5,7 @@ Provides classes for running experiments using the scikit-learn framework.
 """
 
 from abc import ABC, abstractmethod
-from argparse import ArgumentParser, Namespace
+from argparse import Namespace
 from typing import Any, Dict, List, Optional, Set
 
 from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
@@ -14,6 +14,7 @@ from mlrl.common.config.parameters import NONE
 
 from mlrl.testbed_arff.experiments.input.sources import ArffFileSource
 
+from mlrl.testbed.cli import Argument, CommandLineInterface
 from mlrl.testbed.experiments import Experiment, SkLearnExperiment
 from mlrl.testbed.experiments.input.dataset import DatasetReader, InputDataset
 from mlrl.testbed.experiments.input.dataset.preprocessors import Preprocessor
@@ -167,66 +168,69 @@ class SkLearnRunnable(Runnable, ABC):
             PredictionCharacteristicsExtension(),
         ]
 
-    def configure_arguments(self, argument_parser: ArgumentParser):
+    def configure_arguments(self, cli: CommandLineInterface):
         """
         See :func:`mlrl.testbed.runnables.Runnable.configure_arguments`
         """
-        super().configure_arguments(argument_parser)
-        argument_parser.add_argument(self.PARAM_PROBLEM_TYPE,
-                                     type=str,
-                                     default=ClassificationProblem.NAME,
-                                     help='The type of the machine learning problem to be solved. Must be one of '
-                                     + format_set(self.PROBLEM_TYPE_VALUES) + '.')
-        argument_parser.add_argument(self.PARAM_RANDOM_STATE,
-                                     type=int,
-                                     default=None,
-                                     help='The seed to be used by random number generators. Must be at least 1.')
-        argument_parser.add_argument('--data-dir',
-                                     type=str,
-                                     required=True,
-                                     help='The path to the directory where the data set files are located.')
-        argument_parser.add_argument('--dataset',
-                                     type=str,
-                                     required=True,
-                                     help='The name of the data set files without suffix.')
-        argument_parser.add_argument(
-            self.PARAM_DATA_SPLIT,
-            type=str,
-            default=self.DATA_SPLIT_TRAIN_TEST,
-            help='The strategy to be used for splitting the available data into training and test '
-            + 'sets. Must be one of ' + format_set(self.DATA_SPLIT_VALUES.keys()) + '. For additional '
-            + 'options refer to the documentation.')
-        argument_parser.add_argument(
-            '--one-hot-encoding',
-            type=BooleanOption.parse,
-            default=False,
-            help='Whether one-hot-encoding should be used to encode nominal features or not. Must be ' + 'one of '
-            + format_enum_values(BooleanOption) + '.')
-        argument_parser.add_argument(
-            '--create-output-dir',
-            type=BooleanOption.parse,
-            default=True,
-            help='Whether the directories specified via the arguments ' + OutputExtension.PARAM_OUTPUT_DIR + ', '
-            + ModelOutputExtension.PARAM_MODEL_SAVE_DIR + ' and ' + ParameterOutputExtension.PARAM_PARAMETER_SAVE_DIR
-            + ' should ' + 'automatically be created, if they do not exist, or not. Must be one of '
-            + format_enum_values(BooleanOption) + '.')
-        argument_parser.add_argument(
-            '--print-all',
-            type=BooleanOption.parse,
-            default=False,
-            help='Whether all output data should be printed on the console or not. Must be one of '
-            + format_enum_values(BooleanOption) + '.')
-        argument_parser.add_argument('--store-all',
-                                     type=BooleanOption.parse,
-                                     default=False,
-                                     help='Whether all output data should be written to files or not. Must be one of '
-                                     + format_enum_values(BooleanOption) + '.')
-        argument_parser.add_argument(
-            self.PARAM_PREDICTION_TYPE,
-            type=str,
-            default=PredictionType.BINARY.value,
-            help='The type of predictions that should be obtained from the learner. Must be one of '
-            + format_enum_values(PredictionType) + '.')
+        super().configure_arguments(cli)
+        cli.add_arguments(
+            Argument.set(
+                self.PARAM_PROBLEM_TYPE,
+                values={ClassificationProblem.NAME, RegressionProblem.NAME},
+                default=ClassificationProblem.NAME,
+                help='The type of the machine learning problem to be solved. Must be one of '
+                + format_set(self.PROBLEM_TYPE_VALUES) + '.',
+            ),
+            Argument.int(
+                self.PARAM_RANDOM_STATE,
+                help='The seed to be used by random number generators. Must be at least 1.',
+            ),
+            Argument.string(
+                '--data-dir',
+                required=True,
+                help='The path to the directory where the data set files are located.',
+            ),
+            Argument.string(
+                '--dataset',
+                required=True,
+                help='The name of the data set files without suffix.',
+            ),
+            Argument.set(
+                self.PARAM_DATA_SPLIT,
+                values=self.DATA_SPLIT_VALUES,
+                default=self.DATA_SPLIT_TRAIN_TEST,
+                help='The strategy to be used for splitting the available data into training and test sets.',
+            ),
+            Argument.bool(
+                '--one-hot-encoding',
+                default=False,
+                help='Whether one-hot-encoding should be used to encode nominal features or not.',
+            ),
+            Argument.bool(
+                '--create-output-dir',
+                default=True,
+                help='Whether the directories specified via the arguments ' + OutputExtension.PARAM_OUTPUT_DIR + ', '
+                + ModelOutputExtension.PARAM_MODEL_SAVE_DIR + ' and '
+                + ParameterOutputExtension.PARAM_PARAMETER_SAVE_DIR + ' should automatically be created, if they do '
+                + 'not exist, or not. Must be one of ' + format_enum_values(BooleanOption) + '.',
+            ),
+            Argument.bool(
+                '--print-all',
+                default=False,
+                help='Whether all output data should be printed on the console or not.',
+            ),
+            Argument.bool(
+                '--store-all',
+                default=False,
+                help='Whether all output data should be written to files or not.',
+            ),
+            Argument.set(
+                self.PARAM_PREDICTION_TYPE,
+                values=PredictionType,
+                default=PredictionType.BINARY,
+                help='The type of predictions that should be obtained from the learner.',
+            ),
+        )
 
     def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:
         """

@@ -3,14 +3,13 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow configuring the functionality to write output data to one or several sinks.
 """
-from argparse import ArgumentParser, Namespace
+from argparse import Namespace
 from os import listdir, path, unlink
+from typing import List
 
+from mlrl.testbed.cli import Argument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.extensions.extension import Extension
-
-from mlrl.util.format import format_enum_values, format_iterable
-from mlrl.util.options import BooleanOption
 
 
 class OutputExtension(Extension):
@@ -44,26 +43,26 @@ class OutputExtension(Extension):
 
     PARAM_OUTPUT_DIR = '--output-dir'
 
-    def configure_arguments(self, argument_parser: ArgumentParser):
+    def get_arguments(self) -> List[Argument]:
         """
-        See :func:`mlrl.testbed.extensions.extension.Extension.configure_arguments`
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
-        argument_parser.add_argument(self.PARAM_OUTPUT_DIR,
-                                     type=str,
-                                     help='The path to the directory where experimental results should be saved.')
-        argument_parser.add_argument(
-            '--wipe-output-dir',
-            type=BooleanOption.parse,
-            default=True,
-            help='Whether all files in the directory specified via the argument ' + OutputExtension.PARAM_OUTPUT_DIR
-            + ' should be deleted before an experiment starts or not. Must be one of ' + format_iterable(BooleanOption)
-            + '.')
-        argument_parser.add_argument(
-            '--exit-on-error',
-            type=BooleanOption.parse,
-            default=False,
-            help='Whether the program should exit if an error occurs while writing experimental results or not. Must '
-            + 'be one of ' + format_enum_values(BooleanOption) + '.')
+        return [
+            Argument.string(
+                self.PARAM_OUTPUT_DIR,
+                help='The path to the directory where experimental results should be saved.',
+            ),
+            Argument.bool('--wipe-output-dir',
+                          default=True,
+                          help='Whether all files in the directory specified via the argument '
+                          + OutputExtension.PARAM_OUTPUT_DIR
+                          + ' should be deleted before an experiment starts or not.'),
+            Argument.bool(
+                '--exit-on-error',
+                default=False,
+                help='Whether the program should exit if an error occurs while writing experimental results or not.',
+            ),
+        ]
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
