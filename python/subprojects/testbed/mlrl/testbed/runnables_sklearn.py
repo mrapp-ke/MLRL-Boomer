@@ -6,7 +6,6 @@ Provides classes for running experiments using the scikit-learn framework.
 
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser, Namespace
-from os import listdir, path, unlink
 from typing import Any, Dict, List, Optional, Set
 
 from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
@@ -29,6 +28,7 @@ from mlrl.testbed.experiments.output.characteristics.data.tabular.extension_pred
 from mlrl.testbed.experiments.output.dataset.tabular.extension_ground_truth import GroundTruthExtension
 from mlrl.testbed.experiments.output.dataset.tabular.extension_prediction import PredictionExtension
 from mlrl.testbed.experiments.output.evaluation.extension import EvaluationExtension
+from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.label_vectors.extension import LabelVectorExtension
 from mlrl.testbed.experiments.output.model.extension import ModelOutputExtension
 from mlrl.testbed.experiments.output.parameters.extension import ParameterOutputExtension
@@ -40,7 +40,7 @@ from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificatio
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.runnables import Runnable
 
-from mlrl.util.format import format_enum_values, format_iterable, format_set
+from mlrl.util.format import format_enum_values, format_set
 from mlrl.util.options import BooleanOption, parse_param, parse_param_and_options
 from mlrl.util.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 
@@ -49,30 +49,6 @@ class SkLearnRunnable(Runnable, ABC):
     """
     An abstract base class for all programs that run an experiment using the scikit-learn framework.
     """
-
-    class ClearOutputDirectoryListener(Experiment.Listener):
-        """
-        Deletes all files from the output directory before an experiment starts.
-        """
-
-        def __init__(self, output_dir: str):
-            """
-            :param output_dir: The path to the output directory from which the files should be deleted
-            """
-            self.output_dir = output_dir
-
-        def before_start(self, _: Experiment):
-            """
-            See :func:`mlrl.testbed.experiments.Experiment.Listener.before_start`
-            """
-            output_dir = self.output_dir
-
-            if path.isdir(output_dir):
-                for file in listdir(output_dir):
-                    file_path = path.join(output_dir, file)
-
-                    if path.isfile(file_path):
-                        unlink(file_path)
 
     PARAM_PROBLEM_TYPE = '--problem-type'
 
@@ -102,8 +78,6 @@ class SkLearnRunnable(Runnable, ABC):
         DATA_SPLIT_TRAIN_TEST: {OPTION_TEST_SIZE},
         DATA_SPLIT_CROSS_VALIDATION: {OPTION_NUM_FOLDS, OPTION_FIRST_FOLD, OPTION_LAST_FOLD}
     }
-
-    PARAM_OUTPUT_DIR = '--output-dir'
 
     PARAM_PREDICTION_TYPE = '--prediction-type'
 
@@ -175,19 +149,12 @@ class SkLearnRunnable(Runnable, ABC):
 
         return NoSplitter(dataset_reader)
 
-    def __create_clear_output_directory_listener(self, args) -> Optional[Experiment.Listener]:
-        output_dir = args.output_dir
-
-        if output_dir and args.wipe_output_dir:
-            return SkLearnRunnable.ClearOutputDirectoryListener(output_dir)
-
-        return None
-
     def get_extensions(self) -> List[Extension]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
         """
         return super().get_extensions() + [
+            OutputExtension(),
             ModelInputExtension(),
             ModelOutputExtension(),
             ParameterInputExtension(),
@@ -235,23 +202,14 @@ class SkLearnRunnable(Runnable, ABC):
             default=False,
             help='Whether one-hot-encoding should be used to encode nominal features or not. Must be ' + 'one of '
             + format_enum_values(BooleanOption) + '.')
-        argument_parser.add_argument(self.PARAM_OUTPUT_DIR,
-                                     type=str,
-                                     help='The path to the directory where experimental results should be saved.')
-        argument_parser.add_argument('--create-output-dir',
-                                     type=BooleanOption.parse,
-                                     default=True,
-                                     help='Whether the directories specified via the arguments ' + self.PARAM_OUTPUT_DIR
-                                     + ', ' + ModelOutputExtension.PARAM_MODEL_SAVE_DIR + ' and '
-                                     + ParameterOutputExtension.PARAM_PARAMETER_SAVE_DIR + ' should '
-                                     + 'automatically be created, if they do not exist, or not. Must be one of '
-                                     + format_enum_values(BooleanOption) + '.')
         argument_parser.add_argument(
-            '--wipe-output-dir',
+            '--create-output-dir',
             type=BooleanOption.parse,
             default=True,
-            help='Whether all files in the directory specified via the argument ' + self.PARAM_OUTPUT_DIR + ' should '
-            + 'be deleted before an experiment starts or not. Must be one of ' + format_iterable(BooleanOption) + '.')
+            help='Whether the directories specified via the arguments ' + OutputExtension.PARAM_OUTPUT_DIR + ', '
+            + ModelOutputExtension.PARAM_MODEL_SAVE_DIR + ' and ' + ParameterOutputExtension.PARAM_PARAMETER_SAVE_DIR
+            + ' should ' + 'automatically be created, if they do not exist, or not. Must be one of '
+            + format_enum_values(BooleanOption) + '.')
         argument_parser.add_argument(
             '--exit-on-error',
             type=BooleanOption.parse,
@@ -281,11 +239,7 @@ class SkLearnRunnable(Runnable, ABC):
         See :func:`mlrl.testbed.runnables.Runnable.create_experiment`
         """
         dataset_splitter = self.__create_dataset_splitter(args)
-        experiment = self._create_experiment(args, dataset_splitter)
-        experiment.add_listeners(*filter(lambda listener: listener is not None, [
-            self.__create_clear_output_directory_listener(args),
-        ]))
-        return experiment
+        return self._create_experiment(args, dataset_splitter)
 
     def _create_experiment(self, args, dataset_splitter: DatasetSplitter) -> Experiment:
         """

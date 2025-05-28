@@ -12,6 +12,7 @@ from mlrl.testbed.experiments.output.evaluation.extractor_classification import 
 from mlrl.testbed.experiments.output.evaluation.extractor_ranking import RankingEvaluationDataExtractor
 from mlrl.testbed.experiments.output.evaluation.extractor_regression import RegressionEvaluationDataExtractor
 from mlrl.testbed.experiments.output.evaluation.writer import EvaluationWriter
+from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
@@ -28,9 +29,6 @@ class EvaluationExtension(Extension):
     """
     An extension that configures the functionality to write evaluation results to one or several sinks.
     """
-
-    # TODO remove
-    PARAM_OUTPUT_DIR = '--output-dir'
 
     PARAM_PRINT_EVALUATION = '--print-evaluation'
 
@@ -97,7 +95,7 @@ class EvaluationExtension(Extension):
             default=BooleanOption.TRUE.value,
             help='Whether the evaluation results should be written into output files or not. Must be one of '
             + format_set(self.STORE_EVALUATION_VALUES.keys()) + '. Does only have an effect if the argument '
-            + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the documentation.')
+            + OutputExtension.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to the documentation.')
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         value, options = parse_param_and_options(self.PARAM_PRINT_EVALUATION, args.print_evaluation,
