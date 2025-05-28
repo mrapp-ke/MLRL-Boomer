@@ -211,12 +211,6 @@ class SkLearnRunnable(Runnable, ABC):
             + ' should ' + 'automatically be created, if they do not exist, or not. Must be one of '
             + format_enum_values(BooleanOption) + '.')
         argument_parser.add_argument(
-            '--exit-on-error',
-            type=BooleanOption.parse,
-            default=False,
-            help='Whether the program should exit if an error occurs while writing experimental '
-            + 'results or not. Must be one of ' + format_enum_values(BooleanOption) + '.')
-        argument_parser.add_argument(
             '--print-all',
             type=BooleanOption.parse,
             default=False,

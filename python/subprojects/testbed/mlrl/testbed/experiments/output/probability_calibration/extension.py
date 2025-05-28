@@ -84,7 +84,6 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         if sinks:
             writer = ProbabilityCalibrationModelWriter(
                 IsotonicMarginalProbabilityCalibrationModelExtractor()).add_sinks(*sinks)
-            writer.exit_on_error = args.exit_on_error
             experiment_builder.add_post_training_output_writers(writer)
 
 
@@ -148,5 +147,4 @@ class JointProbabilityCalibrationModelExtension(Extension):
         if sinks:
             writer = ProbabilityCalibrationModelWriter(
                 IsotonicJointProbabilityCalibrationModelExtractor()).add_sinks(*sinks)
-            writer.exit_on_error = args.exit_on_error
             experiment_builder.add_post_training_output_writers(writer)
