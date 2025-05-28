@@ -50,6 +50,37 @@ class Runnable(ABC):
             See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
             """
 
+    class VersionExtension(Extension):
+        """
+        An extension that configures the functionality to show information about a program when the "--version" flag is
+        passed to the command line API.
+        """
+
+        def __init__(self, program_info: Optional[ProgramInfo]):
+            """
+            :param program_info:    Information about a program to be shown when the "--version" flag is passed to the
+                                    command line API
+            """
+            self.program_info = program_info
+
+        def configure_arguments(self, argument_parser: ArgumentParser):
+            """
+            See :func:`mlrl.testbed.extensions.extension.Extension.configure_arguments`
+            """
+            program_info = self.program_info
+
+            if program_info:
+                argument_parser.add_argument('-v',
+                                             '--version',
+                                             action='version',
+                                             version=str(program_info),
+                                             help='Display information about the program\'s version.')
+
+        def configure_experiment(self, args: Namespace, _: Experiment):
+            """
+            See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
+            """
+
     def run(self, args: Namespace):
         """
         Executes the runnable.
@@ -71,7 +102,7 @@ class Runnable(ABC):
 
         :return: A list that contains the extensions to be applied to the runnable
         """
-        return [Runnable.BaseExtension(), LogExtension()]
+        return [Runnable.BaseExtension(), Runnable.VersionExtension(self.get_program_info()), LogExtension()]
 
     def get_program_info(self) -> Optional[ProgramInfo]:
         """
@@ -90,16 +121,6 @@ class Runnable(ABC):
         :param argument_parser: The argument parser to be configured
         :param show_help:       True, if the help text of the program should be shown, False otherwise
         """
-        # pylint: disable=assignment-from-none
-        program_info = self.get_program_info()
-
-        if program_info:
-            argument_parser.add_argument('-v',
-                                         '--version',
-                                         action='version',
-                                         version=str(program_info),
-                                         help='Display information about the program\'s version.')
-
         for extension in self.get_extensions():
             extension.configure_arguments(argument_parser)
 
