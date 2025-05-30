@@ -27,7 +27,7 @@ def format_enum_values(enum: Enum) -> str:
     :param enum:    The enum to be formatted
     :return:        The textual representation that has been created
     """
-    return format_set({x.value for x in enum})
+    return format_set({x.value if isinstance(x.value, str) else x.name.lower() for x in enum})
 
 
 def format_set(objects: Iterable[Any]) -> str:

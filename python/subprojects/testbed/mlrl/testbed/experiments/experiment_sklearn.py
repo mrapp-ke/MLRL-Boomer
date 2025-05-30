@@ -17,6 +17,7 @@ from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_tabular import AttributeType, TabularDataset
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
+from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnProblem
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
@@ -26,6 +27,14 @@ class SkLearnExperiment(Experiment):
     """
     An experiment that trains and evaluates a machine learning model using the scikit-learn framework.
     """
+
+    class Builder(Experiment.Builder):
+        """
+        Allows to configure and create instances of the class `SkLearnExperiment`.
+        """
+
+        def _create_experiment(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter) -> Experiment:
+            return SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
 
     def __create_learner(self, parameters: ParameterDict) -> BaseEstimator:
         learner = clone(self.problem_domain.base_learner)
