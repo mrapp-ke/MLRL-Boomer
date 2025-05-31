@@ -9,8 +9,9 @@ from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from importlib import import_module
 from importlib.util import module_from_spec, spec_from_file_location
 
-from mlrl.testbed.cli import CommandLineInterface
 from mlrl.testbed.runnables import Runnable
+
+from mlrl.util.cli import CommandLineInterface
 
 
 def __create_argument_parser() -> ArgumentParser:
@@ -90,8 +91,9 @@ def main():
     if not isinstance(runnable, Runnable):
         raise TypeError('Class "' + runnable_class_name + '" must extend from "' + Runnable.__qualname__ + '"')
 
-    cli = CommandLineInterface(argument_parser, runnable.get_program_info())
-    runnable.configure_arguments(argument_parser, show_help='--help' in sys.argv or '-h' in sys.argv)
+    program_info = runnable.get_program_info()
+    cli = CommandLineInterface(argument_parser, version_text=str(program_info) if program_info else None)
+    runnable.configure_arguments(cli)
     argument_parser.add_argument('-h',
                                  '--help',
                                  action='help',

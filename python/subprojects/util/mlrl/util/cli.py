@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for configuring the arguments of a command line interface.
 """
-from argparse import ArgumentError, ArgumentParser
+from argparse import ArgumentError, ArgumentParser, Namespace
 from enum import Enum
 from typing import Any, Dict, Optional, Set
 
@@ -166,3 +166,41 @@ class SetArgument(Argument):
         :param required:    True, if the argument is mandatory, False otherwise
         """
         super().__init__(*names, help=self.__format_help(help, values), type=str, default=default, required=required)
+
+
+class CommandLineInterface:
+    """
+    Allows to configure a command line interface for running a program.
+    """
+
+    def __init__(self, argument_parser: ArgumentParser, version_text: Optional[str] = None):
+        """
+        :param argument_parser: The parser that should be used for parsing arguments provided to the command line
+                                interface by the user
+        :param version_text:    A text to be shown when the "--version" flag is passed to the command line interface or
+                                None, if the "--version" flag should not be added to the command line interface
+        """
+        self._argument_parser = argument_parser
+
+        if version_text:
+            argument_parser.add_argument('-v',
+                                         '--version',
+                                         action='version',
+                                         version=version_text,
+                                         help='Display information about the program.')
+
+    def add_arguments(self, *arguments: Argument, return_known_args: bool = False) -> Optional[Namespace]:
+        """
+        Adds a new argument that enables the user to provide a value to the command line interface.
+
+        :param arguments:           The arguments to be added
+        :param return_known_args:   True, if the values of the arguments already added to the command line interface
+                                    should be parsed and returned, False otherwise
+        :return:                    A `Namespace` providing access to the values of the arguments already added or None
+        """
+        argument_parser = self._argument_parser
+
+        for argument in arguments:
+            argument.add_to_argument_parser(argument_parser)
+
+        return argument_parser.parse_known_args()[0] if return_known_args else None
