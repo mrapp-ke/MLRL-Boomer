@@ -16,28 +16,13 @@ class Argument:
     An abstract base class for all arguments of a command line interface for which the user can provide a custom value.
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *names: str, **kwargs: Any):
         """
-        :param names:      One of several names of the argument
-        :param help:       An optional description of the argument
-        :param type:       The type of the value
-        :param default:    The default value
-        :param required:   True, if the argument is mandatory, False otherwise
+        :param names:   One of several names of the argument
+        :param kwargs:  Optional keyword argument to be passed to an `ArgumentParser`
         """
-        self.args = list(args)
+        self.names = set(names)
         self.kwargs = dict(kwargs)
-
-    def add_to_argument_parser(self, argument_parser: ArgumentParser):
-        """
-        Adds this argument to a given argument parser.
-
-        :param argument_parser: The argument parser, the argument should be added to
-        """
-        try:
-            argument_parser.add_argument(*self.args, **self.kwargs)
-        except ArgumentError:
-            # Argument has already been added, that's okay
-            pass
 
 
 class StringArgument(Argument):
@@ -201,6 +186,10 @@ class CommandLineInterface:
         argument_parser = self._argument_parser
 
         for argument in arguments:
-            argument.add_to_argument_parser(argument_parser)
+            try:
+                argument_parser.add_argument(*argument.names, **argument.kwargs)
+            except ArgumentError:
+                # Argument has already been added
+                pass
 
         return argument_parser.parse_known_args()[0] if return_known_args else None
