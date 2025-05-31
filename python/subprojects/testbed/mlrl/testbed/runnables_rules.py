@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for programs that can be configured via command line arguments.
 """
 
-from argparse import ArgumentError, ArgumentParser
 from typing import Dict, List, Optional, Set
 
 from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
@@ -104,22 +103,6 @@ class RuleLearnerRunnable(SkLearnRunnable):
         raise RuntimeError('The machine learning algorithm does not support ' + problem_domain.problem_name
                            + ' problems')
 
-    @staticmethod
-    def __configure_argument_parser(parser: ArgumentParser, config_type: type, parameters: Set[Parameter]):
-        """
-        Configure an `ArgumentParser` by taking into account a given set of parameters.
-
-        :param parser:      The `ArgumentParser` to be configured
-        :param config_type: The type of the configuration that should support the parameters
-        :param parameters:  A set that contains the parameters to be taken into account
-        """
-        for parameter in parameters:
-            try:
-                parameter.add_to_argument_parser(parser, config_type)
-            except ArgumentError:
-                # Argument has already been added, that's okay
-                pass
-
     def configure_arguments(self, cli: CommandLineInterface):
         """
         See :func:`mlrl.testbed.runnables.Runnable.configure_arguments`
@@ -158,7 +141,12 @@ class RuleLearnerRunnable(SkLearnRunnable):
         )
         problem_domain = self._create_problem_domain(cli.argument_parser.parse_known_args()[0])
         config_type, parameters = self.__create_config_type_and_parameters(problem_domain)
-        self.__configure_argument_parser(cli.argument_parser, config_type, parameters)
+
+        for parameter in parameters:
+            argument = parameter.as_argument(config_type)
+
+            if argument:
+                argument.add_to_argument_parser(cli.argument_parser)
 
     def _create_experiment_builder(self, args, dataset_splitter: DatasetSplitter) -> Experiment.Builder:
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
