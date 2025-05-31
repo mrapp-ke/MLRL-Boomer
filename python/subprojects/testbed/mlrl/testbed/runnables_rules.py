@@ -14,7 +14,7 @@ from mlrl.common.learners import RuleLearner, SparsePolicy
 from mlrl.testbed.experiments import Experiment, SkLearnExperiment
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.output.characteristics.model.extension import RuleModelCharacteristicsExtension
-from mlrl.testbed.experiments.output.model_text.extension import RuleModelExtension
+from mlrl.testbed.experiments.output.model_text.extension import RuleModelAsTextExtension
 from mlrl.testbed.experiments.output.probability_calibration.extension import \
     JointProbabilityCalibrationModelExtension, MarginalProbabilityCalibrationModelExtension
 from mlrl.testbed.experiments.prediction import IncrementalPredictor
@@ -80,7 +80,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
         """
         return super().get_extensions() + [
-            RuleModelExtension(),
+            RuleModelAsTextExtension(),
             RuleModelCharacteristicsExtension(),
             MarginalProbabilityCalibrationModelExtension(),
             JointProbabilityCalibrationModelExtension()
