@@ -4,11 +4,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for configuring the arguments of a command line interface.
 """
 from argparse import ArgumentError, ArgumentParser, Namespace
-from enum import Enum
+from enum import Enum, EnumType
+from functools import cached_property
 from typing import Any, Dict, Optional, Set
 
 from mlrl.util.format import format_enum_values, format_set
-from mlrl.util.options import BooleanOption
+from mlrl.util.options import BooleanOption, parse_param, parse_param_and_options
 
 
 class Argument:
@@ -16,13 +17,38 @@ class Argument:
     A single argument of a command line interface for which the user can provide a custom value.
     """
 
-    def __init__(self, *names: str, **kwargs: Any):
+    def __init__(self, *names: str, default: Optional[Any] = None, **kwargs: Any):
         """
         :param names:   One of several names of the argument
         :param kwargs:  Optional keyword argument to be passed to an `ArgumentParser`
         """
         self.names = set(names)
+        self.default = default
         self.kwargs = dict(kwargs)
+
+    @cached_property
+    def name(self) -> str:
+        """
+        The name of the argument.
+        """
+        return next(iter(self.names))
+
+    @cached_property
+    def key(self) -> str:
+        """
+        The key of the argument in a `Namespace`.
+        """
+        return self.name.lstrip('--').replace('-', '_')
+
+    def get_value(self, args: Namespace) -> Optional[Any]:
+        """
+        Returns the value provided by the user for this argument.
+
+        :param args: A `Namespace` that provides access to the values provided by the user
+        :return:        The value provided by the user or None, if no value is available
+        """
+        value = getattr(args, self.key, None)
+        return value if value else self.default
 
 
 class StringArgument(Argument):
@@ -37,7 +63,11 @@ class StringArgument(Argument):
         :param default:     The default value
         :param required:    True, if the argument is mandatory, False otherwise
         """
-        super().__init__(*names, help=help, type=str, default=default, required=required)
+        super().__init__(*names, default=default, help=help, type=str, required=required)
+
+    def get_value(self, args: Namespace) -> Optional[Any]:
+        value = super().get_value(args)
+        return str(value) if value else None
 
 
 class IntArgument(Argument):
@@ -52,7 +82,15 @@ class IntArgument(Argument):
         :param default:     The default value
         :param required:    True, if the argument is mandatory, False otherwise
         """
-        super().__init__(*names, help=help, type=int, default=default, required=required)
+        super().__init__(*names, default=default, help=help, type=int, required=required)
+
+    def get_value(self, args: Namespace) -> Optional[Any]:
+        value = super().get_value(args)
+
+        try:
+            return int(value) if value else None
+        except ValueError:
+            raise ValueError('Expected value of argument ' + self.name + ' to be an integer, but got: ' + str(value))
 
 
 class FloatArgument(Argument):
@@ -60,14 +98,26 @@ class FloatArgument(Argument):
     An argument of a command line interface for which the user can provide a custom floating point value.
     """
 
-    def __init__(self, *names: str, help: Optional[str] = None, default: Optional[int] = None, required: bool = False):
+    def __init__(self,
+                 *names: str,
+                 help: Optional[str] = None,
+                 default: Optional[float] = None,
+                 required: bool = False):
         """
         :param names:       One or several names of the argument
         :param help:        An optional description of the argument
         :param default:     The default value
         :param required:    True, if the argument is mandatory, False otherwise
         """
-        super().__init__(*names, help=help, type=float, default=default, required=required)
+        super().__init__(*names, default=default, help=help, type=float, required=required)
+
+    def get_value(self, args: Namespace) -> Optional[Any]:
+        value = super().get_value(args)
+
+        try:
+            return float(value) if value else None
+        except ValueError:
+            raise ValueError('Expected value of argument ' + self.name + ' to be a float, but got: ' + str(value))
 
 
 class BoolArgument(Argument):
@@ -90,7 +140,7 @@ class BoolArgument(Argument):
     def __init__(self,
                  *names: str,
                  help: Optional[str] = None,
-                 default: bool = False,
+                 default: Optional[bool] = None,
                  required: bool = False,
                  true_options: Optional[Set[str]] = None,
                  false_options: Optional[Set[str]] = None):
@@ -103,12 +153,32 @@ class BoolArgument(Argument):
         :param false_options:   The names of options that can be provided by the user in addition to the value "false"
         """
         super().__init__(*names,
+                         default=None if default is None else
+                         (BooleanOption.TRUE.value if default else BooleanOption.FALSE.value),
                          help=self.__format_help(help,
                                                  bool(true_options) or bool(false_options)),
                          type=str if true_options or false_options else BooleanOption.parse,
-                         default=None if default is None else
-                         (BooleanOption.TRUE.value if default else BooleanOption.FALSE.value),
                          required=required)
+        self.true_options = true_options
+        self.false_options = false_options
+
+    def get_value(self, args: Namespace) -> Optional[Any]:
+        value = str(super().get_value(args)).lower()
+
+        if value:
+            true_options = self.true_options
+            false_options = self.false_options
+
+            if true_options or false_options:
+                value, options = parse_param_and_options(self.key, value, {
+                    BooleanOption.TRUE.value: true_options,
+                    BooleanOption.FALSE.value: false_options
+                })
+                return BooleanOption.parse(value), options
+
+            return BooleanOption.parse(value)
+
+        return None
 
 
 class SetArgument(Argument):
@@ -123,7 +193,7 @@ class SetArgument(Argument):
 
         help += ' Must be one of '
 
-        if isinstance(values, Enum):
+        if isinstance(values, EnumType):
             help += format_enum_values(values)
         else:
             help += format_set(values.keys() if isinstance(values, dict) else values)
@@ -139,7 +209,7 @@ class SetArgument(Argument):
                  *names: str,
                  values: Enum | Set[str] | Dict[str, Set[str]],
                  help: Optional[str] = None,
-                 default: Optional[str] = None,
+                 default: Optional[str | Enum] = None,
                  required: bool = False):
         """
         :param names:       One or several names of the argument
@@ -150,7 +220,30 @@ class SetArgument(Argument):
         :param default:     The default value
         :param required:    True, if the argument is mandatory, False otherwise
         """
-        super().__init__(*names, help=self.__format_help(help, values), type=str, default=default, required=required)
+        super().__init__(*names,
+                         default=(default.value if isinstance(default.value, str) else default.name.lower())
+                         if isinstance(default, Enum) else default,
+                         help=self.__format_help(help, values),
+                         type=str,
+                         required=required)
+
+        if isinstance(values, EnumType):
+            self.supported_values = {x.value if isinstance(x.value, str) else x.name for x in values}
+        else:
+            self.supported_values = values
+
+    def get_value(self, args: Namespace) -> Optional[Any]:
+        value = super().get_value(args)
+
+        if value:
+            supported_values = self.supported_values
+
+            if isinstance(supported_values, dict):
+                return parse_param_and_options(self.key, value, supported_values)
+
+            return parse_param(self.key, value, supported_values)
+
+        return None
 
 
 class CommandLineInterface:
@@ -184,7 +277,7 @@ class CommandLineInterface:
 
         for argument in arguments:
             try:
-                argument_parser.add_argument(*argument.names, **argument.kwargs)
+                argument_parser.add_argument(*argument.names, default=argument.default, **argument.kwargs)
             except ArgumentError:
                 # Argument has already been added
                 pass
