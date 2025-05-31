@@ -174,14 +174,11 @@ class CommandLineInterface:
                                          version=version_text,
                                          help='Display information about the program.')
 
-    def add_arguments(self, *arguments: Argument, return_known_args: bool = False) -> Optional[Namespace]:
+    def add_arguments(self, *arguments: Argument) -> Optional[Namespace]:
         """
         Adds a new argument that enables the user to provide a value to the command line interface.
 
-        :param arguments:           The arguments to be added
-        :param return_known_args:   True, if the values of the arguments already added to the command line interface
-                                    should be parsed and returned, False otherwise
-        :return:                    A `Namespace` providing access to the values of the arguments already added or None
+        :param arguments: The arguments to be added
         """
         argument_parser = self._argument_parser
 
@@ -192,4 +189,10 @@ class CommandLineInterface:
                 # Argument has already been added
                 pass
 
-        return argument_parser.parse_known_args()[0] if return_known_args else None
+    def parse_known_args(self) -> Namespace:
+        """
+        Parses and returns the values of the arguments already added to the command line interface.
+
+        :return: A `Namespace` providing access to the values of the arguments
+        """
+        return self._argument_parser.parse_known_args()[0]
