@@ -3,8 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for configuring the arguments of a command line interface.
 """
-from abc import ABC
-from argparse import ArgumentParser
+from argparse import ArgumentError, ArgumentParser
 from enum import Enum
 from typing import Any, Dict, Optional, Set
 
@@ -12,7 +11,7 @@ from mlrl.util.format import format_enum_values, format_set
 from mlrl.util.options import BooleanOption
 
 
-class Argument(ABC):
+class Argument:
     """
     An abstract base class for all arguments of a command line interface for which the user can provide a custom value.
     """
@@ -34,7 +33,11 @@ class Argument(ABC):
 
         :param argument_parser: The argument parser, the argument should be added to
         """
-        argument_parser.add_argument(*self.args, **self.kwargs)
+        try:
+            argument_parser.add_argument(*self.args, **self.kwargs)
+        except ArgumentError:
+            # Argument has already been added, that's okay
+            pass
 
 
 class StringArgument(Argument):
