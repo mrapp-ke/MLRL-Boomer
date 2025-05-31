@@ -53,10 +53,12 @@ class OutputExtension(Extension):
                 self.PARAM_OUTPUT_DIR,
                 help='The path to the directory where experimental results should be saved.',
             ),
-            BoolArgument('--wipe-output-dir',
-                         default=True,
-                         help='Whether all files in the directory specified via the argument '
-                         + OutputExtension.PARAM_OUTPUT_DIR + ' should be deleted before an experiment starts or not.'),
+            BoolArgument(
+                '--wipe-output-dir',
+                default=True,
+                help='Whether all files in the directory specified via the argument ' + OutputExtension.PARAM_OUTPUT_DIR
+                + ' should be deleted before an experiment starts or not.',
+            ),
             BoolArgument(
                 '--exit-on-error',
                 default=False,
