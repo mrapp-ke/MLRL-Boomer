@@ -7,7 +7,7 @@ sinks.
 from argparse import Namespace
 from typing import List
 
-from mlrl.testbed.cli import Argument
+from mlrl.testbed.cli import Argument, BoolArgument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.characteristics.model.extractor_rules import RuleModelCharacteristicsExtractor
 from mlrl.testbed.experiments.output.characteristics.model.writer import ModelCharacteristicsWriter
@@ -28,12 +28,12 @@ class RuleModelCharacteristicsExtension(Extension):
         See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
         return [
-            Argument.bool(
+            BoolArgument(
                 '--print-model-characteristics',
                 default=False,
                 help='Whether the characteristics of models should be printed on the console or not.',
             ),
-            Argument.bool(
+            BoolArgument(
                 '--store-model-characteristics',
                 default=False,
                 help='Whether the characteristics of models should be written into output files or not. Does only have '

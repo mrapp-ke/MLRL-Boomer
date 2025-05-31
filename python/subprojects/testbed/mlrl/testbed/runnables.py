@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 from argparse import Namespace
 from typing import List, Optional
 
-from mlrl.testbed.cli import Argument, CommandLineInterface
+from mlrl.testbed.cli import Argument, BoolArgument, CommandLineInterface
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.extensions import Extension
 from mlrl.testbed.extensions.extension_log import LogExtension
@@ -31,12 +31,12 @@ class Runnable(ABC):
             See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
             """
             return [
-                Argument.bool(
+                BoolArgument(
                     '--predict-for-training-data',
                     default=False,
                     help='Whether predictions should be obtained for the training data or not.',
                 ),
-                Argument.bool(
+                BoolArgument(
                     '--predict-for-test-data',
                     default=True,
                     help='Whether predictions should be obtained for the test data or not.',

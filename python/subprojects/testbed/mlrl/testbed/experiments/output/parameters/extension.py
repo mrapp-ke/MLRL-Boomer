@@ -6,7 +6,7 @@ Provides classes that allow configuring the functionality to write algorithmic p
 from argparse import Namespace
 from typing import List
 
-from mlrl.testbed.cli import Argument
+from mlrl.testbed.cli import Argument, BoolArgument, StringArgument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.parameters.writer import ParameterWriter
 from mlrl.testbed.experiments.output.sinks.sink import Sink
@@ -27,12 +27,12 @@ class ParameterOutputExtension(Extension):
         See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
         return [
-            Argument.string(
+            StringArgument(
                 self.PARAM_PARAMETER_SAVE_DIR,
                 help='The path to the directory where configuration files, which specify the parameters used by the '
                 + 'algorithm, should be saved.',
             ),
-            Argument.bool(
+            BoolArgument(
                 '--print-parameters',
                 default=False,
                 help='Whether the parameter setting should be printed on the console or not.',

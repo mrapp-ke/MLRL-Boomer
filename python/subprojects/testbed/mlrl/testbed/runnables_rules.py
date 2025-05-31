@@ -12,7 +12,7 @@ from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMix
 from mlrl.common.config.parameters import Parameter
 from mlrl.common.learners import RuleLearner, SparsePolicy
 
-from mlrl.testbed.cli import Argument, CommandLineInterface
+from mlrl.testbed.cli import BoolArgument, CommandLineInterface, FloatArgument, SetArgument
 from mlrl.testbed.experiments import Experiment, SkLearnExperiment
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.output.characteristics.model.extension import RuleModelCharacteristicsExtension
@@ -125,31 +125,31 @@ class RuleLearnerRunnable(SkLearnRunnable):
         """
         super().configure_arguments(cli)
         cli.add_arguments(
-            Argument.bool(
+            BoolArgument(
                 self.PARAM_INCREMENTAL_EVALUATION,
                 default=False,
                 help='Whether models should be evaluated repeatedly, using only a subset of the induced rules with '
                 + 'increasing size, or not.',
                 true_options={self.OPTION_MIN_SIZE, self.OPTION_MAX_SIZE, self.OPTION_STEP_SIZE},
             ),
-            Argument.set(
+            SetArgument(
                 self.PARAM_FEATURE_FORMAT,
                 values=SparsePolicy,
                 help='The format to be used for the representation of the feature matrix.',
             ),
-            Argument.float(
+            FloatArgument(
                 self.PARAM_SPARSE_FEATURE_VALUE,
                 default=0.0,
                 help='The value that should be used for sparse elements in the feature matrix. Does only have an '
                 + 'effect if a sparse format is used for the representation of the feature matrix, depending on the '
                 + 'argument ' + self.PARAM_FEATURE_FORMAT + '.',
             ),
-            Argument.set(
+            SetArgument(
                 '--output-format',
                 values=SparsePolicy,
                 help='The format to be used for the representation of the output matrix.',
             ),
-            Argument.set(
+            SetArgument(
                 '--prediction-format',
                 values=SparsePolicy,
                 help='The format to be used for the representation of predictions.',

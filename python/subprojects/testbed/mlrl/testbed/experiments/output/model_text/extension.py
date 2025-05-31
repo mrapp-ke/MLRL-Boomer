@@ -6,7 +6,7 @@ Provides classes that allow configuring the functionality to write rule models t
 from argparse import Namespace
 from typing import Dict, List, Set
 
-from mlrl.testbed.cli import Argument
+from mlrl.testbed.cli import Argument, BoolArgument
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.output.model_text import RuleModelAsText
 from mlrl.testbed.experiments.output.model_text.extractor_rules import RuleModelAsTextExtractor
@@ -45,7 +45,7 @@ class RuleModelExtension(Extension):
         See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
         return [
-            Argument.bool(
+            BoolArgument(
                 self.PARAM_PRINT_RULES,
                 default=False,
                 help='Whether the induced rules should be printed on the console or not.',
@@ -56,7 +56,7 @@ class RuleModelExtension(Extension):
                     RuleModelAsText.OPTION_DECIMALS_HEAD
                 },
             ),
-            Argument.bool(
+            BoolArgument(
                 self.PARAM_STORE_RULES,
                 default=False,
                 help='Whether the induced rules should be written into a text file or not.',

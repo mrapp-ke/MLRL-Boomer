@@ -6,7 +6,7 @@ Provides classes that allow configuring the functionality to write models to one
 from argparse import Namespace
 from typing import List
 
-from mlrl.testbed.cli import Argument
+from mlrl.testbed.cli import Argument, StringArgument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.model.writer import ModelWriter
 from mlrl.testbed.experiments.output.sinks.sink_pickle import PickleFileSink
@@ -25,7 +25,7 @@ class ModelOutputExtension(Extension):
         See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
         return [
-            Argument.string(
+            StringArgument(
                 self.PARAM_MODEL_SAVE_DIR,
                 help='The path to the directory where models should be saved.',
             ),

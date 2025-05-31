@@ -6,7 +6,7 @@ Provides classes that allow configuring the functionality to read algorithmic pa
 from argparse import Namespace
 from typing import List
 
-from mlrl.testbed.cli import Argument
+from mlrl.testbed.cli import Argument, StringArgument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.parameters.reader import ParameterReader
 from mlrl.testbed.experiments.input.sources.source_csv import CsvFileSource
@@ -23,7 +23,7 @@ class ParameterInputExtension(Extension):
         See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
         return [
-            Argument.string(
+            StringArgument(
                 '--parameter-load-dir',
                 help='The path to the directory from which parameter to be used by the algorithm should be loaded.',
             ),
