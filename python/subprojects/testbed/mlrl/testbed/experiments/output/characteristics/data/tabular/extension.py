@@ -7,7 +7,7 @@ sinks.
 from argparse import Namespace
 from typing import Dict, List, Set
 
-from mlrl.testbed.cli import Argument
+from mlrl.testbed.cli import Argument, BoolArgument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.characteristics.data.tabular.characteristics import OutputCharacteristics
 from mlrl.testbed.experiments.output.characteristics.data.tabular.characteristics_data import DataCharacteristics
@@ -51,7 +51,7 @@ class TabularDataCharacteristicExtension(Extension):
         See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
         return [
-            Argument.bool(
+            BoolArgument(
                 self.PARAM_PRINT_DATA_CHARACTERISTICS,
                 default=False,
                 help='Whether the characteristics of the training data should be printed on the console or not.',
@@ -65,7 +65,7 @@ class TabularDataCharacteristicExtension(Extension):
                     OPTION_DECIMALS, OPTION_PERCENTAGE
                 },
             ),
-            Argument.bool(
+            BoolArgument(
                 self.PARAM_STORE_DATA_CHARACTERISTICS,
                 default=False,
                 help='Whether the characteristics of the training data should be written into output files or not. '

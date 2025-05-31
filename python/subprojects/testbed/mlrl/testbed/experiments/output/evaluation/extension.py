@@ -6,7 +6,7 @@ Provides classes that allow configuring the functionality to write evaluation re
 from argparse import Namespace
 from typing import Dict, List, Set
 
-from mlrl.testbed.cli import Argument
+from mlrl.testbed.cli import Argument, BoolArgument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.evaluation.evaluation_result import EvaluationResult
 from mlrl.testbed.experiments.output.evaluation.extractor_classification import ClassificationEvaluationDataExtractor
@@ -84,7 +84,7 @@ class EvaluationExtension(Extension):
         See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
         return [
-            Argument.bool(
+            BoolArgument(
                 self.PARAM_PRINT_EVALUATION,
                 default=True,
                 help='Whether the evaluation results should be printed on the console or not.',
@@ -110,7 +110,7 @@ class EvaluationExtension(Extension):
                     OPTION_PERCENTAGE
                 },
             ),
-            Argument.bool(
+            BoolArgument(
                 self.PARAM_STORE_EVALUATION,
                 default=True,
                 help='Whether the evaluation results should be written into output files or not. Does only have an '
