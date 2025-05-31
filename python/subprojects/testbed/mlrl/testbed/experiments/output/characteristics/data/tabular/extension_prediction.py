@@ -7,7 +7,6 @@ several sinks.
 from argparse import Namespace
 from typing import Dict, List, Set
 
-from mlrl.testbed.cli import Argument, BoolArgument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.characteristics.data.tabular.characteristics import OutputCharacteristics
 from mlrl.testbed.experiments.output.characteristics.data.tabular.writer_prediction import \
@@ -20,6 +19,7 @@ from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
+from mlrl.util.cli import Argument, BoolArgument
 from mlrl.util.options import BooleanOption, parse_param_and_options
 
 

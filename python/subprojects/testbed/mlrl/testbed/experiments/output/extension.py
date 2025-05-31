@@ -7,9 +7,10 @@ from argparse import Namespace
 from os import listdir, path, unlink
 from typing import List
 
-from mlrl.testbed.cli import Argument, BoolArgument, StringArgument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.extensions.extension import Extension
+
+from mlrl.util.cli import Argument, BoolArgument, StringArgument
 
 
 class OutputExtension(Extension):
