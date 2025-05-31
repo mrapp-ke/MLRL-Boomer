@@ -19,7 +19,7 @@ from mlrl.util.cli import Argument, BoolArgument
 from mlrl.util.options import BooleanOption, parse_param_and_options
 
 
-class RuleModelExtension(Extension):
+class RuleModelAsTextExtension(Extension):
     """
     An extension that configures the functionality to write rule models to one or several sinks.
     """
