@@ -107,7 +107,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
         See :func:`mlrl.testbed.runnables.Runnable.configure_arguments`
         """
         super().configure_arguments(cli)
-        known_args = cli.add_arguments(
+        cli.add_arguments(
             BoolArgument(
                 self.PARAM_INCREMENTAL_EVALUATION,
                 default=False,
@@ -137,8 +137,8 @@ class RuleLearnerRunnable(SkLearnRunnable):
                 values=SparsePolicy,
                 help='The format to be used for the representation of predictions.',
             ),
-            return_known_args=True)
-        problem_domain = self._create_problem_domain(known_args)
+        )
+        problem_domain = self._create_problem_domain(cli.parse_known_args())
         config_type, parameters = self.__create_config_type_and_parameters(problem_domain)
 
         for parameter in parameters:
