@@ -6,11 +6,12 @@ Provides classes that allow configuring the functionality to read algorithmic pa
 from argparse import Namespace
 from typing import List
 
-from mlrl.testbed.cli import Argument, StringArgument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.parameters.reader import ParameterReader
 from mlrl.testbed.experiments.input.sources.source_csv import CsvFileSource
 from mlrl.testbed.extensions.extension import Extension
+
+from mlrl.util.cli import Argument, StringArgument
 
 
 class ParameterInputExtension(Extension):

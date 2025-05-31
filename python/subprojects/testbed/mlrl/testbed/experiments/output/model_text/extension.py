@@ -6,7 +6,6 @@ Provides classes that allow configuring the functionality to write rule models t
 from argparse import Namespace
 from typing import Dict, List, Set
 
-from mlrl.testbed.cli import Argument, BoolArgument
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.output.model_text import RuleModelAsText
 from mlrl.testbed.experiments.output.model_text.extractor_rules import RuleModelAsTextExtractor
@@ -16,6 +15,7 @@ from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.experiments.output.sinks.sink_text import TextFileSink
 from mlrl.testbed.extensions import Extension
 
+from mlrl.util.cli import Argument, BoolArgument
 from mlrl.util.options import BooleanOption, parse_param_and_options
 
 

@@ -12,7 +12,7 @@ from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMix
 from mlrl.common.config.parameters import Parameter
 from mlrl.common.learners import RuleLearner, SparsePolicy
 
-from mlrl.testbed.cli import BoolArgument, CommandLineInterface, FloatArgument, SetArgument
+from mlrl.testbed.cli import CommandLineInterface
 from mlrl.testbed.experiments import Experiment, SkLearnExperiment
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.output.characteristics.model.extension import RuleModelCharacteristicsExtension
@@ -26,6 +26,7 @@ from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnProblem
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.runnables_sklearn import SkLearnRunnable
 
+from mlrl.util.cli import BoolArgument, FloatArgument, SetArgument
 from mlrl.util.options import BooleanOption, parse_param_and_options
 from mlrl.util.validation import assert_greater, assert_greater_or_equal
 

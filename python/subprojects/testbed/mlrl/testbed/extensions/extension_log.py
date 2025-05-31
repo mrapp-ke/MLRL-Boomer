@@ -10,9 +10,10 @@ from argparse import Namespace
 from enum import Enum
 from typing import List
 
-from mlrl.testbed.cli import Argument, SetArgument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.extensions.extension import Extension
+
+from mlrl.util.cli import Argument, SetArgument
 
 
 class LogExtension(Extension):

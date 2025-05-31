@@ -6,7 +6,6 @@ Provides classes that allow configuring the functionality to write evaluation re
 from argparse import Namespace
 from typing import Dict, List, Set
 
-from mlrl.testbed.cli import Argument, BoolArgument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.evaluation.evaluation_result import EvaluationResult
 from mlrl.testbed.experiments.output.evaluation.extractor_classification import ClassificationEvaluationDataExtractor
@@ -22,6 +21,7 @@ from mlrl.testbed.experiments.problem_domain import ClassificationProblem, Regre
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
+from mlrl.util.cli import Argument, BoolArgument
 from mlrl.util.options import BooleanOption, parse_param_and_options
 
 
