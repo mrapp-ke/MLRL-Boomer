@@ -24,34 +24,36 @@ class RuleModelCharacteristicsExtension(Extension):
     An extension that configures the functionality to write characteristics of rule models to one or several sinks.
     """
 
+    PRINT_MODEL_CHARACTERISTICS = BoolArgument(
+        '--print-model-characteristics',
+        default=False,
+        help='Whether the characteristics of models should be printed on the console or not.',
+    )
+
+    STORE_MODEL_CHARACTERISTICS = BoolArgument(
+        '--store-model-characteristics',
+        default=False,
+        help='Whether the characteristics of models should be written into output files or not. Does only have an '
+        + 'effect if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
+    )
+
     def get_arguments(self) -> List[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
-        return [
-            BoolArgument(
-                '--print-model-characteristics',
-                default=False,
-                help='Whether the characteristics of models should be printed on the console or not.',
-            ),
-            BoolArgument(
-                '--store-model-characteristics',
-                default=False,
-                help='Whether the characteristics of models should be written into output files or not. Does only have '
-                + 'an effect if the argument ' + OutputExtension.PARAM_OUTPUT_DIR + ' is specified.',
-            ),
-        ]
+        return [self.PRINT_MODEL_CHARACTERISTICS, self.STORE_MODEL_CHARACTERISTICS]
 
-    @staticmethod
-    def __create_log_sinks(args: Namespace) -> List[Sink]:
-        if args.print_model_characteristics or args.print_all:
+    def __create_log_sinks(self, args: Namespace) -> List[Sink]:
+        if self.PRINT_MODEL_CHARACTERISTICS.get_value(args) or args.print_all:
             return [LogSink()]
         return []
 
-    @staticmethod
-    def __create_csv_file_sinks(args: Namespace) -> List[Sink]:
-        if (args.store_model_characteristics or args.store_all) and args.output_dir:
-            return [CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir)]
+    def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
+        store_model_characteristics = self.STORE_MODEL_CHARACTERISTICS.get_value(args)
+        output_dir = OutputExtension.OUTPUT_DIR.get_value(args)
+
+        if (store_model_characteristics or args.store_all) and output_dir:
+            return [CsvFileSink(directory=output_dir, create_directory=args.create_output_dir)]
         return []
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):

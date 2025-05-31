@@ -209,10 +209,10 @@ class SkLearnRunnable(Runnable, ABC):
             BoolArgument(
                 '--create-output-dir',
                 default=True,
-                help='Whether the directories specified via the arguments ' + OutputExtension.PARAM_OUTPUT_DIR + ', '
-                + ModelOutputExtension.PARAM_MODEL_SAVE_DIR + ' and '
-                + ParameterOutputExtension.PARAM_PARAMETER_SAVE_DIR + ' should automatically be created, if they do '
-                + 'not exist, or not. Must be one of ' + format_enum_values(BooleanOption) + '.',
+                help='Whether the directories specified via the arguments ' + OutputExtension.OUTPUT_DIR.name + ', '
+                + ModelOutputExtension.MODEL_SAVE_DIR.name + ' and ' + ParameterOutputExtension.PARAMETER_SAVE_DIR.name
+                + ' should automatically be created, if they do not exist, or not. Must be one of '
+                + format_enum_values(BooleanOption) + '.',
             ),
             BoolArgument(
                 '--print-all',

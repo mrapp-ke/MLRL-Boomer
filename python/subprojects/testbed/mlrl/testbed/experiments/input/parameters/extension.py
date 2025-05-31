@@ -19,22 +19,22 @@ class ParameterInputExtension(Extension):
     An extension that configures the functionality to read algorithmic parameters from a source.
     """
 
+    PARAMETER_LOAD_DIR = StringArgument(
+        '--parameter-load-dir',
+        help='The path to the directory from which parameter to be used by the algorithm should be loaded.',
+    )
+
     def get_arguments(self) -> List[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
-        return [
-            StringArgument(
-                '--parameter-load-dir',
-                help='The path to the directory from which parameter to be used by the algorithm should be loaded.',
-            ),
-        ]
+        return [self.PARAMETER_LOAD_DIR]
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        parameter_load_dir = args.parameter_load_dir
+        parameter_load_dir = self.PARAMETER_LOAD_DIR.get_value(args)
 
         if parameter_load_dir:
             reader = ParameterReader(CsvFileSource(parameter_load_dir))

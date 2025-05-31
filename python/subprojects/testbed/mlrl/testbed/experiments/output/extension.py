@@ -42,37 +42,37 @@ class OutputExtension(Extension):
                     if path.isfile(file_path):
                         unlink(file_path)
 
-    PARAM_OUTPUT_DIR = '--output-dir'
+    OUTPUT_DIR = StringArgument(
+        '--output-dir',
+        help='The path to the directory where experimental results should be saved.',
+    )
+
+    WIPE_OUTPUT_DIR = BoolArgument(
+        '--wipe-output-dir',
+        default=True,
+        help='Whether all files in the directory specified via the argument ' + OUTPUT_DIR.name + ' should be deleted '
+        + 'before an experiment starts or not.',
+    )
+
+    EXIT_ON_ERROR = BoolArgument(
+        '--exit-on-error',
+        default=False,
+        help='Whether the program should exit if an error occurs while writing experimental results or not.',
+    )
 
     def get_arguments(self) -> List[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
-        return [
-            StringArgument(
-                self.PARAM_OUTPUT_DIR,
-                help='The path to the directory where experimental results should be saved.',
-            ),
-            BoolArgument(
-                '--wipe-output-dir',
-                default=True,
-                help='Whether all files in the directory specified via the argument ' + OutputExtension.PARAM_OUTPUT_DIR
-                + ' should be deleted before an experiment starts or not.',
-            ),
-            BoolArgument(
-                '--exit-on-error',
-                default=False,
-                help='Whether the program should exit if an error occurs while writing experimental results or not.',
-            ),
-        ]
+        return [self.OUTPUT_DIR, self.WIPE_OUTPUT_DIR, self.EXIT_ON_ERROR]
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        experiment_builder.set_exit_on_error(args.exit_on_error)
-        output_dir = args.output_dir
+        experiment_builder.set_exit_on_error(self.EXIT_ON_ERROR.get_value(args))
+        output_dir = self.OUTPUT_DIR.get_value(args)
 
-        if output_dir and args.wipe_output_dir:
+        if output_dir and self.WIPE_OUTPUT_DIR.get_value(args):
             listener = OutputExtension.WipeDirectoryListener(output_dir)
             experiment_builder.add_listeners(listener)

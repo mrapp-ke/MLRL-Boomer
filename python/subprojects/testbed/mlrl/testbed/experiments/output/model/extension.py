@@ -19,24 +19,22 @@ class ModelOutputExtension(Extension):
     An extension that configures the functionality to write models to one or several sinks.
     """
 
-    PARAM_MODEL_SAVE_DIR = '--model-save-dir'
+    MODEL_SAVE_DIR = StringArgument(
+        '--model-save-dir',
+        help='The path to the directory where models should be saved.',
+    )
 
     def get_arguments(self) -> List[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
-        return [
-            StringArgument(
-                self.PARAM_MODEL_SAVE_DIR,
-                help='The path to the directory where models should be saved.',
-            ),
-        ]
+        return [self.MODEL_SAVE_DIR]
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        model_save_dir = args.model_save_dir
+        model_save_dir = self.MODEL_SAVE_DIR.get_value(args)
 
         if model_save_dir:
             pickle_sink = PickleFileSink(directory=model_save_dir, create_directory=args.create_output_dir)

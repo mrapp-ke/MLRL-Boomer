@@ -19,22 +19,22 @@ class ModelInputExtension(Extension):
     An extension that configures the functionality to read models from a source.
     """
 
+    MODEL_LOAD_DIR = StringArgument(
+        '--model-load-dir',
+        help='The path to the directory from which models should be loaded.',
+    )
+
     def get_arguments(self) -> List[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
-        return [
-            StringArgument(
-                '--model-load-dir',
-                help='The path to the directory from which models should be loaded.',
-            ),
-        ]
+        return [self.MODEL_LOAD_DIR]
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        model_load_dir = args.model_load_dir
+        model_load_dir = self.MODEL_LOAD_DIR.get_value(args)
 
         if model_load_dir:
             reader = ModelReader(PickleFileSource(model_load_dir))

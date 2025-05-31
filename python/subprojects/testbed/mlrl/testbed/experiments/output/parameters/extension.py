@@ -21,35 +21,34 @@ class ParameterOutputExtension(Extension):
     An extension that configures the functionality to write algorithmic parameters to one or several sinks.
     """
 
-    PARAM_PARAMETER_SAVE_DIR = '--parameter-save-dir'
+    PARAMETER_SAVE_DIR = StringArgument(
+        '--parameter-save-dir',
+        help='The path to the directory where configuration files, which specify the parameters used by the algorithm, '
+        + 'should be saved.',
+    )
+
+    PRINT_PARAMETERS = BoolArgument(
+        '--print-parameters',
+        default=False,
+        help='Whether the parameter setting should be printed on the console or not.',
+    )
 
     def get_arguments(self) -> List[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
-        return [
-            StringArgument(
-                self.PARAM_PARAMETER_SAVE_DIR,
-                help='The path to the directory where configuration files, which specify the parameters used by the '
-                + 'algorithm, should be saved.',
-            ),
-            BoolArgument(
-                '--print-parameters',
-                default=False,
-                help='Whether the parameter setting should be printed on the console or not.',
-            ),
-        ]
+        return [self.PARAMETER_SAVE_DIR, self.PRINT_PARAMETERS]
 
-    @staticmethod
-    def __create_log_sinks(args: Namespace) -> List[Sink]:
-        if args.print_parameters or args.print_all:
+    def __create_log_sinks(self, args: Namespace) -> List[Sink]:
+        if self.PRINT_PARAMETERS.get_value(args) or args.print_all:
             return [LogSink()]
         return []
 
-    @staticmethod
-    def __create_csv_file_sinks(args: Namespace) -> List[Sink]:
-        if args.parameter_save_dir:
-            return [CsvFileSink(directory=args.parameter_save_dir, create_directory=args.create_output_dir)]
+    def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
+        parameter_save_dir = self.PARAMETER_SAVE_DIR.get_value(args)
+
+        if parameter_save_dir:
+            return [CsvFileSink(directory=parameter_save_dir, create_directory=args.create_output_dir)]
         return []
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):

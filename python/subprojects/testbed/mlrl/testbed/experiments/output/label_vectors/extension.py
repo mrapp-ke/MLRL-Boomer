@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write label vectors to one or several sinks.
 """
 from argparse import Namespace
-from typing import Dict, List, Set
+from typing import List
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.extension import OutputExtension
@@ -17,7 +17,6 @@ from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.extensions.extension import Extension
 
 from mlrl.util.cli import Argument, BoolArgument
-from mlrl.util.options import BooleanOption, parse_param_and_options
 
 
 class LabelVectorExtension(Extension):
@@ -25,53 +24,40 @@ class LabelVectorExtension(Extension):
     An extension that configures the functionality to write label vectors to one or several sinks.
     """
 
-    PARAM_PRINT_LABEL_VECTORS = '--print-label-vectors'
+    PRINT_LABEL_VECTORS = BoolArgument(
+        '--print-label-vectors',
+        default=False,
+        help='Whether the unique label vectors contained in the training data should be printed on the console or not.',
+        true_options={LabelVectors.OPTION_SPARSE},
+    )
 
-    PRINT_LABEL_VECTORS_VALUES: Dict[str, Set[str]] = {
-        BooleanOption.TRUE.value: {LabelVectors.OPTION_SPARSE},
-        BooleanOption.FALSE.value: {}
-    }
-
-    PARAM_STORE_LABEL_VECTORS = '--store-label-vectors'
-
-    STORE_LABEL_VECTORS_VALUES = PRINT_LABEL_VECTORS_VALUES
+    STORE_LABEL_VECTORS = BoolArgument(
+        '--store-label-vectors',
+        default=False,
+        help='Whether the unique label vectors contained in the training data should be written into output files or '
+        + 'not. Does only have an effect if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
+        true_options={LabelVectors.OPTION_SPARSE},
+    )
 
     def get_arguments(self) -> List[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
-        return [
-            BoolArgument(
-                self.PARAM_PRINT_LABEL_VECTORS,
-                default=False,
-                help='Whether the unique label vectors contained in the training data should be printed on the console '
-                + 'or not.',
-                true_options={LabelVectors.OPTION_SPARSE},
-            ),
-            BoolArgument(
-                self.PARAM_STORE_LABEL_VECTORS,
-                default=False,
-                help='Whether the unique label vectors contained in the training data should be written into output '
-                + 'files or not. Does only have an effect if the argument ' + OutputExtension.PARAM_OUTPUT_DIR + ' is '
-                + 'specified.',
-                true_options={LabelVectors.OPTION_SPARSE},
-            ),
-        ]
+        return [self.PRINT_LABEL_VECTORS, self.STORE_LABEL_VECTORS]
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = parse_param_and_options(self.PARAM_PRINT_LABEL_VECTORS, args.print_label_vectors,
-                                                 self.PRINT_LABEL_VECTORS_VALUES)
+        value, options = self.PRINT_LABEL_VECTORS.get_value(args)
 
-        if (not value and args.print_all) or value == BooleanOption.TRUE.value:
+        if value or (value is None and args.print_all):
             return [LogSink(options)]
         return []
 
     def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = parse_param_and_options(self.PARAM_STORE_LABEL_VECTORS, args.store_label_vectors,
-                                                 self.STORE_LABEL_VECTORS_VALUES)
+        value, options = self.STORE_LABEL_VECTORS.get_value(args)
+        output_dir = OutputExtension.OUTPUT_DIR.get_value(args)
 
-        if ((not value and args.store_all) or value == BooleanOption.TRUE.value) and args.output_dir:
-            return [CsvFileSink(directory=args.output_dir, create_directory=args.create_output_dir, options=options)]
+        if (value or (value is None and args.store_all)) and output_dir:
+            return [CsvFileSink(directory=output_dir, create_directory=args.create_output_dir, options=options)]
         return []
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):

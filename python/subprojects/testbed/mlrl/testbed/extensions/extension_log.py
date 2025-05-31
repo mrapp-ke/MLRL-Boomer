@@ -51,24 +51,25 @@ class LogExtension(Extension):
 
             raise ValueError()
 
+    LOG_LEVEL = SetArgument(
+        '--log-level',
+        values=LogLevel,
+        default=LogLevel.INFO,
+        help='The log level to be used.',
+    )
+
     def get_arguments(self) -> List[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
-        return [
-            SetArgument(
-                '--log-level',
-                values=LogExtension.LogLevel,
-                default=LogExtension.LogLevel.INFO,
-                help='The log level to be used.',
-            ),
-        ]
+        return [self.LOG_LEVEL]
 
     def configure_experiment(self, args: Namespace, _: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        log_level = LogExtension.LogLevel.parse(args.log_level)
+        value = self.LOG_LEVEL.get_value(args)
+        log_level = LogExtension.LogLevel.parse(value) if value else None
         root = log.getLogger()
         root.setLevel(log_level)
         out_handler = log.StreamHandler(sys.stdout)
