@@ -14,7 +14,6 @@ from mlrl.common.config.parameters import NONE
 
 from mlrl.testbed_arff.experiments.input.sources import ArffFileSource
 
-from mlrl.testbed.cli import CommandLineInterface
 from mlrl.testbed.experiments import Experiment, SkLearnExperiment
 from mlrl.testbed.experiments.input.dataset import DatasetReader, InputDataset
 from mlrl.testbed.experiments.input.dataset.preprocessors import Preprocessor
@@ -41,7 +40,7 @@ from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificatio
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.runnables import Runnable
 
-from mlrl.util.cli import BoolArgument, IntArgument, SetArgument, StringArgument
+from mlrl.util.cli import BoolArgument, CommandLineInterface, IntArgument, SetArgument, StringArgument
 from mlrl.util.format import format_enum_values, format_set
 from mlrl.util.options import BooleanOption, parse_param, parse_param_and_options
 from mlrl.util.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
@@ -84,7 +83,7 @@ class SkLearnRunnable(Runnable, ABC):
     PARAM_PREDICTION_TYPE = '--prediction-type'
 
     def _create_problem_domain(self,
-                               args,
+                               args: Namespace,
                                fit_kwargs: Optional[Dict[str, Any]] = None,
                                predict_kwargs: Optional[Dict[str, Any]] = None) -> ProblemDomain:
         prediction_type = self.__create_prediction_type(args)
@@ -240,7 +239,7 @@ class SkLearnRunnable(Runnable, ABC):
         dataset_splitter = self.__create_dataset_splitter(args)
         return self._create_experiment_builder(args, dataset_splitter)
 
-    def _create_experiment_builder(self, args, dataset_splitter: DatasetSplitter) -> Experiment.Builder:
+    def _create_experiment_builder(self, args: Namespace, dataset_splitter: DatasetSplitter) -> Experiment.Builder:
         """
         May be overridden by subclasses in order to create the `Experiment` that should be run.
 

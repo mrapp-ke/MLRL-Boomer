@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides base classes for programs that can be configured via command line arguments.
 """
-
+from argparse import Namespace
 from typing import Dict, List, Optional, Set
 
 from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
@@ -11,7 +11,6 @@ from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMix
 from mlrl.common.config.parameters import Parameter
 from mlrl.common.learners import RuleLearner, SparsePolicy
 
-from mlrl.testbed.cli import CommandLineInterface
 from mlrl.testbed.experiments import Experiment, SkLearnExperiment
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.output.characteristics.model.extension import RuleModelCharacteristicsExtension
@@ -25,7 +24,7 @@ from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnProblem
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.runnables_sklearn import SkLearnRunnable
 
-from mlrl.util.cli import BoolArgument, FloatArgument, SetArgument
+from mlrl.util.cli import BoolArgument, CommandLineInterface, FloatArgument, SetArgument
 from mlrl.util.options import BooleanOption, parse_param_and_options
 from mlrl.util.validation import assert_greater, assert_greater_or_equal
 
@@ -108,7 +107,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
         See :func:`mlrl.testbed.runnables.Runnable.configure_arguments`
         """
         super().configure_arguments(cli)
-        cli.add_arguments(
+        known_args = cli.add_arguments(
             BoolArgument(
                 self.PARAM_INCREMENTAL_EVALUATION,
                 default=False,
@@ -138,17 +137,17 @@ class RuleLearnerRunnable(SkLearnRunnable):
                 values=SparsePolicy,
                 help='The format to be used for the representation of predictions.',
             ),
-        )
-        problem_domain = self._create_problem_domain(cli.argument_parser.parse_known_args()[0])
+            return_known_args=True)
+        problem_domain = self._create_problem_domain(known_args)
         config_type, parameters = self.__create_config_type_and_parameters(problem_domain)
 
         for parameter in parameters:
             argument = parameter.as_argument(config_type)
 
             if argument:
-                argument.add_to_argument_parser(cli.argument_parser)
+                cli.add_arguments(argument)
 
-    def _create_experiment_builder(self, args, dataset_splitter: DatasetSplitter) -> Experiment.Builder:
+    def _create_experiment_builder(self, args: Namespace, dataset_splitter: DatasetSplitter) -> Experiment.Builder:
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
         problem_domain = self._create_problem_domain(args, fit_kwargs=kwargs, predict_kwargs=kwargs)
         return SkLearnExperiment.Builder(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
