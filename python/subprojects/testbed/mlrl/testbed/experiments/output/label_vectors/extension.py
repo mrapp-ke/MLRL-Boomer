@@ -6,7 +6,7 @@ Provides classes that allow configuring the functionality to write label vectors
 from argparse import Namespace
 from typing import Dict, List, Set
 
-from mlrl.testbed.cli import Argument
+from mlrl.testbed.cli import Argument, BoolArgument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.label_vectors.extractor_rules import LabelVectorSetExtractor
@@ -41,14 +41,14 @@ class LabelVectorExtension(Extension):
         See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
         return [
-            Argument.bool(
+            BoolArgument(
                 self.PARAM_PRINT_LABEL_VECTORS,
                 default=False,
                 help='Whether the unique label vectors contained in the training data should be printed on the console '
                 + 'or not.',
                 true_options={LabelVectors.OPTION_SPARSE},
             ),
-            Argument.bool(
+            BoolArgument(
                 self.PARAM_STORE_LABEL_VECTORS,
                 default=False,
                 help='Whether the unique label vectors contained in the training data should be written into output '

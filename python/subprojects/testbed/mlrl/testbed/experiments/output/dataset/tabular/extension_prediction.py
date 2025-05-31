@@ -8,7 +8,7 @@ from typing import Dict, List, Set
 
 from mlrl.testbed_arff.experiments.output.sinks.sink_arff import ArffFileSink
 
-from mlrl.testbed.cli import Argument
+from mlrl.testbed.cli import Argument, BoolArgument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.dataset.tabular.writer_prediction import PredictionWriter
 from mlrl.testbed.experiments.output.extension import OutputExtension
@@ -41,13 +41,13 @@ class PredictionExtension(Extension):
         See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
         return [
-            Argument.bool(
+            BoolArgument(
                 self.PARAM_PRINT_PREDICTIONS,
                 default=False,
                 help='Whether predictions should be printed on the console or not.',
                 true_options={OPTION_DECIMALS},
             ),
-            Argument.bool(
+            BoolArgument(
                 self.PARAM_STORE_PREDICTIONS,
                 default=False,
                 help='Whether predictions should be written into output files or not. Does only have an effect, if the '

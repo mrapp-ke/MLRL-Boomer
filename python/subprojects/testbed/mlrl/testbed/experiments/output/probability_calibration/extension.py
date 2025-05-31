@@ -6,7 +6,7 @@ Provides classes that allow configuring the functionality to write calibration m
 from argparse import Namespace
 from typing import Dict, List, Set
 
-from mlrl.testbed.cli import Argument
+from mlrl.testbed.cli import Argument, BoolArgument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.probability_calibration.extractor_rules import \
@@ -43,14 +43,14 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
         return [
-            Argument.bool(
+            BoolArgument(
                 self.PARAM_PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL,
                 default=False,
                 help='Whether the model for the calibration of marginal probabilities should be printed on the console '
                 + 'or not.',
                 true_options={OPTION_DECIMALS},
             ),
-            Argument.bool(
+            BoolArgument(
                 self.PARAM_STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL,
                 default=False,
                 help='Whether the model for the calibration of marginal probabilities should be written into an output '
@@ -111,14 +111,14 @@ class JointProbabilityCalibrationModelExtension(Extension):
         See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
         return [
-            Argument.bool(
+            BoolArgument(
                 self.PARAM_PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL,
                 default=False,
                 help='Whether the model for the calibration of joint probabilities should be printed on the console or '
                 + 'not.',
                 true_options={OPTION_DECIMALS},
             ),
-            Argument.bool(
+            BoolArgument(
                 self.PARAM_STORE_JOINT_PROBABILITY_CALIBRATION_MODEL,
                 default=False,
                 help='Whether the model for the calibration of joint probabilities should be written into an output '

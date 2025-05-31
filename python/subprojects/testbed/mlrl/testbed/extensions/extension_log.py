@@ -10,7 +10,7 @@ from argparse import Namespace
 from enum import Enum
 from typing import List
 
-from mlrl.testbed.cli import Argument
+from mlrl.testbed.cli import Argument, SetArgument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.extensions.extension import Extension
 
@@ -55,7 +55,7 @@ class LogExtension(Extension):
         See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
         return [
-            Argument.set(
+            SetArgument(
                 '--log-level',
                 values=LogExtension.LogLevel,
                 default=LogExtension.LogLevel.INFO,

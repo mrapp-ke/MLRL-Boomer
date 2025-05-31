@@ -6,7 +6,7 @@ Provides classes that allow configuring the functionality to read models paramet
 from argparse import Namespace
 from typing import List
 
-from mlrl.testbed.cli import Argument
+from mlrl.testbed.cli import Argument, StringArgument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.model.reader import ModelReader
 from mlrl.testbed.experiments.input.sources.source_pickle import PickleFileSource
@@ -23,7 +23,7 @@ class ModelInputExtension(Extension):
         See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
         """
         return [
-            Argument.string(
+            StringArgument(
                 '--model-load-dir',
                 help='The path to the directory from which models should be loaded.',
             ),
