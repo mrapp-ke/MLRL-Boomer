@@ -13,7 +13,7 @@ from mlrl.util.options import BooleanOption
 
 class Argument:
     """
-    An abstract base class for all arguments of a command line interface for which the user can provide a custom value.
+    A single argument of a command line interface for which the user can provide a custom value.
     """
 
     def __init__(self, *names: str, **kwargs: Any):
