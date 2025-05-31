@@ -8,11 +8,13 @@ from abc import ABC, abstractmethod
 from argparse import Namespace
 from typing import List, Optional
 
-from mlrl.testbed.cli import Argument, BoolArgument, CommandLineInterface
+from mlrl.testbed.cli import CommandLineInterface
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.extensions import Extension
 from mlrl.testbed.extensions.extension_log import LogExtension
 from mlrl.testbed.program_info import ProgramInfo
+
+from mlrl.util.cli import Argument, BoolArgument
 
 
 class Runnable(ABC):

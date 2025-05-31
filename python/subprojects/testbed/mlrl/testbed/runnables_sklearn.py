@@ -14,7 +14,7 @@ from mlrl.common.config.parameters import NONE
 
 from mlrl.testbed_arff.experiments.input.sources import ArffFileSource
 
-from mlrl.testbed.cli import BoolArgument, CommandLineInterface, IntArgument, SetArgument, StringArgument
+from mlrl.testbed.cli import CommandLineInterface
 from mlrl.testbed.experiments import Experiment, SkLearnExperiment
 from mlrl.testbed.experiments.input.dataset import DatasetReader, InputDataset
 from mlrl.testbed.experiments.input.dataset.preprocessors import Preprocessor
@@ -41,6 +41,7 @@ from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificatio
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.runnables import Runnable
 
+from mlrl.util.cli import BoolArgument, IntArgument, SetArgument, StringArgument
 from mlrl.util.format import format_enum_values, format_set
 from mlrl.util.options import BooleanOption, parse_param, parse_param_and_options
 from mlrl.util.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal

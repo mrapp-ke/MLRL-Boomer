@@ -8,8 +8,9 @@ from abc import ABC, abstractmethod
 from argparse import Namespace
 from typing import List
 
-from mlrl.testbed.cli import Argument
 from mlrl.testbed.experiments.experiment import Experiment
+
+from mlrl.util.cli import Argument
 
 
 class Extension(ABC):

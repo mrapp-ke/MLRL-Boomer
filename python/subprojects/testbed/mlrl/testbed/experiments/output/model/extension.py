@@ -6,11 +6,12 @@ Provides classes that allow configuring the functionality to write models to one
 from argparse import Namespace
 from typing import List
 
-from mlrl.testbed.cli import Argument, StringArgument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.model.writer import ModelWriter
 from mlrl.testbed.experiments.output.sinks.sink_pickle import PickleFileSink
 from mlrl.testbed.extensions.extension import Extension
+
+from mlrl.util.cli import Argument, StringArgument
 
 
 class ModelOutputExtension(Extension):

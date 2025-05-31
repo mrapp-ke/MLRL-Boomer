@@ -7,7 +7,6 @@ sinks.
 from argparse import Namespace
 from typing import List
 
-from mlrl.testbed.cli import Argument, BoolArgument
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.characteristics.model.extractor_rules import RuleModelCharacteristicsExtractor
 from mlrl.testbed.experiments.output.characteristics.model.writer import ModelCharacteristicsWriter
@@ -16,6 +15,8 @@ from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.extensions.extension import Extension
+
+from mlrl.util.cli import Argument, BoolArgument
 
 
 class RuleModelCharacteristicsExtension(Extension):
