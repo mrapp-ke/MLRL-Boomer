@@ -27,29 +27,30 @@ class Runnable(ABC):
         An extension that configures the functionality to predict for different datasets.
         """
 
+        PREDICT_FOR_TRAINING_DATA = BoolArgument(
+            '--predict-for-training-data',
+            default=False,
+            help='Whether predictions should be obtained for the training data or not.',
+        )
+
+        PREDICT_FOR_TEST_DATA = BoolArgument(
+            '--predict-for-test-data',
+            default=True,
+            help='Whether predictions should be obtained for the test data or not.',
+        )
+
         def get_arguments(self) -> List[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
             """
-            return [
-                BoolArgument(
-                    '--predict-for-training-data',
-                    default=False,
-                    help='Whether predictions should be obtained for the training data or not.',
-                ),
-                BoolArgument(
-                    '--predict-for-test-data',
-                    default=True,
-                    help='Whether predictions should be obtained for the test data or not.',
-                ),
-            ]
+            return [self.PREDICT_FOR_TRAINING_DATA, self.PREDICT_FOR_TEST_DATA]
 
         def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
             """
             See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
             """
-            experiment_builder.set_predict_for_training_dataset(args.predict_for_training_data)
-            experiment_builder.set_predict_for_test_dataset(args.predict_for_test_data)
+            experiment_builder.set_predict_for_training_dataset(self.PREDICT_FOR_TRAINING_DATA.get_value(args))
+            experiment_builder.set_predict_for_test_dataset(self.PREDICT_FOR_TEST_DATA.get_value(args))
 
     def get_extensions(self) -> List[Extension]:
         """
