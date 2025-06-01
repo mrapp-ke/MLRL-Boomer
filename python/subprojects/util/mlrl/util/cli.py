@@ -56,14 +56,18 @@ class StringArgument(Argument):
     An argument of a command line interface for which the user can provide a custom string value.
     """
 
-    def __init__(self, *names: str, help: Optional[str] = None, default: Optional[str] = None, required: bool = False):
+    def __init__(self,
+                 *names: str,
+                 description: Optional[str] = None,
+                 default: Optional[str] = None,
+                 required: bool = False):
         """
         :param names:       One or several names of the argument
-        :param help:        An optional description of the argument
+        :param description: An optional description of the argument
         :param default:     The default value
         :param required:    True, if the argument is mandatory, False otherwise
         """
-        super().__init__(*names, default=default, help=help, type=str, required=required)
+        super().__init__(*names, default=default, help=description, type=str, required=required)
 
     def get_value(self, args: Namespace) -> Optional[Any]:
         value = super().get_value(args)
@@ -75,22 +79,27 @@ class IntArgument(Argument):
     An argument of a command line interface for which the user can provide a custom integer value.
     """
 
-    def __init__(self, *names: str, help: Optional[str] = None, default: Optional[int] = None, required: bool = False):
+    def __init__(self,
+                 *names: str,
+                 description: Optional[str] = None,
+                 default: Optional[int] = None,
+                 required: bool = False):
         """
         :param names:       One or several names of the argument
-        :param help:        An optional description of the argument
+        :param description: An optional description of the argument
         :param default:     The default value
         :param required:    True, if the argument is mandatory, False otherwise
         """
-        super().__init__(*names, default=default, help=help, type=int, required=required)
+        super().__init__(*names, default=default, help=description, type=int, required=required)
 
     def get_value(self, args: Namespace) -> Optional[Any]:
         value = super().get_value(args)
 
         try:
             return int(value) if value else None
-        except ValueError:
-            raise ValueError('Expected value of argument ' + self.name + ' to be an integer, but got: ' + str(value))
+        except ValueError as error:
+            raise ValueError('Expected value of argument ' + self.name + ' to be an integer, but got: '
+                             + str(value)) from error
 
 
 class FloatArgument(Argument):
@@ -100,24 +109,25 @@ class FloatArgument(Argument):
 
     def __init__(self,
                  *names: str,
-                 help: Optional[str] = None,
+                 description: Optional[str] = None,
                  default: Optional[float] = None,
                  required: bool = False):
         """
         :param names:       One or several names of the argument
-        :param help:        An optional description of the argument
+        :param description: An optional description of the argument
         :param default:     The default value
         :param required:    True, if the argument is mandatory, False otherwise
         """
-        super().__init__(*names, default=default, help=help, type=float, required=required)
+        super().__init__(*names, default=default, help=description, type=float, required=required)
 
     def get_value(self, args: Namespace) -> Optional[Any]:
         value = super().get_value(args)
 
         try:
             return float(value) if value else None
-        except ValueError:
-            raise ValueError('Expected value of argument ' + self.name + ' to be a float, but got: ' + str(value))
+        except ValueError as error:
+            raise ValueError('Expected value of argument ' + self.name + ' to be a float, but got: '
+                             + str(value)) from error
 
 
 class BoolArgument(Argument):
@@ -126,27 +136,27 @@ class BoolArgument(Argument):
     """
 
     @staticmethod
-    def __format_help(help: str, has_options: bool) -> str:
-        if not help.endswith('.'):
-            help += '.'
+    def __format_description(description: str, has_options: bool) -> str:
+        if not description.endswith('.'):
+            description += '.'
 
-        help += ' Must be one of ' + format_enum_values(BooleanOption) + '.'
+        description += ' Must be one of ' + format_enum_values(BooleanOption) + '.'
 
         if has_options:
-            help += ' For additional options refer to the documentation.'
+            description += ' For additional options refer to the documentation.'
 
-        return help
+        return description
 
     def __init__(self,
                  *names: str,
-                 help: Optional[str] = None,
+                 description: Optional[str] = None,
                  default: Optional[bool] = None,
                  required: bool = False,
                  true_options: Optional[Set[str]] = None,
                  false_options: Optional[Set[str]] = None):
         """
         :param names:           One or several names of the argument
-        :param help:            An optional description of the argument
+        :param description:     An optional description of the argument
         :param default:         The default value
         :param required:        True, if the argument is mandatory, False otherwise
         :param true_options:    The names of options that can be provided by the user in addition to the value "true"
@@ -155,8 +165,8 @@ class BoolArgument(Argument):
         super().__init__(*names,
                          default=None if default is None else
                          (BooleanOption.TRUE.value if default else BooleanOption.FALSE.value),
-                         help=self.__format_help(help,
-                                                 bool(true_options) or bool(false_options)),
+                         help=self.__format_description(description,
+                                                        bool(true_options) or bool(false_options)),
                          type=str if true_options or false_options else BooleanOption.parse,
                          required=required)
         self.true_options = true_options
@@ -187,28 +197,28 @@ class SetArgument(Argument):
     """
 
     @staticmethod
-    def __format_help(help: str, values: Any) -> str:
-        if not help.endswith('.'):
-            help += '.'
+    def __format_description(description: str, values: Any) -> str:
+        if not description.endswith('.'):
+            description += '.'
 
-        help += ' Must be one of '
+        description += ' Must be one of '
 
         if isinstance(values, EnumType):
-            help += format_enum_values(values)
+            description += format_enum_values(values)
         else:
-            help += format_set(values.keys() if isinstance(values, dict) else values)
+            description += format_set(values.keys() if isinstance(values, dict) else values)
 
-        help += '.'
+        description += '.'
 
         if isinstance(values, dict):
-            help += ' For additional options refer to the documentation.'
+            description += ' For additional options refer to the documentation.'
 
-        return help
+        return description
 
     def __init__(self,
                  *names: str,
                  values: Enum | Set[str] | Dict[str, Set[str]],
-                 help: Optional[str] = None,
+                 description: Optional[str] = None,
                  default: Optional[str | Enum] = None,
                  required: bool = False):
         """
@@ -216,14 +226,14 @@ class SetArgument(Argument):
         :param values:      An enum or set that contains the predefined values or a dictionary that contains the
                             predefined values, as well as the names of options that can be provided by the user in
                             addition to the respective values
-        :param help:        An optional description of the argument
+        :param description: An optional description of the argument
         :param default:     The default value
         :param required:    True, if the argument is mandatory, False otherwise
         """
         super().__init__(*names,
                          default=(default.value if isinstance(default.value, str) else default.name.lower())
                          if isinstance(default, Enum) else default,
-                         help=self.__format_help(help, values),
+                         help=self.__format_description(description, values),
                          type=str,
                          required=required)
 

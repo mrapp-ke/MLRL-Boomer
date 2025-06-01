@@ -21,7 +21,7 @@ class ModelInputExtension(Extension):
 
     MODEL_LOAD_DIR = StringArgument(
         '--model-load-dir',
-        help='The path to the directory from which models should be loaded.',
+        description='The path to the directory from which models should be loaded.',
     )
 
     def get_arguments(self) -> List[Argument]:

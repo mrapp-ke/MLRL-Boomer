@@ -21,7 +21,7 @@ class ParameterInputExtension(Extension):
 
     PARAMETER_LOAD_DIR = StringArgument(
         '--parameter-load-dir',
-        help='The path to the directory from which parameter to be used by the algorithm should be loaded.',
+        description='The path to the directory from which parameter to be used by the algorithm should be loaded.',
     )
 
     def get_arguments(self) -> List[Argument]:

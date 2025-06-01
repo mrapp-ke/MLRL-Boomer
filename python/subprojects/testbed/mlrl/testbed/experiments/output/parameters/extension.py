@@ -23,14 +23,14 @@ class ParameterOutputExtension(Extension):
 
     PARAMETER_SAVE_DIR = StringArgument(
         '--parameter-save-dir',
-        help='The path to the directory where configuration files, which specify the parameters used by the algorithm, '
-        + 'should be saved.',
+        description='The path to the directory where configuration files, which specify the parameters used by the '
+        + 'algorithm, should be saved.',
     )
 
     PRINT_PARAMETERS = BoolArgument(
         '--print-parameters',
         default=False,
-        help='Whether the parameter setting should be printed on the console or not.',
+        description='Whether the parameter setting should be printed on the console or not.',
     )
 
     def get_arguments(self) -> List[Argument]:

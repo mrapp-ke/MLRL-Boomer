@@ -32,7 +32,7 @@ class EvaluationExtension(Extension):
     PRINT_EVALUATION = BoolArgument(
         '--print-evaluation',
         default=True,
-        help='Whether the evaluation results should be printed on the console or not.',
+        description='Whether the evaluation results should be printed on the console or not.',
         true_options={
             EvaluationResult.OPTION_ENABLE_ALL, EvaluationResult.OPTION_HAMMING_LOSS,
             EvaluationResult.OPTION_HAMMING_ACCURACY, EvaluationResult.OPTION_SUBSET_ZERO_ONE_LOSS,
@@ -57,8 +57,8 @@ class EvaluationExtension(Extension):
     STORE_EVALUATION = BoolArgument(
         '--store-evaluation',
         default=True,
-        help='Whether the evaluation results should be written into output files or not. Does only have an effect if '
-        + 'the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
+        description='Whether the evaluation results should be written into output files or not. Does only have an '
+        + 'effect if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
         true_options={
             EvaluationResult.OPTION_ENABLE_ALL, EvaluationResult.OPTION_HAMMING_LOSS,
             EvaluationResult.OPTION_HAMMING_ACCURACY, EvaluationResult.OPTION_SUBSET_ZERO_ONE_LOSS,

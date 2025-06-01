@@ -175,51 +175,51 @@ class SkLearnRunnable(Runnable, ABC):
                 self.PARAM_PROBLEM_TYPE,
                 values={ClassificationProblem.NAME, RegressionProblem.NAME},
                 default=ClassificationProblem.NAME,
-                help='The type of the machine learning problem to be solved. Must be one of '
+                description='The type of the machine learning problem to be solved. Must be one of '
                 + format_set(self.PROBLEM_TYPE_VALUES) + '.',
             ),
             IntArgument(
                 self.PARAM_RANDOM_STATE,
-                help='The seed to be used by random number generators. Must be at least 1.',
+                description='The seed to be used by random number generators. Must be at least 1.',
             ),
             StringArgument(
                 '--data-dir',
                 required=True,
-                help='The path to the directory where the data set files are located.',
+                description='The path to the directory where the data set files are located.',
             ),
             StringArgument(
                 '--dataset',
                 required=True,
-                help='The name of the data set files without suffix.',
+                description='The name of the data set files without suffix.',
             ),
             SetArgument(
                 self.PARAM_DATA_SPLIT,
                 values=self.DATA_SPLIT_VALUES,
                 default=self.DATA_SPLIT_TRAIN_TEST,
-                help='The strategy to be used for splitting the available data into training and test sets.',
+                description='The strategy to be used for splitting the available data into training and test sets.',
             ),
             BoolArgument(
                 '--one-hot-encoding',
                 default=False,
-                help='Whether one-hot-encoding should be used to encode nominal features or not.',
+                description='Whether one-hot-encoding should be used to encode nominal features or not.',
             ),
             BoolArgument(
                 '--create-output-dir',
                 default=True,
-                help='Whether the directories specified via the arguments ' + OutputExtension.OUTPUT_DIR.name + ', '
-                + ModelOutputExtension.MODEL_SAVE_DIR.name + ' and ' + ParameterOutputExtension.PARAMETER_SAVE_DIR.name
-                + ' should automatically be created, if they do not exist, or not. Must be one of '
-                + format_enum_values(BooleanOption) + '.',
+                description='Whether the directories specified via the arguments ' + OutputExtension.OUTPUT_DIR.name
+                + ', ' + ModelOutputExtension.MODEL_SAVE_DIR.name + ' and '
+                + ParameterOutputExtension.PARAMETER_SAVE_DIR.name + ' should automatically be created, if they do not '
+                + 'exist, or not. Must be one of ' + format_enum_values(BooleanOption) + '.',
             ),
             BoolArgument(
                 '--print-all',
                 default=False,
-                help='Whether all output data should be printed on the console or not.',
+                description='Whether all output data should be printed on the console or not.',
             ),
             BoolArgument(
                 '--store-all',
                 default=False,
-                help='Whether all output data should be written to files or not.',
+                description='Whether all output data should be written to files or not.',
             ),
         )
 
