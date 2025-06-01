@@ -33,6 +33,7 @@ from mlrl.testbed.experiments.output.label_vectors.extension import LabelVectorE
 from mlrl.testbed.experiments.output.model.extension import ModelOutputExtension
 from mlrl.testbed.experiments.output.parameters.extension import ParameterOutputExtension
 from mlrl.testbed.experiments.prediction import GlobalPredictor
+from mlrl.testbed.experiments.prediction.extension import PredictionTypeExtension
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
 from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificationProblem, SkLearnProblem, \
@@ -80,13 +81,11 @@ class SkLearnRunnable(Runnable, ABC):
         DATA_SPLIT_CROSS_VALIDATION: {OPTION_NUM_FOLDS, OPTION_FIRST_FOLD, OPTION_LAST_FOLD}
     }
 
-    PARAM_PREDICTION_TYPE = '--prediction-type'
-
     def _create_problem_domain(self,
                                args: Namespace,
                                fit_kwargs: Optional[Dict[str, Any]] = None,
                                predict_kwargs: Optional[Dict[str, Any]] = None) -> ProblemDomain:
-        prediction_type = self.__create_prediction_type(args)
+        prediction_type = PredictionTypeExtension.get_prediction_type(args)
         predictor_factory = self._create_predictor_factory(args, prediction_type)
         value = parse_param(self.PARAM_PROBLEM_TYPE, args.problem_type, self.PROBLEM_TYPE_VALUES)
 
@@ -104,9 +103,6 @@ class SkLearnRunnable(Runnable, ABC):
                                         prediction_type=prediction_type,
                                         fit_kwargs=fit_kwargs,
                                         predict_kwargs=predict_kwargs)
-
-    def __create_prediction_type(self, args) -> PredictionType:
-        return PredictionType.parse(self.PARAM_PREDICTION_TYPE, args.prediction_type)
 
     @staticmethod
     def __create_preprocessors(args) -> List[Preprocessor]:
@@ -155,6 +151,7 @@ class SkLearnRunnable(Runnable, ABC):
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
         """
         return super().get_extensions() + [
+            PredictionTypeExtension(),
             OutputExtension(),
             ModelInputExtension(),
             ModelOutputExtension(),
@@ -223,12 +220,6 @@ class SkLearnRunnable(Runnable, ABC):
                 '--store-all',
                 default=False,
                 help='Whether all output data should be written to files or not.',
-            ),
-            SetArgument(
-                self.PARAM_PREDICTION_TYPE,
-                values=PredictionType,
-                default=PredictionType.BINARY,
-                help='The type of predictions that should be obtained from the learner.',
             ),
         )
 
