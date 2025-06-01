@@ -206,7 +206,7 @@ class NominalParameter(Parameter, ABC):
                 if value_description:
                     description += ' ' + value_description + '.'
 
-            return SetArgument(self.argument_name, values=supported_values, help=description)
+            return SetArgument(self.argument_name, values=supported_values, description=description)
 
         return None
 
@@ -246,6 +246,7 @@ class NumericalParameter(Parameter, ABC):
     def as_argument(self, config_type: type) -> Optional[Argument]:
         if self.__is_supported(config_type):
             return Argument(self.argument_name, type=self.numeric_type, help=self.description)
+        return None
 
 
 class IntParameter(NumericalParameter, ABC):

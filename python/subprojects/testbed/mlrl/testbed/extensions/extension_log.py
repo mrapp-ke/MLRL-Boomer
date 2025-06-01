@@ -55,7 +55,7 @@ class LogExtension(Extension):
         '--log-level',
         values=LogLevel,
         default=LogLevel.INFO,
-        help='The log level to be used.',
+        description='The log level to be used.',
     )
 
     def get_arguments(self) -> List[Argument]:

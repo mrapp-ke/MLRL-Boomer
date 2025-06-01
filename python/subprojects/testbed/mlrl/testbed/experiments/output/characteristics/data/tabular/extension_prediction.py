@@ -32,8 +32,8 @@ class PredictionCharacteristicsExtension(Extension):
     PRINT_PREDICTION_CHARACTERISTICS = BoolArgument(
         '--print-prediction-characteristics',
         default=False,
-        help='Whether the characteristics of binary predictions should be printed on the console or not. Does only '
-        + 'have an effect if the argument ' + PredictionTypeExtension.PREDICTION_TYPE.name + ' is set to '
+        description='Whether the characteristics of binary predictions should be printed on the console or not. Does '
+        + 'only have an effect if the argument ' + PredictionTypeExtension.PREDICTION_TYPE.name + ' is set to '
         + PredictionType.BINARY.value + '.',
         true_options={
             OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,
@@ -46,8 +46,8 @@ class PredictionCharacteristicsExtension(Extension):
     STORE_PREDICTION_CHARACTERISTICS = BoolArgument(
         '--store-prediction-characteristics',
         default=False,
-        help='Whether the characteristics of binary predictions should be written into output files or not. Does only '
-        + 'have an effect if the argument ' + PredictionTypeExtension.PREDICTION_TYPE.name + ' is set to '
+        description='Whether the characteristics of binary predictions should be written into output files or not. '
+        + 'Does only have an effect if the argument ' + PredictionTypeExtension.PREDICTION_TYPE.name + ' is set to '
         + PredictionType.BINARY.value + ' and if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
         true_options={
             OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,

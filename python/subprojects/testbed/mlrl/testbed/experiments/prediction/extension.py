@@ -21,7 +21,7 @@ class PredictionTypeExtension(Extension):
         '--prediction-type',
         values=PredictionType,
         default=PredictionType.BINARY,
-        help='The type of predictions that should be obtained from the learner.',
+        description='The type of predictions that should be obtained from the learner.',
     )
 
     def get_arguments(self) -> List[Argument]:
