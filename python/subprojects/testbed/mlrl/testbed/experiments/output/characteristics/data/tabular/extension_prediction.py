@@ -15,6 +15,7 @@ from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
+from mlrl.testbed.experiments.prediction.extension import PredictionTypeExtension
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
@@ -28,14 +29,12 @@ class PredictionCharacteristicsExtension(Extension):
     sinks.
     """
 
-    # TODO remove
-    PARAM_PREDICTION_TYPE = '--prediction-type'
-
     PRINT_PREDICTION_CHARACTERISTICS = BoolArgument(
         '--print-prediction-characteristics',
         default=False,
         help='Whether the characteristics of binary predictions should be printed on the console or not. Does only '
-        + 'have an effect if the argument ' + PARAM_PREDICTION_TYPE + ' is set to ' + PredictionType.BINARY.value + '.',
+        + 'have an effect if the argument ' + PredictionTypeExtension.PREDICTION_TYPE.name + ' is set to '
+        + PredictionType.BINARY.value + '.',
         true_options={
             OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,
             OutputCharacteristics.OPTION_OUTPUT_SPARSITY, OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
@@ -48,8 +47,8 @@ class PredictionCharacteristicsExtension(Extension):
         '--store-prediction-characteristics',
         default=False,
         help='Whether the characteristics of binary predictions should be written into output files or not. Does only '
-        + 'have an effect if the argument ' + PARAM_PREDICTION_TYPE + ' is set to ' + PredictionType.BINARY.value
-        + ' and if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
+        + 'have an effect if the argument ' + PredictionTypeExtension.PREDICTION_TYPE.name + ' is set to '
+        + PredictionType.BINARY.value + ' and if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
         true_options={
             OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,
             OutputCharacteristics.OPTION_OUTPUT_SPARSITY, OutputCharacteristics.OPTION_LABEL_IMBALANCE_RATIO,
