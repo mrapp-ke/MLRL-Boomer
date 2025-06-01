@@ -26,10 +26,9 @@ class Extension(ABC):
         :return: A list that contains the argument that should be added to the command line API
         """
 
-    @abstractmethod
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
-        Must be implemented by subclasses in order to configure an experiment according to the command line arguments
+        May be overridden by subclasses in order to configure an experiment according to the command line arguments
         specified by the user.
 
         :param args:                The command line arguments specified by the user
