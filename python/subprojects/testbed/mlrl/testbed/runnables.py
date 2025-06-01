@@ -30,13 +30,13 @@ class Runnable(ABC):
         PREDICT_FOR_TRAINING_DATA = BoolArgument(
             '--predict-for-training-data',
             default=False,
-            help='Whether predictions should be obtained for the training data or not.',
+            description='Whether predictions should be obtained for the training data or not.',
         )
 
         PREDICT_FOR_TEST_DATA = BoolArgument(
             '--predict-for-test-data',
             default=True,
-            help='Whether predictions should be obtained for the test data or not.',
+            description='Whether predictions should be obtained for the test data or not.',
         )
 
         def get_arguments(self) -> List[Argument]:

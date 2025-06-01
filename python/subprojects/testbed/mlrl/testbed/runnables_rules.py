@@ -111,31 +111,31 @@ class RuleLearnerRunnable(SkLearnRunnable):
             BoolArgument(
                 self.PARAM_INCREMENTAL_EVALUATION,
                 default=False,
-                help='Whether models should be evaluated repeatedly, using only a subset of the induced rules with '
-                + 'increasing size, or not.',
+                description='Whether models should be evaluated repeatedly, using only a subset of the induced rules '
+                + 'with increasing size, or not.',
                 true_options={self.OPTION_MIN_SIZE, self.OPTION_MAX_SIZE, self.OPTION_STEP_SIZE},
             ),
             SetArgument(
                 self.PARAM_FEATURE_FORMAT,
                 values=SparsePolicy,
-                help='The format to be used for the representation of the feature matrix.',
+                description='The format to be used for the representation of the feature matrix.',
             ),
             FloatArgument(
                 self.PARAM_SPARSE_FEATURE_VALUE,
                 default=0.0,
-                help='The value that should be used for sparse elements in the feature matrix. Does only have an '
-                + 'effect if a sparse format is used for the representation of the feature matrix, depending on the '
+                description='The value that should be used for sparse elements in the feature matrix. Does only have '
+                + 'an effect if a sparse format is used for the representation of the feature matrix, depending on the '
                 + 'argument ' + self.PARAM_FEATURE_FORMAT + '.',
             ),
             SetArgument(
                 '--output-format',
                 values=SparsePolicy,
-                help='The format to be used for the representation of the output matrix.',
+                description='The format to be used for the representation of the output matrix.',
             ),
             SetArgument(
                 '--prediction-format',
                 values=SparsePolicy,
-                help='The format to be used for the representation of predictions.',
+                description='The format to be used for the representation of predictions.',
             ),
         )
         problem_domain = self._create_problem_domain(cli.parse_known_args())

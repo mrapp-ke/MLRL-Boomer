@@ -44,20 +44,20 @@ class OutputExtension(Extension):
 
     OUTPUT_DIR = StringArgument(
         '--output-dir',
-        help='The path to the directory where experimental results should be saved.',
+        description='The path to the directory where experimental results should be saved.',
     )
 
     WIPE_OUTPUT_DIR = BoolArgument(
         '--wipe-output-dir',
         default=True,
-        help='Whether all files in the directory specified via the argument ' + OUTPUT_DIR.name + ' should be deleted '
-        + 'before an experiment starts or not.',
+        description='Whether all files in the directory specified via the argument ' + OUTPUT_DIR.name + ' should be '
+        + 'deleted before an experiment starts or not.',
     )
 
     EXIT_ON_ERROR = BoolArgument(
         '--exit-on-error',
         default=False,
-        help='Whether the program should exit if an error occurs while writing experimental results or not.',
+        description='Whether the program should exit if an error occurs while writing experimental results or not.',
     )
 
     def get_arguments(self) -> List[Argument]:

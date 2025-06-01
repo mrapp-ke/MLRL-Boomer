@@ -21,7 +21,7 @@ class ModelOutputExtension(Extension):
 
     MODEL_SAVE_DIR = StringArgument(
         '--model-save-dir',
-        help='The path to the directory where models should be saved.',
+        description='The path to the directory where models should be saved.',
     )
 
     def get_arguments(self) -> List[Argument]:
