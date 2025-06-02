@@ -6,20 +6,13 @@ Provides classes for running experiments using the scikit-learn framework.
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional
 
 from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
 
-from mlrl.common.config.parameters import NONE
-
-from mlrl.testbed_arff.experiments.input.sources import ArffFileSource
-
 from mlrl.testbed.experiments import Experiment, SkLearnExperiment
-from mlrl.testbed.experiments.input.dataset import DatasetReader, InputDataset
-from mlrl.testbed.experiments.input.dataset.preprocessors import Preprocessor
-from mlrl.testbed.experiments.input.dataset.preprocessors.tabular import OneHotEncoder
-from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter, NoSplitter
-from mlrl.testbed.experiments.input.dataset.splitters.tabular import BipartitionSplitter, CrossValidationSplitter
+from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
+from mlrl.testbed.experiments.input.dataset.splitters.tabular.extension import DatasetSplitterExtension
 from mlrl.testbed.experiments.input.model.extension import ModelInputExtension
 from mlrl.testbed.experiments.input.parameters.extension import ParameterInputExtension
 from mlrl.testbed.experiments.output.characteristics.data.tabular.extension import TabularDataCharacteristicExtension
@@ -41,10 +34,9 @@ from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificatio
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.runnables import Runnable
 
-from mlrl.util.cli import BoolArgument, CommandLineInterface, IntArgument, SetArgument, StringArgument
+from mlrl.util.cli import BoolArgument, CommandLineInterface, SetArgument, StringArgument
 from mlrl.util.format import format_enum_values, format_set
-from mlrl.util.options import BooleanOption, parse_param, parse_param_and_options
-from mlrl.util.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
+from mlrl.util.options import BooleanOption, parse_param
 
 
 class SkLearnRunnable(Runnable, ABC):
@@ -57,28 +49,6 @@ class SkLearnRunnable(Runnable, ABC):
     PROBLEM_TYPE_VALUES = {
         ClassificationProblem.NAME,
         RegressionProblem.NAME,
-    }
-
-    PARAM_RANDOM_STATE = '--random-state'
-
-    PARAM_DATA_SPLIT = '--data-split'
-
-    DATA_SPLIT_TRAIN_TEST = 'train-test'
-
-    OPTION_TEST_SIZE = 'test_size'
-
-    DATA_SPLIT_CROSS_VALIDATION = 'cross-validation'
-
-    OPTION_NUM_FOLDS = 'num_folds'
-
-    OPTION_FIRST_FOLD = 'last_fold'
-
-    OPTION_LAST_FOLD = 'first_fold'
-
-    DATA_SPLIT_VALUES: Dict[str, Set[str]] = {
-        NONE: {},
-        DATA_SPLIT_TRAIN_TEST: {OPTION_TEST_SIZE},
-        DATA_SPLIT_CROSS_VALIDATION: {OPTION_NUM_FOLDS, OPTION_FIRST_FOLD, OPTION_LAST_FOLD}
     }
 
     def _create_problem_domain(self,
@@ -104,53 +74,12 @@ class SkLearnRunnable(Runnable, ABC):
                                         fit_kwargs=fit_kwargs,
                                         predict_kwargs=predict_kwargs)
 
-    @staticmethod
-    def __create_preprocessors(args) -> List[Preprocessor]:
-        preprocessors = []
-
-        if args.one_hot_encoding:
-            preprocessors.append(OneHotEncoder())
-
-        return preprocessors
-
-    def __create_dataset_splitter(self, args) -> DatasetSplitter:
-        dataset = InputDataset(name=args.dataset)
-        source = ArffFileSource(directory=args.data_dir)
-        dataset_reader = DatasetReader(source=source, input_data=dataset)
-        dataset_reader.add_preprocessors(*self.__create_preprocessors(args))
-        value, options = parse_param_and_options(self.PARAM_DATA_SPLIT, args.data_split, self.DATA_SPLIT_VALUES)
-
-        if value == self.DATA_SPLIT_CROSS_VALIDATION:
-            num_folds = options.get_int(self.OPTION_NUM_FOLDS, 10)
-            assert_greater_or_equal(self.OPTION_NUM_FOLDS, num_folds, 2)
-            first_fold = options.get_int(self.OPTION_FIRST_FOLD, 1)
-            assert_greater_or_equal(self.OPTION_FIRST_FOLD, first_fold, 1)
-            assert_less_or_equal(self.OPTION_FIRST_FOLD, first_fold, num_folds)
-            last_fold = options.get_int(self.OPTION_LAST_FOLD, num_folds)
-            assert_greater_or_equal(self.OPTION_LAST_FOLD, last_fold, first_fold)
-            assert_less_or_equal(self.OPTION_LAST_FOLD, last_fold, num_folds)
-            random_state = int(args.random_state) if args.random_state else 1
-            assert_greater_or_equal(self.PARAM_RANDOM_STATE, random_state, 1)
-            return CrossValidationSplitter(dataset_reader,
-                                           num_folds=num_folds,
-                                           first_fold=first_fold - 1,
-                                           last_fold=last_fold,
-                                           random_state=random_state)
-        if value == self.DATA_SPLIT_TRAIN_TEST:
-            test_size = options.get_float(self.OPTION_TEST_SIZE, 0.33)
-            assert_greater(self.OPTION_TEST_SIZE, test_size, 0)
-            assert_less(self.OPTION_TEST_SIZE, test_size, 1)
-            random_state = int(args.random_state) if args.random_state else 1
-            assert_greater_or_equal(self.PARAM_RANDOM_STATE, random_state, 1)
-            return BipartitionSplitter(dataset_reader, test_size=test_size, random_state=random_state)
-
-        return NoSplitter(dataset_reader)
-
     def get_extensions(self) -> List[Extension]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
         """
         return super().get_extensions() + [
+            DatasetSplitterExtension(),
             PredictionTypeExtension(),
             OutputExtension(),
             ModelInputExtension(),
@@ -178,10 +107,6 @@ class SkLearnRunnable(Runnable, ABC):
                 description='The type of the machine learning problem to be solved. Must be one of '
                 + format_set(self.PROBLEM_TYPE_VALUES) + '.',
             ),
-            IntArgument(
-                self.PARAM_RANDOM_STATE,
-                description='The seed to be used by random number generators. Must be at least 1.',
-            ),
             StringArgument(
                 '--data-dir',
                 required=True,
@@ -191,12 +116,6 @@ class SkLearnRunnable(Runnable, ABC):
                 '--dataset',
                 required=True,
                 description='The name of the data set files without suffix.',
-            ),
-            SetArgument(
-                self.PARAM_DATA_SPLIT,
-                values=self.DATA_SPLIT_VALUES,
-                default=self.DATA_SPLIT_TRAIN_TEST,
-                description='The strategy to be used for splitting the available data into training and test sets.',
             ),
             BoolArgument(
                 '--one-hot-encoding',
@@ -227,7 +146,7 @@ class SkLearnRunnable(Runnable, ABC):
         """
         See :func:`mlrl.testbed.runnables.Runnable.create_experiment_builder`
         """
-        dataset_splitter = self.__create_dataset_splitter(args)
+        dataset_splitter = DatasetSplitterExtension.get_dataset_splitter(args)
         return self._create_experiment_builder(args, dataset_splitter)
 
     def _create_experiment_builder(self, args: Namespace, dataset_splitter: DatasetSplitter) -> Experiment.Builder:
