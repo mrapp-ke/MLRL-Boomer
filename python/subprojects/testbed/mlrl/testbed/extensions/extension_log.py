@@ -58,9 +58,9 @@ class LogExtension(Extension):
         description='The log level to be used.',
     )
 
-    def get_arguments(self) -> List[Argument]:
+    def _get_arguments(self) -> List[Argument]:
         """
-        See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
+        See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return [self.LOG_LEVEL]
 
