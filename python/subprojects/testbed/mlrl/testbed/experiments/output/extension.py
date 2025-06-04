@@ -60,9 +60,9 @@ class OutputExtension(Extension):
         description='Whether the program should exit if an error occurs while writing experimental results or not.',
     )
 
-    def get_arguments(self) -> List[Argument]:
+    def _get_arguments(self) -> List[Argument]:
         """
-        See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
+        See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return [self.OUTPUT_DIR, self.WIPE_OUTPUT_DIR, self.EXIT_ON_ERROR]
 
