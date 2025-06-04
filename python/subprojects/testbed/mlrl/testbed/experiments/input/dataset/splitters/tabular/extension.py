@@ -8,11 +8,8 @@ from typing import List
 
 from mlrl.common.config.parameters import NONE
 
-from mlrl.testbed_arff.experiments.input.sources.source_arff import ArffFileSource
-
-from mlrl.testbed.experiments.input.dataset.dataset import InputDataset
 from mlrl.testbed.experiments.input.dataset.preprocessors.tabular.extension import PreprocessorExtension
-from mlrl.testbed.experiments.input.dataset.reader import DatasetReader
+from mlrl.testbed.experiments.input.dataset.splitters.extension import DatasetFileExtension
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.input.dataset.splitters.splitter_no import NoSplitter
 from mlrl.testbed.experiments.input.dataset.splitters.tabular.splitter_bipartition import BipartitionSplitter
@@ -61,7 +58,7 @@ class DatasetSplitterExtension(Extension):
         """
         :param dependencies: Other extensions, this extension depends on
         """
-        super().__init__(PreprocessorExtension(), *dependencies)
+        super().__init__(PreprocessorExtension(), DatasetFileExtension(), *dependencies)
 
     def _get_arguments(self) -> List[Argument]:
         """
@@ -90,12 +87,8 @@ class DatasetSplitterExtension(Extension):
         :param args:    The command line arguments specified by the user
         :return:        The `DatasetSplitter` to be used
         """
-        dataset = InputDataset(name=args.dataset)
-        source = ArffFileSource(directory=args.data_dir)
-        dataset_reader = DatasetReader(source=source, input_data=dataset)
-
+        dataset_reader = DatasetFileExtension.get_dataset_reader(args)
         dataset_reader.add_preprocessors(*PreprocessorExtension.get_preprocessors(args))
-
         value, options = DatasetSplitterExtension.DATASET_SPLITTER.get_value(args)
 
         if value == VALUE_CROSS_VALIDATION:
