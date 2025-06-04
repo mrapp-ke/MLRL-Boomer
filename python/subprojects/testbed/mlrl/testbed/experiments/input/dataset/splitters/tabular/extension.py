@@ -11,8 +11,7 @@ from mlrl.common.config.parameters import NONE
 from mlrl.testbed_arff.experiments.input.sources.source_arff import ArffFileSource
 
 from mlrl.testbed.experiments.input.dataset.dataset import InputDataset
-from mlrl.testbed.experiments.input.dataset.preprocessors.preprocessor import Preprocessor
-from mlrl.testbed.experiments.input.dataset.preprocessors.tabular.one_hot_encoder import OneHotEncoder
+from mlrl.testbed.experiments.input.dataset.preprocessors.tabular.extension import PreprocessorExtension
 from mlrl.testbed.experiments.input.dataset.reader import DatasetReader
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.input.dataset.splitters.splitter_no import NoSplitter
@@ -58,6 +57,12 @@ class DatasetSplitterExtension(Extension):
         },
     )
 
+    def __init__(self, *dependencies: Extension):
+        """
+        :param dependencies: Other extensions, this extension depends on
+        """
+        super().__init__(PreprocessorExtension(), *dependencies)
+
     def _get_arguments(self) -> List[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
@@ -89,7 +94,7 @@ class DatasetSplitterExtension(Extension):
         source = ArffFileSource(directory=args.data_dir)
         dataset_reader = DatasetReader(source=source, input_data=dataset)
 
-        dataset_reader.add_preprocessors(*DatasetSplitterExtension.__create_preprocessors(args))
+        dataset_reader.add_preprocessors(*PreprocessorExtension.get_preprocessors(args))
 
         value, options = DatasetSplitterExtension.DATASET_SPLITTER.get_value(args)
 
@@ -116,12 +121,3 @@ class DatasetSplitterExtension(Extension):
                                        random_state=DatasetSplitterExtension.get_random_state(args))
 
         return NoSplitter(dataset_reader)
-
-    @staticmethod
-    def __create_preprocessors(args) -> List[Preprocessor]:
-        preprocessors = []
-
-        if args.one_hot_encoding:
-            preprocessors.append(OneHotEncoder())
-
-        return preprocessors
