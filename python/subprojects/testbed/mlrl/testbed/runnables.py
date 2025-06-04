@@ -39,9 +39,9 @@ class Runnable(ABC):
             description='Whether predictions should be obtained for the test data or not.',
         )
 
-        def get_arguments(self) -> List[Argument]:
+        def _get_arguments(self) -> List[Argument]:
             """
-            See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
+            See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
             return [self.PREDICT_FOR_TRAINING_DATA, self.PREDICT_FOR_TEST_DATA]
 
@@ -76,8 +76,15 @@ class Runnable(ABC):
         :param args: The command line arguments specified by the user
         """
         experiment_builder = self.create_experiment_builder(args)
+        extensions = {}
 
         for extension in self.get_extensions():
+            extensions.setdefault(type(extension), extension)
+
+            for dependency in extension.dependencies:
+                extensions.setdefault(type(dependency), dependency)
+
+        for extension in extensions.values():
             extension.configure_experiment(args, experiment_builder)
 
         experiment_builder.run()
@@ -88,8 +95,13 @@ class Runnable(ABC):
 
         :param cli: The command line interface to be configured
         """
+        arguments = {}
+
         for extension in self.get_extensions():
-            cli.add_arguments(*extension.get_arguments())
+            for argument in extension.arguments:
+                arguments.setdefault(argument.key, argument)
+
+        cli.add_arguments(*arguments.values())
 
     @abstractmethod
     def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:

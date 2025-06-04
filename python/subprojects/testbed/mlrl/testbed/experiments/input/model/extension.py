@@ -24,9 +24,9 @@ class ModelInputExtension(Extension):
         description='The path to the directory from which models should be loaded.',
     )
 
-    def get_arguments(self) -> List[Argument]:
+    def _get_arguments(self) -> List[Argument]:
         """
-        See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
+        See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return [self.MODEL_LOAD_DIR]
 

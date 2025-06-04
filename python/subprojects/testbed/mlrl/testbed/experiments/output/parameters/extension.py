@@ -7,6 +7,7 @@ from argparse import Namespace
 from typing import List
 
 from mlrl.testbed.experiments.experiment import Experiment
+from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.parameters.writer import ParameterWriter
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
@@ -33,9 +34,15 @@ class ParameterOutputExtension(Extension):
         description='Whether the parameter setting should be printed on the console or not.',
     )
 
-    def get_arguments(self) -> List[Argument]:
+    def __init__(self, *dependencies: Extension):
         """
-        See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
+        :param dependencies: Other extensions, this extension depends on
+        """
+        super().__init__(OutputExtension(), *dependencies)
+
+    def _get_arguments(self) -> List[Argument]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return [self.PARAMETER_SAVE_DIR, self.PRINT_PARAMETERS]
 

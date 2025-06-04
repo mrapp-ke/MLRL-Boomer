@@ -37,9 +37,15 @@ class RuleModelCharacteristicsExtension(Extension):
         + 'an effect if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
     )
 
-    def get_arguments(self) -> List[Argument]:
+    def __init__(self, *dependencies: Extension):
         """
-        See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
+        :param dependencies: Other extensions, this extension depends on
+        """
+        super().__init__(OutputExtension(), *dependencies)
+
+    def _get_arguments(self) -> List[Argument]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return [self.PRINT_MODEL_CHARACTERISTICS, self.STORE_MODEL_CHARACTERISTICS]
 

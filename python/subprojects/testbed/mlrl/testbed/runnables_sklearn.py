@@ -81,7 +81,6 @@ class SkLearnRunnable(Runnable, ABC):
         return super().get_extensions() + [
             DatasetSplitterExtension(),
             PredictionTypeExtension(),
-            OutputExtension(),
             ModelInputExtension(),
             ModelOutputExtension(),
             ParameterInputExtension(),

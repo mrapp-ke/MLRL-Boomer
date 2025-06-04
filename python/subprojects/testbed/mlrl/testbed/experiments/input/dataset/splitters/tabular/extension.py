@@ -58,9 +58,9 @@ class DatasetSplitterExtension(Extension):
         },
     )
 
-    def get_arguments(self) -> List[Argument]:
+    def _get_arguments(self) -> List[Argument]:
         """
-        See :func:`mlrl.testbed.extensions.extension.Extension.get_arguments`
+        See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return [self.RANDOM_STATE, self.DATASET_SPLITTER]
 
