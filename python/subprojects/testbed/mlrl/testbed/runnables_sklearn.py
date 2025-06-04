@@ -34,7 +34,7 @@ from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificatio
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.runnables import Runnable
 
-from mlrl.util.cli import BoolArgument, CommandLineInterface, SetArgument, StringArgument
+from mlrl.util.cli import BoolArgument, CommandLineInterface, SetArgument
 from mlrl.util.format import format_enum_values, format_set
 from mlrl.util.options import BooleanOption, parse_param
 
@@ -105,16 +105,6 @@ class SkLearnRunnable(Runnable, ABC):
                 default=ClassificationProblem.NAME,
                 description='The type of the machine learning problem to be solved. Must be one of '
                 + format_set(self.PROBLEM_TYPE_VALUES) + '.',
-            ),
-            StringArgument(
-                '--data-dir',
-                required=True,
-                description='The path to the directory where the data set files are located.',
-            ),
-            StringArgument(
-                '--dataset',
-                required=True,
-                description='The name of the data set files without suffix.',
             ),
             BoolArgument(
                 '--create-output-dir',
