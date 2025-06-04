@@ -78,7 +78,7 @@ class TabularDataCharacteristicExtension(Extension):
             return [CsvFileSink(directory=output_dir, create_directory=args.create_output_dir, options=options)]
         return []
 
-    def configure_experiment(self, args: Namespace, experiment_builder: Experiment):
+    def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
