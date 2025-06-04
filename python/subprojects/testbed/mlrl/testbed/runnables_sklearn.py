@@ -117,11 +117,6 @@ class SkLearnRunnable(Runnable, ABC):
                 description='The name of the data set files without suffix.',
             ),
             BoolArgument(
-                '--one-hot-encoding',
-                default=False,
-                description='Whether one-hot-encoding should be used to encode nominal features or not.',
-            ),
-            BoolArgument(
                 '--create-output-dir',
                 default=True,
                 description='Whether the directories specified via the arguments ' + OutputExtension.OUTPUT_DIR.name
