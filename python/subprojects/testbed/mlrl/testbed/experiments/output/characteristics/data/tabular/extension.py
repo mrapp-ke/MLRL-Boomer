@@ -5,7 +5,7 @@ Provides classes that allow configuring the functionality to write characteristi
 sinks.
 """
 from argparse import Namespace
-from typing import List
+from typing import List, Set
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.characteristics.data.tabular.characteristics import OutputCharacteristics
@@ -63,11 +63,11 @@ class TabularDataCharacteristicExtension(Extension):
         """
         super().__init__(OutputExtension(), *dependencies)
 
-    def _get_arguments(self) -> List[Argument]:
+    def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return [self.PRINT_DATA_CHARACTERISTICS, self.STORE_DATA_CHARACTERISTICS]
+        return {self.PRINT_DATA_CHARACTERISTICS, self.STORE_DATA_CHARACTERISTICS}
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         value, options = self.PRINT_DATA_CHARACTERISTICS.get_value(args)

@@ -7,7 +7,7 @@ package.
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from functools import cached_property
-from typing import List
+from typing import Any, Set
 
 from mlrl.testbed.experiments.experiment import Experiment
 
@@ -23,36 +23,34 @@ class Extension(ABC):
         """
         :param dependencies: Other extensions, this extension depends on
         """
-        self._dependencies = list(dependencies)
+        self._dependencies = set(dependencies)
 
     @cached_property
-    def dependencies(self) -> List['Extension']:
+    def dependencies(self) -> Set['Extension']:
         """
-        A list that contains all extensions, this extension depends on recursively.
+        A set that contains all extensions, this extension depends on recursively.
         """
-        dependencies = {}
+        dependencies = set(self._dependencies)
 
         for dependency in self._dependencies:
-            dependencies.setdefault(type(dependency), dependency)
-
             for nested_dependency in dependency.dependencies:
-                dependencies.setdefault(type(nested_dependency).__name__, nested_dependency)
+                dependencies.add(nested_dependency)
 
-        return list(dependencies.values())
+        return dependencies
 
     @cached_property
-    def arguments(self) -> List[Argument]:
+    def arguments(self) -> Set[Argument]:
         """
-        A list that contains the arguments that should be added to the command line API according to this extension,
-        also taking into account dependencies recursively.
+        A set that contains the arguments that should be added to the command line API according to this extension, also
+        taking into account dependencies recursively.
         """
-        arguments = {argument.key: argument for argument in self._get_arguments()}
+        arguments = self._get_arguments()
 
         for dependency in self._dependencies:
             for argument in dependency.arguments:
-                arguments.setdefault(argument.key, argument)
+                arguments.add(argument)
 
-        return list(arguments.values())
+        return arguments
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
@@ -64,10 +62,16 @@ class Extension(ABC):
         """
 
     @abstractmethod
-    def _get_arguments(self) -> List[Argument]:
+    def _get_arguments(self) -> Set[Argument]:
         """
         Must be implemented by subclasses in order to return the arguments that should be added to the command line API
         according to this extension.
 
-        :return: A list that contains the arguments that should be added to the command line API
+        :return: A set that contains the arguments that should be added to the command line API
         """
+
+    def __hash__(self) -> int:
+        return hash(type(self))
+
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, type(self))

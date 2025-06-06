@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to read models parameters from a source.
 """
 from argparse import Namespace
-from typing import List
+from typing import Set
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.model.reader import ModelReader
@@ -24,11 +24,11 @@ class ModelInputExtension(Extension):
         description='The path to the directory from which models should be loaded.',
     )
 
-    def _get_arguments(self) -> List[Argument]:
+    def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return [self.MODEL_LOAD_DIR]
+        return {self.MODEL_LOAD_DIR}
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """

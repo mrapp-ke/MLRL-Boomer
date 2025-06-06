@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to load datasets.
 """
 from argparse import Namespace
-from typing import List
+from typing import Set
 
 from mlrl.testbed_arff.experiments.input.sources.source_arff import ArffFileSource
 
@@ -32,11 +32,11 @@ class DatasetFileExtension(Extension):
         description='The name of the dataset files without suffix.',
     )
 
-    def _get_arguments(self) -> List[Argument]:
+    def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return [self.DATASET_DIRECTORY, self.DATASET_NAME]
+        return {self.DATASET_DIRECTORY, self.DATASET_NAME}
 
     @staticmethod
     def get_dataset_reader(args: Namespace) -> DatasetReader:

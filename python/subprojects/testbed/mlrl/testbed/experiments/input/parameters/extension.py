@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to read algorithmic parameters from a source.
 """
 from argparse import Namespace
-from typing import List
+from typing import Set
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.parameters.reader import ParameterReader
@@ -24,11 +24,11 @@ class ParameterInputExtension(Extension):
         description='The path to the directory from which parameter to be used by the algorithm should be loaded.',
     )
 
-    def _get_arguments(self) -> List[Argument]:
+    def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return [self.PARAMETER_LOAD_DIR]
+        return {self.PARAMETER_LOAD_DIR}
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """

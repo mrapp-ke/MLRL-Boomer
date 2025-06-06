@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write predictions to one or several sinks.
 """
 from argparse import Namespace
-from typing import List
+from typing import List, Set
 
 from mlrl.testbed_arff.experiments.output.sinks.sink_arff import ArffFileSink
 
@@ -45,11 +45,11 @@ class PredictionExtension(Extension):
         """
         super().__init__(OutputExtension(), *dependencies)
 
-    def _get_arguments(self) -> List[Argument]:
+    def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return [self.PRINT_PREDICTIONS, self.STORE_PREDICTIONS]
+        return {self.PRINT_PREDICTIONS, self.STORE_PREDICTIONS}
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         value, options = self.PRINT_PREDICTIONS.get_value(args)

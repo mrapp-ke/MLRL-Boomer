@@ -5,7 +5,7 @@ Provides classes that allow configuring the functionality to write characteristi
 sinks.
 """
 from argparse import Namespace
-from typing import List
+from typing import List, Set
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.characteristics.model.extractor_rules import RuleModelCharacteristicsExtractor
@@ -43,11 +43,11 @@ class RuleModelCharacteristicsExtension(Extension):
         """
         super().__init__(OutputExtension(), *dependencies)
 
-    def _get_arguments(self) -> List[Argument]:
+    def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return [self.PRINT_MODEL_CHARACTERISTICS, self.STORE_MODEL_CHARACTERISTICS]
+        return {self.PRINT_MODEL_CHARACTERISTICS, self.STORE_MODEL_CHARACTERISTICS}
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         if self.PRINT_MODEL_CHARACTERISTICS.get_value(args) or args.print_all:
