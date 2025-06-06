@@ -5,7 +5,7 @@ Provides classes that allow configuring the functionality to write output data t
 """
 from argparse import Namespace
 from os import listdir, path, unlink
-from typing import List
+from typing import Set
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.extensions.extension import Extension
@@ -60,11 +60,11 @@ class OutputExtension(Extension):
         description='Whether the program should exit if an error occurs while writing experimental results or not.',
     )
 
-    def _get_arguments(self) -> List[Argument]:
+    def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return [self.OUTPUT_DIR, self.WIPE_OUTPUT_DIR, self.EXIT_ON_ERROR]
+        return {self.OUTPUT_DIR, self.WIPE_OUTPUT_DIR, self.EXIT_ON_ERROR}
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """

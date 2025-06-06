@@ -50,6 +50,12 @@ class Argument:
         value = getattr(args, self.key, None)
         return value if value else self.default
 
+    def __hash__(self) -> int:
+        return hash(self.key)
+
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, type(self)) and self.key == other.key
+
 
 class StringArgument(Argument):
     """
