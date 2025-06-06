@@ -175,7 +175,6 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   - `true` All files within the directory specified via the argument `--output-dir` are deleted before the experiment starts.
   - `false` No files within the directory are deleted, but existing files may be overwritten by the experiment.
-  - `auto` All files within the directory are deleted unless the experiment runs a subset of the folds of a cross validation.
 
 - `--exit-on-error` (Default value = `false`)
 

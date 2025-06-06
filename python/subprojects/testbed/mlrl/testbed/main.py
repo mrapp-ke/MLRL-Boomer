@@ -11,21 +11,23 @@ from importlib.util import module_from_spec, spec_from_file_location
 
 from mlrl.testbed.runnables import Runnable
 
+from mlrl.util.cli import CommandLineInterface
+
 
 def __create_argument_parser() -> ArgumentParser:
-    parser = ArgumentParser(
+    argument_parser = ArgumentParser(
         formatter_class=RawDescriptionHelpFormatter,
         description='A command line utility for training and evaluating machine learning algorithms',
         add_help=False)
-    parser.add_argument('runnable_module_or_source_file',
-                        type=str,
-                        help='The Python module or source file of the program that should be run')
-    parser.add_argument('-r',
-                        '--runnable',
-                        default='Runnable',
-                        type=str,
-                        help='The Python class name of the program that should be run')
-    return parser
+    argument_parser.add_argument('runnable_module_or_source_file',
+                                 type=str,
+                                 help='The Python module or source file of the program that should be run')
+    argument_parser.add_argument('-r',
+                                 '--runnable',
+                                 default='Runnable',
+                                 type=str,
+                                 help='The Python class name of the program that should be run')
+    return argument_parser
 
 
 def __import_module(module_name: str):
@@ -78,8 +80,8 @@ def main():
     """
     The main function to be executed when the program starts.
     """
-    parser = __create_argument_parser()
-    args = parser.parse_known_args()[0]
+    argument_parser = __create_argument_parser()
+    args = argument_parser.parse_known_args()[0]
 
     runnable_module_or_source_file = str(args.runnable_module_or_source_file)
     runnable_class_name = str(args.runnable)
@@ -89,9 +91,15 @@ def main():
     if not isinstance(runnable, Runnable):
         raise TypeError('Class "' + runnable_class_name + '" must extend from "' + Runnable.__qualname__ + '"')
 
-    runnable.configure_arguments(parser, show_help='--help' in sys.argv or '-h' in sys.argv)
-    parser.add_argument('-h', '--help', action='help', default='==SUPPRESS==', help='Show this help message and exit')
-    runnable.run(parser.parse_args())
+    program_info = runnable.get_program_info()
+    cli = CommandLineInterface(argument_parser, version_text=str(program_info) if program_info else None)
+    runnable.configure_arguments(cli)
+    argument_parser.add_argument('-h',
+                                 '--help',
+                                 action='help',
+                                 default='==SUPPRESS==',
+                                 help='Show this help message and exit')
+    runnable.run(argument_parser.parse_args())
 
 
 if __name__ == '__main__':
