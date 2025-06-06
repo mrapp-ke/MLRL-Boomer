@@ -3,6 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for configuring the arguments of a command line interface.
 """
+import sys
+
 from argparse import ArgumentError, ArgumentParser, Namespace
 from enum import Enum, EnumType
 from functools import cached_property
@@ -17,12 +19,15 @@ class Argument:
     A single argument of a command line interface for which the user can provide a custom value.
     """
 
-    def __init__(self, *names: str, default: Optional[Any] = None, **kwargs: Any):
+    def __init__(self, *names: str, required: Optional[bool] = False, default: Optional[Any] = None, **kwargs: Any):
         """
-        :param names:   One of several names of the argument
-        :param kwargs:  Optional keyword argument to be passed to an `ArgumentParser`
+        :param names:       One of several names of the argument
+        :param required:    True, if the argument is mandatory, False otherwise
+        :param default:     The default value of the argument, if any
+        :param kwargs:      Optional keyword argument to be passed to an `ArgumentParser`
         """
         self.names = set(names)
+        self.required = required
         self.default = default
         self.kwargs = dict(kwargs)
 
@@ -293,7 +298,11 @@ class CommandLineInterface:
 
         for argument in arguments:
             try:
-                argument_parser.add_argument(*argument.names, default=argument.default, **argument.kwargs)
+                required = argument.required and '--help' not in sys.argv and '-h' not in sys.argv
+                argument_parser.add_argument(*argument.names,
+                                             required=required,
+                                             default=argument.default,
+                                             **argument.kwargs)
             except ArgumentError:
                 # Argument has already been added
                 pass
