@@ -4,9 +4,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for retrieving information about this Python package.
 """
 from dataclasses import dataclass, field
+from importlib.metadata import requires, version
 from typing import Set
 
-import pkg_resources
+from packaging.requirements import Requirement
 
 from mlrl.common.cython.package_info import CppLibraryInfo, get_cpp_library_info
 
@@ -30,15 +31,15 @@ class PythonPackageInfo:
         """
         The version of the Python package.
         """
-        return pkg_resources.get_distribution(self.package_name).version
+        return version(self.package_name)
 
     @property
     def dependencies(self) -> Set['PythonPackageInfo']:
         """
         A set that contains a `PythonPackageInfo` for each dependency of this package.
         """
-        dependencies = pkg_resources.get_distribution(self.package_name).requires()
-        package_infos = {PythonPackageInfo(package_name=dependency.project_name) for dependency in dependencies}
+        dependencies = requires(self.package_name)
+        package_infos = {PythonPackageInfo(package_name=Requirement(dependency).name) for dependency in dependencies}
 
         for python_package in self.python_packages:
             package_infos.discard(python_package)
