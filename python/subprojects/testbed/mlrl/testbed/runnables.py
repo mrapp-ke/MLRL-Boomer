@@ -6,7 +6,7 @@ Provides base classes for programs that can be configured via command line argum
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
-from typing import List, Optional
+from typing import List, Optional, Set
 
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.extensions import Extension
@@ -39,11 +39,11 @@ class Runnable(ABC):
             description='Whether predictions should be obtained for the test data or not.',
         )
 
-        def _get_arguments(self) -> List[Argument]:
+        def _get_arguments(self) -> Set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
-            return [self.PREDICT_FOR_TRAINING_DATA, self.PREDICT_FOR_TEST_DATA]
+            return {self.PREDICT_FOR_TRAINING_DATA, self.PREDICT_FOR_TEST_DATA}
 
         def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
             """
@@ -95,13 +95,13 @@ class Runnable(ABC):
 
         :param cli: The command line interface to be configured
         """
-        arguments = {}
+        arguments = set()
 
         for extension in self.get_extensions():
             for argument in extension.arguments:
-                arguments.setdefault(argument.key, argument)
+                arguments.add(argument)
 
-        cli.add_arguments(*arguments.values())
+        cli.add_arguments(*arguments)
 
     @abstractmethod
     def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:

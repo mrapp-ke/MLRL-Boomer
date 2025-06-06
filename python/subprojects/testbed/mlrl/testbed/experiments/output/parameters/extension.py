@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write algorithmic parameters to one or several sinks.
 """
 from argparse import Namespace
-from typing import List
+from typing import List, Set
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.extension import OutputExtension
@@ -40,11 +40,11 @@ class ParameterOutputExtension(Extension):
         """
         super().__init__(OutputExtension(), *dependencies)
 
-    def _get_arguments(self) -> List[Argument]:
+    def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return [self.PARAMETER_SAVE_DIR, self.PRINT_PARAMETERS]
+        return {self.PARAMETER_SAVE_DIR, self.PRINT_PARAMETERS}
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         if self.PRINT_PARAMETERS.get_value(args) or args.print_all:

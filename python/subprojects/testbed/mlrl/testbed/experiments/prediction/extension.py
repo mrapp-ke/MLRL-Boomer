@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to obtain predictions from a machine learning model.
 """
 from multiprocessing.dummy import Namespace
-from typing import List
+from typing import Set
 
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.extensions.extension import Extension
@@ -24,11 +24,11 @@ class PredictionTypeExtension(Extension):
         description='The type of predictions that should be obtained from the learner.',
     )
 
-    def _get_arguments(self) -> List[Argument]:
+    def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return [self.PREDICTION_TYPE]
+        return {self.PREDICTION_TYPE}
 
     @staticmethod
     def get_prediction_type(args: Namespace) -> PredictionType:

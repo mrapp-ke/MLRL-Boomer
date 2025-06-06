@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write label vectors to one or several sinks.
 """
 from argparse import Namespace
-from typing import List
+from typing import List, Set
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.extension import OutputExtension
@@ -47,11 +47,11 @@ class LabelVectorExtension(Extension):
         """
         super().__init__(OutputExtension(), *dependencies)
 
-    def _get_arguments(self) -> List[Argument]:
+    def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return [self.PRINT_LABEL_VECTORS, self.STORE_LABEL_VECTORS]
+        return {self.PRINT_LABEL_VECTORS, self.STORE_LABEL_VECTORS}
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         value, options = self.PRINT_LABEL_VECTORS.get_value(args)

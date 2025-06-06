@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to split datasets into training and test datasets.
 """
 from argparse import Namespace
-from typing import List
+from typing import Set
 
 from mlrl.common.config.parameters import NONE
 
@@ -60,11 +60,11 @@ class DatasetSplitterExtension(Extension):
         """
         super().__init__(PreprocessorExtension(), DatasetFileExtension(), *dependencies)
 
-    def _get_arguments(self) -> List[Argument]:
+    def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return [self.RANDOM_STATE, self.DATASET_SPLITTER]
+        return {self.RANDOM_STATE, self.DATASET_SPLITTER}
 
     @staticmethod
     def get_random_state(args: Namespace) -> int:
