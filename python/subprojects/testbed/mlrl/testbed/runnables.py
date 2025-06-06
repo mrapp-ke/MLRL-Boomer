@@ -1045,7 +1045,7 @@ class RuleLearnerRunnable(LearnerRunnable):
         :param config_type: The type of the configuration that should support the parameters
         :param parameters:  A set that contains the parameters to be taken into account
         """
-        for parameter in parameters:
+        for parameter in sorted(parameters, key=lambda param: param.name):
             try:
                 parameter.add_to_argument_parser(parser, config_type)
             except ArgumentError:

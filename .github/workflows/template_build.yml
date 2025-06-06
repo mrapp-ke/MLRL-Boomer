@@ -38,6 +38,7 @@ jobs:
       run_cpp_tests: ${{ inputs.run_cpp_tests == true }}
       run_python_tests: ${{ inputs.run_python_tests == true }}
       python_version: ${{ inputs.python_version }}
+    secrets: inherit
   macos_build:
     if: ${{ inputs.macos == true || inputs.compile == true }}
     name: Test MacOS build (${{ inputs.subproject }})

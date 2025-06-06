@@ -37,4 +37,4 @@ def format_set(objects: Iterable[Any]) -> str:
     :param objects: The iterable of objects to be formatted
     :return:        The textual representation that has been created
     """
-    return '{' + format_iterable(objects, delimiter='"') + '}'
+    return '{' + format_iterable(sorted(objects, key=str), delimiter='"') + '}'
