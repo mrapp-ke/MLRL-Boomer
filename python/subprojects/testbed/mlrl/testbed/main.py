@@ -74,11 +74,6 @@ def __instantiate_via_default_constructor(module_or_source_file: str, class_name
         raise TypeError('Class "' + class_name + '" must provide a default constructor') from error
 
 
-def __configure_arguments(runnable: Runnable, parser: ArgumentParser):
-    runnable.configure_arguments(parser)
-    parser.add_argument('-h', '--help', action='help', default='==SUPPRESS==', help='Show this help message and exit')
-
-
 def main():
     """
     The main function to be executed when the program starts.
@@ -94,7 +89,8 @@ def main():
     if not isinstance(runnable, Runnable):
         raise TypeError('Class "' + runnable_class_name + '" must extend from "' + Runnable.__qualname__ + '"')
 
-    __configure_arguments(runnable, parser)
+    runnable.configure_arguments(parser, show_help='--help' in sys.argv or '-h' in sys.argv)
+    parser.add_argument('-h', '--help', action='help', default='==SUPPRESS==', help='Show this help message and exit')
     runnable.run(parser.parse_args())
 
 
