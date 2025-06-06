@@ -59,8 +59,9 @@ class CmdBuilder:
         self.expected_output_dir = path.join('python', 'tests', 'res', 'out', expected_output_dir)
         self.runnable_module_name = runnable_module_name
         self.runnable_class_name = runnable_class_name
-        self.show_help = False
         self.dataset = dataset
+        self.show_help = False
+        self.show_version = False
         self.parameter_load_dir = None
         self.parameter_save_dir = None
         self.model_dir = None
@@ -90,6 +91,10 @@ class CmdBuilder:
             args.append('--help')
             return args
 
+        if self.show_version:
+            args.append('--version')
+            return args
+
         args.extend(['--log-level', 'DEBUG'])
         args.extend(['--data-dir', path.join('python', 'tests', 'res', 'data')])
         args.extend(['--dataset', self.dataset])
@@ -104,6 +109,16 @@ class CmdBuilder:
         :return:            The builder itself
         """
         self.show_help = show_help
+        return self
+
+    def set_show_version(self, show_version: bool = True):
+        """
+        Configures whether information about the program should be shown or not.
+
+        :param show_version:    True, if information about the program should be shown, False otherwise
+        :return:                The builder itself
+        """
+        self.show_version = show_version
         return self
 
     def set_model_dir(self, model_dir: Optional[str] = path.join('python', 'tests', 'res', 'tmp', 'models')):

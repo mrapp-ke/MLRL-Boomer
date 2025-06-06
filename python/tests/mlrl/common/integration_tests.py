@@ -90,6 +90,15 @@ class IntegrationTests(TestCase, ABC):
             .set_show_help()
         CmdRunner(self, builder).run('help')
 
+    @ci_only
+    def test_version(self):
+        """
+        Tests the functionality to show information about the program.
+        """
+        builder = self._create_cmd_builder() \
+            .set_show_version()
+        CmdRunner(self, builder).run('version')
+
     def test_single_output(self):
         """
         Tests the evaluation of the rule learning algorithm when predicting for a single output.
