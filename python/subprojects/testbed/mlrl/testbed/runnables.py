@@ -52,7 +52,7 @@ from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificatio
 from mlrl.testbed.program_info import ProgramInfo
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 
-from mlrl.util.format import format_enum_values, format_iterable, format_set
+from mlrl.util.format import format_enum_values, format_set
 from mlrl.util.options import BooleanOption, parse_param, parse_param_and_options
 from mlrl.util.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 
@@ -565,7 +565,7 @@ class LearnerRunnable(Runnable, ABC):
                             default=AUTOMATIC,
                             help='Whether all files in the directory specified via the argument '
                             + self.PARAM_OUTPUT_DIR + ' should be deleted before an experiment starts or not. Must be '
-                            + 'one of ' + format_iterable(self.WIPE_OUTPUT_DIR_VALUES) + '. If set to ' + AUTOMATIC
+                            + 'one of ' + format_set(self.WIPE_OUTPUT_DIR_VALUES) + '. If set to ' + AUTOMATIC
                             + ', the files are only deleted if the experiment does not run a subset of the folds of a '
                             + 'cross validation.')
         parser.add_argument('--exit-on-error',
