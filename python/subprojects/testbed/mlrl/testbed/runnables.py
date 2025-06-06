@@ -121,11 +121,13 @@ class Runnable(ABC):
         """
         return None
 
-    def configure_arguments(self, parser: ArgumentParser):
+    # pylint: disable=unused-argument
+    def configure_arguments(self, parser: ArgumentParser, show_help: bool):
         """
         May be overridden by subclasses in order to configure the command line arguments of the program.
 
-        :param parser:  An `ArgumentParser` that is used for parsing command line arguments
+        :param parser:      An `ArgumentParser` that is used for parsing command line arguments
+        :param show_help:   True, if the help text of the program should be shown, False otherwise
         """
         # pylint: disable=assignment-from-none
         program_info = self.get_program_info()
@@ -438,8 +440,8 @@ class LearnerRunnable(Runnable, ABC):
 
         return None
 
-    def configure_arguments(self, parser: ArgumentParser):
-        super().configure_arguments(parser)
+    def configure_arguments(self, parser: ArgumentParser, show_help: bool):
+        super().configure_arguments(parser, show_help)
         parser.add_argument(self.PARAM_PROBLEM_TYPE,
                             type=str,
                             default=ClassificationProblem.NAME,
@@ -451,9 +453,12 @@ class LearnerRunnable(Runnable, ABC):
                             help='The seed to be used by random number generators. Must be at least 1.')
         parser.add_argument('--data-dir',
                             type=str,
-                            required=True,
+                            required=not show_help,
                             help='The path to the directory where the data set files are located.')
-        parser.add_argument('--dataset', type=str, required=True, help='The name of the data set files without suffix.')
+        parser.add_argument('--dataset',
+                            type=str,
+                            required=not show_help,
+                            help='The name of the data set files without suffix.')
         parser.add_argument(self.PARAM_DATA_SPLIT,
                             type=str,
                             default=self.DATA_SPLIT_TRAIN_TEST,
@@ -1047,8 +1052,8 @@ class RuleLearnerRunnable(LearnerRunnable):
                 # Argument has already been added, that's okay
                 pass
 
-    def configure_arguments(self, parser: ArgumentParser):
-        super().configure_arguments(parser)
+    def configure_arguments(self, parser: ArgumentParser, show_help: bool):
+        super().configure_arguments(parser, show_help)
         parser.add_argument(self.PARAM_INCREMENTAL_EVALUATION,
                             type=str,
                             default=BooleanOption.FALSE.value,
