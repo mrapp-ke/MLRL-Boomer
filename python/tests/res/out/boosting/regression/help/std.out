@@ -1,0 +1,387 @@
+mlrl-testbed mlrl.boosting --help
+usage: mlrl-testbed [-r RUNNABLE] [-v] [--log-level LOG_LEVEL]
+                    [--problem-type PROBLEM_TYPE]
+                    [--random-state RANDOM_STATE] --data-dir DATA_DIR
+                    --dataset DATASET [--data-split DATA_SPLIT]
+                    [--print-evaluation PRINT_EVALUATION]
+                    [--store-evaluation STORE_EVALUATION]
+                    [--evaluate-training-data EVALUATE_TRAINING_DATA]
+                    [--print-prediction-characteristics PRINT_PREDICTION_CHARACTERISTICS]
+                    [--store-prediction-characteristics STORE_PREDICTION_CHARACTERISTICS]
+                    [--print-data-characteristics PRINT_DATA_CHARACTERISTICS]
+                    [--store-data-characteristics STORE_DATA_CHARACTERISTICS]
+                    [--print-label-vectors PRINT_LABEL_VECTORS]
+                    [--store-label-vectors STORE_LABEL_VECTORS]
+                    [--one-hot-encoding ONE_HOT_ENCODING]
+                    [--model-load-dir MODEL_LOAD_DIR]
+                    [--model-save-dir MODEL_SAVE_DIR]
+                    [--parameter-load-dir PARAMETER_LOAD_DIR]
+                    [--parameter-save-dir PARAMETER_SAVE_DIR]
+                    [--output-dir OUTPUT_DIR]
+                    [--print-parameters PRINT_PARAMETERS]
+                    [--print-predictions PRINT_PREDICTIONS]
+                    [--store-predictions STORE_PREDICTIONS]
+                    [--print-ground-truth PRINT_GROUND_TRUTH]
+                    [--store-ground-truth STORE_GROUND_TRUTH]
+                    [--prediction-type PREDICTION_TYPE]
+                    [--incremental-evaluation INCREMENTAL_EVALUATION]
+                    [--print-model-characteristics PRINT_MODEL_CHARACTERISTICS]
+                    [--store-model-characteristics STORE_MODEL_CHARACTERISTICS]
+                    [--print-rules PRINT_RULES] [--store-rules STORE_RULES]
+                    [--print-marginal-probability-calibration-model PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL]
+                    [--store-marginal-probability-calibration-model STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL]
+                    [--print-joint-probability-calibration-model PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL]
+                    [--store-joint-probability-calibration-model STORE_JOINT_PROBABILITY_CALIBRATION_MODEL]
+                    [--feature-format FEATURE_FORMAT]
+                    [--sparse-feature-value SPARSE_FEATURE_VALUE]
+                    [--output-format OUTPUT_FORMAT]
+                    [--prediction-format PREDICTION_FORMAT]
+                    [--binary-predictor BINARY_PREDICTOR]
+                    [--default-rule DEFAULT_RULE]
+                    [--feature-binning FEATURE_BINNING]
+                    [--feature-sampling FEATURE_SAMPLING]
+                    [--global-pruning GLOBAL_PRUNING] [--head-type HEAD_TYPE]
+                    [--holdout HOLDOUT]
+                    [--instance-sampling INSTANCE_SAMPLING]
+                    [--joint-probability-calibration JOINT_PROBABILITY_CALIBRATION]
+                    [--l1-regularization-weight L1_REGULARIZATION_WEIGHT]
+                    [--l2-regularization-weight L2_REGULARIZATION_WEIGHT]
+                    [--label-binning LABEL_BINNING] [--loss LOSS]
+                    [--marginal-probability-calibration MARGINAL_PROBABILITY_CALIBRATION]
+                    [--max-rules MAX_RULES]
+                    [--output-sampling OUTPUT_SAMPLING]
+                    [--parallel-prediction PARALLEL_PREDICTION]
+                    [--parallel-rule-refinement PARALLEL_RULE_REFINEMENT]
+                    [--parallel-statistic-update PARALLEL_STATISTIC_UPDATE]
+                    [--probability-predictor PROBABILITY_PREDICTOR]
+                    [--rule-induction RULE_INDUCTION]
+                    [--rule-pruning RULE_PRUNING]
+                    [--sequential-post-optimization SEQUENTIAL_POST_OPTIMIZATION]
+                    [--shrinkage SHRINKAGE]
+                    [--statistic-format STATISTIC_FORMAT]
+                    [--statistic-type STATISTIC_TYPE]
+                    [--time-limit TIME_LIMIT] [-h]
+                    runnable_module_or_source_file
+
+A command line utility for training and evaluating machine learning algorithms
+
+positional arguments:
+  runnable_module_or_source_file
+                        The Python module or source file of the program that
+                        should be run
+
+options:
+  -r, --runnable RUNNABLE
+                        The Python class name of the program that should be
+                        run
+  -v, --version         Display information about the program's version.
+  --log-level LOG_LEVEL
+                        The log level to be used. Must be one of {"debug",
+                        "error", "warn", "info", "warning", "critical",
+                        "fatal", "notset"}.
+  --problem-type PROBLEM_TYPE
+                        The type of the machine learning problem to be solved.
+                        Must be one of {"classification", "regression"}.
+  --random-state RANDOM_STATE
+                        The seed to be used by random number generators. Must
+                        be at least 1.
+  --data-dir DATA_DIR   The path to the directory where the data set files are
+                        located.
+  --dataset DATASET     The name of the data set files without suffix.
+  --data-split DATA_SPLIT
+                        The strategy to be used for splitting the available
+                        data into training and test sets. Must be one of
+                        {"none", "train-test", "cross-validation"}. For
+                        additional options refer to the documentation.
+  --print-evaluation PRINT_EVALUATION
+                        Whether the evaluation results should be printed on
+                        the console or not. Must be one of {"true", "false"}.
+                        For additional options refer to the documentation.
+  --store-evaluation STORE_EVALUATION
+                        Whether the evaluation results should be written into
+                        output files or not. Must be one of {"true", "false"}.
+                        Does only have an effect if the parameter --output-dir
+                        is specified. For additional options refer to the
+                        documentation.
+  --evaluate-training-data EVALUATE_TRAINING_DATA
+                        Whether the models should not only be evaluated on the
+                        test data, but also on the training data. Must be one
+                        of {"true", "false"}.
+  --print-prediction-characteristics PRINT_PREDICTION_CHARACTERISTICS
+                        Whether the characteristics of binary predictions
+                        should be printed on the console or not. Must be one
+                        of {"true", "false"}. Does only have an effect if the
+                        parameter --prediction-type is set to binary. For
+                        additional options refer to the documentation.
+  --store-prediction-characteristics STORE_PREDICTION_CHARACTERISTICS
+                        Whether the characteristics of binary predictions
+                        should be written into output files or not. Must be
+                        one of {"true", "false"}. Does only have an effect if
+                        the parameter --prediction-type is set to binary. For
+                        additional options refer to the documentation.
+  --print-data-characteristics PRINT_DATA_CHARACTERISTICS
+                        Whether the characteristics of the training data
+                        should be printed on the console or not. Must be one
+                        of {"true", "false"}. For additional options refer to
+                        the documentation.
+  --store-data-characteristics STORE_DATA_CHARACTERISTICS
+                        Whether the characteristics of the training data
+                        should be written into output files or not. Must be
+                        one of {"true", "false"}. Does only have an effect if
+                        the parameter --output-dir is specified. For
+                        additional options refer to the documentation.
+  --print-label-vectors PRINT_LABEL_VECTORS
+                        Whether the unique label vectors contained in the
+                        training data should be printed on the console or not.
+                        Must be one of {"true", "false"}. For additional
+                        options refer to the documentation.
+  --store-label-vectors STORE_LABEL_VECTORS
+                        Whether the unique label vectors contained in the
+                        training data should be written into output files or
+                        not. Must be one of {"true", "false"}. Does only have
+                        an effect if the parameter --output-dir is specified.
+                        For additional options refer to the documentation.
+  --one-hot-encoding ONE_HOT_ENCODING
+                        Whether one-hot-encoding should be used to encode
+                        nominal features or not. Must be one of {"true",
+                        "false"}.
+  --model-load-dir MODEL_LOAD_DIR
+                        The path to the directory from which models should be
+                        loaded.
+  --model-save-dir MODEL_SAVE_DIR
+                        The path to the directory to which models should be
+                        saved.
+  --parameter-load-dir PARAMETER_LOAD_DIR
+                        The path to the directory from which parameter to be
+                        used by the algorith should be loaded.
+  --parameter-save-dir PARAMETER_SAVE_DIR
+                        The path to the directory where configuration files,
+                        which specify the parameters to be used by the
+                        algorithm, are located.
+  --output-dir OUTPUT_DIR
+                        The path to the directory where experimental results
+                        should be saved.
+  --print-parameters PRINT_PARAMETERS
+                        Whether the parameter setting should be printed on the
+                        console or not. Must be one of {"true", "false"}.
+  --print-predictions PRINT_PREDICTIONS
+                        Whether predictions should be printed on the console
+                        or not. Must be one of {"true", "false"}. For
+                        additional options refer to the documentation.
+  --store-predictions STORE_PREDICTIONS
+                        Whether predictions should be written into output
+                        files or not. Must be one of {"true", "false"}. Does
+                        only have an effect, if the parameter --output-dir is
+                        specified. For additional options refer to the
+                        documentation.
+  --print-ground-truth PRINT_GROUND_TRUTH
+                        Whether the ground truth should be printed on the
+                        console or not. Must be one of {"true", "false"}. For
+                        additional options refer to the documentation.
+  --store-ground-truth STORE_GROUND_TRUTH
+                        Whether the ground truth should be written into output
+                        files or not. Must be one of {"true", "false"}. Does
+                        only have an effect, if the parameter --output-dir is
+                        specified. For additional options refer to the
+                        documentation.
+  --prediction-type PREDICTION_TYPE
+                        The type of predictions that should be obtained from
+                        the learner. Must be one of {"probabilities",
+                        "scores", "binary"}.
+  --incremental-evaluation INCREMENTAL_EVALUATION
+                        Whether models should be evaluated repeatedly, using
+                        only a subset of the induced rules with increasing
+                        size, or not. Must be one of {"true", "false"}. For
+                        additional options refer to the documentation.
+  --print-model-characteristics PRINT_MODEL_CHARACTERISTICS
+                        Whether the characteristics of models should be
+                        printed on the console or not. Must be one of {"true",
+                        "false"}.
+  --store-model-characteristics STORE_MODEL_CHARACTERISTICS
+                        Whether the characteristics of models should be
+                        written into output files or not. Must be one of
+                        {"true", "false"}. Does only have an effect if the
+                        parameter --output-dir is specified.
+  --print-rules PRINT_RULES
+                        Whether the induced rules should be printed on the
+                        console or not. Must be one of {"true", "false"}. For
+                        additional options refer to the documentation.
+  --store-rules STORE_RULES
+                        Whether the induced rules should be written into a
+                        text file or not. Must be one of {"true", "false"}.
+                        Does only have an effect if the parameter --output-dir
+                        is specified. For additional options refer to the
+                        documentation.
+  --print-marginal-probability-calibration-model PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL
+                        Whether the model for the calibration of marginal
+                        probabilities should be printed on the console or not.
+                        Must be one of {"true", "false"}. For additional
+                        options refer to the documentation.
+  --store-marginal-probability-calibration-model STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL
+                        Whether the model for the calibration of marginal
+                        probabilities should be written into an output file or
+                        not. Must be one of {"true", "false"}. Does only have
+                        an effect if the parameter --output-dir is specified.
+                        For additional options refer to the documentation.
+  --print-joint-probability-calibration-model PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL
+                        Whether the model for the calibration of joint
+                        probabilities should be printed on the console or not.
+                        Must be one of {"true", "false"}. For additional
+                        options refer to the documentation.
+  --store-joint-probability-calibration-model STORE_JOINT_PROBABILITY_CALIBRATION_MODEL
+                        Whether the model for the calibration of joint
+                        probabilities should be written into an output file or
+                        not. Must be one of {"true", "false"}. Does only have
+                        an effect if the parameter --output-dir is specified.
+                        For additional options refer to the documentation.
+  --feature-format FEATURE_FORMAT
+                        The format to be used for the representation of the
+                        feature matrix. Must be one of {"sparse", "auto",
+                        "dense"}.
+  --sparse-feature-value SPARSE_FEATURE_VALUE
+                        The value that should be used for sparse elements in
+                        the feature matrix. Does only have an effect if a
+                        sparse format is used for the representation of the
+                        feature matrix, depending on the parameter --feature-
+                        format.
+  --output-format OUTPUT_FORMAT
+                        The format to be used for the representation of the
+                        output matrix. Must be one of {"sparse", "auto",
+                        "dense"}.
+  --prediction-format PREDICTION_FORMAT
+                        The format to be used for the representation of
+                        predictions. Must be one of {"sparse", "auto",
+                        "dense"}.
+  --binary-predictor BINARY_PREDICTOR
+                        The name of the strategy to be used for predicting
+                        binary labels. Must be one of {"output-wise",
+                        "example-wise", "gfm", "auto"}. If set to "auto", the
+                        most suitable strategy is chosen automatically based
+                        on the parameter --loss. For additional options refer
+                        to the documentation.
+  --default-rule DEFAULT_RULE
+                        Whether a default rule should be induced or not. Must
+                        be one of {"true", "false", "auto"}.
+  --feature-binning FEATURE_BINNING
+                        The name of the strategy to be used for feature
+                        binning. Must be one of {"none", "equal-frequency",
+                        "equal-width"}. For additional options refer to the
+                        documentation.
+  --feature-sampling FEATURE_SAMPLING
+                        The name of the strategy to be used for feature
+                        sampling. Must be one of {"none", "without-
+                        replacement"}. For additional options refer to the
+                        documentation.
+  --global-pruning GLOBAL_PRUNING
+                        The name of the strategy to be used for pruning entire
+                        rules. Must be one of {"none", "post-pruning", "pre-
+                        pruning"}. For additional options refer to the
+                        documentation.
+  --head-type HEAD_TYPE
+                        The type of the rule heads that should be used. Must
+                        be one of {"single", "partial-fixed", "partial-
+                        dynamic", "complete", "auto"}. If set to "auto", the
+                        most suitable strategy is chosen automatically based
+                        on the parameter --loss. For additional options refer
+                        to the documentation.
+  --holdout HOLDOUT     The name of the strategy to be used for creating a
+                        holdout set. Must be one of {"none", "random",
+                        "stratified-output-wise", "stratified-example-wise"}.
+                        For additional options refer to the documentation.
+  --instance-sampling INSTANCE_SAMPLING
+                        The name of the strategy to be used for instance
+                        sampling. Must be one of {"none", "with-replacement",
+                        "without-replacement", "stratified-output-wise",
+                        "stratified-example-wise"}. For additional options
+                        refer to the documentation.
+  --joint-probability-calibration JOINT_PROBABILITY_CALIBRATION
+                        The name of the method to be used for the calibration
+                        of joint probabilities. Must be one of {"none",
+                        "isotonic"}. For additional options refer to the
+                        documentation.
+  --l1-regularization-weight L1_REGULARIZATION_WEIGHT
+                        The weight of the L1 regularization. Must be at least
+                        0
+  --l2-regularization-weight L2_REGULARIZATION_WEIGHT
+                        The weight of the L2 regularization. Must be at least
+                        0
+  --label-binning LABEL_BINNING
+                        The name of the strategy to be used for gradient-based
+                        label binning (GBLB). Must be one of {"none", "equal-
+                        width", "auto"}. If set to "auto", the most suitable
+                        strategy is chosen automatically based on the
+                        parameters --loss and --head-type. For additional
+                        options refer to the documentation.
+  --loss LOSS           The name of the loss function to be minimized during
+                        training. Must be one of {"squared-error-non-
+                        decomposable", "squared-hinge-non-decomposable",
+                        "logistic-non-decomposable", "logistic-decomposable",
+                        "squared-hinge-decomposable", "squared-error-
+                        decomposable"}.
+  --marginal-probability-calibration MARGINAL_PROBABILITY_CALIBRATION
+                        The name of the method to be used for the calibration
+                        of marginal probabilities. Must be one of {"none",
+                        "isotonic"}. For additional options refer to the
+                        documentation.
+  --max-rules MAX_RULES
+                        The maximum number of rules to be induced. Must be at
+                        least 1 or 0, if the number of rules should not be
+                        restricted
+  --output-sampling OUTPUT_SAMPLING
+                        The name of the strategy to be used for output
+                        sampling. Must be one of {"none", "without-
+                        replacement", "round-robin"}. For additional options
+                        refer to the documentation.
+  --parallel-prediction PARALLEL_PREDICTION
+                        Whether predictions for different examples should be
+                        obtained in parallel or not. Must be one of {"false",
+                        "true"}. For additional options refer to the
+                        documentation.
+  --parallel-rule-refinement PARALLEL_RULE_REFINEMENT
+                        Whether potential refinements of rules should be
+                        searched for in parallel or not. Must be one of
+                        {"false", "true"}. For additional options refer to the
+                        documentation.
+  --parallel-statistic-update PARALLEL_STATISTIC_UPDATE
+                        Whether the statistics for different examples should
+                        be updated in parallel or not. Must be one of
+                        {"false", "true"}. For additional options refer to the
+                        documentation.
+  --probability-predictor PROBABILITY_PREDICTOR
+                        The name of the strategy to be used for predicting
+                        probabilities. Must be one of {"output-wise",
+                        "marginalized", "auto"}. If set to "auto", the most
+                        suitable strategy is chosen automatically based on the
+                        parameter --loss. For additional options refer to the
+                        documentation.
+  --rule-induction RULE_INDUCTION
+                        The name of the algorithm to be used for the induction
+                        of individual rules. Must be one of {"top-down-
+                        greedy", "top-down-beam-search"}. For additional
+                        options refer to the documentation.
+  --rule-pruning RULE_PRUNING
+                        The name of the strategy to be used for pruning
+                        individual rules. Must be one of {"none", "irep"}.
+  --sequential-post-optimization SEQUENTIAL_POST_OPTIMIZATION
+                        Whether each rule in a previously learned model should
+                        be optimized by being relearned in the context of the
+                        other rules or not. Must be one of {"false", "true"}.
+                        For additional options refer to the documentation.
+  --shrinkage SHRINKAGE
+                        The shrinkage parameter, a.k.a. the learning rate, to
+                        be used. Must be in (0, 1].
+  --statistic-format STATISTIC_FORMAT
+                        The format to be used for the representation of
+                        gradients and Hessians. Must be one of {"sparse",
+                        "dense", "auto"}. If set to "auto", the most suitable
+                        format is chosen automatically based on the parameters
+                        --loss, --head-type, --default-rule and the
+                        characteristics of the label matrix.
+  --statistic-type STATISTIC_TYPE
+                        The data type for representing gradients and Hessians.
+                        Must be one of {"64-bit", "32-bit"}.
+  --time-limit TIME_LIMIT
+                        The duration in seconds after which the induction of
+                        rules should be canceled. Must be at least 1 or 0, if
+                        no time limit should be set
+  -h, --help            Show this help message and exit
