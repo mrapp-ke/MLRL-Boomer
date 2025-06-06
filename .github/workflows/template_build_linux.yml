@@ -83,7 +83,7 @@ jobs:
       - name: Push changes to output files
         if: ${{ matrix.os == 'ubuntu-24.04' && inputs.run_python_tests == true && inputs.overwrite_output_files == true }}
         run: |
-          git checkout -b ${{ github.head_ref }}-${{ github.event.number }}-${{ github.job }}
+          git checkout -b ${{ github.head_ref }}-${{ github.event.number }}
           git add --all python/tests/res/out/
           git commit -m "Adjust expected output of integration tests."
           git push -u origin HEAD
