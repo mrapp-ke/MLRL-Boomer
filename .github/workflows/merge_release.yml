@@ -24,7 +24,7 @@ jobs:
         uses: fregante/setup-git-user@v2
       - name: Checkout release branch
         run: |
-          git checkout ${{ github.event.release.target_commitish }}
+          git switch ${{ github.event.release.target_commitish }}
       - name: Reset development version
         if: ${{ github.event.release.target_commitish == 'main' }}
         run: |
@@ -35,29 +35,29 @@ jobs:
       - name: Merge into feature branch
         if: ${{ github.event.release.target_commitish == 'main' }}
         run: |
-          git checkout -b feature origin/feature
+          git switch -c feature origin/feature
           git merge origin/main --strategy-option theirs -m "[Bot] Merge branch \"main\" into \"feature\"."
           git push origin feature
       - name: Merge into bugfix branch
         if: ${{ github.event.release.target_commitish == 'main' || github.event.release.target_commitish == 'feature' }}
         run: |
-          git checkout -b bugfix origin/bugfix
+          git switch -c bugfix origin/bugfix
           git merge origin/feature --strategy-option theirs -m "[Bot] Merge branch \"feature\" into \"bugfix\"."
           git push origin bugfix
       - name: Update major version
         if: ${{ github.event.release.target_commitish == 'main' }}
         run: |
-          git checkout main
+          git switch main
           ./build increment_major_version
           git add build_system/res/versioning/version
           git commit -m "[Bot] Update version to $(cat build_system/res/versioning/version)."
           git push origin main
-          git checkout feature
+          git switch feature
           ./build increment_minor_version
           git add build_system/res/versioning/version
           git commit -m "[Bot] Update version to $(cat build_system/res/versioning/version)."
           git push origin feature
-          git checkout bugfix
+          git switch bugfix
           ./build increment_patch_version
           git add build_system/res/versioning/version
           git commit -m "[Bot] Update version to $(cat build_system/res/versioning/version)."
@@ -65,12 +65,12 @@ jobs:
       - name: Update minor version
         if: ${{ github.event.release.target_commitish == 'feature' }}
         run: |
-          git checkout feature
+          git switch feature
           ./build increment_minor_version
           git add build_system/res/versioning/version
           git commit -m "[Bot] Update version to $(cat build_system/res/versioning/version)."
           git push origin feature
-          git checkout bugfix
+          git switch bugfix
           ./build increment_patch_version
           git add build_system/res/versioning/version
           git commit -m "[Bot] Update version to $(cat build_system/res/versioning/version)."
@@ -78,7 +78,7 @@ jobs:
       - name: Update patch version
         if: ${{ github.event.release.target_commitish == 'bugfix' }}
         run: |-
-          git checkout bugfix
+          git switch bugfix
           ./build increment_patch_version
           git add build_system/res/versioning/version
           git commit -m "[Bot] Update version to $(cat build_system/res/versioning/version)."
