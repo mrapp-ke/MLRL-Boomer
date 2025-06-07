@@ -101,7 +101,7 @@ class Runnable(ABC):
             for argument in extension.arguments:
                 arguments.add(argument)
 
-        cli.add_arguments(*arguments)
+        cli.add_arguments(*sorted(arguments, key=lambda arg: arg.name))
 
     @abstractmethod
     def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:
