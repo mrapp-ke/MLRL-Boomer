@@ -197,7 +197,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
         problem_domain = self._create_problem_domain(cli.parse_known_args())
         config_type, parameters = self.__create_config_type_and_parameters(problem_domain)
 
-        for parameter in parameters:
+        for parameter in sorted(parameters, key=lambda param: param.name):
             argument = parameter.as_argument(config_type)
 
             if argument:
