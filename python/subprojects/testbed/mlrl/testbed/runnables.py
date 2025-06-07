@@ -6,7 +6,7 @@ Provides base classes for programs that can be configured via command line argum
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
-from typing import List, Optional, Set
+from typing import Optional, Set
 
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.extensions import Extension
@@ -52,13 +52,13 @@ class Runnable(ABC):
             experiment_builder.set_predict_for_training_dataset(self.PREDICT_FOR_TRAINING_DATA.get_value(args))
             experiment_builder.set_predict_for_test_dataset(self.PREDICT_FOR_TEST_DATA.get_value(args))
 
-    def get_extensions(self) -> List[Extension]:
+    def get_extensions(self) -> Set[Extension]:
         """
         May be overridden by subclasses in order to return the extensions that should be applied to the runnable.
 
-        :return: A list that contains the extensions to be applied to the runnable
+        :return: A set that contains the extensions to be applied to the runnable
         """
-        return [Runnable.PredictionDatasetExtension(), LogExtension()]
+        return {Runnable.PredictionDatasetExtension(), LogExtension()}
 
     def get_program_info(self) -> Optional[ProgramInfo]:
         """
@@ -76,15 +76,15 @@ class Runnable(ABC):
         :param args: The command line arguments specified by the user
         """
         experiment_builder = self.create_experiment_builder(args)
-        extensions = {}
+        extensions = set()
 
         for extension in self.get_extensions():
-            extensions.setdefault(type(extension), extension)
+            extensions.add(extension)
 
             for dependency in extension.dependencies:
-                extensions.setdefault(type(dependency), dependency)
+                extensions.add(dependency)
 
-        for extension in extensions.values():
+        for extension in extensions:
             extension.configure_experiment(args, experiment_builder)
 
         experiment_builder.run()

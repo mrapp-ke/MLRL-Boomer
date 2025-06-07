@@ -6,7 +6,7 @@ Provides classes for running experiments using the scikit-learn framework.
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional, Set
 
 from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
 
@@ -91,11 +91,11 @@ class SkLearnRunnable(Runnable, ABC):
                                         fit_kwargs=fit_kwargs,
                                         predict_kwargs=predict_kwargs)
 
-    def get_extensions(self) -> List[Extension]:
+    def get_extensions(self) -> Set[Extension]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
         """
-        return super().get_extensions() + [
+        return super().get_extensions() | {
             DatasetSplitterExtension(),
             PredictionTypeExtension(),
             ModelInputExtension(),
@@ -108,7 +108,7 @@ class SkLearnRunnable(Runnable, ABC):
             PredictionExtension(),
             GroundTruthExtension(),
             PredictionCharacteristicsExtension(),
-        ]
+        }
 
     def configure_arguments(self, cli: CommandLineInterface):
         """
