@@ -27,6 +27,7 @@ from mlrl.testbed.experiments.output.model.extension import ModelOutputExtension
 from mlrl.testbed.experiments.output.parameters.extension import ParameterOutputExtension
 from mlrl.testbed.experiments.prediction import GlobalPredictor
 from mlrl.testbed.experiments.prediction.extension import PredictionTypeExtension
+from mlrl.testbed.experiments.prediction.predictor import Predictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
 from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificationProblem, SkLearnProblem, \
@@ -43,6 +44,23 @@ class SkLearnRunnable(Runnable, ABC):
     """
     An abstract base class for all programs that run an experiment using the scikit-learn framework.
     """
+
+    class GlobalPredictorFactory(SkLearnProblem.PredictorFactory):
+        """
+        Allow to create instances of type `Predictor` that obtain predictions from a global model.
+        """
+
+        def __init__(self, prediction_type: PredictionType):
+            """
+            :param prediction_type: The type of the predictions to be obtained
+            """
+            self.prediction_type = prediction_type
+
+        def create(self) -> Predictor:
+            """
+            See :func:`from mlrl.testbed.experiments.problem_domain_sklearn.SkLearnProblem.PredictorFactory.create`
+            """
+            return GlobalPredictor(self.prediction_type)
 
     PARAM_PROBLEM_TYPE = '--problem-type'
 
@@ -154,11 +172,7 @@ class SkLearnRunnable(Runnable, ABC):
         :param prediction_type: The type of the predictions to be obtained
         :return:                The `SkLearnProblem.PredictorFactory` that has been created
         """
-
-        def predictor_factory():
-            return GlobalPredictor(prediction_type)
-
-        return predictor_factory
+        return SkLearnRunnable.GlobalPredictorFactory(prediction_type)
 
     @abstractmethod
     def create_classifier(self, args) -> Optional[SkLearnClassifierMixin]:

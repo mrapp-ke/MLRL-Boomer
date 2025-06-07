@@ -120,7 +120,7 @@ class SkLearnExperiment(Experiment):
                 problem_domain = self.problem_domain
                 predict_kwargs = problem_domain.predict_kwargs
                 predict_kwargs = predict_kwargs if predict_kwargs else {}
-                predictor = problem_domain.predictor_factory()
+                predictor = problem_domain.predictor_factory.create()
                 dataset_type = state.dataset_type
                 yield from predictor.obtain_predictions(learner, dataset, dataset_type, **predict_kwargs)
             except ValueError as error:
