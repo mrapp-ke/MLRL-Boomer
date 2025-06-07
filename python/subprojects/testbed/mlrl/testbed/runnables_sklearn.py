@@ -21,7 +21,6 @@ from mlrl.testbed.experiments.output.characteristics.data.tabular.extension_pred
 from mlrl.testbed.experiments.output.dataset.tabular.extension_ground_truth import GroundTruthExtension
 from mlrl.testbed.experiments.output.dataset.tabular.extension_prediction import PredictionExtension
 from mlrl.testbed.experiments.output.evaluation.extension import EvaluationExtension
-from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.label_vectors.extension import LabelVectorExtension
 from mlrl.testbed.experiments.output.model.extension import ModelOutputExtension
 from mlrl.testbed.experiments.output.parameters.extension import ParameterOutputExtension
@@ -36,8 +35,8 @@ from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.runnables import Runnable
 
 from mlrl.util.cli import BoolArgument, CommandLineInterface, SetArgument
-from mlrl.util.format import format_enum_values, format_set
-from mlrl.util.options import BooleanOption, parse_param
+from mlrl.util.format import format_set
+from mlrl.util.options import parse_param
 
 
 class SkLearnRunnable(Runnable, ABC):
@@ -123,14 +122,6 @@ class SkLearnRunnable(Runnable, ABC):
                 default=ClassificationProblem.NAME,
                 description='The type of the machine learning problem to be solved. Must be one of '
                 + format_set(self.PROBLEM_TYPE_VALUES) + '.',
-            ),
-            BoolArgument(
-                '--create-output-dir',
-                default=True,
-                description='Whether the directories specified via the arguments ' + OutputExtension.OUTPUT_DIR.name
-                + ', ' + ModelOutputExtension.MODEL_SAVE_DIR.name + ' and '
-                + ParameterOutputExtension.PARAMETER_SAVE_DIR.name + ' should automatically be created, if they do not '
-                + 'exist, or not. Must be one of ' + format_enum_values(BooleanOption) + '.',
             ),
             BoolArgument(
                 '--print-all',

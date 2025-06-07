@@ -59,7 +59,9 @@ class RuleModelCharacteristicsExtension(Extension):
         output_dir = OutputExtension.OUTPUT_DIR.get_value(args)
 
         if (store_model_characteristics or args.store_all) and output_dir:
-            return [CsvFileSink(directory=output_dir, create_directory=args.create_output_dir)]
+            return [
+                CsvFileSink(directory=output_dir, create_directory=OutputExtension.CREATE_OUTPUT_DIR.get_value(args))
+            ]
         return []
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):

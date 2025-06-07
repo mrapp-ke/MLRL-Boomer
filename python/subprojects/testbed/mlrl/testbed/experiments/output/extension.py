@@ -47,6 +47,13 @@ class OutputExtension(Extension):
         description='The path to the directory where experimental results should be saved.',
     )
 
+    CREATE_OUTPUT_DIR = BoolArgument(
+        '--create-output-dir',
+        default=True,
+        description='Whether the directory specified via the argument ' + OUTPUT_DIR.name + ' should automatically be '
+        + 'created, if it does not exist, or not.',
+    )
+
     WIPE_OUTPUT_DIR = BoolArgument(
         '--wipe-output-dir',
         default=True,
@@ -64,7 +71,7 @@ class OutputExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {self.OUTPUT_DIR, self.WIPE_OUTPUT_DIR, self.EXIT_ON_ERROR}
+        return {self.OUTPUT_DIR, self.CREATE_OUTPUT_DIR, self.WIPE_OUTPUT_DIR, self.EXIT_ON_ERROR}
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """

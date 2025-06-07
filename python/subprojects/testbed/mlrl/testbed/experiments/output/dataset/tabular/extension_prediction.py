@@ -63,7 +63,11 @@ class PredictionExtension(Extension):
         output_dir = OutputExtension.OUTPUT_DIR.get_value(args)
 
         if value and output_dir:
-            return [ArffFileSink(directory=output_dir, create_directory=args.create_output_dir, options=options)]
+            return [
+                ArffFileSink(directory=output_dir,
+                             create_directory=OutputExtension.CREATE_OUTPUT_DIR.get_value(args),
+                             options=options)
+            ]
         return []
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
