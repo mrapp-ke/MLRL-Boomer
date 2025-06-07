@@ -1,0 +1,23 @@
+mlrl-testbed mlrl.seco --version
+Multi-label SeCo 0.12.0.dev0
+
+Copyright (c) 2020 - 2025 Michael Rapp et al.
+
+Python packages:     mlrl-common 0.12.0.dev0
+                     mlrl-seco 0.12.0.dev0
+                     mlrl-testbed 0.12.0.dev0
+
+Dependencies:        mlrl-testbed 0.12.0.dev0             used by mlrl-seco
+                     mlrl-testbed-arff 0.12.0.dev0        used by mlrl-testbed
+                     mlrl-util 0.12.0.dev0                used by mlrl-common, mlrl-testbed
+                     scikit-learn 1.6.1                   used by mlrl-common
+                     tabulate 0.9.0                       used by mlrl-testbed
+
+Shared libraries:    libmlrlcommon 0.12.0 (x86_64-linux)  used by mlrl-common, mlrl-testbed, mlrl-seco
+                     libmlrlseco 0.12.0 (x86_64-linux)    used by mlrl-seco
+
+Build options:       GPU support (enabled)                used by libmlrlcommon
+                     multi-threading support (enabled)    used by libmlrlcommon
+
+Hardware resources:  available CPU cores                  4
+                     supported GPU devices                none
