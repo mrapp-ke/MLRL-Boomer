@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for programs that can be configured via command line arguments.
 """
 from argparse import Namespace
-from typing import Dict, List, Optional, Set
+from typing import List, Optional, Set
 
 from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
 
@@ -18,15 +18,21 @@ from mlrl.testbed.experiments.output.model_text.extension import RuleModelAsText
 from mlrl.testbed.experiments.output.probability_calibration.extension import \
     JointProbabilityCalibrationModelExtension, MarginalProbabilityCalibrationModelExtension
 from mlrl.testbed.experiments.prediction import IncrementalPredictor
+from mlrl.testbed.experiments.prediction.predictor import Predictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
 from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnProblem
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.runnables_sklearn import SkLearnRunnable
 
-from mlrl.util.cli import BoolArgument, CommandLineInterface, FloatArgument, SetArgument
-from mlrl.util.options import BooleanOption, parse_param_and_options
+from mlrl.util.cli import Argument, BoolArgument, CommandLineInterface, FloatArgument, SetArgument
 from mlrl.util.validation import assert_greater, assert_greater_or_equal
+
+OPTION_MIN_SIZE = 'min_size'
+
+OPTION_MAX_SIZE = 'max_size'
+
+OPTION_STEP_SIZE = 'step_size'
 
 
 class RuleLearnerRunnable(SkLearnRunnable):
@@ -34,18 +40,74 @@ class RuleLearnerRunnable(SkLearnRunnable):
     A base class for all programs that perform an experiment that involves training and evaluation of a rule learner.
     """
 
-    PARAM_INCREMENTAL_EVALUATION = '--incremental-evaluation'
+    class IncrementalPredictorFactory(SkLearnRunnable.GlobalPredictorFactory):
+        """
+        Allow to create instances of type `Predictor` that obtain incremental predictions from a model repeatedly.
+        """
 
-    OPTION_MIN_SIZE = 'min_size'
+        def __init__(self, prediction_type: PredictionType, min_size: int, max_size: int, step_size: int):
+            """
+            :param prediction_type: The type of the predictions to be obtained
+            """
+            super().__init__(prediction_type)
+            self.min_size = min_size
+            self.max_size = max_size
+            self.step_size = step_size
 
-    OPTION_MAX_SIZE = 'max_size'
+        def create(self) -> Predictor:
+            """
+            See :func:`from mlrl.testbed.experiments.problem_domain_sklearn.SkLearnProblem.PredictorFactory.create`
+            """
+            return IncrementalPredictor(self.prediction_type,
+                                        min_size=self.min_size,
+                                        max_size=self.max_size,
+                                        step_size=self.step_size)
 
-    OPTION_STEP_SIZE = 'step_size'
+    class IncrementalPredictionExtension(Extension):
+        """
+        An extension that configures the functionality to obtain incremental predictions.
+        """
 
-    INCREMENTAL_EVALUATION_VALUES: Dict[str, Set[str]] = {
-        BooleanOption.TRUE.value: {OPTION_MIN_SIZE, OPTION_MAX_SIZE, OPTION_STEP_SIZE},
-        BooleanOption.FALSE.value: {}
-    }
+        INCREMENTAL_EVALUATION = BoolArgument(
+            '--incremental-evaluation',
+            default=False,
+            description='Whether models should be evaluated repeatedly, using only a subset of the induced rules with '
+            + 'increasing size, or not.',
+            true_options={OPTION_MIN_SIZE, OPTION_MAX_SIZE, OPTION_STEP_SIZE},
+        )
+
+        def _get_arguments(self) -> Set[Argument]:
+            """
+            See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
+            """
+            return {self.INCREMENTAL_EVALUATION}
+
+        @staticmethod
+        def get_predictor_factory(args: Namespace, prediction_type: PredictionType) -> SkLearnProblem.PredictorFactory:
+            """
+             Returns the `SkLearnProblem.PredictorFactory` that should be used for obtaining predictions of a specific
+             type from a previously trained model according to the configuration.
+
+            :param args:            The command line arguments specified by the user
+            :param prediction_type: The type of the predictions
+            :return:                The `SkLearnProblem.PredictorFactory` that should be used
+            """
+            value, options = RuleLearnerRunnable.IncrementalPredictionExtension.INCREMENTAL_EVALUATION.get_value(args)
+
+            if value:
+                min_size = options.get_int(OPTION_MIN_SIZE, 0)
+                assert_greater_or_equal(OPTION_MIN_SIZE, min_size, 0)
+                max_size = options.get_int(OPTION_MAX_SIZE, 0)
+                if max_size != 0:
+                    assert_greater(OPTION_MAX_SIZE, max_size, min_size)
+                step_size = options.get_int(OPTION_STEP_SIZE, 1)
+                assert_greater_or_equal(OPTION_STEP_SIZE, step_size, 1)
+                return RuleLearnerRunnable.IncrementalPredictorFactory(prediction_type,
+                                                                       min_size=min_size,
+                                                                       max_size=max_size,
+                                                                       step_size=step_size)
+
+            return SkLearnRunnable.GlobalPredictorFactory(prediction_type)
 
     PARAM_FEATURE_FORMAT = '--feature-format'
 
@@ -79,7 +141,8 @@ class RuleLearnerRunnable(SkLearnRunnable):
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
         """
-        return super().get_extensions() + [
+        return super().get_extensions() | [
+            RuleLearnerRunnable.IncrementalPredictionExtension(),
             RuleModelAsTextExtension(),
             RuleModelCharacteristicsExtension(),
             MarginalProbabilityCalibrationModelExtension(),
@@ -108,13 +171,6 @@ class RuleLearnerRunnable(SkLearnRunnable):
         """
         super().configure_arguments(cli)
         cli.add_arguments(
-            BoolArgument(
-                self.PARAM_INCREMENTAL_EVALUATION,
-                default=False,
-                description='Whether models should be evaluated repeatedly, using only a subset of the induced rules '
-                + 'with increasing size, or not.',
-                true_options={self.OPTION_MIN_SIZE, self.OPTION_MAX_SIZE, self.OPTION_STEP_SIZE},
-            ),
             SetArgument(
                 self.PARAM_FEATURE_FORMAT,
                 values=SparsePolicy,
@@ -191,21 +247,4 @@ class RuleLearnerRunnable(SkLearnRunnable):
         return kwargs
 
     def _create_predictor_factory(self, args, prediction_type: PredictionType) -> SkLearnProblem.PredictorFactory:
-        value, options = parse_param_and_options(self.PARAM_INCREMENTAL_EVALUATION, args.incremental_evaluation,
-                                                 self.INCREMENTAL_EVALUATION_VALUES)
-
-        if value == BooleanOption.TRUE.value:
-            min_size = options.get_int(self.OPTION_MIN_SIZE, 0)
-            assert_greater_or_equal(self.OPTION_MIN_SIZE, min_size, 0)
-            max_size = options.get_int(self.OPTION_MAX_SIZE, 0)
-            if max_size != 0:
-                assert_greater(self.OPTION_MAX_SIZE, max_size, min_size)
-            step_size = options.get_int(self.OPTION_STEP_SIZE, 1)
-            assert_greater_or_equal(self.OPTION_STEP_SIZE, step_size, 1)
-
-            def predictor_factory():
-                return IncrementalPredictor(prediction_type, min_size=min_size, max_size=max_size, step_size=step_size)
-
-            return predictor_factory
-
-        return super()._create_predictor_factory(args, prediction_type)
+        return RuleLearnerRunnable.IncrementalPredictionExtension.get_predictor_factory(args, prediction_type)
