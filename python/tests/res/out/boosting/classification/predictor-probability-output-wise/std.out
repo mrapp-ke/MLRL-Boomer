@@ -21,7 +21,7 @@ Median Absolute Error             0.23
 NDCG                             86.91
 Ranking Loss                      0.16
 
-INFO Predictions for test data:
+INFO Ground truth for test data:
 
 [[1 0 0 0 0 1]
  [1 0 0 0 0 0]
@@ -220,7 +220,7 @@ INFO Predictions for test data:
  [0 0 1 1 0 0]
  [1 0 0 0 0 1]]
 
-INFO Ground truth for test data:
+INFO Predictions for test data:
 
 [[1 0 0 0 0 1]
  [1 0 0 0 0 0]

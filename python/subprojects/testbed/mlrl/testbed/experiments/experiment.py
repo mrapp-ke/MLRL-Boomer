@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 from dataclasses import replace
 from functools import reduce
 from itertools import chain
-from typing import Any, Generator, Optional
+from typing import Any, Generator, Iterable, List, Optional
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
@@ -40,10 +40,10 @@ class Experiment(ABC):
             self.problem_domain = problem_domain
             self.dataset_splitter = dataset_splitter
             self.listeners = []
-            self.input_readers = []
-            self.pre_training_output_writers = []
-            self.post_training_output_writers = []
-            self.prediction_output_writers = []
+            self.input_readers = set()
+            self.pre_training_output_writers = set()
+            self.post_training_output_writers = set()
+            self.prediction_output_writers = set()
             self.predict_for_training_dataset = False
             self.predict_for_test_dataset = True
             self.exit_on_error = True
@@ -65,7 +65,7 @@ class Experiment(ABC):
             :param input_readers:   The input readers to be added
             :return:                The builder itself
             """
-            self.input_readers.extend(input_readers)
+            self.input_readers.update(input_readers)
             return self
 
         def add_pre_training_output_writers(self, *output_writers: OutputWriter) -> 'Experiment.Builder':
@@ -75,7 +75,7 @@ class Experiment(ABC):
             :param output_writers:  The output writers to be added
             :return:                The builder itself
             """
-            self.pre_training_output_writers.extend(output_writers)
+            self.pre_training_output_writers.update(output_writers)
             return self
 
         def add_post_training_output_writers(self, *output_writers: OutputWriter) -> 'Experiment.Builder':
@@ -85,7 +85,7 @@ class Experiment(ABC):
             :param output_writers:  The output writers to be added
             :return:                The builder itself
             """
-            self.post_training_output_writers.extend(output_writers)
+            self.post_training_output_writers.update(output_writers)
             return self
 
         def add_prediction_output_writers(self, *output_writers: OutputWriter) -> 'Experiment.Builder':
@@ -96,7 +96,7 @@ class Experiment(ABC):
             :param output_writers:  The output writers to be added
             :return:                The builder itself
             """
-            self.prediction_output_writers.extend(output_writers)
+            self.prediction_output_writers.update(output_writers)
             return self
 
         def set_predict_for_training_dataset(self, predict_for_training_dataset: bool) -> 'Experiment.Builder':
@@ -145,10 +145,14 @@ class Experiment(ABC):
 
             experiment = self._create_experiment(self.problem_domain, self.dataset_splitter)
             experiment.listeners.extend(self.listeners)
-            experiment.input_readers.extend(self.input_readers)
-            experiment.pre_training_output_writers.extend(self.pre_training_output_writers)
-            experiment.post_training_output_writers.extend(self.post_training_output_writers)
-            experiment.prediction_output_writers.extend(self.prediction_output_writers)
+
+            def sort(objects: Iterable[Any]) -> List[Any]:
+                return sorted(objects, key=lambda obj: type(obj).__name__)
+
+            experiment.input_readers.extend(sort(self.input_readers))
+            experiment.pre_training_output_writers.extend(sort(self.pre_training_output_writers))
+            experiment.post_training_output_writers.extend(sort(self.post_training_output_writers))
+            experiment.prediction_output_writers.extend(sort(self.prediction_output_writers))
             return experiment
 
         def run(self):

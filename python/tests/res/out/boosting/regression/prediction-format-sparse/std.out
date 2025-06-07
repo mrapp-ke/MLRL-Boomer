@@ -19,7 +19,7 @@ Mean Squared Error              2826.34
 Median Absolute Error             15.83
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predictions for test data:
+INFO Ground truth for test data:
 
 [[ 334.  440.  460.  463.  334.  463.]
  [ 279.  279.  395.  369.  313.  401.]
@@ -120,7 +120,7 @@ INFO Predictions for test data:
  [ 279.  279.  301.  366.  283.  366.]
  [ 199.  199.  447.  488.  298.  488.]]
 
-INFO Ground truth for test data:
+INFO Predictions for test data:
 
 [[ 334.  440.  460.  463.  334.  463.]
  [ 279.  279.  395.  369.  313.  401.]
