@@ -55,7 +55,10 @@ class ParameterOutputExtension(Extension):
         parameter_save_dir = self.PARAMETER_SAVE_DIR.get_value(args)
 
         if parameter_save_dir:
-            return [CsvFileSink(directory=parameter_save_dir, create_directory=args.create_output_dir)]
+            return [
+                CsvFileSink(directory=parameter_save_dir,
+                            create_directory=OutputExtension.CREATE_OUTPUT_DIR.get_value(args))
+            ]
         return []
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
