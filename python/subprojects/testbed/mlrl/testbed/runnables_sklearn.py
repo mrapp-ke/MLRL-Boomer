@@ -34,9 +34,7 @@ from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificatio
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.runnables import Runnable
 
-from mlrl.util.cli import BoolArgument, CommandLineInterface, SetArgument
-from mlrl.util.format import format_set
-from mlrl.util.options import parse_param
+from mlrl.util.cli import Argument, BoolArgument, CommandLineInterface, SetArgument
 
 
 class SkLearnRunnable(Runnable, ABC):
@@ -61,41 +59,64 @@ class SkLearnRunnable(Runnable, ABC):
             """
             return GlobalPredictor(self.prediction_type)
 
-    PARAM_PROBLEM_TYPE = '--problem-type'
+    class ProblemDomainExtension(Extension):
+        """
+        An extension that configures the problem domain.
+        """
 
-    PROBLEM_TYPE_VALUES = {
-        ClassificationProblem.NAME,
-        RegressionProblem.NAME,
-    }
+        PROBLEM_TYPE = SetArgument(
+            '--problem-type',
+            values={ClassificationProblem.NAME, RegressionProblem.NAME},
+            default=ClassificationProblem.NAME,
+            description='The type of the machine learning problem to be solved.',
+        )
 
-    def _create_problem_domain(self,
+        def __init__(self):
+            super().__init__(PredictionTypeExtension())
+
+        def _get_arguments(self) -> Set[Argument]:
+            """
+            See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
+            """
+            return {self.PROBLEM_TYPE}
+
+        @staticmethod
+        def get_problem_domain(runnable: 'SkLearnRunnable',
                                args: Namespace,
                                fit_kwargs: Optional[Dict[str, Any]] = None,
                                predict_kwargs: Optional[Dict[str, Any]] = None) -> ProblemDomain:
-        prediction_type = PredictionTypeExtension.get_prediction_type(args)
-        predictor_factory = self._create_predictor_factory(args, prediction_type)
-        value = parse_param(self.PARAM_PROBLEM_TYPE, args.problem_type, self.PROBLEM_TYPE_VALUES)
+            """
+            Returns the problem domain that should be tackled by an experiment.
 
-        if value == ClassificationProblem.NAME:
-            base_learner = self.create_classifier(args)
-            return SkLearnClassificationProblem(base_learner=base_learner,
-                                                predictor_factory=predictor_factory,
-                                                prediction_type=prediction_type,
-                                                fit_kwargs=fit_kwargs,
-                                                predict_kwargs=predict_kwargs)
+            :param runnable:        The `SkLearnRunnable` that is used to run the experiment
+            :param args:            The command line arguments specified by the user
+            :param fit_kwargs:      Optional keyword arguments to be passed to the estimator's `predict` function
+            :param predict_kwargs:  Optional keyword arguments to be passed to the estimator's `fit` function
+            :return:                The problem domain that should be tackled by the experiment
+            """
+            prediction_type = PredictionTypeExtension.get_prediction_type(args)
+            predictor_factory = runnable._create_predictor_factory(args, prediction_type)
+            value = SkLearnRunnable.ProblemDomainExtension.PROBLEM_TYPE.get_value(args)
 
-        base_learner = self.create_regressor(args)
-        return SkLearnRegressionProblem(base_learner=base_learner,
-                                        predictor_factory=predictor_factory,
-                                        prediction_type=prediction_type,
-                                        fit_kwargs=fit_kwargs,
-                                        predict_kwargs=predict_kwargs)
+            if value == ClassificationProblem.NAME:
+                return SkLearnClassificationProblem(base_learner=runnable.create_classifier(args),
+                                                    predictor_factory=predictor_factory,
+                                                    prediction_type=prediction_type,
+                                                    fit_kwargs=fit_kwargs,
+                                                    predict_kwargs=predict_kwargs)
+
+            return SkLearnRegressionProblem(base_learner=runnable.create_regressor(args),
+                                            predictor_factory=predictor_factory,
+                                            prediction_type=prediction_type,
+                                            fit_kwargs=fit_kwargs,
+                                            predict_kwargs=predict_kwargs)
 
     def get_extensions(self) -> Set[Extension]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
         """
         return super().get_extensions() | {
+            SkLearnRunnable.ProblemDomainExtension(),
             DatasetSplitterExtension(),
             PredictionTypeExtension(),
             ModelInputExtension(),
@@ -116,13 +137,6 @@ class SkLearnRunnable(Runnable, ABC):
         """
         super().configure_arguments(cli)
         cli.add_arguments(
-            SetArgument(
-                self.PARAM_PROBLEM_TYPE,
-                values={ClassificationProblem.NAME, RegressionProblem.NAME},
-                default=ClassificationProblem.NAME,
-                description='The type of the machine learning problem to be solved. Must be one of '
-                + format_set(self.PROBLEM_TYPE_VALUES) + '.',
-            ),
             BoolArgument(
                 '--print-all',
                 default=False,
@@ -150,7 +164,7 @@ class SkLearnRunnable(Runnable, ABC):
         :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
         :return:                    The `Experiment` that has been created
         """
-        problem_domain = self._create_problem_domain(args)
+        problem_domain = SkLearnRunnable.ProblemDomainExtension.get_problem_domain(self, args)
         return SkLearnExperiment.Builder(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
 
     # pylint: disable=unused-argument
