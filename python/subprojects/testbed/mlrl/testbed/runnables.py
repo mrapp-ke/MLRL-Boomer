@@ -6,6 +6,7 @@ Provides base classes for programs that can be configured via command line argum
 
 from abc import ABC, abstractmethod
 from argparse import Namespace
+from functools import reduce
 from typing import Optional, Set
 
 from mlrl.testbed.experiments import Experiment
@@ -80,9 +81,7 @@ class Runnable(ABC):
 
         for extension in self.get_extensions():
             extensions.add(extension)
-
-            for dependency in extension.dependencies:
-                extensions.add(dependency)
+            extensions.update(extension.dependencies)
 
         for extension in extensions:
             extension.configure_experiment(args, experiment_builder)
@@ -95,12 +94,7 @@ class Runnable(ABC):
 
         :param cli: The command line interface to be configured
         """
-        arguments = set()
-
-        for extension in self.get_extensions():
-            for argument in extension.arguments:
-                arguments.add(argument)
-
+        arguments = reduce(lambda aggr, extension: aggr | extension.arguments, self.get_extensions(), set())
         cli.add_arguments(*sorted(arguments, key=lambda arg: arg.name))
 
     @abstractmethod
