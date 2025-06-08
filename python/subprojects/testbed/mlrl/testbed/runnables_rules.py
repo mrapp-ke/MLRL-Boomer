@@ -194,7 +194,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
                 description='The format to be used for the representation of predictions.',
             ),
         )
-        problem_domain = self._create_problem_domain(cli.parse_known_args())
+        problem_domain = SkLearnRunnable.ProblemDomainExtension.get_problem_domain(self, cli.parse_known_args())
         config_type, parameters = self.__create_config_type_and_parameters(problem_domain)
 
         for parameter in sorted(parameters, key=lambda param: param.name):
@@ -205,7 +205,10 @@ class RuleLearnerRunnable(SkLearnRunnable):
 
     def _create_experiment_builder(self, args: Namespace, dataset_splitter: DatasetSplitter) -> Experiment.Builder:
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
-        problem_domain = self._create_problem_domain(args, fit_kwargs=kwargs, predict_kwargs=kwargs)
+        problem_domain = SkLearnRunnable.ProblemDomainExtension.get_problem_domain(self,
+                                                                                   args,
+                                                                                   fit_kwargs=kwargs,
+                                                                                   predict_kwargs=kwargs)
         return SkLearnExperiment.Builder(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
 
     def create_classifier(self, args) -> Optional[SkLearnClassifierMixin]:
