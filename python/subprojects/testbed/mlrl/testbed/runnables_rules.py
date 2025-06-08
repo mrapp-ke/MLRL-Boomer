@@ -20,7 +20,7 @@ from mlrl.testbed.experiments.output.probability_calibration.extension import \
 from mlrl.testbed.experiments.prediction import IncrementalPredictor
 from mlrl.testbed.experiments.prediction.predictor import Predictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
-from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
+from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
 from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnProblem
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.runnables_sklearn import SkLearnRunnable
@@ -193,22 +193,6 @@ class RuleLearnerRunnable(SkLearnRunnable):
             JointProbabilityCalibrationModelExtension()
         }
 
-    def __create_config_type_and_parameters(self, problem_domain: ProblemDomain):
-        if isinstance(problem_domain, ClassificationProblem):
-            config_type = self.classifier_config_type
-            parameters = self.classifier_parameters
-        elif isinstance(problem_domain, RegressionProblem):
-            config_type = self.regressor_config_type
-            parameters = self.regressor_parameters
-        else:
-            config_type = None
-            parameters = None
-
-        if config_type and parameters:
-            return config_type, parameters
-        raise RuntimeError('The machine learning algorithm does not support ' + problem_domain.problem_name
-                           + ' problems')
-
     def configure_arguments(self, cli: CommandLineInterface):
         """
         See :func:`mlrl.testbed.runnables.Runnable.configure_arguments`
@@ -223,13 +207,22 @@ class RuleLearnerRunnable(SkLearnRunnable):
                 + 'argument ' + RuleLearnerRunnable.RuleLearnerExtension.FEATURE_FORMAT.name + '.',
             ), )
         problem_domain = SkLearnRunnable.ProblemDomainExtension.get_problem_domain(self, cli.parse_known_args())
-        config_type, parameters = self.__create_config_type_and_parameters(problem_domain)
+        config_type = None
+        parameters = None
 
-        for parameter in sorted(parameters, key=lambda param: param.name):
-            argument = parameter.as_argument(config_type)
+        if isinstance(problem_domain, ClassificationProblem):
+            config_type = self.classifier_config_type
+            parameters = self.classifier_parameters
+        elif isinstance(problem_domain, RegressionProblem):
+            config_type = self.regressor_config_type
+            parameters = self.regressor_parameters
 
-            if argument:
-                cli.add_arguments(argument)
+        if not config_type or not parameters:
+            raise RuntimeError('The machine learning algorithm does not support ' + problem_domain.problem_name
+                               + ' problems')
+
+        arguments = filter(None, map(lambda param: param.as_argument(config_type), parameters))
+        cli.add_arguments(*sorted(arguments, key=lambda argument: argument.name))
 
     def _create_experiment_builder(self, args: Namespace, dataset_splitter: DatasetSplitter) -> Experiment.Builder:
         kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
