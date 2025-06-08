@@ -32,10 +32,11 @@ class PredictionWriter(OutputWriter):
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
+            prediction_result = state.prediction_result
             dataset = state.dataset_as(self, TabularDataset)
 
-            if state.prediction_result and dataset:
-                predictions = dataset.y
+            if prediction_result and dataset:
+                predictions = prediction_result.predictions
                 nominal_values = None
 
                 if issubclass(predictions.dtype.type, np.integer):
