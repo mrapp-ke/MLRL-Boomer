@@ -10,7 +10,8 @@ from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.probability_calibration.extractor_rules import \
     IsotonicJointProbabilityCalibrationModelExtractor, IsotonicMarginalProbabilityCalibrationModelExtractor
-from mlrl.testbed.experiments.output.probability_calibration.writer import ProbabilityCalibrationModelWriter
+from mlrl.testbed.experiments.output.probability_calibration.writer import JointProbabilityCalibrationModelWriter, \
+    MarginalProbabilityCalibrationModelWriter
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
@@ -80,7 +81,7 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         sinks = self.__create_log_sinks(args) + self.__create_csv_file_sinks(args)
 
         if sinks:
-            writer = ProbabilityCalibrationModelWriter(
+            writer = MarginalProbabilityCalibrationModelWriter(
                 IsotonicMarginalProbabilityCalibrationModelExtractor()).add_sinks(*sinks)
             experiment_builder.add_post_training_output_writers(writer)
 
@@ -139,6 +140,6 @@ class JointProbabilityCalibrationModelExtension(Extension):
                             options=options))
 
         if sinks:
-            writer = ProbabilityCalibrationModelWriter(
+            writer = JointProbabilityCalibrationModelWriter(
                 IsotonicJointProbabilityCalibrationModelExtractor()).add_sinks(*sinks)
             experiment_builder.add_post_training_output_writers(writer)

@@ -41,3 +41,16 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
         super().__init__(*extractors, ProbabilityCalibrationModelWriter.DefaultExtractor())
+
+
+class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
+    """
+    Allows writing textual representations of models for the calibration of marginal probabilities to one or several
+    sinks.
+    """
+
+
+class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
+    """
+    Allows writing textual representations of models for the calibration of joint probabilities to one or several sinks.
+    """
