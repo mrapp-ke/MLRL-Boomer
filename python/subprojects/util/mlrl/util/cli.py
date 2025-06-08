@@ -249,7 +249,7 @@ class SetArgument(Argument):
                          required=required)
 
         if isinstance(values, EnumType):
-            self.supported_values = {x.value if isinstance(x.value, str) else x.name for x in values}
+            self.supported_values = {x.value if isinstance(x.value, str) else x.name.lower() for x in values}
         else:
             self.supported_values = values
 
