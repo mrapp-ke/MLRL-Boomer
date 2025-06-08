@@ -28,7 +28,7 @@ jobs:
       - name: Prepare MSVC
         uses: ilammy/msvc-dev-cmd@v1
       - name: Install OpenCL
-        uses: johnwason/vcpkg-action@v6
+        uses: johnwason/vcpkg-action@v7
         with:
           pkgs: opencl
           triplet: x64-windows
