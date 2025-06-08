@@ -1,6 +1,8 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+import os
+
 from abc import ABC
 from sys import platform
 from typing import Any
@@ -9,6 +11,20 @@ from unittest import SkipTest, TestCase
 from .cmd_builder import CmdBuilder
 from .cmd_runner import CmdRunner
 from .datasets import Dataset
+
+
+def ci_only(decorated_function):
+    """
+    A decorator that disables all annotated test case if unless run in a GitHub workflow.
+    """
+
+    def wrapper(*args, **kwargs):
+        if os.getenv('GITHUB_ACTIONS') != 'true':
+            raise SkipTest('Disabled unless run on CI')
+
+        decorated_function(*args, **kwargs)
+
+    return wrapper
 
 
 class IntegrationTests(TestCase, ABC):
@@ -64,6 +80,15 @@ class IntegrationTests(TestCase, ABC):
             raise SkipTest('Integration tests are only supported on Linux')
 
         super().setUpClass()
+
+    @ci_only
+    def test_help(self):
+        """
+        Tests the functionality to show a help text.
+        """
+        builder = self._create_cmd_builder() \
+            .set_show_help()
+        CmdRunner(self, builder).run('help')
 
     def test_single_output(self):
         """
