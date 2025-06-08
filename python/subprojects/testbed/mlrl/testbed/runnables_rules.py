@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for programs that can be configured via command line arguments.
 """
 from argparse import Namespace
-from typing import Optional, Set
+from typing import Any, Optional, Set, Type
 
 from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
 
@@ -109,13 +109,56 @@ class RuleLearnerRunnable(SkLearnRunnable):
 
             return SkLearnRunnable.GlobalPredictorFactory(prediction_type)
 
-    PARAM_FEATURE_FORMAT = '--feature-format'
+    class RuleLearnerExtension(Extension):
+        """
+        An extension that configures the algorithmic parameters of a rule learner.
+        """
+
+        FEATURE_FORMAT = SetArgument(
+            '--feature-format',
+            values=SparsePolicy,
+            description='The format to be used for the representation of the feature matrix.',
+        )
+
+        OUTPUT_FORMAT = SetArgument(
+            '--output-format',
+            values=SparsePolicy,
+            description='The format to be used for the representation of the output matrix.',
+        )
+
+        PREDICTION_FORMAT = SetArgument(
+            '--prediction-format',
+            values=SparsePolicy,
+            description='The format to be used for the representation of predictions.',
+        )
+
+        def _get_arguments(self) -> Set[Argument]:
+            """
+            See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
+            """
+            return {self.FEATURE_FORMAT, self.OUTPUT_FORMAT, self.PREDICTION_FORMAT}
+
+        @staticmethod
+        def get_estimator(args: Namespace, estimator_type: Type, parameters: Optional[Set[Parameter]]) -> Any:
+            """
+            Returns the sklearn-estimator to be used in an experiment.
+
+            :param args:            The command line arguments specified by the user
+            :param estimator_type:  The type of the estimator
+            :param parameters:      The algorithmic parameters of the estimator
+            """
+            args_dict = vars(args)
+            kwargs = {param.name: args_dict[param.name] for param in parameters if param.name in args_dict}
+            kwargs['feature_format'] = RuleLearnerRunnable.RuleLearnerExtension.FEATURE_FORMAT.get_value(args)
+            kwargs['output_format'] = RuleLearnerRunnable.RuleLearnerExtension.OUTPUT_FORMAT.get_value(args)
+            kwargs['prediction_format'] = RuleLearnerRunnable.RuleLearnerExtension.PREDICTION_FORMAT.get_value(args)
+            return estimator_type(**kwargs)
 
     PARAM_SPARSE_FEATURE_VALUE = '--sparse-feature-value'
 
-    def __init__(self, classifier_type: Optional[type], classifier_config_type: Optional[type],
-                 classifier_parameters: Optional[Set[Parameter]], regressor_type: Optional[type],
-                 regressor_config_type: Optional[type], regressor_parameters: Optional[Set[Parameter]]):
+    def __init__(self, classifier_type: Optional[Type], classifier_config_type: Optional[Type],
+                 classifier_parameters: Optional[Set[Parameter]], regressor_type: Optional[Type],
+                 regressor_config_type: Optional[Type], regressor_parameters: Optional[Set[Parameter]]):
         """
         :param classifier_type:         The type of the rule learner to be used in classification problems or None, if
                                         classification problems are not supported
@@ -143,6 +186,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
         """
         return super().get_extensions() | {
             RuleLearnerRunnable.IncrementalPredictionExtension(),
+            RuleLearnerRunnable.RuleLearnerExtension(),
             RuleModelAsTextExtension(),
             RuleModelCharacteristicsExtension(),
             MarginalProbabilityCalibrationModelExtension(),
@@ -171,29 +215,13 @@ class RuleLearnerRunnable(SkLearnRunnable):
         """
         super().configure_arguments(cli)
         cli.add_arguments(
-            SetArgument(
-                self.PARAM_FEATURE_FORMAT,
-                values=SparsePolicy,
-                description='The format to be used for the representation of the feature matrix.',
-            ),
             FloatArgument(
                 self.PARAM_SPARSE_FEATURE_VALUE,
                 default=0.0,
                 description='The value that should be used for sparse elements in the feature matrix. Does only have '
                 + 'an effect if a sparse format is used for the representation of the feature matrix, depending on the '
-                + 'argument ' + self.PARAM_FEATURE_FORMAT + '.',
-            ),
-            SetArgument(
-                '--output-format',
-                values=SparsePolicy,
-                description='The format to be used for the representation of the output matrix.',
-            ),
-            SetArgument(
-                '--prediction-format',
-                values=SparsePolicy,
-                description='The format to be used for the representation of predictions.',
-            ),
-        )
+                + 'argument ' + RuleLearnerRunnable.RuleLearnerExtension.FEATURE_FORMAT.name + '.',
+            ), )
         problem_domain = SkLearnRunnable.ProblemDomainExtension.get_problem_domain(self, cli.parse_known_args())
         config_type, parameters = self.__create_config_type_and_parameters(problem_domain)
 
@@ -218,8 +246,9 @@ class RuleLearnerRunnable(SkLearnRunnable):
         classifier_type = self.classifier_type
 
         if classifier_type:
-            kwargs = self.__create_kwargs_from_parameters(self.classifier_parameters, args)
-            return classifier_type(**kwargs)
+            return RuleLearnerRunnable.RuleLearnerExtension.get_estimator(args,
+                                                                          estimator_type=classifier_type,
+                                                                          parameters=self.classifier_parameters)
         return None
 
     def create_regressor(self, args) -> Optional[SkLearnRegressorMixin]:
@@ -229,25 +258,10 @@ class RuleLearnerRunnable(SkLearnRunnable):
         regressor_type = self.regressor_type
 
         if regressor_type:
-            kwargs = self.__create_kwargs_from_parameters(self.regressor_parameters, args)
-            return regressor_type(**kwargs)
+            return RuleLearnerRunnable.RuleLearnerExtension.get_estimator(args,
+                                                                          estimator_type=regressor_type,
+                                                                          parameters=self.regressor_parameters)
         return None
-
-    @staticmethod
-    def __create_kwargs_from_parameters(parameters: Set[Parameter], args):
-        kwargs = {}
-        args_dict = vars(args)
-
-        for parameter in parameters:
-            parameter_name = parameter.name
-
-            if parameter_name in args_dict:
-                kwargs[parameter_name] = args_dict[parameter_name]
-
-        kwargs['feature_format'] = args.feature_format
-        kwargs['output_format'] = args.output_format
-        kwargs['prediction_format'] = args.prediction_format
-        return kwargs
 
     def _create_predictor_factory(self, args, prediction_type: PredictionType) -> SkLearnProblem.PredictorFactory:
         return RuleLearnerRunnable.IncrementalPredictionExtension.get_predictor_factory(args, prediction_type)
