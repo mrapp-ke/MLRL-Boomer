@@ -128,5 +128,3 @@ class SkLearnExperiment(Experiment):
                     yield self._predict(replace(state, dataset=dataset.enforce_dense_features()))
 
                 raise error
-
-        yield
