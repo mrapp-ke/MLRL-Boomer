@@ -53,7 +53,7 @@ class Argument:
         :return:        The value provided by the user or None, if no value is available
         """
         value = getattr(args, self.key, None)
-        return value if value else self.default
+        return self.default if value is None else value
 
     def __hash__(self) -> int:
         return hash(self.key)
@@ -82,7 +82,7 @@ class StringArgument(Argument):
 
     def get_value(self, args: Namespace) -> Optional[Any]:
         value = super().get_value(args)
-        return str(value) if value else None
+        return None if value is None else str(value)
 
 
 class IntArgument(Argument):
@@ -107,7 +107,7 @@ class IntArgument(Argument):
         value = super().get_value(args)
 
         try:
-            return int(value) if value else None
+            return None if value is None else int(value)
         except ValueError as error:
             raise ValueError('Expected value of argument ' + self.name + ' to be an integer, but got: '
                              + str(value)) from error
@@ -135,7 +135,7 @@ class FloatArgument(Argument):
         value = super().get_value(args)
 
         try:
-            return float(value) if value else None
+            return None if value is None else float(value)
         except ValueError as error:
             raise ValueError('Expected value of argument ' + self.name + ' to be a float, but got: '
                              + str(value)) from error
