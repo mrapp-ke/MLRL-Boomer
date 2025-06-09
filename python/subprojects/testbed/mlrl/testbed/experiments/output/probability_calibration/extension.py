@@ -56,14 +56,16 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         return {self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL, self.STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL}
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value(args, default=args.print_all)
+        value, options = self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value(
+            args, default=OutputExtension.PRINT_ALL.get_value(args))
 
         if value:
             return [LogSink(options)]
         return []
 
     def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value(args, default=args.store_all)
+        value, options = self.STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value(
+            args, default=OutputExtension.STORE_ALL.get_value(args))
         output_dir = OutputExtension.OUTPUT_DIR.get_value(args)
 
         if value and output_dir:
@@ -125,12 +127,14 @@ class JointProbabilityCalibrationModelExtension(Extension):
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
         sinks = []
-        value, options = self.PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value(args, default=args.print_all)
+        value, options = self.PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value(
+            args, default=OutputExtension.PRINT_ALL.get_value(args))
 
         if value:
             sinks.append(LogSink(options))
 
-        value, options = self.STORE_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value(args, default=args.store_all)
+        value, options = self.STORE_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value(
+            args, default=OutputExtension.STORE_ALL.get_value(args))
         output_dir = OutputExtension.OUTPUT_DIR.get_value(args)
 
         if value and output_dir:

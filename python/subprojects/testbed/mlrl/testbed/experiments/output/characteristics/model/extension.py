@@ -50,12 +50,12 @@ class RuleModelCharacteristicsExtension(Extension):
         return {self.PRINT_MODEL_CHARACTERISTICS, self.STORE_MODEL_CHARACTERISTICS}
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
-        if self.PRINT_MODEL_CHARACTERISTICS.get_value(args, default=args.print_all):
+        if self.PRINT_MODEL_CHARACTERISTICS.get_value(args, default=OutputExtension.PRINT_ALL.get_value(args)):
             return [LogSink()]
         return []
 
     def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
-        value = self.STORE_MODEL_CHARACTERISTICS.get_value(args, default=args.store_all)
+        value = self.STORE_MODEL_CHARACTERISTICS.get_value(args, default=OutputExtension.STORE_ALL.get_value(args))
         output_dir = OutputExtension.OUTPUT_DIR.get_value(args)
 
         if value and output_dir:

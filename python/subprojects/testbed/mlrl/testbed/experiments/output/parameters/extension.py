@@ -47,7 +47,7 @@ class ParameterOutputExtension(Extension):
         return {self.PARAMETER_SAVE_DIR, self.PRINT_PARAMETERS}
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
-        if self.PRINT_PARAMETERS.get_value(args, default=args.print_all):
+        if self.PRINT_PARAMETERS.get_value(args, default=OutputExtension.PRINT_ALL.get_value(args)):
             return [LogSink()]
         return []
 

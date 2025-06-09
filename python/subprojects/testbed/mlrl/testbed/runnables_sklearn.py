@@ -34,7 +34,7 @@ from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificatio
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.runnables import Runnable
 
-from mlrl.util.cli import Argument, BoolArgument, SetArgument
+from mlrl.util.cli import Argument, SetArgument
 
 
 class SkLearnRunnable(Runnable, ABC):
@@ -129,23 +129,6 @@ class SkLearnRunnable(Runnable, ABC):
             PredictionExtension(),
             GroundTruthExtension(),
             PredictionCharacteristicsExtension(),
-        }
-
-    def get_algorithmic_arguments(self, _: Namespace) -> Set[Argument]:
-        """
-        See :func:`mlrl.testbed.runnables.Runnable.get_algorithmic_arguments`
-        """
-        return {
-            BoolArgument(
-                '--print-all',
-                default=False,
-                description='Whether all output data should be printed on the console or not.',
-            ),
-            BoolArgument(
-                '--store-all',
-                default=False,
-                description='Whether all output data should be written to files or not.',
-            ),
         }
 
     def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:

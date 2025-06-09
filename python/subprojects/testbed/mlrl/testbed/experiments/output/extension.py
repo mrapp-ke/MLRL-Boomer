@@ -67,6 +67,18 @@ class OutputExtension(Extension):
         description='Whether the program should exit if an error occurs while writing experimental results or not.',
     )
 
+    PRINT_ALL = BoolArgument(
+        '--print-all',
+        default=False,
+        description='Whether all output data should be printed on the console or not.',
+    )
+
+    STORE_ALL = BoolArgument(
+        '--store-all',
+        default=False,
+        description='Whether all output data should be written to files or not.',
+    )
+
     def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`

@@ -52,7 +52,7 @@ class PredictionExtension(Extension):
         return {self.PRINT_PREDICTIONS, self.STORE_PREDICTIONS}
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.PRINT_PREDICTIONS.get_value(args, default=args.print_all)
+        value, options = self.PRINT_PREDICTIONS.get_value(args, default=OutputExtension.PRINT_ALL.get_value(args))
 
         if value:
             return [LogSink(options=options)]
