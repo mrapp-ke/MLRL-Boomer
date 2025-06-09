@@ -95,7 +95,19 @@ class Runnable(ABC):
         :param cli: The command line interface to be configured
         """
         arguments = reduce(lambda aggr, extension: aggr | extension.arguments, self.get_extensions(), set())
+        arguments.update(self.get_algorithmic_arguments(cli.parse_known_args()))
         cli.add_arguments(*sorted(arguments, key=lambda arg: arg.name))
+
+    # pylint: disable=unused-argument
+    def get_algorithmic_arguments(self, known_args: Namespace) -> Set[Argument]:
+        """
+        May be overridden by subclasses in order to return the arguments for configuring algorithmic parameters that
+        should be added to the command line API.
+
+        :param known_args:  The command line arguments specified by the user
+        :return:            A set that contains the arguments that should be added to the command line API
+        """
+        return set()
 
     @abstractmethod
     def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:
