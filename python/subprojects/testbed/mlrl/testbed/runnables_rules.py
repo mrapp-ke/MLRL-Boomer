@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for programs that can be configured via command line arguments.
 """
 from argparse import Namespace
-from typing import Any, Optional, Set, Type
+from typing import Any, Dict, Optional, Set, Type
 
 from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
 
@@ -132,11 +132,19 @@ class RuleLearnerRunnable(SkLearnRunnable):
             description='The format to be used for the representation of predictions.',
         )
 
+        SPARSE_FEATURE_VALUE = FloatArgument(
+            '--sparse-feature-value',
+            default=0.0,
+            description='The value that should be used for sparse elements in the feature matrix. Does only have an '
+            + 'effect if a sparse format is used for the representation of the feature matrix, depending '
+            + 'on the argument ' + FEATURE_FORMAT.name + '.',
+        )
+
         def _get_arguments(self) -> Set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
-            return {self.FEATURE_FORMAT, self.OUTPUT_FORMAT, self.PREDICTION_FORMAT}
+            return {self.FEATURE_FORMAT, self.OUTPUT_FORMAT, self.PREDICTION_FORMAT, self.SPARSE_FEATURE_VALUE}
 
         @staticmethod
         def get_estimator(args: Namespace, estimator_type: Type, parameters: Optional[Set[Parameter]]) -> Any:
@@ -154,7 +162,28 @@ class RuleLearnerRunnable(SkLearnRunnable):
             kwargs['prediction_format'] = RuleLearnerRunnable.RuleLearnerExtension.PREDICTION_FORMAT.get_value(args)
             return estimator_type(**kwargs)
 
-    PARAM_SPARSE_FEATURE_VALUE = '--sparse-feature-value'
+        @staticmethod
+        def get_fit_kwargs(args: Namespace) -> Dict[str, Any]:
+            """
+            Returns the keyword arguments that should be passed to the estimators `fit` function.
+
+            :param args:    The command line arguments specified by the user
+            :return:        A dictionary that stores the keyword arguments
+            """
+            return {
+                RuleLearner.KWARG_SPARSE_FEATURE_VALUE:
+                    RuleLearnerRunnable.RuleLearnerExtension.SPARSE_FEATURE_VALUE.get_value(args)
+            }
+
+        @staticmethod
+        def get_predict_kwargs(args: Namespace) -> Dict[str, Any]:
+            """
+            Returns the keyword arguments that should be passed to the estimators `predict` function.
+
+            :param args:    The command line arguments specified by the user
+            :return:        A dictionary that stores the keyword arguments
+            """
+            return RuleLearnerRunnable.RuleLearnerExtension.get_fit_kwargs(args)
 
     def __init__(self, classifier_type: Optional[Type], classifier_config_type: Optional[Type],
                  classifier_parameters: Optional[Set[Parameter]], regressor_type: Optional[Type],
@@ -198,15 +227,8 @@ class RuleLearnerRunnable(SkLearnRunnable):
         See :func:`mlrl.testbed.runnables.Runnable.configure_arguments`
         """
         super().configure_arguments(cli)
-        cli.add_arguments(
-            FloatArgument(
-                self.PARAM_SPARSE_FEATURE_VALUE,
-                default=0.0,
-                description='The value that should be used for sparse elements in the feature matrix. Does only have '
-                + 'an effect if a sparse format is used for the representation of the feature matrix, depending on the '
-                + 'argument ' + RuleLearnerRunnable.RuleLearnerExtension.FEATURE_FORMAT.name + '.',
-            ), )
-        problem_domain = SkLearnRunnable.ProblemDomainExtension.get_problem_domain(self, cli.parse_known_args())
+        problem_domain = SkLearnRunnable.ProblemDomainExtension.get_problem_domain(cli.parse_known_args(),
+                                                                                   runnable=self)
         config_type = None
         parameters = None
 
@@ -225,11 +247,12 @@ class RuleLearnerRunnable(SkLearnRunnable):
         cli.add_arguments(*sorted(arguments, key=lambda argument: argument.name))
 
     def _create_experiment_builder(self, args: Namespace, dataset_splitter: DatasetSplitter) -> Experiment.Builder:
-        kwargs = {RuleLearner.KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
-        problem_domain = SkLearnRunnable.ProblemDomainExtension.get_problem_domain(self,
-                                                                                   args,
-                                                                                   fit_kwargs=kwargs,
-                                                                                   predict_kwargs=kwargs)
+        fit_kwargs = RuleLearnerRunnable.RuleLearnerExtension.get_fit_kwargs(args)
+        predict_kwargs = RuleLearnerRunnable.RuleLearnerExtension.get_predict_kwargs(args)
+        problem_domain = SkLearnRunnable.ProblemDomainExtension.get_problem_domain(args,
+                                                                                   runnable=self,
+                                                                                   fit_kwargs=fit_kwargs,
+                                                                                   predict_kwargs=predict_kwargs)
         return SkLearnExperiment.Builder(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
 
     def create_classifier(self, args) -> Optional[SkLearnClassifierMixin]:

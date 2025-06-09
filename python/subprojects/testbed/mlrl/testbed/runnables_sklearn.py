@@ -81,15 +81,15 @@ class SkLearnRunnable(Runnable, ABC):
             return {self.PROBLEM_TYPE}
 
         @staticmethod
-        def get_problem_domain(runnable: 'SkLearnRunnable',
-                               args: Namespace,
+        def get_problem_domain(args: Namespace,
+                               runnable: 'SkLearnRunnable',
                                fit_kwargs: Optional[Dict[str, Any]] = None,
                                predict_kwargs: Optional[Dict[str, Any]] = None) -> ProblemDomain:
             """
             Returns the problem domain that should be tackled by an experiment.
 
-            :param runnable:        The `SkLearnRunnable` that is used to run the experiment
             :param args:            The command line arguments specified by the user
+            :param runnable:        The `SkLearnRunnable` that is used to run the experiment
             :param fit_kwargs:      Optional keyword arguments to be passed to the estimator's `predict` function
             :param predict_kwargs:  Optional keyword arguments to be passed to the estimator's `fit` function
             :return:                The problem domain that should be tackled by the experiment
@@ -164,7 +164,7 @@ class SkLearnRunnable(Runnable, ABC):
         :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
         :return:                    The `Experiment` that has been created
         """
-        problem_domain = SkLearnRunnable.ProblemDomainExtension.get_problem_domain(self, args)
+        problem_domain = SkLearnRunnable.ProblemDomainExtension.get_problem_domain(args, runnable=self)
         return SkLearnExperiment.Builder(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
 
     # pylint: disable=unused-argument
