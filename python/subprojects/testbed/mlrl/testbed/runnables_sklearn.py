@@ -95,7 +95,7 @@ class SkLearnRunnable(Runnable, ABC):
             :return:                The problem domain that should be tackled by the experiment
             """
             prediction_type = PredictionTypeExtension.get_prediction_type(args)
-            predictor_factory = runnable._create_predictor_factory(args, prediction_type)
+            predictor_factory = runnable.create_predictor_factory(args, prediction_type)
             value = SkLearnRunnable.ProblemDomainExtension.PROBLEM_TYPE.get_value(args)
 
             if value == ClassificationProblem.NAME:
@@ -168,7 +168,7 @@ class SkLearnRunnable(Runnable, ABC):
         return SkLearnExperiment.Builder(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
 
     # pylint: disable=unused-argument
-    def _create_predictor_factory(self, args, prediction_type: PredictionType) -> SkLearnProblem.PredictorFactory:
+    def create_predictor_factory(self, args, prediction_type: PredictionType) -> SkLearnProblem.PredictorFactory:
         """
         May be overridden by subclasses in order to create the `SkLearnProblem.PredictorFactory` that should be used for
         obtaining predictions from a previously trained model.

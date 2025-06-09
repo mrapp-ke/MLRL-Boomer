@@ -279,5 +279,5 @@ class RuleLearnerRunnable(SkLearnRunnable):
                                                                           parameters=self.regressor_parameters)
         return None
 
-    def _create_predictor_factory(self, args, prediction_type: PredictionType) -> SkLearnProblem.PredictorFactory:
+    def create_predictor_factory(self, args, prediction_type: PredictionType) -> SkLearnProblem.PredictorFactory:
         return RuleLearnerRunnable.IncrementalPredictionExtension.get_predictor_factory(args, prediction_type)
