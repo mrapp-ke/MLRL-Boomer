@@ -25,7 +25,7 @@ from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnProblem
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.runnables_sklearn import SkLearnRunnable
 
-from mlrl.util.cli import Argument, BoolArgument, CommandLineInterface, FloatArgument, SetArgument
+from mlrl.util.cli import Argument, BoolArgument, FloatArgument, SetArgument
 from mlrl.util.validation import assert_greater, assert_greater_or_equal
 
 OPTION_MIN_SIZE = 'min_size'
@@ -222,13 +222,11 @@ class RuleLearnerRunnable(SkLearnRunnable):
             JointProbabilityCalibrationModelExtension()
         }
 
-    def configure_arguments(self, cli: CommandLineInterface):
+    def get_algorithmic_arguments(self, known_args: Namespace) -> Set[Argument]:
         """
-        See :func:`mlrl.testbed.runnables.Runnable.configure_arguments`
+        See :func:`mlrl.testbed.runnables.Runnable.get_algorithmic_arguments`
         """
-        super().configure_arguments(cli)
-        problem_domain = SkLearnRunnable.ProblemDomainExtension.get_problem_domain(cli.parse_known_args(),
-                                                                                   runnable=self)
+        problem_domain = SkLearnRunnable.ProblemDomainExtension.get_problem_domain(known_args, runnable=self)
         config_type = None
         parameters = None
 
@@ -243,8 +241,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
             raise RuntimeError('The machine learning algorithm does not support ' + problem_domain.problem_name
                                + ' problems')
 
-        arguments = filter(None, map(lambda param: param.as_argument(config_type), parameters))
-        cli.add_arguments(*sorted(arguments, key=lambda argument: argument.name))
+        return set(filter(None, map(lambda param: param.as_argument(config_type), parameters)))
 
     def _create_experiment_builder(self, args: Namespace, dataset_splitter: DatasetSplitter) -> Experiment.Builder:
         fit_kwargs = RuleLearnerRunnable.RuleLearnerExtension.get_fit_kwargs(args)
