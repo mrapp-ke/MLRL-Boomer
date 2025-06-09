@@ -54,14 +54,14 @@ class LabelVectorExtension(Extension):
         return {self.PRINT_LABEL_VECTORS, self.STORE_LABEL_VECTORS}
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.PRINT_LABEL_VECTORS.get_value(args, default=args.print_all)
+        value, options = self.PRINT_LABEL_VECTORS.get_value(args, default=OutputExtension.PRINT_ALL.get_value(args))
 
         if value:
             return [LogSink(options)]
         return []
 
     def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.STORE_LABEL_VECTORS.get_value(args, default=args.store_all)
+        value, options = self.STORE_LABEL_VECTORS.get_value(args, default=OutputExtension.STORE_ALL.get_value(args))
         output_dir = OutputExtension.OUTPUT_DIR.get_value(args)
 
         if value and output_dir:
