@@ -280,4 +280,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
         return None
 
     def create_predictor_factory(self, args, prediction_type: PredictionType) -> SkLearnProblem.PredictorFactory:
+        """
+        See :func:`mlrl.testbed.runnables_sklearn.SkLearnRunnable.create_predictor_factory`
+        """
         return RuleLearnerRunnable.IncrementalPredictionExtension.get_predictor_factory(args, prediction_type)
