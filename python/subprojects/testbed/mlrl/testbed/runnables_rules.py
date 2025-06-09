@@ -149,7 +149,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
         @staticmethod
         def get_estimator(args: Namespace, estimator_type: Type, parameters: Optional[Set[Parameter]]) -> Any:
             """
-            Returns the sklearn-estimator to be used in an experiment.
+            Returns the scikit-learn estimator to be used in an experiment.
 
             :param args:            The command line arguments specified by the user
             :param estimator_type:  The type of the estimator
