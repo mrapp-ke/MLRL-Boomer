@@ -70,17 +70,17 @@ class TabularDataCharacteristicExtension(Extension):
         return {self.PRINT_DATA_CHARACTERISTICS, self.STORE_DATA_CHARACTERISTICS}
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.PRINT_DATA_CHARACTERISTICS.get_value(args)
+        value, options = self.PRINT_DATA_CHARACTERISTICS.get_value(args, default=args.print_all)
 
-        if value or (value is None and args.print_all):
+        if value:
             return [LogSink(options)]
         return []
 
     def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
         value, options = self.STORE_DATA_CHARACTERISTICS.get_value(args)
-        output_dir = OutputExtension.OUTPUT_DIR.get_value(args)
+        output_dir = OutputExtension.OUTPUT_DIR.get_value(args, default=args.store_all)
 
-        if (value or (value is None and args.store_all)) and output_dir:
+        if value and output_dir:
             return [
                 CsvFileSink(directory=output_dir,
                             create_directory=OutputExtension.CREATE_OUTPUT_DIR.get_value(args),
