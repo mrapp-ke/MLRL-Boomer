@@ -70,17 +70,17 @@ class PredictionCharacteristicsExtension(Extension):
         return {self.PRINT_PREDICTION_CHARACTERISTICS, self.STORE_PREDICTION_CHARACTERISTICS}
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.PRINT_PREDICTION_CHARACTERISTICS.get_value(args)
+        value, options = self.PRINT_PREDICTION_CHARACTERISTICS.get_value(args, default=args.print_all)
 
-        if value or (value is None and args.print_all):
+        if value:
             return [LogSink(options)]
         return []
 
     def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.STORE_PREDICTION_CHARACTERISTICS.get_value(args)
+        value, options = self.STORE_PREDICTION_CHARACTERISTICS.get_value(args, default=args.store_all)
         output_dir = OutputExtension.OUTPUT_DIR.get_value(args)
 
-        if (value or (value is None and args.store_all)) and output_dir:
+        if value and output_dir:
             return [
                 CsvFileSink(directory=output_dir,
                             create_directory=OutputExtension.CREATE_OUTPUT_DIR.get_value(args),

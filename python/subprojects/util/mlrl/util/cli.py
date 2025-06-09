@@ -45,15 +45,17 @@ class Argument:
         """
         return self.name.lstrip('--').replace('-', '_')
 
-    def get_value(self, args: Namespace) -> Optional[Any]:
+    def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
         """
         Returns the value provided by the user for this argument.
 
-        :param args: A `Namespace` that provides access to the values provided by the user
-        :return:        The value provided by the user or None, if no value is available
+        :param args:    A `Namespace` that provides access to the values provided by the user
+        :param default: The default value to be returned if no value is available
+        :return:        The value provided by the user or `default`, if no value is available
         """
         value = getattr(args, self.key, None)
-        return self.default if value is None else value
+        value = self.default if value is None else value
+        return default if value is None else value
 
     def __hash__(self) -> int:
         return hash(self.key)
@@ -80,8 +82,8 @@ class StringArgument(Argument):
         """
         super().__init__(*names, default=default, help=description, type=str, required=required)
 
-    def get_value(self, args: Namespace) -> Optional[Any]:
-        value = super().get_value(args)
+    def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
+        value = super().get_value(args, default=default)
         return None if value is None else str(value)
 
 
@@ -103,8 +105,8 @@ class IntArgument(Argument):
         """
         super().__init__(*names, default=default, help=description, type=int, required=required)
 
-    def get_value(self, args: Namespace) -> Optional[Any]:
-        value = super().get_value(args)
+    def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
+        value = super().get_value(args, default=default)
 
         try:
             return None if value is None else int(value)
@@ -131,8 +133,8 @@ class FloatArgument(Argument):
         """
         super().__init__(*names, default=default, help=description, type=float, required=required)
 
-    def get_value(self, args: Namespace) -> Optional[Any]:
-        value = super().get_value(args)
+    def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
+        value = super().get_value(args, default=default)
 
         try:
             return None if value is None else float(value)
@@ -183,8 +185,8 @@ class BoolArgument(Argument):
         self.true_options = true_options
         self.false_options = false_options
 
-    def get_value(self, args: Namespace) -> Optional[Any]:
-        value = str(super().get_value(args)).lower()
+    def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
+        value = str(super().get_value(args, default=default)).lower()
 
         if value:
             true_options = self.true_options
@@ -253,8 +255,8 @@ class SetArgument(Argument):
         else:
             self.supported_values = values
 
-    def get_value(self, args: Namespace) -> Optional[Any]:
-        value = super().get_value(args)
+    def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
+        value = super().get_value(args, default=default)
 
         if value:
             supported_values = self.supported_values

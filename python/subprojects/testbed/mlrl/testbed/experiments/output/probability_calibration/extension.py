@@ -56,17 +56,17 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         return {self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL, self.STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL}
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value(args)
+        value, options = self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value(args, default=args.print_all)
 
-        if value or (value is None and args.print_all):
+        if value:
             return [LogSink(options)]
         return []
 
     def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value(args)
+        value, options = self.STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value(args, default=args.store_all)
         output_dir = OutputExtension.OUTPUT_DIR.get_value(args)
 
-        if (value or (value is None and args.store_all)) and output_dir:
+        if value and output_dir:
             return [
                 CsvFileSink(directory=output_dir,
                             create_directory=OutputExtension.CREATE_OUTPUT_DIR.get_value(args),
@@ -125,15 +125,15 @@ class JointProbabilityCalibrationModelExtension(Extension):
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
         sinks = []
-        value, options = self.PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value(args)
+        value, options = self.PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value(args, default=args.print_all)
 
-        if value or (value is None and args.print_all):
+        if value:
             sinks.append(LogSink(options))
 
-        value, options = self.STORE_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value(args)
+        value, options = self.STORE_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value(args, default=args.store_all)
         output_dir = OutputExtension.OUTPUT_DIR.get_value(args)
 
-        if (value or (value is None and args.store_all)) and output_dir:
+        if value and output_dir:
             sinks.append(
                 CsvFileSink(directory=output_dir,
                             create_directory=OutputExtension.CREATE_OUTPUT_DIR.get_value(args),
