@@ -47,5 +47,5 @@ class DatasetFileExtension(Extension):
         :return:        The `DatasetReader` to be used
         """
         dataset = InputDataset(name=DatasetFileExtension.DATASET_NAME.get_value(args))
-        source = ArffFileSource(directory=args.data_dir)
+        source = ArffFileSource(directory=DatasetFileExtension.DATASET_DIRECTORY.get_value(args))
         return DatasetReader(source=source, input_data=dataset)
