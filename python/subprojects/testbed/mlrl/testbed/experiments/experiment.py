@@ -8,7 +8,8 @@ import logging as log
 from abc import ABC, abstractmethod
 from dataclasses import replace
 from functools import reduce
-from typing import Any, Generator, Optional
+from itertools import chain
+from typing import Any, Generator, Iterable, List, Optional
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
@@ -24,6 +25,153 @@ class Experiment(ABC):
     """
     An abstract base class for all experiments that train and evaluate a machine learning model.
     """
+
+    class Builder(ABC):
+        """
+        An abstract base class for all classes that allow to configure and create instances of an experiment.
+        """
+
+        def __init__(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter):
+            """
+            :param problem_domain:      The problem domain, the experiment should be concerned with
+            :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
+            """
+            super().__init__()
+            self.problem_domain = problem_domain
+            self.dataset_splitter = dataset_splitter
+            self.listeners = []
+            self.input_readers = set()
+            self.pre_training_output_writers = set()
+            self.post_training_output_writers = set()
+            self.prediction_output_writers = set()
+            self.predict_for_training_dataset = False
+            self.predict_for_test_dataset = True
+            self.exit_on_error = True
+
+        def add_listeners(self, *listeners: 'Experiment.Listener') -> 'Experiment.Builder':
+            """
+            Adds one or several listeners that should be informed about certain events during the experiment.
+
+            :param listeners:   The listeners that should be added
+            :return:            The builder itself
+            """
+            self.listeners.extend(listeners)
+            return self
+
+        def add_input_readers(self, *input_readers: InputReader) -> 'Experiment.Builder':
+            """
+            Adds one or several input readers that should be invoked when the experiment is started.
+
+            :param input_readers:   The input readers to be added
+            :return:                The builder itself
+            """
+            self.input_readers.update(input_readers)
+            return self
+
+        def add_pre_training_output_writers(self, *output_writers: OutputWriter) -> 'Experiment.Builder':
+            """
+            Adds one or several output writers that should be invoked before a machine learning model is trained.
+
+            :param output_writers:  The output writers to be added
+            :return:                The builder itself
+            """
+            self.pre_training_output_writers.update(output_writers)
+            return self
+
+        def add_post_training_output_writers(self, *output_writers: OutputWriter) -> 'Experiment.Builder':
+            """
+            Adds one or several output writers that should be invoked after a machine learning model has been trained.
+
+            :param output_writers:  The output writers to be added
+            :return:                The builder itself
+            """
+            self.post_training_output_writers.update(output_writers)
+            return self
+
+        def add_prediction_output_writers(self, *output_writers: OutputWriter) -> 'Experiment.Builder':
+            """
+            Adds one or several output writers that should be invoked after predictions have been obtained from a
+            machine learning model.
+
+            :param output_writers:  The output writers to be added
+            :return:                The builder itself
+            """
+            self.prediction_output_writers.update(output_writers)
+            return self
+
+        def set_predict_for_training_dataset(self, predict_for_training_dataset: bool) -> 'Experiment.Builder':
+            """
+            Sets whether predictions should be obtained for the training dataset or not.
+
+            :param predict_for_training_dataset:    True, if predictions should be obtained for the training dataset,
+                                                    False otherwise
+            :return:                                The builder itself
+            """
+            self.predict_for_training_dataset = predict_for_training_dataset
+            return self
+
+        def set_predict_for_test_dataset(self, predict_for_test_dataset: bool) -> 'Experiment.Builder':
+            """
+            Sets whether predictions should be obtained for the test dataset, if available, or not.
+
+            :param predict_for_test_dataset:    True, if predictions should be obtained for the test dataset, if
+                                                available, False otherwise
+            :return:                            The builder itself
+            """
+            self.predict_for_test_dataset = predict_for_test_dataset
+            return self
+
+        def set_exit_on_error(self, exit_on_error: bool) -> 'Experiment.Builder':
+            """
+            Sets whether the program should exit if an error occurs while writing experimental results.
+
+            :param exit_on_error:   True, if the program should be aborted if an error occurs, False otherwise
+            :return:                The builder itself
+            """
+            self.exit_on_error = exit_on_error
+            return self
+
+        def build(self) -> 'Experiment':
+            """
+            Creates and returns a new experiment according to the specified configuration.
+
+            :return: The experiment that has been created
+            """
+            exit_on_error = self.exit_on_error
+
+            for output_writer in chain(self.pre_training_output_writers, self.post_training_output_writers,
+                                       self.prediction_output_writers):
+                output_writer.exit_on_error = exit_on_error
+
+            experiment = self._create_experiment(self.problem_domain, self.dataset_splitter)
+            experiment.listeners.extend(self.listeners)
+
+            def sort(objects: Iterable[Any]) -> List[Any]:
+                return sorted(objects, key=lambda obj: type(obj).__name__)
+
+            experiment.input_readers.extend(sort(self.input_readers))
+            experiment.pre_training_output_writers.extend(sort(self.pre_training_output_writers))
+            experiment.post_training_output_writers.extend(sort(self.post_training_output_writers))
+            experiment.prediction_output_writers.extend(sort(self.prediction_output_writers))
+            return experiment
+
+        def run(self):
+            """
+            Creates and runs a new experiment according to the specified configuration.
+            """
+            should_predict = bool(self.prediction_output_writers)
+            self.build().run(predict_for_training_dataset=should_predict and self.predict_for_training_dataset,
+                             predict_for_test_dataset=should_predict and self.predict_for_test_dataset)
+
+        @abstractmethod
+        def _create_experiment(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter) -> 'Experiment':
+            """
+            Must be implemented by subclasses in order to create a new experiment.
+
+            :param problem_domain:      The problem domain, the experiment should be concerned with
+            :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
+            :return:                    The experiment that has been created
+            """
 
     class Listener(ABC):
         """
@@ -137,64 +285,8 @@ class Experiment(ABC):
             Experiment.OutputWriterListener(),
         ]
 
-    def add_listeners(self, *listeners: Listener) -> 'Experiment':
-        """
-        Adds one or several listeners that should be informed about certain events during the experiment.
-
-        :param listeners:   The listeners that should be added
-        :return:            The experiment itself
-        """
-        for listener in listeners:
-            self.listeners.append(listener)
-        return self
-
-    def add_input_readers(self, *input_readers: InputReader) -> 'Experiment':
-        """
-        Adds one or several input readers that should be invoked when an experiment is started.
-
-        :param input_readers:   The input readers to be added
-        :return:                The experiment itself
-        """
-        for input_reader in input_readers:
-            self.input_readers.append(input_reader)
-        return self
-
-    def add_pre_training_output_writers(self, *output_writers: OutputWriter) -> 'Experiment':
-        """
-        Adds one or several output writers that should be invoked before a machine learning model is trained.
-
-        :param output_writers:  The output writers to be added
-        :return:                The experiment itself
-        """
-        for output_writer in output_writers:
-            self.pre_training_output_writers.append(output_writer)
-        return self
-
-    def add_post_training_output_writers(self, *output_writers: OutputWriter) -> 'Experiment':
-        """
-        Adds one or several output writers that should be invoked after a machine learning model has been trained.
-
-        :param output_writers:  The output writers to be added
-        :return:                The experiment itself
-        """
-        for output_writer in output_writers:
-            self.post_training_output_writers.append(output_writer)
-        return self
-
-    def add_prediction_output_writers(self, *output_writers: OutputWriter) -> 'Experiment':
-        """
-        Adds one or several output writers that should be invoked after predictions have been obtained from a machine
-        learning model.
-
-        :param output_writers:  The output writers to be added
-        :return:                The experiment itself
-        """
-        for output_writer in output_writers:
-            self.prediction_output_writers.append(output_writer)
-        return self
-
     # pylint: disable=too-many-branches
-    def run(self, predict_for_training_dataset: bool = False, predict_for_test_dataset: bool = True):
+    def run(self, predict_for_training_dataset: bool, predict_for_test_dataset: bool):
         """
         Runs the experiment.
 

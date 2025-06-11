@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for implementing different kinds of problem domains.
 """
 from abc import ABC, abstractmethod
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Dict, Optional
 
 import numpy as np
 
@@ -21,7 +21,18 @@ class SkLearnProblem(ProblemDomain, ABC):
     framework.
     """
 
-    PredictorFactory = Callable[[], Predictor]
+    class PredictorFactory(ABC):
+        """
+        An abstract base class for all factories that allow to create instances of type `Predictor`.
+        """
+
+        @abstractmethod
+        def create(self) -> Predictor:
+            """
+            Creates and returns a new object of type `Predictor`.
+
+            :return: The `Predictor` that has been created
+            """
 
     def __init__(self,
                  base_learner: BaseEstimator,

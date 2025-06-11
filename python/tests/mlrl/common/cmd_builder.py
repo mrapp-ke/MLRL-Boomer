@@ -90,7 +90,7 @@ class CmdBuilder:
             args.append('--help')
             return args
 
-        args.extend(['--log-level', 'DEBUG'])
+        args.extend(['--log-level', 'debug'])
         args.extend(['--data-dir', path.join('python', 'tests', 'res', 'data')])
         args.extend(['--dataset', self.dataset])
         args.extend(['--output-dir', self.output_dir])
