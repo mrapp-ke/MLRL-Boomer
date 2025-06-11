@@ -255,7 +255,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
                                                                                    predict_kwargs=predict_kwargs)
         return SkLearnExperiment.Builder(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
 
-    def create_classifier(self, args) -> Optional[SkLearnClassifierMixin]:
+    def create_classifier(self, args: Namespace) -> Optional[SkLearnClassifierMixin]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.create_classifier`
         """
@@ -267,7 +267,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
                                                                           parameters=self.classifier_parameters)
         return None
 
-    def create_regressor(self, args) -> Optional[SkLearnRegressorMixin]:
+    def create_regressor(self, args: Namespace) -> Optional[SkLearnRegressorMixin]:
         """
         See :func:`mlrl.testbed.runnables_sklearn.SkLearnRunnable.create_regressor`
         """
