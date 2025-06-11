@@ -31,7 +31,7 @@ from mlrl.common.mixins import ClassifierMixin, IncrementalClassifierMixin, Incr
     IncrementalRegressorMixin, NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, RegressorMixin
 
 from mlrl.util.arrays import SparseFormat, enforce_2d, enforce_dense, is_sparse, is_sparse_and_memory_efficient
-from mlrl.util.format import format_enum_values
+from mlrl.util.options import parse_enum
 from mlrl.util.validation import assert_greater_or_equal
 
 
@@ -43,25 +43,6 @@ class SparsePolicy(Enum):
     AUTO = 'auto'
     FORCE_SPARSE = 'sparse'
     FORCE_DENSE = 'dense'
-
-    @staticmethod
-    def parse(parameter_name: str, value: Optional[str]) -> 'SparsePolicy':
-        """
-        Parses and returns a parameter value that specifies a `SparsePolicy` to be used for converting matrices into
-        sparse or dense formats. If the given value is invalid, a `ValueError` is raised.
-
-        :param parameter_name:  The name of the parameter
-        :param value:           The value to be parsed or None, if the default value should be used
-        :return:                A `SparsePolicy`
-        """
-        try:
-            if value:
-                return SparsePolicy(value)
-
-            return SparsePolicy.AUTO
-        except ValueError as error:
-            raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
-                             + format_enum_values(SparsePolicy) + ', but is "' + str(value) + '"') from error
 
     def should_enforce_sparse(self, matrix, sparse_format: SparseFormat, dtype, sparse_values: bool = True) -> bool:
         """
@@ -356,7 +337,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         """
         sparse_feature_value = float(kwargs.get(self.KWARG_SPARSE_FEATURE_VALUE, 0.0))
         x_sparse_format = SparseFormat.CSC
-        x_sparse_policy = SparsePolicy.parse('feature_format', self.feature_format)
+        x_sparse_policy = parse_enum('feature_format', self.feature_format, SparsePolicy, default=SparsePolicy.AUTO)
         x_enforce_sparse = x_sparse_policy.should_enforce_sparse(x, sparse_format=x_sparse_format, dtype=np.float32)
         x = x if x_enforce_sparse else enforce_2d(
             enforce_dense(x, order='F', dtype=np.float32, sparse_value=sparse_feature_value))
@@ -391,7 +372,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         """
         sparse_feature_value = float(kwargs.get(self.KWARG_SPARSE_FEATURE_VALUE, 0.0))
         sparse_format = SparseFormat.CSR
-        sparse_policy = SparsePolicy.parse('feature_format', self.feature_format)
+        sparse_policy = parse_enum('feature_format', self.feature_format, SparsePolicy, default=SparsePolicy.AUTO)
         enforce_sparse = sparse_policy.should_enforce_sparse(x, sparse_format=sparse_format, dtype=np.float32)
         x = x if enforce_sparse else enforce_2d(
             enforce_dense(x, order='C', dtype=np.float32, sparse_value=sparse_feature_value))
@@ -423,12 +404,15 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         :return:    The matrix that has been created
         """
         y_sparse_format = SparseFormat.CSR
-        prediction_sparse_policy = SparsePolicy.parse('prediction_format', self.prediction_format)
+        prediction_sparse_policy = parse_enum('prediction_format',
+                                              self.prediction_format,
+                                              SparsePolicy,
+                                              default=SparsePolicy.AUTO)
         self.sparse_predictions_ = prediction_sparse_policy != SparsePolicy.FORCE_DENSE and (
             prediction_sparse_policy == SparsePolicy.FORCE_SPARSE
             or is_sparse_and_memory_efficient(y, sparse_format=y_sparse_format, dtype=np.uint8, sparse_values=False))
 
-        y_sparse_policy = SparsePolicy.parse('output_format', self.output_format)
+        y_sparse_policy = parse_enum('output_format', self.output_format, SparsePolicy, default=SparsePolicy.AUTO)
         y_enforce_sparse = y_sparse_policy.should_enforce_sparse(y,
                                                                  sparse_format=y_sparse_format,
                                                                  dtype=np.uint8,

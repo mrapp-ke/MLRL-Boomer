@@ -42,3 +42,9 @@ class InputReader:
         new_state = replace(state)
         self.source.read_from_source(new_state, self.input_data)
         return new_state
+
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, type(self))
+
+    def __hash__(self) -> int:
+        return hash(type(self))

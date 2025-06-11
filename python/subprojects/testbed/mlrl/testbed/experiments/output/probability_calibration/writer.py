@@ -36,10 +36,21 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
                     + 'extractor available.',
                     type(training_result.learner).__name__)
 
-    def __init__(self, *extractors: DataExtractor, exit_on_error: bool = True):
+    def __init__(self, *extractors: DataExtractor):
         """
-        :param extractors:      Extractors that should be used for extracting the output data to be written to the sinks
-        :param exit_on_error:   True, if the program should exit when an error occurs while writing the output data,
-                                False otherwise
+        :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
-        super().__init__(*extractors, ProbabilityCalibrationModelWriter.DefaultExtractor(), exit_on_error=exit_on_error)
+        super().__init__(*extractors, ProbabilityCalibrationModelWriter.DefaultExtractor())
+
+
+class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
+    """
+    Allows writing textual representations of models for the calibration of marginal probabilities to one or several
+    sinks.
+    """
+
+
+class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
+    """
+    Allows writing textual representations of models for the calibration of joint probabilities to one or several sinks.
+    """

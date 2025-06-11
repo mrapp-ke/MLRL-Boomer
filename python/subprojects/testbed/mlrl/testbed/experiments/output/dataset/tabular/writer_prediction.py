@@ -32,10 +32,11 @@ class PredictionWriter(OutputWriter):
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
             """
+            prediction_result = state.prediction_result
             dataset = state.dataset_as(self, TabularDataset)
 
-            if state.prediction_result and dataset:
-                predictions = dataset.y
+            if prediction_result and dataset:
+                predictions = prediction_result.predictions
                 nominal_values = None
 
                 if issubclass(predictions.dtype.type, np.integer):
@@ -53,10 +54,8 @@ class PredictionWriter(OutputWriter):
 
             return None
 
-    def __init__(self, *extractors: DataExtractor, exit_on_error: bool = True):
+    def __init__(self, *extractors: DataExtractor):
         """
-        :param extractors:      Extractors that should be used for extracting the output data to be written to the sinks
-        :param exit_on_error:   True, if the program should exit when an error occurs while writing the output data,
-                                False otherwise
+        :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
-        super().__init__(*extractors, PredictionWriter.DefaultExtractor(), exit_on_error=exit_on_error)
+        super().__init__(*extractors, PredictionWriter.DefaultExtractor())
