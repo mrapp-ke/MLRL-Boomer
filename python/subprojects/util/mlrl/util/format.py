@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for creating textual representations.
 """
-from enum import EnumType as Enum
+from enum import EnumType
 from functools import reduce
 from typing import Any, Iterable
 
@@ -20,7 +20,7 @@ def format_iterable(objects: Iterable[Any], separator: str = ', ', delimiter: st
     return reduce(lambda aggr, obj: aggr + (separator if aggr else '') + delimiter + str(obj) + delimiter, objects, '')
 
 
-def format_enum_values(enum: Enum) -> str:
+def format_enum_values(enum: EnumType) -> str:
     """
     Creates and returns a textual representation of an enum's values.
 
