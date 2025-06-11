@@ -11,7 +11,7 @@ from functools import cached_property
 from typing import Any, Dict, Optional, Set
 
 from mlrl.util.format import format_enum_values, format_set
-from mlrl.util.options import BooleanOption, parse_param, parse_param_and_options
+from mlrl.util.options import BooleanOption, parse_enum, parse_param, parse_param_and_options
 
 
 class Argument:
@@ -210,18 +210,11 @@ class SetArgument(Argument):
     """
 
     @staticmethod
-    def __format_description(description: str, values: Any) -> str:
+    def __format_description(description: str, values: Set[str] | Dict[str, Set[str]]) -> str:
         if not description.endswith('.'):
             description += '.'
 
-        description += ' Must be one of '
-
-        if isinstance(values, EnumType):
-            description += format_enum_values(values)
-        else:
-            description += format_set(values.keys() if isinstance(values, dict) else values)
-
-        description += '.'
+        description += ' Must be one of ' + format_set(values.keys() if isinstance(values, dict) else values) + '.'
 
         if isinstance(values, dict):
             description += ' For additional options refer to the documentation.'
@@ -230,30 +223,25 @@ class SetArgument(Argument):
 
     def __init__(self,
                  *names: str,
-                 values: Enum | Set[str] | Dict[str, Set[str]],
+                 values: Set[str] | Dict[str, Set[str]],
                  description: Optional[str] = None,
-                 default: Optional[str | Enum] = None,
+                 default: Optional[str] = None,
                  required: bool = False):
         """
         :param names:       One or several names of the argument
-        :param values:      An enum or set that contains the predefined values or a dictionary that contains the
-                            predefined values, as well as the names of options that can be provided by the user in
-                            addition to the respective values
+        :param values:      A set that contains the predefined values or a dictionary that contains the predefined
+                            values, as well as the names of options that can be provided by the user in addition to the
+                            respective values
         :param description: An optional description of the argument
         :param default:     The default value
         :param required:    True, if the argument is mandatory, False otherwise
         """
         super().__init__(*names,
-                         default=(default.value if isinstance(default.value, str) else default.name.lower())
-                         if isinstance(default, Enum) else default,
+                         default=default,
                          help=self.__format_description(description, values),
                          type=str,
                          required=required)
-
-        if isinstance(values, EnumType):
-            self.supported_values = {x.value if isinstance(x.value, str) else x.name.lower() for x in values}
-        else:
-            self.supported_values = values
+        self.supported_values = values
 
     def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
         value = super().get_value(args, default=default)
@@ -267,6 +255,38 @@ class SetArgument(Argument):
             return parse_param(self.key, value, supported_values)
 
         return None
+
+
+class EnumArgument(SetArgument):
+    """
+    An argument of a command line interface for which the user can provide one out of a predefined set enum values.
+    """
+
+    def __init__(self,
+                 *names: str,
+                 enum: EnumType,
+                 description: Optional[str] = None,
+                 default: Optional[Enum] = None,
+                 required: bool = False):
+        """
+        :param names:       One or several names of the argument
+        :param values:      An enum that contains the predefined values
+        :param description: An optional description of the argument
+        :param default:     The default value
+        :param required:    True, if the argument is mandatory, False otherwise
+        """
+        super().__init__(
+            *names,
+            values={x.value if isinstance(x.value, str) else x.name.lower()
+                    for x in enum},
+            description=description,
+            default=(default.value if isinstance(default.value, str) else default.name.lower()) if default else None,
+            required=required)
+        self.enum = enum
+
+    def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
+        value = super().get_value(args, default=default)
+        return parse_enum(self.name, value, self.enum) if value else None
 
 
 class CommandLineInterface:

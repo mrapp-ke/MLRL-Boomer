@@ -25,7 +25,7 @@ from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnProblem
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.runnables_sklearn import SkLearnRunnable
 
-from mlrl.util.cli import Argument, BoolArgument, FloatArgument, SetArgument
+from mlrl.util.cli import Argument, BoolArgument, EnumArgument, FloatArgument
 from mlrl.util.validation import assert_greater, assert_greater_or_equal
 
 OPTION_MIN_SIZE = 'min_size'
@@ -114,21 +114,21 @@ class RuleLearnerRunnable(SkLearnRunnable):
         An extension that configures the algorithmic parameters of a rule learner.
         """
 
-        FEATURE_FORMAT = SetArgument(
+        FEATURE_FORMAT = EnumArgument(
             '--feature-format',
-            values=SparsePolicy,
+            enum=SparsePolicy,
             description='The format to be used for the representation of the feature matrix.',
         )
 
-        OUTPUT_FORMAT = SetArgument(
+        OUTPUT_FORMAT = EnumArgument(
             '--output-format',
-            values=SparsePolicy,
+            enum=SparsePolicy,
             description='The format to be used for the representation of the output matrix.',
         )
 
-        PREDICTION_FORMAT = SetArgument(
+        PREDICTION_FORMAT = EnumArgument(
             '--prediction-format',
-            values=SparsePolicy,
+            enum=SparsePolicy,
             description='The format to be used for the representation of predictions.',
         )
 
@@ -155,11 +155,14 @@ class RuleLearnerRunnable(SkLearnRunnable):
             :param estimator_type:  The type of the estimator
             :param parameters:      The algorithmic parameters of the estimator
             """
+            feature_format = RuleLearnerRunnable.RuleLearnerExtension.FEATURE_FORMAT.get_value(args)
+            output_format = RuleLearnerRunnable.RuleLearnerExtension.OUTPUT_FORMAT.get_value(args)
+            prediction_format = RuleLearnerRunnable.RuleLearnerExtension.PREDICTION_FORMAT.get_value(args)
             args_dict = vars(args)
             kwargs = {param.name: args_dict[param.name] for param in parameters if param.name in args_dict}
-            kwargs['feature_format'] = RuleLearnerRunnable.RuleLearnerExtension.FEATURE_FORMAT.get_value(args)
-            kwargs['output_format'] = RuleLearnerRunnable.RuleLearnerExtension.OUTPUT_FORMAT.get_value(args)
-            kwargs['prediction_format'] = RuleLearnerRunnable.RuleLearnerExtension.PREDICTION_FORMAT.get_value(args)
+            kwargs['feature_format'] = feature_format.value if feature_format else None
+            kwargs['output_format'] = output_format.value if output_format else None
+            kwargs['prediction_format'] = prediction_format.value if prediction_format else None
             return estimator_type(**kwargs)
 
         @staticmethod
