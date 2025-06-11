@@ -12,6 +12,7 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   mlrl.testbed.experiments.prediction.extension
    mlrl.testbed.experiments.prediction.predictor
    mlrl.testbed.experiments.prediction.predictor_global
    mlrl.testbed.experiments.prediction.predictor_incremental

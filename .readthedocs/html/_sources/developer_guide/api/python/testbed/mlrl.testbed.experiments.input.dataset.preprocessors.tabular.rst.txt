@@ -12,4 +12,5 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   mlrl.testbed.experiments.input.dataset.preprocessors.tabular.extension
    mlrl.testbed.experiments.input.dataset.preprocessors.tabular.one_hot_encoder
