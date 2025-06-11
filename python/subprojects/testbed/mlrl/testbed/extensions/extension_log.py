@@ -13,7 +13,7 @@ from typing import Set
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.extensions.extension import Extension
 
-from mlrl.util.cli import Argument, SetArgument
+from mlrl.util.cli import Argument, EnumArgument
 
 
 class LogExtension(Extension):
@@ -34,26 +34,9 @@ class LogExtension(Extension):
         FATAL = log.FATAL
         NOTSET = log.NOTSET
 
-        @classmethod
-        def parse(cls, text: str):
-            """
-            Parses a given text that represents a log level. If the given text does not represent a valid log level, a
-            `ValueError` is raised.
-
-            :param text:    The text to be parsed
-            :return:        A log level, depending on the given text
-            """
-            lower_text = text.lower()
-
-            for enum in cls:
-                if enum.name.lower() == lower_text:
-                    return enum.value
-
-            raise ValueError()
-
-    LOG_LEVEL = SetArgument(
+    LOG_LEVEL = EnumArgument(
         '--log-level',
-        values=LogLevel,
+        enum=LogLevel,
         default=LogLevel.INFO,
         description='The log level to be used.',
     )
@@ -68,8 +51,7 @@ class LogExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        value = self.LOG_LEVEL.get_value(args)
-        log_level = LogExtension.LogLevel.parse(value) if value else None
+        log_level = self.LOG_LEVEL.get_value(args).value
         root = log.getLogger()
         root.setLevel(log_level)
         out_handler = log.StreamHandler(sys.stdout)

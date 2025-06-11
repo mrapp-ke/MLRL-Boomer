@@ -9,7 +9,7 @@ from typing import Set
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.extensions.extension import Extension
 
-from mlrl.util.cli import Argument, SetArgument
+from mlrl.util.cli import Argument, EnumArgument
 
 
 class PredictionTypeExtension(Extension):
@@ -17,9 +17,9 @@ class PredictionTypeExtension(Extension):
     An extension that configures the type of predictions to be obtained from a machine learning model.
     """
 
-    PREDICTION_TYPE = SetArgument(
+    PREDICTION_TYPE = EnumArgument(
         '--prediction-type',
-        values=PredictionType,
+        enum=PredictionType,
         default=PredictionType.BINARY,
         description='The type of predictions that should be obtained from the learner.',
     )
@@ -39,5 +39,4 @@ class PredictionTypeExtension(Extension):
         :param args:    The command line arguments specified by the user
         :return:        The `PredictionType` to be used
         """
-        return PredictionType.parse(argument_name=PredictionTypeExtension.PREDICTION_TYPE.name,
-                                    value=PredictionTypeExtension.PREDICTION_TYPE.get_value(args))
+        return PredictionTypeExtension.PREDICTION_TYPE.get_value(args)
