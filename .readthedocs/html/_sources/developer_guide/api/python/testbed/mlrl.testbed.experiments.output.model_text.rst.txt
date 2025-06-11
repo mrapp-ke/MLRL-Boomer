@@ -12,6 +12,7 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   mlrl.testbed.experiments.output.model_text.extension
    mlrl.testbed.experiments.output.model_text.extractor_rules
    mlrl.testbed.experiments.output.model_text.model_text_rules
    mlrl.testbed.experiments.output.model_text.writer

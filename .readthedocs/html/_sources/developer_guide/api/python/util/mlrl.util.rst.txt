@@ -13,6 +13,7 @@ Submodules
    :maxdepth: 4
 
    mlrl.util.arrays
+   mlrl.util.cli
    mlrl.util.format
    mlrl.util.options
    mlrl.util.validation

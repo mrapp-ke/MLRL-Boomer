@@ -1,0 +1,7 @@
+mlrl.testbed.experiments.output.model\_text.extension module
+============================================================
+
+.. automodule:: mlrl.testbed.experiments.output.model_text.extension
+   :members:
+   :show-inheritance:
+   :undoc-members:

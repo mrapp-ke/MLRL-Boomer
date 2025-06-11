@@ -1,0 +1,7 @@
+mlrl.testbed.experiments.input.model.extension module
+=====================================================
+
+.. automodule:: mlrl.testbed.experiments.input.model.extension
+   :members:
+   :show-inheritance:
+   :undoc-members:

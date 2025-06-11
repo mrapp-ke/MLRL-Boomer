@@ -13,6 +13,7 @@ Submodules
    :maxdepth: 4
 
    mlrl.testbed.experiments.output.evaluation.evaluation_result
+   mlrl.testbed.experiments.output.evaluation.extension
    mlrl.testbed.experiments.output.evaluation.extractor_classification
    mlrl.testbed.experiments.output.evaluation.extractor_ranking
    mlrl.testbed.experiments.output.evaluation.extractor_regression

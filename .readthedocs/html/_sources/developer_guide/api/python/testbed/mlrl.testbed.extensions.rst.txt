@@ -1,0 +1,16 @@
+mlrl.testbed.extensions package
+===============================
+
+.. automodule:: mlrl.testbed.extensions
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed.extensions.extension
+   mlrl.testbed.extensions.extension_log

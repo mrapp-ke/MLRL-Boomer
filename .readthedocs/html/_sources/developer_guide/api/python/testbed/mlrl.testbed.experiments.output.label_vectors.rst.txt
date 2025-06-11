@@ -12,6 +12,7 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   mlrl.testbed.experiments.output.label_vectors.extension
    mlrl.testbed.experiments.output.label_vectors.extractor_rules
    mlrl.testbed.experiments.output.label_vectors.label_vector_histogram
    mlrl.testbed.experiments.output.label_vectors.label_vectors

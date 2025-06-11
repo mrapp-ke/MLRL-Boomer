@@ -1,0 +1,7 @@
+mlrl.util.cli module
+====================
+
+.. automodule:: mlrl.util.cli
+   :members:
+   :show-inheritance:
+   :undoc-members:
