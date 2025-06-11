@@ -150,7 +150,8 @@ class SkLearnRunnable(Runnable, ABC):
         return SkLearnExperiment.Builder(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
 
     # pylint: disable=unused-argument
-    def create_predictor_factory(self, args, prediction_type: PredictionType) -> SkLearnProblem.PredictorFactory:
+    def create_predictor_factory(self, args: Namespace,
+                                 prediction_type: PredictionType) -> SkLearnProblem.PredictorFactory:
         """
         May be overridden by subclasses in order to create the `SkLearnProblem.PredictorFactory` that should be used for
         obtaining predictions from a previously trained model.
@@ -162,7 +163,7 @@ class SkLearnRunnable(Runnable, ABC):
         return SkLearnRunnable.GlobalPredictorFactory(prediction_type)
 
     @abstractmethod
-    def create_classifier(self, args) -> Optional[SkLearnClassifierMixin]:
+    def create_classifier(self, args: Namespace) -> Optional[SkLearnClassifierMixin]:
         """
         Must be implemented by subclasses in order to create a machine learning algorithm that can be applied to
         classification problems.
@@ -172,7 +173,7 @@ class SkLearnRunnable(Runnable, ABC):
         """
 
     @abstractmethod
-    def create_regressor(self, args) -> Optional[SkLearnRegressorMixin]:
+    def create_regressor(self, args: Namespace) -> Optional[SkLearnRegressorMixin]:
         """
         Must be implemented by subclasses in order to create a machine learning algorithm that can be applied to
         regression problems.
