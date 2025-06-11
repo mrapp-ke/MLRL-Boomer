@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides a data structure that allows to store and parse options that are provided as key-value pairs.
 """
-from enum import Enum
+from enum import Enum, EnumType
 from typing import Any, Dict, Optional, Set, Tuple
 
 from mlrl.util.format import format_enum_values, format_set
@@ -169,6 +169,32 @@ class Options:
             return value
 
         return default_value
+
+
+def parse_enum(parameter_name: str,
+               value: Optional[str],
+               enum: EnumType,
+               default: Optional[Enum] = None) -> Optional[EnumType]:
+    """
+    Parses and returns an enum value. If the given value is invalid, a `ValueError` is raised.
+
+    :param parameter_name:  The name of the parameter
+    :param value:           The value to be parsed
+    :param enum:            The enum
+    :param default:         The default value to be returned if `value` is None
+    :return:                The value that has been parsed or `default`, if the given value is None
+    """
+    if value:
+        for enum_value in enum:
+            expected_value = enum_value.value if isinstance(enum_value.value, str) else enum_value.name.lower()
+
+            if expected_value == value:
+                return enum_value
+
+        raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
+                         + format_enum_values(enum) + ', but is "' + str(value) + '"')
+
+    return default
 
 
 def parse_param(parameter_name: str, value: str, allowed_values: Set[str]) -> str:

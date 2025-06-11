@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.boosting --log-level DEBUG --data-dir python/tests/res/data --dataset emotions --output-dir python/tests/res/tmp/results --marginal-probability-calibration isotonic --print-marginal-probability-calibration-model true --store-marginal-probability-calibration-model true --joint-probability-calibration isotonic --print-joint-probability-calibration-model true --store-joint-probability-calibration-model true --prediction-type probabilities --probability-predictor marginalized --incremental-evaluation true{step_size=50} --print-evaluation true --store-evaluation true --model-load-dir python/tests/res/tmp/models --model-save-dir python/tests/res/tmp/models
+mlrl-testbed mlrl.boosting --log-level debug --data-dir python/tests/res/data --dataset emotions --output-dir python/tests/res/tmp/results --marginal-probability-calibration isotonic --print-marginal-probability-calibration-model true --store-marginal-probability-calibration-model true --joint-probability-calibration isotonic --print-joint-probability-calibration-model true --store-joint-probability-calibration-model true --prediction-type probabilities --probability-predictor marginalized --incremental-evaluation true{step_size=50} --print-evaluation true --store-evaluation true --model-load-dir python/tests/res/tmp/models --model-save-dir python/tests/res/tmp/models
 INFO Starting experiment using the classification algorithm "BoomerClassifier"...
 INFO Using separate training and test sets...
 DEBUG Reading input data from file "python/tests/res/data/emotions.arff"...
@@ -307,74 +307,6 @@ NDCG                             79.2
 Ranking Loss                      0.45
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Marginal probability calibration model:
-
-┌──────────────────────┬─────────────────────────┐
-│   Label 1 thresholds │   Label 1 probabilities │
-├──────────────────────┼─────────────────────────┤
-│               0      │                  0      │
-│               0.0012 │                  0.2441 │
-│               0.026  │                  0.3312 │
-│               0.2426 │                  0.4333 │
-│               0.404  │                  0.5    │
-│               0.7181 │                  0.6094 │
-│               0.9848 │                  1      │
-└──────────────────────┴─────────────────────────┘
-┌──────────────────────┬─────────────────────────┐
-│   Label 2 thresholds │   Label 2 probabilities │
-├──────────────────────┼─────────────────────────┤
-│               0      │                  0      │
-│               0.0015 │                  0.2    │
-│               0.0019 │                  0.2097 │
-│               0.0446 │                  0.2381 │
-│               0.0657 │                  0.375  │
-│               0.1106 │                  0.3823 │
-│               0.3771 │                  0.5    │
-│               0.7206 │                  0.7045 │
-└──────────────────────┴─────────────────────────┘
-┌──────────────────────┬─────────────────────────┐
-│   Label 3 thresholds │   Label 3 probabilities │
-├──────────────────────┼─────────────────────────┤
-│               0      │                  0      │
-│               0.0285 │                  0.2    │
-│               0.0973 │                  0.5226 │
-│               0.9807 │                  0.5655 │
-│               0.9983 │                  1      │
-└──────────────────────┴─────────────────────────┘
-┌──────────────────────┬─────────────────────────┐
-│   Label 4 thresholds │   Label 4 probabilities │
-├──────────────────────┼─────────────────────────┤
-│               0      │                  0      │
-│               0.0003 │                  0.0156 │
-│               0.0657 │                  0.2667 │
-│               0.3108 │                  0.3625 │
-│               0.9412 │                  0.7083 │
-│               0.9847 │                  1      │
-└──────────────────────┴─────────────────────────┘
-┌──────────────────────┬─────────────────────────┐
-│   Label 5 thresholds │   Label 5 probabilities │
-├──────────────────────┼─────────────────────────┤
-│               0.0001 │                  0      │
-│               0.0018 │                  0.1429 │
-│               0.0034 │                  0.2162 │
-│               0.044  │                  0.25   │
-│               0.0566 │                  0.294  │
-│               0.5818 │                  0.3125 │
-│               0.9535 │                  1      │
-└──────────────────────┴─────────────────────────┘
-┌──────────────────────┬─────────────────────────┐
-│   Label 6 thresholds │   Label 6 probabilities │
-├──────────────────────┼─────────────────────────┤
-│               0      │                  0      │
-│               0.0008 │                  0.025  │
-│               0.0129 │                  0.1667 │
-│               0.0244 │                  0.25   │
-│               0.2021 │                  0.4664 │
-│               0.9622 │                  0.875  │
-│               0.9862 │                  1      │
-└──────────────────────┴─────────────────────────┘
-
-DEBUG Writing output data to file "python/tests/res/tmp/results/marginal_probability_calibration_model.csv"...
 INFO Joint probability calibration model:
 
 ┌─────────────────────────────┬────────────────────────────────┐
@@ -567,5 +499,73 @@ INFO Joint probability calibration model:
 └──────────────────────────────┴─────────────────────────────────┘
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/joint_probability_calibration_model.csv"...
+INFO Marginal probability calibration model:
+
+┌──────────────────────┬─────────────────────────┐
+│   Label 1 thresholds │   Label 1 probabilities │
+├──────────────────────┼─────────────────────────┤
+│               0      │                  0      │
+│               0.0012 │                  0.2441 │
+│               0.026  │                  0.3312 │
+│               0.2426 │                  0.4333 │
+│               0.404  │                  0.5    │
+│               0.7181 │                  0.6094 │
+│               0.9848 │                  1      │
+└──────────────────────┴─────────────────────────┘
+┌──────────────────────┬─────────────────────────┐
+│   Label 2 thresholds │   Label 2 probabilities │
+├──────────────────────┼─────────────────────────┤
+│               0      │                  0      │
+│               0.0015 │                  0.2    │
+│               0.0019 │                  0.2097 │
+│               0.0446 │                  0.2381 │
+│               0.0657 │                  0.375  │
+│               0.1106 │                  0.3823 │
+│               0.3771 │                  0.5    │
+│               0.7206 │                  0.7045 │
+└──────────────────────┴─────────────────────────┘
+┌──────────────────────┬─────────────────────────┐
+│   Label 3 thresholds │   Label 3 probabilities │
+├──────────────────────┼─────────────────────────┤
+│               0      │                  0      │
+│               0.0285 │                  0.2    │
+│               0.0973 │                  0.5226 │
+│               0.9807 │                  0.5655 │
+│               0.9983 │                  1      │
+└──────────────────────┴─────────────────────────┘
+┌──────────────────────┬─────────────────────────┐
+│   Label 4 thresholds │   Label 4 probabilities │
+├──────────────────────┼─────────────────────────┤
+│               0      │                  0      │
+│               0.0003 │                  0.0156 │
+│               0.0657 │                  0.2667 │
+│               0.3108 │                  0.3625 │
+│               0.9412 │                  0.7083 │
+│               0.9847 │                  1      │
+└──────────────────────┴─────────────────────────┘
+┌──────────────────────┬─────────────────────────┐
+│   Label 5 thresholds │   Label 5 probabilities │
+├──────────────────────┼─────────────────────────┤
+│               0.0001 │                  0      │
+│               0.0018 │                  0.1429 │
+│               0.0034 │                  0.2162 │
+│               0.044  │                  0.25   │
+│               0.0566 │                  0.294  │
+│               0.5818 │                  0.3125 │
+│               0.9535 │                  1      │
+└──────────────────────┴─────────────────────────┘
+┌──────────────────────┬─────────────────────────┐
+│   Label 6 thresholds │   Label 6 probabilities │
+├──────────────────────┼─────────────────────────┤
+│               0      │                  0      │
+│               0.0008 │                  0.025  │
+│               0.0129 │                  0.1667 │
+│               0.0244 │                  0.25   │
+│               0.2021 │                  0.4664 │
+│               0.9622 │                  0.875  │
+│               0.9862 │                  1      │
+└──────────────────────┴─────────────────────────┘
+
+DEBUG Writing output data to file "python/tests/res/tmp/results/marginal_probability_calibration_model.csv"...
 DEBUG Writing output data to file "python/tests/res/tmp/models/model.pickle"...
 INFO Successfully finished after <duration>

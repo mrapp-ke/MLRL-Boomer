@@ -5,4 +5,5 @@ Provides classes that allow to write textual representation of probability calib
 """
 from mlrl.testbed.experiments.output.probability_calibration.extractor_rules import \
     IsotonicJointProbabilityCalibrationModelExtractor, IsotonicMarginalProbabilityCalibrationModelExtractor
-from mlrl.testbed.experiments.output.probability_calibration.writer import ProbabilityCalibrationModelWriter
+from mlrl.testbed.experiments.output.probability_calibration.writer import JointProbabilityCalibrationModelWriter, \
+    MarginalProbabilityCalibrationModelWriter
