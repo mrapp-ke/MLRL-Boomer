@@ -6,7 +6,6 @@ Provides utilities that ease the configuration of rule learning algorithms.
 import logging as log
 
 from abc import ABC, abstractmethod
-from argparse import ArgumentParser
 from typing import Optional, Set
 
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, EqualFrequencyFeatureBinningMixin, \
@@ -24,7 +23,7 @@ from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPar
 from mlrl.common.cython.package_info import get_num_cpu_cores, is_multi_threading_support_enabled
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 
-from mlrl.util.format import format_set
+from mlrl.util.cli import Argument, SetArgument
 from mlrl.util.options import BooleanOption, Options, parse_param, parse_param_and_options
 
 AUTOMATIC = 'auto'
@@ -85,10 +84,13 @@ class Parameter(ABC):
         """
 
     @abstractmethod
-    def add_to_argument_parser(self, parser: ArgumentParser, config_type: type):
+    def as_argument(self, config_type: type) -> Optional[Argument]:
         """
-        Adds a command line argument that corresponds to this parameter to an `ArgumentParser` if it is supported by a
-        configuration of a specific type.
+        Creates and returns an `Argument` from this parameter, if it is supported by a configuration of a specific type.
+
+        :param config_type: The type of the configuration
+        :return:            The `Argument` that has been created or None, if it is not supported by a configuration of
+                            the given type
         """
 
     @property
@@ -192,20 +194,11 @@ class NominalParameter(Parameter, ABC):
 
             self._configure(config, value, options)
 
-    def add_to_argument_parser(self, parser: ArgumentParser, config_type: type):
+    def as_argument(self, config_type: type) -> Optional[Argument]:
         supported_values = self.__get_supported_values(config_type)
 
         if supported_values:
             description = self.description
-            description += '. Must be one of '
-
-            if isinstance(supported_values, dict):
-                supported_values = set(supported_values.keys())
-                suffix = ' For additional options refer to the documentation.'
-            else:
-                suffix = ''
-
-            description += format_set(supported_values) + '.'
 
             for supported_value in supported_values:
                 value_description = self.values[supported_value].description
@@ -213,8 +206,9 @@ class NominalParameter(Parameter, ABC):
                 if value_description:
                     description += ' ' + value_description + '.'
 
-            description += suffix
-            parser.add_argument(self.argument_name, type=str, help=description)
+            return SetArgument(self.argument_name, values=supported_values, description=description)
+
+        return None
 
 
 class NumericalParameter(Parameter, ABC):
@@ -249,9 +243,10 @@ class NumericalParameter(Parameter, ABC):
         if self.__is_supported(type(config)):
             self._configure(config, self.numeric_type(value))
 
-    def add_to_argument_parser(self, parser: ArgumentParser, config_type: type):
+    def as_argument(self, config_type: type) -> Optional[Argument]:
         if self.__is_supported(config_type):
-            parser.add_argument(self.argument_name, type=self.numeric_type, help=self.description)
+            return Argument(self.argument_name, type=self.numeric_type, help=self.description)
+        return None
 
 
 class IntParameter(NumericalParameter, ABC):
