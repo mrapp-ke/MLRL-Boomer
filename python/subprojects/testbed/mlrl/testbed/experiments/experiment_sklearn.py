@@ -25,6 +25,7 @@ from mlrl.testbed.experiments.output.dataset.tabular.writer_prediction import Pr
 from mlrl.testbed.experiments.output.evaluation.writer import EvaluationWriter
 from mlrl.testbed.experiments.output.label_vectors.writer import LabelVectorWriter
 from mlrl.testbed.experiments.output.model.writer import ModelWriter
+from mlrl.testbed.experiments.output.parameters.writer import ParameterWriter
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnProblem
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
@@ -54,6 +55,7 @@ class SkLearnExperiment(Experiment):
             self.label_vector_writer = LabelVectorWriter()
             self.evaluation_writer = EvaluationWriter()
             self.model_writer = ModelWriter()
+            self.parameter_writer = ParameterWriter()
 
         def _create_experiment(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter) -> Experiment:
             return SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
@@ -62,7 +64,10 @@ class SkLearnExperiment(Experiment):
             """
             See :func:`mlrl.testbed.experiments.experiment.Experiment.Builder.build`
             """
-            self.add_pre_training_output_writers(self.data_characteristics_writer)
+            self.add_pre_training_output_writers(
+                self.data_characteristics_writer,
+                self.parameter_writer,
+            )
             self.add_post_training_output_writers(
                 self.model_writer,
                 self.label_vector_writer,
