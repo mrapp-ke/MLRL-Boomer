@@ -10,13 +10,14 @@ from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMix
 
 from mlrl.common.config.parameters import Parameter
 from mlrl.common.learners import RuleLearner, SparsePolicy
+from mlrl.common.testbed.experiments.experiment import RuleLearnerExperiment
 from mlrl.common.testbed.experiments.output.characteristics.model import RuleModelCharacteristicsExtension
 from mlrl.common.testbed.experiments.output.label_vectors.extension import LabelVectorSetExtension
 from mlrl.common.testbed.experiments.output.model_text import RuleModelAsTextExtension
+from mlrl.common.testbed.experiments.prediction.predictor_incremental import IncrementalPredictor
 
-from mlrl.testbed.experiments import Experiment, SkLearnExperiment
+from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
-from mlrl.testbed.experiments.prediction import IncrementalPredictor
 from mlrl.testbed.experiments.prediction.predictor import Predictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
@@ -251,7 +252,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
                                                                                    runnable=self,
                                                                                    fit_kwargs=fit_kwargs,
                                                                                    predict_kwargs=predict_kwargs)
-        return SkLearnExperiment.Builder(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
+        return RuleLearnerExperiment.Builder(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
 
     def create_classifier(self, args: Namespace) -> Optional[SkLearnClassifierMixin]:
         """
