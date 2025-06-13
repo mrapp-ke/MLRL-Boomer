@@ -14,6 +14,7 @@ Subpackages
 
    mlrl.common.config
    mlrl.common.cython
+   mlrl.common.testbed
 
 Submodules
 ----------

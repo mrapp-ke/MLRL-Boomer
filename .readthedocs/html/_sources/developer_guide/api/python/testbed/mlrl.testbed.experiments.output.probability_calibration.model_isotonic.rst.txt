@@ -1,7 +1,0 @@
-mlrl.testbed.experiments.output.probability\_calibration.model\_isotonic module
-===============================================================================
-
-.. automodule:: mlrl.testbed.experiments.output.probability_calibration.model_isotonic
-   :members:
-   :show-inheritance:
-   :undoc-members:
