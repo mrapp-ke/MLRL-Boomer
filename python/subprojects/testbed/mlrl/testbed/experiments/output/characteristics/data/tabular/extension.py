@@ -5,14 +5,12 @@ Provides classes that allow configuring the functionality to write characteristi
 sinks.
 """
 from argparse import Namespace
-from typing import List, Set
+from typing import Set
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.characteristics.data.tabular.characteristics import OutputCharacteristics
 from mlrl.testbed.experiments.output.characteristics.data.tabular.characteristics_data import DataCharacteristics
-from mlrl.testbed.experiments.output.characteristics.data.tabular.writer_data import DataCharacteristicsWriter
 from mlrl.testbed.experiments.output.extension import OutputExtension
-from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.extensions.extension import Extension
@@ -69,32 +67,26 @@ class TabularDataCharacteristicExtension(Extension):
         """
         return {self.PRINT_DATA_CHARACTERISTICS, self.STORE_DATA_CHARACTERISTICS}
 
-    def __create_log_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.PRINT_DATA_CHARACTERISTICS.get_value(args,
-                                                                   default=OutputExtension.PRINT_ALL.get_value(args))
+    def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
+        print_all = OutputExtension.PRINT_ALL.get_value(args)
+        print_data_characteristics, options = self.PRINT_DATA_CHARACTERISTICS.get_value(args, default=print_all)
 
-        if value:
-            return [LogSink(options)]
-        return []
+        if print_data_characteristics:
+            experiment_builder.data_characteristics_writer.add_sinks(LogSink(options))
 
-    def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.STORE_DATA_CHARACTERISTICS.get_value(args)
-        output_dir = OutputExtension.OUTPUT_DIR.get_value(args, default=OutputExtension.STORE_ALL.get_value(args))
+    def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
+        store_all = OutputExtension.STORE_ALL.get_value(args)
+        store_data_characteristics, options = self.STORE_DATA_CHARACTERISTICS.get_value(args, default=store_all)
+        output_directory = OutputExtension.OUTPUT_DIR.get_value(args)
 
-        if value and output_dir:
-            return [
-                CsvFileSink(directory=output_dir,
-                            create_directory=OutputExtension.CREATE_OUTPUT_DIR.get_value(args),
-                            options=options)
-            ]
-        return []
+        if store_data_characteristics and output_directory:
+            create_output_directory = OutputExtension.CREATE_OUTPUT_DIR.get_value(args)
+            experiment_builder.data_characteristics_writer.add_sinks(
+                CsvFileSink(directory=output_directory, create_directory=create_output_directory, options=options))
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        sinks = self.__create_log_sinks(args) + self.__create_csv_file_sinks(args)
-
-        if sinks:
-            writer = DataCharacteristicsWriter().add_sinks(*sinks)
-            experiment_builder.add_pre_training_output_writers(writer)
+        self.__configure_log_sink(args, experiment_builder)
+        self.__configure_csv_file_sink(args, experiment_builder)

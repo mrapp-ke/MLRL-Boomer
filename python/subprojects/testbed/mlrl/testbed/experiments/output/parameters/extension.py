@@ -4,12 +4,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write algorithmic parameters to one or several sinks.
 """
 from argparse import Namespace
-from typing import List, Set
+from typing import Set
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.extension import OutputExtension
-from mlrl.testbed.experiments.output.parameters.writer import ParameterWriter
-from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.extensions.extension import Extension
@@ -46,27 +44,24 @@ class ParameterOutputExtension(Extension):
         """
         return {self.PARAMETER_SAVE_DIR, self.PRINT_PARAMETERS}
 
-    def __create_log_sinks(self, args: Namespace) -> List[Sink]:
-        if self.PRINT_PARAMETERS.get_value(args, default=OutputExtension.PRINT_ALL.get_value(args)):
-            return [LogSink()]
-        return []
+    def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
+        print_all = OutputExtension.PRINT_ALL.get_value(args)
+        print_parameters = self.PRINT_PARAMETERS.get_value(args, default=print_all)
 
-    def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
+        if print_parameters:
+            experiment_builder.parameter_writer.add_sinks(LogSink())
+
+    def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         parameter_save_dir = self.PARAMETER_SAVE_DIR.get_value(args)
 
         if parameter_save_dir:
-            return [
-                CsvFileSink(directory=parameter_save_dir,
-                            create_directory=OutputExtension.CREATE_OUTPUT_DIR.get_value(args))
-            ]
-        return []
+            create_output_directory = OutputExtension.CREATE_OUTPUT_DIR.get_value(args)
+            experiment_builder.parameter_writer.add_sinks(
+                CsvFileSink(directory=parameter_save_dir, create_directory=create_output_directory))
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        sinks = self.__create_log_sinks(args) + self.__create_csv_file_sinks(args)
-
-        if sinks:
-            writer = ParameterWriter().add_sinks(*sinks)
-            experiment_builder.add_pre_training_output_writers(writer)
+        self.__configure_log_sink(args, experiment_builder)
+        self.__configure_csv_file_sink(args, experiment_builder)
