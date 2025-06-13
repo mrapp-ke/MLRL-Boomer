@@ -145,6 +145,6 @@ class RuleLearnerProgramInfo:
         return tabulate(rows, tablefmt='plain') if rows else ''
 
     def __str__(self) -> str:
-        program_info = super().__str__()
+        program_info = str(self.program_info)
         package_info = self.__get_package_info()
         return program_info + '\n\n' + package_info if package_info else program_info
