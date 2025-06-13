@@ -9,9 +9,11 @@ from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from importlib import import_module
 from importlib.util import module_from_spec, spec_from_file_location
 
+from mlrl.testbed.program_info import ProgramInfo
 from mlrl.testbed.runnables import Runnable
 
 from mlrl.util.cli import CommandLineInterface
+from mlrl.util.package_info import PackageInfo
 
 
 def __create_argument_parser() -> ArgumentParser:
@@ -19,15 +21,28 @@ def __create_argument_parser() -> ArgumentParser:
         formatter_class=RawDescriptionHelpFormatter,
         description='A command line utility for training and evaluating machine learning algorithms',
         add_help=False)
-    argument_parser.add_argument('runnable_module_or_source_file',
-                                 type=str,
-                                 help='The Python module or source file of the program that should be run')
-    argument_parser.add_argument('-r',
-                                 '--runnable',
-                                 default='Runnable',
-                                 type=str,
-                                 help='The Python class name of the program that should be run')
+
+    if '--version' not in sys.argv and '-v' not in sys.argv:
+        argument_parser.add_argument('runnable_module_or_source_file',
+                                     type=str,
+                                     help='The Python module or source file of the program that should be run')
+        argument_parser.add_argument('-r',
+                                     '--runnable',
+                                     default='Runnable',
+                                     type=str,
+                                     help='The Python class name of the program that should be run')
+
     return argument_parser
+
+
+def __get_default_program_info() -> ProgramInfo:
+    package_info = PackageInfo('mlrl-testbed')
+    return ProgramInfo(
+        name=package_info.package_name,
+        version=package_info.package_version,
+        year='2020 - 2025',
+        authors=['Michael Rapp et al.'],
+    )
 
 
 def __import_module(module_name: str):
@@ -81,25 +96,35 @@ def main():
     The main function to be executed when the program starts.
     """
     argument_parser = __create_argument_parser()
-    args = argument_parser.parse_known_args()[0]
+    args = vars(argument_parser.parse_known_args()[0])
 
-    runnable_module_or_source_file = str(args.runnable_module_or_source_file)
-    runnable_class_name = str(args.runnable)
-    runnable = __instantiate_via_default_constructor(module_or_source_file=runnable_module_or_source_file,
-                                                     class_name=runnable_class_name)
+    runnable_module_or_source_file = args.get('runnable_module_or_source_file', None)
+    runnable_class_name = args.get('runnable', None)
+    runnable = None
 
-    if not isinstance(runnable, Runnable):
-        raise TypeError('Class "' + runnable_class_name + '" must extend from "' + Runnable.__qualname__ + '"')
+    if runnable_module_or_source_file and runnable_class_name:
+        runnable = __instantiate_via_default_constructor(module_or_source_file=str(runnable_module_or_source_file),
+                                                         class_name=str(runnable_class_name))
 
-    program_info = runnable.get_program_info()
+        if not isinstance(runnable, Runnable):
+            raise TypeError('Class "' + str(runnable_class_name) + '" must extend from "' + Runnable.__qualname__ + '"')
+
+    program_info = runnable.get_program_info() if runnable else __get_default_program_info()
     cli = CommandLineInterface(argument_parser, version_text=str(program_info) if program_info else None)
-    runnable.configure_arguments(cli)
+
+    if runnable:
+        runnable.configure_arguments(cli)
+
     argument_parser.add_argument('-h',
                                  '--help',
                                  action='help',
                                  default='==SUPPRESS==',
                                  help='Show this help message and exit')
-    runnable.run(argument_parser.parse_args())
+
+    args = argument_parser.parse_args()
+
+    if runnable:
+        runnable.run(args)
 
 
 if __name__ == '__main__':
