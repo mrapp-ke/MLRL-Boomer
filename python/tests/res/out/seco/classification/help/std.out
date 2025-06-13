@@ -27,9 +27,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--create-output-dir CREATE_OUTPUT_DIR]
                     [--print-data-characteristics PRINT_DATA_CHARACTERISTICS]
                     [--print-evaluation PRINT_EVALUATION]
                     [--print-ground-truth PRINT_GROUND_TRUTH]
-                    [--print-joint-probability-calibration-model PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL]
                     [--print-label-vectors PRINT_LABEL_VECTORS]
-                    [--print-marginal-probability-calibration-model PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL]
                     [--print-model-characteristics PRINT_MODEL_CHARACTERISTICS]
                     [--print-parameters PRINT_PARAMETERS]
                     [--print-prediction-characteristics PRINT_PREDICTION_CHARACTERISTICS]
@@ -44,9 +42,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--create-output-dir CREATE_OUTPUT_DIR]
                     [--store-data-characteristics STORE_DATA_CHARACTERISTICS]
                     [--store-evaluation STORE_EVALUATION]
                     [--store-ground-truth STORE_GROUND_TRUTH]
-                    [--store-joint-probability-calibration-model STORE_JOINT_PROBABILITY_CALIBRATION_MODEL]
                     [--store-label-vectors STORE_LABEL_VECTORS]
-                    [--store-marginal-probability-calibration-model STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL]
                     [--store-model-characteristics STORE_MODEL_CHARACTERISTICS]
                     [--store-prediction-characteristics STORE_PREDICTION_CHARACTERISTICS]
                     [--store-predictions STORE_PREDICTIONS]
@@ -205,19 +201,9 @@ options:
                         Whether the ground truth should be printed on the
                         console or not. Must be one of {"false", "true"}. For
                         additional options refer to the documentation.
-  --print-joint-probability-calibration-model PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL
-                        Whether the model for the calibration of joint
-                        probabilities should be printed on the console or not.
-                        Must be one of {"false", "true"}. For additional
-                        options refer to the documentation.
   --print-label-vectors PRINT_LABEL_VECTORS
                         Whether the unique label vectors contained in the
                         training data should be printed on the console or not.
-                        Must be one of {"false", "true"}. For additional
-                        options refer to the documentation.
-  --print-marginal-probability-calibration-model PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL
-                        Whether the model for the calibration of marginal
-                        probabilities should be printed on the console or not.
                         Must be one of {"false", "true"}. For additional
                         options refer to the documentation.
   --print-model-characteristics PRINT_MODEL_CHARACTERISTICS
@@ -290,23 +276,9 @@ options:
                         argument --output-dir is specified. Must be one of
                         {"false", "true"}. For additional options refer to the
                         documentation.
-  --store-joint-probability-calibration-model STORE_JOINT_PROBABILITY_CALIBRATION_MODEL
-                        Whether the model for the calibration of joint
-                        probabilities should be written into an output file or
-                        not. Does only have an effect if the argument
-                        --output-dir is specified. Must be one of {"false",
-                        "true"}. For additional options refer to the
-                        documentation.
   --store-label-vectors STORE_LABEL_VECTORS
                         Whether the unique label vectors contained in the
                         training data should be written into output files or
-                        not. Does only have an effect if the argument
-                        --output-dir is specified. Must be one of {"false",
-                        "true"}. For additional options refer to the
-                        documentation.
-  --store-marginal-probability-calibration-model STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL
-                        Whether the model for the calibration of marginal
-                        probabilities should be written into an output file or
                         not. Does only have an effect if the argument
                         --output-dir is specified. Must be one of {"false",
                         "true"}. For additional options refer to the

@@ -17,13 +17,15 @@ from mlrl.util.format import format_iterable
 
 
 @dataclass
-class RuleLearnerProgramInfo(ProgramInfo):
+class RuleLearnerProgramInfo:
     """
     Provides information about a program that runs a rule learning algorithm.
 
     Attributes:
-        python_packages: A list that contains a `PythonPackageInfo` for each Python package that is used by the program
+        program_info:       Information about the program
+        python_packages:    A list that contains a `PythonPackageInfo` for each Python package used by the program
     """
+    program_info: ProgramInfo
     python_packages: List[PythonPackageInfo] = field(default_factory=list)
 
     def __collect_python_packages(self, python_packages: Iterable[PythonPackageInfo]) -> Set[str]:

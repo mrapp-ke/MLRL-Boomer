@@ -6,11 +6,11 @@ Provides classes that allow configuring the functionality to write rule models t
 from argparse import Namespace
 from typing import List, Set
 
+from mlrl.common.testbed.experiments.output.model_text.model_text import RuleModelAsText
+from mlrl.common.testbed.experiments.output.model_text.writer import RuleModelAsTextWriter
+
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.output.extension import OutputExtension
-from mlrl.testbed.experiments.output.model_text import RuleModelAsText
-from mlrl.testbed.experiments.output.model_text.extractor_rules import RuleModelAsTextExtractor
-from mlrl.testbed.experiments.output.model_text.writer import ModelAsTextWriter
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.experiments.output.sinks.sink_text import TextFileSink
@@ -86,5 +86,5 @@ class RuleModelAsTextExtension(Extension):
         sinks = self.__create_log_sinks(args) + self.__create_text_file_sinks(args)
 
         if sinks:
-            writer = ModelAsTextWriter(RuleModelAsTextExtractor()).add_sinks(*sinks)
+            writer = RuleModelAsTextWriter().add_sinks(*sinks)
             experiment_builder.add_post_training_output_writers(writer)

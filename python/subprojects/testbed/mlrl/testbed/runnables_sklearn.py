@@ -96,9 +96,9 @@ class SkLearnRunnable(Runnable, ABC):
             """
             prediction_type = PredictionTypeExtension.get_prediction_type(args)
             predictor_factory = runnable.create_predictor_factory(args, prediction_type)
-            value = SkLearnRunnable.ProblemDomainExtension.PROBLEM_TYPE.get_value(args)
+            problem_type = SkLearnRunnable.ProblemDomainExtension.PROBLEM_TYPE.get_value(args)
 
-            if value == ClassificationProblem.NAME:
+            if problem_type == ClassificationProblem.NAME:
                 return SkLearnClassificationProblem(base_learner=runnable.create_classifier(args),
                                                     predictor_factory=predictor_factory,
                                                     prediction_type=prediction_type,
