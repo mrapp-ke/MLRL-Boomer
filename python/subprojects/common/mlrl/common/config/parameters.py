@@ -26,8 +26,6 @@ from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.util.cli import Argument, SetArgument
 from mlrl.util.options import BooleanOption, Options, parse_param, parse_param_and_options
 
-AUTOMATIC = 'auto'
-
 NONE = 'none'
 
 OPTION_RESAMPLE_FEATURES = 'resample_features'

@@ -5,7 +5,7 @@ Provides utility function for configuring boosting algorithms.
 """
 from typing import Optional
 
-from mlrl.common.config.parameters import AUTOMATIC, BINNING_EQUAL_WIDTH, NONE, OPTION_BIN_RATIO, OPTION_MAX_BINS, \
+from mlrl.common.config.parameters import BINNING_EQUAL_WIDTH, NONE, OPTION_BIN_RATIO, OPTION_MAX_BINS, \
     OPTION_MIN_BINS, OPTION_USE_HOLDOUT_SET, RULE_LEARNER_PARAMETERS, FeatureBinningParameter, FloatParameter, \
     NominalParameter, ParallelRuleRefinementParameter, ParallelStatisticUpdateParameter, PartitionSamplingParameter
 from mlrl.common.cython.learner import DefaultRuleMixin, NoJointProbabilityCalibrationMixin, \
@@ -26,6 +26,8 @@ from mlrl.boosting.cython.learner_classification import AutomaticBinaryPredictor
     SparseStatisticsMixin
 
 from mlrl.util.options import BooleanOption, Options
+
+AUTOMATIC = 'auto'
 
 PROBABILITY_CALIBRATION_ISOTONIC = 'isotonic'
 
