@@ -103,8 +103,6 @@ class OutputWriter:
                         self.__write_to_sink(sink, state, output_data)
             else:
                 log.warning('No extractors have been added to output writer of type %s', type(self).__name__)
-        else:
-            log.warning('No sinks have been added to output writer of type %s', type(self).__name__)
 
     def _write_to_sink(self, sink: Sink, state: ExperimentState, output_data: OutputData):
         """
