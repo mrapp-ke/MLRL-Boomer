@@ -4,10 +4,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for retrieving information about Python packages.
 """
 from dataclasses import dataclass, field
-from importlib.metadata import requires, version
+from importlib.metadata import version
 from typing import Any, Set
-
-from packaging.requirements import Requirement
 
 
 @dataclass
@@ -28,19 +26,6 @@ class PackageInfo:
         The version of the Python package.
         """
         return version(self.package_name)
-
-    @property
-    def dependencies(self) -> Set['PackageInfo']:
-        """
-        A set that contains a `PackageInfo` for each dependency of this package.
-        """
-        dependencies = requires(self.package_name)
-        package_infos = {PackageInfo(package_name=Requirement(dependency).name) for dependency in dependencies}
-
-        for python_package in self.python_packages:
-            package_infos.discard(python_package)
-
-        return package_infos
 
     def __str__(self) -> str:
         return self.package_name + ' ' + self.package_version
