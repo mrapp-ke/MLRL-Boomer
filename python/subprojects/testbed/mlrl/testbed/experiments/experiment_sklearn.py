@@ -56,14 +56,6 @@ class SkLearnExperiment(Experiment):
             self.evaluation_writer = EvaluationWriter()
             self.model_writer = ModelWriter()
             self.parameter_writer = ParameterWriter()
-
-        def _create_experiment(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter) -> Experiment:
-            return SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
-
-        def build(self) -> Experiment:
-            """
-            See :func:`mlrl.testbed.experiments.experiment.Experiment.Builder.build`
-            """
             self.add_pre_training_output_writers(
                 self.data_characteristics_writer,
                 self.parameter_writer,
@@ -78,7 +70,9 @@ class SkLearnExperiment(Experiment):
                 self.prediction_writer,
                 self.evaluation_writer,
             )
-            return super().build()
+
+        def _create_experiment(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter) -> Experiment:
+            return SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
 
     def __create_learner(self, parameters: ParameterDict) -> BaseEstimator:
         learner = clone(self.problem_domain.base_learner)
