@@ -17,6 +17,7 @@ from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_tabular import AttributeType, TabularDataset
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
+from mlrl.testbed.experiments.output.label_vectors.writer import LabelVectorWriter
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnProblem
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
@@ -33,8 +34,23 @@ class SkLearnExperiment(Experiment):
         Allows to configure and create instances of the class `SkLearnExperiment`.
         """
 
+        def __init__(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter):
+            """
+            :param problem_domain:      The problem domain, the experiment should be concerned with
+            :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
+            """
+            super().__init__(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
+            self.label_vector_writer = LabelVectorWriter()
+
         def _create_experiment(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter) -> Experiment:
             return SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
+
+        def build(self) -> Experiment:
+            """
+            See :func:`mlrl.testbed.experiments.experiment.Experiment.Builder.build`
+            """
+            self.add_post_training_output_writers(self.label_vector_writer)
+            return super().build()
 
     def __create_learner(self, parameters: ParameterDict) -> BaseEstimator:
         learner = clone(self.problem_domain.base_learner)
