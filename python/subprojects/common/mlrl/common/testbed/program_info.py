@@ -10,7 +10,6 @@ from tabulate import tabulate
 
 from mlrl.common.package_info import PythonPackageInfo
 
-from mlrl.testbed.package_info import get_package_info as get_testbed_package_info
 from mlrl.testbed.program_info import ProgramInfo
 
 from mlrl.util.format import format_iterable
@@ -101,7 +100,7 @@ class RuleLearnerProgramInfo:
 
     def __get_package_info(self) -> str:
         rows = []
-        python_packages = [get_testbed_package_info()] + self.python_packages
+        python_packages = self.python_packages
 
         for i, python_package in enumerate(sorted(self.__collect_python_packages(python_packages))):
             rows.append(['' if i > 0 else 'Python packages:', python_package, ''])
