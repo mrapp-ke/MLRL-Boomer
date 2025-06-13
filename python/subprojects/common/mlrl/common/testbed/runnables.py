@@ -15,8 +15,6 @@ from mlrl.common.testbed.experiments.output.model_text import RuleModelAsTextExt
 
 from mlrl.testbed.experiments import Experiment, SkLearnExperiment
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
-from mlrl.testbed.experiments.output.probability_calibration.extension import \
-    JointProbabilityCalibrationModelExtension, MarginalProbabilityCalibrationModelExtension
 from mlrl.testbed.experiments.prediction import IncrementalPredictor
 from mlrl.testbed.experiments.prediction.predictor import Predictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
@@ -221,8 +219,6 @@ class RuleLearnerRunnable(SkLearnRunnable):
             RuleLearnerRunnable.RuleLearnerExtension(),
             RuleModelAsTextExtension(),
             RuleModelCharacteristicsExtension(),
-            MarginalProbabilityCalibrationModelExtension(),
-            JointProbabilityCalibrationModelExtension()
         }
 
     def get_algorithmic_arguments(self, known_args: Namespace) -> Set[Argument]:
