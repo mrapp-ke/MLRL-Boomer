@@ -1,0 +1,7 @@
+mlrl.boosting.testbed.experiments.output.probability\_calibration.writer module
+===============================================================================
+
+.. automodule:: mlrl.boosting.testbed.experiments.output.probability_calibration.writer
+   :members:
+   :show-inheritance:
+   :undoc-members:

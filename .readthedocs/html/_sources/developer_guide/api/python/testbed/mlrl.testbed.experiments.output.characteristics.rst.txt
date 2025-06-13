@@ -13,4 +13,3 @@ Subpackages
    :maxdepth: 4
 
    mlrl.testbed.experiments.output.characteristics.data
-   mlrl.testbed.experiments.output.characteristics.model
