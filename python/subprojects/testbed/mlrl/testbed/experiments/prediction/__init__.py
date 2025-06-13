@@ -5,4 +5,3 @@ Provides classes that allow to obtain predictions from by a machine learning mod
 """
 from mlrl.testbed.experiments.prediction.predictor import Predictor
 from mlrl.testbed.experiments.prediction.predictor_global import GlobalPredictor
-from mlrl.testbed.experiments.prediction.predictor_incremental import IncrementalPredictor
