@@ -8,9 +8,7 @@ import logging as log
 from abc import ABC, abstractmethod
 from typing import Any, Callable, Generator
 
-from sklearn.base import BaseEstimator, RegressorMixin
-
-from mlrl.common.mixins import ClassifierMixin
+from sklearn.base import BaseEstimator, ClassifierMixin, RegressorMixin
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
