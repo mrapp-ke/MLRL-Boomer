@@ -4,14 +4,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write ground truth to one or several sinks.
 """
 from argparse import Namespace
-from typing import List, Set
+from typing import Set
 
 from mlrl.testbed_arff.experiments.output.sinks.sink_arff import ArffFileSink
 
 from mlrl.testbed.experiments.experiment import Experiment
-from mlrl.testbed.experiments.output.dataset.tabular.writer_ground_truth import GroundTruthWriter
 from mlrl.testbed.experiments.output.extension import OutputExtension
-from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.util.format import OPTION_DECIMALS
@@ -51,31 +49,26 @@ class GroundTruthExtension(Extension):
         """
         return {self.PRINT_GROUND_TRUTH, self.STORE_GROUND_TRUTH}
 
-    def __create_log_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.PRINT_GROUND_TRUTH.get_value(args, default=OutputExtension.PRINT_ALL.get_value(args))
+    def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
+        print_all = OutputExtension.PRINT_ALL.get_value(args)
+        print_ground_truth, options = self.PRINT_GROUND_TRUTH.get_value(args, default=print_all)
 
-        if value:
-            return [LogSink(options=options)]
-        return []
+        if print_ground_truth:
+            experiment_builder.ground_truth_writer.add_sinks(LogSink(options=options))
 
-    def __create_arff_file_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.STORE_GROUND_TRUTH.get_value(args, default=OutputExtension.STORE_ALL.get_value(args))
-        output_dir = OutputExtension.OUTPUT_DIR.get_value(args)
+    def __configure_arff_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
+        store_all = OutputExtension.STORE_ALL.get_value(args)
+        store_ground_truth, options = self.STORE_GROUND_TRUTH.get_value(args, default=store_all)
+        output_directory = OutputExtension.OUTPUT_DIR.get_value(args)
 
-        if value and output_dir:
-            return [
-                ArffFileSink(directory=output_dir,
-                             create_directory=OutputExtension.CREATE_OUTPUT_DIR.get_value(args),
-                             options=options)
-            ]
-        return []
+        if store_ground_truth and output_directory:
+            create_output_directory = OutputExtension.CREATE_OUTPUT_DIR.get_value(args)
+            experiment_builder.ground_truth_writer.add_sinks(
+                ArffFileSink(directory=output_directory, create_directory=create_output_directory, options=options))
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        sinks = self.__create_log_sinks(args) + self.__create_arff_file_sinks(args)
-
-        if sinks:
-            writer = GroundTruthWriter().add_sinks(*sinks)
-            experiment_builder.add_prediction_output_writers(writer)
+        self.__configure_log_sink(args, experiment_builder)
+        self.__configure_arff_file_sink(args, experiment_builder)

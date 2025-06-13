@@ -89,9 +89,9 @@ class DatasetSplitterExtension(Extension):
         """
         dataset_reader = DatasetFileExtension.get_dataset_reader(args)
         dataset_reader.add_preprocessors(*PreprocessorExtension.get_preprocessors(args))
-        value, options = DatasetSplitterExtension.DATASET_SPLITTER.get_value(args)
+        dataset_splitter, options = DatasetSplitterExtension.DATASET_SPLITTER.get_value(args)
 
-        if value == VALUE_CROSS_VALIDATION:
+        if dataset_splitter == VALUE_CROSS_VALIDATION:
             num_folds = options.get_int(OPTION_NUM_FOLDS, 10)
             assert_greater_or_equal(OPTION_NUM_FOLDS, num_folds, 2)
             first_fold = options.get_int(OPTION_FIRST_FOLD, 1)
@@ -105,7 +105,7 @@ class DatasetSplitterExtension(Extension):
                                            first_fold=first_fold - 1,
                                            last_fold=last_fold,
                                            random_state=DatasetSplitterExtension.get_random_state(args))
-        if value == VALUE_TRAIN_TEST:
+        if dataset_splitter == VALUE_TRAIN_TEST:
             test_size = options.get_float(OPTION_TEST_SIZE, 0.33)
             assert_greater(OPTION_TEST_SIZE, test_size, 0)
             assert_less(OPTION_TEST_SIZE, test_size, 1)
