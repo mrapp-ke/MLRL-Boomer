@@ -8,6 +8,8 @@ from mlrl.common.package_info import RuleLearnerPackageInfo, get_package_info as
 
 from mlrl.boosting.cython.package_info import get_cpp_library_info
 
+from mlrl.util.package_info import PackageInfo
+
 
 def get_package_info() -> RuleLearnerPackageInfo:
     """
@@ -15,7 +17,10 @@ def get_package_info() -> RuleLearnerPackageInfo:
 
     :return: A `RuleLearnerPackageInfo` that provides information about the Python package
     """
-    return RuleLearnerPackageInfo(package_name='mlrl-boomer',
-                             python_packages=[get_common_package_info()],
-                             cpp_libraries=[get_common_cpp_library_info(),
-                                            get_cpp_library_info()])
+    return RuleLearnerPackageInfo(
+        package_info=PackageInfo(
+            package_name='mlrl-boomer',
+            python_packages=[get_common_package_info()],
+        ),
+        cpp_libraries=[get_common_cpp_library_info(), get_cpp_library_info()],
+    )
