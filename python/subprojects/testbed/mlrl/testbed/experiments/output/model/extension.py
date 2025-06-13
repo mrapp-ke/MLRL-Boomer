@@ -8,7 +8,6 @@ from typing import Set
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.extension import OutputExtension
-from mlrl.testbed.experiments.output.model.writer import ModelWriter
 from mlrl.testbed.experiments.output.sinks.sink_pickle import PickleFileSink
 from mlrl.testbed.extensions.extension import Extension
 
@@ -44,7 +43,6 @@ class ModelOutputExtension(Extension):
         model_save_dir = self.MODEL_SAVE_DIR.get_value(args)
 
         if model_save_dir:
-            pickle_sink = PickleFileSink(directory=model_save_dir,
-                                         create_directory=OutputExtension.CREATE_OUTPUT_DIR.get_value(args))
-            writer = ModelWriter().add_sinks(pickle_sink)
-            experiment_builder.add_post_training_output_writers(writer)
+            create_output_directory = OutputExtension.CREATE_OUTPUT_DIR.get_value(args)
+            experiment_builder.model_writer.add_sinks(
+                PickleFileSink(directory=model_save_dir, create_directory=create_output_directory))
