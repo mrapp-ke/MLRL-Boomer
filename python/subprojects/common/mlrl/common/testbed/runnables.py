@@ -11,6 +11,7 @@ from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMix
 from mlrl.common.config.parameters import Parameter
 from mlrl.common.learners import RuleLearner, SparsePolicy
 from mlrl.common.testbed.experiments.output.characteristics.model import RuleModelCharacteristicsExtension
+from mlrl.common.testbed.experiments.output.label_vectors.extension import LabelVectorSetExtension
 from mlrl.common.testbed.experiments.output.model_text import RuleModelAsTextExtension
 
 from mlrl.testbed.experiments import Experiment, SkLearnExperiment
@@ -219,6 +220,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
             RuleLearnerRunnable.RuleLearnerExtension(),
             RuleModelAsTextExtension(),
             RuleModelCharacteristicsExtension(),
+            LabelVectorSetExtension(),
         }
 
     def get_algorithmic_arguments(self, known_args: Namespace) -> Set[Argument]:
