@@ -29,7 +29,6 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "mlrl-common",
     "mlrl-testbed-arff",
     "mlrl-util",
     "tabulate",
