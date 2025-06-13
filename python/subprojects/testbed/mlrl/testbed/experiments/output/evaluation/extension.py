@@ -4,16 +4,14 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write evaluation results to one or several sinks.
 """
 from argparse import Namespace
-from typing import List, Set
+from typing import Set
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.evaluation.evaluation_result import EvaluationResult
 from mlrl.testbed.experiments.output.evaluation.extractor_classification import ClassificationEvaluationDataExtractor
 from mlrl.testbed.experiments.output.evaluation.extractor_ranking import RankingEvaluationDataExtractor
 from mlrl.testbed.experiments.output.evaluation.extractor_regression import RegressionEvaluationDataExtractor
-from mlrl.testbed.experiments.output.evaluation.writer import EvaluationWriter
 from mlrl.testbed.experiments.output.extension import OutputExtension
-from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.experiments.prediction_type import PredictionType
@@ -92,32 +90,31 @@ class EvaluationExtension(Extension):
         """
         return {self.PRINT_EVALUATION, self.STORE_EVALUATION}
 
-    def __create_log_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.PRINT_EVALUATION.get_value(args, default=OutputExtension.PRINT_ALL.get_value(args))
+    def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
+        print_all = OutputExtension.PRINT_ALL.get_value(args)
+        print_evaluation, options = self.PRINT_EVALUATION.get_value(args, default=print_all)
 
-        if value:
-            return [LogSink(options)]
-        return []
+        if print_evaluation:
+            experiment_builder.evaluation_writer.add_sinks(LogSink(options))
 
-    def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.STORE_EVALUATION.get_value(args, default=OutputExtension.STORE_ALL.get_value(args))
-        output_dir = OutputExtension.OUTPUT_DIR.get_value(args)
+    def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
+        store_all = OutputExtension.STORE_ALL.get_value(args)
+        store_evaluation, options = self.STORE_EVALUATION.get_value(args, default=store_all)
+        output_directory = OutputExtension.OUTPUT_DIR.get_value(args)
 
-        if value and output_dir:
-            return [
-                CsvFileSink(directory=output_dir,
-                            create_directory=OutputExtension.CREATE_OUTPUT_DIR.get_value(args),
-                            options=options)
-            ]
-        return []
+        if store_evaluation and output_directory:
+            create_output_directory = OutputExtension.CREATE_OUTPUT_DIR.get_value(args)
+            experiment_builder.evaluation_writer.add_sinks(
+                CsvFileSink(directory=output_directory, create_directory=create_output_directory, options=options))
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        sinks = self.__create_log_sinks(args) + self.__create_csv_file_sinks(args)
+        self.__configure_log_sink(args, experiment_builder)
+        self.__configure_csv_file_sink(args, experiment_builder)
 
-        if sinks:
+        if experiment_builder.evaluation_writer.sinks:
             problem_domain = experiment_builder.problem_domain
 
             if isinstance(problem_domain, RegressionProblem):
@@ -129,5 +126,4 @@ class EvaluationExtension(Extension):
             else:
                 extractor = ClassificationEvaluationDataExtractor()
 
-            writer = EvaluationWriter(extractor).add_sinks(*sinks)
-            experiment_builder.add_prediction_output_writers(writer)
+            experiment_builder.evaluation_writer.extractors.append(extractor)
