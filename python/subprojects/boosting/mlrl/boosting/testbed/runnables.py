@@ -6,18 +6,15 @@ dependency.
 """
 from typing import Optional
 
+from mlrl.common.testbed.program_info import RuleLearnerProgramInfo
+from mlrl.common.testbed.runnables import RuleLearnerRunnable
+
 from mlrl.boosting.config.parameters import BOOMER_CLASSIFIER_PARAMETERS, BOOMER_REGRESSOR_PARAMETERS
 from mlrl.boosting.cython.learner_boomer import BoomerClassifierConfig, BoomerRegressorConfig
 from mlrl.boosting.learners import BoomerClassifier, BoomerRegressor
 from mlrl.boosting.package_info import get_package_info
 
 from mlrl.testbed.program_info import ProgramInfo
-from mlrl.testbed.program_info_rules import RuleLearnerProgramInfo
-
-try:
-    from mlrl.common.testbed.runnables import RuleLearnerRunnable
-except ImportError as error:
-    raise ImportError('Optional dependency "mlrl-testbed" is not installed') from error
 
 
 class BoomerRunnable(RuleLearnerRunnable):
