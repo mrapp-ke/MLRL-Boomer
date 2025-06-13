@@ -18,6 +18,8 @@ from mlrl.testbed.experiments.dataset_tabular import AttributeType, TabularDatas
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.output.characteristics.data.tabular.writer_data import DataCharacteristicsWriter
+from mlrl.testbed.experiments.output.characteristics.data.tabular.writer_prediction import \
+    PredictionCharacteristicsWriter
 from mlrl.testbed.experiments.output.label_vectors.writer import LabelVectorWriter
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnProblem
@@ -42,6 +44,7 @@ class SkLearnExperiment(Experiment):
             """
             super().__init__(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
             self.data_characteristics_writer = DataCharacteristicsWriter()
+            self.prediction_characteristics_writer = PredictionCharacteristicsWriter()
             self.label_vector_writer = LabelVectorWriter()
 
         def _create_experiment(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter) -> Experiment:
@@ -53,6 +56,7 @@ class SkLearnExperiment(Experiment):
             """
             self.add_pre_training_output_writers(self.data_characteristics_writer)
             self.add_post_training_output_writers(self.label_vector_writer)
+            self.add_prediction_output_writers(self.prediction_characteristics_writer)
             return super().build()
 
     def __create_learner(self, parameters: ParameterDict) -> BaseEstimator:
