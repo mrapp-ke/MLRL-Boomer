@@ -159,7 +159,7 @@ class Experiment(ABC):
             """
             Creates and runs a new experiment according to the specified configuration.
             """
-            should_predict = bool(self.prediction_output_writers)
+            should_predict = any(bool(output_writer.sinks) for output_writer in self.prediction_output_writers)
             self.build().run(predict_for_training_dataset=should_predict and self.predict_for_training_dataset,
                              predict_for_test_dataset=should_predict and self.predict_for_test_dataset)
 
