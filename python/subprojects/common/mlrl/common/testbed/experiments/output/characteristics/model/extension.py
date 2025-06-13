@@ -7,9 +7,9 @@ sinks.
 from argparse import Namespace
 from typing import List, Set
 
+from mlrl.common.testbed.experiments.output.characteristics.model.writer import RuleModelCharacteristicsWriter
+
 from mlrl.testbed.experiments.experiment import Experiment
-from mlrl.testbed.experiments.output.characteristics.model.extractor_rules import RuleModelCharacteristicsExtractor
-from mlrl.testbed.experiments.output.characteristics.model.writer import ModelCharacteristicsWriter
 from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
@@ -71,5 +71,5 @@ class RuleModelCharacteristicsExtension(Extension):
         sinks = self.__create_log_sinks(args) + self.__create_csv_file_sinks(args)
 
         if sinks:
-            writer = ModelCharacteristicsWriter(RuleModelCharacteristicsExtractor()).add_sinks(*sinks)
+            writer = RuleModelCharacteristicsWriter().add_sinks(*sinks)
             experiment_builder.add_post_training_output_writers(writer)

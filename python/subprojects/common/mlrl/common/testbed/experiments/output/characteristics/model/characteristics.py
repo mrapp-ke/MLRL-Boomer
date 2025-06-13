@@ -8,9 +8,10 @@ from functools import reduce
 from itertools import chain
 from typing import List, Optional
 
-from mlrl.testbed.experiments.context import Context
-from mlrl.testbed.experiments.output.characteristics.model.statistics_rules import BodyStatistics, HeadStatistics, \
+from mlrl.common.testbed.experiments.output.characteristics.model.statistics import BodyStatistics, HeadStatistics, \
     RuleModelStatistics, RuleStatistics
+
+from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.table import Alignment, RowWiseTable, Table
 from mlrl.testbed.util.format import format_number, format_percentage
