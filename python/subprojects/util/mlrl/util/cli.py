@@ -13,6 +13,8 @@ from typing import Any, Dict, Optional, Set
 from mlrl.util.format import format_enum_values, format_set
 from mlrl.util.options import BooleanOption, parse_enum, parse_param, parse_param_and_options
 
+NONE = 'none'
+
 
 class Argument:
     """

@@ -6,8 +6,6 @@ Provides classes that allow configuring the functionality to split datasets into
 from argparse import Namespace
 from typing import Set
 
-from mlrl.common.config.parameters import NONE
-
 from mlrl.testbed.experiments.input.dataset.preprocessors.tabular.extension import PreprocessorExtension
 from mlrl.testbed.experiments.input.dataset.splitters.extension import DatasetFileExtension
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
@@ -16,7 +14,7 @@ from mlrl.testbed.experiments.input.dataset.splitters.tabular.splitter_bipartiti
 from mlrl.testbed.experiments.input.dataset.splitters.tabular.splitter_cross_validation import CrossValidationSplitter
 from mlrl.testbed.extensions.extension import Extension
 
-from mlrl.util.cli import Argument, IntArgument, SetArgument
+from mlrl.util.cli import NONE, Argument, IntArgument, SetArgument
 from mlrl.util.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 
 VALUE_TRAIN_TEST = 'train-test'
