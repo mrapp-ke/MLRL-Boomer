@@ -10,11 +10,11 @@ from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMix
 
 from mlrl.common.config.parameters import Parameter
 from mlrl.common.learners import RuleLearner, SparsePolicy
+from mlrl.common.testbed.experiments.output.characteristics.model import RuleModelCharacteristicsExtension
 from mlrl.common.testbed.experiments.output.model_text import RuleModelAsTextExtension
 
 from mlrl.testbed.experiments import Experiment, SkLearnExperiment
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
-from mlrl.testbed.experiments.output.characteristics.model.extension import RuleModelCharacteristicsExtension
 from mlrl.testbed.experiments.output.probability_calibration.extension import \
     JointProbabilityCalibrationModelExtension, MarginalProbabilityCalibrationModelExtension
 from mlrl.testbed.experiments.prediction import IncrementalPredictor
