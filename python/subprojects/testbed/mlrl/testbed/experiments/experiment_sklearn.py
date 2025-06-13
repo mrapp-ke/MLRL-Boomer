@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for performing experiments.
+Provides classes for performing experiments using the scikit-learn framework.
 """
 import logging as log
 
@@ -11,10 +11,8 @@ from typing import Any, Dict, Generator, Optional
 
 from sklearn.base import BaseEstimator, clone
 
-from mlrl.common.mixins import NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
-
 from mlrl.testbed.experiments.dataset import Dataset
-from mlrl.testbed.experiments.dataset_tabular import AttributeType, TabularDataset
+from mlrl.testbed.experiments.dataset_tabular import TabularDataset
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.output.characteristics.data.tabular.writer_data import DataCharacteristicsWriter
@@ -103,31 +101,6 @@ class SkLearnExperiment(Experiment):
                      if aggr else '') + '"' + change[0] + '" is "' + change[2] + '" instead of "' + change[1] + '"',
                     changes, ''))
 
-    def __train(self, learner: BaseEstimator, dataset: TabularDataset) -> Timer.Duration:
-        # Set the indices of ordinal features, if supported...
-        fit_kwargs = self.problem_domain.fit_kwargs
-        fit_kwargs = fit_kwargs if fit_kwargs else {}
-
-        if isinstance(learner, OrdinalFeatureSupportMixin):
-            fit_kwargs[OrdinalFeatureSupportMixin.KWARG_ORDINAL_FEATURE_INDICES] = dataset.get_feature_indices(
-                AttributeType.ORDINAL)
-
-        # Set the indices of nominal features, if supported...
-        if isinstance(learner, NominalFeatureSupportMixin):
-            fit_kwargs[NominalFeatureSupportMixin.KWARG_NOMINAL_FEATURE_INDICES] = dataset.get_feature_indices(
-                AttributeType.NOMINAL)
-
-        try:
-            start_time = Timer.start()
-            learner.fit(dataset.x, dataset.y, **fit_kwargs)
-            return Timer.stop(start_time)
-        except ValueError as error:
-            if dataset.has_sparse_features:
-                return self.__train(learner, dataset.enforce_dense_features())
-            if dataset.has_sparse_outputs:
-                return self.__train(learner, dataset.enforce_dense_outputs())
-            raise error
-
     # pylint: disable=useless-parent-delegation
     def __init__(self, problem_domain: SkLearnProblem, dataset_splitter: DatasetSplitter):
         """
@@ -135,6 +108,28 @@ class SkLearnExperiment(Experiment):
         :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
         """
         super().__init__(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
+
+    def _fit(self, estimator: BaseEstimator, dataset: TabularDataset,
+             fit_kwargs: Optional[Dict[str, Any]]) -> Timer.Duration:
+        """
+        May be overridden by subclasses in order to fit a scikit-learn estimator to a dataset.
+
+        :param estimator:   A scikit-learn estimator
+        :param fit_kwargs:  Optional keyword arguments to be passed to the estimator
+
+        """
+        fit_kwargs = fit_kwargs if fit_kwargs else {}
+
+        try:
+            start_time = Timer.start()
+            estimator.fit(dataset.x, dataset.y, **fit_kwargs)
+            return Timer.stop(start_time)
+        except ValueError as error:
+            if dataset.has_sparse_features:
+                return self._fit(estimator, dataset.enforce_dense_features(), fit_kwargs)
+            if dataset.has_sparse_outputs:
+                return self._fit(estimator, dataset.enforce_dense_outputs(), fit_kwargs)
+            raise error
 
     def _train(self, learner: Optional[Any], parameters: ParameterDict, dataset: Dataset) -> TrainingState:
         new_learner = self.__create_learner(parameters=parameters)
@@ -145,7 +140,7 @@ class SkLearnExperiment(Experiment):
             return TrainingState(learner=learner)
 
         log.info('Fitting model to %s training examples...', dataset.num_examples)
-        training_duration = self.__train(new_learner, dataset)
+        training_duration = self._fit(new_learner, dataset, fit_kwargs=self.problem_domain.fit_kwargs)
         log.info('Successfully fit model in %s', training_duration)
         return TrainingState(learner=new_learner, training_duration=training_duration)
 
