@@ -35,8 +35,12 @@ class SeCoRunnable(RuleLearnerRunnable):
         See :func:`mlrl.testbed.runnables.Runnable.get_program_info`
         """
         package_info = get_package_info()
-        return RuleLearnerProgramInfo(name='Multi-label SeCo',
-                                      version=package_info.package_version,
-                                      year='2020 - 2025',
-                                      authors=['Michael Rapp et al.'],
-                                      python_packages=[package_info])
+        return RuleLearnerProgramInfo(
+            program_info=ProgramInfo(
+                name='Multi-label SeCo',
+                version=package_info.package_version,
+                year='2020 - 2025',
+                authors=['Michael Rapp et al.'],
+            ),
+            python_packages=[package_info],
+        )
