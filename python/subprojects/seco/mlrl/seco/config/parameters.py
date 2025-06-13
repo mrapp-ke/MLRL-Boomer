@@ -5,7 +5,7 @@ Provides utilities that ease the configuration of separate-and-conquer (SeCo) al
 """
 from typing import Optional
 
-from mlrl.common.config.parameters import NONE, RULE_LEARNER_PARAMETERS, FeatureBinningParameter, NominalParameter
+from mlrl.common.config.parameters import RULE_LEARNER_PARAMETERS, FeatureBinningParameter, NominalParameter
 
 from mlrl.seco.cython.learner import AccuracyHeuristicMixin, AccuracyPruningHeuristicMixin, FMeasureHeuristicMixin, \
     FMeasurePruningHeuristicMixin, KlnLiftFunctionMixin, LaplaceHeuristicMixin, LaplacePruningHeuristicMixin, \
@@ -13,6 +13,7 @@ from mlrl.seco.cython.learner import AccuracyHeuristicMixin, AccuracyPruningHeur
     PeakLiftFunctionMixin, PrecisionHeuristicMixin, PrecisionPruningHeuristicMixin, RecallHeuristicMixin, \
     RecallPruningHeuristicMixin, SingleOutputHeadMixin, WraHeuristicMixin, WraPruningHeuristicMixin
 
+from mlrl.util.cli import NONE
 from mlrl.util.options import Options
 
 HEURISTIC_ACCURACY = 'accuracy'
