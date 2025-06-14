@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for implementing different kinds of problem domains.
+Provides classes for implementing different kinds of problem domains to be tacked via the scikit-learn framework.
 """
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Optional

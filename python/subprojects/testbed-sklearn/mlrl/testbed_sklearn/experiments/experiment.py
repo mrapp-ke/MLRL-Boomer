@@ -12,6 +12,7 @@ from typing import Any, Dict, Generator, Optional
 from sklearn.base import BaseEstimator, clone
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
+from mlrl.testbed_sklearn.experiments.problem_domain import SkLearnProblem
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.experiment import Experiment
@@ -26,7 +27,6 @@ from mlrl.testbed.experiments.output.label_vectors.writer import LabelVectorWrit
 from mlrl.testbed.experiments.output.model.writer import ModelWriter
 from mlrl.testbed.experiments.output.parameters.writer import ParameterWriter
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
-from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnProblem
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
 
