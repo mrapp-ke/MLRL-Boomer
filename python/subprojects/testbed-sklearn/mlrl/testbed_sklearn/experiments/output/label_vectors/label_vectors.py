@@ -7,9 +7,11 @@ from typing import Optional
 
 import numpy as np
 
+from mlrl.testbed_sklearn.experiments.output.label_vectors.label_vector_histogram import LabelVector, \
+    LabelVectorHistogram
+
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
-from mlrl.testbed.experiments.output.label_vectors.label_vector_histogram import LabelVector, LabelVectorHistogram
 from mlrl.testbed.experiments.table import RowWiseTable, Table
 
 from mlrl.util.options import Options
