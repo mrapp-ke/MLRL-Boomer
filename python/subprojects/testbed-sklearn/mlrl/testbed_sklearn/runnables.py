@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for running experiments using the scikit-learn framework.
 """
-
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from typing import Any, Dict, Optional, Set
