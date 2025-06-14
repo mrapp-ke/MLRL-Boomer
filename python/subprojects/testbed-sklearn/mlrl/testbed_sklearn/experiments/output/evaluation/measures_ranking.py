@@ -5,8 +5,9 @@ Provides classes that implement ranking evaluation measures.
 """
 from sklearn import metrics
 
-from mlrl.testbed.experiments.output.evaluation.evaluation_result import EVALUATION_MEASURE_PREDICTION_TIME, \
+from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import EVALUATION_MEASURE_PREDICTION_TIME, \
     EVALUATION_MEASURE_TRAINING_TIME, EvaluationResult
+
 from mlrl.testbed.experiments.output.evaluation.measures import Measure
 
 RANKING_EVALUATION_MEASURES = [
