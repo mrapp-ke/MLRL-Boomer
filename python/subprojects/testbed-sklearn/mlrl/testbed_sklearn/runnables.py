@@ -9,7 +9,9 @@ from typing import Any, Dict, Optional, Set
 
 from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
 
-from mlrl.testbed.experiments import Experiment, SkLearnExperiment
+from mlrl.testbed_sklearn.experiments import SkLearnExperiment
+
+from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.input.dataset.splitters.tabular.extension import DatasetSplitterExtension
 from mlrl.testbed.experiments.input.model.extension import ModelInputExtension
