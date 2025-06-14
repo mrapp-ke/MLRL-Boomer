@@ -1,0 +1,7 @@
+mlrl.util.package\_info module
+==============================
+
+.. automodule:: mlrl.util.package_info
+   :members:
+   :show-inheritance:
+   :undoc-members:

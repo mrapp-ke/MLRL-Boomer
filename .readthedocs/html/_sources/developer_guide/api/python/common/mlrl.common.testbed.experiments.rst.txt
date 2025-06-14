@@ -13,3 +13,12 @@ Subpackages
    :maxdepth: 4
 
    mlrl.common.testbed.experiments.output
+   mlrl.common.testbed.experiments.prediction
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.common.testbed.experiments.experiment

@@ -11,7 +11,7 @@ maxdepth: 1
 Package mlrl-util <util/mlrl.util.rst>
 Package mlrl-testbed <testbed/mlrl.testbed.rst>
 Package mlrl-testbed-arff <testbed-arff/mlrl.testbed_arff.rst>
-Package mlrl-seco <seco/mlrl.seco.rst>
 Package mlrl-common <common/mlrl.common.rst>
+Package mlrl-seco <seco/mlrl.seco.rst>
 Package mlrl-boosting <boosting/mlrl.boosting.rst>
 ```

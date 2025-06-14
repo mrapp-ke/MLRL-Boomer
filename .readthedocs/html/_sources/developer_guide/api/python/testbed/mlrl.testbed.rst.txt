@@ -23,7 +23,6 @@ Submodules
    :maxdepth: 4
 
    mlrl.testbed.main
-   mlrl.testbed.package_info
    mlrl.testbed.program_info
    mlrl.testbed.runnables
    mlrl.testbed.runnables_sklearn
