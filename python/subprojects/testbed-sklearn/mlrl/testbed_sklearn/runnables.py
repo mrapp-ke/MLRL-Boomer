@@ -11,6 +11,8 @@ from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMix
 
 from mlrl.testbed_sklearn.experiments import SkLearnExperiment
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import DatasetSplitterExtension
+from mlrl.testbed_sklearn.experiments.problem_domain import SkLearnClassificationProblem, SkLearnProblem, \
+    SkLearnRegressionProblem
 
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
@@ -30,8 +32,6 @@ from mlrl.testbed.experiments.prediction.extension import PredictionTypeExtensio
 from mlrl.testbed.experiments.prediction.predictor import Predictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
-from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnClassificationProblem, SkLearnProblem, \
-    SkLearnRegressionProblem
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.runnables import Runnable
 
@@ -56,7 +56,7 @@ class SkLearnRunnable(Runnable, ABC):
 
         def create(self) -> Predictor:
             """
-            See :func:`from mlrl.testbed.experiments.problem_domain_sklearn.SkLearnProblem.PredictorFactory.create`
+            See :func:`from mlrl.testbed_sklearn.experiments.problem_domain.SkLearnProblem.PredictorFactory.create`
             """
             return GlobalPredictor(self.prediction_type)
 
