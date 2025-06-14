@@ -7,12 +7,12 @@ from argparse import Namespace
 from typing import Set
 
 from mlrl.testbed_sklearn.experiments.input.dataset.preprocessors.extension import PreprocessorExtension
+from mlrl.testbed_sklearn.experiments.input.dataset.splitters.splitter_bipartition import BipartitionSplitter
+from mlrl.testbed_sklearn.experiments.input.dataset.splitters.splitter_cross_validation import CrossValidationSplitter
 
 from mlrl.testbed.experiments.input.dataset.splitters.extension import DatasetFileExtension
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.input.dataset.splitters.splitter_no import NoSplitter
-from mlrl.testbed.experiments.input.dataset.splitters.tabular.splitter_bipartition import BipartitionSplitter
-from mlrl.testbed.experiments.input.dataset.splitters.tabular.splitter_cross_validation import CrossValidationSplitter
 from mlrl.testbed.extensions.extension import Extension
 
 from mlrl.util.cli import NONE, Argument, IntArgument, SetArgument
@@ -33,7 +33,7 @@ OPTION_LAST_FOLD = 'first_fold'
 
 class DatasetSplitterExtension(Extension):
     """
-    An extension that configures the functionality to split datasets into training and test datasets.
+    An extension that configures the functionality to split tabular datasets into training and test datasets.
     """
 
     RANDOM_STATE = IntArgument(
