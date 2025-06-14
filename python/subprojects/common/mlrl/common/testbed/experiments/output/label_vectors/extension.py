@@ -13,7 +13,8 @@ import numpy as np
 from mlrl.common.cython.output_space_info import LabelVectorSet, LabelVectorSetVisitor, NoOutputSpaceInfo
 from mlrl.common.learners import ClassificationRuleLearner
 
-from mlrl.testbed.experiments.dataset_tabular import TabularDataset
+from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
+
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.extension import OutputExtension

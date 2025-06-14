@@ -6,7 +6,8 @@ Provides classes that allow writing the ground truth to one or several sinks.
 
 from typing import List, Optional
 
-from mlrl.testbed.experiments.dataset_tabular import TabularDataset
+from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
+
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.dataset.tabular.dataset_ground_truth import GroundTruthDataset
 from mlrl.testbed.experiments.output.sinks import Sink

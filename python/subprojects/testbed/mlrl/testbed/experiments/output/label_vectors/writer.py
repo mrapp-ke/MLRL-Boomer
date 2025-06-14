@@ -6,7 +6,8 @@ Provides classes that allow writing unique label vectors that are contained in a
 
 from typing import List, Optional
 
-from mlrl.testbed.experiments.dataset_tabular import TabularDataset
+from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
+
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.label_vectors.label_vector_histogram import LabelVectorHistogram
 from mlrl.testbed.experiments.output.label_vectors.label_vectors import LabelVectors
