@@ -18,12 +18,12 @@ from mlrl.testbed.experiments.input.dataset.preprocessors.preprocessor import Pr
 
 class OneHotEncoder(Preprocessor):
     """
-    Allows one-hot-encoding all nominal features contained in a data set, if any.
+    Allows one-hot-encoding all nominal features contained in a tabular dataset, if any.
     """
 
     class Encoder(Preprocessor.Encoder):
         """
-        Allows one-hot-encoding all nominal features contained in a data set.
+        Allows one-hot-encoding all nominal features contained in a tabular dataset.
         """
 
         def __init__(self):

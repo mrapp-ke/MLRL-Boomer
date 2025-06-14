@@ -6,7 +6,8 @@ Provides classes that allow configuring the functionality to split datasets into
 from argparse import Namespace
 from typing import Set
 
-from mlrl.testbed.experiments.input.dataset.preprocessors.tabular.extension import PreprocessorExtension
+from mlrl.testbed_sklearn.experiments.input.dataset.preprocessors.extension import PreprocessorExtension
+
 from mlrl.testbed.experiments.input.dataset.splitters.extension import DatasetFileExtension
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.input.dataset.splitters.splitter_no import NoSplitter
