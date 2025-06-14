@@ -26,7 +26,7 @@ classifiers = [
 ]
 dependencies = [
     "liac-arff",
-    "mlrl-testbed",
+    "mlrl-testbed-sklearn",
 ]
 
 [project.urls]

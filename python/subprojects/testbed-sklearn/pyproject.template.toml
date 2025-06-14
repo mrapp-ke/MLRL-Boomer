@@ -26,6 +26,7 @@ classifiers = [
 ]
 dependencies = [
     "mlrl-testbed",
+    "mlrl-testbed-arff",
     "scikit-learn",
 ]
 
