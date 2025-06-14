@@ -13,17 +13,17 @@ from mlrl.common.cython.package_info import CppLibraryInfo, get_cpp_library_info
 
 
 @dataclass
-class RuleLearnerPackageInfo:
+class PackageInfo:
     """
     Provides information about a Python package that implements a rule learner.
 
     Attributes:
         package_name:       A string that specifies the package name
-        python_packages:    A set that contains a `PythonPackageInfo` for each Python package used by this package
+        python_packages:    A set that contains a `PackageInfo` for each Python package used by this package
         cpp_libraries:      A set that contains a `CppLibraryInfo` for each C++ library used by this package
     """
     package_name: str
-    python_packages: Set['RuleLearnerPackageInfo'] = field(default_factory=set)
+    python_packages: Set['PackageInfo'] = field(default_factory=set)
     cpp_libraries: Set[CppLibraryInfo] = field(default_factory=set)
 
     @property
@@ -34,15 +34,12 @@ class RuleLearnerPackageInfo:
         return version(self.package_name)
 
     @property
-    def dependencies(self) -> Set['RuleLearnerPackageInfo']:
+    def dependencies(self) -> Set['PackageInfo']:
         """
-        A set that contains a `RuleLearnerPackageInfo` for each dependency of this package.
+        A set that contains a `PackageInfo` for each dependency of this package.
         """
         dependencies = requires(self.package_name)
-        package_infos = {
-            RuleLearnerPackageInfo(package_name=Requirement(dependency).name)
-            for dependency in dependencies
-        }
+        package_infos = {PackageInfo(package_name=Requirement(dependency).name) for dependency in dependencies}
 
         for python_package in self.python_packages:
             package_infos.discard(python_package)
@@ -61,10 +58,10 @@ class RuleLearnerPackageInfo:
         return hash((self.package_name, self.package_version))
 
 
-def get_package_info() -> RuleLearnerPackageInfo:
+def get_package_info() -> PackageInfo:
     """
     Returns information about this Python package.
 
-    :return: A `RuleLearnerPackageInfo` that provides information about the Python package
+    :return: A `PackageInfo` that provides information about the Python package
     """
-    return RuleLearnerPackageInfo(package_name='mlrl-common', cpp_libraries={get_cpp_library_info()})
+    return PackageInfo(package_name='mlrl-common', cpp_libraries={get_cpp_library_info()})
