@@ -39,7 +39,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-testbed = ["mlrl-testbed"]
+testbed = ["mlrl-testbed-sklearn"]
 
 [project.urls]
 homepage = "https://github.com/mrapp-ke/MLRL-Boomer"
