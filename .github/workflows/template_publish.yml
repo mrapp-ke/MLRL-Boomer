@@ -25,6 +25,7 @@ jobs:
           - util
           - testbed
           - testbed-arff
+          - testbed-sklearn
     uses: ./.github/workflows/template_publish_pure.yml
     with:
       subproject: ${{ matrix.subproject }}
