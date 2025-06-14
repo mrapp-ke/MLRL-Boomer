@@ -22,7 +22,7 @@ from mlrl.testbed.experiments.state import ExperimentState
 
 class BipartitionSplitter(DatasetSplitter):
     """
-    Splits a dataset into distinct training and test datasets.
+    Splits a tabular dataset into distinct training and test datasets.
     """
 
     class PredefinedSplit(DatasetSplitter.Split):
