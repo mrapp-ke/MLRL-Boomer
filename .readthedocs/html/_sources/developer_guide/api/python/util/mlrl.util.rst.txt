@@ -16,4 +16,5 @@ Submodules
    mlrl.util.cli
    mlrl.util.format
    mlrl.util.options
+   mlrl.util.package_info
    mlrl.util.validation
