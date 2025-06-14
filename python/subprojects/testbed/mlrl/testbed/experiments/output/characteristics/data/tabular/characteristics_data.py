@@ -6,8 +6,9 @@ Provides classes for representing characteristics of a datasets that are part of
 from itertools import chain
 from typing import Optional
 
+from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
+
 from mlrl.testbed.experiments.context import Context
-from mlrl.testbed.experiments.dataset_tabular import TabularDataset
 from mlrl.testbed.experiments.output.characteristics.data.tabular.characteristics import LABEL_CHARACTERISTICS, \
     OUTPUT_CHARACTERISTICS, Characteristic
 from mlrl.testbed.experiments.output.characteristics.data.tabular.matrix_feature import FeatureMatrix

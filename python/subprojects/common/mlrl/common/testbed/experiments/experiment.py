@@ -9,7 +9,8 @@ from sklearn.base import BaseEstimator
 
 from mlrl.common.mixins import NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
 
-from mlrl.testbed.experiments.dataset_tabular import AttributeType, TabularDataset
+from mlrl.testbed_sklearn.experiments.dataset import AttributeType, TabularDataset
+
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.experiment_sklearn import SkLearnExperiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter

@@ -11,8 +11,9 @@ from typing import Any, Dict, Generator, Optional
 
 from sklearn.base import BaseEstimator, clone
 
+from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
+
 from mlrl.testbed.experiments.dataset import Dataset
-from mlrl.testbed.experiments.dataset_tabular import TabularDataset
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.output.characteristics.data.tabular.writer_data import DataCharacteristicsWriter

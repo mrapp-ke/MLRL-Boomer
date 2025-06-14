@@ -10,8 +10,9 @@ from dataclasses import replace
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder as SkLearnOneHotEncoder
 
+from mlrl.testbed_sklearn.experiments.dataset import AttributeType
+
 from mlrl.testbed.experiments.dataset import Dataset
-from mlrl.testbed.experiments.dataset_tabular import AttributeType
 from mlrl.testbed.experiments.input.dataset.preprocessors.preprocessor import Preprocessor
 
 
