@@ -13,12 +13,10 @@ authors = [
     { name = "Michael Rapp", email = "michael.rapp.ml@gmail.com" },
 ]
 keywords = [
-    "evaluation",
     "machine learning",
     "multi-label classification",
     "multi-output regression",
     "multi-target regression",
-    "scikit-learn",
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
