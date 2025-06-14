@@ -4,14 +4,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for retrieving information about this Python packages that implement rule learners.
 """
 from dataclasses import dataclass, field
-from importlib.metadata import requires
-from typing import Set
+from importlib.metadata import requires, version
+from typing import Any, Set
 
 from packaging.requirements import Requirement
 
 from mlrl.common.cython.package_info import CppLibraryInfo, get_cpp_library_info
-
-from mlrl.util.package_info import PackageInfo
 
 
 @dataclass
@@ -20,34 +18,47 @@ class RuleLearnerPackageInfo:
     Provides information about a Python package that implements a rule learner.
 
     Attributes:
-        package_info:       Information about the Python package
+        package_name:       A string that specifies the package name
+        python_packages:    A set that contains a `PythonPackageInfo` for each Python package used by this package
         cpp_libraries:      A set that contains a `CppLibraryInfo` for each C++ library used by this package
     """
-    package_info: PackageInfo
+    package_name: str
+    python_packages: Set['RuleLearnerPackageInfo'] = field(default_factory=set)
     cpp_libraries: Set[CppLibraryInfo] = field(default_factory=set)
 
     @property
-    def dependencies(self) -> Set['PackageInfo']:
+    def package_version(self) -> str:
         """
-        A set that contains a `PackageInfo` for each dependency of this package.
+        The version of the Python package.
         """
-        package_info = self.package_info
-        dependencies = requires(package_info.package_name)
-        package_infos = {PackageInfo(package_name=Requirement(dependency).name) for dependency in dependencies}
+        return version(self.package_name)
 
-        for python_package in package_info.python_packages:
+    @property
+    def dependencies(self) -> Set['RuleLearnerPackageInfo']:
+        """
+        A set that contains a `RuleLearnerPackageInfo` for each dependency of this package.
+        """
+        dependencies = requires(self.package_name)
+        package_infos = {
+            RuleLearnerPackageInfo(package_name=Requirement(dependency).name)
+            for dependency in dependencies
+        }
+
+        for python_package in self.python_packages:
             package_infos.discard(python_package)
 
         return package_infos
 
     def __str__(self) -> str:
-        return str(self.package_info)
+        return self.package_name + ' ' + self.package_version
 
-    def __eq__(self, other):
-        return isinstance(other, type(self)) and self.package_info == other.package_info
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, type(self)) \
+            and self.package_name == other.package_name \
+            and self.package_version == other.package_version
 
-    def __hash__(self):
-        return hash(self.package_info)
+    def __hash__(self) -> int:
+        return hash((self.package_name, self.package_version))
 
 
 def get_package_info() -> RuleLearnerPackageInfo:
@@ -56,5 +67,4 @@ def get_package_info() -> RuleLearnerPackageInfo:
 
     :return: A `RuleLearnerPackageInfo` that provides information about the Python package
     """
-    return RuleLearnerPackageInfo(package_info=PackageInfo(package_name='mlrl-common'),
-                                  cpp_libraries={get_cpp_library_info()})
+    return RuleLearnerPackageInfo(package_name='mlrl-common', cpp_libraries={get_cpp_library_info()})

@@ -7,13 +7,13 @@ import sys
 
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from importlib import import_module
+from importlib.metadata import version
 from importlib.util import module_from_spec, spec_from_file_location
 
 from mlrl.testbed.program_info import ProgramInfo
 from mlrl.testbed.runnables import Runnable
 
 from mlrl.util.cli import CommandLineInterface
-from mlrl.util.package_info import PackageInfo
 
 
 def __create_argument_parser() -> ArgumentParser:
@@ -36,10 +36,10 @@ def __create_argument_parser() -> ArgumentParser:
 
 
 def __get_default_program_info() -> ProgramInfo:
-    package_info = PackageInfo('mlrl-testbed')
+    package_name = 'mlrl-testbed'
     return ProgramInfo(
-        name=package_info.package_name,
-        version=package_info.package_version,
+        name=package_name,
+        version=version(package_name),
         year='2020 - 2025',
         authors=['Michael Rapp et al.'],
     )
