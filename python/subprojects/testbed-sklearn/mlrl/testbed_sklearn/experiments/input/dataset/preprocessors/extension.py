@@ -1,13 +1,14 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes that allow configuring the functionality to preprocess datasets.
+Provides classes that allow configuring the functionality to preprocess tabular datasets.
 """
 from argparse import Namespace
 from typing import List, Set
 
+from mlrl.testbed_sklearn.experiments.input.dataset.preprocessors.one_hot_encoder import OneHotEncoder
+
 from mlrl.testbed.experiments.input.dataset.preprocessors.preprocessor import Preprocessor
-from mlrl.testbed.experiments.input.dataset.preprocessors.tabular.one_hot_encoder import OneHotEncoder
 from mlrl.testbed.extensions.extension import Extension
 
 from mlrl.util.cli import Argument, BoolArgument
@@ -15,7 +16,7 @@ from mlrl.util.cli import Argument, BoolArgument
 
 class PreprocessorExtension(Extension):
     """
-    An extension that configures the functionality to preprocess datasets.
+    An extension that configures the functionality to preprocess tabular datasets.
     """
 
     ONE_HOT_ENCODING = BoolArgument(
