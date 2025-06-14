@@ -22,16 +22,16 @@ def __create_argument_parser() -> ArgumentParser:
         description='A command line utility for training and evaluating machine learning algorithms',
         add_help=False)
 
-    if '--version' not in sys.argv and '-v' not in sys.argv:
-        argument_parser.add_argument('runnable_module_or_source_file',
-                                     type=str,
-                                     help='The Python module or source file of the program that should be run')
-        argument_parser.add_argument('-r',
-                                     '--runnable',
-                                     default='Runnable',
-                                     type=str,
-                                     help='The Python class name of the program that should be run')
-
+    argument_parser.add_argument('runnable_module_or_source_file',
+                                 nargs='?' if '--version' in sys.argv or '-v' in sys.argv else None,
+                                 default=None,
+                                 type=str,
+                                 help='The Python module or source file of the program that should be run')
+    argument_parser.add_argument('-r',
+                                 '--runnable',
+                                 default='Runnable',
+                                 type=str,
+                                 help='The Python class name of the program that should be run')
     return argument_parser
 
 
