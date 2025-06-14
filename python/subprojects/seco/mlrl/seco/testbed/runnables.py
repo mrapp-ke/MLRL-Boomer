@@ -38,7 +38,7 @@ class SeCoRunnable(RuleLearnerRunnable):
         return RuleLearnerProgramInfo(
             program_info=ProgramInfo(
                 name='Multi-label SeCo',
-                version=package_info.package_info.package_version,
+                version=package_info.package_version,
                 year='2020 - 2025',
                 authors=['Michael Rapp et al.'],
             ),
