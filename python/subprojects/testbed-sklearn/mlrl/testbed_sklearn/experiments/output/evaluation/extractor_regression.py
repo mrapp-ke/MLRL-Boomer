@@ -6,11 +6,12 @@ sinks.
 """
 from typing import Any
 
+from mlrl.testbed_sklearn.experiments.output.evaluation.measures_regression import REGRESSION_EVALUATION_MEASURES
+from mlrl.testbed_sklearn.experiments.output.evaluation.writer import EvaluationDataExtractor
+
 from mlrl.testbed.experiments.output.data import OutputValue
 from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
 from mlrl.testbed.experiments.output.evaluation.measures import Measure
-from mlrl.testbed.experiments.output.evaluation.measures_regression import REGRESSION_EVALUATION_MEASURES
-from mlrl.testbed.experiments.output.evaluation.writer import EvaluationDataExtractor
 
 from mlrl.util.arrays import enforce_dense
 from mlrl.util.options import Options

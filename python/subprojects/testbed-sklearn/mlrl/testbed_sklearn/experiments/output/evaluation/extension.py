@@ -6,11 +6,13 @@ Provides classes that allow configuring the functionality to write evaluation re
 from argparse import Namespace
 from typing import Set
 
+from mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result import EvaluationResult
+from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_classification import \
+    ClassificationEvaluationDataExtractor
+from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_ranking import RankingEvaluationDataExtractor
+from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_regression import RegressionEvaluationDataExtractor
+
 from mlrl.testbed.experiments.experiment import Experiment
-from mlrl.testbed.experiments.output.evaluation.evaluation_result import EvaluationResult
-from mlrl.testbed.experiments.output.evaluation.extractor_classification import ClassificationEvaluationDataExtractor
-from mlrl.testbed.experiments.output.evaluation.extractor_ranking import RankingEvaluationDataExtractor
-from mlrl.testbed.experiments.output.evaluation.extractor_regression import RegressionEvaluationDataExtractor
 from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
