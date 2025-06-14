@@ -13,6 +13,7 @@ from sklearn.base import BaseEstimator, clone
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
 from mlrl.testbed_sklearn.experiments.output.evaluation.writer import EvaluationWriter
+from mlrl.testbed_sklearn.experiments.output.label_vectors import LabelVectorWriter
 from mlrl.testbed_sklearn.experiments.problem_domain import SkLearnProblem
 
 from mlrl.testbed.experiments.dataset import Dataset
@@ -23,7 +24,6 @@ from mlrl.testbed.experiments.output.characteristics.data.tabular.writer_predict
     PredictionCharacteristicsWriter
 from mlrl.testbed.experiments.output.dataset.tabular.writer_ground_truth import GroundTruthWriter
 from mlrl.testbed.experiments.output.dataset.tabular.writer_prediction import PredictionWriter
-from mlrl.testbed.experiments.output.label_vectors.writer import LabelVectorWriter
 from mlrl.testbed.experiments.output.model.writer import ModelWriter
 from mlrl.testbed.experiments.output.parameters.writer import ParameterWriter
 from mlrl.testbed.experiments.problem_domain import ProblemDomain

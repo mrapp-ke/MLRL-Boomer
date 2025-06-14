@@ -12,6 +12,7 @@ from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMix
 from mlrl.testbed_sklearn.experiments import SkLearnExperiment
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import DatasetSplitterExtension
 from mlrl.testbed_sklearn.experiments.output.evaluation.extension import EvaluationExtension
+from mlrl.testbed_sklearn.experiments.output.label_vectors.extension import LabelVectorExtension
 from mlrl.testbed_sklearn.experiments.problem_domain import SkLearnClassificationProblem, SkLearnProblem, \
     SkLearnRegressionProblem
 
@@ -24,7 +25,6 @@ from mlrl.testbed.experiments.output.characteristics.data.tabular.extension_pred
     PredictionCharacteristicsExtension
 from mlrl.testbed.experiments.output.dataset.tabular.extension_ground_truth import GroundTruthExtension
 from mlrl.testbed.experiments.output.dataset.tabular.extension_prediction import PredictionExtension
-from mlrl.testbed.experiments.output.label_vectors.extension import LabelVectorExtension
 from mlrl.testbed.experiments.output.model.extension import ModelOutputExtension
 from mlrl.testbed.experiments.output.parameters.extension import ParameterOutputExtension
 from mlrl.testbed.experiments.prediction import GlobalPredictor
