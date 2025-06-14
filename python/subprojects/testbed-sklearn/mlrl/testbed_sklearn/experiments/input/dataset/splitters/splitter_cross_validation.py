@@ -23,7 +23,8 @@ from mlrl.testbed.experiments.state import ExperimentState
 
 class CrossValidationSplitter(DatasetSplitter):
     """
-    Splits the available data into training and test sets corresponding to the individual folds of a cross validation.
+    Splits a tabular dataset into training and test datasets corresponding to the individual folds of a cross
+    validation.
     """
 
     class PredefinedSplit(DatasetSplitter.Split):
