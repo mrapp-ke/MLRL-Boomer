@@ -8,7 +8,7 @@ from typing import Dict, Iterable, List, Set
 
 from tabulate import tabulate
 
-from mlrl.common.package_info import RuleLearnerPackageInfo
+from mlrl.common.package_info import PackageInfo
 
 from mlrl.testbed.program_info import ProgramInfo
 
@@ -22,53 +22,50 @@ class RuleLearnerProgramInfo:
 
     Attributes:
         program_info:       Information about the program
-        python_packages:    A list that contains a `RuleLearnerPackageInfo` for each Python package used by the program
+        python_packages:    A list that contains a `PackageInfo` for each Python package used by the program
     """
     program_info: ProgramInfo
-    python_packages: List[RuleLearnerPackageInfo] = field(default_factory=list)
+    python_packages: List[PackageInfo] = field(default_factory=list)
 
-    def __collect_python_packages(self, python_packages: Iterable[RuleLearnerPackageInfo]) -> Set[str]:
+    def __collect_python_packages(self, python_packages: Iterable[PackageInfo]) -> Set[str]:
         unique_packages = set()
 
         for python_package in python_packages:
             unique_packages.add(str(python_package))
-            unique_packages.update(self.__collect_python_packages(python_package.package_info.python_packages))
+            unique_packages.update(self.__collect_python_packages(python_package.python_packages))
 
         return unique_packages
 
-    def __collect_dependencies(self, python_packages: Iterable[RuleLearnerPackageInfo]) -> Dict[str, Set[str]]:
+    def __collect_dependencies(self, python_packages: Iterable[PackageInfo]) -> Dict[str, Set[str]]:
         unique_dependencies = {}
 
         for python_package in python_packages:
-            package_info = python_package.package_info
 
-            for dependency in package_info.dependencies:
+            for dependency in python_package.dependencies:
                 parent_packages = unique_dependencies.setdefault(str(dependency), set())
-                parent_packages.add(package_info.package_name)
+                parent_packages.add(python_package.package_name)
 
-            for key, value in self.__collect_dependencies(package_info.python_packages).items():
+            for key, value in self.__collect_dependencies(python_package.python_packages).items():
                 parent_packages = unique_dependencies.setdefault(key, set())
                 parent_packages.update(value)
 
         return unique_dependencies
 
-    def __collect_cpp_libraries(self, python_packages: Iterable[RuleLearnerPackageInfo]) -> Dict[str, Set[str]]:
+    def __collect_cpp_libraries(self, python_packages: Iterable[PackageInfo]) -> Dict[str, Set[str]]:
         unique_libraries = {}
 
         for python_package in python_packages:
-            package_info = python_package.package_info
-
             for cpp_library in python_package.cpp_libraries:
                 parent_packages = unique_libraries.setdefault(str(cpp_library), set())
-                parent_packages.add(package_info.package_name)
+                parent_packages.add(python_package.package_name)
 
-            for key, value in self.__collect_cpp_libraries(package_info.python_packages).items():
+            for key, value in self.__collect_cpp_libraries(python_package.python_packages).items():
                 parent_packages = unique_libraries.setdefault(key, set())
                 parent_packages.update(value)
 
         return unique_libraries
 
-    def __collect_build_options(self, python_packages: Iterable[RuleLearnerPackageInfo]) -> Dict[str, Set[str]]:
+    def __collect_build_options(self, python_packages: Iterable[PackageInfo]) -> Dict[str, Set[str]]:
         unique_build_options = {}
 
         for python_package in python_packages:
@@ -77,13 +74,13 @@ class RuleLearnerProgramInfo:
                     parent_libraries = unique_build_options.setdefault(str(build_option), set())
                     parent_libraries.add(cpp_library.library_name)
 
-            for key, value in self.__collect_build_options(python_package.package_info.python_packages).items():
+            for key, value in self.__collect_build_options(python_package.python_packages).items():
                 parent_libraries = unique_build_options.setdefault(key, set())
                 parent_libraries.update(value)
 
         return unique_build_options
 
-    def __collect_hardware_resources(self, python_packages: Iterable[RuleLearnerPackageInfo]) -> Dict[str, Set[str]]:
+    def __collect_hardware_resources(self, python_packages: Iterable[PackageInfo]) -> Dict[str, Set[str]]:
         unique_hardware_resources = {}
 
         for python_package in python_packages:
@@ -92,7 +89,7 @@ class RuleLearnerProgramInfo:
                     info = unique_hardware_resources.setdefault(hardware_resource.resource, set())
                     info.add(hardware_resource.info)
 
-            for key, value in self.__collect_hardware_resources(python_package.package_info.python_packages).items():
+            for key, value in self.__collect_hardware_resources(python_package.python_packages).items():
                 info = unique_hardware_resources.setdefault(key, set())
                 info.update(value)
 

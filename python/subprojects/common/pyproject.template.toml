@@ -34,6 +34,7 @@ classifiers = [
 ]
 dependencies = [
     "mlrl-util",
+    "packaging",
     "scikit-learn",
 ]
 

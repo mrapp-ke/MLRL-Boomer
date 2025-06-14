@@ -7,13 +7,13 @@ import sys
 
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from importlib import import_module
+from importlib.metadata import version
 from importlib.util import module_from_spec, spec_from_file_location
 
 from mlrl.testbed.program_info import ProgramInfo
 from mlrl.testbed.runnables import Runnable
 
 from mlrl.util.cli import CommandLineInterface
-from mlrl.util.package_info import PackageInfo
 
 
 def __create_argument_parser() -> ArgumentParser:
@@ -22,24 +22,24 @@ def __create_argument_parser() -> ArgumentParser:
         description='A command line utility for training and evaluating machine learning algorithms',
         add_help=False)
 
-    if '--version' not in sys.argv and '-v' not in sys.argv:
-        argument_parser.add_argument('runnable_module_or_source_file',
-                                     type=str,
-                                     help='The Python module or source file of the program that should be run')
-        argument_parser.add_argument('-r',
-                                     '--runnable',
-                                     default='Runnable',
-                                     type=str,
-                                     help='The Python class name of the program that should be run')
-
+    argument_parser.add_argument('runnable_module_or_source_file',
+                                 nargs='?' if '--version' in sys.argv or '-v' in sys.argv else None,
+                                 default=None,
+                                 type=str,
+                                 help='The Python module or source file of the program that should be run')
+    argument_parser.add_argument('-r',
+                                 '--runnable',
+                                 default='Runnable',
+                                 type=str,
+                                 help='The Python class name of the program that should be run')
     return argument_parser
 
 
 def __get_default_program_info() -> ProgramInfo:
-    package_info = PackageInfo('mlrl-testbed')
+    package_name = 'mlrl-testbed'
     return ProgramInfo(
-        name=package_info.package_name,
-        version=package_info.package_version,
+        name=package_name,
+        version=version(package_name),
         year='2020 - 2025',
         authors=['Michael Rapp et al.'],
     )
