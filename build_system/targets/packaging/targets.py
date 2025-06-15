@@ -78,7 +78,7 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
                         break
                     else:
                         for dependency, requirement in requirements.items():
-                            line = line.replace(dependency, str(requirement))
+                            line = line.replace('"' + dependency + '"', '"' + str(requirement) + '"')
 
                         new_lines.append(line)
             else:
