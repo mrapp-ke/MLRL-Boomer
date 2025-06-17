@@ -6,7 +6,7 @@ Provides classes for listing files and directories.
 from functools import partial
 from glob import glob
 from os import path
-from typing import Callable, List, Optional, Set
+from typing import Any, Callable, List, Optional, Set
 
 
 class DirectorySearch:
@@ -557,8 +557,8 @@ class FileType:
     def __str__(self) -> str:
         return self.name
 
-    def __eq__(self, other: 'FileType') -> bool:
-        return self.name == other.name
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, type(self)) and self.name == other.name
 
     def __hash__(self) -> int:
         return hash(self.name)

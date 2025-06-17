@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utilities for checking and updating the versions of Python dependencies.
 """
 from dataclasses import dataclass, replace
-from typing import Set
+from typing import Any, Set
 
 from core.build_unit import BuildUnit
 from util.log import Log
@@ -28,8 +28,10 @@ class Dependency:
     outdated: RequirementVersion
     latest: RequirementVersion
 
-    def __eq__(self, other: 'Dependency') -> bool:
-        return self.requirements_file == other.requirements_file and self.package == other.package
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, type(self)) \
+            and self.requirements_file == other.requirements_file \
+            and self.package == other.package
 
     def __hash__(self) -> int:
         return hash((self.requirements_file, self.package))

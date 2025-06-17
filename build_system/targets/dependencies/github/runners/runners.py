@@ -8,7 +8,7 @@ import re
 
 from dataclasses import dataclass, replace
 from functools import cached_property
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 from xml.etree import ElementTree
 
 from core.build_unit import BuildUnit
@@ -115,8 +115,8 @@ class Runner:
 
         return result
 
-    def __eq__(self, other: 'Runner') -> bool:
-        return str(self) == str(other)
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, type(self)) and str(self) == str(other)
 
     def __hash__(self) -> int:
         return hash(str(self))
@@ -213,8 +213,8 @@ class RunnerUpdater(Workflows):
         def __str__(self) -> str:
             return str(self.runner)
 
-        def __eq__(self, other: 'RunnerUpdater.OutdatedRunner') -> bool:
-            return self.runner == other.runner
+        def __eq__(self, other: Any) -> bool:
+            return isinstance(other, type(self)) and self.runner == other.runner
 
         def __hash__(self) -> int:
             return hash(self.runner)
@@ -234,8 +234,8 @@ class RunnerUpdater(Workflows):
         def __str__(self) -> str:
             return str(self.updated)
 
-        def __eq__(self, other: 'RunnerUpdater.UpdatedRunner') -> bool:
-            return self.updated == other.updated
+        def __eq__(self, other: Any) -> bool:
+            return isinstance(other, type(self)) and self.updated == other.updated
 
         def __hash__(self) -> int:
             return hash(self.updated)

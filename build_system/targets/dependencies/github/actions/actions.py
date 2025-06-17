@@ -5,7 +5,7 @@ Provides utility functions for checking the project's GitHub workflows for outda
 """
 from dataclasses import dataclass, replace
 from functools import cached_property, reduce
-from typing import Dict, List, Set
+from typing import Any, Dict, List, Set
 
 from core.build_unit import BuildUnit
 from util.files import FileType
@@ -107,8 +107,8 @@ class Action:
     def __str__(self) -> str:
         return self.name + self.SEPARATOR + str(self.version)
 
-    def __eq__(self, other: 'Action') -> bool:
-        return str(self) == str(other)
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, type(self)) and str(self) == str(other)
 
     def __hash__(self) -> int:
         return hash(str(self))
@@ -193,8 +193,8 @@ class ActionUpdater(Workflows):
         def __str__(self) -> str:
             return str(self.action)
 
-        def __eq__(self, other: 'ActionUpdater.OutdatedAction') -> bool:
-            return self.action == other.action
+        def __eq__(self, other: Any) -> bool:
+            return isinstance(other, type(self)) and self.action == other.action
 
         def __hash__(self) -> int:
             return hash(self.action)
@@ -214,8 +214,8 @@ class ActionUpdater(Workflows):
         def __str__(self) -> str:
             return str(self.updated)
 
-        def __eq__(self, other: 'ActionUpdater.UpdatedAction') -> bool:
-            return self.updated == other.updated
+        def __eq__(self, other: Any) -> bool:
+            return isinstance(other, type(self)) and self.updated == other.updated
 
         def __hash__(self) -> int:
             return hash(self.updated)

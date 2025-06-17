@@ -5,7 +5,7 @@ Provides classes that allow to configure build options.
 """
 from abc import ABC, abstractmethod
 from os import environ
-from typing import Iterable, List, Optional
+from typing import Any, Iterable, List, Optional
 
 from util.env import get_env
 
@@ -44,8 +44,8 @@ class BuildOption(ABC):
         :return: The value or None, if no value is set
         """
 
-    def __eq__(self, other: 'BuildOption') -> bool:
-        return self.keys == other.keys
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, type(self)) and self.keys == other.keys
 
     def __hash__(self) -> int:
         return hash(tuple(self.keys))

@@ -6,7 +6,7 @@ Provides utility functions for reading and writing files.
 from functools import cached_property
 from os import makedirs, path, remove
 from shutil import rmtree
-from typing import List
+from typing import Any, List
 
 from util.log import Log
 
@@ -114,8 +114,8 @@ class TextFile:
     def __str__(self) -> str:
         return self.file
 
-    def __eq__(self, other: 'TextFile') -> bool:
-        return self.file == other.file
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, type(self)) and self.file == other.file
 
     def __hash__(self) -> int:
         return hash(self.file)
