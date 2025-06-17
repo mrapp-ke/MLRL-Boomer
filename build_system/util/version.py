@@ -69,7 +69,7 @@ class Version:
     def __ne__(self, other: Any) -> bool:
         return not self.__eq__(other)
 
-    def __lt__(self, other: 'Version'):
+    def __lt__(self, other: 'Version') -> bool:
         first_numbers = self.numbers
         second_numbers = other.numbers
         limit = min(len(first_numbers), len(second_numbers))
