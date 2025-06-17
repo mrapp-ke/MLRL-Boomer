@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utilities for checking and updating the versions of Python dependencies.
 """
 from dataclasses import dataclass, replace
-from typing import Any, Set
+from typing import Any, Dict, Set
 
 from core.build_unit import BuildUnit
 from util.log import Log
@@ -68,8 +68,8 @@ class DependencyUpdater:
         :param build_unit:  The `BuildUnit` from which this function is invoked
         :return:            A set that contains all outdated dependencies
         """
-        outdated_dependencies = set()
-        version_cache = {}
+        outdated_dependencies: Set[Dependency] = set()
+        version_cache: Dict[Package, Version] = {}
 
         for requirements_file in self.requirements_files:
             for requirement in requirements_file.requirements:

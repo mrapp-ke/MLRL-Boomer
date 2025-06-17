@@ -616,7 +616,7 @@ class DependencyGraph:
 
             :return: The copy that has been created
             """
-            current_node = self.last
+            current_node: Optional[DependencyGraph.Node] = self.last
             copy = DependencyGraph.Sequence.from_node(current_node.copy())
             current_node = current_node.parent
 
@@ -632,14 +632,14 @@ class DependencyGraph:
 
             :param module_registry: A `ModuleRegistry` that may be used for looking up modules
             """
-            current_node = self.first
+            current_node: Optional[DependencyGraph.Node] = self.first
 
             while current_node:
                 current_node.execute(module_registry)
                 current_node = current_node.child
 
         def __str__(self) -> str:
-            current_node = self.first
+            current_node: Optional[DependencyGraph.Node] = self.first
             result = ' → ' + str(current_node)
             current_node = current_node.child
             indent = 1
