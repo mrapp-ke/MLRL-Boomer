@@ -262,7 +262,7 @@ class ActionUpdater(Workflows):
 
         :return: A dictionary that contains for each workflow a set of outdated Actions
         """
-        outdated_workflows = {}
+        outdated_workflows: Dict[Actions, Set[ActionUpdater.OutdatedAction]] = {}
 
         for workflow in self.workflows:
             Log.info('Searching for GitHub Actions in workflow "%s"...', workflow.file)
