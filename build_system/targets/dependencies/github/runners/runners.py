@@ -360,7 +360,7 @@ class RunnerUpdater(Workflows):
         :param module:      The module, that contains the workflow definition files
         """
         super().__init__(build_unit, module)
-        self.version_cache = None
+        self.version_cache: Optional[Dict[Tuple[str, str], RunnerVersion]] = None
 
     def find_outdated_workflows(self) -> Dict[Runners, Set[OutdatedRunner]]:
         """

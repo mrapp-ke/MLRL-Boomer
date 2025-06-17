@@ -253,7 +253,7 @@ class ActionUpdater(Workflows):
         :param module:      The module, that contains the workflow definition files
         """
         super().__init__(build_unit, module)
-        self.version_cache = {}
+        self.version_cache: Dict[str, ActionVersion] = {}
         self.github_api = GithubApi(build_unit).set_token_from_env()
 
     def find_outdated_workflows(self) -> Dict[Actions, Set[OutdatedAction]]:
