@@ -3,6 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for checking and enforcing code style definitions for Python and Cython files.
 """
+from typing import cast
+
 from core.build_unit import BuildUnit
 from core.modules import Module
 from core.targets import PhonyTarget
@@ -31,12 +33,13 @@ class CheckPythonCodeStyle(PhonyTarget.Runnable):
         super().__init__(PYTHON_MODULE_FILTER)
 
     def run(self, build_unit: BuildUnit, module: Module):
-        Log.info('Checking Python code style in directory "%s"...', module.root_directory)
-        Autoflake(build_unit, module).run()
-        ISort(build_unit, module).run()
-        Yapf(build_unit, module).run()
-        PyLint(build_unit, module).run()
-        Mypy(build_unit, module).run()
+        code_module = cast(CodeModule, module)
+        Log.info('Checking Python code style in directory "%s"...', code_module.root_directory)
+        Autoflake(build_unit, code_module).run()
+        ISort(build_unit, code_module).run()
+        Yapf(build_unit, code_module).run()
+        PyLint(build_unit, code_module).run()
+        Mypy(build_unit, code_module).run()
 
 
 class EnforcePythonCodeStyle(PhonyTarget.Runnable):
@@ -48,10 +51,11 @@ class EnforcePythonCodeStyle(PhonyTarget.Runnable):
         super().__init__(PYTHON_MODULE_FILTER)
 
     def run(self, build_unit: BuildUnit, module: Module):
-        Log.info('Formatting Python code in directory "%s"...', module.root_directory)
-        Autoflake(build_unit, module, enforce_changes=True).run()
-        ISort(build_unit, module, enforce_changes=True).run()
-        Yapf(build_unit, module, enforce_changes=True).run()
+        code_module = cast(CodeModule, module)
+        Log.info('Formatting Python code in directory "%s"...', code_module.root_directory)
+        Autoflake(build_unit, code_module, enforce_changes=True).run()
+        ISort(build_unit, code_module, enforce_changes=True).run()
+        Yapf(build_unit, code_module, enforce_changes=True).run()
 
 
 class CheckCythonCodeStyle(PhonyTarget.Runnable):
@@ -63,9 +67,10 @@ class CheckCythonCodeStyle(PhonyTarget.Runnable):
         super().__init__(CYTHON_MODULE_FILTER)
 
     def run(self, build_unit: BuildUnit, module: Module):
-        Log.info('Checking Cython code style in directory "%s"...', module.root_directory)
-        ISort(build_unit, module).run()
-        CythonLint(build_unit, module).run()
+        code_module = cast(CodeModule, module)
+        Log.info('Checking Cython code style in directory "%s"...', code_module.root_directory)
+        ISort(build_unit, code_module).run()
+        CythonLint(build_unit, code_module).run()
 
 
 class EnforceCythonCodeStyle(PhonyTarget.Runnable):
@@ -77,6 +82,7 @@ class EnforceCythonCodeStyle(PhonyTarget.Runnable):
         super().__init__(CYTHON_MODULE_FILTER)
 
     def run(self, build_unit: BuildUnit, module: Module):
-        Log.info('Formatting Cython code in directory "%s"...', module.root_directory)
-        Autoflake(build_unit, module, enforce_changes=True).run()
-        ISort(build_unit, module, enforce_changes=True).run()
+        code_module = cast(CodeModule, module)
+        Log.info('Formatting Cython code in directory "%s"...', code_module.root_directory)
+        Autoflake(build_unit, code_module, enforce_changes=True).run()
+        ISort(build_unit, code_module, enforce_changes=True).run()

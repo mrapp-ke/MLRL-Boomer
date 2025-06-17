@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements targets for building and installing wheel packages.
 """
 from os import path
-from typing import Dict, List
+from typing import Dict, List, cast
 
 from core.build_unit import BuildUnit
 from core.modules import Module
@@ -95,8 +95,9 @@ class BuildPythonWheels(BuildTarget.Runnable):
         super().__init__(MODULE_FILTER)
 
     def run(self, build_unit: BuildUnit, module: Module):
-        Log.info('Building Python wheels for directory "%s"...', module.root_directory)
-        Build(build_unit, module).run()
+        package_module = cast(PythonPackageModule, module)
+        Log.info('Building Python wheels for directory "%s"...', package_module.root_directory)
+        Build(build_unit, package_module).run()
 
     def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
         file_search = Project.Python.file_search() \

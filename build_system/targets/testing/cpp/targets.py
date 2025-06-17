@@ -3,6 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for testing C++ code.
 """
+from typing import cast
+
 from core.build_unit import BuildUnit
 from core.modules import Module
 from core.targets import PhonyTarget
@@ -20,4 +22,5 @@ class TestCpp(PhonyTarget.Runnable):
         super().__init__(CppTestModule.Filter())
 
     def run(self, build_unit: BuildUnit, module: Module):
-        MesonTest(build_unit, module).run()
+        test_module = cast(CppTestModule, module)
+        MesonTest(build_unit, test_module).run()

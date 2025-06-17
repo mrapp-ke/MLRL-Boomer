@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for generating API documentations for C++ code.
 """
-from typing import List
+from typing import List, cast
 
 from core.build_unit import BuildUnit
 from core.modules import Module
@@ -27,9 +27,10 @@ class ApidocCpp(BuildTarget.Runnable):
         super().__init__(MODULE_FILTER)
 
     def run(self, build_unit: BuildUnit, module: Module):
-        Log.info('Generating C++ API documentation for directory "%s"...', module.root_directory)
-        Doxygen(build_unit, module).run()
-        BreatheApidoc(build_unit, module).run()
+        apidoc_module = cast(CppApidocModule, module)
+        Log.info('Generating C++ API documentation for directory "%s"...', apidoc_module.root_directory)
+        Doxygen(build_unit, apidoc_module).run()
+        BreatheApidoc(build_unit, apidoc_module).run()
 
     def get_output_files(self, _: BuildUnit, module: Module) -> List[str]:
         return [module.output_directory]

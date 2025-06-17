@@ -8,6 +8,7 @@ from typing import List
 from core.build_unit import BuildUnit
 from core.modules import Module
 from core.targets import BuildTarget
+from typing_extensions import cast
 from util.log import Log
 
 from targets.documentation.python.modules import PythonApidocModule
@@ -26,8 +27,9 @@ class ApidocPython(BuildTarget.Runnable):
         super().__init__(MODULE_FILTER)
 
     def run(self, build_unit: BuildUnit, module: Module):
-        Log.info('Generating Python API documentation for directory "%s"...', module.root_directory)
-        SphinxApidoc(build_unit, module).run()
+        apidoc_module = cast(PythonApidocModule, module)
+        Log.info('Generating Python API documentation for directory "%s"...', apidoc_module.root_directory)
+        SphinxApidoc(build_unit, apidoc_module).run()
 
     def get_output_files(self, _: BuildUnit, module: Module) -> List[str]:
         return [module.output_directory]

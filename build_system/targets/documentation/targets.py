@@ -5,7 +5,7 @@ Implements targets for generating documentations.
 """
 from abc import ABC
 from os import environ, path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, cast
 
 from core.build_unit import BuildUnit
 from core.modules import Module
@@ -62,11 +62,13 @@ class ApidocIndex(BuildTarget.Runnable, ABC):
             TextFile(self.__index_file(template), accept_missing=True).write_lines(*new_lines)
 
     def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
-        template = self.__get_template(module)
+        apidoc_module = cast(ApidocModule, module)
+        template = self.__get_template(apidoc_module)
         return [template] if template else []
 
     def get_output_files(self, _: BuildUnit, module: Module) -> List[str]:
-        template = self.__get_template(module)
+        apidoc_module = cast(ApidocModule, module)
+        template = self.__get_template(apidoc_module)
         return [self.__index_file(template)] if template else []
 
     def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
@@ -93,9 +95,10 @@ class BuildDocumentation(BuildTarget.Runnable):
         self.sphinx_builder = sphinx_builder
 
     def run(self, build_unit: BuildUnit, module: Module):
-        Log.info('Building documentation for directory "%s" (using builder "%s")"...', module.root_directory,
+        sphinx_module = cast(SphinxModule, module)
+        Log.info('Building documentation for directory "%s" (using builder "%s")"...', sphinx_module.root_directory,
                  self.sphinx_builder)
-        SphinxBuild(build_unit, module, builder=self.sphinx_builder).run()
+        SphinxBuild(build_unit, sphinx_module, builder=self.sphinx_builder).run()
 
     def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
         return module.find_source_files() if self.sphinx_builder == SphinxBuild.BUILDER_HTML else []
