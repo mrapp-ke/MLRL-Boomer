@@ -332,8 +332,8 @@ class RowWiseTable(Table):
 
         :param column_index:                The index of the column to sort by
         :param additional_column_indices:   Additional indices of columns to sort by
-        :param descending:                  True, if the rows should be sorted in descending order, False, if the should
-                                            be sorted in ascending order
+        :param descending:                  True, if the rows should be sorted in descending order, False, if they
+                                            should be sorted in ascending order
         :return:                            The sorted table
         """
         self._rows.sort(key=lambda row: ([row[i] for i in [column_index] + list(additional_column_indices)]),
