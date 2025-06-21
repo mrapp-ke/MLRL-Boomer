@@ -4,10 +4,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility function for configuring boosting algorithms.
 """
 
-from mlrl.common.config.options import BooleanOption, Options
-from mlrl.common.config.parameters import AUTOMATIC, BINNING_EQUAL_WIDTH, NONE, OPTION_BIN_RATIO, OPTION_MAX_BINS, \
-    OPTION_MIN_BINS, OPTION_USE_HOLDOUT_SET, RULE_LEARNER_PARAMETERS, FeatureBinningParameter, FloatParameter, \
-    NominalParameter, ParallelRuleRefinementParameter, ParallelStatisticUpdateParameter, PartitionSamplingParameter
+from mlrl.common.config.parameters import BINNING_EQUAL_WIDTH, OPTION_BIN_RATIO, OPTION_MAX_BINS, OPTION_MIN_BINS, \
+    OPTION_USE_HOLDOUT_SET, RULE_LEARNER_PARAMETERS, FeatureBinningParameter, FloatParameter, NominalParameter, \
+    ParallelRuleRefinementParameter, ParallelStatisticUpdateParameter, PartitionSamplingParameter
 from mlrl.common.cython.learner import DefaultRuleMixin, NoJointProbabilityCalibrationMixin, \
     NoMarginalProbabilityCalibrationMixin, NoPostProcessorMixin
 
@@ -24,6 +23,11 @@ from mlrl.boosting.cython.learner_classification import AutomaticBinaryPredictor
     MarginalizedProbabilityPredictorMixin, NoDefaultRuleMixin, NoLabelBinningMixin, NonDecomposableLogisticLossMixin, \
     NonDecomposableSquaredHingeLossMixin, OutputWiseBinaryPredictorMixin, OutputWiseProbabilityPredictorMixin, \
     SparseStatisticsMixin
+
+from mlrl.util.cli import NONE
+from mlrl.util.options import BooleanOption, Options
+
+AUTOMATIC = 'auto'
 
 PROBABILITY_CALIBRATION_ISOTONIC = 'isotonic'
 

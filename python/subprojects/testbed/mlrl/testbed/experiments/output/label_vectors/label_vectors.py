@@ -7,13 +7,12 @@ from typing import Optional
 
 import numpy as np
 
-from mlrl.common.config.options import Options
-from mlrl.common.data.types import Uint8
-
-from mlrl.testbed.experiments.data import Data
+from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.output.label_vectors.label_vector_histogram import LabelVector, LabelVectorHistogram
 from mlrl.testbed.experiments.table import RowWiseTable, Table
+
+from mlrl.util.options import Options
 
 
 class LabelVectors(TabularOutputData):
@@ -28,14 +27,14 @@ class LabelVectors(TabularOutputData):
         :param label_vector_histogram: The histogram that stores unique label vectors and their respective frequency
         """
         super().__init__(OutputData.Properties(name='Label vectors', file_name='label_vectors'),
-                         Data.Context(include_dataset_type=False))
+                         Context(include_dataset_type=False))
         self.label_vector_histogram = label_vector_histogram
 
     def __format_label_vector(self, label_vector: LabelVector, sparse: bool) -> str:
         if sparse:
             return str(label_vector)
 
-        dense_label_vector = np.zeros(shape=self.label_vector_histogram.num_labels, dtype=Uint8)
+        dense_label_vector = np.zeros(shape=self.label_vector_histogram.num_labels, dtype=np.uint8)
         dense_label_vector[label_vector.label_indices] = 1
         return str(dense_label_vector)
 

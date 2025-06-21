@@ -77,14 +77,10 @@ One of the most important capabilities of the command line API is to train machi
   - `cross-validation` A cross validation is performed. Given that `dataset-name` is provided as the value of the argument `--dataset`, the data for individual folds must be stored in files named `dataset-name_fold-1`, `dataset-name_fold-2`, etc. If no such files are available, the program searches for a file with the name `dataset-name.arff` and splits it into training and test data for the individual folds automatically. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
     - `num_folds` (Default value = `10`) The total number of cross validation folds to be performed. Must be at least 2.
-    - `current_fold` (Default value = `0`) The cross validation fold to be performed. Must be in \[1, `num_folds`\] or 0, if all folds should be performed.
+    - `first_fold` (Default value = `1`) The first cross validation fold to be performed. Must be in \[1, `num_folds`\].
+    - `last_fold` (Default value = `num_folds`) The cross validation fold to be performed. Must be at least `first_fold` and in \[1, `num_folds`\].
 
-  - `none` The available data is not split into separate training and test sets, but the entire data is used for training and evaluation. This strategy should only be used for testing purposes, as the evaluation results will be highly biased and overly optimistic. Given that `dataset-name` is provided as the value of the argument `--dataset`, the data must be stored in a file named `dataset-name.arff`.
-
-- `--evaluate-training-data` (Default value = `false`)
-
-  - `true` The models are not only evaluated on the test data, but also on the training data.
-  - `false` The models are only evaluated on the test data.
+  - `none` The available data is not split into separate training and test sets, but the entire data is used for training and evaluation. This strategy should only be used for testing purposes, as the evaluation results will be highly biased and overly optimistic. Given that `dataset-name` is provided as the value of the argument `--dataset`, the data must be stored pin a file named `dataset-name.arff`.
 
 ### Types of Predictions
 
@@ -93,6 +89,16 @@ One of the most important capabilities of the command line API is to train machi
   - `scores` The learner is instructed to predict scores. In this case, ranking measures are used for evaluation.
   - `probabilities` The learner is instructed to predict probability estimates. In this case, ranking measures are used for evaluation.
   - `binary` The learner is instructed to predict binary labels. In this case, bi-partition evaluation measures are used for evaluation.
+
+- `--predict-for-training-data` (Default value = `false`)
+
+  - `true` Predictions are obtained for the training data.
+  - `false` Predictions are not obtained for the training data.
+
+- `--predict-for-test-data` (Default value = `true`)
+
+  - `true` Predictions are obtained for the test data.
+  - `false` Predictions are not obtained for the test data.
 
 ### Incremental Evaluation
 
@@ -159,6 +165,31 @@ As an alternative to storing the models learned by an algorithm, the algorithmic
 To provide valuable insights into the models learned by an algorithm, the predictions they provide, or the data they have been derived from, a wide variety of experimental results can be written to output files or printed on the console. If the results should be written to files, it is necessary to specify an output directory:
 
 - `--output-dir` An absolute or relative path to the directory where experimental results should be saved.
+
+- `--create-output-dir` (Default value = `true`)
+
+  - `true` The directories specified via the arguments `--output-dir`, `--model-save-dir` and `--parameter-save-dir` are automatically created if they do not already exist.
+  - `false` The directories are not created automatically.
+
+- `--wipe-output-dir` (Default value = `auto`)
+
+  - `true` All files within the directory specified via the argument `--output-dir` are deleted before the experiment starts.
+  - `false` No files within the directory are deleted, but existing files may be overwritten by the experiment.
+
+- `--exit-on-error` (Default value = `false`)
+
+  - `true` The program exits if an error occurs while writing experimental results.
+  - `false` Any error that occurs while writing experimental results is logged, but the program continues.
+
+- `--print-all` (Default value = `false`)
+
+  - `true` All output data is printed on the console unless specified otherwise.
+  - `false` No output data is printed on the console by default.
+
+- `--store-all` (Default value = `false`)
+
+  - `true` All output data is written to files.
+  - `false` No output data is written to files.
 
 (arguments-evaluation-results)=
 

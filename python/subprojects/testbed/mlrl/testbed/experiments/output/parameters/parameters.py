@@ -5,12 +5,12 @@ Provides classes for representing algorithmic parameters that are part of output
 """
 from typing import Optional
 
-from mlrl.common.config.options import Options
-
-from mlrl.testbed.experiments.data import Data
+from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.output.data import OutputData, TabularOutputData
 from mlrl.testbed.experiments.state import ParameterDict
 from mlrl.testbed.experiments.table import RowWiseTable, Table
+
+from mlrl.util.options import Options
 
 
 class OutputParameters(TabularOutputData):
@@ -23,7 +23,7 @@ class OutputParameters(TabularOutputData):
         :param parameter_dict: A dictionary that stores the parameters of a learner
         """
         super().__init__(OutputData.Properties(name='Custom parameters', file_name='parameters'),
-                         Data.Context(include_dataset_type=False))
+                         Context(include_dataset_type=False))
         self.custom_parameters = {key: value for key, value in parameter_dict.items() if value is not None}
 
     def to_text(self, options: Options, **kwargs) -> Optional[str]:

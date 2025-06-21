@@ -4,14 +4,16 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utilities that ease the configuration of separate-and-conquer (SeCo) algorithms.
 """
 
-from mlrl.common.config.options import Options
-from mlrl.common.config.parameters import NONE, RULE_LEARNER_PARAMETERS, FeatureBinningParameter, NominalParameter
+from mlrl.common.config.parameters import RULE_LEARNER_PARAMETERS, FeatureBinningParameter, NominalParameter
 
 from mlrl.seco.cython.learner import AccuracyHeuristicMixin, AccuracyPruningHeuristicMixin, FMeasureHeuristicMixin, \
     FMeasurePruningHeuristicMixin, KlnLiftFunctionMixin, LaplaceHeuristicMixin, LaplacePruningHeuristicMixin, \
     MEstimateHeuristicMixin, MEstimatePruningHeuristicMixin, NoLiftFunctionMixin, PartialHeadMixin, \
     PeakLiftFunctionMixin, PrecisionHeuristicMixin, PrecisionPruningHeuristicMixin, RecallHeuristicMixin, \
     RecallPruningHeuristicMixin, SingleOutputHeadMixin, WraHeuristicMixin, WraPruningHeuristicMixin
+
+from mlrl.util.cli import NONE
+from mlrl.util.options import Options
 
 HEURISTIC_ACCURACY = 'accuracy'
 

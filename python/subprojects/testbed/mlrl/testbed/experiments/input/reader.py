@@ -4,8 +4,8 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for reading input data.
 """
 from dataclasses import replace
+from typing import Any
 
-from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.input.sources import Source
 from mlrl.testbed.experiments.state import ExperimentState
 
@@ -15,7 +15,7 @@ class InputReader:
     Allows to read input data from a source.
     """
 
-    def __init__(self, source: Source, input_data: Data):
+    def __init__(self, source: Source, input_data: Any):
         """
         :param source:      The source, the input data should be read from
         :param input_data:  The input data that should be read
@@ -42,3 +42,9 @@ class InputReader:
         new_state = replace(state)
         self.source.read_from_source(new_state, self.input_data)
         return new_state
+
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, type(self))
+
+    def __hash__(self) -> int:
+        return hash(type(self))
