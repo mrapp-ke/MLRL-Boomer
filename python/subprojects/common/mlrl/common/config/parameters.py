@@ -153,7 +153,7 @@ class NominalParameter(Parameter, ABC):
         return self
 
     @abstractmethod
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         """
         Must be implemented by subclasses in order to configure a rule learner depending on the specified nominal value.
         
@@ -189,7 +189,7 @@ class NominalParameter(Parameter, ABC):
                 value = parse_param(self.name, value, supported_values)
                 options = None
 
-            self._configure(config, value, options)
+            self._configure(config, value, options if options else Options())
 
     def add_to_argument_parser(self, parser: ArgumentParser, config_type: type):
         supported_values = self.__get_supported_values(config_type)
@@ -328,7 +328,7 @@ class RuleInductionParameter(NominalParameter):
                            self.OPTION_BEAM_WIDTH, OPTION_RESAMPLE_FEATURES
                        })
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == self.RULE_INDUCTION_TOP_DOWN_GREEDY:
             conf = config.use_greedy_top_down_rule_induction()
             conf.set_min_coverage(options.get_int(self.OPTION_MIN_COVERAGE, conf.get_min_coverage()))
@@ -366,7 +366,7 @@ class FeatureBinningParameter(NominalParameter):
                        mixin=EqualWidthFeatureBinningMixin,
                        options={OPTION_BIN_RATIO, OPTION_MIN_BINS, OPTION_MAX_BINS})
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == NONE:
             config.use_no_feature_binning()
         elif value == BINNING_EQUAL_FREQUENCY:
@@ -396,7 +396,7 @@ class OutputSamplingParameter(NominalParameter):
                        options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES})
         self.add_value(name=self.OUTPUT_SAMPLING_ROUND_ROBIN, mixin=RoundRobinOutputSamplingMixin)
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == NONE:
             config.use_no_output_sampling()
         elif value == SAMPLING_WITHOUT_REPLACEMENT:
@@ -430,7 +430,7 @@ class InstanceSamplingParameter(NominalParameter):
                        mixin=ExampleWiseStratifiedInstanceSamplingMixin,
                        options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES})
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == NONE:
             config.use_no_instance_sampling()
         elif value == SAMPLING_WITH_REPLACEMENT:
@@ -470,7 +470,7 @@ class FeatureSamplingParameter(NominalParameter):
                        mixin=FeatureSamplingWithoutReplacementMixin,
                        options={OPTION_SAMPLE_SIZE, OPTION_MIN_SAMPLES, OPTION_MAX_SAMPLES, self.OPTION_NUM_RETAINED})
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == NONE:
             config.use_no_feature_sampling()
         elif value == SAMPLING_WITHOUT_REPLACEMENT:
@@ -503,7 +503,7 @@ class PartitionSamplingParameter(NominalParameter):
                        mixin=ExampleWiseStratifiedBiPartitionSamplingMixin,
                        options={self.OPTION_HOLDOUT_SET_SIZE})
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == NONE:
             config.use_no_partition_sampling()
         elif value == self.PARTITION_SAMPLING_RANDOM:
@@ -579,7 +579,7 @@ class GlobalPruningParameter(NominalParameter):
             return AggregationFunction.MAX
         return AggregationFunction.ARITHMETIC_MEAN
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == NONE:
             config.use_no_global_pruning()
         elif value == self.GLOBAL_PRUNING_POST:
@@ -619,7 +619,7 @@ class RulePruningParameter(NominalParameter):
         self.add_value(name=NONE, mixin=NoRulePruningMixin)
         self.add_value(name=self.RULE_PRUNING_IREP, mixin=IrepRulePruningMixin)
 
-    def _configure(self, config, value: str, _: Optional[Options]):
+    def _configure(self, config, value: str, _: Options):
         if value == NONE:
             config.use_no_rule_pruning()
         elif value == self.RULE_PRUNING_IREP:
@@ -640,7 +640,7 @@ class ParallelRuleRefinementParameter(NominalParameter):
                        mixin=ParallelRuleRefinementMixin,
                        options={OPTION_NUM_PREFERRED_THREADS})
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == BooleanOption.FALSE.value:
             config.use_no_parallel_rule_refinement()
         else:
@@ -670,7 +670,7 @@ class ParallelStatisticUpdateParameter(NominalParameter):
                        mixin=ParallelStatisticUpdateMixin,
                        options={OPTION_NUM_PREFERRED_THREADS})
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == BooleanOption.FALSE.value:
             config.use_no_parallel_statistic_update()
         else:
@@ -699,7 +699,7 @@ class ParallelPredictionParameter(NominalParameter):
                        mixin=ParallelPredictionMixin,
                        options={OPTION_NUM_PREFERRED_THREADS})
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == BooleanOption.FALSE.value:
             config.use_no_parallel_prediction()
         else:
@@ -772,7 +772,7 @@ class SequentialPostOptimizationParameter(NominalParameter):
                        mixin=SequentialPostOptimizationMixin,
                        options={self.OPTION_NUM_ITERATIONS, self.OPTION_REFINE_HEADS, OPTION_RESAMPLE_FEATURES})
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == BooleanOption.FALSE.value:
             config.use_no_sequential_post_optimization()
         elif value == BooleanOption.TRUE.value:

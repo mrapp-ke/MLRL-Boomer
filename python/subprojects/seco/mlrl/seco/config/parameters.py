@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utilities that ease the configuration of separate-and-conquer (SeCo) algorithms.
 """
-from typing import Optional
 
 from mlrl.common.config.options import Options
 from mlrl.common.config.parameters import NONE, RULE_LEARNER_PARAMETERS, FeatureBinningParameter, NominalParameter
@@ -47,7 +46,7 @@ class HeadTypeParameter(NominalParameter):
         self.add_value(name=self.HEAD_TYPE_SINGLE, mixin=SingleOutputHeadMixin)
         self.add_value(name=self.HEAD_TYPE_PARTIAL, mixin=PartialHeadMixin)
 
-    def _configure(self, config, value: str, _: Optional[Options]):
+    def _configure(self, config, value: str, _: Options):
         if value == self.HEAD_TYPE_SINGLE:
             config.use_single_output_heads()
         elif value == self.HEAD_TYPE_PARTIAL:
@@ -80,7 +79,7 @@ class LiftFunctionParameter(NominalParameter):
                        options={self.OPTION_PEAK_LABEL, self.OPTION_MAX_LIFT, self.OPTION_CURVATURE})
         self.add_value(name=self.LIFT_FUNCTION_KLN, mixin=KlnLiftFunctionMixin, options={self.OPTION_K})
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == NONE:
             config.use_no_lift_function()
         elif value == self.LIFT_FUNCTION_PEAK:
@@ -108,7 +107,7 @@ class HeuristicParameter(NominalParameter):
         self.add_value(name=HEURISTIC_F_MEASURE, mixin=FMeasureHeuristicMixin, options={OPTION_BETA})
         self.add_value(name=HEURISTIC_M_ESTIMATE, mixin=MEstimateHeuristicMixin, options={OPTION_M})
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == HEURISTIC_ACCURACY:
             config.use_accuracy_heuristic()
         elif value == HEURISTIC_PRECISION:
@@ -143,7 +142,7 @@ class PruningHeuristicParameter(NominalParameter):
         self.add_value(name=HEURISTIC_F_MEASURE, mixin=FMeasurePruningHeuristicMixin, options={OPTION_BETA})
         self.add_value(name=HEURISTIC_M_ESTIMATE, mixin=MEstimatePruningHeuristicMixin, options={OPTION_M})
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == HEURISTIC_ACCURACY:
             config.use_accuracy_pruning_heuristic()
         elif value == HEURISTIC_PRECISION:
