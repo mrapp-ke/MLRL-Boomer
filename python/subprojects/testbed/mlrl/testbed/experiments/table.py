@@ -5,7 +5,7 @@ Provides classes for representing tables.
 """
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Any, Generator, Iterable, List, Optional
+from typing import Any, Generator, Iterable, Iterator, List, Optional
 
 from tabulate import tabulate
 
@@ -225,7 +225,7 @@ class RowWiseTable(Table):
         def __getitem__(self, column_index: int) -> Header:
             return self.table._headers[column_index]
 
-        def __iter__(self) -> Iterable[Header]:
+        def __iter__(self) -> Iterator[Optional[Any]]:
             return iter(self.table._headers)
 
     class Row(Row):
@@ -253,7 +253,7 @@ class RowWiseTable(Table):
             row = self.table._rows[self.row_index]
             return row[column_index] if column_index < len(row) else None
 
-        def __iter__(self) -> Iterable[Cell]:
+        def __iter__(self) -> Iterator[Cell]:
             for column_index in range(self.num_columns):
                 yield self[column_index]
 
@@ -288,7 +288,7 @@ class RowWiseTable(Table):
             column_index = self.column_index
             return row[column_index] if column_index < len(row) else None
 
-        def __iter__(self) -> Iterable[Cell]:
+        def __iter__(self) -> Iterator[Cell]:
             for row_index in range(self.num_rows):
                 yield self[row_index]
 
@@ -405,7 +405,7 @@ class ColumnWiseTable(Table):
         def __getitem__(self, column_index: int) -> Header:
             return self.table._headers[column_index]
 
-        def __iter__(self) -> Iterable[Header]:
+        def __iter__(self) -> Iterator[Header]:
             return iter(self.table._headers)
 
     class Row(Row):
@@ -434,7 +434,7 @@ class ColumnWiseTable(Table):
             row_index = self.row_index
             return column[row_index] if row_index < len(column) else None
 
-        def __iter__(self) -> Iterable[Cell]:
+        def __iter__(self) -> Iterator[Cell]:
             for column_index in range(self.num_columns):
                 yield self[column_index]
 
@@ -468,7 +468,7 @@ class ColumnWiseTable(Table):
             column = self.table._columns[self.column_index]
             return column[row_index] if row_index < len(column) else None
 
-        def __iter__(self) -> Iterable[Cell]:
+        def __iter__(self) -> Iterator[Cell]:
             for row_index in range(self.num_rows):
                 yield self[row_index]
 
