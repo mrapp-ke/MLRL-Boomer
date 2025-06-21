@@ -34,7 +34,7 @@ jobs:
           triplet: x64-windows
           token: ${{ github.token }}
       - name: Prepare sccache
-        uses: mozilla-actions/sccache-action@v0.0.8
+        uses: mozilla-actions/sccache-action@v0.0.9
       - name: Compile via MSVC
         run: |-
           $env:INCLUDE += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\include"
