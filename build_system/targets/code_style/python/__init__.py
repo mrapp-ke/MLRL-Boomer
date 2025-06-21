@@ -28,11 +28,6 @@ MODULES = [
         source_file_search=Project.BuildSystem.file_search(),
     ),
     CodeModule(
-        file_type=FileType.python(),
-        root_directory=Project.Python.root_directory,
-        source_file_search=Project.Python.file_search(),
-    ),
-    CodeModule(
         file_type=FileType.cython(),
         root_directory=Project.Python.root_directory,
         source_file_search=Project.Python.file_search(),
@@ -42,4 +37,10 @@ MODULES = [
         root_directory=Project.Documentation.root_directory,
         source_file_search=Project.Documentation.file_search(),
     ),
+] + [
+    CodeModule(
+        file_type=FileType.python(),
+        root_directory=subproject,
+        source_file_search=Project.Python.file_search(),
+    ) for subproject in Project.Python.find_subprojects()
 ]
