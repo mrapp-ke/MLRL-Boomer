@@ -28,7 +28,7 @@ class PickleFileSink(FileSink):
 
     # pylint: disable=unused-argument
     def _write_to_file(self, file_path: str, state: ExperimentState, output_data: OutputData, **_):
-        output_object = output_data.to_object()
+        output_object = output_data.to_object(self.options)
 
         if output_object:
             with open(file_path, mode='wb') as pickle_file:
