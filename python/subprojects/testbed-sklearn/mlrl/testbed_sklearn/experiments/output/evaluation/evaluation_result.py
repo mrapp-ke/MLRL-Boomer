@@ -110,11 +110,11 @@ class EvaluationResult(TabularOutputData):
         rotated_table = RowWiseTable()
 
         for column_index in range(0, table.num_columns, 2 if fold is None else 1):
-            header = header_row[column_index]
+            header = header_row[column_index] if header_row else None
 
             if header.option_key not in {self.OPTION_TRAINING_TIME, self.OPTION_PREDICTION_TIME}:
                 value = first_row[column_index]
-                new_row = [header, value]
+                new_row = [header, value] if header else [value]
 
                 if fold is None:
                     std_dev = '±' + first_row[column_index + 1]
