@@ -52,7 +52,7 @@ class DirectorySearch:
         def filter_directory(filtered_names: Set[str], _: str, directory_name: str):
             return directory_name in filtered_names
 
-        return self.add_filters(*[partial(filter_directory, name) for name in names])
+        return self.add_filters(partial(filter_directory, set(names)))
 
     def filter_by_substrings(self,
                              starts_with: Optional[str] = None,

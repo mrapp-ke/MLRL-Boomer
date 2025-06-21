@@ -7,6 +7,8 @@ from typing import Any, Optional
 
 from sklearn.base import BaseEstimator
 
+from mlrl.common.config.options import Options
+
 from mlrl.testbed.experiments.data import Data
 from mlrl.testbed.experiments.output.data import ObjectOutputData, OutputData
 
@@ -24,7 +26,7 @@ class OutputModel(ObjectOutputData):
                          Data.Context(include_dataset_type=False, include_prediction_scope=False))
         self.learner = learner
 
-    def to_object(self) -> Optional[Any]:
+    def to_object(self, options: Options, **kwargs) -> Optional[Any]:
         """
         See :func:`mlrl.testbed.experiments.output.data.ObjectOutputData.to_object`
         """

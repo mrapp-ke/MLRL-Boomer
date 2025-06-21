@@ -15,7 +15,6 @@ from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
 from mlrl.testbed.experiments.problem_type import ProblemType
 from mlrl.testbed.experiments.state import ExperimentState
-from mlrl.testbed.util.format import OPTION_DECIMALS
 
 
 class PredictionWriter(OutputWriter):
@@ -47,10 +46,6 @@ class PredictionWriter(OutputWriter):
                         attribute_type = AttributeType.ORDINAL
                 else:
                     attribute_type = AttributeType.NUMERICAL
-                    decimals = self.options.get_int(OPTION_DECIMALS, 0)
-
-                    if decimals > 0:
-                        predictions = np.around(predictions, decimals=decimals)
 
                 outputs = dataset.outputs
                 outputs = [Attribute('Prediction ' + output.name, attribute_type, nominal_values) for output in outputs]
