@@ -197,6 +197,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         self.feature_format = feature_format
         self.output_format = output_format
         self.prediction_format = prediction_format
+        self.model_: Optional[Any] = None
 
     # pylint: disable=attribute-defined-outside-init
     def _fit(self, x, y, **kwargs):
