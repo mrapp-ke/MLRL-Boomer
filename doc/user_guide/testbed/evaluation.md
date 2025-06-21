@@ -101,14 +101,14 @@ By default, a 10-fold cross validation, where ten models are trained and evaluat
 ````
 
 `````{tip}
-When providing the option `current_fold`, only a single fold, instead of the entire procedure, is performed. This is particularly useful, if one intends to train and evaluate the models for each individual fold in parallel on different machines. For example, the following command does only execute the second fold of a 5-fold CV:
+By providing the options `first_fold` and `last_fold`, a subset of the folds, instead of the entire procedure, can be performed. This is particularly useful, if one intends to train and evaluate models for different folds in parallel on different machines. For example, the following command does only execute only the second fold of a 5-fold CV:
 
 ````{tab} BOOMER
    ```text
    mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --data-split 'cv{num_folds=5,current_fold=2}'
+       --data-split 'cv{num_folds=5,first_fold=2,last_fold=2}'
    ```
 ````
 
@@ -117,7 +117,7 @@ When providing the option `current_fold`, only a single fold, instead of the ent
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --data-split 'cv{num_folds=5,current_fold=2}'
+       --data-split 'cv{num_folds=5,first_fold=2,last_fold=2}'
    ```
 ````
 `````
@@ -151,7 +151,7 @@ Sometimes, evaluating the performance of a model on the data it has been trained
 ````
 
 `````{tip}
-If you are interested in obtaining evaluation results for the training data in addition to the test data when using a train-test-split or a cross validation, as discussed above, the argument `--evaluate-training-data true` may be used:
+If you are interested in obtaining evaluation results for the training data in addition to the test data when using a train-test-split or a cross validation, as discussed above, the argument `--predict-for-training-data true` may be used:
 
 ````{tab} BOOMER
    ```text
@@ -159,7 +159,7 @@ If you are interested in obtaining evaluation results for the training data in a
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --data-split cv \
-       --evaluate-training-data true
+       --predict-for-training-data true
    ```
 ````
 
@@ -169,9 +169,11 @@ If you are interested in obtaining evaluation results for the training data in a
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --data-split cv \
-       --evaluate-training-data true
+       --predict-for-training-data true
    ```
-````    
+````
+
+The argument `--predict-for-test-data false` can be used analogously to control whether evaluation results should be obtained for the test data or not. 
 `````
 
 (prediction-types)=

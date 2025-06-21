@@ -7,16 +7,16 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, replace
 from typing import Any, Iterable, List, Optional, Type
 
-from mlrl.common.config.options import Options
-
-from mlrl.testbed.experiments.data import Data
+from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.state import ExperimentState
 from mlrl.testbed.experiments.table import Table
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_number
 
+from mlrl.util.options import Options
 
-class OutputData(Data, ABC):
+
+class OutputData(ABC):
     """
     An abstract class for all classes that represent output data.
     """
@@ -33,22 +33,22 @@ class OutputData(Data, ABC):
         name: str
         file_name: str
 
-    def __init__(self, properties: Properties, context: Data.Context = Data.Context()):
+    def __init__(self, properties: Properties, context: Context = Context()):
         """
         :param properties:  The properties of the output data
-        :param context:     A `Data.Context` to be used by default for finding a suitable sink this output data can be
+        :param context:     A `Context` to be used by default for finding a suitable sink this output data can be
                             written to
         """
-        super().__init__(context=context)
-        self.custom_context = {}
         self.properties = properties
+        self.context = context
+        self.custom_context = {}
 
-    def get_context(self, lookup_type: Type) -> Data.Context:
+    def get_context(self, lookup_type: Type) -> Context:
         """
-        Returns a `Data.Context` that can be used for finding a suitable sink for handling this data.
+        Returns a `Context` that can be used for finding a suitable sink for handling this data.
 
         :param lookup_type: The type of the sink to search for
-        :return:            A `Data.Context`
+        :return:            A `Context`
         """
         return self.custom_context.setdefault(lookup_type, replace(self.context))
 
@@ -63,10 +63,10 @@ class TextualOutputData(OutputData, ABC):
         A title that is printed before textual output data.
         """
 
-        def __init__(self, title: str, context: Data.Context):
+        def __init__(self, title: str, context: Context):
             """
             :param title:   A title
-            :param context: A `Data.Context` to be used for formatting the title
+            :param context: A `Context` to be used for formatting the title
             """
             self.title = title
             self.context = context

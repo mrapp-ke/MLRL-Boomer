@@ -1,5 +1,5 @@
-mlrl-testbed mlrl.boosting --log-level DEBUG --data-dir python/tests/res/data --dataset atp7d --output-dir python/tests/res/tmp/results --problem-type regression --rule-induction top-down-beam-search
-INFO Starting experiment using the regression algorithm "boomer"...
+mlrl-testbed mlrl.boosting --log-level debug --data-dir python/tests/res/data --dataset atp7d --output-dir python/tests/res/tmp/results --problem-type regression --rule-induction top-down-beam-search
+INFO Starting experiment using the regression algorithm "BoomerRegressor"...
 INFO Using separate training and test sets...
 DEBUG Reading input data from file "python/tests/res/data/atp7d.arff"...
 DEBUG Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
@@ -13,10 +13,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data:
 
-Mean Absolute Error               28.47
-Mean Absolute Percentage Error     1.64
-Mean Squared Error              1789.84
-Median Absolute Error             17.96
+Mean Absolute Error               31.36
+Mean Absolute Percentage Error     0.08
+Mean Squared Error              3285.27
+Median Absolute Error             16.52
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 INFO Successfully finished after <duration>

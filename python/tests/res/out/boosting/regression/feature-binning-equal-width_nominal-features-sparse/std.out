@@ -1,5 +1,5 @@
-mlrl-testbed mlrl.boosting --log-level DEBUG --data-dir python/tests/res/data --dataset atp7d-nominal --output-dir python/tests/res/tmp/results --problem-type regression --feature-binning equal-width --feature-format sparse
-INFO Starting experiment using the regression algorithm "boomer"...
+mlrl-testbed mlrl.boosting --log-level debug --data-dir python/tests/res/data --dataset atp7d-nominal --output-dir python/tests/res/tmp/results --problem-type regression --feature-binning equal-width --feature-format sparse
+INFO Starting experiment using the regression algorithm "BoomerRegressor"...
 INFO Using separate training and test sets...
 DEBUG Reading input data from file "python/tests/res/data/atp7d-nominal.arff"...
 DEBUG Parsing meta-data from file "python/tests/res/data/atp7d-nominal.xml"...
@@ -13,10 +13,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data:
 
-Mean Absolute Error               34.09
-Mean Absolute Percentage Error     1.74
-Mean Squared Error              2325.76
-Median Absolute Error             22.91
+Mean Absolute Error               33.66
+Mean Absolute Percentage Error     0.09
+Mean Squared Error              3975.78
+Median Absolute Error             17.84
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 INFO Successfully finished after <duration>

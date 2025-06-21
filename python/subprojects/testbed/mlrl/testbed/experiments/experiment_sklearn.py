@@ -1,23 +1,32 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for performing experiments.
+Provides classes for performing experiments using the scikit-learn framework.
 """
 import logging as log
 
+from dataclasses import replace
 from functools import reduce
-from typing import Any, Callable, Dict, Generator, Optional
+from typing import Any, Dict, Generator, Optional
 
 from sklearn.base import BaseEstimator, clone
 
-from mlrl.common.mixins import NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
-
-from mlrl.testbed.experiments.dataset import AttributeType, Dataset, DatasetType
+from mlrl.testbed.experiments.dataset import Dataset
+from mlrl.testbed.experiments.dataset_tabular import TabularDataset
 from mlrl.testbed.experiments.experiment import Experiment
-from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
-from mlrl.testbed.experiments.prediction import Predictor
-from mlrl.testbed.experiments.problem_type import ProblemType
-from mlrl.testbed.experiments.state import ParameterDict, PredictionState, TrainingState
+from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
+from mlrl.testbed.experiments.output.characteristics.data.tabular.writer_data import DataCharacteristicsWriter
+from mlrl.testbed.experiments.output.characteristics.data.tabular.writer_prediction import \
+    PredictionCharacteristicsWriter
+from mlrl.testbed.experiments.output.dataset.tabular.writer_ground_truth import GroundTruthWriter
+from mlrl.testbed.experiments.output.dataset.tabular.writer_prediction import PredictionWriter
+from mlrl.testbed.experiments.output.evaluation.writer import EvaluationWriter
+from mlrl.testbed.experiments.output.label_vectors.writer import LabelVectorWriter
+from mlrl.testbed.experiments.output.model.writer import ModelWriter
+from mlrl.testbed.experiments.output.parameters.writer import ParameterWriter
+from mlrl.testbed.experiments.problem_domain import ProblemDomain
+from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnProblem
+from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
 
 
@@ -26,10 +35,45 @@ class SkLearnExperiment(Experiment):
     An experiment that trains and evaluates a machine learning model using the scikit-learn framework.
     """
 
-    PredictorFactory = Callable[[], Predictor]
+    class Builder(Experiment.Builder):
+        """
+        Allows to configure and create instances of the class `SkLearnExperiment`.
+        """
+
+        def __init__(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter):
+            """
+            :param problem_domain:      The problem domain, the experiment should be concerned with
+            :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
+            """
+            super().__init__(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
+            self.data_characteristics_writer = DataCharacteristicsWriter()
+            self.prediction_characteristics_writer = PredictionCharacteristicsWriter()
+            self.ground_truth_writer = GroundTruthWriter()
+            self.prediction_writer = PredictionWriter()
+            self.label_vector_writer = LabelVectorWriter()
+            self.evaluation_writer = EvaluationWriter()
+            self.model_writer = ModelWriter()
+            self.parameter_writer = ParameterWriter()
+            self.add_pre_training_output_writers(
+                self.data_characteristics_writer,
+                self.parameter_writer,
+            )
+            self.add_post_training_output_writers(
+                self.model_writer,
+                self.label_vector_writer,
+            )
+            self.add_prediction_output_writers(
+                self.prediction_characteristics_writer,
+                self.ground_truth_writer,
+                self.prediction_writer,
+                self.evaluation_writer,
+            )
+
+        def _create_experiment(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter) -> Experiment:
+            return SkLearnExperiment(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
 
     def __create_learner(self, parameters: ParameterDict) -> BaseEstimator:
-        learner = clone(self.base_learner)
+        learner = clone(self.problem_domain.base_learner)
 
         if parameters:
             learner.set_params(**parameters)
@@ -57,53 +101,35 @@ class SkLearnExperiment(Experiment):
                      if aggr else '') + '"' + change[0] + '" is "' + change[2] + '" instead of "' + change[1] + '"',
                     changes, ''))
 
-    def __train(self, learner: BaseEstimator, dataset: Dataset) -> Timer.Duration:
-        # Set the indices of ordinal features, if supported...
-        fit_kwargs = self.fit_kwargs if self.fit_kwargs else {}
+    # pylint: disable=useless-parent-delegation
+    def __init__(self, problem_domain: SkLearnProblem, dataset_splitter: DatasetSplitter):
+        """
+        :param problem_domain:      The problem domain, the experiment is concerned with
+        :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
+        """
+        super().__init__(problem_domain=problem_domain, dataset_splitter=dataset_splitter)
 
-        if isinstance(learner, OrdinalFeatureSupportMixin):
-            fit_kwargs[OrdinalFeatureSupportMixin.KWARG_ORDINAL_FEATURE_INDICES] = dataset.get_feature_indices(
-                AttributeType.ORDINAL)
+    def _fit(self, estimator: BaseEstimator, dataset: TabularDataset,
+             fit_kwargs: Optional[Dict[str, Any]]) -> Timer.Duration:
+        """
+        May be overridden by subclasses in order to fit a scikit-learn estimator to a dataset.
 
-        # Set the indices of nominal features, if supported...
-        if isinstance(learner, NominalFeatureSupportMixin):
-            fit_kwargs[NominalFeatureSupportMixin.KWARG_NOMINAL_FEATURE_INDICES] = dataset.get_feature_indices(
-                AttributeType.NOMINAL)
+        :param estimator:   A scikit-learn estimator
+        :param fit_kwargs:  Optional keyword arguments to be passed to the estimator
+
+        """
+        fit_kwargs = fit_kwargs if fit_kwargs else {}
 
         try:
             start_time = Timer.start()
-            learner.fit(dataset.x, dataset.y, **fit_kwargs)
+            estimator.fit(dataset.x, dataset.y, **fit_kwargs)
             return Timer.stop(start_time)
         except ValueError as error:
             if dataset.has_sparse_features:
-                return self.__train(learner, dataset.enforce_dense_features())
+                return self._fit(estimator, dataset.enforce_dense_features(), fit_kwargs)
             if dataset.has_sparse_outputs:
-                return self.__train(learner, dataset.enforce_dense_outputs())
+                return self._fit(estimator, dataset.enforce_dense_outputs(), fit_kwargs)
             raise error
-
-    def __init__(self,
-                 problem_type: ProblemType,
-                 base_learner: BaseEstimator,
-                 learner_name: str,
-                 dataset_splitter: DatasetSplitter,
-                 predictor_factory: PredictorFactory,
-                 fit_kwargs: Optional[Dict[str, Any]] = None,
-                 predict_kwargs: Optional[Dict[str, Any]] = None):
-        """
-        :param problem_type:        The type of the machine learning problem
-        :param base_learner:        The machine learning algorithm to be used
-        :param learner_name:        The name of the machine learning algorithm
-        :param dataset_splitter:    The method to be used for splitting the dataset into training and test datasets
-        :param predictor_factory:   A `PredictorFactory`
-        :param fit_kwargs:          Optional keyword arguments to be passed to the learner when fitting a model
-        :param predict_kwargs:      Optional keyword arguments to be passed to the learner when obtaining predictions
-                                    from a model
-        """
-        super().__init__(problem_type=problem_type, learner_name=learner_name, dataset_splitter=dataset_splitter)
-        self.base_learner = base_learner
-        self.predictor_factory = predictor_factory
-        self.fit_kwargs = fit_kwargs
-        self.predict_kwargs = predict_kwargs
 
     def _train(self, learner: Optional[Any], parameters: ParameterDict, dataset: Dataset) -> TrainingState:
         new_learner = self.__create_learner(parameters=parameters)
@@ -114,19 +140,24 @@ class SkLearnExperiment(Experiment):
             return TrainingState(learner=learner)
 
         log.info('Fitting model to %s training examples...', dataset.num_examples)
-        training_duration = self.__train(new_learner, dataset)
+        training_duration = self._fit(new_learner, dataset, fit_kwargs=self.problem_domain.fit_kwargs)
         log.info('Successfully fit model in %s', training_duration)
         return TrainingState(learner=new_learner, training_duration=training_duration)
 
-    def _predict(self, learner: Any, dataset: Dataset,
-                 dataset_type: DatasetType) -> Generator[PredictionState, None, None]:
-        predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-        predictor = self.predictor_factory()
+    def _predict(self, state: ExperimentState) -> Generator[PredictionState, None, None]:
+        dataset = state.dataset_as(self, TabularDataset)
+        learner = state.learner_as(self, BaseEstimator)
 
-        try:
-            return predictor.obtain_predictions(learner, dataset, dataset_type, **predict_kwargs)
-        except ValueError as error:
-            if dataset.has_sparse_features:
-                return self._predict(learner, dataset.enforce_dense_features(), dataset_type)
+        if dataset and learner:
+            try:
+                problem_domain = self.problem_domain
+                predict_kwargs = problem_domain.predict_kwargs
+                predict_kwargs = predict_kwargs if predict_kwargs else {}
+                predictor = problem_domain.predictor_factory.create()
+                dataset_type = state.dataset_type
+                yield from predictor.obtain_predictions(learner, dataset, dataset_type, **predict_kwargs)
+            except ValueError as error:
+                if dataset.has_sparse_features:
+                    yield self._predict(replace(state, dataset=dataset.enforce_dense_features()))
 
-            raise error
+                raise error

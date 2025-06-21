@@ -33,10 +33,13 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "numpy",
+    "mlrl-util",
+    "packaging",
     "scikit-learn",
-    "scipy",
 ]
+
+[project.optional-dependencies]
+testbed = ["mlrl-testbed"]
 
 [project.urls]
 homepage = "https://github.com/mrapp-ke/MLRL-Boomer"

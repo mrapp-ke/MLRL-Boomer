@@ -6,7 +6,7 @@ Provides classes for writing output data to sinks.
 import logging as log
 
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
@@ -34,12 +34,39 @@ class OutputWriter:
     Allows to write output data to one or several sinks.
     """
 
+    def __extract_data(self, extractor: DataExtractor, state: ExperimentState) -> Optional[OutputData]:
+        try:
+            return extractor.extract_data(state, self.sinks)
+        # pylint: disable=broad-exception-caught
+        except Exception as error:
+            if self.exit_on_error:
+                raise error
+
+            log.error('Failed to extract output data from experimental state via extractor of type %s',
+                      type(extractor).__name__,
+                      exc_info=error)
+            return None
+
+    def __write_to_sink(self, sink: Sink, state: ExperimentState, output_data: OutputData):
+        try:
+            self._write_to_sink(sink, state, output_data)
+        # pylint: disable=broad-exception-caught
+        except Exception as error:
+            if self.exit_on_error:
+                raise error
+
+            log.error('Failed to write output data of type "%s" to sink %s',
+                      type(output_data).__name__,
+                      type(sink).__name__,
+                      exc_info=error)
+
     def __init__(self, *extractors: DataExtractor):
         """
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
         self.extractors = list(extractors)
         self.sinks = []
+        self.exit_on_error = True
 
     def add_sinks(self, *sinks: Sink) -> 'OutputWriter':
         """
@@ -66,18 +93,16 @@ class OutputWriter:
                 output_data = None
 
                 for extractor in extractors:
-                    output_data = extractor.extract_data(state, sinks)
+                    output_data = self.__extract_data(extractor, state)
 
                     if output_data:
                         break
 
                 if output_data:
                     for sink in sinks:
-                        self._write_to_sink(sink, state, output_data)
+                        self.__write_to_sink(sink, state, output_data)
             else:
                 log.warning('No extractors have been added to output writer of type %s', type(self).__name__)
-        else:
-            log.warning('No sinks have been added to output writer of type %s', type(self).__name__)
 
     def _write_to_sink(self, sink: Sink, state: ExperimentState, output_data: OutputData):
         """
@@ -88,3 +113,9 @@ class OutputWriter:
         :param output_data: The output data that should be written to the sink
         """
         sink.write_to_sink(state, output_data)
+
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, type(self))
+
+    def __hash__(self) -> int:
+        return hash(type(self))

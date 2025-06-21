@@ -10,6 +10,14 @@ Each of these information can either be printed to the console or saved to outpu
 The path to the directory, where experimental results should be saved, can be either absolute or relative to the working directory.
 ```
 
+```{tip}
+By default, the directory specified via the argument `--output-dir` is created automatically if it does not exist. This functionality can be turned off via the argument `--create-output-dir false`. Moreover, all files in the specified directory are usually deleted before an experiment starts. By providing the argument `--wipe-output-dir false`, the deletion of files can be prevented.
+```
+
+```{tip}
+By providing the argument `--store-all true`, the program can be instructed to write all available output data to files. Similarly, the argument `--print-all true` results in all output data being printed on the console.  
+```
+
 (output-evaluation-results)=
 
 ## Evaluation Results

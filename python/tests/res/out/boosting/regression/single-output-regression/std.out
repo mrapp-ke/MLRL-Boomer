@@ -1,5 +1,5 @@
-mlrl-testbed mlrl.boosting --log-level DEBUG --data-dir python/tests/res/data --dataset housing --output-dir python/tests/res/tmp/results --problem-type regression --print-evaluation true
-INFO Starting experiment using the regression algorithm "boomer"...
+mlrl-testbed mlrl.boosting --log-level debug --data-dir python/tests/res/data --dataset housing --output-dir python/tests/res/tmp/results --problem-type regression --print-evaluation true
+INFO Starting experiment using the regression algorithm "BoomerRegressor"...
 INFO Using separate training and test sets...
 DEBUG Reading input data from file "python/tests/res/data/housing.arff"...
 DEBUG Parsing meta-data from file "python/tests/res/data/housing.xml"...
@@ -13,10 +13,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data:
 
-Mean Absolute Error              2.46
+Mean Absolute Error              2.59
 Mean Absolute Percentage Error   0.13
-Mean Squared Error              11.37
-Median Absolute Error            1.75
+Mean Squared Error              12.13
+Median Absolute Error            1.82
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 INFO Successfully finished after <duration>

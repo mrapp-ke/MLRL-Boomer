@@ -1,0 +1,317 @@
+mlrl-testbed mlrl.seco --help
+usage: mlrl-testbed [-r RUNNABLE] [-v] [--create-output-dir CREATE_OUTPUT_DIR]
+                    [--data-dir DATA_DIR] [--data-split DATA_SPLIT]
+                    [--dataset DATASET] [--exit-on-error EXIT_ON_ERROR]
+                    [--feature-binning FEATURE_BINNING]
+                    [--feature-format FEATURE_FORMAT]
+                    [--feature-sampling FEATURE_SAMPLING]
+                    [--head-type HEAD_TYPE] [--heuristic HEURISTIC]
+                    [--holdout HOLDOUT]
+                    [--incremental-evaluation INCREMENTAL_EVALUATION]
+                    [--instance-sampling INSTANCE_SAMPLING]
+                    [--lift-function LIFT_FUNCTION] [--log-level LOG_LEVEL]
+                    [--max-rules MAX_RULES] [--model-load-dir MODEL_LOAD_DIR]
+                    [--model-save-dir MODEL_SAVE_DIR]
+                    [--one-hot-encoding ONE_HOT_ENCODING]
+                    [--output-dir OUTPUT_DIR] [--output-format OUTPUT_FORMAT]
+                    [--output-sampling OUTPUT_SAMPLING]
+                    [--parallel-prediction PARALLEL_PREDICTION]
+                    [--parallel-rule-refinement PARALLEL_RULE_REFINEMENT]
+                    [--parallel-statistic-update PARALLEL_STATISTIC_UPDATE]
+                    [--parameter-load-dir PARAMETER_LOAD_DIR]
+                    [--parameter-save-dir PARAMETER_SAVE_DIR]
+                    [--predict-for-test-data PREDICT_FOR_TEST_DATA]
+                    [--predict-for-training-data PREDICT_FOR_TRAINING_DATA]
+                    [--prediction-format PREDICTION_FORMAT]
+                    [--prediction-type PREDICTION_TYPE]
+                    [--print-data-characteristics PRINT_DATA_CHARACTERISTICS]
+                    [--print-evaluation PRINT_EVALUATION]
+                    [--print-ground-truth PRINT_GROUND_TRUTH]
+                    [--print-label-vectors PRINT_LABEL_VECTORS]
+                    [--print-model-characteristics PRINT_MODEL_CHARACTERISTICS]
+                    [--print-parameters PRINT_PARAMETERS]
+                    [--print-prediction-characteristics PRINT_PREDICTION_CHARACTERISTICS]
+                    [--print-predictions PRINT_PREDICTIONS]
+                    [--print-rules PRINT_RULES] [--problem-type PROBLEM_TYPE]
+                    [--pruning-heuristic PRUNING_HEURISTIC]
+                    [--random-state RANDOM_STATE]
+                    [--rule-induction RULE_INDUCTION]
+                    [--rule-pruning RULE_PRUNING]
+                    [--sequential-post-optimization SEQUENTIAL_POST_OPTIMIZATION]
+                    [--sparse-feature-value SPARSE_FEATURE_VALUE]
+                    [--store-data-characteristics STORE_DATA_CHARACTERISTICS]
+                    [--store-evaluation STORE_EVALUATION]
+                    [--store-ground-truth STORE_GROUND_TRUTH]
+                    [--store-label-vectors STORE_LABEL_VECTORS]
+                    [--store-model-characteristics STORE_MODEL_CHARACTERISTICS]
+                    [--store-prediction-characteristics STORE_PREDICTION_CHARACTERISTICS]
+                    [--store-predictions STORE_PREDICTIONS]
+                    [--store-rules STORE_RULES] [--time-limit TIME_LIMIT]
+                    [--wipe-output-dir WIPE_OUTPUT_DIR] [-h]
+                    runnable_module_or_source_file
+
+A command line utility for training and evaluating machine learning algorithms
+
+positional arguments:
+  runnable_module_or_source_file
+                        The Python module or source file of the program that
+                        should be run
+
+options:
+  -r, --runnable RUNNABLE
+                        The Python class name of the program that should be
+                        run
+  -v, --version         Display information about the program.
+  --create-output-dir CREATE_OUTPUT_DIR
+                        Whether the directory specified via the argument
+                        --output-dir should automatically be created, if it
+                        does not exist, or not. Must be one of {"false",
+                        "true"}.
+  --data-dir DATA_DIR   The path to the directory where the dataset files are
+                        located.
+  --data-split DATA_SPLIT
+                        The strategy to be used for splitting the available
+                        data into training and test sets. Must be one of
+                        {"cross-validation", "none", "train-test"}. For
+                        additional options refer to the documentation.
+  --dataset DATASET     The name of the dataset files without suffix.
+  --exit-on-error EXIT_ON_ERROR
+                        Whether the program should exit if an error occurs
+                        while writing experimental results or not. Must be one
+                        of {"false", "true"}.
+  --feature-binning FEATURE_BINNING
+                        The name of the strategy to be used for feature
+                        binning. Must be one of {"equal-frequency", "equal-
+                        width", "none"}. For additional options refer to the
+                        documentation.
+  --feature-format FEATURE_FORMAT
+                        The format to be used for the representation of the
+                        feature matrix. Must be one of {"auto", "dense",
+                        "sparse"}.
+  --feature-sampling FEATURE_SAMPLING
+                        The name of the strategy to be used for feature
+                        sampling. Must be one of {"none", "without-
+                        replacement"}. For additional options refer to the
+                        documentation.
+  --head-type HEAD_TYPE
+                        The type of the rule heads that should be used. Must
+                        be one of {"partial", "single"}.
+  --heuristic HEURISTIC
+                        The name of the heuristic to be used for learning
+                        rules. Must be one of {"accuracy", "f-measure",
+                        "laplace", "m-estimate", "precision", "recall",
+                        "weighted-relative-accuracy"}. For additional options
+                        refer to the documentation.
+  --holdout HOLDOUT     The name of the strategy to be used for creating a
+                        holdout set. Must be one of {"none", "random",
+                        "stratified-example-wise", "stratified-output-wise"}.
+                        For additional options refer to the documentation.
+  --incremental-evaluation INCREMENTAL_EVALUATION
+                        Whether models should be evaluated repeatedly, using
+                        only a subset of the induced rules with increasing
+                        size, or not. Must be one of {"false", "true"}. For
+                        additional options refer to the documentation.
+  --instance-sampling INSTANCE_SAMPLING
+                        The name of the strategy to be used for instance
+                        sampling. Must be one of {"none", "stratified-example-
+                        wise", "stratified-output-wise", "with-replacement",
+                        "without-replacement"}. For additional options refer
+                        to the documentation.
+  --lift-function LIFT_FUNCTION
+                        The lift function to be used for the induction of
+                        multi-label rules. Must be one of {"kln", "none",
+                        "peak"}. For additional options refer to the
+                        documentation.
+  --log-level LOG_LEVEL
+                        The log level to be used. Must be one of {"critical",
+                        "debug", "error", "info", "notset", "warn"}.
+  --max-rules MAX_RULES
+                        The maximum number of rules to be induced. Must be at
+                        least 1 or 0, if the number of rules should not be
+                        restricted
+  --model-load-dir MODEL_LOAD_DIR
+                        The path to the directory from which models should be
+                        loaded.
+  --model-save-dir MODEL_SAVE_DIR
+                        The path to the directory where models should be
+                        saved.
+  --one-hot-encoding ONE_HOT_ENCODING
+                        Whether one-hot-encoding should be used to encode
+                        nominal features or not. Must be one of {"false",
+                        "true"}.
+  --output-dir OUTPUT_DIR
+                        The path to the directory where experimental results
+                        should be saved.
+  --output-format OUTPUT_FORMAT
+                        The format to be used for the representation of the
+                        output matrix. Must be one of {"auto", "dense",
+                        "sparse"}.
+  --output-sampling OUTPUT_SAMPLING
+                        The name of the strategy to be used for output
+                        sampling. Must be one of {"none", "round-robin",
+                        "without-replacement"}. For additional options refer
+                        to the documentation.
+  --parallel-prediction PARALLEL_PREDICTION
+                        Whether predictions for different examples should be
+                        obtained in parallel or not. Must be one of {"false",
+                        "true"}. For additional options refer to the
+                        documentation.
+  --parallel-rule-refinement PARALLEL_RULE_REFINEMENT
+                        Whether potential refinements of rules should be
+                        searched for in parallel or not. Must be one of
+                        {"false", "true"}. For additional options refer to the
+                        documentation.
+  --parallel-statistic-update PARALLEL_STATISTIC_UPDATE
+                        Whether the statistics for different examples should
+                        be updated in parallel or not. Must be one of
+                        {"false", "true"}. For additional options refer to the
+                        documentation.
+  --parameter-load-dir PARAMETER_LOAD_DIR
+                        The path to the directory from which parameter to be
+                        used by the algorithm should be loaded.
+  --parameter-save-dir PARAMETER_SAVE_DIR
+                        The path to the directory where configuration files,
+                        which specify the parameters used by the algorithm,
+                        should be saved.
+  --predict-for-test-data PREDICT_FOR_TEST_DATA
+                        Whether predictions should be obtained for the test
+                        data or not. Must be one of {"false", "true"}.
+  --predict-for-training-data PREDICT_FOR_TRAINING_DATA
+                        Whether predictions should be obtained for the
+                        training data or not. Must be one of {"false",
+                        "true"}.
+  --prediction-format PREDICTION_FORMAT
+                        The format to be used for the representation of
+                        predictions. Must be one of {"auto", "dense",
+                        "sparse"}.
+  --prediction-type PREDICTION_TYPE
+                        The type of predictions that should be obtained from
+                        the learner. Must be one of {"binary",
+                        "probabilities", "scores"}.
+  --print-data-characteristics PRINT_DATA_CHARACTERISTICS
+                        Whether the characteristics of the training data
+                        should be printed on the console or not. Must be one
+                        of {"false", "true"}. For additional options refer to
+                        the documentation.
+  --print-evaluation PRINT_EVALUATION
+                        Whether the evaluation results should be printed on
+                        the console or not. Must be one of {"false", "true"}.
+                        For additional options refer to the documentation.
+  --print-ground-truth PRINT_GROUND_TRUTH
+                        Whether the ground truth should be printed on the
+                        console or not. Must be one of {"false", "true"}. For
+                        additional options refer to the documentation.
+  --print-label-vectors PRINT_LABEL_VECTORS
+                        Whether the unique label vectors contained in the
+                        training data should be printed on the console or not.
+                        Must be one of {"false", "true"}. For additional
+                        options refer to the documentation.
+  --print-model-characteristics PRINT_MODEL_CHARACTERISTICS
+                        Whether the characteristics of models should be
+                        printed on the console or not. Must be one of
+                        {"false", "true"}.
+  --print-parameters PRINT_PARAMETERS
+                        Whether the parameter setting should be printed on the
+                        console or not. Must be one of {"false", "true"}.
+  --print-prediction-characteristics PRINT_PREDICTION_CHARACTERISTICS
+                        Whether the characteristics of binary predictions
+                        should be printed on the console or not. Does only
+                        have an effect if the argument --prediction-type is
+                        set to binary. Must be one of {"false", "true"}. For
+                        additional options refer to the documentation.
+  --print-predictions PRINT_PREDICTIONS
+                        Whether predictions should be printed on the console
+                        or not. Must be one of {"false", "true"}. For
+                        additional options refer to the documentation.
+  --print-rules PRINT_RULES
+                        Whether the induced rules should be printed on the
+                        console or not. Must be one of {"false", "true"}. For
+                        additional options refer to the documentation.
+  --problem-type PROBLEM_TYPE
+                        The type of the machine learning problem to be solved.
+                        Must be one of {"classification", "regression"}.
+  --pruning-heuristic PRUNING_HEURISTIC
+                        The name of the heuristic to be used for pruning
+                        individual rules. Must be one of {"accuracy",
+                        "f-measure", "laplace", "m-estimate", "precision",
+                        "recall", "weighted-relative-accuracy"}. For
+                        additional options refer to the documentation.
+  --random-state RANDOM_STATE
+                        The seed to be used by random number generators. Must
+                        be at least 1.
+  --rule-induction RULE_INDUCTION
+                        The name of the algorithm to be used for the induction
+                        of individual rules. Must be one of {"top-down-beam-
+                        search", "top-down-greedy"}. For additional options
+                        refer to the documentation.
+  --rule-pruning RULE_PRUNING
+                        The name of the strategy to be used for pruning
+                        individual rules. Must be one of {"irep", "none"}.
+  --sequential-post-optimization SEQUENTIAL_POST_OPTIMIZATION
+                        Whether each rule in a previously learned model should
+                        be optimized by being relearned in the context of the
+                        other rules or not. Must be one of {"false", "true"}.
+                        For additional options refer to the documentation.
+  --sparse-feature-value SPARSE_FEATURE_VALUE
+                        The value that should be used for sparse elements in
+                        the feature matrix. Does only have an effect if a
+                        sparse format is used for the representation of the
+                        feature matrix, depending on the argument --feature-
+                        format.
+  --store-data-characteristics STORE_DATA_CHARACTERISTICS
+                        Whether the characteristics of the training data
+                        should be written into output files or not. Does only
+                        have an effect if the argument --output-dir is
+                        specified. Must be one of {"false", "true"}. For
+                        additional options refer to the documentation.
+  --store-evaluation STORE_EVALUATION
+                        Whether the evaluation results should be written into
+                        output files or not. Does only have an effect if the
+                        argument --output-dir is specified. Must be one of
+                        {"false", "true"}. For additional options refer to the
+                        documentation.
+  --store-ground-truth STORE_GROUND_TRUTH
+                        Whether the ground truth should be written into output
+                        files or not. Does only have an effect, if the
+                        argument --output-dir is specified. Must be one of
+                        {"false", "true"}. For additional options refer to the
+                        documentation.
+  --store-label-vectors STORE_LABEL_VECTORS
+                        Whether the unique label vectors contained in the
+                        training data should be written into output files or
+                        not. Does only have an effect if the argument
+                        --output-dir is specified. Must be one of {"false",
+                        "true"}. For additional options refer to the
+                        documentation.
+  --store-model-characteristics STORE_MODEL_CHARACTERISTICS
+                        Whether the characteristics of models should be
+                        written into output files or not. Does only have an
+                        effect if the argument --output-dir is specified. Must
+                        be one of {"false", "true"}.
+  --store-prediction-characteristics STORE_PREDICTION_CHARACTERISTICS
+                        Whether the characteristics of binary predictions
+                        should be written into output files or not. Does only
+                        have an effect if the argument --prediction-type is
+                        set to binary and if the argument --output-dir is
+                        specified. Must be one of {"false", "true"}. For
+                        additional options refer to the documentation.
+  --store-predictions STORE_PREDICTIONS
+                        Whether predictions should be written into output
+                        files or not. Does only have an effect, if the
+                        argument --output-dir is specified. Must be one of
+                        {"false", "true"}. For additional options refer to the
+                        documentation.
+  --store-rules STORE_RULES
+                        Whether the induced rules should be written into a
+                        text file or not. Must be one of {"false", "true"}.
+                        For additional options refer to the documentation.
+  --time-limit TIME_LIMIT
+                        The duration in seconds after which the induction of
+                        rules should be canceled. Must be at least 1 or 0, if
+                        no time limit should be set
+  --wipe-output-dir WIPE_OUTPUT_DIR
+                        Whether all files in the directory specified via the
+                        argument --output-dir should be deleted before an
+                        experiment starts or not. Must be one of {"false",
+                        "true"}.
+  -h, --help            Show this help message and exit

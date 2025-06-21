@@ -1,5 +1,5 @@
-mlrl-testbed mlrl.boosting --log-level DEBUG --data-dir python/tests/res/data --dataset atp7d --output-dir python/tests/res/tmp/results --problem-type regression --loss squared-error-non-decomposable --statistic-type 64-bit --head-type partial-dynamic --print-model-characteristics true
-INFO Starting experiment using the regression algorithm "boomer"...
+mlrl-testbed mlrl.boosting --log-level debug --data-dir python/tests/res/data --dataset atp7d --output-dir python/tests/res/tmp/results --problem-type regression --loss squared-error-non-decomposable --statistic-type 64-bit --head-type partial-dynamic --print-model-characteristics true
+INFO Starting experiment using the regression algorithm "BoomerRegressor"...
 INFO Using separate training and test sets...
 DEBUG Reading input data from file "python/tests/res/data/atp7d.arff"...
 DEBUG Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
@@ -13,10 +13,10 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data:
 
-Mean Absolute Error                91.76
-Mean Absolute Percentage Error      1.18
-Mean Squared Error              13816.7
-Median Absolute Error              66.29
+Mean Absolute Error                337.78
+Mean Absolute Percentage Error       0.94
+Mean Squared Error              130972
+Median Absolute Error              301.8
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 INFO Model characteristics:
@@ -25,21 +25,21 @@ INFO Model characteristics:
 │ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
 ├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
 │ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-│ 4 local rules                 │      10 │                  40.00% │                 60.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 1 local rules                 │       2 │                 100.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
 └───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
 
 ┌────────────────────────────────┬─────────┬────────────┬────────────┐
 │ Statistics about predictions   │   Total │   Positive │   Negative │
 ├────────────────────────────────┼─────────┼────────────┼────────────┤
 │ Default rule                   │       6 │      0.00% │    100.00% │
-│ 4 local rules                  │       4 │    100.00% │      0.00% │
+│ 1 local rules                  │       1 │    100.00% │      0.00% │
 └────────────────────────────────┴─────────┴────────────┴────────────┘
 
 ┌─────────────────────────────┬───────────┬───────────┬───────────┐
 │ Statistics per local rule   │   Minimum │   Average │   Maximum │
 ├─────────────────────────────┼───────────┼───────────┼───────────┤
-│ Conditions                  │         2 │       2.5 │         4 │
-│ Predictions                 │         1 │       1   │         1 │
+│ Conditions                  │         2 │         2 │         2 │
+│ Predictions                 │         1 │         1 │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
 INFO Successfully finished after <duration>

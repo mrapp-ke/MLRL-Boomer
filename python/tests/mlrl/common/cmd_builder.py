@@ -59,12 +59,13 @@ class CmdBuilder:
         self.expected_output_dir = path.join('python', 'tests', 'res', 'out', expected_output_dir)
         self.runnable_module_name = runnable_module_name
         self.runnable_class_name = runnable_class_name
+        self.show_help = False
         self.dataset = dataset
         self.parameter_load_dir = None
         self.parameter_save_dir = None
         self.model_dir = None
         self.num_folds = 0
-        self.current_fold = 0
+        self.current_fold = None
         self.args = []
 
     @property
@@ -85,11 +86,25 @@ class CmdBuilder:
         if self.runnable_class_name:
             args.extend(['-r', self.runnable_class_name])
 
-        args.extend(['--log-level', 'DEBUG'])
+        if self.show_help:
+            args.append('--help')
+            return args
+
+        args.extend(['--log-level', 'debug'])
         args.extend(['--data-dir', path.join('python', 'tests', 'res', 'data')])
         args.extend(['--dataset', self.dataset])
         args.extend(['--output-dir', self.output_dir])
         return args + self.args
+
+    def set_show_help(self, show_help: bool = True):
+        """
+        Configures whether the program's help text should be shown or not.
+
+        :param show_help:   True, if the program's help text should be shown, False otherwise
+        :return:            The builder itself
+        """
+        self.show_help = show_help
+        return self
 
     def set_model_dir(self, model_dir: Optional[str] = path.join('python', 'tests', 'res', 'tmp', 'models')):
         """
@@ -141,23 +156,29 @@ class CmdBuilder:
         :return: The builder itself
         """
         self.num_folds = 0
-        self.current_fold = 0
+        self.current_fold = None
         self.args.append('--data-split')
         self.args.append('none')
         return self
 
-    def cross_validation(self, num_folds: int = 10, current_fold: int = 0):
+    def cross_validation(self, num_folds: int = 10, current_fold: Optional[int] = None):
         """
         Configures the rule learner to use a cross validation.
 
         :param num_folds:       The total number of folds
-        :param current_fold:    The fold to be run or 0, if all folds should be run
+        :param current_fold:    The fold to be run (starting at 1) or None, if all folds should be run
         :return:                The builder itself
         """
         self.num_folds = num_folds
         self.current_fold = current_fold
         self.args.append('--data-split')
-        self.args.append('cross-validation{num_folds=' + str(num_folds) + ',current_fold=' + str(current_fold) + '}')
+        value = 'cross-validation{num_folds=' + str(num_folds)
+
+        if current_fold:
+            value += ',first_fold=' + str(current_fold) + ',last_fold=' + str(current_fold)
+
+        value += '}'
+        self.args.append(value)
         return self
 
     def sparse_feature_value(self, sparse_feature_value: float = 0.0):
@@ -171,16 +192,16 @@ class CmdBuilder:
         self.args.append(str(sparse_feature_value))
         return self
 
-    def evaluate_training_data(self, evaluate_training_data: bool = True):
+    def predict_for_training_data(self, predict_for_training_data: bool = True):
         """
-        Configures whether the rule learner should be evaluated on the training data or not.
+        Configures whether predictions should be obtained for the training data or not.
 
-        :param evaluate_training_data:  True, if the rule learner should be evaluated on the training data, False
-                                        otherwise
-        :return:                        The builder itself
+        :param predict_for_training_data:   True, if predictions should be obtained for the training data, False
+                                            otherwise
+        :return:                            The builder itself
         """
-        self.args.append('--evaluate-training-data')
-        self.args.append(str(evaluate_training_data).lower())
+        self.args.append('--predict-for-training-data')
+        self.args.append(str(predict_for_training_data).lower())
         return self
 
     def incremental_evaluation(self, incremental_evaluation: bool = True, step_size: int = 50):
