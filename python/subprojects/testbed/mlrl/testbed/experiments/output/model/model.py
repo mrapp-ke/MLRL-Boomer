@@ -7,10 +7,10 @@ from typing import Any, Optional
 
 from sklearn.base import BaseEstimator
 
-from mlrl.common.config.options import Options
-
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.output.data import ObjectOutputData, OutputData
+
+from mlrl.util.options import Options
 
 
 class OutputModel(ObjectOutputData):
