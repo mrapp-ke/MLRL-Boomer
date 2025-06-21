@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility function for configuring boosting algorithms.
 """
-from typing import Optional
 
 from mlrl.common.config.parameters import BINNING_EQUAL_WIDTH, OPTION_BIN_RATIO, OPTION_MAX_BINS, OPTION_MIN_BINS, \
     OPTION_USE_HOLDOUT_SET, RULE_LEARNER_PARAMETERS, FeatureBinningParameter, FloatParameter, NominalParameter, \
@@ -49,7 +48,7 @@ class ExtendedPartitionSamplingParameter(PartitionSamplingParameter):
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
                        + 'depending on whether a holdout set is needed and depending on the loss function')
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == AUTOMATIC:
             config.use_automatic_partition_sampling()
         else:
@@ -68,7 +67,7 @@ class ExtendedFeatureBinningParameter(FeatureBinningParameter):
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
                        + 'based on the characteristics of the feature matrix')
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == AUTOMATIC:
             config.use_automatic_feature_binning()
         else:
@@ -87,7 +86,7 @@ class ExtendedParallelRuleRefinementParameter(ParallelRuleRefinementParameter):
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
                        + 'based on ' + 'the parameter ' + RegressionLossParameter().argument_name)
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == AUTOMATIC:
             config.use_automatic_parallel_rule_refinement()
         else:
@@ -106,7 +105,7 @@ class ExtendedParallelStatisticUpdateParameter(ParallelStatisticUpdateParameter)
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
                        + 'based on ' + 'the parameter ' + RegressionLossParameter().argument_name)
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == AUTOMATIC:
             config.use_automatic_parallel_statistic_update()
         else:
@@ -145,7 +144,7 @@ class StatisticTypeParameter(NominalParameter):
         self.add_value(name=self.STATISTIC_TYPE_FLOAT32, mixin=Float32StatisticsMixin)
         self.add_value(name=self.STATISTIC_TYPE_FLOAT64, mixin=Float64StatisticsMixin)
 
-    def _configure(self, config, value: str, _: Optional[Options]):
+    def _configure(self, config, value: str, _: Options):
         if value == self.STATISTIC_TYPE_FLOAT32:
             config.use_32_bit_statistics()
         elif value == self.STATISTIC_TYPE_FLOAT64:
@@ -197,7 +196,7 @@ class DefaultRuleParameter(NominalParameter):
         self.add_value(name=BooleanOption.TRUE.value, mixin=DefaultRuleMixin)
         self.add_value(name=AUTOMATIC, mixin=AutomaticDefaultRuleMixin)
 
-    def _configure(self, config, value: str, _: Optional[Options]):
+    def _configure(self, config, value: str, _: Options):
         if value == BooleanOption.FALSE.value:
             config.use_no_default_rule()
         elif value == BooleanOption.TRUE.value:
@@ -227,7 +226,7 @@ class StatisticFormatParameter(NominalParameter):
                        + HeadTypeParameter().argument_name + ', ' + DefaultRuleParameter().argument_name + ' and the '
                        + 'characteristics of the label matrix')
 
-    def _configure(self, config, value: str, _: Optional[Options]):
+    def _configure(self, config, value: str, _: Options):
         if value == self.STATISTIC_FORMAT_DENSE:
             config.use_dense_statistics()
         elif value == self.STATISTIC_FORMAT_SPARSE:
@@ -254,7 +253,7 @@ class LabelBinningParameter(NominalParameter):
                        + 'based on the parameters ' + RegressionLossParameter().argument_name + ' and '
                        + HeadTypeParameter().argument_name)
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == NONE:
             config.use_no_label_binning()
         elif value == BINNING_EQUAL_WIDTH:
@@ -280,7 +279,7 @@ class RegressionLossParameter(NominalParameter):
         self.add_value(name=self.LOSS_SQUARED_ERROR_DECOMPOSABLE, mixin=DecomposableSquaredErrorLossMixin)
         self.add_value(name=self.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE, mixin=NonDecomposableSquaredErrorLossMixin)
 
-    def _configure(self, config, value: str, _: Optional[Options]):
+    def _configure(self, config, value: str, _: Options):
         if value == self.LOSS_SQUARED_ERROR_DECOMPOSABLE:
             config.use_decomposable_squared_error_loss()
         elif value == self.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE:
@@ -307,7 +306,7 @@ class ClassificationLossParameter(RegressionLossParameter):
         self.add_value(name=self.LOSS_SQUARED_HINGE_DECOMPOSABLE, mixin=DecomposableSquaredHingeLossMixin)
         self.add_value(name=self.LOSS_SQUARED_HINGE_NON_DECOMPOSABLE, mixin=NonDecomposableSquaredHingeLossMixin)
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         super()._configure(config, value, options)
 
         if value == self.LOSS_LOGISTIC_DECOMPOSABLE:
@@ -358,7 +357,7 @@ class HeadTypeParameter(NominalParameter):
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
                        + 'based on the parameter ' + RegressionLossParameter().argument_name)
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == self.HEAD_TYPE_SINGLE:
             config.use_single_output_heads()
         elif value == self.HEAD_TYPE_PARTIAL_FIXED:
@@ -389,7 +388,7 @@ class MarginalProbabilityCalibrationParameter(NominalParameter):
                        mixin=IsotonicMarginalProbabilityCalibrationMixin,
                        options={OPTION_USE_HOLDOUT_SET})
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == NONE:
             config.use_no_marginal_probability_calibration()
         if value == PROBABILITY_CALIBRATION_ISOTONIC:
@@ -410,7 +409,7 @@ class JointProbabilityCalibrationParameter(NominalParameter):
                        mixin=IsotonicJointProbabilityCalibrationMixin,
                        options={OPTION_USE_HOLDOUT_SET})
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == NONE:
             config.use_no_joint_probability_calibration()
         if value == PROBABILITY_CALIBRATION_ISOTONIC:
@@ -446,7 +445,7 @@ class BinaryPredictorParameter(NominalParameter):
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
                        + 'based on the parameter ' + RegressionLossParameter().argument_name)
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == self.BINARY_PREDICTOR_OUTPUT_WISE:
             conf = config.use_output_wise_binary_predictor()
             conf.set_based_on_probabilities(
@@ -493,7 +492,7 @@ class ProbabilityPredictorParameter(NominalParameter):
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
                        + 'based on the parameter ' + RegressionLossParameter().argument_name)
 
-    def _configure(self, config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Options):
         if value == self.PROBABILITY_PREDICTOR_OUTPUT_WISE:
             conf = config.use_output_wise_probability_predictor()
             conf.set_use_probability_calibration_model(
