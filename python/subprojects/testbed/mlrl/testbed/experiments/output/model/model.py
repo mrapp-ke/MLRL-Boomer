@@ -5,8 +5,6 @@ Provides classes for representing models that are part of output data.
 """
 from typing import Any, Optional
 
-from sklearn.base import BaseEstimator
-
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.output.data import ObjectOutputData, OutputData
 
@@ -18,7 +16,7 @@ class OutputModel(ObjectOutputData):
     Represents a model.
     """
 
-    def __init__(self, learner: BaseEstimator):
+    def __init__(self, learner: Any):
         """
         :param learner: The learner that stores the model
         """

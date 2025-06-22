@@ -26,6 +26,7 @@
 # Quality-of-Life Improvements
 
 - The Python package "mlrl-util" has been added. It provides common functionalities of the packages "mlrl-common" and "mlrl-testbed".
+- The Python package "mlrl-testbed-arff" and "mlrl-testbed-sklearn" have been added as extensions to the package "mlrl-testbed".
 - The Python package "mlrl-testbed" has completely been refactored, establishing it as a standalone package, independent of the package "mlrl-common".
 - The Python packages "mlrl-common", "mlrl-seco" and "mlrl-boosting" have been restructured by introducing submodules.
 - C++ 20 is now required for compiling the project.

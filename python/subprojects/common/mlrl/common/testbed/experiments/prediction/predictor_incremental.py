@@ -12,9 +12,10 @@ from sklearn.base import BaseEstimator
 
 from mlrl.common.mixins import IncrementalClassifierMixin, IncrementalRegressorMixin
 
+from mlrl.testbed_sklearn.experiments.prediction.predictor import PredictionFunction, Predictor
+
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
-from mlrl.testbed.experiments.prediction.predictor import PredictionFunction, Predictor
 from mlrl.testbed.experiments.prediction_scope import PredictionScope
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.state import PredictionState
@@ -73,7 +74,7 @@ class IncrementalPredictor(Predictor):
     def obtain_predictions(self, learner: Any, dataset: Dataset, dataset_type: DatasetType,
                            **kwargs) -> Generator[PredictionState, None, None]:
         """
-        See :func:`mlrl.testbed.experiments.prediction.predictor.Predictor.obtain_predictions`
+        See :func:`mlrl.testbed_sklearn.experiments.prediction.predictor.Predictor.obtain_predictions`
         """
         if not isinstance(learner, IncrementalClassifierMixin) and not isinstance(learner, IncrementalRegressorMixin):
             raise ValueError('Cannot obtain incremental predictions from a model of type ' + type(learner.__name__))
