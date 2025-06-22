@@ -8,12 +8,12 @@ from argparse import Namespace
 from typing import Set
 
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import OutputCharacteristics
+from mlrl.testbed_sklearn.experiments.prediction.extension import PredictionTypeExtension
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
-from mlrl.testbed.experiments.prediction.extension import PredictionTypeExtension
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.extensions.extension import Extension
 from mlrl.testbed.util.format import OPTION_DECIMALS, OPTION_PERCENTAGE

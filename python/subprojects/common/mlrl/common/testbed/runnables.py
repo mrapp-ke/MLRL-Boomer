@@ -17,11 +17,11 @@ from mlrl.common.testbed.experiments.output.model_text import RuleModelAsTextExt
 from mlrl.common.testbed.experiments.prediction.predictor_incremental import IncrementalPredictor
 
 from mlrl.testbed_sklearn.experiments import SkLearnProblem
+from mlrl.testbed_sklearn.experiments.prediction.predictor import Predictor
 from mlrl.testbed_sklearn.runnables import SkLearnRunnable
 
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
-from mlrl.testbed.experiments.prediction.predictor import Predictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
 from mlrl.testbed.extensions.extension import Extension

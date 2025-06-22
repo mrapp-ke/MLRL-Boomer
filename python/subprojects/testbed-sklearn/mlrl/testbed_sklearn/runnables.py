@@ -18,6 +18,9 @@ from mlrl.testbed_sklearn.experiments.output.dataset.extension_ground_truth impo
 from mlrl.testbed_sklearn.experiments.output.dataset.extension_prediction import PredictionExtension
 from mlrl.testbed_sklearn.experiments.output.evaluation.extension import EvaluationExtension
 from mlrl.testbed_sklearn.experiments.output.label_vectors.extension import LabelVectorExtension
+from mlrl.testbed_sklearn.experiments.prediction import GlobalPredictor
+from mlrl.testbed_sklearn.experiments.prediction.extension import PredictionTypeExtension
+from mlrl.testbed_sklearn.experiments.prediction.predictor import Predictor
 from mlrl.testbed_sklearn.experiments.problem_domain import SkLearnClassificationProblem, SkLearnProblem, \
     SkLearnRegressionProblem
 
@@ -27,9 +30,6 @@ from mlrl.testbed.experiments.input.model.extension import ModelInputExtension
 from mlrl.testbed.experiments.input.parameters.extension import ParameterInputExtension
 from mlrl.testbed.experiments.output.model.extension import ModelOutputExtension
 from mlrl.testbed.experiments.output.parameters.extension import ParameterOutputExtension
-from mlrl.testbed.experiments.prediction import GlobalPredictor
-from mlrl.testbed.experiments.prediction.extension import PredictionTypeExtension
-from mlrl.testbed.experiments.prediction.predictor import Predictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
 from mlrl.testbed.extensions.extension import Extension
