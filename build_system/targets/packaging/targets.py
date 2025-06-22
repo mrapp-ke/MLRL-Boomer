@@ -38,11 +38,12 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
                 package = Package(dependency)
 
                 if dependency.startswith('mlrl-'):
-                    requirement = Requirement(package, RequirementVersion.parse(str(Project.version())))
+                    requirements[dependency] = Requirement(package, RequirementVersion.parse(str(Project.version())))
                 else:
                     requirement = requirements_file.lookup_requirement(package)
 
-                requirements[dependency] = requirement
+                    if requirement:
+                        requirements[dependency] = requirement
 
         return requirements
 

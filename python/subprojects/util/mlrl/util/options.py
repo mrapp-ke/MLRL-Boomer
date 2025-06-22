@@ -101,7 +101,7 @@ class Options:
 
         return options
 
-    def get_string(self, key: str, default_value: str) -> str:
+    def get_string(self, key: str, default_value: Optional[str] = None) -> Optional[str]:
         """
         Returns a string that corresponds to a specific key.
 

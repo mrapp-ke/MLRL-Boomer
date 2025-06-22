@@ -84,7 +84,8 @@ class DependencyUpdater:
                         Dependency(requirements_file=requirements_file,
                                    package=package,
                                    outdated=current_version,
-                                   latest=RequirementVersion(min_version=latest_version, max_version=latest_version)))
+                                   latest=RequirementVersion(min_version=str(latest_version),
+                                                             max_version=str(latest_version))))
 
         return outdated_dependencies
 
@@ -99,7 +100,7 @@ class DependencyUpdater:
 
         for outdated_dependency in self.list_outdated_dependencies(build_unit):
             latest_version = outdated_dependency.latest
-            latest_version_numbers = latest_version.min_version.numbers
+            latest_version_numbers = Version.parse(latest_version.min_version).numbers
             outdated_version = outdated_dependency.outdated
             updated_version = latest_version
 

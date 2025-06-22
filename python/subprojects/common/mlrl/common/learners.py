@@ -178,6 +178,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         self.feature_format = feature_format
         self.output_format = output_format
         self.prediction_format = prediction_format
+        self.model_: Optional[Any] = None
 
     # pylint: disable=attribute-defined-outside-init
     def _fit(self, x, y, **kwargs):
@@ -234,7 +235,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
             return self._create_score_predictor(learner, self.model_, self.output_space_info_, num_outputs,
                                                 feature_matrix).predict(max_rules)
 
-        return super()._predict_scores(x, **kwargs)
+        raise RuntimeError('Prediction of scores not supported using the current configuration')
 
     def _predict_scores_incrementally(self, x, **kwargs):
         """
@@ -260,7 +261,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
                     feature_matrix, predictor.create_incremental_predictor(max_rules))
             return ClassificationRuleLearner.NonNativeIncrementalPredictor(feature_matrix, model, max_rules, predictor)
 
-        return super()._predict_scores_incrementally(x, **kwargs)
+        raise RuntimeError('Incremental prediction of scores not supported using the current configuration')
 
     @staticmethod
     def __create_feature_indices(input_name: str, **kwargs) -> np.ndarray:
