@@ -14,6 +14,7 @@ authors = [
 ]
 keywords = [
     "arff",
+    "machine learning",
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -25,7 +26,7 @@ classifiers = [
 ]
 dependencies = [
     "liac-arff",
-    "mlrl-testbed",
+    "mlrl-testbed-sklearn",
 ]
 
 [project.urls]

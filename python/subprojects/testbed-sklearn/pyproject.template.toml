@@ -1,0 +1,39 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+    "setuptools >= 80.4, < 80.5",
+]
+
+[project]
+name = "mlrl-testbed-sklearn"
+description = "Adds support for the scikit-learn framework to the package \"mlrl-testbed\""
+license = "MIT"
+readme = "README.md"
+authors = [
+    { name = "Michael Rapp", email = "michael.rapp.ml@gmail.com" },
+]
+keywords = [
+    "machine learning",
+    "scikit-learn",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "mlrl-testbed",
+    "mlrl-testbed-arff",
+    "scikit-learn",
+]
+
+[project.urls]
+homepage = "https://github.com/mrapp-ke/MLRL-Boomer"
+source = "https://github.com/mrapp-ke/MLRL-Boomer.git"
+download = "https://github.com/mrapp-ke/MLRL-Boomer/releases"
+changelog = "https://raw.githubusercontent.com/mrapp-ke/MLRL-Boomer/refs/heads/main/CHANGELOG.md"
+documentation = "https://mlrl-boomer.readthedocs.io/en/latest"
+issues = "https://github.com/mrapp-ke/MLRL-Boomer/issues"
