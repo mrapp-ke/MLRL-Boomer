@@ -2,11 +2,11 @@
 
 # Using Your Own Algorithms
 
-When using the command line API, as described {ref}`here<arguments-basic-usage>`, the Python module of the program to be run must be specified. For running the algorithms provided by this project, the module names `mlrl.boosting` and `mlrl.seco` can be used. However, you can also specify the name of a custom module, or the path to a Python source file, that provides an integration with a machine learning algorithm of your choice.
+When using the package mlrl-testbed, as described {ref}`here<arguments-basic-usage>`, the Python module of the program to be run must be specified. For running the algorithms provided by this project, the module names `mlrl.boosting` and `mlrl.seco` can be used. However, you can also specify the name of a custom module, or the path to a Python source file, that provides an integration with a machine learning algorithm of your choice.
 
 ## Integrating an Algorithm
 
-The module or source file, which is given to the command line API, must contain a class named `Runnable` that extends from {py:class}`mlrl.testbed.SkLearnRunnable <mlrl.testbed.runnables_sklearn.SkLearnRunnable>`. If you want to use a different class name, you can specify a different one via the command line arguments `-r` or `--runnable` as described {ref}`here<arguments-basic-usage>`. Besides the name of the machine learning algorithm to be integrated, the class must override the methods {py:meth}`create_classifier <mlrl.testbed.runnables_sklearn.SkLearnRunnable.create_classifier>` and {py:meth}`create_regressor <mlrl.testbed.runnables_sklearn.SkLearnRunnable.create_regressor>`. If you do not intend to support either classification or regression problems, you can just return `None` from the respective method. Otherwise, it must return a scikit-learn compatible [estimator](https://scikit-learn.org/stable/glossary.html#term-estimators) to be used in experiments.
+The module or source file, which is specified via the command line API, must contain a class named `Runnable` that extends from {py:class}`mlrl.testbed.SkLearnRunnable <mlrl.testbed.runnables_sklearn.SkLearnRunnable>`. If you want to use a different class name, you can specify a different one via the command line arguments `-r` or `--runnable` as described {ref}`here<arguments-basic-usage>`. Besides the name of the machine learning algorithm to be integrated, the class must override the methods {py:meth}`create_classifier <mlrl.testbed.runnables_sklearn.SkLearnRunnable.create_classifier>` and {py:meth}`create_regressor <mlrl.testbed.runnables_sklearn.SkLearnRunnable.create_regressor>`. If you do not intend to support either classification or regression problems, you can just return `None` from the respective method. Otherwise, it must return a scikit-learn compatible [estimator](https://scikit-learn.org/stable/glossary.html#term-estimators) to be used in experiments.
 
 In the following, we provide an exemplary implementation of such a class using scikit-learn's {py:class}`RandomForestClassifier <sklearn.ensemble.RandomForestClassifier>`:
 
@@ -28,7 +28,7 @@ class Runnable(SkLearnRunnable):
 
 ```
 
-Assuming that the source code shown above is saved to a file named `custom_runnable.py` in the working directory, the command line API can be instructed to use it as follows:
+Assuming that the source code shown above is saved to a file named `custom_runnable.py` in the working directory, the package mlrl-testbed can be instructed to use it as follows:
 
 ```text
 mlrl-testbed custom_runnable.py --data-dir path/to/datasets/ --dataset dataset-name
