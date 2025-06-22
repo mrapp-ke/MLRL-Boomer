@@ -14,6 +14,8 @@ from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import D
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.extension import TabularDataCharacteristicExtension
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.extension_prediction import \
     PredictionCharacteristicsExtension
+from mlrl.testbed_sklearn.experiments.output.dataset.extension_ground_truth import GroundTruthExtension
+from mlrl.testbed_sklearn.experiments.output.dataset.extension_prediction import PredictionExtension
 from mlrl.testbed_sklearn.experiments.output.evaluation.extension import EvaluationExtension
 from mlrl.testbed_sklearn.experiments.output.label_vectors.extension import LabelVectorExtension
 from mlrl.testbed_sklearn.experiments.problem_domain import SkLearnClassificationProblem, SkLearnProblem, \
@@ -23,8 +25,6 @@ from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.input.model.extension import ModelInputExtension
 from mlrl.testbed.experiments.input.parameters.extension import ParameterInputExtension
-from mlrl.testbed.experiments.output.dataset.tabular.extension_ground_truth import GroundTruthExtension
-from mlrl.testbed.experiments.output.dataset.tabular.extension_prediction import PredictionExtension
 from mlrl.testbed.experiments.output.model.extension import ModelOutputExtension
 from mlrl.testbed.experiments.output.parameters.extension import ParameterOutputExtension
 from mlrl.testbed.experiments.prediction import GlobalPredictor

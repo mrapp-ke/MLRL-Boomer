@@ -10,9 +10,9 @@ from typing import List, Optional
 import numpy as np
 
 from mlrl.testbed_sklearn.experiments.dataset import Attribute, AttributeType, TabularDataset
+from mlrl.testbed_sklearn.experiments.output.dataset.dataset_prediction import PredictionDataset
 
 from mlrl.testbed.experiments.output.data import OutputData
-from mlrl.testbed.experiments.output.dataset.tabular.dataset_prediction import PredictionDataset
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem
