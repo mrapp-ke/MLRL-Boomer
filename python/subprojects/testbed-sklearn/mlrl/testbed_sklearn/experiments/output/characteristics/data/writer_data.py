@@ -7,8 +7,8 @@ Provides classes for writing characteristics of datasets to one or several sinks
 from typing import List, Optional
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
+from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics_data import DataCharacteristics
 
-from mlrl.testbed.experiments.output.characteristics.data.tabular.characteristics_data import DataCharacteristics
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.sinks import Sink
 from mlrl.testbed.experiments.output.writer import DataExtractor, OutputWriter

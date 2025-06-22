@@ -6,8 +6,7 @@ Provides classes that provide access to characteristics of feature values, assoc
 from functools import cached_property
 
 from mlrl.testbed_sklearn.experiments.dataset import AttributeType, TabularDataset
-
-from mlrl.testbed.experiments.output.characteristics.data.tabular.matrix_output import density
+from mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_output import density
 
 
 class FeatureMatrix:

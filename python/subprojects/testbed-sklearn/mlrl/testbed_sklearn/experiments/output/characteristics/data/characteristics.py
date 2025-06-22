@@ -6,8 +6,9 @@ Provides classes for representing characteristics of an output matrix that are p
 from numbers import Number
 from typing import Any, Callable, Optional
 
+from mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_output import OutputMatrix
+
 from mlrl.testbed.experiments.context import Context
-from mlrl.testbed.experiments.output.characteristics.data.tabular.matrix_output import OutputMatrix
 from mlrl.testbed.experiments.output.data import OutputData, OutputValue, TabularOutputData
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain
 from mlrl.testbed.experiments.table import RowWiseTable, Table
