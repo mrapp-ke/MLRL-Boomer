@@ -1,0 +1,7 @@
+mlrl.testbed\_sklearn.experiments.output.evaluation.extension module
+====================================================================
+
+.. automodule:: mlrl.testbed_sklearn.experiments.output.evaluation.extension
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+mlrl.testbed\_sklearn.experiments.output.evaluation.extractor\_regression module
+================================================================================
+
+.. automodule:: mlrl.testbed_sklearn.experiments.output.evaluation.extractor_regression
+   :members:
+   :show-inheritance:
+   :undoc-members:

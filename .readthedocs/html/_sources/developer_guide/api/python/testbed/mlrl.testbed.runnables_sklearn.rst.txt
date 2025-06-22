@@ -1,7 +1,0 @@
-mlrl.testbed.runnables\_sklearn module
-======================================
-
-.. automodule:: mlrl.testbed.runnables_sklearn
-   :members:
-   :show-inheritance:
-   :undoc-members:

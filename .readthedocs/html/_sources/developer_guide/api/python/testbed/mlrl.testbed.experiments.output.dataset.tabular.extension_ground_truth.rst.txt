@@ -1,7 +1,0 @@
-mlrl.testbed.experiments.output.dataset.tabular.extension\_ground\_truth module
-===============================================================================
-
-.. automodule:: mlrl.testbed.experiments.output.dataset.tabular.extension_ground_truth
-   :members:
-   :show-inheritance:
-   :undoc-members:

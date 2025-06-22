@@ -1,0 +1,21 @@
+mlrl.testbed\_sklearn.experiments.output.dataset package
+========================================================
+
+.. automodule:: mlrl.testbed_sklearn.experiments.output.dataset
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed_sklearn.experiments.output.dataset.dataset
+   mlrl.testbed_sklearn.experiments.output.dataset.dataset_ground_truth
+   mlrl.testbed_sklearn.experiments.output.dataset.dataset_prediction
+   mlrl.testbed_sklearn.experiments.output.dataset.extension_ground_truth
+   mlrl.testbed_sklearn.experiments.output.dataset.extension_prediction
+   mlrl.testbed_sklearn.experiments.output.dataset.writer_ground_truth
+   mlrl.testbed_sklearn.experiments.output.dataset.writer_prediction

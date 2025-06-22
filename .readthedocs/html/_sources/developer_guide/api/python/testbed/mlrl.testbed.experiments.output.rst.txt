@@ -12,10 +12,8 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   mlrl.testbed.experiments.output.characteristics
    mlrl.testbed.experiments.output.dataset
    mlrl.testbed.experiments.output.evaluation
-   mlrl.testbed.experiments.output.label_vectors
    mlrl.testbed.experiments.output.model
    mlrl.testbed.experiments.output.parameters
    mlrl.testbed.experiments.output.sinks

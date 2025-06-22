@@ -6,14 +6,6 @@ mlrl.testbed.experiments.input.dataset.splitters package
    :show-inheritance:
    :undoc-members:
 
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 4
-
-   mlrl.testbed.experiments.input.dataset.splitters.tabular
-
 Submodules
 ----------
 

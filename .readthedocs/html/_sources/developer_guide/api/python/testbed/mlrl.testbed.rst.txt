@@ -25,4 +25,3 @@ Submodules
    mlrl.testbed.main
    mlrl.testbed.program_info
    mlrl.testbed.runnables
-   mlrl.testbed.runnables_sklearn

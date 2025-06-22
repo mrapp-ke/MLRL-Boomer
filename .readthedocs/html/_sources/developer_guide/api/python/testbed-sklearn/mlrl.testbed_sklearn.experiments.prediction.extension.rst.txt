@@ -1,0 +1,7 @@
+mlrl.testbed\_sklearn.experiments.prediction.extension module
+=============================================================
+
+.. automodule:: mlrl.testbed_sklearn.experiments.prediction.extension
+   :members:
+   :show-inheritance:
+   :undoc-members:

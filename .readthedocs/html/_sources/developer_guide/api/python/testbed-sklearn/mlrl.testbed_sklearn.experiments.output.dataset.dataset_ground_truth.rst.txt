@@ -1,0 +1,7 @@
+mlrl.testbed\_sklearn.experiments.output.dataset.dataset\_ground\_truth module
+==============================================================================
+
+.. automodule:: mlrl.testbed_sklearn.experiments.output.dataset.dataset_ground_truth
+   :members:
+   :show-inheritance:
+   :undoc-members:

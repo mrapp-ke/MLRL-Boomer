@@ -1,0 +1,7 @@
+mlrl.testbed\_sklearn.experiments.output.evaluation.extractor\_ranking module
+=============================================================================
+
+.. automodule:: mlrl.testbed_sklearn.experiments.output.evaluation.extractor_ranking
+   :members:
+   :show-inheritance:
+   :undoc-members:

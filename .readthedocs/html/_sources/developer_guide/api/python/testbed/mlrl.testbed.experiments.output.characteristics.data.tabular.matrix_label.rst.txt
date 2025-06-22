@@ -1,7 +1,0 @@
-mlrl.testbed.experiments.output.characteristics.data.tabular.matrix\_label module
-=================================================================================
-
-.. automodule:: mlrl.testbed.experiments.output.characteristics.data.tabular.matrix_label
-   :members:
-   :show-inheritance:
-   :undoc-members:
