@@ -84,6 +84,9 @@ class AbstractStatisticsUpdateCandidate : public IStatisticsUpdateCandidate {
                  */
                 StatisticsUpdateFactory(State& state) : state_(state) {}
 
+                /**
+                 * @see `IStatisticsUpdateFactory::create`
+                 */
                 std::unique_ptr<IStatisticsUpdate> create(
                   CompleteIndexVector::const_iterator indicesBegin, CompleteIndexVector::const_iterator indicesEnd,
                   typename View<typename State::score_type>::const_iterator scoresBegin,
@@ -92,6 +95,9 @@ class AbstractStatisticsUpdateCandidate : public IStatisticsUpdateCandidate {
                       state_, indicesBegin, indicesEnd, scoresBegin, scoresEnd);
                 }
 
+                /**
+                 * @see `IStatisticsUpdateFactory::create`
+                 */
                 std::unique_ptr<IStatisticsUpdate> create(
                   PartialIndexVector::const_iterator indicesBegin, PartialIndexVector::const_iterator indicesEnd,
                   typename View<typename State::score_type>::const_iterator scoresBegin,
