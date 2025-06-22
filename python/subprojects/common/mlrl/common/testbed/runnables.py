@@ -16,14 +16,15 @@ from mlrl.common.testbed.experiments.output.label_vectors.extension import Label
 from mlrl.common.testbed.experiments.output.model_text import RuleModelAsTextExtension
 from mlrl.common.testbed.experiments.prediction.predictor_incremental import IncrementalPredictor
 
+from mlrl.testbed_sklearn.experiments import SkLearnProblem
+from mlrl.testbed_sklearn.experiments.prediction.predictor import Predictor
+from mlrl.testbed_sklearn.runnables import SkLearnRunnable
+
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
-from mlrl.testbed.experiments.prediction.predictor import Predictor
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, RegressionProblem
-from mlrl.testbed.experiments.problem_domain_sklearn import SkLearnProblem
 from mlrl.testbed.extensions.extension import Extension
-from mlrl.testbed.runnables_sklearn import SkLearnRunnable
 
 from mlrl.util.cli import Argument, BoolArgument, EnumArgument, FloatArgument
 from mlrl.util.validation import assert_greater, assert_greater_or_equal
@@ -56,7 +57,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
 
         def create(self) -> Predictor:
             """
-            See :func:`from mlrl.testbed.experiments.problem_domain_sklearn.SkLearnProblem.PredictorFactory.create`
+            See :func:`from mlrl.testbed_sklearn.experiments.problem_domain.SkLearnProblem.PredictorFactory.create`
             """
             return IncrementalPredictor(self.prediction_type,
                                         min_size=self.min_size,
@@ -268,7 +269,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
 
     def create_regressor(self, args: Namespace) -> Optional[SkLearnRegressorMixin]:
         """
-        See :func:`mlrl.testbed.runnables_sklearn.SkLearnRunnable.create_regressor`
+        See :func:`mlrl.testbed_sklearn.runnables.SkLearnRunnable.create_regressor`
         """
         regressor_type = self.regressor_type
 
@@ -280,6 +281,6 @@ class RuleLearnerRunnable(SkLearnRunnable):
 
     def create_predictor_factory(self, args, prediction_type: PredictionType) -> SkLearnProblem.PredictorFactory:
         """
-        See :func:`mlrl.testbed.runnables_sklearn.SkLearnRunnable.create_predictor_factory`
+        See :func:`mlrl.testbed_sklearn.runnables.SkLearnRunnable.create_predictor_factory`
         """
         return RuleLearnerRunnable.IncrementalPredictionExtension.get_predictor_factory(args, prediction_type)
