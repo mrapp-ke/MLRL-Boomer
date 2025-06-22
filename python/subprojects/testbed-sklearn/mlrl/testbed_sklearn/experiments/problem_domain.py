@@ -10,7 +10,8 @@ import numpy as np
 
 from sklearn.base import BaseEstimator
 
-from mlrl.testbed.experiments.prediction import Predictor
+from mlrl.testbed_sklearn.experiments.prediction import Predictor
+
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
 

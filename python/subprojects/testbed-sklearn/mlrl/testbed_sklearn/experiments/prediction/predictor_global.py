@@ -7,9 +7,10 @@ import logging as log
 
 from typing import Any, Generator
 
+from mlrl.testbed_sklearn.experiments.prediction.predictor import PredictionFunction, Predictor
+
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
-from mlrl.testbed.experiments.prediction.predictor import PredictionFunction, Predictor
 from mlrl.testbed.experiments.prediction_scope import PredictionScope
 from mlrl.testbed.experiments.state import PredictionState
 from mlrl.testbed.experiments.timer import Timer
@@ -50,7 +51,7 @@ class GlobalPredictor(Predictor):
     def obtain_predictions(self, learner: Any, dataset: Dataset, dataset_type: DatasetType,
                            **kwargs) -> Generator[PredictionState, None, None]:
         """
-        See :func:`mlrl.testbed.experiments.prediction.predictor.Predictor.obtain_predictions`
+        See :func:`mlrl.testbed_sklearn.experiments.prediction.predictor.Predictor.obtain_predictions`
         """
         log.info('Predicting for %s %s examples...', dataset.num_examples, dataset_type.value)
         start_time = Timer.start()
