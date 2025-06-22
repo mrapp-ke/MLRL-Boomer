@@ -4,9 +4,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for representing predictions that are part of output data.
 """
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
+from mlrl.testbed_sklearn.experiments.output.dataset.dataset import TabularOutputDataset
 
 from mlrl.testbed.experiments.output.data import OutputData
-from mlrl.testbed.experiments.output.dataset.tabular.dataset import TabularOutputDataset
 
 
 class PredictionDataset(TabularOutputDataset):
