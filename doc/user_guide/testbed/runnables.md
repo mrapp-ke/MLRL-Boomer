@@ -12,7 +12,7 @@ In the following, we provide an exemplary implementation of such a class using s
 
 ```python
 from argparse import Namespace
-from mlrl.testbed import SkLearnRunnable
+from mlrl.testbed_sklearn.runnables import SkLearnRunnable
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.base import ClassifierMixin, RegressorMixin
 from typing import Optional
@@ -80,7 +80,7 @@ Instead of retrieving the value specified by the user directly from the given `N
 Optionally, you can provide information about the version and authors of your custom program by overriding the method {py:meth}`get_program_info <mlrl.testbed.runnables.Runnable.get_program_info>`:
 
 ```python
-from mlrl.testbed import SkLearnRunnable
+from mlrl.testbed_sklearn.runnables import SkLearnRunnable
 from mlrl.testbed.program_info import ProgramInfo
 from typing import Optional
 
