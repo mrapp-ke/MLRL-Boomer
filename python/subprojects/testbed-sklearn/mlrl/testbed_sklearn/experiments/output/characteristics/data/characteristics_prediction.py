@@ -3,8 +3,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for representing characteristics of binary predictions that are part of output data.
 """
-from mlrl.testbed.experiments.output.characteristics.data.tabular.characteristics import OutputCharacteristics
-from mlrl.testbed.experiments.output.characteristics.data.tabular.matrix_output import OutputMatrix
+from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import OutputCharacteristics
+from mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_output import OutputMatrix
+
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 
