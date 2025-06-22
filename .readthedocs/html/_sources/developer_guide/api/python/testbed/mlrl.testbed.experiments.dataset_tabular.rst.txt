@@ -1,7 +1,0 @@
-mlrl.testbed.experiments.dataset\_tabular module
-================================================
-
-.. automodule:: mlrl.testbed.experiments.dataset_tabular
-   :members:
-   :show-inheritance:
-   :undoc-members:

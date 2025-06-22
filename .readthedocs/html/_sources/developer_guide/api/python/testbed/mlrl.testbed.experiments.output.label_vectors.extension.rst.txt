@@ -1,7 +1,0 @@
-mlrl.testbed.experiments.output.label\_vectors.extension module
-===============================================================
-
-.. automodule:: mlrl.testbed.experiments.output.label_vectors.extension
-   :members:
-   :show-inheritance:
-   :undoc-members:

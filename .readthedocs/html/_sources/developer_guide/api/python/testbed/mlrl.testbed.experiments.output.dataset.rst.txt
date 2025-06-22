@@ -6,14 +6,6 @@ mlrl.testbed.experiments.output.dataset package
    :show-inheritance:
    :undoc-members:
 
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 4
-
-   mlrl.testbed.experiments.output.dataset.tabular
-
 Submodules
 ----------
 

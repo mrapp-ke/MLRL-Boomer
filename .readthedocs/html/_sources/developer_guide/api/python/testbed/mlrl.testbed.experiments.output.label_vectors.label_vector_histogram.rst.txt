@@ -1,7 +1,0 @@
-mlrl.testbed.experiments.output.label\_vectors.label\_vector\_histogram module
-==============================================================================
-
-.. automodule:: mlrl.testbed.experiments.output.label_vectors.label_vector_histogram
-   :members:
-   :show-inheritance:
-   :undoc-members:

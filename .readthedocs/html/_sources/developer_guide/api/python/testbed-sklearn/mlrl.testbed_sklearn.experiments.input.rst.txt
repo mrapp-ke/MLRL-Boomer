@@ -1,0 +1,15 @@
+mlrl.testbed\_sklearn.experiments.input package
+===============================================
+
+.. automodule:: mlrl.testbed_sklearn.experiments.input
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed_sklearn.experiments.input.dataset

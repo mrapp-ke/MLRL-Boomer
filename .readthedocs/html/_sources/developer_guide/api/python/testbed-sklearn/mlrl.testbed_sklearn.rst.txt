@@ -1,0 +1,23 @@
+mlrl.testbed\_sklearn package
+=============================
+
+.. automodule:: mlrl.testbed_sklearn
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed_sklearn.experiments
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed_sklearn.runnables

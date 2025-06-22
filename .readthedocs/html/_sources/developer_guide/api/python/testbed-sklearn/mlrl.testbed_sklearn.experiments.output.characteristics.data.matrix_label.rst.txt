@@ -1,0 +1,7 @@
+mlrl.testbed\_sklearn.experiments.output.characteristics.data.matrix\_label module
+==================================================================================
+
+.. automodule:: mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_label
+   :members:
+   :show-inheritance:
+   :undoc-members:

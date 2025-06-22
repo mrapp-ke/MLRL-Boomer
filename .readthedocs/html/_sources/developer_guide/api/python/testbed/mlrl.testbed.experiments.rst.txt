@@ -14,7 +14,6 @@ Subpackages
 
    mlrl.testbed.experiments.input
    mlrl.testbed.experiments.output
-   mlrl.testbed.experiments.prediction
 
 Submodules
 ----------
@@ -24,16 +23,13 @@ Submodules
 
    mlrl.testbed.experiments.context
    mlrl.testbed.experiments.dataset
-   mlrl.testbed.experiments.dataset_tabular
    mlrl.testbed.experiments.dataset_type
    mlrl.testbed.experiments.experiment
-   mlrl.testbed.experiments.experiment_sklearn
    mlrl.testbed.experiments.file_path
    mlrl.testbed.experiments.fold
    mlrl.testbed.experiments.prediction_scope
    mlrl.testbed.experiments.prediction_type
    mlrl.testbed.experiments.problem_domain
-   mlrl.testbed.experiments.problem_domain_sklearn
    mlrl.testbed.experiments.state
    mlrl.testbed.experiments.table
    mlrl.testbed.experiments.timer

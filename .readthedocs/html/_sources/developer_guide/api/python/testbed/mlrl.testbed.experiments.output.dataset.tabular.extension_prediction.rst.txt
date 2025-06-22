@@ -1,7 +1,0 @@
-mlrl.testbed.experiments.output.dataset.tabular.extension\_prediction module
-============================================================================
-
-.. automodule:: mlrl.testbed.experiments.output.dataset.tabular.extension_prediction
-   :members:
-   :show-inheritance:
-   :undoc-members:

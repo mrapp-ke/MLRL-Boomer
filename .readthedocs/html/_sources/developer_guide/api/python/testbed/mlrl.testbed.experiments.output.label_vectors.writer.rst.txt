@@ -1,7 +1,0 @@
-mlrl.testbed.experiments.output.label\_vectors.writer module
-============================================================
-
-.. automodule:: mlrl.testbed.experiments.output.label_vectors.writer
-   :members:
-   :show-inheritance:
-   :undoc-members:

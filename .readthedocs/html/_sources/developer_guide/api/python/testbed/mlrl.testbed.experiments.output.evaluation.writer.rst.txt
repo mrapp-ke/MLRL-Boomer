@@ -1,7 +1,0 @@
-mlrl.testbed.experiments.output.evaluation.writer module
-========================================================
-
-.. automodule:: mlrl.testbed.experiments.output.evaluation.writer
-   :members:
-   :show-inheritance:
-   :undoc-members:

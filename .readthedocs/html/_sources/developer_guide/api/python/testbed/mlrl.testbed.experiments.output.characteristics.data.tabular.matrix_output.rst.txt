@@ -1,7 +1,0 @@
-mlrl.testbed.experiments.output.characteristics.data.tabular.matrix\_output module
-==================================================================================
-
-.. automodule:: mlrl.testbed.experiments.output.characteristics.data.tabular.matrix_output
-   :members:
-   :show-inheritance:
-   :undoc-members:
