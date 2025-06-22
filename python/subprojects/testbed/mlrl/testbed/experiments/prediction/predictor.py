@@ -8,7 +8,7 @@ import logging as log
 from abc import ABC, abstractmethod
 from typing import Any, Callable, Generator
 
-from sklearn.base import BaseEstimator, ClassifierMixin, RegressorMixin
+from sklearn.base import ClassifierMixin, RegressorMixin
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
@@ -21,7 +21,7 @@ class PredictionFunction:
     A function that obtains and returns predictions from a learner.
     """
 
-    def __init__(self, learner: BaseEstimator, predict_function: Callable, predict_proba_function: Callable):
+    def __init__(self, learner: Any, predict_function: Callable, predict_proba_function: Callable):
         """
         :param learner:                 The learner, the predictions should be obtained from
         :param predict_function:        The function to be invoked for obtaining binary predictions or scores

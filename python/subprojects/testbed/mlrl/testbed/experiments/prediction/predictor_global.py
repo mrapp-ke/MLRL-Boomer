@@ -7,8 +7,6 @@ import logging as log
 
 from typing import Any, Generator
 
-from sklearn.base import BaseEstimator
-
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.prediction.predictor import PredictionFunction, Predictor
@@ -22,7 +20,7 @@ class GlobalPredictionFunction(PredictionFunction):
     A function that obtains and returns global predictions from a learner.
     """
 
-    def __init__(self, learner: BaseEstimator):
+    def __init__(self, learner: Any):
         """
         :param learner: The learner, the predictions should be obtained from
         """
