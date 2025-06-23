@@ -2,17 +2,17 @@
 
 # Performance Evaluation
 
-A major task in machine learning is to assess the predictive performance of different learning approaches, compare them to each other, and decide for the best approach suitable for a particular problem. The command line API provided by this project helps with these tasks by implementing several strategies for splitting available data into training and test sets, which is crucial to obtain unbiased estimates of a method's performance. In accordance with established practices, a machine learning model that is trained on a test set is afterward applied to the corresponding test set to obtain predictions for data that was not included in the training process. The metrics that are used for evaluating the quality of these predictions are automatically chosen, depending on the type of predictions (binary predictions, probability estimates, etc.) provided by the tested method.
+A major task in machine learning is to assess the predictive performance of different learning approaches, compare them to each other, and decide for the best approach suitable for a particular problem. The package mlrl-testbed helps with these tasks by implementing several strategies for splitting available data into training and test sets, which is crucial to obtain unbiased estimates of a method's performance. In accordance with established practices, a machine learning model that is trained on a test set is afterward applied to the corresponding test set to obtain predictions for data that was not included in the training process. The metrics that are used for evaluating the quality of these predictions are automatically chosen, depending on the type of predictions (binary predictions, probability estimates, etc.) provided by the tested method.
 
 ## Strategies for Data Splitting
 
-Several strategies for splitting the available data into distinct training and test sets can be used via the command line API. They are described in the following.
+Several strategies for splitting the available data into distinct training and test sets can be used. They are described in the following.
 
 (train-test-split)=
 
 ### Train-Test-Splits
 
-The simplest and computationally the least demanding strategy for obtaining training and tests is to randomly split the available data into two, mutually exclusive, parts. This strategy, which is used by default, if not specified otherwise, can be used by providing the argument `--data-split train-test` to the command line API:
+The simplest and computationally the least demanding strategy for obtaining training and tests is to randomly split the available data into two, mutually exclusive, parts. This strategy, which is used by default, if not specified otherwise, can be used via the command line argument `--data-split train-test`:
 
 ````{tab} BOOMER
    ```text
@@ -34,7 +34,7 @@ The simplest and computationally the least demanding strategy for obtaining trai
 
 Following the argument `--dataset`, the program loads the training data from a file named `dataset-name_training.arff`. Similarly, it expects the test data to be stored in a file named `dataset-name_test.arff`. If these files are not available, the program searches for a file with the name `dataset-name.arff` and splits it into training and test data automatically.
 
-When it is the responsibility of the command line API to split a given dataset into training and test tests, 66% of the data are included in the training set, whereas the remaining 33% are part of the test set. Although this ratio is frequently used in machine learning, you can easily adjust it by providing the option `test_size`:
+When it is the responsibility of the package mlrl-testbed to split a given dataset into training and test tests, 66% of the data are included in the training set, whereas the remaining 33% are part of the test set. Although this ratio is frequently used in machine learning, you can easily adjust it by providing the option `test_size`:
 
 ````{tab} BOOMER
    ```text
@@ -54,13 +54,13 @@ When it is the responsibility of the command line API to split a given dataset i
    ```
 ````
 
-This command instructs the command line API to include 75% of the available data in the training set and use the remaining 25% for the test set.
+This command results in 75% of the available data to be included in the training set, whereas the remaining 25% are used for the test set.
 
 (cross-validation)=
 
 ### Cross Validation
 
-A more elaborate strategy for splitting data into training and test sets, which results in more realistic performance estimates, but also entails greater computational costs, is referred to as [cross validation](<https://en.wikipedia.org/wiki/Cross-validation_(statistics)>) (CV). The basic idea is to split the available data into several, equally-sized, parts. Afterward, several machine learning models are trained and evaluated on different portions of the data using the same learning method. Each of these parts are used for testing exactly once, whereas the remaining ones make up the training set. The performance estimates that are obtained for each of these subsequent runs, referred to as *folds*, are finally averaged to obtain a single score and corresponding [standard deviation](https://en.wikipedia.org/wiki/Standard_deviation). The command line API can be instructed to perform a cross validation using the argument `--data-split cv`:
+A more elaborate strategy for splitting data into training and test sets, which results in more realistic performance estimates, but also entails greater computational costs, is referred to as [cross validation](<https://en.wikipedia.org/wiki/Cross-validation_(statistics)>) (CV). The basic idea is to split the available data into several, equally-sized, parts. Afterward, several machine learning models are trained and evaluated on different portions of the data using the same learning method. Each of these parts are used for testing exactly once, whereas the remaining ones make up the training set. The performance estimates that are obtained for each of these subsequent runs, referred to as *folds*, are finally averaged to obtain a single score and corresponding [standard deviation](https://en.wikipedia.org/wiki/Standard_deviation). The package mlrl-testbed can be instructed to perform a cross validation using the argument `--data-split cv`:
 
 ````{tab} BOOMER
    ```text
@@ -130,7 +130,7 @@ By providing the options `first_fold` and `last_fold`, a subset of the folds, in
 The configuration described in this section should only be used for testing purposes, as the evaluation results will be highly biased and overly optimistic.
 ```
 
-Sometimes, evaluating the performance of a model on the data it has been trained on can be helpful for analyzing the behavior of a machine learning algorithm, e.g., if one needs to check if the approach is able to fit the data accurately. For this purpose, the command line API allows to use the argument `--data-split none`, which results in the given data not being split at all. Instead, the learning algorithm is applied to the entire dataset and predictions are be obtained from the resulting model for the exact same data points. The argument can be specified as follows:
+Sometimes, evaluating the performance of a model on the data it has been trained on can be helpful for analyzing the behavior of a machine learning algorithm, e.g., if one needs to check if the approach is able to fit the data accurately. For this purpose, the argument `--data-split none` may be used. It results in the given data not being split at all. Instead, the learning algorithm is applied to the entire dataset and predictions are be obtained from the resulting model for the exact same data points. The argument can be specified as follows:
 
 ````{tab} BOOMER
    ```text
@@ -180,13 +180,13 @@ The argument `--predict-for-test-data false` can be used analogously to control 
 
 ## Types of Predictions
 
-The metrics for evaluating the quality of predictions that have been obtained for a test set are chosen automatically, depending on the type of predictions provided by the model. In general, the command line API supports evaluating binary predictions, probability estimates, and scores. Not all of these prediction types must be supported by a single machine learning method. For example, in case of the BOOMER algorithm, the prediction of probabilities is only possible with certain configurations.
+The metrics for evaluating the quality of predictions that have been obtained for a test set are chosen automatically, depending on the type of predictions provided by the model. In general, the package mlrl-testbed supports evaluating binary predictions, probability estimates, and scores. Not all of these prediction types must be supported by a single machine learning method. For example, in case of the BOOMER algorithm, the prediction of probabilities is only possible with certain configurations.
 
 (scores)=
 
 ### Scores
 
-We refer to real-valued predictions, which may be positive or negative, as *scores*. In the context of multi-label classification, positive scores indicate a preference towards predicting a label as relevant, whereas negative scores are predicted for labels that are more likely to be irrelevant. The absolute size of the scores corresponds to the confidence of the predictions, i.e., if a large value is predicted for a label, the model is more certain about the correctness of the predicted outcome. Unlike {ref}`probability estimates<probability-estimates>`, scores are not bound to a certain interval and can be arbitrary positive or negative values. The BOOMER algorithm uses scores as a basis for predicting probabilities or binary labels. If you want to evaluate the quality of the scores directly, instead of transforming them into probabilities or binary predictions, the argument `--prediction-type scores` may be passed to the command line API:
+We refer to real-valued predictions, which may be positive or negative, as *scores*. In the context of multi-label classification, positive scores indicate a preference towards predicting a label as relevant, whereas negative scores are predicted for labels that are more likely to be irrelevant. The absolute size of the scores corresponds to the confidence of the predictions, i.e., if a large value is predicted for a label, the model is more certain about the correctness of the predicted outcome. Unlike {ref}`probability estimates<probability-estimates>`, scores are not bound to a certain interval and can be arbitrary positive or negative values. The BOOMER algorithm uses scores as a basis for predicting probabilities or binary labels. If you want to evaluate the quality of the scores directly, instead of transforming them into probabilities or binary predictions, the argument `--prediction-type scores` may be used:
 
 ````{tab} BOOMER
    ```text
@@ -232,11 +232,11 @@ Probability estimates are given as real values between zero and one. In the cont
    ```
 ````
 
-The command line API relies on [ranking measures](https://scikit-learn.org/stable/modules/model_evaluation.html#multilabel-ranking-metrics), as implemented by the [scikit-learn](https://scikit-learn.org) framework, for evaluating probability estimates.
+The package mlrl-testbed relies on [ranking measures](https://scikit-learn.org/stable/modules/model_evaluation.html#multilabel-ranking-metrics), as implemented by the [scikit-learn](https://scikit-learn.org) framework, for evaluating probability estimates.
 
 ### Binary Labels
 
-The most common type of prediction used for multi-label classification are binary predictions that directly indicate whether a label is considered as irrelevant or relevant. Irrelevant labels are represented by the value `0`, whereas the value `1` is predicted for relevant labels. By default, the command line API instructs the learning method to provide binary predictions. If you want to explicitly instruct it to use this particular type of predictions, you can use the argument `--prediction-type binary`:
+The most common type of prediction used for multi-label classification are binary predictions that directly indicate whether a label is considered as irrelevant or relevant. Irrelevant labels are represented by the value `0`, whereas the value `1` is predicted for relevant labels. By default, the learning method is instructed to provide binary predictions. If you want to explicitly instruct it to use this particular type of predictions, you can use the argument `--prediction-type binary`:
 
 ````{tab} BOOMER
    ```text
@@ -260,7 +260,7 @@ In a multi-label setting, the quality of binary predictions is assessed in terms
 
 ## Incremental Evaluation
 
-When evaluating the predictive performance of an [ensemble method](https://en.wikipedia.org/wiki/Ensemble_learning), i.e., models that consist of several weak predictors, also referred to as *ensemble members*, the command line API supports to evaluate these models incrementally. In particular, rule-based machine learning algorithms like the ones implemented by this project are often considered as ensemble methods, where each rule in a model can be viewed as a weak predictor. Adding more rules to a model typically results in better predictive performance. However, adding too many rules may result in overfitting the training data and therefore achieving subpar performance on the test data. For analyzing such behavior, the argument `--incremental-evaluation true` may be passed to the command line API:
+When evaluating the predictive performance of an [ensemble method](https://en.wikipedia.org/wiki/Ensemble_learning), i.e., models that consist of several weak predictors, also referred to as *ensemble members*, the package mlrl-testbed supports to evaluate these models incrementally. In particular, rule-based machine learning algorithms like the ones implemented by this project are often considered as ensemble methods, where each rule in a model can be viewed as a weak predictor. Adding more rules to a model typically results in better predictive performance. However, adding too many rules may result in overfitting the training data and therefore achieving subpar performance on the test data. For analyzing such behavior, the argument `--incremental-evaluation true` may be used:
 
 ````{tab} BOOMER
    ```text
