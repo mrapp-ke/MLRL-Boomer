@@ -38,7 +38,7 @@ The following optional arguments allow additional control over the loading mecha
 
 - `-r` or `--runnable` (Default value = `Runnable`) The name of the class extending {py:class}`mlrl.testbed.runnables.Runnable` that resides within the module or source file specified via the argument `<module_or_source_file>`.
 
-The arguments given above can be used to integrate any scikit-learn compatible machine learning algorithm with the command line API. You can learn about this {ref}`here<runnables>`.
+The arguments given above can be used to integrate any scikit-learn compatible machine learning algorithm with mlrl-testbed. You can learn about this {ref}`here<runnables>`.
 
 ### Dataset
 
@@ -53,7 +53,7 @@ Optionally, the following arguments can be used to provide additional informatio
 
 ### Problem Type
 
-The command line API can conduct experiments for classification and regression problems. When dealing with the latter, the type of the machine learning problem must explicitly be specified via the following argument:
+The package mlrl-testbed is able to conduct experiments for classification and regression problems. When dealing with the latter, the type of the machine learning problem must explicitly be specified via the following argument:
 
 - `--problem-type` (Default value = `classification`)
 
@@ -64,7 +64,7 @@ The command line API can conduct experiments for classification and regression p
 
 > A more detailed description of the following arguments can be found {ref}`here<evaluation>`.
 
-One of the most important capabilities of the command line API is to train machine learning models and obtain an unbiased estimate of their predictive performance. For this purpose, the available data must be split into training and test data. The former is used to train models and the latter is used for evaluation afterward, whereas the evaluation metrics depend on the type of predictions provided by a model.
+One of the most important capabilities of mlrl-testbed is to train machine learning models and obtain an unbiased estimate of their predictive performance. For this purpose, the available data must be split into training and test data. The former is used to train models and the latter is used for evaluation afterward, whereas the evaluation metrics depend on the type of predictions provided by a model.
 
 ### Strategies for Data Splitting
 
@@ -528,7 +528,7 @@ For example, the value of the parameter `feature_binning` may be set as follows:
    ```
 ````
 
-Some algorithmic parameters, including the parameter `feature_binning`, allow to specify additional options as key-value pairs by using a {ref}`bracket notation<bracket-notation>`. This is also supported by the command line API, where the options may not contain any spaces and special characters like `{` or `}` must be escaped by using single-quotes (`'`):
+Some algorithmic parameters, including the parameter `feature_binning`, allow to specify additional options as key-value pairs by using a {ref}`bracket notation<bracket-notation>`. This is also supported via the command line API. However, options may not contain any spaces and special characters like `{` or `}` must be escaped by using single-quotes (`'`):
 
 ````{tab} BOOMER
    ```text
