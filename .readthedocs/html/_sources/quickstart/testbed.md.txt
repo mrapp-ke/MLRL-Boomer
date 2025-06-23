@@ -11,14 +11,14 @@ As an alternative to using algorithms provided by this project in your own Pytho
 ## Running Experiments
 
 ```{tip}
-The command line API can also be used to conduct experiments with any machine learning algorithm of your choice. All that is needed for this are few lines of Python code as described {ref}`here<runnables>`.
+The package [mlrl-testbed](https://pypi.org/project/mlrl-testbed/) is capable of conducting experiments with any machine learning algorithm of your choice. All that is needed for this are few lines of Python code as described {ref}`here<runnables>`.
 ```
 
-Depending on the capabilities of an algorithm, the command line API supports both, classification and regression problems. In the following, we provide examples for both scenarios.
+Depending on the capabilities of an algorithm, mlrl-testbed supports both, classification and regression problems. In the following, we provide examples for both scenarios.
 
 ### Classification Problems
 
-The following example illustrates use the command line API for applying the BOOMER algorithm, or the SeCO algorithm, to a particular classification dataset:
+The following example illustrates how to apply the BOOMER algorithm, or the SeCO algorithm, to a particular classification dataset:
 
 ````{tab} BOOMER
    ```text
@@ -52,7 +52,7 @@ If an XML file is not provided, the program tries to parse the number of outputs
 
 ### Regression Problems
 
-In addition to classification problems, the BOOMER algorithm can also be used for solving regression problems. As shown below, the argument `--problem-type` instructs the command line API to consider the given dataset as a regression dataset:
+In addition to classification problems, the BOOMER algorithm can also be used for solving regression problems. As shown below, the argument `--problem-type` specifies that the given dataset should be considered a regression dataset:
 
 ```text
 mlrl-testbed mlrl.boosting \
