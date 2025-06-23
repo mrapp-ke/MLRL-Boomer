@@ -1,5 +1,6 @@
 adaptor
 analogously
+arff
 backend
 bipartition
 blas
@@ -74,6 +75,7 @@ scikit
 Sechidis
 seco
 sexualized
+sklearn
 socio
 subclassed
 sublicense
