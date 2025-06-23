@@ -1,4 +1,4 @@
-```{image} _static/logo_light.svg
+```{image} _static/logo_boomer_light.svg
 ---
 align: center
 alt: 'BOOMER: Gradient Boosted Multi-Label Classification Rules'
@@ -6,7 +6,7 @@ class: only-light
 ---
 ```
 
-```{image} _static/logo_dark.svg
+```{image} _static/logo_boomer_dark.svg
 ---
 align: center
 alt: 'BOOMER: Gradient Boosted Multi-Label Classification Rules'
