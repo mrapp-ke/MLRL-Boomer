@@ -1,4 +1,6 @@
-# MLRL-Testbed
+---
+hide-toc: true
+---
 
 ```{image} ../../_static/logo_testbed_light.svg
 ---
@@ -16,7 +18,16 @@ class: only-dark
 ---
 ```
 
-The package [mlrl-testbed](https://pypi.org/project/mlrl-testbed/) allows to run experiments using arbitrary types of machine learning algorithms, including the ones provided by this project, without the need to write code. Compared to the section {ref}`testbed`, the following sections provide a more detailed description of the functionalities it provides:
+```{include} README.md
+---
+start-after: <!-- documentation-start -->
+end-before: <!-- documentation-end -->
+---
+```
+
+## 📚 Documentation
+
+This documentation provides information about the following topics:
 
 ```{toctree}
 ---
@@ -30,3 +41,5 @@ experimental_results
 runnables
 arguments
 ```
+
+If you are a developer, you might also be interested in the {ref}`Python <python-apidoc>` or {ref}`C++ <cpp-apidoc>` API reference.
