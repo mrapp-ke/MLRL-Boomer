@@ -8,36 +8,39 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![PyPI version](https://badge.fury.io/py/mlrl-testbed.svg)](https://badge.fury.io/py/mlrl-testbed) [![Documentation Status](https://readthedocs.org/projects/mlrl-boomer/badge/?version=latest)](https://mlrl-boomer.readthedocs.io/en/latest/?badge=latest)
 
-**:link: Important links:** [Documentation](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/testbed/index.html) | [Issue Tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) | [Changelog](https://mlrl-boomer.readthedocs.io/en/latest/misc/CHANGELOG.html) | [Contributors](https://mlrl-boomer.readthedocs.io/en/latest/misc/CONTRIBUTORS.html) | [Code of Conduct](https://mlrl-boomer.readthedocs.io/en/latest/misc/CODE_OF_CONDUCT.html) | [License](https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html)
+**🔗 Important links:** [Documentation](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/testbed/index.html) | [Issue Tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) | [Changelog](https://mlrl-boomer.readthedocs.io/en/latest/misc/CHANGELOG.html) | [License](https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html)
 
 This software package provides **mlrl-testbed - a command line utility for running machine learning experiments**. It implements a straightforward, easily configurable, and extensible *workflow* for conducting experiments, including steps such as (but not restricted to) the following:
 
 - loading a dataset
 - splitting it into training and test sets
-- training a model
-- evaluating it
+- training one or several models
+- evaluating the models' performance
 - saving experimental results to output files
+
+# MLRL-Testbed
 
 On its own, this package is not very powerful. It is intended as a basis for other packages that build functionality upon it. In fact, it does not make any assumptions about the problem domain or type of machine learning algorithm that should be used in an experiment. Instead, implementations of domain- or algorithm-specific functionality are provided by the extensions discussed below.
 
-# Tabular Machine Learning: [mlrl-testbed-sklearn](https://pypi.org/project/mlrl-testbed-sklearn/)
+## Tabular Machine Learning
 
-The package [mlrl-testbed-sklearn](https://pypi.org/project/mlrl-testbed-sklearn/) adds support for tabular machine learning problems by making use of the [scikit-learn](https://scikit-learn.org) framework. It can easily be installed via the following command:
+The package [mlrl-testbed-sklearn](https://pypi.org/project/mlrl-testbed-sklearn/) adds support for tabular machine learning problems by making use of the [scikit-learn](https://scikit-learn.org) framework. It can easily be installed via the following command (and will pull [mlrl-testbed](https://pypi.org/project/mlrl-testbed/) as a dependency):
 
 ```
 pip install mlrl-testbed-sklearn
 ```
 
-## :bulb: Example
+### 💡 Example
 
-By writing just a small amount of code, any scikit-learn compatible [estimator](https://scikit-learn.org/stable/glossary.html#term-estimators) can be integrated with `mlrl-testbed` and used in experiments. For example, the following code integrates scikit-learn's [RandomForestClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier):
+By writing just a small amount of code, any scikit-learn compatible [estimator](https://scikit-learn.org/stable/glossary.html#term-estimators) can be integrated with MLRL-Testbed and used in experiments. For example, the following code integrates scikit-learn's [RandomForestClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier):
 
 ```python
 from argparse import Namespace
 from mlrl.testbed_sklearn.runnables import SkLearnRunnable
+from mlrl.util.cli import Argument, IntArgument
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.base import ClassifierMixin, RegressorMixin
-from typing import Optional
+from typing import Optional, Set
 
 
 class Runnable(SkLearnRunnable):
@@ -68,13 +71,13 @@ mlrl-testbed custom_runnable.py \
     --n-estimators 50
 ```
 
-The above command does not only train a model, but also evaluates it according to common measures and prints the evaluation results. It does also demonstrate how algorithmic parameters can be controlled via command line arguments. In the documentation, we provide more details on the [integration of custom algorithms](<(https://mlrl-boomer.readthedocs.io/en/latest/user_guide/testbed/runnables.html)>) and the capabilities of the [command line API](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/testbed/index.html).
+The above command does not only train a model, but also evaluates it according to common measures and prints the evaluation results. It does also demonstrate how algorithmic parameters can be controlled via command line arguments. In the documentation, we provide more details on the [integration of custom algorithms](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/testbed/runnables.html) and the capabilities of the [command line API](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/testbed/index.html).
 
-## :checkered_flag: Advantages
+### 🏁 Advantages
 
-Making use of `mlrl-testbed` does not only help with the burdens of training and evaluating machine learning models, it can also help making your own methods and algorithms more accessible to users. This is demonstrated by the rule learning algorithms [mlrl-boomer](https://pypi.org/project/mlrl-boomer/) and [mlrl-seco](https://pypi.org/project/mlrl-seco/) that can easily be run via the command line API described above and even extend it with rule-specific funtionalities.
+Making use of MLRL-Testbed does not only help with the burdens of training and evaluating machine learning models, it can also help making your own methods and algorithms more accessible to users. This is demonstrated by the rule learning algorithms [mlrl-boomer](https://pypi.org/project/mlrl-boomer/) and [mlrl-seco](https://pypi.org/project/mlrl-seco/) that can easily be run via the command line API described above and even extend it with rule-specific functionalities.
 
-## :wrench: Functionalities
+### 🔧 Functionalities
 
 The package [mlrl-testbed-sklearn](https://pypi.org/project/mlrl-testbed-sklearn/) provides a command line API that allows configuring and running machine learning algorithms. It allows to apply machine learning algorithms to different datasets and can evaluate their predictive performance in terms of commonly used measures. In detail, it supports the following functionalities:
 
@@ -95,7 +98,7 @@ If the following are written to output files, they can be loaded and reused in f
 - The machine learning models that have been learned
 - Algorithmic parameters used for training
 
-## :books: Documentation
+## 📚 Documentation
 
 Our documentation provides an extensive [user guide](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/testbed/index.html), as well as an [API reference](https://mlrl-boomer.readthedocs.io/en/latest/developer_guide/api/python/testbed/mlrl.testbed.html) for developers.
 
@@ -105,7 +108,7 @@ Our documentation provides an extensive [user guide](https://mlrl-boomer.readthe
 
 For an overview of changes and new features that have been included in past releases, please refer to the [changelog](https://mlrl-boomer.readthedocs.io/en/latest/misc/CHANGELOG.html).
 
-## :scroll: License
+## 📜 License
 
 This project is open source software licensed under the terms of the [MIT license](https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html). We welcome contributions to the project to enhance its functionality and make it more accessible to a broader audience. A frequently updated list of contributors is available [here](https://mlrl-boomer.readthedocs.io/en/latest/misc/CONTRIBUTORS.html).
 
