@@ -1,3 +1,7 @@
+---
+orphan: true
+---
+
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/doc/_static/logo_testbed_dark.svg">
@@ -9,6 +13,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![PyPI version](https://badge.fury.io/py/mlrl-testbed.svg)](https://badge.fury.io/py/mlrl-testbed) [![Documentation Status](https://readthedocs.org/projects/mlrl-boomer/badge/?version=latest)](https://mlrl-boomer.readthedocs.io/en/latest/?badge=latest)
 
 **🔗 Important links:** [Documentation](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/testbed/index.html) | [Issue Tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) | [Changelog](https://mlrl-boomer.readthedocs.io/en/latest/misc/CHANGELOG.html) | [License](https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html)
+
+<!-- documentation-start -->
 
 This software package provides **mlrl-testbed - a command line utility for running machine learning experiments**. It implements a straightforward, easily configurable, and extensible *workflow* for conducting experiments, including steps such as (but not restricted to) the following:
 
@@ -71,7 +77,7 @@ mlrl-testbed custom_runnable.py \
     --n-estimators 50
 ```
 
-The above command does not only train a model, but also evaluates it according to common measures and prints the evaluation results. It does also demonstrate how algorithmic parameters can be controlled via command line arguments. In the documentation, we provide more details on the [integration of custom algorithms](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/testbed/runnables.html) and the capabilities of the [command line API](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/testbed/index.html).
+The above command does not only train a model, but also evaluates it according to common measures and prints the evaluation results. It does also demonstrate how algorithmic parameters can be controlled via command line arguments.
 
 ### 🏁 Advantages
 
@@ -97,6 +103,8 @@ If the following are written to output files, they can be loaded and reused in f
 
 - The machine learning models that have been learned
 - Algorithmic parameters used for training
+
+<!-- documentation-end -->
 
 ## 📚 Documentation
 
