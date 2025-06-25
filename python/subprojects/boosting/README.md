@@ -8,7 +8,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![PyPI version](https://badge.fury.io/py/mlrl-boomer.svg)](https://badge.fury.io/py/mlrl-boomer) [![Documentation Status](https://readthedocs.org/projects/mlrl-boomer/badge/?version=latest)](https://mlrl-boomer.readthedocs.io/en/latest/?badge=latest)
 
-**:link: Important links:** [Documentation](https://mlrl-boomer.readthedocs.io/en/latest/) | [Issue Tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) | [Changelog](https://mlrl-boomer.readthedocs.io/en/latest/misc/CHANGELOG.html) | [Contributors](https://mlrl-boomer.readthedocs.io/en/latest/misc/CONTRIBUTORS.html) | [Code of Conduct](https://mlrl-boomer.readthedocs.io/en/latest/misc/CODE_OF_CONDUCT.html) | [License](https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html)
+**🔗 Important links:** [Documentation](https://mlrl-boomer.readthedocs.io/en/latest/) | [Issue Tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) | [Changelog](https://mlrl-boomer.readthedocs.io/en/latest/misc/CHANGELOG.html) | [License](https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html)
 
 This software package provides the official implementation of **BOOMER - an algorithm for learning gradient boosted multi-output rules** that uses [gradient boosting](https://en.wikipedia.org/wiki/Gradient_boosting) for learning an ensemble of rules that is built with respect to a specific multivariate loss function. It integrates with the popular [scikit-learn](https://scikit-learn.org) machine learning framework.
 
@@ -17,17 +17,19 @@ The problem domains addressed by this algorithm include the following:
 - **Multi-label classification**: The goal of [multi-label classification](https://en.wikipedia.org/wiki/Multi-label_classification) is the automatic assignment of sets of labels to individual data points, for example, the annotation of text documents with topics.
 - **Multi-output regression**: Multivariate [regression](https://en.wikipedia.org/wiki/Regression_analysis) problems require to predict for more than a single numerical output variable.
 
-To provide a versatile tool for different use cases, great emphasis is put on the *efficiency* of the implementation. Moreover, to ensure its *flexibility*, it is designed in a modular fashion and can therefore easily be adjusted to different requirements. This modular approach enables implementing different kind of rule learning algorithms. For example, this project does also provide a [Separate-and-Conquer (SeCo) algorithm](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/seco/index.html) based on traditional rule learning techniques that are particularly well-suited for learning interpretable models.
+# The BOOMER Algorithm
 
-## :book: References
+To provide a versatile tool for different use cases, great emphasis is put on the *efficiency* of the implementation. Moreover, to ensure its *flexibility*, it is designed in a modular fashion and can therefore easily be adjusted to different requirements. This modular approach enables implementing different kind of rule learning algorithms (see packages [mlrl-common](https://pypi.org/project/mlrl-common/) and [mlrl-seco](https://pypi.org/project/mlrl-seco/)).
+
+## 📖 References
 
 The algorithm was first published in the following [paper](https://doi.org/10.1007/978-3-030-67664-3_8). A preprint version is publicly available [here](https://arxiv.org/pdf/2006.13346.pdf).
 
 *Michael Rapp, Eneldo Loza Mencía, Johannes Fürnkranz Vu-Linh Nguyen and Eyke Hüllermeier. Learning Gradient Boosted Multi-label Classification Rules. In: Proceedings of the European Conference on Machine Learning and Knowledge Discovery in Databases (ECML-PKDD), 2020, Springer.*
 
-If you use the algorithm in a scientific publication, we would appreciate citations to the mentioned paper. An overview of publications that are concerned with the BOOMER algorithm, together with information on how to cite them, can be found in the section [References](https://mlrl-boomer.readthedocs.io/en/latest/misc/references.html) of the documentation.
+If you use the algorithm in a scientific publication, we would appreciate citations to the mentioned paper.
 
-## :wrench: Functionalities
+## 🔧 Functionalities
 
 The algorithm that is provided by this project currently supports the following core functionalities for learning ensembles of boosted classification or regression rules.
 
@@ -59,7 +61,7 @@ The algorithm that is provided by this project currently supports the following 
 - **Post- and pre-pruning (a.k.a. early stopping)** allows to determine the optimal number of rules to be included in an ensemble.
 - **Sequential post-optimization** may help improving the predictive performance of a model by reconstructing each rule in the context of the other rules.
 
-## :watch: Runtime and Memory Optimizations
+## ⌚ Runtime and Memory Optimizations
 
 In addition to the features mentioned above, several techniques that may speed up training or reduce the memory footprint are currently implemented.
 
@@ -80,7 +82,7 @@ In addition to the features mentioned above, several techniques that may speed u
 
 - **Multi-threading** can be used for parallelizing the evaluation of a rule's potential refinements across several features, updating the gradients and Hessians of individual examples in parallel, or obtaining predictions for several examples in parallel.
 
-## :books: Documentation
+## 📚 Documentation
 
 Our documentation provides an extensive [user guide](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/boosting/index.html), as well as [Python](https://mlrl-boomer.readthedocs.io/en/latest/developer_guide/api/python/boosting/mlrl.boosting.html) and [C++](https://mlrl-boomer.readthedocs.io/en/latest/developer_guide/api/cpp/boosting/filelist.html) API references for developers. If you are new to the project, you probably want to read about the following topics:
 
@@ -92,7 +94,7 @@ A collection of benchmark datasets that are compatible with the algorithm are pr
 
 For an overview of changes and new features that have been included in past releases, please refer to the [changelog](https://mlrl-boomer.readthedocs.io/en/latest/misc/CHANGELOG.html).
 
-## :scroll: License
+## 📜 License
 
 This project is open source software licensed under the terms of the [MIT license](https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html). We welcome contributions to the project to enhance its functionality and make it more accessible to a broader audience. A frequently updated list of contributors is available [here](https://mlrl-boomer.readthedocs.io/en/latest/misc/CONTRIBUTORS.html).
 
