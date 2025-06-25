@@ -75,14 +75,14 @@ In addition to the features mentioned above, several techniques that may speed u
 
 - **Unsupervised feature binning** can be used to speed up the evaluation of a rule's potential conditions when dealing with numerical features.
 - **Sampling techniques and stratification methods** can be used for learning new rules on a subset of the available training examples, features, or output variables.
-- **[Gradient-based label binning (GBLB)](https://arxiv.org/pdf/2106.11690.pdf)** can be used for assigning the labels included in a multi-label classification data set to a limited number of bins. This may speed up training significantly when minimizing a non-decomposable loss function using rules with partial or complete heads.
+- **[Gradient-based label binning (GBLB)](https://arxiv.org/pdf/2106.11690.pdf)** can be used for assigning the labels included in a multi-label classification dataset to a limited number of bins. This may speed up training significantly when minimizing a non-decomposable loss function using rules with partial or complete heads.
 
 ### Sparse Data Structures
 
-- **Sparse feature matrices** can be used for training and prediction. This may speed up training significantly on some data sets.
-- **Sparse ground truth matrices** can be used for training. This may reduce the memory footprint in case of large data sets.
-- **Sparse prediction matrices** can be used for storing predicted labels. This may reduce the memory footprint in case of large data sets.
-- **Sparse matrices for storing gradients and Hessians** can be used if supported by the loss function. This may speed up training significantly on data sets with many output variables.
+- **Sparse feature matrices** can be used for training and prediction. This may speed up training significantly on some datasets.
+- **Sparse ground truth matrices** can be used for training. This may reduce the memory footprint in case of large datasets.
+- **Sparse prediction matrices** can be used for storing predicted labels. This may reduce the memory footprint in case of large datasets.
+- **Sparse matrices for storing gradients and Hessians** can be used if supported by the loss function. This may speed up training significantly on datasets with many output variables.
 
 ### Parallelization
 

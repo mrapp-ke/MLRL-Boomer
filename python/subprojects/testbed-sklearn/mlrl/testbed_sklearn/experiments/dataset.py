@@ -27,7 +27,7 @@ class AttributeType(Enum):
 @dataclass
 class Attribute:
     """
-    An attribute, e.g., a feature, a ground truth label, or a regression score, that is contained by a data set.
+    An attribute, e.g., a feature, a ground truth label, or a regression score, that is contained by a dataset.
 
     Attributes:
         name:           The name of the attribute
@@ -48,8 +48,8 @@ class TabularDataset(Dataset):
     Attributes:
         x:          A `lil_array`, shape `(num_examples, num_features)`, that stores the features of examples
         y:          A `lil_array`, shape `(num_examples, num_features)`, that stores the ground truth of examples
-        features:   A list that contains all features in the data set
-        outputs:    A list that contains all outputs in the data set
+        features:   A list that contains all features in the dataset
+        outputs:    A list that contains all outputs in the dataset
     """
     x: lil_array
     y: lil_array

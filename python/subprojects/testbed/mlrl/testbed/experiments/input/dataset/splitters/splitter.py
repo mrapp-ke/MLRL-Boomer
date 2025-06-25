@@ -14,7 +14,7 @@ from mlrl.testbed.experiments.state import ExperimentState
 
 class DatasetSplitter(ABC):
     """
-    An abstract base class for all classes that split a data set into training and test data.
+    An abstract base class for all classes that split a dataset into training and test data.
     """
 
     class Split(ABC):
