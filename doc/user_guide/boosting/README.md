@@ -27,7 +27,7 @@ The problem domains addressed by this algorithm include the following:
 
 To provide a versatile tool for different use cases, great emphasis is put on the *efficiency* of the implementation. Moreover, to ensure its *flexibility*, it is designed in a modular fashion and can therefore easily be adjusted to different requirements. This modular approach enables implementing different kind of rule learning algorithms (see packages [mlrl-common](https://pypi.org/project/mlrl-common/) and [mlrl-seco](https://pypi.org/project/mlrl-seco/)).
 
-## 📖 References
+## :book: References
 
 The algorithm was first published in the following [paper](https://doi.org/10.1007/978-3-030-67664-3_8). A preprint version is publicly available [here](https://arxiv.org/pdf/2006.13346.pdf).
 
