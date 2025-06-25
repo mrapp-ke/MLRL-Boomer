@@ -32,9 +32,9 @@ The algorithm that is provided by this project currently supports the following 
 
 In addition, the following features that may speed up training or reduce the memory footprint are currently implemented:
 
-- **Sparse feature matrices** can be used for training and prediction. This may speed up training significantly on some data sets.
-- **Sparse label matrices** can be used for training. This may reduce the memory footprint in case of large data sets.
-- **Sparse prediction matrices** can be used to store predicted labels. This may reduce the memory footprint in case of large data sets.
+- **Sparse feature matrices** can be used for training and prediction. This may speed up training significantly on some datasets.
+- **Sparse label matrices** can be used for training. This may reduce the memory footprint in case of large datasets.
+- **Sparse prediction matrices** can be used to store predicted labels. This may reduce the memory footprint in case of large datasets.
 - **Multi-threading** can be used to parallelize the evaluation of a rule's potential refinements across several features or to obtain predictions for several examples in parallel.
 
 <!-- documentation-end -->
