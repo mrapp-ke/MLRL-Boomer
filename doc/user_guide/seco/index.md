@@ -1,8 +1,21 @@
+---
+hide-toc: true
+---
+
 (user-guide-seco)=
 
 # The SeCo Algorithm
 
-In this section, we discuss the Separate-and-Conquer (SeCo) algorithm that is part of this project. The goal of this section is to provide a more detailed explanation of the algorithm's technical aspects, beyond the basic information provided in the section {ref}`usage`:
+```{include} README.md
+---
+start-after: <!-- documentation-start -->
+end-before: <!-- documentation-end -->
+---
+```
+
+## 📚 Documentation
+
+In this documentation you can find information on the following topics:
 
 ```{toctree}
 ---
@@ -10,3 +23,5 @@ maxdepth: 1
 ---
 parameters
 ```
+
+We also provide {ref}`Python <python-apidoc>` and {ref}`C++ <cpp-apidoc>` API references for developers.
