@@ -48,10 +48,10 @@ In {ref}`this<user-guide-seco>` section, we elaborate on the techniques utilized
 
 ## Installing the Command Line API
 
-To ease the use of the algorithms that are developed by this project, we also provide a command line utility that allows configuring the algorithms and applying them to a given dataset without the need to write code. It is published as the Python package [mlrl-testbed](https://pypi.org/project/mlrl-testbed/) and can optionally be installed via the following command:
+To ease the use of the algorithms that are developed by this project, we also provide a command line utility that allows configuring the algorithms and applying them to a given dataset without the need to write code. It is published as the Python package [mlrl-testbed-sklearn](https://pypi.org/project/mlrl-testbed-sklearn/) and can optionally be installed via the following command:
 
 ```text
-pip install mlrl-testbed
+pip install mlrl-testbed-sklearn
 ```
 
 For more information about how to use the command line API, refer to the section {ref}`testbed`.
