@@ -54,6 +54,7 @@ class SphinxBuild(Program):
             'sphinx-copybutton',
             'sphinx-favicon',
             'sphinx-inline-tabs',
+            'sphinx-design',
             'sphinxcontrib-spelling',
             'sphinxext-opengraph',
         )
