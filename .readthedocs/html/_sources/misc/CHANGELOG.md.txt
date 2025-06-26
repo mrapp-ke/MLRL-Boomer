@@ -160,7 +160,7 @@ This release comes with several API changes. For an updated overview of the avai
 
 ### Additions to the Command Line API
 
-- **Data sets in the MEKA format are now supported.**
+- **Datasets in the MEKA format are now supported.**
 - **Certain characteristics of binary predictions can be printed or written to output files** via the new arguments `--print-prediction-characteristics` and `--store-prediction-characteristics`.
 - **Unique label vectors contained in the training data can be printed or written to output files** via the new arguments `--print-label-vectors` and `--store-label-vectors`.
 - **Models for the calibration of marginal or joint probabilities can be printed or written to output files** via the new arguments `--print-marginal-probability-calibration-model`, `--store-marginal-probability-calibration-model`, `--print-joint-probability-calibration-model` and `--store-joint-probability-calibration-model`.
@@ -284,9 +284,9 @@ A major update to the BOOMER algorithm that introduces the following changes:
 - Multi-threading can be used to parallelize the prediction for different examples across multiple CPU cores.
 - Multi-threading can be used to parallelize the calculation of gradients and Hessians for different examples across multiple CPU cores.
 - Probability estimates can be predicted when using the loss function `label-wise-logistic-loss`.
-- The algorithm does now support data sets with missing feature values.
+- The algorithm does now support datasets with missing feature values.
 - The loss function `label-wise-squared-hinge-loss` has been added.
-- Experiments using single-label data sets are now supported out of the box.
+- Experiments using single-label datasets are now supported out of the box.
 
 ## Version 0.3.0 (Sep. 14, 2020)
 
@@ -294,7 +294,7 @@ A major update to the BOOMER algorithm that features the following changes:
 
 - Large parts of the code (loss functions, calculation of gradients/Hessians, calculation of predictions/quality scores) have been refactored and rewritten in C++. This comes with a constant speed-up of training times.
 - Multi-threading can be used to parallelize the evaluation of a rule's potential refinements across multiple CPU cores.
-- Sparse ground truth label matrices can now be used for training, which may reduce the memory footprint in case of large data sets.
+- Sparse ground truth label matrices can now be used for training, which may reduce the memory footprint in case of large datasets.
 - Additional parameters (`feature-format` and `label-format`) that allow to specify the preferred format of the feature and label matrix have been added.
 
 ## Version 0.2.0 (Jun. 28, 2020)
@@ -303,7 +303,7 @@ A major update to the BOOMER algorithm that features the following changes:
 
 - Includes many refactorings and quality of live improvements. Code that is not directly related with the algorithm, such as the implementation of baselines, has been removed.
 - The algorithm is now able to natively handle nominal features without the need for pre-processing techniques such as one-hot encoding.
-- Sparse feature matrices can now be used for training and prediction, which reduces the memory footprint and results in a significant speed-up of training times on some data sets.
+- Sparse feature matrices can now be used for training and prediction, which reduces the memory footprint and results in a significant speed-up of training times on some datasets.
 - Additional hyperparameters (`min_coverage`, `max_conditions` and `max_head_refinements`) that provide fine-grained control over the specificity/generality of rules have been added.
 
 ## Version 0.1.0 (Jun. 22, 2020)

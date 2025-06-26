@@ -1,6 +1,8 @@
-(user-guide-boomer)=
+---
+hide-toc: true
+---
 
-# The BOOMER Algorithm
+(user-guide-boomer)=
 
 ```{image} ../../_static/logo_boomer_light.svg
 ---
@@ -18,7 +20,16 @@ class: only-dark
 ---
 ```
 
-In this section, we provide a detailed discussion of the methodology, the BOOMER algorithm is based on. To achieve optimal results and depending on the use case at hand, it may be beneficial to use a custom configuration for certain aspects of the algorithm. Following up on the introduction in the section {ref}`usage`, the goal of this section is to highlight these aspects and provide an overview of the available configuration options:
+```{include} README.md
+---
+start-after: <!-- documentation-start -->
+end-before: <!-- documentation-end -->
+---
+```
+
+## 📚 Documentation
+
+This documentation discusses the following topics:
 
 ```{toctree}
 ---
@@ -26,3 +37,5 @@ maxdepth: 1
 ---
 parameters
 ```
+
+Moreover, we provide {ref}`Python <python-apidoc>` and {ref}`C++ <cpp-apidoc>` API references for developers.

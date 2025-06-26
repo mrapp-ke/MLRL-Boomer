@@ -21,7 +21,7 @@ The following parameters allow to specify the preferred format for representing 
 : Enforces that the feature matrix is stored using a dense format.
 
 `'sparse'`
-: Enforces that the feature matrix is stored using a sparse format, if possible. Using a sparse format may reduce the memory footprint and/or speed up the training process on some data sets.
+: Enforces that the feature matrix is stored using a sparse format, if possible. Using a sparse format may reduce the memory footprint and/or speed up the training process on some datasets.
 
 ### `output_format`
 
@@ -34,7 +34,7 @@ The following parameters allow to specify the preferred format for representing 
 : Enforces that the ground truth matrix is stored using a dense format.
 
 `'sparse'`
-: Enforces that the ground truth matrix is stored using a sparse format, if possible. Using a sparse format may reduce the memory footprint on some data sets.
+: Enforces that the ground truth matrix is stored using a sparse format, if possible. Using a sparse format may reduce the memory footprint on some datasets.
 
 ### `prediction_format`
 
@@ -47,7 +47,7 @@ The following parameters allow to specify the preferred format for representing 
 : Enforces that predictions are stored using a dense format.
 
 `'sparse'`
-: Enforces that predictions are stored using a sparse format, if supported. Using a sparse format may reduce the memory footprint on some data sets.
+: Enforces that predictions are stored using a sparse format, if supported. Using a sparse format may reduce the memory footprint on some datasets.
 
 ## Training Objective
 

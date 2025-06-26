@@ -38,10 +38,10 @@ The following example illustrates how to apply the BOOMER algorithm, or the SeCO
 
 Both arguments that are included in the above command are mandatory:
 
-- `--data-dir` An absolute or relative path to the directory where the data set files are located.
-- `--dataset` The name of the data set files (without suffix).
+- `--data-dir` An absolute or relative path to the directory where the dataset files are located.
+- `--dataset` The name of the dataset files (without suffix).
 
-The program expects the data set files to be provided in the [Mulan format](https://mulan.sourceforge.net/format.html). It requires two files to be present in the specified directory:
+The program expects the dataset files to be provided in the [Mulan format](https://mulan.sourceforge.net/format.html). It requires two files to be present in the specified directory:
 
 1. An [ARFF](https://waikato.github.io/weka-wiki/formats_and_processing/arff_stable/) file that specifies the feature values and ground truth of the training examples.
 2. An XML file that specifies the names of the outputs.
