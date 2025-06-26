@@ -52,6 +52,7 @@ mlrl
 Mulan
 multilabel
 multivariant
+NaN
 natively
 nd
 neq
