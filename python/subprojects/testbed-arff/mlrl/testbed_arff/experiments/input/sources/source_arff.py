@@ -168,7 +168,7 @@ class ArffFileSource(DatasetFileSource):
                 output_names = None
                 log.debug(
                     'Mulan XML file \"%s\" does not exist. If possible, information about the dataset\'s outputs is '
-                    + 'parsed from the ARFF file\'s @relation declaration as intended by the MEKA data set format...',
+                    + 'parsed from the ARFF file\'s @relation declaration as intended by the MEKA dataset format...',
                     file_path)
 
             return ArffFileSource.ArffDataset(arff_file=arff_file, output_names=output_names)
