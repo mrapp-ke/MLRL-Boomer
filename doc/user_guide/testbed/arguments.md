@@ -44,8 +44,8 @@ The arguments given above can be used to integrate any scikit-learn compatible m
 
 The following mandatory arguments must always be given to specify the dataset that should be used, as well as the location where it should be loaded from.
 
-- `--data-dir` An absolute or relative path to the directory where the data set files are located.
-- `--dataset` The name of the data set files (without suffix).
+- `--data-dir` An absolute or relative path to the directory where the dataset files are located.
+- `--dataset` The name of the dataset files (without suffix).
 
 Optionally, the following arguments can be used to provide additional information about the dataset.
 
@@ -57,8 +57,8 @@ The package mlrl-testbed is able to conduct experiments for classification and r
 
 - `--problem-type` (Default value = `classification`)
 
-  - `classification` The dataset is considered as a classification data set.
-  - `regression` The dataset is considered as a regression data set.
+  - `classification` The dataset is considered as a classification dataset.
+  - `regression` The dataset is considered as a regression dataset.
 
 ## Performance Evaluation
 
@@ -355,7 +355,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--print-data-characteristics` (Default value = `false`)
 
-  - `true` The characteristics of the training data set are printed on the console
+  - `true` The characteristics of the training dataset are printed on the console
 
     - `decimals` (Default value = `2`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
@@ -372,11 +372,11 @@ To provide valuable insights into the models learned by an algorithm, the predic
     - `feature_density` (Default value = `true`) `true`, if the feature density should be printed, `false` otherwise.
     - `feature_sparsity` (Default value = `true`) `true`, if the feature sparsity should be printed, `false` otherwise.
 
-  - `false` The characteristics of the training data set are not printed on the console
+  - `false` The characteristics of the training dataset are not printed on the console
 
 - `--store-data-characteristics` (Default value = `false`)
 
-  - `true` The characteristics of the training data set are written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file. Does only have an effect if the parameter `--output-dir` is specified.
+  - `true` The characteristics of the training dataset are written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file. Does only have an effect if the parameter `--output-dir` is specified.
 
     - `decimals` (Default value = `0`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
@@ -393,7 +393,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
     - `feature_density` (Default value = `true`) `true`, if the feature density should be stored, `false` otherwise.
     - `feature_sparsity` (Default value = `true`) `true`, if the feature sparsity should be stored, `false` otherwise.
 
-  - `false` The characteristics of the training data set are not written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file.
+  - `false` The characteristics of the training dataset are not written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file.
 
 (arguments-label-vectors)=
 

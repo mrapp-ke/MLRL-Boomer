@@ -35,7 +35,7 @@ class OneHotEncoder(Preprocessor):
             """
             nominal_indices = dataset.get_feature_indices(AttributeType.NOMINAL)
             num_nominal_features = len(nominal_indices)
-            log.info('Data set contains %s nominal and %s numerical features.', num_nominal_features,
+            log.info('Dataset contains %s nominal and %s numerical features.', num_nominal_features,
                      (len(dataset.features) - num_nominal_features))
 
             if num_nominal_features > 0:
@@ -53,7 +53,7 @@ class OneHotEncoder(Preprocessor):
 
                 return replace(dataset, x=encoder.transform(dataset.x), features=[])
 
-            log.debug('No need to apply one-hot encoding, as the data set does not contain any nominal features.')
+            log.debug('No need to apply one-hot encoding, as the dataset does not contain any nominal features.')
             return dataset
 
     def create_encoder(self) -> Preprocessor.Encoder:

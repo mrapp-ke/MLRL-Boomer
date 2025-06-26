@@ -236,7 +236,7 @@ When dealing with classification problems, the following statistics are given as
 
 ## Data Characteristics
 
-To obtain insightful statistics regarding the characteristics of a data set, the command line argument `--print-data-characteristics` may be helpful:
+To obtain insightful statistics regarding the characteristics of a dataset, the command line argument `--print-data-characteristics` may be helpful:
 
 ````{tab} BOOMER
    ```text
