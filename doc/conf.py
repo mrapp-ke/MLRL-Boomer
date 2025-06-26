@@ -35,6 +35,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.extlinks',
     'sphinx.ext.intersphinx',
+    'sphinx_design',
     'sphinxcontrib.spelling',
     'sphinxext.opengraph',
     'sphinx_inline_tabs',
@@ -43,6 +44,7 @@ extensions = [
 ]
 
 myst_enable_extensions = [
+    'colon_fence',
     'deflist',
 ]
 
