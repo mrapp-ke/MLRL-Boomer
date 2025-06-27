@@ -402,11 +402,14 @@ cdef extern from *:
     Partial64BitHeadVisitor wrapPartial64BitHeadVisitor(void* self, Partial64BitHeadCythonVisitor visitor)
 
 
-cdef class EmptyBody:
+cdef class Body:
+    pass
+
+cdef class EmptyBody(Body):
     pass
 
 
-cdef class ConjunctiveBody:
+cdef class ConjunctiveBody(Body):
 
     # Attributes:
 
