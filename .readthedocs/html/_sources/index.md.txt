@@ -14,15 +14,94 @@ class: only-dark
 ---
 ```
 
-BOOMER is an algorithm for learning ensembles of gradient boosted multi-output rules that integrates with the popular [scikit-learn](https://scikit-learn.org) machine learning framework. It allows to train a machine learning model on labeled training data, which can afterward be used to make predictions for unseen data. In contrast to prominent boosting algorithms like [XGBoost](https://xgboost.readthedocs.io/en/latest/) or [LightGBM](https://lightgbm.readthedocs.io/en/latest/), the algorithm is aimed at multi-output problems. On the one hand, this includes [multi-label classification](https://en.wikipedia.org/wiki/Multi-label_classification) problems, where individual data examples do not only correspond to a single class, but may be associated with several labels at the same time. Real-world applications of this problem domain include the assignment of keywords to text documents, the annotation of multimedia data, such as images, videos or audio recordings, as well as applications in the field of biology, chemistry and more. On the other hand, multi-output [regression](https://en.wikipedia.org/wiki/Regression_analysis) problems require to predict for more than a single numerical output variable.
+This is a research project evolving around the machine learning algorithm {ref}`BOOMER <user-guide-boomer>` – An algorithm for learning ensembles of gradient boosted multi-output rules that integrates with the popular [scikit-learn](https://scikit-learn.org) machine learning framework. It is aimed at multi-output problems, including [multi-label classification](https://en.wikipedia.org/wiki/Multi-label_classification) and [multi-output regression](https://en.wikipedia.org/wiki/Regression_analysis).
 
-To provide a versatile tool for different use cases, great emphasis is put on the *efficiency* of the implementation. Moreover, to ensure its *flexibility*, it is designed in a modular fashion and can therefore easily be adjusted to different requirements. This modular approach enables implementing different kind of rule learning algorithms. For example, this project does also provide a Separate-and-Conquer (SeCo) algorithm based on traditional rule learning techniques that are particularly well-suited for learning interpretable models.
+The BOOMER algorithm is build upon a modular framework for implementing rule learning algorithms. This enables to implement different kinds of algorithms more easily. One example is the multi-label {ref}`SeCo algorithm <user-guide-seco>` provided by this project. It is based on traditional rule learning techniques and is particularly well-suited for learning interpretable models. Additional algorithms may follow in the future. The same applies to tools and utilities evolving around these algorithms.
 
-This document is intended for end users of our algorithms and developers who are interested in their implementation. In addition, the following links might be of interest:
+**Software packages provides by this project**
 
-- For a detailed description of the methodology used by the algorithms, please refer to the {ref}`list of publications <references>`.
-- The source code maintained by this project can be found in the [GitHub repository](https://github.com/mrapp-ke/MLRL-Boomer).
-- Issues with the software, feature requests, or questions to the developers should be posted via the project's [issue tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues).
+````{grid} 1 1 2 3
+```{grid-item-card} BOOMER Algorithm
+:link: user-guide-boomer
+:link-type: ref
+:link-alt: Documentation of the BOOMER algorithm 
+:text-align: center
+
+A gradient boosting algorithm for multi-output classification and regression
+```
+
+```{grid-item-card} SeCo Algorithm
+:link: user-guide-seco
+:link-type: ref
+:link-alt: Documentation of the SeCo algorithm
+:text-align: center
+
+A separate-and-conquer algorithm for multi-label classification
+```
+
+```{grid-item-card} MLRL-Testbed
+:link: user-guide-testbed
+:link-type: ref
+:link-alt: Documentation of the command line utility MLRL-Testbed
+:text-align: center
+
+A command line utility for running machine learning experiments
+```
+````
+
+**Other sources of information**
+
+````{grid} 1 1 2 3
+```{grid-item-card} GitHub Repository
+:link: https://github.com/mrapp-ke/MLRL-Boomer
+:link-alt: The GitHub repository of this project 
+:text-align: center
+:img-bottom: _static/icon_repository_dark.svg
+:class-item: only-dark
+```
+
+```{grid-item-card} GitHub Repository
+:link: https://github.com/mrapp-ke/MLRL-Boomer
+:link-alt: The GitHub repository of this project 
+:text-align: center
+:img-bottom: _static/icon_repository_light.svg
+:class-item: only-light
+```
+
+```{grid-item-card} Issue Tracker
+:link: https://github.com/mrapp-ke/MLRL-Boomer/issues
+:link-alt: The issue tracker of this project
+:text-align: center
+:img-bottom: _static/icon_issue_tracker_dark.svg
+:class-item: only-dark
+```
+
+```{grid-item-card} Issue Tracker
+:link: https://github.com/mrapp-ke/MLRL-Boomer/issues
+:link-alt: The issue tracker of this project
+:text-align: center
+:img-bottom: _static/icon_issue_tracker_light.svg
+:class-item: only-light
+```
+
+```{grid-item-card} References
+:link: references
+:link-type: ref
+:link-alt: A list of publications discussing the methodology of our algorithms
+:text-align: center
+:img-bottom: _static/icon_references_dark.svg
+:class-item: only-dark
+```
+
+```{grid-item-card} References
+:link: references
+:link-type: ref
+:link-alt: A list of publications discussing the methodology of our algorithms
+:text-align: center
+:img-bottom: _static/icon_references_light.svg
+:class-item: only-light
+```
+````
 
 ```{toctree}
 ---
