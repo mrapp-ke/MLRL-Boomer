@@ -458,6 +458,15 @@ cdef class PartialHead(Head):
     cdef readonly npc.ndarray scores
 
 
+cdef class Rule:
+
+    # Attributes:
+
+    cdef readonly Body body
+
+    cdef readonly Head head
+
+
 cdef class RuleModel:
 
     # Functions:
