@@ -2,6 +2,8 @@
 hide-toc: true
 ---
 
+(user-guide-testbed)=
+
 ```{image} ../../_static/logo_testbed_light.svg
 ---
 align: center
