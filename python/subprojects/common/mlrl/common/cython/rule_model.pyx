@@ -11,13 +11,19 @@ import numpy as np
 SERIALIZATION_VERSION = 4
 
 
-cdef class EmptyBody:
+cdef class Body:
+    """
+    An abstract base class for all bodies of a rule.
+    """
+
+
+cdef class EmptyBody(Body):
     """
     A body of a rule that does not contain any conditions.
     """
 
 
-cdef class ConjunctiveBody:
+cdef class ConjunctiveBody(Body):
     """
     A body of a rule that is given as a conjunction of several conditions.
     """
