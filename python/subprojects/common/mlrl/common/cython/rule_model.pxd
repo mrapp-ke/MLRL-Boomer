@@ -438,14 +438,18 @@ cdef class ConjunctiveBody(Body):
     cdef readonly npc.ndarray nominal_neq_thresholds
 
 
-cdef class CompleteHead:
+cdef class Head:
+    pass
+
+
+cdef class CompleteHead(Head):
 
     # Attributes:
 
     cdef readonly npc.ndarray scores
 
 
-cdef class PartialHead:
+cdef class PartialHead(Head):
 
     # Attributes:
 

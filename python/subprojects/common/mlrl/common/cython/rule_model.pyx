@@ -88,7 +88,13 @@ cdef class ConjunctiveBody(Body):
         self.nominal_neq_thresholds = np.asarray(nominal_neq_thresholds) if nominal_neq_thresholds is not None else None
 
 
-cdef class CompleteHead:
+cdef class Head:
+    """
+    An abstract base class for all heads of a rule.
+    """
+
+
+cdef class CompleteHead(Head):
     """
     A head of a rule that predicts numerical scores for all available outputs.
     """
@@ -100,7 +106,7 @@ cdef class CompleteHead:
         self.scores = scores
 
 
-cdef class PartialHead:
+cdef class PartialHead(Head):
     """
     A head of a rule that predicts numerical scores for a subset of the available outputs.
     """
