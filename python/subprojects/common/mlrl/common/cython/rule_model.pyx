@@ -208,6 +208,35 @@ cdef class RuleModel:
         """
         self.get_rule_model_ptr().setNumUsedRules(num_used_rules)
 
+    def __iter__(self) -> Iterator[Rule]:
+        class Visitor(RuleModelVisitor):
+            """
+            Yields the rules in the model.
+            """
+
+            def __init__(self):
+                self._current_body = None
+                self.rules = []
+
+            def visit_empty_body(self, body: EmptyBody):
+                self._current_body = body
+
+            def visit_conjunctive_body(self, body: ConjunctiveBody):
+                self._current_body = body
+
+            def visit_complete_head(self, head: CompleteHead):
+                self.rules.append(Rule.__new__(Rule, self._current_body, head))
+
+            def visit_partial_head(self, head: PartialHead):
+                self.rules.append(Rule.__new__(Rule, self._current_body, head))
+
+        if self.get_num_used_rules() > 0:
+            visitor = Visitor()
+            self.visit_used(visitor)
+            yield from visitor.rules
+        else:
+            yield from []
+
     @abstractmethod
     def visit(self, visitor: RuleModelVisitor):
         """
