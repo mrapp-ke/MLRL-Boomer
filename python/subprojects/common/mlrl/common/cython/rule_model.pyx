@@ -208,6 +208,7 @@ cdef class RuleModel:
         """
         self.get_rule_model_ptr().setNumUsedRules(num_used_rules)
 
+    @abstractmethod
     def visit(self, visitor: RuleModelVisitor):
         """
         Visits the bodies and heads of all rules that are contained in this model, including the default rule, if
@@ -216,6 +217,7 @@ cdef class RuleModel:
         :param visitor: The `RuleModelVisitor` that should be used to access the bodies and heads
         """
 
+    @abstractmethod
     def visit_used(self, visitor: RuleModelVisitor):
         """
         Visits the bodies and heads of all used rules that are contained in this model, including the default rule, if
