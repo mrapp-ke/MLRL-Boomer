@@ -120,6 +120,20 @@ cdef class PartialHead(Head):
         self.scores = scores
 
 
+cdef class Rule:
+    """
+    A single rule, consisting of a body and a head.
+    """
+
+    def __cinit__(self, Body body not None, Head head not None):
+        """
+        :param body:    The body of the rule
+        :param head:    The head of the rule
+        """
+        self.body = body
+        self.head = head
+
+
 class RuleModelVisitor:
     """
     Defines the methods that must be implemented by a visitor that accesses the bodies and heads of the rules in a
