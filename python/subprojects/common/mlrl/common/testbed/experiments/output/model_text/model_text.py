@@ -6,8 +6,6 @@ Provides classes for representing rule models as text that is part of output dat
 from io import StringIO
 from typing import Optional
 
-import numpy as np
-
 from mlrl.common.cython.rule_model import Body, CompleteHead, ConjunctiveBody, EmptyBody, Head, PartialHead, RuleModel
 
 from mlrl.testbed_sklearn.experiments.dataset import TabularDataset
@@ -55,9 +53,7 @@ class RuleModelAsText(TextualOutputData):
                 text.write('{}')
             elif isinstance(body, ConjunctiveBody):
                 text.write('{')
-                offset = RuleModelAsText.__format_numerical_conditions(text, body, dataset, options, offset=0)
-                offset = RuleModelAsText.__format_ordinal_conditions(text, body, dataset, options, offset=offset)
-                RuleModelAsText.__format_nominal_conditions(text, body, dataset, options, offset=offset)
+                RuleModelAsText.__format_conditions(text, body, dataset, options)
                 text.write('}')
             else:
                 raise ValueError('Unsupported type of body: ' + str(type(body)))
@@ -72,101 +68,38 @@ class RuleModelAsText(TextualOutputData):
             raise ValueError('Unsupported type of head: ' + str(type(head)))
 
     @staticmethod
-    def __format_conditions(text: StringIO, indices: np.ndarray, thresholds: np.ndarray, operator: str, offset: int,
-                            dataset: TabularDataset, options: Options) -> int:
-        if indices is not None and thresholds is not None:
-            features = dataset.features
-            print_feature_names = options.get_bool(RuleModelAsText.OPTION_PRINT_FEATURE_NAMES, True)
-            print_nominal_values = options.get_bool(RuleModelAsText.OPTION_PRINT_NOMINAL_VALUES, True)
-            decimals = options.get_int(RuleModelAsText.OPTION_DECIMALS_BODY, 2)
+    def __format_conditions(text: StringIO, body: Body, dataset: TabularDataset, options: Options):
+        print_feature_names = options.get_bool(RuleModelAsText.OPTION_PRINT_FEATURE_NAMES, True)
+        print_nominal_values = options.get_bool(RuleModelAsText.OPTION_PRINT_NOMINAL_VALUES, True)
+        decimals = options.get_int(RuleModelAsText.OPTION_DECIMALS_BODY, 2)
+        features = dataset.features
 
-            for i in range(indices.shape[0]):
-                if offset > 0:
-                    text.write(' & ')
+        for i, condition in enumerate(body):
+            if i > 0:
+                text.write(' & ')
 
-                feature_index = indices[i]
-                threshold = thresholds[i]
-                feature = features[feature_index] if len(features) > feature_index else None
+            feature_index = condition.feature_index
+            threshold = condition.threshold
+            feature = features[feature_index] if len(features) > feature_index else None
 
-                if print_feature_names and feature:
-                    text.write(feature.name)
+            if print_feature_names and feature:
+                text.write(feature.name)
+            else:
+                text.write(str(feature_index))
+
+            text.write(' ')
+            text.write(str(condition.comparator))
+            text.write(' ')
+
+            if feature and feature.nominal_values:
+                nominal_value = int(threshold)
+
+                if print_nominal_values and len(feature.nominal_values) > nominal_value:
+                    text.write('"' + feature.nominal_values[nominal_value] + '"')
                 else:
-                    text.write(str(feature_index))
-
-                text.write(' ')
-                text.write(operator)
-                text.write(' ')
-
-                if feature and feature.nominal_values:
-                    nominal_value = int(threshold)
-
-                    if print_nominal_values and len(feature.nominal_values) > nominal_value:
-                        text.write('"' + feature.nominal_values[nominal_value] + '"')
-                    else:
-                        text.write(str(nominal_value))
-                else:
-                    text.write(format_number(threshold, decimals=decimals))
-
-                offset += 1
-
-        return offset
-
-    @staticmethod
-    def __format_numerical_conditions(text: StringIO, body: ConjunctiveBody, dataset: TabularDataset, options: Options,
-                                      offset: int) -> int:
-        offset = RuleModelAsText.__format_conditions(text,
-                                                     offset=offset,
-                                                     indices=body.numerical_leq_indices,
-                                                     thresholds=body.numerical_leq_thresholds,
-                                                     operator='<=',
-                                                     dataset=dataset,
-                                                     options=options)
-        offset = RuleModelAsText.__format_conditions(text,
-                                                     offset=offset,
-                                                     indices=body.numerical_gr_indices,
-                                                     thresholds=body.numerical_gr_thresholds,
-                                                     operator='>',
-                                                     dataset=dataset,
-                                                     options=options)
-        return offset
-
-    @staticmethod
-    def __format_ordinal_conditions(text: StringIO, body: ConjunctiveBody, dataset: TabularDataset, options: Options,
-                                    offset: int) -> int:
-        offset = RuleModelAsText.__format_conditions(text,
-                                                     offset=offset,
-                                                     indices=body.ordinal_leq_indices,
-                                                     thresholds=body.ordinal_leq_thresholds,
-                                                     operator='<=',
-                                                     dataset=dataset,
-                                                     options=options)
-        offset = RuleModelAsText.__format_conditions(text,
-                                                     offset=offset,
-                                                     indices=body.ordinal_gr_indices,
-                                                     thresholds=body.ordinal_gr_thresholds,
-                                                     operator='>',
-                                                     dataset=dataset,
-                                                     options=options)
-        return offset
-
-    @staticmethod
-    def __format_nominal_conditions(text: StringIO, body: ConjunctiveBody, dataset: TabularDataset, options: Options,
-                                    offset: int) -> int:
-        offset = RuleModelAsText.__format_conditions(text,
-                                                     offset=offset,
-                                                     indices=body.nominal_eq_indices,
-                                                     thresholds=body.nominal_eq_thresholds,
-                                                     operator='==',
-                                                     dataset=dataset,
-                                                     options=options)
-        offset = RuleModelAsText.__format_conditions(text,
-                                                     offset=offset,
-                                                     indices=body.nominal_neq_indices,
-                                                     thresholds=body.nominal_neq_thresholds,
-                                                     operator='!=',
-                                                     dataset=dataset,
-                                                     options=options)
-        return offset
+                    text.write(str(nominal_value))
+            else:
+                text.write(format_number(threshold, decimals=decimals))
 
     @staticmethod
     def __format_complete_head(text: StringIO, head: CompleteHead, dataset: TabularDataset, options: Options):
