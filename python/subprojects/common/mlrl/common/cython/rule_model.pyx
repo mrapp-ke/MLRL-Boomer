@@ -5,6 +5,8 @@ from libcpp.memory cimport make_unique
 from libcpp.utility cimport move
 
 from abc import abstractmethod
+from dataclasses import dataclass
+from numbers import Number
 
 import numpy as np
 
@@ -88,6 +90,19 @@ cdef class ConjunctiveBody(Body):
         self.nominal_neq_thresholds = np.asarray(nominal_neq_thresholds) if nominal_neq_thresholds is not None else None
 
 
+@dataclass
+class Prediction:
+    """
+    A scalar value predicted by a rule for a specific output.
+
+    Attributes:
+        output_index:   The index of the output, the prediction corresponds to
+        value:          The predicted value
+    """
+    output_index: int
+    value: Number
+
+
 cdef class Head:
     """
     An abstract base class for all heads of a rule.
@@ -105,6 +120,14 @@ cdef class CompleteHead(Head):
         """
         self.scores = scores
 
+    def __iter__(self) -> Iterator[Prediction]:
+        cdef npc.ndarray scores = self.scores
+        cdef uint32 num_predictions = scores.shape[0]
+        cdef uint32 output_index
+
+        for output_index in range(num_predictions):
+            yield Prediction(output_index=output_index, value=scores[output_index])
+
 
 cdef class PartialHead(Head):
     """
@@ -118,6 +141,15 @@ cdef class PartialHead(Head):
         """
         self.indices = indices
         self.scores = scores
+
+    def __iter__(self) -> Iterator[Prediction]:
+        cdef npc.ndarray indices = self.indices
+        cdef npc.ndarray scores = self.scores
+        cdef uint32 num_predictions = indices.shape[0]
+        cdef uint32 i
+
+        for i in range(num_predictions):
+            yield Prediction(output_index=indices[i], value=scores[i])
 
 
 cdef class Rule:
