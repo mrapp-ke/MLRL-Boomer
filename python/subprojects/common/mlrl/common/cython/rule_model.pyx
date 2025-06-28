@@ -6,11 +6,37 @@ from libcpp.utility cimport move
 
 from abc import abstractmethod
 from dataclasses import dataclass
+from enum import StrEnum
 from numbers import Number
 
 import numpy as np
 
 SERIALIZATION_VERSION = 4
+
+
+class Comparator(StrEnum):
+    """
+    The comparison operators that can be used by a condition of a rule.
+    """
+    LEQ = '<='
+    GR = '>'
+    EQ = '=='
+    NEQ = '!='
+
+
+@dataclass
+class Condition:
+    """
+    A single condition contained in the body of a rule.
+
+    Attributes:
+        feature_index:  The index of the feature, the condition corresponds to
+        comparator:     The comparison operator that is used by the condition
+        threshold:      The threshold that is used by the condition
+    """
+    feature_index: int
+    comparator: Comparator
+    threshold: Number
 
 
 cdef class Body:
@@ -23,6 +49,9 @@ cdef class EmptyBody(Body):
     """
     A body of a rule that does not contain any conditions.
     """
+
+    def __iter__(self) -> Iterator[Condition]:
+        yield from []
 
 
 cdef class ConjunctiveBody(Body):
@@ -88,6 +117,50 @@ cdef class ConjunctiveBody(Body):
         self.nominal_eq_thresholds = np.asarray(nominal_eq_thresholds) if nominal_eq_thresholds is not None else None
         self.nominal_neq_indices = np.asarray(nominal_neq_indices) if nominal_neq_indices is not None else None
         self.nominal_neq_thresholds = np.asarray(nominal_neq_thresholds) if nominal_neq_thresholds is not None else None
+
+    def __iter__(self) -> Iterator[Condition]:
+        cdef npc.ndarray indices = self.numerical_leq_indices
+        cdef npc.ndarray thresholds = self.numerical_leq_thresholds
+        cdef uint32 num_conditions = 0 if indices is None else indices.shape[0]
+        cdef uint32 i
+
+        for i in range(num_conditions):
+            yield Condition(feature_index=indices[i], comparator=Comparator.LEQ, threshold=thresholds[i])
+
+        indices = self.numerical_gr_indices
+        thresholds = self.numerical_gr_thresholds
+        num_conditions = 0 if indices is None else indices.shape[0]
+
+        for i in range(num_conditions):
+            yield Condition(feature_index=indices[i], comparator=Comparator.GR, threshold=thresholds[i])
+
+        indices = self.ordinal_leq_indices
+        thresholds = self.ordinal_leq_thresholds
+        num_conditions = 0 if indices is None else indices.shape[0]
+
+        for i in range(num_conditions):
+            yield Condition(feature_index=indices[i], comparator=Comparator.LEQ, threshold=thresholds[i])
+
+        indices = self.ordinal_gr_indices
+        thresholds = self.ordinal_gr_thresholds
+        num_conditions = 0 if indices is None else indices.shape[0]
+
+        for i in range(num_conditions):
+            yield Condition(feature_index=indices[i], comparator=Comparator.GR, threshold=thresholds[i])
+
+        indices = self.nominal_eq_indices
+        thresholds = self.nominal_eq_thresholds
+        num_conditions = 0 if indices is None else indices.shape[0]
+
+        for i in range(num_conditions):
+            yield Condition(feature_index=indices[i], comparator=Comparator.EQ, threshold=thresholds[i])
+
+        indices = self.nominal_neq_indices
+        thresholds = self.nominal_neq_thresholds
+        num_conditions = 0 if indices is None else indices.shape[0]
+
+        for i in range(num_conditions):
+            yield Condition(feature_index=indices[i], comparator=Comparator.NEQ, threshold=thresholds[i])
 
 
 @dataclass
