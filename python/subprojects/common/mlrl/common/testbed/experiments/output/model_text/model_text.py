@@ -176,24 +176,20 @@ class RuleModelAsText(TextualOutputData):
             print_output_names = options.get_bool(RuleModelAsText.OPTION_PRINT_OUTPUT_NAMES, True)
             decimals = options.get_int(RuleModelAsText.OPTION_DECIMALS_HEAD, 2)
             outputs = dataset.outputs
-            scores = head.scores
 
             if print_bodies:
                 text.write(' => ')
 
             text.write('(')
 
-            for i in range(scores.shape[0]):
+            for i, prediction in enumerate(head):
                 if i > 0:
                     text.write(', ')
 
-                if print_output_names and len(outputs) > i:
-                    text.write(outputs[i].name)
-                else:
-                    text.write(str(i))
-
+                output_index = prediction.output_index
+                text.write(outputs[output_index].name if print_output_names and len(outputs) > i else str(output_index))
                 text.write(' = ')
-                text.write(format_number(scores[i], decimals=decimals))
+                text.write(format_number(prediction.value, decimals=decimals))
 
             text.write(')\n')
         elif print_bodies:
@@ -207,19 +203,17 @@ class RuleModelAsText(TextualOutputData):
             print_output_names = options.get_bool(RuleModelAsText.OPTION_PRINT_OUTPUT_NAMES, True)
             decimals = options.get_int(RuleModelAsText.OPTION_DECIMALS_HEAD, 2)
             outputs = dataset.outputs
-            indices = head.indices
-            scores = head.scores
 
             if print_bodies:
                 text.write(' => ')
 
             text.write('(')
 
-            for i in range(indices.shape[0]):
+            for i, prediction in enumerate(head):
                 if i > 0:
                     text.write(', ')
 
-                output_index = indices[i]
+                output_index = prediction.output_index
 
                 if print_output_names and len(outputs) > output_index:
                     text.write(outputs[output_index].name)
@@ -227,7 +221,7 @@ class RuleModelAsText(TextualOutputData):
                     text.write(str(output_index))
 
                 text.write(' = ')
-                text.write(format_number(scores[i], decimals=decimals))
+                text.write(format_number(prediction.value, decimals=decimals))
 
             text.write(')\n')
         elif print_bodies:
