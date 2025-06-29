@@ -1,0 +1,5 @@
+File output_space_info.hpp
+==========================
+
+.. doxygenfile:: output_space_info.hpp
+   :project: common

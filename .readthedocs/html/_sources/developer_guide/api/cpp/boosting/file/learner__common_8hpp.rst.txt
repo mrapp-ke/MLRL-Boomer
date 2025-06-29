@@ -1,0 +1,5 @@
+File learner_common.hpp
+=======================
+
+.. doxygenfile:: learner_common.hpp
+   :project: boosting

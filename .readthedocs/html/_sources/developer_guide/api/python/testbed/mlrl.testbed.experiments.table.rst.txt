@@ -1,0 +1,7 @@
+mlrl.testbed.experiments.table module
+=====================================
+
+.. automodule:: mlrl.testbed.experiments.table
+   :members:
+   :show-inheritance:
+   :undoc-members:

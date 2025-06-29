@@ -1,0 +1,5 @@
+File model_builder_intermediate.hpp
+===================================
+
+.. doxygenfile:: model_builder_intermediate.hpp
+   :project: common

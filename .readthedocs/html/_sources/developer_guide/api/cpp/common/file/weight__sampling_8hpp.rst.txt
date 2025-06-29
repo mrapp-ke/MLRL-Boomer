@@ -1,0 +1,5 @@
+File weight_sampling.hpp
+========================
+
+.. doxygenfile:: weight_sampling.hpp
+   :project: common

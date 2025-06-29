@@ -1,0 +1,15 @@
+mlrl.common.testbed.experiments.prediction package
+==================================================
+
+.. automodule:: mlrl.common.testbed.experiments.prediction
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.common.testbed.experiments.prediction.predictor_incremental

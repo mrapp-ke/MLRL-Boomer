@@ -1,0 +1,5 @@
+File view_functions.hpp
+=======================
+
+.. doxygenfile:: view_functions.hpp
+   :project: common

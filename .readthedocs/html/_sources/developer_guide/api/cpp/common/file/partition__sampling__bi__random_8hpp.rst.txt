@@ -1,0 +1,5 @@
+File partition_sampling_bi_random.hpp
+=====================================
+
+.. doxygenfile:: partition_sampling_bi_random.hpp
+   :project: common

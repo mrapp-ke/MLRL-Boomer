@@ -1,0 +1,5 @@
+File predictor_binary_gfm.hpp
+=============================
+
+.. doxygenfile:: predictor_binary_gfm.hpp
+   :project: boosting

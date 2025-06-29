@@ -1,0 +1,5 @@
+File probability_calibration_isotonic.hpp
+=========================================
+
+.. doxygenfile:: probability_calibration_isotonic.hpp
+   :project: common

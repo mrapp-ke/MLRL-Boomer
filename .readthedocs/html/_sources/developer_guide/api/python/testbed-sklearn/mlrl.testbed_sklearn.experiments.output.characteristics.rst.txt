@@ -1,0 +1,15 @@
+mlrl.testbed\_sklearn.experiments.output.characteristics package
+================================================================
+
+.. automodule:: mlrl.testbed_sklearn.experiments.output.characteristics
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed_sklearn.experiments.output.characteristics.data

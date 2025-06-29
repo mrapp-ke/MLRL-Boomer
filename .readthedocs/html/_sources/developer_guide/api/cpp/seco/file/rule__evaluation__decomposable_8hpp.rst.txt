@@ -1,0 +1,5 @@
+File rule_evaluation_decomposable.hpp
+=====================================
+
+.. doxygenfile:: rule_evaluation_decomposable.hpp
+   :project: seco

@@ -1,0 +1,5 @@
+File iterator_diagonal.hpp
+==========================
+
+.. doxygenfile:: iterator_diagonal.hpp
+   :project: boosting

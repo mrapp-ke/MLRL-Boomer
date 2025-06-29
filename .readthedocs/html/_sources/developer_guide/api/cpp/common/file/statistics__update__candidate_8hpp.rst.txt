@@ -1,0 +1,5 @@
+File statistics_update_candidate.hpp
+====================================
+
+.. doxygenfile:: statistics_update_candidate.hpp
+   :project: common

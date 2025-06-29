@@ -1,0 +1,26 @@
+mlrl.boosting package
+=====================
+
+.. automodule:: mlrl.boosting
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.boosting.config
+   mlrl.boosting.cython
+   mlrl.boosting.testbed
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.boosting.learners
+   mlrl.boosting.package_info

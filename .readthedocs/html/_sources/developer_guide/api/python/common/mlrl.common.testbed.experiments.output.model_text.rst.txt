@@ -1,0 +1,17 @@
+mlrl.common.testbed.experiments.output.model\_text package
+==========================================================
+
+.. automodule:: mlrl.common.testbed.experiments.output.model_text
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.common.testbed.experiments.output.model_text.extension
+   mlrl.common.testbed.experiments.output.model_text.model_text
+   mlrl.common.testbed.experiments.output.model_text.writer

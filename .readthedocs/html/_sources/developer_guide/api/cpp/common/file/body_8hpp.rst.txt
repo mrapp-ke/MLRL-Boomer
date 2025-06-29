@@ -1,0 +1,5 @@
+File body.hpp
+=============
+
+.. doxygenfile:: body.hpp
+   :project: common

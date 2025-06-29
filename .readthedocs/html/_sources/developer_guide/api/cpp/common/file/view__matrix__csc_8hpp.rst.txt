@@ -1,0 +1,5 @@
+File view_matrix_csc.hpp
+========================
+
+.. doxygenfile:: view_matrix_csc.hpp
+   :project: common

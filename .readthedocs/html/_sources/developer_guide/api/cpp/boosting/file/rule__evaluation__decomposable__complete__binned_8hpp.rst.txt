@@ -1,0 +1,5 @@
+File rule_evaluation_decomposable_complete_binned.hpp
+=====================================================
+
+.. doxygenfile:: rule_evaluation_decomposable_complete_binned.hpp
+   :project: boosting

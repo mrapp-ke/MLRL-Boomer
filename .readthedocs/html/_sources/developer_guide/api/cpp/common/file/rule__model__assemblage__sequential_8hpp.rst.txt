@@ -1,0 +1,5 @@
+File rule_model_assemblage_sequential.hpp
+=========================================
+
+.. doxygenfile:: rule_model_assemblage_sequential.hpp
+   :project: common

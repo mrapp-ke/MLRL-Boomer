@@ -1,0 +1,5 @@
+File statistic_format_sparse.hpp
+================================
+
+.. doxygenfile:: statistic_format_sparse.hpp
+   :project: boosting

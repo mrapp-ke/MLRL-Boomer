@@ -1,0 +1,7 @@
+mlrl.testbed\_sklearn.experiments.prediction.predictor\_global module
+=====================================================================
+
+.. automodule:: mlrl.testbed_sklearn.experiments.prediction.predictor_global
+   :members:
+   :show-inheritance:
+   :undoc-members:

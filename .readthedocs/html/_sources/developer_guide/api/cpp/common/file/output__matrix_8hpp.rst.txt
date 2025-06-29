@@ -1,0 +1,5 @@
+File output_matrix.hpp
+======================
+
+.. doxygenfile:: output_matrix.hpp
+   :project: common

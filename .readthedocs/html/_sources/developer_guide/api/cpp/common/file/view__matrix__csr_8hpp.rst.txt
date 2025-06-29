@@ -1,0 +1,5 @@
+File view_matrix_csr.hpp
+========================
+
+.. doxygenfile:: view_matrix_csr.hpp
+   :project: common

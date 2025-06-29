@@ -1,0 +1,7 @@
+mlrl.testbed\_sklearn.experiments.output.characteristics.data.writer\_data module
+=================================================================================
+
+.. automodule:: mlrl.testbed_sklearn.experiments.output.characteristics.data.writer_data
+   :members:
+   :show-inheritance:
+   :undoc-members:

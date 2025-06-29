@@ -1,0 +1,7 @@
+mlrl.testbed\_arff.experiments.input.sources.source\_arff module
+================================================================
+
+.. automodule:: mlrl.testbed_arff.experiments.input.sources.source_arff
+   :members:
+   :show-inheritance:
+   :undoc-members:

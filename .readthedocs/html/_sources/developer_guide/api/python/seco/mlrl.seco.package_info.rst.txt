@@ -1,0 +1,7 @@
+mlrl.seco.package\_info module
+==============================
+
+.. automodule:: mlrl.seco.package_info
+   :members:
+   :show-inheritance:
+   :undoc-members:

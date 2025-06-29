@@ -1,0 +1,17 @@
+mlrl.testbed\_sklearn.experiments.prediction package
+====================================================
+
+.. automodule:: mlrl.testbed_sklearn.experiments.prediction
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed_sklearn.experiments.prediction.extension
+   mlrl.testbed_sklearn.experiments.prediction.predictor
+   mlrl.testbed_sklearn.experiments.prediction.predictor_global

@@ -1,0 +1,5 @@
+File loss_decomposable_squared_error.hpp
+========================================
+
+.. doxygenfile:: loss_decomposable_squared_error.hpp
+   :project: boosting

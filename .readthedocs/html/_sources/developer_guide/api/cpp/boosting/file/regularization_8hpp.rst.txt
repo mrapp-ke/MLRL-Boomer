@@ -1,0 +1,5 @@
+File regularization.hpp
+=======================
+
+.. doxygenfile:: regularization.hpp
+   :project: boosting

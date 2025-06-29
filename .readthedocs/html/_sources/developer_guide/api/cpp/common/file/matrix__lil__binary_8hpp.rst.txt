@@ -1,0 +1,5 @@
+File matrix_lil_binary.hpp
+==========================
+
+.. doxygenfile:: matrix_lil_binary.hpp
+   :project: common

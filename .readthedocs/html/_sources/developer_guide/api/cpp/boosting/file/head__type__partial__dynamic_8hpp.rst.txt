@@ -1,0 +1,5 @@
+File head_type_partial_dynamic.hpp
+==================================
+
+.. doxygenfile:: head_type_partial_dynamic.hpp
+   :project: boosting

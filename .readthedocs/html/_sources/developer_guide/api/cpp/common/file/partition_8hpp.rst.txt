@@ -1,0 +1,5 @@
+File partition.hpp
+==================
+
+.. doxygenfile:: partition.hpp
+   :project: common

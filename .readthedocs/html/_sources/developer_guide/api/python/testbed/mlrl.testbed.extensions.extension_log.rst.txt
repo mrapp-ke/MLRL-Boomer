@@ -1,0 +1,7 @@
+mlrl.testbed.extensions.extension\_log module
+=============================================
+
+.. automodule:: mlrl.testbed.extensions.extension_log
+   :members:
+   :show-inheritance:
+   :undoc-members:

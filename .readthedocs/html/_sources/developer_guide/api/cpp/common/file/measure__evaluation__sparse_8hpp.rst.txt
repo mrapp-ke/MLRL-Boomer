@@ -1,0 +1,5 @@
+File measure_evaluation_sparse.hpp
+==================================
+
+.. doxygenfile:: measure_evaluation_sparse.hpp
+   :project: common

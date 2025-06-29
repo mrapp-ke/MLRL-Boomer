@@ -1,0 +1,27 @@
+mlrl.testbed.experiments.input package
+======================================
+
+.. automodule:: mlrl.testbed.experiments.input
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed.experiments.input.dataset
+   mlrl.testbed.experiments.input.model
+   mlrl.testbed.experiments.input.parameters
+   mlrl.testbed.experiments.input.sources
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed.experiments.input.data
+   mlrl.testbed.experiments.input.reader

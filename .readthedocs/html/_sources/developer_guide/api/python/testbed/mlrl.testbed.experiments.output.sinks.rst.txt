@@ -1,0 +1,19 @@
+mlrl.testbed.experiments.output.sinks package
+=============================================
+
+.. automodule:: mlrl.testbed.experiments.output.sinks
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed.experiments.output.sinks.sink
+   mlrl.testbed.experiments.output.sinks.sink_csv
+   mlrl.testbed.experiments.output.sinks.sink_log
+   mlrl.testbed.experiments.output.sinks.sink_pickle
+   mlrl.testbed.experiments.output.sinks.sink_text

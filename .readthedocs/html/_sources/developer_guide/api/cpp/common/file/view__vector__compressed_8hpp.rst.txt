@@ -1,0 +1,5 @@
+File view_vector_compressed.hpp
+===============================
+
+.. doxygenfile:: view_vector_compressed.hpp
+   :project: common

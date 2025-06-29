@@ -1,0 +1,7 @@
+mlrl.testbed\_sklearn.experiments.output.evaluation.measures\_classification module
+===================================================================================
+
+.. automodule:: mlrl.testbed_sklearn.experiments.output.evaluation.measures_classification
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+mlrl.boosting.cython.label\_binning module
+==========================================
+
+.. automodule:: mlrl.boosting.cython.label_binning
+   :members:
+   :show-inheritance:
+   :undoc-members:

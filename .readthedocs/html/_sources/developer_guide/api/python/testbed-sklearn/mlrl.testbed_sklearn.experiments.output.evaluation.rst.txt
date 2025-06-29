@@ -1,0 +1,23 @@
+mlrl.testbed\_sklearn.experiments.output.evaluation package
+===========================================================
+
+.. automodule:: mlrl.testbed_sklearn.experiments.output.evaluation
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed_sklearn.experiments.output.evaluation.evaluation_result
+   mlrl.testbed_sklearn.experiments.output.evaluation.extension
+   mlrl.testbed_sklearn.experiments.output.evaluation.extractor_classification
+   mlrl.testbed_sklearn.experiments.output.evaluation.extractor_ranking
+   mlrl.testbed_sklearn.experiments.output.evaluation.extractor_regression
+   mlrl.testbed_sklearn.experiments.output.evaluation.measures_classification
+   mlrl.testbed_sklearn.experiments.output.evaluation.measures_ranking
+   mlrl.testbed_sklearn.experiments.output.evaluation.measures_regression
+   mlrl.testbed_sklearn.experiments.output.evaluation.writer
