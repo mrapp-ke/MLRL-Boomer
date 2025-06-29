@@ -44,4 +44,4 @@ runnables
 arguments
 ```
 
-If you are a developer, you might also be interested in the {ref}`Python <python-apidoc>` or {ref}`C++ <cpp-apidoc>` API reference.
+If you are a developer, you might also be interested in the {ref}`API reference <python-apidoc>`.

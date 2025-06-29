@@ -9,8 +9,7 @@ from typing import List, Optional
 
 import numpy as np
 
-from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBody, PartialHead, RuleModel, \
-    RuleModelVisitor
+from mlrl.common.cython.rule_model import Body, CompleteHead, ConjunctiveBody, EmptyBody, Head, PartialHead, RuleModel
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 from mlrl.common.testbed.experiments.output.characteristics.model.characteristics import BodyStatistics, \
     HeadStatistics, RuleModelCharacteristics, RuleModelStatistics, RuleStatistics
@@ -31,29 +30,22 @@ class RuleModelCharacteristicsWriter(OutputWriter):
         Allows to extract characteristics from a `RuleModel`.
         """
 
-        class Visitor(RuleModelVisitor):
-            """
-            A visitor that allows to determine the characteristics of a `RuleModel`.
-            """
+        def __create_rule_model_characteristics(self, model: RuleModel) -> RuleModelCharacteristics:
+            statistics = RuleModelStatistics()
 
-            def __init__(self):
-                self.default_rule_index = None
-                self.index = -1
-                self.statistics = RuleModelStatistics()
+            for rule in model:
+                default_rule = self.__create_body_characteristics(statistics, rule.body)
+                self.__create_head_characteristics(statistics, rule.head, default_rule=default_rule)
 
-            def visit_empty_body(self, _: EmptyBody):
-                """
-                See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_empty_body`
-                """
-                self.index += 1
-                self.default_rule_index = self.index
-                self.statistics.default_rule_statistics = RuleStatistics(body_statistics=BodyStatistics())
+            return RuleModelCharacteristics(statistics)
 
-            def visit_conjunctive_body(self, body: ConjunctiveBody):
-                """
-                See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_conjunctive_body`
-                """
-                self.index += 1
+        @staticmethod
+        def __create_body_characteristics(statistics: RuleModelStatistics, body: Body) -> bool:
+            if isinstance(body, EmptyBody):
+                statistics.default_rule_statistics = RuleStatistics(body_statistics=BodyStatistics())
+                return True
+
+            if isinstance(body, ConjunctiveBody):
                 body_statistics = BodyStatistics(
                     num_numerical_leq=body.numerical_leq_indices.size if body.numerical_leq_indices is not None else 0,
                     num_numerical_gr=body.numerical_gr_indices.size if body.numerical_gr_indices is not None else 0,
@@ -61,35 +53,33 @@ class RuleModelCharacteristicsWriter(OutputWriter):
                     num_ordinal_gr=body.ordinal_gr_indices.size if body.ordinal_gr_indices is not None else 0,
                     num_nominal_eq=body.nominal_eq_indices.size if body.nominal_eq_indices is not None else 0,
                     num_nominal_neq=body.nominal_neq_indices.size if body.nominal_neq_indices is not None else 0)
-                self.statistics.rule_statistics.append(RuleStatistics(body_statistics=body_statistics))
+                statistics.rule_statistics.append(RuleStatistics(body_statistics=body_statistics))
+                return False
 
-            def visit_complete_head(self, head: CompleteHead):
-                """
-                See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_complete_head`
-                """
+            raise ValueError('Unsupported type of body: ' + str(type(body)))
+
+        @staticmethod
+        def __create_head_characteristics(statistics: RuleModelStatistics, head: Head, default_rule: bool):
+            head_statistics = None
+
+            if isinstance(head, CompleteHead):
+                num_positive_predictions = np.count_nonzero(head.scores > 0)
+                num_negative_predictions = head.scores.shape[0] - num_positive_predictions
+                head_statistics = HeadStatistics(num_positive_predictions=num_positive_predictions,
+                                                 num_negative_predictions=num_negative_predictions)
+            elif isinstance(head, PartialHead):
                 num_positive_predictions = np.count_nonzero(head.scores > 0)
                 num_negative_predictions = head.scores.shape[0] - num_positive_predictions
                 head_statistics = HeadStatistics(num_positive_predictions=num_positive_predictions,
                                                  num_negative_predictions=num_negative_predictions)
 
-                if self.index == self.default_rule_index:
-                    self.statistics.default_rule_statistics.head_statistics = head_statistics
+            if head_statistics:
+                if default_rule:
+                    statistics.default_rule_statistics.head_statistics = head_statistics
                 else:
-                    self.statistics.rule_statistics[-1].head_statistics = head_statistics
-
-            def visit_partial_head(self, head: PartialHead):
-                """
-                See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_partial_head`
-                """
-                num_positive_predictions = np.count_nonzero(head.scores > 0)
-                num_negative_predictions = head.scores.shape[0] - num_positive_predictions
-                head_statistics = HeadStatistics(num_positive_predictions=num_positive_predictions,
-                                                 num_negative_predictions=num_negative_predictions)
-
-                if self.index == self.default_rule_index:
-                    self.statistics.default_rule_statistics.head_statistics = head_statistics
-                else:
-                    self.statistics.rule_statistics[-1].head_statistics = head_statistics
+                    statistics.rule_statistics[-1].head_statistics = head_statistics
+            else:
+                raise ValueError('Unsupported type of head: ' + str(type(head)))
 
         def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
             """
@@ -101,9 +91,7 @@ class RuleModelCharacteristicsWriter(OutputWriter):
                 model = learner.model_
 
                 if isinstance(model, RuleModel):
-                    visitor = RuleModelCharacteristicsWriter.DefaultExtractor.Visitor()
-                    model.visit_used(visitor)
-                    return RuleModelCharacteristics(visitor.statistics)
+                    return self.__create_rule_model_characteristics(model)
 
                 log.error('%s expected type of model to be %s, but model has type %s',
                           type(self).__name__, RuleModel.__name__,
