@@ -101,6 +101,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**/*.template.md']
 # Suppress certain warnings.
 suppress_warnings = [
     'duplicate_declaration.cpp',  # Suppress warnings about duplicate C++ declarations, such as namespaces
+    'toc.not_included',  # Suppress warnings about files only included via {include} not being included in any toctree
 ]
 
 # -- Options for HTML output -------------------------------------------------
