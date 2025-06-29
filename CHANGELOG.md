@@ -17,7 +17,7 @@ This release comes with API changes. For an updated overview of the available pa
 ### API Changes
 
 - The executable `testbed` has been renamed to `mlrl-testbed`.
-- The command line argument `--model-dir` has been replaced with the arguments `--model-load-dir` and `--model-save-dir`, which enables to save models to a different directory than the one they are loaded from. 
+- The command line argument `--model-dir` has been replaced with the arguments `--model-load-dir` and `--model-save-dir`, which enables to save models to a different directory than the one they are loaded from.
 - The command line argument `--parameter-dir` has been replaced with the arguments `--parameter-load-dir` and `--parameter-save-dir`. The former specifies the directory, parameter settings should be loaded from, whereas the latter replaces the argument `--store-parameters`.
 - The command line argument `--store-predictions` does now write ARFF files where the ground truth is replaced with the predictions of a model. Accordingly, the ARFF files written via the new argument `--store-ground-truth` contains the original ground truth.
 - The command line argument `--evaluate-training-data` has been renamed to `--predict-for-training-data`. Analogously, a new argument `--predict-for-test-data` has been added.
@@ -25,11 +25,11 @@ This release comes with API changes. For an updated overview of the available pa
 - When passing the value `cross-validation` to the command line argument `--data-split`, the options `first_fold` and `last_fold` can now be used to specify a range of folds to be run. The option `current_fold` has been removed.
 - Output directories are now automatically created by the command line API. This behavior can be disabled via the newly added argument `--create-output-dir`.
 - The command line argument `--wipe-output-dir` has been added. It allows to prevent existing output files from being deleted before an experiment starts.
-- The new command line arguments `--store-all` and `--print-all` allow to print all output data on the console or to write it to files. 
+- The new command line arguments `--store-all` and `--print-all` allow to print all output data on the console or to write it to files.
 - The options `min_samples` and `max_samples` have been added to the values of the command line arguments `--feature-sampling` and `--instance-sampling`.
 - The indices of nominal and ordinal features are now provided to a learner's `fit`-method via the keyword arguments `nominal_feature_indices` and `ordinal_feature_indices`.
 - The Python API does now allow to provide custom weights for training examples to a learner's `fit`-method via the keyword argument `sample_weights`.
-- The Python API of the class `RuleModel` does now provide an easy way to access the rules in the model. 
+- The Python API of the class `RuleModel` does now provide an easy way to access the rules in the model.
 
 ### Algorithmic Enhancements
 
