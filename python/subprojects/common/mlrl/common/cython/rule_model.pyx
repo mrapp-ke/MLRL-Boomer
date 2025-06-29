@@ -5,19 +5,56 @@ from libcpp.memory cimport make_unique
 from libcpp.utility cimport move
 
 from abc import abstractmethod
+from dataclasses import dataclass
+from enum import StrEnum
+from numbers import Number
 
 import numpy as np
 
 SERIALIZATION_VERSION = 4
 
 
-cdef class EmptyBody:
+class Comparator(StrEnum):
+    """
+    The comparison operators that can be used by a condition of a rule.
+    """
+    LEQ = '<='
+    GR = '>'
+    EQ = '=='
+    NEQ = '!='
+
+
+@dataclass
+class Condition:
+    """
+    A single condition contained in the body of a rule.
+
+    Attributes:
+        feature_index:  The index of the feature, the condition corresponds to
+        comparator:     The comparison operator that is used by the condition
+        threshold:      The threshold that is used by the condition
+    """
+    feature_index: int
+    comparator: Comparator
+    threshold: Number
+
+
+cdef class Body:
+    """
+    An abstract base class for all bodies of a rule.
+    """
+
+
+cdef class EmptyBody(Body):
     """
     A body of a rule that does not contain any conditions.
     """
 
+    def __iter__(self) -> Iterator[Condition]:
+        yield from []
 
-cdef class ConjunctiveBody:
+
+cdef class ConjunctiveBody(Body):
     """
     A body of a rule that is given as a conjunction of several conditions.
     """
@@ -81,8 +118,71 @@ cdef class ConjunctiveBody:
         self.nominal_neq_indices = np.asarray(nominal_neq_indices) if nominal_neq_indices is not None else None
         self.nominal_neq_thresholds = np.asarray(nominal_neq_thresholds) if nominal_neq_thresholds is not None else None
 
+    def __iter__(self) -> Iterator[Condition]:
+        cdef npc.ndarray indices = self.numerical_leq_indices
+        cdef npc.ndarray thresholds = self.numerical_leq_thresholds
+        cdef uint32 num_conditions = 0 if indices is None else indices.shape[0]
+        cdef uint32 i
 
-cdef class CompleteHead:
+        for i in range(num_conditions):
+            yield Condition(feature_index=indices[i], comparator=Comparator.LEQ, threshold=thresholds[i])
+
+        indices = self.numerical_gr_indices
+        thresholds = self.numerical_gr_thresholds
+        num_conditions = 0 if indices is None else indices.shape[0]
+
+        for i in range(num_conditions):
+            yield Condition(feature_index=indices[i], comparator=Comparator.GR, threshold=thresholds[i])
+
+        indices = self.ordinal_leq_indices
+        thresholds = self.ordinal_leq_thresholds
+        num_conditions = 0 if indices is None else indices.shape[0]
+
+        for i in range(num_conditions):
+            yield Condition(feature_index=indices[i], comparator=Comparator.LEQ, threshold=thresholds[i])
+
+        indices = self.ordinal_gr_indices
+        thresholds = self.ordinal_gr_thresholds
+        num_conditions = 0 if indices is None else indices.shape[0]
+
+        for i in range(num_conditions):
+            yield Condition(feature_index=indices[i], comparator=Comparator.GR, threshold=thresholds[i])
+
+        indices = self.nominal_eq_indices
+        thresholds = self.nominal_eq_thresholds
+        num_conditions = 0 if indices is None else indices.shape[0]
+
+        for i in range(num_conditions):
+            yield Condition(feature_index=indices[i], comparator=Comparator.EQ, threshold=thresholds[i])
+
+        indices = self.nominal_neq_indices
+        thresholds = self.nominal_neq_thresholds
+        num_conditions = 0 if indices is None else indices.shape[0]
+
+        for i in range(num_conditions):
+            yield Condition(feature_index=indices[i], comparator=Comparator.NEQ, threshold=thresholds[i])
+
+
+@dataclass
+class Prediction:
+    """
+    A scalar value predicted by a rule for a specific output.
+
+    Attributes:
+        output_index:   The index of the output, the prediction corresponds to
+        value:          The predicted value
+    """
+    output_index: int
+    value: Number
+
+
+cdef class Head:
+    """
+    An abstract base class for all heads of a rule.
+    """
+
+
+cdef class CompleteHead(Head):
     """
     A head of a rule that predicts numerical scores for all available outputs.
     """
@@ -93,8 +193,16 @@ cdef class CompleteHead:
         """
         self.scores = scores
 
+    def __iter__(self) -> Iterator[Prediction]:
+        cdef npc.ndarray scores = self.scores
+        cdef uint32 num_predictions = scores.shape[0]
+        cdef uint32 output_index
 
-cdef class PartialHead:
+        for output_index in range(num_predictions):
+            yield Prediction(output_index=output_index, value=scores[output_index])
+
+
+cdef class PartialHead(Head):
     """
     A head of a rule that predicts numerical scores for a subset of the available outputs.
     """
@@ -106,6 +214,29 @@ cdef class PartialHead:
         """
         self.indices = indices
         self.scores = scores
+
+    def __iter__(self) -> Iterator[Prediction]:
+        cdef npc.ndarray indices = self.indices
+        cdef npc.ndarray scores = self.scores
+        cdef uint32 num_predictions = indices.shape[0]
+        cdef uint32 i
+
+        for i in range(num_predictions):
+            yield Prediction(output_index=indices[i], value=scores[i])
+
+
+cdef class Rule:
+    """
+    A single rule, consisting of a body and a head.
+    """
+
+    def __cinit__(self, Body body not None, Head head not None):
+        """
+        :param body:    The body of the rule
+        :param head:    The head of the rule
+        """
+        self.body = body
+        self.head = head
 
 
 class RuleModelVisitor:
@@ -182,6 +313,36 @@ cdef class RuleModel:
         """
         self.get_rule_model_ptr().setNumUsedRules(num_used_rules)
 
+    def __iter__(self) -> Iterator[Rule]:
+        class Visitor(RuleModelVisitor):
+            """
+            Yields the rules in the model.
+            """
+
+            def __init__(self):
+                self._current_body = None
+                self.rules = []
+
+            def visit_empty_body(self, body: EmptyBody):
+                self._current_body = body
+
+            def visit_conjunctive_body(self, body: ConjunctiveBody):
+                self._current_body = body
+
+            def visit_complete_head(self, head: CompleteHead):
+                self.rules.append(Rule.__new__(Rule, self._current_body, head))
+
+            def visit_partial_head(self, head: PartialHead):
+                self.rules.append(Rule.__new__(Rule, self._current_body, head))
+
+        if self.get_num_used_rules() > 0:
+            visitor = Visitor()
+            self.visit_used(visitor)
+            yield from visitor.rules
+        else:
+            yield from []
+
+    @abstractmethod
     def visit(self, visitor: RuleModelVisitor):
         """
         Visits the bodies and heads of all rules that are contained in this model, including the default rule, if
@@ -190,6 +351,7 @@ cdef class RuleModel:
         :param visitor: The `RuleModelVisitor` that should be used to access the bodies and heads
         """
 
+    @abstractmethod
     def visit_used(self, visitor: RuleModelVisitor):
         """
         Visits the bodies and heads of all used rules that are contained in this model, including the default rule, if

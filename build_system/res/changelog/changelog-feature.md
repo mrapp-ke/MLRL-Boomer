@@ -12,7 +12,8 @@
 - The new command line arguments `--store-all` and `--print-all` allow to print all output data on the console or to write it to files. 
 - The options `min_samples` and `max_samples` have been added to the values of the command line arguments `--feature-sampling` and `--instance-sampling`.
 - The indices of nominal and ordinal features are now provided to a learner's `fit`-method via the keyword arguments `nominal_feature_indices` and `ordinal_feature_indices`.
-- The Python API does now allow to provide custom weights for training examples to a learner's `fit`-method via the keyword argument `sample_weights`. 
+- The Python API does now allow to provide custom weights for training examples to a learner's `fit`-method via the keyword argument `sample_weights`.
+- The Python API of the class `RuleModel` does now provide an easy way to access the rules in the model. 
 
 # Algorithmic Enhancements
 - The BOOMER algorithm can now be configured to use either 32- or 64-bit floating point values for gradients and Hessians via the command line argument `--statistic-type`. Using lower-precision values might speed up training at the risk of losing training accuracy.
