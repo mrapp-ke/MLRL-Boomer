@@ -46,7 +46,7 @@ class ReadTheDocsApi:
                 Log.verbose('Request succeeded with status code %s and response: %s', response.status_code,
                             response.content)
             else:
-                Log.error('Request failed with status code %s', response.status_code)
+                Log.error('Request POST %s failed with status code %s', url, response.status_code)
 
     @staticmethod
     def __get_token_from_env() -> Optional[str]:
