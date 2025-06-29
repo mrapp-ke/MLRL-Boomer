@@ -128,3 +128,20 @@ The argument `x` that must be passed to the `predict` method, has the same seman
 ```python
 pred = clf.predict(x, sparse_feature_value = 0.0)
 ```
+
+## Accessing the Rules in a Model
+
+In some cases it might be desirable to access the rule in a model that has been learned via the `fit` method. For this purpose, we provide a convenient API that is illustrated in the following example:
+
+```python
+clf = clf.fit(x, y)
+
+for rule in clf.model_:
+    for condition in rule.body:
+        print(f'{condition.feature_index}, {condition.comparator} {condition.threshold}')
+    
+    for prediction in rule.head:
+        print(f'{prediction.output_index} {prediction.value}')
+```
+
+For details, we refer to the API reference of the classes {py:class}`RuleModel <mlrl.common.cython.rule_model.RuleModel>`, {py:class}`Rule <mlrl.common.cython.rule_model.Rule>`, {py:class}`Condition <mlrl.common.cython.rule_model.Condition>` and {py:class}`Prediction <mlrl.common.cython.rule_model.Prediction>`.
