@@ -1,7 +1,3 @@
----
-orphan: true
----
-
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://github.com/mrapp-ke/MLRL-Boomer/raw/main/doc/_static/logo_testbed_dark.svg">

@@ -1,7 +1,3 @@
----
-orphan: true
----
-
 # Multi-label Separate-and-Conquer Rule Learning Algorithm
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![PyPI version](https://badge.fury.io/py/mlrl-seco.svg)](https://badge.fury.io/py/mlrl-seco) [![Documentation Status](https://readthedocs.org/projects/mlrl-boomer/badge/?version=latest)](https://mlrl-boomer.readthedocs.io/en/latest/?badge=latest)
