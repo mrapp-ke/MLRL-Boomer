@@ -1,0 +1,5 @@
+File transformation_probability_output_wise.hpp
+===============================================
+
+.. doxygenfile:: transformation_probability_output_wise.hpp
+   :project: boosting

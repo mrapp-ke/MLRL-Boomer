@@ -1,0 +1,5 @@
+File label_matrix_row_wise.hpp
+==============================
+
+.. doxygenfile:: label_matrix_row_wise.hpp
+   :project: common

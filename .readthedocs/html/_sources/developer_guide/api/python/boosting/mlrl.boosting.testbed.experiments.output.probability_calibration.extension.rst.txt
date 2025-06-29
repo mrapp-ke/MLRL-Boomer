@@ -1,0 +1,7 @@
+mlrl.boosting.testbed.experiments.output.probability\_calibration.extension module
+==================================================================================
+
+.. automodule:: mlrl.boosting.testbed.experiments.output.probability_calibration.extension
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,5 @@
+File matrix_sparse_binary.hpp
+=============================
+
+.. doxygenfile:: matrix_sparse_binary.hpp
+   :project: common

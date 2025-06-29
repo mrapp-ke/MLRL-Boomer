@@ -1,0 +1,17 @@
+mlrl.testbed.experiments.input.sources package
+==============================================
+
+.. automodule:: mlrl.testbed.experiments.input.sources
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed.experiments.input.sources.source
+   mlrl.testbed.experiments.input.sources.source_csv
+   mlrl.testbed.experiments.input.sources.source_pickle

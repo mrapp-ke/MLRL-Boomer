@@ -1,0 +1,5 @@
+File model_builder.hpp
+======================
+
+.. doxygenfile:: model_builder.hpp
+   :project: common

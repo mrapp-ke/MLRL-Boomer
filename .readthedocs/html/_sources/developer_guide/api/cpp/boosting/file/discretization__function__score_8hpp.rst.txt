@@ -1,0 +1,5 @@
+File discretization_function_score.hpp
+======================================
+
+.. doxygenfile:: discretization_function_score.hpp
+   :project: boosting

@@ -1,0 +1,5 @@
+File feature_binning_auto.hpp
+=============================
+
+.. doxygenfile:: feature_binning_auto.hpp
+   :project: boosting

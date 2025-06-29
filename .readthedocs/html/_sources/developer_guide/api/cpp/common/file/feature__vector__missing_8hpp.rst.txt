@@ -1,0 +1,5 @@
+File feature_vector_missing.hpp
+===============================
+
+.. doxygenfile:: feature_vector_missing.hpp
+   :project: common

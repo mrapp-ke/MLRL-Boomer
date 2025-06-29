@@ -1,0 +1,5 @@
+File statistic_format.hpp
+=========================
+
+.. doxygenfile:: statistic_format.hpp
+   :project: boosting

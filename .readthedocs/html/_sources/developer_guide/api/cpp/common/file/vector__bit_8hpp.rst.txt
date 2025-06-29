@@ -1,0 +1,5 @@
+File vector_bit.hpp
+===================
+
+.. doxygenfile:: vector_bit.hpp
+   :project: common

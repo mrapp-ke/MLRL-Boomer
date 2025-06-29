@@ -1,0 +1,27 @@
+mlrl.testbed\_sklearn.experiments package
+=========================================
+
+.. automodule:: mlrl.testbed_sklearn.experiments
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed_sklearn.experiments.input
+   mlrl.testbed_sklearn.experiments.output
+   mlrl.testbed_sklearn.experiments.prediction
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed_sklearn.experiments.dataset
+   mlrl.testbed_sklearn.experiments.experiment
+   mlrl.testbed_sklearn.experiments.problem_domain

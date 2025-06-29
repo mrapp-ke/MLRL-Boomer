@@ -1,0 +1,5 @@
+File rule_induction_top_down_beam_search.hpp
+============================================
+
+.. doxygenfile:: rule_induction_top_down_beam_search.hpp
+   :project: common

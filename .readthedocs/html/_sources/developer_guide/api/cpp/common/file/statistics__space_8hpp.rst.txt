@@ -1,0 +1,5 @@
+File statistics_space.hpp
+=========================
+
+.. doxygenfile:: statistics_space.hpp
+   :project: common

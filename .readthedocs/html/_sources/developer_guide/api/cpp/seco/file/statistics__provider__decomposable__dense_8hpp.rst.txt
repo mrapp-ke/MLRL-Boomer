@@ -1,0 +1,5 @@
+File statistics_provider_decomposable_dense.hpp
+===============================================
+
+.. doxygenfile:: statistics_provider_decomposable_dense.hpp
+   :project: seco

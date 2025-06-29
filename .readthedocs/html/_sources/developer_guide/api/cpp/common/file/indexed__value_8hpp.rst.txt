@@ -1,0 +1,5 @@
+File indexed_value.hpp
+======================
+
+.. doxygenfile:: indexed_value.hpp
+   :project: common

@@ -1,0 +1,17 @@
+mlrl.testbed.experiments.input.dataset.splitters package
+========================================================
+
+.. automodule:: mlrl.testbed.experiments.input.dataset.splitters
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed.experiments.input.dataset.splitters.extension
+   mlrl.testbed.experiments.input.dataset.splitters.splitter
+   mlrl.testbed.experiments.input.dataset.splitters.splitter_no

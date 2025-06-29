@@ -1,0 +1,5 @@
+File rule_induction.hpp
+=======================
+
+.. doxygenfile:: rule_induction.hpp
+   :project: common

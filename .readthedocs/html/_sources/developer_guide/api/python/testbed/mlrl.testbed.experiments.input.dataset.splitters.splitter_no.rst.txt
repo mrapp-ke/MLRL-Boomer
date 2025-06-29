@@ -1,0 +1,7 @@
+mlrl.testbed.experiments.input.dataset.splitters.splitter\_no module
+====================================================================
+
+.. automodule:: mlrl.testbed.experiments.input.dataset.splitters.splitter_no
+   :members:
+   :show-inheritance:
+   :undoc-members:

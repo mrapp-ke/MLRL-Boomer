@@ -1,0 +1,5 @@
+File feature_matrix.hpp
+=======================
+
+.. doxygenfile:: feature_matrix.hpp
+   :project: common

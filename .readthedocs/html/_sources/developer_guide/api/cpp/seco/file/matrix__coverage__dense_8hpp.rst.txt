@@ -1,0 +1,5 @@
+File matrix_coverage_dense.hpp
+==============================
+
+.. doxygenfile:: matrix_coverage_dense.hpp
+   :project: seco

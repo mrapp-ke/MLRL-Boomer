@@ -1,0 +1,5 @@
+File stopping_criterion_time.hpp
+================================
+
+.. doxygenfile:: stopping_criterion_time.hpp
+   :project: common

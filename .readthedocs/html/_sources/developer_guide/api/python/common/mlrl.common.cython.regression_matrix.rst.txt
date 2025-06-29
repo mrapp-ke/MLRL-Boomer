@@ -1,0 +1,7 @@
+mlrl.common.cython.regression\_matrix module
+============================================
+
+.. automodule:: mlrl.common.cython.regression_matrix
+   :members:
+   :show-inheritance:
+   :undoc-members:

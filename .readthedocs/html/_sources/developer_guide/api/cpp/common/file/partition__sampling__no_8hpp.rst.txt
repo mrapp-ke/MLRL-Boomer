@@ -1,0 +1,5 @@
+File partition_sampling_no.hpp
+==============================
+
+.. doxygenfile:: partition_sampling_no.hpp
+   :project: common

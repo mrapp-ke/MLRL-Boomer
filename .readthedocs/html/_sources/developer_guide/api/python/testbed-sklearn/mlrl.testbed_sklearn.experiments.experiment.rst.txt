@@ -1,0 +1,7 @@
+mlrl.testbed\_sklearn.experiments.experiment module
+===================================================
+
+.. automodule:: mlrl.testbed_sklearn.experiments.experiment
+   :members:
+   :show-inheritance:
+   :undoc-members:

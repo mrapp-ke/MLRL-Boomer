@@ -1,0 +1,18 @@
+mlrl.common.testbed.experiments.output.characteristics.model package
+====================================================================
+
+.. automodule:: mlrl.common.testbed.experiments.output.characteristics.model
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.common.testbed.experiments.output.characteristics.model.characteristics
+   mlrl.common.testbed.experiments.output.characteristics.model.extension
+   mlrl.common.testbed.experiments.output.characteristics.model.statistics
+   mlrl.common.testbed.experiments.output.characteristics.model.writer

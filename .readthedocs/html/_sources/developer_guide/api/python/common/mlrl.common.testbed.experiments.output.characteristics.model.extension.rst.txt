@@ -1,0 +1,7 @@
+mlrl.common.testbed.experiments.output.characteristics.model.extension module
+=============================================================================
+
+.. automodule:: mlrl.common.testbed.experiments.output.characteristics.model.extension
+   :members:
+   :show-inheritance:
+   :undoc-members:

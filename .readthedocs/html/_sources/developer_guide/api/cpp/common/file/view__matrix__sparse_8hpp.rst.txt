@@ -1,0 +1,5 @@
+File view_matrix_sparse.hpp
+===========================
+
+.. doxygenfile:: view_matrix_sparse.hpp
+   :project: common

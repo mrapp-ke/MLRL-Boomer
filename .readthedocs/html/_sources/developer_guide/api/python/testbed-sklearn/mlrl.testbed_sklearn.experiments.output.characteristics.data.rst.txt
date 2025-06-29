@@ -1,0 +1,24 @@
+mlrl.testbed\_sklearn.experiments.output.characteristics.data package
+=====================================================================
+
+.. automodule:: mlrl.testbed_sklearn.experiments.output.characteristics.data
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics
+   mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics_data
+   mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics_prediction
+   mlrl.testbed_sklearn.experiments.output.characteristics.data.extension
+   mlrl.testbed_sklearn.experiments.output.characteristics.data.extension_prediction
+   mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_feature
+   mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_label
+   mlrl.testbed_sklearn.experiments.output.characteristics.data.matrix_output
+   mlrl.testbed_sklearn.experiments.output.characteristics.data.writer_data
+   mlrl.testbed_sklearn.experiments.output.characteristics.data.writer_prediction

@@ -1,0 +1,5 @@
+File feature_type_numerical.hpp
+===============================
+
+.. doxygenfile:: feature_type_numerical.hpp
+   :project: common

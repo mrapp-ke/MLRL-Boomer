@@ -1,0 +1,15 @@
+mlrl.testbed\_arff.experiments.output.sinks package
+===================================================
+
+.. automodule:: mlrl.testbed_arff.experiments.output.sinks
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mlrl.testbed_arff.experiments.output.sinks.sink_arff

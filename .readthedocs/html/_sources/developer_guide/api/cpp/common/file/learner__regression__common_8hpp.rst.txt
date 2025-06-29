@@ -1,0 +1,5 @@
+File learner_regression_common.hpp
+==================================
+
+.. doxygenfile:: learner_regression_common.hpp
+   :project: common

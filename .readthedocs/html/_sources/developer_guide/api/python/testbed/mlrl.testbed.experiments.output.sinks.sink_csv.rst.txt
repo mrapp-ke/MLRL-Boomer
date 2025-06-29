@@ -1,0 +1,7 @@
+mlrl.testbed.experiments.output.sinks.sink\_csv module
+======================================================
+
+.. automodule:: mlrl.testbed.experiments.output.sinks.sink_csv
+   :members:
+   :show-inheritance:
+   :undoc-members:

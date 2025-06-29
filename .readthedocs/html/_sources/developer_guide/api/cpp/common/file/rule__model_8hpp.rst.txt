@@ -1,0 +1,5 @@
+File rule_model.hpp
+===================
+
+.. doxygenfile:: rule_model.hpp
+   :project: common

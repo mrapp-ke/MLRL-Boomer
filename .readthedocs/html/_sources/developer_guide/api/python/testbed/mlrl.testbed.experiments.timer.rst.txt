@@ -1,0 +1,7 @@
+mlrl.testbed.experiments.timer module
+=====================================
+
+.. automodule:: mlrl.testbed.experiments.timer
+   :members:
+   :show-inheritance:
+   :undoc-members:

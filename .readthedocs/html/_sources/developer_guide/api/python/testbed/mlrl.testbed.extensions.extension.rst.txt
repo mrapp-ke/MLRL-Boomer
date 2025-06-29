@@ -1,0 +1,7 @@
+mlrl.testbed.extensions.extension module
+========================================
+
+.. automodule:: mlrl.testbed.extensions.extension
+   :members:
+   :show-inheritance:
+   :undoc-members:
