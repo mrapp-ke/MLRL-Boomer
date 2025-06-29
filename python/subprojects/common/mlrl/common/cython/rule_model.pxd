@@ -402,11 +402,14 @@ cdef extern from *:
     Partial64BitHeadVisitor wrapPartial64BitHeadVisitor(void* self, Partial64BitHeadCythonVisitor visitor)
 
 
-cdef class EmptyBody:
+cdef class Body:
+    pass
+
+cdef class EmptyBody(Body):
     pass
 
 
-cdef class ConjunctiveBody:
+cdef class ConjunctiveBody(Body):
 
     # Attributes:
 
@@ -435,20 +438,33 @@ cdef class ConjunctiveBody:
     cdef readonly npc.ndarray nominal_neq_thresholds
 
 
-cdef class CompleteHead:
+cdef class Head:
+    pass
+
+
+cdef class CompleteHead(Head):
 
     # Attributes:
 
     cdef readonly npc.ndarray scores
 
 
-cdef class PartialHead:
+cdef class PartialHead(Head):
 
     # Attributes:
 
     cdef readonly npc.ndarray indices
 
     cdef readonly npc.ndarray scores
+
+
+cdef class Rule:
+
+    # Attributes:
+
+    cdef readonly Body body
+
+    cdef readonly Head head
 
 
 cdef class RuleModel:
