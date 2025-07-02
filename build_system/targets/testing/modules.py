@@ -5,9 +5,10 @@ Implements modules that provide access to automated tests.
 """
 from abc import ABC
 from os import environ
+from typing import Set
 
 from core.modules import Module
-from util.env import get_env_bool
+from util.env import get_env_array, get_env_bool
 
 
 class TestModule(Module, ABC):
@@ -28,3 +29,11 @@ class TestModule(Module, ABC):
         True, if only tests that failed during the last run should be executed, False otherwise.
         """
         return get_env_bool(environ, 'ONLY_FAILED')
+
+    @property
+    def markers(self) -> Set[str]:
+        """
+        A set that contains the markers of the test cases to be run or an empty list, if all test cases should be run.
+        """
+        markers = get_env_array(environ, 'MARKERS')
+        return set(markers) if markers else set()
