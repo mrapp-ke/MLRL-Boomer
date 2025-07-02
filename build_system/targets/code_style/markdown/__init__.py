@@ -23,6 +23,11 @@ TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
 MODULES = [
     CodeModule(
         file_type=FileType.markdown(),
+        root_directory=Project.BuildSystem.resource_directory,
+        source_file_search=Project.BuildSystem.file_search(),
+    ),
+    CodeModule(
+        file_type=FileType.markdown(),
         root_directory=Project.root_directory,
         source_file_search=FileSearch().set_recursive(False),
     ),
