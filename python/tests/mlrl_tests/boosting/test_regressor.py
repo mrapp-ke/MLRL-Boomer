@@ -2,6 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from typing import Any
+import pytest
 
 from ..common.cmd_runner import CmdRunner
 from ..common.datasets import Dataset
@@ -11,6 +12,8 @@ from .cmd_builder_regression import BoomerRegressorCmdBuilder
 from .integration_tests import BoomerIntegrationTestsMixin
 
 
+@pytest.mark.boosting
+@pytest.mark.regression
 class BoomerRegressorIntegrationTests(RegressionIntegrationTests, BoomerIntegrationTestsMixin):
     """
     Defines a series of integration tests for the BOOMER algorithm for regression problems.

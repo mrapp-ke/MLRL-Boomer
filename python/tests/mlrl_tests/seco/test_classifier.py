@@ -2,6 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from typing import Any
+import pytest
 
 from ..common.cmd_builder import CmdBuilder
 from ..common.cmd_runner import CmdRunner
@@ -10,6 +11,8 @@ from ..common.integration_tests_classification import ClassificationIntegrationT
 from .cmd_builder import SeCoClassifierCmdBuilder
 
 
+@pytest.mark.seco
+@pytest.mark.classification
 class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
     """
     Defines a series of integration tests for the separate-and-conquer (SeCo) algorithm for classification problems.

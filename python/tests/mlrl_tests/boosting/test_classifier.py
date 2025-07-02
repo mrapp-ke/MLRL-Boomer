@@ -2,6 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from typing import Any
+import pytest
 
 from ..common.cmd_builder_classification import ClassificationCmdBuilder
 from ..common.cmd_runner import CmdRunner
@@ -12,6 +13,8 @@ from .cmd_builder_classification import BoomerClassifierCmdBuilder
 from .integration_tests import BoomerIntegrationTestsMixin
 
 
+@pytest.mark.boosting
+@pytest.mark.classification
 class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerIntegrationTestsMixin):
     """
     Defines a series of integration tests for the BOOMER algorithm for classification problems.
