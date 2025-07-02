@@ -21,3 +21,10 @@ class TestModule(Module, ABC):
         True, if all tests should be skipped as soon as a single test fails, False otherwise
         """
         return get_env_bool(environ, 'FAIL_FAST')
+
+    @property
+    def only_failed(self) -> bool:
+        """
+        True, if only tests that failed during the last run should be executed, False otherwise.
+        """
+        return get_env_bool(environ, 'ONLY_FAILED')

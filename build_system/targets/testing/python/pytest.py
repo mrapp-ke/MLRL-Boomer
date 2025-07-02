@@ -24,5 +24,6 @@ class Pytest(PythonModule):
         super().__init__('pytest', '--verbose', '--color=yes',
                          '--junit-xml=' + path.join(module.result_directory, 'junit.xml'), module.root_directory)
         self.add_conditional_arguments(module.fail_fast, '--exitfirst')
+        self.add_conditional_arguments(module.only_failed, '--last-failed')
         self.print_arguments(True)
         self.set_build_unit(build_unit)
