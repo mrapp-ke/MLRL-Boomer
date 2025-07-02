@@ -1,2 +1,1 @@
 pytest >= 8.4, < 8.5
-unittest-xml-reporting >= 3.2, < 3.3
