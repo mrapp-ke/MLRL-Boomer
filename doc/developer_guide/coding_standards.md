@@ -28,7 +28,19 @@ To be able to detect problems with the project's source code early during develo
    ```
 ````
 
-This will result in all tests being run and their results being reported. If the execution should be aborted as soon as a single test fails, the environment variable `FAIL_FAST` can be used as shown below:
+This will result in all tests being run and their results being reported. The tests are run automatically for pull requests via {ref}`Continuous Integration <ci>` whenever relevant parts of the source code have been modified.
+
+```{note}
+If you want to execute the tests for the C++ or Python code independently, you can use the build target `tests_cpp` or `tests_python` instead of `tests`.
+```
+
+```{warning}
+Tests for the C++ code are only executed if the project has been compiled with testing support enabled. As described in the section {ref}`build-options`, testing support is enabled by default if the [GoogleTest](https://github.com/google/googletest) framework is available on the system.
+```
+
+### Failing Fast
+
+If the execution should be aborted as soon as a single test fails, the environment variable `FAIL_FAST` can be used as shown below:
 
 ````{tab} Linux
    ```text
@@ -49,11 +61,31 @@ This will result in all tests being run and their results being reported. If the
    ```
 ````
 
-```{note}
-If you want to execute the tests for the C++ or Python code independently, you can use the build target `tests_cpp` or `tests_python` instead of `tests`.
-```
+### Running Only Failed Tests
 
-`````{note}
+To run only the tests that failed at the last run (or all if none failed), the environment `ONLY_FAILED` can be specified:
+
+````{tab} Linux
+   ```text
+   ONLY_FAILED=true ./build tests
+   ```
+````
+
+````{tab} macOS
+   ```text
+   ONLY_FAILED=true ./build tests
+   ```
+````
+
+````{tab} Windows
+   ```text
+   $env:ONLY_FAILED = "true"
+   build.bat tests
+   ```
+````
+
+### Running Only Selected Tests
+
 It is also possible to only run the tests for certain subprojects (see {ref}`project-structure`) by providing their names as a comma-separated list via the environment variable `SUBPROJECTS`:
 
 ````{tab} Linux
@@ -74,15 +106,36 @@ It is also possible to only run the tests for certain subprojects (see {ref}`pro
    build.bat tests
    ```
 ````
-`````
 
-`````{note}
+Alternatively, markers of the tests that should be run can be specified via the environment variable `MARKERS`. This provides more fine-grained control, but applies only to Python tests. The following markers are available: `boosting`, `seco`, `classification`, `regression`.
+
+````{tab} Linux
+   ```text
+   MARKERS=boosting,seco ./build tests
+   ```
+````
+
+````{tab} macOS
+   ```text
+   MARKERS=boosting,seco ./build tests
+   ```
+````
+
+````{tab} Windows
+   ```text
+   $env:MARKERS = "boosting,seco"
+   build.bat tests
+   ```
+````
+
+### Overwriting Output Files
+
 When using the build target `tests_python`, the environment variable `OVERWRITE_OUTPUT_FILES` may be utilized to overwrite the files in the directory {repo-dir}`python/tests/res/out/` with the actual output of the corresponding test cases:
 
- ````{tab} Linux
-   ```text
-   OVERWRITE_OUTPUT_FILES=true ./build tests_python
-   ```
+````{tab} Linux
+  ```text
+  OVERWRITE_OUTPUT_FILES=true ./build tests_python
+  ```
 ````
 
 ````{tab} macOS
@@ -97,13 +150,6 @@ When using the build target `tests_python`, the environment variable `OVERWRITE_
    build.bat tests_python
    ```
 ````
-`````
-
-```{warning}
-Tests for the C++ code are only executed if the project has been compiled with testing support enabled. As described in the section {ref}`build-options`, testing support is enabled by default if the [GoogleTest](https://github.com/google/googletest) framework is available on the system.
-```
-
-The unit and integration tests are run automatically via {ref}`Continuous Integration <ci>` whenever relevant parts of the source code have been modified.
 
 (code-style)=
 
