@@ -1,6 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+# pylint: disable=missing-function-docstring
 from ..common.cmd_builder import CmdBuilder
 from ..common.cmd_runner import CmdRunner
 from .cmd_builder import BoomerCmdBuilderMixin
