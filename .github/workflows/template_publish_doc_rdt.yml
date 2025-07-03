@@ -16,4 +16,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Trigger readthedocs build
-        run: RDT_TOKEN=${{ secrets.RTD_TOKEN }} ./build trigger_readthedocs_build
+        env:
+          RDT_TOKEN: ${{ secrets.RTD_TOKEN }}
+        run: ./build trigger_readthedocs_build
