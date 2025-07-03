@@ -83,43 +83,26 @@ class IntegrationTests(TestCase, ABC):
 
     @ci_only
     def test_help(self):
-        """
-        Tests the functionality to show a help text.
-        """
         builder = self._create_cmd_builder() \
             .set_show_help()
         CmdRunner(self, builder).run('help')
 
     def test_single_output(self):
-        """
-        Tests the evaluation of the rule learning algorithm when predicting for a single output.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_single_output) \
             .print_evaluation()
         CmdRunner(self, builder).run('single-output')
 
     def test_sparse_feature_value(self):
-        """
-        Tests the training of the rule learning algorithm when using a custom value for the sparse elements in the
-        feature matrix.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_numerical_sparse) \
             .sparse_feature_value(1.0)
         CmdRunner(self, builder).run('sparse-feature-value')
 
     def test_meka_format(self):
-        """
-        Tests the evaluation of the rule learning algorithm when using the MEKA data format.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_meka) \
             .print_evaluation(False)
         CmdRunner(self, builder).run('meka-format')
 
     def test_evaluation_no_data_split(self):
-        """
-        Tests the evaluation of the rule learning algorithm when not using a split of the dataset into training and test
-        data.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .no_data_split() \
             .print_evaluation() \
@@ -127,29 +110,18 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('evaluation_no-data-split')
 
     def test_evaluation_train_test(self):
-        """
-        Tests the evaluation of the rule learning algorithm when using a predefined split of the dataset into training
-        and test data.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .print_evaluation() \
             .store_evaluation()
         CmdRunner(self, builder).run('evaluation_train-test')
 
     def test_evaluation_train_test_predefined(self):
-        """
-        Tests the evaluation of the rule learning algorithm when using a predefined split of the dataset into training
-        and test data, as provided by separate files.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default + '-predefined') \
             .print_evaluation() \
             .store_evaluation()
         CmdRunner(self, builder).run('evaluation_train-test-predefined')
 
     def test_evaluation_cross_validation(self):
-        """
-        Tests the evaluation of the rule learning algorithm when using a cross validation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .cross_validation() \
             .print_evaluation() \
@@ -157,10 +129,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('evaluation_cross-validation')
 
     def test_evaluation_cross_validation_predefined(self):
-        """
-        Tests the evaluation of the rule learning algorithm when using predefined splits of the dataset into individual
-        cross validation folds, as provided by separate files.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default + '-predefined') \
             .cross_validation() \
             .print_evaluation() \
@@ -168,9 +136,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('evaluation_cross-validation-predefined')
 
     def test_evaluation_single_fold(self):
-        """
-        Tests the evaluation of the rule learning algorithm when using a single fold of a cross validation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .cross_validation(current_fold=1) \
             .print_evaluation() \
@@ -178,9 +143,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('evaluation_single-fold')
 
     def test_evaluation_training_data(self):
-        """
-        Tests the evaluation of the rule learning algorithm on the training data.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .predict_for_training_data() \
             .print_evaluation() \
@@ -188,10 +150,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('evaluation_training-data')
 
     def test_evaluation_incremental(self):
-        """
-        Tests the repeated evaluation of the model that is learned by a rule learning algorithm, using subsets of the
-        induced rules with increasing size.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .incremental_evaluation() \
             .print_evaluation() \
@@ -199,37 +157,23 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('evaluation_incremental')
 
     def test_model_persistence_train_test(self):
-        """
-        Tests the functionality to store models and load them afterward when using a split of the dataset into training
-        and test data.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .set_model_dir()
         CmdRunner(self, builder).run('model-persistence_train-test')
 
     def test_model_persistence_cross_validation(self):
-        """
-        Tests the functionality to store models and load them afterward when using a cross validation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .cross_validation() \
             .set_model_dir()
         CmdRunner(self, builder).run('model-persistence_cross-validation')
 
     def test_model_persistence_single_fold(self):
-        """
-        Tests the functionality to store models and load them afterward when using a single fold of a cross validation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .cross_validation(current_fold=1) \
             .set_model_dir()
         CmdRunner(self, builder).run('model-persistence_single-fold')
 
     def test_predictions_train_test(self):
-        """
-        Tests the functionality to store the predictions of the rule learning algorithm when using a split of the
-        dataset into training and test data.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .print_evaluation(False) \
             .store_evaluation(False) \
@@ -240,9 +184,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('predictions_train-test')
 
     def test_predictions_cross_validation(self):
-        """
-        Tests the functionality to store the predictions of the rule learning algorithm when using a cross validation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .cross_validation() \
             .print_evaluation(False) \
@@ -254,10 +195,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('predictions_cross-validation')
 
     def test_predictions_single_fold(self):
-        """
-        Tests the functionality to store the predictions of the rule learning algorithm when using a single fold of a
-        cross validation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .cross_validation(current_fold=1) \
             .print_evaluation(False) \
@@ -269,9 +206,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('predictions_single-fold')
 
     def test_predictions_training_data(self):
-        """
-        Tests the functionality to store the predictions of the rule learning algorithm for the training data.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .predict_for_training_data() \
             .print_evaluation(False) \
@@ -283,10 +217,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('predictions_training-data')
 
     def test_prediction_characteristics_train_test(self):
-        """
-        Tests the functionality to store the prediction characteristics of the rule learning algorithm when using a
-        split of the dataset into training and test data.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .print_evaluation(False) \
             .store_evaluation(False) \
@@ -295,10 +225,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('prediction-characteristics_train-test')
 
     def test_prediction_characteristics_cross_validation(self):
-        """
-        Tests the functionality to store the prediction characteristics of the rule learning algorithm when using a
-        cross validation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .cross_validation() \
             .print_evaluation(False) \
@@ -308,10 +234,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('prediction-characteristics_cross-validation')
 
     def test_prediction_characteristics_single_fold(self):
-        """
-        Tests the functionality to store the prediction characteristics of the rule learning algorithm when using a
-        single fold of a cross validation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .cross_validation(current_fold=1) \
             .print_evaluation(False) \
@@ -321,10 +243,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('prediction-characteristics_single-fold')
 
     def test_prediction_characteristics_training_data(self):
-        """
-        Tests the functionality to store the prediction characteristics of the rule learning algorithm for the training
-        data.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .predict_for_training_data() \
             .print_evaluation(False) \
@@ -334,10 +252,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('prediction-characteristics_training-data')
 
     def test_data_characteristics_train_test(self):
-        """
-        Tests the functionality to store the characteristics of the data used for training by the rule learning
-        algorithm when using a split of the dataset into training and test data.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .print_evaluation(False) \
             .store_evaluation(False) \
@@ -346,10 +260,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('data-characteristics_train-test')
 
     def test_data_characteristics_cross_validation(self):
-        """
-        Tests the functionality to store the characteristics of the data used for training by the rule learning
-        algorithm when using a cross validation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .cross_validation() \
             .print_evaluation(False) \
@@ -359,10 +269,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('data-characteristics_cross-validation')
 
     def test_data_characteristics_single_fold(self):
-        """
-        Tests the functionality to store the characteristics of the data used for training by the rule learning
-        algorithm when using a single fold of a cross validation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .cross_validation(current_fold=1) \
             .print_evaluation(False) \
@@ -372,10 +278,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('data-characteristics_single-fold')
 
     def test_model_characteristics_train_test(self):
-        """
-        Tests the functionality to store the characteristics of models when using a split of the dataset into training
-        and test data.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .print_evaluation(False) \
             .store_evaluation(False) \
@@ -384,9 +286,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('model-characteristics_train-test')
 
     def test_model_characteristics_cross_validation(self):
-        """
-        Tests the functionality to store the characteristics of models when using a cross validation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .cross_validation() \
             .print_evaluation(False) \
@@ -396,9 +295,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('model-characteristics_cross-validation')
 
     def test_model_characteristics_single_fold(self):
-        """
-        Tests the functionality to store the characteristics of models when using a single fold of a cross validation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .cross_validation(current_fold=1) \
             .print_evaluation(False) \
@@ -408,10 +304,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('model-characteristics_single-fold')
 
     def test_rules_train_test(self):
-        """
-        Tests the functionality to store textual representations of the rules in a model when using a split of the
-        dataset into training and test data.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .print_evaluation(False) \
             .store_evaluation(False) \
@@ -420,9 +312,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('rules_train-test')
 
     def test_rules_cross_validation(self):
-        """
-        Tests the functionality to store textual representations of the rules in a model when using a cross validation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .cross_validation() \
             .print_evaluation(False) \
@@ -432,10 +321,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('rules_cross-validation')
 
     def test_rules_single_fold(self):
-        """
-        Tests the functionality to store textual representations of the rules in a model when using a single fold of a
-        cross validation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .cross_validation(current_fold=1) \
             .print_evaluation(False) \
@@ -445,91 +330,56 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('rules_single-fold')
 
     def test_numeric_features_dense(self):
-        """
-        Tests the rule learning algorithm on a dataset with numerical features when using a dense feature
-        representation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_numerical_sparse) \
             .sparse_feature_format(False)
         CmdRunner(self, builder).run('numeric-features-dense')
 
     def test_numeric_features_sparse(self):
-        """
-        Tests the rule learning algorithm on a dataset with numerical features when using a sparse feature
-        representation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_numerical_sparse) \
             .sparse_feature_format()
         CmdRunner(self, builder).run('numeric-features-sparse')
 
     def test_binary_features_dense(self):
-        """
-        Tests the rule learning algorithm on a dataset with binary features when using a dense feature representation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_binary) \
             .sparse_feature_format(False)
         CmdRunner(self, builder).run('binary-features-dense')
 
     def test_binary_features_sparse(self):
-        """
-        Tests the rule learning algorithm on a dataset with binary features when using a sparse feature representation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_binary) \
             .sparse_feature_format()
         CmdRunner(self, builder).run('binary-features-sparse')
 
     def test_nominal_features_dense(self):
-        """
-        Tests the rule learning algorithm on a dataset with nominal features when using a dense feature representation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_nominal) \
             .sparse_feature_format(False)
         CmdRunner(self, builder).run('nominal-features-dense')
 
     def test_nominal_features_sparse(self):
-        """
-        Tests the rule learning algorithm on a dataset with nominal features when using a sparse feature representation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_nominal) \
             .sparse_feature_format()
         CmdRunner(self, builder).run('nominal-features-sparse')
 
     def test_ordinal_features_dense(self):
-        """
-        Tests the rule learning algorithm on a dataset with ordinal features when using a dense feature representation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_ordinal) \
             .sparse_feature_format(False)
         CmdRunner(self, builder).run('ordinal-features-dense')
 
     def test_ordinal_features_sparse(self):
-        """
-        Tests the rule learning algorithm on a dataset with ordinal features when using a sparse feature representation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_ordinal) \
             .sparse_feature_format()
         CmdRunner(self, builder).run('ordinal-features-sparse')
 
     def test_output_format_dense(self):
-        """
-        Tests the rule learning algorithm when using a dense output representation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .sparse_output_format(False)
         CmdRunner(self, builder).run('output-format-dense')
 
     def test_output_format_sparse(self):
-        """
-        Tests the rule learning algorithm when using a sparse output representation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .sparse_output_format()
         CmdRunner(self, builder).run('output-format-sparse')
 
     def test_prediction_format_dense(self):
-        """
-        Tests the rule learning algorithm when using a dense representation of predictions.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .sparse_prediction_format(False) \
             .print_predictions() \
@@ -537,9 +387,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('prediction-format-dense')
 
     def test_prediction_format_sparse(self):
-        """
-        Tests the rule learning algorithm when using a sparse representation of predictions.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .sparse_prediction_format() \
             .print_predictions() \
@@ -547,10 +394,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('prediction-format-sparse')
 
     def test_parameters_train_test(self):
-        """
-        Tests the functionality to configure the rule learning algorithm according to parameter settings that are loaded
-        from input files when using a split of the dataset into training and test data.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .print_evaluation(False) \
             .store_evaluation(False) \
@@ -561,10 +404,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('parameters_train-test')
 
     def test_parameters_cross_validation(self):
-        """
-        Tests the functionality to configure the rule learning algorithm according to parameter settings that are loaded
-        from input files when using a cross validation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .cross_validation() \
             .print_evaluation(False) \
@@ -576,10 +415,6 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('parameters_cross-validation')
 
     def test_parameters_single_fold(self):
-        """
-        Tests the functionality to configure the rule learning algorithm according to parameter settings that are loaded
-        from input files when using a single fold of a cross validation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .cross_validation(current_fold=1) \
             .print_evaluation(False) \
@@ -591,219 +426,133 @@ class IntegrationTests(TestCase, ABC):
         CmdRunner(self, builder).run('parameters_single-fold')
 
     def test_instance_sampling_no(self):
-        """
-        Tests the rule learning algorithm when not using a method to sample from the available training examples.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .instance_sampling(CmdBuilder.INSTANCE_SAMPLING_NO)
         CmdRunner(self, builder).run('instance-sampling-no')
 
     def test_instance_sampling_with_replacement(self):
-        """
-        Tests the rule learning algorithm when using a method to sample from the available training examples with
-        replacement.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .instance_sampling(CmdBuilder.INSTANCE_SAMPLING_WITH_REPLACEMENT)
         CmdRunner(self, builder).run('instance-sampling-with-replacement')
 
     def test_instance_sampling_without_replacement(self):
-        """
-        Tests the rule learning algorithm when using a method to sample from the available training examples without
-        replacement.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .instance_sampling(CmdBuilder.INSTANCE_SAMPLING_WITHOUT_REPLACEMENT)
         CmdRunner(self, builder).run('instance-sampling-without-replacement')
 
     def test_feature_sampling_no(self):
-        """
-        Tests the rule learning algorithm when not using a method to sample from the available features.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .feature_sampling(CmdBuilder.FEATURE_SAMPLING_NO)
         CmdRunner(self, builder).run('feature-sampling-no')
 
     def test_feature_sampling_without_replacement(self):
-        """
-        Tests the rule learning algorithm when using a method to sample from the available features without replacement.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .feature_sampling(CmdBuilder.FEATURE_SAMPLING_WITHOUT_REPLACEMENT)
         CmdRunner(self, builder).run('feature-sampling-without-replacement')
 
     def test_output_sampling_no(self):
-        """
-        Tests the rule learning algorithm when not using a method to sample from the available outputs.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .output_sampling(CmdBuilder.OUTPUT_SAMPLING_NO)
         CmdRunner(self, builder).run('output-sampling-no')
 
     def test_output_sampling_round_robin(self):
-        """
-        Tests the rule learning algorithm when using a method that samples single outputs in a round-robin fashion.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .output_sampling(CmdBuilder.OUTPUT_SAMPLING_ROUND_ROBIN)
         CmdRunner(self, builder).run('output-sampling-round-robin')
 
     def test_output_sampling_without_replacement(self):
-        """
-        Tests the rule learning algorithm when using a method to sample from the available outputs without replacement.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .output_sampling(CmdBuilder.OUTPUT_SAMPLING_WITHOUT_REPLACEMENT)
         CmdRunner(self, builder).run('output-sampling-without-replacement')
 
     def test_pruning_no(self):
-        """
-        Tests the rule learning algorithm when not using a pruning method.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .rule_pruning(CmdBuilder.RULE_PRUNING_NO)
         CmdRunner(self, builder).run('pruning-no')
 
     def test_pruning_irep(self):
-        """
-        Tests the rule learning algorithm when using the IREP pruning method.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .instance_sampling() \
             .rule_pruning(CmdBuilder.RULE_PRUNING_IREP)
         CmdRunner(self, builder).run('pruning-irep')
 
     def test_rule_induction_top_down_beam_search(self):
-        """
-        Tests the rule learning algorithm when using a top-down beam search.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .rule_induction(CmdBuilder.RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH)
         CmdRunner(self, builder).run('rule-induction-top-down-beam-search')
 
     def test_sequential_post_optimization(self):
-        """
-        Tests the rule learning algorithm when using sequential post-optimization.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .sequential_post_optimization()
         CmdRunner(self, builder).run('sequential-post-optimization')
 
     def test_feature_binning_equal_width_binary_features_dense(self):
-        """
-        Tests the rule learning algorithm's ability to use equal-width feature binning when applied to a dataset with
-        binary features using a dense feature representation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_binary) \
             .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
             .sparse_feature_format(False)
         CmdRunner(self, builder).run('feature-binning-equal-width_binary-features-dense')
 
     def test_feature_binning_equal_width_binary_features_sparse(self):
-        """
-        Tests the rule learning algorithm's ability to use equal-width feature binning when applied to a dataset with
-        binary features using a sparse feature representation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_binary) \
             .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
             .sparse_feature_format()
         CmdRunner(self, builder).run('feature-binning-equal-width_binary-features-sparse')
 
     def test_feature_binning_equal_width_nominal_features_dense(self):
-        """
-        Tests the rule learning algorithm's ability to use equal-width feature binning when applied to a dataset with
-        nominal features using a dense feature representation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_nominal) \
             .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
             .sparse_feature_format(False)
         CmdRunner(self, builder).run('feature-binning-equal-width_nominal-features-dense')
 
     def test_feature_binning_equal_width_nominal_features_sparse(self):
-        """
-        Tests the rule learning algorithm's ability to use equal-width feature binning when applied to a dataset with
-        nominal features using a sparse feature representation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_nominal) \
             .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
             .sparse_feature_format()
         CmdRunner(self, builder).run('feature-binning-equal-width_nominal-features-sparse')
 
     def test_feature_binning_equal_width_numerical_features_dense(self):
-        """
-        Tests the rule learning algorithm's ability to use equal-width feature binning when applied to a dataset with
-        numerical features using a dense feature representation.
-        """
         builder = self._create_cmd_builder() \
             .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
             .sparse_feature_format(False)
         CmdRunner(self, builder).run('feature-binning-equal-width_numerical-features-dense')
 
     def test_feature_binning_equal_width_numerical_features_sparse(self):
-        """
-        Tests the rule learning algorithm's ability to use equal-width feature binning when applied to a dataset with
-        numerical features using a sparse feature representation.
-        """
         builder = self._create_cmd_builder() \
             .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
             .sparse_feature_format()
         CmdRunner(self, builder).run('feature-binning-equal-width_numerical-features-sparse')
 
     def test_feature_binning_equal_frequency_binary_features_dense(self):
-        """
-        Tests the rule learning algorithm's ability to use equal-frequency feature binning when applied to a dataset
-        with binary features using a dense feature representation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_binary) \
             .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format(False)
         CmdRunner(self, builder).run('feature-binning-equal-frequency_binary-features-dense')
 
     def test_feature_binning_equal_frequency_binary_features_sparse(self):
-        """
-        Tests the rule learning algorithm's ability to use equal-frequency feature binning when applied to a dataset
-        with binary features using a sparse feature representation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_binary) \
             .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format()
         CmdRunner(self, builder).run('feature-binning-equal-frequency_binary-features-sparse')
 
     def test_feature_binning_equal_frequency_nominal_features_dense(self):
-        """
-        Tests the rule learning algorithm's ability to use equal-frequency feature binning when applied to a dataset
-        with nominal features using a dense feature representation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_nominal) \
             .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format(False)
         CmdRunner(self, builder).run('feature-binning-equal-frequency_nominal-features-dense')
 
     def test_feature_binning_equal_frequency_nominal_features_sparse(self):
-        """
-        Tests the rule learning algorithm's ability to use equal-frequency feature binning when applied to a dataset
-        with nominal features using a sparse feature representation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_nominal) \
             .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format()
         CmdRunner(self, builder).run('feature-binning-equal-frequency_nominal-features-sparse')
 
     def test_feature_binning_equal_frequency_numerical_features_dense(self):
-        """
-        Tests the rule learning algorithm's ability to use equal-frequency feature binning when applied to a dataset
-        with numerical features using a dense feature representation.
-        """
         builder = self._create_cmd_builder() \
             .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format(False)
         CmdRunner(self, builder).run('feature-binning-equal-frequency_numerical-features-dense')
 
     def test_feature_binning_equal_frequency_numerical_features_sparse(self):
-        """
-        Tests the rule learning algorithm's ability to use equal-frequency feature binning when applied to a dataset
-        with numerical features using a sparse feature representation.
-        """
         builder = self._create_cmd_builder() \
             .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
             .sparse_feature_format()

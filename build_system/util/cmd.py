@@ -63,6 +63,7 @@ class Command:
             return command.command
 
         def __init__(self):
+            self.accepted_exit_codes = {0}
             self.print_command = True
             self.exit_on_error = True
             self.environment = None
@@ -85,7 +86,7 @@ class Command:
                                     env=self.environment)
             exit_code = output.returncode
 
-            if exit_code != 0:
+            if exit_code not in self.accepted_exit_codes:
                 if capture_output:
                     Log.info('%s', str(output.stderr).strip())
 

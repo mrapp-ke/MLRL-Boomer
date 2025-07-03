@@ -76,6 +76,16 @@ class Program(Command):
         self.run_options.dependencies.update(dependencies)
         return self
 
+    def set_accepted_exit_codes(self, *accepted_exit_codes: int) -> 'Program':
+        """
+        Sets one or several exit codes that should not be considered as an error.
+
+        :param accepted_exit_codes: The exit codes to be set
+        :return:                    The `Program` itself
+        """
+        self.run_options.accepted_exit_codes = set(accepted_exit_codes)
+        return self
+
 
 class PythonModule(Program):
     """

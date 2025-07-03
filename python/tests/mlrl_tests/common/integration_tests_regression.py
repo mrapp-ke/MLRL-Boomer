@@ -45,10 +45,6 @@ class RegressionIntegrationTests(IntegrationTests, ABC):
         super().setUpClass()
 
     def test_single_output_regression(self):
-        """
-        Tests the evaluation of the rule learning algorithm when predicting regression scores for a single-output
-        problem.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_single_output) \
             .print_evaluation()
         CmdRunner(self, builder).run('single-output-regression')

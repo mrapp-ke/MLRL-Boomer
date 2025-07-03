@@ -44,10 +44,6 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
         super().setUpClass()
 
     def test_label_vectors_train_test(self):
-        """
-        Tests the functionality to store the unique label vectors contained in the data used for training by the rule
-        learning algorithm when using a split of the dataset into training and test data.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .print_evaluation(False) \
             .store_evaluation(False) \
@@ -56,10 +52,6 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
         CmdRunner(self, builder).run('label-vectors_train-test')
 
     def test_label_vectors_cross_validation(self):
-        """
-        Tests the functionality to store the unique label vectors contained in the data used for training by the rule
-        learning algorithm when using a cross validation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .cross_validation() \
             .print_evaluation(False) \
@@ -69,10 +61,6 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
         CmdRunner(self, builder).run('label-vectors_cross-validation')
 
     def test_label_vectors_single_fold(self):
-        """
-        Tests the functionality to store the unique label vectors contained in the data used for training by the rule
-        learning algorithm when using a single fold of a cross validation.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .cross_validation(current_fold=1) \
             .print_evaluation(False) \
@@ -82,19 +70,11 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
         CmdRunner(self, builder).run('label-vectors_single-fold')
 
     def test_instance_sampling_stratified_output_wise(self):
-        """
-        Tests the rule learning algorithm when using a method to sample from the available training examples using
-        label-wise stratification.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .instance_sampling(ClassificationCmdBuilder.INSTANCE_SAMPLING_STRATIFIED_OUTPUT_WISE)
         CmdRunner(self, builder).run('instance-sampling-stratified-output-wise')
 
     def test_instance_sampling_stratified_example_wise(self):
-        """
-        Tests the rule learning algorithm when using a method to sample from the available training examples using
-        example-wise stratification.
-        """
         builder = self._create_cmd_builder(dataset=self.dataset_default) \
             .instance_sampling(ClassificationCmdBuilder.INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE)
         CmdRunner(self, builder).run('instance-sampling-stratified-example-wise')

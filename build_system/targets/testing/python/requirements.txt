@@ -1,1 +1,1 @@
-unittest-xml-reporting >= 3.2, < 3.3
+pytest >= 8.4, < 8.5
