@@ -67,8 +67,11 @@ jobs:
           private-key: ${{ secrets.TOKEN_APP_SECRET }}
       - name: Generate documentation
         if: ${{ inputs.doc == true }}
-        run: SPHINX_BUILDER=${{ inputs.sphinx_builder }} GIT_BRANCH=${{ github.head_ref || github.ref_name }} GITHUB_TOKEN=${{ steps.app-token.outputs.token }}
-          ./build doc
+        env:
+          SPHINX_BUILDER: ${{ inputs.sphinx_builder }}
+          GIT_BRANCH: ${{ github.head_ref || github.ref_name }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: ./build doc
       - name: Upload documentation as artifact
         if: ${{ inputs.doc == true && inputs.sphinx_builder == 'html' }}
         uses: actions/upload-artifact@v4

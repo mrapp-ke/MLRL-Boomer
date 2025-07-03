@@ -27,7 +27,9 @@ jobs:
           python-version: ${{ inputs.python_version }}
           check-latest: true
       - name: Install OpenMP
-        run: GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} ./build dependency_libomp
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./build dependency_libomp
       - name: Install OpenCL
         run: brew install opencl-clhpp-headers
       - name: Prepare ccache

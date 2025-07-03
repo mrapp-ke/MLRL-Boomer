@@ -46,8 +46,10 @@ jobs:
           app-id: ${{ secrets.TOKEN_APP_ID }}
           private-key: ${{ secrets.TOKEN_APP_SECRET }}
       - name: Update GitHub Actions
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          GITHUB_TOKEN=${{ steps.app-token.outputs.token }} ./build update_github_actions
+          ./build update_github_actions
           git add .github/workflows/*.y*ml
       - name: Submit pull request
         id: pull-request
