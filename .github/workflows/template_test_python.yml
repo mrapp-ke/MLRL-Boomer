@@ -1,0 +1,74 @@
+---
+name: Test Python packages
+on:
+  workflow_call:
+    inputs:
+      python_version:
+        required: true
+        type: string
+      overwrite_output_files:
+        required: false
+        type: boolean
+      subproject:
+        required: true
+        type: string
+jobs:
+  test_python:
+    name: Test Python packages
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Generate token
+        uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ secrets.token_app_id }}
+          private-key: ${{ secrets.token_app_secret }}
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+          ref: ${{ github.head_ref }}
+      - name: Setup git
+        uses: fregante/setup-git-user@v2
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python_version }}
+          check-latest: true
+      - name: Install OpenCL
+        run: sudo apt update && sudo apt install -y opencl-headers ocl-icd-opencl-dev
+      - name: Create virtual environment
+        run: ./build venv
+      - name: Download Python packages
+        uses: actions/download-artifact@v4
+        with:
+          name: python-packages-${{ inputs.subproject }}
+          path: python/subprojects/
+      - name: Install Python packages
+        run: . .venv/bin/activate && python -m pip install python/subprojects/**/dist/*.whl && deactivate
+      - name: Test Python packages
+        env:
+          SUBPROJECTS: ${{ inputs.subproject }}
+          OVERWRITE_OUTPUT_FILES: ${{ inputs.overwrite_output_files }}
+        run: ./build tests_python --no-dependencies
+      - name: Push changes in output files
+        if: ${{ inputs.overwrite_output_files == true }}
+        env:
+          BRANCH_NAME: ${{ github.head_ref }}-${{ github.event.number }}
+        run: |
+          git stash
+          git fetch
+          (git switch $BRANCH_NAME && git pull) || git switch -c $BRANCH_NAME
+          git stash apply || (git checkout --theirs . && git add .)
+          git stash drop
+          git add python/tests/res/out/**/*
+          git diff --cached --quiet || git commit -m "Adjust expected output of integration tests."
+          git push -u origin HEAD
+      - name: Upload Python test results as artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-test-results-${{ inputs.subproject }}
+          path: python/tests/build/test-results/*.xml
+          if-no-files-found: ignore
