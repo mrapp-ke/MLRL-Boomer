@@ -9,7 +9,7 @@ from core.targets import PhonyTarget
 from util.log import Log
 
 from targets.testing.python.modules import PythonTestModule
-from targets.testing.python.unittest import UnitTest
+from targets.testing.python.pytest import Pytest
 
 
 class TestPython(PhonyTarget.Runnable):
@@ -22,4 +22,4 @@ class TestPython(PhonyTarget.Runnable):
 
     def run(self, build_unit: BuildUnit, module: Module):
         Log.info('Running tests in directory "%s"...', module.root_directory)
-        UnitTest(build_unit, module).run()
+        Pytest(build_unit, module).run()

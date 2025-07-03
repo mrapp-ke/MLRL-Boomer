@@ -7,6 +7,7 @@ blas
 bugfix
 bugfixes
 ccache
+cfg
 changelog
 Charte
 const
