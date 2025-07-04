@@ -63,6 +63,8 @@ jobs:
           if-no-files-found: ignore
       - name: Build Python packages
         if: ${{ matrix.os == 'ubuntu-24.04' && inputs.run_python_tests == true }}
+        env:
+          REPAIR_WHEELS: true
         run: ./build build_wheels
       - name: Upload Python packages as artifacts
         if: ${{ matrix.os == 'ubuntu-24.04' && inputs.run_python_tests == true }}

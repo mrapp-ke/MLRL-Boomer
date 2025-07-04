@@ -193,6 +193,13 @@ class PythonPackageModule(SubprojectModule):
         return wheels[0] if wheels else None
 
     @property
+    def pure(self) -> bool:
+        """
+        True, if the wheel package is a pure Pyton package without extension modules, False otherwise
+        """
+        return not path.isfile(path.join(self.root_directory, 'setup.py'))
+
+    @property
     def subproject_name(self) -> str:
         return path.basename(self.root_directory)
 
