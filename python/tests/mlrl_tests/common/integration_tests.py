@@ -329,19 +329,16 @@ class IntegrationTests(ABC):
             .sparse_output_format()
         CmdRunner(builder).run('output-format-sparse')
 
-    def test_prediction_format_dense(self, dataset: Dataset):
+    @pytest.mark.parametrize('prediction_format', [
+        CmdBuilder.PREDICTION_FORMAT_DENSE,
+        CmdBuilder.PREDICTION_FORMAT_SPARSE,
+    ])
+    def test_prediction_format(self, prediction_format: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .sparse_prediction_format(False) \
+            .prediction_format(prediction_format) \
             .print_predictions() \
             .print_ground_truth()
-        CmdRunner(builder).run('prediction-format-dense')
-
-    def test_prediction_format_sparse(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .sparse_prediction_format() \
-            .print_predictions() \
-            .print_ground_truth()
-        CmdRunner(builder).run('prediction-format-sparse')
+        CmdRunner(builder).run(f'prediction-format-{prediction_format}')
 
     def test_parameters_train_test(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
