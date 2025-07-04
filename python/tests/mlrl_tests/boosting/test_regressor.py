@@ -1,7 +1,9 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+# pylint: disable=missing-function-docstring
 from typing import Any
+
 import pytest
 
 from ..common.cmd_runner import CmdRunner
