@@ -428,15 +428,17 @@ class CmdBuilder:
         self.args.append('sparse' if sparse else 'dense')
         return self
 
-    def instance_sampling(self, instance_sampling: str = INSTANCE_SAMPLING_WITHOUT_REPLACEMENT):
+    def instance_sampling(self, instance_sampling: Optional[str]):
         """
         Configures the rule learner to sample from the available training examples.
 
         :param instance_sampling:   The name of the sampling method that should be used
         :return:                    The builder itself
         """
-        self.args.append('--instance-sampling')
-        self.args.append(instance_sampling)
+        if instance_sampling:
+            self.args.append('--instance-sampling')
+            self.args.append(instance_sampling)
+
         return self
 
     def feature_sampling(self, feature_sampling: str = FEATURE_SAMPLING_WITHOUT_REPLACEMENT):
