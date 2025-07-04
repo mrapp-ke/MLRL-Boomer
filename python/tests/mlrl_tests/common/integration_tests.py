@@ -394,20 +394,15 @@ class IntegrationTests(ABC):
             .feature_sampling(feature_sampling)
         CmdRunner(builder).run(f'feature-sampling-{feature_sampling}')
 
-    def test_output_sampling_no(self, dataset: Dataset):
+    @pytest.mark.parametrize('output_sampling', [
+        CmdBuilder.OUTPUT_SAMPLING_NO,
+        CmdBuilder.OUTPUT_SAMPLING_ROUND_ROBIN,
+        CmdBuilder.OUTPUT_SAMPLING_WITHOUT_REPLACEMENT,
+    ])
+    def test_output_sampling(self, output_sampling: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .output_sampling(CmdBuilder.OUTPUT_SAMPLING_NO)
-        CmdRunner(builder).run('output-sampling-no')
-
-    def test_output_sampling_round_robin(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .output_sampling(CmdBuilder.OUTPUT_SAMPLING_ROUND_ROBIN)
-        CmdRunner(builder).run('output-sampling-round-robin')
-
-    def test_output_sampling_without_replacement(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .output_sampling(CmdBuilder.OUTPUT_SAMPLING_WITHOUT_REPLACEMENT)
-        CmdRunner(builder).run('output-sampling-without-replacement')
+            .output_sampling(output_sampling)
+        CmdRunner(builder).run(f'output-sampling-{output_sampling}')
 
     @pytest.mark.parametrize('rule_pruning, instance_sampling', [
         (CmdBuilder.RULE_PRUNING_NO, None),
