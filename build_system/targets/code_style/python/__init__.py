@@ -3,6 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Defines targets and modules for checking and enforcing code style definitions for Python and Cython files.
 """
+from os import path
+
 from core.build_unit import BuildUnit
 from core.targets import PhonyTarget, TargetBuilder
 from util.files import FileType
@@ -26,6 +28,11 @@ MODULES = [
         file_type=FileType.python(),
         root_directory=Project.BuildSystem.root_directory,
         source_file_search=Project.BuildSystem.file_search(),
+    ),
+    CodeModule(
+        file_type=FileType.python(),
+        root_directory=path.join(Project.Python.root_directory, 'tests'),
+        source_file_search=Project.Python.file_search(),
     ),
     CodeModule(
         file_type=FileType.cython(),

@@ -1,6 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+# pylint: disable=missing-function-docstring
 import os
 
 from abc import ABC
