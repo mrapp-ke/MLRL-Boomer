@@ -12,21 +12,10 @@ from unittest import SkipTest, TestCase
 from .cmd_builder import CmdBuilder
 from .cmd_runner import CmdRunner
 from .datasets import Dataset
+import pytest
 
 
-def ci_only(decorated_function):
-    """
-    A decorator that disables all annotated test case if unless run in a GitHub workflow.
-    """
-
-    def wrapper(*args, **kwargs):
-        if os.getenv('GITHUB_ACTIONS') != 'true':
-            raise SkipTest('Disabled unless run on CI')
-
-        decorated_function(*args, **kwargs)
-
-    return wrapper
-
+ci_only = pytest.mark.skipif(os.getenv('GITHUB_ACTIONS') != 'true', reason='Disabled unless run on CI')
 
 class IntegrationTests(TestCase, ABC):
     """
