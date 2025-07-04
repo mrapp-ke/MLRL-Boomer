@@ -375,15 +375,15 @@ class IntegrationTests(ABC):
             .set_parameter_load_dir()
         CmdRunner(builder).run('parameters_single-fold')
 
-    def test_instance_sampling_no(self, dataset: Dataset):
+    @pytest.mark.parametrize('instance_sampling', [
+        CmdBuilder.INSTANCE_SAMPLING_NO,
+        CmdBuilder.INSTANCE_SAMPLING_WITH_REPLACEMENT,
+        CmdBuilder.INSTANCE_SAMPLING_WITHOUT_REPLACEMENT,
+    ])
+    def test_instance_sampling(self, instance_sampling: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .instance_sampling(CmdBuilder.INSTANCE_SAMPLING_NO)
-        CmdRunner(builder).run('instance-sampling-no')
-
-    def test_instance_sampling_with_replacement(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .instance_sampling(CmdBuilder.INSTANCE_SAMPLING_WITH_REPLACEMENT)
-        CmdRunner(builder).run('instance-sampling-with-replacement')
+            .instance_sampling(instance_sampling)
+        CmdRunner(builder).run(f'instance-sampling-{instance_sampling}')
 
     def test_instance_sampling_without_replacement(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
