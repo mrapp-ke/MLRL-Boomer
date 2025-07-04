@@ -385,20 +385,14 @@ class IntegrationTests(ABC):
             .instance_sampling(instance_sampling)
         CmdRunner(builder).run(f'instance-sampling-{instance_sampling}')
 
-    def test_instance_sampling_without_replacement(self, dataset: Dataset):
+    @pytest.mark.parametrize('feature_sampling', [
+        CmdBuilder.FEATURE_SAMPLING_NO,
+        CmdBuilder.FEATURE_SAMPLING_WITHOUT_REPLACEMENT,
+    ])
+    def test_feature_sampling(self, feature_sampling: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .instance_sampling(CmdBuilder.INSTANCE_SAMPLING_WITHOUT_REPLACEMENT)
-        CmdRunner(builder).run('instance-sampling-without-replacement')
-
-    def test_feature_sampling_no(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .feature_sampling(CmdBuilder.FEATURE_SAMPLING_NO)
-        CmdRunner(builder).run('feature-sampling-no')
-
-    def test_feature_sampling_without_replacement(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .feature_sampling(CmdBuilder.FEATURE_SAMPLING_WITHOUT_REPLACEMENT)
-        CmdRunner(builder).run('feature-sampling-without-replacement')
+            .feature_sampling(feature_sampling)
+        CmdRunner(builder).run(f'feature-sampling-{feature_sampling}')
 
     def test_output_sampling_no(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
