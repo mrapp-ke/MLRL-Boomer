@@ -67,7 +67,6 @@ jobs:
       apidoc_cpp: ${{ needs.changes.outputs.cpp == 'true' }}
       apidoc_python: ${{ needs.changes.outputs.python == 'true' }}
       doc: ${{ needs.changes.outputs.doc == 'true' }}
-      ccache_key: build-doc-ccache
     secrets: inherit
   check_links:
     needs: changes
@@ -76,7 +75,6 @@ jobs:
     with:
       doc: ${{ needs.changes.outputs.doc_links == 'true' }}
       sphinx_builder: linkcheck
-      ccache_key: check-links-ccache
     secrets: inherit
   check_spelling:
     needs: changes
@@ -85,7 +83,6 @@ jobs:
     with:
       doc: ${{ needs.changes.outputs.doc_spelling == 'true' }}
       sphinx_builder: spelling
-      ccache_key: check-spelling-ccache
     secrets: inherit
   check_success:
     needs:

@@ -35,7 +35,7 @@ jobs:
       - name: Prepare ccache
         uses: hendrikmuhs/ccache-action@v1
         with:
-          key: ${{ runner.os }}-test-build-ccache-${{ inputs.subproject }}
+          key: ccache-${{ runner.os }}-${{ runner.arch }}-${{ inputs.subproject }}
       - name: Compile via Clang
         run: CPLUS_INCLUDE_PATH=/Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/include/:/opt/homebrew/opt/opencl-clhpp-headers/include/
           LIBRARY_PATH=/Users/runner/work/MLRL-Boomer/MLRL-Boomer/libomp/lib/ ./build compile
