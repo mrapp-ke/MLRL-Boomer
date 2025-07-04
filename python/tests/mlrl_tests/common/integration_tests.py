@@ -319,15 +319,14 @@ class IntegrationTests(ABC):
             .feature_format(CmdBuilder.FEATURE_FORMAT_SPARSE)
         CmdRunner(builder).run('ordinal-features-sparse')
 
-    def test_output_format_dense(self, dataset: Dataset):
+    @pytest.mark.parametrize('output_format', [
+        CmdBuilder.OUTPUT_FORMAT_DENSE,
+        CmdBuilder.OUTPUT_FORMAT_SPARSE,
+    ])
+    def test_output_format(self, output_format: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .sparse_output_format(False)
-        CmdRunner(builder).run('output-format-dense')
-
-    def test_output_format_sparse(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .sparse_output_format()
-        CmdRunner(builder).run('output-format-sparse')
+            .output_format(output_format)
+        CmdRunner(builder).run(f'output-format-{output_format}')
 
     @pytest.mark.parametrize('prediction_format', [
         CmdBuilder.PREDICTION_FORMAT_DENSE,
