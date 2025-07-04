@@ -17,9 +17,6 @@ on:
         required: false
         type: string
         default: html
-      ccache_key:
-        required: false
-        type: string
       release:
         required: false
         type: boolean
@@ -43,10 +40,9 @@ jobs:
           python-version: ${{ steps.python_version.outputs.python_version }}
           check-latest: true
       - name: Prepare ccache
-        if: ${{ inputs.ccache_key }}
         uses: hendrikmuhs/ccache-action@v1
         with:
-          key: ${{ inputs.ccache_key }}
+          key: ccache-${{ runner.os }}-${{ runner.arch }}-doc
       - name: Install Doxygen
         uses: ssciwr/doxygen-install@v1
       - name: Generate C++ Apidoc
