@@ -3,16 +3,18 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for building and installing wheel packages.
 """
-from os import path
+from os import environ, path
 from typing import Dict, List
 
 from core.build_unit import BuildUnit
 from core.modules import Module
 from core.targets import BuildTarget
+from util.env import get_env_bool
 from util.files import DirectorySearch, FileType
 from util.log import Log
 from util.pip import Package, Pip, Requirement, RequirementsTextFile, RequirementVersion
 
+from targets.packaging.auditwheel import Auditwheel
 from targets.packaging.build import Build
 from targets.packaging.modules import PythonPackageModule
 from targets.packaging.pyproject_toml import PyprojectTomlFile
@@ -110,8 +112,10 @@ class GeneratePyprojectTomlFiles(BuildTarget.Runnable):
 
 class BuildPythonWheels(BuildTarget.Runnable):
     """
-    Builds Python wheel packages.
+    Builds Python wheel packages and optionally repairs them via "auditwheel".
     """
+
+    ENV_REPAIR_WHEELS = 'REPAIR_WHEELS'
 
     def __init__(self):
         super().__init__(MODULE_FILTER)
@@ -119,6 +123,16 @@ class BuildPythonWheels(BuildTarget.Runnable):
     def run(self, build_unit: BuildUnit, module: Module):
         Log.info('Building Python wheels for directory "%s"...', module.root_directory)
         Build(build_unit, module).run()
+
+        if get_env_bool(environ, self.ENV_REPAIR_WHEELS):
+            if module.pure:
+                Log.info('Python wheels in directory "%s" are pure and must not be repaired', module.root_directory)
+            else:
+                Log.info('Repairing Python wheels in directory "%s"...', module.root_directory)
+                wheel = module.find_wheel()
+
+                if wheel:
+                    Auditwheel(build_unit, wheel).run()
 
     def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
         file_search = Project.Python.file_search() \

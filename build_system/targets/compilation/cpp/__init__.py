@@ -9,7 +9,7 @@ from util.files import FileType
 
 from targets.compilation.cpp.targets import CompileCpp, InstallCpp, SetupCpp
 from targets.compilation.modules import CompilationModule
-from targets.dependencies.python import VENV
+from targets.dependencies.python import INSTALL_RUNTIME_DEPENDENCIES
 from targets.project import Project
 
 SETUP_CPP = 'setup_cpp'
@@ -20,7 +20,7 @@ INSTALL_CPP = 'install_cpp'
 
 TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
     .add_build_target(SETUP_CPP) \
-        .depends_on(VENV) \
+        .depends_on(INSTALL_RUNTIME_DEPENDENCIES) \
         .set_runnables(SetupCpp()) \
     .add_phony_target(COMPILE_CPP) \
         .depends_on(SETUP_CPP, clean_dependencies=True) \
