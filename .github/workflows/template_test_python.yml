@@ -30,6 +30,7 @@ jobs:
           - 7
     steps:
       - name: Generate token
+        if: ${{ inputs.overwrite_output_files == true }}
         uses: actions/create-github-app-token@v2
         id: app-token
         with:
@@ -46,6 +47,7 @@ jobs:
         if: ${{ inputs.overwrite_output_files != true }}
         uses: actions/checkout@v4
       - name: Setup git
+        if: ${{ inputs.overwrite_output_files == true }}
         uses: fregante/setup-git-user@v2
       - name: Setup Python
         uses: actions/setup-python@v5
