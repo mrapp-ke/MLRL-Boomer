@@ -48,7 +48,7 @@ jobs:
       - name: Prepare ccache
         uses: hendrikmuhs/ccache-action@v1
         with:
-          key: ${{ runner.os }}-${{ runner.arch }}-test-build-ccache-${{ inputs.subproject }}
+          key: ccache-${{ runner.os }}-${{ runner.arch }}-${{ inputs.subproject }}
       - name: Compile via GCC
         run: ./build compile
       - name: Test C++ code
