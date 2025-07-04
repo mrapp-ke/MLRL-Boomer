@@ -6,7 +6,9 @@ import subprocess
 
 from functools import reduce
 from os import environ, listdir, makedirs, path, remove
-from typing import Any, Optional
+from typing import Optional
+
+import pytest
 
 from .cmd_builder import CmdBuilder
 from .comparison import FileComparison, TextFileComparison
@@ -41,8 +43,8 @@ class CmdRunner:
         exit_code = out.returncode
 
         if exit_code != 0:
-            self.test_case.fail('Command "' + self.__format_cmd() + '" terminated with non-zero exit code '
-                                + str(exit_code) + '\n\n' + str(out.stderr))
+            pytest.fail('Command "' + self.__format_cmd() + '" terminated with non-zero exit code ' + str(exit_code)
+                        + '\n\n' + str(out.stderr))
 
         return out
 
@@ -82,8 +84,8 @@ class CmdRunner:
         file = path.join(directory, file_name)
 
         if not path.isfile(file):
-            self.test_case.fail('Command "' + self.__format_cmd() + '" is expected to create file ' + str(file)
-                                + ', but it does not exist')
+            pytest.fail('Command "' + self.__format_cmd() + '" is expected to create file ' + str(file)
+                        + ', but it does not exist')
 
     def __compare_or_overwrite_files(self, file_comparison: FileComparison, test_name: str, file_name: str):
         expected_output_file = path.join(self.builder.expected_output_dir, test_name, file_name)
@@ -91,8 +93,7 @@ class CmdRunner:
         difference = file_comparison.compare_or_overwrite(expected_output_file, overwrite=overwrite)
 
         if difference:
-            self.test_case.fail('Command "' + self.__format_cmd() + '" resulted in unexpected output: '
-                                + str(difference))
+            pytest.fail('Command "' + self.__format_cmd() + '" resulted in unexpected output: ' + str(difference))
 
     @staticmethod
     def __should_overwrite_files() -> bool:
@@ -106,12 +107,10 @@ class CmdRunner:
         raise ValueError('Value of environment variable "' + variable_name + '" must be "true" or "false", but is "'
                          + value + '"')
 
-    def __init__(self, test_case: Any, builder: CmdBuilder):
+    def __init__(self, builder: CmdBuilder):
         """
-        :param test_case:   The test case from which the command should be run
-        :param builder:     A `CmdBuilder` that has been used for configuring a command
+        :param builder: A `CmdBuilder` that has been used for configuring a command
         """
-        self.test_case = test_case
         self.builder = builder
         self.args = builder.build()
 
