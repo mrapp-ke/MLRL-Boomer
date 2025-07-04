@@ -128,6 +128,27 @@ Alternatively, markers of the tests that should be run can be specified via the 
    ```
 ````
 
+Finally, it is also possible to run tests by their name. For this purpose, the environment variable `TEST_NAME` allows to specify a substring to search for in the names of tests. Only those that contain the substring in their name are run by the following command:
+
+````{tab} Linux
+   ```text
+   TEST_NAME=test_evaluation ./build tests
+   ```
+````
+
+````{tab} macOS
+   ```text
+   TEST_NAME=test_evaluation ./build tests
+   ```
+````
+
+````{tab} Windows
+   ```text
+   $env:TEST_NAME = "test_evaluation"
+   build.bat tests
+   ```
+````
+
 ### Overwriting Output Files
 
 When using the build target `tests_python`, the environment variable `OVERWRITE_OUTPUT_FILES` may be utilized to overwrite the files in the directory {repo-dir}`python/tests/res/out/` with the actual output of the corresponding test cases:

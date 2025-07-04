@@ -21,6 +21,11 @@ class Pytest(PythonModule):
     @staticmethod
     def __get_marker_arguments(module: PythonTestModule) -> List[str]:
         markers = list(module.markers)
+        test_name = module.test_name
+
+        if test_name is not None:
+            return ['-k', str(test_name)]
+
         num_blocks = module.num_blocks
         block_index = module.block_index
         arguments = []
@@ -33,6 +38,7 @@ class Pytest(PythonModule):
             return arguments + [
                 '-m', reduce(lambda aggr, marker: aggr + (' and ' if aggr else '') + marker, markers, '')
             ]
+
         return arguments
 
     def __init__(self, build_unit: BuildUnit, module: PythonTestModule):
