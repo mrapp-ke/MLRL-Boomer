@@ -348,7 +348,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
     def test_statistics_sparse_output_format_dense(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.numerical_sparse) \
             .sparse_statistic_format() \
-            .sparse_output_format(False) \
+            .output_format(CmdBuilder.OUTPUT_FORMAT_DENSE) \
             .default_rule(False) \
             .loss(BoomerClassifierCmdBuilder.LOSS_SQUARED_HINGE_DECOMPOSABLE) \
             .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_SINGLE)
@@ -357,7 +357,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
     def test_statistics_sparse_output_format_sparse(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.numerical_sparse) \
             .sparse_statistic_format() \
-            .sparse_output_format() \
+            .output_format(CmdBuilder.OUTPUT_FORMAT_SPARSE) \
             .default_rule(False) \
             .loss(BoomerClassifierCmdBuilder.LOSS_SQUARED_HINGE_DECOMPOSABLE) \
             .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_SINGLE)

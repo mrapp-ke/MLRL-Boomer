@@ -52,6 +52,10 @@ class CmdBuilder:
 
     PREDICTION_FORMAT_SPARSE = 'sparse'
 
+    OUTPUT_FORMAT_DENSE = 'dense'
+
+    OUTPUT_FORMAT_SPARSE = 'sparse'
+
     def __init__(self,
                  expected_output_dir: str,
                  runnable_module_name: str,
@@ -411,16 +415,15 @@ class CmdBuilder:
         self.args.append(feature_format)
         return self
 
-    def sparse_output_format(self, sparse: bool = True):
+    def output_format(self, output_format: str = OUTPUT_FORMAT_SPARSE):
         """
-        Configures whether sparse data structures should be used to represent the labels of training examples or not.
+        Configures the format to be used for the ground truth of training examples.
 
-        :param sparse:  True, if sparse data structures should be used to represent the labels of training examples,
-                        False otherwise
-        :return:        The builder itself
+        :param output_format:   The format to be used
+        :return:                The builder itself
         """
         self.args.append('--output-format')
-        self.args.append('sparse' if sparse else 'dense')
+        self.args.append(output_format)
         return self
 
     def prediction_format(self, prediction_format: str = PREDICTION_FORMAT_SPARSE):
