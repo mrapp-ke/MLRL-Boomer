@@ -5,7 +5,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 import os
 
 from abc import ABC
-from typing import Any
+from typing import Any, Optional
 
 import pytest
 
@@ -415,16 +415,15 @@ class IntegrationTests(ABC):
             .output_sampling(CmdBuilder.OUTPUT_SAMPLING_WITHOUT_REPLACEMENT)
         CmdRunner(builder).run('output-sampling-without-replacement')
 
-    def test_pruning_no(self, dataset: Dataset):
+    @pytest.mark.parametrize('rule_pruning, instance_sampling', [
+        (CmdBuilder.RULE_PRUNING_NO, None),
+        (CmdBuilder.RULE_PRUNING_IREP, CmdBuilder.INSTANCE_SAMPLING_WITHOUT_REPLACEMENT),
+    ])
+    def test_rule_pruning(self, rule_pruning: str, instance_sampling: Optional[str], dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .rule_pruning(CmdBuilder.RULE_PRUNING_NO)
-        CmdRunner(builder).run('pruning-no')
-
-    def test_pruning_irep(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .instance_sampling() \
-            .rule_pruning(CmdBuilder.RULE_PRUNING_IREP)
-        CmdRunner(builder).run('pruning-irep')
+            .instance_sampling(instance_sampling) \
+            .rule_pruning(rule_pruning)
+        CmdRunner(builder).run(f'rule-pruning-{rule_pruning}')
 
     def test_rule_induction_top_down_beam_search(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
