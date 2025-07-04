@@ -3,7 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 # pylint: disable=missing-function-docstring
 from abc import ABC
-from unittest import SkipTest
+
+import pytest
 
 from .cmd_runner import CmdRunner
 from .datasets import Dataset
@@ -16,36 +17,17 @@ class RegressionIntegrationTests(IntegrationTests, ABC):
     problems.
     """
 
-    # pylint: disable=invalid-name
-    def __init__(self,
-                 dataset_default: str = Dataset.ATP7D,
-                 dataset_numerical_sparse: str = Dataset.ATP7D_NUMERICAL_SPARSE,
-                 dataset_binary: str = Dataset.ATP7D_BINARY,
-                 dataset_nominal: str = Dataset.ATP7D_NOMINAL,
-                 dataset_ordinal: str = Dataset.ATP7D_ORDINAL,
-                 dataset_single_output: str = Dataset.HOUSING,
-                 dataset_meka: str = Dataset.ATP7D_MEKA,
-                 methodName='runTest'):
-        super().__init__(dataset_default=dataset_default,
-                         dataset_numerical_sparse=dataset_numerical_sparse,
-                         dataset_binary=dataset_binary,
-                         dataset_nominal=dataset_nominal,
-                         dataset_ordinal=dataset_ordinal,
-                         dataset_single_output=dataset_single_output,
-                         dataset_meka=dataset_meka,
-                         methodName=methodName)
+    @pytest.fixture
+    def dataset(self) -> Dataset:
+        return Dataset(default=Dataset.ATP7D,
+                       numerical_sparse=Dataset.ATP7D_NUMERICAL_SPARSE,
+                       binary=Dataset.ATP7D_BINARY,
+                       nominal=Dataset.ATP7D_NOMINAL,
+                       ordinal=Dataset.ATP7D_ORDINAL,
+                       single_output=Dataset.HOUSING,
+                       meka=Dataset.ATP7D_MEKA)
 
-    @classmethod
-    def setUpClass(cls):
-        """
-        Sets up the test class.
-        """
-        if cls is RegressionIntegrationTests:
-            raise SkipTest(cls.__name__ + ' is an abstract base class')
-
-        super().setUpClass()
-
-    def test_single_output_regression(self):
-        builder = self._create_cmd_builder(dataset=self.dataset_single_output) \
+    def test_single_output_regression(self, dataset: Dataset):
+        builder = self._create_cmd_builder(dataset=dataset.single_output) \
             .print_evaluation()
         CmdRunner(self, builder).run('single-output-regression')
