@@ -16,14 +16,10 @@ from .integration_tests import BoomerIntegrationTestsMixin
 
 @pytest.mark.boosting
 @pytest.mark.regression
-class BoomerRegressorIntegrationTests(RegressionIntegrationTests, BoomerIntegrationTestsMixin):
+class TestBoomerRegressor(RegressionIntegrationTests, BoomerIntegrationTestsMixin):
     """
     Defines a series of integration tests for the BOOMER algorithm for regression problems.
     """
-
-    # pylint: disable=invalid-name
-    def __init__(self, methodName='runTest'):
-        super().__init__(methodName=methodName)
 
     def _create_cmd_builder(self, dataset: str = Dataset.ATP7D) -> Any:
         return BoomerRegressorCmdBuilder(dataset=dataset)
