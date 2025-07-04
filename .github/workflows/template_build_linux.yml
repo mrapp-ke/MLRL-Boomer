@@ -18,9 +18,6 @@ on:
       run_python_tests:
         required: false
         type: boolean
-      overwrite_output_files:
-        required: false
-        type: boolean
 env:
   SUBPROJECTS: ${{ inputs.subproject }}
 jobs:
@@ -36,20 +33,8 @@ jobs:
         exclude:
           - os: ${{ inputs.compile == false && 'ubuntu-24.04-arm' }}
     steps:
-      - name: Generate token
-        uses: actions/create-github-app-token@v2
-        id: app-token
-        with:
-          app-id: ${{ secrets.token_app_id }}
-          private-key: ${{ secrets.token_app_secret }}
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ steps.app-token.outputs.token }}
-          ref: ${{ github.head_ref }}
-      - name: Setup git
-        uses: fregante/setup-git-user@v2
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -76,28 +61,15 @@ jobs:
           name: cpp-test-results-${{ inputs.subproject }}
           path: cpp/build/meson-logs/testlog.junit.xml
           if-no-files-found: ignore
-      - name: Test Python code
+      - name: Build Python packages
         if: ${{ matrix.os == 'ubuntu-24.04' && inputs.run_python_tests == true }}
         env:
-          OVERWRITE_OUTPUT_FILES: ${{ inputs.overwrite_output_files }}
-        run: ./build tests_python
-      - name: Push changes in output files
-        if: ${{ matrix.os == 'ubuntu-24.04' && inputs.run_python_tests == true && inputs.overwrite_output_files == true }}
-        env:
-          BRANCH_NAME: ${{ github.head_ref }}-${{ github.event.number }}
-        run: |
-          git stash
-          git fetch
-          (git switch $BRANCH_NAME && git pull) || git switch -c $BRANCH_NAME
-          git stash apply || (git checkout --theirs . && git add .)
-          git stash drop
-          git add python/tests/res/out/**/*
-          git diff --cached --quiet || git commit -m "Adjust expected output of integration tests."
-          git push -u origin HEAD
-      - name: Upload Python test results as artifacts
-        if: ${{ !cancelled() && matrix.os == 'ubuntu-24.04' && inputs.run_python_tests == true }}
+          REPAIR_WHEELS: true
+        run: ./build build_wheels
+      - name: Upload Python packages as artifacts
+        if: ${{ matrix.os == 'ubuntu-24.04' && inputs.run_python_tests == true }}
         uses: actions/upload-artifact@v4
         with:
-          name: python-test-results-${{ inputs.subproject }}
-          path: python/tests/build/test-results/*.xml
-          if-no-files-found: ignore
+          name: python-packages-${{ inputs.subproject }}
+          path: python/subprojects/**/dist/*.whl
+          if-no-files-found: error
