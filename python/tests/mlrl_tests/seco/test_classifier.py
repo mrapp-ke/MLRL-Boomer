@@ -15,14 +15,10 @@ from .cmd_builder import SeCoClassifierCmdBuilder
 
 @pytest.mark.seco
 @pytest.mark.classification
-class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
+class TestSeCoClassifier(ClassificationIntegrationTests):
     """
     Defines a series of integration tests for the separate-and-conquer (SeCo) algorithm for classification problems.
     """
-
-    # pylint: disable=invalid-name
-    def __init__(self, methodName='runTest'):
-        super().__init__(methodName=methodName)
 
     def _create_cmd_builder(self, dataset: str = Dataset.EMOTIONS) -> Any:
         return SeCoClassifierCmdBuilder(dataset=dataset)
