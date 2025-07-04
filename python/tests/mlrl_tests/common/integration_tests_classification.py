@@ -28,7 +28,7 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
             .store_evaluation(False) \
             .print_label_vectors() \
             .store_label_vectors()
-        CmdRunner(self, builder).run('label-vectors_train-test')
+        CmdRunner(builder).run('label-vectors_train-test')
 
     def test_label_vectors_cross_validation(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
@@ -37,7 +37,7 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
             .store_evaluation(False) \
             .print_label_vectors() \
             .store_label_vectors()
-        CmdRunner(self, builder).run('label-vectors_cross-validation')
+        CmdRunner(builder).run('label-vectors_cross-validation')
 
     def test_label_vectors_single_fold(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
@@ -46,14 +46,14 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
             .store_evaluation(False) \
             .print_label_vectors() \
             .store_label_vectors()
-        CmdRunner(self, builder).run('label-vectors_single-fold')
+        CmdRunner(builder).run('label-vectors_single-fold')
 
     def test_instance_sampling_stratified_output_wise(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .instance_sampling(ClassificationCmdBuilder.INSTANCE_SAMPLING_STRATIFIED_OUTPUT_WISE)
-        CmdRunner(self, builder).run('instance-sampling-stratified-output-wise')
+        CmdRunner(builder).run('instance-sampling-stratified-output-wise')
 
     def test_instance_sampling_stratified_example_wise(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .instance_sampling(ClassificationCmdBuilder.INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE)
-        CmdRunner(self, builder).run('instance-sampling-stratified-example-wise')
+        CmdRunner(builder).run('instance-sampling-stratified-example-wise')
