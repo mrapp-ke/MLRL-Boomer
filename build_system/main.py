@@ -22,6 +22,9 @@ def __parse_command_line_arguments():
     parser = ArgumentParser(description='The build system of the project "MLRL-Boomer"')
     parser.add_argument('--verbose', action='store_true', help='Enables verbose logging.')
     parser.add_argument('--clean', action='store_true', help='Cleans the specified targets.')
+    parser.add_argument('--no-dependencies',
+                        action='store_true',
+                        help='If the dependencies of the given targets should not be built.')
     parser.add_argument('targets', nargs='*')
     return parser.parse_args()
 
@@ -131,7 +134,12 @@ def __create_dependency_graph(target_registry: TargetRegistry, args, default_tar
 
     Log.verbose('Creating dependency graph for %s targets [%s]...', 'cleaning' if clean else 'running',
                 format_iterable(targets))
-    dependency_graph = target_registry.create_dependency_graph(*targets, graph_type=graph_type)
+    no_dependencies = args.no_dependencies
+    Log.verbose('Dependencies of the given targets will ' + ('not ' if no_dependencies else '')
+                + 'be taken into account')
+    dependency_graph = target_registry.create_dependency_graph(*targets,
+                                                               graph_type=graph_type,
+                                                               follow_dependencies=not no_dependencies)
     Log.verbose('Successfully created dependency graph:\n\n%s\n', str(dependency_graph))
     return dependency_graph
 

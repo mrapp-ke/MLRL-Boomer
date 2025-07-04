@@ -652,10 +652,10 @@ class DependencyGraph:
             return result
 
     @staticmethod
-    def __expand_sequence(targets_by_name: Dict[str, Target], sequence: Sequence,
-                          graph_type: 'DependencyGraph.Type') -> List[Sequence]:
+    def __expand_sequence(targets_by_name: Dict[str, Target], sequence: Sequence, graph_type: 'DependencyGraph.Type',
+                          follow_dependencies: bool) -> List[Sequence]:
         sequences = []
-        dependencies = sequence.first.target.dependencies
+        dependencies = sequence.first.target.dependencies if follow_dependencies else None
 
         if dependencies:
             for dependency in dependencies:
@@ -664,7 +664,9 @@ class DependencyGraph:
                 if new_node:
                     new_sequence = sequence.copy()
                     new_sequence.prepend(new_node)
-                    sequences.extend(DependencyGraph.__expand_sequence(targets_by_name, new_sequence, graph_type))
+                    sequences.extend(
+                        DependencyGraph.__expand_sequence(targets_by_name, new_sequence, graph_type,
+                                                          follow_dependencies))
                 else:
                     sequences.append(sequence)
         else:
@@ -673,11 +675,11 @@ class DependencyGraph:
         return sequences
 
     @staticmethod
-    def __create_sequence(targets_by_name: Dict[str, Target], target_name: str,
-                          graph_type: 'DependencyGraph.Type') -> List[Sequence]:
+    def __create_sequence(targets_by_name: Dict[str, Target], target_name: str, graph_type: 'DependencyGraph.Type',
+                          follow_dependencies: bool) -> List[Sequence]:
         node = DependencyGraph.Node.from_name(targets_by_name, target_name, graph_type)
         sequence = DependencyGraph.Sequence.from_node(node)
-        return DependencyGraph.__expand_sequence(targets_by_name, sequence, graph_type)
+        return DependencyGraph.__expand_sequence(targets_by_name, sequence, graph_type, follow_dependencies)
 
     @staticmethod
     def __find_in_parents(node: Node, parent: Optional[Node]) -> Optional[Node]:
@@ -730,15 +732,23 @@ class DependencyGraph:
 
         return sequences[0]
 
-    def __init__(self, targets_by_name: Dict[str, Target], *target_names: str, graph_type: 'DependencyGraph.Type'):
+    def __init__(self,
+                 targets_by_name: Dict[str, Target],
+                 *target_names: str,
+                 graph_type: 'DependencyGraph.Type',
+                 follow_dependencies: bool = True):
         """
-        :param targets_by_name: A dictionary that stores all available targets by their names
-        :param target_names:    The names of the targets to be included in the graph
-        :param graph_type:      The type of the dependency graph
+        :param targets_by_name:     A dictionary that stores all available targets by their names
+        :param target_names:        The names of the targets to be included in the graph
+        :param graph_type:          The type of the dependency graph
+        :param follow_dependencies: True, if the dependencies of the given targets should also be included in the graph,
+                                    False otherwise
         """
         self.sequence = self.__merge_multiple_sequences(
-            reduce(lambda aggr, target_name: aggr + self.__create_sequence(targets_by_name, target_name, graph_type),
-                   target_names, []))
+            reduce(
+                lambda aggr, target_name: aggr + self.__create_sequence(
+                    targets_by_name, target_name, graph_type, follow_dependencies=follow_dependencies), target_names,
+                []))
 
     def execute(self, module_registry: ModuleRegistry):
         """
@@ -776,13 +786,16 @@ class TargetRegistry:
 
     def create_dependency_graph(self,
                                 *target_names: str,
-                                graph_type: 'DependencyGraph.Type' = DependencyGraph.Type.RUN) -> DependencyGraph:
+                                graph_type: 'DependencyGraph.Type' = DependencyGraph.Type.RUN,
+                                follow_dependencies: bool = True) -> DependencyGraph:
         """
         Creates and returns a `DependencyGraph` for each of the given targets.
 
-        :param target_names:    The names of the targets for which graphs should be created
-        :param graph_type:      The type of the dependency graph
-        :return:                A list that contains the graphs that have been created
+        :param target_names:        The names of the targets for which graphs should be created
+        :param graph_type:          The type of the dependency graph
+        :param follow_dependencies: True, if the dependencies of the given targets should also be included in the graph,
+                                    False otherwise
+        :return:                    A list that contains the graphs that have been created
         """
         if not target_names:
             Log.error('No targets given')
@@ -792,4 +805,7 @@ class TargetRegistry:
         if invalid_targets:
             Log.error('The following targets are invalid: %s', format_iterable(invalid_targets))
 
-        return DependencyGraph(self.targets_by_name, *target_names, graph_type=graph_type)
+        return DependencyGraph(self.targets_by_name,
+                               *target_names,
+                               graph_type=graph_type,
+                               follow_dependencies=follow_dependencies)
