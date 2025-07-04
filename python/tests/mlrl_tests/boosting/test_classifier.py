@@ -17,26 +17,22 @@ from .integration_tests import BoomerIntegrationTestsMixin
 
 @pytest.mark.boosting
 @pytest.mark.classification
-class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerIntegrationTestsMixin):
+class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTestsMixin):
     """
     Defines a series of integration tests for the BOOMER algorithm for classification problems.
     """
 
-    # pylint: disable=invalid-name
-    def __init__(self, methodName='runTest'):
-        super().__init__(methodName=methodName)
-
     def _create_cmd_builder(self, dataset: str = Dataset.EMOTIONS) -> Any:
         return BoomerClassifierCmdBuilder(dataset=dataset)
 
-    def test_single_label_scores(self):
-        builder = self._create_cmd_builder(dataset=self.dataset_single_output) \
+    def test_single_label_scores(self, dataset: Dataset):
+        builder = self._create_cmd_builder(dataset=dataset.single_output) \
             .prediction_type(ClassificationCmdBuilder.PREDICTION_TYPE_SCORES) \
             .print_evaluation()
         CmdRunner(self, builder).run('single-label-scores')
 
-    def test_single_label_probabilities(self):
-        builder = self._create_cmd_builder(dataset=self.dataset_single_output) \
+    def test_single_label_probabilities(self, dataset: Dataset):
+        builder = self._create_cmd_builder(dataset=dataset.single_output) \
             .prediction_type(ClassificationCmdBuilder.PREDICTION_TYPE_PROBABILITIES) \
             .print_evaluation()
         CmdRunner(self, builder).run('single-label-probabilities')
@@ -348,8 +344,8 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .set_model_dir()
         CmdRunner(self, builder).run('predictor-probability-marginalized_incremental')
 
-    def test_statistics_sparse_output_format_dense(self):
-        builder = self._create_cmd_builder(dataset=self.dataset_numerical_sparse) \
+    def test_statistics_sparse_output_format_dense(self, dataset: Dataset):
+        builder = self._create_cmd_builder(dataset=dataset.numerical_sparse) \
             .sparse_statistic_format() \
             .sparse_output_format(False) \
             .default_rule(False) \
@@ -357,8 +353,8 @@ class BoomerClassifierIntegrationTests(ClassificationIntegrationTests, BoomerInt
             .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_SINGLE)
         CmdRunner(self, builder).run('statistics-sparse_output-format-dense')
 
-    def test_statistics_sparse_output_format_sparse(self):
-        builder = self._create_cmd_builder(dataset=self.dataset_numerical_sparse) \
+    def test_statistics_sparse_output_format_sparse(self, dataset: Dataset):
+        builder = self._create_cmd_builder(dataset=dataset.numerical_sparse) \
             .sparse_statistic_format() \
             .sparse_output_format() \
             .default_rule(False) \

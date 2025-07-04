@@ -102,7 +102,7 @@ jobs:
               - 'python/subprojects/util/requirements.txt'
               - 'python/subprojects/util/setup.py'
               - 'python/subprojects/util/mlrl/**'
-              - 'python/tests/mlrl/common/**'
+              - 'python/tests/mlrl_tests/common/**'
               - 'python/tests/res/data/**'
               - 'python/tests/res/in/**'
             python_tests_boosting: &python_tests_boosting
@@ -112,7 +112,7 @@ jobs:
               - 'python/subprojects/boosting/requirements.txt'
               - 'python/subprojects/boosting/setup.py'
               - 'python/subprojects/boosting/mlrl/**'
-              - 'python/tests/mlrl/boosting/**'
+              - 'python/tests/mlrl_tests/boosting/**'
               - 'python/tests/res/out/boosting/**'
             python_tests_seco: &python_tests_seco
               - *python_tests_common
@@ -121,7 +121,7 @@ jobs:
               - 'python/subprojects/seco/requirements.txt'
               - 'python/subprojects/seco/setup.py'
               - 'python/subprojects/seco/mlrl/**'
-              - 'python/tests/mlrl/seco/**'
+              - 'python/tests/mlrl_tests/seco/**'
               - 'python/tests/res/out/seco/**'
             python_tests: &python_tests
               - *python_tests_boosting
