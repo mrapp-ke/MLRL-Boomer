@@ -44,6 +44,10 @@ class CmdBuilder:
 
     FEATURE_BINNING_EQUAL_FREQUENCY = 'equal-frequency'
 
+    FEATURE_FORMAT_DENSE = 'dense'
+
+    FEATURE_FORMAT_SPARSE = 'sparse'
+
     def __init__(self,
                  expected_output_dir: str,
                  runnable_module_name: str,
@@ -392,17 +396,15 @@ class CmdBuilder:
         self.args.append(str(store_rules).lower())
         return self
 
-    def sparse_feature_format(self, sparse: bool = True):
+    def feature_format(self, feature_format: str = FEATURE_FORMAT_SPARSE):
         """
-        Configures whether sparse data structures should be used to represent the feature values of training examples or
-        not.
+        Configures the format to be used for the feature values of training examples.
 
-        :param sparse:  True, if sparse data structures should be used to represent the feature values of training
-                        examples, False otherwise
-        :return:        The builder itself
+        :param feature_format:  The format to be used
+        :return:                The builder itself
         """
         self.args.append('--feature-format')
-        self.args.append('sparse' if sparse else 'dense')
+        self.args.append(feature_format)
         return self
 
     def sparse_output_format(self, sparse: bool = True):

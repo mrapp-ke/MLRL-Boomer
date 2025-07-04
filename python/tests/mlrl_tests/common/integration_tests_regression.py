@@ -20,6 +20,7 @@ class RegressionIntegrationTests(IntegrationTests, ABC):
     @pytest.fixture
     def dataset(self) -> Dataset:
         return Dataset(default=Dataset.ATP7D,
+                       numerical=Dataset.ATP7D,
                        numerical_sparse=Dataset.ATP7D_NUMERICAL_SPARSE,
                        binary=Dataset.ATP7D_BINARY,
                        nominal=Dataset.ATP7D_NOMINAL,

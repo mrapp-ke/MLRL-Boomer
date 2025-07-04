@@ -281,42 +281,42 @@ class IntegrationTests(ABC):
 
     def test_numeric_features_dense(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.numerical_sparse) \
-            .sparse_feature_format(False)
+            .feature_format(CmdBuilder.FEATURE_FORMAT_DENSE)
         CmdRunner(builder).run('numeric-features-dense')
 
     def test_numeric_features_sparse(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.numerical_sparse) \
-            .sparse_feature_format()
+            .feature_format(CmdBuilder.FEATURE_FORMAT_SPARSE)
         CmdRunner(builder).run('numeric-features-sparse')
 
     def test_binary_features_dense(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.binary) \
-            .sparse_feature_format(False)
+            .feature_format(CmdBuilder.FEATURE_FORMAT_DENSE)
         CmdRunner(builder).run('binary-features-dense')
 
     def test_binary_features_sparse(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.binary) \
-            .sparse_feature_format()
+            .feature_format(CmdBuilder.FEATURE_FORMAT_SPARSE)
         CmdRunner(builder).run('binary-features-sparse')
 
     def test_nominal_features_dense(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.nominal) \
-            .sparse_feature_format(False)
+            .feature_format(CmdBuilder.FEATURE_FORMAT_DENSE)
         CmdRunner(builder).run('nominal-features-dense')
 
     def test_nominal_features_sparse(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.nominal) \
-            .sparse_feature_format()
+            .feature_format(CmdBuilder.FEATURE_FORMAT_SPARSE)
         CmdRunner(builder).run('nominal-features-sparse')
 
     def test_ordinal_features_dense(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.ordinal) \
-            .sparse_feature_format(False)
+            .feature_format(CmdBuilder.FEATURE_FORMAT_DENSE)
         CmdRunner(builder).run('ordinal-features-dense')
 
     def test_ordinal_features_sparse(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.ordinal) \
-            .sparse_feature_format()
+            .feature_format(CmdBuilder.FEATURE_FORMAT_SPARSE)
         CmdRunner(builder).run('ordinal-features-sparse')
 
     def test_output_format_dense(self, dataset: Dataset):
@@ -414,9 +414,7 @@ class IntegrationTests(ABC):
             .rule_pruning(rule_pruning)
         CmdRunner(builder).run(f'rule-pruning-{rule_pruning}')
 
-    @pytest.mark.parametrize('rule_induction', [
-        CmdBuilder.RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH,
-    ])
+    @pytest.mark.parametrize('rule_induction', [CmdBuilder.RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH])
     def test_rule_induction(self, rule_induction: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .rule_induction(rule_induction)
@@ -427,74 +425,14 @@ class IntegrationTests(ABC):
             .sequential_post_optimization()
         CmdRunner(builder).run('sequential-post-optimization')
 
-    def test_feature_binning_equal_width_binary_features_dense(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.binary) \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
-            .sparse_feature_format(False)
-        CmdRunner(builder).run('feature-binning-equal-width_binary-features-dense')
-
-    def test_feature_binning_equal_width_binary_features_sparse(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.binary) \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
-            .sparse_feature_format()
-        CmdRunner(builder).run('feature-binning-equal-width_binary-features-sparse')
-
-    def test_feature_binning_equal_width_nominal_features_dense(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.nominal) \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
-            .sparse_feature_format(False)
-        CmdRunner(builder).run('feature-binning-equal-width_nominal-features-dense')
-
-    def test_feature_binning_equal_width_nominal_features_sparse(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.nominal) \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
-            .sparse_feature_format()
-        CmdRunner(builder).run('feature-binning-equal-width_nominal-features-sparse')
-
-    def test_feature_binning_equal_width_numerical_features_dense(self):
-        builder = self._create_cmd_builder() \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
-            .sparse_feature_format(False)
-        CmdRunner(builder).run('feature-binning-equal-width_numerical-features-dense')
-
-    def test_feature_binning_equal_width_numerical_features_sparse(self):
-        builder = self._create_cmd_builder() \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
-            .sparse_feature_format()
-        CmdRunner(builder).run('feature-binning-equal-width_numerical-features-sparse')
-
-    def test_feature_binning_equal_frequency_binary_features_dense(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.binary) \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
-            .sparse_feature_format(False)
-        CmdRunner(builder).run('feature-binning-equal-frequency_binary-features-dense')
-
-    def test_feature_binning_equal_frequency_binary_features_sparse(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.binary) \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
-            .sparse_feature_format()
-        CmdRunner(builder).run('feature-binning-equal-frequency_binary-features-sparse')
-
-    def test_feature_binning_equal_frequency_nominal_features_dense(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.nominal) \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
-            .sparse_feature_format(False)
-        CmdRunner(builder).run('feature-binning-equal-frequency_nominal-features-dense')
-
-    def test_feature_binning_equal_frequency_nominal_features_sparse(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.nominal) \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
-            .sparse_feature_format()
-        CmdRunner(builder).run('feature-binning-equal-frequency_nominal-features-sparse')
-
-    def test_feature_binning_equal_frequency_numerical_features_dense(self):
-        builder = self._create_cmd_builder() \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
-            .sparse_feature_format(False)
-        CmdRunner(builder).run('feature-binning-equal-frequency_numerical-features-dense')
-
-    def test_feature_binning_equal_frequency_numerical_features_sparse(self):
-        builder = self._create_cmd_builder() \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
-            .sparse_feature_format()
-        CmdRunner(builder).run('feature-binning-equal-frequency_numerical-features-sparse')
+    @pytest.mark.parametrize('feature_binning', [
+        CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH,
+        CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY,
+    ])
+    @pytest.mark.parametrize('dataset_name', ['numerical', 'nominal', 'binary'])
+    @pytest.mark.parametrize('feature_format', [CmdBuilder.FEATURE_FORMAT_DENSE, CmdBuilder.FEATURE_FORMAT_SPARSE])
+    def test_feature_binning(self, feature_binning: str, dataset_name: str, feature_format: str, dataset: Dataset):
+        builder = self._create_cmd_builder(dataset=getattr(dataset, dataset_name)) \
+            .feature_binning(feature_binning) \
+            .feature_format(feature_format)
+        CmdRunner(builder).run(f'feature-binning-{feature_binning}_{dataset_name}-features-{feature_format}')
