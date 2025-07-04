@@ -30,4 +30,4 @@ class RegressionIntegrationTests(IntegrationTests, ABC):
     def test_single_output_regression(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.single_output) \
             .print_evaluation()
-        CmdRunner(self, builder).run('single-output-regression')
+        CmdRunner(builder).run('single-output-regression')
