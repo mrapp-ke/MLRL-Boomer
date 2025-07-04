@@ -5,10 +5,10 @@ Implements modules that provide access to automated tests.
 """
 from abc import ABC
 from os import environ
-from typing import Set
+from typing import Optional, Set
 
 from core.modules import Module
-from util.env import get_env_array, get_env_bool
+from util.env import get_env, get_env_array, get_env_bool
 
 
 class TestModule(Module, ABC):
@@ -37,3 +37,19 @@ class TestModule(Module, ABC):
         """
         markers = get_env_array(environ, 'MARKERS')
         return set(markers) if markers else set()
+
+    @property
+    def num_blocks(self) -> Optional[int]:
+        """
+        The total number of blocks to assign tests to or None, if no blocks should be used
+        """
+        value = get_env(environ, 'NUM_BLOCKS')
+        return int(value) if value else None
+
+    @property
+    def block_index(self) -> Optional[int]:
+        """
+        The index of the block of tests to be run or None, if all tests should be run.
+        """
+        value = get_env(environ, 'BLOCK_INDEX')
+        return int(value) if value else None
