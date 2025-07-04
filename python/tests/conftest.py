@@ -1,7 +1,10 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+from sys import platform
+
 import numpy as np
+import pytest
 
 ARGUMENT_NUM_BLOCKS = '--num-blocks'
 
@@ -21,6 +24,9 @@ def pytest_collection_modifyitems(items):
 
     :param items: The test cases
     """
+    if not platform.startswith('linux'):
+        pytest.skip('Integration tests are only supported on Linux', allow_module_level=True)
+
     num_tests = len(items)
     block_indices = None
 
