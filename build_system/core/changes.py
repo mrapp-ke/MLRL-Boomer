@@ -82,7 +82,10 @@ class ChangeDetection:
                 del module_cache[invalid_key]
 
             for file in files:
-                module_cache[file] = self.__checksum(file)
+                if path.exists(file):
+                    module_cache[file] = self.__checksum(file)
+                elif file in module_cache:
+                    del module_cache[file]
 
             if module_cache:
                 cache[module_name] = module_cache
