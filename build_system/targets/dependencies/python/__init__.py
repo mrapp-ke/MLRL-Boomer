@@ -16,8 +16,13 @@ from targets.project import Project
 
 VENV = 'venv'
 
+INSTALL_RUNTIME_DEPENDENCIES = 'install_runtime_dependencies'
+
 TARGETS = TargetBuilder(BuildUnit.for_file(__file__)) \
-    .add_phony_target(VENV).set_runnables(InstallPythonDependencies(DependencyType.RUNTIME)) \
+    .add_phony_target(VENV).nop() \
+    .add_phony_target(INSTALL_RUNTIME_DEPENDENCIES) \
+        .depends_on(VENV) \
+        .set_runnables(InstallPythonDependencies(DependencyType.RUNTIME)) \
     .add_phony_target('check_runtime_dependencies').set_runnables(CheckPythonDependencies(DependencyType.RUNTIME)) \
     .add_phony_target('check_build_dependencies').set_runnables(CheckPythonDependencies(DependencyType.BUILD_TIME)) \
     .add_phony_target('check_dependencies').set_runnables(CheckPythonDependencies()) \
