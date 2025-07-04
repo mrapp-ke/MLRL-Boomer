@@ -5,17 +5,17 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 import os
 
 from abc import ABC
-from sys import platform
 from typing import Any
 from unittest import SkipTest, TestCase
+
+import pytest
 
 from .cmd_builder import CmdBuilder
 from .cmd_runner import CmdRunner
 from .datasets import Dataset
-import pytest
-
 
 ci_only = pytest.mark.skipif(os.getenv('GITHUB_ACTIONS') != 'true', reason='Disabled unless run on CI')
+
 
 class IntegrationTests(TestCase, ABC):
     """
@@ -66,8 +66,6 @@ class IntegrationTests(TestCase, ABC):
         """
         if cls is IntegrationTests:
             raise SkipTest(cls.__name__ + ' is an abstract base class')
-        if not platform.startswith('linux'):
-            raise SkipTest('Integration tests are only supported on Linux')
 
         super().setUpClass()
 
