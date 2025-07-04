@@ -414,10 +414,13 @@ class IntegrationTests(ABC):
             .rule_pruning(rule_pruning)
         CmdRunner(builder).run(f'rule-pruning-{rule_pruning}')
 
-    def test_rule_induction_top_down_beam_search(self, dataset: Dataset):
+    @pytest.mark.parametrize('rule_induction', [
+        CmdBuilder.RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH,
+    ])
+    def test_rule_induction(self, rule_induction: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .rule_induction(CmdBuilder.RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH)
-        CmdRunner(builder).run('rule-induction-top-down-beam-search')
+            .rule_induction(rule_induction)
+        CmdRunner(builder).run(f'rule-induction-{rule_induction}')
 
     def test_sequential_post_optimization(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
