@@ -53,3 +53,10 @@ class TestModule(Module, ABC):
         """
         value = get_env(environ, 'BLOCK_INDEX')
         return int(value) if value else None
+
+    @property
+    def test_name(self) -> Optional[str]:
+        """
+        A substring to be contained in the name of all tests to be run or None, if all tests should be run.
+        """
+        return get_env(environ, 'TEST_NAME')
