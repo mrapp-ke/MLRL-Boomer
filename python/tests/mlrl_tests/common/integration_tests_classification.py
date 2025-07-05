@@ -45,12 +45,11 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
             .store_label_vectors()
         CmdRunner(builder).run(f'label-vectors_{data_split}' + (f'_{data_split_options}' if data_split_options else ''))
 
-    def test_instance_sampling_stratified_output_wise(self, dataset: Dataset):
+    @pytest.mark.parametrize('instance_sampling', [
+        SAMPLING_STRATIFIED_OUTPUT_WISE,
+        SAMPLING_STRATIFIED_EXAMPLE_WISE,
+    ])
+    def test_instance_sampling_stratified(self, instance_sampling: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .instance_sampling(SAMPLING_STRATIFIED_OUTPUT_WISE)
-        CmdRunner(builder).run('instance-sampling-stratified-output-wise')
-
-    def test_instance_sampling_stratified_example_wise(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .instance_sampling(SAMPLING_STRATIFIED_EXAMPLE_WISE)
-        CmdRunner(builder).run('instance-sampling-stratified-example-wise')
+            .instance_sampling(instance_sampling)
+        CmdRunner(builder).run(f'instance-sampling-{instance_sampling}')
