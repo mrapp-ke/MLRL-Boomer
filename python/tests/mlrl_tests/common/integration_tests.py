@@ -54,7 +54,7 @@ class IntegrationTests(ABC):
 
     def test_evaluation_no_data_split(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .no_data_split() \
+            .data_split(CmdBuilder.DATA_SPLIT_NO) \
             .print_evaluation() \
             .store_evaluation()
         CmdRunner(builder).run('evaluation_no-data-split')
@@ -73,21 +73,21 @@ class IntegrationTests(ABC):
 
     def test_evaluation_cross_validation(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation() \
+            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION) \
             .print_evaluation() \
             .store_evaluation()
         CmdRunner(builder).run('evaluation_cross-validation')
 
     def test_evaluation_cross_validation_predefined(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default + '-predefined') \
-            .cross_validation() \
+            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION) \
             .print_evaluation() \
             .store_evaluation()
         CmdRunner(builder).run('evaluation_cross-validation-predefined')
 
     def test_evaluation_single_fold(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation(current_fold=1) \
+            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({OPTION_FIRST_FOLD: 1, OPTION_LAST_FOLD: 1})) \
             .print_evaluation() \
             .store_evaluation()
         CmdRunner(builder).run('evaluation_single-fold')
@@ -113,13 +113,13 @@ class IntegrationTests(ABC):
 
     def test_model_persistence_cross_validation(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation() \
+            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION) \
             .set_model_dir()
         CmdRunner(builder).run('model-persistence_cross-validation')
 
     def test_model_persistence_single_fold(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation(current_fold=1) \
+            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({OPTION_FIRST_FOLD: 1, OPTION_LAST_FOLD: 1})) \
             .set_model_dir()
         CmdRunner(builder).run('model-persistence_single-fold')
 
@@ -135,7 +135,7 @@ class IntegrationTests(ABC):
 
     def test_predictions_cross_validation(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation() \
+            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_predictions() \
@@ -146,7 +146,7 @@ class IntegrationTests(ABC):
 
     def test_predictions_single_fold(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation(current_fold=1) \
+            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({OPTION_FIRST_FOLD: 1, OPTION_LAST_FOLD: 1})) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_predictions() \
@@ -176,7 +176,7 @@ class IntegrationTests(ABC):
 
     def test_prediction_characteristics_cross_validation(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation() \
+            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_prediction_characteristics() \
@@ -185,7 +185,7 @@ class IntegrationTests(ABC):
 
     def test_prediction_characteristics_single_fold(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation(current_fold=1) \
+            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({OPTION_FIRST_FOLD: 1, OPTION_LAST_FOLD: 1})) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_prediction_characteristics() \
@@ -211,7 +211,7 @@ class IntegrationTests(ABC):
 
     def test_data_characteristics_cross_validation(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation() \
+            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_data_characteristics() \
@@ -220,7 +220,7 @@ class IntegrationTests(ABC):
 
     def test_data_characteristics_single_fold(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation(current_fold=1) \
+            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({OPTION_FIRST_FOLD: 1, OPTION_LAST_FOLD: 1})) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_data_characteristics() \
@@ -237,7 +237,7 @@ class IntegrationTests(ABC):
 
     def test_model_characteristics_cross_validation(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation() \
+            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_model_characteristics() \
@@ -246,7 +246,7 @@ class IntegrationTests(ABC):
 
     def test_model_characteristics_single_fold(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation(current_fold=1) \
+            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({OPTION_FIRST_FOLD: 1, OPTION_LAST_FOLD: 1})) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_model_characteristics() \
@@ -263,7 +263,7 @@ class IntegrationTests(ABC):
 
     def test_rules_cross_validation(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation() \
+            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_rules() \
@@ -272,7 +272,7 @@ class IntegrationTests(ABC):
 
     def test_rules_single_fold(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation(current_fold=1) \
+            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, first_fold=1, last_fold=1) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_rules() \
@@ -308,6 +308,7 @@ class IntegrationTests(ABC):
 
     def test_parameters_train_test(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
+            .data_split(CmdBuilder.DATA_SPLIT_TRAIN_TEST) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_model_characteristics() \
@@ -318,7 +319,7 @@ class IntegrationTests(ABC):
 
     def test_parameters_cross_validation(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation() \
+            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_model_characteristics() \
@@ -329,7 +330,7 @@ class IntegrationTests(ABC):
 
     def test_parameters_single_fold(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation(current_fold=1) \
+            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, first_fold=1, last_fold=1) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_model_characteristics() \

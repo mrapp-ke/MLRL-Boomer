@@ -6,6 +6,10 @@ from typing import List, Optional
 
 from .datasets import Dataset
 
+from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import OPTION_FIRST_FOLD, OPTION_NUM_FOLDS
+
+from mlrl.util.options import Options
+
 
 class CmdBuilder:
     """
@@ -55,6 +59,12 @@ class CmdBuilder:
     OUTPUT_FORMAT_DENSE = 'dense'
 
     OUTPUT_FORMAT_SPARSE = 'sparse'
+
+    DATA_SPLIT_NO = 'none'
+
+    DATA_SPLIT_TRAIN_TEST = 'train-test'
+
+    DATA_SPLIT_CROSS_VALIDATION = 'cross-validation'
 
     def __init__(self,
                  expected_output_dir: str,
@@ -161,36 +171,28 @@ class CmdBuilder:
         self.args.append(parameter_dir)
         return self
 
-    def no_data_split(self):
+    def data_split(self, data_split: str = DATA_SPLIT_TRAIN_TEST, **kwargs):
         """
-        Configures the rule learner to not use separate training and test data.
+        Configures the rule learner to use a specific strategy for splitting datasets into training and test datasets.
 
-        :return: The builder itself
+        :param data_split:  The name of the strategy to be used
+        :return:            The builder itself
         """
-        self.num_folds = 0
-        self.current_fold = None
         self.args.append('--data-split')
-        self.args.append('none')
-        return self
+        options = Options.from_dict(**kwargs)
+        num_folds = 0
+        current_fold = None
 
-    def cross_validation(self, num_folds: int = 10, current_fold: Optional[int] = None):
-        """
-        Configures the rule learner to use a cross validation.
+        if data_split == CmdBuilder.DATA_SPLIT_CROSS_VALIDATION:
+            num_folds = options.get_int(OPTION_NUM_FOLDS, 10)
+            first_fold = options.get_int(OPTION_FIRST_FOLD, 0)
 
-        :param num_folds:       The total number of folds
-        :param current_fold:    The fold to be run (starting at 1) or None, if all folds should be run
-        :return:                The builder itself
-        """
+            if first_fold > 0 and first_fold == options.get_int(OPTION_FIRST_FOLD, 0):
+                current_fold = first_fold
+
+        self.args.append(data_split + (str(options) if options else ''))
         self.num_folds = num_folds
         self.current_fold = current_fold
-        self.args.append('--data-split')
-        value = 'cross-validation{num_folds=' + str(num_folds)
-
-        if current_fold:
-            value += ',first_fold=' + str(current_fold) + ',last_fold=' + str(current_fold)
-
-        value += '}'
-        self.args.append(value)
         return self
 
     def sparse_feature_value(self, sparse_feature_value: float = 0.0):
