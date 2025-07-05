@@ -279,45 +279,12 @@ class IntegrationTests(ABC):
             .store_rules()
         CmdRunner(builder).run('rules_single-fold')
 
-    def test_numeric_features_dense(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.numerical_sparse) \
-            .feature_format(CmdBuilder.FEATURE_FORMAT_DENSE)
-        CmdRunner(builder).run('numeric-features-dense')
-
-    def test_numeric_features_sparse(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.numerical_sparse) \
-            .feature_format(CmdBuilder.FEATURE_FORMAT_SPARSE)
-        CmdRunner(builder).run('numeric-features-sparse')
-
-    def test_binary_features_dense(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.binary) \
-            .feature_format(CmdBuilder.FEATURE_FORMAT_DENSE)
-        CmdRunner(builder).run('binary-features-dense')
-
-    def test_binary_features_sparse(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.binary) \
-            .feature_format(CmdBuilder.FEATURE_FORMAT_SPARSE)
-        CmdRunner(builder).run('binary-features-sparse')
-
-    def test_nominal_features_dense(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.nominal) \
-            .feature_format(CmdBuilder.FEATURE_FORMAT_DENSE)
-        CmdRunner(builder).run('nominal-features-dense')
-
-    def test_nominal_features_sparse(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.nominal) \
-            .feature_format(CmdBuilder.FEATURE_FORMAT_SPARSE)
-        CmdRunner(builder).run('nominal-features-sparse')
-
-    def test_ordinal_features_dense(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.ordinal) \
-            .feature_format(CmdBuilder.FEATURE_FORMAT_DENSE)
-        CmdRunner(builder).run('ordinal-features-dense')
-
-    def test_ordinal_features_sparse(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.ordinal) \
-            .feature_format(CmdBuilder.FEATURE_FORMAT_SPARSE)
-        CmdRunner(builder).run('ordinal-features-sparse')
+    @pytest.mark.parametrize('dataset_name', ['numerical_sparse', 'binary', 'nominal', 'ordinal'])
+    @pytest.mark.parametrize('feature_format', [CmdBuilder.FEATURE_FORMAT_DENSE, CmdBuilder.FEATURE_FORMAT_SPARSE])
+    def test_feature_format(self, dataset_name: str, feature_format: str, dataset: Dataset):
+        builder = self._create_cmd_builder(dataset=getattr(dataset, dataset_name)) \
+            .feature_format(feature_format)
+        CmdRunner(builder).run(f'feature-format-{dataset_name}-{feature_format}')
 
     @pytest.mark.parametrize('output_format', [
         CmdBuilder.OUTPUT_FORMAT_DENSE,
