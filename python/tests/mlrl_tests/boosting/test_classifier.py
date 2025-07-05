@@ -6,6 +6,7 @@ from typing import Any
 
 import pytest
 
+from ..common.cmd_builder import CmdBuilder
 from ..common.cmd_builder_classification import ClassificationCmdBuilder
 from ..common.cmd_runner import CmdRunner
 from ..common.datasets import Dataset
@@ -129,13 +130,13 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
             .binary_predictor(BoomerClassifierCmdBuilder.BINARY_PREDICTOR_OUTPUT_WISE) \
             .print_predictions() \
             .print_ground_truth() \
-            .sparse_prediction_format()
+            .prediction_format(CmdBuilder.PREDICTION_FORMAT_SPARSE)
         CmdRunner(builder).run('predictor-binary-output-wise_sparse')
 
     def test_predictor_binary_output_wise_sparse_incremental(self):
         builder = self._create_cmd_builder() \
             .binary_predictor(BoomerClassifierCmdBuilder.BINARY_PREDICTOR_OUTPUT_WISE) \
-            .sparse_prediction_format() \
+            .prediction_format(CmdBuilder.PREDICTION_FORMAT_SPARSE) \
             .incremental_evaluation() \
             .print_evaluation() \
             .store_evaluation()
@@ -194,13 +195,13 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
             .print_predictions() \
             .print_ground_truth() \
             .print_label_vectors() \
-            .sparse_prediction_format()
+            .prediction_format(CmdBuilder.PREDICTION_FORMAT_SPARSE)
         CmdRunner(builder).run('predictor-binary-example-wise_sparse')
 
     def test_predictor_binary_example_wise_sparse_incremental(self):
         builder = self._create_cmd_builder() \
             .binary_predictor(BoomerClassifierCmdBuilder.BINARY_PREDICTOR_EXAMPLE_WISE) \
-            .sparse_prediction_format() \
+            .prediction_format(CmdBuilder.PREDICTION_FORMAT_SPARSE) \
             .incremental_evaluation() \
             .print_evaluation() \
             .store_evaluation()
@@ -250,7 +251,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
             .print_predictions() \
             .print_ground_truth() \
             .print_label_vectors() \
-            .sparse_prediction_format() \
+            .prediction_format(CmdBuilder.PREDICTION_FORMAT_SPARSE) \
             .set_model_dir()
         CmdRunner(builder).run('predictor-binary-gfm_sparse')
 
@@ -263,7 +264,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
             .print_joint_probability_calibration_model() \
             .store_joint_probability_calibration_model() \
             .binary_predictor(BoomerClassifierCmdBuilder.BINARY_PREDICTOR_GFM) \
-            .sparse_prediction_format() \
+            .prediction_format(CmdBuilder.PREDICTION_FORMAT_SPARSE) \
             .incremental_evaluation() \
             .print_evaluation() \
             .store_evaluation() \
@@ -347,7 +348,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
     def test_statistics_sparse_output_format_dense(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.numerical_sparse) \
             .sparse_statistic_format() \
-            .sparse_output_format(False) \
+            .output_format(CmdBuilder.OUTPUT_FORMAT_DENSE) \
             .default_rule(False) \
             .loss(BoomerClassifierCmdBuilder.LOSS_SQUARED_HINGE_DECOMPOSABLE) \
             .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_SINGLE)
@@ -356,7 +357,7 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
     def test_statistics_sparse_output_format_sparse(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.numerical_sparse) \
             .sparse_statistic_format() \
-            .sparse_output_format() \
+            .output_format(CmdBuilder.OUTPUT_FORMAT_SPARSE) \
             .default_rule(False) \
             .loss(BoomerClassifierCmdBuilder.LOSS_SQUARED_HINGE_DECOMPOSABLE) \
             .head_type(BoomerCmdBuilderMixin.HEAD_TYPE_SINGLE)

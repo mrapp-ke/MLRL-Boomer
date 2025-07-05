@@ -44,6 +44,18 @@ class CmdBuilder:
 
     FEATURE_BINNING_EQUAL_FREQUENCY = 'equal-frequency'
 
+    FEATURE_FORMAT_DENSE = 'dense'
+
+    FEATURE_FORMAT_SPARSE = 'sparse'
+
+    PREDICTION_FORMAT_DENSE = 'dense'
+
+    PREDICTION_FORMAT_SPARSE = 'sparse'
+
+    OUTPUT_FORMAT_DENSE = 'dense'
+
+    OUTPUT_FORMAT_SPARSE = 'sparse'
+
     def __init__(self,
                  expected_output_dir: str,
                  runnable_module_name: str,
@@ -392,51 +404,50 @@ class CmdBuilder:
         self.args.append(str(store_rules).lower())
         return self
 
-    def sparse_feature_format(self, sparse: bool = True):
+    def feature_format(self, feature_format: str = FEATURE_FORMAT_SPARSE):
         """
-        Configures whether sparse data structures should be used to represent the feature values of training examples or
-        not.
+        Configures the format to be used for the feature values of training examples.
 
-        :param sparse:  True, if sparse data structures should be used to represent the feature values of training
-                        examples, False otherwise
-        :return:        The builder itself
+        :param feature_format:  The format to be used
+        :return:                The builder itself
         """
         self.args.append('--feature-format')
-        self.args.append('sparse' if sparse else 'dense')
+        self.args.append(feature_format)
         return self
 
-    def sparse_output_format(self, sparse: bool = True):
+    def output_format(self, output_format: str = OUTPUT_FORMAT_SPARSE):
         """
-        Configures whether sparse data structures should be used to represent the labels of training examples or not.
+        Configures the format to be used for the ground truth of training examples.
 
-        :param sparse:  True, if sparse data structures should be used to represent the labels of training examples,
-                        False otherwise
-        :return:        The builder itself
+        :param output_format:   The format to be used
+        :return:                The builder itself
         """
         self.args.append('--output-format')
-        self.args.append('sparse' if sparse else 'dense')
+        self.args.append(output_format)
         return self
 
-    def sparse_prediction_format(self, sparse: bool = True):
+    def prediction_format(self, prediction_format: str = PREDICTION_FORMAT_SPARSE):
         """
-        Configures whether sparse data structures should be used to represent predictions or not.
+        Configures the format to be used for predictions.
 
-        :param sparse:  True, if sparse data structures should be used to represent predictions, False otherwise
-        :return:        The builder itself
+        :param prediction_format:   The format to be used
+        :return:                    The builder itself
         """
         self.args.append('--prediction-format')
-        self.args.append('sparse' if sparse else 'dense')
+        self.args.append(prediction_format)
         return self
 
-    def instance_sampling(self, instance_sampling: str = INSTANCE_SAMPLING_WITHOUT_REPLACEMENT):
+    def instance_sampling(self, instance_sampling: Optional[str]):
         """
         Configures the rule learner to sample from the available training examples.
 
         :param instance_sampling:   The name of the sampling method that should be used
         :return:                    The builder itself
         """
-        self.args.append('--instance-sampling')
-        self.args.append(instance_sampling)
+        if instance_sampling:
+            self.args.append('--instance-sampling')
+            self.args.append(instance_sampling)
+
         return self
 
     def feature_sampling(self, feature_sampling: str = FEATURE_SAMPLING_WITHOUT_REPLACEMENT):
