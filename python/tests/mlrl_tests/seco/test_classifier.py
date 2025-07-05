@@ -44,47 +44,20 @@ class TestSeCoClassifier(ClassificationIntegrationTests):
             .heuristic(heuristic)
         CmdRunner(builder).run(f'heuristic_{heuristic}')
 
-    def test_pruning_heuristic_accuracy(self):
+    @pytest.mark.parametrize('pruning_heuristic', [
+        HEURISTIC_ACCURACY,
+        HEURISTIC_PRECISION,
+        HEURISTIC_RECALL,
+        HEURISTIC_LAPLACE,
+        HEURISTIC_WRA,
+        HEURISTIC_F_MEASURE,
+        HEURISTIC_M_ESTIMATE,
+    ])
+    def test_pruning_heuristic(self, pruning_heuristic: str):
         builder = self._create_cmd_builder() \
             .rule_pruning(RulePruningParameter.RULE_PRUNING_IREP) \
-            .pruning_heuristic(HEURISTIC_ACCURACY)
-        CmdRunner(builder).run('pruning-heuristic_accuracy')
-
-    def test_pruning_heuristic_precision(self):
-        builder = self._create_cmd_builder() \
-            .rule_pruning(RulePruningParameter.RULE_PRUNING_IREP) \
-            .pruning_heuristic(HEURISTIC_PRECISION)
-        CmdRunner(builder).run('pruning-heuristic_precision')
-
-    def test_pruning_heuristic_recall(self):
-        builder = self._create_cmd_builder() \
-            .rule_pruning(RulePruningParameter.RULE_PRUNING_IREP) \
-            .pruning_heuristic(HEURISTIC_RECALL)
-        CmdRunner(builder).run('pruning-heuristic_recall')
-
-    def test_pruning_heuristic_laplace(self):
-        builder = self._create_cmd_builder() \
-            .rule_pruning(RulePruningParameter.RULE_PRUNING_IREP) \
-            .pruning_heuristic(HEURISTIC_LAPLACE)
-        CmdRunner(builder).run('pruning-heuristic_laplace')
-
-    def test_pruning_heuristic_wra(self):
-        builder = self._create_cmd_builder() \
-            .rule_pruning(RulePruningParameter.RULE_PRUNING_IREP) \
-            .pruning_heuristic(HEURISTIC_WRA)
-        CmdRunner(builder).run('pruning-heuristic_wra')
-
-    def test_pruning_heuristic_f_measure(self):
-        builder = self._create_cmd_builder() \
-            .rule_pruning(RulePruningParameter.RULE_PRUNING_IREP) \
-            .pruning_heuristic(HEURISTIC_F_MEASURE)
-        CmdRunner(builder).run('pruning-heuristic_f-measure')
-
-    def test_pruning_heuristic_m_estimate(self):
-        builder = self._create_cmd_builder() \
-            .rule_pruning(RulePruningParameter.RULE_PRUNING_IREP) \
-            .pruning_heuristic(HEURISTIC_M_ESTIMATE)
-        CmdRunner(builder).run('pruning-heuristic_m-estimate')
+            .pruning_heuristic(pruning_heuristic)
+        CmdRunner(builder).run(f'pruning-heuristic_{pruning_heuristic}')
 
     def test_single_output_heads(self):
         builder = self._create_cmd_builder() \
