@@ -6,10 +6,15 @@ from abc import ABC
 
 import pytest
 
+from .cmd_builder import CmdBuilder
 from .cmd_builder_classification import ClassificationCmdBuilder
 from .cmd_runner import CmdRunner
 from .datasets import Dataset
 from .integration_tests import IntegrationTests
+
+from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import OPTION_FIRST_FOLD, OPTION_LAST_FOLD
+
+from mlrl.util.options import Options
 
 
 class ClassificationIntegrationTests(IntegrationTests, ABC):
@@ -32,7 +37,7 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
 
     def test_label_vectors_cross_validation(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation() \
+            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_label_vectors() \
@@ -41,7 +46,7 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
 
     def test_label_vectors_single_fold(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation(current_fold=1) \
+            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({OPTION_FIRST_FOLD: 1, OPTION_LAST_FOLD: 1})) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_label_vectors() \
