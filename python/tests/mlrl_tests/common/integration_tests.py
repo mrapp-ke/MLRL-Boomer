@@ -56,45 +56,24 @@ class IntegrationTests(ABC):
             .print_evaluation(False)
         CmdRunner(builder).run('meka-format')
 
-    def test_evaluation_no_data_split(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .data_split(CmdBuilder.DATA_SPLIT_NO) \
+    @pytest.mark.parametrize('data_split, data_split_options, predefined', [
+        (CmdBuilder.DATA_SPLIT_NO, Options(), False),
+        (CmdBuilder.DATA_SPLIT_TRAIN_TEST, Options(), False),
+        (CmdBuilder.DATA_SPLIT_TRAIN_TEST, Options(), True),
+        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options(), False),
+        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options(), True),
+        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({
+            OPTION_FIRST_FOLD: 1,
+            OPTION_LAST_FOLD: 1,
+        }), False),
+    ])
+    def test_evaluation(self, data_split: str, data_split_options: Options, predefined: bool, dataset: Dataset):
+        builder = self._create_cmd_builder(dataset=dataset.default + ('-predefined' if predefined else '')) \
+            .data_split(data_split, options=data_split_options) \
             .print_evaluation() \
             .store_evaluation()
-        CmdRunner(builder).run('evaluation_no-data-split')
-
-    def test_evaluation_train_test(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .print_evaluation() \
-            .store_evaluation()
-        CmdRunner(builder).run('evaluation_train-test')
-
-    def test_evaluation_train_test_predefined(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default + '-predefined') \
-            .print_evaluation() \
-            .store_evaluation()
-        CmdRunner(builder).run('evaluation_train-test-predefined')
-
-    def test_evaluation_cross_validation(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION) \
-            .print_evaluation() \
-            .store_evaluation()
-        CmdRunner(builder).run('evaluation_cross-validation')
-
-    def test_evaluation_cross_validation_predefined(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default + '-predefined') \
-            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION) \
-            .print_evaluation() \
-            .store_evaluation()
-        CmdRunner(builder).run('evaluation_cross-validation-predefined')
-
-    def test_evaluation_single_fold(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({OPTION_FIRST_FOLD: 1, OPTION_LAST_FOLD: 1})) \
-            .print_evaluation() \
-            .store_evaluation()
-        CmdRunner(builder).run('evaluation_single-fold')
+        CmdRunner(builder).run(f'evaluation_{data_split}' + ('-predefined' if predefined else '')
+                               + (f'_{data_split_options}' if data_split_options else ''))
 
     def test_evaluation_training_data(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
@@ -122,7 +101,8 @@ class IntegrationTests(ABC):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .data_split(data_split, options=data_split_options) \
             .set_model_dir()
-        CmdRunner(builder).run(f'model-persistence_{data_split}' + (f'_{data_split_options}' if data_split_options else ''))
+        CmdRunner(builder).run(f'model-persistence_{data_split}'
+                               + (f'_{data_split_options}' if data_split_options else ''))
 
     @pytest.mark.parametrize('data_split, data_split_options', [
         (CmdBuilder.DATA_SPLIT_TRAIN_TEST, Options()),
