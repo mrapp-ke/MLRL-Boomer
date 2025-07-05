@@ -1,6 +1,8 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+import pytest
+
 # pylint: disable=missing-function-docstring
 from ..common.cmd_runner import CmdRunner
 
@@ -46,30 +48,14 @@ class BoomerIntegrationTestsMixin:
             .print_model_characteristics()
         CmdRunner(builder).run('no-default-rule')
 
-    def test_global_post_pruning_no_holdout(self):
+    @pytest.mark.parametrize('global_pruning', [
+        GlobalPruningParameter.GLOBAL_PRUNING_POST,
+        GlobalPruningParameter.GLOBAL_PRUNING_PRE,
+    ])
+    @pytest.mark.parametrize('holdout', [NONE, PartitionSamplingParameter.PARTITION_SAMPLING_RANDOM])
+    def test_global_pruning(self, global_pruning: str, holdout: str):
         builder = self._create_cmd_builder() \
-            .global_pruning(GlobalPruningParameter.GLOBAL_PRUNING_POST) \
-            .holdout(NONE) \
+            .global_pruning(global_pruning) \
+            .holdout(holdout) \
             .print_model_characteristics()
-        CmdRunner(builder).run('post-pruning_no-holdout')
-
-    def test_global_post_pruning_random_holdout(self):
-        builder = self._create_cmd_builder() \
-            .global_pruning(GlobalPruningParameter.GLOBAL_PRUNING_POST) \
-            .holdout(PartitionSamplingParameter.PARTITION_SAMPLING_RANDOM) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('post-pruning_random-holdout')
-
-    def test_global_pre_pruning_no_holdout(self):
-        builder = self._create_cmd_builder() \
-            .global_pruning(GlobalPruningParameter.GLOBAL_PRUNING_PRE) \
-            .holdout(NONE) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('pre-pruning_no-holdout')
-
-    def test_global_pre_pruning_random_holdout(self):
-        builder = self._create_cmd_builder() \
-            .global_pruning(GlobalPruningParameter.GLOBAL_PRUNING_PRE) \
-            .holdout(PartitionSamplingParameter.PARTITION_SAMPLING_RANDOM) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('pre-pruning_random-holdout')
+        CmdRunner(builder).run(f'{global_pruning}_{holdout}-holdout')
