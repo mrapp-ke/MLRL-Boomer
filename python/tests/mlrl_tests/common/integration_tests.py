@@ -9,12 +9,17 @@ from typing import Any, Optional
 
 import pytest
 
-from .cmd_builder import CmdBuilder
 from .cmd_runner import CmdRunner
 from .datasets import Dataset
 
-from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import OPTION_FIRST_FOLD, OPTION_LAST_FOLD
+from mlrl.common.config.parameters import BINNING_EQUAL_FREQUENCY, BINNING_EQUAL_WIDTH, SAMPLING_WITH_REPLACEMENT, \
+    SAMPLING_WITHOUT_REPLACEMENT, OutputSamplingParameter, RuleInductionParameter, RulePruningParameter
+from mlrl.common.learners import SparsePolicy
 
+from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import OPTION_FIRST_FOLD, OPTION_LAST_FOLD, \
+    VALUE_CROSS_VALIDATION, VALUE_TRAIN_TEST
+
+from mlrl.util.cli import NONE
 from mlrl.util.options import Options
 
 ci_only = pytest.mark.skipif(os.getenv('GITHUB_ACTIONS') != 'true', reason='Disabled unless run on CI')
@@ -57,12 +62,12 @@ class IntegrationTests(ABC):
         CmdRunner(builder).run('meka-format')
 
     @pytest.mark.parametrize('data_split, data_split_options, predefined', [
-        (CmdBuilder.DATA_SPLIT_NO, Options(), False),
-        (CmdBuilder.DATA_SPLIT_TRAIN_TEST, Options(), False),
-        (CmdBuilder.DATA_SPLIT_TRAIN_TEST, Options(), True),
-        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options(), False),
-        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options(), True),
-        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({
+        (NONE, Options(), False),
+        (VALUE_TRAIN_TEST, Options(), False),
+        (VALUE_TRAIN_TEST, Options(), True),
+        (VALUE_CROSS_VALIDATION, Options(), False),
+        (VALUE_CROSS_VALIDATION, Options(), True),
+        (VALUE_CROSS_VALIDATION, Options({
             OPTION_FIRST_FOLD: 1,
             OPTION_LAST_FOLD: 1,
         }), False),
@@ -90,9 +95,9 @@ class IntegrationTests(ABC):
         CmdRunner(builder).run('evaluation_incremental')
 
     @pytest.mark.parametrize('data_split, data_split_options', [
-        (CmdBuilder.DATA_SPLIT_TRAIN_TEST, Options()),
-        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options()),
-        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({
+        (VALUE_TRAIN_TEST, Options()),
+        (VALUE_TRAIN_TEST, Options()),
+        (VALUE_CROSS_VALIDATION, Options({
             OPTION_FIRST_FOLD: 1,
             OPTION_LAST_FOLD: 1,
         })),
@@ -105,9 +110,9 @@ class IntegrationTests(ABC):
                                + (f'_{data_split_options}' if data_split_options else ''))
 
     @pytest.mark.parametrize('data_split, data_split_options', [
-        (CmdBuilder.DATA_SPLIT_TRAIN_TEST, Options()),
-        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options()),
-        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({
+        (VALUE_TRAIN_TEST, Options()),
+        (VALUE_CROSS_VALIDATION, Options()),
+        (VALUE_CROSS_VALIDATION, Options({
             OPTION_FIRST_FOLD: 1,
             OPTION_LAST_FOLD: 1,
         })),
@@ -135,9 +140,9 @@ class IntegrationTests(ABC):
         CmdRunner(builder).run('predictions_training-data')
 
     @pytest.mark.parametrize('data_split, data_split_options', [
-        (CmdBuilder.DATA_SPLIT_TRAIN_TEST, Options()),
-        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options()),
-        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({
+        (VALUE_TRAIN_TEST, Options()),
+        (VALUE_CROSS_VALIDATION, Options()),
+        (VALUE_CROSS_VALIDATION, Options({
             OPTION_FIRST_FOLD: 1,
             OPTION_LAST_FOLD: 1,
         })),
@@ -162,9 +167,9 @@ class IntegrationTests(ABC):
         CmdRunner(builder).run('prediction-characteristics_training-data')
 
     @pytest.mark.parametrize('data_split, data_split_options', [
-        (CmdBuilder.DATA_SPLIT_TRAIN_TEST, Options()),
-        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options()),
-        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({
+        (VALUE_TRAIN_TEST, Options()),
+        (VALUE_CROSS_VALIDATION, Options()),
+        (VALUE_CROSS_VALIDATION, Options({
             OPTION_FIRST_FOLD: 1,
             OPTION_LAST_FOLD: 1,
         })),
@@ -180,9 +185,9 @@ class IntegrationTests(ABC):
                                + (f'_{data_split_options}' if data_split_options else ''))
 
     @pytest.mark.parametrize('data_split, data_split_options', [
-        (CmdBuilder.DATA_SPLIT_TRAIN_TEST, Options()),
-        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options()),
-        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({
+        (VALUE_TRAIN_TEST, Options()),
+        (VALUE_CROSS_VALIDATION, Options()),
+        (VALUE_CROSS_VALIDATION, Options({
             OPTION_FIRST_FOLD: 1,
             OPTION_LAST_FOLD: 1,
         })),
@@ -198,9 +203,9 @@ class IntegrationTests(ABC):
                                + (f'_{data_split_options}' if data_split_options else ''))
 
     @pytest.mark.parametrize('data_split, data_split_options', [
-        (CmdBuilder.DATA_SPLIT_TRAIN_TEST, Options()),
-        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options()),
-        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({
+        (VALUE_TRAIN_TEST, Options()),
+        (VALUE_CROSS_VALIDATION, Options()),
+        (VALUE_CROSS_VALIDATION, Options({
             OPTION_FIRST_FOLD: 1,
             OPTION_LAST_FOLD: 1,
         })),
@@ -215,15 +220,15 @@ class IntegrationTests(ABC):
         CmdRunner(builder).run(f'rules_{data_split}' + (f'_{data_split_options}' if data_split_options else ''))
 
     @pytest.mark.parametrize('dataset_name', ['numerical_sparse', 'binary', 'nominal', 'ordinal'])
-    @pytest.mark.parametrize('feature_format', [CmdBuilder.FEATURE_FORMAT_DENSE, CmdBuilder.FEATURE_FORMAT_SPARSE])
+    @pytest.mark.parametrize('feature_format', [SparsePolicy.FORCE_DENSE, SparsePolicy.FORCE_SPARSE])
     def test_feature_format(self, dataset_name: str, feature_format: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=getattr(dataset, dataset_name)) \
             .feature_format(feature_format)
         CmdRunner(builder).run(f'feature-format-{dataset_name}-{feature_format}')
 
     @pytest.mark.parametrize('output_format', [
-        CmdBuilder.OUTPUT_FORMAT_DENSE,
-        CmdBuilder.OUTPUT_FORMAT_SPARSE,
+        SparsePolicy.FORCE_DENSE,
+        SparsePolicy.FORCE_SPARSE,
     ])
     def test_output_format(self, output_format: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
@@ -231,8 +236,8 @@ class IntegrationTests(ABC):
         CmdRunner(builder).run(f'output-format-{output_format}')
 
     @pytest.mark.parametrize('prediction_format', [
-        CmdBuilder.PREDICTION_FORMAT_DENSE,
-        CmdBuilder.PREDICTION_FORMAT_SPARSE,
+        SparsePolicy.FORCE_DENSE,
+        SparsePolicy.FORCE_SPARSE,
     ])
     def test_prediction_format(self, prediction_format: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
@@ -242,9 +247,9 @@ class IntegrationTests(ABC):
         CmdRunner(builder).run(f'prediction-format-{prediction_format}')
 
     @pytest.mark.parametrize('data_split, data_split_options', [
-        (CmdBuilder.DATA_SPLIT_TRAIN_TEST, Options()),
-        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options()),
-        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({
+        (VALUE_TRAIN_TEST, Options()),
+        (VALUE_CROSS_VALIDATION, Options()),
+        (VALUE_CROSS_VALIDATION, Options({
             OPTION_FIRST_FOLD: 1,
             OPTION_LAST_FOLD: 1
         })),
@@ -261,9 +266,9 @@ class IntegrationTests(ABC):
         CmdRunner(builder).run(f'parameters_{data_split}' + (f'_{data_split_options}' if data_split_options else ''))
 
     @pytest.mark.parametrize('instance_sampling', [
-        CmdBuilder.INSTANCE_SAMPLING_NO,
-        CmdBuilder.INSTANCE_SAMPLING_WITH_REPLACEMENT,
-        CmdBuilder.INSTANCE_SAMPLING_WITHOUT_REPLACEMENT,
+        NONE,
+        SAMPLING_WITH_REPLACEMENT,
+        SAMPLING_WITHOUT_REPLACEMENT,
     ])
     def test_instance_sampling(self, instance_sampling: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
@@ -271,8 +276,8 @@ class IntegrationTests(ABC):
         CmdRunner(builder).run(f'instance-sampling-{instance_sampling}')
 
     @pytest.mark.parametrize('feature_sampling', [
-        CmdBuilder.FEATURE_SAMPLING_NO,
-        CmdBuilder.FEATURE_SAMPLING_WITHOUT_REPLACEMENT,
+        NONE,
+        SAMPLING_WITHOUT_REPLACEMENT,
     ])
     def test_feature_sampling(self, feature_sampling: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
@@ -280,9 +285,9 @@ class IntegrationTests(ABC):
         CmdRunner(builder).run(f'feature-sampling-{feature_sampling}')
 
     @pytest.mark.parametrize('output_sampling', [
-        CmdBuilder.OUTPUT_SAMPLING_NO,
-        CmdBuilder.OUTPUT_SAMPLING_ROUND_ROBIN,
-        CmdBuilder.OUTPUT_SAMPLING_WITHOUT_REPLACEMENT,
+        NONE,
+        OutputSamplingParameter.OUTPUT_SAMPLING_ROUND_ROBIN,
+        SAMPLING_WITHOUT_REPLACEMENT,
     ])
     def test_output_sampling(self, output_sampling: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
@@ -290,8 +295,8 @@ class IntegrationTests(ABC):
         CmdRunner(builder).run(f'output-sampling-{output_sampling}')
 
     @pytest.mark.parametrize('rule_pruning, instance_sampling', [
-        (CmdBuilder.RULE_PRUNING_NO, None),
-        (CmdBuilder.RULE_PRUNING_IREP, CmdBuilder.INSTANCE_SAMPLING_WITHOUT_REPLACEMENT),
+        (NONE, None),
+        (RulePruningParameter.RULE_PRUNING_IREP, SAMPLING_WITHOUT_REPLACEMENT),
     ])
     def test_rule_pruning(self, rule_pruning: str, instance_sampling: Optional[str], dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
@@ -299,7 +304,7 @@ class IntegrationTests(ABC):
             .rule_pruning(rule_pruning)
         CmdRunner(builder).run(f'rule-pruning-{rule_pruning}')
 
-    @pytest.mark.parametrize('rule_induction', [CmdBuilder.RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH])
+    @pytest.mark.parametrize('rule_induction', [RuleInductionParameter.RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH])
     def test_rule_induction(self, rule_induction: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .rule_induction(rule_induction)
@@ -311,11 +316,11 @@ class IntegrationTests(ABC):
         CmdRunner(builder).run('sequential-post-optimization')
 
     @pytest.mark.parametrize('feature_binning', [
-        CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH,
-        CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY,
+        BINNING_EQUAL_WIDTH,
+        BINNING_EQUAL_FREQUENCY,
     ])
     @pytest.mark.parametrize('dataset_name', ['numerical', 'nominal', 'binary'])
-    @pytest.mark.parametrize('feature_format', [CmdBuilder.FEATURE_FORMAT_DENSE, CmdBuilder.FEATURE_FORMAT_SPARSE])
+    @pytest.mark.parametrize('feature_format', [SparsePolicy.FORCE_DENSE, SparsePolicy.FORCE_SPARSE])
     def test_feature_binning(self, feature_binning: str, dataset_name: str, feature_format: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=getattr(dataset, dataset_name)) \
             .feature_binning(feature_binning) \
