@@ -231,31 +231,23 @@ class IntegrationTests(ABC):
             .store_data_characteristics()
         CmdRunner(builder).run('data-characteristics_single-fold')
 
-    def test_model_characteristics_train_test(self, dataset: Dataset):
+    @pytest.mark.parametrize('data_split, data_split_options', [
+        (CmdBuilder.DATA_SPLIT_TRAIN_TEST, Options()),
+        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options()),
+        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({
+            OPTION_FIRST_FOLD: 1,
+            OPTION_LAST_FOLD: 1,
+        })),
+    ])
+    def test_model_characteristics(self, data_split: str, data_split_options: Options, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
+            .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_model_characteristics() \
             .store_model_characteristics()
-        CmdRunner(builder).run('model-characteristics_train-test')
-
-    def test_model_characteristics_cross_validation(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION) \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .print_model_characteristics() \
-            .store_model_characteristics()
-        CmdRunner(builder).run('model-characteristics_cross-validation')
-
-    def test_model_characteristics_single_fold(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({OPTION_FIRST_FOLD: 1, OPTION_LAST_FOLD: 1})) \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .print_model_characteristics() \
-            .store_model_characteristics()
-        CmdRunner(builder).run('model-characteristics_single-fold')
+        CmdRunner(builder).run(f'model-characteristics_{data_split}'
+                               + (f'_{data_split_options}' if data_split_options else ''))
 
     @pytest.mark.parametrize('data_split, data_split_options', [
         (CmdBuilder.DATA_SPLIT_TRAIN_TEST, Options()),
