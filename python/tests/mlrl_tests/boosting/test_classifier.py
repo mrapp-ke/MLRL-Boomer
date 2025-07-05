@@ -31,17 +31,15 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
     def _create_cmd_builder(self, dataset: str = Dataset.EMOTIONS) -> Any:
         return BoomerClassifierCmdBuilder(dataset=dataset)
 
-    def test_single_label_scores(self, dataset: Dataset):
+    @pytest.mark.parametrize('prediction_type', [
+        PredictionType.SCORES,
+        PredictionType.PROBABILITIES,
+    ])
+    def test_single_label(self, prediction_type: PredictionType, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.single_output) \
-            .prediction_type(PredictionType.SCORES) \
+            .prediction_type(prediction_type) \
             .print_evaluation()
-        CmdRunner(builder).run('single-label-scores')
-
-    def test_single_label_probabilities(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.single_output) \
-            .prediction_type(PredictionType.PROBABILITIES) \
-            .print_evaluation()
-        CmdRunner(builder).run('single-label-probabilities')
+        CmdRunner(builder).run(f'single-label-{prediction_type}')
 
     def test_loss_logistic_decomposable_32bit_statistics(self):
         builder = self._create_cmd_builder() \
