@@ -127,37 +127,24 @@ class IntegrationTests(ABC):
             .set_model_dir()
         CmdRunner(builder).run('model-persistence_single-fold')
 
-    def test_predictions_train_test(self, dataset: Dataset):
+    @pytest.mark.parametrize('data_split, data_split_options', [
+        (CmdBuilder.DATA_SPLIT_TRAIN_TEST, Options()),
+        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options()),
+        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({
+            OPTION_FIRST_FOLD: 1,
+            OPTION_LAST_FOLD: 1,
+        })),
+    ])
+    def test_predictions(self, data_split: str, data_split_options: Options, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
+            .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_predictions() \
             .print_ground_truth() \
             .store_predictions() \
             .store_ground_truth()
-        CmdRunner(builder).run('predictions_train-test')
-
-    def test_predictions_cross_validation(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION) \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .print_predictions() \
-            .print_ground_truth() \
-            .store_predictions() \
-            .store_ground_truth()
-        CmdRunner(builder).run('predictions_cross-validation')
-
-    def test_predictions_single_fold(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({OPTION_FIRST_FOLD: 1, OPTION_LAST_FOLD: 1})) \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .print_predictions() \
-            .print_ground_truth() \
-            .store_predictions() \
-            .store_ground_truth()
-        CmdRunner(builder).run('predictions_single-fold')
+        CmdRunner(builder).run(f'predictions_{data_split}' + (f'_{data_split_options}' if data_split_options else ''))
 
     def test_predictions_training_data(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
