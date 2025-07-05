@@ -26,9 +26,9 @@ VALUE_CROSS_VALIDATION = 'cross-validation'
 
 OPTION_NUM_FOLDS = 'num_folds'
 
-OPTION_FIRST_FOLD = 'last_fold'
+OPTION_FIRST_FOLD = 'first_fold'
 
-OPTION_LAST_FOLD = 'first_fold'
+OPTION_LAST_FOLD = 'last_fold'
 
 
 class DatasetSplitterExtension(Extension):
