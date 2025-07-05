@@ -610,30 +610,17 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
             .print_model_characteristics()
         CmdRunner(builder).run('non-decomposable-partial-dynamic-heads_equal-width-label-binning_64-bit-statistics')
 
-    def test_global_post_pruning_stratified_output_wise_holdout(self):
+    @pytest.mark.parametrize('global_pruning', [
+        GlobalPruningParameter.GLOBAL_PRUNING_POST,
+        GlobalPruningParameter.GLOBAL_PRUNING_PRE,
+    ])
+    @pytest.mark.parametrize('holdout', [
+        SAMPLING_STRATIFIED_OUTPUT_WISE,
+        SAMPLING_STRATIFIED_EXAMPLE_WISE,
+    ])
+    def test_global_pruning_stratified_holdout(self, global_pruning: str, holdout: str):
         builder = self._create_cmd_builder() \
-            .global_pruning(GlobalPruningParameter.GLOBAL_PRUNING_POST) \
-            .holdout(SAMPLING_STRATIFIED_OUTPUT_WISE) \
+            .global_pruning(global_pruning) \
+            .holdout(holdout) \
             .print_model_characteristics()
-        CmdRunner(builder).run('post-pruning_stratified-output-wise-holdout')
-
-    def test_global_post_pruning_stratified_example_wise_holdout(self):
-        builder = self._create_cmd_builder() \
-            .global_pruning(GlobalPruningParameter.GLOBAL_PRUNING_POST) \
-            .holdout(SAMPLING_STRATIFIED_EXAMPLE_WISE) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('post-pruning_stratified-example-wise-holdout')
-
-    def test_global_pre_pruning_stratified_output_wise_holdout(self):
-        builder = self._create_cmd_builder() \
-            .global_pruning(GlobalPruningParameter.GLOBAL_PRUNING_PRE) \
-            .holdout(SAMPLING_STRATIFIED_OUTPUT_WISE) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('pre-pruning_stratified-output-wise-holdout')
-
-    def test_global_pre_pruning_stratified_example_wise_holdout(self):
-        builder = self._create_cmd_builder() \
-            .global_pruning(GlobalPruningParameter.GLOBAL_PRUNING_PRE) \
-            .holdout(SAMPLING_STRATIFIED_EXAMPLE_WISE) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('pre-pruning_stratified-example-wise-holdout')
+        CmdRunner(builder).run(f'{global_pruning}_{holdout}-holdout')
