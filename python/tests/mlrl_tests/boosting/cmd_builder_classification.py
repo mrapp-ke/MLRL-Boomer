@@ -2,6 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from os import path
+from typing import Optional
 
 from ..common.cmd_builder_classification import ClassificationCmdBuilder
 from ..common.datasets import Dataset
@@ -52,57 +53,67 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
                          runnable_module_name='mlrl.boosting',
                          dataset=dataset)
 
-    def marginal_probability_calibration(self, probability_calibrator: str = PROBABILITY_CALIBRATOR_ISOTONIC):
+    def marginal_probability_calibration(self, probability_calibrator: Optional[str] = PROBABILITY_CALIBRATOR_ISOTONIC):
         """
         Configures the algorithm to fit a model for the calibration of marginal probabilities.
 
         :param probability_calibrator:  The name of the method that should be used to fit a calibration model
         :return:                        The builder itself
         """
-        self.args.append('--marginal-probability-calibration')
-        self.args.append(probability_calibrator)
+        if probability_calibrator:
+            self.args.append('--marginal-probability-calibration')
+            self.args.append(probability_calibrator)
+
         return self
 
-    def joint_probability_calibration(self, probability_calibrator: str = PROBABILITY_CALIBRATOR_ISOTONIC):
+    def joint_probability_calibration(self, probability_calibrator: Optional[str] = PROBABILITY_CALIBRATOR_ISOTONIC):
         """
         Configures the algorithm to fit a model for the calibration of joint probabilities.
 
         :param probability_calibrator:  The name of the method that should be used to fit a calibration model
         :return:                        The builder itself
         """
-        self.args.append('--joint-probability-calibration')
-        self.args.append(probability_calibrator)
+        if probability_calibrator:
+            self.args.append('--joint-probability-calibration')
+            self.args.append(probability_calibrator)
+
         return self
 
-    def binary_predictor(self, binary_predictor: str = BINARY_PREDICTOR_AUTO):
+    def binary_predictor(self, binary_predictor: Optional[str] = BINARY_PREDICTOR_AUTO):
         """
         Configures the algorithm to use a specific method for predicting binary labels.
 
         :param binary_predictor:    The name of the method that should be used for predicting binary labels
         :return:                    The builder itself
         """
-        self.args.append('--binary-predictor')
-        self.args.append(binary_predictor)
+        if binary_predictor:
+            self.args.append('--binary-predictor')
+            self.args.append(binary_predictor)
+
         return self
 
-    def probability_predictor(self, probability_predictor: str = PROBABILITY_PREDICTOR_AUTO):
+    def probability_predictor(self, probability_predictor: Optional[str] = PROBABILITY_PREDICTOR_AUTO):
         """
         Configures the algorithm to use a specific method for predicting probabilities.
 
         :param probability_predictor:   The name of the method that should be used for predicting probabilities
         :return:                        The builder itself
         """
-        self.args.append('--probability-predictor')
-        self.args.append(probability_predictor)
+        if probability_predictor:
+            self.args.append('--probability-predictor')
+            self.args.append(probability_predictor)
+
         return self
 
-    def label_binning(self, label_binning: str = LABEL_BINNING_EQUAL_WIDTH):
+    def label_binning(self, label_binning: Optional[str] = LABEL_BINNING_EQUAL_WIDTH):
         """
         Configures the algorithm to use a specific method for the assignment of labels to bins.
 
         :param label_binning:   The name of the method to be used
         :return:                The builder itself
         """
-        self.args.append('--label-binning')
-        self.args.append(label_binning)
+        if label_binning:
+            self.args.append('--label-binning')
+            self.args.append(label_binning)
+
         return self

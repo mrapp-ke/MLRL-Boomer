@@ -2,6 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from os import path
+from typing import Optional
 
 from ..common.cmd_builder_classification import ClassificationCmdBuilder
 from ..common.datasets import Dataset
@@ -41,40 +42,46 @@ class SeCoClassifierCmdBuilder(ClassificationCmdBuilder):
                          runnable_module_name='mlrl.seco',
                          dataset=dataset)
 
-    def heuristic(self, heuristic: str = HEURISTIC_F_MEASURE):
+    def heuristic(self, heuristic: Optional[str] = HEURISTIC_F_MEASURE):
         """
         Configures the algorithm to use a specific heuristic for learning rules.
 
         :param heuristic:   The name of the heuristic that should be used for learning rules
         :return:            The builder itself
         """
-        self.args.append('--heuristic')
-        self.args.append(heuristic)
+        if heuristic:
+            self.args.append('--heuristic')
+            self.args.append(heuristic)
+
         return self
 
-    def pruning_heuristic(self, heuristic: str = HEURISTIC_ACCURACY):
+    def pruning_heuristic(self, heuristic: Optional[str] = HEURISTIC_ACCURACY):
         """
         Configures the algorithm to use a specific heuristic for pruning rules.
 
         :param heuristic:   The name of the heuristic that should be used for pruning rules
         :return:            The builder itself
         """
-        self.args.append('--pruning-heuristic')
-        self.args.append(heuristic)
+        if heuristic:
+            self.args.append('--pruning-heuristic')
+            self.args.append(heuristic)
+
         return self
 
-    def head_type(self, head_type: str = HEAD_TYPE_SINGLE):
+    def head_type(self, head_type: Optional[str] = HEAD_TYPE_SINGLE):
         """
         Configures the algorithm to use a specific type of rule heads.
 
         :param head_type:   The type of rule heads to be used
         :return:            The builder itself
         """
-        self.args.append('--head-type')
-        self.args.append(head_type)
+        if head_type:
+            self.args.append('--head-type')
+            self.args.append(head_type)
+
         return self
 
-    def lift_function(self, lift_function: str = LIFT_FUNCTION_PEAK):
+    def lift_function(self, lift_function: Optional[str] = LIFT_FUNCTION_PEAK):
         """
         Configures the algorithm to use a specific lift function for the induction of rules with partial heads.
 
@@ -82,6 +89,8 @@ class SeCoClassifierCmdBuilder(ClassificationCmdBuilder):
                                 partial heads
         :return:                The builder itself
         """
-        self.args.append('--lift-function')
-        self.args.append(lift_function)
+        if lift_function:
+            self.args.append('--lift-function')
+            self.args.append(lift_function)
+
         return self

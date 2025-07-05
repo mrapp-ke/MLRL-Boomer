@@ -124,13 +124,15 @@ class ClassificationCmdBuilder(CmdBuilder):
         self.args.append(str(store_joint_probability_calibration_model).lower())
         return self
 
-    def prediction_type(self, prediction_type: str = PREDICTION_TYPE_BINARY):
+    def prediction_type(self, prediction_type: Optional[str] = PREDICTION_TYPE_BINARY):
         """
         Configures the type of predictions that should be obtained from the algorithm.
 
         :param prediction_type: The type of the predictions
         :return:                The builder itself
         """
-        self.args.append('--prediction-type')
-        self.args.append(prediction_type)
+        if prediction_type:
+            self.args.append('--prediction-type')
+            self.args.append(prediction_type)
+
         return self
