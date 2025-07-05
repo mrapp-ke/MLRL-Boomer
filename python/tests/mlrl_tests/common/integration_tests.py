@@ -257,31 +257,22 @@ class IntegrationTests(ABC):
             .store_model_characteristics()
         CmdRunner(builder).run('model-characteristics_single-fold')
 
-    def test_rules_train_test(self, dataset: Dataset):
+    @pytest.mark.parametrize('data_split, data_split_options', [
+        (CmdBuilder.DATA_SPLIT_TRAIN_TEST, Options()),
+        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options()),
+        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({
+            OPTION_FIRST_FOLD: 1,
+            OPTION_LAST_FOLD: 1,
+        })),
+    ])
+    def test_rules(self, data_split: str, data_split_options: Options, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
+            .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_rules() \
             .store_rules()
-        CmdRunner(builder).run('rules_train-test')
-
-    def test_rules_cross_validation(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION) \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .print_rules() \
-            .store_rules()
-        CmdRunner(builder).run('rules_cross-validation')
-
-    def test_rules_single_fold(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, first_fold=1, last_fold=1) \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .print_rules() \
-            .store_rules()
-        CmdRunner(builder).run('rules_single-fold')
+        CmdRunner(builder).run(f'rules_{data_split}' + (f'_{data_split_options}' if data_split_options else ''))
 
     @pytest.mark.parametrize('dataset_name', ['numerical_sparse', 'binary', 'nominal', 'ordinal'])
     @pytest.mark.parametrize('feature_format', [CmdBuilder.FEATURE_FORMAT_DENSE, CmdBuilder.FEATURE_FORMAT_SPARSE])
