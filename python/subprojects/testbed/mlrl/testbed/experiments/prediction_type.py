@@ -3,10 +3,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for dealing with different types of predictions.
 """
-from enum import Enum
+from enum import StrEnum
 
 
-class PredictionType(Enum):
+class PredictionType(StrEnum):
     """
     Specifies all possible types of predictions that may be obtained from a machine learning model.
     """

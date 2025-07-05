@@ -6,7 +6,12 @@ from typing import List, Optional
 
 from .datasets import Dataset
 
-from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import OPTION_FIRST_FOLD, OPTION_NUM_FOLDS
+from mlrl.common.config.parameters import BINNING_EQUAL_WIDTH, SAMPLING_WITHOUT_REPLACEMENT, \
+    PartitionSamplingParameter, RuleInductionParameter, RulePruningParameter
+from mlrl.common.learners import SparsePolicy
+
+from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import OPTION_FIRST_FOLD, OPTION_NUM_FOLDS, \
+    VALUE_CROSS_VALIDATION, VALUE_TRAIN_TEST
 
 from mlrl.util.options import Options
 
@@ -15,56 +20,6 @@ class CmdBuilder:
     """
     A builder that allows to configure a command for running a rule learner.
     """
-
-    RULE_PRUNING_NO = 'none'
-
-    RULE_PRUNING_IREP = 'irep'
-
-    RULE_INDUCTION_TOP_DOWN_GREEDY = 'top-down-greedy'
-
-    RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH = 'top-down-beam-search'
-
-    INSTANCE_SAMPLING_NO = 'none'
-
-    INSTANCE_SAMPLING_WITH_REPLACEMENT = 'with-replacement'
-
-    INSTANCE_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
-
-    FEATURE_SAMPLING_NO = 'none'
-
-    FEATURE_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
-
-    OUTPUT_SAMPLING_NO = 'none'
-
-    OUTPUT_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
-
-    OUTPUT_SAMPLING_ROUND_ROBIN = 'round-robin'
-
-    HOLDOUT_NO = 'none'
-
-    HOLDOUT_RANDOM = 'random'
-
-    FEATURE_BINNING_EQUAL_WIDTH = 'equal-width'
-
-    FEATURE_BINNING_EQUAL_FREQUENCY = 'equal-frequency'
-
-    FEATURE_FORMAT_DENSE = 'dense'
-
-    FEATURE_FORMAT_SPARSE = 'sparse'
-
-    PREDICTION_FORMAT_DENSE = 'dense'
-
-    PREDICTION_FORMAT_SPARSE = 'sparse'
-
-    OUTPUT_FORMAT_DENSE = 'dense'
-
-    OUTPUT_FORMAT_SPARSE = 'sparse'
-
-    DATA_SPLIT_NO = 'none'
-
-    DATA_SPLIT_TRAIN_TEST = 'train-test'
-
-    DATA_SPLIT_CROSS_VALIDATION = 'cross-validation'
 
     def __init__(self,
                  expected_output_dir: str,
@@ -142,6 +97,7 @@ class CmdBuilder:
             self.args.append(model_dir)
             self.args.append('--model-save-dir')
             self.args.append(model_dir)
+
         return self
 
     def set_parameter_load_dir(self, parameter_dir: Optional[str] = path.join('python', 'tests', 'res', 'in')):
@@ -156,6 +112,7 @@ class CmdBuilder:
         if parameter_dir:
             self.args.append('--parameter-load-dir')
             self.args.append(parameter_dir)
+
         return self
 
     def set_parameter_save_dir(self,
@@ -174,7 +131,7 @@ class CmdBuilder:
 
         return self
 
-    def data_split(self, data_split: Optional[str] = DATA_SPLIT_TRAIN_TEST, options: Options = Options()):
+    def data_split(self, data_split: Optional[str] = VALUE_TRAIN_TEST, options: Options = Options()):
         """
         Configures the rule learner to use a specific strategy for splitting datasets into training and test datasets.
 
@@ -187,7 +144,7 @@ class CmdBuilder:
         current_fold = None
 
         if data_split:
-            if data_split == CmdBuilder.DATA_SPLIT_CROSS_VALIDATION:
+            if data_split == VALUE_CROSS_VALIDATION:
                 num_folds = options.get_int(OPTION_NUM_FOLDS, 10)
                 first_fold = options.get_int(OPTION_FIRST_FOLD, 0)
 
@@ -411,7 +368,7 @@ class CmdBuilder:
         self.args.append(str(store_rules).lower())
         return self
 
-    def feature_format(self, feature_format: Optional[str] = FEATURE_FORMAT_SPARSE):
+    def feature_format(self, feature_format: Optional[str] = SparsePolicy.FORCE_SPARSE):
         """
         Configures the format to be used for the feature values of training examples.
 
@@ -424,7 +381,7 @@ class CmdBuilder:
 
         return self
 
-    def output_format(self, output_format: Optional[str] = OUTPUT_FORMAT_SPARSE):
+    def output_format(self, output_format: Optional[str] = SparsePolicy.FORCE_SPARSE):
         """
         Configures the format to be used for the ground truth of training examples.
 
@@ -437,7 +394,7 @@ class CmdBuilder:
 
         return self
 
-    def prediction_format(self, prediction_format: Optional[str] = PREDICTION_FORMAT_SPARSE):
+    def prediction_format(self, prediction_format: Optional[str] = SparsePolicy.FORCE_SPARSE):
         """
         Configures the format to be used for predictions.
 
@@ -463,7 +420,7 @@ class CmdBuilder:
 
         return self
 
-    def feature_sampling(self, feature_sampling: Optional[str] = FEATURE_SAMPLING_WITHOUT_REPLACEMENT):
+    def feature_sampling(self, feature_sampling: Optional[str] = SAMPLING_WITHOUT_REPLACEMENT):
         """
         Configures the rule learner to sample from the available features.
 
@@ -476,7 +433,7 @@ class CmdBuilder:
 
         return self
 
-    def output_sampling(self, output_sampling: Optional[str] = OUTPUT_SAMPLING_WITHOUT_REPLACEMENT):
+    def output_sampling(self, output_sampling: Optional[str] = SAMPLING_WITHOUT_REPLACEMENT):
         """
         Configures the rule learner to sample from the available outputs.
 
@@ -489,7 +446,7 @@ class CmdBuilder:
 
         return self
 
-    def rule_pruning(self, rule_pruning: Optional[str] = RULE_PRUNING_IREP):
+    def rule_pruning(self, rule_pruning: Optional[str] = RulePruningParameter.RULE_PRUNING_IREP):
         """
         Configures the rule learner to use a specific method for pruning individual rules.
 
@@ -502,7 +459,7 @@ class CmdBuilder:
 
         return self
 
-    def rule_induction(self, rule_induction: Optional[str] = RULE_INDUCTION_TOP_DOWN_GREEDY):
+    def rule_induction(self, rule_induction: Optional[str] = RuleInductionParameter.RULE_INDUCTION_TOP_DOWN_GREEDY):
         """
         Configures the rule learner to use a specific algorithm for the induction of individual rules.
 
@@ -526,7 +483,7 @@ class CmdBuilder:
         self.args.append(str(sequential_post_optimization).lower())
         return self
 
-    def holdout(self, holdout: Optional[str] = HOLDOUT_RANDOM):
+    def holdout(self, holdout: Optional[str] = PartitionSamplingParameter.PARTITION_SAMPLING_RANDOM):
         """
         Configures the algorithm to use a holdout set.
 
@@ -539,7 +496,7 @@ class CmdBuilder:
 
         return self
 
-    def feature_binning(self, feature_binning: Optional[str] = FEATURE_BINNING_EQUAL_WIDTH):
+    def feature_binning(self, feature_binning: Optional[str] = BINNING_EQUAL_WIDTH):
         """
         Configures the algorithm to use a specific method for feature binning.
 

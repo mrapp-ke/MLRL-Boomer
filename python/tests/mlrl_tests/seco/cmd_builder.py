@@ -7,35 +7,14 @@ from typing import Optional
 from ..common.cmd_builder_classification import ClassificationCmdBuilder
 from ..common.datasets import Dataset
 
+from mlrl.seco.config.parameters import HEURISTIC_ACCURACY, HEURISTIC_F_MEASURE, HeadTypeParameter, \
+    LiftFunctionParameter
+
 
 class SeCoClassifierCmdBuilder(ClassificationCmdBuilder):
     """
     A builder that allows to configure a command for running the separate-and-conquer (SeCo) algorithm.
     """
-
-    HEURISTIC_ACCURACY = 'accuracy'
-
-    HEURISTIC_PRECISION = 'precision'
-
-    HEURISTIC_LAPLACE = 'laplace'
-
-    HEURISTIC_RECALL = 'recall'
-
-    HEURISTIC_WRA = 'weighted-relative-accuracy'
-
-    HEURISTIC_F_MEASURE = 'f-measure'
-
-    HEURISTIC_M_ESTIMATE = 'm-estimate'
-
-    HEAD_TYPE_SINGLE = 'single'
-
-    HEAD_TYPE_PARTIAL = 'partial'
-
-    LIFT_FUNCTION_NO = 'none'
-
-    LIFT_FUNCTION_PEAK = 'peak'
-
-    LIFT_FUNCTION_KLN = 'kln'
 
     def __init__(self, dataset: str = Dataset.EMOTIONS):
         super().__init__(expected_output_dir=path.join('seco', 'classification'),
@@ -68,7 +47,7 @@ class SeCoClassifierCmdBuilder(ClassificationCmdBuilder):
 
         return self
 
-    def head_type(self, head_type: Optional[str] = HEAD_TYPE_SINGLE):
+    def head_type(self, head_type: Optional[str] = HeadTypeParameter.HEAD_TYPE_SINGLE):
         """
         Configures the algorithm to use a specific type of rule heads.
 
@@ -81,7 +60,7 @@ class SeCoClassifierCmdBuilder(ClassificationCmdBuilder):
 
         return self
 
-    def lift_function(self, lift_function: Optional[str] = LIFT_FUNCTION_PEAK):
+    def lift_function(self, lift_function: Optional[str] = LiftFunctionParameter.LIFT_FUNCTION_PEAK):
         """
         Configures the algorithm to use a specific lift function for the induction of rules with partial heads.
 

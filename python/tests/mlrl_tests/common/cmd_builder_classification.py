@@ -6,25 +6,13 @@ from typing import Optional
 from .cmd_builder import CmdBuilder
 from .datasets import Dataset
 
+from mlrl.testbed.experiments.prediction_type import PredictionType
+
 
 class ClassificationCmdBuilder(CmdBuilder):
     """
     A builder that allows to configure a command for applying a rule learning algorithm to a classification problem.
     """
-
-    PREDICTION_TYPE_BINARY = 'binary'
-
-    PREDICTION_TYPE_SCORES = 'scores'
-
-    PREDICTION_TYPE_PROBABILITIES = 'probabilities'
-
-    INSTANCE_SAMPLING_STRATIFIED_OUTPUT_WISE = 'stratified-output-wise'
-
-    INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
-
-    HOLDOUT_STRATIFIED_OUTPUT_WISE = 'stratified-output-wise'
-
-    HOLDOUT_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
     def __init__(self,
                  expected_output_dir: str,
@@ -124,7 +112,7 @@ class ClassificationCmdBuilder(CmdBuilder):
         self.args.append(str(store_joint_probability_calibration_model).lower())
         return self
 
-    def prediction_type(self, prediction_type: Optional[str] = PREDICTION_TYPE_BINARY):
+    def prediction_type(self, prediction_type: Optional[str] = PredictionType.BINARY):
         """
         Configures the type of predictions that should be obtained from the algorithm.
 
