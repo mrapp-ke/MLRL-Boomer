@@ -46,8 +46,23 @@ class Options:
     def __init__(self, dictionary: Optional[Dict[str, Any]] = None):
         self.dictionary = dictionary if dictionary is not None else {}
 
-    @classmethod
-    def create(cls, string: str, allowed_keys: Set[str]):
+    @staticmethod
+    def from_dict(**kwargs) -> 'Options':
+        """
+        Creates and returns options that contain the given keys and corresponding values.
+
+        :param kwargs:  The keys and values to be added
+        :return:        The options that have been created
+        """
+        dictionary = {}
+
+        for key, value in kwargs.items():
+            dictionary[str(key)] = value
+
+        return Options(dictionary)
+
+    @staticmethod
+    def create(string: str, allowed_keys: Set[str]) -> 'Options':
         """
         Parses the options that are provided via a given string that is formatted according to the following syntax:
         "[key1=value1,key2=value2]". If the given string is malformed, a `ValueError` will be raised.
@@ -57,7 +72,7 @@ class Options:
         :return:                An object of type `Options` that stores the key-value pairs that have been parsed from
                                 the given string
         """
-        options = cls()
+        dictionary = {}
 
         if string:
             if not string.startswith('{'):
@@ -98,9 +113,9 @@ class Options:
                                              + ', but value is missing from element "' + option + '" at index '
                                              + str(option_index))
 
-                        options.dictionary[key] = value
+                        dictionary[key] = value
 
-        return options
+        return Options(dictionary)
 
     def get_string(self, key: str, default_value: Optional[str] = None) -> Optional[str]:
         """
