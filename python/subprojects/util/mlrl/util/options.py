@@ -47,21 +47,6 @@ class Options:
         self.dictionary = dictionary if dictionary is not None else {}
 
     @staticmethod
-    def from_dict(**kwargs) -> 'Options':
-        """
-        Creates and returns options that contain the given keys and corresponding values.
-
-        :param kwargs:  The keys and values to be added
-        :return:        The options that have been created
-        """
-        dictionary = {}
-
-        for key, value in kwargs.items():
-            dictionary[str(key)] = value
-
-        return Options(dictionary)
-
-    @staticmethod
     def create(string: str, allowed_keys: Set[str]) -> 'Options':
         """
         Parses the options that are provided via a given string that is formatted according to the following syntax:

@@ -13,6 +13,10 @@ from .cmd_builder import CmdBuilder
 from .cmd_runner import CmdRunner
 from .datasets import Dataset
 
+from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import OPTION_FIRST_FOLD, OPTION_LAST_FOLD
+
+from mlrl.util.options import Options
+
 ci_only = pytest.mark.skipif(os.getenv('GITHUB_ACTIONS') != 'true', reason='Disabled unless run on CI')
 
 
@@ -306,38 +310,24 @@ class IntegrationTests(ABC):
             .print_ground_truth()
         CmdRunner(builder).run(f'prediction-format-{prediction_format}')
 
-    def test_parameters_train_test(self, dataset: Dataset):
+    @pytest.mark.parametrize('data_split, data_split_options', [
+        (CmdBuilder.DATA_SPLIT_TRAIN_TEST, Options()),
+        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options()),
+        (CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, Options({
+            OPTION_FIRST_FOLD: 1,
+            OPTION_LAST_FOLD: 1
+        })),
+    ])
+    def test_parameters(self, data_split: str, data_split_options: Options, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .data_split(CmdBuilder.DATA_SPLIT_TRAIN_TEST) \
+            .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_model_characteristics() \
             .print_parameters() \
             .set_parameter_save_dir() \
             .set_parameter_load_dir()
-        CmdRunner(builder).run('parameters_train-test')
-
-    def test_parameters_cross_validation(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION) \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .print_model_characteristics() \
-            .print_parameters() \
-            .set_parameter_save_dir() \
-            .set_parameter_load_dir()
-        CmdRunner(builder).run('parameters_cross-validation')
-
-    def test_parameters_single_fold(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .data_split(CmdBuilder.DATA_SPLIT_CROSS_VALIDATION, first_fold=1, last_fold=1) \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .print_model_characteristics() \
-            .print_parameters() \
-            .set_parameter_save_dir() \
-            .set_parameter_load_dir()
-        CmdRunner(builder).run('parameters_single-fold')
+        CmdRunner(builder).run(f'parameters_{data_split}' + (f'_{data_split_options}' if data_split_options else ''))
 
     @pytest.mark.parametrize('instance_sampling', [
         CmdBuilder.INSTANCE_SAMPLING_NO,
