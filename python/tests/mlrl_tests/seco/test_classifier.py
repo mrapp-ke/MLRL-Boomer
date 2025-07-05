@@ -2,7 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 # pylint: disable=missing-function-docstring
-from typing import Any
+from typing import Any, Optional
 
 import pytest
 
@@ -59,29 +59,15 @@ class TestSeCoClassifier(ClassificationIntegrationTests):
             .pruning_heuristic(pruning_heuristic)
         CmdRunner(builder).run(f'pruning-heuristic_{pruning_heuristic}')
 
-    def test_single_output_heads(self):
+    @pytest.mark.parametrize('head_type, lift_function', [
+        (HeadTypeParameter.HEAD_TYPE_SINGLE, None),
+        (HeadTypeParameter.HEAD_TYPE_PARTIAL, NONE),
+        (HeadTypeParameter.HEAD_TYPE_PARTIAL, LiftFunctionParameter.LIFT_FUNCTION_PEAK),
+        (HeadTypeParameter.HEAD_TYPE_PARTIAL, LiftFunctionParameter.LIFT_FUNCTION_KLN),
+    ])
+    def test_head_type(self, head_type: str, lift_function: Optional[str]):
         builder = self._create_cmd_builder() \
-            .head_type(HeadTypeParameter.HEAD_TYPE_SINGLE) \
+            .head_type(head_type) \
+            .lift_function(lift_function) \
             .print_model_characteristics()
-        CmdRunner(builder).run('single-output-heads')
-
-    def test_partial_heads_no_lift_function(self):
-        builder = self._create_cmd_builder() \
-            .head_type(HeadTypeParameter.HEAD_TYPE_PARTIAL) \
-            .lift_function(NONE) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('partial-heads_no-lift-function')
-
-    def test_partial_heads_peak_lift_function(self):
-        builder = self._create_cmd_builder() \
-            .head_type(HeadTypeParameter.HEAD_TYPE_PARTIAL) \
-            .lift_function(LiftFunctionParameter.LIFT_FUNCTION_PEAK) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('partial-heads_peak-lift-function')
-
-    def test_partial_heads_kln_lift_function(self):
-        builder = self._create_cmd_builder() \
-            .head_type(HeadTypeParameter.HEAD_TYPE_PARTIAL) \
-            .lift_function(LiftFunctionParameter.LIFT_FUNCTION_KLN) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('partial-heads_kln-lift-function')
+        CmdRunner(builder).run(f'head-type-{head_type}' + (f'_{lift_function}-lift-function' if lift_function else ''))
