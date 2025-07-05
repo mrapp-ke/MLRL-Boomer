@@ -41,53 +41,21 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
             .print_evaluation()
         CmdRunner(builder).run(f'single-label-{prediction_type}')
 
-    def test_loss_logistic_decomposable_32bit_statistics(self):
+    @pytest.mark.parametrize('loss', [
+        BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE,
+        BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE,
+        BoomerClassifierCmdBuilder.LOSS_SQUARED_HINGE_DECOMPOSABLE,
+        BoomerClassifierCmdBuilder.LOSS_SQUARED_HINGE_NON_DECOMPOSABLE,
+    ])
+    @pytest.mark.parametrize('statistic_type', [
+        StatisticTypeParameter.STATISTIC_TYPE_FLOAT32,
+        StatisticTypeParameter.STATISTIC_TYPE_FLOAT64,
+    ])
+    def test_loss(self, loss: str, statistic_type: str):
         builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT32)
-        CmdRunner(builder).run('loss-logistic-decomposable_32-bit-statistics')
-
-    def test_loss_logistic_decomposable_64bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT64)
-        CmdRunner(builder).run('loss-logistic-decomposable_64-bit-statistics')
-
-    def test_loss_logistic_non_decomposable_32bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT32)
-        CmdRunner(builder).run('loss-logistic-non-decomposable_32-bit-statistics')
-
-    def test_loss_logistic_non_decomposable_64bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT64)
-        CmdRunner(builder).run('loss-logistic-non-decomposable_64-bit-statistics')
-
-    def test_loss_squared_hinge_decomposable_32bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT32)
-        CmdRunner(builder).run('loss-squared-hinge-decomposable_32-bit-statistics')
-
-    def test_loss_squared_hinge_decomposable_64bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_SQUARED_HINGE_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT64)
-        CmdRunner(builder).run('loss-squared-hinge-decomposable_64-bit-statistics')
-
-    def test_loss_squared_hinge_non_decomposable_32bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_SQUARED_HINGE_NON_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT32)
-        CmdRunner(builder).run('loss-squared-hinge-non-decomposable_32-bit-statistics')
-
-    def test_loss_squared_hinge_non_decomposable_64bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_SQUARED_HINGE_NON_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT64)
-        CmdRunner(builder).run('loss-squared-hinge-non-decomposable_64-bit-statistics')
+            .loss(loss) \
+            .statistic_type(statistic_type)
+        CmdRunner(builder).run(f'loss-{loss}_{statistic_type}-statistics')
 
     def test_predictor_binary_output_wise(self):
         builder = self._create_cmd_builder() \
