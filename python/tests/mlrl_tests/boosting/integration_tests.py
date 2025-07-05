@@ -18,29 +18,19 @@ class BoomerIntegrationTestsMixin:
     A mixin for integration tests for the BOOMER algorithm.
     """
 
-    def test_loss_squared_error_decomposable_32bit_statistics(self):
+    @pytest.mark.parametrize('loss', [
+        RegressionLossParameter.LOSS_SQUARED_ERROR_DECOMPOSABLE,
+        RegressionLossParameter.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE,
+    ])
+    @pytest.mark.parametrize('statistic_type', [
+        StatisticTypeParameter.STATISTIC_TYPE_FLOAT32,
+        StatisticTypeParameter.STATISTIC_TYPE_FLOAT64,
+    ])
+    def test_loss_squared_error(self, loss: str, statistic_type: str):
         builder = self._create_cmd_builder() \
-            .loss(RegressionLossParameter.LOSS_SQUARED_ERROR_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT32)
-        CmdRunner(builder).run('loss-squared-error-decomposable_32-bit-statistics')
-
-    def test_loss_squared_error_decomposable_64bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(RegressionLossParameter.LOSS_SQUARED_ERROR_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT64)
-        CmdRunner(builder).run('loss-squared-error-decomposable_64-bit-statistics')
-
-    def test_loss_squared_error_non_decomposable_32bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(RegressionLossParameter.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT32)
-        CmdRunner(builder).run('loss-squared-error-non-decomposable_32-bit-statistics')
-
-    def test_loss_squared_error_non_decomposable_64bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(RegressionLossParameter.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT64)
-        CmdRunner(builder).run('loss-squared-error-non-decomposable_64-bit-statistics')
+            .loss(loss) \
+            .statistic_type(statistic_type)
+        CmdRunner(builder).run(f'loss-{loss}_{statistic_type}-statistics')
 
     def test_no_default_rule(self):
         builder = self._create_cmd_builder() \
