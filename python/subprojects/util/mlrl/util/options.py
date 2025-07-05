@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides a data structure that allows to store and parse options that are provided as key-value pairs.
 """
 from enum import Enum, EnumType
+from functools import reduce
 from typing import Any, Dict, Optional, Set, Tuple
 
 from mlrl.util.format import format_enum_values, format_set
@@ -169,6 +170,13 @@ class Options:
             return value
 
         return default_value
+
+    def __str__(self) -> str:
+        return '{' + reduce(lambda aggr, item: aggr + (',' if aggr else '') + item[0] + '=' + str(item[1]),
+                            sorted(self.dictionary.items()), '') + '}'
+
+    def __bool__(self) -> bool:
+        return bool(self.dictionary)
 
 
 def parse_enum(parameter_name: str,
