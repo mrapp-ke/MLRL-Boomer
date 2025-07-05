@@ -171,15 +171,15 @@ class CmdBuilder:
         self.args.append(parameter_dir)
         return self
 
-    def data_split(self, data_split: str = DATA_SPLIT_TRAIN_TEST, **kwargs):
+    def data_split(self, data_split: str = DATA_SPLIT_TRAIN_TEST, options: Options = Options()):
         """
         Configures the rule learner to use a specific strategy for splitting datasets into training and test datasets.
 
         :param data_split:  The name of the strategy to be used
+        :param options:     Options to be taken into account
         :return:            The builder itself
         """
         self.args.append('--data-split')
-        options = Options.from_dict(**kwargs)
         num_folds = 0
         current_fold = None
 
