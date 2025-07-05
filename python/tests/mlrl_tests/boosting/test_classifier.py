@@ -2,7 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 # pylint: disable=missing-function-docstring
-from typing import Any
+from typing import Any, Optional
 
 import pytest
 
@@ -486,129 +486,29 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
             .print_model_characteristics()
         CmdRunner(builder).run('decomposable-partial-dynamic-heads_equal-width-label-binning_64-bit-statistics')
 
-    def test_non_decomposable_single_label_heads_32bit_statistics(self):
+    @pytest.mark.parametrize('head_type, label_binning', [
+        (HeadTypeParameter.HEAD_TYPE_SINGLE, None),
+        (HeadTypeParameter.HEAD_TYPE_COMPLETE, BoomerClassifierCmdBuilder.LABEL_BINNING_NO),
+        (HeadTypeParameter.HEAD_TYPE_COMPLETE, BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH),
+        (HeadTypeParameter.HEAD_TYPE_PARTIAL_FIXED, BoomerClassifierCmdBuilder.LABEL_BINNING_NO),
+        (HeadTypeParameter.HEAD_TYPE_PARTIAL_FIXED, BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH),
+        (HeadTypeParameter.HEAD_TYPE_PARTIAL_DYNAMIC, BoomerClassifierCmdBuilder.LABEL_BINNING_NO),
+        (HeadTypeParameter.HEAD_TYPE_PARTIAL_DYNAMIC, BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH),
+    ])
+    @pytest.mark.parametrize('statistic_type', [
+        StatisticTypeParameter.STATISTIC_TYPE_FLOAT32,
+        StatisticTypeParameter.STATISTIC_TYPE_FLOAT64,
+    ])
+    def test_non_decomposable_head_type(self, head_type: str, label_binning: Optional[str], statistic_type: str):
         builder = self._create_cmd_builder() \
             .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT32) \
-            .head_type(HeadTypeParameter.HEAD_TYPE_SINGLE) \
+            .statistic_type(statistic_type) \
+            .head_type(head_type) \
+            .label_binning(label_binning) \
             .print_model_characteristics()
-        CmdRunner(builder).run('non-decomposable-single-output-heads_32-bit-statistics')
-
-    def test_non_decomposable_single_label_heads_64bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT64) \
-            .head_type(HeadTypeParameter.HEAD_TYPE_SINGLE) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('non-decomposable-single-output-heads_64-bit-statistics')
-
-    def test_non_decomposable_complete_heads_32bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT32) \
-            .head_type(HeadTypeParameter.HEAD_TYPE_COMPLETE) \
-            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_NO) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('non-decomposable-complete-heads_32-bit-statistics')
-
-    def test_non_decomposable_complete_heads_64bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT64) \
-            .head_type(HeadTypeParameter.HEAD_TYPE_COMPLETE) \
-            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_NO) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('non-decomposable-complete-heads_64-bit-statistics')
-
-    def test_non_decomposable_complete_heads_equal_width_label_binning_32bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT32) \
-            .head_type(HeadTypeParameter.HEAD_TYPE_COMPLETE) \
-            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('non-decomposable-complete-heads_equal-width-label-binning_32-bit-statistics')
-
-    def test_non_decomposable_complete_heads_equal_width_label_binning_64bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT64) \
-            .head_type(HeadTypeParameter.HEAD_TYPE_COMPLETE) \
-            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('non-decomposable-complete-heads_equal-width-label-binning_64-bit-statistics')
-
-    def test_non_decomposable_partial_fixed_heads_32bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT32) \
-            .head_type(HeadTypeParameter.HEAD_TYPE_PARTIAL_FIXED) \
-            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_NO) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('non-decomposable-partial-fixed-heads_32-bit-statistics')
-
-    def test_non_decomposable_partial_fixed_heads_64bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT64) \
-            .head_type(HeadTypeParameter.HEAD_TYPE_PARTIAL_FIXED) \
-            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_NO) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('non-decomposable-partial-fixed-heads_64-bit-statistics')
-
-    def test_non_decomposable_partial_fixed_heads_equal_width_label_binning_32bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT32) \
-            .head_type(HeadTypeParameter.HEAD_TYPE_PARTIAL_FIXED) \
-            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('non-decomposable-partial-fixed-heads_equal-width-label-binning_32-bit-statistics')
-
-    def test_non_decomposable_partial_fixed_heads_equal_width_label_binning_64bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT64) \
-            .head_type(HeadTypeParameter.HEAD_TYPE_PARTIAL_FIXED) \
-            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('non-decomposable-partial-fixed-heads_equal-width-label-binning_64-bit-statistics')
-
-    def test_non_decomposable_partial_dynamic_heads_32bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT32) \
-            .head_type(HeadTypeParameter.HEAD_TYPE_PARTIAL_DYNAMIC) \
-            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_NO) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('non-decomposable-partial-dynamic-heads_32-bit-statistics')
-
-    def test_non_decomposable_partial_dynamic_heads_64bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT64) \
-            .head_type(HeadTypeParameter.HEAD_TYPE_PARTIAL_DYNAMIC) \
-            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_NO) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('non-decomposable-partial-dynamic-heads_64-bit-statistics')
-
-    def test_non_decomposable_partial_dynamic_heads_equal_width_label_binning_32bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT32) \
-            .head_type(HeadTypeParameter.HEAD_TYPE_PARTIAL_DYNAMIC) \
-            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('non-decomposable-partial-dynamic-heads_equal-width-label-binning_32-bit-statistics')
-
-    def test_non_decomposable_partial_dynamic_heads_equal_width_label_binning_64bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerClassifierCmdBuilder.LOSS_LOGISTIC_NON_DECOMPOSABLE) \
-            .statistic_type(StatisticTypeParameter.STATISTIC_TYPE_FLOAT64) \
-            .head_type(HeadTypeParameter.HEAD_TYPE_PARTIAL_DYNAMIC) \
-            .label_binning(BoomerClassifierCmdBuilder.LABEL_BINNING_EQUAL_WIDTH) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('non-decomposable-partial-dynamic-heads_equal-width-label-binning_64-bit-statistics')
+        CmdRunner(builder).run(f'non-decomposable-{head_type}-heads'
+                               + (f'_{label_binning}-label-binning' if label_binning else '')
+                               + f'_{statistic_type}-statistics')
 
     @pytest.mark.parametrize('global_pruning', [
         GlobalPruningParameter.GLOBAL_PRUNING_POST,
