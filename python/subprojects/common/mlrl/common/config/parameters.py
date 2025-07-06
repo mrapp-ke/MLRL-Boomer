@@ -625,13 +625,13 @@ class ParallelRuleRefinementParameter(NominalParameter):
     def __init__(self):
         super().__init__(name='parallel_rule_refinement',
                          description='Whether potential refinements of rules should be searched for in parallel or not')
-        self.add_value(name=BooleanOption.FALSE.value, mixin=NoParallelRuleRefinementMixin)
-        self.add_value(name=BooleanOption.TRUE.value,
+        self.add_value(name=BooleanOption.FALSE, mixin=NoParallelRuleRefinementMixin)
+        self.add_value(name=BooleanOption.TRUE,
                        mixin=ParallelRuleRefinementMixin,
                        options={OPTION_NUM_PREFERRED_THREADS})
 
     def _configure(self, config, value: str, options: Options):
-        if value == BooleanOption.FALSE.value:
+        if value == BooleanOption.FALSE:
             config.use_no_parallel_rule_refinement()
         else:
             conf = config.use_parallel_rule_refinement()
@@ -655,13 +655,13 @@ class ParallelStatisticUpdateParameter(NominalParameter):
         super().__init__(
             name='parallel_statistic_update',
             description='Whether the statistics for different examples should be updated in parallel or not')
-        self.add_value(name=BooleanOption.FALSE.value, mixin=NoParallelStatisticUpdateMixin)
-        self.add_value(name=BooleanOption.TRUE.value,
+        self.add_value(name=BooleanOption.FALSE, mixin=NoParallelStatisticUpdateMixin)
+        self.add_value(name=BooleanOption.TRUE,
                        mixin=ParallelStatisticUpdateMixin,
                        options={OPTION_NUM_PREFERRED_THREADS})
 
     def _configure(self, config, value: str, options: Options):
-        if value == BooleanOption.FALSE.value:
+        if value == BooleanOption.FALSE:
             config.use_no_parallel_statistic_update()
         else:
             conf = config.use_parallel_statistic_update()
@@ -684,13 +684,11 @@ class ParallelPredictionParameter(NominalParameter):
     def __init__(self):
         super().__init__(name='parallel_prediction',
                          description='Whether predictions for different examples should be obtained in parallel or not')
-        self.add_value(name=BooleanOption.FALSE.value, mixin=NoParallelPredictionMixin)
-        self.add_value(name=BooleanOption.TRUE.value,
-                       mixin=ParallelPredictionMixin,
-                       options={OPTION_NUM_PREFERRED_THREADS})
+        self.add_value(name=BooleanOption.FALSE, mixin=NoParallelPredictionMixin)
+        self.add_value(name=BooleanOption.TRUE, mixin=ParallelPredictionMixin, options={OPTION_NUM_PREFERRED_THREADS})
 
     def _configure(self, config, value: str, options: Options):
-        if value == BooleanOption.FALSE.value:
+        if value == BooleanOption.FALSE:
             config.use_no_parallel_prediction()
         else:
             conf = config.use_parallel_prediction()
@@ -757,15 +755,15 @@ class SequentialPostOptimizationParameter(NominalParameter):
             name='sequential_post_optimization',
             description='Whether each rule in a previously learned model should be optimized by being relearned in the '
             + 'context of the other rules or not')
-        self.add_value(name=BooleanOption.FALSE.value, mixin=NoSequentialPostOptimizationMixin)
-        self.add_value(name=BooleanOption.TRUE.value,
+        self.add_value(name=BooleanOption.FALSE, mixin=NoSequentialPostOptimizationMixin)
+        self.add_value(name=BooleanOption.TRUE,
                        mixin=SequentialPostOptimizationMixin,
                        options={self.OPTION_NUM_ITERATIONS, self.OPTION_REFINE_HEADS, OPTION_RESAMPLE_FEATURES})
 
     def _configure(self, config, value: str, options: Options):
-        if value == BooleanOption.FALSE.value:
+        if value == BooleanOption.FALSE:
             config.use_no_sequential_post_optimization()
-        elif value == BooleanOption.TRUE.value:
+        elif value == BooleanOption.TRUE:
             conf = config.use_sequential_post_optimization()
             conf.set_num_iterations(options.get_int(self.OPTION_NUM_ITERATIONS, conf.get_num_iterations()))
             conf.set_refine_heads(options.get_bool(self.OPTION_REFINE_HEADS, conf.are_heads_refined()))
