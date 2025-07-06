@@ -260,18 +260,30 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
             .store_evaluation()
         CmdRunner(builder).run('predictor-score-output-wise_incremental')
 
-    def test_predictor_probability_output_wise(self):
+    @pytest.mark.parametrize(
+        'probability_predictor, marginal_probability_calibration, joint_probability_calibration, print_label_vectors', [
+            (ProbabilityPredictorParameter.PROBABILITY_PREDICTOR_OUTPUT_WISE, PROBABILITY_CALIBRATION_ISOTONIC, None,
+             None),
+            (ProbabilityPredictorParameter.PROBABILITY_PREDICTOR_MARGINALIZED, PROBABILITY_CALIBRATION_ISOTONIC,
+             PROBABILITY_CALIBRATION_ISOTONIC, True),
+        ])
+    def test_predictor_probability(self, probability_predictor: str, marginal_probability_calibration: Optional[str],
+                                   joint_probability_calibration: Optional[str], print_label_vectors: Optional[bool]):
         builder = self._create_cmd_builder() \
-            .marginal_probability_calibration() \
-            .print_marginal_probability_calibration_model() \
-            .store_marginal_probability_calibration_model() \
+            .marginal_probability_calibration(marginal_probability_calibration) \
+            .print_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
+            .store_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
+            .joint_probability_calibration(joint_probability_calibration) \
+            .print_joint_probability_calibration_model(True if joint_probability_calibration else None) \
+            .store_joint_probability_calibration_model(True if joint_probability_calibration else None) \
             .store_evaluation(False) \
             .prediction_type(PredictionType.PROBABILITIES) \
-            .probability_predictor(ProbabilityPredictorParameter.PROBABILITY_PREDICTOR_OUTPUT_WISE) \
+            .probability_predictor(probability_predictor) \
             .print_predictions() \
             .print_ground_truth() \
+            .print_label_vectors(print_label_vectors) \
             .set_model_dir()
-        CmdRunner(builder).run('predictor-probability-output-wise')
+        CmdRunner(builder).run(f'predictor-probability-{probability_predictor}')
 
     @pytest.mark.parametrize('probability_predictor, marginal_probability_calibration, joint_probability_calibration', [
         (ProbabilityPredictorParameter.PROBABILITY_PREDICTOR_OUTPUT_WISE, PROBABILITY_CALIBRATION_ISOTONIC, None),
@@ -295,23 +307,6 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
             .store_evaluation() \
             .set_model_dir()
         CmdRunner(builder).run(f'predictor-probability-{probability_predictor}_incremental')
-
-    def test_predictor_probability_marginalized(self):
-        builder = self._create_cmd_builder() \
-            .marginal_probability_calibration() \
-            .print_marginal_probability_calibration_model() \
-            .store_marginal_probability_calibration_model() \
-            .joint_probability_calibration() \
-            .print_joint_probability_calibration_model() \
-            .store_joint_probability_calibration_model() \
-            .store_evaluation(False) \
-            .prediction_type(PredictionType.PROBABILITIES) \
-            .probability_predictor(ProbabilityPredictorParameter.PROBABILITY_PREDICTOR_MARGINALIZED) \
-            .print_predictions() \
-            .print_ground_truth() \
-            .print_label_vectors() \
-            .set_model_dir()
-        CmdRunner(builder).run('predictor-probability-marginalized')
 
     @pytest.mark.parametrize('output_format', [
         SparsePolicy.FORCE_DENSE,
