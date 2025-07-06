@@ -68,14 +68,14 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
             (BinaryPredictorParameter.BINARY_PREDICTOR_OUTPUT_WISE, Options(), None, None, None, None),
             (BinaryPredictorParameter.BINARY_PREDICTOR_OUTPUT_WISE,
              Options({
-                 OPTION_BASED_ON_PROBABILITIES: BooleanOption.TRUE.value,
+                 OPTION_BASED_ON_PROBABILITIES: BooleanOption.TRUE,
              }), PROBABILITY_CALIBRATION_ISOTONIC, None, None, None),
             (BinaryPredictorParameter.BINARY_PREDICTOR_OUTPUT_WISE, Options(), None, None, None,
              SparsePolicy.FORCE_SPARSE),
             (BinaryPredictorParameter.BINARY_PREDICTOR_EXAMPLE_WISE, Options(), None, None, True, None),
             (BinaryPredictorParameter.BINARY_PREDICTOR_EXAMPLE_WISE,
              Options({
-                 OPTION_BASED_ON_PROBABILITIES: BooleanOption.TRUE.value,
+                 OPTION_BASED_ON_PROBABILITIES: BooleanOption.TRUE,
              }), PROBABILITY_CALIBRATION_ISOTONIC, PROBABILITY_CALIBRATION_ISOTONIC, True, None),
             (BinaryPredictorParameter.BINARY_PREDICTOR_EXAMPLE_WISE, Options(), None, None, True,
              SparsePolicy.FORCE_SPARSE),
@@ -114,13 +114,13 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
             (BinaryPredictorParameter.BINARY_PREDICTOR_OUTPUT_WISE, Options(), None, None, None),
             (BinaryPredictorParameter.BINARY_PREDICTOR_OUTPUT_WISE,
              Options({
-                 OPTION_BASED_ON_PROBABILITIES: BooleanOption.TRUE.value,
+                 OPTION_BASED_ON_PROBABILITIES: BooleanOption.TRUE,
              }), PROBABILITY_CALIBRATION_ISOTONIC, None, None),
             (BinaryPredictorParameter.BINARY_PREDICTOR_OUTPUT_WISE, Options(), None, None, SparsePolicy.FORCE_SPARSE),
             (BinaryPredictorParameter.BINARY_PREDICTOR_EXAMPLE_WISE, Options(), None, None, None),
             (BinaryPredictorParameter.BINARY_PREDICTOR_EXAMPLE_WISE,
              Options({
-                 OPTION_BASED_ON_PROBABILITIES: BooleanOption.TRUE.value,
+                 OPTION_BASED_ON_PROBABILITIES: BooleanOption.TRUE,
              }), PROBABILITY_CALIBRATION_ISOTONIC, PROBABILITY_CALIBRATION_ISOTONIC, None),
             (BinaryPredictorParameter.BINARY_PREDICTOR_EXAMPLE_WISE, Options(), None, None, SparsePolicy.FORCE_SPARSE),
             (BinaryPredictorParameter.BINARY_PREDICTOR_GFM, Options(), PROBABILITY_CALIBRATION_ISOTONIC,

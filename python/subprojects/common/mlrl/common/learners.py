@@ -342,11 +342,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         x_enforce_sparse = x_sparse_policy.should_enforce_sparse(x, sparse_format=x_sparse_format, dtype=np.float32)
         x = x if x_enforce_sparse else enforce_2d(
             enforce_dense(x, order='F', dtype=np.float32, sparse_value=sparse_feature_value))
-        x = validate_data(self,
-                          X=x,
-                          accept_sparse=x_sparse_format.value,
-                          dtype=np.float32,
-                          ensure_all_finite='allow-nan')
+        x = validate_data(self, X=x, accept_sparse=x_sparse_format, dtype=np.float32, ensure_all_finite='allow-nan')
 
         if is_sparse(x):
             log.debug(
@@ -380,7 +376,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         x = validate_data(self,
                           X=x,
                           reset=False,
-                          accept_sparse=sparse_format.value,
+                          accept_sparse=sparse_format,
                           dtype=np.float32,
                           ensure_all_finite='allow-nan')
 
@@ -481,7 +477,7 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
 
     def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool, **_) -> Any:
         y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=np.uint8)),
-                        accept_sparse=sparse_format.value,
+                        accept_sparse=sparse_format,
                         dtype=np.uint8,
                         ensure_non_negative=True)
 
@@ -652,7 +648,7 @@ class RegressionRuleLearner(RuleLearner, RegressorMixin, IncrementalRegressorMix
 
     def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool, **_) -> Any:
         y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=np.float32)),
-                        accept_sparse=sparse_format.value,
+                        accept_sparse=sparse_format,
                         dtype=np.float32)
 
         if is_sparse(y):
