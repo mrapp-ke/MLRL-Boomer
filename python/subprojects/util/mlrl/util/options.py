@@ -3,14 +3,14 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides a data structure that allows to store and parse options that are provided as key-value pairs.
 """
-from enum import Enum, EnumType
+from enum import Enum, EnumType, StrEnum
 from functools import reduce
 from typing import Any, Dict, Optional, Set, Tuple
 
 from mlrl.util.format import format_enum_values, format_set
 
 
-class BooleanOption(Enum):
+class BooleanOption(StrEnum):
     """
     Specifies all valid textual representations of boolean values.
     """
@@ -26,9 +26,9 @@ class BooleanOption(Enum):
         :param text:    The text to be parsed
         :return:        True or false, depending on the given text
         """
-        if text == BooleanOption.TRUE.value:
+        if text == BooleanOption.TRUE:
             return True
-        if text == BooleanOption.FALSE.value:
+        if text == BooleanOption.FALSE:
             return False
         raise ValueError('Invalid boolean value given. Must be one of ' + format_enum_values(BooleanOption)
                          + ', but is "' + str(text) + '".')
