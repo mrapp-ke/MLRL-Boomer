@@ -10,7 +10,7 @@ from .cmd_builder import BoomerCmdBuilderMixin
 
 from mlrl.common.config.parameters import BINNING_EQUAL_WIDTH
 
-from mlrl.boosting.config.parameters import AUTOMATIC, PROBABILITY_CALIBRATION_ISOTONIC, BinaryPredictorParameter
+from mlrl.boosting.config.parameters import AUTOMATIC, PROBABILITY_CALIBRATION_ISOTONIC
 
 from mlrl.util.options import Options
 
@@ -19,12 +19,6 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
     """
     A builder that allows to configure a command for running the BOOMER algorithm for classification problems.
     """
-
-    BINARY_PREDICTOR_OUTPUT_WISE_BASED_ON_PROBABILITIES = (BinaryPredictorParameter.BINARY_PREDICTOR_OUTPUT_WISE
-                                                           + '{based_on_probabilities=true}')
-
-    BINARY_PREDICTOR_EXAMPLE_WISE_BASED_ON_PROBABILITIES = (BinaryPredictorParameter.BINARY_PREDICTOR_EXAMPLE_WISE
-                                                            + '{based_on_probabilities=true}')
 
     def __init__(self, dataset: str = Dataset.EMOTIONS):
         super().__init__(expected_output_dir=path.join('boosting', 'classification'),
