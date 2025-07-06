@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for handling arrays.
 """
-from enum import Enum
+from enum import StrEnum
 from typing import Optional, Set
 
 import numpy as np
@@ -14,7 +14,7 @@ from scipy.sparse import issparse, isspmatrix_coo, isspmatrix_csc, isspmatrix_cs
 from mlrl.util.format import format_iterable
 
 
-class SparseFormat(Enum):
+class SparseFormat(StrEnum):
     """
     Specifies all valid textual representations of sparse matrix formats.
     """
