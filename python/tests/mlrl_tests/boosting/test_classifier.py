@@ -16,8 +16,8 @@ from mlrl.common.config.parameters import BINNING_EQUAL_WIDTH, SAMPLING_STRATIFI
     SAMPLING_STRATIFIED_OUTPUT_WISE, GlobalPruningParameter
 from mlrl.common.learners import SparsePolicy
 
-from mlrl.boosting.config.parameters import BinaryPredictorParameter, ClassificationLossParameter, HeadTypeParameter, \
-    ProbabilityPredictorParameter, StatisticTypeParameter
+from mlrl.boosting.config.parameters import PROBABILITY_CALIBRATION_ISOTONIC, BinaryPredictorParameter, \
+    ClassificationLossParameter, HeadTypeParameter, ProbabilityPredictorParameter, StatisticTypeParameter
 
 from mlrl.testbed.experiments.prediction_type import PredictionType
 
@@ -273,18 +273,28 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
             .set_model_dir()
         CmdRunner(builder).run('predictor-probability-output-wise')
 
-    def test_predictor_probability_output_wise_incremental(self):
+    @pytest.mark.parametrize('probability_predictor, marginal_probability_calibration, joint_probability_calibration', [
+        (ProbabilityPredictorParameter.PROBABILITY_PREDICTOR_OUTPUT_WISE, PROBABILITY_CALIBRATION_ISOTONIC, None),
+        (ProbabilityPredictorParameter.PROBABILITY_PREDICTOR_MARGINALIZED, PROBABILITY_CALIBRATION_ISOTONIC,
+         PROBABILITY_CALIBRATION_ISOTONIC),
+    ])
+    def test_predictor_probability_incremental(self, probability_predictor: str,
+                                               marginal_probability_calibration: Optional[str],
+                                               joint_probability_calibration: Optional[str]):
         builder = self._create_cmd_builder() \
-            .marginal_probability_calibration() \
-            .print_marginal_probability_calibration_model() \
-            .store_marginal_probability_calibration_model() \
+            .marginal_probability_calibration(marginal_probability_calibration) \
+            .print_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
+            .store_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
+            .joint_probability_calibration(joint_probability_calibration) \
+            .print_joint_probability_calibration_model(True if joint_probability_calibration else None) \
+            .store_joint_probability_calibration_model(True if joint_probability_calibration else None) \
             .prediction_type(PredictionType.PROBABILITIES) \
-            .probability_predictor(ProbabilityPredictorParameter.PROBABILITY_PREDICTOR_OUTPUT_WISE) \
+            .probability_predictor(probability_predictor) \
             .incremental_evaluation() \
             .print_evaluation() \
             .store_evaluation() \
             .set_model_dir()
-        CmdRunner(builder).run('predictor-probability-output-wise_incremental')
+        CmdRunner(builder).run(f'predictor-probability-{probability_predictor}_incremental')
 
     def test_predictor_probability_marginalized(self):
         builder = self._create_cmd_builder() \
@@ -302,22 +312,6 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
             .print_label_vectors() \
             .set_model_dir()
         CmdRunner(builder).run('predictor-probability-marginalized')
-
-    def test_predictor_probability_marginalized_incremental(self):
-        builder = self._create_cmd_builder() \
-            .marginal_probability_calibration() \
-            .print_marginal_probability_calibration_model() \
-            .store_marginal_probability_calibration_model() \
-            .joint_probability_calibration() \
-            .print_joint_probability_calibration_model() \
-            .store_joint_probability_calibration_model() \
-            .prediction_type(PredictionType.PROBABILITIES) \
-            .probability_predictor(ProbabilityPredictorParameter.PROBABILITY_PREDICTOR_MARGINALIZED) \
-            .incremental_evaluation() \
-            .print_evaluation() \
-            .store_evaluation() \
-            .set_model_dir()
-        CmdRunner(builder).run('predictor-probability-marginalized_incremental')
 
     @pytest.mark.parametrize('output_format', [
         SparsePolicy.FORCE_DENSE,
