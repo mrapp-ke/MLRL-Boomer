@@ -27,7 +27,7 @@ class ClassificationCmdBuilder(CmdBuilder):
         self.marginal_probability_calibration_model_stored = False
         self.joint_probability_calibration_model_stored = False
 
-    def print_label_vectors(self, print_label_vectors: bool = True):
+    def print_label_vectors(self, print_label_vectors: Optional[bool] = True):
         """
         Configures whether the unique label vectors contained in the training data should be printed on the console or
         not.
@@ -36,8 +36,10 @@ class ClassificationCmdBuilder(CmdBuilder):
                                     False otherwise
         :return:                    The builder itself    
         """
-        self.args.append('--print-label-vectors')
-        self.args.append(str(print_label_vectors).lower())
+        if print_label_vectors:
+            self.args.append('--print-label-vectors')
+            self.args.append(str(print_label_vectors).lower())
+
         return self
 
     def store_label_vectors(self, store_label_vectors: bool = True):
