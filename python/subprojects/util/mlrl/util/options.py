@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides a data structure that allows to store and parse options that are provided as key-value pairs.
 """
 from enum import Enum, EnumType
+from functools import reduce
 from typing import Any, Dict, Optional, Set, Tuple
 
 from mlrl.util.format import format_enum_values, format_set
@@ -45,8 +46,8 @@ class Options:
     def __init__(self, dictionary: Optional[Dict[str, Any]] = None):
         self.dictionary = dictionary if dictionary is not None else {}
 
-    @classmethod
-    def create(cls, string: str, allowed_keys: Set[str]):
+    @staticmethod
+    def create(string: str, allowed_keys: Set[str]) -> 'Options':
         """
         Parses the options that are provided via a given string that is formatted according to the following syntax:
         "[key1=value1,key2=value2]". If the given string is malformed, a `ValueError` will be raised.
@@ -56,7 +57,7 @@ class Options:
         :return:                An object of type `Options` that stores the key-value pairs that have been parsed from
                                 the given string
         """
-        options = cls()
+        dictionary = {}
 
         if string:
             if not string.startswith('{'):
@@ -97,9 +98,9 @@ class Options:
                                              + ', but value is missing from element "' + option + '" at index '
                                              + str(option_index))
 
-                        options.dictionary[key] = value
+                        dictionary[key] = value
 
-        return options
+        return Options(dictionary)
 
     def get_string(self, key: str, default_value: Optional[str] = None) -> Optional[str]:
         """
@@ -169,6 +170,13 @@ class Options:
             return value
 
         return default_value
+
+    def __str__(self) -> str:
+        return '{' + reduce(lambda aggr, item: aggr + (',' if aggr else '') + item[0] + '=' + str(item[1]),
+                            sorted(self.dictionary.items()), '') + '}'
+
+    def __bool__(self) -> bool:
+        return bool(self.dictionary)
 
 
 def parse_enum(parameter_name: str,

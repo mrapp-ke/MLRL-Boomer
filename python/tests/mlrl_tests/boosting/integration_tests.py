@@ -1,10 +1,16 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+import pytest
+
 # pylint: disable=missing-function-docstring
-from ..common.cmd_builder import CmdBuilder
 from ..common.cmd_runner import CmdRunner
-from .cmd_builder import BoomerCmdBuilderMixin
+
+from mlrl.common.config.parameters import GlobalPruningParameter, PartitionSamplingParameter
+
+from mlrl.boosting.config.parameters import RegressionLossParameter, StatisticTypeParameter
+
+from mlrl.util.cli import NONE
 
 
 class BoomerIntegrationTestsMixin:
@@ -12,29 +18,19 @@ class BoomerIntegrationTestsMixin:
     A mixin for integration tests for the BOOMER algorithm.
     """
 
-    def test_loss_squared_error_decomposable_32bit_statistics(self):
+    @pytest.mark.parametrize('loss', [
+        RegressionLossParameter.LOSS_SQUARED_ERROR_DECOMPOSABLE,
+        RegressionLossParameter.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE,
+    ])
+    @pytest.mark.parametrize('statistic_type', [
+        StatisticTypeParameter.STATISTIC_TYPE_FLOAT32,
+        StatisticTypeParameter.STATISTIC_TYPE_FLOAT64,
+    ])
+    def test_loss_squared_error(self, loss: str, statistic_type: str):
         builder = self._create_cmd_builder() \
-            .loss(BoomerCmdBuilderMixin.LOSS_SQUARED_ERROR_DECOMPOSABLE) \
-            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32)
-        CmdRunner(builder).run('loss-squared-error-decomposable_32-bit-statistics')
-
-    def test_loss_squared_error_decomposable_64bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerCmdBuilderMixin.LOSS_SQUARED_ERROR_DECOMPOSABLE) \
-            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64)
-        CmdRunner(builder).run('loss-squared-error-decomposable_64-bit-statistics')
-
-    def test_loss_squared_error_non_decomposable_32bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerCmdBuilderMixin.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE) \
-            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT32)
-        CmdRunner(builder).run('loss-squared-error-non-decomposable_32-bit-statistics')
-
-    def test_loss_squared_error_non_decomposable_64bit_statistics(self):
-        builder = self._create_cmd_builder() \
-            .loss(BoomerCmdBuilderMixin.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE) \
-            .statistic_type(BoomerCmdBuilderMixin.STATISTIC_TYPE_FLOAT64)
-        CmdRunner(builder).run('loss-squared-error-non-decomposable_64-bit-statistics')
+            .loss(loss) \
+            .statistic_type(statistic_type)
+        CmdRunner(builder).run(f'loss-{loss}_{statistic_type}-statistics')
 
     def test_no_default_rule(self):
         builder = self._create_cmd_builder() \
@@ -42,30 +38,14 @@ class BoomerIntegrationTestsMixin:
             .print_model_characteristics()
         CmdRunner(builder).run('no-default-rule')
 
-    def test_global_post_pruning_no_holdout(self):
+    @pytest.mark.parametrize('global_pruning', [
+        GlobalPruningParameter.GLOBAL_PRUNING_POST,
+        GlobalPruningParameter.GLOBAL_PRUNING_PRE,
+    ])
+    @pytest.mark.parametrize('holdout', [NONE, PartitionSamplingParameter.PARTITION_SAMPLING_RANDOM])
+    def test_global_pruning(self, global_pruning: str, holdout: str):
         builder = self._create_cmd_builder() \
-            .global_pruning(BoomerCmdBuilderMixin.GLOBAL_PRUNING_POST) \
-            .holdout(CmdBuilder.HOLDOUT_NO) \
+            .global_pruning(global_pruning) \
+            .holdout(holdout) \
             .print_model_characteristics()
-        CmdRunner(builder).run('post-pruning_no-holdout')
-
-    def test_global_post_pruning_random_holdout(self):
-        builder = self._create_cmd_builder() \
-            .global_pruning(BoomerCmdBuilderMixin.GLOBAL_PRUNING_POST) \
-            .holdout(CmdBuilder.HOLDOUT_RANDOM) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('post-pruning_random-holdout')
-
-    def test_global_pre_pruning_no_holdout(self):
-        builder = self._create_cmd_builder() \
-            .global_pruning(BoomerCmdBuilderMixin.GLOBAL_PRUNING_PRE) \
-            .holdout(CmdBuilder.HOLDOUT_NO) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('pre-pruning_no-holdout')
-
-    def test_global_pre_pruning_random_holdout(self):
-        builder = self._create_cmd_builder() \
-            .global_pruning(BoomerCmdBuilderMixin.GLOBAL_PRUNING_PRE) \
-            .holdout(CmdBuilder.HOLDOUT_RANDOM) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('pre-pruning_random-holdout')
+        CmdRunner(builder).run(f'{global_pruning}_{holdout}-holdout')
