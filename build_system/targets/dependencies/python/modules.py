@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements modules that provide access to Python requirements files.
 """
-from enum import Enum
+from enum import StrEnum
 from os import path
 from typing import List, Optional
 
@@ -16,7 +16,7 @@ from targets.dependencies.python.pyproject_toml_file import PyprojectTomlFile
 from targets.modules import SubprojectModule
 
 
-class DependencyType(Enum):
+class DependencyType(StrEnum):
     """
     The type of the Python dependencies.
     """
@@ -82,5 +82,5 @@ class PythonDependencyModule(SubprojectModule):
         return path.basename(self.root_directory)
 
     def __str__(self) -> str:
-        return ('PythonDependencyModule {dependency_type="' + self.dependency_type.value + '", root_directory="'
+        return ('PythonDependencyModule {dependency_type="' + self.dependency_type + '", root_directory="'
                 + self.root_directory + '"}')
