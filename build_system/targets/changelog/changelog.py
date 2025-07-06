@@ -5,7 +5,7 @@ Provides actions for validating and updating the project's changelog.
 """
 from dataclasses import dataclass, field
 from datetime import date
-from enum import Enum, auto
+from enum import Enum, StrEnum, auto
 from functools import cached_property
 from os import path
 from typing import List, Optional
@@ -221,7 +221,7 @@ class ChangesetFile(TextFile):
             pass
 
 
-class ReleaseType(Enum):
+class ReleaseType(StrEnum):
     """
     Represents the type of a release.
     """
@@ -277,7 +277,7 @@ class Release:
     def __str__(self) -> str:
         release = self.PREFIX_SUB_HEADER + 'Version ' + str(
             self.version) + ' (' + self.__format_release_date() + ')\n\n'
-        release += 'A ' + self.release_type.value + ' release that comes with the following changes.\n\n'
+        release += 'A ' + self.release_type + ' release that comes with the following changes.\n\n'
         release += self.__format_disclaimer()
 
         for i, changeset in enumerate(self.changesets):

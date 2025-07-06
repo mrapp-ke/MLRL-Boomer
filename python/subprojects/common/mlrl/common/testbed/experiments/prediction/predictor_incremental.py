@@ -96,7 +96,7 @@ class IncrementalPredictor(Predictor):
 
             while incremental_predictor.has_next():
                 log.info('Predicting for %s %s examples using a model of size %s...', dataset.num_examples,
-                         dataset_type.value, current_size)
+                         dataset_type, current_size)
                 start_time = Timer.start()
                 predictions = incremental_predictor.apply_next(next_step_size)
                 prediction_duration = Timer.stop(start_time)
