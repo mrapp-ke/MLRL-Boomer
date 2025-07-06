@@ -16,12 +16,14 @@ from mlrl.common.config.parameters import BINNING_EQUAL_WIDTH, SAMPLING_STRATIFI
     SAMPLING_STRATIFIED_OUTPUT_WISE, GlobalPruningParameter
 from mlrl.common.learners import SparsePolicy
 
-from mlrl.boosting.config.parameters import PROBABILITY_CALIBRATION_ISOTONIC, BinaryPredictorParameter, \
-    ClassificationLossParameter, HeadTypeParameter, ProbabilityPredictorParameter, StatisticTypeParameter
+from mlrl.boosting.config.parameters import OPTION_BASED_ON_PROBABILITIES, PROBABILITY_CALIBRATION_ISOTONIC, \
+    BinaryPredictorParameter, ClassificationLossParameter, HeadTypeParameter, ProbabilityPredictorParameter, \
+    StatisticTypeParameter
 
 from mlrl.testbed.experiments.prediction_type import PredictionType
 
 from mlrl.util.cli import NONE
+from mlrl.util.options import BooleanOption, Options
 
 
 @pytest.mark.boosting
@@ -60,190 +62,95 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
             .statistic_type(statistic_type)
         CmdRunner(builder).run(f'loss-{loss}_{statistic_type}-statistics')
 
-    def test_predictor_binary_output_wise(self):
+    @pytest.mark.parametrize(
+        'binary_predictor, binary_predictor_options, marginal_probability_calibration, joint_probability_calibration, '
+        + 'label_vectors, prediction_format', [
+            (BinaryPredictorParameter.BINARY_PREDICTOR_OUTPUT_WISE, Options(), None, None, None, None),
+            (BinaryPredictorParameter.BINARY_PREDICTOR_OUTPUT_WISE,
+             Options({
+                 OPTION_BASED_ON_PROBABILITIES: BooleanOption.TRUE.value,
+             }), PROBABILITY_CALIBRATION_ISOTONIC, None, None, None),
+            (BinaryPredictorParameter.BINARY_PREDICTOR_OUTPUT_WISE, Options(), None, None, None,
+             SparsePolicy.FORCE_SPARSE),
+            (BinaryPredictorParameter.BINARY_PREDICTOR_EXAMPLE_WISE, Options(), None, None, True, None),
+            (BinaryPredictorParameter.BINARY_PREDICTOR_EXAMPLE_WISE,
+             Options({
+                 OPTION_BASED_ON_PROBABILITIES: BooleanOption.TRUE.value,
+             }), PROBABILITY_CALIBRATION_ISOTONIC, PROBABILITY_CALIBRATION_ISOTONIC, True, None),
+            (BinaryPredictorParameter.BINARY_PREDICTOR_EXAMPLE_WISE, Options(), None, None, True,
+             SparsePolicy.FORCE_SPARSE),
+            (BinaryPredictorParameter.BINARY_PREDICTOR_GFM, Options(), PROBABILITY_CALIBRATION_ISOTONIC,
+             PROBABILITY_CALIBRATION_ISOTONIC, True, None),
+            (BinaryPredictorParameter.BINARY_PREDICTOR_GFM, Options(), PROBABILITY_CALIBRATION_ISOTONIC,
+             PROBABILITY_CALIBRATION_ISOTONIC, True, SparsePolicy.FORCE_SPARSE),
+        ])
+    def test_predictor_binary(self, binary_predictor: str, binary_predictor_options: Options,
+                              marginal_probability_calibration: Optional[str],
+                              joint_probability_calibration: Optional[str], label_vectors: Optional[bool],
+                              prediction_format: Optional[str]):
         builder = self._create_cmd_builder() \
-            .binary_predictor(BinaryPredictorParameter.BINARY_PREDICTOR_OUTPUT_WISE) \
-            .print_predictions() \
-            .print_ground_truth()
-        CmdRunner(builder).run('predictor-binary-output-wise')
-
-    def test_predictor_binary_output_wise_based_on_probabilities(self):
-        builder = self._create_cmd_builder() \
-            .marginal_probability_calibration() \
-            .print_marginal_probability_calibration_model() \
-            .store_marginal_probability_calibration_model() \
-            .store_evaluation(False) \
-            .binary_predictor(BoomerClassifierCmdBuilder.BINARY_PREDICTOR_OUTPUT_WISE_BASED_ON_PROBABILITIES) \
+            .marginal_probability_calibration(marginal_probability_calibration) \
+            .print_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
+            .store_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
+            .joint_probability_calibration(joint_probability_calibration) \
+            .print_joint_probability_calibration_model(True if joint_probability_calibration else None) \
+            .store_joint_probability_calibration_model(True if joint_probability_calibration else None) \
+            .binary_predictor(binary_predictor, options=binary_predictor_options) \
             .print_predictions() \
             .print_ground_truth() \
-            .set_model_dir()
-        CmdRunner(builder).run('predictor-binary-output-wise_based-on-probabilities')
+            .print_label_vectors(label_vectors) \
+            .prediction_format(prediction_format)
 
-    def test_predictor_binary_output_wise_incremental(self):
-        builder = self._create_cmd_builder() \
-            .binary_predictor(BinaryPredictorParameter.BINARY_PREDICTOR_OUTPUT_WISE) \
-            .incremental_evaluation() \
-            .print_evaluation() \
-            .store_evaluation()
-        CmdRunner(builder).run('predictor-binary-output-wise_incremental')
+        if marginal_probability_calibration or joint_probability_calibration:
+            builder.set_model_dir()
 
-    def test_predictor_binary_output_wise_incremental_based_on_probabilities(self):
+        CmdRunner(builder).run(f'predictor-binary-{binary_predictor}'
+                               + (f'_{prediction_format}' if prediction_format else '')
+                               + (f'_{binary_predictor_options}' if binary_predictor_options else ''))
+
+    @pytest.mark.parametrize(
+        'binary_predictor, binary_predictor_options, marginal_probability_calibration, joint_probability_calibration, '
+        + 'prediction_format', [
+            (BinaryPredictorParameter.BINARY_PREDICTOR_OUTPUT_WISE, Options(), None, None, None),
+            (BinaryPredictorParameter.BINARY_PREDICTOR_OUTPUT_WISE,
+             Options({
+                 OPTION_BASED_ON_PROBABILITIES: BooleanOption.TRUE.value,
+             }), PROBABILITY_CALIBRATION_ISOTONIC, None, None),
+            (BinaryPredictorParameter.BINARY_PREDICTOR_OUTPUT_WISE, Options(), None, None, SparsePolicy.FORCE_SPARSE),
+            (BinaryPredictorParameter.BINARY_PREDICTOR_EXAMPLE_WISE, Options(), None, None, None),
+            (BinaryPredictorParameter.BINARY_PREDICTOR_EXAMPLE_WISE,
+             Options({
+                 OPTION_BASED_ON_PROBABILITIES: BooleanOption.TRUE.value,
+             }), PROBABILITY_CALIBRATION_ISOTONIC, PROBABILITY_CALIBRATION_ISOTONIC, None),
+            (BinaryPredictorParameter.BINARY_PREDICTOR_EXAMPLE_WISE, Options(), None, None, SparsePolicy.FORCE_SPARSE),
+            (BinaryPredictorParameter.BINARY_PREDICTOR_GFM, Options(), PROBABILITY_CALIBRATION_ISOTONIC,
+             PROBABILITY_CALIBRATION_ISOTONIC, None),
+            (BinaryPredictorParameter.BINARY_PREDICTOR_GFM, Options(), PROBABILITY_CALIBRATION_ISOTONIC,
+             PROBABILITY_CALIBRATION_ISOTONIC, SparsePolicy.FORCE_SPARSE),
+        ])
+    def test_predictor_binary_incremental(self, binary_predictor: str, binary_predictor_options: Options,
+                                          marginal_probability_calibration: Optional[str],
+                                          joint_probability_calibration: Optional[str],
+                                          prediction_format: Optional[str]):
         builder = self._create_cmd_builder() \
-            .marginal_probability_calibration() \
-            .print_marginal_probability_calibration_model() \
-            .store_marginal_probability_calibration_model() \
-            .binary_predictor(BoomerClassifierCmdBuilder.BINARY_PREDICTOR_OUTPUT_WISE_BASED_ON_PROBABILITIES) \
+            .marginal_probability_calibration(marginal_probability_calibration) \
+            .print_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
+            .store_marginal_probability_calibration_model(True if marginal_probability_calibration else None) \
+            .joint_probability_calibration(joint_probability_calibration) \
+            .print_joint_probability_calibration_model(True if joint_probability_calibration else None) \
+            .store_joint_probability_calibration_model(True if joint_probability_calibration else None) \
+            .binary_predictor(binary_predictor, options=binary_predictor_options) \
             .incremental_evaluation() \
             .print_evaluation() \
             .store_evaluation() \
-            .set_model_dir()
-        CmdRunner(builder).run('predictor-binary-output-wise_incremental_based-on-probabilities')
+            .prediction_format(prediction_format)
 
-    def test_predictor_binary_output_wise_sparse(self):
-        builder = self._create_cmd_builder() \
-            .binary_predictor(BinaryPredictorParameter.BINARY_PREDICTOR_OUTPUT_WISE) \
-            .print_predictions() \
-            .print_ground_truth() \
-            .prediction_format(SparsePolicy.FORCE_SPARSE)
-        CmdRunner(builder).run('predictor-binary-output-wise_sparse')
+        if marginal_probability_calibration or joint_probability_calibration:
+            builder.set_model_dir()
 
-    def test_predictor_binary_output_wise_sparse_incremental(self):
-        builder = self._create_cmd_builder() \
-            .binary_predictor(BinaryPredictorParameter.BINARY_PREDICTOR_OUTPUT_WISE) \
-            .prediction_format(SparsePolicy.FORCE_SPARSE) \
-            .incremental_evaluation() \
-            .print_evaluation() \
-            .store_evaluation()
-        CmdRunner(builder).run('predictor-binary-output-wise_sparse_incremental')
-
-    def test_predictor_binary_example_wise(self):
-        builder = self._create_cmd_builder() \
-            .binary_predictor(BinaryPredictorParameter.BINARY_PREDICTOR_EXAMPLE_WISE) \
-            .print_predictions() \
-            .print_ground_truth() \
-            .print_label_vectors()
-        CmdRunner(builder).run('predictor-binary-example-wise')
-
-    def test_predictor_binary_example_wise_based_on_probabilities(self):
-        builder = self._create_cmd_builder() \
-            .marginal_probability_calibration() \
-            .print_marginal_probability_calibration_model() \
-            .store_marginal_probability_calibration_model() \
-            .joint_probability_calibration() \
-            .print_joint_probability_calibration_model() \
-            .store_joint_probability_calibration_model() \
-            .store_evaluation(False) \
-            .binary_predictor(BoomerClassifierCmdBuilder.BINARY_PREDICTOR_EXAMPLE_WISE_BASED_ON_PROBABILITIES) \
-            .print_predictions() \
-            .print_ground_truth() \
-            .print_label_vectors() \
-            .set_model_dir()
-        CmdRunner(builder).run('predictor-binary-example-wise_based-on-probabilities')
-
-    def test_predictor_binary_example_wise_incremental(self):
-        builder = self._create_cmd_builder() \
-            .binary_predictor(BinaryPredictorParameter.BINARY_PREDICTOR_EXAMPLE_WISE) \
-            .incremental_evaluation() \
-            .print_evaluation() \
-            .store_evaluation()
-        CmdRunner(builder).run('predictor-binary-example-wise_incremental')
-
-    def test_predictor_binary_example_wise_incremental_based_on_probabilities(self):
-        builder = self._create_cmd_builder() \
-            .marginal_probability_calibration() \
-            .print_marginal_probability_calibration_model() \
-            .store_marginal_probability_calibration_model() \
-            .joint_probability_calibration() \
-            .print_joint_probability_calibration_model() \
-            .store_joint_probability_calibration_model() \
-            .binary_predictor(BoomerClassifierCmdBuilder.BINARY_PREDICTOR_EXAMPLE_WISE_BASED_ON_PROBABILITIES) \
-            .incremental_evaluation() \
-            .print_evaluation() \
-            .store_evaluation() \
-            .set_model_dir()
-        CmdRunner(builder).run('predictor-binary-example-wise_incremental_based-on-probabilities')
-
-    def test_predictor_binary_example_wise_sparse(self):
-        builder = self._create_cmd_builder() \
-            .binary_predictor(BinaryPredictorParameter.BINARY_PREDICTOR_EXAMPLE_WISE) \
-            .print_predictions() \
-            .print_ground_truth() \
-            .print_label_vectors() \
-            .prediction_format(SparsePolicy.FORCE_SPARSE)
-        CmdRunner(builder).run('predictor-binary-example-wise_sparse')
-
-    def test_predictor_binary_example_wise_sparse_incremental(self):
-        builder = self._create_cmd_builder() \
-            .binary_predictor(BinaryPredictorParameter.BINARY_PREDICTOR_EXAMPLE_WISE) \
-            .prediction_format(SparsePolicy.FORCE_SPARSE) \
-            .incremental_evaluation() \
-            .print_evaluation() \
-            .store_evaluation()
-        CmdRunner(builder).run('predictor-binary-example-wise_sparse_incremental')
-
-    def test_predictor_binary_gfm(self):
-        builder = self._create_cmd_builder() \
-            .marginal_probability_calibration() \
-            .print_marginal_probability_calibration_model() \
-            .store_marginal_probability_calibration_model() \
-            .joint_probability_calibration() \
-            .print_joint_probability_calibration_model() \
-            .store_joint_probability_calibration_model() \
-            .store_evaluation(False) \
-            .binary_predictor(BinaryPredictorParameter.BINARY_PREDICTOR_GFM) \
-            .print_predictions() \
-            .print_ground_truth() \
-            .print_label_vectors() \
-            .set_model_dir()
-        CmdRunner(builder).run('predictor-binary-gfm')
-
-    def test_predictor_binary_gfm_incremental(self):
-        builder = self._create_cmd_builder() \
-            .marginal_probability_calibration() \
-            .print_marginal_probability_calibration_model() \
-            .store_marginal_probability_calibration_model() \
-            .joint_probability_calibration() \
-            .print_joint_probability_calibration_model() \
-            .store_joint_probability_calibration_model() \
-            .binary_predictor(BinaryPredictorParameter.BINARY_PREDICTOR_GFM) \
-            .incremental_evaluation() \
-            .print_evaluation() \
-            .store_evaluation() \
-            .set_model_dir()
-        CmdRunner(builder).run('predictor-binary-gfm_incremental')
-
-    def test_predictor_binary_gfm_sparse(self):
-        builder = self._create_cmd_builder() \
-            .marginal_probability_calibration() \
-            .print_marginal_probability_calibration_model() \
-            .store_marginal_probability_calibration_model() \
-            .joint_probability_calibration() \
-            .print_joint_probability_calibration_model() \
-            .store_joint_probability_calibration_model() \
-            .store_evaluation(False) \
-            .binary_predictor(BinaryPredictorParameter.BINARY_PREDICTOR_GFM) \
-            .print_predictions() \
-            .print_ground_truth() \
-            .print_label_vectors() \
-            .prediction_format(SparsePolicy.FORCE_SPARSE) \
-            .set_model_dir()
-        CmdRunner(builder).run('predictor-binary-gfm_sparse')
-
-    def test_predictor_binary_gfm_sparse_incremental(self):
-        builder = self._create_cmd_builder() \
-            .marginal_probability_calibration() \
-            .print_marginal_probability_calibration_model() \
-            .store_marginal_probability_calibration_model() \
-            .joint_probability_calibration() \
-            .print_joint_probability_calibration_model() \
-            .store_joint_probability_calibration_model() \
-            .binary_predictor(BinaryPredictorParameter.BINARY_PREDICTOR_GFM) \
-            .prediction_format(SparsePolicy.FORCE_SPARSE) \
-            .incremental_evaluation() \
-            .print_evaluation() \
-            .store_evaluation() \
-            .set_model_dir()
-        CmdRunner(builder).run('predictor-binary-gfm_sparse_incremental')
+        CmdRunner(builder).run(f'predictor-binary-{binary_predictor}'
+                               + (f'_{prediction_format}' if prediction_format else '')
+                               + (f'_{binary_predictor_options}' if binary_predictor_options else '') + '_incremental')
 
     def test_predictor_score_output_wise(self):
         builder = self._create_cmd_builder() \

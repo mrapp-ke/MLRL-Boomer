@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.boosting --log-level debug --data-dir python/tests/res/data --dataset emotions --output-dir python/tests/res/tmp/results --marginal-probability-calibration isotonic --print-marginal-probability-calibration-model true --store-marginal-probability-calibration-model true --joint-probability-calibration isotonic --print-joint-probability-calibration-model true --store-joint-probability-calibration-model true --store-evaluation false --binary-predictor example-wise{based_on_probabilities=true} --print-predictions true --print-ground-truth true --print-label-vectors true --model-load-dir python/tests/res/tmp/models --model-save-dir python/tests/res/tmp/models
+mlrl-testbed mlrl.boosting --log-level debug --data-dir python/tests/res/data --dataset emotions --output-dir python/tests/res/tmp/results --marginal-probability-calibration isotonic --print-marginal-probability-calibration-model true --store-marginal-probability-calibration-model true --joint-probability-calibration isotonic --print-joint-probability-calibration-model true --store-joint-probability-calibration-model true --binary-predictor example-wise{based_on_probabilities=true} --print-predictions true --print-ground-truth true --print-label-vectors true --model-load-dir python/tests/res/tmp/models --model-save-dir python/tests/res/tmp/models
 INFO Starting experiment using the classification algorithm "BoomerClassifier"...
 INFO Using separate training and test sets...
 DEBUG Reading input data from file "python/tests/res/data/emotions.arff"...
@@ -28,6 +28,7 @@ Micro Recall            42.67
 Subset 0/1 Loss         88.27
 Subset Accuracy         11.73
 
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 INFO Ground truth for test data:
 
 [[1 0 0 0 0 1]

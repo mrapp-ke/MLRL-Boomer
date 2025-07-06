@@ -12,6 +12,8 @@ from mlrl.common.config.parameters import BINNING_EQUAL_WIDTH
 
 from mlrl.boosting.config.parameters import AUTOMATIC, PROBABILITY_CALIBRATION_ISOTONIC, BinaryPredictorParameter
 
+from mlrl.util.options import Options
+
 
 class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin):
     """
@@ -56,16 +58,17 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
 
         return self
 
-    def binary_predictor(self, binary_predictor: Optional[str] = AUTOMATIC):
+    def binary_predictor(self, binary_predictor: Optional[str] = AUTOMATIC, options: Options = Options()):
         """
         Configures the algorithm to use a specific method for predicting binary labels.
 
         :param binary_predictor:    The name of the method that should be used for predicting binary labels
+        :param options:             Options to be taken into account
         :return:                    The builder itself
         """
         if binary_predictor:
             self.args.append('--binary-predictor')
-            self.args.append(binary_predictor)
+            self.args.append(binary_predictor + (str(options) if options else ''))
 
         return self
 
