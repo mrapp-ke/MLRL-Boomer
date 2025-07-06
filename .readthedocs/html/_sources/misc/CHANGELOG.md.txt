@@ -6,6 +6,54 @@ tocdepth: 2
 
 # Release Notes
 
+## Version 0.12.0 (Jun. 29th, 2025)
+
+A feature release that comes with the following changes.
+
+```{warning}
+This release comes with API changes. For an updated overview of the available parameters and command line arguments, please refer to the [documentation](https://mlrl-boomer.readthedocs.io/en/0.12.0).
+```
+
+### API Changes
+
+- The executable `testbed` has been renamed to `mlrl-testbed`.
+- The command line argument `--model-dir` has been replaced with the arguments `--model-load-dir` and `--model-save-dir`, which enables to save models to a different directory than the one they are loaded from.
+- The command line argument `--parameter-dir` has been replaced with the arguments `--parameter-load-dir` and `--parameter-save-dir`. The former specifies the directory, parameter settings should be loaded from, whereas the latter replaces the argument `--store-parameters`.
+- The command line argument `--store-predictions` does now write ARFF files where the ground truth is replaced with the predictions of a model. Accordingly, the ARFF files written via the new argument `--store-ground-truth` contains the original ground truth.
+- The command line argument `--evaluate-training-data` has been renamed to `--predict-for-training-data`. Analogously, a new argument `--predict-for-test-data` has been added.
+- By default, the command line API is not terminated anymore when an error occurs while writing output data. This behavior can be changed via the new argument `--exit-on-error`.
+- When passing the value `cross-validation` to the command line argument `--data-split`, the options `first_fold` and `last_fold` can now be used to specify a range of folds to be run. The option `current_fold` has been removed.
+- Output directories are now automatically created by the command line API. This behavior can be disabled via the newly added argument `--create-output-dir`.
+- The command line argument `--wipe-output-dir` has been added. It allows to prevent existing output files from being deleted before an experiment starts.
+- The new command line arguments `--store-all` and `--print-all` allow to print all output data on the console or to write it to files.
+- The options `min_samples` and `max_samples` have been added to the values of the command line arguments `--feature-sampling` and `--instance-sampling`.
+- The indices of nominal and ordinal features are now provided to a learner's `fit`-method via the keyword arguments `nominal_feature_indices` and `ordinal_feature_indices`.
+- The Python API does now allow to provide custom weights for training examples to a learner's `fit`-method via the keyword argument `sample_weights`.
+- The Python API of the class `RuleModel` does now provide an easy way to access the rules in the model.
+
+### Algorithmic Enhancements
+
+- The BOOMER algorithm can now be configured to use either 32- or 64-bit floating point values for gradients and Hessians via the command line argument `--statistic-type`. Using lower-precision values might speed up training at the risk of losing training accuracy.
+- Efficient data types and data structures are now used for storing binary scores calculated by the SeCo algorithm.
+- Unnecessary conversions from integer weights to floating point values are now avoided.
+
+### Fixes
+
+- Correct data types are now used for ground truth matrices when using the command line argument `--problem-type regression`. Previously, the values in these matrices were completely off, rendering any experiments using them invalid.
+- An issue that caused thresholds and probabilities of isotonic regression models being swapped in output files when using the command line arguments `--store-marginal-probability-calibration-model` and `--store-joint-probability-calibration-model` has been fixed.
+
+### Quality-of-Life Improvements
+
+- The Python package "mlrl-util" has been added. It provides common functionalities of the packages "mlrl-common" and "mlrl-testbed".
+- The Python package "mlrl-testbed-arff" and "mlrl-testbed-sklearn" have been added as extensions to the package "mlrl-testbed".
+- The Python package "mlrl-testbed" has completely been refactored, establishing it as a standalone package, independent of the package "mlrl-common".
+- The Python packages "mlrl-common", "mlrl-seco" and "mlrl-boosting" have been restructured by introducing submodules.
+- C++ 20 is now required for compiling the project.
+- The integration tests do now check the contents of output files.
+- The build targets `format_python` and `test_format_python` now employ [autoflake](https://github.com/PyCQA/autoflake) to detect and remove unused variables and imports, as well as unnecessary `pass` statements from Python and Cython source files.
+- The build targets `format_cfg` and `test_format_cfg` have been added. They enforce a consistent style for .cfg files by employing the package [config-formatter](https://github.com/Delgan/config-formatter).
+- The tool [cython-lint](https://github.com/MarcoGorelli/cython-lint) is now applied to Cython source files via Continuous Integration.
+
 ## Version 0.11.4 (Feb. 27th, 2025)
 
 A bugfix release that comes with the following changes.
