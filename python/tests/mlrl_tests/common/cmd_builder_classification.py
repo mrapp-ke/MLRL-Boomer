@@ -54,7 +54,9 @@ class ClassificationCmdBuilder(CmdBuilder):
         self.args.append(str(store_label_vectors).lower())
         return self
 
-    def print_marginal_probability_calibration_model(self, print_marginal_probability_calibration_model: bool = True):
+    def print_marginal_probability_calibration_model(self,
+                                                     print_marginal_probability_calibration_model: Optional[bool] = True
+                                                     ):
         """
         Configures whether textual representations of models for the calibration of marginal probabilities should be
         printed on the console or not.
@@ -64,11 +66,15 @@ class ClassificationCmdBuilder(CmdBuilder):
                                                                 False otherwise
         :return:                                                The builder itself    
         """
-        self.args.append('--print-marginal-probability-calibration-model')
-        self.args.append(str(print_marginal_probability_calibration_model).lower())
+        if print_marginal_probability_calibration_model:
+            self.args.append('--print-marginal-probability-calibration-model')
+            self.args.append(str(print_marginal_probability_calibration_model).lower())
+
         return self
 
-    def store_marginal_probability_calibration_model(self, store_marginal_probability_calibration_model: bool = True):
+    def store_marginal_probability_calibration_model(self,
+                                                     store_marginal_probability_calibration_model: Optional[bool] = True
+                                                     ):
         """
         Configures whether textual representations of models for the calibration of marginal probabilities should be
         written into output files or not.
@@ -78,12 +84,15 @@ class ClassificationCmdBuilder(CmdBuilder):
                                                                 into output files, False otherwise
         :return:                                                The builder itself    
         """
-        self.marginal_probability_calibration_model_stored = store_marginal_probability_calibration_model
-        self.args.append('--store-marginal-probability-calibration-model')
-        self.args.append(str(store_marginal_probability_calibration_model).lower())
+        if store_marginal_probability_calibration_model:
+            self.marginal_probability_calibration_model_stored = store_marginal_probability_calibration_model
+            self.args.append('--store-marginal-probability-calibration-model')
+            self.args.append(str(store_marginal_probability_calibration_model).lower())
+
         return self
 
-    def print_joint_probability_calibration_model(self, print_joint_probability_calibration_model: bool = True):
+    def print_joint_probability_calibration_model(self,
+                                                  print_joint_probability_calibration_model: Optional[bool] = True):
         """
         Configures whether textual representations of models for the calibration of joint probabilities should be
         printed on the console or not.
@@ -93,11 +102,14 @@ class ClassificationCmdBuilder(CmdBuilder):
                                                             otherwise
         :return:                                            The builder itself    
         """
-        self.args.append('--print-joint-probability-calibration-model')
-        self.args.append(str(print_joint_probability_calibration_model).lower())
+        if print_joint_probability_calibration_model:
+            self.args.append('--print-joint-probability-calibration-model')
+            self.args.append(str(print_joint_probability_calibration_model).lower())
+
         return self
 
-    def store_joint_probability_calibration_model(self, store_joint_probability_calibration_model: bool = True):
+    def store_joint_probability_calibration_model(self,
+                                                  store_joint_probability_calibration_model: Optional[bool] = True):
         """
         Configures whether textual representations of models for the calibration of joint probabilities should be
         written into output files or not.
@@ -107,9 +119,11 @@ class ClassificationCmdBuilder(CmdBuilder):
                                                             output files, False otherwise
         :return:                                            The builder itself    
         """
-        self.joint_probability_calibration_model_stored = store_joint_probability_calibration_model
-        self.args.append('--store-joint-probability-calibration-model')
-        self.args.append(str(store_joint_probability_calibration_model).lower())
+        if store_joint_probability_calibration_model:
+            self.joint_probability_calibration_model_stored = store_joint_probability_calibration_model
+            self.args.append('--store-joint-probability-calibration-model')
+            self.args.append(str(store_joint_probability_calibration_model).lower())
+
         return self
 
     def prediction_type(self, prediction_type: Optional[str] = PredictionType.BINARY):
