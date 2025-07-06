@@ -319,23 +319,18 @@ class TestBoomerClassifier(ClassificationIntegrationTests, BoomerIntegrationTest
             .set_model_dir()
         CmdRunner(builder).run('predictor-probability-marginalized_incremental')
 
-    def test_statistics_sparse_output_format_dense(self, dataset: Dataset):
+    @pytest.mark.parametrize('output_format', [
+        SparsePolicy.FORCE_DENSE,
+        SparsePolicy.FORCE_SPARSE,
+    ])
+    def test_statistics_sparse(self, output_format: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.numerical_sparse) \
             .sparse_statistic_format() \
-            .output_format(SparsePolicy.FORCE_DENSE) \
+            .output_format(output_format) \
             .default_rule(False) \
             .loss(ClassificationLossParameter.LOSS_SQUARED_HINGE_DECOMPOSABLE) \
             .head_type(HeadTypeParameter.HEAD_TYPE_SINGLE)
-        CmdRunner(builder).run('statistics-sparse_output-format-dense')
-
-    def test_statistics_sparse_output_format_sparse(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.numerical_sparse) \
-            .sparse_statistic_format() \
-            .output_format(SparsePolicy.FORCE_SPARSE) \
-            .default_rule(False) \
-            .loss(ClassificationLossParameter.LOSS_SQUARED_HINGE_DECOMPOSABLE) \
-            .head_type(HeadTypeParameter.HEAD_TYPE_SINGLE)
-        CmdRunner(builder).run('statistics-sparse_output-format-sparse')
+        CmdRunner(builder).run(f'statistics-sparse_output-format-{output_format}')
 
     @pytest.mark.parametrize('head_type, label_binning', [
         (HeadTypeParameter.HEAD_TYPE_SINGLE, None),
