@@ -6,7 +6,7 @@ Provides base classes for implementing rule learning algorithms.
 import logging as log
 
 from abc import ABC, abstractmethod
-from enum import Enum
+from enum import StrEnum
 from typing import Any, Optional, Set
 
 import numpy as np
@@ -35,7 +35,7 @@ from mlrl.util.options import parse_enum
 from mlrl.util.validation import assert_greater_or_equal
 
 
-class SparsePolicy(Enum):
+class SparsePolicy(StrEnum):
     """
     Specifies all valid textual representation of policies to be used for converting matrices into sparse or dense
     formats.
