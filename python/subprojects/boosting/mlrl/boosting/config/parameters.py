@@ -192,14 +192,14 @@ class DefaultRuleParameter(NominalParameter):
 
     def __init__(self):
         super().__init__(name='default_rule', description='Whether a default rule should be induced or not')
-        self.add_value(name=BooleanOption.FALSE.value, mixin=NoDefaultRuleMixin)
-        self.add_value(name=BooleanOption.TRUE.value, mixin=DefaultRuleMixin)
+        self.add_value(name=BooleanOption.FALSE, mixin=NoDefaultRuleMixin)
+        self.add_value(name=BooleanOption.TRUE, mixin=DefaultRuleMixin)
         self.add_value(name=AUTOMATIC, mixin=AutomaticDefaultRuleMixin)
 
     def _configure(self, config, value: str, _: Options):
-        if value == BooleanOption.FALSE.value:
+        if value == BooleanOption.FALSE:
             config.use_no_default_rule()
-        elif value == BooleanOption.TRUE.value:
+        elif value == BooleanOption.TRUE:
             config.use_default_rule()
         elif value == AUTOMATIC:
             config.use_automatic_default_rule()
