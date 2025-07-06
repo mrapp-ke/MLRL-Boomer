@@ -178,8 +178,7 @@ class BoolArgument(Argument):
         :param false_options:   The names of options that can be provided by the user in addition to the value "false"
         """
         super().__init__(*names,
-                         default=None if default is None else
-                         (BooleanOption.TRUE.value if default else BooleanOption.FALSE.value),
+                         default=None if default is None else (BooleanOption.TRUE if default else BooleanOption.FALSE),
                          help=self.__format_description(description,
                                                         bool(true_options) or bool(false_options)),
                          type=str if true_options or false_options else BooleanOption.parse,
@@ -196,8 +195,8 @@ class BoolArgument(Argument):
 
             if true_options or false_options:
                 value, options = parse_param_and_options(self.key, value, {
-                    BooleanOption.TRUE.value: true_options,
-                    BooleanOption.FALSE.value: false_options
+                    BooleanOption.TRUE: true_options,
+                    BooleanOption.FALSE: false_options
                 })
                 return BooleanOption.parse(value), options
 
