@@ -110,7 +110,7 @@ As shown in the section {ref}`project-structure`, this project is organized in t
 
 ## Creating a Virtual Environment
 
-The build process is based on a virtual Python environment that allows to install build- and run-time dependencies in an isolated manner and independently of the host system. Once the build process was completed, the resulting Python packages are installed into the virtual environment. To create new virtual environment and install all necessarily run-time dependencies, the following command must be executed:
+The build process is based on a virtual Python environment that allows to install build- and run-time dependencies in an isolated manner and independently of the host system. Once the build process was completed, the resulting Python packages are installed into the virtual environment. To create new virtual environment the following command must be executed:
 
 ````{tab} Linux
    ```text
@@ -127,6 +127,26 @@ The build process is based on a virtual Python environment that allows to instal
 ````{tab} Windows
    ```text
    build.bat venv
+   ```
+````
+
+Afterward, all necessarily run-time dependencies can be installed:
+
+````{tab} Linux
+   ```text
+   ./build install_runtime_dependencies
+   ```
+````
+
+````{tab} macOS
+   ```text
+   ./build install_runtime_dependencies
+   ```
+````
+
+````{tab} Windows
+   ```text
+   build.bat install_runtime_dependencies
    ```
 ````
 
