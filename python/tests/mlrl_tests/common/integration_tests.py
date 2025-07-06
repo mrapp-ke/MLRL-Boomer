@@ -5,13 +5,22 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 import os
 
 from abc import ABC
-from typing import Any
+from typing import Any, Optional
 
 import pytest
 
-from .cmd_builder import CmdBuilder
 from .cmd_runner import CmdRunner
 from .datasets import Dataset
+
+from mlrl.common.config.parameters import BINNING_EQUAL_FREQUENCY, BINNING_EQUAL_WIDTH, SAMPLING_WITH_REPLACEMENT, \
+    SAMPLING_WITHOUT_REPLACEMENT, OutputSamplingParameter, RuleInductionParameter, RulePruningParameter
+from mlrl.common.learners import SparsePolicy
+
+from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import OPTION_FIRST_FOLD, OPTION_LAST_FOLD, \
+    VALUE_CROSS_VALIDATION, VALUE_TRAIN_TEST
+
+from mlrl.util.cli import NONE
+from mlrl.util.options import Options
 
 ci_only = pytest.mark.skipif(os.getenv('GITHUB_ACTIONS') != 'true', reason='Disabled unless run on CI')
 
@@ -52,45 +61,24 @@ class IntegrationTests(ABC):
             .print_evaluation(False)
         CmdRunner(builder).run('meka-format')
 
-    def test_evaluation_no_data_split(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .no_data_split() \
+    @pytest.mark.parametrize('data_split, data_split_options, predefined', [
+        (NONE, Options(), False),
+        (VALUE_TRAIN_TEST, Options(), False),
+        (VALUE_TRAIN_TEST, Options(), True),
+        (VALUE_CROSS_VALIDATION, Options(), False),
+        (VALUE_CROSS_VALIDATION, Options(), True),
+        (VALUE_CROSS_VALIDATION, Options({
+            OPTION_FIRST_FOLD: 1,
+            OPTION_LAST_FOLD: 1,
+        }), False),
+    ])
+    def test_evaluation(self, data_split: str, data_split_options: Options, predefined: bool, dataset: Dataset):
+        builder = self._create_cmd_builder(dataset=dataset.default + ('-predefined' if predefined else '')) \
+            .data_split(data_split, options=data_split_options) \
             .print_evaluation() \
             .store_evaluation()
-        CmdRunner(builder).run('evaluation_no-data-split')
-
-    def test_evaluation_train_test(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .print_evaluation() \
-            .store_evaluation()
-        CmdRunner(builder).run('evaluation_train-test')
-
-    def test_evaluation_train_test_predefined(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default + '-predefined') \
-            .print_evaluation() \
-            .store_evaluation()
-        CmdRunner(builder).run('evaluation_train-test-predefined')
-
-    def test_evaluation_cross_validation(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation() \
-            .print_evaluation() \
-            .store_evaluation()
-        CmdRunner(builder).run('evaluation_cross-validation')
-
-    def test_evaluation_cross_validation_predefined(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default + '-predefined') \
-            .cross_validation() \
-            .print_evaluation() \
-            .store_evaluation()
-        CmdRunner(builder).run('evaluation_cross-validation-predefined')
-
-    def test_evaluation_single_fold(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation(current_fold=1) \
-            .print_evaluation() \
-            .store_evaluation()
-        CmdRunner(builder).run('evaluation_single-fold')
+        CmdRunner(builder).run(f'evaluation_{data_split}' + ('-predefined' if predefined else '')
+                               + (f'_{data_split_options}' if data_split_options else ''))
 
     def test_evaluation_training_data(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
@@ -106,54 +94,39 @@ class IntegrationTests(ABC):
             .store_evaluation()
         CmdRunner(builder).run('evaluation_incremental')
 
-    def test_model_persistence_train_test(self, dataset: Dataset):
+    @pytest.mark.parametrize('data_split, data_split_options', [
+        (VALUE_TRAIN_TEST, Options()),
+        (VALUE_TRAIN_TEST, Options()),
+        (VALUE_CROSS_VALIDATION, Options({
+            OPTION_FIRST_FOLD: 1,
+            OPTION_LAST_FOLD: 1,
+        })),
+    ])
+    def test_model_persistence(self, data_split: str, data_split_options: Options, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
+            .data_split(data_split, options=data_split_options) \
             .set_model_dir()
-        CmdRunner(builder).run('model-persistence_train-test')
+        CmdRunner(builder).run(f'model-persistence_{data_split}'
+                               + (f'_{data_split_options}' if data_split_options else ''))
 
-    def test_model_persistence_cross_validation(self, dataset: Dataset):
+    @pytest.mark.parametrize('data_split, data_split_options', [
+        (VALUE_TRAIN_TEST, Options()),
+        (VALUE_CROSS_VALIDATION, Options()),
+        (VALUE_CROSS_VALIDATION, Options({
+            OPTION_FIRST_FOLD: 1,
+            OPTION_LAST_FOLD: 1,
+        })),
+    ])
+    def test_predictions(self, data_split: str, data_split_options: Options, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation() \
-            .set_model_dir()
-        CmdRunner(builder).run('model-persistence_cross-validation')
-
-    def test_model_persistence_single_fold(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation(current_fold=1) \
-            .set_model_dir()
-        CmdRunner(builder).run('model-persistence_single-fold')
-
-    def test_predictions_train_test(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
+            .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_predictions() \
             .print_ground_truth() \
             .store_predictions() \
             .store_ground_truth()
-        CmdRunner(builder).run('predictions_train-test')
-
-    def test_predictions_cross_validation(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation() \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .print_predictions() \
-            .print_ground_truth() \
-            .store_predictions() \
-            .store_ground_truth()
-        CmdRunner(builder).run('predictions_cross-validation')
-
-    def test_predictions_single_fold(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation(current_fold=1) \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .print_predictions() \
-            .print_ground_truth() \
-            .store_predictions() \
-            .store_ground_truth()
-        CmdRunner(builder).run('predictions_single-fold')
+        CmdRunner(builder).run(f'predictions_{data_split}' + (f'_{data_split_options}' if data_split_options else ''))
 
     def test_predictions_training_data(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
@@ -166,31 +139,23 @@ class IntegrationTests(ABC):
             .store_ground_truth()
         CmdRunner(builder).run('predictions_training-data')
 
-    def test_prediction_characteristics_train_test(self, dataset: Dataset):
+    @pytest.mark.parametrize('data_split, data_split_options', [
+        (VALUE_TRAIN_TEST, Options()),
+        (VALUE_CROSS_VALIDATION, Options()),
+        (VALUE_CROSS_VALIDATION, Options({
+            OPTION_FIRST_FOLD: 1,
+            OPTION_LAST_FOLD: 1,
+        })),
+    ])
+    def test_prediction_characteristics(self, data_split: str, data_split_options: Options, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
+            .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_prediction_characteristics() \
             .store_prediction_characteristics()
-        CmdRunner(builder).run('prediction-characteristics_train-test')
-
-    def test_prediction_characteristics_cross_validation(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation() \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .print_prediction_characteristics() \
-            .store_prediction_characteristics()
-        CmdRunner(builder).run('prediction-characteristics_cross-validation')
-
-    def test_prediction_characteristics_single_fold(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation(current_fold=1) \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .print_prediction_characteristics() \
-            .store_prediction_characteristics()
-        CmdRunner(builder).run('prediction-characteristics_single-fold')
+        CmdRunner(builder).run(f'prediction-characteristics_{data_split}'
+                               + (f'_{data_split_options}' if data_split_options else ''))
 
     def test_prediction_characteristics_training_data(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
@@ -201,309 +166,163 @@ class IntegrationTests(ABC):
             .store_prediction_characteristics()
         CmdRunner(builder).run('prediction-characteristics_training-data')
 
-    def test_data_characteristics_train_test(self, dataset: Dataset):
+    @pytest.mark.parametrize('data_split, data_split_options', [
+        (VALUE_TRAIN_TEST, Options()),
+        (VALUE_CROSS_VALIDATION, Options()),
+        (VALUE_CROSS_VALIDATION, Options({
+            OPTION_FIRST_FOLD: 1,
+            OPTION_LAST_FOLD: 1,
+        })),
+    ])
+    def test_data_characteristics(self, data_split: str, data_split_options: Options, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
+            .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_data_characteristics() \
             .store_data_characteristics()
-        CmdRunner(builder).run('data-characteristics_train-test')
+        CmdRunner(builder).run(f'data-characteristics_{data_split}'
+                               + (f'_{data_split_options}' if data_split_options else ''))
 
-    def test_data_characteristics_cross_validation(self, dataset: Dataset):
+    @pytest.mark.parametrize('data_split, data_split_options', [
+        (VALUE_TRAIN_TEST, Options()),
+        (VALUE_CROSS_VALIDATION, Options()),
+        (VALUE_CROSS_VALIDATION, Options({
+            OPTION_FIRST_FOLD: 1,
+            OPTION_LAST_FOLD: 1,
+        })),
+    ])
+    def test_model_characteristics(self, data_split: str, data_split_options: Options, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation() \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .print_data_characteristics() \
-            .store_data_characteristics()
-        CmdRunner(builder).run('data-characteristics_cross-validation')
-
-    def test_data_characteristics_single_fold(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation(current_fold=1) \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .print_data_characteristics() \
-            .store_data_characteristics()
-        CmdRunner(builder).run('data-characteristics_single-fold')
-
-    def test_model_characteristics_train_test(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
+            .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_model_characteristics() \
             .store_model_characteristics()
-        CmdRunner(builder).run('model-characteristics_train-test')
+        CmdRunner(builder).run(f'model-characteristics_{data_split}'
+                               + (f'_{data_split_options}' if data_split_options else ''))
 
-    def test_model_characteristics_cross_validation(self, dataset: Dataset):
+    @pytest.mark.parametrize('data_split, data_split_options', [
+        (VALUE_TRAIN_TEST, Options()),
+        (VALUE_CROSS_VALIDATION, Options()),
+        (VALUE_CROSS_VALIDATION, Options({
+            OPTION_FIRST_FOLD: 1,
+            OPTION_LAST_FOLD: 1,
+        })),
+    ])
+    def test_rules(self, data_split: str, data_split_options: Options, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation() \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .print_model_characteristics() \
-            .store_model_characteristics()
-        CmdRunner(builder).run('model-characteristics_cross-validation')
-
-    def test_model_characteristics_single_fold(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation(current_fold=1) \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .print_model_characteristics() \
-            .store_model_characteristics()
-        CmdRunner(builder).run('model-characteristics_single-fold')
-
-    def test_rules_train_test(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
+            .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_rules() \
             .store_rules()
-        CmdRunner(builder).run('rules_train-test')
+        CmdRunner(builder).run(f'rules_{data_split}' + (f'_{data_split_options}' if data_split_options else ''))
 
-    def test_rules_cross_validation(self, dataset: Dataset):
+    @pytest.mark.parametrize('dataset_name', ['numerical_sparse', 'binary', 'nominal', 'ordinal'])
+    @pytest.mark.parametrize('feature_format', [SparsePolicy.FORCE_DENSE, SparsePolicy.FORCE_SPARSE])
+    def test_feature_format(self, dataset_name: str, feature_format: str, dataset: Dataset):
+        builder = self._create_cmd_builder(dataset=getattr(dataset, dataset_name)) \
+            .feature_format(feature_format)
+        CmdRunner(builder).run(f'feature-format-{dataset_name}-{feature_format}')
+
+    @pytest.mark.parametrize('output_format', [
+        SparsePolicy.FORCE_DENSE,
+        SparsePolicy.FORCE_SPARSE,
+    ])
+    def test_output_format(self, output_format: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation() \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .print_rules() \
-            .store_rules()
-        CmdRunner(builder).run('rules_cross-validation')
+            .output_format(output_format)
+        CmdRunner(builder).run(f'output-format-{output_format}')
 
-    def test_rules_single_fold(self, dataset: Dataset):
+    @pytest.mark.parametrize('prediction_format', [
+        SparsePolicy.FORCE_DENSE,
+        SparsePolicy.FORCE_SPARSE,
+    ])
+    def test_prediction_format(self, prediction_format: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation(current_fold=1) \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .print_rules() \
-            .store_rules()
-        CmdRunner(builder).run('rules_single-fold')
-
-    def test_numeric_features_dense(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.numerical_sparse) \
-            .sparse_feature_format(False)
-        CmdRunner(builder).run('numeric-features-dense')
-
-    def test_numeric_features_sparse(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.numerical_sparse) \
-            .sparse_feature_format()
-        CmdRunner(builder).run('numeric-features-sparse')
-
-    def test_binary_features_dense(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.binary) \
-            .sparse_feature_format(False)
-        CmdRunner(builder).run('binary-features-dense')
-
-    def test_binary_features_sparse(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.binary) \
-            .sparse_feature_format()
-        CmdRunner(builder).run('binary-features-sparse')
-
-    def test_nominal_features_dense(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.nominal) \
-            .sparse_feature_format(False)
-        CmdRunner(builder).run('nominal-features-dense')
-
-    def test_nominal_features_sparse(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.nominal) \
-            .sparse_feature_format()
-        CmdRunner(builder).run('nominal-features-sparse')
-
-    def test_ordinal_features_dense(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.ordinal) \
-            .sparse_feature_format(False)
-        CmdRunner(builder).run('ordinal-features-dense')
-
-    def test_ordinal_features_sparse(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.ordinal) \
-            .sparse_feature_format()
-        CmdRunner(builder).run('ordinal-features-sparse')
-
-    def test_output_format_dense(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .sparse_output_format(False)
-        CmdRunner(builder).run('output-format-dense')
-
-    def test_output_format_sparse(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .sparse_output_format()
-        CmdRunner(builder).run('output-format-sparse')
-
-    def test_prediction_format_dense(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .sparse_prediction_format(False) \
+            .prediction_format(prediction_format) \
             .print_predictions() \
             .print_ground_truth()
-        CmdRunner(builder).run('prediction-format-dense')
+        CmdRunner(builder).run(f'prediction-format-{prediction_format}')
 
-    def test_prediction_format_sparse(self, dataset: Dataset):
+    @pytest.mark.parametrize('data_split, data_split_options', [
+        (VALUE_TRAIN_TEST, Options()),
+        (VALUE_CROSS_VALIDATION, Options()),
+        (VALUE_CROSS_VALIDATION, Options({
+            OPTION_FIRST_FOLD: 1,
+            OPTION_LAST_FOLD: 1
+        })),
+    ])
+    def test_parameters(self, data_split: str, data_split_options: Options, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .sparse_prediction_format() \
-            .print_predictions() \
-            .print_ground_truth()
-        CmdRunner(builder).run('prediction-format-sparse')
-
-    def test_parameters_train_test(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
+            .data_split(data_split, options=data_split_options) \
             .print_evaluation(False) \
             .store_evaluation(False) \
             .print_model_characteristics() \
             .print_parameters() \
             .set_parameter_save_dir() \
             .set_parameter_load_dir()
-        CmdRunner(builder).run('parameters_train-test')
+        CmdRunner(builder).run(f'parameters_{data_split}' + (f'_{data_split_options}' if data_split_options else ''))
 
-    def test_parameters_cross_validation(self, dataset: Dataset):
+    @pytest.mark.parametrize('instance_sampling', [
+        NONE,
+        SAMPLING_WITH_REPLACEMENT,
+        SAMPLING_WITHOUT_REPLACEMENT,
+    ])
+    def test_instance_sampling(self, instance_sampling: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation() \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .print_model_characteristics() \
-            .print_parameters() \
-            .set_parameter_save_dir() \
-            .set_parameter_load_dir()
-        CmdRunner(builder).run('parameters_cross-validation')
+            .instance_sampling(instance_sampling)
+        CmdRunner(builder).run(f'instance-sampling-{instance_sampling}')
 
-    def test_parameters_single_fold(self, dataset: Dataset):
+    @pytest.mark.parametrize('feature_sampling', [
+        NONE,
+        SAMPLING_WITHOUT_REPLACEMENT,
+    ])
+    def test_feature_sampling(self, feature_sampling: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .cross_validation(current_fold=1) \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .print_model_characteristics() \
-            .print_parameters() \
-            .set_parameter_save_dir() \
-            .set_parameter_load_dir()
-        CmdRunner(builder).run('parameters_single-fold')
+            .feature_sampling(feature_sampling)
+        CmdRunner(builder).run(f'feature-sampling-{feature_sampling}')
 
-    def test_instance_sampling_no(self, dataset: Dataset):
+    @pytest.mark.parametrize('output_sampling', [
+        NONE,
+        OutputSamplingParameter.OUTPUT_SAMPLING_ROUND_ROBIN,
+        SAMPLING_WITHOUT_REPLACEMENT,
+    ])
+    def test_output_sampling(self, output_sampling: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .instance_sampling(CmdBuilder.INSTANCE_SAMPLING_NO)
-        CmdRunner(builder).run('instance-sampling-no')
+            .output_sampling(output_sampling)
+        CmdRunner(builder).run(f'output-sampling-{output_sampling}')
 
-    def test_instance_sampling_with_replacement(self, dataset: Dataset):
+    @pytest.mark.parametrize('rule_pruning, instance_sampling', [
+        (NONE, None),
+        (RulePruningParameter.RULE_PRUNING_IREP, SAMPLING_WITHOUT_REPLACEMENT),
+    ])
+    def test_rule_pruning(self, rule_pruning: str, instance_sampling: Optional[str], dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .instance_sampling(CmdBuilder.INSTANCE_SAMPLING_WITH_REPLACEMENT)
-        CmdRunner(builder).run('instance-sampling-with-replacement')
+            .instance_sampling(instance_sampling) \
+            .rule_pruning(rule_pruning)
+        CmdRunner(builder).run(f'rule-pruning-{rule_pruning}')
 
-    def test_instance_sampling_without_replacement(self, dataset: Dataset):
+    @pytest.mark.parametrize('rule_induction', [RuleInductionParameter.RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH])
+    def test_rule_induction(self, rule_induction: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .instance_sampling(CmdBuilder.INSTANCE_SAMPLING_WITHOUT_REPLACEMENT)
-        CmdRunner(builder).run('instance-sampling-without-replacement')
-
-    def test_feature_sampling_no(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .feature_sampling(CmdBuilder.FEATURE_SAMPLING_NO)
-        CmdRunner(builder).run('feature-sampling-no')
-
-    def test_feature_sampling_without_replacement(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .feature_sampling(CmdBuilder.FEATURE_SAMPLING_WITHOUT_REPLACEMENT)
-        CmdRunner(builder).run('feature-sampling-without-replacement')
-
-    def test_output_sampling_no(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .output_sampling(CmdBuilder.OUTPUT_SAMPLING_NO)
-        CmdRunner(builder).run('output-sampling-no')
-
-    def test_output_sampling_round_robin(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .output_sampling(CmdBuilder.OUTPUT_SAMPLING_ROUND_ROBIN)
-        CmdRunner(builder).run('output-sampling-round-robin')
-
-    def test_output_sampling_without_replacement(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .output_sampling(CmdBuilder.OUTPUT_SAMPLING_WITHOUT_REPLACEMENT)
-        CmdRunner(builder).run('output-sampling-without-replacement')
-
-    def test_pruning_no(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .rule_pruning(CmdBuilder.RULE_PRUNING_NO)
-        CmdRunner(builder).run('pruning-no')
-
-    def test_pruning_irep(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .instance_sampling() \
-            .rule_pruning(CmdBuilder.RULE_PRUNING_IREP)
-        CmdRunner(builder).run('pruning-irep')
-
-    def test_rule_induction_top_down_beam_search(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.default) \
-            .rule_induction(CmdBuilder.RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH)
-        CmdRunner(builder).run('rule-induction-top-down-beam-search')
+            .rule_induction(rule_induction)
+        CmdRunner(builder).run(f'rule-induction-{rule_induction}')
 
     def test_sequential_post_optimization(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
             .sequential_post_optimization()
         CmdRunner(builder).run('sequential-post-optimization')
 
-    def test_feature_binning_equal_width_binary_features_dense(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.binary) \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
-            .sparse_feature_format(False)
-        CmdRunner(builder).run('feature-binning-equal-width_binary-features-dense')
-
-    def test_feature_binning_equal_width_binary_features_sparse(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.binary) \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
-            .sparse_feature_format()
-        CmdRunner(builder).run('feature-binning-equal-width_binary-features-sparse')
-
-    def test_feature_binning_equal_width_nominal_features_dense(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.nominal) \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
-            .sparse_feature_format(False)
-        CmdRunner(builder).run('feature-binning-equal-width_nominal-features-dense')
-
-    def test_feature_binning_equal_width_nominal_features_sparse(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.nominal) \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
-            .sparse_feature_format()
-        CmdRunner(builder).run('feature-binning-equal-width_nominal-features-sparse')
-
-    def test_feature_binning_equal_width_numerical_features_dense(self):
-        builder = self._create_cmd_builder() \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
-            .sparse_feature_format(False)
-        CmdRunner(builder).run('feature-binning-equal-width_numerical-features-dense')
-
-    def test_feature_binning_equal_width_numerical_features_sparse(self):
-        builder = self._create_cmd_builder() \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_WIDTH) \
-            .sparse_feature_format()
-        CmdRunner(builder).run('feature-binning-equal-width_numerical-features-sparse')
-
-    def test_feature_binning_equal_frequency_binary_features_dense(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.binary) \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
-            .sparse_feature_format(False)
-        CmdRunner(builder).run('feature-binning-equal-frequency_binary-features-dense')
-
-    def test_feature_binning_equal_frequency_binary_features_sparse(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.binary) \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
-            .sparse_feature_format()
-        CmdRunner(builder).run('feature-binning-equal-frequency_binary-features-sparse')
-
-    def test_feature_binning_equal_frequency_nominal_features_dense(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.nominal) \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
-            .sparse_feature_format(False)
-        CmdRunner(builder).run('feature-binning-equal-frequency_nominal-features-dense')
-
-    def test_feature_binning_equal_frequency_nominal_features_sparse(self, dataset: Dataset):
-        builder = self._create_cmd_builder(dataset=dataset.nominal) \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
-            .sparse_feature_format()
-        CmdRunner(builder).run('feature-binning-equal-frequency_nominal-features-sparse')
-
-    def test_feature_binning_equal_frequency_numerical_features_dense(self):
-        builder = self._create_cmd_builder() \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
-            .sparse_feature_format(False)
-        CmdRunner(builder).run('feature-binning-equal-frequency_numerical-features-dense')
-
-    def test_feature_binning_equal_frequency_numerical_features_sparse(self):
-        builder = self._create_cmd_builder() \
-            .feature_binning(CmdBuilder.FEATURE_BINNING_EQUAL_FREQUENCY) \
-            .sparse_feature_format()
-        CmdRunner(builder).run('feature-binning-equal-frequency_numerical-features-sparse')
+    @pytest.mark.parametrize('feature_binning', [
+        BINNING_EQUAL_WIDTH,
+        BINNING_EQUAL_FREQUENCY,
+    ])
+    @pytest.mark.parametrize('dataset_name', ['numerical', 'nominal', 'binary'])
+    @pytest.mark.parametrize('feature_format', [SparsePolicy.FORCE_DENSE, SparsePolicy.FORCE_SPARSE])
+    def test_feature_binning(self, feature_binning: str, dataset_name: str, feature_format: str, dataset: Dataset):
+        builder = self._create_cmd_builder(dataset=getattr(dataset, dataset_name)) \
+            .feature_binning(feature_binning) \
+            .feature_format(feature_format)
+        CmdRunner(builder).run(f'feature-binning-{feature_binning}_{dataset_name}-features-{feature_format}')

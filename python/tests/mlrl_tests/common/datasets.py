@@ -11,6 +11,7 @@ class Dataset:
 
     Attributes:
         default:            The name of the dataset that should be used by default
+        numerical:          The name of a dataset with numerical features
         numerical_sparse:   The name of a dataset with sparse numerical features
         binary:             The name of a dataset with binary features
         nominal:            The name of a dataset with nominal features
@@ -48,6 +49,7 @@ class Dataset:
     HOUSING = 'housing'
 
     default: str = EMOTIONS
+    numerical: str = EMOTIONS
     numerical_sparse: str = LANGLOG
     binary: str = ENRON
     nominal: str = EMOTIONS_NOMINAL
