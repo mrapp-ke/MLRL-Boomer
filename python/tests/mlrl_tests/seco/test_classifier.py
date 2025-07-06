@@ -2,15 +2,22 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 # pylint: disable=missing-function-docstring
-from typing import Any
+from typing import Any, Optional
 
 import pytest
 
-from ..common.cmd_builder import CmdBuilder
 from ..common.cmd_runner import CmdRunner
 from ..common.datasets import Dataset
 from ..common.integration_tests_classification import ClassificationIntegrationTests
 from .cmd_builder import SeCoClassifierCmdBuilder
+
+from mlrl.common.config.parameters import RulePruningParameter
+
+from mlrl.seco.config.parameters import HEURISTIC_ACCURACY, HEURISTIC_F_MEASURE, HEURISTIC_LAPLACE, \
+    HEURISTIC_M_ESTIMATE, HEURISTIC_PRECISION, HEURISTIC_RECALL, HEURISTIC_WRA, HeadTypeParameter, \
+    LiftFunctionParameter
+
+from mlrl.util.cli import NONE
 
 
 @pytest.mark.seco
@@ -23,106 +30,44 @@ class TestSeCoClassifier(ClassificationIntegrationTests):
     def _create_cmd_builder(self, dataset: str = Dataset.EMOTIONS) -> Any:
         return SeCoClassifierCmdBuilder(dataset=dataset)
 
-    def test_heuristic_accuracy(self):
+    @pytest.mark.parametrize('heuristic', [
+        HEURISTIC_ACCURACY,
+        HEURISTIC_PRECISION,
+        HEURISTIC_RECALL,
+        HEURISTIC_LAPLACE,
+        HEURISTIC_WRA,
+        HEURISTIC_F_MEASURE,
+        HEURISTIC_M_ESTIMATE,
+    ])
+    def test_heuristic(self, heuristic: str):
         builder = self._create_cmd_builder() \
-            .heuristic(SeCoClassifierCmdBuilder.HEURISTIC_ACCURACY)
-        CmdRunner(builder).run('heuristic_accuracy')
+            .heuristic(heuristic)
+        CmdRunner(builder).run(f'heuristic_{heuristic}')
 
-    def test_heuristic_precision(self):
+    @pytest.mark.parametrize('pruning_heuristic', [
+        HEURISTIC_ACCURACY,
+        HEURISTIC_PRECISION,
+        HEURISTIC_RECALL,
+        HEURISTIC_LAPLACE,
+        HEURISTIC_WRA,
+        HEURISTIC_F_MEASURE,
+        HEURISTIC_M_ESTIMATE,
+    ])
+    def test_pruning_heuristic(self, pruning_heuristic: str):
         builder = self._create_cmd_builder() \
-            .heuristic(SeCoClassifierCmdBuilder.HEURISTIC_PRECISION)
-        CmdRunner(builder).run('heuristic_precision')
+            .rule_pruning(RulePruningParameter.RULE_PRUNING_IREP) \
+            .pruning_heuristic(pruning_heuristic)
+        CmdRunner(builder).run(f'pruning-heuristic_{pruning_heuristic}')
 
-    def test_heuristic_recall(self):
+    @pytest.mark.parametrize('head_type, lift_function', [
+        (HeadTypeParameter.HEAD_TYPE_SINGLE, None),
+        (HeadTypeParameter.HEAD_TYPE_PARTIAL, NONE),
+        (HeadTypeParameter.HEAD_TYPE_PARTIAL, LiftFunctionParameter.LIFT_FUNCTION_PEAK),
+        (HeadTypeParameter.HEAD_TYPE_PARTIAL, LiftFunctionParameter.LIFT_FUNCTION_KLN),
+    ])
+    def test_head_type(self, head_type: str, lift_function: Optional[str]):
         builder = self._create_cmd_builder() \
-            .heuristic(SeCoClassifierCmdBuilder.HEURISTIC_RECALL)
-        CmdRunner(builder).run('heuristic_recall')
-
-    def test_heuristic_laplace(self):
-        builder = self._create_cmd_builder() \
-            .heuristic(SeCoClassifierCmdBuilder.HEURISTIC_LAPLACE)
-        CmdRunner(builder).run('heuristic_laplace')
-
-    def test_heuristic_wra(self):
-        builder = self._create_cmd_builder() \
-            .heuristic(SeCoClassifierCmdBuilder.HEURISTIC_WRA)
-        CmdRunner(builder).run('heuristic_wra')
-
-    def test_heuristic_f_measure(self):
-        builder = self._create_cmd_builder() \
-            .heuristic(SeCoClassifierCmdBuilder.HEURISTIC_F_MEASURE)
-        CmdRunner(builder).run('heuristic_f-measure')
-
-    def test_heuristic_m_estimate(self):
-        builder = self._create_cmd_builder() \
-            .heuristic(SeCoClassifierCmdBuilder.HEURISTIC_M_ESTIMATE)
-        CmdRunner(builder).run('heuristic_m-estimate')
-
-    def test_pruning_heuristic_accuracy(self):
-        builder = self._create_cmd_builder() \
-            .rule_pruning(CmdBuilder.RULE_PRUNING_IREP) \
-            .pruning_heuristic(SeCoClassifierCmdBuilder.HEURISTIC_ACCURACY)
-        CmdRunner(builder).run('pruning-heuristic_accuracy')
-
-    def test_pruning_heuristic_precision(self):
-        builder = self._create_cmd_builder() \
-            .rule_pruning(CmdBuilder.RULE_PRUNING_IREP) \
-            .pruning_heuristic(SeCoClassifierCmdBuilder.HEURISTIC_PRECISION)
-        CmdRunner(builder).run('pruning-heuristic_precision')
-
-    def test_pruning_heuristic_recall(self):
-        builder = self._create_cmd_builder() \
-            .rule_pruning(CmdBuilder.RULE_PRUNING_IREP) \
-            .pruning_heuristic(SeCoClassifierCmdBuilder.HEURISTIC_RECALL)
-        CmdRunner(builder).run('pruning-heuristic_recall')
-
-    def test_pruning_heuristic_laplace(self):
-        builder = self._create_cmd_builder() \
-            .rule_pruning(CmdBuilder.RULE_PRUNING_IREP) \
-            .pruning_heuristic(SeCoClassifierCmdBuilder.HEURISTIC_LAPLACE)
-        CmdRunner(builder).run('pruning-heuristic_laplace')
-
-    def test_pruning_heuristic_wra(self):
-        builder = self._create_cmd_builder() \
-            .rule_pruning(CmdBuilder.RULE_PRUNING_IREP) \
-            .pruning_heuristic(SeCoClassifierCmdBuilder.HEURISTIC_WRA)
-        CmdRunner(builder).run('pruning-heuristic_wra')
-
-    def test_pruning_heuristic_f_measure(self):
-        builder = self._create_cmd_builder() \
-            .rule_pruning(CmdBuilder.RULE_PRUNING_IREP) \
-            .pruning_heuristic(SeCoClassifierCmdBuilder.HEURISTIC_F_MEASURE)
-        CmdRunner(builder).run('pruning-heuristic_f-measure')
-
-    def test_pruning_heuristic_m_estimate(self):
-        builder = self._create_cmd_builder() \
-            .rule_pruning(CmdBuilder.RULE_PRUNING_IREP) \
-            .pruning_heuristic(SeCoClassifierCmdBuilder.HEURISTIC_M_ESTIMATE)
-        CmdRunner(builder).run('pruning-heuristic_m-estimate')
-
-    def test_single_output_heads(self):
-        builder = self._create_cmd_builder() \
-            .head_type(SeCoClassifierCmdBuilder.HEAD_TYPE_SINGLE) \
+            .head_type(head_type) \
+            .lift_function(lift_function) \
             .print_model_characteristics()
-        CmdRunner(builder).run('single-output-heads')
-
-    def test_partial_heads_no_lift_function(self):
-        builder = self._create_cmd_builder() \
-            .head_type(SeCoClassifierCmdBuilder.HEAD_TYPE_PARTIAL) \
-            .lift_function(SeCoClassifierCmdBuilder.LIFT_FUNCTION_NO) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('partial-heads_no-lift-function')
-
-    def test_partial_heads_peak_lift_function(self):
-        builder = self._create_cmd_builder() \
-            .head_type(SeCoClassifierCmdBuilder.HEAD_TYPE_PARTIAL) \
-            .lift_function(SeCoClassifierCmdBuilder.LIFT_FUNCTION_PEAK) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('partial-heads_peak-lift-function')
-
-    def test_partial_heads_kln_lift_function(self):
-        builder = self._create_cmd_builder() \
-            .head_type(SeCoClassifierCmdBuilder.HEAD_TYPE_PARTIAL) \
-            .lift_function(SeCoClassifierCmdBuilder.LIFT_FUNCTION_KLN) \
-            .print_model_characteristics()
-        CmdRunner(builder).run('partial-heads_kln-lift-function')
+        CmdRunner(builder).run(f'head-type-{head_type}' + (f'_{lift_function}-lift-function' if lift_function else ''))
