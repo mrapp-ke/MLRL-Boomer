@@ -1,0 +1,23 @@
+mlrl-testbed mlrl.boosting --log-level debug --data-dir python/tests/res/data --dataset atp7d --output-dir python/tests/res/tmp/results --problem-type regression --data-split cross-validation{first_fold=1,last_fold=1} --print-evaluation true --store-evaluation true
+INFO Starting experiment using the regression algorithm "BoomerRegressor"...
+INFO Performing fold 1 of 10-fold cross validation...
+INFO Fold 1 / 10:
+DEBUG Reading input data from file "python/tests/res/data/atp7d.arff"...
+DEBUG Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
+INFO Fitting model to 266 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 30 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 1):
+
+Mean Absolute Error               28.78
+Mean Absolute Percentage Error     0.08
+Mean Squared Error              2827.78
+Median Absolute Error             14.58
+
+DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-1.csv"...
+INFO Successfully finished after <duration>
