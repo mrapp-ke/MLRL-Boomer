@@ -1,4 +1,4 @@
-mlrl-testbed mlrl.boosting --log-level debug --data-dir python/tests/res/data --dataset emotions --output-dir python/tests/res/tmp/results --loss logistic-non-decomposable --statistic-type 32-bit
+mlrl-testbed mlrl.boosting --log-level debug --data-dir python/tests/res/data --dataset emotions --output-dir python/tests/res/tmp/results --loss squared-hinge-decomposable --statistic-type 32-bit
 INFO Starting experiment using the classification algorithm "BoomerClassifier"...
 INFO Using separate training and test sets...
 DEBUG Reading input data from file "python/tests/res/data/emotions.arff"...
@@ -13,22 +13,22 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data:
 
-Example-wise F1         64.93
-Example-wise Jaccard    56.34
-Example-wise Precision  71.51
-Example-wise Recall     64.97
-Hamming Accuracy        80.78
-Hamming Loss            19.22
-Macro F1                66
-Macro Jaccard           50.24
-Macro Precision         72.83
-Macro Recall            62.45
-Micro F1                67.9
-Micro Jaccard           51.4
-Micro Precision         72.64
-Micro Recall            63.73
-Subset 0/1 Loss         70.92
-Subset Accuracy         29.08
+Example-wise F1         58.81
+Example-wise Jaccard    50.95
+Example-wise Precision  74.45
+Example-wise Recall     60.03
+Hamming Accuracy        79.34
+Hamming Loss            20.66
+Macro F1                63.55
+Macro Jaccard           47.02
+Macro Precision         71.23
+Macro Recall            57.86
+Micro F1                64.32
+Micro Jaccard           47.4
+Micro Precision         71.57
+Micro Recall            58.4
+Subset 0/1 Loss         74.49
+Subset Accuracy         25.51
 
 DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
 INFO Successfully finished after <duration>

@@ -6,43 +6,20 @@ from typing import List, Optional
 
 from .datasets import Dataset
 
+from mlrl.common.config.parameters import BINNING_EQUAL_WIDTH, SAMPLING_WITHOUT_REPLACEMENT, \
+    PartitionSamplingParameter, RuleInductionParameter, RulePruningParameter
+from mlrl.common.learners import SparsePolicy
+
+from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import OPTION_FIRST_FOLD, OPTION_NUM_FOLDS, \
+    VALUE_CROSS_VALIDATION, VALUE_TRAIN_TEST
+
+from mlrl.util.options import Options
+
 
 class CmdBuilder:
     """
     A builder that allows to configure a command for running a rule learner.
     """
-
-    RULE_PRUNING_NO = 'none'
-
-    RULE_PRUNING_IREP = 'irep'
-
-    RULE_INDUCTION_TOP_DOWN_GREEDY = 'top-down-greedy'
-
-    RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH = 'top-down-beam-search'
-
-    INSTANCE_SAMPLING_NO = 'none'
-
-    INSTANCE_SAMPLING_WITH_REPLACEMENT = 'with-replacement'
-
-    INSTANCE_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
-
-    FEATURE_SAMPLING_NO = 'none'
-
-    FEATURE_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
-
-    OUTPUT_SAMPLING_NO = 'none'
-
-    OUTPUT_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
-
-    OUTPUT_SAMPLING_ROUND_ROBIN = 'round-robin'
-
-    HOLDOUT_NO = 'none'
-
-    HOLDOUT_RANDOM = 'random'
-
-    FEATURE_BINNING_EQUAL_WIDTH = 'equal-width'
-
-    FEATURE_BINNING_EQUAL_FREQUENCY = 'equal-frequency'
 
     def __init__(self,
                  expected_output_dir: str,
@@ -120,6 +97,7 @@ class CmdBuilder:
             self.args.append(model_dir)
             self.args.append('--model-save-dir')
             self.args.append(model_dir)
+
         return self
 
     def set_parameter_load_dir(self, parameter_dir: Optional[str] = path.join('python', 'tests', 'res', 'in')):
@@ -134,6 +112,7 @@ class CmdBuilder:
         if parameter_dir:
             self.args.append('--parameter-load-dir')
             self.args.append(parameter_dir)
+
         return self
 
     def set_parameter_save_dir(self,
@@ -145,40 +124,37 @@ class CmdBuilder:
         :return:                The builder itself
         """
         self.parameter_save_dir = parameter_dir
-        self.args.append('--parameter-save-dir')
-        self.args.append(parameter_dir)
+
+        if parameter_dir:
+            self.args.append('--parameter-save-dir')
+            self.args.append(parameter_dir)
+
         return self
 
-    def no_data_split(self):
+    def data_split(self, data_split: Optional[str] = VALUE_TRAIN_TEST, options: Options = Options()):
         """
-        Configures the rule learner to not use separate training and test data.
+        Configures the rule learner to use a specific strategy for splitting datasets into training and test datasets.
 
-        :return: The builder itself
+        :param data_split:  The name of the strategy to be used
+        :param options:     Options to be taken into account
+        :return:            The builder itself
         """
-        self.num_folds = 0
-        self.current_fold = None
         self.args.append('--data-split')
-        self.args.append('none')
-        return self
+        num_folds = 0
+        current_fold = None
 
-    def cross_validation(self, num_folds: int = 10, current_fold: Optional[int] = None):
-        """
-        Configures the rule learner to use a cross validation.
+        if data_split:
+            if data_split == VALUE_CROSS_VALIDATION:
+                num_folds = options.get_int(OPTION_NUM_FOLDS, 10)
+                first_fold = options.get_int(OPTION_FIRST_FOLD, 0)
 
-        :param num_folds:       The total number of folds
-        :param current_fold:    The fold to be run (starting at 1) or None, if all folds should be run
-        :return:                The builder itself
-        """
+                if first_fold > 0 and first_fold == options.get_int(OPTION_FIRST_FOLD, 0):
+                    current_fold = first_fold
+
+            self.args.append(data_split + (str(options) if options else ''))
+
         self.num_folds = num_folds
         self.current_fold = current_fold
-        self.args.append('--data-split')
-        value = 'cross-validation{num_folds=' + str(num_folds)
-
-        if current_fold:
-            value += ',first_fold=' + str(current_fold) + ',last_fold=' + str(current_fold)
-
-        value += '}'
-        self.args.append(value)
         return self
 
     def sparse_feature_value(self, sparse_feature_value: float = 0.0):
@@ -392,95 +368,108 @@ class CmdBuilder:
         self.args.append(str(store_rules).lower())
         return self
 
-    def sparse_feature_format(self, sparse: bool = True):
+    def feature_format(self, feature_format: Optional[str] = SparsePolicy.FORCE_SPARSE):
         """
-        Configures whether sparse data structures should be used to represent the feature values of training examples or
-        not.
+        Configures the format to be used for the feature values of training examples.
 
-        :param sparse:  True, if sparse data structures should be used to represent the feature values of training
-                        examples, False otherwise
-        :return:        The builder itself
+        :param feature_format:  The format to be used
+        :return:                The builder itself
         """
-        self.args.append('--feature-format')
-        self.args.append('sparse' if sparse else 'dense')
+        if feature_format:
+            self.args.append('--feature-format')
+            self.args.append(feature_format)
+
         return self
 
-    def sparse_output_format(self, sparse: bool = True):
+    def output_format(self, output_format: Optional[str] = SparsePolicy.FORCE_SPARSE):
         """
-        Configures whether sparse data structures should be used to represent the labels of training examples or not.
+        Configures the format to be used for the ground truth of training examples.
 
-        :param sparse:  True, if sparse data structures should be used to represent the labels of training examples,
-                        False otherwise
-        :return:        The builder itself
+        :param output_format:   The format to be used
+        :return:                The builder itself
         """
-        self.args.append('--output-format')
-        self.args.append('sparse' if sparse else 'dense')
+        if output_format:
+            self.args.append('--output-format')
+            self.args.append(output_format)
+
         return self
 
-    def sparse_prediction_format(self, sparse: bool = True):
+    def prediction_format(self, prediction_format: Optional[str] = SparsePolicy.FORCE_SPARSE):
         """
-        Configures whether sparse data structures should be used to represent predictions or not.
+        Configures the format to be used for predictions.
 
-        :param sparse:  True, if sparse data structures should be used to represent predictions, False otherwise
-        :return:        The builder itself
+        :param prediction_format:   The format to be used
+        :return:                    The builder itself
         """
-        self.args.append('--prediction-format')
-        self.args.append('sparse' if sparse else 'dense')
+        if prediction_format:
+            self.args.append('--prediction-format')
+            self.args.append(prediction_format)
+
         return self
 
-    def instance_sampling(self, instance_sampling: str = INSTANCE_SAMPLING_WITHOUT_REPLACEMENT):
+    def instance_sampling(self, instance_sampling: Optional[str]):
         """
         Configures the rule learner to sample from the available training examples.
 
         :param instance_sampling:   The name of the sampling method that should be used
         :return:                    The builder itself
         """
-        self.args.append('--instance-sampling')
-        self.args.append(instance_sampling)
+        if instance_sampling:
+            self.args.append('--instance-sampling')
+            self.args.append(instance_sampling)
+
         return self
 
-    def feature_sampling(self, feature_sampling: str = FEATURE_SAMPLING_WITHOUT_REPLACEMENT):
+    def feature_sampling(self, feature_sampling: Optional[str] = SAMPLING_WITHOUT_REPLACEMENT):
         """
         Configures the rule learner to sample from the available features.
 
         :param feature_sampling:    The name of the sampling method that should be used
         :return:                    The builder itself
         """
-        self.args.append('--feature-sampling')
-        self.args.append(feature_sampling)
+        if feature_sampling:
+            self.args.append('--feature-sampling')
+            self.args.append(feature_sampling)
+
         return self
 
-    def output_sampling(self, output_sampling: str = OUTPUT_SAMPLING_WITHOUT_REPLACEMENT):
+    def output_sampling(self, output_sampling: Optional[str] = SAMPLING_WITHOUT_REPLACEMENT):
         """
         Configures the rule learner to sample from the available outputs.
 
         :param output_sampling: The name of the sampling method that should be used
         :return:                The builder itself
         """
-        self.args.append('--output-sampling')
-        self.args.append(output_sampling)
+        if output_sampling:
+            self.args.append('--output-sampling')
+            self.args.append(output_sampling)
+
         return self
 
-    def rule_pruning(self, rule_pruning: str = RULE_PRUNING_IREP):
+    def rule_pruning(self, rule_pruning: Optional[str] = RulePruningParameter.RULE_PRUNING_IREP):
         """
         Configures the rule learner to use a specific method for pruning individual rules.
 
         :param rule_pruning:    The name of the pruning method that should be used
         :return:                The builder itself
         """
-        self.args.append('--rule-pruning')
-        self.args.append(rule_pruning)
+        if rule_pruning:
+            self.args.append('--rule-pruning')
+            self.args.append(rule_pruning)
+
         return self
 
-    def rule_induction(self, rule_induction=RULE_INDUCTION_TOP_DOWN_GREEDY):
+    def rule_induction(self, rule_induction: Optional[str] = RuleInductionParameter.RULE_INDUCTION_TOP_DOWN_GREEDY):
         """
         Configures the rule learner to use a specific algorithm for the induction of individual rules.
 
         :param rule_induction:  The name of the algorithm that should be used
         :return:                The builder itself
         """
-        self.args.append('--rule-induction')
-        self.args.append(rule_induction)
+        if rule_induction:
+            self.args.append('--rule-induction')
+            self.args.append(rule_induction)
+
         return self
 
     def sequential_post_optimization(self, sequential_post_optimization: bool = True):
@@ -494,24 +483,28 @@ class CmdBuilder:
         self.args.append(str(sequential_post_optimization).lower())
         return self
 
-    def holdout(self, holdout: str = HOLDOUT_RANDOM):
+    def holdout(self, holdout: Optional[str] = PartitionSamplingParameter.PARTITION_SAMPLING_RANDOM):
         """
         Configures the algorithm to use a holdout set.
 
         :param holdout: The name of the sampling method that should be used to create the holdout set
         :return:        The builder itself
         """
-        self.args.append('--holdout')
-        self.args.append(holdout)
+        if holdout:
+            self.args.append('--holdout')
+            self.args.append(holdout)
+
         return self
 
-    def feature_binning(self, feature_binning: str = FEATURE_BINNING_EQUAL_WIDTH):
+    def feature_binning(self, feature_binning: Optional[str] = BINNING_EQUAL_WIDTH):
         """
         Configures the algorithm to use a specific method for feature binning.
 
         :param feature_binning: The name of the method that should be used for feature binning
         :return:                The builder itself
         """
-        self.args.append('--feature-binning')
-        self.args.append(feature_binning)
+        if feature_binning:
+            self.args.append('--feature-binning')
+            self.args.append(feature_binning)
+
         return self
