@@ -76,7 +76,7 @@ class TextualOutputData(OutputData, ABC):
                 dataset_type = state.dataset_type
 
                 if dataset_type:
-                    return ' for ' + dataset_type.value + ' data'
+                    return ' for ' + dataset_type + ' data'
 
             return ''
 

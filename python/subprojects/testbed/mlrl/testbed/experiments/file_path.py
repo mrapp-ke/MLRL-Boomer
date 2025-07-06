@@ -38,7 +38,7 @@ class FilePath:
             dataset_type = state.dataset_type
 
             if dataset_type:
-                file_name += '_' + dataset_type.value
+                file_name += '_' + dataset_type
 
         if self.context.include_prediction_scope:
             prediction_result = state.prediction_result
