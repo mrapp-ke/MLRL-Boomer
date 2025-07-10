@@ -13,7 +13,8 @@ from .cmd_runner import CmdRunner
 from .datasets import Dataset
 
 from mlrl.common.config.parameters import BINNING_EQUAL_FREQUENCY, BINNING_EQUAL_WIDTH, SAMPLING_WITH_REPLACEMENT, \
-    SAMPLING_WITHOUT_REPLACEMENT, OutputSamplingParameter, RuleInductionParameter, RulePruningParameter
+    SAMPLING_WITHOUT_REPLACEMENT, OutputSamplingParameter, PostOptimizationParameter, RuleInductionParameter, \
+    RulePruningParameter
 from mlrl.common.learners import SparsePolicy
 
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import OPTION_FIRST_FOLD, OPTION_LAST_FOLD, \
@@ -310,10 +311,11 @@ class IntegrationTests(ABC):
             .rule_induction(rule_induction)
         CmdRunner(builder).run(f'rule-induction-{rule_induction}')
 
-    def test_sequential_post_optimization(self, dataset: Dataset):
+    @pytest.mark.parametrize('post_optimization', [PostOptimizationParameter.POST_OPTIMIZATION_SEQUENTIAL])
+    def test_post_optimization(self, post_optimization: str, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.default) \
-            .sequential_post_optimization()
-        CmdRunner(builder).run('sequential-post-optimization')
+            .post_optimization(post_optimization)
+        CmdRunner(builder).run(f'post-optimization-{post_optimization}')
 
     @pytest.mark.parametrize('feature_binning', [
         BINNING_EQUAL_WIDTH,
