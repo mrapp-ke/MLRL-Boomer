@@ -127,6 +127,8 @@ class CmdBuilder:
         self.parameter_save_dir = parameter_dir
 
         if parameter_dir:
+            self.args.append('--save-parameters')
+            self.args.append(str(True).lower())
             self.args.append('--parameter-save-dir')
             self.args.append(parameter_dir)
 
