@@ -83,7 +83,7 @@ Making use of MLRL-Testbed does not only help with the burdens of training and e
 
 The package [mlrl-testbed-sklearn](https://pypi.org/project/mlrl-testbed-sklearn/) provides a command line API that allows configuring and running machine learning algorithms. It allows to apply machine learning algorithms to different datasets and can evaluate their predictive performance in terms of commonly used measures. In detail, it supports the following functionalities:
 
-- Single- and multi-output datasets in the [Mulan](http://mulan.sourceforge.net/format.html) and [Meka](https://waikato.github.io/meka/datasets/) format are supported (with the help of the package [mlrl-testbed-arff](https://pypi.org/project/mlrl-testbed-arff/)).
+- Single- and multi-output datasets in the [Mulan](https://github.com/tsoumakas/mulan) and [MEKA](https://waikato.github.io/meka/) format are supported (with the help of the package [mlrl-testbed-arff](https://pypi.org/project/mlrl-testbed-arff/)).
 - Datasets can automatically be split into training and test data, including the possibility to use cross validation. Alternatively, predefined splits can be provided as separate files.
 - One-hot-encoding can be applied to nominal or binary features.
 - Binary predictions, scores, or probability estimates can be obtained from machine learning algorithms, if supported. Evaluation measures that are suited for the respective type of predictions are picked automatically.
