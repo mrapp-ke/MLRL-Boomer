@@ -21,6 +21,7 @@ class ModelOutputExtension(Extension):
 
     MODEL_SAVE_DIR = StringArgument(
         '--model-save-dir',
+        default='models',
         description='The path to the directory where models should be saved.',
     )
 
