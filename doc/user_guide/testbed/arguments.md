@@ -236,7 +236,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   - `false` The evaluation results are not printed on the console.
 
-- `--store-evaluation` (Default value = `true`)
+- `--store-evaluation` (Default value = `false`)
 
   - `true` The evaluation results in terms of common metrics are written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files. Does only have an effect if the parameter `--output-dir` is specified.
 
