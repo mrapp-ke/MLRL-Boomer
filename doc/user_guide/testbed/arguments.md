@@ -238,7 +238,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--store-evaluation` (Default value = `false`)
 
-  - `true` The evaluation results in terms of common metrics are written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files. Does only have an effect if the parameter `--output-dir` is specified.
+  - `true` The evaluation results in terms of common metrics are written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files.
 
     - `decimals` (Default value = `0`) The number of decimals to be used for evaluation scores or 0, if the number of decimals should not be restricted.
     - `percentage` (Default value = `true`) `true`, if evaluation scores should be given as a percentage, if possible, `false` otherwise.
@@ -293,7 +293,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--store-predictions` (Default value = `false`)
 
-  - `true` Datasets, where the ground truth has been replaced with the predictions of a model, are written into ARFF files. Does only have an effect if the parameter `--output-dir` is specified.
+  - `true` Datasets, where the ground truth has been replaced with the predictions of a model, are written into ARFF files.
 
     - `decimals` (Default value = `0`) The number of decimals to be used for real-valued predictions or 0, if the number of decimals should not be restricted.
 
@@ -309,7 +309,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--store-ground-truth` (Default value = `false`)
 
-  - `true` Training datasets containing the ground truth are written into ARFF files. Does only have an effect if the parameter `--output-dir` is specified.
+  - `true` Training datasets containing the ground truth are written into ARFF files.
 
     - `decimals` (Default value = `0`) The number of decimals to be used for real-valued ground truth or 0, if the number of decimals should not be restricted.
 
@@ -376,7 +376,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--store-data-characteristics` (Default value = `false`)
 
-  - `true` The characteristics of the training dataset are written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file. Does only have an effect if the parameter `--output-dir` is specified.
+  - `true` The characteristics of the training dataset are written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file.
 
     - `decimals` (Default value = `0`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
@@ -409,7 +409,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--store-label-vectors` (Default value = `false`, *classification only*)
 
-  - `true` The unique label vectors contained in the training data are written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file. Does only have an effect if the parameter `` `--output-dir `` is specified. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
+  - `true` The unique label vectors contained in the training data are written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
     - `sparse` (Default value = `false`) `true`, if a sparse representation of label vectors should be used, `false` otherwise.
 
@@ -426,7 +426,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--store-model-characteristics` (Default value = `false`)
 
-  - `true` The characteristics of rule models are written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file. Does only have an effect if the parameter `--output-dir` is specified.
+  - `true` The characteristics of rule models are written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file.
   - `false` The characteristics of rule models are not written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file.
 
 (arguments-output-rules)=
@@ -449,7 +449,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--store-rules` (Default value = `false`)
 
-  - `true` The induced rules are written into a text file. Does only have an effect if the parameter `--output-dir` is specified. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
+  - `true` The induced rules are written into a text file. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
     - `print_feature_names` (Default value = `true`) `true`, if the names of features should be printed instead of their indices, `false` otherwise.
     - `print_output_names` (Default value = `true`) `true`, if the names of outputs should be printed instead of their indices, `false` otherwise.
@@ -475,7 +475,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--store-marginal-probability-calibration-model` (Default value = `false`)
 
-  - `true` The model for the calibration of marginal probabilities is written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file. Does only have an effect if the parameter `--output-dir` is specified. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
+  - `true` The model for the calibration of marginal probabilities is written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
     - `decimals` (Default value = `0`) The number of decimals to be used for thresholds and probabilities or 0, if the number of decimals should not be restricted.
 
@@ -491,7 +491,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--store-joint-probability-calibration-model` (Default value = `false`)
 
-  - `true` The model for the calibration of joint probabilities is written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file. Does only have an effect if the parameter `--output-dir` is specified. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
+  - `true` The model for the calibration of joint probabilities is written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
     - `decimals` (Default value = `2`) The number of decimals to be used for thresholds and probabilities or 0, if the number of decimals should not be restricted.
 

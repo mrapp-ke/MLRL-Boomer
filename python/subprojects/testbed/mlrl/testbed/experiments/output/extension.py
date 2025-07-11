@@ -44,6 +44,7 @@ class OutputExtension(Extension):
 
     OUTPUT_DIR = StringArgument(
         '--output-dir',
+        default='results',
         description='The path to the directory where experimental results should be saved.',
     )
 
