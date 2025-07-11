@@ -96,6 +96,8 @@ class CmdBuilder:
         if model_dir:
             self.args.append('--model-load-dir')
             self.args.append(model_dir)
+            self.args.append('--save-models')
+            self.args.append(str(True).lower())
             self.args.append('--model-save-dir')
             self.args.append(model_dir)
 

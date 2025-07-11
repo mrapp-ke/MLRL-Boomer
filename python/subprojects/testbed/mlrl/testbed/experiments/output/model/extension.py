@@ -11,7 +11,7 @@ from mlrl.testbed.experiments.output.extension import OutputExtension
 from mlrl.testbed.experiments.output.sinks.sink_pickle import PickleFileSink
 from mlrl.testbed.extensions.extension import Extension
 
-from mlrl.util.cli import Argument, StringArgument
+from mlrl.util.cli import Argument, BoolArgument, StringArgument
 
 
 class ModelOutputExtension(Extension):
@@ -25,6 +25,12 @@ class ModelOutputExtension(Extension):
         description='The path to the directory where models should be saved.',
     )
 
+    SAVE_MODELS = BoolArgument(
+        '--save-models',
+        default=False,
+        description='',
+    )
+
     def __init__(self, *dependencies: Extension):
         """
         :param dependencies: Other extensions, this extension depends on
@@ -35,15 +41,16 @@ class ModelOutputExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {self.MODEL_SAVE_DIR}
+        return {self.MODEL_SAVE_DIR, self.SAVE_MODELS}
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
-        model_save_dir = self.MODEL_SAVE_DIR.get_value(args)
+        if self.SAVE_MODELS.get_value(args):
+            model_save_dir = self.MODEL_SAVE_DIR.get_value(args)
 
-        if model_save_dir:
-            create_output_directory = OutputExtension.CREATE_OUTPUT_DIR.get_value(args)
-            experiment_builder.model_writer.add_sinks(
-                PickleFileSink(directory=model_save_dir, create_directory=create_output_directory))
+            if model_save_dir:
+                create_output_directory = OutputExtension.CREATE_OUTPUT_DIR.get_value(args)
+                experiment_builder.model_writer.add_sinks(
+                    PickleFileSink(directory=model_save_dir, create_directory=create_output_directory))
