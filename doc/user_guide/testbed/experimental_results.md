@@ -22,7 +22,7 @@ By providing the argument `--save-all true`, the program can be instructed to wr
 
 ## Evaluation Results
 
-By default, the predictive performance of all models trained during an experiment is evaluated in terms of commonly used evaluation metrics and the evaluation results are printed to the console. In addition, the evaluation results can also be written into output files. The command line argument `--print-evaluation` can be used to explicitly enable or disable printing the evaluation results:
+By default, the predictive performance of all models trained during an experiment is evaluated in terms of commonly used evaluation metrics and the evaluation results are printed to the console. In addition, the evaluation results can also be written to output files. The command line argument `--print-evaluation` can be used to explicitly enable or disable printing the evaluation results:
 
 ````{tab} BOOMER
    ```text
@@ -140,7 +140,7 @@ Alternatively, the argument `--save-predictions` and `--save-ground-truth` can b
 Depending on the {ref}`type of predictions<prediction-types>`, the machine learning models used in an experiment are supposed to provide, the predictions stored in the resulting output files are either binary values (if binary predictions are provided), or real values (if scores or probability estimates are provided). When working with real-valued ground truth or predictions, the option ``decimals`` may be supplied to the arguments ``--print-predictions``, ``--save-predictions``, ``--print-ground-truth` and `--save-ground-truth` to specify the number of decimals that should be included in the output (see {ref}`here<arguments-predictions>` for more information).
 ```
 
-When using {ref}`train-test splits<train-test-split>`, a single model is trained and queried for predictions for the test set. These predictions are written into a single output file. When {ref}`evaluating on the training data<evaluating-training-data>`, predictions are also obtained for the training set and written into an additional output file. The names of the output files indicate whether the predictions have been obtained for the training or test set, respectively:
+When using {ref}`train-test splits<train-test-split>`, a single model is trained and queried for predictions for the test set. These predictions are written to a single output file. When {ref}`evaluating on the training data<evaluating-training-data>`, predictions are also obtained for the training set and written to an additional output file. The names of the output files indicate whether the predictions have been obtained for the training or test set, respectively:
 
 - `predictions_train.arff`
 - `predictions_test.arff`
@@ -182,7 +182,7 @@ By using the command line argument `--print-prediction-characteristics`, charact
    ```
 ````
 
-Alternatively, they statistics can be written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file by using the argument `--save-prediction-characteristics`:
+Alternatively, they statistics can be written to a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file by using the argument `--save-prediction-characteristics`:
 
 ````{tab} BOOMER
    ```text
@@ -208,7 +208,7 @@ Alternatively, they statistics can be written into a [.csv](https://en.wikipedia
 The output produced by the arguments ``--print-data-characteristics`` and ``--save-data-characteristics`` can be customized via several options described {ref}`here<arguments-prediction-characteristics>`. It is possible to exclude certain statistics from the output, to specify whether they should be given as percentages, and how many decimal places should be used.
 ```
 
-The statistics obtained via the arguments given above correspond to the test data for which predictions are obtained from the model. Consequently, they depend on the strategy used for splitting a dataset into training and test sets. When using {ref}`train-test splits<train-test-split>`, predictions for a single test set are obtained and their characteristics are written into a file. In addition, statistics for the training data are written into an additional output file when {ref}`evaluating on the training data<evaluating-training-data>`:
+The statistics obtained via the arguments given above correspond to the test data for which predictions are obtained from the model. Consequently, they depend on the strategy used for splitting a dataset into training and test sets. When using {ref}`train-test splits<train-test-split>`, predictions for a single test set are obtained and their characteristics are written to a file. In addition, statistics for the training data are written to an additional output file when {ref}`evaluating on the training data<evaluating-training-data>`:
 
 - `prediction_characteristics_train.csv`
 - `prediction_characteristics_test.csv`
@@ -356,7 +356,7 @@ When using {ref}`train-test splits<train-test-split>` for splitting the availabl
 
 - `label_vectors.csv`
 
-When using a {ref}`cross validation<cross-validation>`, several models are trained on different parts of the dataset. The label vectors present in each of these training sets are written into separate output files. For example, the following files result from a 5-fold cross validation:
+When using a {ref}`cross validation<cross-validation>`, several models are trained on different parts of the dataset. The label vectors present in each of these training sets are written to separate output files. For example, the following files result from a 5-fold cross validation:
 
 - `label_vectors_fold-1.csv`
 - `label_vectors_fold-2.csv`
@@ -464,7 +464,7 @@ It is considered one of the advantages of rule-based machine learning models tha
    ```
 ````
 
-Alternatively, by using the argument `--save-rules`, a textual representation of models can be written into a text file in the specified output directory:
+Alternatively, by using the argument `--save-rules`, a textual representation of models can be written to a text file in the specified output directory:
 
 ````{tab} BOOMER
    ```text
@@ -546,7 +546,7 @@ Some machine learning algorithms provided by this project allow to obtain probab
    ```
 ````
 
-Alternatively, a representations of the calibration models can be written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files by using the arguments `--save-marginal-probability-calibration-model` and `--save-joint-probability-calibration-model`
+Alternatively, a representations of the calibration models can be written to [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files by using the arguments `--save-marginal-probability-calibration-model` and `--save-joint-probability-calibration-model`
 
 ````{tab} BOOMER
    ```text

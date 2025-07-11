@@ -32,7 +32,7 @@ class PredictionExtension(Extension):
     SAVE_PREDICTIONS = BoolArgument(
         '--save-predictions',
         default=False,
-        description='Whether predictions should be written into output files or not.',
+        description='Whether predictions should be written to output files or not.',
         true_options={OPTION_DECIMALS},
     )
 

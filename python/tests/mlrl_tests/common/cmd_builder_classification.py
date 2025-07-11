@@ -44,7 +44,7 @@ class ClassificationCmdBuilder(CmdBuilder):
 
     def save_label_vectors(self, save_label_vectors: bool = True):
         """
-        Configures whether the unique label vectors contained in the training data should be written into output files
+        Configures whether the unique label vectors contained in the training data should be written to output files
         or not.
 
         :param save_label_vectors:  True, if the unique label vectors contained in the training data should be written
@@ -78,7 +78,7 @@ class ClassificationCmdBuilder(CmdBuilder):
                                                     save_marginal_probability_calibration_model: Optional[bool] = True):
         """
         Configures whether textual representations of models for the calibration of marginal probabilities should be
-        written into output files or not.
+        written to output files or not.
 
         :param save_marginal_probability_calibration_model:    True, if textual representations of models for the
                                                                 calibration of marginal probabilities should be written
@@ -112,10 +112,10 @@ class ClassificationCmdBuilder(CmdBuilder):
     def save_joint_probability_calibration_model(self, save_joint_probability_calibration_model: Optional[bool] = True):
         """
         Configures whether textual representations of models for the calibration of joint probabilities should be
-        written into output files or not.
+        written to output files or not.
 
         :param save_joint_probability_calibration_model:    True, if textual representations of models for the
-                                                            calibration of joint probabilities should be written into
+                                                            calibration of joint probabilities should be written to
                                                             output files, False otherwise
         :return:                                            The builder itself    
         """

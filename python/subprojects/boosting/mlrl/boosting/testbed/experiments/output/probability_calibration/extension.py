@@ -37,7 +37,7 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
     SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL = BoolArgument(
         '--save-marginal-probability-calibration-model',
         default=False,
-        description='Whether the model for the calibration of marginal probabilities should be written into an output '
+        description='Whether the model for the calibration of marginal probabilities should be written to an output '
         + 'file or not.',
         true_options={OPTION_DECIMALS},
     )
@@ -103,8 +103,8 @@ class JointProbabilityCalibrationModelExtension(Extension):
     SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL = BoolArgument(
         '--save-joint-probability-calibration-model',
         default=False,
-        description='Whether the model for the calibration of joint probabilities should be written into an output '
-        + 'file or not.',
+        description='Whether the model for the calibration of joint probabilities should be written to an output file '
+        + 'or not.',
         true_options={OPTION_DECIMALS},
     )
 

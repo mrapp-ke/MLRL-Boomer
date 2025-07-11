@@ -216,9 +216,9 @@ class CmdBuilder:
 
     def save_evaluation_results(self, save_evaluation_results: bool = True):
         """
-        Configures whether the evaluation results should be written into output files or not.
+        Configures whether the evaluation results should be written to output files or not.
 
-        :param save_evaluation_results: True, if the evaluation results should be written into output files or not
+        :param save_evaluation_results: True, if the evaluation results should be written to output files or not
         :return:                        The builder itself
         """
         self.args.append('--save-evaluation')
@@ -249,9 +249,9 @@ class CmdBuilder:
 
     def save_predictions(self, save_predictions: bool = True):
         """
-        Configures whether the predictions should be written into output files or not.
+        Configures whether the predictions should be written to output files or not.
 
-        :param save_predictions:    True, if the predictions should be written into output files, False otherwise
+        :param save_predictions:    True, if the predictions should be written to output files, False otherwise
         :return:                    The builder itself
         """
         self.args.append('--save-predictions')
@@ -271,9 +271,9 @@ class CmdBuilder:
 
     def save_ground_truth(self, save_ground_truth: bool = True):
         """
-        Configures whether the ground truth should be written into output files or not.
+        Configures whether the ground truth should be written to output files or not.
 
-        :param save_ground_truth:   True, if the ground truth should be written into output files, False otherwise
+        :param save_ground_truth:   True, if the ground truth should be written to output files, False otherwise
         :return:                    The builder itself
         """
         self.args.append('--save-ground-truth')
@@ -294,9 +294,9 @@ class CmdBuilder:
 
     def save_prediction_characteristics(self, save_prediction_characteristics: bool = True):
         """
-        Configures whether the characteristics of predictions should be written into output files or not.
+        Configures whether the characteristics of predictions should be written to output files or not.
 
-        :param save_prediction_characteristics: True, if the characteristics of predictions should be written into
+        :param save_prediction_characteristics: True, if the characteristics of predictions should be written to
                                                 output files, False otherwise
         :return:                                The builder itself
         """
@@ -317,9 +317,9 @@ class CmdBuilder:
 
     def save_data_characteristics(self, save_data_characteristics: bool = True):
         """
-        Configures whether the characteristics of datasets should be written into output files or not.
+        Configures whether the characteristics of datasets should be written to output files or not.
 
-        :param save_data_characteristics:   True, if the characteristics of datasets should be written into output
+        :param save_data_characteristics:   True, if the characteristics of datasets should be written to output
                                             files, False otherwise
         :return:                            The builder itself
         """
@@ -340,9 +340,9 @@ class CmdBuilder:
 
     def save_model_characteristics(self, save_model_characteristics: bool = True):
         """
-        Configures whether the characteristics of models should be written into output files or not.
+        Configures whether the characteristics of models should be written to output files or not.
 
-        :param save_model_characteristics:  True, if the characteristics of models should be written into output files,
+        :param save_model_characteristics:  True, if the characteristics of models should be written to output files,
                                             False otherwise
         :return:                            The builder itself
         """
@@ -363,9 +363,9 @@ class CmdBuilder:
 
     def save_rules(self, save_rules: bool = True):
         """
-        Configures whether textual representations of the rules in a model should be written into output files or not.
+        Configures whether textual representations of the rules in a model should be written to output files or not.
 
-        :param save_rules:  True, if textual representations of rules should be written into output files, False
+        :param save_rules:  True, if textual representations of rules should be written to output files, False
                             otherwise
         :return:            The builder itself
         """

@@ -32,7 +32,7 @@ class GroundTruthExtension(Extension):
     SAVE_GROUND_TRUTH = BoolArgument(
         '--save-ground-truth',
         default=False,
-        description='Whether the ground truth should be written into output files or not.',
+        description='Whether the ground truth should be written to output files or not.',
         true_options={OPTION_DECIMALS},
     )
 
