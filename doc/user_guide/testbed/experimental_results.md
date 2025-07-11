@@ -4,7 +4,7 @@
 
 One of the most important features provided by the package mlrl-testbed is the ability to output a wide variety of experimental results that provide valuable insights into the models learned by a machine learning algorithm, the predictions it provides, and the data it has been trained on.
 
-Each of these information can either be printed to the console or saved to output files. The latter requires to provide a directory, where the output files should be saved. As shown in the examples below, the path to this directory must be specified via the argument `--output-dir`.
+Each of these information can either be printed to the console or saved to output files. The latter requires to provide a directory, where the output files should be saved. As shown in the examples below, the path to this directory can be specified via the argument `--output-dir`. However, this argument is optional. If not given explicitly, the default value `results` is used.
 
 ```{note}
 The path to the directory, where experimental results should be saved, can be either absolute or relative to the working directory.
@@ -22,7 +22,7 @@ By providing the argument `--store-all true`, the program can be instructed to w
 
 ## Evaluation Results
 
-By default, the predictive performance of all models trained during an experiment is evaluated in terms of commonly used evaluation metrics and the evaluation results are printed to the console. In addition, if the argument `--output-dir` is given, the evaluation results are also written into output files. The command line argument `--print-evaluation` can be used to explicitly enable or disable printing the evaluation results:
+By default, the predictive performance of all models trained during an experiment is evaluated in terms of commonly used evaluation metrics and the evaluation results are printed to the console. In addition, the evaluation results can also be written into output files. The command line argument `--print-evaluation` can be used to explicitly enable or disable printing the evaluation results:
 
 ````{tab} BOOMER
    ```text
