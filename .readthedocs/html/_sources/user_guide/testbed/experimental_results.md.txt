@@ -1,6 +1,6 @@
 (experimental-results)=
 
-# Output of Experimental Results
+# Saving Experimental Results
 
 One of the most important features provided by the package mlrl-testbed is the ability to output a wide variety of experimental results that provide valuable insights into the models learned by a machine learning algorithm, the predictions it provides, and the data it has been trained on.
 
