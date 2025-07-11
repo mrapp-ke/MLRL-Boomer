@@ -15,7 +15,7 @@ By default, the directory specified via the argument `--output-dir` is created a
 ```
 
 ```{tip}
-By providing the argument `--store-all true`, the program can be instructed to write all available output data to files. Similarly, the argument `--print-all true` results in all output data being printed on the console.  
+By providing the argument `--save-all true`, the program can be instructed to write all available output data to files. Similarly, the argument `--print-all true` results in all output data being printed on the console.  
 ```
 
 (output-evaluation-results)=
@@ -42,7 +42,7 @@ By default, the predictive performance of all models trained during an experimen
    ```
 ````
 
-Accordingly, the argument `--store-evaluation` allows to enable or disable saving the evaluation results to [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files:
+Accordingly, the argument `--save-evaluation` allows to enable or disable saving the evaluation results to [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files:
 
 ````{tab} BOOMER
    ```text
@@ -50,7 +50,7 @@ Accordingly, the argument `--store-evaluation` allows to enable or disable savin
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
-       --store-evaluation true
+       --save-evaluation true
    ```
 ````
 
@@ -60,12 +60,12 @@ Accordingly, the argument `--store-evaluation` allows to enable or disable savin
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
-       --store-evaluation true
+       --save-evaluation true
    ```
 ````
 
 ```{tip}
-The command line arguments ``--print-evaluation`` and ``--store-evaluation`` come with several options for customization described {ref}`here<arguments-evaluation-results>`. It is possible to specify the performance metrics that should be used for evaluation by providing a black- or whitelist. Moreover, one can specify whether performance scores should be given as percentages and the number of decimals used for these scores can be chosen freely.
+The command line arguments ``--print-evaluation`` and ``--save-evaluation`` come with several options for customization described {ref}`here<arguments-evaluation-results>`. It is possible to specify the performance metrics that should be used for evaluation by providing a black- or whitelist. Moreover, one can specify whether performance scores should be given as percentages and the number of decimals used for these scores can be chosen freely.
 ```
 
 The number of models evaluated during an experiment varies depending on the strategy used for splitting the available data into training and test sets. When using {ref}`train-test splits<train-test-split>`, only a single model is evaluated. The performance scores according to different metrics that assess the quality of the model's predictions are saved to a single output file. In addition, when {ref}`evaluating on the training data<evaluating-training-data>`, the performance scores for the model's predictions on the training set are also evaluated and written to a file. As shown below, the names of the output files specify whether predictions for the training or test set have been evaluated:
@@ -90,7 +90,7 @@ When using a {ref}`cross validation<cross-validation>`, a model is trained and e
 
 ## Predictions
 
-In cases where the {ref}`evaluation results<output-evaluation-results>` obtained via the arguments `--print-evaluation` or `--store-evaluation` are not sufficient for a detailed analysis, it may be desired to directly inspect the predictions provided by the evaluated models. They can be printed on the console by proving the argument `--print-predictions`. If the ground truth should also be printed, the argument `--print-ground-truth` must be provided as well:
+In cases where the {ref}`evaluation results<output-evaluation-results>` obtained via the arguments `--print-evaluation` or `--save-evaluation` are not sufficient for a detailed analysis, it may be desired to directly inspect the predictions provided by the evaluated models. They can be printed on the console by proving the argument `--print-predictions`. If the ground truth should also be printed, the argument `--print-ground-truth` must be provided as well:
 
 ````{tab} BOOMER
    ```text
@@ -112,7 +112,7 @@ In cases where the {ref}`evaluation results<output-evaluation-results>` obtained
    ```
 ````
 
-Alternatively, the argument `--store-predictions` and `--store-ground-truth` can be used to save a dataset with the predictions or the ground truth, respectively, to [ARFF](https://waikato.github.io/weka-wiki/formats_and_processing/arff_stable/) files:
+Alternatively, the argument `--save-predictions` and `--save-ground-truth` can be used to save a dataset with the predictions or the ground truth, respectively, to [ARFF](https://waikato.github.io/weka-wiki/formats_and_processing/arff_stable/) files:
 
 ````{tab} BOOMER
    ```text
@@ -120,8 +120,8 @@ Alternatively, the argument `--store-predictions` and `--store-ground-truth` can
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
-       --store-predictions true \
-       --store-ground-truth true
+       --save-predictions true \
+       --save-ground-truth true
    ```
 ````
 
@@ -131,13 +131,13 @@ Alternatively, the argument `--store-predictions` and `--store-ground-truth` can
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
-       --store-predictions true \
-       --store-ground-truth true
+       --save-predictions true \
+       --save-ground-truth true
    ```
 ````
 
 ```{tip}
-Depending on the {ref}`type of predictions<prediction-types>`, the machine learning models used in an experiment are supposed to provide, the predictions stored in the resulting output files are either binary values (if binary predictions are provided), or real values (if scores or probability estimates are provided). When working with real-valued ground truth or predictions, the option ``decimals`` may be supplied to the arguments ``--print-predictions``, ``--store-predictions``, ``--print-ground-truth` and `--store-ground-truth` to specify the number of decimals that should be included in the output (see {ref}`here<arguments-predictions>` for more information).
+Depending on the {ref}`type of predictions<prediction-types>`, the machine learning models used in an experiment are supposed to provide, the predictions stored in the resulting output files are either binary values (if binary predictions are provided), or real values (if scores or probability estimates are provided). When working with real-valued ground truth or predictions, the option ``decimals`` may be supplied to the arguments ``--print-predictions``, ``--save-predictions``, ``--print-ground-truth` and `--save-ground-truth` to specify the number of decimals that should be included in the output (see {ref}`here<arguments-predictions>` for more information).
 ```
 
 When using {ref}`train-test splits<train-test-split>`, a single model is trained and queried for predictions for the test set. These predictions are written into a single output file. When {ref}`evaluating on the training data<evaluating-training-data>`, predictions are also obtained for the training set and written into an additional output file. The names of the output files indicate whether the predictions have been obtained for the training or test set, respectively:
@@ -182,7 +182,7 @@ By using the command line argument `--print-prediction-characteristics`, charact
    ```
 ````
 
-Alternatively, they statistics can be written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file by using the argument `--store-prediction-characteristics`:
+Alternatively, they statistics can be written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file by using the argument `--save-prediction-characteristics`:
 
 ````{tab} BOOMER
    ```text
@@ -190,7 +190,7 @@ Alternatively, they statistics can be written into a [.csv](https://en.wikipedia
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
-       --store-prediction-characteristics true
+       --save-prediction-characteristics true
    ```
 ````
 
@@ -200,12 +200,12 @@ Alternatively, they statistics can be written into a [.csv](https://en.wikipedia
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
-       --store-prediction-characteristics true
+       --save-prediction-characteristics true
    ```
 ````
 
 ```{tip}
-The output produced by the arguments ``--print-data-characteristics`` and ``--store-data-characteristics`` can be customized via several options described {ref}`here<arguments-prediction-characteristics>`. It is possible to exclude certain statistics from the output, to specify whether they should be given as percentages, and how many decimal places should be used.
+The output produced by the arguments ``--print-data-characteristics`` and ``--save-data-characteristics`` can be customized via several options described {ref}`here<arguments-prediction-characteristics>`. It is possible to exclude certain statistics from the output, to specify whether they should be given as percentages, and how many decimal places should be used.
 ```
 
 The statistics obtained via the arguments given above correspond to the test data for which predictions are obtained from the model. Consequently, they depend on the strategy used for splitting a dataset into training and test sets. When using {ref}`train-test splits<train-test-split>`, predictions for a single test set are obtained and their characteristics are written into a file. In addition, statistics for the training data are written into an additional output file when {ref}`evaluating on the training data<evaluating-training-data>`:
@@ -256,14 +256,14 @@ To obtain insightful statistics regarding the characteristics of a dataset, the 
    ```
 ````
 
-If you prefer to write the statistics into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file, the argument `--store-data-characteristics` can be used:
+If you prefer to write the statistics into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file, the argument `--save-data-characteristics` can be used:
 
 ````{tab} BOOMER
    ```text
    mlrl-testbed mlrl.boosting --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
-       --store-data-characteristics true
+       --save-data-characteristics true
    ```
 ````
 
@@ -273,12 +273,12 @@ If you prefer to write the statistics into a [.csv](https://en.wikipedia.org/wik
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
-       --store-data-characteristics true
+       --save-data-characteristics true
    ```
 ````
 
 ```{tip}
-As shown {ref}`here<arguments-data-characteristics>`, the arguments ``--print-data-characteristics`` and ``--store-data-characteristics`` come with several options that allow to exclude specific statistics from the respective output. It is also possible to specify whether percentages should be preferred for presenting the statistics. Additionally, the number of decimals to be included in the output can be limited.
+As shown {ref}`here<arguments-data-characteristics>`, the arguments ``--print-data-characteristics`` and ``--save-data-characteristics`` come with several options that allow to exclude specific statistics from the respective output. It is also possible to specify whether percentages should be preferred for presenting the statistics. Additionally, the number of decimals to be included in the output can be limited.
 ```
 
 The statistics provided by the previous commands are obtained on the training data and therefore depend on the strategy used for splitting a dataset into training and test sets. If {ref}`train-test splits<train-test-split>` are used, a single training set is used and its characteristics are saved to a file:
@@ -332,14 +332,14 @@ We refer to the unique labels combinations present for different examples in a c
    ```
 ````
 
-If you prefer writing the label vectors into an output file, the argument `--store-label-vectors` can be used:
+If you prefer writing the label vectors into an output file, the argument `--save-label-vectors` can be used:
 
 ````{tab} BOOMER
    ```text
    mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --store-label-vectors true
+       --save-label-vectors true
    ```
 ````
 
@@ -348,7 +348,7 @@ If you prefer writing the label vectors into an output file, the argument `--sto
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --store-label-vectors true
+       --save-label-vectors true
    ```
 ````
 
@@ -400,7 +400,7 @@ To obtain a quick overview of some statistics that characterize a rule-based mod
    ```
 ````
 
-The above command results in a tabular representation of the characteristics being printed on the console. If one intends to write them into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file instead, the argument `--store-model-characteristics` may be used:
+The above command results in a tabular representation of the characteristics being printed on the console. If one intends to write them into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file instead, the argument `--save-model-characteristics` may be used:
 
 ````{tab} BOOMER
    ```text
@@ -408,7 +408,7 @@ The above command results in a tabular representation of the characteristics bei
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
-       --store-model-characteristics true
+       --save-model-characteristics true
    ```
 ````
 
@@ -418,7 +418,7 @@ The above command results in a tabular representation of the characteristics bei
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
-       --store-model-characteristics true
+       --save-model-characteristics true
    ```
 ````
 
@@ -464,7 +464,7 @@ It is considered one of the advantages of rule-based machine learning models tha
    ```
 ````
 
-Alternatively, by using the argument `--store-rules`, a textual representation of models can be written into a text file in the specified output directory:
+Alternatively, by using the argument `--save-rules`, a textual representation of models can be written into a text file in the specified output directory:
 
 ````{tab} BOOMER
    ```text
@@ -472,7 +472,7 @@ Alternatively, by using the argument `--store-rules`, a textual representation o
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
-       --store-rules true
+       --save-rules true
    ```
 ````
 
@@ -482,12 +482,12 @@ Alternatively, by using the argument `--store-rules`, a textual representation o
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --output-dir /path/to/results/ \
-       --store-rules true
+       --save-rules true
    ```
 ````
 
 ```{tip}
-Both, the ``--print-rules`` and ``--store-rules`` arguments, come with several options that allow to customize the textual representation of models. An overview of these options is provided {ref}`here<arguments-output-rules>`.
+Both, the ``--print-rules`` and ``--save-rules`` arguments, come with several options that allow to customize the textual representation of models. An overview of these options is provided {ref}`here<arguments-output-rules>`.
 ```
 
 When using {ref}`train-test splits<train-test-split>`, only a single model is trained. Consequently, the above command results in a single output file being created:
@@ -546,15 +546,15 @@ Some machine learning algorithms provided by this project allow to obtain probab
    ```
 ````
 
-Alternatively, a representations of the calibration models can be written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files by using the arguments `--store-marginal-probability-calibration-model` and `--store-joint-probability-calibration-model`
+Alternatively, a representations of the calibration models can be written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files by using the arguments `--save-marginal-probability-calibration-model` and `--save-joint-probability-calibration-model`
 
 ````{tab} BOOMER
    ```text
    mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --store-marginal-probability-calibration-model true \
-       --store-joint-probabiliy-calibration-model true
+       --save-marginal-probability-calibration-model true \
+       --save-joint-probabiliy-calibration-model true
    ```
 ````
 
@@ -563,8 +563,8 @@ Alternatively, a representations of the calibration models can be written into [
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --store-marginal-probability-calibration-model true \
-       --store-joint-probabiliy-calibration-model true
+       --save-marginal-probability-calibration-model true \
+       --save-joint-probabiliy-calibration-model true
    ```
 ````
 

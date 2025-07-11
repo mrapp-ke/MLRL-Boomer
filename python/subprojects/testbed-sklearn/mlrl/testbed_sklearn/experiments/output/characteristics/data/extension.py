@@ -40,8 +40,8 @@ class TabularDataCharacteristicExtension(Extension):
         },
     )
 
-    STORE_DATA_CHARACTERISTICS = BoolArgument(
-        '--store-data-characteristics',
+    SAVE_DATA_CHARACTERISTICS = BoolArgument(
+        '--save-data-characteristics',
         default=False,
         description='Whether the characteristics of the training data should be written into output files or not.',
         true_options={
@@ -65,7 +65,7 @@ class TabularDataCharacteristicExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {self.PRINT_DATA_CHARACTERISTICS, self.STORE_DATA_CHARACTERISTICS}
+        return {self.PRINT_DATA_CHARACTERISTICS, self.SAVE_DATA_CHARACTERISTICS}
 
     def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         print_all = OutputExtension.PRINT_ALL.get_value(args)
@@ -75,11 +75,11 @@ class TabularDataCharacteristicExtension(Extension):
             experiment_builder.data_characteristics_writer.add_sinks(LogSink(options))
 
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
-        store_all = OutputExtension.STORE_ALL.get_value(args)
-        store_data_characteristics, options = self.STORE_DATA_CHARACTERISTICS.get_value(args, default=store_all)
+        save_all = OutputExtension.SAVE_ALL.get_value(args)
+        save_data_characteristics, options = self.SAVE_DATA_CHARACTERISTICS.get_value(args, default=save_all)
         output_directory = OutputExtension.OUTPUT_DIR.get_value(args)
 
-        if store_data_characteristics and output_directory:
+        if save_data_characteristics and output_directory:
             create_output_directory = OutputExtension.CREATE_OUTPUT_DIR.get_value(args)
             experiment_builder.data_characteristics_writer.add_sinks(
                 CsvFileSink(directory=output_directory, create_directory=create_output_directory, options=options))
