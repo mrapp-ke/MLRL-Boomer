@@ -22,6 +22,7 @@ class ParameterOutputExtension(Extension):
 
     PARAMETER_SAVE_DIR = StringArgument(
         '--parameter-save-dir',
+        default='parameters',
         description='The path to the directory where configuration files, which specify the parameters used by the '
         + 'algorithm, should be saved.',
     )
