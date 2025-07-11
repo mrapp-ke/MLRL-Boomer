@@ -56,7 +56,7 @@ class EvaluationExtension(Extension):
 
     STORE_EVALUATION = BoolArgument(
         '--store-evaluation',
-        default=True,
+        default=False,
         description='Whether the evaluation results should be written into output files or not. Does only have an '
         + 'effect if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
         true_options={

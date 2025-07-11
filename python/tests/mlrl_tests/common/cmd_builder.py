@@ -44,6 +44,7 @@ class CmdBuilder:
         self.num_folds = 0
         self.current_fold = None
         self.args = []
+        self.store_evaluation(True)
 
     @property
     def output_dir(self) -> str:
