@@ -139,6 +139,11 @@ Because the training of models can be time-consuming, it might be desirable to s
 
   - An absolute or relative path to the directory to which models should be saved once training has completed.
 
+- `--save-models` (Default value = `false`)
+
+  - `true` Models are saved to output files.
+  - `false` Models are not saved to output files. 
+
 ## Saving and Loading Parameters
 
 > A more detailed description of the following arguments can be found {ref}`here<parameter-persistence>`.
@@ -157,6 +162,11 @@ As an alternative to storing the models learned by an algorithm, the algorithmic
 
   - `true` Algorithmic parameters are printed on the console.
   - `false` Algorithmic parameters are not printed on the console.
+
+- `--save-parameters` (Default value = `false`)
+
+  - `true` Algorithmic parameters are saved to output files
+  - `false` Algorithmic parameters are not saved to output files
 
 ## Saving Experimental Results
 
