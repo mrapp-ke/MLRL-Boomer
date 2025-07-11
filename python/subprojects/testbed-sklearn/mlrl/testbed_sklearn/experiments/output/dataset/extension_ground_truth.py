@@ -32,8 +32,7 @@ class GroundTruthExtension(Extension):
     STORE_GROUND_TRUTH = BoolArgument(
         '--store-ground-truth',
         default=False,
-        description='Whether the ground truth should be written into output files or not. Does only have an effect, if '
-        + 'the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
+        description='Whether the ground truth should be written into output files or not.',
         true_options={OPTION_DECIMALS},
     )
 

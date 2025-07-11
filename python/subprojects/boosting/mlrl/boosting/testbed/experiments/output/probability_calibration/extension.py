@@ -38,7 +38,7 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         '--store-marginal-probability-calibration-model',
         default=False,
         description='Whether the model for the calibration of marginal probabilities should be written into an output '
-        + 'file or not. Does only have an effect if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
+        + 'file or not.',
         true_options={OPTION_DECIMALS},
     )
 
@@ -104,7 +104,7 @@ class JointProbabilityCalibrationModelExtension(Extension):
         '--store-joint-probability-calibration-model',
         default=False,
         description='Whether the model for the calibration of joint probabilities should be written into an output '
-        + 'file or not. Does only have an effect if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
+        + 'file or not.',
         true_options={OPTION_DECIMALS},
     )
 

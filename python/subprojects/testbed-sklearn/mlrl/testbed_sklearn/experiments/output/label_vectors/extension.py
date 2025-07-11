@@ -34,8 +34,7 @@ class LabelVectorExtension(Extension):
         '--store-label-vectors',
         default=False,
         description='Whether the unique label vectors contained in the training data should be written into output '
-        + 'files or not. Does only have an effect if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is '
-        + 'specified.',
+        + 'files or not.',
         true_options={LabelVectors.OPTION_SPARSE},
     )
 
