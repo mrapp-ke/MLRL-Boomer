@@ -57,8 +57,8 @@ class EvaluationExtension(Extension):
     SAVE_EVALUATION_RESULTS = BoolArgument(
         '--save-evaluation',
         default=False,
-        description='Whether the evaluation results should be written into output files or not. Does only have an '
-        + 'effect if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
+        description='Whether the evaluation results should be written to output files or not. Does only have an effect'
+        + 'if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
         true_options={
             EvaluationResult.OPTION_ENABLE_ALL, EvaluationResult.OPTION_HAMMING_LOSS,
             EvaluationResult.OPTION_HAMMING_ACCURACY, EvaluationResult.OPTION_SUBSET_ZERO_ONE_LOSS,

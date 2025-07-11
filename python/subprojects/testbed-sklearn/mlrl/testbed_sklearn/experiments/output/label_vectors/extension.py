@@ -33,8 +33,8 @@ class LabelVectorExtension(Extension):
     SAVE_LABEL_VECTORS = BoolArgument(
         '--save-label-vectors',
         default=False,
-        description='Whether the unique label vectors contained in the training data should be written into output '
-        + 'files or not.',
+        description='Whether the unique label vectors contained in the training data should be written to output files '
+        + 'or not.',
         true_options={LabelVectors.OPTION_SPARSE},
     )
 

@@ -39,7 +39,7 @@ class RuleModelAsTextExtension(Extension):
     SAVE_RULES = BoolArgument(
         '--save-rules',
         default=False,
-        description='Whether the induced rules should be written into a text file or not.',
+        description='Whether the induced rules should be written to a text file or not.',
         true_options={
             RuleModelAsText.OPTION_PRINT_FEATURE_NAMES, RuleModelAsText.OPTION_PRINT_OUTPUT_NAMES,
             RuleModelAsText.OPTION_PRINT_NOMINAL_VALUES, RuleModelAsText.OPTION_PRINT_BODIES,

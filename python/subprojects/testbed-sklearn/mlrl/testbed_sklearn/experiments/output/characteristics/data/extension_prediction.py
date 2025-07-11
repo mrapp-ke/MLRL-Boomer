@@ -44,8 +44,8 @@ class PredictionCharacteristicsExtension(Extension):
     SAVE_PREDICTION_CHARACTERISTICS = BoolArgument(
         '--save-prediction-characteristics',
         default=False,
-        description='Whether the characteristics of binary predictions should be written into output files or not. '
-        + 'Does only have an effect if the argument ' + PredictionTypeExtension.PREDICTION_TYPE.name + ' is set to '
+        description='Whether the characteristics of binary predictions should be written to output files or not. Does '
+        + 'only have an effect if the argument ' + PredictionTypeExtension.PREDICTION_TYPE.name + ' is set to '
         + PredictionType.BINARY.value + ' and if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
         true_options={
             OutputCharacteristics.OPTION_OUTPUTS, OutputCharacteristics.OPTION_OUTPUT_DENSITY,

@@ -33,8 +33,8 @@ class RuleModelCharacteristicsExtension(Extension):
     SAVE_MODEL_CHARACTERISTICS = BoolArgument(
         '--save-model-characteristics',
         default=False,
-        description='Whether the characteristics of models should be written into output files or not. Does only have '
-        + 'an effect if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
+        description='Whether the characteristics of models should be written to output files or not. Does only have an '
+        + 'effect if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
     )
 
     def __init__(self, *dependencies: Extension):
