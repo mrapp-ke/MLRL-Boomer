@@ -142,7 +142,7 @@ Because the training of models can be time-consuming, it might be desirable to s
 - `--save-models` (Default value = `false`)
 
   - `true` Models are saved to output files.
-  - `false` Models are not saved to output files. 
+  - `false` Models are not saved to output files.
 
 ## Saving and Loading Parameters
 
@@ -196,7 +196,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
   - `true` All output data is printed on the console unless specified otherwise.
   - `false` No output data is printed on the console by default.
 
-- `--store-all` (Default value = `false`)
+- `--save-all` (Default value = `false`)
 
   - `true` All output data is written to files.
   - `false` No output data is written to files.
@@ -246,7 +246,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   - `false` The evaluation results are not printed on the console.
 
-- `--store-evaluation` (Default value = `false`)
+- `--save-evaluation` (Default value = `false`)
 
   - `true` The evaluation results in terms of common metrics are written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files.
 
@@ -301,7 +301,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   - `false` The predictions are not printed on the console.
 
-- `--store-predictions` (Default value = `false`)
+- `--save-predictions` (Default value = `false`)
 
   - `true` Datasets, where the ground truth has been replaced with the predictions of a model, are written into ARFF files.
 
@@ -317,7 +317,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   - `false` The ground truth is not printed on the console.
 
-- `--store-ground-truth` (Default value = `false`)
+- `--save-ground-truth` (Default value = `false`)
 
   - `true` Training datasets containing the ground truth are written into ARFF files.
 
@@ -344,7 +344,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   - `false` The characteristics of predictions are not printed on the console.
 
-- `--store-prediction-characteristics` (Default value = `false`)
+- `--save-prediction-characteristics` (Default value = `false`)
 
   - `true` The characteristics of binary predictions are written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files. Does only have an effect if the parameter `--predict-probabilities` is set to `false`.
 
@@ -384,7 +384,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   - `false` The characteristics of the training dataset are not printed on the console
 
-- `--store-data-characteristics` (Default value = `false`)
+- `--save-data-characteristics` (Default value = `false`)
 
   - `true` The characteristics of the training dataset are written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file.
 
@@ -417,7 +417,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   - `false` The unique label vectors contained in the training data are not printed on the console.
 
-- `--store-label-vectors` (Default value = `false`, *classification only*)
+- `--save-label-vectors` (Default value = `false`, *classification only*)
 
   - `true` The unique label vectors contained in the training data are written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
@@ -434,7 +434,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
   - `true` The characteristics of rule models are printed on the console
   - `false` The characteristics of rule models are not printed on the console
 
-- `--store-model-characteristics` (Default value = `false`)
+- `--save-model-characteristics` (Default value = `false`)
 
   - `true` The characteristics of rule models are written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file.
   - `false` The characteristics of rule models are not written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file.
@@ -457,7 +457,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   - `false` The induced rules are not printed on the console.
 
-- `--store-rules` (Default value = `false`)
+- `--save-rules` (Default value = `false`)
 
   - `true` The induced rules are written into a text file. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
@@ -483,7 +483,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   - `false` The model for the calibration of marginal probabilities is not printed on the console.
 
-- `--store-marginal-probability-calibration-model` (Default value = `false`)
+- `--save-marginal-probability-calibration-model` (Default value = `false`)
 
   - `true` The model for the calibration of marginal probabilities is written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
@@ -499,7 +499,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   - `false` The model for the calibration of joint probabilities is not printed on the console.
 
-- `--store-joint-probability-calibration-model` (Default value = `false`)
+- `--save-joint-probability-calibration-model` (Default value = `false`)
 
   - `true` The model for the calibration of joint probabilities is written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
