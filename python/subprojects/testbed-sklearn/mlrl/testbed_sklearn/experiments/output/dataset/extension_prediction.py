@@ -32,8 +32,7 @@ class PredictionExtension(Extension):
     STORE_PREDICTIONS = BoolArgument(
         '--store-predictions',
         default=False,
-        description='Whether predictions should be written into output files or not. Does only have an effect, if the '
-        + 'argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
+        description='Whether predictions should be written into output files or not.',
         true_options={OPTION_DECIMALS},
     )
 

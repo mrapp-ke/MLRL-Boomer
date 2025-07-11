@@ -43,8 +43,7 @@ class TabularDataCharacteristicExtension(Extension):
     STORE_DATA_CHARACTERISTICS = BoolArgument(
         '--store-data-characteristics',
         default=False,
-        description='Whether the characteristics of the training data should be written into output files or not. '
-        + 'Does only have an effect if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
+        description='Whether the characteristics of the training data should be written into output files or not.',
         true_options={
             DataCharacteristics.OPTION_EXAMPLES, DataCharacteristics.OPTION_FEATURES,
             DataCharacteristics.OPTION_NUMERICAL_FEATURES, DataCharacteristics.OPTION_NOMINAL_FEATURES,
