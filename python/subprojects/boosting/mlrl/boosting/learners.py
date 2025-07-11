@@ -31,7 +31,7 @@ class BoomerClassifier(ClassificationRuleLearner, ClassifierMixin):
                  max_rules: Optional[int] = None,
                  time_limit: Optional[int] = None,
                  global_pruning: Optional[str] = None,
-                 sequential_post_optimization: Optional[str] = None,
+                 post_optimization: Optional[str] = None,
                  head_type: Optional[str] = None,
                  loss: Optional[str] = None,
                  marginal_probability_calibration: Optional[str] = None,
@@ -72,7 +72,7 @@ class BoomerClassifier(ClassificationRuleLearner, ClassifierMixin):
         :param global_pruning:                      The strategy that should be used for pruning entire rules. Must be
                                                     'pre-pruning', 'post-pruning' or 'none', if no pruning should be
                                                     used. For additional options refer to the documentation
-        :param sequential_post_optimization:        Whether each rule in a previously learned model should be optimized
+        :param post_optimization:                   Whether each rule in a previously learned model should be optimized
                                                     by being relearned in the context of the other rules or not. Must be
                                                     'true' or 'false'. For additional options refer to the documentation
         :param head_type:                           The type of the rule heads that should be used. Must be 'single',
@@ -156,7 +156,7 @@ class BoomerClassifier(ClassificationRuleLearner, ClassifierMixin):
         self.max_rules = max_rules
         self.time_limit = time_limit
         self.global_pruning = global_pruning
-        self.sequential_post_optimization = sequential_post_optimization
+        self.post_optimization = post_optimization
         self.head_type = head_type
         self.loss = loss
         self.marginal_probability_calibration = marginal_probability_calibration
@@ -201,7 +201,7 @@ class BoomerRegressor(RegressionRuleLearner, RegressorMixin):
                  max_rules: Optional[int] = None,
                  time_limit: Optional[int] = None,
                  global_pruning: Optional[str] = None,
-                 sequential_post_optimization: Optional[str] = None,
+                 post_optimization: Optional[str] = None,
                  head_type: Optional[str] = None,
                  loss: Optional[str] = None,
                  output_sampling: Optional[str] = None,
@@ -217,74 +217,72 @@ class BoomerRegressor(RegressionRuleLearner, RegressorMixin):
                  parallel_statistic_update: Optional[str] = None,
                  parallel_prediction: Optional[str] = None):
         """
-        :param random_state:                    The seed to be used by RNGs. Must be at least 1
-        :param statistic_format:                The format to be used for representing gradients and Hessians. Must be
-                                                'dense', 'sparse' or 'auto', if the most suitable format should be
-                                                chosen automatically
-        :param statistic_type:                  The data type to be used for representing gradients and Hessians. Must
-                                                be '32-bit' or '64-bit'
-        :param default_rule:                    Whether a default rule should be induced or not. Must be 'true', 'false'
-                                                or 'auto', if it should be decided automatically whether a default rule
-                                                should be induced or not
-        :param rule_induction:                  The algorithm that should be used for the induction of individual rules.
-                                                Must be 'top-down-greedy' or 'top-down-beam-search'. For additional
-                                                options refer to the documentation
-        :param max_rules:                       The maximum number of rules to be learned (including the default rule).
-                                                Must be at least 1 or 0, if the number of rules should not be restricted
-        :param time_limit:                      The duration in seconds after which the induction of rules should be
-                                                canceled. Must be at least 1 or 0, if no time limit should be set
-        :param global_pruning:                  The strategy that should be used for pruning entire rules. Must be
-                                                'pre-pruning', 'post-pruning' or 'none', if no pruning should be used.
-                                                For additional options refer to the documentation
-        :param sequential_post_optimization:    Whether each rule in a previously learned model should be optimized by
-                                                being relearned in the context of the other rules or not. Must be 'true'
-                                                or 'false'. For additional options refer to the documentation
-        :param head_type:                       The type of the rule heads that should be used. Must be 'single',
-                                                'complete', 'partial-fixed', 'partial-dynamic' or 'auto', if the type of
-                                                the heads should be chosen automatically. For additional options refer
-                                                to the documentation
-        :param loss:                            The loss function to be minimized. Must be 'squared-error-decomposable'
-                                                or 'squared-error-non-decomposable'
-        :param output_sampling:                 The strategy that should be used to sample from the available outputs
-                                                whenever a new rule is learned. Must be 'round-robin',
-                                                'without-replacement' or 'none', if no sampling should be used. For
-                                                additional options refer to the documentation
-        :param instance_sampling:               The strategy that should be used to sample from the available the
-                                                training examples whenever a new rule is learned. Must be
-                                                'with-replacement', 'without-replacement' or 'none', if no sampling
-                                                should be used. For additional options refer to the documentation
-        :param feature_sampling:                The strategy that is used to sample from the available features whenever
-                                                a rule is refined. Must be 'without-replacement' or 'none', if no
-                                                sampling should be used. For additional options refer to the
-                                                documentation
-        :param holdout:                         The name of the strategy that should be used to create a holdout set.
-                                                Must be 'random' or 'none', if no holdout set should be used. If set to
-                                                'auto', the most suitable strategy is chosen automatically depending on
-                                                whether a holdout set is needed and depending on the loss function. For
-                                                additional options refer to the documentation
-        :param feature_binning:                 The strategy that should be used to assign examples to bins based on
-                                                their feature values. Must be 'auto', 'equal-width', 'equal-frequency'
-                                                or 'none', if no feature binning should be used. If set to 'auto', the
-                                                most suitable strategy is chosen automatically, depending on the
-                                                characteristics of the feature matrix. For additional options refer to
-                                                the documentation
-        :param rule_pruning:                    The strategy that should be used to prune individual rules. Must be
-                                                'irep' or 'none', if no pruning should be used
-        :param shrinkage:                       The shrinkage parameter, a.k.a. the "learning rate", that should be used
-                                                to shrink the weight of individual rules. Must be in (0, 1]
-        :param l1_regularization_weight:        The weight of the L1 regularization. Must be at least 0
-        :param l2_regularization_weight:        The weight of the L2 regularization. Must be at least 0
-        :param parallel_rule_refinement:        Whether potential refinements of rules should be searched for in
-                                                parallel or not. Must be 'true', 'false' or 'auto', if the most suitable
-                                                strategy should be chosen automatically depending on the loss function.
-                                                For additional options refer to the documentation
-        :param parallel_statistic_update:       Whether the gradients and Hessians for different examples should be
-                                                updated in parallel or not. Must be 'true', 'false' or 'auto', if the
-                                                most suitable strategy should be chosen automatically, depending on the
-                                                loss function. For additional options refer to the documentation
-        :param parallel_prediction:             Whether predictions for different examples should be obtained in
-                                                parallel or not. Must be 'true' or 'false'. For additional options refer
-                                                to the documentation
+        :param random_state:                The seed to be used by RNGs. Must be at least 1
+        :param statistic_format:            The format to be used for representing gradients and Hessians. Must be
+                                            'dense', 'sparse' or 'auto', if the most suitable format should be chosen
+                                            automatically
+        :param statistic_type:              The data type to be used for representing gradients and Hessians. Must be
+                                            '32-bit' or '64-bit'
+        :param default_rule:                Whether a default rule should be induced or not. Must be 'true', 'false' or
+                                            'auto', if it should be decided automatically whether a default rule should
+                                            be induced or not
+        :param rule_induction:              The algorithm that should be used for the induction of individual rules.
+                                            Must be 'top-down-greedy' or 'top-down-beam-search'. For additional options
+                                            refer to the documentation
+        :param max_rules:                   The maximum number of rules to be learned (including the default rule). Must
+                                            be at least 1 or 0, if the number of rules should not be restricted
+        :param time_limit:                  The duration in seconds after which the induction of rules should be
+                                            canceled. Must be at least 1 or 0, if no time limit should be set
+        :param global_pruning:              The strategy that should be used for pruning entire rules. Must be
+                                            'pre-pruning', 'post-pruning' or 'none', if no pruning should be used. For
+                                            additional options refer to the documentation
+        :param post_optimization:           Whether each rule in a previously learned model should be optimized by being
+                                            relearned in the context of the other rules or not. Must be 'true' or
+                                            'false'. For additional options refer to the documentation
+        :param head_type:                   The type of the rule heads that should be used. Must be 'single',
+                                            'complete', 'partial-fixed', 'partial-dynamic' or 'auto', if the type of the
+                                            heads should be chosen automatically. For additional options refer to the
+                                            documentation
+        :param loss:                        The loss function to be minimized. Must be 'squared-error-decomposable' or
+                                            'squared-error-non-decomposable'
+        :param output_sampling:             The strategy that should be used to sample from the available outputs
+                                            whenever a new rule is learned. Must be 'round-robin', 'without-replacement'
+                                            or 'none', if no sampling should be used. For additional options refer to
+                                            the documentation
+        :param instance_sampling:           The strategy that should be used to sample from the available the training
+                                            examples whenever a new rule is learned. Must be 'with-replacement',
+                                            'without-replacement' or 'none', if no sampling should be used. For
+                                            additional options refer to the documentation
+        :param feature_sampling:            The strategy that is used to sample from the available features whenever a
+                                            rule is refined. Must be 'without-replacement' or 'none', if no sampling
+                                            should be used. For additional options refer to the documentation
+        :param holdout:                     The name of the strategy that should be used to create a holdout set. Must
+                                            be 'random' or 'none', if no holdout set should be used. If set to 'auto',
+                                            the most suitable strategy is chosen automatically depending on whether a
+                                            holdout set is needed and depending on the loss function. For additional
+                                            options refer to the documentation
+        :param feature_binning:             The strategy that should be used to assign examples to bins based on their
+                                            feature values. Must be 'auto', 'equal-width', 'equal-frequency' or 'none',
+                                            if no feature binning should be used. If set to 'auto', the most suitable
+                                            strategy is chosen automatically, depending on the characteristics of the
+                                            feature matrix. For additional options refer to the documentation
+        :param rule_pruning:                The strategy that should be used to prune individual rules. Must be 'irep'
+                                            or 'none', if no pruning should be used
+        :param shrinkage:                   The shrinkage parameter, a.k.a. the "learning rate", that should be used to
+                                            shrink the weight of individual rules. Must be in (0, 1]
+        :param l1_regularization_weight:    The weight of the L1 regularization. Must be at least 0
+        :param l2_regularization_weight:    The weight of the L2 regularization. Must be at least 0
+        :param parallel_rule_refinement:    Whether potential refinements of rules should be searched for in parallel or
+                                            not. Must be 'true', 'false' or 'auto', if the most suitable strategy should
+                                            be chosen automatically depending on the loss function. For additional
+                                            options refer to the documentation
+        :param parallel_statistic_update:   Whether the gradients and Hessians for different examples should be updated
+                                            in parallel or not. Must be 'true', 'false' or 'auto', if the most suitable
+                                            strategy should be chosen automatically, depending on the loss function. For
+                                            additional options refer to the documentation
+        :param parallel_prediction:         Whether predictions for different examples should be obtained in parallel or
+                                            not. Must be 'true' or 'false'. For additional options refer to the
+                                            documentation
         """
         super().__init__(feature_format, output_format, prediction_format)
         self.random_state = random_state
@@ -295,7 +293,7 @@ class BoomerRegressor(RegressionRuleLearner, RegressorMixin):
         self.max_rules = max_rules
         self.time_limit = time_limit
         self.global_pruning = global_pruning
-        self.sequential_post_optimization = sequential_post_optimization
+        self.post_optimization = post_optimization
         self.head_type = head_type
         self.loss = loss
         self.output_sampling = output_sampling
