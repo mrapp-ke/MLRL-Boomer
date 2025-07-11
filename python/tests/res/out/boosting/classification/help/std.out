@@ -27,6 +27,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--binary-predictor BINARY_PREDICTOR]
                     [--parallel-statistic-update PARALLEL_STATISTIC_UPDATE]
                     [--parameter-load-dir PARAMETER_LOAD_DIR]
                     [--parameter-save-dir PARAMETER_SAVE_DIR]
+                    [--post-optimization POST_OPTIMIZATION]
                     [--predict-for-test-data PREDICT_FOR_TEST_DATA]
                     [--predict-for-training-data PREDICT_FOR_TRAINING_DATA]
                     [--prediction-format PREDICTION_FORMAT]
@@ -46,9 +47,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--binary-predictor BINARY_PREDICTOR]
                     [--problem-type PROBLEM_TYPE]
                     [--random-state RANDOM_STATE]
                     [--rule-induction RULE_INDUCTION]
-                    [--rule-pruning RULE_PRUNING]
-                    [--sequential-post-optimization SEQUENTIAL_POST_OPTIMIZATION]
-                    [--shrinkage SHRINKAGE]
+                    [--rule-pruning RULE_PRUNING] [--shrinkage SHRINKAGE]
                     [--sparse-feature-value SPARSE_FEATURE_VALUE]
                     [--statistic-format STATISTIC_FORMAT]
                     [--statistic-type STATISTIC_TYPE]
@@ -225,6 +224,11 @@ options:
                         The path to the directory where configuration files,
                         which specify the parameters used by the algorithm,
                         should be saved.
+  --post-optimization POST_OPTIMIZATION
+                        The method that should be used for post-optimization
+                        of a previous learned model. Must be one of {"none",
+                        "sequential"}. For additional options refer to the
+                        documentation.
   --predict-for-test-data PREDICT_FOR_TEST_DATA
                         Whether predictions should be obtained for the test
                         data or not. Must be one of {"false", "true"}.
@@ -310,11 +314,6 @@ options:
   --rule-pruning RULE_PRUNING
                         The name of the strategy to be used for pruning
                         individual rules. Must be one of {"irep", "none"}.
-  --sequential-post-optimization SEQUENTIAL_POST_OPTIMIZATION
-                        Whether each rule in a previously learned model should
-                        be optimized by being relearned in the context of the
-                        other rules or not. Must be one of {"false", "true"}.
-                        For additional options refer to the documentation.
   --shrinkage SHRINKAGE
                         The shrinkage parameter, a.k.a. the learning rate, to
                         be used. Must be in (0, 1].

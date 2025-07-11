@@ -740,30 +740,30 @@ class TimeStoppingCriterionParameter(IntParameter):
             config.use_time_stopping_criterion().set_time_limit(value)
 
 
-class SequentialPostOptimizationParameter(NominalParameter):
+class PostOptimizationParameter(NominalParameter):
     """
-    A parameter that allows to configure whether each rule in a previously learned model should be optimized by being
-    relearned in the context of the other rules or not.
+    A parameter that allows to configure the method that should be used for post-optimization of a previously learned
+    model.
     """
+
+    POST_OPTIMIZATION_SEQUENTIAL = 'sequential'
 
     OPTION_NUM_ITERATIONS = 'num_iterations'
 
     OPTION_REFINE_HEADS = 'refine_heads'
 
     def __init__(self):
-        super().__init__(
-            name='sequential_post_optimization',
-            description='Whether each rule in a previously learned model should be optimized by being relearned in the '
-            + 'context of the other rules or not')
-        self.add_value(name=BooleanOption.FALSE, mixin=NoSequentialPostOptimizationMixin)
-        self.add_value(name=BooleanOption.TRUE,
+        super().__init__(name='post_optimization',
+                         description='The method that should be used for post-optimization of a previous learned model')
+        self.add_value(name=NONE, mixin=NoSequentialPostOptimizationMixin)
+        self.add_value(name=self.POST_OPTIMIZATION_SEQUENTIAL,
                        mixin=SequentialPostOptimizationMixin,
                        options={self.OPTION_NUM_ITERATIONS, self.OPTION_REFINE_HEADS, OPTION_RESAMPLE_FEATURES})
 
     def _configure(self, config, value: str, options: Options):
-        if value == BooleanOption.FALSE:
+        if value == NONE:
             config.use_no_sequential_post_optimization()
-        elif value == BooleanOption.TRUE:
+        elif value == self.POST_OPTIMIZATION_SEQUENTIAL:
             conf = config.use_sequential_post_optimization()
             conf.set_num_iterations(options.get_int(self.OPTION_NUM_ITERATIONS, conf.get_num_iterations()))
             conf.set_refine_heads(options.get_bool(self.OPTION_REFINE_HEADS, conf.are_heads_refined()))
@@ -785,5 +785,5 @@ RULE_LEARNER_PARAMETERS = {
     ParallelPredictionParameter(),
     SizeStoppingCriterionParameter(),
     TimeStoppingCriterionParameter(),
-    SequentialPostOptimizationParameter()
+    PostOptimizationParameter()
 }
