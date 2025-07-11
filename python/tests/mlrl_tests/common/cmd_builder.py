@@ -7,7 +7,7 @@ from typing import List, Optional
 from .datasets import Dataset
 
 from mlrl.common.config.parameters import BINNING_EQUAL_WIDTH, SAMPLING_WITHOUT_REPLACEMENT, \
-    PartitionSamplingParameter, RuleInductionParameter, RulePruningParameter
+    PartitionSamplingParameter, PostOptimizationParameter, RuleInductionParameter, RulePruningParameter
 from mlrl.common.learners import SparsePolicy
 
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.extension import OPTION_FIRST_FOLD, OPTION_NUM_FOLDS, \
@@ -472,15 +472,18 @@ class CmdBuilder:
 
         return self
 
-    def sequential_post_optimization(self, sequential_post_optimization: bool = True):
+    def post_optimization(self,
+                          post_optimization: Optional[str] = PostOptimizationParameter.POST_OPTIMIZATION_SEQUENTIAL):
         """
-        Configures whether the algorithm should use sequential post-optimization or not.
+        Configures the post-optimization method to be used by the algorithm.
 
-        :param sequential_post_optimization:    True, if sequential post-optimization should be used, False otherwise
-        :return:                                The builder itself
+        :param post_optimization:   The name of the method that should be used for post-optimzation
+        :return:                    The builder itself
         """
-        self.args.append('--sequential-post-optimization')
-        self.args.append(str(sequential_post_optimization).lower())
+        if post_optimization:
+            self.args.append('--post-optimization')
+            self.args.append(post_optimization)
+
         return self
 
     def holdout(self, holdout: Optional[str] = PartitionSamplingParameter.PARTITION_SAMPLING_RANDOM):
