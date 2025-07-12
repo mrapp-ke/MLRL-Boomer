@@ -70,7 +70,7 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
         if value and result_dir:
             return [
                 CsvFileSink(directory=result_dir,
-                            create_directory=OutputExtension.CREATE_OUTPUT_DIR.get_value(args),
+                            create_directory=OutputExtension.CREATE_DIRS.get_value(args),
                             options=options)
             ]
         return []
@@ -138,7 +138,7 @@ class JointProbabilityCalibrationModelExtension(Extension):
         if value and result_dir:
             sinks.append(
                 CsvFileSink(directory=result_dir,
-                            create_directory=OutputExtension.CREATE_OUTPUT_DIR.get_value(args),
+                            create_directory=OutputExtension.CREATE_DIRS.get_value(args),
                             options=options))
 
         if sinks:

@@ -74,7 +74,7 @@ class RuleModelAsTextExtension(Extension):
         if value and result_dir:
             return [
                 TextFileSink(directory=result_dir,
-                             create_directory=OutputExtension.CREATE_OUTPUT_DIR.get_value(args),
+                             create_directory=OutputExtension.CREATE_DIRS.get_value(args),
                              options=options)
             ]
         return []
