@@ -30,12 +30,11 @@ class LabelVectorExtension(Extension):
         true_options={LabelVectors.OPTION_SPARSE},
     )
 
-    STORE_LABEL_VECTORS = BoolArgument(
-        '--store-label-vectors',
+    SAVE_LABEL_VECTORS = BoolArgument(
+        '--save-label-vectors',
         default=False,
-        description='Whether the unique label vectors contained in the training data should be written into output '
-        + 'files or not. Does only have an effect if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is '
-        + 'specified.',
+        description='Whether the unique label vectors contained in the training data should be written to output files '
+        + 'or not.',
         true_options={LabelVectors.OPTION_SPARSE},
     )
 
@@ -49,7 +48,7 @@ class LabelVectorExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {self.PRINT_LABEL_VECTORS, self.STORE_LABEL_VECTORS}
+        return {self.PRINT_LABEL_VECTORS, self.SAVE_LABEL_VECTORS}
 
     def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         print_all = OutputExtension.PRINT_ALL.get_value(args)
@@ -59,11 +58,11 @@ class LabelVectorExtension(Extension):
             experiment_builder.label_vector_writer.add_sinks(LogSink(options))
 
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
-        store_all = OutputExtension.STORE_ALL.get_value(args)
-        store_label_vectors, options = self.STORE_LABEL_VECTORS.get_value(args, default=store_all)
+        save_all = OutputExtension.SAVE_ALL.get_value(args)
+        save_label_vectors, options = self.SAVE_LABEL_VECTORS.get_value(args, default=save_all)
         output_directory = OutputExtension.OUTPUT_DIR.get_value(args)
 
-        if store_label_vectors and output_directory:
+        if save_label_vectors and output_directory:
             create_output_directory = OutputExtension.CREATE_OUTPUT_DIR.get_value(args)
             experiment_builder.label_vector_writer.add_sinks(
                 CsvFileSink(directory=output_directory, create_directory=create_output_directory, options=options))
