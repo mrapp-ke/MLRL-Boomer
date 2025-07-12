@@ -77,12 +77,12 @@ class TabularDataCharacteristicExtension(Extension):
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputExtension.SAVE_ALL.get_value(args)
         save_data_characteristics, options = self.SAVE_DATA_CHARACTERISTICS.get_value(args, default=save_all)
-        output_directory = OutputExtension.OUTPUT_DIR.get_value(args)
+        result_directory = OutputExtension.RESULT_DIR.get_value(args)
 
-        if save_data_characteristics and output_directory:
+        if save_data_characteristics and result_directory:
             create_output_directory = OutputExtension.CREATE_OUTPUT_DIR.get_value(args)
             experiment_builder.data_characteristics_writer.add_sinks(
-                CsvFileSink(directory=output_directory, create_directory=create_output_directory, options=options))
+                CsvFileSink(directory=result_directory, create_directory=create_output_directory, options=options))
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """

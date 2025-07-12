@@ -47,9 +47,9 @@ class CmdBuilder:
         self.save_evaluation_results(True)
 
     @property
-    def output_dir(self) -> str:
+    def result_dir(self) -> str:
         """
-        The path to the directory where output files should be stored.
+        The path to the directory where experimental results should be stored.
         """
         return path.join('python', 'tests', 'res', 'tmp', 'results')
 
@@ -71,7 +71,7 @@ class CmdBuilder:
         args.extend(['--log-level', 'debug'])
         args.extend(['--data-dir', path.join('python', 'tests', 'res', 'data')])
         args.extend(['--dataset', self.dataset])
-        args.extend(['--output-dir', self.output_dir])
+        args.extend(['--result-dir', self.result_dir])
         return args + self.args
 
     def set_show_help(self, show_help: bool = True):

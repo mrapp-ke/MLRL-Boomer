@@ -174,16 +174,16 @@ As an alternative to storing the models learned by an algorithm, the algorithmic
 
 To provide valuable insights into the models learned by an algorithm, the predictions they provide, or the data they have been derived from, a wide variety of experimental results can be written to output files or printed on the console. If the results should be written to files, it is necessary to specify an output directory:
 
-- `--output-dir` An absolute or relative path to the directory where experimental results should be saved.
+- `--result-dir` An absolute or relative path to the directory where experimental results should be saved.
 
 - `--create-output-dir` (Default value = `true`)
 
-  - `true` The directories specified via the arguments `--output-dir`, `--model-save-dir` and `--parameter-save-dir` are automatically created if they do not already exist.
+  - `true` The directories specified via the arguments `--result-dir`, `--model-save-dir` and `--parameter-save-dir` are automatically created if they do not already exist.
   - `false` The directories are not created automatically.
 
 - `--wipe-output-dir` (Default value = `auto`)
 
-  - `true` All files within the directory specified via the argument `--output-dir` are deleted before the experiment starts.
+  - `true` All files within the directory specified via the argument `--result-dir` are deleted before the experiment starts.
   - `false` No files within the directory are deleted, but existing files may be overwritten by the experiment.
 
 - `--exit-on-error` (Default value = `false`)

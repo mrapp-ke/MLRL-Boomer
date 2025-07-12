@@ -42,8 +42,8 @@ class OutputExtension(Extension):
                     if path.isfile(file_path):
                         unlink(file_path)
 
-    OUTPUT_DIR = StringArgument(
-        '--output-dir',
+    RESULT_DIR = StringArgument(
+        '--result-dir',
         default='results',
         description='The path to the directory where experimental results should be saved.',
     )
@@ -51,14 +51,14 @@ class OutputExtension(Extension):
     CREATE_OUTPUT_DIR = BoolArgument(
         '--create-output-dir',
         default=True,
-        description='Whether the directory specified via the argument ' + OUTPUT_DIR.name + ' should automatically be '
+        description='Whether the directory specified via the argument ' + RESULT_DIR.name + ' should automatically be '
         + 'created, if it does not exist, or not.',
     )
 
     WIPE_OUTPUT_DIR = BoolArgument(
         '--wipe-output-dir',
         default=True,
-        description='Whether all files in the directory specified via the argument ' + OUTPUT_DIR.name + ' should be '
+        description='Whether all files in the directory specified via the argument ' + RESULT_DIR.name + ' should be '
         + 'deleted before an experiment starts or not.',
     )
 
@@ -84,15 +84,15 @@ class OutputExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {self.OUTPUT_DIR, self.CREATE_OUTPUT_DIR, self.WIPE_OUTPUT_DIR, self.EXIT_ON_ERROR}
+        return {self.RESULT_DIR, self.CREATE_OUTPUT_DIR, self.WIPE_OUTPUT_DIR, self.EXIT_ON_ERROR}
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
         experiment_builder.set_exit_on_error(self.EXIT_ON_ERROR.get_value(args))
-        output_dir = self.OUTPUT_DIR.get_value(args)
+        result_dir = self.RESULT_DIR.get_value(args)
 
-        if output_dir and self.WIPE_OUTPUT_DIR.get_value(args):
-            listener = OutputExtension.WipeDirectoryListener(output_dir)
+        if result_dir and self.WIPE_OUTPUT_DIR.get_value(args):
+            listener = OutputExtension.WipeDirectoryListener(result_dir)
             experiment_builder.add_listeners(listener)

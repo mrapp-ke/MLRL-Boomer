@@ -65,7 +65,7 @@ In addition to the mandatory arguments that must be provided to the command line
    mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --output-dir /path/to/output/
+       --result-dir /path/to/output/
    ```
 ````
 
@@ -74,7 +74,7 @@ In addition to the mandatory arguments that must be provided to the command line
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --output-dir /path/to/output/
+       --result-dir /path/to/output/
    ```
 ````
 
