@@ -184,6 +184,8 @@ As an alternative to storing the models learned by an algorithm, the algorithmic
 
 To provide valuable insights into the models learned by an algorithm, the predictions they provide, or the data they have been derived from, a wide variety of experimental results can be written to output files or printed on the console. If the results should be written to files, it is necessary to specify an output directory:
 
+- `--base-dir` (Default value = `experiments/<yyyy-mm-dd_HH-MM>`, e.g., `experiments/2025-07-13_01-20`, depending on the current date and time) An absolute or relative path to a directory. If relative paths to directories, where files should be saved, are given, they are considered relative to the directory specified via this argument.
+
 - `--result-dir` (Default value = `result`) An absolute or relative path to the directory where experimental results should be saved.
 
 - `--create-dirs` (Default value = `true`)
