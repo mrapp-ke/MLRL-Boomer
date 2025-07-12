@@ -58,12 +58,12 @@ class GroundTruthExtension(Extension):
     def __configure_arff_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputExtension.SAVE_ALL.get_value(args)
         save_ground_truth, options = self.SAVE_GROUND_TRUTH.get_value(args, default=save_all)
-        output_directory = OutputExtension.OUTPUT_DIR.get_value(args)
+        result_directory = OutputExtension.RESULT_DIR.get_value(args)
 
-        if save_ground_truth and output_directory:
-            create_output_directory = OutputExtension.CREATE_OUTPUT_DIR.get_value(args)
+        if save_ground_truth and result_directory:
+            create_directory = OutputExtension.CREATE_DIRS.get_value(args)
             experiment_builder.ground_truth_writer.add_sinks(
-                ArffFileSink(directory=output_directory, create_directory=create_output_directory, options=options))
+                ArffFileSink(directory=result_directory, create_directory=create_directory, options=options))
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """

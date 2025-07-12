@@ -51,6 +51,6 @@ class ModelOutputExtension(Extension):
             model_save_dir = self.MODEL_SAVE_DIR.get_value(args)
 
             if model_save_dir:
-                create_output_directory = OutputExtension.CREATE_OUTPUT_DIR.get_value(args)
+                create_directory = OutputExtension.CREATE_DIRS.get_value(args)
                 experiment_builder.model_writer.add_sinks(
-                    PickleFileSink(directory=model_save_dir, create_directory=create_output_directory))
+                    PickleFileSink(directory=model_save_dir, create_directory=create_directory))

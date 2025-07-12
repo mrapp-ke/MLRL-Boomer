@@ -58,12 +58,12 @@ class PredictionExtension(Extension):
     def __configure_arff_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputExtension.SAVE_ALL.get_value(args)
         save_predictions, options = self.SAVE_PREDICTIONS.get_value(args, default=save_all)
-        output_directory = OutputExtension.OUTPUT_DIR.get_value(args)
+        result_directory = OutputExtension.RESULT_DIR.get_value(args)
 
-        if save_predictions and output_directory:
-            create_output_directory = OutputExtension.CREATE_OUTPUT_DIR.get_value(args)
+        if save_predictions and result_directory:
+            create_directory = OutputExtension.CREATE_DIRS.get_value(args)
             experiment_builder.prediction_writer.add_sinks(
-                ArffFileSink(directory=output_directory, create_directory=create_output_directory, options=options))
+                ArffFileSink(directory=result_directory, create_directory=create_directory, options=options))
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
