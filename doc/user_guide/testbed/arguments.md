@@ -181,7 +181,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
   - `true` The directories specified via the arguments `--result-dir`, `--model-save-dir` and `--parameter-save-dir` are automatically created if they do not already exist.
   - `false` The directories are not created automatically.
 
-- `--wipe-output-dir` (Default value = `auto`)
+- `--wipe-result-dir` (Default value = `auto`)
 
   - `true` All files within the directory specified via the argument `--result-dir` are deleted before the experiment starts.
   - `false` No files within the directory are deleted, but existing files may be overwritten by the experiment.
