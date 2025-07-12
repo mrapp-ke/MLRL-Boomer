@@ -63,9 +63,9 @@ class LabelVectorExtension(Extension):
         result_directory = OutputExtension.RESULT_DIR.get_value(args)
 
         if save_label_vectors and result_directory:
-            create_output_directory = OutputExtension.CREATE_OUTPUT_DIR.get_value(args)
+            create_directory = OutputExtension.CREATE_DIRS.get_value(args)
             experiment_builder.label_vector_writer.add_sinks(
-                CsvFileSink(directory=result_directory, create_directory=create_output_directory, options=options))
+                CsvFileSink(directory=result_directory, create_directory=create_directory, options=options))
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """

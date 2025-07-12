@@ -176,7 +176,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--result-dir` An absolute or relative path to the directory where experimental results should be saved.
 
-- `--create-output-dir` (Default value = `true`)
+- `--create-dirs` (Default value = `true`)
 
   - `true` The directories specified via the arguments `--result-dir`, `--model-save-dir` and `--parameter-save-dir` are automatically created if they do not already exist.
   - `false` The directories are not created automatically.
