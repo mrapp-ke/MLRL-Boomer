@@ -79,7 +79,7 @@ jobs:
           git fetch
           (git switch $BRANCH_NAME && git pull) || git switch -c $BRANCH_NAME
           git stash apply || (git checkout --theirs . && git add .)
-          git stash drop
+          git stash drop || true
           git add python/tests/res/out/**/*
           git diff --cached --quiet || git commit -m "Adjust expected output of integration tests."
           git push -u origin HEAD
