@@ -55,8 +55,8 @@ class OutputExtension(Extension):
         + 'created, if it does not exist, or not.',
     )
 
-    WIPE_OUTPUT_DIR = BoolArgument(
-        '--wipe-output-dir',
+    WIPE_RESULT_DIR = BoolArgument(
+        '--wipe-result-dir',
         default=True,
         description='Whether all files in the directory specified via the argument ' + RESULT_DIR.name + ' should be '
         + 'deleted before an experiment starts or not.',
@@ -84,7 +84,7 @@ class OutputExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {self.RESULT_DIR, self.CREATE_OUTPUT_DIR, self.WIPE_OUTPUT_DIR, self.EXIT_ON_ERROR}
+        return {self.RESULT_DIR, self.CREATE_OUTPUT_DIR, self.WIPE_RESULT_DIR, self.EXIT_ON_ERROR}
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
@@ -93,6 +93,6 @@ class OutputExtension(Extension):
         experiment_builder.set_exit_on_error(self.EXIT_ON_ERROR.get_value(args))
         result_dir = self.RESULT_DIR.get_value(args)
 
-        if result_dir and self.WIPE_OUTPUT_DIR.get_value(args):
+        if result_dir and self.WIPE_RESULT_DIR.get_value(args):
             listener = OutputExtension.WipeDirectoryListener(result_dir)
             experiment_builder.add_listeners(listener)
