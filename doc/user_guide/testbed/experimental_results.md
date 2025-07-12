@@ -4,14 +4,14 @@
 
 One of the most important features provided by the package mlrl-testbed is the ability to output a wide variety of experimental results that provide valuable insights into the models learned by a machine learning algorithm, the predictions it provides, and the data it has been trained on.
 
-Each of these information can either be printed to the console or saved to output files. The latter requires to provide a directory, where the output files should be saved. As shown in the examples below, the path to this directory can be specified via the argument `--output-dir`. However, this argument is optional. If not given explicitly, the default value `results` is used.
+Each of these information can either be printed to the console or saved to output files. The latter requires to provide a directory, where the output files should be saved. As shown in the examples below, the path to this directory can be specified via the argument `--result-dir`. However, this argument is optional. If not given explicitly, the default value `results` is used.
 
 ```{note}
 The path to the directory, where experimental results should be saved, can be either absolute or relative to the working directory.
 ```
 
 ```{tip}
-By default, the directory specified via the argument `--output-dir` is created automatically if it does not exist. This functionality can be turned off via the argument `--create-output-dir false`. Moreover, all files in the specified directory are usually deleted before an experiment starts. By providing the argument `--wipe-output-dir false`, the deletion of files can be prevented.
+By default, the directory specified via the argument `--result-dir` is created automatically if it does not exist. This functionality can be turned off via the argument `--create-output-dir false`. Moreover, all files in the specified directory are usually deleted before an experiment starts. By providing the argument `--wipe-output-dir false`, the deletion of files can be prevented.
 ```
 
 ```{tip}
@@ -49,7 +49,7 @@ Accordingly, the argument `--save-evaluation` allows to enable or disable saving
    mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --output-dir /path/to/results/ \
+       --result-dir /path/to/results/ \
        --save-evaluation true
    ```
 ````
@@ -59,7 +59,7 @@ Accordingly, the argument `--save-evaluation` allows to enable or disable saving
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --output-dir /path/to/results/ \
+       --result-dir /path/to/results/ \
        --save-evaluation true
    ```
 ````
@@ -119,7 +119,7 @@ Alternatively, the argument `--save-predictions` and `--save-ground-truth` can b
    mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --output-dir /path/to/results/ \
+       --result-dir /path/to/results/ \
        --save-predictions true \
        --save-ground-truth true
    ```
@@ -130,7 +130,7 @@ Alternatively, the argument `--save-predictions` and `--save-ground-truth` can b
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --output-dir /path/to/results/ \
+       --result-dir /path/to/results/ \
        --save-predictions true \
        --save-ground-truth true
    ```
@@ -189,7 +189,7 @@ Alternatively, they statistics can be written to a [.csv](https://en.wikipedia.o
    mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --output-dir /path/to/results/ \
+       --result-dir /path/to/results/ \
        --save-prediction-characteristics true
    ```
 ````
@@ -199,7 +199,7 @@ Alternatively, they statistics can be written to a [.csv](https://en.wikipedia.o
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --output-dir /path/to/results/ \
+       --result-dir /path/to/results/ \
        --save-prediction-characteristics true
    ```
 ````
@@ -262,7 +262,7 @@ If you prefer to write the statistics into a [.csv](https://en.wikipedia.org/wik
    ```text
    mlrl-testbed mlrl.boosting --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --output-dir /path/to/results/ \
+       --result-dir /path/to/results/ \
        --save-data-characteristics true
    ```
 ````
@@ -272,7 +272,7 @@ If you prefer to write the statistics into a [.csv](https://en.wikipedia.org/wik
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --output-dir /path/to/results/ \
+       --result-dir /path/to/results/ \
        --save-data-characteristics true
    ```
 ````
@@ -407,7 +407,7 @@ The above command results in a tabular representation of the characteristics bei
    mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --output-dir /path/to/results/ \
+       --result-dir /path/to/results/ \
        --save-model-characteristics true
    ```
 ````
@@ -417,7 +417,7 @@ The above command results in a tabular representation of the characteristics bei
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --output-dir /path/to/results/ \
+       --result-dir /path/to/results/ \
        --save-model-characteristics true
    ```
 ````
@@ -471,7 +471,7 @@ Alternatively, by using the argument `--save-rules`, a textual representation of
    mlrl-testbed mlrl.boosting \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --output-dir /path/to/results/ \
+       --result-dir /path/to/results/ \
        --save-rules true
    ```
 ````
@@ -481,7 +481,7 @@ Alternatively, by using the argument `--save-rules`, a textual representation of
    mlrl-testbed mlrl.seco \
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
-       --output-dir /path/to/results/ \
+       --result-dir /path/to/results/ \
        --save-rules true
    ```
 ````

@@ -33,8 +33,7 @@ class RuleModelCharacteristicsExtension(Extension):
     SAVE_MODEL_CHARACTERISTICS = BoolArgument(
         '--save-model-characteristics',
         default=False,
-        description='Whether the characteristics of models should be written to output files or not. Does only have an '
-        + 'effect if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
+        description='Whether the characteristics of models should be written to output files or not.',
     )
 
     def __init__(self, *dependencies: Extension):
@@ -56,11 +55,11 @@ class RuleModelCharacteristicsExtension(Extension):
 
     def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
         value = self.SAVE_MODEL_CHARACTERISTICS.get_value(args, default=OutputExtension.SAVE_ALL.get_value(args))
-        output_dir = OutputExtension.OUTPUT_DIR.get_value(args)
+        result_dir = OutputExtension.RESULT_DIR.get_value(args)
 
-        if value and output_dir:
+        if value and result_dir:
             return [
-                CsvFileSink(directory=output_dir, create_directory=OutputExtension.CREATE_OUTPUT_DIR.get_value(args))
+                CsvFileSink(directory=result_dir, create_directory=OutputExtension.CREATE_OUTPUT_DIR.get_value(args))
             ]
         return []
 

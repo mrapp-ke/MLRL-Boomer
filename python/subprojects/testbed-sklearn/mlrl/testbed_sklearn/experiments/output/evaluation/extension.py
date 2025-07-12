@@ -57,8 +57,7 @@ class EvaluationExtension(Extension):
     SAVE_EVALUATION_RESULTS = BoolArgument(
         '--save-evaluation',
         default=False,
-        description='Whether the evaluation results should be written to output files or not. Does only have an effect'
-        + 'if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
+        description='Whether evaluation results should be written to output files or not.',
         true_options={
             EvaluationResult.OPTION_ENABLE_ALL, EvaluationResult.OPTION_HAMMING_LOSS,
             EvaluationResult.OPTION_HAMMING_ACCURACY, EvaluationResult.OPTION_SUBSET_ZERO_ONE_LOSS,
@@ -102,12 +101,12 @@ class EvaluationExtension(Extension):
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputExtension.SAVE_ALL.get_value(args)
         save_evaluation_results, options = self.SAVE_EVALUATION_RESULTS.get_value(args, default=save_all)
-        output_directory = OutputExtension.OUTPUT_DIR.get_value(args)
+        result_directory = OutputExtension.RESULT_DIR.get_value(args)
 
-        if save_evaluation_results and output_directory:
+        if save_evaluation_results and result_directory:
             create_output_directory = OutputExtension.CREATE_OUTPUT_DIR.get_value(args)
             experiment_builder.evaluation_writer.add_sinks(
-                CsvFileSink(directory=output_directory, create_directory=create_output_directory, options=options))
+                CsvFileSink(directory=result_directory, create_directory=create_output_directory, options=options))
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
