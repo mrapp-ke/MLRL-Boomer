@@ -44,6 +44,7 @@ class OutputExtension(Extension):
 
     OUTPUT_DIR = StringArgument(
         '--output-dir',
+        default='results',
         description='The path to the directory where experimental results should be saved.',
     )
 
@@ -73,8 +74,8 @@ class OutputExtension(Extension):
         description='Whether all output data should be printed on the console or not.',
     )
 
-    STORE_ALL = BoolArgument(
-        '--store-all',
+    SAVE_ALL = BoolArgument(
+        '--save-all',
         default=False,
         description='Whether all output data should be written to files or not.',
     )
