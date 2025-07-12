@@ -47,7 +47,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: doc/_build/html/.doctrees
-          key: cache-doctrees-${{ inputs.sphinx_builder }}
+          key: cache-doctrees-${{ inputs.sphinx_builder }}-${{ github.run_id }}
+          restore-keys: |
+            cache-doctrees-${{ inputs.sphinx_builder }}
       - name: Install Doxygen
         uses: ssciwr/doxygen-install@v1
       - name: Generate C++ Apidoc
