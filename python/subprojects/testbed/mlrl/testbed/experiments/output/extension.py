@@ -90,8 +90,8 @@ class OutputExtension(Extension):
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`
         """
         experiment_builder.set_exit_on_error(self.EXIT_ON_ERROR.get_value(args))
-        result_dir = self.RESULT_DIR.get_value(args)
+        result_directory = self.RESULT_DIR.get_value(args)
 
-        if result_dir and self.WIPE_RESULT_DIR.get_value(args):
-            listener = OutputExtension.WipeDirectoryListener(result_dir)
+        if result_directory and self.WIPE_RESULT_DIR.get_value(args):
+            listener = OutputExtension.WipeDirectoryListener(result_directory)
             experiment_builder.add_listeners(listener)

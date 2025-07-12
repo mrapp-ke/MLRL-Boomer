@@ -69,11 +69,11 @@ class RuleModelAsTextExtension(Extension):
 
     def __create_text_file_sinks(self, args: Namespace) -> List[Sink]:
         value, options = self.SAVE_RULES.get_value(args, default=OutputExtension.SAVE_ALL.get_value(args))
-        result_dir = OutputExtension.RESULT_DIR.get_value(args)
+        result_directory = OutputExtension.RESULT_DIR.get_value(args)
 
-        if value and result_dir:
+        if value and result_directory:
             return [
-                TextFileSink(directory=result_dir,
+                TextFileSink(directory=result_directory,
                              create_directory=OutputExtension.CREATE_DIRS.get_value(args),
                              options=options)
             ]
