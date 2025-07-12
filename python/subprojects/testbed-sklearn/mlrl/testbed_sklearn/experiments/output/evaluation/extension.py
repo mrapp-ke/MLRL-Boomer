@@ -54,11 +54,11 @@ class EvaluationExtension(Extension):
         },
     )
 
-    STORE_EVALUATION = BoolArgument(
-        '--store-evaluation',
-        default=True,
-        description='Whether the evaluation results should be written into output files or not. Does only have an '
-        + 'effect if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
+    SAVE_EVALUATION_RESULTS = BoolArgument(
+        '--save-evaluation',
+        default=False,
+        description='Whether the evaluation results should be written to output files or not. Does only have an effect'
+        + 'if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
         true_options={
             EvaluationResult.OPTION_ENABLE_ALL, EvaluationResult.OPTION_HAMMING_LOSS,
             EvaluationResult.OPTION_HAMMING_ACCURACY, EvaluationResult.OPTION_SUBSET_ZERO_ONE_LOSS,
@@ -90,7 +90,7 @@ class EvaluationExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {self.PRINT_EVALUATION, self.STORE_EVALUATION}
+        return {self.PRINT_EVALUATION, self.SAVE_EVALUATION_RESULTS}
 
     def __configure_log_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         print_all = OutputExtension.PRINT_ALL.get_value(args)
@@ -100,11 +100,11 @@ class EvaluationExtension(Extension):
             experiment_builder.evaluation_writer.add_sinks(LogSink(options))
 
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
-        store_all = OutputExtension.STORE_ALL.get_value(args)
-        store_evaluation, options = self.STORE_EVALUATION.get_value(args, default=store_all)
+        save_all = OutputExtension.SAVE_ALL.get_value(args)
+        save_evaluation_results, options = self.SAVE_EVALUATION_RESULTS.get_value(args, default=save_all)
         output_directory = OutputExtension.OUTPUT_DIR.get_value(args)
 
-        if store_evaluation and output_directory:
+        if save_evaluation_results and output_directory:
             create_output_directory = OutputExtension.CREATE_OUTPUT_DIR.get_value(args)
             experiment_builder.evaluation_writer.add_sinks(
                 CsvFileSink(directory=output_directory, create_directory=create_output_directory, options=options))
