@@ -60,12 +60,12 @@ class LabelVectorExtension(Extension):
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputExtension.SAVE_ALL.get_value(args)
         save_label_vectors, options = self.SAVE_LABEL_VECTORS.get_value(args, default=save_all)
-        output_directory = OutputExtension.OUTPUT_DIR.get_value(args)
+        result_directory = OutputExtension.RESULT_DIR.get_value(args)
 
-        if save_label_vectors and output_directory:
-            create_output_directory = OutputExtension.CREATE_OUTPUT_DIR.get_value(args)
+        if save_label_vectors and result_directory:
+            create_directory = OutputExtension.CREATE_DIRS.get_value(args)
             experiment_builder.label_vector_writer.add_sinks(
-                CsvFileSink(directory=output_directory, create_directory=create_output_directory, options=options))
+                CsvFileSink(directory=result_directory, create_directory=create_directory, options=options))
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
