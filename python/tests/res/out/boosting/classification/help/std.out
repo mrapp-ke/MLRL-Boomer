@@ -1,8 +1,8 @@
 mlrl-testbed mlrl.boosting --help
 usage: mlrl-testbed [-r RUNNABLE] [-v] [--binary-predictor BINARY_PREDICTOR]
-                    [--create-output-dir CREATE_OUTPUT_DIR]
-                    [--data-dir DATA_DIR] [--data-split DATA_SPLIT]
-                    [--dataset DATASET] [--default-rule DEFAULT_RULE]
+                    [--create-dirs CREATE_DIRS] [--data-dir DATA_DIR]
+                    [--data-split DATA_SPLIT] [--dataset DATASET]
+                    [--default-rule DEFAULT_RULE]
                     [--exit-on-error EXIT_ON_ERROR]
                     [--feature-binning FEATURE_BINNING]
                     [--feature-format FEATURE_FORMAT]
@@ -20,7 +20,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--binary-predictor BINARY_PREDICTOR]
                     [--max-rules MAX_RULES] [--model-load-dir MODEL_LOAD_DIR]
                     [--model-save-dir MODEL_SAVE_DIR]
                     [--one-hot-encoding ONE_HOT_ENCODING]
-                    [--output-dir OUTPUT_DIR] [--output-format OUTPUT_FORMAT]
+                    [--output-format OUTPUT_FORMAT]
                     [--output-sampling OUTPUT_SAMPLING]
                     [--parallel-prediction PARALLEL_PREDICTION]
                     [--parallel-rule-refinement PARALLEL_RULE_REFINEMENT]
@@ -45,7 +45,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--binary-predictor BINARY_PREDICTOR]
                     [--print-rules PRINT_RULES]
                     [--probability-predictor PROBABILITY_PREDICTOR]
                     [--problem-type PROBLEM_TYPE]
-                    [--random-state RANDOM_STATE]
+                    [--random-state RANDOM_STATE] [--result-dir RESULT_DIR]
                     [--rule-induction RULE_INDUCTION]
                     [--rule-pruning RULE_PRUNING]
                     [--save-data-characteristics SAVE_DATA_CHARACTERISTICS]
@@ -64,7 +64,7 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--binary-predictor BINARY_PREDICTOR]
                     [--statistic-format STATISTIC_FORMAT]
                     [--statistic-type STATISTIC_TYPE]
                     [--time-limit TIME_LIMIT]
-                    [--wipe-output-dir WIPE_OUTPUT_DIR] [-h]
+                    [--wipe-result-dir WIPE_RESULT_DIR] [-h]
                     runnable_module_or_source_file
 
 A command line utility for training and evaluating machine learning algorithms
@@ -86,11 +86,10 @@ options:
                         parameter --loss. Must be one of {"auto", "example-
                         wise", "gfm", "output-wise"}. For additional options
                         refer to the documentation.
-  --create-output-dir CREATE_OUTPUT_DIR
-                        Whether the directory specified via the argument
-                        --output-dir should automatically be created, if it
-                        does not exist, or not. Must be one of {"false",
-                        "true"}.
+  --create-dirs CREATE_DIRS
+                        Whether the directories, where files should be saved,
+                        should be created automatically, if they do not exist,
+                        or not. Must be one of {"false", "true"}.
   --data-dir DATA_DIR   The path to the directory where the dataset files are
                         located.
   --data-split DATA_SPLIT
@@ -193,9 +192,6 @@ options:
                         Whether one-hot-encoding should be used to encode
                         nominal features or not. Must be one of {"false",
                         "true"}.
-  --output-dir OUTPUT_DIR
-                        The path to the directory where experimental results
-                        should be saved.
   --output-format OUTPUT_FORMAT
                         The format to be used for the representation of the
                         output matrix. Must be one of {"auto", "dense",
@@ -309,6 +305,9 @@ options:
   --random-state RANDOM_STATE
                         The seed to be used by random number generators. Must
                         be at least 1.
+  --result-dir RESULT_DIR
+                        The path to the directory where experimental results
+                        should be saved.
   --rule-induction RULE_INDUCTION
                         The name of the algorithm to be used for the induction
                         of individual rules. Must be one of {"top-down-beam-
@@ -323,11 +322,9 @@ options:
                         of {"false", "true"}. For additional options refer to
                         the documentation.
   --save-evaluation SAVE_EVALUATION
-                        Whether the evaluation results should be written to
-                        output files or not. Does only have an effectif the
-                        argument --output-dir is specified. Must be one of
-                        {"false", "true"}. For additional options refer to the
-                        documentation.
+                        Whether evaluation results should be written to output
+                        files or not. Must be one of {"false", "true"}. For
+                        additional options refer to the documentation.
   --save-ground-truth SAVE_GROUND_TRUTH
                         Whether the ground truth should be written to output
                         files or not. Must be one of {"false", "true"}. For
@@ -349,9 +346,8 @@ options:
                         options refer to the documentation.
   --save-model-characteristics SAVE_MODEL_CHARACTERISTICS
                         Whether the characteristics of models should be
-                        written to output files or not. Does only have an
-                        effect if the argument --output-dir is specified. Must
-                        be one of {"false", "true"}.
+                        written to output files or not. Must be one of
+                        {"false", "true"}.
   --save-models SAVE_MODELS
                         . Must be one of {"false", "true"}.
   --save-parameters SAVE_PARAMETERS
@@ -361,7 +357,7 @@ options:
                         Whether the characteristics of binary predictions
                         should be written to output files or not. Does only
                         have an effect if the argument --prediction-type is
-                        set to binary and if the argument --output-dir is
+                        set to binary and if the argument --result-dir is
                         specified. Must be one of {"false", "true"}. For
                         additional options refer to the documentation.
   --save-predictions SAVE_PREDICTIONS
@@ -395,9 +391,9 @@ options:
                         The duration in seconds after which the induction of
                         rules should be canceled. Must be at least 1 or 0, if
                         no time limit should be set
-  --wipe-output-dir WIPE_OUTPUT_DIR
+  --wipe-result-dir WIPE_RESULT_DIR
                         Whether all files in the directory specified via the
-                        argument --output-dir should be deleted before an
+                        argument --result-dir should be deleted before an
                         experiment starts or not. Must be one of {"false",
                         "true"}.
   -h, --help            Show this help message and exit
