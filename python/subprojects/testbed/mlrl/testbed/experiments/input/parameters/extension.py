@@ -21,6 +21,7 @@ class ParameterInputExtension(Extension):
 
     PARAMETER_LOAD_DIR = StringArgument(
         '--parameter-load-dir',
+        default='parameters',
         description='The path to the directory from which parameters to be used by the algorithm should be loaded.',
     )
 
