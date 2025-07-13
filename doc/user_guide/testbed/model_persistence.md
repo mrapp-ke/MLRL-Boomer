@@ -2,7 +2,7 @@
 
 # Saving and Loading Models
 
-Because the training of machine learning models can be time-consuming, they are usually trained once and then reused later for making predictions. For this purpose, the package mlrl-testbed provides means to store models on disk and load them from the created files later on. This requires to specify the argument `--save-models`. Optionally, the path to a directory where models should be saved, as well as a directory from which models should be loaded can be set via the command line arguments `--model-save-dir` and `--model-load-dir`. If not specified manually, the default `models` is used.
+Because the training of machine learning models can be time-consuming, they are usually trained once and then reused later for making predictions. For this purpose, the package mlrl-testbed provides means to store models on disk and load them from the created files later on. This requires to specify the arguments `--save-models` and `--load-models`. Optionally, the path to a directory where models should be saved, as well as a directory from which models should be loaded can be set via the command line arguments `--model-save-dir` and `--model-load-dir`. If not specified manually, the default `models` is used for both.
 
 ````{tab} BOOMER
    ```text

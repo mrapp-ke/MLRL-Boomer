@@ -135,6 +135,11 @@ Because the training of models can be time-consuming, it might be desirable to s
 
   - An absolute or relative path to the directory from which models should be loaded. If such models are found in the specified directory, they are used instead of learning a new model from scratch.
 
+- `--load-models` (Default value = `false`)
+
+  - `true` Models are loaded from input files.
+  - `false` Models are not loaded from input files.
+
 - `--model-save-dir` (Default value = `models`)
 
   - An absolute or relative path to the directory to which models should be saved once training has completed.
