@@ -38,12 +38,12 @@ class CmdBuilder:
         self.runnable_class_name = runnable_class_name
         self.show_help = False
         self.dataset = dataset
-        self.parameter_load_dir = None
-        self.parameter_save_dir = None
-        self.model_dir = None
+        self.parameter_load_dir: Optional[str] = None
+        self.parameter_save_dir: Optional[str] = None
+        self.model_dir: Optional[str] = None
         self.num_folds = 0
         self.current_fold = None
-        self.args = []
+        self.args: List[str] = []
         self.save_evaluation_results(True)
 
     @property

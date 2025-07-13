@@ -193,7 +193,7 @@ class ArffFileSource(DatasetFileSource):
             True, if the outputs are defined before the features, False otherwise.
             """
             attributes = self.arff_file.attributes
-            return attributes and attributes[0].name in self.output_names
+            return bool(attributes) and attributes[0].name in self.output_names
 
         @property
         def feature_matrix(self) -> sparray:
