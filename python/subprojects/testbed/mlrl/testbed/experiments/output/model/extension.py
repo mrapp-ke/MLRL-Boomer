@@ -28,7 +28,7 @@ class ModelOutputExtension(Extension):
     SAVE_MODELS = BoolArgument(
         '--save-models',
         default=False,
-        description='',
+        description='Whether models should be saved to output files or not.',
     )
 
     def __init__(self, *dependencies: Extension):
