@@ -52,7 +52,7 @@ class DataCharacteristics(TabularOutputData):
 
         if isinstance(problem_domain, ClassificationProblem):
             self.output_characteristics = LABEL_CHARACTERISTICS
-            self.output_matrix = LabelMatrix(values=dataset.y)
+            self.output_matrix: OutputMatrix = LabelMatrix(values=dataset.y)
         else:
             self.output_characteristics = OUTPUT_CHARACTERISTICS
             self.output_matrix = OutputMatrix(values=dataset.y)
@@ -62,7 +62,8 @@ class DataCharacteristics(TabularOutputData):
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
         kwargs = dict(kwargs) | {OPTION_DECIMALS: 2}
-        return self.to_table(options, **kwargs).format()
+        table = self.to_table(options, **kwargs)
+        return table.format() if table else None
 
     def to_table(self, options: Options, **kwargs) -> Optional[Table]:
         """

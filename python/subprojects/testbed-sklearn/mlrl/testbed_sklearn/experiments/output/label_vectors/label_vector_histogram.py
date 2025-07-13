@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that provide access to unique label vectors.
 """
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 import numpy as np
 
@@ -51,7 +51,7 @@ class LabelVectorHistogram:
         :param dataset: The dataset
         :return:        The `LabelVectorHistogram` that has been created
         """
-        unique_label_vector_strings = {}
+        unique_label_vector_strings: Dict[str, int] = {}
         separator = ','
 
         for label_vector in lil_array(dataset.y).rows:

@@ -6,7 +6,7 @@ Provides classes for splitting dataset into distinct training and test datasets.
 import logging as log
 
 from dataclasses import dataclass, replace
-from typing import Generator
+from typing import Any, Generator, Optional
 
 from sklearn.model_selection import train_test_split
 
@@ -108,7 +108,7 @@ class BipartitionSplitter(DatasetSplitter):
         self.test_size = test_size
         self.random_state = random_state
         self.folding_strategy = FoldingStrategy(num_folds=1, first=0, last=1)
-        self.cache = None
+        self.cache: Optional[Any] = None
         context = dataset_reader.input_data.context
         context.include_fold = False
         context.include_dataset_type = True

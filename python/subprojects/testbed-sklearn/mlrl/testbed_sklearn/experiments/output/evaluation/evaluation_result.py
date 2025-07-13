@@ -104,26 +104,30 @@ class EvaluationResult(TabularOutputData):
         """
         kwargs = dict(kwargs) | {OPTION_DECIMALS: 2}
         table = self.to_table(options, **kwargs)
-        header_row = table.header_row
-        first_row = next(table.rows)
-        fold = kwargs.get(self.KWARG_FOLD)
-        rotated_table = RowWiseTable()
 
-        for column_index in range(0, table.num_columns, 2 if fold is None else 1):
-            # pylint: disable=unsubscriptable-object
-            header = header_row[column_index] if header_row else None
+        if table:
+            header_row = table.header_row
+            first_row = next(table.rows)
+            fold = kwargs.get(self.KWARG_FOLD)
+            rotated_table = RowWiseTable()
 
-            if header.option_key not in {self.OPTION_TRAINING_TIME, self.OPTION_PREDICTION_TIME}:
-                value = first_row[column_index]
-                new_row = [header, value] if header else [value]
+            for column_index in range(0, table.num_columns, 2 if fold is None else 1):
+                # pylint: disable=unsubscriptable-object
+                header = header_row[column_index] if header_row else None
 
-                if fold is None:
-                    std_dev = '±' + first_row[column_index + 1]
-                    new_row.append(std_dev)
+                if not header or header.option_key not in {self.OPTION_TRAINING_TIME, self.OPTION_PREDICTION_TIME}:
+                    value = first_row[column_index]
+                    new_row = [header, value] if header else [value]
 
-                rotated_table.add_row(*new_row)
+                    if fold is None:
+                        std_dev = '±' + first_row[column_index + 1]
+                        new_row.append(std_dev)
 
-        return rotated_table.sort_by_columns(0).format()
+                    rotated_table.add_row(*new_row)
+
+            return rotated_table.sort_by_columns(0).format()
+
+        return None
 
     def to_table(self, options: Options, **kwargs) -> Optional[Table]:
         """
