@@ -3,12 +3,14 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from typing import Optional
 
+from ..common.cmd_builder import CmdBuilder
+
 from mlrl.common.config.parameters import GlobalPruningParameter
 
 from mlrl.boosting.config.parameters import HeadTypeParameter, StatisticTypeParameter
 
 
-class BoomerCmdBuilderMixin:
+class BoomerCmdBuilderMixin(CmdBuilder):
     """
     A mixin for builders that allow to configure a command for running the BOOMER algorithm.
     """
