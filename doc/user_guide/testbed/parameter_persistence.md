@@ -4,7 +4,7 @@
 
 To remember the parameters that have been used for training a model, it might be useful to save them to disk. Similar to {ref}`saving models<model-persistence>`, keeping the resulting files allows to load a previously used configuration and reuse it at a later point in time.
 
-This requires to specify a directory via the command line argument `--parameter-save-dir`, where parameters set via the command line API (see {ref}`setting-algorithmic-parameters`) should be saved. If this argument is not specified, the default value `parameters` is used. For example, the following command sets a custom value for a parameter, which is stored in an output file:
+This requires to specify the argument `--save-parameters`. Optionally, the command line argument `--parameter-save-dir`, can be used to specify a directory where algorithmic parameters (see {ref}`setting-algorithmic-parameters`) should be saved. If this argument is not specified, the default value `parameters` is used. For example, the following command sets a custom value for a parameter, which is stored in an output file:
 
 ````{tab} BOOMER
    ```text
@@ -12,6 +12,7 @@ This requires to specify a directory via the command line argument `--parameter-
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --parameter-save-dir /path/to/parameters \
+       --save-parameters true \
        --shrinkage 0.5
    ```
 ````
@@ -22,6 +23,7 @@ This requires to specify a directory via the command line argument `--parameter-
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --parameter-save-dir /path/to/parameters \
+       --save-parameters true \
        --heuristic precision
    ```
 ````
