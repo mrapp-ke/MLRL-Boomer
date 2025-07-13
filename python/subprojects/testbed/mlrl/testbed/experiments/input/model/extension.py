@@ -11,7 +11,7 @@ from mlrl.testbed.experiments.input.model.reader import ModelReader
 from mlrl.testbed.experiments.input.sources.source_pickle import PickleFileSource
 from mlrl.testbed.extensions.extension import Extension
 
-from mlrl.util.cli import Argument, StringArgument
+from mlrl.util.cli import Argument, BoolArgument, StringArgument
 
 
 class ModelInputExtension(Extension):
@@ -24,11 +24,17 @@ class ModelInputExtension(Extension):
         description='The path to the directory from which models should be loaded.',
     )
 
+    LOAD_MODELS = BoolArgument(
+        '--load-models',
+        default=False,
+        description='Whether models should be loaded from input files or not.',
+    )
+
     def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {self.MODEL_LOAD_DIR}
+        return {self.MODEL_LOAD_DIR, self.LOAD_MODELS}
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
@@ -36,6 +42,6 @@ class ModelInputExtension(Extension):
         """
         model_load_dir = self.MODEL_LOAD_DIR.get_value(args)
 
-        if model_load_dir:
+        if model_load_dir and self.LOAD_MODELS.get_value(args):
             reader = ModelReader(PickleFileSource(model_load_dir))
             experiment_builder.add_input_readers(reader)
