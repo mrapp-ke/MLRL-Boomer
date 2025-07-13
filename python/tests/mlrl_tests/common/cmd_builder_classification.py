@@ -42,18 +42,18 @@ class ClassificationCmdBuilder(CmdBuilder):
 
         return self
 
-    def store_label_vectors(self, store_label_vectors: bool = True):
+    def save_label_vectors(self, save_label_vectors: bool = True):
         """
-        Configures whether the unique label vectors contained in the training data should be written into output files
+        Configures whether the unique label vectors contained in the training data should be written to output files
         or not.
 
-        :param store_label_vectors: True, if the unique label vectors contained in the training data should be written
+        :param save_label_vectors:  True, if the unique label vectors contained in the training data should be written
                                     into output files, False otherwise
         :return:                    The builder itself
         """
-        self.label_vectors_stored = store_label_vectors
-        self.args.append('--store-label-vectors')
-        self.args.append(str(store_label_vectors).lower())
+        self.label_vectors_stored = save_label_vectors
+        self.args.append('--save-label-vectors')
+        self.args.append(str(save_label_vectors).lower())
         return self
 
     def print_marginal_probability_calibration_model(self,
@@ -74,22 +74,21 @@ class ClassificationCmdBuilder(CmdBuilder):
 
         return self
 
-    def store_marginal_probability_calibration_model(self,
-                                                     store_marginal_probability_calibration_model: Optional[bool] = True
-                                                     ):
+    def save_marginal_probability_calibration_model(self,
+                                                    save_marginal_probability_calibration_model: Optional[bool] = True):
         """
         Configures whether textual representations of models for the calibration of marginal probabilities should be
-        written into output files or not.
+        written to output files or not.
 
-        :param store_marginal_probability_calibration_model:    True, if textual representations of models for the
+        :param save_marginal_probability_calibration_model:    True, if textual representations of models for the
                                                                 calibration of marginal probabilities should be written
                                                                 into output files, False otherwise
         :return:                                                The builder itself    
         """
-        if store_marginal_probability_calibration_model:
-            self.marginal_probability_calibration_model_stored = store_marginal_probability_calibration_model
-            self.args.append('--store-marginal-probability-calibration-model')
-            self.args.append(str(store_marginal_probability_calibration_model).lower())
+        if save_marginal_probability_calibration_model:
+            self.marginal_probability_calibration_model_stored = save_marginal_probability_calibration_model
+            self.args.append('--save-marginal-probability-calibration-model')
+            self.args.append(str(save_marginal_probability_calibration_model).lower())
 
         return self
 
@@ -110,21 +109,20 @@ class ClassificationCmdBuilder(CmdBuilder):
 
         return self
 
-    def store_joint_probability_calibration_model(self,
-                                                  store_joint_probability_calibration_model: Optional[bool] = True):
+    def save_joint_probability_calibration_model(self, save_joint_probability_calibration_model: Optional[bool] = True):
         """
         Configures whether textual representations of models for the calibration of joint probabilities should be
-        written into output files or not.
+        written to output files or not.
 
-        :param store_joint_probability_calibration_model:   True, if textual representations of models for the
-                                                            calibration of joint probabilities should be written into
+        :param save_joint_probability_calibration_model:    True, if textual representations of models for the
+                                                            calibration of joint probabilities should be written to
                                                             output files, False otherwise
         :return:                                            The builder itself    
         """
-        if store_joint_probability_calibration_model:
-            self.joint_probability_calibration_model_stored = store_joint_probability_calibration_model
-            self.args.append('--store-joint-probability-calibration-model')
-            self.args.append(str(store_joint_probability_calibration_model).lower())
+        if save_joint_probability_calibration_model:
+            self.joint_probability_calibration_model_stored = save_joint_probability_calibration_model
+            self.args.append('--save-joint-probability-calibration-model')
+            self.args.append(str(save_joint_probability_calibration_model).lower())
 
         return self
 

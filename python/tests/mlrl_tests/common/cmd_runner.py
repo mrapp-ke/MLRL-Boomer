@@ -21,19 +21,19 @@ class CmdRunner:
 
     def __create_temporary_directories(self):
         builder = self.builder
-        makedirs(builder.output_dir, exist_ok=True)
-        model_dir = builder.model_dir
+        makedirs(builder.resolved_result_dir, exist_ok=True)
+        model_dir = builder.resolved_model_dir
 
         if model_dir:
             makedirs(model_dir, exist_ok=True)
 
     def __delete_temporary_directories(self):
         builder = self.builder
-        shutil.rmtree(builder.output_dir, ignore_errors=True)
+        shutil.rmtree(builder.resolved_result_dir, ignore_errors=True)
         model_dir = builder.model_dir
 
         if model_dir:
-            shutil.rmtree(model_dir, ignore_errors=True)
+            shutil.rmtree(builder.resolved_model_dir, ignore_errors=True)
 
     def __format_cmd(self):
         return reduce(lambda aggr, arg: aggr + (' ' + arg if len(aggr) > 0 else arg), self.args, '')
@@ -50,7 +50,7 @@ class CmdRunner:
 
     def __assert_model_files_exist(self):
         builder = self.builder
-        self.__assert_files_exist(directory=builder.model_dir, file_name='model', suffix='pickle')
+        self.__assert_files_exist(directory=builder.resolved_model_dir, file_name='model', suffix='pickle')
 
     def __assert_files_exist(self, directory: Optional[str], file_name: str, suffix: str):
         if directory:
@@ -138,24 +138,24 @@ class CmdRunner:
 
         # Check if all expected output files have been created...
         self.__assert_model_files_exist()
-        output_dir = builder.output_dir
+        result_dir = builder.resolved_result_dir
         expected_output_dir = builder.expected_output_dir
         expected_files_to_be_deleted = []
 
         for expected_file in listdir(path.join(expected_output_dir, test_name)):
             if expected_file != stdout_file:
                 if self.__should_overwrite_files():
-                    if not path.isfile(path.join(output_dir, expected_file)):
+                    if not path.isfile(path.join(result_dir, expected_file)):
                         expected_files_to_be_deleted.append(path.join(expected_output_dir, test_name, expected_file))
                 else:
-                    self.__assert_file_exists(output_dir, expected_file)
+                    self.__assert_file_exists(result_dir, expected_file)
 
         for expected_file in expected_files_to_be_deleted:
             remove(expected_file)
 
         # Check if all output files have the expected content...
-        for output_file in listdir(output_dir):
-            self.__compare_or_overwrite_files(FileComparison.for_file(path.join(output_dir, output_file)),
+        for output_file in listdir(result_dir):
+            self.__compare_or_overwrite_files(FileComparison.for_file(path.join(result_dir, output_file)),
                                               test_name=test_name,
                                               file_name=path.basename(output_file))
 

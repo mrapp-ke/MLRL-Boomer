@@ -30,11 +30,10 @@ class RuleModelCharacteristicsExtension(Extension):
         description='Whether the characteristics of models should be printed on the console or not.',
     )
 
-    STORE_MODEL_CHARACTERISTICS = BoolArgument(
-        '--store-model-characteristics',
+    SAVE_MODEL_CHARACTERISTICS = BoolArgument(
+        '--save-model-characteristics',
         default=False,
-        description='Whether the characteristics of models should be written into output files or not. Does only have '
-        + 'an effect if the argument ' + OutputExtension.OUTPUT_DIR.name + ' is specified.',
+        description='Whether the characteristics of models should be written to output files or not.',
     )
 
     def __init__(self, *dependencies: Extension):
@@ -47,7 +46,7 @@ class RuleModelCharacteristicsExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {self.PRINT_MODEL_CHARACTERISTICS, self.STORE_MODEL_CHARACTERISTICS}
+        return {self.PRINT_MODEL_CHARACTERISTICS, self.SAVE_MODEL_CHARACTERISTICS}
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         if self.PRINT_MODEL_CHARACTERISTICS.get_value(args, default=OutputExtension.PRINT_ALL.get_value(args)):
@@ -55,12 +54,12 @@ class RuleModelCharacteristicsExtension(Extension):
         return []
 
     def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
-        value = self.STORE_MODEL_CHARACTERISTICS.get_value(args, default=OutputExtension.STORE_ALL.get_value(args))
-        output_dir = OutputExtension.OUTPUT_DIR.get_value(args)
+        value = self.SAVE_MODEL_CHARACTERISTICS.get_value(args, default=OutputExtension.SAVE_ALL.get_value(args))
+        result_directory = OutputExtension.RESULT_DIR.get_value(args)
 
-        if value and output_dir:
+        if value and result_directory:
             return [
-                CsvFileSink(directory=output_dir, create_directory=OutputExtension.CREATE_OUTPUT_DIR.get_value(args))
+                CsvFileSink(directory=result_directory, create_directory=OutputExtension.CREATE_DIRS.get_value(args))
             ]
         return []
 
