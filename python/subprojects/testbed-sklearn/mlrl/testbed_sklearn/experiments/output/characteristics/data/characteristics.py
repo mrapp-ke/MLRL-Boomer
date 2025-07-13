@@ -81,7 +81,8 @@ class OutputCharacteristics(TabularOutputData):
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
         kwargs = dict(kwargs) | {OPTION_DECIMALS: 2}
-        return self.to_table(options, **kwargs).format()
+        table = self.to_table(options, **kwargs)
+        return table.format() if table else None
 
     def to_table(self, options: Options, **kwargs) -> Optional[Table]:
         """

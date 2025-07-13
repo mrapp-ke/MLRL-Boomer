@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow configuring the functionality to obtain predictions from a machine learning model.
 """
-from multiprocessing.dummy import Namespace
+from argparse import Namespace
 from typing import Set
 
 from mlrl.testbed.experiments.prediction_type import PredictionType
