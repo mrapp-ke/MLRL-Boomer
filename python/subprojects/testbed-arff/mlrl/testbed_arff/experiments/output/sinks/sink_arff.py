@@ -5,6 +5,7 @@ Provides classes that allow writing datasets to ARFF files.
 """
 import xml.etree.ElementTree as XmlTree
 
+from typing import Any, List
 from xml.dom import minidom
 
 import arff
@@ -31,37 +32,46 @@ class ArffFileSink(DatasetFileSink):
     SUFFIX_XML = 'xml'
 
     @staticmethod
-    def __write_arff_file(file_path: str, dataset: TabularDataset):
-        sparse = dataset.has_sparse_features and dataset.has_sparse_outputs
+    def __create_arff_data(dataset: TabularDataset) -> List[Any]:
         num_examples = dataset.num_examples
+
+        if dataset.has_sparse_features and dataset.has_sparse_outputs:
+            return [{} for _ in range(num_examples)]
+
         num_features = dataset.num_features
         num_outputs = dataset.num_outputs
+        return [[0 for _ in range(num_features + num_outputs)] for _ in range(num_examples)]
 
-        features = dataset.features
-        x_features = [(features[i].name, 'NUMERIC' if features[i].attribute_type == AttributeType.NUMERICAL
-                       or features[i].nominal_values is None else features[i].nominal_values)
-                      for i in range(num_features)]
-
-        outputs = dataset.outputs
-        y_features = [(outputs[i].name, 'NUMERIC' if outputs[i].attribute_type == AttributeType.NUMERICAL
-                       or outputs[i].nominal_values is None else outputs[i].nominal_values) for i in range(num_outputs)]
-
-        if sparse:
-            data = [{} for _ in range(num_examples)]
-        else:
-            data = [[0 for _ in range(num_features + num_outputs)] for _ in range(num_examples)]
-
+    @staticmethod
+    def __fill_arff_data(dataset: TabularDataset, data: List[Any]):
         for keys, value in dok_array(dataset.x).items():
             data[keys[0]][keys[1]] = value
 
+        num_features = dataset.num_features
+
         for keys, value in dok_array(dataset.y).items():
             data[keys[0]][num_features + keys[1]] = value
+
+    @staticmethod
+    def __write_arff_file(file_path: str, dataset: TabularDataset):
+        features = dataset.features
+        x_features = [(features[i].name, 'NUMERIC' if features[i].attribute_type == AttributeType.NUMERICAL
+                       or features[i].nominal_values is None else features[i].nominal_values)
+                      for i in range(dataset.num_features)]
+
+        outputs = dataset.outputs
+        y_features = [(outputs[i].name, 'NUMERIC' if outputs[i].attribute_type == AttributeType.NUMERICAL
+                       or outputs[i].nominal_values is None else outputs[i].nominal_values)
+                      for i in range(dataset.num_outputs)]
+
+        data = ArffFileSink.__create_arff_data(dataset)
+        ArffFileSink.__fill_arff_data(dataset, data)
 
         with open_writable_file(file_path) as arff_file:
             arff_file.write(
                 arff.dumps({
                     'description': 'traindata',
-                    'relation': 'traindata: -C ' + str(-num_outputs),
+                    'relation': 'traindata: -C ' + str(-dataset.num_outputs),
                     'attributes': x_features + y_features,
                     'data': data
                 }))

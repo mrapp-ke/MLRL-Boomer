@@ -35,7 +35,6 @@ class Mypy(Program):
             path.join('python', 'subprojects', 'util'),
             path.join('python', 'subprojects', 'testbed'),
             path.join('python', 'subprojects', 'boosting'),
-            path.join('python', 'subprojects', 'testbed-arff'),
             path.join('python', 'subprojects', 'testbed-sklearn'),
         }
         return self.module.root_directory in blacklist
