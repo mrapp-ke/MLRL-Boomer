@@ -131,7 +131,7 @@ Depending on the characteristics of a dataset, it might be desirable to apply on
 
 Because the training of models can be time-consuming, it might be desirable to store them on disk for later use. This requires to specify the paths of directories to which models should be saved or loaded from.
 
-- `--model-load-dir` (Default value = `None`)
+- `--model-load-dir` (Default value = `models`)
 
   - An absolute or relative path to the directory from which models should be loaded. If such models are found in the specified directory, they are used instead of learning a new model from scratch.
 
