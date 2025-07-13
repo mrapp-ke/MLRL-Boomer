@@ -21,6 +21,7 @@ class ModelInputExtension(Extension):
 
     MODEL_LOAD_DIR = StringArgument(
         '--model-load-dir',
+        default='models',
         description='The path to the directory from which models should be loaded.',
     )
 
