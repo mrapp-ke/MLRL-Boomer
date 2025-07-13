@@ -64,14 +64,14 @@ class SkLearnProblem(ProblemDomain, ABC):
 
     @property
     @abstractmethod
-    def feature_dtype(self) -> np.dtype:
+    def feature_dtype(self) -> Any:
         """
         The data type to be used for features.
         """
 
     @property
     @abstractmethod
-    def output_dtype(self) -> np.dtype:
+    def output_dtype(self) -> Any:
         """
         The data type to be used for outputs.
         """
@@ -83,11 +83,11 @@ class SkLearnClassificationProblem(SkLearnProblem, ClassificationProblem):
     """
 
     @property
-    def feature_dtype(self) -> np.dtype:
+    def feature_dtype(self) -> Any:
         return np.float32
 
     @property
-    def output_dtype(self) -> np.dtype:
+    def output_dtype(self) -> Any:
         return np.uint8
 
 
@@ -97,9 +97,9 @@ class SkLearnRegressionProblem(SkLearnProblem, RegressionProblem):
     """
 
     @property
-    def feature_dtype(self) -> np.dtype:
+    def feature_dtype(self) -> Any:
         return np.float32
 
     @property
-    def output_dtype(self) -> np.dtype:
+    def output_dtype(self) -> Any:
         return np.float32

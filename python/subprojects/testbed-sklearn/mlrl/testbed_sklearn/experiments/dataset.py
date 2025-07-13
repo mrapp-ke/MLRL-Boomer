@@ -119,10 +119,10 @@ class TabularDataset(Dataset):
         :param feature_types:   The types of the features to be counted
         :return:                The number of features of the given types
         """
-        feature_types = set(feature_types)
+        unique_feature_types = set(feature_types)
 
-        if feature_types:
-            return reduce(lambda aggr, feature: aggr + (1 if feature.attribute_type in feature_types else 0),
+        if unique_feature_types:
+            return reduce(lambda aggr, feature: aggr + (1 if feature.attribute_type in unique_feature_types else 0),
                           self.features, 0)
 
         return len(self.features)
@@ -135,7 +135,8 @@ class TabularDataset(Dataset):
         :param feature_types:   The types of the features whose indices should be returned
         :return:                A list that contains the indices of all features of the given types
         """
-        feature_types = set(feature_types)
+        unique_feature_types = set(feature_types)
         return [
-            i for i, feature in enumerate(self.features) if not feature_types or feature.attribute_type in feature_types
+            i for i, feature in enumerate(self.features)
+            if not unique_feature_types or feature.attribute_type in unique_feature_types
         ]
