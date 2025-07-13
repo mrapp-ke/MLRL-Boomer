@@ -6,7 +6,7 @@ Provides classes for splitting datasets into multiple, equally sized, folds cons
 import logging as log
 
 from dataclasses import dataclass, field, replace
-from typing import Generator, List
+from typing import Any, Generator, List, Optional, cast
 
 from scipy.sparse import vstack
 from sklearn.model_selection import KFold
@@ -50,12 +50,14 @@ class CrossValidationSplitter(DatasetSplitter):
 
             for fold_index in range(state.folding_strategy.num_folds):
                 if fold_index != state.fold.index:
-                    dataset = cache.datasets[fold_index]
+                    dataset = cache.datasets[fold_index] if cache else None
 
                     if not dataset:
                         state = splitter.dataset_reader.read(replace(state, fold=Fold(index=fold_index)))
                         dataset = state.dataset
-                        cache.datasets[fold_index] = dataset
+
+                        if cache:
+                            cache.datasets[fold_index] = dataset
 
                     if training_dataset:
                         training_dataset.x = vstack((training_dataset.x, dataset.x))
@@ -63,20 +65,22 @@ class CrossValidationSplitter(DatasetSplitter):
                     else:
                         training_dataset = replace(dataset)
 
-            return training_dataset
+            return cast(TabularDataset, training_dataset)
 
         def __get_test_dataset(self, state: ExperimentState) -> TabularDataset:
             splitter = self.splitter
             cache = splitter.cache
             fold_index = state.fold.index
-            dataset = cache.datasets[fold_index]
+            dataset = cache.datasets[fold_index] if cache else None
 
             if not dataset:
                 state = splitter.dataset_reader.read(state)
                 dataset = state.dataset
-                cache.datasets[fold_index] = dataset
 
-            return dataset
+                if cache:
+                    cache.datasets[fold_index] = dataset
+
+            return cast(TabularDataset, dataset)
 
         def __init__(self, splitter: 'CrossValidationSplitter', state: ExperimentState):
             """
@@ -176,7 +180,7 @@ class CrossValidationSplitter(DatasetSplitter):
         self.dataset_reader = dataset_reader
         self.random_state = random_state
         self.folding_strategy = FoldingStrategy(num_folds=num_folds, first=first_fold, last=last_fold)
-        self.cache = None
+        self.cache: Optional[Any] = None
         context = dataset_reader.input_data.context
         context.include_dataset_type = False
         context.include_fold = True
