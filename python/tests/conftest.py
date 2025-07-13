@@ -35,7 +35,8 @@ def pytest_collection_modifyitems(items):
         num_blocks = config.getoption(ARGUMENT_NUM_BLOCKS)
 
         if block_indices is None:
-            rng = np.random.default_rng()
+            seed = 42
+            rng = np.random.default_rng(seed)
             block_indices = rng.integers(low=0, high=num_blocks, size=num_tests)
 
         if num_blocks < 1 or num_blocks > 8:
