@@ -44,7 +44,8 @@ class LabelVectors(TabularOutputData):
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
-        return self.to_table(options, **kwargs).format()
+        table = self.to_table(options, **kwargs)
+        return table.format() if table else None
 
     def to_table(self, options: Options, **kwargs) -> Optional[Table]:
         """
