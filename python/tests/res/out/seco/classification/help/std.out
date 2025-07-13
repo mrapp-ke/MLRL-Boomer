@@ -1,7 +1,8 @@
 mlrl-testbed mlrl.seco --help
-usage: mlrl-testbed [-r RUNNABLE] [-v] [--create-dirs CREATE_DIRS]
-                    [--data-dir DATA_DIR] [--data-split DATA_SPLIT]
-                    [--dataset DATASET] [--exit-on-error EXIT_ON_ERROR]
+usage: mlrl-testbed [-r RUNNABLE] [-v] [--base-dir BASE_DIR]
+                    [--create-dirs CREATE_DIRS] [--data-dir DATA_DIR]
+                    [--data-split DATA_SPLIT] [--dataset DATASET]
+                    [--exit-on-error EXIT_ON_ERROR]
                     [--feature-binning FEATURE_BINNING]
                     [--feature-format FEATURE_FORMAT]
                     [--feature-sampling FEATURE_SAMPLING]
@@ -9,8 +10,11 @@ usage: mlrl-testbed [-r RUNNABLE] [-v] [--create-dirs CREATE_DIRS]
                     [--holdout HOLDOUT]
                     [--incremental-evaluation INCREMENTAL_EVALUATION]
                     [--instance-sampling INSTANCE_SAMPLING]
-                    [--lift-function LIFT_FUNCTION] [--log-level LOG_LEVEL]
-                    [--max-rules MAX_RULES] [--model-load-dir MODEL_LOAD_DIR]
+                    [--lift-function LIFT_FUNCTION]
+                    [--load-models LOAD_MODELS]
+                    [--load-parameters LOAD_PARAMETERS]
+                    [--log-level LOG_LEVEL] [--max-rules MAX_RULES]
+                    [--model-load-dir MODEL_LOAD_DIR]
                     [--model-save-dir MODEL_SAVE_DIR]
                     [--one-hot-encoding ONE_HOT_ENCODING]
                     [--output-format OUTPUT_FORMAT]
@@ -65,6 +69,9 @@ options:
                         The Python class name of the program that should be
                         run
   -v, --version         Display information about the program.
+  --base-dir BASE_DIR   If relative paths to directories, where files should
+                        be saved, are given, they are considered relative to
+                        the directory specified via this argument.
   --create-dirs CREATE_DIRS
                         Whether the directories, where files should be saved,
                         should be created automatically, if they do not exist,
@@ -124,6 +131,12 @@ options:
                         multi-label rules. Must be one of {"kln", "none",
                         "peak"}. For additional options refer to the
                         documentation.
+  --load-models LOAD_MODELS
+                        Whether models should be loaded from input files or
+                        not. Must be one of {"false", "true"}.
+  --load-parameters LOAD_PARAMETERS
+                        Whether parameters should be loaded from input files
+                        or not. Must be one of {"false", "true"}.
   --log-level LOG_LEVEL
                         The log level to be used. Must be one of {"critical",
                         "debug", "error", "info", "notset", "warn"}.
@@ -166,7 +179,7 @@ options:
                         {"false", "true"}. For additional options refer to the
                         documentation.
   --parameter-load-dir PARAMETER_LOAD_DIR
-                        The path to the directory from which parameter to be
+                        The path to the directory from which parameters to be
                         used by the algorithm should be loaded.
   --parameter-save-dir PARAMETER_SAVE_DIR
                         The path to the directory where configuration files,
@@ -277,7 +290,8 @@ options:
                         written to output files or not. Must be one of
                         {"false", "true"}.
   --save-models SAVE_MODELS
-                        . Must be one of {"false", "true"}.
+                        Whether models should be saved to output files or not.
+                        Must be one of {"false", "true"}.
   --save-parameters SAVE_PARAMETERS
                         Whether the parameter setting should be written to
                         output files or not. Must be one of {"false", "true"}.

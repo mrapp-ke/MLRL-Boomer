@@ -4,7 +4,7 @@
 
 To remember the parameters that have been used for training a model, it might be useful to save them to disk. Similar to {ref}`saving models<model-persistence>`, keeping the resulting files allows to load a previously used configuration and reuse it at a later point in time.
 
-This requires to specify a directory via the command line argument `--parameter-save-dir`, where parameters set via the command line API (see {ref}`setting-algorithmic-parameters`) should be saved. If this argument is not specified, the default value `parameters` is used. For example, the following command sets a custom value for a parameter, which is stored in an output file:
+This requires to specify the argument `--save-parameters`. Optionally, the command line argument `--parameter-save-dir`, can be used to specify a directory where algorithmic parameters (see {ref}`setting-algorithmic-parameters`) should be saved. If this argument is not specified, the default value `parameters` is used. For example, the following command sets a custom value for a parameter, which is stored in an output file:
 
 ````{tab} BOOMER
    ```text
@@ -12,6 +12,7 @@ This requires to specify a directory via the command line argument `--parameter-
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --parameter-save-dir /path/to/parameters \
+       --save-parameters true \
        --shrinkage 0.5
    ```
 ````
@@ -22,6 +23,7 @@ This requires to specify a directory via the command line argument `--parameter-
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --parameter-save-dir /path/to/parameters \
+       --save-parameters true \
        --heuristic precision
    ```
 ````
@@ -64,7 +66,7 @@ If you want to print all custom parameters that are used by a learning algorithm
    ```
 ````
 
-Once parameters have been saved to a directory, they can be loaded in subsequent experiments by specifying the command line argument `--parameter-load-dir`. This allows to omit the respective parameters from the command line. If a parameter is included in both, the loaded file and the command line arguments, the latter takes precedence.
+Once parameters have been saved to a directory, they can be loaded in subsequent experiments by using the command line argument `--load-parameters`. The path to the directory, where the input files are located, can be set via the argument `--parameter-load-dir`. If no path is given, `parameters` is used as the default. Loading parameters from input files allows to omit the respective parameters from the command line. If a parameter is included in both, the loaded file and the command line arguments, the latter takes precedence.
 
 ````{tab} BOOMER
    ```text
@@ -72,6 +74,7 @@ Once parameters have been saved to a directory, they can be loaded in subsequent
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --parameter-load-dir /path/to/parameters \
+       --load-parameters true
    ```
 ````
 
@@ -81,6 +84,7 @@ Once parameters have been saved to a directory, they can be loaded in subsequent
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --parameter-load-dir /path/to/parameters \
+       --load-parameters true
    ```
 ````
 

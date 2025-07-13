@@ -47,11 +47,33 @@ class CmdBuilder:
         self.save_evaluation_results(True)
 
     @property
+    def base_dir(self) -> str:
+        """
+        The base directory.
+        """
+        return path.join('python', 'tests', 'res', 'tmp')
+
+    @property
     def result_dir(self) -> str:
         """
-        The path to the directory where experimental results should be stored.
+        The relative path to the directory where experimental results should be saved.
         """
-        return path.join('python', 'tests', 'res', 'tmp', 'results')
+        return 'results'
+
+    @property
+    def resolved_result_dir(self) -> str:
+        """
+        The path to the directory where experimental results should be saved, resolved against the base directory.
+        """
+        return path.join(self.base_dir, self.result_dir)
+
+    @property
+    def resolved_model_dir(self) -> Optional[str]:
+        """
+        The  path to the directory where models should be saved, resolved agains the base directory.
+        """
+        model_dir = self.model_dir
+        return path.join(self.base_dir, model_dir) if model_dir else None
 
     def build(self) -> List[str]:
         """
@@ -71,6 +93,7 @@ class CmdBuilder:
         args.extend(['--log-level', 'debug'])
         args.extend(['--data-dir', path.join('python', 'tests', 'res', 'data')])
         args.extend(['--dataset', self.dataset])
+        args.extend(['--base-dir', self.base_dir])
         args.extend(['--result-dir', self.result_dir])
         return args + self.args
 
@@ -84,7 +107,7 @@ class CmdBuilder:
         self.show_help = show_help
         return self
 
-    def set_model_dir(self, model_dir: Optional[str] = path.join('python', 'tests', 'res', 'tmp', 'models')):
+    def set_model_dir(self, model_dir: Optional[str] = 'models'):
         """
         Configures the rule learner to store models in a given directory or load them, if available.
 
@@ -94,6 +117,8 @@ class CmdBuilder:
         self.model_dir = model_dir
 
         if model_dir:
+            self.args.append('--load-models')
+            self.args.append(str(True).lower())
             self.args.append('--model-load-dir')
             self.args.append(model_dir)
             self.args.append('--save-models')
@@ -113,13 +138,14 @@ class CmdBuilder:
         self.parameter_load_dir = parameter_dir
 
         if parameter_dir:
+            self.args.append('--load-parameters')
+            self.args.append(str(True).lower())
             self.args.append('--parameter-load-dir')
             self.args.append(parameter_dir)
 
         return self
 
-    def set_parameter_save_dir(self,
-                               parameter_dir: Optional[str] = path.join('python', 'tests', 'res', 'tmp', 'results')):
+    def set_parameter_save_dir(self, parameter_dir: Optional[str] = 'results'):
         """
         Configures the rule learner to save parameter settings to a given directory.
 

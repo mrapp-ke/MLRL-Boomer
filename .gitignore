@@ -13,6 +13,4 @@
 
 # Folders commonly used for experiments
 /data/
-/results/
-/models/
-/parameters/
+/experiments/

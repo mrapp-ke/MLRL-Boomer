@@ -21,19 +21,19 @@ class CmdRunner:
 
     def __create_temporary_directories(self):
         builder = self.builder
-        makedirs(builder.result_dir, exist_ok=True)
-        model_dir = builder.model_dir
+        makedirs(builder.resolved_result_dir, exist_ok=True)
+        model_dir = builder.resolved_model_dir
 
         if model_dir:
             makedirs(model_dir, exist_ok=True)
 
     def __delete_temporary_directories(self):
         builder = self.builder
-        shutil.rmtree(builder.result_dir, ignore_errors=True)
+        shutil.rmtree(builder.resolved_result_dir, ignore_errors=True)
         model_dir = builder.model_dir
 
         if model_dir:
-            shutil.rmtree(model_dir, ignore_errors=True)
+            shutil.rmtree(builder.resolved_model_dir, ignore_errors=True)
 
     def __format_cmd(self):
         return reduce(lambda aggr, arg: aggr + (' ' + arg if len(aggr) > 0 else arg), self.args, '')
@@ -50,7 +50,7 @@ class CmdRunner:
 
     def __assert_model_files_exist(self):
         builder = self.builder
-        self.__assert_files_exist(directory=builder.model_dir, file_name='model', suffix='pickle')
+        self.__assert_files_exist(directory=builder.resolved_model_dir, file_name='model', suffix='pickle')
 
     def __assert_files_exist(self, directory: Optional[str], file_name: str, suffix: str):
         if directory:
@@ -138,7 +138,7 @@ class CmdRunner:
 
         # Check if all expected output files have been created...
         self.__assert_model_files_exist()
-        result_dir = builder.result_dir
+        result_dir = builder.resolved_result_dir
         expected_output_dir = builder.expected_output_dir
         expected_files_to_be_deleted = []
 

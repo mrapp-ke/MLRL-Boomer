@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write algorithmic parameters to one or several sinks.
 """
 from argparse import Namespace
+from os import path
 from typing import Set
 
 from mlrl.testbed.experiments.experiment import Experiment
@@ -25,6 +26,7 @@ class ParameterOutputExtension(Extension):
         default='parameters',
         description='The path to the directory where configuration files, which specify the parameters used by the '
         + 'algorithm, should be saved.',
+        decorator=lambda args, value: path.join(OutputExtension.BASE_DIR.get_value(args), value),
     )
 
     PRINT_PARAMETERS = BoolArgument(
