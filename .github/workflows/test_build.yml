@@ -105,6 +105,7 @@ jobs:
               - 'python/tests/mlrl_tests/common/**'
               - 'python/tests/res/data/**'
               - 'python/tests/res/in/**'
+              - 'python/tests/conftest.py'
             python_tests_boosting: &python_tests_boosting
               - *python_tests_common
               - *cpp_tests_boosting
