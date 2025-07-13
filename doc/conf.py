@@ -5,6 +5,7 @@ This file only contains a selection of the most common options. For a full list 
 https://www.sphinx-doc.org/en/master/usage/configuration.html
 """
 # pylint: disable=redefined-builtin,invalid-name
+# mypy: ignore-errors
 from os import environ, listdir
 from pathlib import Path
 

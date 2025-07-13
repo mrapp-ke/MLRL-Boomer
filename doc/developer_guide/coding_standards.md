@@ -188,6 +188,7 @@ We aim to enforce a consistent code style across the entire project. For this pu
 - We use [YAPF](https://github.com/google/yapf) to enforce the Python code style defined in the file {repo-file}`.style.yapf <build_system/targets/code_style/python/.style.yapf>`.
 - In addition, [isort](https://github.com/PyCQA/isort) is used to keep the ordering of imports in Python and Cython source files consistent according to the configuration file {repo-file}`.isort.cfg <build_system/targets/code_style/python/.isort.cfg>`
 - We also use [pylint](https://pylint.org/) to check for common issues in the Python code according to the configuration file {repo-file}`.pylintrc.toml <build_system/targets/code_style/python/.pylintrc.toml>`.
+- For static type checking of Python code, we use [mypy](https://www.mypy-lang.org/). It uses the configuration file {repo-file}`.mypy.ini <build_system/targets/code_style/python/.mypy.ini>`.
 - To automatically detect and remove unused variables and imports, as well as unnecessary `pass` statements, in Python and Cython code, we employ [autoflake](https://github.com/PyCQA/autoflake). The configuration of this tool can be found in the file {repo-file}`.autoflake.toml <build_system/targets/code_style/python/.autoflake.toml>`.
 - For linting Cython source files, we rely on [cython-lint](https://github.com/MarcoGorelli/cython-lint).
 
