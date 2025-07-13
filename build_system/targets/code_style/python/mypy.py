@@ -31,7 +31,6 @@ class Mypy(Program):
             'build_system',
             path.join('python', 'tests'),
             'doc',
-            path.join('python', 'subprojects', 'seco'),
             path.join('python', 'subprojects', 'common'),
             path.join('python', 'subprojects', 'util'),
             path.join('python', 'subprojects', 'testbed'),
