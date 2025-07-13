@@ -6,3 +6,4 @@
 - The command line arguments `--output-dir`, `--create-output-dir` and `--wipe-output-dir` have been renamed to `--result-dir`, `--create-dirs` and `--wipe-result-dir`.
 - The command line arguments `--result-dir` (previously `--output-dir`), `--model-save-dir` and `--parameter-save-dir` do now come with default values.
 - The command line arguments `--save-models` and `--save-parameters` have been added for specifying whether models or parameter settings should be written to output files.
+- The command line arguments `--load-models` and `--load-parameters` have been added for specifying whether models or parameter settings should be loaded from input files.
