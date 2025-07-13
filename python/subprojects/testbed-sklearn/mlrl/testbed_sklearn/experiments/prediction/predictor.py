@@ -6,7 +6,7 @@ Provides classes for obtaining predictions from machine learning models.
 import logging as log
 
 from abc import ABC, abstractmethod
-from typing import Any, Callable, Generator
+from typing import Any, Callable, Generator, Optional
 
 from sklearn.base import ClassifierMixin, RegressorMixin
 
@@ -21,7 +21,8 @@ class PredictionFunction:
     A function that obtains and returns predictions from a learner.
     """
 
-    def __init__(self, learner: Any, predict_function: Callable, predict_proba_function: Callable):
+    def __init__(self, learner: Any, predict_function: Optional[Callable[..., Any]],
+                 predict_proba_function: Optional[Callable[..., Any]]):
         """
         :param learner:                 The learner, the predictions should be obtained from
         :param predict_function:        The function to be invoked for obtaining binary predictions or scores
@@ -33,9 +34,9 @@ class PredictionFunction:
 
     def __predict_scores(self, dataset: Dataset, **kwargs) -> Any:
         try:
-            if isinstance(self.learner, ClassifierMixin):
+            if isinstance(self.learner, ClassifierMixin) and self.predict_function:
                 return self.predict_function(dataset.x, predict_scores=True, **kwargs)
-            if isinstance(self.learner, RegressorMixin):
+            if isinstance(self.learner, RegressorMixin) and self.predict_function:
                 return self.predict_function(dataset.x, **kwargs)
             raise RuntimeError()
         except RuntimeError:
@@ -44,13 +45,21 @@ class PredictionFunction:
 
     def __predict_probabilities(self, dataset: Dataset, **kwargs) -> Any:
         try:
-            return self.predict_proba_function(dataset.x, **kwargs)
+            if self.predict_proba_function:
+                return self.predict_proba_function(dataset.x, **kwargs)
+            raise RuntimeError()
         except RuntimeError:
             log.error('Prediction of probabilities not supported')
             return None
 
     def __predict_binary(self, dataset: Dataset, **kwargs) -> Any:
-        return self.predict_function(dataset.x, **kwargs)
+        try:
+            if self.predict_function:
+                return self.predict_function(dataset.x, **kwargs)
+            raise RuntimeError()
+        except RuntimeError:
+            log.error('Prediction of binary values not supported')
+            return None
 
     def invoke(self, dataset: Dataset, prediction_type: PredictionType, **kwargs) -> Any:
         """
