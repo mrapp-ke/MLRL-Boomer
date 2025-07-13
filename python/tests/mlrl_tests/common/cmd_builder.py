@@ -115,6 +115,8 @@ class CmdBuilder:
         self.parameter_load_dir = parameter_dir
 
         if parameter_dir:
+            self.args.append('--load-parameters')
+            self.args.append(str(True).lower())
             self.args.append('--parameter-load-dir')
             self.args.append(parameter_dir)
 
