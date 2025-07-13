@@ -55,10 +55,12 @@ class RuleModelCharacteristicsExtension(Extension):
 
     def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
         value = self.SAVE_MODEL_CHARACTERISTICS.get_value(args, default=OutputExtension.SAVE_ALL.get_value(args))
-        result_dir = OutputExtension.RESULT_DIR.get_value(args)
+        result_directory = OutputExtension.RESULT_DIR.get_value(args)
 
-        if value and result_dir:
-            return [CsvFileSink(directory=result_dir, create_directory=OutputExtension.CREATE_DIRS.get_value(args))]
+        if value and result_directory:
+            return [
+                CsvFileSink(directory=result_directory, create_directory=OutputExtension.CREATE_DIRS.get_value(args))
+            ]
         return []
 
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):

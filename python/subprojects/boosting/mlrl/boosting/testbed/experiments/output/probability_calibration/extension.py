@@ -65,11 +65,11 @@ class MarginalProbabilityCalibrationModelExtension(Extension):
     def __create_csv_file_sinks(self, args: Namespace) -> List[Sink]:
         value, options = self.SAVE_MARGINAL_PROBABILITY_CALIBRATION_MODEL.get_value(
             args, default=OutputExtension.SAVE_ALL.get_value(args))
-        result_dir = OutputExtension.RESULT_DIR.get_value(args)
+        result_directory = OutputExtension.RESULT_DIR.get_value(args)
 
-        if value and result_dir:
+        if value and result_directory:
             return [
-                CsvFileSink(directory=result_dir,
+                CsvFileSink(directory=result_directory,
                             create_directory=OutputExtension.CREATE_DIRS.get_value(args),
                             options=options)
             ]
@@ -133,11 +133,11 @@ class JointProbabilityCalibrationModelExtension(Extension):
 
         value, options = self.SAVE_JOINT_PROBABILITY_CALIBRATION_MODEL.get_value(
             args, default=OutputExtension.SAVE_ALL.get_value(args))
-        result_dir = OutputExtension.RESULT_DIR.get_value(args)
+        result_directory = OutputExtension.RESULT_DIR.get_value(args)
 
-        if value and result_dir:
+        if value and result_directory:
             sinks.append(
-                CsvFileSink(directory=result_dir,
+                CsvFileSink(directory=result_directory,
                             create_directory=OutputExtension.CREATE_DIRS.get_value(args),
                             options=options))
 
