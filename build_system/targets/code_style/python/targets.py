@@ -13,6 +13,7 @@ from targets.code_style.modules import CodeModule
 from targets.code_style.python.autoflake import Autoflake
 from targets.code_style.python.cython_lint import CythonLint
 from targets.code_style.python.isort import ISort
+from targets.code_style.python.mypy import Mypy
 from targets.code_style.python.pylint import PyLint
 from targets.code_style.python.yapf import Yapf
 
@@ -35,6 +36,7 @@ class CheckPythonCodeStyle(PhonyTarget.Runnable):
         ISort(build_unit, module).run()
         Yapf(build_unit, module).run()
         PyLint(build_unit, module).run()
+        Mypy(build_unit, module).run()
 
 
 class EnforcePythonCodeStyle(PhonyTarget.Runnable):

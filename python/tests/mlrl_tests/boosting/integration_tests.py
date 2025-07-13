@@ -1,10 +1,11 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+# pylint: disable=missing-function-docstring
 import pytest
 
-# pylint: disable=missing-function-docstring
 from ..common.cmd_runner import CmdRunner
+from ..common.integration_tests import IntegrationTests
 
 from mlrl.common.config.parameters import GlobalPruningParameter, PartitionSamplingParameter
 
@@ -13,7 +14,7 @@ from mlrl.boosting.config.parameters import RegressionLossParameter, StatisticTy
 from mlrl.util.cli import NONE
 
 
-class BoomerIntegrationTestsMixin:
+class BoomerIntegrationTestsMixin(IntegrationTests):
     """
     A mixin for integration tests for the BOOMER algorithm.
     """
