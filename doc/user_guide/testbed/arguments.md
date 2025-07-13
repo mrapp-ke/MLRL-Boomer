@@ -155,7 +155,7 @@ Because the training of models can be time-consuming, it might be desirable to s
 
 As an alternative to storing the models learned by an algorithm, the algorithmic parameters used for training can be saved to disk. This may help to remember the configuration used for training a model and enables to reload the same parameter setting for additional experiments.
 
-- `--parameter-load-dir` (Default value = `None`)
+- `--parameter-load-dir` (Default value = `parameters`)
 
   - An absolute or relative path to the directory from which parameters to be used by the algorithm should be loaded. If such files are found in the specified directory, the specified parameter settings are used instead of the parameters that are provided via command line arguments.
 
