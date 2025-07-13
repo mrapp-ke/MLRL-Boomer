@@ -131,9 +131,14 @@ Depending on the characteristics of a dataset, it might be desirable to apply on
 
 Because the training of models can be time-consuming, it might be desirable to store them on disk for later use. This requires to specify the paths of directories to which models should be saved or loaded from.
 
-- `--model-load-dir` (Default value = `None`)
+- `--model-load-dir` (Default value = `models`)
 
   - An absolute or relative path to the directory from which models should be loaded. If such models are found in the specified directory, they are used instead of learning a new model from scratch.
+
+- `--load-models` (Default value = `false`)
+
+  - `true` Models are loaded from input files.
+  - `false` Models are not loaded from input files.
 
 - `--model-save-dir` (Default value = `models`)
 
@@ -150,11 +155,16 @@ Because the training of models can be time-consuming, it might be desirable to s
 
 As an alternative to storing the models learned by an algorithm, the algorithmic parameters used for training can be saved to disk. This may help to remember the configuration used for training a model and enables to reload the same parameter setting for additional experiments.
 
-- `--parameter-load-dir` (Default value = `None`)
+- `--parameter-load-dir` (Default value = `parameters`)
 
   - An absolute or relative path to the directory from which parameters to be used by the algorithm should be loaded. If such files are found in the specified directory, the specified parameter settings are used instead of the parameters that are provided via command line arguments.
 
-- `--parameter-save-dir` (Default value = `None`)
+- `--load-parameters` (Default value = `false`)
+
+  - `true` Algorithmic parameters are loaded from input files
+  - `false` Algorithmic parameters are not loaded from input files
+
+- `--parameter-save-dir` (Default value = `parameters`)
 
   - An absolute or relative path to the directory to which [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files that store algorithmic parameters set by the user should be saved.
 
@@ -174,7 +184,9 @@ As an alternative to storing the models learned by an algorithm, the algorithmic
 
 To provide valuable insights into the models learned by an algorithm, the predictions they provide, or the data they have been derived from, a wide variety of experimental results can be written to output files or printed on the console. If the results should be written to files, it is necessary to specify an output directory:
 
-- `--result-dir` An absolute or relative path to the directory where experimental results should be saved.
+- `--base-dir` (Default value = `experiments/<yyyy-mm-dd_HH-MM>`, e.g., `experiments/2025-07-13_01-20`, depending on the current date and time) An absolute or relative path to a directory. If relative paths to directories, where files should be saved, are given, they are considered relative to the directory specified via this argument.
+
+- `--result-dir` (Default value = `result`) An absolute or relative path to the directory where experimental results should be saved.
 
 - `--create-dirs` (Default value = `true`)
 
