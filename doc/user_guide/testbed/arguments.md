@@ -159,6 +159,11 @@ As an alternative to storing the models learned by an algorithm, the algorithmic
 
   - An absolute or relative path to the directory from which parameters to be used by the algorithm should be loaded. If such files are found in the specified directory, the specified parameter settings are used instead of the parameters that are provided via command line arguments.
 
+- `--load-parameters` (Default value = `false`)
+
+  - `true` Algorithmic parameters are loaded from input files
+  - `false` Algorithmic parameters are not loaded from input files
+
 - `--parameter-save-dir` (Default value = `parameters`)
 
   - An absolute or relative path to the directory to which [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files that store algorithmic parameters set by the user should be saved.

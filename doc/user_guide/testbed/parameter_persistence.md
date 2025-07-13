@@ -66,7 +66,7 @@ If you want to print all custom parameters that are used by a learning algorithm
    ```
 ````
 
-Once parameters have been saved to a directory, they can be loaded in subsequent experiments by specifying the command line argument `--parameter-load-dir`. This allows to omit the respective parameters from the command line. If a parameter is included in both, the loaded file and the command line arguments, the latter takes precedence.
+Once parameters have been saved to a directory, they can be loaded in subsequent experiments by using the command line argument `--load-parameters`. The path to the directory, where the input files are located, can be set via the argument `--parameter-load-dir`. If no path is given, `parameters` is used as the default. Loading parameters from input files allows to omit the respective parameters from the command line. If a parameter is included in both, the loaded file and the command line arguments, the latter takes precedence.
 
 ````{tab} BOOMER
    ```text
@@ -74,6 +74,7 @@ Once parameters have been saved to a directory, they can be loaded in subsequent
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --parameter-load-dir /path/to/parameters \
+       --load-parameters true
    ```
 ````
 
@@ -83,6 +84,7 @@ Once parameters have been saved to a directory, they can be loaded in subsequent
        --data-dir /path/to/datasets/ \
        --dataset dataset-name \
        --parameter-load-dir /path/to/parameters \
+       --load-parameters true
    ```
 ````
 
