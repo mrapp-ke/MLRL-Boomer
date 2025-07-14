@@ -29,7 +29,7 @@ class GithubApi:
             from github import Auth, Github
             return Github(auth=Auth.Token(self.token) if self.token else None)
 
-        def __init__(self, repository_name: str, token: str):
+        def __init__(self, repository_name: str, token: Optional[str] = None):
             """
             :param repository_name: The name of the repository
             :param token:           The API token to be used for accessing the repository or None, if no token should be
@@ -72,7 +72,7 @@ class GithubApi:
         :param build_unit: The build unit to access the GitHub API from
         """
         Pip.for_build_unit(build_unit).install_packages('pygithub')
-        self.token = None
+        self.token: Optional[str] = None
 
     def set_token(self, token: Optional[str]) -> 'GithubApi':
         """
