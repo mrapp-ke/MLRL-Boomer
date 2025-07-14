@@ -6,7 +6,7 @@ Provides classes for installing Python packages via pip.
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from functools import reduce
-from typing import Dict, Optional, Set
+from typing import Any, Dict, Optional, Set
 
 from core.build_unit import BuildUnit
 from util.cmd import Command as Cmd
@@ -34,8 +34,8 @@ class Package:
     def __str__(self) -> str:
         return self.normalized_name
 
-    def __eq__(self, other: 'Package') -> bool:
-        return self.normalized_name == other.normalized_name
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, type(self)) and self.normalized_name == other.normalized_name
 
     def __hash__(self) -> int:
         return hash(self.normalized_name)
@@ -139,8 +139,8 @@ class Requirement:
     def __str__(self) -> str:
         return str(self.package) + (' ' + str(self.version) if self.version else '')
 
-    def __eq__(self, other: 'Requirement') -> bool:
-        return self.package == other.package
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, type(self)) and self.package == other.package
 
     def __hash__(self) -> int:
         return hash(self.package)
@@ -217,7 +217,7 @@ class RequirementsFile(ABC):
     def __str__(self) -> str:
         return self.path
 
-    def __eq__(self, other: 'RequirementsFile') -> bool:
+    def __eq__(self, other: Any) -> bool:
         return isinstance(other, type(self)) and self.path == other.path
 
     def __hash__(self) -> int:
@@ -350,7 +350,7 @@ class Pip:
         """
         packages = [Package(package_name) for package_name in package_names]
         missing_package_names = {package.normalized_name for package in packages}
-        result = {}
+        result: Dict[RequirementsFile, Set[Requirement]] = {}
 
         for requirements_file in self.requirements_files:
             requirements = requirements_file.lookup_requirements(*packages, accept_missing=True)
@@ -392,8 +392,9 @@ class Pip:
                                 if it should simply be ignored
         """
         looked_up_requirements = self.lookup_requirements(*package_names, accept_missing=accept_missing)
+        requirements_to_be_installed: Set[Requirement] = set()
         requirements_to_be_installed = reduce(lambda aggr, requirements: aggr | requirements,
-                                              looked_up_requirements.values(), set())
+                                              looked_up_requirements.values(), requirements_to_be_installed)
         self.install_requirements(*requirements_to_be_installed)
 
     def install_all_packages(self):

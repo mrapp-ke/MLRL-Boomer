@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for generating API documentations for C++ code.
 """
-from typing import List
+from typing import List, cast
 
 from core.build_unit import BuildUnit
 from core.modules import Module
@@ -27,18 +27,22 @@ class ApidocCpp(BuildTarget.Runnable):
         super().__init__(MODULE_FILTER)
 
     def run(self, build_unit: BuildUnit, module: Module):
-        Log.info('Generating C++ API documentation for directory "%s"...', module.root_directory)
-        Doxygen(build_unit, module).run()
-        BreatheApidoc(build_unit, module).run()
+        apidoc_module = cast(CppApidocModule, module)
+        Log.info('Generating C++ API documentation for directory "%s"...', apidoc_module.root_directory)
+        Doxygen(build_unit, apidoc_module).run()
+        BreatheApidoc(build_unit, apidoc_module).run()
 
     def get_output_files(self, _: BuildUnit, module: Module) -> List[str]:
-        return [module.output_directory]
+        apidoc_module = cast(CppApidocModule, module)
+        return [apidoc_module.output_directory]
 
     def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
-        return module.find_header_files()
+        apidoc_module = cast(CppApidocModule, module)
+        return apidoc_module.find_header_files()
 
     def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
-        Log.info('Removing C++ API documentation for directory "%s"...', module.root_directory)
+        apidoc_module = cast(CppApidocModule, module)
+        Log.info('Removing C++ API documentation for directory "%s"...', apidoc_module.root_directory)
         return super().get_clean_files(build_unit, module)
 
 

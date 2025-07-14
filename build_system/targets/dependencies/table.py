@@ -3,6 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for creating tables.
 """
+from typing import List
+
 from core.build_unit import BuildUnit
 from util.pip import Pip
 
@@ -19,7 +21,7 @@ class Table:
         """
         self.build_unit = build_unit
         self.headers = list(headers) if headers else None
-        self.rows = []
+        self.rows: List[List[str]] = []
 
     def add_row(self, *entries: str):
         """

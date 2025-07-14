@@ -5,10 +5,10 @@ Provides classes that provide information about files and directories that belon
 to be dealt with by the targets of the build system.
 """
 from abc import ABC, abstractmethod
-from typing import Dict, Optional, Set
+from typing import Optional, Set
 
 from core.modules import Module, ModuleRegistry
-from util.env import get_env_array
+from util.env import Env, get_env_array
 
 
 class SubprojectModule(Module, ABC):
@@ -31,7 +31,7 @@ class SubprojectModule(Module, ABC):
             self.subproject_names = subproject_names
 
         @staticmethod
-        def from_env(env: Dict) -> 'SubprojectModule.Filter':
+        def from_env(env: Env) -> 'SubprojectModule.Filter':
             """
             Creates and returns a `SubprojectModule.Filter` that filters modules by the subprojects given via the
             environment variable `SubprojectModule.ENV_SUBPROJECTS`.
