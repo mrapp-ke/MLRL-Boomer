@@ -6,9 +6,9 @@ Provides classes for configuring the arguments of a command line interface.
 import sys
 
 from argparse import ArgumentError, ArgumentParser, Namespace
-from enum import Enum, EnumType
+from enum import Enum
 from functools import cached_property
-from typing import Any, Dict, Optional, Set
+from typing import Any, Dict, Optional, Set, Type
 
 from mlrl.util.format import format_enum_values, format_set
 from mlrl.util.options import BooleanOption, parse_enum, parse_param, parse_param_and_options
@@ -21,7 +21,7 @@ class Argument:
     A single argument of a command line interface for which the user can provide a custom value.
     """
 
-    def __init__(self, *names: str, required: Optional[bool] = False, default: Optional[Any] = None, **kwargs: Any):
+    def __init__(self, *names: str, required: bool = False, default: Optional[Any] = None, **kwargs: Any):
         """
         :param names:       One of several names of the argument
         :param required:    True, if the argument is mandatory, False otherwise
@@ -151,11 +151,16 @@ class BoolArgument(Argument):
     """
 
     @staticmethod
-    def __format_description(description: str, has_options: bool) -> str:
-        if not description.endswith('.'):
-            description += '.'
+    def __format_description(description: Optional[str], has_options: bool) -> str:
+        if description:
+            if not description.endswith('.'):
+                description += '.'
 
-        description += ' Must be one of ' + format_enum_values(BooleanOption) + '.'
+            description += ' '
+        else:
+            description = ''
+
+        description += 'Must be one of ' + format_enum_values(BooleanOption) + '.'
 
         if has_options:
             description += ' For additional options refer to the documentation.'
@@ -183,8 +188,8 @@ class BoolArgument(Argument):
                                                         bool(true_options) or bool(false_options)),
                          type=str if true_options or false_options else BooleanOption.parse,
                          required=required)
-        self.true_options = true_options
-        self.false_options = false_options
+        self.true_options = true_options if true_options else set()
+        self.false_options = false_options if false_options else set()
 
     def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
         value = str(super().get_value(args, default=default)).lower()
@@ -195,8 +200,8 @@ class BoolArgument(Argument):
 
             if true_options or false_options:
                 value, options = parse_param_and_options(self.key, value, {
-                    BooleanOption.TRUE: true_options,
-                    BooleanOption.FALSE: false_options
+                    str(BooleanOption.TRUE): true_options,
+                    str(BooleanOption.FALSE): false_options
                 })
                 return BooleanOption.parse(value), options
 
@@ -211,11 +216,16 @@ class SetArgument(Argument):
     """
 
     @staticmethod
-    def __format_description(description: str, values: Set[str] | Dict[str, Set[str]]) -> str:
-        if not description.endswith('.'):
-            description += '.'
+    def __format_description(description: Optional[str], values: Set[str] | Dict[str, Set[str]]) -> str:
+        if description:
+            if not description.endswith('.'):
+                description += '.'
 
-        description += ' Must be one of ' + format_set(values.keys() if isinstance(values, dict) else values) + '.'
+            description += ' '
+        else:
+            description = ''
+
+        description += 'Must be one of ' + format_set(values.keys() if isinstance(values, dict) else values) + '.'
 
         if isinstance(values, dict):
             description += ' For additional options refer to the documentation.'
@@ -265,7 +275,7 @@ class EnumArgument(SetArgument):
 
     def __init__(self,
                  *names: str,
-                 enum: EnumType,
+                 enum: Type[Enum],
                  description: Optional[str] = None,
                  default: Optional[Enum] = None,
                  required: bool = False):
@@ -311,7 +321,7 @@ class CommandLineInterface:
                                          version=version_text,
                                          help='Display information about the program.')
 
-    def add_arguments(self, *arguments: Argument) -> Optional[Namespace]:
+    def add_arguments(self, *arguments: Argument):
         """
         Adds a new argument that enables the user to provide a value to the command line interface.
 
