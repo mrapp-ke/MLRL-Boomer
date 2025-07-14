@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utilities for checking and updating the versions of Python dependencies.
 """
 from dataclasses import dataclass, replace
-from typing import Set
+from typing import Any, Dict, Set
 
 from core.build_unit import BuildUnit
 from util.log import Log
@@ -28,8 +28,10 @@ class Dependency:
     outdated: RequirementVersion
     latest: RequirementVersion
 
-    def __eq__(self, other: 'Dependency') -> bool:
-        return self.requirements_file == other.requirements_file and self.package == other.package
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, type(self)) \
+            and self.requirements_file == other.requirements_file \
+            and self.package == other.package
 
     def __hash__(self) -> int:
         return hash((self.requirements_file, self.package))
@@ -66,20 +68,21 @@ class DependencyUpdater:
         :param build_unit:  The `BuildUnit` from which this function is invoked
         :return:            A set that contains all outdated dependencies
         """
-        outdated_dependencies = set()
-        version_cache = {}
+        outdated_dependencies: Set[Dependency] = set()
+        version_cache: Dict[Package, Version] = {}
 
         for requirements_file in self.requirements_files:
             for requirement in requirements_file.requirements:
                 package = requirement.package
-                current_version = requirement.version
                 latest_version = version_cache.get(package)
 
                 if not latest_version:
                     latest_version = self.__query_latest_package_version(build_unit, package)
                     version_cache[package] = latest_version
 
-                if Version.parse(current_version.min_version, skip_on_error=True) < latest_version:
+                current_version = requirement.version
+
+                if current_version and Version.parse(current_version.min_version, skip_on_error=True) < latest_version:
                     outdated_dependencies.add(
                         Dependency(requirements_file=requirements_file,
                                    package=package,

@@ -44,10 +44,17 @@ def __find_init_files() -> List[str]:
 def __import_source_file(source_file: str) -> ModuleType:
     try:
         spec = spec_from_file_location(source_file, source_file)
-        module = module_from_spec(spec)
-        sys.modules[source_file] = module
-        spec.loader.exec_module(module)
-        return module
+
+        if spec:
+            loader = spec.loader
+
+            if loader:
+                module = module_from_spec(spec)
+                sys.modules[source_file] = module
+                loader.exec_module(module)
+                return module
+
+        raise FileNotFoundError()
     except FileNotFoundError as error:
         raise ImportError('Source file "' + source_file + '" not found') from error
 
