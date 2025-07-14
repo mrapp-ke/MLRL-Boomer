@@ -8,7 +8,7 @@ from datetime import date
 from enum import Enum, StrEnum, auto
 from functools import cached_property
 from os import path
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from core.build_unit import BuildUnit
 from util.io import TextFile
@@ -156,12 +156,10 @@ class ChangesetFile(TextFile):
             raise ValueError('File "' + self.file + '" must start with a top-level header (starting with "'
                              + Line.PREFIX_HEADER + '")')
 
-        current_line_is_header = current_line and current_line.line_type == LineType.HEADER
-        previous_line_is_header = previous_line and previous_line.line_type == LineType.HEADER
-
-        if (current_line_is_header and previous_line_is_header) or (not current_line and previous_line_is_header):
-            raise ValueError('Header "' + previous_line.line + '" at line ' + str(previous_line.line_number)
-                             + ' of file "' + self.file + '" is not followed by any content')
+        if previous_line and previous_line.line_type == LineType.HEADER:
+            if not current_line or current_line.line_type == LineType.HEADER:
+                raise ValueError('Header "' + previous_line.line + '" at line ' + str(previous_line.line_number)
+                                 + ' of file "' + self.file + '" is not followed by any content')
 
     @cached_property
     def parsed_lines(self) -> List[Line]:
@@ -353,7 +351,7 @@ def __validate_changeset(changeset_file: ChangesetFile):
 
 
 def __merge_changesets(*changeset_files: ChangesetFile) -> List[Changeset]:
-    changesets_by_header = {}
+    changesets_by_header: Dict[str, Changeset] = {}
 
     for changeset_file in changeset_files:
         for changeset in changeset_file.changesets:

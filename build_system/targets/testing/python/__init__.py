@@ -28,13 +28,5 @@ MODULES = [
         root_directory=test_directory,
         result_directory=path.join(Project.Python.root_directory, 'tests', Project.Python.build_directory_name,
                                    'test-results'),
-    ) for test_directory in {
-        path.dirname(test_file) for test_file in reduce(
-            lambda aggr, suffix : aggr + Project.Python.file_search() \
-                .filter_by_substrings(starts_with='test_', ends_with='.' + suffix) \
-                .list(path.join(Project.Python.root_directory, 'tests')),
-            FileType.python().suffixes,
-            [],
-        )
-    }
+    ) for test_directory in Project.Python.find_test_directories()
 ]

@@ -6,7 +6,7 @@ Provides classes for listing files and directories.
 from functools import partial
 from glob import glob
 from os import path
-from typing import Callable, List, Optional, Set
+from typing import Any, Callable, List, Optional, Set
 
 
 class DirectorySearch:
@@ -372,7 +372,10 @@ class FileSearch:
         :return:            The `FileSearch` itself
         """
         for file_type in file_types:
-            file_type.file_search_decorator(self)
+            file_search_decorator = file_type.file_search_decorator
+
+            if file_search_decorator:
+                file_search_decorator(self)
 
         return self
 
@@ -443,7 +446,7 @@ class FileType:
     def __init__(self,
                  name: str,
                  suffixes: Set[str],
-                 file_search_decorator: Optional[Callable[[FileSearch], None]] = None):
+                 file_search_decorator: Optional[Callable[[FileSearch], Any]] = None):
         """
         :param name:                    The name of the file type
         :param suffixes:                The suffixes that correspond to this file type (without leading dot)
@@ -557,8 +560,8 @@ class FileType:
     def __str__(self) -> str:
         return self.name
 
-    def __eq__(self, other: 'FileType') -> bool:
-        return self.name == other.name
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, type(self)) and self.name == other.name
 
     def __hash__(self) -> int:
         return hash(self.name)

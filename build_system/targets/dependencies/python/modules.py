@@ -61,7 +61,7 @@ class PythonDependencyModule(SubprojectModule):
         :param dependency_type: An optional `DependencyType` to be matched
         :return:                A list that contains the requirements files that have been found
         """
-        requirements_files = []
+        requirements_files: List[RequirementsFile] = []
 
         if not dependency_type or self.dependency_type == dependency_type:
             requirements_files.extend([
