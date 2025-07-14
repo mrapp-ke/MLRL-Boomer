@@ -27,8 +27,12 @@ class CurlDownload(Program):
         """
         super().__init__('curl')
         self.add_conditional_arguments(follow_redirects, '--location')
-        self.add_conditional_arguments(file_name is not None, '-o', file_name)
-        self.add_conditional_arguments(file_name is None, '-O')
+
+        if file_name is None:
+            self.add_arguments('-O')
+        else:
+            self.add_arguments('-o', file_name)
+
         self.add_arguments(url)
         self.use_authorization = authorization_header is not None
         self.add_conditional_arguments(self.use_authorization, '-H', 'Authorization: ' + str(authorization_header))

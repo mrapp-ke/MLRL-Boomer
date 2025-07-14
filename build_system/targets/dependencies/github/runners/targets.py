@@ -3,6 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for updating the project's GitHub runners.
 """
+from typing import cast
+
 from core.build_unit import BuildUnit
 from core.modules import Module
 from core.targets import PhonyTarget
@@ -24,7 +26,8 @@ class CheckGithubRunners(PhonyTarget.Runnable):
         super().__init__(MODULE_FILTER)
 
     def run(self, build_unit: BuildUnit, module: Module):
-        outdated_workflows = RunnerUpdater(build_unit, module).find_outdated_workflows()
+        workflow_module = cast(GithubWorkflowModule, module)
+        outdated_workflows = RunnerUpdater(build_unit, workflow_module).find_outdated_workflows()
 
         if outdated_workflows:
             table = Table(build_unit, 'Workflow', 'Runner', 'Current version', 'Latest version')
@@ -49,7 +52,8 @@ class UpdateGithubRunners(PhonyTarget.Runnable):
         super().__init__(MODULE_FILTER)
 
     def run(self, build_unit: BuildUnit, module: Module):
-        updated_workflows = RunnerUpdater(build_unit, module).update_outdated_workflows()
+        workflow_module = cast(GithubWorkflowModule, module)
+        updated_workflows = RunnerUpdater(build_unit, workflow_module).update_outdated_workflows()
 
         if updated_workflows:
             table = Table(build_unit, 'Workflow', 'Runner', 'Previous version', 'Updated version')

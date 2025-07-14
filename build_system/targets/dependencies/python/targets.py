@@ -4,13 +4,13 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements targets for installing runtime requirements that are required by the project's source code.
 """
 from functools import reduce
-from typing import List, Optional
+from typing import List, Optional, cast
 
 from core.build_unit import BuildUnit
 from core.modules import Module
 from core.targets import PhonyTarget
 from util.log import Log
-from util.pip import Pip
+from util.pip import Pip, RequirementsFile
 
 from targets.dependencies.python.dependencies import DependencyUpdater
 from targets.dependencies.python.modules import DependencyType, PythonDependencyModule
@@ -31,8 +31,11 @@ class InstallPythonDependencies(PhonyTarget.Runnable):
         self.dependency_type = dependency_type
 
     def run_all(self, build_unit: BuildUnit, modules: List[Module]):
+        dependency_modules = (cast(PythonDependencyModule, module) for module in modules)
+        requirements_files: List[RequirementsFile] = []
         requirements_files = reduce(
-            lambda aggr, module: aggr + module.find_requirements_files(build_unit, self.dependency_type), modules, [])
+            lambda aggr, module: aggr + module.find_requirements_files(build_unit, self.dependency_type),
+            dependency_modules, requirements_files)
         pip = Pip(*requirements_files)
         Log.info('Installing %s dependencies...',
                  ('all build-time' if self.dependency_type == DependencyType.BUILD_TIME else 'all runtime')
@@ -55,8 +58,11 @@ class CheckPythonDependencies(PhonyTarget.Runnable):
 
     def run_all(self, build_unit: BuildUnit, modules: List[Module]):
         Log.info('Checking for outdated dependencies...')
+        dependency_modules = (cast(PythonDependencyModule, module) for module in modules)
+        requirements_files: List[RequirementsFile] = []
         requirements_files = reduce(
-            lambda aggr, module: aggr + module.find_requirements_files(build_unit, self.dependency_type), modules, [])
+            lambda aggr, module: aggr + module.find_requirements_files(build_unit, self.dependency_type),
+            dependency_modules, requirements_files)
         outdated_dependencies = DependencyUpdater(*requirements_files).list_outdated_dependencies(build_unit)
 
         if outdated_dependencies:
@@ -87,8 +93,11 @@ class UpdatePythonDependencies(PhonyTarget.Runnable):
 
     def run_all(self, build_unit: BuildUnit, modules: List[Module]):
         Log.info('Updating outdated dependencies...')
+        dependency_modules = (cast(PythonDependencyModule, module) for module in modules)
+        requirements_files: List[RequirementsFile] = []
         requirements_files = reduce(
-            lambda aggr, module: aggr + module.find_requirements_files(build_unit, self.dependency_type), modules, [])
+            lambda aggr, module: aggr + module.find_requirements_files(build_unit, self.dependency_type),
+            dependency_modules, requirements_files)
         updated_dependencies = DependencyUpdater(*requirements_files).update_outdated_dependencies(build_unit)
 
         if updated_dependencies:

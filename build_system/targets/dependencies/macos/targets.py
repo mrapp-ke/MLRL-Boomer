@@ -38,7 +38,7 @@ def __get_download_url_and_file_name_from_release(release: Any, package_name: st
     return None
 
 
-def __get_download_url_and_file_name(github_api: GithubApi, package_name: str) -> Tuple[str, str]:
+def __get_download_url_and_file_name(github_api: GithubApi, package_name: str) -> Tuple[Optional[str], Optional[str]]:
     repository = github_api.open_repository('llvm/llvm-project')
     asset = __get_download_url_and_file_name_from_release(repository.get_latest_release(), package_name)
 
@@ -51,27 +51,36 @@ def __get_download_url_and_file_name(github_api: GithubApi, package_name: str) -
 
     if not asset:
         Log.error('Failed to identify asset to be downloaded!')
+        return None, None
 
     return asset.browser_download_url, asset.name
 
 
-def __download_package(github_api: GithubApi, package_name: str) -> str:
+def __download_package(github_api: GithubApi, package_name: str) -> Optional[str]:
     Log.info('Determining download URL of the latest release of package "%s"...', package_name)
     download_url, file_name = __get_download_url_and_file_name(github_api, package_name=package_name)
-    Log.info('Downloading from "%s"...', download_url)
-    authorization_header = 'token ' + github_api.token if github_api.token else None
-    CurlDownload(download_url, authorization_header=authorization_header, file_name=file_name).run()
-    return file_name
+
+    if download_url and file_name:
+        Log.info('Downloading from "%s"...', download_url)
+        authorization_header = 'token ' + github_api.token if github_api.token else None
+        CurlDownload(download_url, authorization_header=authorization_header, file_name=file_name).run()
+        return file_name
+
+    return None
 
 
-def __download_and_extract_package(github_api: GithubApi, package_name: str, extract_to: str) -> str:
+def __download_and_extract_package(github_api: GithubApi, package_name: str, extract_to: str) -> Optional[str]:
     file_name = __download_package(github_api, package_name=package_name)
-    file_name_without_suffix = file_name[:-len(SUFFIX_SRC_TAR_XZ)]
-    extract_directory = path.join(extract_to, file_name_without_suffix)
-    Log.info('Extracting file "%s" into directory "%s"...', file_name, extract_directory)
-    create_directories(extract_directory)
-    TarExtract(file_to_extract=file_name, into_directory=extract_directory).run()
-    return path.join(extract_directory, file_name_without_suffix + SUFFIX_SRC)
+
+    if file_name:
+        file_name_without_suffix = file_name[:-len(SUFFIX_SRC_TAR_XZ)]
+        extract_directory = path.join(extract_to, file_name_without_suffix)
+        Log.info('Extracting file "%s" into directory "%s"...', file_name, extract_directory)
+        create_directories(extract_directory)
+        TarExtract(file_to_extract=file_name, into_directory=extract_directory).run()
+        return path.join(extract_directory, file_name_without_suffix + SUFFIX_SRC)
+
+    return None
 
 
 def compile_libomp(build_unit: BuildUnit):
@@ -85,21 +94,22 @@ def compile_libomp(build_unit: BuildUnit):
     build_directory = 'libomp'
     cmake_directory = __download_and_extract_package(github_api, package_name='cmake', extract_to=build_directory)
     openmp_directory = __download_and_extract_package(github_api, package_name='openmp', extract_to=build_directory)
-    shutil.copytree(path.join(cmake_directory, 'Modules'), path.join(openmp_directory, 'cmake'), dirs_exist_ok=True)
 
-    Log.info('Compiling from source directory "%s"...', openmp_directory)
-    args = [
-        '-DCMAKE_INSTALL_PREFIX=' + build_directory,
-        '-DCMAKE_INSTALL_LIBDIR=lib',
-        '-DCMAKE_BUILD_TYPE=Release',
-        '-DCMAKE_FIND_FRAMEWORK=LAST',
-        '-DCMAKE_VERBOSE_MAKEFILE=ON',
-        '-Wno-dev',
-        '-DBUILD_TESTING=OFF',
-        '-DLIBOMP_INSTALL_ALIASES=OFF',
-    ]
-    cmake_build_directory = path.join(build_directory, 'build', 'shared')
-    create_directories(cmake_build_directory)
-    Cmake('-S', openmp_directory, '-B', cmake_build_directory, *args).run()
-    Cmake('--build', cmake_build_directory).run()
-    Cmake('--install', cmake_build_directory).run()
+    if cmake_directory and openmp_directory:
+        shutil.copytree(path.join(cmake_directory, 'Modules'), path.join(openmp_directory, 'cmake'), dirs_exist_ok=True)
+        Log.info('Compiling from source directory "%s"...', openmp_directory)
+        args = [
+            '-DCMAKE_INSTALL_PREFIX=' + build_directory,
+            '-DCMAKE_INSTALL_LIBDIR=lib',
+            '-DCMAKE_BUILD_TYPE=Release',
+            '-DCMAKE_FIND_FRAMEWORK=LAST',
+            '-DCMAKE_VERBOSE_MAKEFILE=ON',
+            '-Wno-dev',
+            '-DBUILD_TESTING=OFF',
+            '-DLIBOMP_INSTALL_ALIASES=OFF',
+        ]
+        cmake_build_directory = path.join(build_directory, 'build', 'shared')
+        create_directories(cmake_build_directory)
+        Cmake('-S', openmp_directory, '-B', cmake_build_directory, *args).run()
+        Cmake('--build', cmake_build_directory).run()
+        Cmake('--install', cmake_build_directory).run()

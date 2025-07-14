@@ -3,12 +3,14 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for accessing environment variables.
 """
-from typing import Dict, List, Optional
+from typing import List, MutableMapping, Optional
 
 from util.log import Log
 
+Env = MutableMapping
 
-def get_env(env: Dict, name: str, default: Optional[str] = None) -> Optional[str]:
+
+def get_env(env: Env, name: str, default: Optional[str] = None) -> Optional[str]:
     """
     Returns the value of the environment variable with a given name.
 
@@ -20,7 +22,7 @@ def get_env(env: Dict, name: str, default: Optional[str] = None) -> Optional[str
     return env.get(name, default)
 
 
-def get_env_bool(env: Dict, name: str, default: bool = False) -> bool:
+def get_env_bool(env: Env, name: str, default: bool = False) -> bool:
     """
     Returns the value of the environment variable with a given name as a boolean value.
 
@@ -44,7 +46,7 @@ def get_env_bool(env: Dict, name: str, default: bool = False) -> bool:
     return default
 
 
-def get_env_array(env: Dict, name: str, default: Optional[List[str]] = None) -> List[str]:
+def get_env_array(env: Env, name: str, default: Optional[List[str]] = None) -> List[str]:
     """
     Returns the value of the environment variable with a given name as a comma-separated list.
 
@@ -61,7 +63,7 @@ def get_env_array(env: Dict, name: str, default: Optional[List[str]] = None) -> 
     return default if default else []
 
 
-def set_env(env: Dict, name: str, value: str):
+def set_env(env: Env, name: str, value: str):
     """
     Sets the value of the environment variable with a given name.
 

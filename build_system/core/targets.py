@@ -51,14 +51,14 @@ class Target(ABC):
             self.dependency_names = set()
             self.dependencies = []
 
-        def depends_on(self, *target_names: str, clean_dependencies: bool = False) -> 'Target.Builder':
+        def depends_on(self, *target_names: str, clean_dependencies: bool = False) -> Any:
             """
             Adds on or several targets, this target should depend on.
 
             :param target_names:        The names of the targets, this target should depend on
             :param clean_dependencies:  True, if output files of the dependencies should also be cleaned when cleaning
                                         the output files of this target, False otherwise
-            :return:                    The `Target.Builder` itself
+            :return:                    The builder itself
             """
             for target_name in target_names:
                 if not target_name in self.dependency_names:
@@ -190,7 +190,7 @@ class BuildTarget(Target):
             super().__init__()
             self.parent_builder = parent_builder
             self.target_name = target_name
-            self.runnables = []
+            self.runnables: List[BuildTarget.Runnable] = []
 
         def set_runnables(self, *runnables: 'BuildTarget.Runnable') -> Any:
             """
@@ -356,8 +356,8 @@ class PhonyTarget(Target):
             super().__init__()
             self.parent_builder = parent_builder
             self.target_name = target_name
-            self.functions = []
-            self.runnables = []
+            self.functions: List[PhonyTarget.Function] = []
+            self.runnables: List[PhonyTarget.Runnable] = []
 
         def nop(self) -> Any:
             """
@@ -431,7 +431,7 @@ class TargetBuilder:
         :param build_unit: The build unit, the targets belong to
         """
         self.build_unit = build_unit
-        self.target_builders = []
+        self.target_builders: List[Target.Builder] = []
 
     def add_build_target(self, name: str) -> BuildTarget.Builder:
         """
@@ -616,9 +616,9 @@ class DependencyGraph:
 
             :return: The copy that has been created
             """
-            current_node = self.last
-            copy = DependencyGraph.Sequence.from_node(current_node.copy())
-            current_node = current_node.parent
+            last_node = self.last
+            copy = DependencyGraph.Sequence.from_node(last_node.copy())
+            current_node = last_node.parent
 
             while current_node:
                 copy.prepend(current_node.copy())
@@ -632,16 +632,16 @@ class DependencyGraph:
 
             :param module_registry: A `ModuleRegistry` that may be used for looking up modules
             """
-            current_node = self.first
+            current_node: Optional[DependencyGraph.Node] = self.first
 
             while current_node:
                 current_node.execute(module_registry)
                 current_node = current_node.child
 
         def __str__(self) -> str:
-            current_node = self.first
-            result = ' → ' + str(current_node)
-            current_node = current_node.child
+            first_node = self.first
+            result = ' → ' + str(first_node)
+            current_node = first_node.child
             indent = 1
 
             while current_node:
@@ -693,8 +693,8 @@ class DependencyGraph:
 
     @staticmethod
     def __merge_two_sequences(first_sequence: Sequence, second_sequence: Sequence) -> Sequence:
-        first_node = first_sequence.last
-        second_node = second_sequence.last
+        first_node: Optional[DependencyGraph.Node] = first_sequence.last
+        second_node: Optional[DependencyGraph.Node] = second_sequence.last
 
         while second_node:
             overlapping_node = DependencyGraph.__find_in_parents(second_node, first_node)
