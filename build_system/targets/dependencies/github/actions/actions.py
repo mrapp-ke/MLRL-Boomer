@@ -5,7 +5,7 @@ Provides utility functions for checking the project's GitHub workflows for outda
 """
 from dataclasses import dataclass, replace
 from functools import cached_property, reduce
-from typing import Dict, List, Set
+from typing import Any, Dict, List, Set
 
 from core.build_unit import BuildUnit
 from util.files import FileType
@@ -107,8 +107,8 @@ class Action:
     def __str__(self) -> str:
         return self.name + self.SEPARATOR + str(self.version)
 
-    def __eq__(self, other: 'Action') -> bool:
-        return str(self) == str(other)
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, type(self)) and str(self) == str(other)
 
     def __hash__(self) -> int:
         return hash(str(self))
@@ -146,7 +146,9 @@ class Actions(Workflow):
 
         :param updated_actions: The actions to be updated
         """
-        updated_actions_by_name = reduce(lambda aggr, action: aggr | {action.name: action}, updated_actions, {})
+        updated_actions_by_name: Dict[str, Action] = {}
+        updated_actions_by_name = reduce(lambda aggr, action: aggr | {action.name: action}, updated_actions,
+                                         updated_actions_by_name)
         uses_prefix = self.TAG_USES + ':'
         updated_lines = []
 
@@ -193,8 +195,8 @@ class ActionUpdater(Workflows):
         def __str__(self) -> str:
             return str(self.action)
 
-        def __eq__(self, other: 'ActionUpdater.OutdatedAction') -> bool:
-            return self.action == other.action
+        def __eq__(self, other: Any) -> bool:
+            return isinstance(other, type(self)) and self.action == other.action
 
         def __hash__(self) -> int:
             return hash(self.action)
@@ -214,8 +216,8 @@ class ActionUpdater(Workflows):
         def __str__(self) -> str:
             return str(self.updated)
 
-        def __eq__(self, other: 'ActionUpdater.UpdatedAction') -> bool:
-            return self.updated == other.updated
+        def __eq__(self, other: Any) -> bool:
+            return isinstance(other, type(self)) and self.updated == other.updated
 
         def __hash__(self) -> int:
             return hash(self.updated)
@@ -224,10 +226,8 @@ class ActionUpdater(Workflows):
         repository_name = action.repository
 
         try:
-            latest_tag = self.github_api \
-                .open_repository(repository_name) \
-                .get_latest_release() \
-                .tag_name
+            latest_release = self.github_api.open_repository(repository_name).get_latest_release()
+            latest_tag = latest_release.tag_name if latest_release else None
 
             if not latest_tag:
                 raise RuntimeError('No releases available')
@@ -253,7 +253,7 @@ class ActionUpdater(Workflows):
         :param module:      The module, that contains the workflow definition files
         """
         super().__init__(build_unit, module)
-        self.version_cache = {}
+        self.version_cache: Dict[str, ActionVersion] = {}
         self.github_api = GithubApi(build_unit).set_token_from_env()
 
     def find_outdated_workflows(self) -> Dict[Actions, Set[OutdatedAction]]:
@@ -262,7 +262,7 @@ class ActionUpdater(Workflows):
 
         :return: A dictionary that contains for each workflow a set of outdated Actions
         """
-        outdated_workflows = {}
+        outdated_workflows: Dict[Actions, Set[ActionUpdater.OutdatedAction]] = {}
 
         for workflow in self.workflows:
             Log.info('Searching for GitHub Actions in workflow "%s"...', workflow.file)
@@ -283,10 +283,10 @@ class ActionUpdater(Workflows):
 
         :return: A dictionary that contains for each workflow a set of updated Actions
         """
-        updated_workflows = {}
+        updated_workflows: Dict[Actions, Set[ActionUpdater.UpdatedAction]] = {}
 
         for workflow, outdated_actions in self.find_outdated_workflows().items():
-            updated_actions = set()
+            updated_actions: Set[ActionUpdater.UpdatedAction] = set()
 
             for outdated_action in outdated_actions:
                 previous_version = outdated_action.action.version

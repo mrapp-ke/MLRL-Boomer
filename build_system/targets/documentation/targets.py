@@ -5,7 +5,7 @@ Implements targets for generating documentations.
 """
 from abc import ABC
 from os import environ, path
-from typing import Dict, List, Optional
+from typing import Dict, Iterable, List, Optional, cast
 
 from core.build_unit import BuildUnit
 from core.modules import Module
@@ -31,8 +31,8 @@ class ApidocIndex(BuildTarget.Runnable, ABC):
         return template if path.isfile(template) else None
 
     @staticmethod
-    def __get_templates_and_modules(modules: List[ApidocModule]) -> Dict[str, List[ApidocModule]]:
-        modules_by_template = {}
+    def __get_templates_and_modules(modules: Iterable[ApidocModule]) -> Dict[str, List[ApidocModule]]:
+        modules_by_template: Dict[str, List[ApidocModule]] = {}
 
         for module in modules:
             template = ApidocIndex.__get_template(module)
@@ -48,7 +48,9 @@ class ApidocIndex(BuildTarget.Runnable, ABC):
         return path.join(path.dirname(template), 'index.md')
 
     def run_all(self, _: BuildUnit, modules: List[Module]):
-        for template, modules_in_directory in self.__get_templates_and_modules(modules).items():
+        apidoc_modules = (cast(ApidocModule, module) for module in modules)
+
+        for template, modules_in_directory in self.__get_templates_and_modules(apidoc_modules).items():
             Log.info('Generating index file referencing API documentations from template "%s"...', template)
             references = [module.create_reference() + '\n' for module in modules_in_directory]
             new_lines = []
@@ -62,15 +64,18 @@ class ApidocIndex(BuildTarget.Runnable, ABC):
             TextFile(self.__index_file(template), accept_missing=True).write_lines(*new_lines)
 
     def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
-        template = self.__get_template(module)
+        apidoc_module = cast(ApidocModule, module)
+        template = self.__get_template(apidoc_module)
         return [template] if template else []
 
     def get_output_files(self, _: BuildUnit, module: Module) -> List[str]:
-        template = self.__get_template(module)
+        apidoc_module = cast(ApidocModule, module)
+        template = self.__get_template(apidoc_module)
         return [self.__index_file(template)] if template else []
 
     def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
-        Log.info('Removing index file referencing API documentation in directory "%s"', module.output_directory)
+        apidoc_module = cast(ApidocModule, module)
+        Log.info('Removing index file referencing API documentation in directory "%s"', apidoc_module.output_directory)
         return super().get_clean_files(build_unit, module)
 
 
@@ -93,16 +98,20 @@ class BuildDocumentation(BuildTarget.Runnable):
         self.sphinx_builder = sphinx_builder
 
     def run(self, build_unit: BuildUnit, module: Module):
-        Log.info('Building documentation for directory "%s" (using builder "%s")"...', module.root_directory,
+        sphinx_module = cast(SphinxModule, module)
+        Log.info('Building documentation for directory "%s" (using builder "%s")"...', sphinx_module.root_directory,
                  self.sphinx_builder)
-        SphinxBuild(build_unit, module, builder=self.sphinx_builder).run()
+        SphinxBuild(build_unit, sphinx_module, builder=self.sphinx_builder).run()
 
     def get_input_files(self, _: BuildUnit, module: Module) -> List[str]:
-        return module.find_source_files() if self.sphinx_builder == SphinxBuild.BUILDER_HTML else []
+        sphinx_module = cast(SphinxModule, module)
+        return sphinx_module.find_source_files() if self.sphinx_builder == SphinxBuild.BUILDER_HTML else []
 
     def get_output_files(self, _: BuildUnit, module: Module) -> List[str]:
-        return [module.output_directory] if self.sphinx_builder == SphinxBuild.BUILDER_HTML else []
+        sphinx_module = cast(SphinxModule, module)
+        return [sphinx_module.output_directory] if self.sphinx_builder == SphinxBuild.BUILDER_HTML else []
 
     def get_clean_files(self, _: BuildUnit, module: Module) -> List[str]:
-        Log.info('Removing documentation for directory "%s"...', module.root_directory)
-        return [module.output_directory]
+        sphinx_module = cast(SphinxModule, module)
+        Log.info('Removing documentation for directory "%s"...', sphinx_module.root_directory)
+        return [sphinx_module.output_directory]

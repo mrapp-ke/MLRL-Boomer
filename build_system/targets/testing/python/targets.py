@@ -3,6 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for testing Python code.
 """
+from typing import cast
+
 from core.build_unit import BuildUnit
 from core.modules import Module
 from core.targets import PhonyTarget
@@ -21,5 +23,6 @@ class TestPython(PhonyTarget.Runnable):
         super().__init__(PythonTestModule.Filter())
 
     def run(self, build_unit: BuildUnit, module: Module):
-        Log.info('Running tests in directory "%s"...', module.root_directory)
-        Pytest(build_unit, module).run()
+        test_module = cast(PythonTestModule, module)
+        Log.info('Running tests in directory "%s"...', test_module.root_directory)
+        Pytest(build_unit, test_module).run()

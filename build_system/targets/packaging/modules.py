@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements modules that provide access to Python code that can be built as wheel packages.
 """
 from os import environ, path
-from typing import Generator, List, Optional, Set
+from typing import Generator, List, Optional, Set, cast
 
 from core.build_unit import BuildUnit
 from core.modules import Module, ModuleRegistry
@@ -57,7 +57,7 @@ class PythonPackageModule(SubprojectModule):
             modules_to_be_built = module_registry.lookup(PythonPackageModule.Filter.TypeFilter(),
                                                          SubprojectModule.Filter.from_env(environ))
             return any(
-                self.__is_dependency_of_module(module, module_to_be_built, module_registry)
+                self.__is_dependency_of_module(module, cast(PythonPackageModule, module_to_be_built), module_registry)
                 for module_to_be_built in modules_to_be_built)
 
         def __is_dependency_of_module(self,
@@ -88,9 +88,9 @@ class PythonPackageModule(SubprojectModule):
             self.build_unit = BuildUnit.for_file(__file__)
 
         def matches(self, module: Module, module_registry: ModuleRegistry) -> bool:
-            return PythonPackageModule.Filter.TypeFilter().matches(
-                module, module_registry) and (self.__needs_to_be_built(module, module_registry)
-                                              or self.__is_dependency_to_be_built(module, module_registry))
+            return PythonPackageModule.Filter.TypeFilter().matches(module, module_registry) and (
+                self.__needs_to_be_built(cast(PythonPackageModule, module), module_registry)
+                or self.__is_dependency_to_be_built(cast(PythonPackageModule, module), module_registry))
 
     def __init__(self, root_directory: str, wheel_directory_name: str):
         """
@@ -99,8 +99,8 @@ class PythonPackageModule(SubprojectModule):
         """
         self.root_directory = root_directory
         self.wheel_directory_name = wheel_directory_name
-        self._pyproject_toml_file = None
-        self._dependencies = None
+        self._pyproject_toml_file: Optional[PyprojectTomlFile] = None
+        self._dependencies: Optional[List[PythonPackageModule]] = None
 
     @property
     def pyproject_toml_template_file(self) -> str:
@@ -164,7 +164,8 @@ class PythonPackageModule(SubprojectModule):
                 modules = module_registry.lookup(PythonPackageModule.PackageNameFilter(dependency_name))
 
                 if modules:
-                    dependencies.append(modules[0])
+                    package_module = cast(PythonPackageModule, modules[0])
+                    dependencies.append(package_module)
 
             self._dependencies = dependencies
 

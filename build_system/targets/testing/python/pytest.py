@@ -28,7 +28,7 @@ class Pytest(PythonModule):
 
         num_blocks = module.num_blocks
         block_index = module.block_index
-        arguments = []
+        arguments: List[str] = []
 
         if num_blocks is not None and block_index is not None:
             markers.append('block-' + str(block_index))
