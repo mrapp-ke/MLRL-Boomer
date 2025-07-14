@@ -4,12 +4,13 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides information about the project that is important to the build system.
 """
 from dataclasses import replace
+from functools import reduce
 from os import environ, path
-from typing import Set
+from typing import List, Set
 
 from core.build_unit import BuildUnit
 from util.env import get_env_bool
-from util.files import FileSearch
+from util.files import FileSearch, FileType
 from util.pip import RequirementVersion
 
 from targets.version_files import DevelopmentVersionFile, PythonVersionFile, SemanticVersion, VersionFile, \
@@ -167,6 +168,22 @@ class Project:
                 for toml_file in Project.Python.file_search().filter_by_name('pyproject.template.toml').list(
                     Project.Python.root_directory)
             }
+
+        @staticmethod
+        def find_test_directories() -> Set[str]:
+            """
+            Finds and returns the names of all directories that contain test files.
+
+            :return: A set that contains the names of all directories that have been found
+            """
+            test_files: List[str] = []
+            test_files = reduce(
+                lambda aggr, suffix: aggr + Project.Python.file_search() \
+                    .filter_by_substrings(starts_with='test_', ends_with='.' + suffix) \
+                    .list(path.join(Project.Python.root_directory, 'tests')),
+                FileType.python().suffixes,
+                test_files)
+            return {path.dirname(test_file) for test_file in test_files}
 
     class Cpp:
         """

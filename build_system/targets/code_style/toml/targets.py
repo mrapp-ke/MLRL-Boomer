@@ -3,6 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for checking and enforcing code style definitions for TOML files.
 """
+from typing import cast
+
 from core.build_unit import BuildUnit
 from core.modules import Module
 from core.targets import PhonyTarget
@@ -24,8 +26,9 @@ class CheckTomlCodeStyle(PhonyTarget.Runnable):
         super().__init__(MODULE_FILTER)
 
     def run(self, build_unit: BuildUnit, module: Module):
-        Log.info('Checking TOML files in the directory "%s"...', module.root_directory)
-        source_files = module.find_source_files()
+        code_module = cast(CodeModule, module)
+        Log.info('Checking TOML files in the directory "%s"...', code_module.root_directory)
+        source_files = code_module.find_source_files()
         TaploLint(build_unit, source_files).run()
         TaploFormat(build_unit, source_files).run()
 
@@ -39,5 +42,6 @@ class EnforceTomlCodeStyle(PhonyTarget.Runnable):
         super().__init__(MODULE_FILTER)
 
     def run(self, build_unit: BuildUnit, module: Module):
-        Log.info('Formatting TOML files in the directory "%s"...', module.root_directory)
-        TaploFormat(build_unit, module.find_source_files(), enforce_changes=True).run()
+        code_module = cast(CodeModule, module)
+        Log.info('Formatting TOML files in the directory "%s"...', code_module.root_directory)
+        TaploFormat(build_unit, code_module.find_source_files(), enforce_changes=True).run()
