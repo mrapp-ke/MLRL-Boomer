@@ -28,7 +28,6 @@ class Mypy(Program):
 
     def _should_be_skipped(self) -> bool:
         blacklist = {
-            'build_system',
             path.join('python', 'subprojects', 'common'),
             path.join('python', 'subprojects', 'util'),
             path.join('python', 'subprojects', 'testbed'),

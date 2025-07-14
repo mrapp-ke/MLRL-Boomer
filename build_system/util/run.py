@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for running external programs during the build process.
 """
 from subprocess import CompletedProcess
+from typing import Set
 
 from core.build_unit import BuildUnit
 from util.cmd import Command
@@ -27,7 +28,7 @@ class Program(Command):
             super().__init__()
             self.build_unit = build_unit
             self.install_program = True
-            self.dependencies = set()
+            self.dependencies: Set[str] = set()
 
         def run(self, command: Command, capture_output: bool) -> CompletedProcess:
             dependencies = []
@@ -44,7 +45,9 @@ class Program(Command):
         :param program:     The name of the program to be run
         :param arguments:   Optional arguments to be passed to the program
         """
-        super().__init__(program, *arguments, run_options=Program.RunOptions())
+        super().__init__(program, *arguments)
+        self.program_run_options = Program.RunOptions()
+        self.run_options = self.program_run_options
 
     def set_build_unit(self, build_unit: BuildUnit) -> 'Program':
         """
@@ -53,7 +56,7 @@ class Program(Command):
         :param build_unit:  The build unit to be set
         :return:            The `Program` itself
         """
-        self.run_options.build_unit = build_unit
+        self.program_run_options.build_unit = build_unit
         return self
 
     def install_program(self, install_program: bool) -> 'Program':
@@ -63,7 +66,7 @@ class Program(Command):
         :param install_program: True, if the program should be installed before being run, False otherwise
         :return:                The `Program` itself
         """
-        self.run_options.install_program = install_program
+        self.program_run_options.install_program = install_program
         return self
 
     def add_dependencies(self, *dependencies: str) -> 'Program':
@@ -73,7 +76,7 @@ class Program(Command):
         :param dependencies:    The names of the Python packages to be added
         :return:                The `Program` itself
         """
-        self.run_options.dependencies.update(dependencies)
+        self.program_run_options.dependencies.update(dependencies)
         return self
 
     def set_accepted_exit_codes(self, *accepted_exit_codes: int) -> 'Program':
@@ -107,6 +110,6 @@ class PythonModule(Program):
         if install_program:
             super().add_dependencies(self.module)
         else:
-            self.run_options.dependencies.remove(self.module)
+            self.program_run_options.dependencies.remove(self.module)
 
         return self

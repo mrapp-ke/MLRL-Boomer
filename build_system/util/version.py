@@ -5,7 +5,7 @@ Provides utilities for dealing with version numbers.
 """
 from dataclasses import dataclass
 from functools import reduce
-from typing import Tuple
+from typing import Any, Tuple
 
 
 @dataclass
@@ -63,13 +63,13 @@ class Version:
     def __hash__(self) -> int:
         return hash(self.numbers)
 
-    def __eq__(self, other: 'Version') -> bool:
-        return self.numbers == other.numbers
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, type(self)) and self.numbers == other.numbers
 
-    def __ne__(self, other: 'Version') -> bool:
+    def __ne__(self, other: Any) -> bool:
         return not self.__eq__(other)
 
-    def __lt__(self, other: 'Version'):
+    def __lt__(self, other: 'Version') -> bool:
         first_numbers = self.numbers
         second_numbers = other.numbers
         limit = min(len(first_numbers), len(second_numbers))

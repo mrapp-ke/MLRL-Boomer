@@ -31,17 +31,17 @@ class SemanticVersion:
     dev: Optional[int] = None
 
     @staticmethod
-    def parse(version: str) -> 'SemanticVersion':
+    def parse(value: str) -> 'SemanticVersion':
         """
         Parses and returns a version from a given string.
 
-        :param version: The string to be parsed
+        :param value:   The string to be parsed
         :return:        The version that has been parsed
         """
-        version = Version.parse(version)
+        version = Version.parse(value)
 
         if len(version.numbers) != 3:
-            raise ValueError('Version must be given in format MAJOR.MINOR.PATCH, but got: ' + version)
+            raise ValueError('Version must be given in format MAJOR.MINOR.PATCH, but got: ' + value)
 
         return SemanticVersion(major=version.numbers[0], minor=version.numbers[1], patch=version.numbers[2])
 

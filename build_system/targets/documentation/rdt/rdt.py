@@ -24,10 +24,10 @@ class ReadTheDocsApi:
         Allows to access the readthedocs API for a single project.
         """
 
-        def __init__(self, project_name: str, token: str):
+        def __init__(self, project_name: str, token: Optional[str] = None):
             """
             :param project_name:    The name of the project
-            :param token:           The token to be used for authentication
+            :param token:           The token to be used for authentication or None, if no token should be used
             """
             self.project_name = project_name
             self.token = token
@@ -40,7 +40,9 @@ class ReadTheDocsApi:
             import requests
             url = 'https://readthedocs.org/api/v3/projects/' + self.project_name + '/versions/' + version + '/builds/'
             Log.verbose('Sending request POST %s', url)
-            response = requests.post(url, headers={'Authorization': 'Token ' + self.token}, timeout=5)
+            token = self.token
+            headers = {'Authorization': 'Token ' + token} if token else None
+            response = requests.post(url, headers=headers, timeout=5)
 
             if response.ok:
                 Log.verbose('Request succeeded with status code %s and response: %s', response.status_code,

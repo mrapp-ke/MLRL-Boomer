@@ -8,7 +8,7 @@ import re
 
 from dataclasses import dataclass, replace
 from functools import cached_property
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 from xml.etree import ElementTree
 
 from core.build_unit import BuildUnit
@@ -115,8 +115,8 @@ class Runner:
 
         return result
 
-    def __eq__(self, other: 'Runner') -> bool:
-        return str(self) == str(other)
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, type(self)) and str(self) == str(other)
 
     def __hash__(self) -> int:
         return hash(str(self))
@@ -213,8 +213,8 @@ class RunnerUpdater(Workflows):
         def __str__(self) -> str:
             return str(self.runner)
 
-        def __eq__(self, other: 'RunnerUpdater.OutdatedRunner') -> bool:
-            return self.runner == other.runner
+        def __eq__(self, other: Any) -> bool:
+            return isinstance(other, type(self)) and self.runner == other.runner
 
         def __hash__(self) -> int:
             return hash(self.runner)
@@ -228,14 +228,14 @@ class RunnerUpdater(Workflows):
             previous:   The previous runner
             updated:    The updated runner
         """
-        previous: 'RunnerUpdater.OutdatedAction'
+        previous: 'RunnerUpdater.OutdatedRunner'
         updated: Runner
 
         def __str__(self) -> str:
             return str(self.updated)
 
-        def __eq__(self, other: 'RunnerUpdater.UpdatedRunner') -> bool:
-            return self.updated == other.updated
+        def __eq__(self, other: Any) -> bool:
+            return isinstance(other, type(self)) and self.updated == other.updated
 
         def __hash__(self) -> int:
             return hash(self.updated)
@@ -299,23 +299,34 @@ class RunnerUpdater(Workflows):
         relevant_column_text = 'workflow label'
         relevant_column_index = None
 
-        for i, column in enumerate(header.findall('.//th')):
-            text = column.text if column.text else column.find('.//').text
+        if header:
+            for i, column in enumerate(header.findall('.//th')):
+                text = column.text
 
-            if text.lower().find(relevant_column_text) >= 0:
-                relevant_column_index = i
-                break
+                if not text:
+                    next_column = column.find('.//')
 
-        if not relevant_column_index:
-            Log.error('Could not find table column with text "%s": %s', relevant_column_text, html)
+                    if next_column:
+                        text = next_column.text
+
+                if text and text.lower().find(relevant_column_text) >= 0:
+                    relevant_column_index = i
+                    break
 
         runners = set()
 
-        for row in table.findall('./tbody/tr'):
-            relevant_column = row.find('./td[' + str(relevant_column_index + 1) + ']')
+        if relevant_column_index:
+            for row in table.findall('./tbody/tr'):
+                relevant_column = row.find('./td[' + str(relevant_column_index + 1) + ']')
 
-            for link in relevant_column.findall('.//a[@href]'):
-                runners.add(Runner.parse(link.text))
+                if relevant_column:
+                    for link in relevant_column.findall('.//a[@href]'):
+                        text = link.text
+
+                        if text:
+                            runners.add(Runner.parse(text))
+        else:
+            Log.error('Could not find table column with text "%s": %s', relevant_column_text, html)
 
         return runners
 
@@ -326,28 +337,31 @@ class RunnerUpdater(Workflows):
         lines = self.__find_relevant_section(lines)
         lines = self.__find_table(lines)
         versioned_runners = {runner for runner in self.__parse_table(lines) if not runner.version.is_latest()}
-        latest_runners = {}
+        latest_runners: Dict[Tuple[str, str], RunnerVersion] = {}
 
         for runner in versioned_runners:
-            key = (runner.image, runner.architecture)
-            version = latest_runners.get(key)
+            arch = runner.architecture
 
-            if not version or version < runner.version:
-                latest_runners[key] = runner.version
+            if arch:
+                key = (runner.image, arch)
+                version = latest_runners.get(key)
+
+                if not version or version < runner.version:
+                    latest_runners[key] = runner.version
 
         if not latest_runners:
             Log.error('Failed to retrieve latest runners from the GitHub documentation!')
 
         return latest_runners
 
-    def __get_latest_runner_version(self, runner: Runner) -> RunnerVersion:
+    def __get_latest_runner_version(self, runner: Runner) -> Optional[RunnerVersion]:
         version_cache = self.version_cache
 
-        if version_cache is None:
-            version_cache = self.__get_latest_runners_from_documentation()
-            self.version_cache = version_cache
+        if not version_cache:
+            version_cache.update(self.__get_latest_runners_from_documentation())
 
-        latest_version = version_cache.get((runner.image, runner.architecture))
+        arch = runner.architecture
+        latest_version = version_cache.get((runner.image, arch)) if arch else None
 
         if not latest_version:
             Log.error('Latest version of runner "%s" is unknown!', runner)
@@ -360,7 +374,7 @@ class RunnerUpdater(Workflows):
         :param module:      The module, that contains the workflow definition files
         """
         super().__init__(build_unit, module)
-        self.version_cache = None
+        self.version_cache: Dict[Tuple[str, str], RunnerVersion] = {}
 
     def find_outdated_workflows(self) -> Dict[Runners, Set[OutdatedRunner]]:
         """
@@ -368,7 +382,7 @@ class RunnerUpdater(Workflows):
 
         :return: A dictionary that contains for each workflow a set of outdated runners
         """
-        outdated_workflows = {}
+        outdated_workflows: Dict[Runners, Set[RunnerUpdater.OutdatedRunner]] = {}
 
         for workflow in self.workflows:
             Log.info('Searching for GitHub-hosted runners in workflow "%s"...', workflow.file)
@@ -378,7 +392,7 @@ class RunnerUpdater(Workflows):
                 if not runner.version.is_latest():
                     latest_version = self.__get_latest_runner_version(runner)
 
-                    if runner.version < latest_version:
+                    if latest_version and runner.version < latest_version:
                         outdated_runners = outdated_workflows.setdefault(workflow, set())
                         outdated_runners.add(RunnerUpdater.OutdatedRunner(runner, latest_version))
 
@@ -390,10 +404,10 @@ class RunnerUpdater(Workflows):
 
         :return: A dictionary that contains for each workflow a set of updated runners
         """
-        updated_workflows = {}
+        updated_workflows: Dict[Runners, Set[RunnerUpdater.UpdatedRunner]] = {}
 
         for workflow, outdated_runners in self.find_outdated_workflows().items():
-            updated_runners = set()
+            updated_runners: Set[RunnerUpdater.UpdatedRunner] = set()
 
             for outdated_runner in outdated_runners:
                 updated_runners = updated_workflows.setdefault(workflow, updated_runners)
