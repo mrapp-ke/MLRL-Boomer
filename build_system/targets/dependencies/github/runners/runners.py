@@ -306,7 +306,7 @@ class RunnerUpdater(Workflows):
                 if not text:
                     next_column = column.find('.//')
 
-                    if next_column:
+                    if next_column is not None:
                         text = next_column.text
 
                 if text and text.lower().find(relevant_column_text) >= 0:
@@ -315,7 +315,7 @@ class RunnerUpdater(Workflows):
 
         runners = set()
 
-        if relevant_column_index:
+        if relevant_column_index is not None:
             for row in table.findall('./tbody/tr'):
                 relevant_column = row.find('./td[' + str(relevant_column_index + 1) + ']')
 
@@ -326,28 +326,26 @@ class RunnerUpdater(Workflows):
                         if text:
                             runners.add(Runner.parse(text))
         else:
-            Log.error('Could not find table column with text "%s": %s', relevant_column_text, html)
+            Log.error('Could not find table column with text "%s":\n\n%s', relevant_column_text, html)
 
         return runners
 
-    def __get_latest_runners_from_documentation(self) -> Dict[Tuple[str, str], RunnerVersion]:
+    def __get_latest_runners_from_documentation(self) -> Dict[Tuple[str, Optional[str]], RunnerVersion]:
         Log.info('Retrieving the latest runners from the GitHub documentation...')
         runner_documentation = self.__download_runner_documentation()
         lines = runner_documentation.split('\n')
         lines = self.__find_relevant_section(lines)
         lines = self.__find_table(lines)
         versioned_runners = {runner for runner in self.__parse_table(lines) if not runner.version.is_latest()}
-        latest_runners: Dict[Tuple[str, str], RunnerVersion] = {}
+        latest_runners: Dict[Tuple[str, Optional[str]], RunnerVersion] = {}
 
         for runner in versioned_runners:
             arch = runner.architecture
+            key = (runner.image, arch)
+            version = latest_runners.get(key)
 
-            if arch:
-                key = (runner.image, arch)
-                version = latest_runners.get(key)
-
-                if not version or version < runner.version:
-                    latest_runners[key] = runner.version
+            if not version or version < runner.version:
+                latest_runners[key] = runner.version
 
         if not latest_runners:
             Log.error('Failed to retrieve latest runners from the GitHub documentation!')
@@ -361,7 +359,7 @@ class RunnerUpdater(Workflows):
             version_cache.update(self.__get_latest_runners_from_documentation())
 
         arch = runner.architecture
-        latest_version = version_cache.get((runner.image, arch)) if arch else None
+        latest_version = version_cache.get((runner.image, arch))
 
         if not latest_version:
             Log.error('Latest version of runner "%s" is unknown!', runner)
@@ -374,7 +372,7 @@ class RunnerUpdater(Workflows):
         :param module:      The module, that contains the workflow definition files
         """
         super().__init__(build_unit, module)
-        self.version_cache: Dict[Tuple[str, str], RunnerVersion] = {}
+        self.version_cache: Dict[Tuple[str, Optional[str]], RunnerVersion] = {}
 
     def find_outdated_workflows(self) -> Dict[Runners, Set[OutdatedRunner]]:
         """
