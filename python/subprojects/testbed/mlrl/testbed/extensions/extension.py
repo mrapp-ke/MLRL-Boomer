@@ -7,7 +7,7 @@ package.
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from functools import cached_property
-from typing import Any, Set, override
+from typing import Any, Set, Type, override
 
 from mlrl.testbed.experiments.experiment import Experiment
 
