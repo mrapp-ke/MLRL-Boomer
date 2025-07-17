@@ -96,7 +96,7 @@ options:
                         data into training and test sets. Must be one of
                         {"cross-validation", "none", "train-test"}. For
                         additional options refer to the documentation.
-  --dataset DATASET     The name of the dataset files without suffix.
+  --dataset DATASET     The name of the dataset.
   --default-rule DEFAULT_RULE
                         Whether a default rule should be induced or not. Must
                         be one of {"auto", "false", "true"}.
