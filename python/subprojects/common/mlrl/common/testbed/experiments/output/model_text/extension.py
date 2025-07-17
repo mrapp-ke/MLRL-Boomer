@@ -36,10 +36,10 @@ class RuleModelAsTextExtension(Extension):
         },
     )
 
-    STORE_RULES = BoolArgument(
-        '--store-rules',
+    SAVE_RULES = BoolArgument(
+        '--save-rules',
         default=False,
-        description='Whether the induced rules should be written into a text file or not.',
+        description='Whether the induced rules should be written to a text file or not.',
         true_options={
             RuleModelAsText.OPTION_PRINT_FEATURE_NAMES, RuleModelAsText.OPTION_PRINT_OUTPUT_NAMES,
             RuleModelAsText.OPTION_PRINT_NOMINAL_VALUES, RuleModelAsText.OPTION_PRINT_BODIES,
@@ -58,7 +58,7 @@ class RuleModelAsTextExtension(Extension):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
-        return {self.PRINT_RULES, self.STORE_RULES}
+        return {self.PRINT_RULES, self.SAVE_RULES}
 
     def __create_log_sinks(self, args: Namespace) -> List[Sink]:
         value, options = self.PRINT_RULES.get_value(args, default=OutputExtension.PRINT_ALL.get_value(args))
@@ -68,13 +68,13 @@ class RuleModelAsTextExtension(Extension):
         return []
 
     def __create_text_file_sinks(self, args: Namespace) -> List[Sink]:
-        value, options = self.STORE_RULES.get_value(args, default=OutputExtension.STORE_ALL.get_value(args))
-        output_dir = OutputExtension.OUTPUT_DIR.get_value(args)
+        value, options = self.SAVE_RULES.get_value(args, default=OutputExtension.SAVE_ALL.get_value(args))
+        result_directory = OutputExtension.RESULT_DIR.get_value(args)
 
-        if value and output_dir:
+        if value and result_directory:
             return [
-                TextFileSink(directory=output_dir,
-                             create_directory=OutputExtension.CREATE_OUTPUT_DIR.get_value(args),
+                TextFileSink(directory=result_directory,
+                             create_directory=OutputExtension.CREATE_DIRS.get_value(args),
                              options=options)
             ]
         return []
