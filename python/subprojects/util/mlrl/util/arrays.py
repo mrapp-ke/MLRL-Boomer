@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for handling arrays.
 """
 from enum import StrEnum
-from typing import Optional, Set
+from typing import Optional, Set, Union
 
 import numpy as np
 
@@ -134,7 +134,10 @@ def is_sparse_and_memory_efficient(array,
     return False
 
 
-def enforce_dense(array, order: str, dtype: Optional[np.dtype] = None, sparse_value=0) -> np.ndarray:
+def enforce_dense(array,
+                  order: str,
+                  dtype: Optional[np.dtype] = None,
+                  sparse_value: Union[int, float] = 0) -> np.ndarray:
     """
     Converts a given array into a `np.ndarray`, if necessary, and enforces a specific memory layout and data type to be
     used.
@@ -149,12 +152,16 @@ def enforce_dense(array, order: str, dtype: Optional[np.dtype] = None, sparse_va
 
     if is_sparse(array):
         if sparse_value != 0:
-            dense_array = np.full(shape=array.shape, fill_value=sparse_value, dtype=dtype, order=order)
+            dense_array = np.full(
+                shape=array.shape,  # type: ignore[call-overload]
+                fill_value=sparse_value,
+                dtype=dtype,
+                order=order)
             dense_array[array.nonzero()] = 0
             dense_array += array
-            return np.asarray(dense_array, dtype=dtype, order=order)
+            return np.asarray(dense_array, dtype=dtype, order=order)  # type: ignore[call-overload]
         return np.require(array.toarray(order=order), dtype=dtype)
-    return np.require(array, dtype=dtype, requirements=[order])
+    return np.require(array, dtype=dtype, requirements=[order])  # type: ignore[list-item, arg-type]
 
 
 def enforce_2d(array: np.ndarray) -> np.ndarray:

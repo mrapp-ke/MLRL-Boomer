@@ -3,9 +3,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides a data structure that allows to store and parse options that are provided as key-value pairs.
 """
-from enum import Enum, EnumType, StrEnum
+from enum import Enum, StrEnum
 from functools import reduce
-from typing import Any, Dict, Optional, Set, Tuple
+from typing import Any, Dict, Optional, Set, Tuple, Type
 
 from mlrl.util.format import format_enum_values, format_set
 
@@ -181,8 +181,8 @@ class Options:
 
 def parse_enum(parameter_name: str,
                value: Optional[str],
-               enum: EnumType,
-               default: Optional[Enum] = None) -> Optional[EnumType]:
+               enum: Type[Enum],
+               default: Optional[Enum] = None) -> Optional[Enum]:
     """
     Parses and returns an enum value. If the given value is invalid, a `ValueError` is raised.
 
