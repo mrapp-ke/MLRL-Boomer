@@ -6,12 +6,13 @@ Provides classes that allow configuring the functionality to load datasets.
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from pathlib import Path
-from typing import Set, override
+from typing import Set, Type, override
 
 from mlrl.testbed.experiments.input.dataset.dataset import InputDataset
 from mlrl.testbed.experiments.input.dataset.reader import DatasetReader
 from mlrl.testbed.experiments.input.sources import FileSource, Source
 from mlrl.testbed.extensions.extension import Extension
+from mlrl.testbed.modes import Mode, SingleExperimentMode
 
 from mlrl.util.cli import Argument, StringArgument
 
@@ -54,6 +55,13 @@ class DatasetExtension(Extension, ABC):
         dataset = InputDataset(name=self.DATASET_NAME.get_value(args))
         source = self._create_source(dataset, args)
         return DatasetReader(source=source, input_data=dataset)
+
+    @override
+    def get_supported_modes(self) -> Set[Type[Mode]]:
+        """
+        See :func:`mlrl.testbed.extensions.extension.Extension.get_supported_modes`
+        """
+        return {SingleExperimentMode}
 
 
 class DatasetFileExtension(DatasetExtension, ABC):
