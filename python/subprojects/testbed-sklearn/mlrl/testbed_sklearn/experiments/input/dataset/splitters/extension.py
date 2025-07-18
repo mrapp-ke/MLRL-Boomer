@@ -6,11 +6,11 @@ Provides classes that allow configuring the functionality to split datasets into
 from argparse import Namespace
 from typing import Set
 
+from mlrl.testbed_sklearn.experiments.input.dataset.extension import ArffFileExtension
 from mlrl.testbed_sklearn.experiments.input.dataset.preprocessors.extension import PreprocessorExtension
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.splitter_bipartition import BipartitionSplitter
 from mlrl.testbed_sklearn.experiments.input.dataset.splitters.splitter_cross_validation import CrossValidationSplitter
 
-from mlrl.testbed.experiments.input.dataset.splitters.extension import DatasetFileExtension
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.input.dataset.splitters.splitter_no import NoSplitter
 from mlrl.testbed.extensions.extension import Extension
@@ -57,7 +57,7 @@ class DatasetSplitterExtension(Extension):
         """
         :param dependencies: Other extensions, this extension depends on
         """
-        super().__init__(PreprocessorExtension(), DatasetFileExtension(), *dependencies)
+        super().__init__(PreprocessorExtension(), ArffFileExtension(), *dependencies)
 
     def _get_arguments(self) -> Set[Argument]:
         """
@@ -86,7 +86,7 @@ class DatasetSplitterExtension(Extension):
         :param args:    The command line arguments specified by the user
         :return:        The `DatasetSplitter` to be used
         """
-        dataset_reader = DatasetFileExtension.get_dataset_reader(args)
+        dataset_reader = ArffFileExtension().get_dataset_reader(args)
         dataset_reader.add_preprocessors(*PreprocessorExtension.get_preprocessors(args))
         dataset_splitter, options = DatasetSplitterExtension.DATASET_SPLITTER.get_value(args)
 
