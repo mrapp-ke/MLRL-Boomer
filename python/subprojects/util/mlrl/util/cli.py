@@ -83,6 +83,19 @@ class Argument:
         return isinstance(other, type(self)) and self.key == other.key
 
 
+class FlagArgument(Argument):
+    """
+    An argument of a command line interface, which can be set by the user as a flag.
+    """
+
+    def __init__(self, name: str, description: Optional[str] = None):
+        """
+        :param name:        The name of the argument
+        :param description: An optional description of the argument
+        """
+        super().__init__(name, default=False, help=description, action='store_true')
+
+
 class StringArgument(Argument):
     """
     An argument of a command line interface for which the user can provide a custom string value.
