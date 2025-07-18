@@ -6,10 +6,11 @@ Provides classes for implementing experiments.
 import logging as log
 
 from abc import ABC, abstractmethod
+from argparse import Namespace
 from dataclasses import replace
 from functools import reduce
 from itertools import chain
-from typing import Any, Generator, Iterable, List, Optional, Set, override
+from typing import Any, Callable, Generator, Iterable, List, Optional, Set, override
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
@@ -32,6 +33,8 @@ class Experiment(ABC):
         """
         An abstract base class for all classes that allow to configure and create instances of an experiment.
         """
+
+        Factory = Callable[[Namespace], 'Experiment.Builder']
 
         def __init__(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter):
             """
