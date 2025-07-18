@@ -12,6 +12,7 @@ from typing import Optional, Set, override
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.extensions import Extension
 from mlrl.testbed.extensions.extension_log import LogExtension
+from mlrl.testbed.modes import Mode
 from mlrl.testbed.program_info import ProgramInfo
 
 from mlrl.util.cli import Argument, BoolArgument, CommandLineInterface
@@ -72,31 +73,33 @@ class Runnable(ABC):
         """
         return None
 
-    def run(self, args: Namespace):
+    def run(self, mode: Mode, args: Namespace):
         """
         Executes the runnable.
 
-        :param args: The command line arguments specified by the user
+        :param mode:    The mode of operation
+        :param args:    The command line arguments specified by the user
         """
         experiment_builder = self.create_experiment_builder(args)
         extensions = set()
 
         for extension in self.get_extensions():
             extensions.add(extension)
-            extensions.update(extension.dependencies)
+            extensions.update(extension.get_dependencies(mode))
 
         for extension in extensions:
             extension.configure_experiment(args, experiment_builder)
 
         experiment_builder.run()
 
-    def configure_arguments(self, cli: CommandLineInterface):
+    def configure_arguments(self, cli: CommandLineInterface, mode: Mode):
         """
         Configures the command line interface according to the extensions applied to the runnable.
 
-        :param cli: The command line interface to be configured
+        :param cli:     The command line interface to be configured
+        :param mode:    The mode of operation
         """
-        arguments = reduce(lambda aggr, extension: aggr | extension.arguments, self.get_extensions(), set())
+        arguments = reduce(lambda aggr, extension: aggr | extension.get_arguments(mode), self.get_extensions(), set())
         arguments.update(self.get_algorithmic_arguments(cli.parse_known_args()))
         cli.add_arguments(*sorted(arguments, key=lambda arg: arg.name))
 
