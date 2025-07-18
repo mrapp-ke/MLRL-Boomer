@@ -105,6 +105,11 @@ suppress_warnings = [
     'toc.not_included',  # Suppress warnings about files only included via {include} not being included in any toctree
 ]
 
+# Exclude the following Python modules from the API documentation.
+autodoc_mock_imports = [
+    'sklearn',
+]
+
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
