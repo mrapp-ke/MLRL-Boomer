@@ -42,10 +42,15 @@ class IntegrationTests(ABC):
         raise NotImplementedError('Method _create_cmd_builder not implemented by test class')
 
     @ci_only
-    def test_help(self):
+    @pytest.mark.parametrize('mode', [
+        'single',
+        'batch',
+    ])
+    def test_help(self, mode: str):
         builder = self._create_cmd_builder() \
+            .set_mode(mode) \
             .set_show_help()
-        CmdRunner(builder).run('help')
+        CmdRunner(builder).run(f'help-{mode}')
 
     def test_single_output(self, dataset: Dataset):
         builder = self._create_cmd_builder(dataset=dataset.single_output) \

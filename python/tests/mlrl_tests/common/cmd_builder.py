@@ -46,6 +46,7 @@ class CmdBuilder:
         self.expected_output_dir = expected_output_dir
         self.runnable_module_name = runnable_module_name
         self.runnable_class_name = runnable_class_name
+        self.mode: Optional[str] = None
         self.show_help = False
         self.dataset = dataset
         self.parameter_load_dir: Optional[Path] = None
@@ -96,6 +97,9 @@ class CmdBuilder:
         if self.runnable_class_name:
             args.extend(['-r', self.runnable_class_name])
 
+        if self.mode:
+            args.extend(('--mode', self.mode))
+
         if self.show_help:
             args.append('--help')
             return args
@@ -106,6 +110,16 @@ class CmdBuilder:
         args.extend(('--base-dir', str(self.base_dir)))
         args.extend(('--result-dir', str(self.result_dir)))
         return args + self.args
+
+    def set_mode(self, mode: Optional[str] = 'single'):
+        """
+        Configures the mode of operation to be used.
+
+        :param mode:    The mode of operation to be used
+        :return:        The builder itself
+        """
+        self.mode = mode
+        return self
 
     def set_show_help(self, show_help: bool = True):
         """
