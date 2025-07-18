@@ -80,17 +80,19 @@ class Runnable(ABC):
         :param mode:    The mode of operation
         :param args:    The command line arguments specified by the user
         """
-        experiment_builder = self.create_experiment_builder(args)
-        extensions = set()
 
-        for extension in self.get_extensions():
-            extensions.add(extension)
-            extensions.update(extension.get_dependencies(mode))
+        def configure_experiment(builder_args: Namespace) -> Experiment.Builder:
+            experiment_builder = self.create_experiment_builder(builder_args)
 
-        for extension in extensions:
-            extension.configure_experiment(args, experiment_builder)
+            for extension in self.get_extensions():
+                extension.configure_experiment(builder_args, experiment_builder)
 
-        experiment_builder.run()
+                for dependency in extension.get_dependencies(mode):
+                    dependency.configure_experiment(builder_args, experiment_builder)
+
+            return experiment_builder
+
+        mode.run_experiment(args, configure_experiment)
 
     def configure_arguments(self, cli: CommandLineInterface, mode: Mode):
         """
