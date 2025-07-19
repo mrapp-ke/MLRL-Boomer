@@ -48,7 +48,7 @@ class Argument:
         """
         The name of the argument.
         """
-        return next(iter(self.names))
+        return sorted(self.names)[0]
 
     @cached_property
     def key(self) -> str:
