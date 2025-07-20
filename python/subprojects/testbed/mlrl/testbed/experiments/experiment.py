@@ -268,12 +268,11 @@ class Experiment(ABC):
     def __predict(self, state: ExperimentState):
         prediction_results = self._predict(state)
 
-        if prediction_results:
-            for prediction_result in prediction_results:
-                new_state = replace(state, prediction_result=prediction_result)
+        for prediction_result in prediction_results:
+            new_state = replace(state, prediction_result=prediction_result)
 
-                for listener in self.listeners:
-                    listener.after_prediction(self, new_state)
+            for listener in self.listeners:
+                listener.after_prediction(self, new_state)
 
     def __init__(self, problem_domain: ProblemDomain, dataset_splitter: DatasetSplitter):
         """

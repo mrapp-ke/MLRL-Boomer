@@ -18,7 +18,7 @@ class Workflow(YamlFile):
     """
 
     @staticmethod
-    def find_tags(yaml_dict: Dict, *tags: str) -> List[Any]:
+    def find_tags(yaml_dict: Dict[Any, Any], *tags: str) -> List[Any]:
         """
         Returns a list that contains the values of all tags with a specific name in a given dictionary that stores parts
         of a YAML file.
@@ -39,7 +39,7 @@ class Workflow(YamlFile):
         return values
 
     @staticmethod
-    def find_tag(yaml_dict: Dict, tag: str, default: Any = None) -> Any:
+    def find_tag(yaml_dict: Dict[Any, Any], tag: str, default: Any = None) -> Any:
         """
         Returns the value of the first tag with a specific name in a given dictionary that stores parts of a YAML file.
 
