@@ -40,12 +40,15 @@ class CsvFileSink(TabularFileSink):
     def _write_table_to_file(self, file_path: str, state: ExperimentState, table: Table, **_):
         table = table.to_column_wise_table()
         prediction_result = state.prediction_result
-        incremental_prediction = prediction_result and not prediction_result.prediction_scope.is_global
+        incremental_prediction = False
 
-        if incremental_prediction:
-            model_size = prediction_result.prediction_scope.model_size
-            table.add_column(*[model_size for _ in range(table.num_rows)],
-                             header=OutputValue('model_size', 'Model size'))
+        if prediction_result:
+            incremental_prediction = not prediction_result.prediction_scope.is_global
+
+            if incremental_prediction:
+                model_size = prediction_result.prediction_scope.model_size
+                table.add_column(*[model_size for _ in range(table.num_rows)],
+                                 header=OutputValue('model_size', 'Model size'))
 
         table.sort_by_headers()
 
@@ -55,8 +58,11 @@ class CsvFileSink(TabularFileSink):
                                     quotechar=self.QUOTE_CHAR,
                                     quoting=csv.QUOTE_MINIMAL)
 
-            if table.has_headers and csv_file.tell() == 0:
-                csv_writer.writerow(table.header_row)
+            if csv_file.tell() == 0:
+                header_row = table.header_row
+
+                if header_row:
+                    csv_writer.writerow(header_row)
 
             for row in table.rows:
                 csv_writer.writerow(row)

@@ -19,9 +19,10 @@ class LogSink(Sink):
         """
         See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
         """
-        text = output_data.to_text(self.options, **kwargs)
+        if isinstance(output_data, TextualOutputData):
+            text = output_data.to_text(self.options, **kwargs)
 
-        if text:
-            context = output_data.get_context(type(self))
-            title = TextualOutputData.Title(title=output_data.properties.name, context=context)
-            log.info('%s:\n\n%s\n', title.format(state), text)
+            if text:
+                context = output_data.get_context(type(self))
+                title = TextualOutputData.Title(title=output_data.properties.name, context=context)
+                log.info('%s:\n\n%s\n', title.format(state), text)
