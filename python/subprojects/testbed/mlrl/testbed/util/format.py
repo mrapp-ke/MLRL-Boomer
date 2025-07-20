@@ -21,9 +21,10 @@ def format_number(value: Number, decimals: int = 2) -> str:
     :param decimals:    The number of decimals to be used or 0, if the number of decimals should not be restricted
     :return:            The textual representation that has been created
     """
-    if isinstance(value, (int, np.integer)):
-        return str(value)
-    return ('{:.' + str(decimals) + 'f}').format(round(value, decimals)) if decimals > 0 else str(value)
+    if decimals > 0 and isinstance(value, (float, np.floating)):
+        rounded_value = round(value, decimals)
+        return ('{:.' + str(decimals) + 'f}').format(rounded_value)
+    return str(value)
 
 
 def format_percentage(fraction: float, decimals: int = 2) -> str:
@@ -34,4 +35,5 @@ def format_percentage(fraction: float, decimals: int = 2) -> str:
     :param decimals:    The number of decimals to be used or 0, if the number of decimals should not be restricted
     :return:            The textual representation that has been created
     """
-    return format_number(float(fraction) * 100, decimals) + '%'
+    percentage = float(fraction) * 100
+    return format_number(percentage, decimals) + '%'  # type: ignore[arg-type]

@@ -69,8 +69,7 @@ class FileSink(Sink, ABC):
         file_path = FilePath(directory=directory,
                              file_name=output_data.properties.file_name,
                              suffix=self.suffix,
-                             context=context)
-        file_path = file_path.resolve(state)
+                             context=context).resolve(state)
         log.debug('Writing output data to file "%s"...', file_path)
         self._write_to_file(file_path, state, output_data, **kwargs)
 
