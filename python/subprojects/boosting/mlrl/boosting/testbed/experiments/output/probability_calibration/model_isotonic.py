@@ -83,22 +83,26 @@ class IsotonicRegressionModel(TabularOutputData):
         """
         kwargs = dict(kwargs) | {OPTION_DECIMALS: 4}
         table = self.to_table(options, **kwargs)
-        columns = table.columns
-        result = ''
 
-        for list_index, _ in enumerate(range(0, table.num_columns, 2)):
-            bin_list_table = ColumnWiseTable()
-            bin_list_table.add_column(*filter(lambda value: value is not None, next(columns)),
-                                      header=self._format_threshold_header(list_index))
-            bin_list_table.add_column(*filter(lambda value: value is not None, next(columns)),
-                                      header=self._format_probability_header(list_index))
+        if table:
+            columns = table.columns
+            result = ''
 
-            if result:
-                result += '\n'
+            for list_index, _ in enumerate(range(0, table.num_columns, 2)):
+                bin_list_table = ColumnWiseTable()
+                bin_list_table.add_column(*filter(lambda value: value is not None, next(columns)),
+                                          header=self._format_threshold_header(list_index))
+                bin_list_table.add_column(*filter(lambda value: value is not None, next(columns)),
+                                          header=self._format_probability_header(list_index))
 
-            result += bin_list_table.format(auto_rotate=False)
+                if result:
+                    result += '\n'
 
-        return result
+                result += bin_list_table.format(auto_rotate=False)
+
+            return result
+
+        return None
 
     def to_table(self, options: Options, **kwargs) -> Optional[Table]:
         """

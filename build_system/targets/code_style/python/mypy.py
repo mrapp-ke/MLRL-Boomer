@@ -30,6 +30,5 @@ class Mypy(Program):
         blacklist = {
             path.join('python', 'subprojects', 'common'),
             path.join('python', 'subprojects', 'testbed'),
-            path.join('python', 'subprojects', 'boosting'),
         }
         return self.module.root_directory in blacklist
