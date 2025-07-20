@@ -37,7 +37,7 @@ class RuleLearnerProgramInfo:
         return unique_packages
 
     def __collect_dependencies(self, python_packages: Iterable[PackageInfo]) -> Dict[str, Set[str]]:
-        unique_dependencies = {}
+        unique_dependencies: Dict[str, Set[str]] = {}
 
         for python_package in python_packages:
 
@@ -52,7 +52,7 @@ class RuleLearnerProgramInfo:
         return unique_dependencies
 
     def __collect_cpp_libraries(self, python_packages: Iterable[PackageInfo]) -> Dict[str, Set[str]]:
-        unique_libraries = {}
+        unique_libraries: Dict[str, Set[str]] = {}
 
         for python_package in python_packages:
             for cpp_library in python_package.cpp_libraries:
@@ -66,7 +66,7 @@ class RuleLearnerProgramInfo:
         return unique_libraries
 
     def __collect_build_options(self, python_packages: Iterable[PackageInfo]) -> Dict[str, Set[str]]:
-        unique_build_options = {}
+        unique_build_options: Dict[str, Set[str]] = {}
 
         for python_package in python_packages:
             for cpp_library in python_package.cpp_libraries:
@@ -81,7 +81,7 @@ class RuleLearnerProgramInfo:
         return unique_build_options
 
     def __collect_hardware_resources(self, python_packages: Iterable[PackageInfo]) -> Dict[str, Set[str]]:
-        unique_hardware_resources = {}
+        unique_hardware_resources: Dict[str, Set[str]] = {}
 
         for python_package in python_packages:
             for cpp_library in python_package.cpp_libraries:
