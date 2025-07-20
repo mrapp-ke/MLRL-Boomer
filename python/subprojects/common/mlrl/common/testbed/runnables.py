@@ -160,7 +160,15 @@ class RuleLearnerRunnable(SkLearnRunnable):
             output_format = RuleLearnerRunnable.RuleLearnerExtension.OUTPUT_FORMAT.get_value(args)
             prediction_format = RuleLearnerRunnable.RuleLearnerExtension.PREDICTION_FORMAT.get_value(args)
             args_dict = vars(args)
-            kwargs = {param.name: args_dict[param.name] for param in parameters if param.name in args_dict}
+            kwargs = {}
+
+            if parameters:
+                for parameter in parameters:
+                    parameter_name = parameter.name
+
+                    if parameter_name in args_dict:
+                        kwargs[parameter_name] = args_dict[parameter_name]
+
             kwargs['feature_format'] = feature_format.value if feature_format else None
             kwargs['output_format'] = output_format.value if output_format else None
             kwargs['prediction_format'] = prediction_format.value if prediction_format else None
