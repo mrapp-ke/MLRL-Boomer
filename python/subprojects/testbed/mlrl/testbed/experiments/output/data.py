@@ -41,9 +41,9 @@ class OutputData(ABC):
         """
         self.properties = properties
         self.context = context
-        self.custom_context: Dict[Type, Context] = {}
+        self.custom_context: Dict[Type[Any], Context] = {}
 
-    def get_context(self, lookup_type: Type) -> Context:
+    def get_context(self, lookup_type: Type[Any]) -> Context:
         """
         Returns a `Context` that can be used for finding a suitable sink for handling this data.
 

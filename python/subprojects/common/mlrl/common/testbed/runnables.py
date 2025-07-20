@@ -6,9 +6,11 @@ Provides base classes for programs that can be configured via command line argum
 from argparse import Namespace
 from typing import Any, Dict, Optional, Set, Type
 
-from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
+from sklearn.base import BaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
+    RegressorMixin as SkLearnRegressorMixin
 
 from mlrl.common.config.parameters import Parameter
+from mlrl.common.cython.learner import RuleLearnerConfig
 from mlrl.common.learners import RuleLearner, SparsePolicy
 from mlrl.common.testbed.experiments.experiment import RuleLearnerExperiment
 from mlrl.common.testbed.experiments.output.characteristics.model import RuleModelCharacteristicsExtension
@@ -148,7 +150,8 @@ class RuleLearnerRunnable(SkLearnRunnable):
             return {self.FEATURE_FORMAT, self.OUTPUT_FORMAT, self.PREDICTION_FORMAT, self.SPARSE_FEATURE_VALUE}
 
         @staticmethod
-        def get_estimator(args: Namespace, estimator_type: Type, parameters: Optional[Set[Parameter]]) -> Any:
+        def get_estimator(args: Namespace, estimator_type: Type[BaseEstimator],
+                          parameters: Optional[Set[Parameter]]) -> Any:
             """
             Returns the scikit-learn estimator to be used in an experiment.
 
@@ -197,9 +200,11 @@ class RuleLearnerRunnable(SkLearnRunnable):
             """
             return RuleLearnerRunnable.RuleLearnerExtension.get_fit_kwargs(args)
 
-    def __init__(self, classifier_type: Optional[Type], classifier_config_type: Optional[Type],
-                 classifier_parameters: Optional[Set[Parameter]], regressor_type: Optional[Type],
-                 regressor_config_type: Optional[Type], regressor_parameters: Optional[Set[Parameter]]):
+    def __init__(self, classifier_type: Optional[Type[SkLearnClassifierMixin]],
+                 classifier_config_type: Optional[Type[RuleLearnerConfig]],
+                 classifier_parameters: Optional[Set[Parameter]], regressor_type: Optional[Type[SkLearnRegressorMixin]],
+                 regressor_config_type: Optional[Type[RuleLearnerConfig]],
+                 regressor_parameters: Optional[Set[Parameter]]):
         """
         :param classifier_type:         The type of the rule learner to be used in classification problems or None, if
                                         classification problems are not supported
