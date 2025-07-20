@@ -13,7 +13,14 @@ class Measure(OutputValue):
     An evaluation measure.
     """
 
-    def __init__(self, option_key: str, name: str, evaluation_function: Callable, percentage: bool = True, **kwargs):
+    EvaluationFunction = Callable[[Any, Any], float]
+
+    def __init__(self,
+                 option_key: str,
+                 name: str,
+                 evaluation_function: EvaluationFunction,
+                 percentage: bool = True,
+                 **kwargs):
         """
         :param option_key:          The key of the option that can be used for filtering
         :param name:                The name of the value

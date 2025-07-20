@@ -8,7 +8,9 @@ import sys
 
 from os import path
 from subprocess import CompletedProcess
+from typing import Any
 
+from util.env import Env
 from util.format import format_iterable
 from util.log import Log
 
@@ -68,7 +70,7 @@ class Command:
             self.exit_on_error = True
             self.environment = None
 
-        def run(self, command: 'Command', capture_output: bool) -> CompletedProcess:
+        def run(self, command: 'Command', capture_output: bool) -> CompletedProcess[Any]:
             """
             Runs a given command line program.
 
@@ -169,7 +171,7 @@ class Command:
         self.run_options.exit_on_error = exit_on_error
         return self
 
-    def use_environment(self, environment) -> 'Command':
+    def use_environment(self, environment: Env) -> 'Command':
         """
         Sets the environment to be used for running the command line program.
 

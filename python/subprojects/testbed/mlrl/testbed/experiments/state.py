@@ -75,7 +75,7 @@ class ExperimentState:
     training_result: Optional[TrainingState] = None
     prediction_result: Optional[PredictionState] = None
 
-    def dataset_as(self, caller: Any, *types: Type) -> Optional[Any]:
+    def dataset_as(self, caller: Any, *types: Type[Dataset]) -> Optional[Dataset]:
         """
         Returns the dataset used in the experiment, if it has one of given types. Otherwise, a log message is omitted
         and `None` is returned.
@@ -94,7 +94,7 @@ class ExperimentState:
                   type(dataset).__name__)
         return None
 
-    def learner_as(self, caller: Any, *types: Type) -> Optional[Any]:
+    def learner_as(self, caller: Any, *types: Type[Any]) -> Optional[Any]:
         """
         Returns the learner that has been trained in the experiment, if it has one of given types. Otherwise, a log
         message is omitted and `None` is returned.
