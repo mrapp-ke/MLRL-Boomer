@@ -56,10 +56,17 @@ def __import_source_file(source_file: str):
     try:
         module_name = 'runnable'
         spec = spec_from_file_location(module_name, source_file)
-        module = module_from_spec(spec)
-        sys.modules[module_name] = module
-        spec.loader.exec_module(module)
-        return module
+
+        if spec:
+            spec_loader = spec.loader
+
+            if spec_loader:
+                module = module_from_spec(spec)
+                sys.modules[module_name] = module
+                spec_loader.exec_module(module)
+                return module
+
+        raise FileNotFoundError()
     except FileNotFoundError as error:
         raise ImportError('Source file "' + source_file + '" not found') from error
 

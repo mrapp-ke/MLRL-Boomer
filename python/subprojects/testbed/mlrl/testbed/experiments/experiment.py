@@ -9,12 +9,14 @@ from abc import ABC, abstractmethod
 from dataclasses import replace
 from functools import reduce
 from itertools import chain
-from typing import Any, Generator, Iterable, List, Optional
+from typing import Any, Generator, Iterable, List, Optional, Set
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
 from mlrl.testbed.experiments.input.reader import InputReader
+from mlrl.testbed.experiments.output.model.writer import ModelWriter
+from mlrl.testbed.experiments.output.parameters.writer import ParameterWriter
 from mlrl.testbed.experiments.output.writer import OutputWriter
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
@@ -39,14 +41,18 @@ class Experiment(ABC):
             super().__init__()
             self.problem_domain = problem_domain
             self.dataset_splitter = dataset_splitter
-            self.listeners = []
-            self.input_readers = set()
-            self.pre_training_output_writers = set()
-            self.post_training_output_writers = set()
-            self.prediction_output_writers = set()
+            self.listeners: List[Experiment.Listener] = []
+            self.input_readers: Set[InputReader] = set()
+            self.pre_training_output_writers: Set[OutputWriter] = set()
+            self.post_training_output_writers: Set[OutputWriter] = set()
+            self.prediction_output_writers: Set[OutputWriter] = set()
+            self.model_writer = ModelWriter()
+            self.parameter_writer = ParameterWriter()
             self.predict_for_training_dataset = False
             self.predict_for_test_dataset = True
             self.exit_on_error = True
+            self.add_pre_training_output_writers(self.parameter_writer)
+            self.add_post_training_output_writers(self.model_writer)
 
         def add_listeners(self, *listeners: 'Experiment.Listener') -> 'Experiment.Builder':
             """
@@ -276,10 +282,10 @@ class Experiment(ABC):
         """
         self.problem_domain = problem_domain
         self.dataset_splitter = dataset_splitter
-        self.input_readers = []
-        self.pre_training_output_writers = []
-        self.post_training_output_writers = []
-        self.prediction_output_writers = []
+        self.input_readers: List[InputReader] = []
+        self.pre_training_output_writers: List[OutputWriter] = []
+        self.post_training_output_writers: List[OutputWriter] = []
+        self.prediction_output_writers: List[OutputWriter] = []
         self.listeners = [
             Experiment.InputReaderListener(),
             Experiment.OutputWriterListener(),
@@ -307,30 +313,31 @@ class Experiment(ABC):
         for split in self.dataset_splitter.split(problem_domain):
             training_state = split.get_state(DatasetType.TRAINING)
 
-            for listener in self.listeners:
-                training_state = listener.on_start(self, training_state)
+            if training_state:
+                for listener in self.listeners:
+                    training_state = listener.on_start(self, training_state)
 
-            for listener in self.listeners:
-                training_state = listener.before_training(self, training_state)
+                for listener in self.listeners:
+                    training_state = listener.before_training(self, training_state)
 
-            # Train model...
-            training_result = self._train(
-                learner=training_state.training_result.learner if training_state.training_result else None,
-                parameters=training_state.parameters,
-                dataset=training_state.dataset)
-            training_state = replace(training_state, training_result=training_result)
-            test_state = split.get_state(DatasetType.TEST)
+                # Train model...
+                training_result = self._train(
+                    learner=training_state.training_result.learner if training_state.training_result else None,
+                    parameters=training_state.parameters,
+                    dataset=training_state.dataset)
+                training_state = replace(training_state, training_result=training_result)
+                test_state = split.get_state(DatasetType.TEST)
 
-            # Obtain and evaluate predictions for training data, if necessary...
-            if predict_for_training_dataset or (predict_for_test_dataset and not test_state):
-                self.__predict(training_state)
+                # Obtain and evaluate predictions for training data, if necessary...
+                if predict_for_training_dataset or (predict_for_test_dataset and not test_state):
+                    self.__predict(training_state)
 
-            # Obtain and evaluate predictions for test data, if necessary...
-            if test_state and predict_for_test_dataset:
-                self.__predict(replace(test_state, training_result=training_result))
+                # Obtain and evaluate predictions for test data, if necessary...
+                if test_state and predict_for_test_dataset:
+                    self.__predict(replace(test_state, training_result=training_result))
 
-            for listener in self.listeners:
-                listener.after_training(self, training_state)
+                for listener in self.listeners:
+                    listener.after_training(self, training_state)
 
         run_time = Timer.stop(start_time)
         log.info('Successfully finished after %s', run_time)
