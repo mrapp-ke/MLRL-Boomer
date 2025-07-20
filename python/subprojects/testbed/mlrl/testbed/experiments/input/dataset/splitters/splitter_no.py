@@ -6,7 +6,7 @@ Provides classes that preserve a dataset instead of splitting it into training a
 import logging as log
 
 from dataclasses import replace
-from typing import Generator
+from typing import Generator, Optional
 
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.fold import FoldingStrategy
@@ -32,7 +32,7 @@ class NoSplitter(DatasetSplitter):
             """
             self.state = state
 
-        def get_state(self, dataset_type: DatasetType) -> ExperimentState:
+        def get_state(self, dataset_type: DatasetType) -> Optional[ExperimentState]:
             """
             See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.Split.get_state`
             """

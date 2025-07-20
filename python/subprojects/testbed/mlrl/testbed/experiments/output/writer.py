@@ -65,7 +65,7 @@ class OutputWriter:
         :param extractors: Extractors that should be used for extracting the output data to be written to the sinks
         """
         self.extractors = list(extractors)
-        self.sinks = []
+        self.sinks: List[Sink] = []
         self.exit_on_error = True
 
     def add_sinks(self, *sinks: Sink) -> 'OutputWriter':

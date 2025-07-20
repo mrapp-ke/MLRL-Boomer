@@ -30,7 +30,11 @@ class OutputParameters(TabularOutputData):
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
         """
-        return self.to_table(options, **kwargs).to_column_wise_table().sort_by_headers().format()
+        table = self.to_table(options, **kwargs)
+
+        if table:
+            return table.to_column_wise_table().sort_by_headers().format()
+        return None
 
     # pylint: disable=unused-argument
     def to_table(self, options: Options, **_) -> Optional[Table]:
