@@ -95,7 +95,9 @@ class DatasetFileSource(FileSource, ABC):
     """
 
     def _read_from_file(self, state: ExperimentState, file_path: str, input_data: InputData) -> Optional[Any]:
-        return self._read_dataset_from_file(state, file_path, input_data)
+        if isinstance(input_data, DatasetInputData):
+            return self._read_dataset_from_file(state, file_path, input_data)
+        return None
 
     @abstractmethod
     def _read_dataset_from_file(self, state: ExperimentState, file_path: str,
@@ -123,7 +125,9 @@ class TabularFileSource(FileSource, ABC):
         super().__init__(directory=directory, suffix=suffix)
 
     def _read_from_file(self, _: ExperimentState, file_path: str, input_data: InputData) -> Optional[Any]:
-        return self._read_table_from_file(file_path, input_data)
+        if isinstance(input_data, TabularInputData):
+            return self._read_table_from_file(file_path, input_data)
+        return None
 
     @abstractmethod
     def _read_table_from_file(self, file_path: str, input_data: TabularInputData) -> Optional[Table]:

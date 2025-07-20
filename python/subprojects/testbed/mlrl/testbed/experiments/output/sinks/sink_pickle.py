@@ -6,6 +6,7 @@ Provides classes that allow writing output data to files by using Python's pickl
 import pickle
 
 from mlrl.testbed.experiments.output.data import OutputData
+from mlrl.testbed.experiments.output.model.model import OutputModel
 from mlrl.testbed.experiments.output.sinks.sink import FileSink
 from mlrl.testbed.experiments.state import ExperimentState
 
@@ -33,8 +34,9 @@ class PickleFileSink(FileSink):
 
     # pylint: disable=unused-argument
     def _write_to_file(self, file_path: str, state: ExperimentState, output_data: OutputData, **_):
-        output_object = output_data.to_object(self.options)
+        if isinstance(output_data, OutputModel):
+            output_object = output_data.to_object(self.options)
 
-        if output_object:
-            with open(file_path, mode='wb') as pickle_file:
-                pickle.dump(output_object, pickle_file, pickle.HIGHEST_PROTOCOL)
+            if output_object:
+                with open(file_path, mode='wb') as pickle_file:
+                    pickle.dump(output_object, pickle_file, pickle.HIGHEST_PROTOCOL)

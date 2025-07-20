@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for keeping track of several measurements according to different measures.
 """
 
-from typing import Dict, Set, Tuple
+from typing import Dict, Tuple
 
 import numpy as np
 
@@ -22,14 +22,7 @@ class Measurements:
         :param num_values_per_measure: The number of values to be tracked of for each measure
         """
         self.num_values_per_measure = num_values_per_measure
-        self._values_per_measure = {}
-
-    @property
-    def measures(self) -> Set[Measure]:
-        """
-        A set that contains all measures for which values have been tracked.
-        """
-        return set(self._values_per_measure.keys())
+        self._values_per_measure: Dict[OutputValue, np.ndarray] = {}
 
     def values_by_measure(self, measure: Measure) -> np.ndarray:
         """
@@ -41,7 +34,7 @@ class Measurements:
         return self._values_per_measure.setdefault(
             measure, np.full(shape=self.num_values_per_measure, dtype=float, fill_value=np.nan))
 
-    def average_by_measure(self, measure: Measure) -> Tuple[float, float]:
+    def average_by_measure(self, measure: OutputValue) -> Tuple[float, float]:
         """
         Returns an average and a corresponding standard deviation for a given measure. The average is calculated as the
         arithmetic mean of all values that have been tracked for the measure.
@@ -52,7 +45,7 @@ class Measurements:
         values = self._values_per_measure[measure]
         return np.average(values), np.std(values)
 
-    def values_as_dict(self, index: int) -> Dict[Measure, float]:
+    def values_as_dict(self, index: int) -> Dict[OutputValue, float]:
         """
         Returns a dictionary that contains the value at a specific index that has been tracked for each measure.
 
@@ -61,7 +54,7 @@ class Measurements:
         """
         return {measure: values[index] for measure, values in self._values_per_measure.items()}
 
-    def averages_as_dict(self) -> Dict[Measure, float]:
+    def averages_as_dict(self) -> Dict[OutputValue, float]:
         """
         Returns a dictionary that stores an average and a corresponding standard deviation for each measure. The
         averages are calculated as the arithmetic mean of all values that have been tracked for an individual measure.

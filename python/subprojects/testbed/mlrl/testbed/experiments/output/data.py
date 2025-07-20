@@ -5,7 +5,7 @@ Provides classes for representing output data.
 """
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, replace
-from typing import Any, Iterable, List, Optional, Type
+from typing import Any, Dict, Iterable, List, Optional, Type
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.dataset import Dataset
@@ -41,7 +41,7 @@ class OutputData(ABC):
         """
         self.properties = properties
         self.context = context
-        self.custom_context = {}
+        self.custom_context: Dict[Type, Context] = {}
 
     def get_context(self, lookup_type: Type) -> Context:
         """
