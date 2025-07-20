@@ -133,7 +133,7 @@ class Runners(Workflow):
         except ValueError as error:
             raise RuntimeError('Failed to parse runs-on-clause in workflow "' + self.file + '"') from error
 
-    def __parse_strategy(self, strategy: Dict) -> Set[Runner]:
+    def __parse_strategy(self, strategy: Dict[Any, Any]) -> Set[Runner]:
         runners = set()
 
         for os in self.find_tag(strategy, 'os', default=[]):

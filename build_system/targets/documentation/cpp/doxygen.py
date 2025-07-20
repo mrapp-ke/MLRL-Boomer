@@ -4,10 +4,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow to run the external program "doxygen".
 """
 from os import environ, path
-from typing import Dict
 
 from core.build_unit import BuildUnit
-from util.env import set_env
+from util.env import Env, set_env
 from util.io import create_directories, delete_files
 from util.run import Program
 
@@ -30,7 +29,7 @@ class Doxygen(Program):
     """
 
     @staticmethod
-    def __create_environment(module: CppApidocModule) -> Dict:
+    def __create_environment(module: CppApidocModule) -> Env:
         env = environ.copy()
         set_env(env, 'DOXYGEN_PROJECT_NAME', 'libmlrl' + module.subproject_name)
         set_env(env, 'DOXYGEN_INPUT_DIR', module.include_directory)
