@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow to run the external program "sphinx-build".
 """
 from os import environ, path
+from typing import override
 
 from core.build_unit import BuildUnit
 from util.env import Env, set_env
@@ -58,10 +59,12 @@ class SphinxBuild(Program):
             'sphinxext-opengraph',
         )
 
+    @override
     def _before(self):
         if self.builder == self.BUILDER_SPELLING:
             delete_files(*self.module.find_spelling_files())
 
+    @override
     def _after(self):
         if self.builder == self.BUILDER_SPELLING:
             if self.module.find_spelling_files():

@@ -6,7 +6,7 @@ Provides utilities for reading and writing TOML files via "toml".
 import tomllib
 
 from functools import cached_property
-from typing import Any, Dict
+from typing import Any, Dict, override
 
 from core.build_unit import BuildUnit
 from util.io import TextFile, read_file
@@ -34,6 +34,7 @@ class TomlFile(TextFile):
             toml_dict = tomllib.loads(file.read())
             return toml_dict if toml_dict else {}
 
+    @override
     def write_lines(self, *lines: str):
         super().write_lines(*lines)
 

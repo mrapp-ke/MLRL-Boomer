@@ -8,7 +8,7 @@ import sys
 from argparse import ArgumentError, ArgumentParser, Namespace
 from enum import Enum
 from functools import cached_property
-from typing import Any, Callable, Dict, Optional, Set, Type
+from typing import Any, Callable, Dict, Optional, Set, Type, override
 
 from mlrl.util.format import format_enum_values, format_set
 from mlrl.util.options import BooleanOption, parse_enum, parse_param, parse_param_and_options
@@ -74,9 +74,11 @@ class Argument:
         value = self.default if value is None else value
         return default if value is None else value
 
+    @override
     def __hash__(self) -> int:
         return hash(self.key)
 
+    @override
     def __eq__(self, other: Any) -> bool:
         return isinstance(other, type(self)) and self.key == other.key
 
@@ -102,6 +104,7 @@ class StringArgument(Argument):
         """
         super().__init__(*names, default=default, help=description, type=str, required=required, decorator=decorator)
 
+    @override
     def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
         value = super().get_value(args, default=default)
         return None if value is None else str(value)
@@ -128,6 +131,7 @@ class IntArgument(Argument):
         """
         super().__init__(*names, default=default, help=description, type=int, required=required, decorator=decorator)
 
+    @override
     def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
         value = super().get_value(args, default=default)
 
@@ -159,6 +163,7 @@ class FloatArgument(Argument):
         """
         super().__init__(*names, default=default, help=description, type=float, required=required, decorator=decorator)
 
+    @override
     def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
         value = super().get_value(args, default=default)
 
@@ -219,6 +224,7 @@ class BoolArgument(Argument):
         self.true_options = true_options if true_options else set()
         self.false_options = false_options if false_options else set()
 
+    @override
     def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
         value = str(super().get_value(args, default=default)).lower()
 
@@ -286,6 +292,7 @@ class SetArgument(Argument):
                          decorator=decorator)
         self.supported_values = values
 
+    @override
     def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
         value = super().get_value(args, default=default)
 
@@ -331,6 +338,7 @@ class EnumArgument(SetArgument):
             decorator=decorator)
         self.enum = enum
 
+    @override
     def get_value(self, args: Namespace, default: Optional[Any] = None) -> Optional[Any]:
         value = super().get_value(args, default=default)
         return parse_enum(self.name, value, self.enum) if value else None

@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow to run the external program "meson".
 """
 from abc import ABC
-from typing import List
+from typing import List, override
 
 from core.build_unit import BuildUnit
 from util.log import Log
@@ -89,9 +89,11 @@ class MesonConfigure(Meson):
                          module.build_directory)
         self.build_options = build_options
 
+    @override
     def _should_be_skipped(self) -> bool:
         return not self.build_options
 
+    @override
     def _before(self):
         Log.info('Configuring build options according to environment variables...')
 

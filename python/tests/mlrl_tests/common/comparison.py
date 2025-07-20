@@ -7,7 +7,7 @@ import re as regex
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from os import makedirs, path
-from typing import Any, Iterable, List, Optional, Set
+from typing import Any, Iterable, List, Optional, Set, override
 
 from mlrl.testbed.experiments.output.sinks import CsvFileSink
 from mlrl.testbed.util.io import ENCODING_UTF8
@@ -26,6 +26,7 @@ class Difference(ABC):
         """
         self.file = file
 
+    @override
     def __str__(self) -> str:
         return 'Found unexpected content in file "' + self.file + '"'
 
@@ -52,6 +53,7 @@ class FileComparison(ABC):
             self.expected_line = expected_line
             self.actual_line = actual_line
 
+        @override
         def __str__(self) -> str:
             text = 'Line ' + str(self.line_index + 1) + ' is unexpected according to file "' + self.file + '".\n\n'
             text += 'Expected:\n' + self.expected_line + '\n\n'
@@ -122,6 +124,7 @@ class TextFileComparison(FileComparison):
         """
         self.lines = lines
 
+    @override
     def _compare(self, another_file: str) -> Optional[Difference]:
         with open(another_file, 'r', encoding=ENCODING_UTF8) as file:
             expected_lines = file.readlines()
@@ -138,6 +141,7 @@ class TextFileComparison(FileComparison):
 
         return None
 
+    @override
     def _write(self, file: str):
         with open(file, 'w+', encoding=ENCODING_UTF8) as output_file:
             for line in self.lines:
@@ -170,6 +174,7 @@ class CsvFileComparison(FileComparison):
             self.num_actual_rows = num_actual_rows
             self.num_actual_columns = num_actual_columns
 
+        @override
         def __str__(self) -> str:
             return 'CSV file should have ' + str(self.num_expected_rows) + ' rows and ' + str(
                 self.num_expected_columns) + ' columns according to file "' + self.file + '", but has ' + str(
@@ -198,6 +203,7 @@ class CsvFileComparison(FileComparison):
             actual_value: Any
             header: Any
 
+            @override
             def __str__(self) -> str:
                 return 'row ' + str(self.row_index
                                     + 1) + ', column ' + str(self.column_index + 1) + ' with header "' + str(
@@ -212,6 +218,7 @@ class CsvFileComparison(FileComparison):
             super().__init__(file)
             self.different_cells = different_cells
 
+        @override
         def __str__(self) -> str:
             different_cells = self.different_cells
             text = 'Found ' + str(len(different_cells)) + ' unexpected ' + (
@@ -231,6 +238,7 @@ class CsvFileComparison(FileComparison):
     def __get_duration_column_indices(self, headers: List[Any]) -> Set[int]:
         return {column_index for column_index, header in enumerate(headers) if 'time' in header.lower().split()}
 
+    @override
     def _compare(self, another_file: str) -> Optional[Difference]:
         with open(self.file, mode='r', encoding=ENCODING_UTF8) as actual_file:
             actual_csv_file = csv.reader(actual_file, delimiter=CsvFileSink.DELIMITER, quotechar=CsvFileSink.QUOTE_CHAR)
@@ -277,6 +285,7 @@ class CsvFileComparison(FileComparison):
 
         return None
 
+    @override
     def _write(self, file: str):
         with open(self.file, 'r', encoding=ENCODING_UTF8) as input_file:
             input_csv_file = csv.reader(input_file, delimiter=CsvFileSink.DELIMITER, quotechar=CsvFileSink.QUOTE_CHAR)

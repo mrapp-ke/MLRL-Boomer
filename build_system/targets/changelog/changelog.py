@@ -8,7 +8,7 @@ from datetime import date
 from enum import Enum, StrEnum, auto
 from functools import cached_property
 from os import path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, override
 
 from core.build_unit import BuildUnit
 from util.io import TextFile
@@ -106,6 +106,7 @@ class Changeset:
     header: str
     changes: List[str] = field(default_factory=list)
 
+    @override
     def __str__(self) -> str:
         changeset = '### ' + self.header + '\n\n'
 
@@ -205,6 +206,7 @@ class ChangesetFile(TextFile):
 
         self.__validate_line(current_line=None, previous_line=previous_line)
 
+    @override
     def write_lines(self, *lines: str):
         super().write_lines(*lines)
 
@@ -272,6 +274,7 @@ class Release:
                     + self.URL_DOCUMENTATION + str(self.version) + ').\n```\n\n')
         return ''
 
+    @override
     def __str__(self) -> str:
         release = self.PREFIX_SUB_HEADER + 'Version ' + str(
             self.version) + ' (' + self.__format_release_date() + ')\n\n'

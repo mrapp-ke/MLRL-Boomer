@@ -5,7 +5,7 @@ Provides classes that allow writing textual representations of models to one or 
 """
 import logging as log
 
-from typing import List, Optional
+from typing import List, Optional, override
 
 from mlrl.common.cython.rule_model import RuleModel
 from mlrl.common.mixins import ClassifierMixin, RegressorMixin
@@ -29,6 +29,7 @@ class RuleModelAsTextWriter(OutputWriter):
         Allows to extract textual representation of rules from a `RuleModel`.
         """
 
+        @override
         def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`

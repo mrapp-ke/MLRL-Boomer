@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements targets for compiling C++ code.
 """
 from os import path
-from typing import List, cast
+from typing import List, cast, override
 
 from core.build_unit import BuildUnit
 from core.modules import Module
@@ -40,14 +40,17 @@ class SetupCpp(BuildTarget.Runnable):
     def __init__(self):
         super().__init__(MODULE_FILTER)
 
+    @override
     def run(self, build_unit: BuildUnit, module: Module):
         compilation_module = cast(CompilationModule, module)
         MesonSetup(build_unit, compilation_module, *MESON_OPTIONS, build_options=BUILD_OPTIONS).run()
 
+    @override
     def get_output_files(self, _: BuildUnit, module: Module) -> List[str]:
         compilation_module = cast(CompilationModule, module)
         return [compilation_module.build_directory]
 
+    @override
     def get_clean_files(self, build_unit: BuildUnit, module: Module) -> List[str]:
         compilation_module = cast(CompilationModule, module)
         Log.info('Removing C++ build files from directory "%s"...', compilation_module.root_directory)
@@ -62,6 +65,7 @@ class CompileCpp(PhonyTarget.Runnable):
     def __init__(self):
         super().__init__(MODULE_FILTER)
 
+    @override
     def run(self, build_unit: BuildUnit, module: Module):
         compilation_module = cast(CompilationModule, module)
         Log.info('Compiling C++ code in directory "%s"...', compilation_module.root_directory)
@@ -77,12 +81,14 @@ class InstallCpp(BuildTarget.Runnable):
     def __init__(self):
         super().__init__(MODULE_FILTER)
 
+    @override
     def run(self, build_unit: BuildUnit, module: Module):
         compilation_module = cast(CompilationModule, module)
         Log.info('Installing shared libraries from directory "%s" into source tree...',
                  compilation_module.root_directory)
         MesonInstall(build_unit, compilation_module).run()
 
+    @override
     def get_clean_files(self, _: BuildUnit, module: Module) -> List[str]:
         compilation_module = cast(CompilationModule, module)
         Log.info('Removing shared libraries installed from directory "%s" from source tree...',

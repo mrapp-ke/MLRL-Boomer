@@ -5,7 +5,7 @@ Provides classes for running experiments using the scikit-learn framework.
 """
 from abc import ABC, abstractmethod
 from argparse import Namespace
-from typing import Any, Dict, Optional, Set
+from typing import Any, Dict, Optional, Set, override
 
 from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
 
@@ -54,6 +54,7 @@ class SkLearnRunnable(Runnable, ABC):
             """
             self.prediction_type = prediction_type
 
+        @override
         def create(self) -> Predictor:
             """
             See :func:`from mlrl.testbed_sklearn.experiments.problem_domain.SkLearnProblem.PredictorFactory.create`
@@ -75,6 +76,7 @@ class SkLearnRunnable(Runnable, ABC):
         def __init__(self):
             super().__init__(PredictionTypeExtension())
 
+        @override
         def _get_arguments(self) -> Set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`

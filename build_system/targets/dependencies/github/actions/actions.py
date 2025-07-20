@@ -5,7 +5,7 @@ Provides utility functions for checking the project's GitHub workflows for outda
 """
 from dataclasses import dataclass, replace
 from functools import cached_property, reduce
-from typing import Any, Dict, List, Set
+from typing import Any, Dict, List, Set, override
 
 from core.build_unit import BuildUnit
 from util.files import FileType
@@ -45,6 +45,7 @@ class ActionVersion:
         """
         return [int(version_number) for version_number in str(self).split(self.SEPARATOR)]
 
+    @override
     def __str__(self) -> str:
         return self.version.lstrip('v')
 
@@ -104,12 +105,15 @@ class Action:
         parts = repository.split(separator)
         return separator.join(parts[:2]) if len(parts) > 2 else repository
 
+    @override
     def __str__(self) -> str:
         return self.name + self.SEPARATOR + str(self.version)
 
+    @override
     def __eq__(self, other: Any) -> bool:
         return isinstance(other, type(self)) and str(self) == str(other)
 
+    @override
     def __hash__(self) -> int:
         return hash(str(self))
 
@@ -166,6 +170,7 @@ class Actions(Workflow):
 
         self.write_lines(*updated_lines)
 
+    @override
     def write_lines(self, *lines: str):
         super().write_lines(*lines)
 
@@ -192,12 +197,15 @@ class ActionUpdater(Workflows):
         action: Action
         latest_version: ActionVersion
 
+        @override
         def __str__(self) -> str:
             return str(self.action)
 
+        @override
         def __eq__(self, other: Any) -> bool:
             return isinstance(other, type(self)) and self.action == other.action
 
+        @override
         def __hash__(self) -> int:
             return hash(self.action)
 
@@ -213,12 +221,15 @@ class ActionUpdater(Workflows):
         previous: 'ActionUpdater.OutdatedAction'
         updated: Action
 
+        @override
         def __str__(self) -> str:
             return str(self.updated)
 
+        @override
         def __eq__(self, other: Any) -> bool:
             return isinstance(other, type(self)) and self.updated == other.updated
 
+        @override
         def __hash__(self) -> int:
             return hash(self.updated)
 

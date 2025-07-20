@@ -5,7 +5,7 @@ Provides classes for representing input data.
 """
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.state import ExperimentState
@@ -51,6 +51,7 @@ class DatasetInputData(InputData):
     An abstract base class for all classes that represent input data that can be converted into a dataset.
     """
 
+    @override
     def update_state(self, state: ExperimentState, input_data: Any):
         """
         See :func:`mlrl.testbed.experiments.input.data.InputData.update_state`
@@ -82,6 +83,7 @@ class TabularInputData(InputData, ABC):
         """
         super().__init__(properties=properties, context=context)
 
+    @override
     def update_state(self, state: ExperimentState, input_data: Any):
         self._update_state(state, input_data)
 
