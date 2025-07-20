@@ -3,12 +3,13 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utilities for reading and writing TOML files via "toml".
 """
+import tomllib
+
 from functools import cached_property
 from typing import Any, Dict
 
 from core.build_unit import BuildUnit
 from util.io import TextFile, read_file
-from util.pip import Pip
 
 
 class TomlFile(TextFile):
@@ -29,11 +30,8 @@ class TomlFile(TextFile):
         """
         A dictionary that stores the content of the TOML file.
         """
-        Pip.for_build_unit(self.build_unit).install_packages('toml')
-        # pylint: disable=import-outside-toplevel
-        import toml
         with read_file(self.file) as file:
-            toml_dict = toml.loads(file.read())
+            toml_dict = tomllib.loads(file.read())
             return toml_dict if toml_dict else {}
 
     def write_lines(self, *lines: str):
