@@ -4,10 +4,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow to run the external program "sphinx-build".
 """
 from os import environ, path
-from typing import Dict
 
 from core.build_unit import BuildUnit
-from util.env import set_env
+from util.env import Env, set_env
 from util.io import delete_files
 from util.log import Log
 from util.run import Program
@@ -28,7 +27,7 @@ class SphinxBuild(Program):
     BUILDER_SPELLING = 'spelling'
 
     @staticmethod
-    def __create_environment() -> Dict:
+    def __create_environment() -> Env:
         env = environ.copy()
         set_env(env, 'PROJECT_VERSION', str(Project.version()))
         return env

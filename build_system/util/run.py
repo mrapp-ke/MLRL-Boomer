@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for running external programs during the build process.
 """
 from subprocess import CompletedProcess
-from typing import Set
+from typing import Any, Set
 
 from core.build_unit import BuildUnit
 from util.cmd import Command
@@ -30,7 +30,7 @@ class Program(Command):
             self.install_program = True
             self.dependencies: Set[str] = set()
 
-        def run(self, command: Command, capture_output: bool) -> CompletedProcess:
+        def run(self, command: Command, capture_output: bool) -> CompletedProcess[Any]:
             dependencies = []
 
             if self.install_program:
