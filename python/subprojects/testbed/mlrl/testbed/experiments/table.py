@@ -189,8 +189,9 @@ class Table(ABC):
 
             if auto_rotate and headers and self.num_rows == 1:
                 first_row = next(self.rows)
-                rows = [[headers[column_index], first_row[column_index]] for column_index in range(self.num_columns)]
-                return tabulate(rows, tablefmt='plain')
+                rotated_rows = [[headers[column_index], first_row[column_index]]
+                                for column_index in range(self.num_columns)]
+                return tabulate(rotated_rows, tablefmt='plain')
 
             if not headers:
                 return tabulate(rows, tablefmt='plain')
@@ -303,7 +304,7 @@ class RowWiseTable(Table):
 
         self._headers = headers
         self._alignments = alignments
-        self._rows = []
+        self._rows: List[List[Any]] = []
         self._num_columns = len(headers) if headers else 0
 
     def add_row(self, *values: Optional[Any]):
@@ -313,14 +314,14 @@ class RowWiseTable(Table):
         :param values:  The values in the row
         :return:        The modified table
         """
-        values = list(values)
+        row = list(values)
         headers = self._headers
 
-        if headers and len(values) > len(headers):
+        if headers and len(row) > len(headers):
             raise ValueError('The row must contain at most ' + str(len(headers)) + ' values')
 
-        self._rows.append(values)
-        self._num_columns = max(len(values), self._num_columns)
+        self._rows.append(row)
+        self._num_columns = max(len(row), self._num_columns)
         return self
 
     def sort_by_columns(self,
@@ -490,7 +491,7 @@ class ColumnWiseTable(Table):
         :param alignment:   The alignment of the column or None
         :return:            The modified table
         """
-        values = list(values)
+        column = list(values)
 
         if header:
             if not self._headers:
@@ -504,8 +505,8 @@ class ColumnWiseTable(Table):
 
             self._alignments.append(alignment)
 
-        self._columns.append(values)
-        self._num_rows = max(len(values), self._num_rows)
+        self._columns.append(column)
+        self._num_rows = max(len(column), self._num_rows)
         return self
 
     def sort_by_headers(self) -> 'ColumnWiseTable':
@@ -522,13 +523,13 @@ class ColumnWiseTable(Table):
             sorted_column_indices = sorted(range(len(headers)), key=headers.__getitem__)
             sorted_columns = []
             sorted_headers = []
-            sorted_alignments = [] if alignments else None
+            sorted_alignments: Optional[List[str]] = [] if alignments else None
 
             for column_index in sorted_column_indices:
                 sorted_columns.append(columns[column_index])
                 sorted_headers.append(headers[column_index])
 
-                if alignments:
+                if sorted_alignments and alignments:
                     sorted_alignments.append(alignments[column_index])
 
             self._headers = sorted_headers
