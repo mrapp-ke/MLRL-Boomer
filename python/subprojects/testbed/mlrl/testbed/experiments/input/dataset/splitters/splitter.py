@@ -5,7 +5,7 @@ Provides classes for implementing splitters that split datasets into training an
 """
 
 from abc import ABC, abstractmethod
-from typing import Generator
+from typing import Generator, Optional
 
 from mlrl.testbed.experiments.dataset_type import DatasetType
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
@@ -23,12 +23,13 @@ class DatasetSplitter(ABC):
         """
 
         @abstractmethod
-        def get_state(self, dataset_type: DatasetType) -> ExperimentState:
+        def get_state(self, dataset_type: DatasetType) -> Optional[ExperimentState]:
             """
             Returns a state that stores the dataset that corresponds to a specific `DatasetType`.
 
             :param dataset_type:    The `DatasetType`
-            :return:                A state that stores the dataset that corresponds to the given `DatasetType`
+            :return:                A state that stores the dataset that corresponds to the given `DatasetType` or None,
+                                    if not such dataset is available
             """
 
     @abstractmethod
