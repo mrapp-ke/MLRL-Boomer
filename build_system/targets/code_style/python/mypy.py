@@ -25,9 +25,3 @@ class Mypy(Program):
                          '--warn-unused-configs', *module.find_source_files())
         self.set_build_unit(build_unit)
         self.module = module
-
-    def _should_be_skipped(self) -> bool:
-        blacklist = {
-            path.join('python', 'subprojects', 'common'),
-        }
-        return self.module.root_directory in blacklist

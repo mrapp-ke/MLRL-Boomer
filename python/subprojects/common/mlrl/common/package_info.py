@@ -38,8 +38,12 @@ class PackageInfo:
         """
         A set that contains a `PackageInfo` for each dependency of this package.
         """
+        package_infos: Set[PackageInfo] = set()
         dependencies = requires(self.package_name)
-        package_infos = {PackageInfo(package_name=Requirement(dependency).name) for dependency in dependencies}
+
+        if dependencies:
+            for dependency in dependencies:
+                package_infos.add(PackageInfo(package_name=Requirement(dependency).name))
 
         for python_package in self.python_packages:
             package_infos.discard(python_package)

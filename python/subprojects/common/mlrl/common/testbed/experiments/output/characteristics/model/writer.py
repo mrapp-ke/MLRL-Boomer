@@ -63,19 +63,22 @@ class RuleModelCharacteristicsWriter(OutputWriter):
             head_statistics = None
 
             if isinstance(head, CompleteHead):
-                num_positive_predictions = np.count_nonzero(head.scores > 0)
-                num_negative_predictions = head.scores.shape[0] - num_positive_predictions
+                num_positive_predictions = int(np.count_nonzero(head.scores > 0))
+                num_negative_predictions = int(head.scores.shape[0] - num_positive_predictions)
                 head_statistics = HeadStatistics(num_positive_predictions=num_positive_predictions,
                                                  num_negative_predictions=num_negative_predictions)
             elif isinstance(head, PartialHead):
-                num_positive_predictions = np.count_nonzero(head.scores > 0)
-                num_negative_predictions = head.scores.shape[0] - num_positive_predictions
+                num_positive_predictions = int(np.count_nonzero(head.scores > 0))
+                num_negative_predictions = int(head.scores.shape[0] - num_positive_predictions)
                 head_statistics = HeadStatistics(num_positive_predictions=num_positive_predictions,
                                                  num_negative_predictions=num_negative_predictions)
 
             if head_statistics:
                 if default_rule:
-                    statistics.default_rule_statistics.head_statistics = head_statistics
+                    default_rule_statistics = statistics.default_rule_statistics
+
+                    if default_rule_statistics:
+                        default_rule_statistics.head_statistics = head_statistics
                 else:
                     statistics.rule_statistics[-1].head_statistics = head_statistics
             else:
