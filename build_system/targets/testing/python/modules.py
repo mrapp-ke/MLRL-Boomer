@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements modules that provide access to automated tests for Python code.
 """
 from os import environ, path
+from typing import override
 
 from core.modules import Module, ModuleRegistry
 
@@ -21,6 +22,7 @@ class PythonTestModule(TestModule, SubprojectModule):
         A filter that matches modules of type `PythonTestModule`.
         """
 
+        @override
         def matches(self, module: Module, module_registry: ModuleRegistry) -> bool:
             return isinstance(module, PythonTestModule) and SubprojectModule.Filter.from_env(environ).matches(
                 module, module_registry)
@@ -33,9 +35,11 @@ class PythonTestModule(TestModule, SubprojectModule):
         self.root_directory = root_directory
         self.result_directory = result_directory
 
+    @override
     @property
     def subproject_name(self) -> str:
         return path.basename(self.root_directory)
 
+    @override
     def __str__(self) -> str:
         return 'PythonTestModule {root_directory="' + self.root_directory + '"}'

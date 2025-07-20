@@ -6,7 +6,7 @@ Provides classes that allow configuring the functionality to write output data t
 from argparse import Namespace
 from datetime import datetime
 from os import listdir, path, unlink
-from typing import Set
+from typing import Set, override
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.extensions.extension import Extension
@@ -30,6 +30,7 @@ class OutputExtension(Extension):
             """
             self.directory = directory
 
+        @override
         def before_start(self, _: Experiment):
             """
             See :func:`mlrl.testbed.experiments.Experiment.Listener.before_start`
@@ -89,12 +90,14 @@ class OutputExtension(Extension):
         description='Whether all output data should be written to files or not.',
     )
 
+    @override
     def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return {self.BASE_DIR, self.RESULT_DIR, self.CREATE_DIRS, self.WIPE_RESULT_DIR, self.EXIT_ON_ERROR}
 
+    @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`

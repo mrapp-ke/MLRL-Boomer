@@ -6,7 +6,7 @@ Provides classes for installing Python packages via pip.
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from functools import reduce
-from typing import Any, Dict, Optional, Set
+from typing import Any, Dict, Optional, Set, override
 
 from core.build_unit import BuildUnit
 from util.cmd import Command as Cmd
@@ -31,12 +31,15 @@ class Package:
         """
         return self.name.replace('_', '-').lower()
 
+    @override
     def __str__(self) -> str:
         return self.normalized_name
 
+    @override
     def __eq__(self, other: Any) -> bool:
         return isinstance(other, type(self)) and self.normalized_name == other.normalized_name
 
+    @override
     def __hash__(self) -> int:
         return hash(self.normalized_name)
 
@@ -105,6 +108,7 @@ class RequirementVersion:
         """
         return self.min_version != self.max_version
 
+    @override
     def __str__(self) -> str:
         if self.is_range():
             return self.PREFIX_GEQ + ' ' + self.min_version + ', ' + self.PREFIX_LE + ' ' + self.max_version
@@ -136,12 +140,15 @@ class Requirement:
         version = RequirementVersion.parse(' '.join(parts[1:])) if len(parts) > 1 else None
         return Requirement(package, version)
 
+    @override
     def __str__(self) -> str:
         return str(self.package) + (' ' + str(self.version) if self.version else '')
 
+    @override
     def __eq__(self, other: Any) -> bool:
         return isinstance(other, type(self)) and self.package == other.package
 
+    @override
     def __hash__(self) -> int:
         return hash(self.package)
 
@@ -214,12 +221,15 @@ class RequirementsFile(ABC):
         requirements = self.lookup_requirements(package, accept_missing=accept_missing)
         return requirements.pop() if requirements else None
 
+    @override
     def __str__(self) -> str:
         return self.path
 
+    @override
     def __eq__(self, other: Any) -> bool:
         return isinstance(other, type(self)) and self.path == other.path
 
+    @override
     def __hash__(self) -> int:
         return hash(self.path)
 
@@ -229,10 +239,12 @@ class RequirementsTextFile(TextFile, RequirementsFile):
     Represents a specific requirements.txt file.
     """
 
+    @override
     @property
     def path(self) -> str:
         return self.file
 
+    @override
     @property
     def requirements_by_package(self) -> Dict[Package, Requirement]:
         return {
@@ -241,6 +253,7 @@ class RequirementsTextFile(TextFile, RequirementsFile):
             [Requirement.parse(line.strip('\n').strip()) for line in self.lines if line.strip('\n').strip()]
         }
 
+    @override
     def update(self, _: Requirement, updated_requirement: Requirement):
         new_lines = []
 

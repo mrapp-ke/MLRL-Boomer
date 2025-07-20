@@ -6,6 +6,7 @@ Provides classes that allow to run the external program "auditwheel".
 import shutil
 
 from os import path
+from typing import override
 
 from core.build_unit import BuildUnit
 from util.files import FileSearch
@@ -30,6 +31,7 @@ class Auditwheel(Program):
         self.wheel = wheel
         self.wheel_directory = wheel_directory
 
+    @override
     def _after(self):
         original_wheel = self.wheel
         delete_files(original_wheel)
