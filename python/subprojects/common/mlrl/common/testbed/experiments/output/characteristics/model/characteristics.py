@@ -65,9 +65,10 @@ class RuleModelCharacteristics(TabularOutputData):
         ]
         alignments = [Alignment.LEFT] + [Alignment.RIGHT for _ in range(len(headers) - 1)]
         table = RowWiseTable(*headers, alignments=alignments)
+        default_rule_statistics = statistics.default_rule_statistics
 
-        if statistics.has_default_rule:
-            body_statistics = statistics.default_rule_statistics.body_statistics
+        if default_rule_statistics:
+            body_statistics = default_rule_statistics.body_statistics
             table.add_row('Default rule', *self.__format_body_statistics(body_statistics))
 
         body_statistics = aggregated_rule_statistics.body_statistics
@@ -87,9 +88,10 @@ class RuleModelCharacteristics(TabularOutputData):
         headers = ['Statistics about predictions', 'Total', 'Positive', 'Negative']
         alignments = [Alignment.LEFT] + [Alignment.RIGHT for _ in range(len(headers) - 1)]
         table = RowWiseTable(*headers, alignments=alignments)
+        default_rule_statistics = statistics.default_rule_statistics
 
-        if statistics.has_default_rule:
-            head_statistics = statistics.default_rule_statistics.head_statistics
+        if default_rule_statistics:
+            head_statistics = default_rule_statistics.head_statistics
             table.add_row('Default rule', *self.__format_head_statistics(head_statistics))
 
         head_statistics = aggregated_rule_statistics.head_statistics
@@ -121,8 +123,7 @@ class RuleModelCharacteristics(TabularOutputData):
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
         """
         statistics = self.statistics
-        has_default_rule = statistics.has_default_rule
-        default_rule_statistics = [statistics.default_rule_statistics] if has_default_rule else []
+        default_rule_statistics = [statistics.default_rule_statistics] if statistics.default_rule_statistics else []
         table = RowWiseTable('Rule', 'conditions', 'numerical conditions', 'numerical <= operator',
                              'numerical > operator', 'ordinal conditions', 'ordinal <= operator', 'ordinal > operator',
                              'nominal conditions', 'nominal == operator', 'nominal != operator', 'predictions',
@@ -131,7 +132,7 @@ class RuleModelCharacteristics(TabularOutputData):
         for i, rule_statistics in enumerate(chain(default_rule_statistics, statistics.rule_statistics)):
             rule_name = 'Rule ' + str(i + 1)
 
-            if i == 0 and has_default_rule:
+            if i == 0 and statistics.has_default_rule:
                 rule_name += ' (Default rule)'
 
             body_statistics = rule_statistics.body_statistics
