@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for providing the text to be shown when the "--version" flag is passed to the command line API.
 """
 from dataclasses import dataclass, field
-from typing import Optional, Set
+from typing import List, Optional
 
 from mlrl.util.format import format_iterable
 
@@ -17,12 +17,12 @@ class ProgramInfo:
     :param name:    The name of the program
     :param version: The version of the program
     :param year:    The year when the program was released
-    :param authors: A set containing the names of all authors of the program
+    :param authors: A list containing the names of all authors of the program
     """
     name: str
     version: str
     year: Optional[str] = None
-    authors: Set[str] = field(default_factory=set)
+    authors: List[str] = field(default_factory=list)
 
     def __get_copyright_text(self) -> str:
         text = ''

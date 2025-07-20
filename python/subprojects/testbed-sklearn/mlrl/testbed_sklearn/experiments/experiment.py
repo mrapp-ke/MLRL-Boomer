@@ -24,8 +24,6 @@ from mlrl.testbed_sklearn.experiments.problem_domain import SkLearnProblem
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.input.dataset.splitters.splitter import DatasetSplitter
-from mlrl.testbed.experiments.output.model.writer import ModelWriter
-from mlrl.testbed.experiments.output.parameters.writer import ParameterWriter
 from mlrl.testbed.experiments.problem_domain import ProblemDomain
 from mlrl.testbed.experiments.state import ExperimentState, ParameterDict, PredictionState, TrainingState
 from mlrl.testbed.experiments.timer import Timer
@@ -53,16 +51,8 @@ class SkLearnExperiment(Experiment):
             self.prediction_writer = PredictionWriter()
             self.label_vector_writer = LabelVectorWriter()
             self.evaluation_writer = EvaluationWriter()
-            self.model_writer = ModelWriter()
-            self.parameter_writer = ParameterWriter()
-            self.add_pre_training_output_writers(
-                self.data_characteristics_writer,
-                self.parameter_writer,
-            )
-            self.add_post_training_output_writers(
-                self.model_writer,
-                self.label_vector_writer,
-            )
+            self.add_pre_training_output_writers(self.data_characteristics_writer)
+            self.add_post_training_output_writers(self.label_vector_writer)
             self.add_prediction_output_writers(
                 self.prediction_characteristics_writer,
                 self.ground_truth_writer,
