@@ -196,9 +196,8 @@ class Table(ABC):
             if not headers:
                 return tabulate(rows, tablefmt='plain')
 
-            table_format = 'simple_outline' if headers else 'plain'
             alignments = map(lambda alignment: alignment.value, self.alignments) if self.alignments else None
-            return tabulate(rows, headers=headers, tablefmt=table_format, colalign=alignments)
+            return tabulate(rows, headers=headers, tablefmt='simple_outline', colalign=alignments)
 
         return ''
 

@@ -3,11 +3,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for accessing environment variables.
 """
-from typing import List, MutableMapping, Optional
+from typing import Any, List, MutableMapping, Optional
 
 from util.log import Log
 
-Env = MutableMapping
+Env = MutableMapping[Any, Any]
 
 
 def get_env(env: Env, name: str, default: Optional[str] = None) -> Optional[str]:

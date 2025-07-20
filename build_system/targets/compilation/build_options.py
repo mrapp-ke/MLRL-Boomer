@@ -97,7 +97,7 @@ class EnvBuildOption(BuildOption):
         return value
 
 
-class BuildOptions(Iterable):
+class BuildOptions(Iterable[BuildOption]):
     """
     Stores multiple build options.
     """

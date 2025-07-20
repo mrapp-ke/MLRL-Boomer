@@ -5,9 +5,10 @@ Provides classes that allow to run the external program "taplo".
 """
 from abc import ABC
 from os import environ, path
-from typing import Dict, List
+from typing import List
 
 from core.build_unit import BuildUnit
+from util.env import Env
 from util.run import Program
 
 
@@ -17,7 +18,7 @@ class Taplo(Program, ABC):
     """
 
     @staticmethod
-    def __create_environment() -> Dict:
+    def __create_environment() -> Env:
         env = environ.copy()
         env['RUST_LOG'] = 'warn'
         return env
