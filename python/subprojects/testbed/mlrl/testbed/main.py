@@ -109,7 +109,7 @@ def __instantiate_via_default_constructor(module_or_source_file: str, class_name
         raise TypeError('Class "' + class_name + '" must provide a default constructor') from error
 
 
-def __get_mode(cli: CommandLineInterface) -> Mode:
+def __get_mode(cli: CommandLineInterface, runnable: Optional[Runnable]) -> Mode:
     mode_single = 'single'
     mode_batch = 'batch'
     modes = {mode_single, mode_batch}
@@ -125,7 +125,7 @@ def __get_mode(cli: CommandLineInterface) -> Mode:
     if mode == mode_single:
         return SingleExperimentMode()
     if mode == mode_batch:
-        return BatchExperimentMode()
+        return BatchExperimentMode(runnable.create_batch_config_file_factory() if runnable else None)
     raise ValueError('Invalid value given for argument '
                      + format_iterable(sorted(mode_argument.names), delimiter='"', separator=' / ')
                      + ': Must be one of ' + format_set(modes) + ', but is "' + str(mode) + '"')
@@ -149,7 +149,7 @@ def main():
     runnable = __get_runnable(argument_parser)
     program_info = runnable.get_program_info() if runnable else __get_default_program_info()
     cli = CommandLineInterface(argument_parser, version_text=str(program_info) if program_info else None)
-    mode = __get_mode(cli)
+    mode = __get_mode(cli, runnable)
     mode.configure_arguments(cli)
 
     if runnable:
