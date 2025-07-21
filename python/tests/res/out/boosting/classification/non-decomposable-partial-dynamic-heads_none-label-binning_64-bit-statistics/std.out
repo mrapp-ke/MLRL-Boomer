@@ -54,4 +54,4 @@ Model characteristics:
 │ Predictions                 │         1 │      1.53 │         3 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-Successfully finished after <duration>
+Successfully finished experiment after <duration>

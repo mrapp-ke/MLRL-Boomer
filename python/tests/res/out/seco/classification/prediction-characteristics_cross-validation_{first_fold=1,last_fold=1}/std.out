@@ -22,4 +22,4 @@ Label Cardinality        1.9
 Distinct Label Vectors  16
 
 Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-1.csv"...
-Successfully finished after <duration>
+Successfully finished experiment after <duration>

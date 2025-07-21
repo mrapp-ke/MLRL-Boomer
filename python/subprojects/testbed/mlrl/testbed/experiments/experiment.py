@@ -346,7 +346,7 @@ class Experiment(ABC):
                     listener.after_training(self, training_state)
 
         run_time = Timer.stop(start_time)
-        log.info('Successfully finished after %s', run_time)
+        log.info('Successfully finished experiment after %s', run_time)
 
     @abstractmethod
     def _train(self, learner: Optional[Any], parameters: ParameterDict, dataset: Dataset) -> TrainingState:
