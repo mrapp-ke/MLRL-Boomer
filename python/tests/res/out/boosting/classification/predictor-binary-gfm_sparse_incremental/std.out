@@ -1,19 +1,19 @@
 mlrl-testbed mlrl.boosting --log-level debug --data-dir python/tests/res/data --dataset emotions --base-dir python/tests/res/tmp --result-dir results --save-evaluation true --marginal-probability-calibration isotonic --print-marginal-probability-calibration-model true --save-marginal-probability-calibration-model true --joint-probability-calibration isotonic --print-joint-probability-calibration-model true --save-joint-probability-calibration-model true --binary-predictor gfm --incremental-evaluation true{step_size=50} --print-evaluation true --save-evaluation true --prediction-format sparse --load-models true --model-load-dir models --save-models true --model-save-dir models
-INFO Starting experiment using the classification algorithm "BoomerClassifier"...
-INFO Using separate training and test sets...
-DEBUG Reading input data from file "python/tests/res/data/emotions.arff"...
-DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
-DEBUG Reading input data from file "models/model.pickle"...
-ERROR Failed to unpickle file "models/model.pickle"
-INFO Fitting model to 397 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A sparse matrix is used to store the predicted labels
-INFO Predicting for 196 test examples using a model of size 50...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 50:
+Starting experiment using the classification algorithm "BoomerClassifier"...
+Using separate training and test sets...
+Reading input data from file "python/tests/res/data/emotions.arff"...
+Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+Reading input data from file "models/model.pickle"...
+Failed to unpickle file "models/model.pickle"
+Fitting model to 397 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+A dense matrix is used to store the feature values of the query examples
+A sparse matrix is used to store the predicted labels
+Predicting for 196 test examples using a model of size 50...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 50:
 
 Example-wise F1         59.64
 Example-wise Jaccard    46.15
@@ -32,10 +32,10 @@ Micro Recall            87.47
 Subset 0/1 Loss         92.35
 Subset Accuracy          7.65
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 100...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 100:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 100...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 100:
 
 Example-wise F1         61.55
 Example-wise Jaccard    48.63
@@ -54,10 +54,10 @@ Micro Recall            86.4
 Subset 0/1 Loss         89.29
 Subset Accuracy         10.71
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 150...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 150:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 150...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 150:
 
 Example-wise F1         63.12
 Example-wise Jaccard    50.49
@@ -76,10 +76,10 @@ Micro Recall            87.2
 Subset 0/1 Loss         86.73
 Subset Accuracy         13.27
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 200...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 200:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 200...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 200:
 
 Example-wise F1         60.44
 Example-wise Jaccard    47.84
@@ -98,10 +98,10 @@ Micro Recall            82.13
 Subset 0/1 Loss         88.78
 Subset Accuracy         11.22
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 250...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 250:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 250...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 250:
 
 Example-wise F1         59.08
 Example-wise Jaccard    47.07
@@ -120,10 +120,10 @@ Micro Recall            78.67
 Subset 0/1 Loss         87.24
 Subset Accuracy         12.76
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 300...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 300:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 300...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 300:
 
 Example-wise F1         55.87
 Example-wise Jaccard    44.49
@@ -142,10 +142,10 @@ Micro Recall            72.53
 Subset 0/1 Loss         87.76
 Subset Accuracy         12.24
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 350...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 350:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 350...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 350:
 
 Example-wise F1         55.11
 Example-wise Jaccard    43.81
@@ -164,10 +164,10 @@ Micro Recall            71.2
 Subset 0/1 Loss         87.76
 Subset Accuracy         12.24
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 400...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 400:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 400...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 400:
 
 Example-wise F1         54.22
 Example-wise Jaccard    42.86
@@ -186,10 +186,10 @@ Micro Recall            69.33
 Subset 0/1 Loss         89.29
 Subset Accuracy         10.71
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 450...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 450:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 450...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 450:
 
 Example-wise F1         52.19
 Example-wise Jaccard    41.11
@@ -208,10 +208,10 @@ Micro Recall            65.87
 Subset 0/1 Loss         90.82
 Subset Accuracy          9.18
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 500...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 500:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 500...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 500:
 
 Example-wise F1         51.38
 Example-wise Jaccard    40.57
@@ -230,10 +230,10 @@ Micro Recall            64
 Subset 0/1 Loss         90.31
 Subset Accuracy          9.69
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 550...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 550:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 550...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 550:
 
 Example-wise F1         50.79
 Example-wise Jaccard    40.41
@@ -252,10 +252,10 @@ Micro Recall            62.4
 Subset 0/1 Loss         89.29
 Subset Accuracy         10.71
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 600...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 600:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 600...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 600:
 
 Example-wise F1         49.82
 Example-wise Jaccard    39.86
@@ -274,10 +274,10 @@ Micro Recall            60.53
 Subset 0/1 Loss         88.27
 Subset Accuracy         11.73
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 650...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 650:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 650...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 650:
 
 Example-wise F1         48.99
 Example-wise Jaccard    39.34
@@ -296,10 +296,10 @@ Micro Recall            59.73
 Subset 0/1 Loss         87.76
 Subset Accuracy         12.24
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 700...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 700:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 700...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 700:
 
 Example-wise F1         46.98
 Example-wise Jaccard    37.6
@@ -318,10 +318,10 @@ Micro Recall            57.07
 Subset 0/1 Loss         88.78
 Subset Accuracy         11.22
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 750...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 750:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 750...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 750:
 
 Example-wise F1         45.95
 Example-wise Jaccard    36.79
@@ -340,10 +340,10 @@ Micro Recall            55.73
 Subset 0/1 Loss         88.78
 Subset Accuracy         11.22
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 800...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 800:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 800...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 800:
 
 Example-wise F1         45.46
 Example-wise Jaccard    36.25
@@ -362,10 +362,10 @@ Micro Recall            55.2
 Subset 0/1 Loss         89.29
 Subset Accuracy         10.71
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 850...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 850:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 850...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 850:
 
 Example-wise F1         43.77
 Example-wise Jaccard    34.71
@@ -384,10 +384,10 @@ Micro Recall            53.07
 Subset 0/1 Loss         90.31
 Subset Accuracy          9.69
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 900...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 900:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 900...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 900:
 
 Example-wise F1         42.17
 Example-wise Jaccard    33.31
@@ -406,10 +406,10 @@ Micro Recall            52
 Subset 0/1 Loss         90.82
 Subset Accuracy          9.18
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 950...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 950:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 950...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 950:
 
 Example-wise F1         41.43
 Example-wise Jaccard    32.6
@@ -428,10 +428,10 @@ Micro Recall            50.93
 Subset 0/1 Loss         91.84
 Subset Accuracy          8.16
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Predicting for 196 test examples using a model of size 1000...
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data using a model of size 1000:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Predicting for 196 test examples using a model of size 1000...
+Successfully predicted in <duration>
+Evaluation result for test data using a model of size 1000:
 
 Example-wise F1         41.1
 Example-wise Jaccard    32.37
@@ -450,8 +450,8 @@ Micro Recall            50.67
 Subset 0/1 Loss         92.35
 Subset Accuracy          7.65
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Joint probability calibration model:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Joint probability calibration model:
 
 ┌─────────────────────────────┬────────────────────────────────┐
 │   Label vector 1 thresholds │   Label vector 1 probabilities │
@@ -642,8 +642,8 @@ INFO Joint probability calibration model:
 │                       0.2246 │                          1      │
 └──────────────────────────────┴─────────────────────────────────┘
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/joint_probability_calibration_model.csv"...
-INFO Marginal probability calibration model:
+Writing output data to file "python/tests/res/tmp/results/joint_probability_calibration_model.csv"...
+Marginal probability calibration model:
 
 ┌──────────────────────┬─────────────────────────┐
 │   Label 1 thresholds │   Label 1 probabilities │
@@ -710,6 +710,6 @@ INFO Marginal probability calibration model:
 │               0.9862 │                  1      │
 └──────────────────────┴─────────────────────────┘
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/marginal_probability_calibration_model.csv"...
-DEBUG Writing output data to file "python/tests/res/tmp/models/model.pickle"...
-INFO Successfully finished after <duration>
+Writing output data to file "python/tests/res/tmp/results/marginal_probability_calibration_model.csv"...
+Writing output data to file "python/tests/res/tmp/models/model.pickle"...
+Successfully finished after <duration>

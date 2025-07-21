@@ -1,14 +1,14 @@
 mlrl-testbed mlrl.seco --log-level debug --data-dir python/tests/res/data --dataset emotions --base-dir python/tests/res/tmp --result-dir results --save-evaluation true --data-split cross-validation --print-evaluation false --save-evaluation false --print-rules true --save-rules true
-INFO Starting experiment using the classification algorithm "SeCoClassifier"...
-INFO Performing full 10-fold cross validation...
-INFO Fold 1 / 10:
-DEBUG Reading input data from file "python/tests/res/data/emotions.arff"...
-DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
-INFO Fitting model to 533 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-INFO Model (Fold 1):
+Starting experiment using the classification algorithm "SeCoClassifier"...
+Performing full 10-fold cross validation...
+Fold 1 / 10:
+Reading input data from file "python/tests/res/data/emotions.arff"...
+Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+Fitting model to 533 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Model (Fold 1):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.06} => (quiet-still = 1)
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.06} => (sad-lonely = 1)
@@ -100,13 +100,13 @@ INFO Model (Fold 1):
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/rules_fold-1.txt"...
-INFO Fold 2 / 10:
-INFO Fitting model to 533 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-INFO Model (Fold 2):
+Writing output data to file "python/tests/res/tmp/results/rules_fold-1.txt"...
+Fold 2 / 10:
+Fitting model to 533 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Model (Fold 2):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.07} => (quiet-still = 1)
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.07} => (sad-lonely = 1)
@@ -178,13 +178,13 @@ INFO Model (Fold 2):
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/rules_fold-2.txt"...
-INFO Fold 3 / 10:
-INFO Fitting model to 533 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-INFO Model (Fold 3):
+Writing output data to file "python/tests/res/tmp/results/rules_fold-2.txt"...
+Fold 3 / 10:
+Fitting model to 533 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Model (Fold 3):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.06} => (sad-lonely = 1)
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.07} => (quiet-still = 1)
@@ -260,13 +260,13 @@ INFO Model (Fold 3):
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/rules_fold-3.txt"...
-INFO Fold 4 / 10:
-INFO Fitting model to 534 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-INFO Model (Fold 4):
+Writing output data to file "python/tests/res/tmp/results/rules_fold-3.txt"...
+Fold 4 / 10:
+Fitting model to 534 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Model (Fold 4):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.07} => (quiet-still = 1)
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.06} => (sad-lonely = 1)
@@ -340,13 +340,13 @@ INFO Model (Fold 4):
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/rules_fold-4.txt"...
-INFO Fold 5 / 10:
-INFO Fitting model to 534 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-INFO Model (Fold 5):
+Writing output data to file "python/tests/res/tmp/results/rules_fold-4.txt"...
+Fold 5 / 10:
+Fitting model to 534 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Model (Fold 5):
 
 {Std_Acc1298_Std_Mem40_MFCC_10 <= 0.06} => (amazed-suprised = 1)
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.06 & Std_Acc1298_Std_Mem40_MFCC_4 > 0.09} => (quiet-still = 1)
@@ -428,13 +428,13 @@ INFO Model (Fold 5):
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/rules_fold-5.txt"...
-INFO Fold 6 / 10:
-INFO Fitting model to 534 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-INFO Model (Fold 6):
+Writing output data to file "python/tests/res/tmp/results/rules_fold-5.txt"...
+Fold 6 / 10:
+Fitting model to 534 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Model (Fold 6):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.06} => (quiet-still = 1)
 {Std_Acc1298_Mean_Mem40_MFCC_11 > 0.63} => (quiet-still = 1)
@@ -502,13 +502,13 @@ INFO Model (Fold 6):
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/rules_fold-6.txt"...
-INFO Fold 7 / 10:
-INFO Fitting model to 534 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-INFO Model (Fold 7):
+Writing output data to file "python/tests/res/tmp/results/rules_fold-6.txt"...
+Fold 7 / 10:
+Fitting model to 534 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Model (Fold 7):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.07} => (sad-lonely = 1)
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.06} => (quiet-still = 1)
@@ -584,13 +584,13 @@ INFO Model (Fold 7):
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/rules_fold-7.txt"...
-INFO Fold 8 / 10:
-INFO Fitting model to 534 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-INFO Model (Fold 8):
+Writing output data to file "python/tests/res/tmp/results/rules_fold-7.txt"...
+Fold 8 / 10:
+Fitting model to 534 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Model (Fold 8):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.06} => (quiet-still = 1)
 {Std_Acc1298_Mean_Mem40_MFCC_12 > 0.58} => (quiet-still = 1)
@@ -663,13 +663,13 @@ INFO Model (Fold 8):
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/rules_fold-8.txt"...
-INFO Fold 9 / 10:
-INFO Fitting model to 534 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-INFO Model (Fold 9):
+Writing output data to file "python/tests/res/tmp/results/rules_fold-8.txt"...
+Fold 9 / 10:
+Fitting model to 534 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Model (Fold 9):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.06} => (sad-lonely = 1)
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.06} => (quiet-still = 1)
@@ -751,13 +751,13 @@ INFO Model (Fold 9):
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/rules_fold-9.txt"...
-INFO Fold 10 / 10:
-INFO Fitting model to 534 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-INFO Model (Fold 10):
+Writing output data to file "python/tests/res/tmp/results/rules_fold-9.txt"...
+Fold 10 / 10:
+Fitting model to 534 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Model (Fold 10):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.07} => (quiet-still = 1)
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.06} => (sad-lonely = 1)
@@ -839,5 +839,5 @@ INFO Model (Fold 10):
 {} => (amazed-suprised = 0, happy-pleased = 0, relaxing-calm = 0, quiet-still = 0, sad-lonely = 0, angry-aggresive = 0)
 
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/rules_fold-10.txt"...
-INFO Successfully finished after <duration>
+Writing output data to file "python/tests/res/tmp/results/rules_fold-10.txt"...
+Successfully finished after <duration>
