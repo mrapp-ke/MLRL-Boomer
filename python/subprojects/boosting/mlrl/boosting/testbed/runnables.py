@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Integrates the BOOMER algorithm with the command line utility 'mlrl-testbed', which may be installed as an optional
 dependency.
 """
-from typing import Optional, Set
+from typing import Optional, Set, override
 
 from mlrl.common.testbed.program_info import RuleLearnerProgramInfo
 from mlrl.common.testbed.runnables import RuleLearnerRunnable
@@ -33,6 +33,7 @@ class BoomerRunnable(RuleLearnerRunnable):
                          regressor_config_type=BoomerRegressorConfig,
                          regressor_parameters=BOOMER_REGRESSOR_PARAMETERS)
 
+    @override
     def get_extensions(self) -> Set[Extension]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
@@ -42,6 +43,7 @@ class BoomerRunnable(RuleLearnerRunnable):
             JointProbabilityCalibrationModelExtension(),
         }
 
+    @override
     def get_program_info(self) -> Optional[ProgramInfo]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_program_info`

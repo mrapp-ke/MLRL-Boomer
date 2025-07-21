@@ -52,6 +52,7 @@ class LabelVectorSetExtension(Extension):
                 """
                 self.label_vector_histogram = LabelVectorHistogram(num_labels=num_labels)
 
+            @override
             def visit_label_vector(self, label_vector: np.ndarray, frequency: int):
                 """
                 See :func:`mlrl.common.cython.output_space_info.LabelVectorSetVisitor.visit_label_vector`
