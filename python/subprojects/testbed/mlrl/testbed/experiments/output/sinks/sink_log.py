@@ -5,6 +5,8 @@ Provides classes that allow writing output data to the log.
 """
 import logging as log
 
+from typing import override
+
 from mlrl.testbed.experiments.output.data import OutputData, TextualOutputData
 from mlrl.testbed.experiments.output.sinks.sink import Sink
 from mlrl.testbed.experiments.state import ExperimentState
@@ -15,6 +17,7 @@ class LogSink(Sink):
     Allows to write textual output data to the log.
     """
 
+    @override
     def write_to_sink(self, state: ExperimentState, output_data: OutputData, **kwargs):
         """
         See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`

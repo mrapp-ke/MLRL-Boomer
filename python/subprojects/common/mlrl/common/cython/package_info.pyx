@@ -4,7 +4,7 @@
 from libcpp.utility cimport move
 
 from dataclasses import dataclass
-from typing import List
+from typing import List, override
 
 
 @dataclass
@@ -21,6 +21,7 @@ class CppBuildOption:
     description: str
     value: str
 
+    @override
     def __str__(self) -> str:
         return self.description + ' (' + self.value + ')'
 
@@ -101,12 +102,15 @@ cdef class CppLibraryInfo:
             wrapHardwareResourceVisitor(<void*>self, <HardwareResourceCythonVisitor>self.__visit_hardware_resource))
         return self.__hardware_resources
 
+    @override
     def __str__(self) -> str:
         return self.library_name + ' ' + self.library_version + ' (' + self.target_architecture + ')'
 
+    @override
     def __eq__(self, other):
         return str(self) == str(other)
 
+    @override
     def __hash__(self):
         return hash(str(self))
 

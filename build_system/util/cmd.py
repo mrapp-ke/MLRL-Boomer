@@ -8,7 +8,7 @@ import sys
 
 from os import path
 from subprocess import CompletedProcess
-from typing import Any
+from typing import Any, override
 
 from util.env import Env
 from util.format import format_iterable
@@ -220,6 +220,7 @@ class Command:
         May be overridden by subclasses in order to perform some operations after the command has been run.
         """
 
+    @override
     def __str__(self) -> str:
         print_options = Command.PrintOptions()
         print_options.print_arguments = True

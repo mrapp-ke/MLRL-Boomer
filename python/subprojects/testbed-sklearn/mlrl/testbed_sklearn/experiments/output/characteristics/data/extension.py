@@ -5,7 +5,7 @@ Provides classes that allow configuring the functionality to write characteristi
 sinks.
 """
 from argparse import Namespace
-from typing import Set
+from typing import Set, override
 
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics import OutputCharacteristics
 from mlrl.testbed_sklearn.experiments.output.characteristics.data.characteristics_data import DataCharacteristics
@@ -61,6 +61,7 @@ class TabularDataCharacteristicExtension(Extension):
         """
         super().__init__(OutputExtension(), *dependencies)
 
+    @override
     def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
@@ -84,6 +85,7 @@ class TabularDataCharacteristicExtension(Extension):
             experiment_builder.data_characteristics_writer.add_sinks(
                 CsvFileSink(directory=result_directory, create_directory=create_directory, options=options))
 
+    @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`

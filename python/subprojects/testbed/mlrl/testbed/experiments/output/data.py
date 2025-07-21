@@ -5,7 +5,7 @@ Provides classes for representing output data.
 """
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, replace
-from typing import Any, Dict, Iterable, List, Optional, Type
+from typing import Any, Dict, Iterable, List, Optional, Type, override
 
 from mlrl.testbed.experiments.context import Context
 from mlrl.testbed.experiments.dataset import Dataset
@@ -220,11 +220,13 @@ class OutputValue:
 
         return format_number(value, decimals=kwargs.get(OPTION_DECIMALS, 0))
 
+    @override
     def __str__(self) -> str:
         return self.name
 
     def __lt__(self, other: 'OutputValue') -> bool:
         return self.name < other.name
 
+    @override
     def __hash__(self) -> int:
         return hash(self.name)

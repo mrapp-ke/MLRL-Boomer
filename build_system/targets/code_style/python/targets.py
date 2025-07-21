@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Implements targets for checking and enforcing code style definitions for Python and Cython files.
 """
-from typing import cast
+from typing import cast, override
 
 from core.build_unit import BuildUnit
 from core.modules import Module
@@ -32,6 +32,7 @@ class CheckPythonCodeStyle(PhonyTarget.Runnable):
     def __init__(self):
         super().__init__(PYTHON_MODULE_FILTER)
 
+    @override
     def run(self, build_unit: BuildUnit, module: Module):
         code_module = cast(CodeModule, module)
         Log.info('Checking Python code style in directory "%s"...', code_module.root_directory)
@@ -50,6 +51,7 @@ class EnforcePythonCodeStyle(PhonyTarget.Runnable):
     def __init__(self):
         super().__init__(PYTHON_MODULE_FILTER)
 
+    @override
     def run(self, build_unit: BuildUnit, module: Module):
         code_module = cast(CodeModule, module)
         Log.info('Formatting Python code in directory "%s"...', code_module.root_directory)
@@ -66,6 +68,7 @@ class CheckCythonCodeStyle(PhonyTarget.Runnable):
     def __init__(self):
         super().__init__(CYTHON_MODULE_FILTER)
 
+    @override
     def run(self, build_unit: BuildUnit, module: Module):
         code_module = cast(CodeModule, module)
         Log.info('Checking Cython code style in directory "%s"...', code_module.root_directory)
@@ -81,6 +84,7 @@ class EnforceCythonCodeStyle(PhonyTarget.Runnable):
     def __init__(self):
         super().__init__(CYTHON_MODULE_FILTER)
 
+    @override
     def run(self, build_unit: BuildUnit, module: Module):
         code_module = cast(CodeModule, module)
         Log.info('Formatting Cython code in directory "%s"...', code_module.root_directory)

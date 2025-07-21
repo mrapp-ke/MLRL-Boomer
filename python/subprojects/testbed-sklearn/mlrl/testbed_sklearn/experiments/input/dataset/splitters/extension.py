@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to split datasets into training and test datasets.
 """
 from argparse import Namespace
-from typing import Set
+from typing import Set, override
 
 from mlrl.testbed_sklearn.experiments.input.dataset.extension import ArffFileExtension
 from mlrl.testbed_sklearn.experiments.input.dataset.preprocessors.extension import PreprocessorExtension
@@ -59,6 +59,7 @@ class DatasetSplitterExtension(Extension):
         """
         super().__init__(PreprocessorExtension(), ArffFileExtension(), *dependencies)
 
+    @override
     def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`

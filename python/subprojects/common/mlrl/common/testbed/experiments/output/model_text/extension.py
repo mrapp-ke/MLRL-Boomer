@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write rule models to one or several sinks.
 """
 from argparse import Namespace
-from typing import List, Set
+from typing import List, Set, override
 
 from mlrl.common.testbed.experiments.output.model_text.model_text import RuleModelAsText
 from mlrl.common.testbed.experiments.output.model_text.writer import RuleModelAsTextWriter
@@ -54,6 +54,7 @@ class RuleModelAsTextExtension(Extension):
         """
         super().__init__(OutputExtension(), *dependencies)
 
+    @override
     def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
@@ -79,6 +80,7 @@ class RuleModelAsTextExtension(Extension):
             ]
         return []
 
+    @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`

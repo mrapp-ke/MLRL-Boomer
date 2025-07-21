@@ -6,7 +6,7 @@ Provides classes for splitting datasets into multiple, equally sized, folds cons
 import logging as log
 
 from dataclasses import dataclass, field, replace
-from typing import Any, Generator, List, Optional, cast
+from typing import Any, Generator, List, Optional, cast, override
 
 from scipy.sparse import vstack
 from sklearn.model_selection import KFold
@@ -93,6 +93,7 @@ class CrossValidationSplitter(DatasetSplitter):
             context.include_dataset_type = False
             context.include_fold = True
 
+        @override
         def get_state(self, dataset_type: DatasetType) -> ExperimentState:
             """
             See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.Split.get_state`
@@ -139,6 +140,7 @@ class CrossValidationSplitter(DatasetSplitter):
             context.include_dataset_type = False
             context.include_fold = False
 
+        @override
         def get_state(self, dataset_type: DatasetType) -> ExperimentState:
             """
             See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.Split.get_state`
@@ -185,6 +187,7 @@ class CrossValidationSplitter(DatasetSplitter):
         context.include_dataset_type = False
         context.include_fold = True
 
+    @override
     def split(self, problem_domain: ProblemDomain) -> Generator[DatasetSplitter.Split, None, None]:
         """
         See :func:`mlrl.testbed.experiments.input.dataset.splitters.splitter.DatasetSplitter.split`

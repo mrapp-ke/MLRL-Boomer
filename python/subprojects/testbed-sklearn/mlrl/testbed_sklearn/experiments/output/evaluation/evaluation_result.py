@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for writing predictions to one or several sinks.
 """
 from itertools import tee
-from typing import Optional
+from typing import Optional, override
 
 from mlrl.testbed.experiments.output.data import OutputData, OutputValue, TabularOutputData
 from mlrl.testbed.experiments.output.evaluation.measurements import Measurements
@@ -98,6 +98,7 @@ class EvaluationResult(TabularOutputData):
         self.get_context(CsvFileSink).include_prediction_scope = False
         self.measurements = measurements
 
+    @override
     def to_text(self, options: Options, **kwargs) -> Optional[str]:
         """
         See :func:`mlrl.testbed.experiments.output.data.TextualOutputData.to_text`
@@ -129,6 +130,7 @@ class EvaluationResult(TabularOutputData):
 
         return None
 
+    @override
     def to_table(self, options: Options, **kwargs) -> Optional[Table]:
         """
         See :func:`mlrl.testbed.experiments.output.data.TabularOutputData.to_table`
