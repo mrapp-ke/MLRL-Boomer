@@ -29,7 +29,7 @@ from mlrl.testbed.experiments.input.dataset.extension import DatasetFileExtensio
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.input.model.extension import ModelInputExtension
 from mlrl.testbed.experiments.input.parameters.extension import ParameterInputExtension
-from mlrl.testbed.experiments.output.model.extension import ModelOutputExtension
+from mlrl.testbed.experiments.output.model.extension import ModelOutputDirectoryExtension, ModelOutputExtension
 from mlrl.testbed.experiments.output.parameters.extension import ParameterOutputDirectoryExtension, \
     ParameterOutputExtension
 from mlrl.testbed.experiments.prediction_type import PredictionType
@@ -141,6 +141,7 @@ class SkLearnRunnable(Runnable, ABC):
             PredictionTypeExtension(),
             ModelInputExtension(),
             ModelOutputExtension(),
+            ModelOutputDirectoryExtension(),
             ParameterInputExtension(),
             ParameterOutputExtension(),
             ParameterOutputDirectoryExtension(),
