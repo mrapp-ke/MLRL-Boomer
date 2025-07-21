@@ -179,18 +179,15 @@ class Options:
         return bool(self.dictionary)
 
 
-def parse_enum(parameter_name: str,
-               value: Optional[str],
-               enum: Type[Enum],
-               default: Optional[Enum] = None) -> Optional[Enum]:
+def parse_enum(name: str, value: Optional[str], enum: Type[Enum], default: Optional[Enum] = None) -> Optional[Enum]:
     """
     Parses and returns an enum value. If the given value is invalid, a `ValueError` is raised.
 
-    :param parameter_name:  The name of the parameter
-    :param value:           The value to be parsed
-    :param enum:            The enum
-    :param default:         The default value to be returned if `value` is None
-    :return:                The value that has been parsed or `default`, if the given value is None
+    :param name:    The name of the argument or parameter, the value corresponds to
+    :param value:   The value to be parsed
+    :param enum:    The enum
+    :param default: The default value to be returned if `value` is None
+    :return:        The value that has been parsed or `default`, if the given value is None
     """
     if value:
         for enum_value in enum:
@@ -199,17 +196,17 @@ def parse_enum(parameter_name: str,
             if expected_value == value:
                 return enum_value
 
-        raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
-                         + format_enum_values(enum) + ', but is "' + str(value) + '"')
+        raise ValueError('Invalid value given for ' + ('argument' if name.startswith('-') else 'parameter') + ' "'
+                         + name + '": Must be one of ' + format_enum_values(enum) + ', but is "' + str(value) + '"')
 
     return default
 
 
-def parse_param(parameter_name: str, value: str, allowed_values: Set[str]) -> str:
+def parse_param(name: str, value: str, allowed_values: Set[str]) -> str:
     """
-    Parses and returns a parameter value. If the given value is invalid, a `ValueError` is raised.
+    Parses and returns an argument or parameter value. If the given value is invalid, a `ValueError` is raised.
 
-    :param parameter_name:  The name of the parameter
+    :param name:            The name of the argument or parameter, the value corresponds to
     :param value:           The value to be parsed
     :param allowed_values:  A set that contains all valid values
     :return:                The value that has been parsed
@@ -217,17 +214,17 @@ def parse_param(parameter_name: str, value: str, allowed_values: Set[str]) -> st
     if value in allowed_values:
         return value
 
-    raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
-                     + format_set(allowed_values) + ', but is "' + str(value) + '"')
+    raise ValueError('Invalid value given for ' + ('argument' if name.startswith('-') else 'parameter') + ' "' + name
+                     + '": Must be one of ' + format_set(allowed_values) + ', but is "' + str(value) + '"')
 
 
-def parse_param_and_options(parameter_name: str, value: str,
-                            allowed_values_and_options: Dict[str, Set[str]]) -> Tuple[str, Options]:
+def parse_param_and_options(name: str, value: str, allowed_values_and_options: Dict[str,
+                                                                                    Set[str]]) -> Tuple[str, Options]:
     """
-    Parses and returns a parameter value, as well as additional `Options` that may be associated with it. If the given
-    value is invalid, a `ValueError` is raised.
+    Parses and returns an argument or parameter value, as well as additional `Options` that may be associated with it.
+    If the given value is invalid, a `ValueError` is raised.
     
-    :param parameter_name:              The name of the parameter
+    :param name:                        The name of the argument or parameter, the value corresponds to
     :param value:                       The value to be parsed
     :param allowed_values_and_options:  A dictionary that contains all valid values, as well as their options
     :return:                            A tuple that contains the value that has been parsed, as well as additional
@@ -241,10 +238,12 @@ def parse_param_and_options(parameter_name: str, value: str,
                 try:
                     return allowed_value, Options.create(suffix, allowed_options)
                 except ValueError as error:
-                    raise ValueError('Invalid options specified for parameter "' + parameter_name + '" with value "'
-                                     + allowed_value + '": ' + str(error)) from error
+                    raise ValueError('Invalid options given for '
+                                     + ('argument' if name.startswith('-') else 'parameter') + ' "' + name
+                                     + '" with value "' + allowed_value + '": ' + str(error)) from error
 
             return allowed_value, Options()
 
-    raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
-                     + format_set(allowed_values_and_options.keys()) + ', but is "' + value + '"')
+    raise ValueError('Invalid value given for ' + ('argument' if name.startswith('-') else 'parameter') + ' "' + name
+                     + '": Must be one of ' + format_set(allowed_values_and_options.keys()) + ', but is "' + value
+                     + '"')
