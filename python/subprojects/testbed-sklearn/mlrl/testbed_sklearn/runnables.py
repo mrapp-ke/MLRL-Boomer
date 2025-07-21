@@ -5,7 +5,7 @@ Provides classes for running experiments using the scikit-learn framework.
 """
 from abc import ABC, abstractmethod
 from argparse import Namespace
-from typing import Any, Dict, Optional, Set, override
+from typing import Any, Dict, List, Optional, Set, override
 
 from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
 
@@ -25,6 +25,7 @@ from mlrl.testbed_sklearn.experiments.problem_domain import SkLearnClassificatio
     SkLearnRegressionProblem
 
 from mlrl.testbed.experiments import Experiment
+from mlrl.testbed.experiments.input.dataset.extension import DatasetFileExtension
 from mlrl.testbed.experiments.input.dataset.splitters import DatasetSplitter
 from mlrl.testbed.experiments.input.model.extension import ModelInputExtension
 from mlrl.testbed.experiments.input.parameters.extension import ParameterInputExtension
@@ -33,6 +34,7 @@ from mlrl.testbed.experiments.output.parameters.extension import ParameterOutput
 from mlrl.testbed.experiments.prediction_type import PredictionType
 from mlrl.testbed.experiments.problem_domain import ClassificationProblem, ProblemDomain, RegressionProblem
 from mlrl.testbed.extensions.extension import Extension
+from mlrl.testbed.modes.mode_batch import BatchExperimentMode
 from mlrl.testbed.runnables import Runnable
 
 from mlrl.util.cli import Argument, SetArgument
@@ -42,6 +44,18 @@ class SkLearnRunnable(Runnable, ABC):
     """
     An abstract base class for all programs that run an experiment using the scikit-learn framework.
     """
+
+    class BatchConfigFile(BatchExperimentMode.ConfigFile):
+        """
+        A YAML configuration file that configures a batch of experiments using the scikit-learn framework to be run.
+        """
+
+        @property
+        def dataset_args(self) -> List[List[str]]:
+            """
+            See :func:`from mlrl.testbed.modes.BatchExperimentMode.ConfigFile.dataset_args`
+            """
+            return DatasetFileExtension.parse_dataset_args_from_config(self)
 
     class GlobalPredictorFactory(SkLearnProblem.PredictorFactory):
         """
@@ -143,6 +157,14 @@ class SkLearnRunnable(Runnable, ABC):
         """
         dataset_splitter = DatasetSplitterExtension.get_dataset_splitter(args)
         return self._create_experiment_builder(args, dataset_splitter)
+
+    @override
+    def create_batch_config_file_factory(self) -> BatchExperimentMode.ConfigFile.Factory:
+        """
+        See :func:`mlrl.testbed.runnables.Runnable.create_batch_config_file_factory`
+        """
+        # pylint: disable=unnecessary-lambda
+        return lambda config_file_path: SkLearnRunnable.BatchConfigFile(config_file_path)
 
     def _create_experiment_builder(self, args: Namespace, dataset_splitter: DatasetSplitter) -> Experiment.Builder:
         """

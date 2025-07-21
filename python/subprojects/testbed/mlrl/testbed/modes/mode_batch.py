@@ -6,10 +6,11 @@ Provides classes that implement a mode of operation for performing multiple expe
 import logging as log
 import sys
 
+from abc import ABC, abstractmethod
 from argparse import Namespace
 from dataclasses import dataclass, field
 from functools import cached_property, reduce
-from typing import Any, Dict, List, override
+from typing import Any, Callable, Dict, List, Optional, override
 
 import yaml
 
@@ -24,13 +25,15 @@ from mlrl.util.format import format_iterable
 
 class BatchExperimentMode(Mode):
     """
-    A mode of operation that performs multiple experiments.
+    An abstract base class for all modes of operation that perform multiple experiments.
     """
 
-    class ConfigFile:
+    class ConfigFile(ABC):
         """
         A YAML configuration file that configures the batch of experiments to be run.
         """
+
+        Factory = Callable[[str], 'BatchExperimentMode.ConfigFile']
 
         @dataclass
         class Parameter:
@@ -125,6 +128,14 @@ class BatchExperimentMode(Mode):
 
             return parameter_args
 
+        @property
+        @abstractmethod
+        def dataset_args(self) -> List[List[str]]:
+            """
+            A list that contains the command line arguments corresponding to the datasets to be used in the different
+            experiments defined in the configuration file.
+            """
+
         @override
         def __str__(self) -> str:
             return self.file_path
@@ -181,9 +192,12 @@ class BatchExperimentMode(Mode):
     def __get_args(config_file: ConfigFile) -> List[List[str]]:
         args = []
         default_args = BatchExperimentMode.__get_default_args()
+        dataset_batch_args = config_file.dataset_args
+        parameter_batch_args = config_file.parameter_args
 
-        for parameter_args in config_file.parameter_args:
-            args.append(default_args + parameter_args)
+        for dataset_args in dataset_batch_args:
+            for parameter_args in parameter_batch_args:
+                args.append(default_args + dataset_args + parameter_args)
 
         return args
 
@@ -221,6 +235,13 @@ class BatchExperimentMode(Mode):
 
         return namespace
 
+    def __init__(self, config_file_factory: Optional[ConfigFile.Factory]):
+        """
+        :param config_file_factory: A factory that allows to create the configuration file that configures the batch of
+                                    experiments to be run or None, if no such factory is available
+        """
+        self.config_file_factory_ = config_file_factory
+
     @override
     def configure_arguments(self, cli: CommandLineInterface):
         cli.add_arguments(self.CONFIG_FILE, self.LIST_COMMANDS)
@@ -230,5 +251,8 @@ class BatchExperimentMode(Mode):
         config_file_path = self.CONFIG_FILE.get_value(args)
 
         if config_file_path:
-            config_file = BatchExperimentMode.ConfigFile(config_file_path)
-            self.__process_commands(args, config_file, experiment_builder_factory)
+            config_file_factory = self.config_file_factory_
+            config_file = config_file_factory(config_file_path) if config_file_factory else None
+
+            if config_file:
+                self.__process_commands(args, config_file, experiment_builder_factory)
