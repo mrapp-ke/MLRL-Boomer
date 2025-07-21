@@ -44,6 +44,7 @@ class IsotonicRegressionModel(TabularOutputData):
         def __init__(self):
             self.bin_lists = {}
 
+        @override
         def visit_bin(self, list_index: int, threshold: float, probability: float):
             """
             See :func:`mlrl.common.cython.probability_calibration.IsotonicProbabilityCalibrationModelVisitor.visit_bin`

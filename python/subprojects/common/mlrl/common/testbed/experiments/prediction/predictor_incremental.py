@@ -51,6 +51,7 @@ class IncrementalPredictor(Predictor):
             """
             self._model_size = model_size
 
+        @override
         @property
         def model_size(self) -> int:
             """
