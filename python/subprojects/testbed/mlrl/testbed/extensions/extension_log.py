@@ -59,4 +59,9 @@ class LogExtension(Extension):
         out_handler = log.StreamHandler(sys.stdout)
         out_handler.setLevel(log_level)
         out_handler.setFormatter(log.Formatter('%(message)s'))
+        existing_handlers = list(root.handlers)
+
+        for existing_handler in existing_handlers:
+            root.removeHandler(existing_handler)
+
         root.addHandler(out_handler)
