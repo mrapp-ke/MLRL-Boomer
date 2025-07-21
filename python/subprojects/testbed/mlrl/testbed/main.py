@@ -17,8 +17,7 @@ from mlrl.testbed.modes.mode_single import SingleExperimentMode
 from mlrl.testbed.program_info import ProgramInfo
 from mlrl.testbed.runnables import Runnable
 
-from mlrl.util.cli import CommandLineInterface, SetArgument
-from mlrl.util.format import format_iterable, format_set
+from mlrl.util.cli import CommandLineInterface
 
 
 def __create_argument_parser() -> ArgumentParser:
@@ -110,25 +109,13 @@ def __instantiate_via_default_constructor(module_or_source_file: str, class_name
 
 
 def __get_mode(cli: CommandLineInterface, runnable: Optional[Runnable]) -> Mode:
-    mode_single = 'single'
-    mode_batch = 'batch'
-    modes = {mode_single, mode_batch}
-    mode_argument = SetArgument('-m',
-                                '--mode',
-                                values=modes,
-                                description='The mode of operation to be used.',
-                                default=mode_single)
-    cli.add_arguments(mode_argument)
+    cli.add_arguments(Mode.MODE)
     args = cli.parse_known_args()
-    mode = mode_argument.get_value(args)
+    mode = Mode.MODE.get_value(args)
 
-    if mode == mode_single:
-        return SingleExperimentMode()
-    if mode == mode_batch:
+    if mode == Mode.MODE_BATCH:
         return BatchExperimentMode(runnable.create_batch_config_file_factory() if runnable else None)
-    raise ValueError('Invalid value given for argument '
-                     + format_iterable(sorted(mode_argument.names), delimiter='"', separator=' / ')
-                     + ': Must be one of ' + format_set(modes) + ', but is "' + str(mode) + '"')
+    return SingleExperimentMode()
 
 
 def __get_default_program_info() -> ProgramInfo:
