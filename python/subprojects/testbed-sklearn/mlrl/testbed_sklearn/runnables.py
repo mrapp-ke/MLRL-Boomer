@@ -55,6 +55,7 @@ class SkLearnRunnable(Runnable, ABC):
             self.prediction_type = prediction_type
 
         @override
+        @override
         def create(self) -> Predictor:
             """
             See :func:`from mlrl.testbed_sklearn.experiments.problem_domain.SkLearnProblem.PredictorFactory.create`
@@ -114,6 +115,7 @@ class SkLearnRunnable(Runnable, ABC):
                                             fit_kwargs=fit_kwargs,
                                             predict_kwargs=predict_kwargs)
 
+    @override
     def get_extensions(self) -> Set[Extension]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
@@ -134,6 +136,7 @@ class SkLearnRunnable(Runnable, ABC):
             PredictionCharacteristicsExtension(),
         }
 
+    @override
     def create_experiment_builder(self, args: Namespace) -> Experiment.Builder:
         """
         See :func:`mlrl.testbed.runnables.Runnable.create_experiment_builder`
