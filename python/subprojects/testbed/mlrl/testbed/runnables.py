@@ -13,6 +13,7 @@ from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.extensions import Extension
 from mlrl.testbed.extensions.extension_log import LogExtension
 from mlrl.testbed.modes import Mode
+from mlrl.testbed.modes.mode_batch import BatchExperimentMode
 from mlrl.testbed.program_info import ProgramInfo
 
 from mlrl.util.cli import Argument, BoolArgument, CommandLineInterface
@@ -124,4 +125,13 @@ class Runnable(ABC):
 
         :param args:    The command line arguments specified by the user
         :return:        The builder that has been created
+        """
+
+    @abstractmethod
+    def create_batch_config_file_factory(self) -> BatchExperimentMode.ConfigFile.Factory:
+        """
+        Must be implemented by subclasses in order to create the factory that allows to create the configuration file
+        that configures the batch of experiments to be run in batch mode.
+
+        :return: The factory that has been created
         """
