@@ -5,7 +5,7 @@ Provides classes that allow configuring the functionality to load datasets.
 """
 from abc import ABC, abstractmethod
 from argparse import Namespace
-from typing import Set
+from typing import Set, override
 
 from mlrl.testbed.experiments.input.dataset.dataset import InputDataset
 from mlrl.testbed.experiments.input.dataset.reader import DatasetReader
@@ -26,6 +26,7 @@ class DatasetExtension(Extension, ABC):
         description='The name of the dataset.',
     )
 
+    @override
     def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
@@ -65,12 +66,14 @@ class DatasetFileExtension(DatasetExtension, ABC):
         description='The path to the directory where the dataset files are located.',
     )
 
+    @override
     def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return super()._get_arguments() | {self.DATASET_DIRECTORY}
 
+    @override
     def _create_source(self, dataset: InputDataset, args: Namespace) -> Source:
         """
         See :func:`mlrl.testbed.experiments.input.dataset.extension.DatasetExtension._create_source`

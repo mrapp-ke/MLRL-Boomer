@@ -7,7 +7,7 @@ Provides base classes for programs that can be configured via command line argum
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from functools import reduce
-from typing import Optional, Set
+from typing import Optional, Set, override
 
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.extensions import Extension
@@ -40,12 +40,14 @@ class Runnable(ABC):
             description='Whether predictions should be obtained for the test data or not.',
         )
 
+        @override
         def _get_arguments(self) -> Set[Argument]:
             """
             See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
             """
             return {self.PREDICT_FOR_TRAINING_DATA, self.PREDICT_FOR_TEST_DATA}
 
+        @override
         def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
             """
             See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`

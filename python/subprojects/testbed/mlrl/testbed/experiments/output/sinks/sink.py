@@ -7,6 +7,7 @@ import logging as log
 
 from abc import ABC, abstractmethod
 from os import makedirs
+from typing import override
 
 from mlrl.testbed.experiments.dataset import Dataset
 from mlrl.testbed.experiments.file_path import FilePath
@@ -56,6 +57,7 @@ class FileSink(Sink, ABC):
         self.suffix = suffix
         self.create_directory = create_directory
 
+    @override
     def write_to_sink(self, state: ExperimentState, output_data: OutputData, **kwargs):
         """
         See :func:`mlrl.testbed.experiments.output.sinks.sink.Sink.write_to_sink`
@@ -99,6 +101,7 @@ class TabularFileSink(FileSink, ABC):
         """
         super().__init__(directory=directory, suffix=suffix, options=options, create_directory=create_directory)
 
+    @override
     def _write_to_file(self, file_path: str, state: ExperimentState, output_data: OutputData, **kwargs):
         if not isinstance(output_data, TabularOutputData):
             raise RuntimeError('Output data of type "' + type(output_data).__name__
@@ -134,6 +137,7 @@ class DatasetFileSink(FileSink, ABC):
         """
         super().__init__(directory=directory, suffix=suffix, options=options, create_directory=create_directory)
 
+    @override
     def _write_to_file(self, file_path: str, state: ExperimentState, output_data: OutputData, **kwargs):
         if not isinstance(output_data, DatasetOutputData):
             raise RuntimeError('Output data of type "' + type(output_data).__name__

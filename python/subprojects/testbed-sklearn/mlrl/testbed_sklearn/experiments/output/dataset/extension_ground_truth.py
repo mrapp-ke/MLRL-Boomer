@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes that allow configuring the functionality to write ground truth to one or several sinks.
 """
 from argparse import Namespace
-from typing import Set
+from typing import Set, override
 
 from mlrl.testbed_arff.experiments.output.sinks.sink_arff import ArffFileSink
 
@@ -42,6 +42,7 @@ class GroundTruthExtension(Extension):
         """
         super().__init__(OutputExtension(), *dependencies)
 
+    @override
     def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
@@ -65,6 +66,7 @@ class GroundTruthExtension(Extension):
             experiment_builder.ground_truth_writer.add_sinks(
                 ArffFileSink(directory=result_directory, create_directory=create_directory, options=options))
 
+    @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`

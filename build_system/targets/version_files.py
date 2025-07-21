@@ -6,7 +6,7 @@ Provides utilities for reading and writing version files.
 
 from dataclasses import dataclass
 from functools import cached_property
-from typing import Optional
+from typing import Optional, override
 
 from util.io import TextFile
 from util.log import Log
@@ -45,6 +45,7 @@ class SemanticVersion:
 
         return SemanticVersion(major=version.numbers[0], minor=version.numbers[1], patch=version.numbers[2])
 
+    @override
     def __str__(self) -> str:
         version = str(self.major) + '.' + str(self.minor) + '.' + str(self.patch)
         dev = self.dev
@@ -94,6 +95,7 @@ class VersionFile(VersionTextFile):
         self.write_lines(str(version))
         Log.info('Updated version to "%s"', str(version))
 
+    @override
     def write_lines(self, *lines: str):
         super().write_lines(*lines)
 
@@ -124,6 +126,7 @@ class DevelopmentVersionFile(VersionTextFile):
         self.write_lines(str(development_version))
         Log.info('Updated development version to "%s"', str(development_version))
 
+    @override
     def write_lines(self, *lines: str):
         super().write_lines(*lines)
 
@@ -154,6 +157,7 @@ class PythonVersionFile(VersionTextFile):
         self.write_lines(str(supported_versions))
         Log.info('Updated supported Python versions to "%s"', str(supported_versions))
 
+    @override
     def write_lines(self, *lines: str):
         super().write_lines(*lines)
 

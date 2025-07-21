@@ -5,7 +5,7 @@ Provides classes that allow configuring the functionality to write models to one
 """
 from argparse import Namespace
 from os import path
-from typing import Set
+from typing import Set, override
 
 from mlrl.testbed.experiments.experiment import Experiment
 from mlrl.testbed.experiments.output.extension import OutputExtension
@@ -39,12 +39,14 @@ class ModelOutputExtension(Extension):
         """
         super().__init__(OutputExtension(), *dependencies)
 
+    @override
     def _get_arguments(self) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.extensions.extension.Extension._get_arguments`
         """
         return {self.MODEL_SAVE_DIR, self.SAVE_MODELS}
 
+    @override
     def configure_experiment(self, args: Namespace, experiment_builder: Experiment.Builder):
         """
         See :func:`mlrl.testbed.extensions.extension.Extension.configure_experiment`

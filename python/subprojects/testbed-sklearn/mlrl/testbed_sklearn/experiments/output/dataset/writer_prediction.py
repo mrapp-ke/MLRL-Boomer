@@ -5,7 +5,7 @@ Provides classes that allow writing predictions to one or several sinks.
 """
 
 from dataclasses import replace
-from typing import List, Optional
+from typing import List, Optional, override
 
 import numpy as np
 
@@ -29,6 +29,7 @@ class PredictionWriter(OutputWriter):
         The extractor to be used by a `PredictionWriter`, by default.
         """
 
+        @override
         def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`
