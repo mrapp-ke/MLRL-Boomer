@@ -229,6 +229,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
         self.regressor_config_type = regressor_config_type
         self.regressor_parameters = regressor_parameters
 
+    @override
     def get_extensions(self) -> Set[Extension]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_extensions`
@@ -241,6 +242,7 @@ class RuleLearnerRunnable(SkLearnRunnable):
             LabelVectorSetExtension(),
         }
 
+    @override
     def get_algorithmic_arguments(self, known_args: Namespace) -> Set[Argument]:
         """
         See :func:`mlrl.testbed.runnables.Runnable.get_algorithmic_arguments`
