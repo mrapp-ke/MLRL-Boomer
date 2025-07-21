@@ -102,6 +102,29 @@ class BatchExperimentMode(Mode):
 
             return parameters
 
+        @property
+        def parameter_args(self) -> List[List[str]]:
+            """
+            A list that contains the command line arguments corresponding to the algorithmic parameters to be used in
+            the different experiments defined in the configuration file.
+            """
+            parameter_args: List[List[str]] = [[]]
+
+            for parameter in self.parameters:
+                updated_parameter_args = []
+
+                for args in parameter_args:
+                    for parameter_value in parameter.values:
+                        additional_arguments: List[str] = []
+                        additional_arguments = reduce(lambda aggr, arguments: aggr + arguments.split(),
+                                                      parameter_value.additional_arguments, additional_arguments)
+                        updated_parameter_args.append(args + [parameter.name, parameter_value.value]
+                                                      + additional_arguments)
+
+                parameter_args = updated_parameter_args
+
+            return parameter_args
+
         @override
         def __str__(self) -> str:
             return self.file_path
@@ -159,7 +182,7 @@ class BatchExperimentMode(Mode):
         args = []
         default_args = BatchExperimentMode.__get_default_args()
 
-        for parameter_args in BatchExperimentMode.__get_parameter_args(config_file):
+        for parameter_args in config_file.parameter_args:
             args.append(default_args + parameter_args)
 
         return args
@@ -178,24 +201,6 @@ class BatchExperimentMode(Mode):
                 default_args.append(arg)
 
         return default_args
-
-    @staticmethod
-    def __get_parameter_args(config_file: ConfigFile) -> List[List[str]]:
-        parameter_args: List[List[str]] = [[]]
-
-        for parameter in config_file.parameters:
-            updated_parameter_args = []
-
-            for args in parameter_args:
-                for parameter_value in parameter.values:
-                    additional_arguments: List[str] = []
-                    additional_arguments = reduce(lambda aggr, arguments: aggr + arguments.split(),
-                                                  parameter_value.additional_arguments, additional_arguments)
-                    updated_parameter_args.append(args + [parameter.name, parameter_value.value] + additional_arguments)
-
-            parameter_args = updated_parameter_args
-
-        return parameter_args
 
     @staticmethod
     def __add_args_to_namespace(namespace: Namespace, args: List[str]) -> Namespace:
