@@ -31,6 +31,7 @@ class Characteristic(OutputValue):
         super().__init__(option_key=option_key, name=name, percentage=percentage)
         self.function = function
 
+    @override
     def format(self, value, **kwargs) -> str:
         """
         See :func:`mlrl.testbed.experiments.output.data.OutputValue.format`
