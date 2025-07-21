@@ -21,4 +21,4 @@ Precision  42.31
 Recall     33.33
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-Successfully finished after <duration>
+Successfully finished experiment after <duration>

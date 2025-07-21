@@ -19,4 +19,4 @@ Output Density   100
 Output Sparsity    0
 
 Writing output data to file "python/tests/res/tmp/results/prediction_characteristics_test_fold-1.csv"...
-Successfully finished after <duration>
+Successfully finished experiment after <duration>

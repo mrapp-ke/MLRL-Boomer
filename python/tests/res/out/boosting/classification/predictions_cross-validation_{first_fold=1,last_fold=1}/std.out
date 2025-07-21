@@ -140,4 +140,4 @@ Predictions for test data (Fold 1):
  [0 0 1 1 1 0]]
 
 Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-1.arff"...
-Successfully finished after <duration>
+Successfully finished experiment after <duration>

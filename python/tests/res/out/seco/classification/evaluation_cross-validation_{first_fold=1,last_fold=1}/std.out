@@ -32,4 +32,4 @@ Subset 0/1 Loss         81.67
 Subset Accuracy         18.33
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test_fold-1.csv"...
-Successfully finished after <duration>
+Successfully finished experiment after <duration>

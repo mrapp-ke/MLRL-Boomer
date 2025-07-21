@@ -765,4 +765,4 @@ Predictions for test data (Fold 10):
  [237.66 280.77 430.87 484.96 291.13 476.69]]
 
 Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-10.arff"...
-Successfully finished after <duration>
+Successfully finished experiment after <duration>

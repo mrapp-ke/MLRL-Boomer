@@ -459,4 +459,4 @@ Label vectors:
 │      22 │ [0 0 1 0 0 1]  │           1 │
 └─────────┴────────────────┴─────────────┘
 
-Successfully finished after <duration>
+Successfully finished experiment after <duration>

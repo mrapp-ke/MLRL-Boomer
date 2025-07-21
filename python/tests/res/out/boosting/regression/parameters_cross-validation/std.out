@@ -363,4 +363,4 @@ Model characteristics (Fold 10):
 │ Predictions                 │         6 │         6 │         6 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-Successfully finished after <duration>
+Successfully finished experiment after <duration>

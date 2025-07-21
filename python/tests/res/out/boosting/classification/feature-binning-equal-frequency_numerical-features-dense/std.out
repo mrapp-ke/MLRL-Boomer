@@ -31,4 +31,4 @@ Subset 0/1 Loss         71.43
 Subset Accuracy         28.57
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-Successfully finished after <duration>
+Successfully finished experiment after <duration>

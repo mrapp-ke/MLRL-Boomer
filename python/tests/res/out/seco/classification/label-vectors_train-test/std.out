@@ -38,4 +38,4 @@ Label vectors:
 └─────────┴────────────────┴─────────────┘
 
 Writing output data to file "python/tests/res/tmp/results/label_vectors.csv"...
-Successfully finished after <duration>
+Successfully finished experiment after <duration>

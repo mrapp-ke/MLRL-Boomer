@@ -19,4 +19,4 @@ Mean Squared Error              2840.67
 Median Absolute Error             16.41
 
 Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-Successfully finished after <duration>
+Successfully finished experiment after <duration>
