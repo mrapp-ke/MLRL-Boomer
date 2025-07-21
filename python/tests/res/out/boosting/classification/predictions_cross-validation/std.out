@@ -1,18 +1,18 @@
 mlrl-testbed mlrl.boosting --log-level debug --data-dir python/tests/res/data --dataset emotions --base-dir python/tests/res/tmp --result-dir results --save-evaluation true --data-split cross-validation --print-evaluation false --save-evaluation false --print-predictions true --print-ground-truth true --save-predictions true --save-ground-truth true
-INFO Starting experiment using the classification algorithm "BoomerClassifier"...
-INFO Performing full 10-fold cross validation...
-INFO Fold 1 / 10:
-DEBUG Reading input data from file "python/tests/res/data/emotions.arff"...
-DEBUG Parsing meta-data from file "python/tests/res/data/emotions.xml"...
-INFO Fitting model to 533 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-INFO Predicting for 60 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in <duration>
-INFO Ground truth for test data (Fold 1):
+Starting experiment using the classification algorithm "BoomerClassifier"...
+Performing full 10-fold cross validation...
+Fold 1 / 10:
+Reading input data from file "python/tests/res/data/emotions.arff"...
+Parsing meta-data from file "python/tests/res/data/emotions.xml"...
+Fitting model to 533 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Predicting for 60 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted labels
+Successfully predicted in <duration>
+Ground truth for test data (Fold 1):
 
 [[0 1 1 0 0 0]
  [0 0 1 0 1 0]
@@ -75,8 +75,8 @@ INFO Ground truth for test data (Fold 1):
  [0 0 1 1 1 0]
  [0 0 1 1 1 0]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-1.arff"...
-INFO Predictions for test data (Fold 1):
+Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-1.arff"...
+Predictions for test data (Fold 1):
 
 [[0 0 1 0 0 0]
  [0 0 1 1 1 0]
@@ -139,17 +139,17 @@ INFO Predictions for test data (Fold 1):
  [0 0 1 1 1 0]
  [0 0 1 1 1 0]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-1.arff"...
-INFO Fold 2 / 10:
-INFO Fitting model to 533 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-INFO Predicting for 60 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in <duration>
-INFO Ground truth for test data (Fold 2):
+Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-1.arff"...
+Fold 2 / 10:
+Fitting model to 533 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Predicting for 60 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted labels
+Successfully predicted in <duration>
+Ground truth for test data (Fold 2):
 
 [[0 0 1 0 0 0]
  [0 1 1 0 0 0]
@@ -212,8 +212,8 @@ INFO Ground truth for test data (Fold 2):
  [0 0 1 1 0 0]
  [1 0 0 0 0 1]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-2.arff"...
-INFO Predictions for test data (Fold 2):
+Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-2.arff"...
+Predictions for test data (Fold 2):
 
 [[0 0 1 0 0 0]
  [0 0 1 0 0 0]
@@ -276,17 +276,17 @@ INFO Predictions for test data (Fold 2):
  [0 0 1 0 0 0]
  [1 0 0 0 0 1]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-2.arff"...
-INFO Fold 3 / 10:
-INFO Fitting model to 533 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-INFO Predicting for 60 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in <duration>
-INFO Ground truth for test data (Fold 3):
+Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-2.arff"...
+Fold 3 / 10:
+Fitting model to 533 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Predicting for 60 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted labels
+Successfully predicted in <duration>
+Ground truth for test data (Fold 3):
 
 [[0 0 0 1 0 0]
  [0 0 1 1 1 0]
@@ -349,8 +349,8 @@ INFO Ground truth for test data (Fold 3):
  [0 0 1 1 1 0]
  [0 0 1 1 1 0]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-3.arff"...
-INFO Predictions for test data (Fold 3):
+Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-3.arff"...
+Predictions for test data (Fold 3):
 
 [[0 0 0 1 0 0]
  [0 0 1 1 1 0]
@@ -413,17 +413,17 @@ INFO Predictions for test data (Fold 3):
  [0 0 1 1 1 0]
  [0 0 0 1 1 0]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-3.arff"...
-INFO Fold 4 / 10:
-INFO Fitting model to 534 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-INFO Predicting for 59 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in <duration>
-INFO Ground truth for test data (Fold 4):
+Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-3.arff"...
+Fold 4 / 10:
+Fitting model to 534 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Predicting for 59 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted labels
+Successfully predicted in <duration>
+Ground truth for test data (Fold 4):
 
 [[1 1 0 0 0 0]
  [0 0 1 0 0 0]
@@ -485,8 +485,8 @@ INFO Ground truth for test data (Fold 4):
  [1 1 0 0 0 0]
  [0 1 1 0 0 0]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-4.arff"...
-INFO Predictions for test data (Fold 4):
+Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-4.arff"...
+Predictions for test data (Fold 4):
 
 [[1 1 0 0 0 0]
  [0 0 1 0 0 0]
@@ -548,17 +548,17 @@ INFO Predictions for test data (Fold 4):
  [0 1 1 0 0 0]
  [0 0 1 0 0 0]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-4.arff"...
-INFO Fold 5 / 10:
-INFO Fitting model to 534 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-INFO Predicting for 59 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in <duration>
-INFO Ground truth for test data (Fold 5):
+Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-4.arff"...
+Fold 5 / 10:
+Fitting model to 534 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Predicting for 59 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted labels
+Successfully predicted in <duration>
+Ground truth for test data (Fold 5):
 
 [[1 0 0 0 0 1]
  [0 1 0 0 0 1]
@@ -620,8 +620,8 @@ INFO Ground truth for test data (Fold 5):
  [0 1 1 0 0 0]
  [0 0 1 1 1 0]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-5.arff"...
-INFO Predictions for test data (Fold 5):
+Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-5.arff"...
+Predictions for test data (Fold 5):
 
 [[1 0 0 0 0 1]
  [0 0 0 0 0 1]
@@ -683,17 +683,17 @@ INFO Predictions for test data (Fold 5):
  [1 1 0 0 0 0]
  [0 0 1 1 1 0]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-5.arff"...
-INFO Fold 6 / 10:
-INFO Fitting model to 534 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-INFO Predicting for 59 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in <duration>
-INFO Ground truth for test data (Fold 6):
+Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-5.arff"...
+Fold 6 / 10:
+Fitting model to 534 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Predicting for 59 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted labels
+Successfully predicted in <duration>
+Ground truth for test data (Fold 6):
 
 [[0 0 0 0 1 0]
  [0 0 1 0 1 1]
@@ -755,8 +755,8 @@ INFO Ground truth for test data (Fold 6):
  [1 0 0 0 0 1]
  [0 1 0 0 0 0]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-6.arff"...
-INFO Predictions for test data (Fold 6):
+Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-6.arff"...
+Predictions for test data (Fold 6):
 
 [[0 0 1 1 1 0]
  [0 0 1 0 0 1]
@@ -818,17 +818,17 @@ INFO Predictions for test data (Fold 6):
  [0 0 0 0 0 0]
  [1 1 0 0 0 0]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-6.arff"...
-INFO Fold 7 / 10:
-INFO Fitting model to 534 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-INFO Predicting for 59 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in <duration>
-INFO Ground truth for test data (Fold 7):
+Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-6.arff"...
+Fold 7 / 10:
+Fitting model to 534 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Predicting for 59 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted labels
+Successfully predicted in <duration>
+Ground truth for test data (Fold 7):
 
 [[1 1 0 0 0 0]
  [0 1 0 0 0 0]
@@ -890,8 +890,8 @@ INFO Ground truth for test data (Fold 7):
  [1 0 0 0 1 1]
  [0 1 1 0 0 0]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-7.arff"...
-INFO Predictions for test data (Fold 7):
+Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-7.arff"...
+Predictions for test data (Fold 7):
 
 [[0 0 0 0 0 1]
  [0 0 0 0 0 1]
@@ -953,17 +953,17 @@ INFO Predictions for test data (Fold 7):
  [0 1 0 0 0 1]
  [0 0 0 0 0 1]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-7.arff"...
-INFO Fold 8 / 10:
-INFO Fitting model to 534 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-INFO Predicting for 59 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in <duration>
-INFO Ground truth for test data (Fold 8):
+Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-7.arff"...
+Fold 8 / 10:
+Fitting model to 534 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Predicting for 59 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted labels
+Successfully predicted in <duration>
+Ground truth for test data (Fold 8):
 
 [[0 1 0 0 0 0]
  [0 0 0 0 0 1]
@@ -1025,8 +1025,8 @@ INFO Ground truth for test data (Fold 8):
  [0 0 0 0 1 1]
  [0 0 1 0 0 0]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-8.arff"...
-INFO Predictions for test data (Fold 8):
+Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-8.arff"...
+Predictions for test data (Fold 8):
 
 [[1 0 0 0 0 1]
  [0 0 0 0 0 1]
@@ -1088,17 +1088,17 @@ INFO Predictions for test data (Fold 8):
  [1 0 0 0 0 0]
  [0 0 0 0 0 0]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-8.arff"...
-INFO Fold 9 / 10:
-INFO Fitting model to 534 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-INFO Predicting for 59 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in <duration>
-INFO Ground truth for test data (Fold 9):
+Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-8.arff"...
+Fold 9 / 10:
+Fitting model to 534 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Predicting for 59 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted labels
+Successfully predicted in <duration>
+Ground truth for test data (Fold 9):
 
 [[0 1 1 0 0 0]
  [1 0 0 0 0 1]
@@ -1160,8 +1160,8 @@ INFO Ground truth for test data (Fold 9):
  [0 0 1 1 1 0]
  [0 0 0 0 1 1]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-9.arff"...
-INFO Predictions for test data (Fold 9):
+Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-9.arff"...
+Predictions for test data (Fold 9):
 
 [[0 0 1 0 0 0]
  [1 0 0 0 0 1]
@@ -1223,17 +1223,17 @@ INFO Predictions for test data (Fold 9):
  [0 0 1 1 0 0]
  [0 0 0 0 0 0]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-9.arff"...
-INFO Fold 10 / 10:
-INFO Fitting model to 534 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in <duration>
-INFO Predicting for 59 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in <duration>
-INFO Ground truth for test data (Fold 10):
+Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-9.arff"...
+Fold 10 / 10:
+Fitting model to 534 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the labels of the training examples
+Successfully fit model in <duration>
+Predicting for 59 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted labels
+Successfully predicted in <duration>
+Ground truth for test data (Fold 10):
 
 [[0 0 0 0 0 1]
  [1 0 0 0 0 1]
@@ -1295,8 +1295,8 @@ INFO Ground truth for test data (Fold 10):
  [0 0 1 0 1 1]
  [1 1 0 0 0 0]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-10.arff"...
-INFO Predictions for test data (Fold 10):
+Writing output data to file "python/tests/res/tmp/results/ground_truth_test_fold-10.arff"...
+Predictions for test data (Fold 10):
 
 [[0 0 0 0 0 1]
  [1 0 0 0 0 1]
@@ -1358,5 +1358,5 @@ INFO Predictions for test data (Fold 10):
  [0 0 0 0 0 1]
  [0 1 1 0 0 0]]
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-10.arff"...
-INFO Successfully finished after <duration>
+Writing output data to file "python/tests/res/tmp/results/predictions_test_fold-10.arff"...
+Successfully finished after <duration>

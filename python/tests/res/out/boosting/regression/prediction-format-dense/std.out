@@ -1,25 +1,25 @@
 mlrl-testbed mlrl.boosting --log-level debug --data-dir python/tests/res/data --dataset atp7d --base-dir python/tests/res/tmp --result-dir results --save-evaluation true --problem-type regression --prediction-format dense --print-predictions true --print-ground-truth true
-INFO Starting experiment using the regression algorithm "BoomerRegressor"...
-INFO Using separate training and test sets...
-DEBUG Reading input data from file "python/tests/res/data/atp7d.arff"...
-DEBUG Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
-INFO Fitting model to 198 training examples...
-DEBUG A dense matrix is used to store the feature values of the training examples
-DEBUG A dense matrix is used to store the regression scores of the training examples
-INFO Successfully fit model in <duration>
-INFO Predicting for 98 test examples...
-DEBUG A dense matrix is used to store the feature values of the query examples
-DEBUG A dense matrix is used to store the predicted scores
-INFO Successfully predicted in <duration>
-INFO Evaluation result for test data:
+Starting experiment using the regression algorithm "BoomerRegressor"...
+Using separate training and test sets...
+Reading input data from file "python/tests/res/data/atp7d.arff"...
+Parsing meta-data from file "python/tests/res/data/atp7d.xml"...
+Fitting model to 198 training examples...
+A dense matrix is used to store the feature values of the training examples
+A dense matrix is used to store the regression scores of the training examples
+Successfully fit model in <duration>
+Predicting for 98 test examples...
+A dense matrix is used to store the feature values of the query examples
+A dense matrix is used to store the predicted scores
+Successfully predicted in <duration>
+Evaluation result for test data:
 
 Mean Absolute Error               29.91
 Mean Absolute Percentage Error     0.08
 Mean Squared Error              2826.34
 Median Absolute Error             15.83
 
-DEBUG Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
-INFO Ground truth for test data:
+Writing output data to file "python/tests/res/tmp/results/evaluation_test.csv"...
+Ground truth for test data:
 
 [[ 334.  440.  460.  463.  334.  463.]
  [ 279.  279.  395.  369.  313.  401.]
@@ -120,7 +120,7 @@ INFO Ground truth for test data:
  [ 279.  279.  301.  366.  283.  366.]
  [ 199.  199.  447.  488.  298.  488.]]
 
-INFO Predictions for test data:
+Predictions for test data:
 
 [[359.85 510.21 510.34 486.62 377.7  487.11]
  [278.01 300.33 402.85 374.6  305.17 390.72]
@@ -221,4 +221,4 @@ INFO Predictions for test data:
  [267.26 291.32 309.8  360.89 283.69 360.32]
  [228.4  247.16 457.26 494.6  282.14 503.42]]
 
-INFO Successfully finished after <duration>
+Successfully finished after <duration>
