@@ -8,13 +8,25 @@ from argparse import Namespace
 
 from mlrl.testbed.experiments import Experiment
 
-from mlrl.util.cli import CommandLineInterface
+from mlrl.util.cli import CommandLineInterface, SetArgument
 
 
 class Mode(ABC):
     """
     An abstract base class for all modes of operation.
     """
+
+    MODE_SINGLE = 'single'
+
+    MODE_BATCH = 'batch'
+
+    MODE = SetArgument(
+        '-m',
+        '--mode',
+        values={MODE_SINGLE, MODE_BATCH},
+        description='The mode of operation to be used.',
+        default=MODE_SINGLE,
+    )
 
     @abstractmethod
     def configure_arguments(self, cli: CommandLineInterface):
