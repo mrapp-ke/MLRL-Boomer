@@ -211,6 +211,8 @@ class BatchExperimentMode(Mode):
                 skip_next = False
             elif arg in BatchExperimentMode.CONFIG_FILE.names:
                 skip_next = True
+            elif arg in Mode.MODE.names:
+                skip_next = True
             elif arg != BatchExperimentMode.LIST_COMMANDS.name:
                 default_args.append(arg)
 
