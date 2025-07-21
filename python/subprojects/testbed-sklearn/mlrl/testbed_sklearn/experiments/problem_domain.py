@@ -55,6 +55,7 @@ class SkLearnProblem(ProblemDomain, ABC):
         self.fit_kwargs = fit_kwargs
         self.predict_kwargs = predict_kwargs
 
+    @override
     @property
     def learner_name(self) -> str:
         """

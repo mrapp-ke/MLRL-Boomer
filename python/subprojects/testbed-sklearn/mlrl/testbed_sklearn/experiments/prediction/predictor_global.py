@@ -41,6 +41,7 @@ class GlobalPredictor(Predictor):
         Provides information about predictions that have been obtained from a global model.
         """
 
+        @override
         @property
         def model_size(self) -> int:
             """
