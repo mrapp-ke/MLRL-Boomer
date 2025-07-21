@@ -14,7 +14,7 @@ from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_ranking import
 from mlrl.testbed_sklearn.experiments.output.evaluation.extractor_regression import RegressionEvaluationDataExtractor
 
 from mlrl.testbed.experiments.experiment import Experiment
-from mlrl.testbed.experiments.output.extension import OutputExtension
+from mlrl.testbed.experiments.output.extension import OutputExtension, ResultDirectoryExtension
 from mlrl.testbed.experiments.output.sinks.sink_csv import CsvFileSink
 from mlrl.testbed.experiments.output.sinks.sink_log import LogSink
 from mlrl.testbed.experiments.prediction_type import PredictionType
@@ -84,7 +84,7 @@ class EvaluationExtension(Extension):
         """
         :param dependencies: Other extensions, this extension depends on
         """
-        super().__init__(OutputExtension(), *dependencies)
+        super().__init__(OutputExtension(), ResultDirectoryExtension(), *dependencies)
 
     @override
     def _get_arguments(self) -> Set[Argument]:
@@ -103,7 +103,7 @@ class EvaluationExtension(Extension):
     def __configure_csv_file_sink(self, args: Namespace, experiment_builder: Experiment.Builder):
         save_all = OutputExtension.SAVE_ALL.get_value(args)
         save_evaluation_results, options = self.SAVE_EVALUATION_RESULTS.get_value(args, default=save_all)
-        result_directory = OutputExtension.RESULT_DIR.get_value(args)
+        result_directory = ResultDirectoryExtension.RESULT_DIR.get_value(args)
 
         if save_evaluation_results and result_directory:
             create_directory = OutputExtension.CREATE_DIRS.get_value(args)
