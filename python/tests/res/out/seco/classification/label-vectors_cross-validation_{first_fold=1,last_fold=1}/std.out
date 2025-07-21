@@ -42,4 +42,4 @@ Label vectors (Fold 1):
 └─────────┴────────────────┴─────────────┘
 
 Writing output data to file "python/tests/res/tmp/results/label_vectors_fold-1.csv"...
-Successfully finished after <duration>
+Successfully finished experiment after <duration>

@@ -840,4 +840,4 @@ Model (Fold 10):
 
 
 Writing output data to file "python/tests/res/tmp/results/rules_fold-10.txt"...
-Successfully finished after <duration>
+Successfully finished experiment after <duration>

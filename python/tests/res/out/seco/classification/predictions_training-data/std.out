@@ -1217,4 +1217,4 @@ Predictions for test data:
  [0 0 0 0 0 1]]
 
 Writing output data to file "python/tests/res/tmp/results/predictions_test.arff"...
-Successfully finished after <duration>
+Successfully finished experiment after <duration>

@@ -223,4 +223,4 @@ Fitting model to 534 training examples...
 A dense matrix is used to store the feature values of the training examples
 A dense matrix is used to store the labels of the training examples
 Successfully fit model in <duration>
-Successfully finished after <duration>
+Successfully finished experiment after <duration>

@@ -42,4 +42,4 @@ Model characteristics:
 │ Predictions                 │         0 │         0 │         0 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-Successfully finished after <duration>
+Successfully finished experiment after <duration>

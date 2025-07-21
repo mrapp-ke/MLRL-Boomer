@@ -422,4 +422,4 @@ Predictions for test data:
  [ -3.86  -0.8    2.9   -0.69  -3.66  -3.08]
  [ -5.62  -2.34  -2.46  -9.99  -4.23   1.93]]
 
-Successfully finished after <duration>
+Successfully finished experiment after <duration>
