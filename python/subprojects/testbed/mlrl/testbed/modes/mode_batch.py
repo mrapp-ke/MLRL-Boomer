@@ -10,14 +10,13 @@ from abc import ABC, abstractmethod
 from argparse import Namespace
 from dataclasses import dataclass, field
 from functools import cached_property, reduce
-from typing import Any, Callable, Dict, List, Optional, override
+from typing import Any, Callable, List, Optional, override
 
-import yaml
+import yamale
 
 from mlrl.testbed.experiments import Experiment
 from mlrl.testbed.experiments.timer import Timer
 from mlrl.testbed.modes.mode import Mode
-from mlrl.testbed.util.io import open_readable_file
 
 from mlrl.util.cli import CommandLineInterface, FlagArgument, StringArgument
 from mlrl.util.format import format_iterable
@@ -76,20 +75,15 @@ class BatchExperimentMode(Mode):
 
             return parameter_values
 
-        def __init__(self, file_path: str):
+        def __init__(self, file_path: str, schema_file_path: str):
             """
             :param file_path: The path to the configuration file
             """
+            schema = yamale.make_schema(schema_file_path)
+            data = yamale.make_data(file_path)
+            yamale.validate(schema, data)
             self.file_path = file_path
-
-        @cached_property
-        def yaml_dict(self) -> Dict[Any, Any]:
-            """
-            A dictionary that contains the content of the configuration file.
-            """
-            with open_readable_file(self.file_path) as file:
-                yaml_dict = yaml.safe_load(file)
-                return yaml_dict if yaml_dict else {}
+            self.yaml_dict = data[0][0]
 
         @cached_property
         def parameters(self) -> List[Parameter]:

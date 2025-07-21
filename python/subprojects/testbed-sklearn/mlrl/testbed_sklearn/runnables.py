@@ -5,6 +5,7 @@ Provides classes for running experiments using the scikit-learn framework.
 """
 from abc import ABC, abstractmethod
 from argparse import Namespace
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, override
 
 from sklearn.base import ClassifierMixin as SkLearnClassifierMixin, RegressorMixin as SkLearnRegressorMixin
@@ -50,6 +51,12 @@ class SkLearnRunnable(Runnable, ABC):
         """
         A YAML configuration file that configures a batch of experiments using the scikit-learn framework to be run.
         """
+
+        def __init__(self, file_path: str):
+            """
+            :param file_path: The path to the configuration file
+            """
+            super().__init__(file_path, schema_file_path=Path(__file__).parent / 'batch_config.schema.yml')
 
         @property
         def dataset_args(self) -> List[List[str]]:
