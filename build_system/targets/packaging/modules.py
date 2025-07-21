@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements modules that provide access to Python code that can be built as wheel packages.
 """
 from os import environ, path
-from typing import Generator, List, Optional, Set, cast
+from typing import Generator, List, Optional, Set, cast, override
 
 from core.build_unit import BuildUnit
 from core.modules import Module, ModuleRegistry
@@ -33,6 +33,7 @@ class PythonPackageModule(SubprojectModule):
             """
             self.package_name = package_name
 
+        @override
         def matches(self, module: 'Module', module_registry: 'ModuleRegistry') -> bool:
             build_unit = BuildUnit.for_file(__file__)
             return isinstance(module, PythonPackageModule) and module.get_package_name(build_unit) == self.package_name
@@ -47,6 +48,7 @@ class PythonPackageModule(SubprojectModule):
             An internal filter that only checks the type of modules.
             """
 
+            @override
             def matches(self, module: 'Module', _: ModuleRegistry) -> bool:
                 return isinstance(module, PythonPackageModule)
 
@@ -87,6 +89,7 @@ class PythonPackageModule(SubprojectModule):
         def __init__(self):
             self.build_unit = BuildUnit.for_file(__file__)
 
+        @override
         def matches(self, module: Module, module_registry: ModuleRegistry) -> bool:
             return PythonPackageModule.Filter.TypeFilter().matches(module, module_registry) and (
                 self.__needs_to_be_built(cast(PythonPackageModule, module), module_registry)
@@ -200,9 +203,11 @@ class PythonPackageModule(SubprojectModule):
         """
         return not path.isfile(path.join(self.root_directory, 'setup.py'))
 
+    @override
     @property
     def subproject_name(self) -> str:
         return path.basename(self.root_directory)
 
+    @override
     def __str__(self) -> str:
         return 'PythonPackageModule {root_directory="' + self.root_directory + '"}'

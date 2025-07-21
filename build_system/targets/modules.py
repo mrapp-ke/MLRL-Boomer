@@ -5,7 +5,7 @@ Provides classes that provide information about files and directories that belon
 to be dealt with by the targets of the build system.
 """
 from abc import ABC, abstractmethod
-from typing import Optional, Set
+from typing import Optional, Set, override
 
 from core.modules import Module, ModuleRegistry
 from util.env import Env, get_env_array
@@ -43,6 +43,7 @@ class SubprojectModule(Module, ABC):
             return SubprojectModule.Filter(subproject_names)
 
         # pylint: disable=unused-argument
+        @override
         def matches(self, module: Module, module_registry: ModuleRegistry) -> bool:
             """
             Returns whether the filter matches a given module or not.

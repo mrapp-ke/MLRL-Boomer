@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes for creating tables.
 """
-from typing import List
+from typing import List, override
 
 from core.build_unit import BuildUnit
 from util.pip import Pip
@@ -40,6 +40,7 @@ class Table:
         """
         self.rows.sort(key=lambda row: ([row[i] for i in [column_index] + list(additional_column_indices)]))
 
+    @override
     def __str__(self) -> str:
         Pip.for_build_unit(self.build_unit).install_packages('tabulate')
         # pylint: disable=import-outside-toplevel

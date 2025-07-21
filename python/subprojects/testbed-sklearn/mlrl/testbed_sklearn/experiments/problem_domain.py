@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for implementing different kinds of problem domains to be tacked via the scikit-learn framework.
 """
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, override
 
 import numpy as np
 
@@ -82,10 +82,12 @@ class SkLearnClassificationProblem(SkLearnProblem, ClassificationProblem):
     Represents a classification problem to be tackled via the scikit-learn framework.
     """
 
+    @override
     @property
     def feature_dtype(self) -> Any:
         return np.float32
 
+    @override
     @property
     def output_dtype(self) -> Any:
         return np.uint8
@@ -96,10 +98,12 @@ class SkLearnRegressionProblem(SkLearnProblem, RegressionProblem):
     Represents a regression problem to be tackled via the scikit-learn framework.
     """
 
+    @override
     @property
     def feature_dtype(self) -> Any:
         return np.float32
 
+    @override
     @property
     def output_dtype(self) -> Any:
         return np.float32

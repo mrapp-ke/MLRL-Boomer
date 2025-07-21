@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides classes that allow writing models to one or several sinks.
 """
-from typing import List, Optional
+from typing import List, Optional, override
 
 from mlrl.testbed.experiments.output.data import OutputData
 from mlrl.testbed.experiments.output.model.model import OutputModel
@@ -22,6 +22,7 @@ class ModelWriter(OutputWriter):
         The extractor to be used by a `ModelWriter`, by default.
         """
 
+        @override
         def extract_data(self, state: ExperimentState, _: List[Sink]) -> Optional[OutputData]:
             """
             See :func:`mlrl.testbed.experiments.output.writer.DataExtractor.extract_data`

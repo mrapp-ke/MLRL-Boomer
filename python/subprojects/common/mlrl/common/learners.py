@@ -7,7 +7,7 @@ import logging as log
 
 from abc import ABC, abstractmethod
 from enum import StrEnum
-from typing import Any, Optional, Set
+from typing import Any, Optional, Set, override
 
 import numpy as np
 
@@ -112,18 +112,21 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
             self.feature_matrix = feature_matrix
             self.incremental_predictor = incremental_predictor
 
+        @override
         def has_next(self) -> bool:
             """
             See :func:`mlrl.common.mixins.IncrementalPredictor.has_next`
             """
             return self.incremental_predictor.has_next()
 
+        @override
         def get_num_next(self) -> int:
             """
             See :func:`mlrl.common.mixins.IncrementalPredictor.get_num_next`
             """
             return self.incremental_predictor.get_num_next()
 
+        @override
         def apply_next(self, step_size: int):
             """
             See :func:`mlrl.common.mixins.IncrementalPredictor.apply_next`
@@ -151,12 +154,14 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
             self.predictor = predictor
             self.num_considered_rules = 0
 
+        @override
         def get_num_next(self) -> int:
             """
             See :func:`mlrl.common.mixins.IncrementalPredictor.get_num_next`
             """
             return self.num_total_rules - self.num_considered_rules
 
+        @override
         def apply_next(self, step_size: int):
             """
             See :func:`mlrl.common.mixins.IncrementalPredictor.apply_next`
@@ -464,6 +469,7 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
         support of this functionality.
         """
 
+        @override
         def apply_next(self, step_size: int):
             return convert_into_sklearn_compatible_probabilities(super().apply_next(step_size))
 
@@ -472,9 +478,11 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
         Allows to obtain probability estimates from a `ClassificationRuleLearner` incrementally.
         """
 
+        @override
         def apply_next(self, step_size: int):
             return convert_into_sklearn_compatible_probabilities(super().apply_next(step_size))
 
+    @override
     def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool, **_) -> Any:
         y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=np.uint8)),
                         accept_sparse=sparse_format,
@@ -513,6 +521,7 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
                                                     marginal_probability_calibration_model,
                                                     joint_probability_calibration_model, num_labels)
 
+    @override
     def _predict_proba(self, x, **kwargs):
         """
         :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
@@ -533,6 +542,7 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
 
         return super()._predict_proba(x, **kwargs)
 
+    @override
     def _predict_proba_incrementally(self, x, **kwargs):
         """
         :keyword sparse_feature_value:  The value that should be used for sparse elements in the feature matrix. Does
@@ -591,6 +601,7 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
                                                marginal_probability_calibration_model,
                                                joint_probability_calibration_model, num_labels)
 
+    @override
     def _predict_binary(self, x, **kwargs):
         """
         :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
@@ -611,6 +622,7 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
 
         return super()._predict_binary(x, **kwargs)
 
+    @override
     def _predict_binary_incrementally(self, x, **kwargs):
         """
         :keyword sparse_feature_value:  The value that should be used for sparse elements in the feature matrix. Does
@@ -646,6 +658,7 @@ class RegressionRuleLearner(RuleLearner, RegressorMixin, IncrementalRegressorMix
     A scikit-learn implementation of a rule learning algorithm that can be applied to regression problems.
     """
 
+    @override
     def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool, **_) -> Any:
         y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=np.float32)),
                         accept_sparse=sparse_format,
