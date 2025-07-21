@@ -5,7 +5,7 @@ Provides a data structure that allows to store and parse options that are provid
 """
 from enum import Enum, StrEnum
 from functools import reduce
-from typing import Any, Dict, Optional, Set, Tuple, Type
+from typing import Any, Dict, Optional, Set, Tuple, Type, override
 
 from mlrl.util.format import format_enum_values, format_set
 
@@ -171,6 +171,7 @@ class Options:
 
         return default_value
 
+    @override
     def __str__(self) -> str:
         return '{' + reduce(lambda aggr, item: aggr + (',' if aggr else '') + item[0] + '=' + str(item[1]),
                             sorted(self.dictionary.items()), '') + '}'

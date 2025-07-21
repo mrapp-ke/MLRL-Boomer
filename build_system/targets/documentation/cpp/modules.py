@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Implements modules that provide access to C++ code for which an API documentation can be generated.
 """
 from os import environ, path
-from typing import List
+from typing import List, override
 
 from core.modules import Module, ModuleRegistry
 from util.files import FileSearch, FileType
@@ -23,6 +23,7 @@ class CppApidocModule(ApidocModule):
         A filter that matches modules of type `CppApidocModule`.
         """
 
+        @override
         def matches(self, module: Module, module_registry: ModuleRegistry) -> bool:
             return isinstance(module, CppApidocModule) and SubprojectModule.Filter.from_env(environ).matches(
                 module, module_registry)
@@ -60,13 +61,16 @@ class CppApidocModule(ApidocModule):
         """
         return self.header_file_search.filter_by_file_type(FileType.cpp()).list(self.include_directory)
 
+    @override
     @property
     def subproject_name(self) -> str:
         return path.basename(self.root_directory)
 
+    @override
     def create_reference(self) -> str:
         return 'Library libmlrl' + self.subproject_name + ' <' + path.join(path.basename(self.output_directory),
                                                                            'filelist.rst') + '>'
 
+    @override
     def __str__(self) -> str:
         return 'CppApidocModule {root_directory="' + self.root_directory + '"}'
