@@ -40,6 +40,17 @@ The following optional arguments allow additional control over the loading mecha
 
 The arguments given above can be used to integrate any scikit-learn compatible machine learning algorithm with mlrl-testbed. You can learn about this {ref}`here<runnables>`.
 
+(argument-mode)=
+
+### Mode
+
+MLRL-Testbed supports different modes of operation configurable via the argument `-m` or `--mode`. By default, a single experiment configured via the command line API is run. However, it is also possible to run several experiments at once. In the following, we provide an overview of all available configuration options:
+
+- `-m` or `--mode` (Default value = `single`)
+
+  - `single` A single experiment is run.
+  - `batch` A batch of experiments is run at once.
+
 ### Dataset
 
 The following mandatory arguments must always be given to specify the dataset that should be used, as well as the location where it should be loaded from.
