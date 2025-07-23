@@ -83,6 +83,57 @@ The package mlrl-testbed is able to conduct experiments for classification and r
   - `classification` The dataset is considered as a classification dataset.
   - `regression` The dataset is considered as a regression dataset.
 
+(setting-algorithmic-parameters)=
+
+## Setting Algorithmic Parameters
+
+In addition to the command line arguments that are discussed above, it is often desirable to not rely on the default configuration of the BOOMER algorithm in an experiment, but to use a custom configuration. For this purpose, all the algorithmic parameters that are discussed in the section {ref}`parameters` may be set by providing corresponding arguments to the command line API.
+
+In accordance with the syntax that is typically used by command line programs, the parameter names must be given according to the following syntax that slightly differs from the names that are used by the programmatic Python API:
+
+- All argument names must start with two leading dashes (`--`).
+- Underscores (`_`) must be replaced with dashes (`-`).
+
+For example, the value of the parameter `feature_binning` may be set as follows:
+
+````{tab} BOOMER
+   ```text
+   mlrl-testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --feature-binning equal-width
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   mlrl-testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --feature-binning equal-width
+   ```
+````
+
+Some algorithmic parameters, including the parameter `feature_binning`, allow to specify additional options as key-value pairs by using a {ref}`bracket notation<bracket-notation>`. This is also supported via the command line API. However, options may not contain any spaces and special characters like `{` or `}` must be escaped by using single-quotes (`'`):
+
+````{tab} BOOMER
+   ```text
+   mlrl-testbed mlrl.boosting\
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   mlrl-testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
+   ```
+````
+
 ## Performance Evaluation
 
 > A more detailed description of the following arguments can be found {ref}`here<evaluation>`.
@@ -553,54 +604,3 @@ To provide valuable insights into the models learned by an algorithm, the predic
     - `decimals` (Default value = `2`) The number of decimals to be used for thresholds and probabilities or 0, if the number of decimals should not be restricted.
 
   - `false` The model for the calibration of joint probabilities is not written to a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file.
-
-(setting-algorithmic-parameters)=
-
-## Setting Algorithmic Parameters
-
-In addition to the command line arguments that are discussed above, it is often desirable to not rely on the default configuration of the BOOMER algorithm in an experiment, but to use a custom configuration. For this purpose, all the algorithmic parameters that are discussed in the section {ref}`parameters` may be set by providing corresponding arguments to the command line API.
-
-In accordance with the syntax that is typically used by command line programs, the parameter names must be given according to the following syntax that slightly differs from the names that are used by the programmatic Python API:
-
-- All argument names must start with two leading dashes (`--`).
-- Underscores (`_`) must be replaced with dashes (`-`).
-
-For example, the value of the parameter `feature_binning` may be set as follows:
-
-````{tab} BOOMER
-   ```text
-   mlrl-testbed mlrl.boosting \
-       --data-dir /path/to/datasets/ \
-       --dataset dataset-name \
-       --feature-binning equal-width
-   ```
-````
-
-````{tab} SeCo
-   ```text
-   mlrl-testbed mlrl.seco \
-       --data-dir /path/to/datasets/ \
-       --dataset dataset-name \
-       --feature-binning equal-width
-   ```
-````
-
-Some algorithmic parameters, including the parameter `feature_binning`, allow to specify additional options as key-value pairs by using a {ref}`bracket notation<bracket-notation>`. This is also supported via the command line API. However, options may not contain any spaces and special characters like `{` or `}` must be escaped by using single-quotes (`'`):
-
-````{tab} BOOMER
-   ```text
-   mlrl-testbed mlrl.boosting\
-       --data-dir /path/to/datasets/ \
-       --dataset dataset-name \
-       --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
-   ```
-````
-
-````{tab} SeCo
-   ```text
-   mlrl-testbed mlrl.seco \
-       --data-dir /path/to/datasets/ \
-       --dataset dataset-name \
-       --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
-   ```
-````
