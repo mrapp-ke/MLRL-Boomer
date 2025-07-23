@@ -1,6 +1,154 @@
+(testbed-outputs)=
+
+# Saving and Loading Data
+
+The {ref}`command line API <arguments>` of MLRL-Testbed provides a diverse set of options for saving data that is collected during an experiment. In some cases, e.g., models or algorithmic parameters, such data can also be read from input files. Both aspects, saving and loading data, are discussed below.
+
+(model-persistence)=
+
+## Saving and Loading Models
+
+Because the training of machine learning models can be time-consuming, they are usually trained once and then reused later for making predictions. For this purpose, the package mlrl-testbed provides means to store models on disk and load them from the created files later on. This requires to specify the arguments `--save-models` and `--load-models`. Optionally, the path to a directory where models should be saved, as well as a directory from which models should be loaded can be set via the command line arguments `--model-save-dir` and `--model-load-dir`. If not specified manually, the default `models` is used for both.
+
+````{tab} BOOMER
+   ```text
+   mlrl-testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --model-save-dir /path/to/models \
+       --model-load-dir /path/to/models \
+       --save-models true \
+       --load-models true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   mlrl-testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --model-save-dir /path/to/models \
+       --model-load-dir /path/to/models \
+       --save-models true \
+       --load-models true
+   ```
+````
+
+```{note}
+The paths of the directories specified via the arguments `--model-save-dir` and `--model-load-dir` can be either absolute or relative to the working directory. They must not refer to the same directory, which allows saving models to a different directory than the one they are loaded from. 
+```
+
+If {ref}`train-test splits<train-test-split>` are used for evaluating the predictive performance of models, a single model is fit to the training data and stored in a file:
+
+- `model.pickle`
+
+If a {ref}`cross validation<cross-validation>` is performed instead, one model is trained per cross validation fold and all of these models are stored in the specified directory. For example, a 5-fold cross validation results in the following files:
+
+- `model_fold-1.pickle`
+- `model_fold-2.pickle`
+- `model_fold-3.pickle`
+- `model_fold-4.pickle`
+- `model_fold-5.pickle`
+
+When executing the aforementioned command again, the program recognizes the previously stored models in the specified directory. Instead of training them from scratch, the models are then loaded from the respective files, which should be much faster than training them again.
+
+(parameter-persistence)=
+
+## Saving and Loading Parameters
+
+To remember the parameters that have been used for training a model, it might be useful to save them to disk. Similar to {ref}`saving models<model-persistence>`, keeping the resulting files allows to load a previously used configuration and reuse it at a later point in time.
+
+This requires to specify the argument `--save-parameters`. Optionally, the command line argument `--parameter-save-dir`, can be used to specify a directory where algorithmic parameters (see {ref}`setting-algorithmic-parameters`) should be saved. If this argument is not specified, the default value `parameters` is used. For example, the following command sets a custom value for a parameter, which is stored in an output file:
+
+````{tab} BOOMER
+   ```text
+   mlrl-testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --parameter-save-dir /path/to/parameters \
+       --save-parameters true \
+       --shrinkage 0.5
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   mlrl-testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --parameter-save-dir /path/to/parameters \
+       --save-parameters true \
+       --heuristic precision
+   ```
+````
+
+If {ref}`train-test splits<train-test-split>` are used for splitting the available data into training and test sets, a single model is trained and its configuration is saved to a file:
+
+- `parameters.csv`
+
+If a {ref}`cross validation<cross-validation>` is performed instead, one model is trained per cross validation fold and the configurations of all of these models are stored in the specified directory. For example, a 5-fold cross validation results in the following files:
+
+- `parameters_fold-1.csv`
+- `parameters_fold-2.csv`
+- `parameters_fold-3.csv`
+- `parameters_fold-4.csv`
+- `parameters_fold-5.csv`
+
+```{note}
+Only parameters with custom values are included in the output files. Parameters for which the default value is used are not included.
+```
+
+If you want to print all custom parameters that are used by a learning algorithm on the console, you can specify the argument `--print-parameters true`:
+
+````{tab} BOOMER
+   ```text
+   mlrl-testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-parameters true \
+       --shrinkage 0.5
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   mlrl-testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-parameters true \
+       --heuristic precision
+   ```
+````
+
+Once parameters have been saved to a directory, they can be loaded in subsequent experiments by using the command line argument `--load-parameters`. The path to the directory, where the input files are located, can be set via the argument `--parameter-load-dir`. If no path is given, `parameters` is used as the default. Loading parameters from input files allows to omit the respective parameters from the command line. If a parameter is included in both, the loaded file and the command line arguments, the latter takes precedence.
+
+````{tab} BOOMER
+   ```text
+   mlrl-testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --parameter-load-dir /path/to/parameters \
+       --load-parameters true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   mlrl-testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --parameter-load-dir /path/to/parameters \
+       --load-parameters true
+   ```
+````
+
+```{note}
+The paths of the directories that are specified via the arguments `--parameter-save-dir` and `--parameter-load-dir` can be either absolute or relative to the working directory.
+```
+
 (experimental-results)=
 
-# Saving Experimental Results
+## Saving Experimental Results
 
 One of the most important features provided by the package mlrl-testbed is the ability to output a wide variety of experimental results that provide valuable insights into the models learned by a machine learning algorithm, the predictions it provides, and the data it has been trained on.
 
@@ -20,7 +168,7 @@ By providing the argument `--save-all true`, the program can be instructed to wr
 
 (output-evaluation-results)=
 
-## Evaluation Results
+### Evaluation Results
 
 By default, the predictive performance of all models trained during an experiment is evaluated in terms of commonly used evaluation metrics and the evaluation results are printed to the console. In addition, the evaluation results can also be written to output files. The command line argument `--print-evaluation` can be used to explicitly enable or disable printing the evaluation results:
 
@@ -88,7 +236,7 @@ When using a {ref}`cross validation<cross-validation>`, a model is trained and e
 
 (output-predictions)=
 
-## Predictions
+### Predictions
 
 In cases where the {ref}`evaluation results<output-evaluation-results>` obtained via the arguments `--print-evaluation` or `--save-evaluation` are not sufficient for a detailed analysis, it may be desired to directly inspect the predictions provided by the evaluated models. They can be printed on the console by proving the argument `--print-predictions`. If the ground truth should also be printed, the argument `--print-ground-truth` must be provided as well:
 
@@ -160,7 +308,7 @@ When using a {ref}`cross validation<cross-validation>` for performance evaluatio
 
 (output-prediction-characteristics)=
 
-## Prediction Characteristics
+### Prediction Characteristics
 
 By using the command line argument `--print-prediction-characteristics`, characteristics regarding a model's predictions can be printed:
 
@@ -234,7 +382,7 @@ When dealing with classification problems, the following statistics are given as
 
 (output-data-characteristics)=
 
-## Data Characteristics
+### Data Characteristics
 
 To obtain insightful statistics regarding the characteristics of a dataset, the command line argument `--print-data-characteristics` may be helpful:
 
@@ -311,7 +459,7 @@ When dealing with classification problems, the following statistics are given as
 
 (output-label-vectors)=
 
-## Label Vectors
+### Label Vectors
 
 We refer to the unique labels combinations present for different examples in a classification dataset as label vectors. They can be printed by using the command line argument `--print-label-vectors`:
 
@@ -376,9 +524,15 @@ By setting the option `sparse` to the value `true`, an alternative representatio
 [2 3 4]
 ```
 
+(output-rule-specific)=
+
+### Rule-specific Results
+
+The rule learning algorithms developed by this project extend the functionality of MLRL-Testbed with rule-specific options. In the following, we discuss options for saving experiment results that are specific to this particular type of algorithms. Unless noted otherwise, the following options are available when using the packages [mlrl-boomer](https://pypi.org/project/mlrl-boomer/) and [mlrl-seco](https://pypi.org/project/mlrl-seco/) with MLRL-Testbed.
+
 (output-model-characteristics)=
 
-## Model Characteristics
+#### Model Characteristics
 
 To obtain a quick overview of some statistics that characterize a rule-based model learned by one of the algorithms provided by this project, the command line argument `--print-model-characteristics` can be useful:
 
@@ -442,7 +596,7 @@ The statistics captured by the previous commands include the following:
 
 (output-rules)=
 
-## Rules
+#### Rules
 
 It is considered one of the advantages of rule-based machine learning models that they capture patterns found in the training data in a human-comprehensible form. This enables to manually inspect the models and reason about their predictive behavior. To help with this task, the package mlrl-testbed allows to output the rules in a model using a textual representation. If the text should be printed on the console, the following command specifying the argument `--print-rules` can be used:
 
@@ -522,9 +676,13 @@ Examples that satisfy all conditions in a rule's body are said to be "covered" b
 
 (output-probability-calibration-models)=
 
-## Probability Calibration Models
+#### Probability Calibration Models
 
-Some machine learning algorithms provided by this project allow to obtain probabilistic predictions. These predictions can optionally be fine-tuned via calibration models to improve the reliability of the probability estimates. We support two types of calibration models for tuning marginal and joint probabilities, respectively. If one needs to inspect these calibration models, the command line arguments `--print-marginal-probability-calibration-model` and `--print-joint-probability-calibration-model` may be helpful:
+```{note}
+Probability calibration models are only supported by the gradient boosting algorithm [mlrl-boomer](https://pypi.org/project/mlrl-boomer/).
+```
+
+The gradient boosting algorithms provided by this project allow to obtain probabilistic predictions. These predictions can optionally be fine-tuned via calibration models to improve the reliability of the probability estimates. We support two types of calibration models for tuning marginal and joint probabilities, respectively. If one needs to inspect these calibration models, the command line arguments `--print-marginal-probability-calibration-model` and `--print-joint-probability-calibration-model` may be helpful:
 
 ````{tab} BOOMER
    ```text
