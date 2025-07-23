@@ -51,6 +51,14 @@ MLRL-Testbed supports different modes of operation configurable via the argument
   - `single` A single experiment is run.
   - `batch` A batch of experiments is run at once.
 
+In {ref}`batch mode <testbed-batch-mode>`, the following mandatory arguments must be given as well:
+
+- `-c` or `--config` An absolute or relative path to a YAML file that defines the batch of experiments to be run.
+
+In addition, the batch mode comes with the following optional arguments:
+
+- `--list` Lists the commands for running individual experiments instead of executing them.
+
 ### Dataset
 
 The following mandatory arguments must always be given to specify the dataset that should be used, as well as the location where it should be loaded from.
