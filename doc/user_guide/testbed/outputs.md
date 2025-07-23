@@ -524,9 +524,15 @@ By setting the option `sparse` to the value `true`, an alternative representatio
 [2 3 4]
 ```
 
+(output-rule-specific)=
+
+### Rule-specific Results
+
+The rule learning algorithms developed by this project extend the functionality of MLRL-Testbed with rule-specific options. In the following, we discuss options for saving experiment results that are specific to this particular type of algorithms. Unless noted otherwise, the following options are available when using the packages [mlrl-boomer](https://pypi.org/project/mlrl-boomer/) and [mlrl-seco](https://pypi.org/project/mlrl-seco/) with MLRL-Testbed.
+
 (output-model-characteristics)=
 
-### Model Characteristics
+#### Model Characteristics
 
 To obtain a quick overview of some statistics that characterize a rule-based model learned by one of the algorithms provided by this project, the command line argument `--print-model-characteristics` can be useful:
 
@@ -590,7 +596,7 @@ The statistics captured by the previous commands include the following:
 
 (output-rules)=
 
-### Rules
+#### Rules
 
 It is considered one of the advantages of rule-based machine learning models that they capture patterns found in the training data in a human-comprehensible form. This enables to manually inspect the models and reason about their predictive behavior. To help with this task, the package mlrl-testbed allows to output the rules in a model using a textual representation. If the text should be printed on the console, the following command specifying the argument `--print-rules` can be used:
 
@@ -670,9 +676,13 @@ Examples that satisfy all conditions in a rule's body are said to be "covered" b
 
 (output-probability-calibration-models)=
 
-### Probability Calibration Models
+#### Probability Calibration Models
 
-Some machine learning algorithms provided by this project allow to obtain probabilistic predictions. These predictions can optionally be fine-tuned via calibration models to improve the reliability of the probability estimates. We support two types of calibration models for tuning marginal and joint probabilities, respectively. If one needs to inspect these calibration models, the command line arguments `--print-marginal-probability-calibration-model` and `--print-joint-probability-calibration-model` may be helpful:
+```{note}
+Probability calibration models are only supported by the gradient boosting algorithm [mlrl-boomer](https://pypi.org/project/mlrl-boomer/).
+```
+
+The gradient boosting algorithms provided by this project allow to obtain probabilistic predictions. These predictions can optionally be fine-tuned via calibration models to improve the reliability of the probability estimates. We support two types of calibration models for tuning marginal and joint probabilities, respectively. If one needs to inspect these calibration models, the command line arguments `--print-marginal-probability-calibration-model` and `--print-joint-probability-calibration-model` may be helpful:
 
 ````{tab} BOOMER
    ```text
