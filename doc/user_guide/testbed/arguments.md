@@ -58,6 +58,10 @@ The following mandatory arguments must always be given to specify the dataset th
 - `--data-dir` An absolute or relative path to the directory where the dataset files are located.
 - `--dataset` The name of the dataset files (without suffix).
 
+```{note}
+The arguments `--data-dir` and `--dataset` are only available when using the {ref}`mode <argument-mode>` `--mode single` (which is the default). In {ref}`batch mode <testbed-batch-mode>`, datasets are defined via a configuration file.
+```
+
 Optionally, the following arguments can be used to provide additional information about the dataset.
 
 - `--sparse-feature-value` (Default value = `0.0`) The value that should be used for sparse elements in the feature matrix. Does only have an effect if a sparse format is used for the representation of the feature matrix, depending on the parameter `--feature-format`.
@@ -155,6 +159,10 @@ Because the training of models can be time-consuming, it might be desirable to s
 
   - An absolute or relative path to the directory to which models should be saved once training has completed.
 
+    ```{note}
+    This argument is only available when using the {ref}`mode <argument-mode>` `--mode single` (which is the default). In {ref}`batch mode <testbed-batch-mode>`, a suitable directory is created automatically.
+    ```
+
 - `--save-models` (Default value = `false`)
 
   - `true` Models are saved to output files.
@@ -179,6 +187,10 @@ As an alternative to storing the models learned by an algorithm, the algorithmic
 
   - An absolute or relative path to the directory to which [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files that store algorithmic parameters set by the user should be saved.
 
+    ```{note}
+    This argument is only available when using the {ref}`mode <argument-mode>` `--mode single` (which is the default). In {ref}`batch mode <testbed-batch-mode>`, a suitable directory is created automatically.
+    ```
+
 - `--print-parameters` (Default value = `false`)
 
   - `true` Algorithmic parameters are printed on the console.
@@ -198,6 +210,10 @@ To provide valuable insights into the models learned by an algorithm, the predic
 - `--base-dir` (Default value = `experiments/<yyyy-mm-dd_HH-MM>`, e.g., `experiments/2025-07-13_01-20`, depending on the current date and time) An absolute or relative path to a directory. If relative paths to directories, where files should be saved, are given, they are considered relative to the directory specified via this argument.
 
 - `--result-dir` (Default value = `result`) An absolute or relative path to the directory where experimental results should be saved.
+
+  ```{note}
+  This argument is only available when using the {ref}`mode <argument-mode>` `--mode single` (which is the default). In {ref}`batch mode <testbed-batch-mode>`, a suitable directory is created automatically.
+  ```
 
 - `--create-dirs` (Default value = `true`)
 
