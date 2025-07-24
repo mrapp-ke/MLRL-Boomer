@@ -5,7 +5,8 @@ import shutil
 import subprocess
 
 from functools import reduce
-from os import environ, listdir, makedirs, path, remove
+from os import environ
+from pathlib import Path
 from typing import Optional
 
 import pytest
@@ -21,19 +22,19 @@ class CmdRunner:
 
     def __create_temporary_directories(self):
         builder = self.builder
-        makedirs(builder.resolved_result_dir, exist_ok=True)
-        model_dir = builder.resolved_model_dir
-
-        if model_dir:
-            makedirs(model_dir, exist_ok=True)
-
-    def __delete_temporary_directories(self):
-        builder = self.builder
-        shutil.rmtree(builder.resolved_result_dir, ignore_errors=True)
+        builder.result_dir.mkdir(parents=True, exist_ok=True)
         model_dir = builder.model_dir
 
         if model_dir:
-            shutil.rmtree(builder.resolved_model_dir, ignore_errors=True)
+            model_dir.mkdir(parents=True, exist_ok=True)
+
+    def __delete_temporary_directories(self):
+        builder = self.builder
+        shutil.rmtree(builder.result_dir, ignore_errors=True)
+        model_dir = builder.model_dir
+
+        if model_dir:
+            shutil.rmtree(builder.model_dir, ignore_errors=True)
 
     def __format_cmd(self):
         return reduce(lambda aggr, arg: aggr + (' ' + arg if len(aggr) > 0 else arg), self.args, '')
@@ -50,9 +51,9 @@ class CmdRunner:
 
     def __assert_model_files_exist(self):
         builder = self.builder
-        self.__assert_files_exist(directory=builder.resolved_model_dir, file_name='model', suffix='pickle')
+        self.__assert_files_exist(directory=builder.model_dir, file_name='model', suffix='pickle')
 
-    def __assert_files_exist(self, directory: Optional[str], file_name: str, suffix: str):
+    def __assert_files_exist(self, directory: Optional[Path], file_name: str, suffix: str):
         if directory:
             builder = self.builder
             num_folds = builder.num_folds
@@ -62,11 +63,11 @@ class CmdRunner:
 
                 if current_fold is None:
                     for i in range(num_folds):
-                        self.__assert_file_exists(directory, self.__get_file_name(file_name, suffix, i + 1))
+                        self.__assert_file_exists(directory / self.__get_file_name(file_name, suffix, i + 1))
                 else:
-                    self.__assert_file_exists(directory, self.__get_file_name(file_name, suffix, current_fold))
+                    self.__assert_file_exists(directory / self.__get_file_name(file_name, suffix, current_fold))
             else:
-                self.__assert_file_exists(directory, self.__get_file_name(file_name, suffix))
+                self.__assert_file_exists(directory / self.__get_file_name(file_name, suffix))
 
     @staticmethod
     def __get_file_name(name: str, suffix: str, fold: Optional[int] = None):
@@ -74,21 +75,18 @@ class CmdRunner:
             return name + '.' + suffix
         return name + '_fold-' + str(fold) + '.' + suffix
 
-    def __assert_file_exists(self, directory: str, file_name: str):
+    def __assert_file_exists(self, file: Path):
         """
         Asserts that a specific file exists.
 
-        :param directory:   The path to the directory where the file should be located
-        :param file_name:   The name of the file
+        :param file: The path to the file that should be checked
         """
-        file = path.join(directory, file_name)
-
-        if not path.isfile(file):
-            pytest.fail('Command "' + self.__format_cmd() + '" is expected to create file ' + str(file)
-                        + ', but it does not exist')
+        if file.is_file():
+            pytest.fail('Command "' + self.__format_cmd() + '" is expected to create file "' + str(file)
+                        + '", but it does not exist')
 
     def __compare_or_overwrite_files(self, file_comparison: FileComparison, test_name: str, file_name: str):
-        expected_output_file = path.join(self.builder.expected_output_dir, test_name, file_name)
+        expected_output_file = self.builder.expected_output_dir / test_name / file_name
         overwrite = self.__should_overwrite_files()
         difference = file_comparison.compare_or_overwrite(expected_output_file, overwrite=overwrite)
 
@@ -133,31 +131,31 @@ class CmdRunner:
 
         # Check if output of the command is as expected...
         stdout = [self.__format_cmd()] + str(out.stdout).splitlines()
-        stdout_file = 'std.out'
-        self.__compare_or_overwrite_files(TextFileComparison(stdout), test_name=test_name, file_name=stdout_file)
+        stdout_file_name = 'std.out'
+        self.__compare_or_overwrite_files(TextFileComparison(stdout), test_name=test_name, file_name=stdout_file_name)
 
         # Check if all expected output files have been created...
         self.__assert_model_files_exist()
-        result_dir = builder.resolved_result_dir
+        result_dir = builder.result_dir
         expected_output_dir = builder.expected_output_dir
         expected_files_to_be_deleted = []
 
-        for expected_file in listdir(path.join(expected_output_dir, test_name)):
-            if expected_file != stdout_file:
+        for expected_file in (expected_output_dir / test_name).iterdir():
+            if expected_file != Path(stdout_file_name):
                 if self.__should_overwrite_files():
-                    if not path.isfile(path.join(result_dir, expected_file)):
-                        expected_files_to_be_deleted.append(path.join(expected_output_dir, test_name, expected_file))
+                    if not (result_dir / expected_file).is_file():
+                        expected_files_to_be_deleted.append(expected_output_dir / test_name / expected_file)
                 else:
-                    self.__assert_file_exists(result_dir, expected_file)
+                    self.__assert_file_exists(result_dir / expected_file)
 
         for expected_file in expected_files_to_be_deleted:
-            remove(expected_file)
+            expected_file.unlink()
 
         # Check if all output files have the expected content...
-        for output_file in listdir(result_dir):
-            self.__compare_or_overwrite_files(FileComparison.for_file(path.join(result_dir, output_file)),
+        for output_file in result_dir.iterdir():
+            self.__compare_or_overwrite_files(FileComparison.for_file(result_dir / output_file),
                                               test_name=test_name,
-                                              file_name=path.basename(output_file))
+                                              file_name=output_file.name)
 
         # Delete temporary directories...
         self.__delete_temporary_directories()

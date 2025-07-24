@@ -1,9 +1,9 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from os import path
 from typing import Optional
 
+from ..common.cmd_builder import CmdBuilder
 from ..common.cmd_builder_classification import ClassificationCmdBuilder
 from ..common.datasets import Dataset
 from .cmd_builder import BoomerCmdBuilderMixin
@@ -21,7 +21,7 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder, BoomerCmdBuilderMixin
     """
 
     def __init__(self, dataset: str = Dataset.EMOTIONS):
-        super().__init__(expected_output_dir=path.join('boosting', 'classification'),
+        super().__init__(expected_output_dir=CmdBuilder.OUTPUT_DIR / 'boosting' / 'classification',
                          runnable_module_name='mlrl.boosting',
                          dataset=dataset)
 
